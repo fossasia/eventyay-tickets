@@ -1,0 +1,12 @@
+.juiz_last_tweet_inside { color: #666; }
+.juiz_last_tweet_inside ul { position: relative; padding: 15px; background-color: #f4f4f4;  background-image: -webkit-linear-gradient(rgba(255,255,255, 0.1), rgba(0,0,0, 0.1)); background-image: -moz-linear-gradient(rgba(255,255,255, 0.1), rgba(0,0,0, 0.1)); background-image: -ms-linear-gradient(rgba(255,255,255, 0.1), rgba(0,0,0, 0.1)); background-image: -o-linear-gradient(rgba(255,255,255, 0.1), rgba(0,0,0, 0.1)); background-image: linear-gradient(rgba(255,255,255, 0.1), rgba(0,0,0, 0.1)); -webkit-border-radius: 12px; -moz-border-radius: 12px; border-radius: 12px; -webkit-box-shadow: 1px 1px 4px rgba(0,0,0,0.45); -moz-box-shadow: 1px 1px 4px rgba(0,0,0,0.45); box-shadow: 1px 1px 4px rgba(0,0,0,0.45); }
+.juiz_last_tweet_inside ul:after { position:absolute; content: " "; bottom: -12px; left: 30px; border-top: 12px solid #ddd; border-left: 6px solid transparent; border-right: 6px solid transparent; }
+.juiz_last_tweet_inside li { display:block; list-style:none; background: none; }
+.juiz_last_tweet_inside li + li { margin-top: 12px; padding-top: 12px; border-top: 1px solid #fff; box-shadow: 0 1px 0 rgba(0,0,0,0.1) inset; }
+.juiz_last_tweet_inside .user_avatar { float: right; height:48px; width:48px; position: relative; margin-right:-10px; z-index:2; }
+.juiz_last_tweet_inside .user_avatar a { position: absolute; height:48px; width:48px; border: 2px solid #fff; top: -23px; right: -13px; -webkit-border-radius: 12px; -moz-border-radius: 12px; border-radius: 12px; overflow: hidden; -webkit-box-shadow:0 0 2px rgba(0, 0, 0, 0.5);-moz-box-shadow:0 0 2px rgba(0, 0, 0, 0.5);box-shadow:0 0 2px rgba(0, 0, 0, 0.5);}
+.juiz_last_tweet_inside .user_avatar a img { border:0 none;max-width: 100%; }
+.juiz_last_tweet_inside .juiz_lt_content { display:block; padding-bottom: 5px; line-height: 1.5em; border-bottom: 1px dashed #ccc; border-color: rgba(0,0,0,0.1); }
+.juiz_last_tweet_inside .juiz_last_tweet_inner { font-size: 10px; }
+.juiz_last_tweet_follow_us { min-height: 22px; margin:0; padding: 7px 0 10px 48px; background: url(../img/twitter.png) 0 11px no-repeat; font-size: 10px; }
+.juiz_last_tweet_widget .hasjs li + li { margin-top: 0; padding-top:0; border-top:0; box-shadow: 0 0 0; }
