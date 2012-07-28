@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Juiz Last Tweet Widget\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-04 00:51+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Geoffrey <rikuasakura@hotmail.fr>\n"
+"Language-Team: CreativeJuiz <support@creativejuiz.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: France\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: juiz-last-tweet.php:81
+msgid "List you last tweet by displaying content, date, and link to follow you"
+msgstr "Enumera los últimos tweets y ver su contenido, la fecha, y un enlace que te siga."
+
+#: juiz-last-tweet.php:86
+msgid "Juiz Last Tweet"
+msgstr "Juiz Ultimo Tweet"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:120
+msgid "Title"
+msgstr "Título"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:129
+msgid "Preferences"
+msgstr "Preferencias"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:132
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: juiz-last-tweet.php:133
+msgid "No @, just your username"
+msgstr "No @, sólo su nombre de usuario"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:136
+msgid "Number of tweets to show"
+msgstr "Número de tweets a mostrar"
+
+#: juiz-last-tweet.php:137
+msgid "Just a number, between 1 and 5 for example"
+msgstr "Un solo número, entre 1 y 5, por ejemplo"
+
+#: juiz-last-tweet.php:140
+msgid "Duration of cache"
+msgstr "Tiempo de descuento"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:141
+#: juiz-last-tweet.php:153
+#: juiz-last-tweet.php:268
+msgid "Seconds"
+msgstr "Segundos"
+
+#: juiz-last-tweet.php:141
+msgid "A big number save your page speed. Try to use the delay between each tweet you make. (e.g. 1800 s = 30 min)"
+msgstr "Un gran número guarda la velocidad de carga de tu página. Trate de usar el tiempo transcurrido entre cada tweet que hacer. (ex : 1800 s = 30 min)"
+
+#: juiz-last-tweet.php:144
+msgid "Show your avatar?"
+msgstr "¿Mostrar tu avatar?"
+
+#: juiz-last-tweet.php:145
+msgid "If it's possible, display your avatar at the top of tweets list"
+msgstr "Si es posible, mostrar tu avatar en la parte superior de la lista de los tweets"
+
+#: juiz-last-tweet.php:148
+msgid "Auto slide one by one?"
+msgstr "¿Pase de diapositivas automático entre los tweets?"
+
+#: juiz-last-tweet.php:149
+msgid "Use JavaScript to activate an little slider showing tweet by tweet"
+msgstr "Usar JavaScript para activar un slider mostrando poco a Tweet"
+
+#: juiz-last-tweet.php:152
+msgid "Delay between 2 tweets?"
+msgstr "La demora entre 2 tweets"
+
+#: juiz-last-tweet.php:153
+msgid "Chose a delay if you use the auto slide feature."
+msgstr "Seleccione un retraso si se utiliza la función de automático slideshow."
+
+#: juiz-last-tweet.php:159
+msgid "Manage CSS"
+msgstr "Administración de CSS"
+
+#: juiz-last-tweet.php:162
+msgid "Use the default CSS?"
+msgstr "¿Utilizar el original CSS ?"
+
+#: juiz-last-tweet.php:163
+msgid "Load a little CSS file with default styles for the widget"
+msgstr "Cargar un poco de archivo CSS con estilos predeterminados para el widge"
+
+#: juiz-last-tweet.php:166
+msgid "Your own CSS"
+msgstr "Su propio CSS"
+
+#: juiz-last-tweet.php:166
+msgid "Write your CSS here to replace or overwrite the default CSS"
+msgstr "Escribe tu propio CSS para sustituir o reemplazar el original"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:268
+msgid "Second"
+msgstr "Segundo"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:272
+msgid "Minutes"
+msgstr "Minutos"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:272
+msgid "Minute"
+msgstr "Minuto"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:276
+msgid "Hours"
+msgstr "Horas"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:276
+msgid "Hour"
+msgstr "Hora"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:280
+msgid "Days"
+msgstr "Días"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:280
+msgid "Day"
+msgstr "Día"
+
+#: juiz-last-tweet.php:362
+msgid "Twitter has a problem with your RSS feed&hellip;"
+msgstr "Twitter tiene un problema con tu feed RSS&hellip;"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:426
+#: juiz-last-tweet.php:501
+msgid "Follow"
+msgstr "Seguir"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:426
+#: juiz-last-tweet.php:503
+msgid "on twitter."
+msgstr "en Twitter."
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:448
+msgid "Time ago"
+msgstr "Hace"
+
+#: juiz-last-tweet.php:450
+msgid "See the status"
+msgstr "Ver el estado"
+
+#: juiz-last-tweet.php:476
+msgid "The RSS feed for this twitter account is not loadable for the moment."
+msgstr "Canal RSS de esta cuenta de twitter no está disponible en este momento."
+
+#: juiz-last-tweet.php:631
+#, php-format
+msgid "%s: Widget class not found."
+msgstr "%s: La clase del widget no se encuentra."
+
