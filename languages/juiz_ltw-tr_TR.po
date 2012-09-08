@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: juiz last tweet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-26 03:34+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Geoffrey <rikuasakura@hotmail.fr>\n"
+"Language-Team: kazancexpert <kazancexpert@gmail.com>\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: juiz-last-tweet.php:105
+msgid "Widgets"
+msgstr "Widgets"
+
+#: juiz-last-tweet.php:111
+msgid "List you last tweet by displaying content, date, and link to follow you"
+msgstr ""
+"Son tweet içeriğinizi, tarihini ve sizi takip etmeleri için bir bağlantı "
+"listeler"
+
+#: juiz-last-tweet.php:116
+msgid "Juiz Last Tweet"
+msgstr "Juiz Last Tweet"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:154
+msgid "Title"
+msgstr "Başlık"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:163
+msgid "Preferences"
+msgstr "Tercihler"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:166
+msgid "Username"
+msgstr "Kullanıcı Adı"
+
+#: juiz-last-tweet.php:167
+msgid "No @, just your username"
+msgstr "@ yok, sadece kullanıcı adı"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:170
+msgid "Number of tweets to show"
+msgstr "Gösterilecek tweet sayısı"
+
+#: juiz-last-tweet.php:171
+msgid "Just a number, between 1 and 5 for example"
+msgstr "Sadece bir sayı, örneğin 1 ve 5 arası"
+
+#: juiz-last-tweet.php:174
+msgid "Duration of cache"
+msgstr "Önbellek süresi"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:175 juiz-last-tweet.php:191 juiz-last-tweet.php:311
+msgid "Seconds"
+msgstr "Saniye"
+
+#: juiz-last-tweet.php:175
+msgid ""
+"A big number save your page speed. Try to use the delay between each tweet "
+"you make. (e.g. 1800 s = 30 min)"
+msgstr ""
+"Büyük sayılar sayfa hızınızı arttırır. Yazdığınız her tweet arasındaki "
+"gecikme süresini deneyin. (örn. 1800 s = 30 dk)"
+
+#: juiz-last-tweet.php:178
+msgid "Show your avatar?"
+msgstr "Avatar gösterilsin mi?"
+
+#: juiz-last-tweet.php:179
+msgid "If it's possible, display your avatar at the top of tweets list"
+msgstr "Mümkünse, tweet listesinin üstünde avatarınızı gösterin"
+
+#: juiz-last-tweet.php:182
+msgid "Show action links?"
+msgstr "Eylem bağlantıları göster?"
+
+#: juiz-last-tweet.php:183
+msgid "Display action links like Retweet, Reply and Fav"
+msgstr "Retweet, cevap ve favori gibi eylem bağlantıları görüntüleyin"
+
+#: juiz-last-tweet.php:186
+msgid "Auto slide one by one?"
+msgstr "Otomatik sıralı kaydırma?"
+
+#: juiz-last-tweet.php:187
+msgid "Use JavaScript to activate an little slider showing tweet by tweet"
+msgstr "Tek tek tweetleri kaydırmak için JavaScript kullanmayı etkinleştir"
+
+#: juiz-last-tweet.php:190
+msgid "Delay between 2 tweets?"
+msgstr "2 tweet arası gecikme?"
+
+#: juiz-last-tweet.php:191
+msgid "Chose a delay if you use the auto slide feature."
+msgstr "Eğer otomatik kaydırma kullanıyorsan bir gecikme belirle."
+
+#: juiz-last-tweet.php:197
+msgid "Manage CSS"
+msgstr "CSS Düzenle"
+
+#: juiz-last-tweet.php:200
+msgid "Use the default CSS?"
+msgstr "Varsayılan CSS kullanılsın?"
+
+#: juiz-last-tweet.php:201
+msgid "Load a little CSS file with default styles for the widget"
+msgstr "Widget geçerli görünümü için küçük bir CSS dosyası yükle"
+
+#: juiz-last-tweet.php:204
+msgid "Your own CSS"
+msgstr "Senin CSS"
+
+#: juiz-last-tweet.php:204
+msgid "Write your CSS here to replace or overwrite the default CSS"
+msgstr "Geçerli CSS ile değiştirmek için buraya kendi CSS bilgini gir"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:311
+msgid "Second"
+msgstr "Saniye önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:315
+msgid "Minutes"
+msgstr "Dakika önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:315
+msgid "Minute"
+msgstr "Dakika önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:319
+msgid "Hours"
+msgstr "Saat önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:319
+msgid "Hour"
+msgstr "Saat önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:323
+msgid "Days"
+msgstr "Gün önce"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:323
+msgid "Day"
+msgstr "Gün önce"
+
+#: juiz-last-tweet.php:422
+msgid "Twitter has a problem with your RSS feed&hellip;"
+msgstr "RSS beslemenizle ilgili bir Twitter sorunu var&hellip;"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:488 juiz-last-tweet.php:586
+msgid "Follow"
+msgstr "Twitter'da"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:488 juiz-last-tweet.php:588
+msgid "on twitter."
+msgstr "Takip Et."
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:512
+msgid "Time ago"
+msgstr "Tarih:"
+
+#: juiz-last-tweet.php:514
+msgid "See the status"
+msgstr "Durumu gör"
+
+#: juiz-last-tweet.php:533
+msgid "Reply"
+msgstr "Cevap"
+
+#: juiz-last-tweet.php:534
+msgid "Retweet"
+msgstr "Retweet"
+
+#: juiz-last-tweet.php:535
+msgid "Favorite"
+msgstr "Favori"
+
+#: juiz-last-tweet.php:560
+msgid "The RSS feed for this twitter account is not loadable for the moment."
+msgstr "Şuan için bu twitter hesabının RSS beslemesi yüklenemez durumda."
+
+#: juiz-last-tweet.php:698
+#, php-format
+msgid "%s: Widget class not found."
+msgstr "%s: Widget sınıfı bulunamadı."
