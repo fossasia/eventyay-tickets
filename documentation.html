@@ -1,0 +1,613 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Juiz LTW - Documentation</title>
+	
+	<style type="text/css">
+		html {
+			background: #f2F2f2;
+			font-size: 100%;
+		}
+		body {
+			width: 772px;
+			padding: 20px;
+			margin:auto;
+			font-family:Helvetica Neue,Helvetica,Arial,sans-serif;
+			font-size:100%;
+			line-height: 1.55em;
+			color: #444;
+			font-size: .9em;
+			background: #fff;
+			box-shadow: 0 0 3px rgba(0,0,0,0.3);
+		}
+		code, pre { font-family: Consolas, 'Courier New', monospace; font-size: .9em; }
+		p code, li code { color: #0c8db8; font-size: 1em; }
+		a { color: darkorange; }
+		h1 { position: relative; margin-top:0; }
+		h1 .overlay { position: absolute; top:0; left:0; right:0; bottom:0; box-shadow: 0 0 55px rgba(0,0,0,0.35) inset; }
+		h1 .title {
+			background: none repeat scroll 0 0 rgba(30, 30, 30, 0.9);
+			border-radius: 8px 8px 8px 8px;
+			bottom: 20px;
+			box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+			color: #FFFFFF;
+			font-size: 30px;
+			left: 30px;
+			margin-bottom: 4px;
+			max-width: 682px;
+			padding: 8px 15px;
+			position: absolute;
+			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+		}
+		h2 {
+			margin-top: 1.5em;
+			padding-top: 1em;
+			border-top: 1px solid #eee;
+			font-size: 2em;
+			font-weight:normal;
+		}
+		pre {
+			background: #ededed;
+			border: 1px dashed #ddd;
+			padding: 8px;
+			color: #000;
+			text-shadow: 1px 1px 0 #fff;
+			line-height: 1.4em;
+		}
+		.author {
+			float: right;
+			width: 40%;
+			margin: 0 0 1em 1em;
+			background: #ffffdd;
+			border: 1px solid #EECC88;
+			padding: 20px;
+			font-size: 0.8em;
+			overflow: hidden;
+		}
+		.author img {
+			float: left;
+			margin-top: 5px;
+			margin-right: 20px;
+		}
+		blockquote {
+			border: 2px dotted #ddd;
+			padding:0 20px;
+			margin-left:0;
+		}
+		blockquote h1 {
+			font-size: 1em;
+			font-weight:bold;
+		}
+		.aligncenter {
+			text-align: center;
+		}
+		.aligncenter img {
+			box-shadow: 1px 1px 5px #aaa;
+		}
+		
+		.button {
+			display: inline-block;
+			vertical-align: top;
+			padding: 4px 10px;
+			border-radius: 4px;
+			background-color: darkorange;
+			background-image: -moz-linear-gradient(orange, darkorange);
+			color: #fff;
+			text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+			box-shadow: 1px 1px 3px rgba(0,0,0,.3);
+			text-decoration:none;
+			font-weight:bold;
+			-moz-transition: all .8s;
+		}
+		.button + .button {
+			margin-left: 1em;
+		}
+		.button.tweet {
+			background-color: #29bcec;
+			background-image: -moz-linear-gradient(#29bcec, #1b92b9);
+			text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+		}
+		.button:hover, .button:focus {
+			background-image: -moz-linear-gradient(#eee, #ccc);
+			color: darkorange;
+			text-shadow: 0 0 0;
+		}
+		
+		.tdm {
+			clear: both;
+			margin-top: 30px;
+			padding: 20px;
+			border-radius: 12px;
+			border: 1px solid #eee;
+			background: -moz-linear-gradient(#fff, #f2f2f2);
+		}
+		.tdm h2 {
+			margin:0;
+			padding:0;
+			padding-bottom: .2em;
+			text-align: left;
+			color:#777;
+			border-top: 0 none;
+			font-size: 1.5em;
+		}
+		
+		.important {
+			border: 1px dashed darkred;
+			color: darkred;
+			padding: 12px;
+			background: #f6e7e7;
+		}
+		
+		dt {
+			font-weight: bold;
+		}
+		dt:before {
+			content:'→';
+			display:inline-block;
+			vertical-align: top;
+			margin-right: .5em;
+		}
+		dd + dt {
+			margin-top: 1.5em;
+		}
+		#footer {
+			position:relative;
+			padding: 12px;
+			margin: 3em 0 1em;
+			border: 1px solid #ddd;
+			background: #f2f2f2;
+			text-align: center;
+			font-weight: bold;
+			color: #666;
+		}
+		.last-update {
+			position: absolute;
+			bottom: 0px; right: 10px;
+			font-weight: normal;
+			font-size: 0.7em;
+			line-height: 1.2em;
+			text-align:right;
+			color: #999
+		}
+		.since {
+			font-size: .7em;
+			color: #777;
+			font-weight: normal;
+		}
+		dl .since {
+			font-size: 1em;
+			color: #777;
+			font-weight: normal;
+		}
+	</style>
+</head>
+<body>
+	
+	<h1>
+		<img src="http://plugins.svn.wordpress.org/juiz-last-tweet-widget/assets/banner-772x250.png" width="772" height="250" alt="" />
+		<span class="title">Juiz LTW - Documentation</span>
+		<span class="overlay"></span>
+	</h1>
+	
+	<p class="author"><img src="http://www.gravatar.com/avatar/5b6a2bd86ef643786a381a212e0ef2f1?s=75" alt="Geoffrey Crofte" width="75" height="75" />
+	Developed, designed and polished by Geoffrey Crofte.<br />
+	French blogger for <a href="http://www.creativejuiz.fr/blog/?from=jltw_doc" title="Astuces et tutoriels pour WordPress, CSS3, HTML5 et jQuery, notamment.">Creative Juiz blog</a> and <a href="http://alsacreations.com/?from=jltw_doc">Alsacréations community</a>, I'm a code and pixels lover ! Find me on : <a href="http://twitter.com/geoffrey_crofte">Twitter</a>, <a href="http://creativejuiz.fr/trytotry/?from=jltw_doc" hreflang="en">TryToTry Laboratory</a> or <a href="http://crofte.fr?from=jltw_doc">crofte.fr</a></p>
+	
+	<p>This file is a documention for the plugin Juiz Last Tweet Widget.<br />
+	It will be updated each time with the plugin features.</p>
+	
+	<p>Please, note that this documentation concerne all versions of the plugin. Read the "<strong>since</strong>" mention on each feature.</p>
+	
+	<p>You like this plugin and want support it ?
+	<br />
+	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P39NJPCWVXGDY&lc=FR&item_name=Juiz%20Last%20Tweet%20Widget%20%2d%20WordPress%20Plugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest" title="Go to Paypal Website" class="button" target="_blank">Donate</a>
+	<a href="https://twitter.com/intent/tweet?hashtags=CreativeJuiz&amp;text=I%20use%20Juiz%20Last%20Tweet%20Widget%20on%20my%20WordPress%20blog,%20awesome!%20&amp;url=http%3A%2F%2Fwordpress.org%2Fextend%2Fplugins%2Fjuiz-last-tweet-widget%2F&amp;via=geoffrey_crofte" target="_blank" class="tweet button">Tweet it</a>
+	</p>
+	
+	<h2>See also</h2>
+	<ul>
+		<li><a href="http://wordpress.org/extend/plugins/social-subscribers-counter/">Social Subscribers Counter</a> - Same default design than Juiz Last Tweet Widget, allows you to show a counter of followers from several social network,</li>
+		<li><a href="http://wordpress.org/extend/plugins/juiz-smart-mobile-admin/">Juiz Smart Mobile Admin</a> - A responsive layout for your default WordPress Admin theme. Your administration always with you!</li>
+	</ul>
+	
+	<div class="tdm">
+		<h2>Table of content</h2>
+		<ul>
+			<li><a href="#css-classes">CSS classes</a></li>
+			<li><a href="#shortcode">ShortCode</a></li>
+			<li><a href="#template">Template functions</a></li>
+			<li><a href="#hooks">Hooks</a></li>
+			<li><a href="#faq">FAQ</a></li>
+		</ul>
+	</div>
+	
+	<h2 id="css-classes">CSS Classes</h2>
+	
+	<p>If you need to use custom styles for your embedded tweets :</p>
+	
+	<pre class="code"><code class="css">/* The big container */  
+.juiz_last_tweet_widget { }  
+       
+/* The list of tweets and "follow us" container */  
+.juiz_last_tweet_inside { }  
+       
+/* The list of tweets */  
+.juiz_last_tweet_tweetlist { }  
+       
+/* The user avatar */  
+.juiz_last_tweet_widget .user_avatar { }  
+       
+/* The user avatar link */  
+.juiz_last_tweet_widget .user_avatar a { }  
+       
+/* The user avatar image */  
+.juiz_last_tweet_widget .user_avatar img { }  
+
+/* A tweet (since 1.1.5) */
+.juiz_last_tweet_item { }
+
+/* The tweet content */  
+.juiz_lt_content { } 
+
+/* The part after the tweet content (since 1.1.5) */
+juiz_last_tweet_footer_item { }
+   
+/* The links inside a tweet */  
+.juiz_last_tweet_tweetos { }  
+.juiz_last_tweet_hastag { }  
+.juiz_last_tweet_url { }
+
+/* The container of action links */
+.juiz_action_links { }
+/* The different action links */
+.juiz_al_reply { }
+.juiz_al_retweet { }
+.juiz_al_fav { }
+   
+/* The tweet metadata */  
+.juiz_last_tweet_metadata { }  
+   
+/* The source */  
+.juiz_ltw_source { } 
+   
+/* The baseline */  
+.juiz_last_tweet_follow_us { }  
+   
+/* The "follow" word */  
+.juiz_ltw_follow { }  
+   
+/* The username link */  
+.juiz_ltw_username { }  
+   
+/* The "on Twitter" words */  
+.juiz_ltw_ontwitter { } </code></pre>
+	
+	<p>You can improve your CSS editions by using <a href="http://getfirebug.com/" target="_blank">Firebug plugin</a>.</p>
+
+	
+	
+	
+	<h2 id="shortcode">ShortCode <span class="since">since 1.1.0</span></h2>
+	
+	<p>This plugin has a Shortcode, a kind of BBcode, that allows you to display this widget where you want.<br />
+	This shortcode uses the keyword <code>jltw</code> (Juiz Last Tweet Widget), a particular word to oust any conflict with other plugins.<br />
+	You can use the keyword <code>tweets</code>, also. (<span class="since">since 1.2.0</span>)</p>
+	
+	<pre class="code"><code class="html">[jltw]</code></pre>
+	
+	or since 1.2.0
+	
+	<pre class="code"><code class="html">[tweets]</code></pre>
+	
+	<p>Used in a post, this shortcode display the widget.<br />
+	Morever, options are available. The list of options is the following :</p>
+	<ul>
+		<li><code>username</code>: by default, my own twitter account ('geoffrey_crofte')</li>
+		<li><code>nb</code>: by default '1'</li>
+		<li><code>avatar</code>: by default 'false' (since 1.1.3 default is '0')</li>
+		<li><code>cache</code>: by default '0'</li>
+		<li><code>transition</code>: by default 'false' (since 1.1.3 default is '0')</li>
+		<li><code>delay</code>: by default '0'</li>
+		<li><code>links</code>: by default 'false' (since 1.1.3 default is '0')</li>
+	</ul>
+	<p>So, you need to change the <code>username</code>, at least ;)</p>
+	
+	<h3 id="shortcode">Basic ShortCode</h3>
+	<pre class="code"><code class="html">[jltw username="<span style="color:red">your-account</span>" nb="<span style="color:red">3</span>" avatar="<span style="color:red">true</span>"]</code></pre>
+	<p>This sample of code show the <code>3</code> last tweets of the Twitter account named "<code>your-account</code>". It display the Twitter avatar (note: you can write <code>avatar="something"</code>, it works).</p>
+	
+	<h3 id="shortcode">Advanced ShortCode</h3>
+	<pre class="code"><code class="html">[jltw username="<span style="color:red">your-account</span>" nb="<span style="color:red">3</span>" avatar="<span style="color:red">1</span>" transition="<span style="color:red">1</span>" delay="<span style="color:red">7</span>" cache="<span style="color:red">3600</span>" links="<span style="color:red">1</span>"]</code></pre>
+	<p>This sample does the same as the previous sample, it adds a slideshow with a delay of 7 seconds to display the 3 tweets one by one. A cache of 3600 seconds (1 hour) is used to maintain the speed of the page. Action links (retweet, reply, favorite) are displayed below each tweet.</p>
+	<p class="important">Note: if you used the <strong>previous version of this shortcode</strong>, the version 1.1.3 needs 0 and 1 instead of False and True values respectively. Thanks.</p>
+	
+	<p class="important">You <strong>can't desactivate default CSS</strong> when the widget is displayed with a shortcode. You'll need to overwrite it by using your own CSS file.</p>
+	
+
+
+	
+	<h2 id="template">Template functions <span class="since">since 1.1.4</span></h2>
+
+	<p>Template functions allow you to display list of tweets inside any theme template you need.
+		<br />There are two functions: <code>jltw($args)</code> and <code>get_jltw($args)</code></p>
+	
+	<p>Example of use:</p>
+	<pre class="code"><code class="html">&lt;div class="my_tweets_block"&gt;
+	&lt;?php
+		/* your parameters */
+		$jltw_args = array(
+			'username'	=> 'geoffrey_crofte',
+			'nb_tweets'	=> 1,
+			'avatar'	=> false,
+			'cache'		=> 120,
+			'transition'	=> false,
+			'delay'		=> 8,
+			'links'		=> true
+		);
+
+		/* display widget */
+		jltw($jltw_args);
+	?&gt;
+&lt;/div&gt;</code></pre>
+
+	<p><code>jltw()</code> makes an <code>echo</code>, if you need to save data in a variable, use <code>get_jltw()</code>.</p>
+
+	<p>Example of use:</p>
+	<pre class="code"><code class="html">&lt;?php
+	/* your parameters */
+	$jltw_args = array(
+		'username'	=> 'creativejuiz',
+		'nb_tweets'	=> 2,
+		'avatar'	=> true,
+		'cache'		=> 1600,
+		'transition'	=> true,
+		'delay'		=> 10,
+		'links'		=> false
+	);
+
+	/* set variable */
+
+	$list_of_tweets = get_jltw($jltw_args);
+
+	/* more later */
+	echo $list_of_tweets;
+?&gt;</code></pre>
+
+	<p>Since 1.2.0 you can use <code>the_tweets( $args )</code> and <code>get_the_tweets( $args )</code> instead of <code>jltw( $args )</code> and <code>get_jltw( $args )</code></p>
+
+
+	
+	<h2 id="hooks">Hooks <span class="since">since 1.1.0</span></h2>
+	
+	<p>This plugin allows you to change some parts of its structure without broke the core.<br />The following samples of code can be inserted in the functions.php file.</p>
+	<p>In general, be careful when using several occurrences of this widget. Hooks presented here will apply to all occurrences simultaneously!</p>
+	
+	<h3>Hook : <code>juiz_ltw_list_container_tag</code></h3>
+	<p>Change the tag of the list container (<code>&lt;ul&gt;</code>) by another, for example:</p>
+<pre class="code"><code class="php">&lt;?php
+if( !function_exists('replacing_by_div')) {
+	function replacing_by_div() {
+		return 'div';
+	}
+}
+add_filter('juiz_ltw_list_container_tag', 'replacing_by_div');
+?&gt;</code></pre>
+	
+	
+	
+	
+	<h3>Hook : <code>juiz_ltw_each_item_tag</code></h3>
+	<p>Change the tag of each item (tweet) (<code>&lt;li&gt;</code>) by another, for example:</p>
+<pre class="code"><code class="php">&lt;?php
+if( !function_exists('replacing_by_div')) {
+	function replacing_by_div() {
+		return 'div';
+	}
+}
+add_filter('juiz_ltw_each_item_tag', 'replacing_by_div');
+?&gt;</code></pre>
+	
+	
+	
+	
+	<h3>Hook : <code>juiz_ltw_user_avatar</code></h3>
+	<p>Add things around avatar, or other manipulations using this hook. Example:</p>
+<pre class="code"><code class="php">&lt;?php
+if( !function_exists('add_username_under_avatar')) {
+	function add_username_under_avatar($avatar) {
+		$new_content = $avatar.'&lt;span class="avatar_username"&gt;@my_username&lt;/span&gt;';
+		return $new_content;
+	}
+}
+add_filter('juiz_ltw_user_avatar', 'add_username_under_avatar');
+?&gt;</code></pre>
+
+
+
+
+
+	<h3>Hook: <code>juiz_ltw_user_avatar_attr</code></h3>
+	<p>You can also manipulate all the avatar attributes by using this hook. Example:</p>
+<pre class="code"><code class="php">&lt;?php
+if( !function_exists('change_some_avatar_attr')) {
+	function change_some_avatar_attr($avatar_attr) {
+		// existing attributes
+		$avatar_attr['title']	= __('Web expert on Twitter');
+		$avatar_attr['src']	= '/my-own-avatar.png';
+		$avatar_attr['alt']	= 'John Smith';
+		$avatar_attr['width']	= '30';
+		$avatar_attr['height']	= '30';
+		
+		// adding attributes
+		$avatar_attr['attrs'] 	= array(
+			'id'		=&gt; 'jltw_avatar',
+			'data-custom'	=&gt; 'my-data'
+		);
+		return $avatar_attr;
+	}
+}
+add_filter('juiz_ltw_user_avatar_attr', 'change_some_avatar_attr');
+?&gt;</code></pre>
+	
+	
+	
+	
+	<h3>Hook : <code>juiz_ltw_each_tweet</code></h3>
+	<p>Add things around each tweet, or other manipulations using this hook. Example:</p>
+<pre class="code"><code class="php">&lt;?php
+if( !function_exists('add_arrow_before_tweet')) {
+	function add_arrow_before_tweet($a_tweet) {
+		$new_content = preg_replace(
+				  '#&lt;span class="juiz_lt_content"&gt;#',
+				  '&lt;span class="juiz_lt_content"&gt;&rarr;',
+				   $a_tweet);
+		return $new_content;
+	}
+}
+add_filter('juiz_ltw_each_tweet', 'add_arrow_before_tweet');
+?&gt;</code></pre>
+	
+	
+	
+	
+	<h3>Hook : <code>juiz_ltw_content</code></h3>
+	<p>Add things around the widget container. Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('see_more_tweets_on')) {
+	function see_more_tweets_on($tweets_block) {
+		$new_content = '&lt;a href="http://twitter.com/my_username"&gt;'.
+		               __('See more tweets on Twitter').
+			       '&lt;/a&gt;'.$tweets_block;
+		return $new_content;
+	}
+}
+add_filter('juiz_ltw_content', 'see_more_tweets_on');
+?&gt;</code></pre>
+	
+	
+	
+	<h3>Hook : <code>juiz_ltw_time_ago</code></h3>
+	
+	<p>Change the content of the "time ago" part of code or, with the same idea, delete, replace, or add content before and after "time ago" content.<br /> Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('see_more_tweets_link')) {
+	function see_more_tweets_link($time_ago) {
+		$time_ago['before']  = '&lt;span&gt;';
+		$time_ago['content'] = __('See the status', 'juiz_ltw');
+		$time_ago['after']   = __('on Twitter', 'juiz_ltw') . '&lt;/span&gt;';
+		
+		return $time_ago;
+	}
+}
+add_filter('juiz_ltw_time_ago', 'see_more_tweets_link');
+?&gt;</code></pre>
+
+
+<h3>Hook : <code>juiz_ltw_target_attr</code></h3>
+	
+	<p>Change the '_self' default target value for all the links (almost, see next hook) generated by the Juiz Last Tweet Widget plugin<br /> Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('change_ltw_target_attr')) {
+	function change_ltw_target_attr($target) {
+		return '_blank';
+	}
+}
+add_filter('juiz_ltw_target_attr', 'change_ltw_target_attr');
+?&gt;</code></pre>
+
+<h3>Hook : <code>juiz_ltw_target_action_links_attr</code></h3>
+	
+	<p>Change the '_self' default target value for the optional action links below each tweet<br /> Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('change_ltw_target_attr_for_action_links')) {
+	function change_ltw_target_attr_for_action_links($target) {
+		return '_blank';
+	}
+}
+add_filter('juiz_ltw_target_action_links_attr', 'change_ltw_target_attr_for_action_links');
+?&gt;</code></pre>
+
+<h3>Hook : <code>juiz_ltw_twitter_feed_not_loadable</code> <span class="since">(since 1.1.5)</span></h3>
+	
+	<p>Change the "The RSS feed for this twitter account is not loadable for the moment." error message<br /> Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('change_juiz_ltw_twitter_feed_not_loadable')) {
+	function change_juiz_ltw_twitter_feed_not_loadable($target) {
+		return 'Tweets coming soon&hellip;';
+	}
+}
+add_filter('juiz_ltw_twitter_feed_not_loadable', 'change_juiz_ltw_twitter_feed_not_loadable');
+?&gt;</code></pre>
+
+<h3>Hook : <code>juiz_ltw_twitter_has_a_problem</code> <span class="since">(since 1.1.5)</span></h3>
+	
+	<p>Change the "Twitter has a problem with your RSS feed&hellip;" error message<br /> Example:</p>
+	<pre class="code"><code class="php">&lt;?php
+if( !function_exists('change_juiz_ltw_twitter_has_a_problem')) {
+	function change_juiz_ltw_twitter_has_a_problem($target) {
+		return ''; // to remove this sentence for example
+	}
+}
+add_filter('juiz_ltw_twitter_has_a_problem', 'change_juiz_ltw_twitter_has_a_problem');
+?&gt;</code></pre>
+
+
+	<h2 id="faq">FAQ</h2>
+	
+	<dl>
+		<dt>
+			Why the widget show me an error of load for my tweets ? <span class="since">since 1.0.1</span>
+		</dt>
+		<dd>
+			Try to visit the link : <code>http://search.twitter.com/search.rss?q=from%3AUSERNAME&rpp=2</code> by replacing "USERNAME" with your own username.
+			<br />If nothing happens, try with : <code>http://api.twitter.com/1/statuses/user_timeline.rss?screen_name=USERNAME&count=2</code><br />
+			If nothing happens, it's the fault of Twitter API limitation.
+			<br />If this link shows your 2 last tweets, it's the fault of my script, so <a href="http://www.creativejuiz.fr/blog/contact?from=jltw">contact me</a>.
+			<br />
+			<br />
+			Since the v1.1.3 of this plugin, this kind of error <strong>should</strong> only arrive the first time you activate it, if your Twitter flow is not accessible.
+		</dd>
+		
+		
+		<dt>
+			Why the widget shows me less tweets than I ask it to show me ? <span class="since">since 1.1.0</span>
+		</dt>
+		<dd>
+			Twitter do what it wants to do with its feeds of tweets. This plugin uses both of feeds and controls the two to know which is available. The first available is chosen. If the chosen feed don't have tweets enought (example: 2 tweets whereas you chose 4 tweets to display) the selected stream will not allow you to display all your tweets you want.<br /><br />
+			You can try to solve a part of the problem by switching two variables in my code (see <code>`wp-content/plugins/juiz-last-tweet-widget/juiz-last-tweet.php`</code>)  on lines 400 and 401.
+			You have <code>$search_feed1</code> and <code>$search_feed2</code>.<br />
+			Just change 1 by 2, and 2 by 1.<br /><br />
+			A future update will allow you to change the feed directly from widget interface (I hope so).
+		</dd>
+
+		<dt>
+			My tweets are not always updated <span class="since">since 1.1.3</span>
+		</dt>
+		<dd>
+			Since the v1.1.3, the cache system prefers keep your old tweets instead of displaying a error message due to a lack of tweets inside the Twitter flow.
+			<br />It's a kind of security: old tweets are better than error message :)
+		</dd>
+		
+		<dt>
+			Why the widget show me "See the status" instead of the time ago ? <span class="since">since 1.1.0</span>
+		</dt>
+		<dd>
+			You certainly host your site in a PHP4 installation&hellip;
+		</dd>
+
+		<dt>
+			When I use my own CSS, defaults CSS seems to disappear ? <span class="since">before 1.1.4</span>
+		</dt>
+		<dd>
+			Yeah, sorry, it's a bug. Please, update to 1.1.4 at least&hellip;
+		</dd>
+	</dl>
+	
+	<div id="footer"><p>Documentation for your life easier !<br />
+	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=P39NJPCWVXGDY&lc=FR&item_name=Juiz%20Last%20Tweet%20Widget%20%2d%20WordPress%20Plugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest" title="Go to Paypal Website" class="button" target="_blank">Donate</a>
+	<a href="https://twitter.com/intent/tweet?hashtags=CreativeJuiz&amp;text=I%20use%20Juiz%20Last%20Tweet%20Widget%20on%20my%20WordPress%20blog,%20awesome!%20&amp;url=http%3A%2F%2Fwordpress.org%2Fextend%2Fplugins%2Fjuiz-last-tweet-widget%2F&amp;via=geoffrey_crofte" target="_blank" class="tweet button">Tweet it</a></p>
+	<p class="last-update">v 1.2.0<br />Last update: 2013, 31 March</p>
+	</div>
+</body>
+</html>
