@@ -1,0 +1,360 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-31 21:13+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Geoffrey <rikuasakura@hotmail.fr>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: juiz-last-tweet.php:101
+msgid "Don't worry!"
+msgstr "Geen paniek!"
+
+#: juiz-last-tweet.php:102
+#, php-format
+msgid ""
+"But you need to %scomplete the %sJuiz Last Tweet Widget%s options page%s if "
+"you want to display your latest tweets."
+msgstr ""
+"Maar je moet %sde %sJuiz Last Tweet Widget%s instellingen pagina%s invullen "
+"om je laatste tweets te tonen."
+
+#: juiz-last-tweet.php:124
+msgid "Widgets"
+msgstr "Widgets"
+
+#: juiz-last-tweet.php:125
+msgid "Settings"
+msgstr "Instellingen"
+
+#: juiz-last-tweet.php:135
+msgid "List you last tweet by displaying content, date, and link to follow you"
+msgstr "Toon de inhoud, datum en link om je te volgen van je laatste tweet"
+
+#: juiz-last-tweet.php:140
+msgid "Juiz Last Tweet"
+msgstr "Juiz laatste Tweet"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:176
+msgid "Title"
+msgstr "Titel"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:185
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:188
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: juiz-last-tweet.php:189
+msgid "No @, just your username"
+msgstr "Geen @, alleen je gebruikersnaam"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:192
+msgid "Number of tweets to show"
+msgstr "Aantal tweets om te tonen"
+
+#: juiz-last-tweet.php:193
+msgid "Just a number, between 1 and 5 for example"
+msgstr "Gewoon een nummer, tussen 1 and 5 bijvoorbeeld"
+
+#: juiz-last-tweet.php:196
+msgid "Duration of cache"
+msgstr "Lengte van de cache"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:197 juiz-last-tweet.php:213 juiz-last-tweet.php:327
+msgid "Seconds"
+msgstr "Seconden"
+
+#: juiz-last-tweet.php:197
+msgid ""
+"A big number save your page speed. Try to use the delay between each tweet "
+"you make. (e.g. 1800 s = 30 min)"
+msgstr ""
+"Een hoog aantal zorgt voor kortere laadtijd. Probeer de tijd te gebruiken "
+"die tussen je tweets zit. (Bijvb. 1800 s = 30 min)"
+
+#: juiz-last-tweet.php:200
+msgid "Show your avatar?"
+msgstr "Toon je avatar?"
+
+#: juiz-last-tweet.php:201
+msgid "If it's possible, display your avatar at the top of tweets list"
+msgstr "Indien mogelijk, toon je avatar boven de lijst met tweets"
+
+#: juiz-last-tweet.php:204
+msgid "Show action links?"
+msgstr "Toon actie links?"
+
+#: juiz-last-tweet.php:205
+msgid "Display action links like Retweet, Reply and Fav"
+msgstr "Toon actie links als Retweet, Reply en Fav"
+
+#: juiz-last-tweet.php:208
+msgid "Auto slide one by one?"
+msgstr "Auto slide een voor een?"
+
+#: juiz-last-tweet.php:209
+msgid "Use JavaScript to activate an little slider showing tweet by tweet"
+msgstr "Gebruik JavaScript om de 'Tweet voor Tweet' slider te tonen"
+
+#: juiz-last-tweet.php:212
+msgid "Delay between 2 tweets?"
+msgstr "Vertraging tussen 2 tweets?"
+
+#: juiz-last-tweet.php:213
+msgid "Chose a delay if you use the auto slide feature."
+msgstr "Kies een vertraging als je de auto-slide functie gebruikt."
+
+#: juiz-last-tweet.php:219
+msgid "Manage CSS"
+msgstr "Beheer CSS"
+
+#: juiz-last-tweet.php:221
+msgid "Your own CSS"
+msgstr "Je eigen CSS"
+
+#: juiz-last-tweet.php:221
+msgid "Write your CSS here to replace or overwrite the default CSS"
+msgstr "Plaats je eigen CSS hier. Deze overschrijft de standaard CSS"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:327
+msgid "Second"
+msgstr "Seconden"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:331
+msgid "Minutes"
+msgstr "Minuten"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:331
+msgid "Minute"
+msgstr "Minuut"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:335
+msgid "Hours"
+msgstr "Uren"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:335
+msgid "Hour"
+msgstr "Uur"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:339
+msgid "Days"
+msgstr "Dagen"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:339
+msgid "Day"
+msgstr "Dag"
+
+#: juiz-last-tweet.php:461
+msgid "Twitter has a problem with your RSS feed&hellip;"
+msgstr "Twitter heeft een probleem met jouw RSS feed&hellip;"
+
+#: juiz-last-tweet.php:527 juiz-last-tweet.php:533
+msgid "via"
+msgstr "van"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:549 juiz-last-tweet.php:651
+msgid "Follow"
+msgstr "Volg"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:549 juiz-last-tweet.php:653
+msgid "on twitter."
+msgstr "op twitter."
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:574
+msgid "Time ago"
+msgstr "Tijd geleden"
+
+#: juiz-last-tweet.php:576
+msgid "See the status"
+msgstr "Bekijk de status"
+
+#: juiz-last-tweet.php:595
+msgid "Reply"
+msgstr "Reply"
+
+#: juiz-last-tweet.php:596
+msgid "Retweet"
+msgstr "Retweet"
+
+#: juiz-last-tweet.php:597
+msgid "Favorite"
+msgstr "Favoriet"
+
+#: juiz-last-tweet.php:625
+msgid "The RSS feed for this twitter account is not loadable for the moment."
+msgstr ""
+"De RSS feed voor deze twitter account is niet beschikbaar op dit moment."
+
+#: juiz-last-tweet.php:765
+#, php-format
+msgid "%s: Widget class not found."
+msgstr "%s: Widget class niet gevonden."
+
+#: admin/jltw-admin.inc.php:14 admin/jltw-admin.inc.php:15
+msgid "Last Tweet Widget"
+msgstr "Laaste Tweet Widget"
+
+#: admin/jltw-admin.inc.php:60
+msgid "Twitter API 1.1 Settings"
+msgstr "Twitter API 1.1 Instellingen"
+
+#: admin/jltw-admin.inc.php:62
+msgid "Consumer Key"
+msgstr "Consumer Key"
+
+#: admin/jltw-admin.inc.php:63
+msgid "Consumer Secret"
+msgstr "Consumer Secret"
+
+#: admin/jltw-admin.inc.php:64
+msgid "oAuth Token"
+msgstr "oAuth Token"
+
+#: admin/jltw-admin.inc.php:65
+msgid "oAuth Token Secret"
+msgstr "oAuth Token Secret"
+
+#: admin/jltw-admin.inc.php:67
+msgid "General settings"
+msgstr "Algemene instellingen"
+
+#: admin/jltw-admin.inc.php:68
+msgid "Use default appareance/styles?"
+msgstr "Gebruik standaard opmaak/styling?"
+
+#: admin/jltw-admin.inc.php:70
+msgid "Fallback Settings"
+msgstr "Fallback instellingen"
+
+#: admin/jltw-admin.inc.php:71
+msgid "Change RSS used (if you have bugs)"
+msgstr "Verander de gebruikte RSS (als je errors krijgt)"
+
+#: admin/jltw-admin.inc.php:93
+msgid ""
+"You need to create a Twitter plugin to use Juiz Last Tweet Widget because of "
+"new API 1.1 rules of Twitter."
+msgstr ""
+"Je moet een Twitter app aanmaken om Juiz Last Tweet Widget te gebruiken, "
+"vanwege de nieuwe API 1.1 regels van Twitter."
+
+#: admin/jltw-admin.inc.php:93
+msgid "How to?"
+msgstr "Instructie?"
+
+#: admin/jltw-admin.inc.php:95
+#, php-format
+msgid ""
+"Go to the %sTwitter Developer Center%s to create an app, and create an "
+"account if necessary (you can use your Twitter account)"
+msgstr ""
+"Ga naar het %sTwitter Developer Center%s en creeer een app, maak eerst "
+"indien nodig een account aan (je kunt je Twitter account gebruiken)"
+
+#: admin/jltw-admin.inc.php:96
+msgid "Give it a name, description and website, at least, and validate"
+msgstr "Geef het een naam, omschrijving en website, tenminste, en valideer"
+
+#: admin/jltw-admin.inc.php:97
+msgid ""
+"In the next page, find the 4 informations (consumer key, consumer secret, "
+"oauth token and oauth token secret)."
+msgstr ""
+"Vul de vier onderstaande gegevens in (Consumer Key, Consumer Secret, oAuth "
+"token en oAuth Token Secret)."
+
+#: admin/jltw-admin.inc.php:98
+msgid "Write them in the fields below (they are big strings of characters)."
+msgstr ""
+"Schrijf ze in onderstaande velden (als een lange string met karakters)."
+
+#: admin/jltw-admin.inc.php:149
+msgid "Some general settings"
+msgstr "Enkele algemene instellingen"
+
+#: admin/jltw-admin.inc.php:161 admin/jltw-admin.inc.php:183
+msgid "Yes"
+msgstr "Ja"
+
+#: admin/jltw-admin.inc.php:163 admin/jltw-admin.inc.php:185
+msgid "No"
+msgstr "Nee"
+
+#: admin/jltw-admin.inc.php:172
+msgid "If API 1.1 is out of rate limit"
+msgstr "Als API 1.1 zijn limiet bereikt heeft"
+
+#: admin/jltw-admin.inc.php:198
+msgid "Manage Juiz Last Tweet Widget"
+msgstr "Beheer Juiz Last Tweet Widget"
+
+#: admin/jltw-admin.inc.php:201
+#, php-format
+msgid "You can use %s[jltw]%s or %s[tweets]%s shortcode with some attributes."
+msgstr ""
+"Je gebruikt %s[jltw]%s of %s[tweets]%s shortcode met enkele parameters."
+
+#: admin/jltw-admin.inc.php:203
+msgid "Example with all available attributes:"
+msgstr "Voorbeeld met alle beschikbare parameters:"
+
+#: admin/jltw-admin.inc.php:205
+#, php-format
+msgid "See %sthe documentation%s for more information"
+msgstr "Bekijk %sde documentatie%s voor meer informatie"
+
+#: admin/jltw-admin.inc.php:216
+msgid "Like it? Support this plugin! Thank you."
+msgstr "Leuk? Support de plugin! Bedankt."
+
+#: admin/jltw-admin.inc.php:217
+msgid "Donate"
+msgstr "Doneer"
+
+#: admin/jltw-admin.inc.php:218
+msgid "Tweet it"
+msgstr "Tweet dit"
+
+#: admin/jltw-admin.inc.php:219
+msgid "Rate it"
+msgstr "Geef een waardering"
+
+#: admin/jltw-admin.inc.php:220
+msgid "Documentation"
+msgstr "Documentatie"
+
+#~ msgid "Use the default CSS?"
+#~ msgstr "Use the default CSS?"
+
+#~ msgid "Load a little CSS file with default styles for the widget"
+#~ msgstr "Load a little CSS file with default styles for the widget"

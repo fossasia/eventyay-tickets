@@ -1,0 +1,32 @@
+.juiz_last_tweet_widget .juiz_last_tweet_inside { -webkit-hyphens:none;-moz-hyphens:none;hyphens:none;}
+.juiz_last_tweet_widget .juiz_last_tweet_inside .juiz_last_tweet_tweetlist,.juiz_last_tweet_widget .juiz_last_tweet_inside .juiz_last_tweet_follow_us {line-height:normal;}
+.juiz_last_tweet_inside{color:#e6e6e6;color:rgba(255,255,255,.75);background-color:#59574d;}
+.juiz_last_tweet_inside .juiz_last_tweet_tweetlist{position:relative;padding:15px;margin:0;}
+.juiz_last_tweet_inside .juiz_last_tweet_item{display:block;list-style:none;background:none}
+.juiz_last_tweet_inside .juiz_last_tweet_item+.juiz_last_tweet_item{padding-top:22px;}
+.juiz_last_tweet_inside .user_avatar{float:left;height:48px;width:48px;margin-right: 15px;border-radius:50%;border:2px solid #f2f2f2;border:2px solid rgba(255,255,255,.8);box-shadow:0 0 8px rgba(0,0,0,.4)}
+.juiz_last_tweet_inside .user_avatar a img{border:0 none;max-width:100%;border-radius:50%}
+.juiz_last_tweet_inside .juiz_lt_content{display:block;padding-bottom:5px;line-height:1.5em;word-wrap:break-word}
+.juiz_last_tweet_widget div.juiz_last_tweet_inside a{text-decoration:none;transition:color .2s;}
+.juiz_last_tweet_widget div.juiz_last_tweet_inside a:hover, .juiz_last_tweet_widget div.juiz_last_tweet_inside a:focus{color: #fff;outline:none;}
+div.juiz_last_tweet_inside .juiz_lt_content a{padding:0;background:transparent;color:#ddd;color:rgba(255,255,255,.55);text-decoration:none;}
+.juiz_last_tweet_inside .juiz_last_tweet_footer_item {display:block;background:#3b3b3b;background:rgba(0,0,0,.28);}
+.juiz_last_tweet_inside .juiz_last_tweet_metadata{color:#b8b8b8;color:rgba(255,255,255,.6);font-style:normal;padding:5px 10px;font-size: 10px}
+div.juiz_last_tweet_inside .juiz_last_tweet_metadata a{color:#8d8d8d; color:rgba(255,255,255,.5);}
+.juiz_last_tweet_inside .juiz_action_links {display:block;padding:6px 10px 4px;font-size:.7em; text-align:left;background:#252525;background:rgba(0,0,0,.28);}
+.juiz_last_tweet_inside .juiz_action_links a { opacity:.5;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;-ms-transition:opacity .5s;-o-transition:opacity .5s;transition:opacity .5s;}
+.juiz_last_tweet_inside .juiz_action_links:hover a {opacity:1;}
+div.juiz_last_tweet_inside .juiz_action_links a {display:inline-block;text-indent:-9999px;width:22px;height:16px;background:transparent url(../img/sprite-w.png) 2px 0 scroll no-repeat;-webkit-transition:background .25s;-moz-transition:background .25s;-ms-transition:background .25s;-o-transition:background .25s;transition:background .25s;}
+.juiz_last_tweet_inside .juiz_action_links .juiz_ltw_sep + a { margin-left: 10px;}
+.juiz_last_tweet_inside .juiz_action_links .juiz_al_retweet{background-position: 0 -17px}
+.juiz_last_tweet_inside .juiz_action_links .juiz_al_fav{width:18px;background-position: 0 -37px}
+.juiz_last_tweet_inside .juiz_action_links a:hover,.juiz_last_tweet_inside .juiz_action_links a:focus {background-position: -21px 0;}
+.juiz_last_tweet_inside .juiz_action_links .juiz_al_retweet:hover,.juiz_last_tweet_inside .juiz_action_links .juiz_al_retweet:focus{background-position: -27px -17px}
+.juiz_last_tweet_inside .juiz_action_links .juiz_al_fav:hover,.juiz_last_tweet_inside .juiz_action_links .juiz_al_fav:focus{background-position: -21px -37px}
+.juiz_last_tweet_inside .juiz_ltw_sep {display:none;}
+.juiz_last_tweet_widget div.juiz_last_tweet_inside .juiz_last_tweet_follow_us{min-height:36px;margin:0;padding:5px 10px 5px 57px;background: url(../img/twitter-w.png) 16px 11px no-repeat;background-color:#696969; background-color:rgba(255,255,255,.15);font-size:11px;color:#bcbcbc;color:rgba(255,255,255,.5);}
+div.juiz_last_tweet_inside .juiz_last_tweet_follow_us a {color:#959595;color:rgba(255,255,255,.35);}
+.juiz_last_tweet_widget .hasjs .juiz_last_tweet_item+.juiz_last_tweet_item,.juiz_ltw_autoslide.hasjs .juiz_last_tweet_item+.juiz_last_tweet_item{margin-top:0;padding-top:0;border-top:0; -webkit-box-shadow:0 0 0;-moz-box-shadow:0 0 0;box-shadow:0 0 0}
+.juiz_ltw_autoslide.hasjs .user_avatar{margin:15px 15px 0 15px}
+.juiz_last_tweet_inside .user_avatar a:after {content: attr(title);position: absolute;left: -9999px;opacity:0;transition: opacity .4s;}
+.juiz_last_tweet_inside .user_avatar a:focus:after {content:attr(title);position:absolute;left:72px;top:15px;width:58%;padding:5px;background: #000;color:#FFF;font-size:11px;opacity:.9;}
