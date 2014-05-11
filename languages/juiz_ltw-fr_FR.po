@@ -1,0 +1,443 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Juiz Last Tweet Widget\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-27 00:28+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Geoffrey <rikuasakura@hotmail.fr>\n"
+"Language-Team: Creative Juiz <support@creativejuiz.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: juiz-last-tweet.php:97
+msgid "Don't worry!"
+msgstr "Ne vous inquiétez pas&nbsp;!"
+
+#: juiz-last-tweet.php:98
+#, php-format
+msgid ""
+"But you need to %scomplete the %sJuiz Last Tweet Widget%s options page%s if "
+"you want to display your latest tweets."
+msgstr ""
+"Mais vous devez %scompléter la page d'options de %s Juiz Last Tweet Widget%s"
+"%s si vous souhaitez afficher vos derniers tweets."
+
+#: juiz-last-tweet.php:120
+msgid "Widgets"
+msgstr "Widgets"
+
+#: juiz-last-tweet.php:121
+msgid "Settings"
+msgstr "Réglages"
+
+#: juiz-last-tweet.php:131
+msgid "List you last tweet by displaying content, date, and link to follow you"
+msgstr ""
+"Listez vos derniers tweets en affichant leur contenu, date, et un lien pour "
+"vous suivre."
+
+#: juiz-last-tweet.php:136
+msgid "Juiz Last Tweet"
+msgstr "Juiz Dernier Tweet"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:172
+msgid "Title"
+msgstr "Titre"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:181
+msgid "Preferences"
+msgstr "Préférences"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:184
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: juiz-last-tweet.php:185
+msgid "No @, just your username"
+msgstr "Pas de @, juste votre nom d'utilisateur"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:188
+msgid "Number of tweets to show"
+msgstr "Nombre de tweets à afficher"
+
+#: juiz-last-tweet.php:189
+msgid "Just a number, between 1 and 5 for example"
+msgstr "Un simple chiffre, entre 1 et 5 par exemple"
+
+#: juiz-last-tweet.php:192
+msgid "Duration of cache"
+msgstr "Durée du cache"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:193 juiz-last-tweet.php:209 juiz-last-tweet.php:326
+msgid "Seconds"
+msgstr "secondes"
+
+#: juiz-last-tweet.php:193
+msgid ""
+"A big number save your page speed. Try to use the delay between each tweet "
+"you make. (e.g. 1800 s = 30 min)"
+msgstr ""
+"Un grand nombre sauve la vitesse de chargement de votre page. Essayez le "
+"délais moyen entre deux de vos tweets. (ex : 1800 s = 30 min)"
+
+#: juiz-last-tweet.php:196
+msgid "Show your avatar?"
+msgstr "Afficher votre avatar ?"
+
+#: juiz-last-tweet.php:197
+msgid "If it's possible, display your avatar at the top of tweets list"
+msgstr ""
+"Si c'est possible, afficher votre avatar en haut de la liste des tweets"
+
+#: juiz-last-tweet.php:200
+msgid "Show action links?"
+msgstr "Afficher les liens d'action ?"
+
+#: juiz-last-tweet.php:201
+msgid "Display action links like Retweet, Reply and Fav"
+msgstr "Afficher les liens d'action comme Retweet, Répondre et Favori"
+
+#: juiz-last-tweet.php:204
+msgid "Auto slide one by one?"
+msgstr "Diaporama de tweets ?"
+
+#: juiz-last-tweet.php:205
+msgid "Use JavaScript to activate an little slider showing tweet by tweet"
+msgstr ""
+"Utilise JavaScript pour activer un petit diaporama présentant tweet par "
+"tweet."
+
+#: juiz-last-tweet.php:208
+msgid "Delay between 2 tweets?"
+msgstr "Délai entre deux tweets"
+
+#: juiz-last-tweet.php:209
+msgid "Chose a delay if you use the auto slide feature."
+msgstr "Choisir un délai si vous utilisez la fonctionnalité de diaporama."
+
+#: juiz-last-tweet.php:215
+msgid "Manage CSS"
+msgstr "Gérer les CSS"
+
+#: juiz-last-tweet.php:217
+msgid "Your own CSS"
+msgstr "Vos propres CSS"
+
+#: juiz-last-tweet.php:217
+msgid "Write your CSS here to replace or overwrite the default CSS"
+msgstr "Écrivez votre CSS ici pour remplacer ou surcharger les CSS par défaut"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:326
+msgid "Second"
+msgstr "seconde"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:330
+msgid "Minutes"
+msgstr "minutes"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:330
+msgid "Minute"
+msgstr "minute"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:334
+msgid "Hours"
+msgstr "heures"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:334
+msgid "Hour"
+msgstr "heure"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:338
+msgid "Days"
+msgstr "jours"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:338
+msgid "Day"
+msgstr "jour"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:451 juiz-last-tweet.php:588
+msgid "Follow"
+msgstr "Suivre"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:451 juiz-last-tweet.php:590
+msgid "on twitter."
+msgstr "sur Twitter."
+
+#: juiz-last-tweet.php:487
+msgid "via"
+msgstr "via"
+
+# @ tweetview-sidebar-widget
+#: juiz-last-tweet.php:492
+msgid "Time ago"
+msgstr "Il y a"
+
+#: juiz-last-tweet.php:494
+msgid "See the status"
+msgstr "Voir le statut"
+
+#: juiz-last-tweet.php:515
+msgid "Reply"
+msgstr "Répondre"
+
+#: juiz-last-tweet.php:516
+msgid "Retweet"
+msgstr "Retweeter"
+
+#: juiz-last-tweet.php:517
+msgid "Favorite"
+msgstr "Favori"
+
+#: juiz-last-tweet.php:559
+msgid "The RSS feed for this twitter account is not loadable for the moment."
+msgstr ""
+"Le flux RSS de ce compte twitter ne semble pas disponible pour le moment."
+
+#: juiz-last-tweet.php:760
+#, php-format
+msgid "%s: Widget class not found."
+msgstr "%s: La classe du Widget est introuvable."
+
+#: admin/jltw-admin.inc.php:13 admin/jltw-admin.inc.php:14
+msgid "Last Tweet Widget"
+msgstr "Last Tweet Widget"
+
+#: admin/jltw-admin.inc.php:70
+msgid "Twitter API 1.1 Settings"
+msgstr "Réglages de l'API Twitter 1.1"
+
+#: admin/jltw-admin.inc.php:72
+msgid "Consumer Key"
+msgstr "Consumer Key"
+
+#: admin/jltw-admin.inc.php:73
+msgid "Consumer Secret"
+msgstr "Consumer Secret"
+
+#: admin/jltw-admin.inc.php:74
+msgid "oAuth Token"
+msgstr "oAuth Token"
+
+#: admin/jltw-admin.inc.php:75
+msgid "oAuth Token Secret"
+msgstr "oAuth Token Secret"
+
+#: admin/jltw-admin.inc.php:77
+msgid "General settings"
+msgstr "Réglages généraux"
+
+#: admin/jltw-admin.inc.php:78
+msgid "Use default appareance/styles?"
+msgstr "Utiliser l'apparence/les styles par défault&nbsp;?"
+
+#: admin/jltw-admin.inc.php:79
+msgid "Which style do you want?"
+msgstr "Quel style souhaitez-vous&nbsp;?"
+
+#: admin/jltw-admin.inc.php:81
+msgid "Customization"
+msgstr "Personnalisation"
+
+#: admin/jltw-admin.inc.php:82
+msgid "Color for hashtag links"
+msgstr "Couleur des liens hashtag"
+
+#: admin/jltw-admin.inc.php:82 admin/jltw-admin.inc.php:83
+#: admin/jltw-admin.inc.php:84 admin/jltw-admin.inc.php:85
+msgid "Hexadecimal value"
+msgstr "Valeur héxadécimale"
+
+#: admin/jltw-admin.inc.php:83
+msgid "Color for user links"
+msgstr "Couleur pour les liens des utilisateurs"
+
+#: admin/jltw-admin.inc.php:84
+msgid "Color for classical links"
+msgstr "Couleur pour les liens classiques"
+
+#: admin/jltw-admin.inc.php:85
+msgid "Color for background"
+msgstr "Couleur de fond"
+
+#: admin/jltw-admin.inc.php:120
+msgid ""
+"You need to create a Twitter plugin to use Juiz Last Tweet Widget because of "
+"new API 1.1 rules of Twitter."
+msgstr ""
+"Vous avez besoin de créer une application Twitter pour utiliser Juiz Last "
+"Tweet Widget à cause des nouvelles règles de l'API 1.1 de Twitter."
+
+#: admin/jltw-admin.inc.php:120
+msgid "How to?"
+msgstr "Comment faire&nbsp;?"
+
+#: admin/jltw-admin.inc.php:122
+#, php-format
+msgid ""
+"Go to the %sTwitter Developer Center%s to create an app, and create an "
+"account if necessary (you can use your Twitter account)"
+msgstr ""
+"Rendez-vous sur le %sCentre de développement Twitter%s pour créer une app, "
+"et créer un compte si nécessaire (vous pouvez utiliser votre compte Twitter)"
+
+#: admin/jltw-admin.inc.php:123
+msgid "Give it a name, description and website, at least, and validate"
+msgstr ""
+"Lui donner au moins un nom, une description et un site web de référence, et "
+"valider"
+
+#: admin/jltw-admin.inc.php:124
+msgid ""
+"In the next page, find the 4 informations (consumer key, consumer secret, "
+"oauth token and oauth token secret)."
+msgstr ""
+"Sur la page suivante, trouver les 4 informations (consumer key, consumer "
+"secret, oauth token and oauth token secret)."
+
+#: admin/jltw-admin.inc.php:125
+msgid "Write them in the fields below (they are big strings of characters)."
+msgstr ""
+"Les écrire dans les champs ci-dessous (ce sont de grosses chaînes de "
+"caractères)."
+
+#: admin/jltw-admin.inc.php:176
+msgid "Some general settings"
+msgstr "Quelques réglages généraux"
+
+#: admin/jltw-admin.inc.php:188
+msgid "Yes"
+msgstr "Oui"
+
+#: admin/jltw-admin.inc.php:190
+msgid "No"
+msgstr "Non"
+
+#: admin/jltw-admin.inc.php:202
+msgid "Default style"
+msgstr "Style par défaut"
+
+#: admin/jltw-admin.inc.php:204
+msgid "Flat Light style"
+msgstr "Style Flat lumineux"
+
+#: admin/jltw-admin.inc.php:205
+msgid "Flat Dark style"
+msgstr "Style Flat sombre"
+
+#: admin/jltw-admin.inc.php:207
+msgid "Help"
+msgstr "Aide"
+
+#: admin/jltw-admin.inc.php:209
+msgid ""
+"Light style is when you have light background color (need dark texts). Dark "
+"style&hellip; is the opposite"
+msgstr ""
+"Le style lumineux c'est quand vous avez une couleur de fond claire (vous "
+"avez besoin de textes sombres). Le style sombre&hellip; c'est l'inverse"
+
+#: admin/jltw-admin.inc.php:215
+msgid "You can now customize some colors!"
+msgstr "Vous pouvez désormais personnaliser les couleurs&nbsp;!"
+
+#: admin/jltw-admin.inc.php:263
+#, php-format
+msgid "You need to activate one of the %sprevious Flat Style%s"
+msgstr "Vous devez activer l'un des %sstyles flats précédents%s"
+
+#: admin/jltw-admin.inc.php:266
+#, php-format
+msgid "You should use the %sLight Flat style%s to have better color contrast"
+msgstr ""
+"Vous devriez utiliser le %sstyle flat lumineux%s pour avoir une meilleur "
+"contraste de couleurs"
+
+#: admin/jltw-admin.inc.php:269
+#, php-format
+msgid "You should use the %sDark Flat style%s to have better color contrast"
+msgstr ""
+"Vous devriez utiliser le %sstyle flat sombre%s pour avoir une meilleur "
+"contraste de couleurs"
+
+#: admin/jltw-admin.inc.php:285
+msgid "Manage Juiz Last Tweet Widget"
+msgstr "Gérer Juiz Last Tweet Widget"
+
+#: admin/jltw-admin.inc.php:288
+#, php-format
+msgid "You can use %s[jltw]%s or %s[tweets]%s shortcode with some attributes."
+msgstr ""
+"Vous pouvez utiliser le shortcode %s[jltw]%s ou %s[tweets]%s avec quelques "
+"attributs."
+
+#: admin/jltw-admin.inc.php:290
+msgid "Example with all available attributes:"
+msgstr "Exemple avec les attributs disponibles&nbsp;:"
+
+#: admin/jltw-admin.inc.php:293
+#, php-format
+msgid "See %sthe documentation%s for more information"
+msgstr "Voir %sla documentation%s pour plus d'info"
+
+#: admin/jltw-admin.inc.php:321
+msgid "Like it? Support this plugin! Thank you."
+msgstr "Vous l'aimez&nbsp;? Aidez ce plugin&nbsp;! Merci."
+
+#: admin/jltw-admin.inc.php:322
+msgid "Donate"
+msgstr "Faites un don"
+
+#: admin/jltw-admin.inc.php:323
+msgid "Tweet it"
+msgstr "Tweetez"
+
+#: admin/jltw-admin.inc.php:324
+msgid "Rate it"
+msgstr "Notez-le"
+
+#: admin/jltw-admin.inc.php:325
+msgid "Documentation"
+msgstr "Documentation"
+
+#~ msgid "Twitter has a problem with your RSS feed&hellip;"
+#~ msgstr "Twitter a un problème avec votre flux RSS&hellip;"
+
+#~ msgid "Fallback Settings"
+#~ msgstr "Réglages de secours"
+
+#~ msgid "Change RSS used (if you have bugs)"
+#~ msgstr "Changer le flux utilisé (si vous avez un bogue)"
+
+#~ msgid "If API 1.1 is out of rate limit"
+#~ msgstr "Si l'API 1.1 est en rade&hellip;"
+
+#~ msgid "Use the default CSS?"
+#~ msgstr "Utiliser les CSS par défaut ?"
+
+#~ msgid "Load a little CSS file with default styles for the widget"
+#~ msgstr ""
+#~ "Charge un petit fichier CSS avec les styles par défaut pour le widget"
