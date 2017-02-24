@@ -1,0 +1,5 @@
+django-debug-toolbar
+django-extensions
+ipython
+pytest-sugar
+shell

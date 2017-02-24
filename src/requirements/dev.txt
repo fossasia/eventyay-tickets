@@ -1,0 +1,4 @@
+pylama
+pytest
+pytest-cov
+pytest-django

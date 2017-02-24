@@ -1,0 +1,3 @@
+# Functional requirements
+Django==1.10.*
+pytz
