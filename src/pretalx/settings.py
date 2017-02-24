@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pretalx.person',
 ]
 
 try:
@@ -105,9 +106,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'person.User'
 LOGIN_URL = '/login'  # global login does not yet exist
-LOGIN_URL_CONTROL = 'auth.login'
+#LOGIN_URL_CONTROL = 'auth.login'
 
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
