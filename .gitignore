@@ -18,3 +18,4 @@ atlassian-ide-plugin.xml
 local/
 .project
 .pydevproject
+.idea/

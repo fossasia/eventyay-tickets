@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'pretalx.person',
     'pretalx.schedule',
     'pretalx.submission',
+    'pretalx.orga',
 ]
 
 try:

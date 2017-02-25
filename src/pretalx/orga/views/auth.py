@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 
 
 class LoginView(TemplateView):
-    template_name = 'person/login.html'
+    template_name = 'orga/auth/login.html'
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         username = request.POST.get('username')

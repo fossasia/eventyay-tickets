@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-from pretalx.person.urls import auth_urls
+from .orga.urls import orga_urls
 
 urlpatterns = [
     # url(r'^(?P<event>\w+)/schedule/export/', include('')),
@@ -23,7 +23,7 @@ urlpatterns = [
     # url(r'^orga/(?P<event>\w+)/settings/', include('')),
     # url(r'^orga/(?P<event>\w+)/', include('')),
 
-    url(r'auth/', include(auth_urls, namespace='auth')),
+    url(r'^orga/', include(orga_urls, namespace='orga')),
 ]
 
 if settings.DEBUG:
