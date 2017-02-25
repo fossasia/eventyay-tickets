@@ -13,5 +13,6 @@ class CfP(models.Model):
     default_type = models.ForeignKey(
         to='submission.SubmissionType',
         on_delete=models.PROTECT,
+        related_name='+',
     )
     # languages
