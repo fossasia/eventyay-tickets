@@ -1,0 +1,43 @@
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#page-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+#page-content {
+  background: white;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.sidebar {
+  background-color: $gray-lightest;
+  width: 250px;
+
+  .nav-link {
+    border-bottom: 1px solid $gray-lighter;
+  }
+
+  .nav-link .fa {
+    margin-right: 5px;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    background: $gray-lighter;
+  }
+}
+
+.navbar-brand img {
+  height: 30px;
+  width: auto;
+}
+
+.navbar-inverse .navbar-nav .nav-link {
+  color: $white;
+}

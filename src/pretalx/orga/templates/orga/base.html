@@ -1,45 +1,88 @@
+{% load compress %}
 {% load staticfiles %}
 {% load i18n %}
-{% load compress %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>pretalx :: {% block title %}{% endblock %}</title>
-
+    <title>{% block title %}{% endblock %} :: pretalx</title>
     {% compress css %}
-        <link rel="stylesheet" href="{% static "orga/scss/main.scss" %}" type="text/x-scss">
+        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
+    {% endcompress %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static "pretixbase/img/favicon.ico" %}">
+    {% compress js %}
+        <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
     {% endcompress %}
 </head>
-<body class="">
-<span class="fa fa-folder"></span>
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-toggleable-md navbar-inverse navbar-static-top bg-primary">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbartoggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+            <img src="{% static "orga/img/icon_white.svg" %}"> pretalx
+        </a>
+        <div class="collapse navbar-collapse" id="navbartoggle">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        EVENT
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Event</a>
+                        <a class="dropdown-item" href="#">Another event</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <span class="fa fa-user"></span>
+                        {{ request.user }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "orga:logout" %}">
+                        <span class="fa fa-sign-out"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="page-wrapper">
+        <nav class="nav flex-column sidebar">
+            <a class="nav-link active" href="#">
+                <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
+            </a>
+            <a class="nav-link" href="#">
+                <span class="fa fa-wrench"></span> {% trans "Settings" %}
+            </a>
+        </nav>
+        <div id="page-content">
+            <div class="container-fluid">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-<div class="container">
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="pretalx-main">
-
-        <h1>{% block headline %}{% endblock %}</h1>
-        <div class="pretalx-content">
-            <p>
                 {% block content %}
                 {% endblock %}
-            </p>
+                <footer>
+                    {% with "href='https://github.com/rixx/pretalx'" as a_attr %}
+                        {% blocktrans trimmed %}
+                            powered by <a {{ a_attr }}>pretalx</a>
+                        {% endblocktrans %}
+                    {% endwith %}
+                </footer>
+            </div>
         </div>
-
     </div>
-
 </div>
-
-{% compress js %}
-    <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-{% endcompress %}
 </body>
 </html>
