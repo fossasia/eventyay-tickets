@@ -17,6 +17,6 @@ class Room(models.Model):
     capacity = models.PositiveIntegerField(
         null=True, blank=True,
     )
-    order = models.PositiveIntegerField(
+    position = models.PositiveIntegerField(
         null=True, blank=True,
     )
