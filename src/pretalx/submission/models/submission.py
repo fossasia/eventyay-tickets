@@ -17,7 +17,7 @@ class Submission(models.Model):
     speakers = models.ManyToManyField(
         to='person.User',
         related_name='submissions',
-        null=True, blank=True,
+        blank=True,
     )
     event = models.ForeignKey(
         to='event.Event',
