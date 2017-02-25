@@ -1,0 +1,10 @@
+{% extends "orga/base.html" %}
+{% block content %}
+
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Submit</button>
+</form>
+
+{% endblock %}
