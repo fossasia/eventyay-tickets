@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'compressor',
     'pretalx.common',
     'pretalx.event',
     'pretalx.person',
@@ -150,15 +151,24 @@ TEMPLATES = [
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'pretalx/static')
-] if os.path.exists(os.path.join(BASE_DIR, 'pretalx/static')) else []
+    os.path.join(BASE_DIR, 'pretalx', 'static')
+] if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static')) else []
 
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 

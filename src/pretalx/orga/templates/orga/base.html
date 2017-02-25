@@ -1,42 +1,45 @@
 {% load staticfiles %}
 {% load i18n %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>pretalx :: {% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <title>pretalx :: {% block title %}{% endblock %}</title>
 
-  {% block stylesheets %}
-  {% endblock %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/scss/main.scss" %}" type="text/x-scss">
+    {% endcompress %}
 </head>
 <body class="">
+<span class="fa fa-folder"></span>
 
-  <div class="container">
+<div class="container">
 
     {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-          {{ message }}
-        </div>
-      {% endfor %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endif %}
 
     <div class="pretalx-main">
 
-      <h1>{% block headline %}{% endblock %}</h1>
-      <div class="pretalx-content">
-        <p>
-          {% block content %}
-          {% endblock %}
-        </p>
-      </div>
+        <h1>{% block headline %}{% endblock %}</h1>
+        <div class="pretalx-content">
+            <p>
+                {% block content %}
+                {% endblock %}
+            </p>
+        </div>
 
     </div>
 
-  </div>
+</div>
 
-  {% block scripts %}
-  {% endblock %}
-
+{% compress js %}
+    <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+{% endcompress %}
 </body>
 </html>
