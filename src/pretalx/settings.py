@@ -244,9 +244,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MESSAGE_TAGS = {
-    messages.INFO: 'alert-info',
-    messages.ERROR: 'alert-danger',
-    messages.WARNING: 'alert-warning',
-    messages.SUCCESS: 'alert-success',
+    messages.INFO: 'info',
+    messages.ERROR: 'danger',
+    messages.WARNING: 'warning',
+    messages.SUCCESS: 'success',
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
