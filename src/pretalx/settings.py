@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pretalx.common',
     'pretalx.event',
     'pretalx.person',
     'pretalx.schedule',

@@ -1,0 +1,43 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>pretalx :: {% block title %}{% endblock %}</title>
+
+  {% block stylesheets %}
+  {% endblock %}
+
+</head>
+<body class="">
+
+  <div class="container">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="pretalx-main">
+
+      <h1>{% block headline %}{% endblock %}</h1>
+      <div class="pretalx-content">
+        <p>
+          {% block content %}
+          {% endblock %}
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  {% block scripts %}
+  {% endblock %}
+
+</body>
+</html>

@@ -1,7 +1,31 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-urlpatterns = []
+from pretalx.person.urls import auth_urls
+
+urlpatterns = [
+    # url(r'^(?P<event>\w+)/schedule/export/', include('')),
+    # url(r'^(?P<event>\w+)/schedule/', include('')),
+    # url(r'^(?P<event>\w+)/cfp/', include('')),
+
+    # url(r'^(?P<event>\w+)/submissions/availability/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/create/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/confirm/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/cancel/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/edit/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/', include('')),
+    # url(r'^(?P<event>\w+)/submissions/', include('')),
+
+    # url(r'^(?P<event>\w+)/people/', include('')),
+
+    # url(r'^orga/(?P<event>\w+)/team/add/', include('')),
+    # url(r'^orga/(?P<event>\w+)/team/', include('')),
+    # url(r'^orga/(?P<event>\w+)/settings/', include('')),
+    # url(r'^orga/(?P<event>\w+)/', include('')),
+
+    url(r'auth/', include(auth_urls, namespace='auth')),
+]
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
