@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pretalx.event',
     'pretalx.person',
+    'pretalx.submission',
 ]
 
 try:
