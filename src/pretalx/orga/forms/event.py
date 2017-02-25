@@ -9,8 +9,7 @@ class EventForm(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 
     def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        import pdb; pdb.set_trace()
+        super().__init__(*args, **kwargs)
         self.initial['timezone'] = get_current_timezone_name()
 
     def clean_slug(self):
