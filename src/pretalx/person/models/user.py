@@ -71,6 +71,11 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
+    send_mail = models.BooleanField(
+        default=False,
+        verbose_name='Receive mails from pretalx?',
+    )
+
     def __str__(self) -> str:
         if self.email:
             return f'{self.nick} ({self.email})'
