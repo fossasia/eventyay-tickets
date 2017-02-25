@@ -18,11 +18,11 @@ class LoginView(TemplateView):
 
         if user is None:
             messages.error(request, _('No user account matches the entered credentials.'))
-            return redirect('auth:login')
+            return redirect('orga:login')
 
         if not user.is_active:
             messages.error(request, _('User account is deactivated.'))
-            return redirect('auth:login')
+            return redirect('orga:login')
 
         login(request, user)
         url = request.GET.get('next')
@@ -36,7 +36,7 @@ class LoginView(TemplateView):
         # no current cfp? dummy page
 
         messages.success(request, _('Hi!'))
-        return redirect('auth:login')
+        return redirect('orga:dashboard')
 
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:
