@@ -15,10 +15,10 @@ class EventCreate(OrgaPermissionRequired, CreateView):
     context_object_name = 'event'
 
     def get_success_url(self) -> str:
-        return reverse('orga:event.detail', kwargs={'slug': self.kwargs['slug']})
+        return reverse('orga:event.view', kwargs={'event': self.object.slug})
 
     def form_valid(self, form):
-        messages.succes(self.request, 'Yay!')
+        messages.success(self.request, 'Yay!')
         ret = super().form_valid(form)
         return ret
 
