@@ -1,0 +1,34 @@
+{% load compress %}
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %} :: pretalx</title>
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}"/>
+    {% endcompress %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static "pretixbase/img/favicon.ico" %}">
+    {% compress js %}
+        <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
+    {% endcompress %}
+</head>
+<body>
+<div id="wrapper">
+    <img src="{% static "orga/img/logo.svg" %}" class="logo">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="card card-login">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

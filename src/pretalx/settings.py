@@ -242,3 +242,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.ERROR: 'alert-danger',
+    messages.WARNING: 'alert-warning',
+    messages.SUCCESS: 'alert-success',
+}
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
