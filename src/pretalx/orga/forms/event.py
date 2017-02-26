@@ -1,19 +1,17 @@
 from django import forms
 from django.utils.timezone import get_current_timezone_name
 
+from pretalx.common.forms import ReadOnlyFlag
 from pretalx.event.models import Event
 from pretalx.person.models import EventPermission, User
 
 
-class EventForm(forms.ModelForm):
+class EventForm(ReadOnlyFlag, forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 
-    def __init__(self, *args, read_only=False, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['timezone'] = get_current_timezone_name()
-        if read_only:
-            for field_name, field in self.fields.items():
-                field.disabled = True
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
