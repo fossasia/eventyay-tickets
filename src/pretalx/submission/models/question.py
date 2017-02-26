@@ -35,6 +35,12 @@ class Question(models.Model):
         default=0,
     )
 
+    def __str__(self):
+        return str(self.question)
+
+    class Meta:
+        ordering = ['position']
+
 
 class AnswerOption(models.Model):
     question = models.ForeignKey(
@@ -45,6 +51,9 @@ class AnswerOption(models.Model):
     answer = models.CharField(
         max_length=200,
     )
+
+    def __str__(self):
+        return str(self.answer)
 
 
 class Answer(models.Model):

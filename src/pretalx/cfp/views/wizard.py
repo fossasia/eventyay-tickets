@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import forms
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -6,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
 from pretalx.cfp.views.event import EventPageMixin
+from pretalx.submission.models import QuestionVariant
 
 
 class InfoStepForm(forms.Form):
@@ -15,7 +18,56 @@ class InfoStepForm(forms.Form):
 
 
 class QuestionStepForm(forms.Form):
-    samplequestion = forms.CharField(max_length=200)
+
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event', None)
+
+        super().__init__(*args, **kwargs)
+
+        for q in event.questions.prefetch_related('options'):
+            if q.variant == QuestionVariant.BOOLEAN:
+                if q.required:
+                    # For some reason, django-bootstrap4 does not set the required attribute
+                    # itself.
+                    widget = forms.CheckboxInput(attrs={'required': 'required'})
+                else:
+                    widget = forms.CheckboxInput()
+
+                field = forms.BooleanField(
+                    label=q.question, required=q.required,
+                    widget=widget, initial=bool(q.default_answer)
+                )
+            elif q.variant == QuestionVariant.NUMBER:
+                field = forms.DecimalField(
+                    label=q.question, required=q.required,
+                    min_value=Decimal('0.00'), initial=q.default_answer
+                )
+            elif q.variant == QuestionVariant.STRING:
+                field = forms.CharField(
+                    label=q.question, required=q.required, initial=q.default_answer
+                )
+            elif q.variant == QuestionVariant.TEXT:
+                field = forms.CharField(
+                    label=q.question, required=q.required,
+                    widget=forms.Textarea,
+                    initial=q.default_answer
+                )
+            elif q.variant == QuestionVariant.CHOICES:
+                field = forms.ModelChoiceField(
+                    queryset=q.options.all(),
+                    label=q.question, required=q.required,
+                    widget=forms.RadioSelect,
+                    initial=q.default_answer
+                )
+            elif q.variant == QuestionVariant.MULTIPLE:
+                field = forms.ModelMultipleChoiceField(
+                    queryset=q.options.all(),
+                    label=q.question, required=q.required,
+                    widget=forms.CheckboxSelectMultiple,
+                    initial=q.default_answer
+                )
+            field.question = q
+            self.fields['question_%s' % q.id] = field
 
 
 class UserStepForm(forms.Form):
@@ -66,6 +118,15 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     condition_dict = {
         'questions': show_questions_page
     }
+
+    def get_form_instance(self, step):
+        return super().get_form_instance(step)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = super().get_form_kwargs(step)
+        if step == 'questions':
+            kwargs['event'] = self.request.event
+        return kwargs
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
