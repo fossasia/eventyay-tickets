@@ -1,10 +1,16 @@
 {% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
 {% block content %}
 
-<form method="post" action="">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>
+    <form method="post" action="">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="offset-md-3 col-md-9">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}
