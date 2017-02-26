@@ -15,19 +15,23 @@ class EventForm(ReadOnlyFlag, forms.ModelForm):
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
-        if Event.objects.filter(slug__iexact=slug).exists():
+        qs = Event.objects.all()
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.filter(slug__iexact=slug).exists():
             raise forms.ValidationError('This slug is already taken.')
         return slug.lower()
 
     def _save_m2m(self):
         new_users = set(self.cleaned_data['permissions'])
-        old_users = set(EventPermission.objects.filter(event=self.instance, is_orga=True))
+        old_users = set(User.objects.filter(permissions__event=self.instance, permissions__is_orga=True))
 
         to_be_removed = old_users - new_users
         to_be_added = new_users - old_users
 
         for user in to_be_removed:
-            EventPermission.objects.get(user=user, event=self.instance, orga=True).delete()
+            EventPermission.objects.get(user=user, event=self.instance, is_orga=True).delete()
 
         for user in to_be_added:
             EventPermission.objects.create(user=user, event=self.instance, is_orga=True)
