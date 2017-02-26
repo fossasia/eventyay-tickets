@@ -4,3 +4,5 @@ pytz
 django-compressor==2.1.*
 django-libsass==0.7
 git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
+Markdown
+bleach
