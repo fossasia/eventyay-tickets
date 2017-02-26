@@ -2,7 +2,7 @@ from django import forms
 from django.utils.timezone import get_current_timezone_name
 
 from pretalx.event.models import Event
-from pretalx.person.models import User
+from pretalx.person.models import EventPermission, User
 
 
 class EventForm(forms.ModelForm):
@@ -17,6 +17,19 @@ class EventForm(forms.ModelForm):
         if Event.objects.filter(slug__iexact=slug).exists():
             raise forms.ValidationError('This slug is already taken.')
         return slug.lower()
+
+    def _save_m2m(self):
+        new_users = set(self.cleaned_data['permissions'])
+        old_users = set(EventPermission.objects.filter(event=self.instance, is_orga=True))
+
+        to_be_removed = old_users - new_users
+        to_be_added = new_users - old_users
+
+        for user in to_be_removed:
+            EventPermission.objects.get(user=user, event=self.instance, orga=True).delete()
+
+        for user in to_be_added:
+            EventPermission.objects.create(user=user, event=self.instance, is_orga=True)
 
     class Meta:
         model = Event
