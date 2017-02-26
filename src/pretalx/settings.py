@@ -144,6 +144,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'pretalx.orga.context_processors.add_events',
             ],
             'loaders': template_loaders
         },

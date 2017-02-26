@@ -22,26 +22,39 @@
                 data-target="#navbartoggle">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="{% static "common/img/icon_white.svg" %}"> pretalx
         </a>
         <div class="collapse navbar-collapse" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
+                    {% if events.length > 1 or request.user.is_superuser %}
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-                        EVENT
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Event</a>
-                        <a class="dropdown-item" href="#">Another event</a>
-                    </div>
+                            {{ event.name }}
+                        </a>
+                        <div class="dropdown-menu">
+                            {% for e in events %}
+                                {% if not event == e %}
+                                <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ event.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                            <a class="dropdown-item" href="{% url "orga:event.create" %}">
+                                <span class="fa fa-plus"></span>
+                                New event
+                            </a>
+                        </div>
+                    {% else %}
+                        <a class="nav-link">
+                            {{ event.name }}
+                        </a>
+                    {% endif %}
                 </li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="">
                         <span class="fa fa-user"></span>
-                        {{ request.user }}
+                        {{ request.user.nick }}
                     </a>
                 </li>
                 <li class="nav-item">
@@ -54,7 +67,7 @@
     </nav>
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
-            <a class="nav-link active" href="#">
+            <a class="nav-link active" href="{% url "orga:dashboard" %}">
                 <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
             </a>
             <a class="nav-link" href="#">
