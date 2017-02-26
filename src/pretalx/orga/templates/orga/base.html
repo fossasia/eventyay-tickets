@@ -70,6 +70,9 @@
             <a class="nav-link active" href="{% url "orga:dashboard" %}">
                 <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
             </a>
+            <a class="nav-link" href="{% url "orga:cfp.view" event=request.event.slug %}">
+                <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
+            </a>
             <a class="nav-link" href="{% url "orga:event.view" event=request.event.slug %}">
                 <span class="fa fa-wrench"></span> {% trans "Event settings" %}
             </a>
