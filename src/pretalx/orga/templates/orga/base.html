@@ -29,13 +29,13 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     {% if events.length > 1 or request.user.is_superuser %}
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            {{ request.event.name }}
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+                            {% if request.event %}{{ request.event.name }}{% else %}{% trans "Events" %}{% endif %}
                         </a>
                         <div class="dropdown-menu">
                             {% for e in events %}
                                 {% if not request.event == e %}
-                                <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ request.event.name }}</a>
+                                    <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ request.event.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             <a class="dropdown-item" href="{% url "orga:event.create" %}">
@@ -43,7 +43,7 @@
                                 New event
                             </a>
                         </div>
-                    {% else %}
+                    {% elif request.event %}
                         <a class="nav-link">
                             {{ request.event.name }}
                         </a>
@@ -70,12 +70,14 @@
             <a class="nav-link active" href="{% url "orga:dashboard" %}">
                 <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
             </a>
-            <a class="nav-link" href="{% url "orga:cfp.view" event=request.event.slug %}">
-                <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
-            </a>
-            <a class="nav-link" href="{% url "orga:event.view" event=request.event.slug %}">
-                <span class="fa fa-wrench"></span> {% trans "Event settings" %}
-            </a>
+            {% if request.event %}
+                <a class="nav-link" href="{% url "orga:cfp.view" event=request.event.slug %}">
+                    <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
+                </a>
+                <a class="nav-link" href="{% url "orga:event.view" event=request.event.slug %}">
+                    <span class="fa fa-wrench"></span> {% trans "Event settings" %}
+                </a>
+            {% endif %}
         </nav>
         <div id="page-content">
             <div class="container-fluid">
