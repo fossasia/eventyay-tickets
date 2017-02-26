@@ -1,5 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 
@@ -8,7 +10,8 @@ from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
 
 
-class EventCreate(OrgaPermissionRequired, CreateView):
+@method_decorator(user_passes_test(lambda u: u.is_superuser), name='dispatch')
+class EventCreate(CreateView):
     model = Event
     form_class = EventForm
     template_name = 'orga/event/create.html'
