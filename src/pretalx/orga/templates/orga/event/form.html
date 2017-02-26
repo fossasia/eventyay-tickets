@@ -1,6 +1,15 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% block headline %}
+    {% if action == "create" %}
+        {% trans "Create event" %}
+    {% elif action == "update" %}
+        {% trans "Change settings" %}
+    {% elif action == "view" %}
+        {% trans "Event settings" %}
+    {% endif %}
+{% endblock %}
 {% block content %}
 
     <form method="post" action="">
