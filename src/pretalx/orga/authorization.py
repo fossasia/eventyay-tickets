@@ -1,4 +1,5 @@
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 
 from pretalx.event.models import Event
 from pretalx.person.models import EventPermission
@@ -8,8 +9,10 @@ class OrgaPermissionRequired:
     login_url = 'orga:login'
 
     def dispatch(self, request, *args, **kwargs):
-        event_slug = kwargs.get('event')
+        if request.user.is_anonymous:
+            return redirect(self.login_url)
 
+        event_slug = kwargs.get('event')
         if event_slug:
             try:
                 request.event = Event.objects.get(slug=event_slug)
