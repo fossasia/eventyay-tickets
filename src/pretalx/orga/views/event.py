@@ -56,9 +56,6 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
     form_class = EventForm
     template_name = 'orga/event/form.html'
 
-    def get_queryset(self):
-        return Event.objects.filter(permissions__user=self.request.user)
-
     def get_initial(self):
         initial = super().get_initial()
         initial['permissions'] = User.objects.filter(

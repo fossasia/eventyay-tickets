@@ -30,12 +30,12 @@
                 <li class="nav-item dropdown">
                     {% if events.length > 1 or request.user.is_superuser %}
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            {{ event.name }}
+                            {{ request.event.name }}
                         </a>
                         <div class="dropdown-menu">
                             {% for e in events %}
-                                {% if not event == e %}
-                                <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ event.name }}</a>
+                                {% if not request.event == e %}
+                                <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ request.event.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             <a class="dropdown-item" href="{% url "orga:event.create" %}">
@@ -45,7 +45,7 @@
                         </div>
                     {% else %}
                         <a class="nav-link">
-                            {{ event.name }}
+                            {{ request.event.name }}
                         </a>
                     {% endif %}
                 </li>
@@ -70,7 +70,7 @@
             <a class="nav-link active" href="{% url "orga:dashboard" %}">
                 <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
             </a>
-            <a class="nav-link" href="{% url "orga:event.view" event=event.slug %}">
+            <a class="nav-link" href="{% url "orga:event.view" event=request.event.slug %}">
                 <span class="fa fa-wrench"></span> {% trans "Event settings" %}
             </a>
         </nav>
