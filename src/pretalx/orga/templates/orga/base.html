@@ -35,7 +35,7 @@
                         <div class="dropdown-menu">
                             {% for e in events %}
                                 {% if not request.event == e %}
-                                    <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ request.event.name }}</a>
+                                    <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ e.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             <a class="dropdown-item" href="{% url "orga:event.create" %}">
