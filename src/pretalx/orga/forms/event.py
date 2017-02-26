@@ -8,9 +8,12 @@ from pretalx.person.models import EventPermission, User
 class EventForm(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, read_only=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['timezone'] = get_current_timezone_name()
+        if read_only:
+            for field_name, field in self.fields.items():
+                field.disabled = True
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']

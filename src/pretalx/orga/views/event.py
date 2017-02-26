@@ -14,7 +14,7 @@ from pretalx.person.models import User
 class EventCreate(CreateView):
     model = Event
     form_class = EventForm
-    template_name = 'orga/event/create.html'
+    template_name = 'orga/event/form.html'
     context_object_name = 'event'
 
     def get_success_url(self) -> str:
@@ -25,12 +25,28 @@ class EventCreate(CreateView):
         ret = super().form_valid(form)
         return ret
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['action'] = 'create'
+        return context
 
-class EventDetail(OrgaPermissionRequired, DetailView):
+
+class EventDetail(OrgaPermissionRequired, UpdateView):
+    form_class = EventForm
     model = Event
     slug_url_kwarg = 'event'
     slug_field = 'slug'
-    template_name = 'orga/event/detail.html'
+    template_name = 'orga/event/form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['read_only'] = True
+        return kwargs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['action'] = 'view'
+        return context
 
 
 class EventUpdate(OrgaPermissionRequired, UpdateView):
@@ -38,7 +54,7 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
     slug_url_kwarg = 'event'
     slug_field = 'slug'
     form_class = EventForm
-    template_name = 'orga/event/create.html'
+    template_name = 'orga/event/form.html'
 
     def get_queryset(self):
         return Event.objects.filter(permissions__user=self.request.user)
@@ -58,3 +74,8 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
         messages.success(self.request, 'Yay!')
         ret = super().form_valid(form)
         return ret
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['action'] = 'update'
+        return context

@@ -1,0 +1,22 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block content %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="offset-md-3 col-md-9">
+                {% if action == "create" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Create event" %}</button>
+                {% elif action == "update" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                {% elif action == "view" %}
+                    <a class="btn btn-primary" href={% url "orga:event.update" event=event.slug %}>{% trans "Edit" %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

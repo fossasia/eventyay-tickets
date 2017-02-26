@@ -70,8 +70,8 @@
             <a class="nav-link active" href="{% url "orga:dashboard" %}">
                 <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
             </a>
-            <a class="nav-link" href="#">
-                <span class="fa fa-wrench"></span> {% trans "Settings" %}
+            <a class="nav-link" href="{% url "orga:event.view" event=event.slug %}">
+                <span class="fa fa-wrench"></span> {% trans "Event settings" %}
             </a>
         </nav>
         <div id="page-content">
