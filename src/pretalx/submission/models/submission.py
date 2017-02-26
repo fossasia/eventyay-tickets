@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.crypto import get_random_string
 
 from pretalx.common.choices import Choices
 
@@ -14,6 +15,10 @@ class SubmissionStates(Choices):
 
 
 class Submission(models.Model):
+    code = models.CharField(
+        max_length=16,
+        db_index=True
+    )
     speakers = models.ManyToManyField(
         to='person.User',
         related_name='submissions',
@@ -53,6 +58,22 @@ class Submission(models.Model):
     duration = models.PositiveIntegerField(
         null=True, blank=True
     )
+
+    def assign_code(self):
+        # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
+        # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
+        # handwriting (2/Z, 4/A, 5/S, 6/G).
+        charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+        while True:
+            code = get_random_string(length=6, allowed_chars=charset)
+            if not Submission.objects.filter(code=code).exists():
+                self.code = code
+                return
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.assign_code()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
