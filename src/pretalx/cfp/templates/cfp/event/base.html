@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %} :: pretalx</title>
+    <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
     {% endcompress %}
@@ -20,7 +20,7 @@
     <div id="top-bg" class="bg-primary"></div>
     <div class="container" id="main-container">
         <header>
-            <h1>Name of the event</h1>
+            <h1>{{ request.event }}</h1>
         </header>
         <section class="card" id="main">
             {% block content %}

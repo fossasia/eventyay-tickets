@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, UpdateView
 
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired

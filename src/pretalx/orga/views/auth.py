@@ -42,8 +42,3 @@ class LoginView(TemplateView):
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     logout(request)
     return redirect('auth:login')
-
-
-def switch_user(request: HttpRequest) -> HttpResponseRedirect:
-    logout(request)
-    return redirect(reverse('auth:login') + '?next=' + request.GET.get('next', ''))

@@ -25,4 +25,4 @@ class OrgaPermissionRequired:
             if not is_permitted:
                 raise PermissionDenied()
 
-        return super().dispatch(request, args, kwargs)
+        return super().dispatch(request, *args, **kwargs)

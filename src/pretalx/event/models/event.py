@@ -56,3 +56,6 @@ class Event(models.Model):
     )
     # enable_feedback = models.BooleanField(default=False)
     # send_notifications = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.name)
