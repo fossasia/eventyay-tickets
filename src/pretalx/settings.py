@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'pretalx.schedule',
     'pretalx.submission',
     'pretalx.orga',
+    'pretalx.cfp',
 ]
 
 try:

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 
 from .orga.urls import orga_urls
+from .cfp.urls import cfp_urls
 
 urlpatterns = [
     # url(r'^(?P<event>\w+)/schedule/export/', include('')),
@@ -24,6 +25,7 @@ urlpatterns = [
     # url(r'^orga/(?P<event>\w+)/', include('')),
 
     url(r'^orga/', include(orga_urls, namespace='orga')),
+    url(r'', include(cfp_urls, namespace='cfp')),
 ]
 
 if settings.DEBUG:

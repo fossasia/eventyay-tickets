@@ -1,0 +1,23 @@
+{% extends "cfp/base.html" %}
+{% load i18n %}
+{% block content %}
+    <h2>Welcome to our CFP!</h2>
+    <p>Lorem Ipsum</p>
+    <p>Lorem Ipsum</p>
+    <p>Lorem Ipsum</p>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a class="btn btn-success btn-lg btn-block" href="">
+                {% trans "Submit a proposal" %}
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-info btn-lg btn-block" href="">
+                {% trans "Edit or view your submission" %}
+            </a>
+        </div>
+    </div>
+    <h3>Any questions?</h3>
+    <p>Talk to us!</p>
+    <p>Lorem Ipsum</p>
+{% endblock %}

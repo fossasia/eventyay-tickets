@@ -1,0 +1,41 @@
+body {
+  background: $gray-lighter;
+}
+
+#top-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 300px;
+}
+
+#main-container {
+  padding-top: 100px;
+}
+
+h1 {
+  color: white;
+}
+
+#main {
+  min-height: 300px;
+  padding: 20px;
+  box-shadow: 0 5px 10px rgba($black, 0.2);
+}
+
+footer {
+  padding: 20px;
+  text-align: center;
+  font-size: 11px;
+
+  img {
+    max-height: 50px;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  #main-container {
+    padding-top: 20px;
+  }
+}

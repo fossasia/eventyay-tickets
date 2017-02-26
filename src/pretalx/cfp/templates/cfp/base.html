@@ -6,7 +6,7 @@
 <head>
     <title>{% block title %}{% endblock %} :: pretalx</title>
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}"/>
+        <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
     {% endcompress %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "pretixbase/img/favicon.ico" %}">
@@ -17,17 +17,18 @@
 </head>
 <body>
 <div id="wrapper">
-    <img src="{% static "common/img/logo_white.svg" %}" class="logo">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    <div class="card card-login">
-        {% block content %}
-        {% endblock %}
+    <div id="top-bg" class="bg-primary"></div>
+    <div class="container" id="main-container">
+        <header>
+            <h1>Name of the event</h1>
+        </header>
+        <section class="card" id="main">
+            {% block content %}
+            {% endblock %}
+        </section>
+        <footer>
+            <img src="{% static "common/img/logo.svg" %}">
+        </footer>
     </div>
 </div>
 </body>
