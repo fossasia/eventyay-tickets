@@ -8,8 +8,9 @@ class CfP(models.Model):
     )
     headline = models.CharField(
         max_length=300,
+        null=True, blank=True,
     )
-    text = models.TextField()
+    text = models.TextField(null=True, blank=True)
     default_type = models.ForeignKey(
         to='submission.SubmissionType',
         on_delete=models.PROTECT,

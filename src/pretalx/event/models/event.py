@@ -59,3 +59,13 @@ class Event(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+    def get_cfp(self):
+        if hasattr(self, 'cfp'):
+            return self.cfp
+
+        from pretalx.submission.models import CfP, Submission, SubmissionType
+        sub_type = Submission.objects.filter(event=self).first()
+        if not sub_type:
+            sub_type = SubmissionType.objects.create(event=self, name='Talk')
+        return CfP.objects.create(event=self, default_type=sub_type)
