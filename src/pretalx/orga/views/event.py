@@ -25,6 +25,7 @@ class EventCreate(OrgaPermissionRequired, CreateView):
 
 class EventDetail(OrgaPermissionRequired, DetailView):
     model = Event
+    slug_url_kwarg = 'event'
     slug_field = 'slug'
     form_class = EventForm
     template_name = 'orga/event/detail.html'
