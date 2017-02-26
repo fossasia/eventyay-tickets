@@ -202,23 +202,24 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         form_dict['info'].instance.speakers.add(user)
         sub = form_dict['info'].instance
 
-        for k, value in form_dict['questions'].cleaned_data.items():
-            qid = k.split('_')[1]
-            question = Question.objects.get(pk=qid)
-            answer = Answer(question=question, submission=sub)
+        if 'questions' in form_dict:
+            for k, value in form_dict['questions'].cleaned_data.items():
+                qid = k.split('_')[1]
+                question = Question.objects.get(pk=qid)
+                answer = Answer(question=question, submission=sub)
 
-            if question.variant == QuestionVariant.MULTIPLE:
-                answstr = ", ".join([str(o) for o in value])
+                if question.variant == QuestionVariant.MULTIPLE:
+                    answstr = ", ".join([str(o) for o in value])
+                    answer.save()
+                    answer.answer = answstr
+                    answer.options.add(*value)
+                elif question.variant == QuestionVariant.CHOICES:
+                    answer.save()
+                    answer.options.add(value)
+                    answer.answer = value.answer
+                else:
+                    answer.answer = value
                 answer.save()
-                answer.answer = answstr
-                answer.options.add(*value)
-            elif question.variant == QuestionVariant.CHOICES:
-                answer.save()
-                answer.options.add(value)
-                answer.answer = value.answer
-            else:
-                answer.answer = value
-            answer.save()
 
         login(self.request, user)
 
