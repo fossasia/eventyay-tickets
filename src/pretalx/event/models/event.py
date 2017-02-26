@@ -11,9 +11,7 @@ class Event(models.Model):
     )
     slug = models.SlugField(
         max_length=50, db_index=True,
-        help_text=_(
-            'Should be short, only contain lowercase letters and numbers, and must be unique among your events. '
-            'This will be used in order codes, invoice numbers, links and bank transfer references.'),
+        help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique.'),
         validators=[
             RegexValidator(
                 regex="^[a-zA-Z0-9.-]+$",
