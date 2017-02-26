@@ -1,15 +1,16 @@
 {% extends "orga/auth/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}Log in{% endblock %}
+{% block title %}{% trans "Sign in" %}{% endblock %}
 {% block content %}
     <form class="form-signin" action="" method="post" autocomplete="off">
         {% csrf_token %}
-        <input type="text" class="form-control" placeholder="Username" required autofocus id="username"
+        <input type="text" class="form-control" placeholder="{% trans "Nick" %}" required autofocus id="username"
                autocomplete="off" name="username">
         <input type="password" class="form-control" placeholder="Password" required id="password" autocomplete="off"
                name="password">
         <button class="btn btn-lg btn-primary btn-block" type="submit">
-            Sign in
+            {% trans "Sign in" %}
         </button>
     </form>
 {% endblock %}

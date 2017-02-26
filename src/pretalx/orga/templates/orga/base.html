@@ -40,7 +40,7 @@
                             {% endfor %}
                             <a class="dropdown-item" href="{% url "orga:event.create" %}">
                                 <span class="fa fa-plus"></span>
-                                New event
+                                {% trans "New event" %}
                             </a>
                         </div>
                     {% elif request.event %}
