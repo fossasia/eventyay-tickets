@@ -17,3 +17,6 @@ class EventPermission(models.Model):
         default=True,
         verbose_name=_('Organizes the event'),
     )
+
+    def __str__(self):
+        return '{} on {}'.format(user, event)

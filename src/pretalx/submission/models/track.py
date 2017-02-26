@@ -13,3 +13,6 @@ class Track(models.Model):
     color = models.CharField(
         max_length=7,
     )
+
+    def __str__(self):
+        return str(self.name)

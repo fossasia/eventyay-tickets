@@ -18,3 +18,6 @@ class SubmissionType(models.Model):
         default=60,
         help_text='Maximum duration in minutes',
     )
+
+    def __str__(self):
+        return str(self.name)

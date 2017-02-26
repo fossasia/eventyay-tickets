@@ -17,3 +17,6 @@ class CfP(models.Model):
         related_name='+',
     )
     # languages
+
+    def __str__(self):
+        return str(self.headline)

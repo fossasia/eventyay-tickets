@@ -72,3 +72,6 @@ class Answer(models.Model):
         to='submission.AnswerOption',
         related_name='answers',
     )
+
+    def __str__(self):
+        return self.answer
