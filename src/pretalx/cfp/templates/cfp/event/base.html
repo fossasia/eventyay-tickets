@@ -20,7 +20,7 @@
     <div id="top-bg" class="bg-primary"></div>
     <div class="container" id="main-container">
         <header>
-            <h1>{{ request.event }}</h1>
+            <h1><a href="{% url "cfp:event.start" event=request.event.slug %}">{{ request.event }}</a></h1>
         </header>
         <section class="card" id="main">
             {% block content %}

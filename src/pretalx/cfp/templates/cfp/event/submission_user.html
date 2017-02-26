@@ -1,0 +1,30 @@
+{% extends "cfp/event/submission_base.html" %}
+{% load i18n %}
+{% load rich_text %}
+{% load bootstrap4 %}
+{% block title %}{{ request.event }}{% endblock %}
+{% block inner %}
+    <h2>{% trans "That's it about your submission! We now just need a way to contact you." %}</h2>
+    <p>
+        {% blocktrans trimmed %}
+            To create your submission, you need an account on this page. This not only gives us a way
+            to contact you, it also gives you the possibility to edit your submission or to view its
+            current state.
+        {% endblocktrans %}
+    </p>
+    {% bootstrap_form_errors wizard.form %}
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="text-center">{% trans "I already have an account" %}</h4>
+            {% bootstrap_field wizard.form.login_username %}
+            {% bootstrap_field wizard.form.login_password %}
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center">{% trans "I need a new account" %}</h4>
+            {% bootstrap_field wizard.form.register_username %}
+            {% bootstrap_field wizard.form.register_email %}
+            {% bootstrap_field wizard.form.register_password %}
+            {% bootstrap_field wizard.form.register_password_repeat %}
+        </div>
+    </div>
+{% endblock %}

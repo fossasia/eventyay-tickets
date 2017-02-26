@@ -1,0 +1,26 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load rich_text %}
+{% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
+{% block content %}
+    <form action="" method="post">
+        {{ wizard.management_form }}
+        {% block inner %}
+        {% endblock %}
+        <div class="row">
+            <div class="col-md-3">
+                {% if wizard.steps.prev %}
+                    <button type="submit" class="btn btn-block btn-default btn-lg"
+                            value="{{ wizard.steps.prev }}" name="wizard_goto_step">
+                        &laquo; {% trans "Back" %}
+                    </button>
+                {% endif %}
+            </div>
+            <div class="col-md-3 offset-md-6">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {% trans "Continue" %} &raquo;
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

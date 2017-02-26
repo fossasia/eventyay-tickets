@@ -1,0 +1,12 @@
+{% extends "cfp/event/submission_base.html" %}
+{% load i18n %}
+{% load rich_text %}
+{% load bootstrap4 %}
+{% block title %}{{ request.event }}{% endblock %}
+{% block inner %}
+    <h2>{% trans "Hey, nice to meet you!" %}</h2>
+    <p>
+        {% trans "We're glad that you want to submit something to our event. We need you to fill out a few details first." %}
+    </p>
+    {% bootstrap_form wizard.form %}
+{% endblock %}

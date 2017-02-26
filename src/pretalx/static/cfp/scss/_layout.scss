@@ -6,7 +6,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 200px;
 }
 
@@ -14,8 +14,12 @@ body {
   padding-top: 100px;
 }
 
-h1 {
+h1 a {
   color: white;
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
 }
 
 #main {
