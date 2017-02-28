@@ -19,9 +19,11 @@
 .sidebar {
   background-color: $gray-lightest;
   width: 250px;
+  font-size: 14px;
 
   .nav-link {
     border-bottom: 1px solid $gray-lighter;
+    padding: 10px 15px;
   }
 
   .nav-link .fa {
@@ -42,11 +44,36 @@
 .navbar-inverse .navbar-nav .nav-link {
   color: $white;
 }
-
 .orga-headline {
   font-weight: bold;
-  padding-bottom: 24px;
 }
+
+.nav-pills {
+  margin-bottom: 10px;
+
+  > li {
+    float: left;
+    font-size: 14px;
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        color: #fff;
+        background-color: $brand-primary;
+      }
+    }
+    + li {
+      margin-left: 20px;
+    }
+  }
+
+}
+
+legend {
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 20px;
+}
+
 footer {
   margin-top: 20px;
   text-align: center;
