@@ -1,17 +1,10 @@
-{% extends "orga/base.html" %}
-{% load bootstrap4 %}
+{% extends "orga/cfp/base.html" %}
 {% load i18n %}
-{% block headline %}
-    {% if action == "create" or action == "update" %}
-        {% trans "Modify CfP" %}
-    {% elif action == "view" %}
-        {% trans "CfP" %}
-    {% endif %}
-{% endblock %}
-{% block content %}
-
+{% load bootstrap4 %}
+{% block cfp_content %}
     <form method="post" action="">
         {% csrf_token %}
+        <legend>{% trans "Public texts" %}</legend>
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
@@ -20,7 +13,7 @@
                 {% elif action == "update" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:cfp.update" event=request.event.slug %}>{% trans "Edit" %}</a>
+                    <a class="btn btn-primary" href={% url "orga:cfp.text.edit" event=request.event.slug %}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

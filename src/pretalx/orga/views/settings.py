@@ -14,11 +14,11 @@ from pretalx.person.models import User
 class EventCreate(CreateView):
     model = Event
     form_class = EventForm
-    template_name = 'orga/event/form.html'
+    template_name = 'orga/settings/form.html'
     context_object_name = 'event'
 
     def get_success_url(self) -> str:
-        return reverse('orga:event.view', kwargs={'event': self.object.slug})
+        return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
 
     def form_valid(self, form):
         messages.success(self.request, 'Yay!')
@@ -36,7 +36,7 @@ class EventDetail(OrgaPermissionRequired, UpdateView):
     model = Event
     slug_url_kwarg = 'event'
     slug_field = 'slug'
-    template_name = 'orga/event/form.html'
+    template_name = 'orga/settings/form.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -54,7 +54,7 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
     slug_url_kwarg = 'event'
     slug_field = 'slug'
     form_class = EventForm
-    template_name = 'orga/event/form.html'
+    template_name = 'orga/settings/form.html'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -65,7 +65,7 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse('orga:event.view', kwargs={'event': self.object.slug})
+        return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
 
     def form_valid(self, form):
         messages.success(self.request, 'Yay!')
