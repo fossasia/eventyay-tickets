@@ -20,3 +20,6 @@ class Room(models.Model):
     position = models.PositiveIntegerField(
         null=True, blank=True,
     )
+
+    def __str__(self) -> str:
+        return str(self.name)

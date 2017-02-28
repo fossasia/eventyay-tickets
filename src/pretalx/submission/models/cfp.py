@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class CfP(models.Model):
@@ -18,5 +19,5 @@ class CfP(models.Model):
     )
     # languages
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.headline)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class Schedule(models.Model):
@@ -11,3 +12,6 @@ class Schedule(models.Model):
         max_length=200,
         null=True, blank=True,
     )
+
+    def __str__(self) -> str:
+        return str(self.version) or _(f'Schedule for {self.event}')

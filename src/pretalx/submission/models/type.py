@@ -19,5 +19,5 @@ class SubmissionType(models.Model):
         help_text='Maximum duration in minutes',
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)

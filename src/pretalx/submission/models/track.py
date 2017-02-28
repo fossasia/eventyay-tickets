@@ -14,5 +14,5 @@ class Track(models.Model):
         max_length=7,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
