@@ -41,4 +41,4 @@ class LoginView(TemplateView):
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     logout(request)
-    return redirect('auth:login')
+    return redirect('orga:login')
