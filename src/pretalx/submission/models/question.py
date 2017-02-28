@@ -23,11 +23,14 @@ class Question(models.Model):
     variant = models.CharField(
         max_length=QuestionVariant.get_max_length(),
         choices=QuestionVariant.get_choices(),
+        default=QuestionVariant.STRING,
     )
     question = models.CharField(
         max_length=200,
     )
-    default_answer = models.TextField()
+    default_answer = models.TextField(
+        null=True, blank=True,
+    )
     required = models.BooleanField(
         default=False,
     )
