@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import auth, cfp, dashboard, settings
+from .views import auth, cfp, dashboard, settings, submission
 
 orga_urls = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
@@ -15,6 +15,12 @@ orga_urls = [
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/', cfp.CfPTextDetail.as_view(), name='cfp.text.view'),
+
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/accept/', submission.SubmissionAccept.as_view(), name='submissions.accept'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/reject/', submission.SubmissionReject.as_view(), name='submissions.reject'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/edit/', submission.SubmissionUpdate.as_view(), name='submissions.edit'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/', submission.SubmissionDetail.as_view(), name='submissions.view'),
+    url('^event/(?P<event>\w+)/submissions/', submission.SubmissionList.as_view(), name='submissions.list'),
 
     url('^event/(?P<event>\w+)/settings/edit/', settings.EventUpdate.as_view(), name='settings.event.edit'),
     url('^event/(?P<event>\w+)/settings/', settings.EventDetail.as_view(), name='settings.event.view'),

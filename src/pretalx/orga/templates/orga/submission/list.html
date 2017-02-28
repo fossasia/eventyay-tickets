@@ -1,0 +1,47 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block headline %}
+    {% trans "Submissions" %}
+{% endblock %}
+{% block content %}
+
+    <legend>{{ submissions.count }} {% trans "submissions" %}</legend>
+
+    <table class="table table-condensed">
+        <thead>
+            <th>Title</th>
+            <th>State</th>
+            <th></th>
+        <tbody>
+            {% for submission in submissions %}
+                <tr>
+                    <td>
+                        <a href="{% url "orga:submissions.view" event=request.event.slug pk=submission.pk %}">
+                            {{ submission.title }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if submission.state == 'submitted' %}
+                            <span class="fa fa-inbox" title="{% trans "submitted" %}">
+                        {% elif submission.state == 'rejected' %}
+                            <span class="fa fa-ban" title="{% trans "rejected" %}">
+                        {% elif submission.state == 'accepted' %}
+                            <span class="fa fa-check-circle-o" title="{% trans "accepted" %}">
+                        {% elif submission.state == 'confirmed' %}
+                            <span class="fa fa-check-circle" title="{% trans "confirmed" %}">
+                        {% elif submission.state == 'cancelled' %}
+                            <span class="fa fa-times-circle" title="{% trans "cancelled" %}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-xs"><a href="{% url "orga:submissions.edit" event=request.event.slug pk=submission.pk %}">
+                            <span class="fa fa-pencil" />
+                        </a></button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

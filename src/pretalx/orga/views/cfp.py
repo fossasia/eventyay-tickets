@@ -62,7 +62,7 @@ class CfPQuestionList(OrgaPermissionRequired, ListView):
     context_object_name = 'questions'
 
     def get_queryset(self):
-        return Question.objects.filter(event=self.request.event)
+        return self.request.event.questions.all()
 
 
 class CfPQuestionCreate(OrgaPermissionRequired, CreateView):
@@ -138,7 +138,7 @@ class CfPQuestionDelete(OrgaPermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
 
-        question = self.request.event.questions.get(pk=kwargs.get('pk'))
+        question = self.request.event.questions.get(pk=self.kwargs.get('pk'))
         question.delete()
         messages.success(request, _('The Question has been deleted.'))
         return redirect('orga:cfp.questions.view', kwargs={'event': self.request.event})

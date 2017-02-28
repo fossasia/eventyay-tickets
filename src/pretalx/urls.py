@@ -5,25 +5,6 @@ from .orga.urls import orga_urls
 from .cfp.urls import cfp_urls
 
 urlpatterns = [
-    # url(r'^(?P<event>\w+)/schedule/export/', include('')),
-    # url(r'^(?P<event>\w+)/schedule/', include('')),
-    # url(r'^(?P<event>\w+)/cfp/', include('')),
-
-    # url(r'^(?P<event>\w+)/submissions/availability/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/create/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/confirm/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/cancel/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/edit/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/(?P<id>[0-9]+)/', include('')),
-    # url(r'^(?P<event>\w+)/submissions/', include('')),
-
-    # url(r'^(?P<event>\w+)/people/', include('')),
-
-    # url(r'^orga/(?P<event>\w+)/team/add/', include('')),
-    # url(r'^orga/(?P<event>\w+)/team/', include('')),
-    # url(r'^orga/(?P<event>\w+)/settings/', include('')),
-    # url(r'^orga/(?P<event>\w+)/', include('')),
-
     url(r'^orga/', include(orga_urls, namespace='orga')),
     url(r'', include(cfp_urls, namespace='cfp')),
 ]
