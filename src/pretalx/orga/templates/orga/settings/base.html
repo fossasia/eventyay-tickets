@@ -1,0 +1,30 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block headline %}
+    {% trans "Settings" %}
+{% endblock %}
+{% block content %}
+    {% if request.event %}
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a 
+              class="nav-link {% if "settings.event" in url_name %}active{% endif %}"
+              href="{% url "orga:settings.event.view" event=request.event.slug %}"
+            >
+                {% trans "Event" %}
+                    </a>
+          </li>
+          <li class="nav-item">
+              <a
+                class="nav-link {% if "settings.email" in url_name %}active{% endif %}"
+              >
+                {% trans "E-mail" %}
+                    </a>
+          </li>
+        </ul>
+    {% endif %}
+
+    {% block settings_content %}
+    {% endblock %}
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block headline %}
+    {% if action == "create" or action == "update" %}
+        {% trans "Modify CfP" %}
+    {% elif action == "view" %}
+        {% trans "CfP" %}
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a 
+          class="nav-link {% if "cfp.text" in url_name %}active{% endif %}"
+          href="{% url "orga:cfp.text.view" event=request.event.slug %}"
+        >
+            {% trans "Text" %}
+		</a>
+      </li>
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "cfp.question" in url_name %}active{% endif %}"
+            href="{% url "orga:cfp.questions.view" event=request.event.slug %}"
+          >
+            {% trans "Questions" %}
+		</a>
+      </li>
+      <li class="nav-item">
+          <a
+          class="nav-link {% if "cfp.types" in url_name %}active{% endif %}"
+            href="#"
+          >
+            {% trans "Submission Types" %}
+          </a>
+      </li>
+    </ul>
+
+    {% block cfp_content %}
+    {% endblock %}
+
+{% endblock %}

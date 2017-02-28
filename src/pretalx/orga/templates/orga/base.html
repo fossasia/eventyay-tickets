@@ -35,7 +35,7 @@
                         <div class="dropdown-menu">
                             {% for e in events %}
                                 {% if not request.event == e %}
-                                    <a class="dropdown-item" href="{% url "orga:event.view" event=e.slug %}">{{ e.name }}</a>
+                                    <a class="dropdown-item" href="{% url "orga:settings.event.view" event=e.slug %}">{{ e.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             <a class="dropdown-item" href="{% url "orga:event.create" %}">
@@ -67,15 +67,15 @@
     </nav>
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
-            <a class="nav-link active" href="{% url "orga:dashboard" %}">
-                <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
-            </a>
             {% if request.event %}
-                <a class="nav-link" href="{% url "orga:cfp.view" event=request.event.slug %}">
+                <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{% url "orga:event.dashboard" event=request.event.slug %}">
+                    <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
+                </a>
+                <a class="nav-link {% if "cfp." in url_name %}active{% endif %}" href="{% url "orga:cfp.text.view" event=request.event.slug %}">
                     <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
                 </a>
-                <a class="nav-link" href="{% url "orga:event.view" event=request.event.slug %}">
-                    <span class="fa fa-wrench"></span> {% trans "Event settings" %}
+                <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{% url "orga:settings.event.view" event=request.event.slug %}">
+                    <span class="fa fa-wrench"></span> {% trans "Settings" %}
                 </a>
             {% endif %}
         </nav>
