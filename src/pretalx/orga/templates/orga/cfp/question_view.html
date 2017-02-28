@@ -1,0 +1,28 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block cfp_content %}
+
+    <legend>Speaker questions</legend>
+    <div class="cfp-explanation">
+        {% blocktrans %}
+        Questions can help you sort out additional details with speakers, such as
+        clothing sizes, special requirements such as dietary needs, or accomodation.
+        Submission-specific notes may be left at the submission, speaker questions
+        are meant to target the person regardless of the number/kind of submissions.
+        {% endblocktrans %}
+    </div>
+    <table><tbody>
+        {% for question in questions %}
+            <tr>
+                <td> {{ question.question }} </td>
+            </tr>
+        {% endfor %}
+    </tbody></table>
+
+    <a href="{% url "orga:cfp.questions.create" event=request.event.slug %}">
+        <button class="btn btn-secondary">
+            {% trans "New question" %}
+        </button>
+    </a>
+{% endblock %}

@@ -9,7 +9,9 @@ orga_urls = [
 
     url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/edit/', cfp.CfPQuestionUpdate.as_view(), name='cfp.questions.edit'),
     url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/delete/', cfp.CfPQuestionDelete.as_view(), name='cfp.questions.delete'),
-    url('^event/(?P<event>\w+)/cfp/questions/', cfp.CfPQuestionsDetail.as_view(), name='cfp.questions.view'),
+    url('^event/(?P<event>\w+)/cfp/questions/new/', cfp.CfPQuestionUpdate.as_view(), name='cfp.questions.create'),
+    url('^event/(?P<event>\w+)/cfp/questions/', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
+    url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/', cfp.CfPTextDetail.as_view(), name='cfp.text.view'),
 
