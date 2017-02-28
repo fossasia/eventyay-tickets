@@ -71,11 +71,29 @@
                 <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{% url "orga:event.dashboard" event=request.event.slug %}">
                     <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
                 </a>
+                <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{% url "orga:settings.event.view" event=request.event.slug %}">
+                    <span class="fa fa-wrench"></span> {% trans "Settings" %}
+                </a>
+                <a class="nav-link {% if "team." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-users"></span> {% trans "Team" %}
+                </a>
                 <a class="nav-link {% if "cfp." in url_name %}active{% endif %}" href="{% url "orga:cfp.text.view" event=request.event.slug %}">
                     <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
                 </a>
-                <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{% url "orga:settings.event.view" event=request.event.slug %}">
-                    <span class="fa fa-wrench"></span> {% trans "Settings" %}
+                <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-sticky-note-o"></span> {% trans "Submissions" %}
+                </a>
+                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-address-card-o"></span> {% trans "Speakers" %}
+                </a>
+                <a class="nav-link {% if "review." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-eye"></span> {% trans "Review" %}
+                </a>
+                <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-calendar-o"></span> {% trans "Schedule" %}
+                </a>
+                <a class="nav-link {% if "mails." in url_name %}active{% endif %}" href="#">
+                    <span class="fa fa-envelope"></span> {% trans "Mails" %}
                 </a>
             {% endif %}
         </nav>
