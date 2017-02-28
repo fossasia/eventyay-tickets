@@ -5,3 +5,19 @@
 {% block headline %}
     {% trans "Dashboard" %}
 {% endblock %}
+
+{% block content %}
+
+    <div class="dashboard-list">
+        {% for event in events %}
+            <div class="dashboard-block"><a href="{% url "orga:event.dashboard" event=event.slug %}">
+                {{ event.name }}
+            </a></div>
+        {% empty %}
+            <div class="no-events">
+                {% trans "There does not seem to be anything here." %}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
