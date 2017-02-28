@@ -34,9 +34,14 @@ class Event(models.Model):
         through='person.EventPermission',
         related_name="events",
     )
-    date_from = models.DateField(verbose_name=_('Event start date'))
-    date_to = models.DateField(null=True, blank=True,
-                               verbose_name=_('Event end date'))
+    date_from = models.DateField(
+        null=True, blank=True,
+        verbose_name=_('Event start date'),
+    )
+    date_to = models.DateField(
+        null=True, blank=True,
+        verbose_name=_('Event end date'),
+    )
     timezone = models.CharField(
         choices=[(tz, tz) for tz in pytz.common_timezones],
         max_length=30,
