@@ -3,7 +3,7 @@ from django.utils.timezone import get_current_timezone_name
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.person.models import EventPermission, User
-from pretalx.submission.models import CfP
+from pretalx.submission.models import CfP, Question
 
 
 class CfPForm(ReadOnlyFlag, forms.ModelForm):
@@ -12,4 +12,13 @@ class CfPForm(ReadOnlyFlag, forms.ModelForm):
         model = CfP
         fields = [
             'headline', 'text', 'default_type',
+        ]
+
+
+class QuestionForm(ReadOnlyFlag, forms.ModelForm):
+
+    class Meta:
+        model = Question
+        fields = [
+            'question', 'variant', 'default_answer', 'required',
         ]

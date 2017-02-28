@@ -1,11 +1,7 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 {% block headline %}
-    {% if action == "create" or action == "update" %}
-        {% trans "Modify CfP" %}
-    {% elif action == "view" %}
-        {% trans "CfP" %}
-    {% endif %}
+    {% trans "CfP" %}
 {% endblock %}
 {% block content %}
     <ul class="nav nav-pills">

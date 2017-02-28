@@ -12,13 +12,35 @@
         are meant to target the person regardless of the number/kind of submissions.
         {% endblocktrans %}
     </div>
-    <table><tbody>
-        {% for question in questions %}
-            <tr>
-                <td> {{ question.question }} </td>
-            </tr>
-        {% endfor %}
-    </tbody></table>
+    <table class="table table-condensed">
+        <thead>
+            <th>Question</th>
+            <th>required</th>
+            <th></th>
+            <th></th>
+        <tbody>
+            {% for question in questions %}
+                <tr>
+                    <td>
+                        <a href="{% url "orga:cfp.question.view" event=request.event.slug pk=question.pk %}">
+                            {{ question.question }}
+                        </a>
+                    </td>
+                    <td> <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}" /></td>
+                    <td>
+                        <button class="btn btn-xs"><a href="{% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}">
+                            <span class="fa fa-pencil" />
+                        </a></button>
+                    </td>
+                    <td>
+                        <button class="btn btn-xs"><a href="{% url "orga:cfp.question.delete" event=request.event.slug pk=question.pk %}">
+                            <span class="fa fa-trash" />
+                        </a></button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <a href="{% url "orga:cfp.questions.create" event=request.event.slug %}">
         <button class="btn btn-secondary">

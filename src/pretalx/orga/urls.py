@@ -7,9 +7,10 @@ orga_urls = [
     url('^logout/$', auth.logout_view, name='logout'),
     url('^event/new/', settings.EventCreate.as_view(), name='event.create'),
 
-    url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/edit/', cfp.CfPQuestionUpdate.as_view(), name='cfp.questions.edit'),
-    url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/delete/', cfp.CfPQuestionDelete.as_view(), name='cfp.questions.delete'),
-    url('^event/(?P<event>\w+)/cfp/questions/new/', cfp.CfPQuestionUpdate.as_view(), name='cfp.questions.create'),
+    url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/edit/', cfp.CfPQuestionUpdate.as_view(), name='cfp.question.edit'),
+    url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/delete/', cfp.CfPQuestionDelete.as_view(), name='cfp.question.delete'),
+    url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/', cfp.CfPQuestionDetail.as_view(), name='cfp.question.view'),
+    url('^event/(?P<event>\w+)/cfp/questions/new/', cfp.CfPQuestionCreate.as_view(), name='cfp.questions.create'),
     url('^event/(?P<event>\w+)/cfp/questions/', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
