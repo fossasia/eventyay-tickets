@@ -79,15 +79,15 @@ class User(AbstractBaseUser):
     def __str__(self) -> str:
         if self.email:
             return f'{self.nick} ({self.email})'
-        return f'User {self.nick}'
+        return self.nick
 
     def get_full_name(self) -> str:
         if self.first_name and self.last_name:
-            return f"User {self.first_name} '{self.nick}' {self.last_name}"
-        return f'User {self.nick}'
+            return f"{self.first_name} '{self.nick}' {self.last_name}"
+        return self.nick
 
     def get_short_name(self) -> str:
-        return f'User {self.nick}'
+        return self.nick
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
