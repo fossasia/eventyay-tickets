@@ -1,0 +1,16 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block headline %}
+    {% trans "Speakers" %}
+{% endblock %}
+{% block content %}
+
+    <legend>{{ speakers.count }} {% trans "speakers" %}</legend>
+
+    <ul>
+        {% for speaker in speakers %}
+        <li>{{ speaker.nick }}, {{ speaker.id }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
