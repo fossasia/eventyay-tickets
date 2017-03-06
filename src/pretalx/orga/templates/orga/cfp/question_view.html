@@ -29,12 +29,12 @@
                     <td> <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}" /></td>
                     <td>
                         <button class="btn btn-xs"><a href="{% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}">
-                            <span class="fa fa-pencil" />
+                            <span class="fa fa-pencil"></span>
                         </a></button>
                     </td>
                     <td>
                         <button class="btn btn-xs"><a href="{% url "orga:cfp.question.delete" event=request.event.slug pk=question.pk %}">
-                            <span class="fa fa-trash" />
+                            <span class="fa fa-trash"></span>
                         </a></button>
                     </td>
                 </tr>

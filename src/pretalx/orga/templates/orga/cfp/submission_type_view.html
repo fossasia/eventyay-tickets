@@ -27,7 +27,7 @@
                     <td>{{ type.max_duration }}</td>
                     <td>
                         {% if request.event.cfp.default_type == type %}
-                            <span class="fa fa-check" /> {% trans "Default" %}
+                            <span class="fa fa-check"></span> {% trans "Default" %}
                         {% else %}
                             <a href="{% url "orga:cfp.type.default" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
                                 Make default
@@ -36,12 +36,12 @@
                     </td>
                     <td>
                         <a href="{% url "orga:cfp.type.edit" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
-                            <span class="fa fa-pencil" />
+                            <span class="fa fa-pencil"></span>
                         </button></a>
                     </td>
                     <td>
                         <a href="{% url "orga:cfp.type.delete" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
-                            <span class="fa fa-trash" />
+                            <span class="fa fa-trash"></span>
                         </button></a>
                     </td>
                 </tr>
