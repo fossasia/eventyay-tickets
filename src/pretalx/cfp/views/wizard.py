@@ -176,10 +176,15 @@ def show_questions_page(wizard):
     return wizard.request.event.questions.exists()
 
 
+def show_user_page(wizard):
+    return not wizard.request.user.is_authenticated
+
+
 class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     form_list = FORMS
     condition_dict = {
-        'questions': show_questions_page
+        'questions': show_questions_page,
+        'user': show_user_page
     }
 
     def get_form_instance(self, step):
@@ -205,8 +210,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         })
 
     def done(self, form_list, form_dict, **kwargs):
-        uid = form_dict['user'].save()
-        user = User.objects.get(pk=uid)
+        if self.request.user.is_authenticated:
+            user = self.request.user
+        else:
+            uid = form_dict['user'].save()
+            user = User.objects.get(pk=uid)
 
         form_dict['info'].instance.event = self.request.event
         form_dict['info'].save()
@@ -232,7 +240,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     answer.answer = value
                 answer.save()
 
-        login(self.request, user)
+        if not self.request.user.is_authenticated:
+            login(self.request, user)
 
         # TODO: Redirect to detail page of submission
         return redirect(reverse('cfp:event.thanks', kwargs={
