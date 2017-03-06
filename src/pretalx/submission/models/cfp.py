@@ -17,6 +17,7 @@ class CfP(models.Model):
         on_delete=models.PROTECT,
         related_name='+',
     )
+    deadline = models.DateTimeField(null=True, blank=True)
     # languages
 
     def __str__(self) -> str:

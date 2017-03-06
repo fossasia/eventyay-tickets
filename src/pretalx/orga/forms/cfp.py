@@ -11,7 +11,7 @@ class CfPForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = CfP
         fields = [
-            'headline', 'text', 'default_type',
+            'headline', 'text', 'default_type', 'deadline',
         ]
 
 
