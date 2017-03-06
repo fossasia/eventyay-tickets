@@ -15,8 +15,6 @@ from pretalx.submission.models import CfP, Question, SubmissionType
 class CfPTextDetail(OrgaPermissionRequired, UpdateView):
     form_class = CfPForm
     model = CfP
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
     template_name = 'orga/cfp/text.html'
 
     def get_object(self):
@@ -35,8 +33,6 @@ class CfPTextDetail(OrgaPermissionRequired, UpdateView):
 
 class CfPTextUpdate(OrgaPermissionRequired, UpdateView):
     model = CfP
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
     form_class = CfPForm
     template_name = 'orga/cfp/text.html'
 
@@ -68,8 +64,6 @@ class CfPQuestionList(OrgaPermissionRequired, ListView):
 
 class CfPQuestionCreate(OrgaPermissionRequired, CreateView):
     model = Question
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
     form_class = QuestionForm
     template_name = 'orga/cfp/question_form.html'
 
@@ -90,8 +84,6 @@ class CfPQuestionCreate(OrgaPermissionRequired, CreateView):
 
 class CfPQuestionDetail(OrgaPermissionRequired, UpdateView):
     model = CfP
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
     form_class = QuestionForm
     template_name = 'orga/cfp/question_form.html'
 
@@ -111,8 +103,6 @@ class CfPQuestionDetail(OrgaPermissionRequired, UpdateView):
 
 class CfPQuestionUpdate(OrgaPermissionRequired, UpdateView):
     model = CfP
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
     form_class = QuestionForm
     template_name = 'orga/cfp/question_form.html'
 
