@@ -1,0 +1,57 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block cfp_content %}
+
+    <legend>{% trans "Submission types" %}</legend>
+    <div class="cfp-explanation">
+        {% blocktrans %}
+        Different submission types may help to guide speakers into different slot
+        lengths (short talks vs long talks) or different presentation formats
+        (talk vs workshop vs metal concert).
+        {% endblocktrans %}
+    </div>
+    <table class="table table-condensed">
+        <thead>
+            <th>{% trans "Submission type" %}</th>
+            <th>{% trans "Default length" %}</th>
+            <th>{% trans "Maximum length" %}</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        <tbody>
+            {% for type in types %}
+                <tr>
+                    <td>{{ type.name }}</td>
+                    <td>{{ type.default_duration }}</td>
+                    <td>{{ type.max_duration }}</td>
+                    <td>
+                        {% if request.event.cfp.default_type == type %}
+                            <span class="fa fa-check" /> {% trans "Default" %}
+                        {% else %}
+                            <a href="{% url "orga:cfp.type.default" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                                Make default
+                            </button></a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url "orga:cfp.type.edit" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                            <span class="fa fa-pencil" />
+                        </button></a>
+                    </td>
+                    <td>
+                        <a href="{% url "orga:cfp.type.delete" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                            <span class="fa fa-trash" />
+                        </button></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url "orga:cfp.types.create" event=request.event.slug %}">
+        <button class="btn btn-secondary">
+            {% trans "New type" %}
+        </button>
+    </a>
+{% endblock %}

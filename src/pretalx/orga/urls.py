@@ -15,6 +15,11 @@ orga_urls = [
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/edit/', cfp.CfPTextUpdate.as_view(), name='cfp.text.edit'),
     url('^event/(?P<event>\w+)/cfp/text/', cfp.CfPTextDetail.as_view(), name='cfp.text.view'),
+    url('^event/(?P<event>\w+)/cfp/types/(?P<pk>[0-9]+)/edit/', cfp.SubmissionTypeUpdate.as_view(), name='cfp.type.edit'),
+    url('^event/(?P<event>\w+)/cfp/types/(?P<pk>[0-9]+)/delete/', cfp.SubmissionTypeDelete.as_view(), name='cfp.type.delete'),
+    url('^event/(?P<event>\w+)/cfp/types/(?P<pk>[0-9]+)/default/', cfp.SubmissionTypeDefault.as_view(), name='cfp.type.default'),
+    url('^event/(?P<event>\w+)/cfp/types/new/', cfp.SubmissionTypeCreate.as_view(), name='cfp.types.create'),
+    url('^event/(?P<event>\w+)/cfp/types/', cfp.SubmissionTypeList.as_view(), name='cfp.types.view'),
 
     url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/accept/', submission.SubmissionAccept.as_view(), name='submissions.accept'),
     url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/reject/', submission.SubmissionReject.as_view(), name='submissions.reject'),

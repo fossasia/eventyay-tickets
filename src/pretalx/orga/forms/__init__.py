@@ -1,4 +1,4 @@
-from .cfp import CfPForm, QuestionForm
+from .cfp import CfPForm, QuestionForm, SubmissionTypeForm
 from .event import EventForm
 from .speaker import SpeakerForm
 from .submission import SubmissionForm
@@ -9,4 +9,5 @@ __all__ = [
     'QuestionForm',
     'SpeakerForm',
     'SubmissionForm',
+    'SubmissionTypeForm',
 ]

@@ -23,8 +23,8 @@
       </li>
       <li class="nav-item">
           <a
-          class="nav-link {% if "cfp.types" in url_name %}active{% endif %}"
-            href="#"
+            class="nav-link {% if "cfp.types" in url_name %}active{% endif %}"
+            href="{% url "orga:cfp.types.view" event=request.event.slug %}"
           >
             {% trans "Submission Types" %}
           </a>
