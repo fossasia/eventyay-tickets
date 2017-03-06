@@ -1,0 +1,29 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Login" %} :: {{ request.event }}{% endblock %}
+{% block content %}
+    <h2>{% trans "Welcome back!" %}</h2>
+    <p>
+        {% blocktrans trimmed %}
+            If you do not have an account yet, don't worry, you can create one while you create your first submission.
+            You don't need one before that.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            If you already created a submission for a different event on this server, you can re-use your account
+            to log in for this event.
+        {% endblocktrans %}
+    </p>
+    <form action="" method="post">
+        {% bootstrap_form_errors form %}
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                {% bootstrap_field form.login_username layout='inline' %}
+                {% bootstrap_field form.login_password layout='inline' %}
+                <button type="submit" class="btn btn-block btn-primary">{% trans "Log in" %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

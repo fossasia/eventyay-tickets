@@ -23,9 +23,9 @@ class EventPageMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
-class LoggedInEventPageMixin(LoginRequiredMixin, EventPageMixin):
+class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):
 
-    def get_login_url(self):
+    def get_login_url(self) -> str:
         return reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug
         })
