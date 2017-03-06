@@ -2,3 +2,12 @@
 @import "../../vendored/bootstrap-4-dev/scss/bootstrap";
 @import "../../vendored/fontawesome/scss/font-awesome";
 @import "_layout";
+
+table .btn-secondary {
+  background: $gray-lighter;
+  border-color: white;
+}
+
+.table-responsive {
+  display: table;
+}

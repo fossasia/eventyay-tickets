@@ -1,0 +1,63 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% block title %}Submissions :: {{ request.event }}{% endblock %}
+{% block content %}
+    <h2>{% trans "Your submissions" %}</h2>
+    {% if submissions %}
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>State</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for submission in submissions %}
+                <tr>
+                    <td>
+                        <a href="#">
+                            {{ submission.title }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if submission.state == 'submitted' %}
+                            <span class="fa fa-inbox"></span> {% trans "submitted" %}
+                        {% elif submission.state == 'rejected' %}
+                            <span class="fa fa-ban"></span> {% trans "not accepted" %}
+                        {% elif submission.state == 'accepted' %}
+                            <span class="fa fa-check-circle-o"></span> {% trans "accepted" %}
+                        {% elif submission.state == 'confirmed' %}
+                            <span class="fa fa-check-circle"></span> {% trans "confirmed" %}
+                        {% elif submission.state == 'cancelled' %}
+                            <span class="fa fa-times-circle"></span> {% trans "cancelled" %}
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        <a href="#"
+                                class="btn btn-sm btn-secondary">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">
+            {% trans "It seems like you haven't submitted anything to this event yet." %}
+        </p>
+        <p class="text-center">
+            {% trans "If you did, maybe you used a different account? Check your emails!" %}
+        </p>
+        <p class="text-center">
+            {% trans "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
+        </p>
+        <p class="text-center">
+            <a class="btn btn-success btn-lg btn-block"
+                    href="{% url "cfp:event.submit" event=request.event.slug %}">
+                {% trans "Submit something now!" %}
+            </a>
+        </p>
+    {% endif %}
+{% endblock %}

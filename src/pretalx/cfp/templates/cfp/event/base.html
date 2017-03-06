@@ -26,7 +26,9 @@
             {% if request.user.is_authenticated %}
                 <div class="user-row">
                     <div class="pull-right">
-                        <a href="">{% trans "My submissions" %}</a> &middot;
+                        <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
+                            {% trans "My submissions" %}
+                        </a> &middot;
                         <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
                     </div>
                     {% url "cfp:event.start" event=request.event.slug as userurl %}

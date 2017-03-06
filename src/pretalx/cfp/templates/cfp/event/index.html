@@ -13,7 +13,7 @@
             </a>
         </div>
         <div class="col-md-6">
-            <a class="btn btn-info btn-lg btn-block" href="">
+            <a class="btn btn-info btn-lg btn-block" href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
                 {% trans "Edit or view your submission" %}
             </a>
         </div>
