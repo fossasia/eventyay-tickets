@@ -10,9 +10,12 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
+
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.person.models import User
-from pretalx.submission.models import QuestionVariant, Submission, Question, Answer
+from pretalx.submission.models import (
+    Answer, Question, QuestionVariant, Submission,
+)
 
 
 class InfoStepForm(forms.ModelForm):

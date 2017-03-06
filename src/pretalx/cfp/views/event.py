@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.views.generic import TemplateView
+
 from pretalx.event.models import Event
 
 

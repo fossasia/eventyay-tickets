@@ -36,9 +36,9 @@ class LoginView(TemplateView):
         # no current cfp? dummy page
 
         messages.success(request, _('Hi!'))
-        return redirect('orga:dashboard')
+        return redirect(reverse('orga:dashboard'))
 
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     logout(request)
-    return redirect('orga:login')
+    return redirect(reverse('orga:login'))

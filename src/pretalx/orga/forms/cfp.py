@@ -1,8 +1,6 @@
 from django import forms
-from django.utils.timezone import get_current_timezone_name
 
 from pretalx.common.forms import ReadOnlyFlag
-from pretalx.person.models import EventPermission, User
 from pretalx.submission.models import CfP, Question, SubmissionType
 
 

@@ -1,14 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView, View, ListView
+from django.views.generic import (
+    CreateView, ListView, TemplateView, UpdateView, View,
+)
 
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
-from pretalx.person.models import User
 from pretalx.submission.models import CfP, Question, SubmissionType
 
 

@@ -19,4 +19,4 @@ class EventPermission(models.Model):
     )
 
     def __str__(self):
-        return '{} on {}'.format(user, event)
+        return '{} on {}'.format(self.user, self.event)
