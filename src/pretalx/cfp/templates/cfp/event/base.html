@@ -23,8 +23,22 @@
             <h1><a href="{% url "cfp:event.start" event=request.event.slug %}">{{ request.event }}</a></h1>
         </header>
         <section class="card" id="main">
-            {% block content %}
-            {% endblock %}
+            {% if request.user.is_authenticated %}
+                <div class="user-row">
+                    <div class="pull-right">
+                        <a href="">{% trans "My submissions" %}</a> &middot;
+                        <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
+                    </div>
+                    {% url "cfp:event.start" event=request.event.slug as userurl %}
+                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
+                        You are logged in as <a {{ attr }}>{{ nick }}</a>.
+                    {% endblocktrans %}
+                </div>
+            {% endif %}
+            <div class="content">
+                {% block content %}
+                {% endblock %}
+            </div>
         </section>
         <footer>
             <img src="{% static "common/img/logo.svg" %}">

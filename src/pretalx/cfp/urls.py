@@ -1,9 +1,10 @@
 from django.conf.urls import url
 
-from .views import event, wizard
+from .views import auth, event, wizard
 
 cfp_urls = [
     url('^(?P<event>\w+)/$', event.EventStartpage.as_view(), name='event.start'),
+    url('^(?P<event>\w+)/logout$', auth.LogoutView.as_view(), name='event.logout'),
     url('^(?P<event>\w+)/submit/$',
         wizard.SubmitStartView.as_view(),
         name='event.submit'),
