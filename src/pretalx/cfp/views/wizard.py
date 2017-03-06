@@ -130,16 +130,23 @@ class UserStepForm(forms.Form):
                 raise ValidationError(_('We already have a user with that email address. Did you already register '
                                         'before and just need to log in?'))
 
-            user = User.objects.create_user(nick=data.get('register_username'),
-                                            email=data.get('register_email'),
-                                            password=data.get('register_password'))
-            data['user_id'] = user.pk
         else:
             raise ValidationError(
                 _('You need to fill all fields of either the login or the registration form.')
             )
 
         return data
+
+    def save(self):
+        data = self.cleaned_data
+        if data.get('register_username') and data.get('register_email') and data.get('register_password'):
+            user = User.objects.create_user(nick=data.get('register_username'),
+                                            email=data.get('register_email'),
+                                            password=data.get('register_password'))
+            data['user_id'] = user.pk
+
+        return data['user_id']
+
 
 
 FORMS = [
@@ -198,7 +205,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         })
 
     def done(self, form_list, form_dict, **kwargs):
-        user = User.objects.get(pk=form_dict['user'].cleaned_data['user_id'])
+        uid = form_dict['user'].save()
+        user = User.objects.get(pk=uid)
 
         form_dict['info'].instance.event = self.request.event
         form_dict['info'].save()
