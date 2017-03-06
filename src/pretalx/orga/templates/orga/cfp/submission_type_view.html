@@ -13,12 +13,14 @@
     </div>
     <table class="table table-condensed">
         <thead>
-            <th>{% trans "Submission type" %}</th>
-            <th>{% trans "Default length" %}</th>
-            <th>{% trans "Maximum length" %}</th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <tr>
+                <th>{% trans "Submission type" %}</th>
+                <th>{% trans "Default length" %}</th>
+                <th>{% trans "Maximum length" %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody>
             {% for type in types %}
                 <tr>
@@ -29,20 +31,21 @@
                         {% if request.event.cfp.default_type == type %}
                             <span class="fa fa-check"></span> {% trans "Default" %}
                         {% else %}
-                            <a href="{% url "orga:cfp.type.default" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                            <a href="{% url "orga:cfp.type.default" event=request.event.slug pk=type.pk %}"
+                                    class="btn btn-sm btn-secondary">
                                 Make default
-                            </button></a>
+                            </a>
                         {% endif %}
                     </td>
-                    <td>
-                        <a href="{% url "orga:cfp.type.edit" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                    <td class="text-right">
+                        <a href="{% url "orga:cfp.type.edit" event=request.event.slug pk=type.pk %}"
+                                class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
-                        </button></a>
-                    </td>
-                    <td>
-                        <a href="{% url "orga:cfp.type.delete" event=request.event.slug pk=type.pk %}"><button class="btn btn-xs">
+                        </a>
+                        <a href="{% url "orga:cfp.type.delete" event=request.event.slug pk=type.pk %}"
+                                class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
-                        </button></a>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

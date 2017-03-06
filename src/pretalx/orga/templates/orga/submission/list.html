@@ -10,10 +10,13 @@
 
     <table class="table table-condensed">
         <thead>
-            <th>Speaker</th>
-            <th>Title</th>
-            <th>State</th>
-            <th></th>
+            <tr>
+                <th>Speaker</th>
+                <th>Title</th>
+                <th>State</th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody>
             {% for submission in submissions %}
                 <tr>
@@ -21,6 +24,7 @@
                         {% for speaker in submission.speakers.all %}
                             {{ speaker.first_name }}<br>
                         {% endfor %}
+                    </td>
                     <td>
                         <a href="{% url "orga:submissions.view" event=request.event.slug pk=submission.pk %}">
                             {{ submission.title }}
@@ -28,21 +32,22 @@
                     </td>
                     <td>
                         {% if submission.state == 'submitted' %}
-                            <span class="fa fa-inbox" title="{% trans "submitted" %}">
+                            <span class="fa fa-inbox" title="{% trans "submitted" %}"></span>
                         {% elif submission.state == 'rejected' %}
-                            <span class="fa fa-ban" title="{% trans "rejected" %}">
+                            <span class="fa fa-ban" title="{% trans "rejected" %}"></span>
                         {% elif submission.state == 'accepted' %}
-                            <span class="fa fa-check-circle-o" title="{% trans "accepted" %}">
+                            <span class="fa fa-check-circle-o" title="{% trans "accepted" %}"></span>
                         {% elif submission.state == 'confirmed' %}
-                            <span class="fa fa-check-circle" title="{% trans "confirmed" %}">
+                            <span class="fa fa-check-circle" title="{% trans "confirmed" %}"></span>
                         {% elif submission.state == 'cancelled' %}
-                            <span class="fa fa-times-circle" title="{% trans "cancelled" %}">
+                            <span class="fa fa-times-circle" title="{% trans "cancelled" %}"></span>
                         {% endif %}
                     </td>
-                    <td>
-                        <button class="btn btn-xs"><a href="{% url "orga:submissions.edit" event=request.event.slug pk=submission.pk %}">
+                    <td class="text-right">
+                        <a href="{% url "orga:submissions.edit" event=request.event.slug pk=submission.pk %}"
+                            class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
-                        </a></button>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

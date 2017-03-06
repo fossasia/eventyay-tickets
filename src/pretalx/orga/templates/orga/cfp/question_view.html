@@ -14,10 +14,12 @@
     </div>
     <table class="table table-condensed">
         <thead>
-            <th>Question</th>
-            <th>required</th>
-            <th></th>
-            <th></th>
+            <tr>
+                <th>Question</th>
+                <th>required</th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody>
             {% for question in questions %}
                 <tr>
@@ -26,16 +28,20 @@
                             {{ question.question }}
                         </a>
                     </td>
-                    <td> <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}" /></td>
                     <td>
-                        <button class="btn btn-xs"><a href="{% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}">
-                            <span class="fa fa-pencil"></span>
-                        </a></button>
+                        <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
+
+                        </span>
                     </td>
-                    <td>
-                        <button class="btn btn-xs"><a href="{% url "orga:cfp.question.delete" event=request.event.slug pk=question.pk %}">
+                    <td class="text-right">
+                        <a href="{% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a href="{% url "orga:cfp.question.delete" event=request.event.slug pk=question.pk %}"
+                            class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
-                        </a></button>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
