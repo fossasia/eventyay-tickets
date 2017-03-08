@@ -83,7 +83,7 @@
                 <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{% url "orga:submissions.list" event=request.event.slug %}">
                     <span class="fa fa-sticky-note-o"></span> {% trans "Submissions" %}
                 </a>
-                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="#">
+                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{% url "orga:speakers.list" event=request.event.slug %}">
                     <span class="fa fa-address-card-o"></span> {% trans "Speakers" %}
                 </a>
                 <a class="nav-link {% if "review." in url_name %}active{% endif %}" href="#">

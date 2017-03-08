@@ -2,24 +2,20 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block headline %}
-    {% trans "Submissions" %}
+    {% trans "Speakers" %}
 {% endblock %}
 {% block content %}
 
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{{ form.instance.title }} ({{ form.instance.state }})</legend>
+        <legend>{% trans "Speaker" %} {{ form.instance }} ({{ submission_count }} {% trans "submissions" %})</legend>
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create submission" %}</button>
-                {% elif action == "update" %}
+                {% if action == "update" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:submissions.accept" event=request.event.slug pk=form.instance.pk %}>{% trans "Accept" %}</a>
-                    <a class="btn btn-secondary" href={% url "orga:submissions.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
-                    <a class="btn btn-danger" href={% url "orga:submissions.reject" event=request.event.slug pk=form.instance.pk %}>{% trans "Reject" %}</a>
+                    <a class="btn btn-secondary" href={% url "orga:speakers.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

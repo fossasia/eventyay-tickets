@@ -10,7 +10,7 @@
 
     <ul>
         {% for speaker in speakers %}
-        <li>{{ speaker.nick }}, {{ speaker.id }}</li>
+        <li><a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.pk %}">{{ speaker.nick }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
