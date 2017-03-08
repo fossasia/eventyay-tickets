@@ -11,9 +11,9 @@
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>Speaker</th>
-                <th>Title</th>
-                <th>State</th>
+                <th>{% trans "Speakers" %}</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "State" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -22,7 +22,7 @@
                 <tr>
                     <td>
                         {% for speaker in submission.speakers.all %}
-                            {{ speaker.first_name }}<br>
+                            {{ speaker.get_short_name }}<br>
                         {% endfor %}
                     </td>
                     <td>
