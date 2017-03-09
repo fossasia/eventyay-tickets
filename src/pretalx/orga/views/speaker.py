@@ -6,6 +6,7 @@ from django.views.generic import (
     CreateView, DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
 
+from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import SpeakerForm
 from pretalx.person.models import User
@@ -23,7 +24,7 @@ class SpeakerList(OrgaPermissionRequired, ListView):
             .distinct()
 
 
-class SpeakerDetail(OrgaPermissionRequired, FormView):
+class SpeakerDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
     form_class = SpeakerForm
     model = User
@@ -44,8 +45,3 @@ class SpeakerDetail(OrgaPermissionRequired, FormView):
         ctx = super().get_context_data()
         ctx['submission_count'] = User.objects.filter(submissions__in=self.request.event.submissions.all()).count()
         return ctx
-
-    def get_form(self, *args, **kwargs):
-        import pdb; pdb.set_trace()
-        ret = super().get_form(*args, **kwargs)
-        return ret

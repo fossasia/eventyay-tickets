@@ -10,7 +10,7 @@
             <div class="offset-md-3 col-md-9">
                 {% if action == "create" %}
                     <button type="submit" class="btn btn-primary">{% trans "Create event" %}</button>
-                {% elif action == "update" %}
+                {% elif action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-primary" href={% url "orga:cfp.text.edit" event=request.event.slug %}>{% trans "Edit" %}</a>

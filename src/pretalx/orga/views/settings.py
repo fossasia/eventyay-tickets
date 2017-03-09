@@ -1,60 +1,33 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
 
+from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
 from pretalx.person.models import User
 
 
-@method_decorator(user_passes_test(lambda u: u.is_superuser), name='dispatch')
-class EventCreate(CreateView):
+class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Event
     form_class = EventForm
     template_name = 'orga/settings/form.html'
-    context_object_name = 'event'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self._action == 'create':
+            if not request.user.is_anonymous and not request.user.is_superuser:
+                raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        return Event.objects.get(slug=self.kwargs.get('event'))
 
     def get_success_url(self) -> str:
         return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
-        ret = super().form_valid(form)
-        return ret
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['action'] = 'create'
-        return context
-
-
-class EventDetail(OrgaPermissionRequired, UpdateView):
-    form_class = EventForm
-    model = Event
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
-    template_name = 'orga/settings/form.html'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['read_only'] = True
-        return kwargs
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['action'] = 'view'
-        return context
-
-
-class EventUpdate(OrgaPermissionRequired, UpdateView):
-    model = Event
-    slug_url_kwarg = 'event'
-    slug_field = 'slug'
-    form_class = EventForm
-    template_name = 'orga/settings/form.html'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -64,15 +37,7 @@ class EventUpdate(OrgaPermissionRequired, UpdateView):
         )
         return initial
 
-    def get_success_url(self) -> str:
-        return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
-
     def form_valid(self, form):
         messages.success(self.request, 'Yay!')
         ret = super().form_valid(form)
         return ret
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['action'] = 'update'
-        return context

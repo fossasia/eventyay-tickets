@@ -14,7 +14,7 @@
             <div class="offset-md-3 col-md-9">
                 {% if action == "create" %}
                     <button type="submit" class="btn btn-primary">{% trans "Create submission" %}</button>
-                {% elif action == "update" %}
+                {% elif action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-primary" href={% url "orga:submissions.accept" event=request.event.slug pk=form.instance.pk %}>{% trans "Accept" %}</a>

@@ -6,6 +6,7 @@ from django.views.generic import (
     DetailView, ListView, TemplateView, UpdateView, View,
 )
 
+from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import SubmissionForm
 from pretalx.submission.models import Submission, SubmissionStates
@@ -38,7 +39,7 @@ class SubmissionReject(OrgaPermissionRequired, View):
         return redirect(reverse('orga:submissions.view', kwargs=self.kwargs))
 
 
-class SubmissionUpdate(OrgaPermissionRequired, UpdateView):
+class SubmissionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/form.html'
@@ -53,30 +54,6 @@ class SubmissionUpdate(OrgaPermissionRequired, UpdateView):
         messages.success(self.request, 'Yay!')
         form.instance.event = self.request.event
         return super().form_valid(form)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['action'] = 'update'
-        return context
-
-
-class SubmissionDetail(OrgaPermissionRequired, UpdateView):
-    model = Submission
-    form_class = SubmissionForm
-    template_name = 'orga/submission/form.html'
-
-    def get_object(self):
-        return self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['read_only'] = True
-        return kwargs
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['action'] = 'view'
-        return context
 
 
 class SubmissionList(OrgaPermissionRequired, ListView):
