@@ -1,7 +1,6 @@
 from decimal import Decimal
 
 from django import forms
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
@@ -146,7 +145,6 @@ class UserStepForm(forms.Form):
             data['user_id'] = user.pk
 
         return data['user_id']
-
 
 
 FORMS = [

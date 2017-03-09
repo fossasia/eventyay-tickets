@@ -1,10 +1,4 @@
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
-from django.utils.translation import ugettext as _
-from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, TemplateView, UpdateView, View,
-)
+from django.views.generic import ListView
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.authorization import OrgaPermissionRequired

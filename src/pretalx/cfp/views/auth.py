@@ -1,10 +1,9 @@
-from django.contrib.auth import logout, login
+from django.contrib.auth import login, logout
 from django.core.urlresolvers import reverse
-from django.http import HttpRequest
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
-from django.views.generic import View, FormView
+from django.views.generic import FormView, View
 
 from pretalx.cfp.forms.auth import LoginForm
 from pretalx.cfp.views.event import EventPageMixin
