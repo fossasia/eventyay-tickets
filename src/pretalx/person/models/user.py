@@ -18,9 +18,6 @@ def nick_validator(value: str) -> None:
     if not re.compile(rf'^[{allowed}]+$').search(value):
         raise ValidationError('The nick may only contain ascii letters, digits and -_.')
 
-    if User.objects.filter(nick=value.lower()).exists():
-        raise ValidationError('This nick is already in use.')
-
 
 class UserManager(BaseUserManager):
     """
