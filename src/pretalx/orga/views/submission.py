@@ -39,27 +39,31 @@ class SubmissionReject(OrgaPermissionRequired, View):
 
 
 class SubmissionSpeakersAdd(OrgaPermissionRequired, View):
-    def post(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        speaker = User.objects.get(pk=request.POST.get('pk'))
+        speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
         if submission not in speaker.submissions.all():
             speaker.submissions.add(submission)
             speaker.save(update_fields=['submissions'])
-        messages.success(request, _('The speaker has been added to the submission.'))
+            messages.success(request, _('The speaker has been added to the submission.'))
+        else:
+            messages.warning(request, _('The speaker was already part of the submission.'))
         return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
 
 
 class SubmissionSpeakersDelete(OrgaPermissionRequired, View):
-    def post(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        speaker = User.objects.get(pk=request.POST.get('pk'))
+        speaker = User.objects.get(nick__iexact=request.GET.get('nick'))
 
         if submission in speaker.submissions.all():
             speaker.submissions.remove(submission)
             speaker.save(update_fields=['submissions'])
-        messages.success(request, _('The speaker has been removed from the submission.'))
+            messages.success(request, _('The speaker has been removed from the submission.'))
+        else:
+            messages.warning(request, _('The speaker was not part of this submission.'))
         return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
 
 
@@ -69,6 +73,8 @@ class SubmissionSpeakers(OrgaPermissionRequired, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['submission'] = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        context['speakers'] = context['submission'].speakers.all()
+        context['users'] = User.objects.all()  # TODO: yeah, no
         return context
 
 

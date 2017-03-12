@@ -1,0 +1,41 @@
+{% extends "orga/submission/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    <legend>{% trans "Speakers" %}</legend>
+
+    <table class="table table-condensed">
+        <tbody>
+            {% for speaker in speakers %}
+                <tr>
+                    <td>
+                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                            {{ speaker.get_short_name }}
+                        </a>
+                    </td>
+                    <td class="text-right">
+                        <a href="{% url "orga:submissions.speakers.delete" event=request.event.slug pk=submission.pk %}?nick={{ speaker.nick }}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
+                    <td>
+                        <select name="nick">
+                            {% for user in users %}
+                                <option value={{ user.nick }}>{{ user.get_short_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="text-right">
+                        <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
+                    </td>
+                </form>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

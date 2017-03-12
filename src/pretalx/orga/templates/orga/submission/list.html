@@ -21,7 +21,7 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{% url "orga:submissions.view" event=request.event.slug pk=submission.pk %}">
+                        <a href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}">
                             {{ submission.title }}
                         </a>
                     </td>
@@ -46,7 +46,7 @@
                         {% endif %}
                     </td>
                     <td class="text-right">
-                        <a href="{% url "orga:submissions.edit" event=request.event.slug pk=submission.pk %}"
+                        <a href="{% url "orga:submissions.content.edit" event=request.event.slug pk=submission.pk %}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
