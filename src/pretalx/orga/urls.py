@@ -26,6 +26,7 @@ orga_urls = [
     url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/', submission.SubmissionDetail.as_view(), name='submissions.view'),
     url('^event/(?P<event>\w+)/submissions/', submission.SubmissionList.as_view(), name='submissions.list'),
 
+    url('^event/(?P<event>\w+)/speakers/(?P<pk>[0-9]+)/edit/', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
     url('^event/(?P<event>\w+)/speakers/(?P<pk>[0-9]+)/', speaker.SpeakerDetail.as_view(), name='speakers.view'),
     url('^event/(?P<event>\w+)/speakers/', speaker.SpeakerList.as_view(), name='speakers.list'),
 

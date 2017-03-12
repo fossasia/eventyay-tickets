@@ -12,7 +12,7 @@
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
-                {% if action == "update" %}
+                {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-secondary" href={% url "orga:speakers.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
