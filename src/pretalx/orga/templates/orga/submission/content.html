@@ -1,10 +1,7 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block headline %}
-    {% trans "Submissions" %}
-{% endblock %}
-{% block content %}
+{% block submission_content %}
 
     <form method="post" action="">
         {% csrf_token %}

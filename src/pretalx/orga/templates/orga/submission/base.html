@@ -1,0 +1,37 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block headline %}
+    {% trans "Submissions" %}
+{% endblock %}
+{% block content %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a 
+          class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
+          href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}"
+        >
+            {% trans "Content" %}
+		</a>
+      </li>
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
+            href="{% url "orga:submissions.speakers.view" event=request.event.slug pk=submission.pk %}"
+          >
+            {% trans "Speakers" %}
+          </a>
+      </li>
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "submissions.questions" in url_name %}active{% endif %}"
+            href="{% url "orga:submissions.questions.view" event=request.event.slug pk=submission.pk %}"
+          >
+            {% trans "Questions" %}
+	  </a>
+      </li>
+    </ul>
+
+    {% block submission_content %}
+    {% endblock %}
+
+{% endblock %}
