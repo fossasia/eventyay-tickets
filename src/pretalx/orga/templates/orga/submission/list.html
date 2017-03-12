@@ -22,7 +22,9 @@
                 <tr>
                     <td>
                         {% for speaker in submission.speakers.all %}
-                            {{ speaker.get_short_name }}<br>
+                            <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                                {{ speaker.get_short_name }}
+                            </a><br>
                         {% endfor %}
                     </td>
                     <td>
