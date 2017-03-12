@@ -18,7 +18,7 @@
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-primary" href={% url "orga:submissions.accept" event=request.event.slug pk=form.instance.pk %}>{% trans "Accept" %}</a>
-                    <a class="btn btn-secondary" href={% url "orga:submissions.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
+                    <a class="btn btn-secondary" href={% url "orga:submissions.content.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
                     <a class="btn btn-danger" href={% url "orga:submissions.reject" event=request.event.slug pk=form.instance.pk %}>{% trans "Reject" %}</a>
                 {% endif %}
             </div>

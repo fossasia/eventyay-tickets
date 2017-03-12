@@ -17,13 +17,13 @@ class SubmissionAccept(OrgaPermissionRequired, View):
 
         if submission.state not in [SubmissionStates.SUBMITTED, SubmissionStates.REJECTED]:
             messages.error(request, _('A submission must be submitted or rejected to become accepted.'))
-            return redirect(reverse('orga:submissions.view', kwargs=self.kwargs))
+            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
         submission.state = SubmissionStates.ACCEPTED
         submission.save(update_fields=['state'])
         # TODO: ask for confirmation
         messages.success(request, _('The submission has been accepted.'))
-        return redirect(reverse('orga:submissions.view', kwargs=self.kwargs))
+        return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
 class SubmissionReject(OrgaPermissionRequired, View):
@@ -34,10 +34,10 @@ class SubmissionReject(OrgaPermissionRequired, View):
         submission.state = SubmissionStates.REJECTED
         submission.save(update_fields=['state'])
         messages.success(request, _('The submission has been rejected.'))
-        return redirect(reverse('orga:submissions.view', kwargs=self.kwargs))
+        return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
-class SubmissionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class SubmissionContent(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/form.html'
@@ -46,7 +46,7 @@ class SubmissionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView
         return self.request.event.submissions.get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self) -> str:
-        return reverse('orga:submissions.view', kwargs=self.kwargs)
+        return reverse('orga:submissions.content.view', kwargs=self.kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, 'Yay!')

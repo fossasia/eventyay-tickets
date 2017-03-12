@@ -20,10 +20,15 @@ orga_urls = [
     url('^event/(?P<event>\w+)/cfp/types/new/', cfp.SubmissionTypeDetail.as_view(), name='cfp.types.create'),
     url('^event/(?P<event>\w+)/cfp/types/', cfp.SubmissionTypeList.as_view(), name='cfp.types.view'),
 
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/speakers/add/', submission.SubmissionSpeakersAdd.as_view(), name='submissions.speakers.add'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/speakers/delete/', submission.SubmissionSpeakersDelete.as_view(), name='submissions.speakers.delete'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/speakers/', submission.SubmissionSpeakers.as_view(), name='submissions.speakers.view'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/questions/edit/', submission.SubmissionQuestions.as_view(), name='submissions.questions.edit'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/questions/', submission.SubmissionQuestions.as_view(), name='submissions.questions.view'),
     url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/accept/', submission.SubmissionAccept.as_view(), name='submissions.accept'),
     url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/reject/', submission.SubmissionReject.as_view(), name='submissions.reject'),
-    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/edit/', submission.SubmissionDetail.as_view(), name='submissions.edit'),
-    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/', submission.SubmissionDetail.as_view(), name='submissions.view'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/edit/', submission.SubmissionContent.as_view(), name='submissions.content.edit'),
+    url('^event/(?P<event>\w+)/submissions/(?P<pk>[0-9]+)/', submission.SubmissionContent.as_view(), name='submissions.content.view'),
     url('^event/(?P<event>\w+)/submissions/', submission.SubmissionList.as_view(), name='submissions.list'),
 
     url('^event/(?P<event>\w+)/speakers/(?P<pk>[0-9]+)/edit/', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
