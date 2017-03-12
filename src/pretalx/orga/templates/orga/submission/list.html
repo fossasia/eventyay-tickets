@@ -11,8 +11,8 @@
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>{% trans "Speakers" %}</th>
                 <th>{% trans "Title" %}</th>
+                <th>{% trans "Speakers" %}</th>
                 <th>{% trans "State" %}</th>
                 <th></th>
             </tr>
@@ -21,16 +21,16 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
+                        <a href="{% url "orga:submissions.view" event=request.event.slug pk=submission.pk %}">
+                            {{ submission.title }}
+                        </a>
+                    </td>
+                    <td>
                         {% for speaker in submission.speakers.all %}
                             <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
                                 {{ speaker.get_short_name }}
                             </a><br>
                         {% endfor %}
-                    </td>
-                    <td>
-                        <a href="{% url "orga:submissions.view" event=request.event.slug pk=submission.pk %}">
-                            {{ submission.title }}
-                        </a>
                     </td>
                     <td>
                         {% if submission.state == 'submitted' %}
