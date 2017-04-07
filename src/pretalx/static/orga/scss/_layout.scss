@@ -20,6 +20,8 @@
   background-color: $gray-lightest;
   width: 250px;
   font-size: 14px;
+  flex-grow: 0;
+  flex-shrink: 0;
 
   .nav-link {
     border-bottom: 1px solid $gray-lighter;
