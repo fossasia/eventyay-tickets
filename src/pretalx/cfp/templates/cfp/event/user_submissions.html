@@ -34,7 +34,7 @@
                         {% endif %}
                     </td>
                     <td class="text-right">
-                        <a href="#"
+                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}"
                                 class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
@@ -43,6 +43,12 @@
             {% endfor %}
             </tbody>
         </table>
+        <p>
+            <a class="btn btn-success btn-lg"
+               href="{% url "cfp:event.submit" event=request.event.slug %}">
+                {% trans "Create a new submission" %}
+            </a>
+        </p>
     {% else %}
         <p class="text-center">
             {% trans "It seems like you haven't submitted anything to this event yet." %}

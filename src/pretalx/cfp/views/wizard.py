@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ValidationError
@@ -10,69 +8,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.person.models import User
 from pretalx.submission.models import (
-    Answer, Question, QuestionVariant, Submission,
+    Answer, Question, QuestionVariant,
 )
-
-
-class InfoStepForm(forms.ModelForm):
-    class Meta:
-        model = Submission
-        fields = ['title', 'subtitle', 'submission_type', 'description', 'abstract', 'notes', 'duration']
-
-
-class QuestionStepForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        event = kwargs.pop('event', None)
-
-        super().__init__(*args, **kwargs)
-
-        for q in event.questions.prefetch_related('options'):
-            if q.variant == QuestionVariant.BOOLEAN:
-                if q.required:
-                    # For some reason, django-bootstrap4 does not set the required attribute
-                    # itself.
-                    widget = forms.CheckboxInput(attrs={'required': 'required'})
-                else:
-                    widget = forms.CheckboxInput()
-
-                field = forms.BooleanField(
-                    label=q.question, required=q.required,
-                    widget=widget, initial=bool(q.default_answer)
-                )
-            elif q.variant == QuestionVariant.NUMBER:
-                field = forms.DecimalField(
-                    label=q.question, required=q.required,
-                    min_value=Decimal('0.00'), initial=q.default_answer
-                )
-            elif q.variant == QuestionVariant.STRING:
-                field = forms.CharField(
-                    label=q.question, required=q.required, initial=q.default_answer
-                )
-            elif q.variant == QuestionVariant.TEXT:
-                field = forms.CharField(
-                    label=q.question, required=q.required,
-                    widget=forms.Textarea,
-                    initial=q.default_answer
-                )
-            elif q.variant == QuestionVariant.CHOICES:
-                field = forms.ModelChoiceField(
-                    queryset=q.options.all(),
-                    label=q.question, required=q.required,
-                    widget=forms.RadioSelect,
-                    initial=q.default_answer
-                )
-            elif q.variant == QuestionVariant.MULTIPLE:
-                field = forms.ModelMultipleChoiceField(
-                    queryset=q.options.all(),
-                    label=q.question, required=q.required,
-                    widget=forms.CheckboxSelectMultiple,
-                    initial=q.default_answer
-                )
-            field.question = q
-            self.fields['question_%s' % q.id] = field
 
 
 class UserStepForm(forms.Form):
@@ -148,8 +89,8 @@ class UserStepForm(forms.Form):
 
 
 FORMS = [
-    ("info", InfoStepForm),
-    ("questions", QuestionStepForm),
+    ("info", InfoForm),
+    ("questions", QuestionsForm),
     ("user", UserStepForm),
 ]
 

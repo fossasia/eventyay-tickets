@@ -1,0 +1,18 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Your submission" %} :: {{ request.event }}{% endblock %}
+{% block content %}
+    <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+    <form action="" method="post">
+        {% bootstrap_form form %}
+        {% bootstrap_form qform %}
+        <div class="row">
+            <div class="col-md-3 offset-md-9">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -14,4 +14,6 @@ cfp_urls = [
         name='event.submit'),
     url('^(?P<event>\w+)/thanks$', event.EventStartpage.as_view(), name='event.thanks'),
     url('^(?P<event>\w+)/me/submissions$', user.SubmissionsListView.as_view(), name='event.user.submissions'),
+    url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/$', user.SubmissionsEditView.as_view(),
+        name='event.user.submission.edit'),
 ]
