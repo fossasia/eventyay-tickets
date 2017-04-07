@@ -1,0 +1,39 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+
+{% block headline %}
+    {% blocktrans with event=invitation.event.name %}
+        Invitation to the team organizing {{ event }}
+    {% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post">
+
+    {% bootstrap_form_errors form %}
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="text-center">{% trans "I already have an account" %}</h4>
+            {% bootstrap_field form.login_username %}
+            {% bootstrap_field form.login_password %}
+            <button type="submit" class="btn btn-block btn-success btn-lg">
+                {% trans "Log in" %} &raquo;
+            </button>
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center">{% trans "I need a new account" %}</h4>
+            {% bootstrap_field form.register_username %}
+            {% bootstrap_field form.register_email %}
+            {% bootstrap_field form.register_password %}
+            {% bootstrap_field form.register_password_repeat %}
+            <button type="submit" class="btn btn-block btn-success btn-lg">
+                {% trans "Register" %} &raquo;
+            </button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

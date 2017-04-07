@@ -1,16 +1,19 @@
 import string
 
 from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
-from django.views.generic import TemplateView, View
+from django.views.generic import FormView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
+from pretalx.person.forms import UserForm
 from pretalx.person.models import EventPermission, User
 
 
@@ -94,3 +97,29 @@ class EventTeamDelete(OrgaPermissionRequired, View):
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_orga=False)
         return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
+
+
+class InvitationView(FormView):
+    template_name = 'orga/invitation.html'
+    form_class = UserForm
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['invitation'] = EventPermission.objects.get(
+            invitation_token=self.kwargs.get('code'),
+        )
+        return ctx
+
+    def form_valid(self, form):
+        form.save()
+        permission = EventPermission.objects.get(invitation_token=self.kwargs.get('code'))
+        user = User.objects.get(pk=form.cleaned_data.get('user_id'))
+        if EventPermission.objects.filter(user=user, event=permission.event).exists():
+            permission.delete()
+            permission = EventPermission.objects.filter(user=user, event=permission.event)
+            permission.is_orga = True
+
+        permission.user = user
+        permission.save()
+        login(self.request, user)
+        return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))

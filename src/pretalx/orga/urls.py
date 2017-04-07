@@ -5,6 +5,9 @@ from .views import auth, cfp, dashboard, settings, speaker, submission
 orga_urls = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
     url('^logout/$', auth.logout_view, name='logout'),
+
+    url('^invitation/(?P<code>\w+)/', settings.InvitationView.as_view(), name='invitation.view'),
+
     url('^event/new/', settings.EventDetail.as_view(), name='event.create'),
 
     url('^event/(?P<event>\w+)/cfp/questions/(?P<pk>[0-9]+)/delete/', cfp.CfPQuestionDelete.as_view(), name='cfp.question.delete'),
