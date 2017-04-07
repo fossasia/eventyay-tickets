@@ -28,6 +28,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['qform'] = self.qform
+        ctx['can_edit'] = self.can_edit
         return ctx
 
     @cached_property
@@ -36,6 +37,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
             data=self.request.POST if self.request.method == 'POST' else None,
             submission=self.object,
             event=self.request.event,
+            readonly=not self.can_edit
         )
 
     def get_object(self, queryset=None):
@@ -55,10 +57,22 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
         else:
             return self.form_invalid(form)
 
+    @property
+    def can_edit(self):
+        return self.object.state in (
+            SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED, SubmissionStates.SUBMITTED
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['readonly'] = not self.can_edit
+        return kwargs
+
     def form_valid(self, form):
-        form.save()
-        self.questions_save()
-        messages.success(self.request, _('Your changes have been saved.'))
+        if self.can_edit:
+            form.save()
+            self.questions_save()
+            messages.success(self.request, _('Your changes have been saved.'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
     def questions_save(self):

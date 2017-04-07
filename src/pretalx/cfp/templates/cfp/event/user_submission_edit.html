@@ -7,12 +7,14 @@
     <form action="" method="post">
         {% bootstrap_form form %}
         {% bootstrap_form qform %}
-        <div class="row">
-            <div class="col-md-3 offset-md-9">
-                <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% trans "Save" %}
-                </button>
+        {% if can_edit %}
+            <div class="row">
+                <div class="col-md-3 offset-md-9">
+                    <button type="submit" class="btn btn-block btn-success btn-lg">
+                        {% trans "Save" %}
+                    </button>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </form>
 {% endblock %}
