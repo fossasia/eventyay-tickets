@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.choices import Choices
 
@@ -11,7 +12,14 @@ class QuestionVariant(Choices):
     CHOICES = 'choices'
     MULTIPLE = 'muliple_choice'
 
-    valid_choices = [NUMBER, STRING, TEXT, BOOLEAN, CHOICES, MULTIPLE]
+    valid_choices = [
+        (NUMBER, _('number')),
+        (STRING, _('one-line text')),
+        (TEXT, _('multi-line text')),
+        (BOOLEAN, _('yes/no')),
+        (CHOICES, _('single choice')),
+        (MULTIPLE, _('multiple choice'))
+    ]
 
 
 class Question(models.Model):

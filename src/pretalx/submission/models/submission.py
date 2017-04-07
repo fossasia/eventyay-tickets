@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.choices import Choices
 
@@ -9,9 +10,17 @@ class SubmissionStates(Choices):
     REJECTED = 'rejected'
     ACCEPTED = 'accepted'
     CONFIRMED = 'confirmed'
-    CANCELLED = 'cancelled'
+    CANCELED = 'canceled'
+    WITHDRAWN = 'withdrawn'
 
-    valid_choices = [SUBMITTED, REJECTED, ACCEPTED, CONFIRMED, CANCELLED]
+    valid_choices = [
+        (SUBMITTED, _('submitted')),
+        (REJECTED, _('rejected')),
+        (ACCEPTED, _('accepted')),
+        (CONFIRMED, _('confirmed')),
+        (CANCELED, _('canceled')),
+        (WITHDRAWN, _('withdrawn'))
+    ]
 
 
 class Submission(models.Model):

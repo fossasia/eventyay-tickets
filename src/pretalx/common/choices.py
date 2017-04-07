@@ -20,10 +20,8 @@ class Choices:
     """
     @classmethod
     def get_choices(cls):
-        return (
-            (val, val) for val in cls.valid_choices
-        )
+        return cls.valid_choices
 
     @classmethod
     def get_max_length(cls):
-        return max([len(val) for val in cls.valid_choices])
+        return max([len(val) for val, label in cls.valid_choices])

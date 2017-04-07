@@ -29,8 +29,10 @@
                             <span class="fa fa-check-circle-o"></span> {% trans "accepted" %}
                         {% elif submission.state == 'confirmed' %}
                             <span class="fa fa-check-circle"></span> {% trans "confirmed" %}
-                        {% elif submission.state == 'cancelled' %}
-                            <span class="fa fa-times-circle"></span> {% trans "cancelled" %}
+                        {% elif submission.state == 'canceled' %}
+                            <span class="fa fa-times-circle"></span> {% trans "canceled" %}
+                        {% elif submission.state == 'withdrawn' %}
+                            <span class="fa fa-times-circle"></span> {% trans "withdrawn" %}
                         {% endif %}
                     </td>
                     <td class="text-right">

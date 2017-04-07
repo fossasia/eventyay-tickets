@@ -8,7 +8,7 @@ from django.views.generic import ListView, UpdateView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
-from pretalx.submission.models import Submission, Answer
+from pretalx.submission.models import Submission, Answer, SubmissionStates
 
 
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
