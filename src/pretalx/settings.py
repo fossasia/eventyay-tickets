@@ -57,6 +57,12 @@ ALLOWED_HOSTS = ['*']
 
 
 # Internal settings
+LANGUAGES = [
+    ('en', _('English')),
+    ('de', _('German')),
+    ('it', _('Italian')),
+]
+LANGUAGE_CODE = 'en'
 
 SESSION_COOKIE_NAME = 'pretalx_session'
 CSRF_COOKIE_NAME = 'pretalx_csrftoken'

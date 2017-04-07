@@ -7,3 +7,4 @@ git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
 Markdown
 bleach
 django-formtools==2.*
+django-i18nfield==1.0.*

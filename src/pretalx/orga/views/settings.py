@@ -1,12 +1,10 @@
 import string
 
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
-from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView

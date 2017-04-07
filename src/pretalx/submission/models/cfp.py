@@ -1,4 +1,5 @@
 from django.db import models
+from i18nfield.fields import I18nCharField, I18nTextField
 
 
 class CfP(models.Model):
@@ -6,11 +7,11 @@ class CfP(models.Model):
         to='event.Event',
         on_delete=models.PROTECT,
     )
-    headline = models.CharField(
+    headline = I18nCharField(
         max_length=300,
         null=True, blank=True,
     )
-    text = models.TextField(null=True, blank=True)
+    text = I18nTextField(null=True, blank=True)
     default_type = models.ForeignKey(
         to='submission.SubmissionType',
         on_delete=models.PROTECT,

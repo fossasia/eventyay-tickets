@@ -1,4 +1,5 @@
 from django.db import models
+from i18nfield.fields import I18nCharField
 
 
 class Room(models.Model):
@@ -7,10 +8,10 @@ class Room(models.Model):
         on_delete=models.PROTECT,
         related_name='rooms',
     )
-    name = models.CharField(
+    name = I18nCharField(
         max_length=100,
     )
-    description = models.CharField(
+    description = I18nCharField(
         max_length=1000,
         null=True, blank=True,
     )

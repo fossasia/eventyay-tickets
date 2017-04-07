@@ -1,11 +1,13 @@
 import pytz
+from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from i18nfield.fields import I18nCharField
 
 
 class Event(models.Model):
-    name = models.CharField(
+    name = I18nCharField(
         max_length=200,
         verbose_name=_('Name'),
     )
@@ -20,7 +22,7 @@ class Event(models.Model):
         ],
         verbose_name=_("Short form"),
     )
-    subtitle = models.CharField(
+    subtitle = I18nCharField(
         max_length=200,
         verbose_name=_('Subitle'),
         null=True, blank=True,
@@ -59,11 +61,19 @@ class Event(models.Model):
         null=True, blank=True,
         validators=[],
     )
+    locale_array = models.TextField(default=settings.LANGUAGE_CODE)
+    locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
+                              choices=settings.LANGUAGES,
+                              verbose_name=_('Default language'))
     # enable_feedback = models.BooleanField(default=False)
     # send_notifications = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return str(self.name)
+
+    @property
+    def locales(self) -> list:
+        return self.locale_array.split(",")
 
     def get_cfp(self) -> 'submission.CfP':
         if hasattr(self, 'cfp'):

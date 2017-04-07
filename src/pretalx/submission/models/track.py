@@ -1,4 +1,5 @@
 from django.db import models
+from i18nfield.fields import I18nCharField
 
 
 class Track(models.Model):
@@ -7,7 +8,7 @@ class Track(models.Model):
         on_delete=models.PROTECT,
         related_name='tracks',
     )
-    name = models.CharField(
+    name = I18nCharField(
         max_length=200,
     )
     color = models.CharField(

@@ -1,4 +1,5 @@
 from django.db import models
+from i18nfield.fields import I18nCharField
 
 
 class SubmissionType(models.Model):
@@ -7,7 +8,7 @@ class SubmissionType(models.Model):
         related_name='submission_types',
         on_delete=models.CASCADE,
     )
-    name = models.CharField(
+    name = I18nCharField(
         max_length=100,
     )
     default_duration = models.PositiveIntegerField(

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
 
@@ -33,7 +34,7 @@ class Question(models.Model):
         choices=QuestionVariant.get_choices(),
         default=QuestionVariant.STRING,
     )
-    question = models.CharField(
+    question = I18nCharField(
         max_length=200,
     )
     default_answer = models.TextField(
@@ -59,7 +60,7 @@ class AnswerOption(models.Model):
         on_delete=models.PROTECT,
         related_name='options',
     )
-    answer = models.CharField(
+    answer = I18nCharField(
         max_length=200,
     )
 

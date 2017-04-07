@@ -1,10 +1,11 @@
 from django import forms
+from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.submission.models import CfP, Question, SubmissionType
 
 
-class CfPForm(ReadOnlyFlag, forms.ModelForm):
+class CfPForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = CfP
@@ -13,7 +14,7 @@ class CfPForm(ReadOnlyFlag, forms.ModelForm):
         ]
 
 
-class QuestionForm(ReadOnlyFlag, forms.ModelForm):
+class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = Question
@@ -22,7 +23,7 @@ class QuestionForm(ReadOnlyFlag, forms.ModelForm):
         ]
 
 
-class SubmissionTypeForm(ReadOnlyFlag, forms.ModelForm):
+class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = SubmissionType

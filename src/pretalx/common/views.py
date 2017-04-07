@@ -1,5 +1,6 @@
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
+from i18nfield.forms import I18nModelForm
 
 
 class ActionFromUrl:
@@ -15,6 +16,8 @@ class ActionFromUrl:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['read_only'] = (self._action == 'view')
+        if hasattr(self.request, 'event') and issubclass(self.form_class, I18nModelForm):
+            kwargs['locales'] = self.request.event.locales
         return kwargs
 
 
