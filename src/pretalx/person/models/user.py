@@ -52,13 +52,9 @@ class User(AbstractBaseUser):
         verbose_name='Nickname',
         help_text='Please use only characters in the latin alphabet, plus numbers and _-.',
     )
-    first_name = models.CharField(
+    name = models.CharField(
         max_length=120, null=True, blank=True, verbose_name='Name',
-        help_text='Please enter your real first name.',
-    )
-    last_name = models.CharField(
-        max_length=120, null=True, blank=True, verbose_name='Name',
-        help_text='Please enter your real last name.',
+        help_text='Please enter your real name.',
     )
     email = models.EmailField(
         verbose_name='E-Mail',

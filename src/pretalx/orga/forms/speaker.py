@@ -19,5 +19,5 @@ class SpeakerForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'nick', 'first_name', 'last_name', 'email', 'send_mail',
+            'nick', 'name', 'email', 'send_mail',
         ]
