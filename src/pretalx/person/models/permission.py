@@ -12,10 +12,15 @@ class EventPermission(models.Model):
         to='person.User',
         related_name='permissions',
         on_delete=models.CASCADE,
+        null=True, blank=True,
     )
     is_orga = models.BooleanField(
         default=True,
         verbose_name=_('Organizes the event'),
+    )
+    invitation_token = models.CharField(
+        max_length=255,
+        null=True, blank=True,
     )
 
     def __str__(self):
