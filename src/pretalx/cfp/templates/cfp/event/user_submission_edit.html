@@ -9,6 +9,7 @@
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
     <form action="" method="post">
+        {% csrf_token %}
         {% bootstrap_form form %}
         {% bootstrap_form qform %}
         {% if can_edit %}
@@ -21,4 +22,28 @@
             </div>
         {% endif %}
     </form>
+    {% if submission.state == "submitted" %}
+        <h3>{% trans "Withdraw submission" %}</h3>
+        <p>
+            {% blocktrans trimmed %}
+                You can click here to withdraw your submission from the selection process.
+            {% endblocktrans %}
+        </p>
+        <div class="row">
+            <div class="col-md-3 offset-md-9">
+                <a href="{% url "cfp:event.user.submission.withdraw" event=request.event.slug id=submission.pk %}"
+                   class="btn pull-right btn-danger btn-block">
+                    {% trans "Withdraw" %}
+                </a>
+            </div>
+        </div>
+    {% elif submission.state == "accepted" or submission.state == "confirmed" %}
+        <h3>{% trans "Cancel submission" %}</h3>
+        <p>
+            {% blocktrans trimmed %}
+                As your submission has been accepted already, please contact the event's organizing team to cancel
+                it.
+            {% endblocktrans %}
+        </p>
+    {% endif %}
 {% endblock %}

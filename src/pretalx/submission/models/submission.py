@@ -22,6 +22,14 @@ class SubmissionStates(Choices):
         (WITHDRAWN, _('withdrawn'))
     ]
 
+    valid_next_states = {
+        SUBMITTED: (REJECTED, WITHDRAWN, ACCEPTED),
+        REJECTED: (ACCEPTED, SUBMITTED),
+        ACCEPTED: (CONFIRMED, CANCELED, REJECTED, SUBMITTED),
+        CONFIRMED: (ACCEPTED, CANCELED),
+        WITHDRAWN: (SUBMITTED,)
+    }
+
 
 class Submission(models.Model):
     code = models.CharField(

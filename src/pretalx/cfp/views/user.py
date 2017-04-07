@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DetailView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
@@ -17,6 +17,28 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
 
     def get_queryset(self):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
+
+
+class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
+    template_name = 'cfp/event/user_submission_withdraw.html'
+    model = Submission
+    context_object_name = "submission"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.state = SubmissionStates.WITHDRAWN
+        self.object.save()
+        messages.success(self.request, _('Your submission has been withdrawn.'))
+        return redirect('cfp:event.user.submissions', event=self.request.event.slug)
+
+    def get_object(self, queryset=None):
+        try:
+            return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
+                speakers__in=[self.request.user],
+                pk=self.kwargs.get('id')
+            )
+        except Submission.DoesNotExist:
+            raise Http404()
 
 
 class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):

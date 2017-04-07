@@ -1,0 +1,32 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Your submission" %} :: {{ request.event }}{% endblock %}
+{% block content %}
+<h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+<p>
+    {% trans "Current state of your submission:" %}
+    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <h3>{% trans "Withdraw submission" %}</h3>
+    <p>
+        {% blocktrans trimmed %}
+            Do you really want to withdraw your submission?
+        {% endblocktrans %}
+    </p>
+    <div class="alert alert-danger">
+        <button type="submit"
+           class="btn pull-right btn-danger">
+            {% trans "Withdraw" %}
+        </button>
+        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.pk %}"
+           class="btn pull-right btn-link">
+            {% trans "Go back" %}
+        </a>
+        {% trans "You will not be able to revert this action." %}
+        <div class="clearfix"></div>
+    </div>
+</form>
+{% endblock %}
