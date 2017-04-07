@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German')], default='en-us', max_length=32),
+            field=models.CharField(choices=[('en', 'English'), ('de', 'German')], default='en', max_length=32),
         ),
         migrations.AddField(
             model_name='event',
             name='locale_array',
-            field=models.TextField(default='en-us'),
+            field=models.TextField(default='en'),
         ),
     ]
