@@ -60,7 +60,6 @@ ALLOWED_HOSTS = ['*']
 LANGUAGES = [
     ('en', _('English')),
     ('de', _('German')),
-    ('it', _('Italian')),
 ]
 LANGUAGE_CODE = 'en'
 
