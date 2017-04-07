@@ -36,6 +36,10 @@ orga_urls = [
     url('^event/(?P<event>\w+)/speakers/', speaker.SpeakerList.as_view(), name='speakers.list'),
 
     url('^event/(?P<event>\w+)/settings/edit/', settings.EventDetail.as_view(), name='settings.event.edit'),
+    url('^event/(?P<event>\w+)/settings/team/delete/(?P<pk>[0-9]+)', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
+    url('^event/(?P<event>\w+)/settings/team/add/', settings.EventTeamInvite.as_view(), name='settings.team.add'),
+    url('^event/(?P<event>\w+)/settings/team/retract/(?P<pk>[0-9]+)', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
+    url('^event/(?P<event>\w+)/settings/team/', settings.EventTeam.as_view(), name='settings.team.view'),
     url('^event/(?P<event>\w+)/settings/', settings.EventDetail.as_view(), name='settings.event.view'),
 
     url('^event/(?P<event>\w+)/$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),

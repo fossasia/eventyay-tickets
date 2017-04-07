@@ -7,7 +7,7 @@
     {% if request.event %}
         <ul class="nav nav-pills">
           <li class="nav-item">
-            <a 
+            <a
               class="nav-link {% if "settings.event" in url_name %}active{% endif %}"
               href="{% url "orga:settings.event.view" event=request.event.slug %}"
             >
@@ -15,11 +15,19 @@
                     </a>
           </li>
           <li class="nav-item">
+            <a
+              class="nav-link {% if "settings.team" in url_name %}active{% endif %}"
+              href="{% url "orga:settings.team.view" event=request.event.slug %}"
+            >
+                {% trans "Team" %}
+            </a>
+          </li>
+          <li class="nav-item">
               <a
                 class="nav-link {% if "settings.email" in url_name %}active{% endif %}"
               >
                 {% trans "E-mail" %}
-                    </a>
+              </a>
           </li>
         </ul>
     {% endif %}

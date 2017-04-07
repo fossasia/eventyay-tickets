@@ -1,0 +1,39 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block settings_content %}
+
+<div>
+    <h4>{{ team|length }} {% trans "Team Members" %}</h4>
+    <ul>
+        {% for member in team %}
+            <li>
+                {{ member.get_short_name }}
+                {% if member != request.user or team|length > 1 %}
+                    <a href="{% url "orga:settings.team.delete" event=request.event.slug pk=member.pk %}" class="btn btn-sm btn-secondary">
+                        <span class="fa fa-times"></span>
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        <li><form method="post" action="{% url "orga:settings.team.add" event=request.event.slug %}">
+            <input type="text" name="email" />
+            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-check"></span></button>
+        </form></li>
+    </ul>
+
+    {% if pending %}
+        <h4>{{ pending|length }} {% trans "Pending Invitations" %}</h4>
+        <ul>
+            {% for email in pending %}
+                <li>
+                    {{ email.invitation_email }}
+                    <a href="{% url "orga:settings.team.retract" event=request.event.slug pk=email.pk %}" class="btn btn-sm btn-secondary">
+                        <span class="fa fa-times"></span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

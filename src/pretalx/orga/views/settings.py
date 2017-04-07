@@ -1,15 +1,19 @@
+import string
+
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
+from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
-from pretalx.person.models import User
+from pretalx.person.models import EventPermission, User
 
 
 class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -41,3 +45,54 @@ class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         messages.success(self.request, 'Yay!')
         ret = super().form_valid(form)
         return ret
+
+
+class EventTeam(OrgaPermissionRequired, TemplateView):
+    template_name = 'orga/settings/team.html'
+
+    def get_object(self):
+        return Event.objects.get(slug=self.kwargs.get('event'))
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        event = self.get_object()
+        ctx['team'] = User.objects.filter(
+            permissions__is_orga=True,
+            permissions__event=event,
+        )
+        ctx['pending'] = EventPermission.objects.filter(event=event, user__isnull=True, is_orga=True)
+        return ctx
+
+
+class EventTeamInvite(OrgaPermissionRequired, View):
+
+    def post(self, request, event):
+        email = request.POST.get('email')
+        event = self.request.event
+        invitation_token = get_random_string(
+            allowed_chars=string.ascii_lowercase + string.digits, length=20
+        )
+        EventPermission.objects.create(
+            event=event,
+            invitation_email=email,
+            invitation_token=invitation_token,
+            is_orga=True,
+        )
+        return redirect(reverse(
+            'orga:settings.team.view',
+            kwargs={'event': event.slug}
+        ))
+
+
+class EventTeamRetract(OrgaPermissionRequired, View):
+
+    def dispatch(self, request, event, pk):
+        EventPermission.objects.filter(event__slug=event, pk=pk).delete()
+        return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
+
+
+class EventTeamDelete(OrgaPermissionRequired, View):
+
+    def dispatch(self, request, event, pk):
+        EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_orga=False)
+        return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
