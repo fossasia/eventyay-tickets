@@ -22,6 +22,9 @@ class EventPermission(models.Model):
         max_length=255,
         null=True, blank=True,
     )
+    invitation_email = models.EmailField(
+        null=True, blank=True,
+    )
 
     def __str__(self):
         return '{} on {}'.format(self.user, self.event)
