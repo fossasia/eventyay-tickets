@@ -1,0 +1,14 @@
+{% load i18n %}
+{% if state == 'submitted' %}
+    <span class="fa fa-inbox"></span> {% trans "submitted" %}
+{% elif state == 'rejected' %}
+    <span class="fa fa-ban"></span> {% trans "not accepted" %}
+{% elif state == 'accepted' %}
+    <span class="fa fa-check-circle-o"></span> {% trans "accepted" %}
+{% elif state == 'confirmed' %}
+    <span class="fa fa-check-circle"></span> {% trans "confirmed" %}
+{% elif state == 'canceled' %}
+    <span class="fa fa-times-circle"></span> {% trans "canceled" %}
+{% elif state == 'withdrawn' %}
+    <span class="fa fa-times-circle"></span> {% trans "withdrawn" %}
+{% endif %}

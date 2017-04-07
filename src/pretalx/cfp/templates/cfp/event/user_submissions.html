@@ -16,24 +16,12 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="#">
+                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}">
                             {{ submission.title }}
                         </a>
                     </td>
                     <td>
-                        {% if submission.state == 'submitted' %}
-                            <span class="fa fa-inbox"></span> {% trans "submitted" %}
-                        {% elif submission.state == 'rejected' %}
-                            <span class="fa fa-ban"></span> {% trans "not accepted" %}
-                        {% elif submission.state == 'accepted' %}
-                            <span class="fa fa-check-circle-o"></span> {% trans "accepted" %}
-                        {% elif submission.state == 'confirmed' %}
-                            <span class="fa fa-check-circle"></span> {% trans "confirmed" %}
-                        {% elif submission.state == 'canceled' %}
-                            <span class="fa fa-times-circle"></span> {% trans "canceled" %}
-                        {% elif submission.state == 'withdrawn' %}
-                            <span class="fa fa-times-circle"></span> {% trans "withdrawn" %}
-                        {% endif %}
+                        {% include "cfp/event/fragment_state.html" with state=submission.state %}
                     </td>
                     <td class="text-right">
                         <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}"
