@@ -1,0 +1,15 @@
+{% extends "cfp/event/submission_base.html" %}
+{% load i18n %}
+{% load rich_text %}
+{% load bootstrap4 %}
+{% block title %}{{ request.event }}{% endblock %}
+{% block inner %}
+    <h2>{% trans "Tell us something about yourself!" %}</h2>
+    <p>
+        {% blocktrans trimmed %}
+            This information will be publicly displayed next to your talk - you can always edit it
+            later, too.
+        {% endblocktrans %}
+    </p>
+    {% bootstrap_form wizard.form %}
+{% endblock %}

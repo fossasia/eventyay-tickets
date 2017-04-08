@@ -7,7 +7,7 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.person.forms import UserForm
+from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.models import (
     Answer, Question, QuestionVariant,
@@ -18,12 +18,14 @@ FORMS = [
     ("info", InfoForm),
     ("questions", QuestionsForm),
     ("user", UserForm),
+    ("profile", SpeakerProfileForm),
 ]
 
 TEMPLATES = {
     "info": "cfp/event/submission_info.html",
     "questions": "cfp/event/submission_questions.html",
     "user": "cfp/event/submission_user.html",
+    "profile": "cfp/event/submission_profile.html",
 }
 
 
@@ -59,6 +61,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         kwargs = super().get_form_kwargs(step)
         if step == 'questions':
             kwargs['event'] = self.request.event
+        if step == 'profile':
+            kwargs['event'] = self.request.event
+            kwargs['user'] = self.request.user
         return kwargs
 
     def get_template_names(self):
@@ -85,6 +90,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         form_dict['info'].save()
         form_dict['info'].instance.speakers.add(user)
         sub = form_dict['info'].instance
+        form_dict['profile'].save()
 
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
