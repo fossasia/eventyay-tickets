@@ -86,6 +86,7 @@ class SpeakerProfileForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
         initial = kwargs.pop('initial', dict())
+        initial['name'] = self.user.name
         kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
@@ -100,4 +101,4 @@ class SpeakerProfileForm(forms.ModelForm):
 
     class Meta:
         model = SpeakerProfile
-        fields = ('name', 'biography')
+        fields = ('biography', )

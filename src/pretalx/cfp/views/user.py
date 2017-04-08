@@ -8,11 +8,27 @@ from django.views.generic import FormView, ListView, UpdateView, DetailView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
+from pretalx.person.forms import SpeakerProfileForm
 from pretalx.submission.models import Submission, Answer, SubmissionStates
 
 
 class ProfileView(LoggedInEventPageMixin, FormView):
-    template_name = 'cfp/event/'
+    form_class = SpeakerProfileForm
+    template_name = 'cfp/event/user_profile.html'
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return redirect('cfp:event.user.view', event=self.request.event.slug)
+
+    def get_form_kwargs(self):
+        ret = super().get_form_kwargs()
+        ret.update({
+            'user': self.request.user,
+            'event': self.request.event,
+        })
+        return ret
+
 
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = 'cfp/event/user_submissions.html'

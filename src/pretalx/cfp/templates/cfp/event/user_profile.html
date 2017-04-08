@@ -1,0 +1,22 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Your Profile" %} :: {{ request.event }}{% endblock %}
+{% block content %}
+    <h2>{% trans "Your Profile:" %}</h2>
+    <p>
+        {% trans "This data will be displayed next to your talk slots in the schedule." %}
+    </p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.name %}
+        {% bootstrap_field form.biography %}
+        <div class="row">
+            <div class="col-md-3 offset-md-9">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

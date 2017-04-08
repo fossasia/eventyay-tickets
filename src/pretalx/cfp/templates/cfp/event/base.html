@@ -31,7 +31,7 @@
                         </a> &middot;
                         <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
                     </div>
-                    {% url "cfp:event.start" event=request.event.slug as userurl %}
+                    {% url "cfp:event.user.view" event=request.event.slug as userurl %}
                     {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
                         You are logged in as <a {{ attr }}>{{ nick }}</a>.
                     {% endblocktrans %}
