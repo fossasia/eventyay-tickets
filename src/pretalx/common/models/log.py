@@ -34,3 +34,6 @@ class ActivityLog(models.Model):
     data = models.TextField(
         null=True, blank=True
     )
+
+    class Meta:
+        ordering = ('-timestamp', )
