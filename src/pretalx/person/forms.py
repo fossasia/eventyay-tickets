@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile, User
 
 
 class UserForm(forms.Form):
@@ -75,3 +75,29 @@ class UserForm(forms.Form):
             data['user_id'] = user.pk
 
         return data['user_id']
+
+
+class SpeakerProfileForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100, label=_('Name (public)')
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.event = kwargs.pop('event', None)
+        initial = kwargs.pop('initial', dict())
+        kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
+        kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        name = self.cleaned_data.pop('name')
+        if name:
+            self.user.name = name
+            self.user.save(update_fields=['name'])
+        self.cleaned_data.update({'user': self.user, 'event': self.event})
+        super().save()
+
+    class Meta:
+        model = SpeakerProfile
+        fields = ('name', 'biography')
