@@ -4,15 +4,42 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, ListView, UpdateView, DetailView
+from django.views.generic import FormView, ListView, UpdateView, DetailView, TemplateView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
-from pretalx.person.forms import SpeakerProfileForm
+from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.models import Submission, Answer, SubmissionStates
 
 
-class ProfileView(LoggedInEventPageMixin, FormView):
+class ProfileView(LoggedInEventPageMixin, TemplateView):
+    template_name = 'cfp/event/user_profile.html'
+
+    def get_context_data(self, event):
+        ctx = super().get_context_data()
+        ctx['login_form'] = LoginInfoForm(user=self.request.user)
+        ctx['profile_form'] = SpeakerProfileForm(user=self.request.user, event=self.request.event)
+        return ctx
+
+
+class LoginChange(LoggedInEventPageMixin, FormView):
+    form_class = LoginInfoForm
+    template_name = 'cfp/event/user_profile.html'
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return redirect('cfp:event.user.view', event=self.request.event.slug)
+
+    def get_form_kwargs(self):
+        ret = super().get_form_kwargs()
+        ret.update({
+            'user': self.request.user,
+        })
+        return ret
+
+
+class ProfileChange(LoggedInEventPageMixin, FormView):
     form_class = SpeakerProfileForm
     template_name = 'cfp/event/user_profile.html'
 

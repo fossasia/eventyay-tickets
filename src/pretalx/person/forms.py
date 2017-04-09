@@ -102,3 +102,30 @@ class SpeakerProfileForm(forms.ModelForm):
     class Meta:
         model = SpeakerProfile
         fields = ('biography', )
+
+
+class LoginInfoForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput,
+                               label=_('Password'),
+                               required=False)
+    password_repeat = forms.CharField(widget=forms.PasswordInput,
+                                      label=_('Password (again)'),
+                                      required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        kwargs['instance'] = user
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        password = self.cleaned_data.get('password')
+        if not password == self.cleaned_data.get('password_repeat'):
+            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
+        super().save()
+        if password:
+            self.user.set_password(password)
+            self.user.save()
+
+    class Meta:
+        model = User
+        fields = ('email', )
