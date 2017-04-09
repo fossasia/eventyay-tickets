@@ -9,10 +9,7 @@ from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
-from pretalx.submission.models import (
-    Answer, Question, QuestionVariant,
-)
-
+from pretalx.submission.models import Answer, Question, QuestionVariant
 
 FORMS = [
     ("info", InfoForm),

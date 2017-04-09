@@ -1,4 +1,3 @@
-from django import forms
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms import ReadOnlyFlag

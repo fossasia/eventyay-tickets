@@ -1,7 +1,8 @@
 from decimal import Decimal
+
 from django import forms
 
-from pretalx.submission.models import Submission, QuestionVariant
+from pretalx.submission.models import QuestionVariant, Submission
 
 
 class InfoForm(forms.ModelForm):
@@ -94,5 +95,3 @@ class QuestionsForm(forms.Form):
             field.question = q
             field.answer = initial_obj
             self.fields['question_%s' % q.id] = field
-
-

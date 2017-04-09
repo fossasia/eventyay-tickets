@@ -121,7 +121,6 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'person.User'
 LOGIN_URL = '/login'  # global login does not yet exist
-#LOGIN_URL_CONTROL = 'auth.login'
 
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
@@ -219,12 +218,12 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['file', 'console',],
+            'handlers': ['file', 'console'],
             'level': loglevel,
             'propagate': True,
         },
         'django.security': {
-            'handlers': ['file', 'console',],
+            'handlers': ['file', 'console'],
             'level': loglevel,
             'propagate': True,
         },

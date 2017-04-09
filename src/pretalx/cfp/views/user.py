@@ -4,12 +4,14 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, ListView, UpdateView, DetailView, TemplateView
+from django.views.generic import (
+    DetailView, FormView, ListView, TemplateView, UpdateView,
+)
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
-from pretalx.submission.models import Submission, Answer, SubmissionStates
+from pretalx.submission.models import Answer, Submission, SubmissionStates
 
 
 class ProfileView(LoggedInEventPageMixin, TemplateView):
