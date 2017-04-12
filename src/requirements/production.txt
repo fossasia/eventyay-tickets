@@ -8,3 +8,4 @@ Markdown
 bleach
 django-formtools==2.*
 django-i18nfield==1.0.*
+hierarkey==1.0.*

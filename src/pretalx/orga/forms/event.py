@@ -1,8 +1,10 @@
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.timezone import get_current_timezone_name
 from django.utils.translation import ugettext_lazy as _
-from i18nfield.forms import I18nModelForm
+from hierarkey.forms import HierarkeyForm
+from i18nfield.forms import I18nModelForm, I18nFormMixin
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.event.models import Event
@@ -64,3 +66,55 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             'name', 'slug', 'subtitle', 'is_public', 'date_from', 'date_to',
             'timezone', 'email', 'color', 'permissions', 'locale'
         ]
+
+
+class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+    mail_from = forms.EmailField(
+        label=_("Sender address"),
+        help_text=_("Sender address for outgoing emails")
+    )
+    smtp_use_custom = forms.BooleanField(
+        label=_("Use custom SMTP server"),
+        help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
+        required=False
+    )
+    smtp_host = forms.CharField(
+        label=_("Hostname"),
+        required=False
+    )
+    smtp_port = forms.IntegerField(
+        label=_("Port"),
+        required=False
+    )
+    smtp_username = forms.CharField(
+        label=_("Username"),
+        required=False
+    )
+    smtp_password = forms.CharField(
+        label=_("Password"),
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+        }),
+    )
+    smtp_use_tls = forms.BooleanField(
+        label=_("Use STARTTLS"),
+        help_text=_("Commonly enabled on port 587."),
+        required=False
+    )
+    smtp_use_ssl = forms.BooleanField(
+        label=_("Use SSL"),
+        help_text=_("Commonly enabled on port 465."),
+        required=False
+    )
+
+    def clean(self):
+        data = self.cleaned_data
+        if not data.get('smtp_password') and data.get('smtp_username'):
+            # Leave password unchanged if the username is set and the password field is empty.
+            # This makes it impossible to set an empty password as long as a username is set, but
+            # Python's smtplib does not support password-less schemes anyway.
+            data['smtp_password'] = self.initial.get('smtp_password')
+
+        if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
+            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))

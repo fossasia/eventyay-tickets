@@ -1,11 +1,17 @@
 import pytz
 from django.conf import settings
+from django.core.mail import get_connection
+from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
+from pretalx.common.mail import CustomSMTPBackend
+from pretalx.common.models.settings import settings_hierarkey
 
+
+@settings_hierarkey.add()
 class Event(models.Model):
     name = I18nCharField(
         max_length=200,
@@ -84,3 +90,15 @@ class Event(models.Model):
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return CfP.objects.create(event=self, default_type=sub_type)
+
+    def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
+        if self.settings.smtp_use_custom or force_custom:
+            return CustomSMTPBackend(host=self.settings.smtp_host,
+                                     port=self.settings.smtp_port,
+                                     username=self.settings.smtp_username,
+                                     password=self.settings.smtp_password,
+                                     use_tls=self.settings.smtp_use_tls,
+                                     use_ssl=self.settings.smtp_use_ssl,
+                                     fail_silently=False)
+        else:
+            return get_connection(fail_silently=False)

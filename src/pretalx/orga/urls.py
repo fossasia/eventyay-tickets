@@ -44,6 +44,8 @@ orga_urls = [
 
         url('^settings$', settings.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/edit$', settings.EventDetail.as_view(), name='settings.event.edit'),
+        url('^settings/mail$', settings.EventMailSettings.as_view(), name='settings.mail.view'),
+        url('^settings/mail/edit$', settings.EventMailSettings.as_view(), name='settings.mail.edit'),
         url('^settings/team$', settings.EventTeam.as_view(), name='settings.team.view'),
         url('^settings/team/add$', settings.EventTeamInvite.as_view(), name='settings.team.add'),
         url('^settings/team/delete/(?P<pk>[0-9]+)$', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
