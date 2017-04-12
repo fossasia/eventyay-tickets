@@ -69,6 +69,9 @@ class User(AbstractBaseUser):
         verbose_name='Receive mails from pretalx?',
     )
 
+    pw_reset_token = models.CharField(null=True, max_length=160)
+    pw_reset_time = models.DateTimeField(null=True)
+
     def __str__(self) -> str:
         if self.email:
             return f'{self.nick} ({self.email})'

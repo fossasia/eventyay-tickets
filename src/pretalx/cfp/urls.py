@@ -5,6 +5,8 @@ from .views import auth, event, user, wizard
 cfp_urls = [
     url('^(?P<event>\w+)/$', event.EventStartpage.as_view(), name='event.start'),
     url('^(?P<event>\w+)/logout$', auth.LogoutView.as_view(), name='event.logout'),
+    url('^(?P<event>\w+)/reset$', auth.ResetView.as_view(), name='event.reset'),
+    url('^(?P<event>\w+)/reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='event.recover'),
     url('^(?P<event>\w+)/login', auth.LoginView.as_view(), name='event.login'),
 
     url('^(?P<event>\w+)/submit/$',

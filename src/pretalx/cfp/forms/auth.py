@@ -36,3 +36,40 @@ class LoginForm(forms.Form):
 
         data['user'] = user
         return data
+
+
+class ResetForm(forms.Form):
+    login_username = forms.CharField(max_length=60,
+                                     label=_('Username or email address'),
+                                     required=True)
+
+    def clean(self):
+        data = super().clean()
+
+        try:
+            if '@' in data.get('login_username'):
+                user = User.objects.get(email=data.get('login_username'))
+            else:
+                user = User.objects.get(nick=data.get('login_username'))
+        except User.DoesNotExist:
+            raise ValidationError(_('We are unable to find a user matching this information. Sorry!'))
+
+        data['user'] = user
+        return data
+
+
+class RecoverForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput,
+                               label=_('New password'),
+                               required=False)
+    password_repeat = forms.CharField(widget=forms.PasswordInput,
+                                      label=_('New password (again)'),
+                                      required=False)
+
+    def clean(self):
+        data = super().clean()
+
+        if data.get('password') != data.get('password_repeat'):
+            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
+
+        return data

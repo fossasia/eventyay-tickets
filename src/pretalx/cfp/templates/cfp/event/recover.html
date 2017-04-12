@@ -1,0 +1,22 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Password reset" %} :: {{ request.event }}{% endblock %}
+{% block content %}
+    <h2>{% trans "OK, this looks good!" %}</h2>
+    <p>
+        {% blocktrans trimmed %}
+            Now you just need to decide for your new password and then we are ready to go.
+        {% endblocktrans %}
+    </p>
+    <form action="" method="post">
+        {% bootstrap_form_errors form %}
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                {% bootstrap_field form.password layout='inline' %}
+                {% bootstrap_field form.password_repeat layout='inline' %}
+                <button type="submit" class="btn btn-block btn-primary">{% trans "Save this!" %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
