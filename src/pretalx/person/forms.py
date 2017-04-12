@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -92,13 +93,14 @@ class SpeakerProfileForm(forms.ModelForm):
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
 
-    def save(self):
-        name = self.cleaned_data.pop('name')
+    def save(self, **kwargs):
+        name = self.cleaned_data.get('name')
         if name:
             self.user.name = name
             self.user.save(update_fields=['name'])
-        self.cleaned_data.update({'user': self.user, 'event': self.event})
-        super().save()
+        self.instance.event = self.event
+        self.instance.user = self.user
+        super().save(**kwargs)
 
     class Meta:
         model = SpeakerProfile
@@ -106,12 +108,28 @@ class SpeakerProfileForm(forms.ModelForm):
 
 
 class LoginInfoForm(forms.ModelForm):
+    error_messages = {
+        'pw_current_wrong': _("The current password you entered was not correct."),
+    }
+
+    old_password = forms.CharField(widget=forms.PasswordInput,
+                                   label=_('Password (current)'),
+                                   required=False)
     password = forms.CharField(widget=forms.PasswordInput,
-                               label=_('Password'),
+                               label=_('Password (new)'),
                                required=False)
     password_repeat = forms.CharField(widget=forms.PasswordInput,
                                       label=_('Password (again)'),
                                       required=False)
+
+    def clean_old_password(self):
+        old_pw = self.cleaned_data.get('old_password')
+        if old_pw and not check_password(old_pw, self.user.password):
+            raise forms.ValidationError(
+                self.error_messages['pw_current_wrong'],
+                code='pw_current_wrong',
+            )
+        return old_pw
 
     def __init__(self, user, *args, **kwargs):
         self.user = user

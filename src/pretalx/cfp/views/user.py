@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
-    DetailView, FormView, ListView, TemplateView, UpdateView,
+    DetailView, ListView, TemplateView, UpdateView,
 )
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
@@ -17,46 +17,43 @@ from pretalx.submission.models import Answer, Submission, SubmissionStates
 class ProfileView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_profile.html'
 
+    @cached_property
+    def login_form(self):
+        return LoginInfoForm(user=self.request.user,
+                             data=(self.request.POST
+                                   if self.request.method == "POST"
+                                      and self.request.POST.get("form") == "login"
+                                   else None))
+
+    @cached_property
+    def profile_form(self):
+        return SpeakerProfileForm(user=self.request.user,
+                                  event=self.request.event,
+                                  data=(self.request.POST
+                                        if self.request.method == "POST"
+                                           and self.request.POST.get("form") == "profile"
+                                        else None))
+
     def get_context_data(self, event):
         ctx = super().get_context_data()
-        ctx['login_form'] = LoginInfoForm(user=self.request.user)
-        ctx['profile_form'] = SpeakerProfileForm(user=self.request.user, event=self.request.event)
+        ctx['login_form'] = self.login_form
+        ctx['profile_form'] = self.profile_form
         return ctx
 
+    def post(self, request, *args, **kwargs):
+        if self.login_form.is_bound:
+            if self.login_form.is_valid():
+                self.login_form.save()
+                messages.success(self.request, _('Your changes have been saved.'))
+                return redirect('cfp:event.user.view', event=self.request.event.slug)
+        elif self.profile_form.is_bound:
+            if self.profile_form.is_valid():
+                self.profile_form.save()
+                messages.success(self.request, _('Your changes have been saved.'))
+                return redirect('cfp:event.user.view', event=self.request.event.slug)
 
-class LoginChange(LoggedInEventPageMixin, FormView):
-    form_class = LoginInfoForm
-    template_name = 'cfp/event/user_profile.html'
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
-        return redirect('cfp:event.user.view', event=self.request.event.slug)
-
-    def get_form_kwargs(self):
-        ret = super().get_form_kwargs()
-        ret.update({
-            'user': self.request.user,
-        })
-        return ret
-
-
-class ProfileChange(LoggedInEventPageMixin, FormView):
-    form_class = SpeakerProfileForm
-    template_name = 'cfp/event/user_profile.html'
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
-        return redirect('cfp:event.user.view', event=self.request.event.slug)
-
-    def get_form_kwargs(self):
-        ret = super().get_form_kwargs()
-        ret.update({
-            'user': self.request.user,
-            'event': self.request.event,
-        })
-        return ret
+        messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
+        return super().get(request, *args, **kwargs)
 
 
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
