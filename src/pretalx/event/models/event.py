@@ -7,7 +7,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mail import CustomSMTPBackend
 from pretalx.common.models.settings import settings_hierarkey
 
 
@@ -92,6 +91,8 @@ class Event(models.Model):
         return CfP.objects.create(event=self, default_type=sub_type)
 
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
+        from pretalx.common.mail import CustomSMTPBackend
+
         if self.settings.smtp_use_custom or force_custom:
             return CustomSMTPBackend(host=self.settings.smtp_host,
                                      port=self.settings.smtp_port,

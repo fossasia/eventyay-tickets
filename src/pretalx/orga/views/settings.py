@@ -9,6 +9,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
+from pretalx.common.mail import mail
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
@@ -148,6 +149,7 @@ class InvitationView(FormView):
         ctx['invitation'] = EventPermission.objects.get(
             invitation_token=self.kwargs.get('code'),
         )
+
         return ctx
 
     def form_valid(self, form):

@@ -257,3 +257,6 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# For now, to ease development
+CELERY_TASK_ALWAYS_EAGER = True
