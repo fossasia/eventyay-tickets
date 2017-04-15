@@ -81,7 +81,7 @@ class UserForm(forms.Form):
 
 class SpeakerProfileForm(forms.ModelForm):
     name = forms.CharField(
-        max_length=100, label=_('Name (public)')
+        max_length=100, label=_('Name')
     )
 
     def __init__(self, *args, **kwargs):

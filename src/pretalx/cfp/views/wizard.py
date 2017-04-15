@@ -61,7 +61,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['event'] = self.request.event
         if step == 'profile':
             kwargs['event'] = self.request.event
-            kwargs['user'] = self.request.user
+            kwargs['user'] = User.objects.get(pk=self.get_cleaned_data_for_step('user')['user_id'])
+
         return kwargs
 
     def get_template_names(self):

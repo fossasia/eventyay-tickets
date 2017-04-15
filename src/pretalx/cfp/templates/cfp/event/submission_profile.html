@@ -11,5 +11,8 @@
             later, too.
         {% endblocktrans %}
     </p>
-    {% bootstrap_form wizard.form %}
+
+    {% bootstrap_form_errors wizard.form %}
+    {% bootstrap_field wizard.form.name %}
+    {% bootstrap_field wizard.form.biography %}
 {% endblock %}
