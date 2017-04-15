@@ -8,11 +8,10 @@ from i18nfield.forms import I18nModelForm, I18nFormMixin
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.event.models import Event
-from pretalx.person.models import EventPermission, User
+from pretalx.person.models import User
 
 
 class EventForm(ReadOnlyFlag, I18nModelForm):
-    permissions = forms.ModelMultipleChoiceField(queryset=User.objects.all())
     locales = forms.MultipleChoiceField(
         label=_('Active languages'),
         choices=settings.LANGUAGES,
@@ -47,24 +46,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.instance.locale_array = ",".join(self.cleaned_data['locales'])
         return super().save(*args, **kwargs)
 
-    def _save_m2m(self):
-        new_users = set(self.cleaned_data['permissions'])
-        old_users = set(User.objects.filter(permissions__event=self.instance, permissions__is_orga=True))
-
-        to_be_removed = old_users - new_users
-        to_be_added = new_users - old_users
-
-        for user in to_be_removed:
-            EventPermission.objects.get(user=user, event=self.instance, is_orga=True).delete()
-
-        for user in to_be_added:
-            EventPermission.objects.create(user=user, event=self.instance, is_orga=True)
-
     class Meta:
         model = Event
         fields = [
             'name', 'slug', 'subtitle', 'is_public', 'date_from', 'date_to',
-            'timezone', 'email', 'color', 'permissions', 'locale'
+            'timezone', 'email', 'color', 'locale'
         ]
 
 
