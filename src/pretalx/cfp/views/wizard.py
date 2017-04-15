@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -108,10 +109,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     answer.answer = value
                 answer.save()
 
-        if not self.request.user.is_authenticated:
-            login(self.request, user)
-
-        # TODO: Redirect to detail page of submission
-        return redirect(reverse('cfp:event.thanks', kwargs={
+        messages.success(self.request, 'Your talk has been submitted successfully!')
+        return redirect(reverse('cfp:event.user.submissions', kwargs={
             'event': self.request.event.slug
         }))
