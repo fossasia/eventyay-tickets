@@ -49,9 +49,6 @@ class Submission(models.Model):
     title = models.CharField(
         max_length=200,
     )
-    subtitle = models.CharField(
-        max_length=300, null=True, blank=True
-    )
     submission_type = models.ForeignKey(  # Reasonable default must be set in form/view
         to='submission.SubmissionType',
         related_name='submissions',
