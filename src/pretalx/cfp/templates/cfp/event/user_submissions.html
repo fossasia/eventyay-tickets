@@ -24,20 +24,24 @@
                         {% include "cfp/event/fragment_state.html" with state=submission.state %}
                     </td>
                     <td class="text-right">
-                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}"
-                                class="btn btn-sm btn-secondary">
-                            <span class="fa fa-pencil"></span>
-                        </a>
+                        {% if submission.editable %}
+                            <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}"
+                                    class="btn btn-sm btn-secondary">
+                                <span class="fa fa-pencil"></span>
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         <p>
-            <a class="btn btn-success btn-lg"
-               href="{% url "cfp:event.submit" event=request.event.slug %}">
-                {% trans "Create a new submission" %}
-            </a>
+            {% if request.event.cfp.is_open %}
+                <a class="btn btn-success btn-lg"
+                   href="{% url "cfp:event.submit" event=request.event.slug %}">
+                    {% trans "Create a new submission" %}
+                </a>
+            {% endif %}
         </p>
     {% else %}
         <p class="text-center">
@@ -46,14 +50,16 @@
         <p class="text-center">
             {% trans "If you did, maybe you used a different account? Check your emails!" %}
         </p>
-        <p class="text-center">
-            {% trans "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
-        </p>
-        <p class="text-center">
-            <a class="btn btn-success btn-lg btn-block"
-                    href="{% url "cfp:event.submit" event=request.event.slug %}">
-                {% trans "Submit something now!" %}
-            </a>
-        </p>
+        {% if request.event.cfp.is_open %}
+            <p class="text-center">
+                {% trans "If you did not, why not go ahead and create a proposal now? We'd love to hear from you!" %}
+            </p>
+            <p class="text-center">
+                <a class="btn btn-success btn-lg btn-block"
+                        href="{% url "cfp:event.submit" event=request.event.slug %}">
+                    {% trans "Submit something now!" %}
+                </a>
+            </p>
+        {% endif %}
     {% endif %}
 {% endblock %}

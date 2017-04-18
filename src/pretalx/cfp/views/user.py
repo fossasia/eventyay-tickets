@@ -126,9 +126,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
 
     @property
     def can_edit(self):
-        return self.object.state in (
-            SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED, SubmissionStates.SUBMITTED
-        )
+        return self.object.editable
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

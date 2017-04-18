@@ -2,14 +2,18 @@
 {% load i18n %}
 {% load rich_text %}
 {% block title %}{{ request.event }}{% endblock %}
-{% block content %}
-    <h2>{{ request.event.get_cfp.headline|default:"" }}</h2>
-    {{ request.event.get_cfp.text|rich_text }}
+{% block content %}{% with cfp=request.event.get_cfp %}
+    <h2>{{ cfp.headline|default:"" }}</h2>
+    {{ cfp.text|rich_text }}
     <div class="row mb-4">
         <div class="col-md-6">
-            <a class="btn btn-success btn-lg btn-block"
+            <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
                href="{% url "cfp:event.submit" event=request.event.slug %}">
-                {% trans "Submit a proposal" %}
+                {% if cfp.is_open %}
+                    {% trans "Submit a proposal" %}
+                {% else %}
+                    {% trans "Submissions are closed" %}
+                {% endif %}
             </a>
         </div>
         <div class="col-md-6">
@@ -18,4 +22,5 @@
             </a>
         </div>
     </div>
+{% endwith %}
 {% endblock %}
