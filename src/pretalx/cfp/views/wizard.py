@@ -57,12 +57,14 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step=None):
         kwargs = super().get_form_kwargs(step)
-        if step == 'questions':
+        if step in ['info', 'profile', 'questions']:
             kwargs['event'] = self.request.event
         if step == 'profile':
-            kwargs['event'] = self.request.event
-            kwargs['user'] = User.objects.get(pk=self.get_cleaned_data_for_step('user')['user_id'])
-
+            user_data = self.get_cleaned_data_for_step('user')
+            if user_data:
+                kwargs['user'] = User.objects.get(pk=user_data['user_id'])
+            else:
+                kwargs['user'] = self.request.user
         return kwargs
 
     def get_template_names(self):
