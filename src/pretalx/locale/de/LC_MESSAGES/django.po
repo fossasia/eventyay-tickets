@@ -1,0 +1,1007 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-18 16:50-0500\n"
+"PO-Revision-Date: 2017-04-19 00:23+0200\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: pretalx/cfp/forms/auth.py:11 pretalx/cfp/forms/auth.py:43
+#: pretalx/person/forms.py:12
+msgid "Username or email address"
+msgstr "Username oder E-Mail_Adresse"
+
+#: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:80
+#: pretalx/person/forms.py:15 pretalx/person/forms.py:23
+msgid "Password"
+msgstr "Passwort"
+
+#: pretalx/cfp/forms/auth.py:31 pretalx/person/forms.py:44
+msgid ""
+"No user account matches the entered credentials. Are you sure that you typed "
+"your password correctly?"
+msgstr ""
+"Kein Account passt zu den eingegebenen Daten. Bist du dir sicher, dass du "
+"das Passwort richtig geschrieben hast?"
+
+#: pretalx/cfp/forms/auth.py:35 pretalx/person/forms.py:48
+msgid "Sorry, your account is currently disabled."
+msgstr "Dein Account ist nicht aktiviert."
+
+#: pretalx/cfp/forms/auth.py:55
+msgid "We are unable to find a user matching this information. Sorry!"
+msgstr ""
+"Wir konnten keinen Benutzer finden, der zu den eingegebenen Daten passt."
+
+#: pretalx/cfp/forms/auth.py:63
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: pretalx/cfp/forms/auth.py:66
+msgid "New password (again)"
+msgstr "Neues Passwort (noch mal)"
+
+#: pretalx/cfp/forms/auth.py:73 pretalx/person/forms.py:54
+#: pretalx/person/forms.py:142
+msgid "You entered two different passwords. Please input the same one twice!"
+msgstr ""
+"Du hast zwei unterschiedliche Passwörter eingegeben. Bitte probier es noch "
+"einmal."
+
+#: pretalx/cfp/templates/cfp/event/base.html:30
+msgid "My submissions"
+msgstr "Meine Einreichungen"
+
+#: pretalx/cfp/templates/cfp/event/base.html:32
+msgid "Logout"
+msgstr "Abmelden"
+
+#: pretalx/cfp/templates/cfp/event/base.html:35
+#, python-format
+msgid "You are logged in as <a %(attr)s>%(nick)s</a>."
+msgstr "Du bist als <a %(attr)s>%(nick)s</a> angemeldet."
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:3
+#: pretalx/orga/templates/orga/submission/list.html:37
+#: pretalx/submission/models/submission.py:17
+msgid "submitted"
+msgstr "eingereicht"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:5
+msgid "not accepted"
+msgstr "abgelehnt"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:7
+#: pretalx/orga/templates/orga/submission/list.html:41
+#: pretalx/submission/models/submission.py:19
+msgid "accepted"
+msgstr "angenommen"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:9
+#: pretalx/orga/templates/orga/submission/list.html:43
+#: pretalx/submission/models/submission.py:20
+msgid "confirmed"
+msgstr "bestätigt"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:11
+#: pretalx/submission/models/submission.py:21
+msgid "canceled"
+msgstr "abgesagt"
+
+#: pretalx/cfp/templates/cfp/event/fragment_state.html:13
+#: pretalx/submission/models/submission.py:22
+msgid "withdrawn"
+msgstr "zurückgezogen"
+
+#: pretalx/cfp/templates/cfp/event/index.html:13
+msgid "Submit a proposal"
+msgstr "Einreichung abschicken"
+
+#: pretalx/cfp/templates/cfp/event/index.html:15
+msgid "Submissions are closed"
+msgstr "Der Einreichungszeitraum ist beendet"
+
+#: pretalx/cfp/templates/cfp/event/index.html:21
+msgid "Edit or view your submission"
+msgstr "Einreichungen ansehen/bearbeiten"
+
+#: pretalx/cfp/templates/cfp/event/login.html:4
+msgid "Login"
+msgstr "Login"
+
+#: pretalx/cfp/templates/cfp/event/login.html:6
+msgid "Welcome back!"
+msgstr "Willkommen zurück!"
+
+#: pretalx/cfp/templates/cfp/event/login.html:8
+msgid ""
+"If you do not have an account yet, don't worry, you can create one while you "
+"create your first submission. You don't need one before that."
+msgstr ""
+"Wenn du noch keinen Account hast: keine Sorge, du kannst einen einrichten, "
+"während du deine erste Einreichung schreibst. Davor benötigst du keinen."
+
+#: pretalx/cfp/templates/cfp/event/login.html:14
+msgid ""
+"If you already created a submission for a different event on this server, "
+"you can re-use your account to log in for this event."
+msgstr ""
+"Wenn du schon für eine andere Veranstaltung eine Einreichung auf diesem "
+"Server hast, kannst du deinen Account wiederbenutzen."
+
+#: pretalx/cfp/templates/cfp/event/login.html:25
+#: pretalx/orga/templates/orga/invitation.html:23
+msgid "Log in"
+msgstr "Einloggen"
+
+#: pretalx/cfp/templates/cfp/event/login.html:27
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+#: pretalx/cfp/templates/cfp/event/recover.html:4
+#: pretalx/cfp/templates/cfp/event/reset.html:4
+msgid "Password reset"
+msgstr "Passwort zurücksetzen"
+
+#: pretalx/cfp/templates/cfp/event/recover.html:6
+msgid "OK, this looks good!"
+msgstr "Das sieht doch gut aus."
+
+#: pretalx/cfp/templates/cfp/event/recover.html:8
+msgid ""
+"Now you just need to decide for your new password and then we are ready to "
+"go."
+msgstr ""
+"Jetzt entscheide dich nur noch für ein neues Passwort und wir sind hier "
+"fertig."
+
+#: pretalx/cfp/templates/cfp/event/recover.html:18
+msgid "Save this!"
+msgstr "Speichern"
+
+#: pretalx/cfp/templates/cfp/event/reset.html:6
+msgid "Forgot your password?"
+msgstr "Passwort verlegt?"
+
+#: pretalx/cfp/templates/cfp/event/reset.html:8
+msgid "No worries, we can help you there!"
+msgstr "Keine Sorge, wir können dir helfen."
+
+#: pretalx/cfp/templates/cfp/event/reset.html:17
+msgid "Send me a new one!"
+msgstr "Schickt mir ein neues!"
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:4
+#: pretalx/orga/templates/orga/submission/content.html:13
+msgid "Create submission"
+msgstr "Einreichung erstellen"
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:15
+msgid "Back"
+msgstr "Zurück"
+
+#: pretalx/cfp/templates/cfp/event/submission_base.html:21
+msgid "Continue"
+msgstr "Weiter"
+
+#: pretalx/cfp/templates/cfp/event/submission_info.html:7
+msgid "Hey, nice to meet you!"
+msgstr "Hey, schön dich kennenzulernen!"
+
+#: pretalx/cfp/templates/cfp/event/submission_info.html:9
+msgid ""
+"We're glad that you want to submit something to our event. We need you to "
+"fill out a few details first."
+msgstr ""
+"Wir freuen uns, dass du etwas bei unserer Veranstaltung einreichen möchtest. "
+"Zunächst benötigen wir ein paar Details."
+
+#: pretalx/cfp/templates/cfp/event/submission_profile.html:7
+msgid "Tell us something about yourself!"
+msgstr "Erzähl uns etwas über dich!"
+
+#: pretalx/cfp/templates/cfp/event/submission_profile.html:9
+msgid ""
+"This information will be publicly displayed next to your talk - you can "
+"always edit it later, too."
+msgstr ""
+"Diese Informationen werden öffentlich neben deiner Einreichung gezeigt - du "
+"kannst sie aber auch später noch anpassen."
+
+#: pretalx/cfp/templates/cfp/event/submission_questions.html:7
+msgid "This looks good!"
+msgstr "Das sieht schon mal gut aus."
+
+#: pretalx/cfp/templates/cfp/event/submission_questions.html:9
+#, python-format
+msgid ""
+"Before we can save your submission, we have some more questions for you. But "
+"rest assured, you reached step %(step)s of %(steps)s already, we are nearly "
+"there!"
+msgstr ""
+"Bevor du deine Einreichung abschließen kannst, haben wir noch ein paar "
+"Fragen für dich. Aber du hast schon Schritt %(step)s von %(steps)s erreicht, "
+"gleich ist es geschafft."
+
+#: pretalx/cfp/templates/cfp/event/submission_user.html:7
+msgid "That's it about your submission! We now just need a way to contact you."
+msgstr "Und das wars! Wir brauchen nur noch einen Weg, dich zu erreichen."
+
+#: pretalx/cfp/templates/cfp/event/submission_user.html:9
+msgid ""
+"To create your submission, you need an account on this page. This not only "
+"gives us a way to contact you, it also gives you the possibility to edit "
+"your submission or to view its current state."
+msgstr ""
+"Um deine Einreichung abzuschicken, brauchst du einen Account auf dieser "
+"Seite - nicht nur, damit wir dich erreichen können, sondern auch, damit du "
+"deine Einreichung editieren und ihren Status einsehen kannst."
+
+#: pretalx/cfp/templates/cfp/event/submission_user.html:18
+#: pretalx/orga/templates/orga/invitation.html:19
+msgid "I already have an account"
+msgstr "Ich habe schon einen Account"
+
+#: pretalx/cfp/templates/cfp/event/submission_user.html:23
+#: pretalx/orga/templates/orga/invitation.html:27
+msgid "I need a new account"
+msgstr "Ich brauche einen neuen Account"
+
+#: pretalx/cfp/templates/cfp/event/user_profile.html:4
+#: pretalx/cfp/templates/cfp/event/user_profile.html:6
+msgid "Your Profile"
+msgstr "Dein Profil"
+
+#: pretalx/cfp/templates/cfp/event/user_profile.html:8
+msgid "This data will be displayed next to your talk slots in the schedule."
+msgstr "Diese Daten werden neben deiner Einreichung im Programm angezeigt."
+
+#: pretalx/cfp/templates/cfp/event/user_profile.html:17
+#: pretalx/cfp/templates/cfp/event/user_profile.html:35
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:19
+#: pretalx/orga/templates/orga/cfp/question_form.html:15
+#: pretalx/orga/templates/orga/cfp/submission_type_form.html:15
+#: pretalx/orga/templates/orga/cfp/text.html:14
+#: pretalx/orga/templates/orga/settings/form.html:15
+#: pretalx/orga/templates/orga/settings/mail.html:13
+#: pretalx/orga/templates/orga/speaker/form.html:16
+#: pretalx/orga/templates/orga/submission/content.html:15
+msgid "Save"
+msgstr "Speichern"
+
+#: pretalx/cfp/templates/cfp/event/user_profile.html:22
+msgid "Your Account"
+msgstr "Dein Account"
+
+#: pretalx/cfp/templates/cfp/event/user_profile.html:24
+msgid "You can change your log in data here."
+msgstr "Du kannst deine Login-Daten hier anpassen."
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:4
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:4
+msgid "Your submission"
+msgstr "Deine Einreichung"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:6
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:6
+msgid "Your submission:"
+msgstr "Deine Einreichung:"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:8
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:8
+msgid "Current state of your submission:"
+msgstr "Aktueller Stand deiner Einreichung:"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:26
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:13
+msgid "Withdraw submission"
+msgstr "Einreichung zurückziehen"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:28
+msgid ""
+"You can click here to withdraw your submission from the selection process. "
+"You cannot undo this - if you are just uncertain if you can or should hold "
+"your talk, please contact the organizer instead."
+msgstr ""
+"Du kannst hier klicken, um deine Einreichung zurückzuziehen. Das kann nicht "
+"rückgängig gemacht werden - wenn du dir unsicher bist, ob du deine "
+"Veranstaltung abhalten kannst oder sollst, kontaktiere bitte lieber die Orga."
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:37
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:22
+msgid "Withdraw"
+msgstr "Zurückziehen"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:42
+msgid "Cancel submission"
+msgstr "Einreichung absagen"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_edit.html:44
+msgid ""
+"As your submission has been accepted already, please contact the event's "
+"organizing team to cancel it."
+msgstr ""
+"Da deine Einreichung bereits angenommen wurde, nimm bitte Kontakt mit der "
+"Orga auf, wenn du sie absagen möchtest."
+
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:15
+msgid "Do you really want to withdraw your submission?"
+msgstr "Möchtest du deine Einreichung wirklich zurückziehen?"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:26
+msgid "Go back"
+msgstr "Zurück"
+
+#: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:28
+msgid "You will not be able to revert this action."
+msgstr "Das kannst du nicht mehr rückgängig machen!"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:3
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:5
+msgid "Your submissions"
+msgstr "Deine Einreichungen"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:42
+msgid "Create a new submission"
+msgstr "Einreichung erstellen"
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:48
+msgid "It seems like you haven't submitted anything to this event yet."
+msgstr ""
+"Hm, du hast anscheinend noch nichts bei dieser Veranstaltung eingereicht."
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:51
+msgid "If you did, maybe you used a different account? Check your emails!"
+msgstr ""
+"Wenn doch, dann hast du vielleicht einen anderen Account genutzt? Guck im "
+"Zweifel in deine Mails."
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:55
+msgid ""
+"If you did not, why not go ahead and create a proposal now? We'd love to "
+"hear from you!"
+msgstr ""
+"Wenn nicht, dann tu das doch jetzt! Die Orga freut sich auf deine "
+"Einreichungen."
+
+#: pretalx/cfp/templates/cfp/event/user_submissions.html:60
+msgid "Submit something now!"
+msgstr "Reich etwas ein!"
+
+#: pretalx/cfp/views/auth.py:51
+msgid "You already requested a new password within the last 24 hours."
+msgstr ""
+"Du hast in den letzten 24 Stunden schon mal dein Passwort zurückgesetzt."
+
+#: pretalx/cfp/views/auth.py:62
+msgid "Password recovery"
+msgstr "Passwortwiederherstellung"
+
+#: pretalx/cfp/views/auth.py:77
+msgid ""
+"We will send you an e-mail containing further instructions. If you don't see "
+"the email within the next minutes, check your spam inbox!"
+msgstr ""
+"Wir werden dir eine Mail mit weiteren Schritten schicken. Wenn du in den "
+"nächsten Minuten keine Mail bekommst, guck mal im Spam-Ordner."
+
+#: pretalx/cfp/views/auth.py:80
+msgid "There was an error sending the mail. Please try again later."
+msgstr ""
+"Es gab ein Fehler beim Senden der E-Mail. Bitte probiere es später noch mal, "
+"wir sind dran."
+
+#: pretalx/cfp/views/auth.py:99
+msgid ""
+"This link was not valid. Make sure you copied the complete URL from the "
+"email and that the email is no more than 24 hours old."
+msgstr ""
+"Der Link war nicht valide - bitte prüfe, dass du wirklich die vollständige "
+"URL kopiert hast und die E-Mail nicht älter als 24 Stunden ist."
+
+#: pretalx/cfp/views/auth.py:112
+msgid "Awesome! You can now login using your new password."
+msgstr "Jupp, du kannst dich jetzt mit deinem neuen Passwort anmelden."
+
+#: pretalx/cfp/views/user.py:47 pretalx/cfp/views/user.py:52
+#: pretalx/cfp/views/user.py:141
+msgid "Your changes have been saved."
+msgstr "Deine Änderungen wurden gespeichert."
+
+#: pretalx/cfp/views/user.py:55
+msgid "Oh :( We had trouble saving your input. See below for details."
+msgstr ""
+"Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
+
+#: pretalx/cfp/views/user.py:76
+msgid "Your submission has been withdrawn."
+msgstr "Deine Einreichung wurde zurückgezogen."
+
+#: pretalx/common/models/settings.py:21
+#, python-brace-format
+msgid ""
+"Hello {name},\n"
+"\n"
+"you have requested a new password for your submission account at {event}.\n"
+"\n"
+"To reset your password, click on the following link:\n"
+"\n"
+"{url}\n"
+"\n"
+"If this wasn't you, you can just ignore this email.\n"
+"\n"
+"All the best,\n"
+"your {event} team.\n"
+msgstr ""
+"Hi {name},\n"
+"\n"
+"du hast ein neues Passwort für deinen Einreichungs-Account für {event} "
+"angefordert.\n"
+"\n"
+"Um dein Passwort zurückzusetzen, klick bitte den folgenden Link:\n"
+"\n"
+"{url}\n"
+"\n"
+"Wenn du das nicht warst, oder dir dein Passwort wieder eingefallen ist, "
+"ignorier diese Mail einfach.\n"
+"\n"
+"Grüße,\n"
+"deine {event}-Orga\n"
+
+#: pretalx/event/models/event.py:17 pretalx/person/forms.py:84
+msgid "Name"
+msgstr "Name"
+
+#: pretalx/event/models/event.py:21
+msgid ""
+"Should be short, only contain lowercase letters and numbers, and must be "
+"unique."
+msgstr ""
+"Sollte kurz sein, nur Kleinbuchstaben und Zahlen enthalten, und muss "
+"einmalig sein."
+
+#: pretalx/event/models/event.py:25
+msgid "The slug may only contain letters, numbers, dots and dashes."
+msgstr ""
+"Die Kurzform darf nur Buchstaben, Zahlen, Punkte und Bindestriche enthalten."
+
+#: pretalx/event/models/event.py:28
+msgid "Short form"
+msgstr "Kurzform"
+
+#: pretalx/event/models/event.py:32
+msgid "Subitle"
+msgstr "Untertitel"
+
+#: pretalx/event/models/event.py:37
+msgid "Event is public"
+msgstr "Veranstaltung ist öffentlich"
+
+#: pretalx/event/models/event.py:46
+msgid "Event start date"
+msgstr "Veranstaltungsbeginn"
+
+#: pretalx/event/models/event.py:50
+msgid "Event end date"
+msgstr "Veranstaltungsende"
+
+#: pretalx/event/models/event.py:58
+msgid "Orga email address"
+msgstr "Orga-Adresse"
+
+#: pretalx/event/models/event.py:59
+msgid "Will be used as sender/reply-to in emails"
+msgstr "Wird als Absender und Reply-To verwendet"
+
+#: pretalx/event/models/event.py:64
+msgid "Main event color"
+msgstr "Veranstaltungsfarbe"
+
+#: pretalx/event/models/event.py:65
+msgid ""
+"Please provide a hex value like #00ff00 if you do not like pretalx colors."
+msgstr ""
+"Gib hier einen hex-Wert wie #00ff00 ein, wenn dir unsere Farben nicht "
+"gefallen."
+
+#: pretalx/event/models/event.py:72
+msgid "Default language"
+msgstr "Standardsprache"
+
+#: pretalx/orga/forms/event.py:16
+msgid "Active languages"
+msgstr "Verfügbare Sprachen"
+
+#: pretalx/orga/forms/event.py:33
+msgid "This slug is already taken."
+msgstr "Diese Kurzform ist schon vergeben."
+
+#: pretalx/orga/forms/event.py:41
+msgid "Your default language needs to be one of your active languages."
+msgstr "Deine Standardsprache muss aktiviert sein."
+
+#: pretalx/orga/forms/event.py:59
+msgid "Sender address"
+msgstr "Absender-Adresse"
+
+#: pretalx/orga/forms/event.py:60
+msgid "Sender address for outgoing emails"
+msgstr "Absender-Adresse für ausgehende E-Mails"
+
+#: pretalx/orga/forms/event.py:63
+msgid "Use custom SMTP server"
+msgstr "Eigenen SMTP-Server verwenden"
+
+#: pretalx/orga/forms/event.py:64
+msgid ""
+"All mail related to your event will be sent over the smtp server specified "
+"by you."
+msgstr ""
+"Alle E-Mails bezüglich deiner Veranstaltung werden über den von dir "
+"angegebenen SMTP-Server versendet."
+
+#: pretalx/orga/forms/event.py:68
+msgid "Hostname"
+msgstr "Hostname"
+
+#: pretalx/orga/forms/event.py:72
+msgid "Port"
+msgstr "Port"
+
+#: pretalx/orga/forms/event.py:76 pretalx/person/forms.py:18
+msgid "Username"
+msgstr "Username"
+
+#: pretalx/orga/forms/event.py:87
+msgid "Use STARTTLS"
+msgstr "STARTTLS verwenden"
+
+#: pretalx/orga/forms/event.py:88
+msgid "Commonly enabled on port 587."
+msgstr "Meistens auf Port 587 verfügbar."
+
+#: pretalx/orga/forms/event.py:92
+msgid "Use SSL"
+msgstr "SSL verwenden"
+
+#: pretalx/orga/forms/event.py:93
+msgid "Commonly enabled on port 465."
+msgstr "Meistens auf Port 465 verfügbar."
+
+#: pretalx/orga/forms/event.py:106
+msgid ""
+"You can activate either SSL or STARTTLS security, but not both at the same "
+"time."
+msgstr "Du kannst nur SSL oder STARTTLS aktivieren, nicht beides."
+
+#: pretalx/orga/templates/orga/auth/login.html:4
+#: pretalx/orga/templates/orga/auth/login.html:13
+msgid "Sign in"
+msgstr "Einloggen"
+
+#: pretalx/orga/templates/orga/auth/login.html:8
+msgid "Nick"
+msgstr "Nick"
+
+#: pretalx/orga/templates/orga/base.html:33
+msgid "Events"
+msgstr "Veranstaltungen"
+
+#: pretalx/orga/templates/orga/base.html:43
+msgid "New event"
+msgstr "Neue Veranstaltung erstellen"
+
+#: pretalx/orga/templates/orga/base.html:72
+#: pretalx/orga/templates/orga/dashboard.html:6
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: pretalx/orga/templates/orga/base.html:75
+#: pretalx/orga/templates/orga/settings/base.html:4
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: pretalx/orga/templates/orga/base.html:78
+#: pretalx/orga/templates/orga/cfp/base.html:4
+msgid "CfP"
+msgstr "CfP"
+
+#: pretalx/orga/templates/orga/base.html:81
+#: pretalx/orga/templates/orga/submission/base.html:4
+#: pretalx/orga/templates/orga/submission/list.html:5
+msgid "Submissions"
+msgstr "Einreichungen"
+
+#: pretalx/orga/templates/orga/base.html:84
+#: pretalx/orga/templates/orga/speaker/form.html:5
+#: pretalx/orga/templates/orga/speaker/list.html:5
+#: pretalx/orga/templates/orga/submission/base.html:21
+#: pretalx/orga/templates/orga/submission/list.html:15
+#: pretalx/orga/templates/orga/submission/speakers.html:6
+msgid "Speakers"
+msgstr "Vortragende"
+
+#: pretalx/orga/templates/orga/base.html:87
+msgid "Review"
+msgstr ""
+
+#: pretalx/orga/templates/orga/base.html:90
+msgid "Schedule"
+msgstr "Programm"
+
+#: pretalx/orga/templates/orga/base.html:93
+msgid "Mails"
+msgstr "E-Mails"
+
+#: pretalx/orga/templates/orga/base.html:116
+#, python-format
+msgid "powered by <a %(a_attr)s>pretalx</a>"
+msgstr "powered by <a %(a_attr)s>pretalx</a>"
+
+#: pretalx/orga/templates/orga/cfp/base.html:13
+msgid "Text"
+msgstr "Text"
+
+#: pretalx/orga/templates/orga/cfp/base.html:21
+#: pretalx/orga/templates/orga/submission/base.html:29
+msgid "Questions"
+msgstr "Fragen"
+
+#: pretalx/orga/templates/orga/cfp/base.html:29
+msgid "Submission Types"
+msgstr "Einreichungsarten"
+
+#: pretalx/orga/templates/orga/cfp/question_form.html:8
+#: pretalx/orga/templates/orga/settings/form.html:8
+msgid "Event settings"
+msgstr "Veranstaltungseinstellungen"
+
+#: pretalx/orga/templates/orga/cfp/question_form.html:13
+msgid "Create question"
+msgstr "Neue Frage erstellen"
+
+#: pretalx/orga/templates/orga/cfp/question_form.html:17
+#: pretalx/orga/templates/orga/cfp/text.html:16
+#: pretalx/orga/templates/orga/settings/form.html:17
+#: pretalx/orga/templates/orga/settings/mail.html:18
+#: pretalx/orga/templates/orga/speaker/form.html:18
+#: pretalx/orga/templates/orga/submission/content.html:18
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: pretalx/orga/templates/orga/cfp/question_view.html:8
+msgid ""
+"\n"
+"        Questions can help you sort out additional details with speakers, "
+"such as\n"
+"        clothing sizes, special requirements such as dietary needs, or "
+"accomodation.\n"
+"        Submission-specific notes may be left at the submission, speaker "
+"questions\n"
+"        are meant to target the person regardless of the number/kind of "
+"submissions.\n"
+"        "
+msgstr ""
+
+#: pretalx/orga/templates/orga/cfp/question_view.html:53
+msgid "New question"
+msgstr "Neue Frage erstellen"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_form.html:8
+msgid "Submission Type"
+msgstr "Einreichungsart"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_form.html:13
+msgid "Create type"
+msgstr "Einreichungsart erstellen"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:6
+msgid "Submission types"
+msgstr "Einreichungsarten"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:8
+msgid ""
+"\n"
+"        Different submission types may help to guide speakers into different "
+"slot\n"
+"        lengths (short talks vs long talks) or different presentation "
+"formats\n"
+"        (talk vs workshop vs metal concert).\n"
+"        "
+msgstr ""
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:17
+msgid "Submission type"
+msgstr "Einreichungsart"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
+msgid "Default length"
+msgstr "Standardlänge"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:19
+msgid "Maximum length"
+msgstr "Maximallänge"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:32
+msgid "Default"
+msgstr "Standard"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:57
+msgid "New type"
+msgstr "Einreichungsart erstellen"
+
+#: pretalx/orga/templates/orga/cfp/text.html:7
+msgid "Public texts"
+msgstr "Öffentliche Texte"
+
+#: pretalx/orga/templates/orga/cfp/text.html:12
+#: pretalx/orga/templates/orga/settings/form.html:13
+msgid "Create event"
+msgstr "Neue Veranstaltung erstellen"
+
+#: pretalx/orga/templates/orga/dashboard.html:18
+msgid "There does not seem to be anything here."
+msgstr "Hier ist noch alles öd und leer."
+
+#: pretalx/orga/templates/orga/invitation.html:7
+#, python-format
+msgid ""
+"\n"
+"        Invitation to the team organizing %(event)s\n"
+"    "
+msgstr ""
+
+#: pretalx/orga/templates/orga/invitation.html:33
+msgid "Register"
+msgstr "Registrieren"
+
+#: pretalx/orga/templates/orga/settings/base.html:14
+msgid "Event"
+msgstr "Veranstaltung"
+
+#: pretalx/orga/templates/orga/settings/base.html:22
+msgid "Team"
+msgstr "Team"
+
+#: pretalx/orga/templates/orga/settings/base.html:28
+msgid "E-mail"
+msgstr "E-Mail"
+
+#: pretalx/orga/templates/orga/settings/mail.html:8
+msgid "E-mail settings"
+msgstr "E-Mail-Einstellungen"
+
+#: pretalx/orga/templates/orga/settings/mail.html:15
+msgid "Save and test custom SMTP connection"
+msgstr "Speichern und SMTP-Einstellung testen"
+
+#: pretalx/orga/templates/orga/settings/team.html:7
+msgid "Team Members"
+msgstr "Team"
+
+#: pretalx/orga/templates/orga/settings/team.html:26
+msgid "Pending Invitations"
+msgstr "Ausstehende Einladungen"
+
+#: pretalx/orga/templates/orga/speaker/form.html:11
+msgid "Speaker"
+msgstr "Vortragende"
+
+#: pretalx/orga/templates/orga/speaker/form.html:11
+#: pretalx/orga/templates/orga/submission/list.html:9
+msgid "submissions"
+msgstr "Einreichungen"
+
+#: pretalx/orga/templates/orga/speaker/list.html:9
+msgid "speakers"
+msgstr "Vortragende"
+
+#: pretalx/orga/templates/orga/submission/base.html:13
+msgid "Content"
+msgstr "Inhalt"
+
+#: pretalx/orga/templates/orga/submission/content.html:17
+msgid "Accept"
+msgstr "Annehmen"
+
+#: pretalx/orga/templates/orga/submission/content.html:19
+msgid "Reject"
+msgstr "Ablehnen"
+
+#: pretalx/orga/templates/orga/submission/list.html:14
+msgid "Title"
+msgstr "Titel"
+
+#: pretalx/orga/templates/orga/submission/list.html:16
+msgid "State"
+msgstr "Status"
+
+#: pretalx/orga/templates/orga/submission/list.html:39
+#: pretalx/submission/models/submission.py:18
+msgid "rejected"
+msgstr "abgelehnt"
+
+#: pretalx/orga/templates/orga/submission/list.html:45
+msgid "cancelled"
+msgstr "abgesagt"
+
+#: pretalx/orga/views/auth.py:20
+msgid "No user account matches the entered credentials."
+msgstr "Die eingegebenen Benutzerdaten sind nicht bekannt."
+
+#: pretalx/orga/views/auth.py:24
+msgid "User account is deactivated."
+msgstr "Dein Account wurde deaktiviert."
+
+#: pretalx/orga/views/auth.py:38
+msgid "Hi!"
+msgstr "Hi!"
+
+#: pretalx/orga/views/cfp.py:64
+msgid "The Question has been deleted."
+msgstr "Die Frage wurde gelöscht."
+
+#: pretalx/orga/views/cfp.py:102
+msgid "The SubmissionType has been made default."
+msgstr "Der Einreichungstyp wurde zum Standard gemacht."
+
+#: pretalx/orga/views/cfp.py:113
+msgid "The Submission Type has been deleted."
+msgstr "Der Einreichungstyp wurde gelöscht."
+
+#: pretalx/orga/views/settings.py:48
+msgid "Yay!"
+msgstr "Yay!"
+
+#: pretalx/orga/views/settings.py:75
+#, python-format
+msgid "An error occured while contacting the SMTP server: %s"
+msgstr "Ein Fehler trat auf beim Versuch, den SMTP-Server zu erreichen: %s"
+
+#: pretalx/orga/views/settings.py:79
+msgid ""
+"Yay, your changes have been saved and the connection attempt to your SMTP "
+"server was successful."
+msgstr ""
+"Ihre Änderungen wurden gespeichert und die Verbindung zum SMTP-Server war "
+"erfolgreich."
+
+#: pretalx/orga/views/settings.py:82
+msgid ""
+"We've been able to contact the SMTP server you configured. Remember to check "
+"the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
+"be used."
+msgstr ""
+"Wir haben den SMTP-Server erreichen können. Denke daran, den Haken bei "
+"\"Eigenen SMTP-Server verwenden\" zu setzen, damit der Server auch benutzt "
+"wird."
+
+#: pretalx/orga/views/settings.py:86
+msgid "Yay! We saved your changes."
+msgstr "Jupp, alle Änderungen wurden gespeichert."
+
+#: pretalx/orga/views/submission.py:20
+msgid "A submission must be submitted or rejected to become accepted."
+msgstr ""
+"Eine Einreichung muss im eingereichten Zustand sein, um angenommen oder "
+"abgelehnt zu sein."
+
+#: pretalx/orga/views/submission.py:26
+msgid "The submission has been accepted."
+msgstr "Die Einreichung wurde angenommen."
+
+#: pretalx/orga/views/submission.py:37
+msgid "The submission has been rejected."
+msgstr "Die Einreichung wurde abgelehnt."
+
+#: pretalx/orga/views/submission.py:49
+msgid "The speaker has been added to the submission."
+msgstr "Der Vortragende wurde der Einreichung hinzugefügt."
+
+#: pretalx/orga/views/submission.py:51
+msgid "The speaker was already part of the submission."
+msgstr "Der Vortragende war bereits Teil der Einreichung."
+
+#: pretalx/orga/views/submission.py:64
+msgid "The speaker has been removed from the submission."
+msgstr "Der Vortragende wurde von der Einreichung entfernt."
+
+#: pretalx/orga/views/submission.py:66
+msgid "The speaker was not part of this submission."
+msgstr "Der Vortragende war nicht Teil der Einreichung."
+
+#: pretalx/person/forms.py:20
+msgid "Email address"
+msgstr "E-Mail-Adresse"
+
+#: pretalx/person/forms.py:26 pretalx/person/forms.py:122
+msgid "Password (again)"
+msgstr "Passwort, noch mal"
+
+#: pretalx/person/forms.py:57
+msgid ""
+"We already have a user with that username. Did you already register before "
+"and just need to log in?"
+msgstr ""
+"Wir haben schon einen User, der so heißt - hast du dich schon registriert "
+"und musst dich nur einloggen?"
+
+#: pretalx/person/forms.py:61
+msgid ""
+"We already have a user with that email address. Did you already register "
+"before and just need to log in?"
+msgstr ""
+"Wir haben schon einen User mit der Adresse - hast du dich schon mal "
+"registriert und musst dich nur einloggen?"
+
+#: pretalx/person/forms.py:66
+msgid ""
+"You need to fill all fields of either the login or the registration form."
+msgstr ""
+"Du musst entweder alle Felder des Login- oder des Registrierungsformulars "
+"ausfüllen."
+
+#: pretalx/person/forms.py:112
+msgid "The current password you entered was not correct."
+msgstr "Das eingegebene aktuelle Passwort war nicht korrekt."
+
+#: pretalx/person/forms.py:116
+msgid "Password (current)"
+msgstr "Aktuelles Passwort"
+
+#: pretalx/person/forms.py:119
+msgid "Password (new)"
+msgstr "Neues Passwort"
+
+#: pretalx/person/models/permission.py:19
+msgid "Organizes the event"
+msgstr "Organisiert die Veranstaltung"
+
+#: pretalx/schedule/models/schedule.py:17
+#, python-brace-format
+msgid "Schedule for {self.event}"
+msgstr "Programm für {self.event}"
+
+#: pretalx/settings.py:61
+msgid "English"
+msgstr "Englisch"
+
+#: pretalx/settings.py:62
+msgid "German"
+msgstr "Deutsch"
+
+#: pretalx/submission/models/question.py:17
+msgid "number"
+msgstr "Zahl"
+
+#: pretalx/submission/models/question.py:18
+msgid "one-line text"
+msgstr "Text (einzeilig)"
+
+#: pretalx/submission/models/question.py:19
+msgid "multi-line text"
+msgstr "Text (mehrzeilig)"
+
+#: pretalx/submission/models/question.py:20
+msgid "yes/no"
+msgstr "Ja/Nein"
+
+#: pretalx/submission/models/question.py:21
+msgid "single choice"
+msgstr "Auswahl (einzeln)"
+
+#: pretalx/submission/models/question.py:22
+msgid "multiple choice"
+msgstr "Auswahl (mehrere)"
