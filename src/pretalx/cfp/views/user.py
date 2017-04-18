@@ -132,6 +132,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
         kwargs['readonly'] = not self.can_edit
         return kwargs
 

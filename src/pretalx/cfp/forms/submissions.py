@@ -2,14 +2,17 @@ from decimal import Decimal
 
 from django import forms
 
-from pretalx.submission.models import QuestionVariant, Submission
+from pretalx.submission.models import QuestionVariant, Submission, SubmissionType
 
 
 class InfoForm(forms.ModelForm):
 
-    def __init__(self, **kwargs):
+    def __init__(self, event, **kwargs):
+        self.event = event
         readonly = kwargs.pop('readonly', False)
+
         super().__init__(**kwargs)
+        self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
         if readonly:
             for f in self.fields.values():
                 f.disabled = True
