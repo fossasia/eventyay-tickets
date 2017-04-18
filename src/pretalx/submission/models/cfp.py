@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 from i18nfield.fields import I18nCharField, I18nTextField
 
 
@@ -19,6 +20,12 @@ class CfP(models.Model):
     )
     deadline = models.DateTimeField(null=True, blank=True)
     # languages
+
+    @property
+    def is_open(self):
+        if self.deadline is not None:
+            return now() <= self.deadline
+        return True
 
     def __str__(self) -> str:
         return str(self.headline)

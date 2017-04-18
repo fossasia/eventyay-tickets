@@ -89,6 +89,12 @@ class Submission(models.Model):
             self.assign_code()
         super().save(*args, **kwargs)
 
+    @property
+    def editable(self):
+        return self.state in (
+            SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED, SubmissionStates.SUBMITTED
+        ) and self.event.cfp.is_open
+
     def __str__(self):
         return self.title
 
