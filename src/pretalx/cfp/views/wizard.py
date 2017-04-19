@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -73,9 +74,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['event'] = self.request.event
         if step == 'profile':
             user_data = self.get_cleaned_data_for_step('user')
-            if user_data:
+            if user_data and user_data.get('user_id'):
                 kwargs['user'] = User.objects.get(pk=user_data['user_id'])
-            else:
+            elif self.request.user.is_authenticated:
                 kwargs['user'] = self.request.user
         return kwargs
 
@@ -103,6 +104,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         form_dict['info'].save()
         form_dict['info'].instance.speakers.add(user)
         sub = form_dict['info'].instance
+        form_dict['profile'].user = user
         form_dict['profile'].save()
 
         if 'questions' in form_dict:
@@ -125,6 +127,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                 answer.save()
 
         messages.success(self.request, 'Your talk has been submitted successfully!')
+        login(self.request, user)
         return redirect(reverse('cfp:event.user.submissions', kwargs={
             'event': self.request.event.slug
         }))

@@ -91,8 +91,11 @@ class SpeakerProfileForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
         initial = kwargs.pop('initial', dict())
-        initial['name'] = self.user.name
-        kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
+        if self.user:
+            initial['name'] = self.user.name
+            kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
+        else:
+            kwargs['instance'] = SpeakerProfile()
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
 
