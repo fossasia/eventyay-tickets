@@ -71,6 +71,18 @@ class Event(models.Model):
     locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
                               choices=settings.LANGUAGES,
                               verbose_name=_('Default language'))
+    accept_template = models.ForeignKey(
+        to='mail.MailTemplate', on_delete=models.CASCADE,
+        related_name='+', null=True, blank=True,
+    )
+    ack_template = models.ForeignKey(
+        to='mail.MailTemplate', on_delete=models.CASCADE,
+        related_name='+', null=True, blank=True,
+    )
+    reject_template = models.ForeignKey(
+        to='mail.MailTemplate', on_delete=models.CASCADE,
+        related_name='+', null=True, blank=True,
+    )
     # enable_feedback = models.BooleanField(default=False)
     # send_notifications = models.BooleanField(default=True)
 
@@ -89,12 +101,32 @@ class Event(models.Model):
     def get_cfp(self) -> 'submission.CfP':
         if hasattr(self, 'cfp'):
             return self.cfp
+        self._build_initial_data()
+        self.refresh_from_db()
+        return self.cfp
 
+    def save(self, *args, **kwargs):
+        was_created = bool(self.pk)
+        super().save(*args, **kwargs)
+
+        if was_created:
+            self._build_initial_data()
+
+    def _get_default_submission_type(self):
         from pretalx.submission.models import CfP, Submission, SubmissionType
         sub_type = Submission.objects.filter(event=self).first()
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
-        return CfP.objects.create(event=self, default_type=sub_type)
+        return sub_type
+
+    def _build_initial_data(self):
+        from mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT
+        if not hasattr(self, 'cfp'):
+            CfP.objects.create(event=self, default_type=self._get_default_submission_type())
+        self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
+        self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
+        self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
+        self.save()
 
     @cached_property
     def cfp(self):
