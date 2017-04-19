@@ -61,7 +61,15 @@ LANGUAGES = [
     ('en', _('English')),
     ('de', _('German')),
 ]
+LANGUAGES_NATURAL_NAMES = [
+    ('en', 'English'),
+    ('de', 'Deutsch'),
+]
 LANGUAGE_CODE = 'en'
+
+LOCALE_PATHS = (
+    os.path.join(os.path.dirname(__file__), 'locale'),
+)
 
 SESSION_COOKIE_NAME = 'pretalx_session'
 CSRF_COOKIE_NAME = 'pretalx_csrftoken'

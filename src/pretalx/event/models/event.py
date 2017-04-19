@@ -80,6 +80,11 @@ class Event(models.Model):
     def locales(self) -> list:
         return self.locale_array.split(",")
 
+    @property
+    def named_locales(self) -> list:
+        enabled = set(self.locale_array.split(","))
+        return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
+
     def get_cfp(self) -> 'submission.CfP':
         if hasattr(self, 'cfp'):
             return self.cfp

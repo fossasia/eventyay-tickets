@@ -22,6 +22,21 @@ h1 a {
   }
 }
 
+.locales {
+  padding-top: 1.3rem;
+
+  a {
+    color: white;
+  }
+  a:hover {
+    border-bottom: 1px dashed white;
+    text-decoration: none;
+  }
+  a.active {
+    border-bottom: 1px solid white;
+  }
+}
+
 #main {
   min-height: 300px;
   box-shadow: 0 5px 10px rgba($black, 0.2);

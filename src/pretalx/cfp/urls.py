@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import auth, event, user, wizard
+from .views import auth, event, locale, user, wizard
 
 cfp_urls = [
     url('^(?P<event>\w+)/$', event.EventStartpage.as_view(), name='event.start'),
@@ -22,4 +22,7 @@ cfp_urls = [
         name='event.user.submission.edit'),
     url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/withdraw$', user.SubmissionsWithdrawView.as_view(),
         name='event.user.submission.withdraw'),
+
+    url('^locale/set', locale.LocaleSet.as_view(),
+        name='locale.set'),
 ]
