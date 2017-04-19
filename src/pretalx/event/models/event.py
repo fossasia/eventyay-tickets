@@ -52,7 +52,7 @@ class Event(models.Model):
     timezone = models.CharField(
         choices=[(tz, tz) for tz in pytz.common_timezones],
         max_length=30,
-        default='Europe/Berlin',
+        default='UTC',
     )
     email = models.EmailField(
         verbose_name=_('Orga email address'),

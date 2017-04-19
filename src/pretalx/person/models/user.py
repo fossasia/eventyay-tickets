@@ -1,9 +1,12 @@
 import re
 import string
 
+import pytz
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 def nick_validator(value: str) -> None:
@@ -63,6 +66,14 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
+                              choices=settings.LANGUAGES,
+                              verbose_name=_('Preferred language'))
+    timezone = models.CharField(
+        choices=[(tz, tz) for tz in pytz.common_timezones],
+        max_length=30,
+        default='UTC',
+    )
 
     send_mail = models.BooleanField(
         default=False,

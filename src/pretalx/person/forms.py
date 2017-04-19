@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
+from django.utils import translation, timezone
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.person.models import SpeakerProfile, User
@@ -73,7 +74,9 @@ class UserForm(forms.Form):
         if data.get('register_username') and data.get('register_email') and data.get('register_password'):
             user = User.objects.create_user(nick=data.get('register_username'),
                                             email=data.get('register_email'),
-                                            password=data.get('register_password'))
+                                            password=data.get('register_password'),
+                                            locale=translation.get_language(),
+                                            timezone=timezone.get_current_timezone_name())
             data['user_id'] = user.pk
 
         return data['user_id']

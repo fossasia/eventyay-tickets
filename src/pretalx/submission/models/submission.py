@@ -47,27 +47,32 @@ class Submission(models.Model):
         related_name='submissions',
     )
     title = models.CharField(
+        verbose_name=_('Title'),
         max_length=200,
     )
     submission_type = models.ForeignKey(  # Reasonable default must be set in form/view
+        verbose_name=_('Type of submission'),
         to='submission.SubmissionType',
         related_name='submissions',
         on_delete=models.PROTECT,
     )
     state = models.CharField(
+        verbose_name=_('Submission state'),
         max_length=SubmissionStates.get_max_length(),
         choices=SubmissionStates.get_choices(),
         default=SubmissionStates.SUBMITTED,
     )
     description = models.TextField(
+        verbose_name=_('Description'),
         null=True, blank=True,
     )
     abstract = models.TextField(
+        verbose_name=_('Abstract'),
         null=True, blank=True,
     )
     notes = models.TextField(
+        verbose_name=_('Notes for the organizer'),
         null=True, blank=True,
-        verbose_name='Notes for the organizer',
     )
     duration = models.PositiveIntegerField(
         null=True, blank=True

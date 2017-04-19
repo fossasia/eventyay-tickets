@@ -55,10 +55,20 @@ class EventPageMixin:
         except LookupError:
             pass
 
+    def _language_from_user(self, request, supported):
+        if request.user.is_authenticated:
+            try:
+                value = get_supported_language_variant(request.user.locale)
+                if value and value in supported:
+                    return value
+            except LookupError:
+                pass
+
     def _select_locale(self, request):
         supported = request.event.locales
         language = (
-            self._language_from_cookie(request, supported)
+            self._language_from_user(request, supported)
+            or self._language_from_cookie(request, supported)
             or self._language_from_browser(request, supported)
             or request.event.locale
         )
@@ -67,8 +77,12 @@ class EventPageMixin:
         request.LANGUAGE_CODE = translation.get_language()
 
         try:
-            timezone.activate(pytz.timezone(request.event.timezone))
-            request.timezone = request.event.timezone
+            if request.user.is_authenticated:
+                tzname = request.user.timezone
+            else:
+                tzname = request.event.timezone
+            timezone.activate(pytz.timezone(tzname))
+            request.timezone = tzname
         except pytz.UnknownTimeZoneError:
             pass
 
