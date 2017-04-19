@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'pretalx.common',
     'pretalx.event',
+    'pretalx.mail',
     'pretalx.person',
     'pretalx.schedule',
     'pretalx.submission',
