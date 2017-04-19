@@ -10,3 +10,4 @@ django-formtools==2.*
 django-i18nfield==1.0.*
 django-hierarkey==1.0.*
 celery==4.0.*
+django-csp
