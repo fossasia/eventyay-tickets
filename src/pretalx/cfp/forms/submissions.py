@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django import forms
 
+from pretalx import settings
 from pretalx.submission.models import QuestionVariant, Submission, SubmissionType
 
 
@@ -13,13 +14,15 @@ class InfoForm(forms.ModelForm):
 
         super().__init__(**kwargs)
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
+        locale_names = dict(settings.LANGUAGES)
+        self.fields['content_locale'].choices = [(a, locale_names[a]) for a in self.event.locales]
         if readonly:
             for f in self.fields.values():
                 f.disabled = True
 
     class Meta:
         model = Submission
-        fields = ['title', 'submission_type', 'description', 'abstract', 'notes', 'duration']
+        fields = ['title', 'submission_type', 'content_locale', 'description', 'abstract', 'notes', 'duration']
 
 
 class QuestionsForm(forms.Form):

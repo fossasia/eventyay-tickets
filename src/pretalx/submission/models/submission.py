@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
@@ -77,6 +78,9 @@ class Submission(models.Model):
     duration = models.PositiveIntegerField(
         null=True, blank=True
     )
+    content_locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
+                                      choices=settings.LANGUAGES,
+                                      verbose_name=_('Language of the submission'))
 
     def assign_code(self):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
