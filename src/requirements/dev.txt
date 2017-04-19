@@ -2,3 +2,6 @@ pylama
 pytest
 pytest-cov
 pytest-django
+pytest-mock
+beautifulsoup4
+lxml
