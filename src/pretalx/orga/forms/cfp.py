@@ -1,7 +1,21 @@
-from i18nfield.forms import I18nModelForm
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+from hierarkey.forms import HierarkeyForm
+from i18nfield.forms import I18nModelForm, I18nFormMixin
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.submission.models import CfP, Question, SubmissionType
+
+
+class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+    cfp_show_deadline = forms.BooleanField(label=_('Display deadline publicly'),
+                                           required=False)
+
+    class Meta:
+        model = CfP
+        fields = [
+            'headline', 'text', 'deadline',
+        ]
 
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):

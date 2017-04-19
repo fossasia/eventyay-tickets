@@ -10,6 +10,7 @@ class GlobalSettings(GlobalSettingsBase):
     pass
 
 
+settings_hierarkey.add_default('cfp_show_settings', 'False', bool)
 settings_hierarkey.add_default('mail_from', 'noreply@example.org', str)
 settings_hierarkey.add_default('smtp_use_custom', 'False', bool)
 settings_hierarkey.add_default('smtp_host', '', str)

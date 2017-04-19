@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, UpdateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
+from pretalx.orga.forms.cfp import CfPSettingsForm
 from pretalx.submission.models import CfP, Question, SubmissionType
 
 
@@ -15,6 +17,22 @@ class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
     model = CfP
     template_name = 'orga/cfp/text.html'
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['sform'] = self.sform
+        return ctx
+
+    @cached_property
+    def sform(self):
+        return CfPSettingsForm(
+            read_only=(self._action == 'view'),
+            locales=self.request.event.locales,
+            obj=self.request.event,
+            attribute_name='settings',
+            data=self.request.POST if self.request.method == "POST" else None,
+            prefix='settings'
+        )
+
     def get_object(self):
         return self.request.event.get_cfp()
 
@@ -22,9 +40,12 @@ class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
         return reverse('orga:cfp.text.view', kwargs={'event': self.object.event.slug})
 
     def form_valid(self, form):
+        if not self.sform.is_valid():
+            return self.form_invalid(form)
         messages.success(self.request, 'Yay!')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
+        self.sform.save()
         return ret
 
 

@@ -5,10 +5,19 @@
 {% block content %}{% with cfp=request.event.get_cfp %}
     <h2>{{ cfp.headline|default:"" }}</h2>
     {{ cfp.text|rich_text }}
+    {% if request.event.settings.cfp_show_deadline %}
+        <p>
+            <strong>
+                {% blocktrans with time=cfp.deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone %}
+                    You can enter submissions until {{ time }} ({{ timezone }}).
+                {% endblocktrans %}
+            </strong>
+        </p>
+    {% endif %}
     <div class="row mb-4">
         <div class="col-md-6">
             <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
-               href="{% url "cfp:event.submit" event=request.event.slug %}">
+                    href="{% url "cfp:event.submit" event=request.event.slug %}">
                 {% if cfp.is_open %}
                     {% trans "Submit a proposal" %}
                 {% else %}

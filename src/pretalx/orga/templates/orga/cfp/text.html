@@ -4,8 +4,9 @@
 {% block cfp_content %}
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "Public texts" %}</legend>
+        <legend>{% trans "General settings" %}</legend>
         {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_form sform layout='horizontal' %}
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
                 {% if action == "create" %}
