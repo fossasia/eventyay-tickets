@@ -4,6 +4,7 @@ from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
@@ -94,6 +95,10 @@ class Event(models.Model):
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return CfP.objects.create(event=self, default_type=sub_type)
+
+    @cached_property
+    def cfp(self):
+        return self.get_cfp()
 
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend

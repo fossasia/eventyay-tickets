@@ -1,8 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils import translation
+from django.utils.translation import ugettext_lazy as _
 from django.utils.crypto import get_random_string
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
@@ -52,6 +51,18 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         'questions': show_questions_page,
         'user': show_user_page
     }
+
+    def get(self, request, *args, **kwargs):
+        if not request.event.cfp.is_open:
+            messages.error(request, _('This event currently does not accept new submissions, sorry!'))
+            return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not request.event.cfp.is_open:
+            messages.error(request, _('This event currently does not accept new submissions, sorry!'))
+            return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
+        return super().post(request, *args, **kwargs)
 
     def get_form_instance(self, step):
         return super().get_form_instance(step)
