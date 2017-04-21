@@ -30,6 +30,26 @@ class MailTemplate(models.Model):
         help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!')
     )
 
+    def bulk_mail(self):
+        # TODO: use log_address and call to_mail
+        pass
+
+    def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
+        # TODO correct handling of locale. translation.activate()?
+        context = context or dict()
+        mail = QueuedMail(
+            event=self.event,
+            to=user.email,
+            reply_to=self.reply_to or event.email,
+            bcc=self.bcc,
+            subject=self.subject.format(**context),
+            text=self.text.format(**context)
+        )
+        if skip_queue:
+            mail.send()
+        else:
+            mail.save()
+
 
 class QueuedMail(models.Model):
     event = models.ForeignKey(
@@ -43,3 +63,8 @@ class QueuedMail(models.Model):
     bcc = models.CharField(max_length=1000, null=True, blank=True)
     subject = models.CharField(max_length=200)  # Use non-i18n fields; this is the final actual to-be-sent version
     text = models.TextField()
+
+    def send(self):
+        # TODO: send
+        # TODO: log
+        self.delete()
