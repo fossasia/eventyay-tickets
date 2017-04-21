@@ -39,7 +39,7 @@ class QueuedMail(models.Model):
     )
     to = models.CharField(max_length=1000)  # allow multiple recipients: several perople per talk
     reply_to = models.CharField(max_length=1000)
-    cc = models.CharField(max_length=1000)
-    bcc = models.CharField(max_length=1000)
+    cc = models.CharField(max_length=1000, null=True, blank=True)
+    bcc = models.CharField(max_length=1000, null=True, blank=True)
     subject = models.CharField(max_length=200)  # Use non-i18n fields; this is the final actual to-be-sent version
     text = models.TextField()
