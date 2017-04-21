@@ -91,6 +91,7 @@
                 </a>
                 <a class="nav-link {% if "mails." in url_name %}active{% endif %}" href="{% url "orga:mails.templates.list" event=request.event.slug %}">
                     <span class="fa fa-envelope"></span> {% trans "Mails" %}
+                    {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}{% endif %}
                 </a>
             {% endif %}
         </nav>

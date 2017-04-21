@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.mail.context import template_context_from_submission
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
@@ -24,6 +25,10 @@ class SubmissionAccept(OrgaPermissionRequired, View):
         submission.save(update_fields=['state'])
         # TODO: ask for confirmation
         messages.success(request, _('The submission has been accepted.'))
+        for speaker in submission.speakers.all():
+            submission.event.accept_template.to_mail(
+                user=speaker, event=self.request.event, context=template_context_from_submission(submission),
+            )
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
@@ -35,6 +40,10 @@ class SubmissionReject(OrgaPermissionRequired, View):
         submission.state = SubmissionStates.REJECTED
         submission.save(update_fields=['state'])
         messages.success(request, _('The submission has been rejected.'))
+        for speaker in submission.speakers.all():
+            submission.event.accept_template.to_mail(
+                user=speaker, event=self.request.event, context=template_context_from_submission(submission),
+            )
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 

@@ -26,7 +26,7 @@ to {event_name}. Please click this link to confirm your attendance:
 
     {confirmation_link}
 
-We look forward to seeing you at {event} - Please contact us if you have any
+We look forward to seeing you at {event_name} - Please contact us if you have any
 questions! We will reach out again before the conference to tell you details
 about your slot in the schedule and technical details concerning the room
 and presentation tech.
