@@ -44,8 +44,8 @@ class MailTemplate(models.Model):
             to=user.email,
             reply_to=self.reply_to or event.email,
             bcc=self.bcc,
-            subject=self.subject.format(**context),
-            text=self.text.format(**context)
+            subject=str(self.subject).format(**context),
+            text=str(self.text).format(**context)
         )
         if skip_queue:
             mail.send()
@@ -82,10 +82,11 @@ class QueuedMail(models.Model):
 
         send_mail(
             subject=self.subject,
-            messag=self.text,
+            message=self.text,
             from_email=self.reply_to,
             recipient_list=[to.strip() for to in self.to.split(',')],
             connection=backend
         )
         # TODO: log
-        self.delete()
+        if self.pk:
+            self.delete()
