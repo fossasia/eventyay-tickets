@@ -9,6 +9,7 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
+from pretalx.mail.context import template_context_from_submission
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.models import Answer, Question, QuestionVariant
@@ -106,6 +107,10 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         sub = form_dict['info'].instance
         form_dict['profile'].user = user
         form_dict['profile'].save()
+        sub.event.ack_template.to_mail(
+            user=user, event=self.request.event, context=template_context_from_submission(sub),
+            skip_queue=True
+        )
 
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
