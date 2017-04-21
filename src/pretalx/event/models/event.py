@@ -136,6 +136,10 @@ class Event(models.Model):
     def cfp(self):
         return self.get_cfp()
 
+    @cached_property
+    def pending_mails(self):
+        return self.queued_mails.count()
+
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend
 
