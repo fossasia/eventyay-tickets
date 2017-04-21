@@ -1,3 +1,5 @@
+from django.core.mail import get_connection, send_mail
+from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
@@ -65,6 +67,25 @@ class QueuedMail(models.Model):
     text = models.TextField()
 
     def send(self):
-        # TODO: send
+        if self.event.settings.smtp_use_custom:
+            backend =  EmailBackend(
+                host=self.event.settings.smtp_host,
+                port=self.event.settings.smtp_port,
+                username=self.event.settings.smtp_username,
+                password=self.event.settings.smtp_password,
+                use_tls=self.event.settings.smtp_use_tls,
+                use_ssl=self.event.settings.smtp_use_ssl,
+                fail_silently=False
+            )
+        else:
+            backend = get_connection()
+
+        send_mail(
+            subject=self.subject,
+            messag=self.text,
+            from_email=self.reply_to,
+            recipient_list=[to.strip() for to in self.to.split(',')],
+            connection=backend
+        )
         # TODO: log
         self.delete()
