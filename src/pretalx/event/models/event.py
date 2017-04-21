@@ -106,23 +106,27 @@ class Event(models.Model):
         return self.cfp
 
     def save(self, *args, **kwargs):
-        was_created = bool(self.pk)
+        was_created = not bool(self.pk)
         super().save(*args, **kwargs)
 
         if was_created:
             self._build_initial_data()
 
     def _get_default_submission_type(self):
-        from pretalx.submission.models import CfP, Submission, SubmissionType
+        from pretalx.submission.models import Submission, SubmissionType
         sub_type = Submission.objects.filter(event=self).first()
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return sub_type
 
     def _build_initial_data(self):
-        from mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT
+        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT
+        from pretalx.mail.models import MailTemplate
+
         if not hasattr(self, 'cfp'):
+            from pretalx.submission.models import CfP
             CfP.objects.create(event=self, default_type=self._get_default_submission_type())
+
         self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
