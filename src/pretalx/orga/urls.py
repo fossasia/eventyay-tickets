@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 
-from .views import auth, cfp, dashboard, settings, speaker, submission
+from .views import auth, cfp, dashboard, mails, settings, speaker, submission
 
 orga_urls = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
@@ -24,6 +24,15 @@ orga_urls = [
         url('^cfp/types/(?P<pk>[0-9]+)/delete$', cfp.SubmissionTypeDelete.as_view(), name='cfp.type.delete'),
         url('^cfp/types/(?P<pk>[0-9]+)/default$', cfp.SubmissionTypeDefault.as_view(), name='cfp.type.default'),
         url('^cfp/types/(?P<pk>[0-9]+)/edit$', cfp.SubmissionTypeDetail.as_view(), name='cfp.type.edit'),
+
+        url('^mails/', include([
+            url('^templates$', mails.TemplateList.as_view(), name='mails.templates.list'),
+            url('^templates/new$', mails.TemplateDetail.as_view(), name='mails.templates.create'),
+            url('^templates/(?P<pk>[0-9]+)/edit$', mails.TemplateDetail.as_view(), name='mails.templates.edit'),
+            url('^templates/(?P<pk>[0-9]+)/delete$', mails.TemplateDelete.as_view(), name='mails.templates.delete'),
+            url('^send$', mails.SendMail.as_view(), name='mails.send'),
+            url('^outbox$', mails.OutboxList.as_view(), name='mails.outbox.list'),
+        ])),
 
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),
         url('^submissions/(?P<pk>[0-9]+)/', include([

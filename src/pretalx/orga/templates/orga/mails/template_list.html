@@ -1,0 +1,51 @@
+{% extends "orga/mails/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block mail_content %}
+
+    <div><a href="{% url "orga:mails.templates.create" event=request.event.slug %}">
+        <button class="btn btn-primary pull-right">{% trans "New custom template" %}</button>
+    </a></div>
+
+    <div>
+    <div>
+        {% csrf_token %}
+        <legend>{% trans "Acknowledge Mail" %}</legend>
+        {% bootstrap_form ack layout='horizontal' %}
+        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=ack.instance.pk %}">
+            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+        </a></div>
+    </div>
+    <div>
+        {% csrf_token %}
+        <legend>{% trans "Accept Mail" %}</legend>
+        {% bootstrap_form accept layout='horizontal' %}
+        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=accept.instance.pk %}">
+            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+        </a></div>
+    </div>
+    <div>
+        {% csrf_token %}
+        <legend>{% trans "Rejection Mail" %}</legend>
+        {% bootstrap_form reject layout='horizontal' %}
+        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=reject.instance.pk %}">
+            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+        </a></div>
+    </div>
+
+    {% for template in other %}
+    <div>
+        {% csrf_token %}
+        <legend>{% trans "Custom Mail" %}</legend>
+        {% bootstrap_form template layout='horizontal' %}
+        <div><a href="{% url "orga:mails.templates.delete" event=request.event.slug pk=template.instance.pk %}">
+            <button class="btn btn-danger">{% trans "Delete template" %}</button>
+        </a></div>
+        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=template.instance.pk %}">
+            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+        </a></div>
+    </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

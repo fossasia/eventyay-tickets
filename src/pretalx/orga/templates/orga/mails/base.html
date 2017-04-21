@@ -1,0 +1,39 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block headline %}
+    {% trans "Emails" %}
+{% endblock %}
+{% block content %}
+    {% if request.event %}
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a
+              class="nav-link {% if "mails.templates" in url_name %}active{% endif %}"
+              href="{% url "orga:mails.templates.list" event=request.event.slug %}"
+            >
+                {% trans "Templates" %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if "mails.send" in url_name %}active{% endif %}"
+              href="{% url "orga:settings.event.view" event=request.event.slug %}"
+            >
+                {% trans "Send Emails" %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if "mails.outbox" in url_name %}active{% endif %}"
+              href="{% url "orga:settings.team.view" event=request.event.slug %}"
+            >
+                {% trans "Outbox" %}
+            </a>
+          </li>
+        </ul>
+    {% endif %}
+
+    {% block mail_content %}
+    {% endblock %}
+
+{% endblock %}

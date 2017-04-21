@@ -62,7 +62,7 @@ class CfPQuestionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
     form_class = QuestionForm
     template_name = 'orga/cfp/question_form.html'
 
-    def get_object(self):
+    def get_object(self) -> Question:
         return self.request.event.questions.get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self) -> str:
