@@ -6,11 +6,53 @@ from django.views.generic import FormView, ListView, TemplateView, View
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.models import MailTemplate
 from pretalx.orga.authorization import OrgaPermissionRequired
-from pretalx.orga.forms.mails import MailTemplateForm
+from pretalx.orga.forms.mails import MailTemplateForm, OutboxMailForm
 
 
 class OutboxList(OrgaPermissionRequired, ListView):
+    context_object_name = 'mails'
     template_name = 'orga/mails/outbox_list.html'
+
+    def get_queryset(self):
+        return self.request.event.queued_mails.all()
+
+
+class OutboxSend(OrgaPermissionRequired, View):
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        if 'pk' in self.kwargs:
+            self.request.event.queued_mails.get(pk=self.kwargs.get('pk')).send()
+        else:
+            for mail in self.request.event.queued_mails.all():
+                mail.send()
+        return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
+
+
+class OutboxPurge(OrgaPermissionRequired, View):
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        if 'pk' in self.kwargs:
+            self.request.event.queued_mails.get(pk=self.kwargs.get('pk')).delete()
+        else:
+            self.request.event.queued_mails.all().delete()
+        return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
+
+
+class OutboxMail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+    model = MailTemplate
+    form_class = OutboxMailForm
+    template_name = 'orga/mails/outbox_form.html'
+
+    def get_object(self) -> MailTemplate:
+        return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+
+    def get_success_url(self):
+        return reverse('orga:mails.outbox.list', kwargs={'event': self.object.event.slug})
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Yay!')
+        form.instance.event = self.request.event
+        return super().form_valid(form)
 
 
 class SendMail(OrgaPermissionRequired, FormView):

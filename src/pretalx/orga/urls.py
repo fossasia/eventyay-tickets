@@ -32,6 +32,12 @@ orga_urls = [
             url('^templates/(?P<pk>[0-9]+)/delete$', mails.TemplateDelete.as_view(), name='mails.templates.delete'),
             url('^send$', mails.SendMail.as_view(), name='mails.send'),
             url('^outbox$', mails.OutboxList.as_view(), name='mails.outbox.list'),
+            url('^outbox/send$', mails.OutboxSend.as_view(), name='mails.outbox.send'),
+            url('^outbox/purge$', mails.OutboxPurge.as_view(), name='mails.outbox.purge'),
+            url('^outbox/(?P<pk>[0-9]+)$', mails.OutboxMail.as_view(), name='mails.outbox.mail.view'),
+            url('^outbox/(?P<pk>[0-9]+)/edit$', mails.OutboxMail.as_view(), name='mails.outbox.mail.edit'),
+            url('^outbox/(?P<pk>[0-9]+)/delete$', mails.OutboxPurge.as_view(), name='mails.outbox.mail.delete'),
+            url('^outbox/(?P<pk>[0-9]+)/send$', mails.OutboxSend.as_view(), name='mails.outbox.mail.send'),
         ])),
 
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),

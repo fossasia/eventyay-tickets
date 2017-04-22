@@ -25,7 +25,7 @@
           <li class="nav-item">
             <a
               class="nav-link {% if "mails.outbox" in url_name %}active{% endif %}"
-              href="{% url "orga:settings.team.view" event=request.event.slug %}"
+              href="{% url "orga:mails.outbox.list" event=request.event.slug %}"
             >
                 {% trans "Outbox" %}
             </a>
