@@ -4,7 +4,7 @@
 {% load bootstrap4 %}
 
 {% block headline %}
-    {% blocktrans with event=invitation.event.name %}
+    {% blocktrans with event=invitation.event.name trimmed %}
         Invitation to the team organizing {{ event }}
     {% endblocktrans %}
 {% endblock %}

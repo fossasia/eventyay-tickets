@@ -8,8 +8,8 @@
     {% if request.event.settings.cfp_show_deadline %}
         <p>
             <strong>
-                {% blocktrans with time=cfp.deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone %}
-                    You can enter submissions until {{ time }} ({{ timezone }}).
+                {% blocktrans with deadline=cfp.deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
+                    You can enter submissions until {{ deadline }} ({{ timezone }}).
                 {% endblocktrans %}
             </strong>
         </p>
