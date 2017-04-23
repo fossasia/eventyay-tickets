@@ -19,12 +19,6 @@ class MailTemplate(models.Model):
         verbose_name=_('Reply-To'),
         help_text=_('Change the Reply-To address if you do not want to use the default orga address'),
     )
-    log_address = models.EmailField(
-        max_length=200,
-        blank=True, null=True,
-        verbose_name=_('Log address'),
-        help_text=_('You can choose to receive one notification mail for every batch of mails sent from this template.')
-    )
     bcc = models.CharField(
         max_length=1000,
         blank=True, null=True,
@@ -33,7 +27,7 @@ class MailTemplate(models.Model):
     )
 
     def bulk_mail(self):
-        # TODO: use log_address and call to_mail
+        # TODO: call to_mail
         pass
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):

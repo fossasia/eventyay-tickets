@@ -9,7 +9,7 @@ class MailTemplateForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = MailTemplate
         fields = [
-            'subject', 'text', 'reply_to', 'log_address', 'bcc',
+            'subject', 'text', 'reply_to', 'bcc',
         ]
 
 
