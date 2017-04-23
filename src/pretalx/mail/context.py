@@ -31,7 +31,7 @@ def template_context_from_event(event):
     return {
         'all_submissions_url': reverse(
             'cfp:event.user.submissions',
-            kwargs={'event': submission.event.slug}
+            kwargs={'event': event.slug}
         ),
     }
 
