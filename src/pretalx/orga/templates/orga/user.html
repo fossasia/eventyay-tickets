@@ -1,0 +1,23 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block headline %}
+    {% trans "User settings" %}
+{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <legend>{% trans "User settings" %}</legend>
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="offset-md-3 col-md-9">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

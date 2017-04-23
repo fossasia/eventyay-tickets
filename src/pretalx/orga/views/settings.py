@@ -15,7 +15,7 @@ from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
 from pretalx.orga.forms.event import MailSettingsForm
-from pretalx.person.forms import UserForm
+from pretalx.person.forms import LoginInfoForm, UserForm
 from pretalx.person.models import EventPermission, User
 
 
@@ -165,3 +165,22 @@ class InvitationView(FormView):
         permission.save()
         login(self.request, user)
         return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))
+
+
+class UserSettings(OrgaPermissionRequired, FormView):
+    form_class = LoginInfoForm
+    template_name = 'orga/user.html'
+
+    def get_success_url(self) -> str:
+        return reverse('orga:user.view')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, _('Yay!'))
+        form.save()
+        ret = super().form_valid(form)
+        return ret
