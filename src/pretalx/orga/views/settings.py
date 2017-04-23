@@ -113,7 +113,7 @@ class EventTeamInvite(OrgaPermissionRequired, View):
         email = request.POST.get('email')
         event = self.request.event
         invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-        invitation_link = reverse('orga:invitation.view', kwargs={'code': invitation_token})
+        invitation_link = self.request.build_absolute_uri(reverse('orga:invitation.view', kwargs={'code': invitation_token}))
         EventPermission.objects.create(
             event=event,
             invitation_email=email,
