@@ -4,12 +4,12 @@
 {% block cfp_content %}
 
     <legend>Speaker questions</legend>
-    <div class="cfp-explanation">
+    <div class="alert alert-info">
         {% blocktrans %}
         Questions can help you sort out additional details with speakers, such as
         clothing sizes, special requirements such as dietary needs, or accomodation.
-        Submission-specific notes may be left at the submission, speaker questions
-        are meant to target the person regardless of the number/kind of submissions.
+        Questions will be asked on a per-submission level, so you will have multiple
+        answers of speakers with multiple submissions/talks.
         {% endblocktrans %}
     </div>
     <table class="table table-condensed">
@@ -44,6 +44,8 @@
                         </a>
                     </td>
                 </tr>
+            {% empty %}
+                <tr><td>{% trans "You have configured no questions yet." %}</td></tr>
             {% endfor %}
         </tbody>
     </table>

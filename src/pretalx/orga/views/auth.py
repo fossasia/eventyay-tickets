@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
@@ -35,7 +37,15 @@ class LoginView(TemplateView):
         # neither? go to (a) current cfp
         # no current cfp? dummy page
 
-        messages.success(request, _('Hi!'))
+        messages.success(request, random.choice([
+            _('Hi, nice to see you!'),
+            _('Welcome!'),
+            _('I hope you are having a good day :)'),
+            _('Remember: organizing events is lots of work, but it pays off.'),
+            _('If you are waiting for feedback from your speakers, try sending a mail to a subset of them.'),
+            _('Remember to provide your speakers with all information they need ahead of time.'),
+            _('Even the busiest event organizers should make time to see at least one talk ;)'),
+        ]))
         return redirect(reverse('orga:dashboard'))
 
 

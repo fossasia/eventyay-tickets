@@ -125,6 +125,10 @@ class EventTeamInvite(OrgaPermissionRequired, View):
             invitation_token=invitation_token,
             is_orga=True,
         )
+        messages.success(
+            self.request,
+            _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
+        )
         return redirect(reverse(
             'orga:settings.team.view',
             kwargs={'event': event.slug}
@@ -185,7 +189,7 @@ class UserSettings(OrgaPermissionRequired, FormView):
         return kwargs
 
     def form_valid(self, form):
-        messages.success(self.request, _('Yay!'))
+        messages.success(self.request, _('Your profile has been updated :)'))
         form.save()
         ret = super().form_valid(form)
         return ret

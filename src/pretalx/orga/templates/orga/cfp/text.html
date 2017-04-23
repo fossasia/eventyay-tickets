@@ -2,16 +2,26 @@
 {% load i18n %}
 {% load bootstrap4 %}
 {% block cfp_content %}
+    <div class="alert alert-info">
+        {% trans "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
+        <ul>
+            <li>{% trans "The formats (talks, workshops, panels) and their durations" %}</li>
+            <li>{% trans "Topics you are looking for" %}</li>
+            <li>{% trans "How open you are to alternative topics" %}</li>
+            <li>{% trans "The people coming to your conference: interests, experience level …" %}</li>
+            <li>{% trans "Link your Code of Conduct if you have one" %}</li>
+            <li>{% trans "Do you offer financial or other support, e.g. support for first time speakers?" %}
+            <li>{% trans "Dates and location" %}</li>
+        </ul>
+    </div>
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "General settings" %}</legend>
+        <legend>{% trans "Text and deadline" %}</legend>
         {% bootstrap_form form layout='horizontal' %}
         {% bootstrap_form sform layout='horizontal' %}
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create event" %}</button>
-                {% elif action == "edit" %}
+                {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-primary" href={% url "orga:cfp.text.edit" event=request.event.slug %}>{% trans "Edit" %}</a>

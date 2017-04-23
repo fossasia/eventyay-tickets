@@ -42,7 +42,7 @@ class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
     def form_valid(self, form):
         if not self.sform.is_valid():
             return self.form_invalid(form)
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The CfP update has been saved.')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
         self.sform.save()
@@ -69,7 +69,7 @@ class CfPQuestionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
         return reverse('orga:cfp.questions.view', kwargs={'event': self.object.event.slug})
 
     def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The question has been saved.')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
         return ret
@@ -82,7 +82,7 @@ class CfPQuestionDelete(OrgaPermissionRequired, View):
 
         question = self.request.event.questions.get(pk=self.kwargs.get('pk'))
         question.delete()
-        messages.success(request, _('The Question has been deleted.'))
+        messages.success(request, _('The question has been deleted.'))
         return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event}))
 
 
@@ -106,7 +106,7 @@ class SubmissionTypeDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdate
         return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
 
     def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The Submission Type has been saved.')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
         return ret
@@ -120,7 +120,7 @@ class SubmissionTypeDefault(OrgaPermissionRequired, View):
         submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=['default_type'])
-        messages.success(request, _('The SubmissionType has been made default.'))
+        messages.success(request, _('The Submission Type has been made default.'))
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
 
 

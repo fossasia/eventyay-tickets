@@ -4,7 +4,13 @@
 {% block settings_content %}
 
 <div>
-    <h4>{{ team|length }} {% trans "Team Members" %}</h4>
+    <div class="alert alert-info">
+        {% if team|length < 4 %}{% if pending and pending|length < 3 %}
+            {% trans "Teams of three people or less are somewhat small and provide more work for everyone. Why don't you invite some more team members?" %}<br>
+            {% endif %}{% endif %}
+        {% trans "To invite more members to your team, enter an email address below." %}
+    </div>
+    <legend>{{ team|length }} {% trans "Team Members" %}</legend>
     <ul>
         {% for member in team %}
             <li>
@@ -23,7 +29,7 @@
     </ul>
 
     {% if pending %}
-        <h4>{{ pending|length }} {% trans "Pending Invitations" %}</h4>
+        <legend>{{ pending|length }} {% trans "Pending Invitations" %}</legend>
         <ul>
             {% for email in pending %}
                 <li>

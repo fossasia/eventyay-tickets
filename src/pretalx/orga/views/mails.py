@@ -51,7 +51,7 @@ class OutboxMail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return reverse('orga:mails.outbox.list', kwargs={'event': self.object.event.slug})
 
     def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The email has been saved. When you send it, the updated text will be used.')
         form.instance.event = self.request.event
         return super().form_valid(form)
 
@@ -96,7 +96,7 @@ class TemplateDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return reverse('orga:mails.templates.list', kwargs={'event': self.object.event.slug})
 
     def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The template has been saved - note that already pending emails that are based on this template will not be changed!')
         form.instance.event = self.request.event
         return super().form_valid(form)
 
@@ -107,5 +107,5 @@ class TemplateDelete(OrgaPermissionRequired, View):
         super().dispatch(request, *args, **kwargs)
         template = MailTemplate.objects.filter(event=self.request.event).get(pk=self.kwargs.get('pk'))
         template.delete()
-        messages.success(request, 'Yay!')
+        messages.success(request, 'The template has been deleted.')
         return redirect(reverse('orga:mails.templates.list', kwargs={'event': request.event.slug}))

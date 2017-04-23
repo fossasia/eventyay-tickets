@@ -118,7 +118,7 @@ class SubmissionContent(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
         return reverse('orga:submissions.content.view', kwargs=self.kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Yay!')
+        messages.success(self.request, 'The submission has been updated!')
         form.instance.event = self.request.event
         return super().form_valid(form)
 
