@@ -5,6 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 
+class TolerantDict(dict):
+
+    def __missing__(self, key):
+        return key
+
+
 class MailTemplate(models.Model):
     event = models.ForeignKey(
         to='event.Event',
@@ -32,7 +38,7 @@ class MailTemplate(models.Model):
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
         # TODO correct handling of locale. translation.activate()?
-        context = context or dict()
+        context = TolerantDict(context or dict())
         mail = QueuedMail(
             event=self.event,
             to=user.email,
