@@ -45,8 +45,13 @@ class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return initial
 
     def form_valid(self, form):
-        messages.success(self.request, _('Yay!'))
         ret = super().form_valid(form)
+        messages.success(self.request, _('Yay, a new event! Check the settings and configure a CfP and you\'re good to go!'))
+        EventPermission.objects.create(
+            event=form.instance,
+            user=self.request.user,
+            is_orga=True,
+        )
         return ret
 
 
