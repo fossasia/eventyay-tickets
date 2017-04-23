@@ -81,6 +81,10 @@ class Submission(models.Model):
     content_locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
                                       choices=settings.LANGUAGES,
                                       verbose_name=_('Language of the submission'))
+    do_not_record = models.BooleanField(
+        default=False,
+        verbose_name=_('Don\'t record my talk.')
+    )
 
     def assign_code(self):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)

@@ -22,7 +22,10 @@ class InfoForm(forms.ModelForm):
 
     class Meta:
         model = Submission
-        fields = ['title', 'submission_type', 'content_locale', 'description', 'abstract', 'notes', 'duration']
+        fields = [
+            'title', 'submission_type', 'content_locale', 'description',
+            'abstract', 'notes', 'do_not_record', 'duration',
+        ]
 
 
 class QuestionsForm(forms.Form):
