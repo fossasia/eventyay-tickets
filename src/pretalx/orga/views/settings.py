@@ -9,7 +9,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
-from pretalx.common.mail import mail
+from pretalx.common.mail import mail, mail_send_task
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
@@ -116,15 +116,29 @@ class EventTeamInvite(OrgaPermissionRequired, View):
     def post(self, request, event):
         email = request.POST.get('email')
         event = self.request.event
-        invitation_token = get_random_string(
-            allowed_chars=string.ascii_lowercase + string.digits, length=20
-        )
+        invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
+        invitation_link = reverse('orga:invitation.view', kwargs={'code': invitation_token})
         EventPermission.objects.create(
             event=event,
             invitation_email=email,
             invitation_token=invitation_token,
             is_orga=True,
         )
+        invitation_text = _('''Hi!
+
+You have been invited to the orga crew of {event} - Please click here to accept:
+
+    {invitation_link}
+
+See you there,
+The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
+        mail_send_task.apply_async(args=(
+            [email],
+            _('You have been invited to the orga crew of {event}').format(event=self.request.event.name),
+            invitation_text,
+            request.event.email,
+            event.pk
+        ))
         messages.success(
             self.request,
             _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-23 12:06-0500\n"
-"PO-Revision-Date: 2017-04-23 19:04+0200\n"
+"POT-Creation-Date: 2017-04-23 12:27-0500\n"
+"PO-Revision-Date: 2017-04-23 19:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -554,21 +554,21 @@ msgstr "Link zur Einreichung. Kann nur in Standardvorlagen genutzt werden."
 msgid "The link to all submissions of this user."
 msgstr "Link zu allen Einreichungen des Adressaten."
 
-#: pretalx/mail/models.py:19
+#: pretalx/mail/models.py:25
 msgid "Reply-To"
 msgstr "Reply-To"
 
-#: pretalx/mail/models.py:20
+#: pretalx/mail/models.py:26
 msgid ""
 "Change the Reply-To address if you do not want to use the default orga "
 "address"
 msgstr "Trag hier etwas ein, wenn nicht die Orga-Adresse genutzt werden soll"
 
-#: pretalx/mail/models.py:25
+#: pretalx/mail/models.py:31
 msgid "BCC"
 msgstr "BCC"
 
-#: pretalx/mail/models.py:26
+#: pretalx/mail/models.py:32
 msgid ""
 "Enter comma separated addresses. Will receive a blind copy of every mail "
 "sent from this template. This may be a LOT!"
@@ -1156,7 +1156,35 @@ msgstr ""
 msgid "Yay! We saved your changes."
 msgstr "Jupp, alle Änderungen wurden gespeichert."
 
-#: pretalx/orga/views/settings.py:130
+#: pretalx/orga/views/settings.py:127
+#, python-brace-format
+msgid ""
+"Hi!\n"
+"\n"
+"You have been invited to the orga crew of {event} - Please click here to "
+"accept:\n"
+"\n"
+"    {invitation_link}\n"
+"\n"
+"See you there,\n"
+"The {event} orga crew (minus you)"
+msgstr ""
+"Hi!\n"
+"\n"
+"Du wurdest zum Orga-Team von {event} eingeladen - Bitte klicke hier, um die "
+"Einladung anzunehmen:\n"
+"\n"
+"    {invitation_link}\n"
+"\n"
+"Wir freuen uns auf dich\n"
+"Die {event} Orga (außer dir)"
+
+#: pretalx/orga/views/settings.py:137
+#, python-brace-format
+msgid "You have been invited to the orga crew of {event}"
+msgstr "Du wurdest zur \"{event}\"-Orga eingeladen"
+
+#: pretalx/orga/views/settings.py:144
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your team - more team members help distribute "
@@ -1165,7 +1193,7 @@ msgstr ""
 "<{email}> wurde zum Orga-Team eingeladen. Mehr Orga heißt weniger Arbeit für "
 "die Einzelnen - yay!"
 
-#: pretalx/orga/views/settings.py:192
+#: pretalx/orga/views/settings.py:206
 msgid "Your profile has been updated :)"
 msgstr "Dein Profil wurde angepasst :)"
 
