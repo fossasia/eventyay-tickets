@@ -1,7 +1,9 @@
 from django.db import models
 
+from pretalx.common.mixins import LogMixin
 
-class SpeakerProfile(models.Model):
+
+class SpeakerProfile(LogMixin, models.Model):
     biography = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         to='person.User',

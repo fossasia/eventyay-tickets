@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.mixins import LogMixin
 
-class Schedule(models.Model):
+
+class Schedule(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         on_delete=models.PROTECT,

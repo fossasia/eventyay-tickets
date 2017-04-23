@@ -4,6 +4,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.choices import Choices
+from pretalx.common.mixins import LogMixin
 
 
 class SubmissionStates(Choices):
@@ -32,7 +33,7 @@ class SubmissionStates(Choices):
     }
 
 
-class Submission(models.Model):
+class Submission(LogMixin, models.Model):
     code = models.CharField(
         max_length=16,
         db_index=True

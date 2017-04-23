@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
+from pretalx.common.mixins import LogMixin
 
 
 class QuestionVariant(Choices):
@@ -23,7 +24,7 @@ class QuestionVariant(Choices):
     ]
 
 
-class Question(models.Model):
+class Question(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         on_delete=models.PROTECT,
@@ -54,7 +55,7 @@ class Question(models.Model):
         ordering = ['position']
 
 
-class AnswerOption(models.Model):
+class AnswerOption(LogMixin, models.Model):
     question = models.ForeignKey(
         to='submission.Question',
         on_delete=models.PROTECT,
@@ -64,11 +65,15 @@ class AnswerOption(models.Model):
         max_length=200,
     )
 
+    @property
+    def event(self):
+        return self.question.event
+
     def __str__(self):
         return str(self.answer)
 
 
-class Answer(models.Model):
+class Answer(LogMixin, models.Model):
     question = models.ForeignKey(
         to='submission.Question',
         on_delete=models.PROTECT,
@@ -84,6 +89,10 @@ class Answer(models.Model):
         to='submission.AnswerOption',
         related_name='answers',
     )
+
+    @property
+    def event(self):
+        return self.question.event
 
     def __str__(self):
         return self.answer

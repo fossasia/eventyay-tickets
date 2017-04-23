@@ -8,11 +8,12 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
+from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import settings_hierarkey
 
 
 @settings_hierarkey.add()
-class Event(models.Model):
+class Event(LogMixin, models.Model):
     name = I18nCharField(
         max_length=200,
         verbose_name=_('Name'),
@@ -153,3 +154,7 @@ class Event(models.Model):
                                      fail_silently=False)
         else:
             return get_connection(fail_silently=False)
+
+    @property
+    def event(self):
+        return self

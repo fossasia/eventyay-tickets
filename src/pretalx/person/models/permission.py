@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.mixins import LogMixin
 
-class EventPermission(models.Model):
+
+class EventPermission(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         related_name='permissions',

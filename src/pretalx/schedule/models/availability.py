@@ -1,7 +1,9 @@
 from django.db import models
 
+from pretalx.common.mixins import LogMixin
 
-class Availability(models.Model):
+
+class Availability(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         related_name='availabilities',

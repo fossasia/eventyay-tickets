@@ -1,7 +1,9 @@
 from django.db import models
 
+from pretalx.common.mixins import LogMixin
 
-class TalkSlot(models.Model):
+
+class TalkSlot(LogMixin, models.Model):
     submission = models.ForeignKey(
         to='submission.Submission',
         on_delete=models.PROTECT,
@@ -19,3 +21,7 @@ class TalkSlot(models.Model):
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    @property
+    def event(self):
+        return self.submission.event

@@ -1,8 +1,10 @@
 from django.db import models
 from i18nfield.fields import I18nCharField
 
+from pretalx.common.mixins import LogMixin
 
-class SubmissionType(models.Model):
+
+class SubmissionType(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         related_name='submission_types',

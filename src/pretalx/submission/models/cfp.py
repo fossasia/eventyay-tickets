@@ -2,8 +2,10 @@ from django.db import models
 from django.utils.timezone import now
 from i18nfield.fields import I18nCharField, I18nTextField
 
+from pretalx.common.mixins import LogMixin
 
-class CfP(models.Model):
+
+class CfP(LogMixin, models.Model):
     event = models.OneToOneField(
         to='event.Event',
         on_delete=models.PROTECT,
@@ -19,7 +21,6 @@ class CfP(models.Model):
         related_name='+',
     )
     deadline = models.DateTimeField(null=True, blank=True)
-    # languages
 
     @property
     def is_open(self):

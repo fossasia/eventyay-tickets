@@ -1,8 +1,10 @@
 from django.db import models
 from i18nfield.fields import I18nCharField
 
+from pretalx.common.mixins import LogMixin
 
-class Track(models.Model):
+
+class Track(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
         on_delete=models.PROTECT,
