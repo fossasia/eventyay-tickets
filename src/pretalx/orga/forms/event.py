@@ -50,7 +50,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         model = Event
         fields = [
             'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
-            'email', 'color', 'locale'
+            'email', 'locale'
         ]
 
 
