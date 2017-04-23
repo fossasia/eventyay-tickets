@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.views.generic import FormView, ListView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate
 from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms.mails import MailTemplateForm, OutboxMailForm
@@ -82,6 +83,11 @@ class TemplateDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = MailTemplate
     form_class = MailTemplateForm
     template_name = 'orga/mails/template_form.html'
+
+    def get_context_data(self):
+        ctx = super().get_context_data()
+        ctx['placeholders'] = get_context_explanation()
+        return ctx
 
     def get_object(self) -> MailTemplate:
         return MailTemplate.objects.filter(event=self.request.event).get(pk=self.kwargs.get('pk'))

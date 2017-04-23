@@ -2,6 +2,17 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block mail_content %}
+    <div class="alert alert-info">
+        {% blocktrans %}
+            You have some variables available that will be rendered into the mails
+            (in the appropriate language) before sending:
+        {% endblocktrans %}
+        <ul>
+        {% for placeholder in placeholders %}
+            <li>{{ placeholder.name }}{% if placeholder.explanation %}: {{ placeholder.explanation }}{% endif %}</li>
+        {% endfor %}
+        </ul>
+    </div>
 
     <form method="post" action="">
         {% csrf_token %}

@@ -3,12 +3,20 @@
 {% load i18n %}
 {% block mail_content %}
 
-    <div><a href="{% url "orga:mails.templates.create" event=request.event.slug %}">
+    <div class="alert alert-info">
+        {% blocktrans %}
+            You can edit the default templates and your custom templates for emails here.
+            If you want to send emails to some or all of your speakers, head over to the
+            "Send Emails" tab. Mails queued for sending are in the "Outbox" tab.
+        {% endblocktrans %}
+    </div>
+
+    <div class="alert"><a href="{% url "orga:mails.templates.create" event=request.event.slug %}">
         <button class="btn btn-primary pull-right">{% trans "New custom template" %}</button>
     </a></div>
 
     <div>
-    <div>
+    <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Acknowledge Mail" %}</legend>
         {% bootstrap_form ack layout='horizontal' %}
@@ -16,7 +24,7 @@
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
-    <div>
+    <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Accept Mail" %}</legend>
         {% bootstrap_form accept layout='horizontal' %}
@@ -24,7 +32,7 @@
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
-    <div>
+    <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Rejection Mail" %}</legend>
         {% bootstrap_form reject layout='horizontal' %}
@@ -34,7 +42,7 @@
     </div>
 
     {% for template in other %}
-    <div>
+    <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Custom Mail" %}</legend>
         {% bootstrap_form template layout='horizontal' %}
