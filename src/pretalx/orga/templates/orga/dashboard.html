@@ -10,14 +10,14 @@
 
     <div class="dashboard-list">
         {% for event in events %}
-            <div class="dashboard-block"><a href="{% url "orga:event.dashboard" event=event.slug %}">
+            <a href="{% url "orga:event.dashboard" event=event.slug %}"><div class="dashboard-block">
                 {{ event.name }}
-            </a></div>
-        {% empty %}
-            <div class="no-events">
-                {% trans "There does not seem to be anything here." %}
-            </div>
+            </div></a>
         {% endfor %}
+        <a href="{% url "orga:event.create" %}"><div class="dashboard-block">
+            <h1><span class="fa fa-plus"></span>{% trans "New event" %}</h1>
+            <span class="dashboard-description">{% trans "Uh, a new event? Head over here, please!" %}</span>
+        </div></a>
     </div>
 
 {% endblock %}
