@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
 

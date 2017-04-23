@@ -3,10 +3,9 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.urls import reverse
-from django.utils import translation, timezone
+from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
-    get_supported_language_variant, language_code_re,
-    parse_accept_lang_header,
+    get_supported_language_variant, language_code_re, parse_accept_lang_header,
 )
 from django.views.generic import TemplateView
 

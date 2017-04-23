@@ -4,9 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import (
-    DetailView, ListView, TemplateView, UpdateView,
-)
+from django.views.generic import DetailView, ListView, TemplateView, UpdateView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
@@ -22,7 +20,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         return LoginInfoForm(user=self.request.user,
                              data=(self.request.POST
                                    if self.request.method == "POST"
-                                      and self.request.POST.get("form") == "login"
+                                   and self.request.POST.get("form") == "login"
                                    else None))
 
     @cached_property
@@ -31,7 +29,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
                                   event=self.request.event,
                                   data=(self.request.POST
                                         if self.request.method == "POST"
-                                           and self.request.POST.get("form") == "profile"
+                                        and self.request.POST.get("form") == "profile"
                                         else None))
 
     def get_context_data(self, event):

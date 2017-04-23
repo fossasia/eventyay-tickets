@@ -1,5 +1,3 @@
-from django.core.mail import get_connection, send_mail
-from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField

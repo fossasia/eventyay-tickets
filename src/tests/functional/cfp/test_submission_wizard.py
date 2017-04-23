@@ -292,4 +292,3 @@ def test_wizard_logged_in_user_no_questions(event, client, user):
 # TODO: test failed login
 # TODO: test required fields
 # TODO: test required questions
-

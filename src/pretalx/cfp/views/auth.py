@@ -1,4 +1,5 @@
 from datetime import timedelta
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.urlresolvers import reverse
@@ -7,10 +8,10 @@ from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _, get_language
+from django.utils.translation import get_language, ugettext_lazy as _
 from django.views.generic import FormView, View
 
-from pretalx.cfp.forms.auth import LoginForm, ResetForm, RecoverForm
+from pretalx.cfp.forms.auth import LoginForm, RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException, mail
 from pretalx.person.models import User

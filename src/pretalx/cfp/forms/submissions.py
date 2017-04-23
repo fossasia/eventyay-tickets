@@ -3,7 +3,9 @@ from decimal import Decimal
 from django import forms
 
 from pretalx import settings
-from pretalx.submission.models import QuestionVariant, Submission, SubmissionType
+from pretalx.submission.models import (
+    QuestionVariant, Submission, SubmissionType,
+)
 
 
 class InfoForm(forms.ModelForm):

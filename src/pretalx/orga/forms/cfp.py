@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
-from i18nfield.forms import I18nModelForm, I18nFormMixin
+from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.submission.models import CfP, Question, SubmissionType

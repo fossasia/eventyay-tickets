@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
-from django.utils import translation, timezone
+from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.person.models import SpeakerProfile, User

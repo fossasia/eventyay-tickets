@@ -11,11 +11,13 @@ def event():
     e.get_cfp()  # created on access
     return e
 
+
 @pytest.fixture
 def question(event):
     return Question.objects.create(event=event, question='How old are you?',
                                    variant=QuestionVariant.NUMBER,
                                    required=False)
+
 
 @pytest.fixture
 def user(event):

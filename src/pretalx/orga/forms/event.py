@@ -4,11 +4,10 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import get_current_timezone_name
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
-from i18nfield.forms import I18nModelForm, I18nFormMixin
+from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.event.models import Event
-from pretalx.person.models import User
 
 
 class EventForm(ReadOnlyFlag, I18nModelForm):

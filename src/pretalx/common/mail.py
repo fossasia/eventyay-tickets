@@ -1,11 +1,10 @@
 import logging
 from smtplib import SMTPRecipientsRefused, SMTPSenderRefused
+from typing import Any, Dict, Union
 
 from django.core.mail import EmailMultiAlternatives, get_connection
-from django.utils.translation import override
-from typing import Union, Dict, Any
-
 from django.core.mail.backends.smtp import EmailBackend
+from django.utils.translation import override
 from i18nfield.strings import LazyI18nString
 
 from pretalx.celery_app import app
