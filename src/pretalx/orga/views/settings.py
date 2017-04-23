@@ -36,22 +36,18 @@ class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_success_url(self) -> str:
         return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial['permissions'] = User.objects.filter(
-            permissions__is_orga=True,
-            permissions__event=self.object
-        )
-        return initial
-
     def form_valid(self, form):
+        new_event = not bool(form.instance.pk)
         ret = super().form_valid(form)
-        messages.success(self.request, _('Yay, a new event! Check the settings and configure a CfP and you\'re good to go!'))
-        EventPermission.objects.create(
-            event=form.instance,
-            user=self.request.user,
-            is_orga=True,
-        )
+        if new_event:
+            messages.success(self.request, _('Yay, a new event! Check the settings and configure a CfP and you\'re good to go!'))
+            EventPermission.objects.create(
+                event=form.instance,
+                user=self.request.user,
+                is_orga=True,
+            )
+        else:
+            messages.success(self.request, _('The event settings have been saved.'))
         return ret
 
 
