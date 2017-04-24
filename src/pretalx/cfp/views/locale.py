@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.utils.http import is_safe_url
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
 
@@ -24,5 +26,10 @@ class LocaleSet(View):
                             expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime(
                                 '%a, %d-%b-%Y %H:%M:%S GMT'),
                             domain=settings.SESSION_COOKIE_DOMAIN)
+            messages.success(
+                request,
+                _('Your locale preferences have been saved. We like to think that we have excellent support '
+                  'for pretalx, but if you encounter issues or errors, please contact us!'),
+            )
 
         return resp
