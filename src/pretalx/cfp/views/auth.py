@@ -75,11 +75,15 @@ class ResetView(EventPageMixin, FormView):
                 self.request.event,
                 locale=get_language()
             )
-            messages.success(self.request, _('We will send you an e-mail containing further instructions. If you don\'t '
-                                             'see the email within the next minutes, check your spam inbox!'))
         except SendMailException:
             messages.error(self.request, _('There was an error sending the mail. Please try again later.'))
             return self.get(self.request, *self.args, **self.kwargs)
+
+        messages.success(self.request, _('We will send you an e-mail containing further instructions. If you don\'t '
+                                         'see the email within the next minutes, check your spam inbox!'))
+        if user.profiles.filter(event=self.request.event).exists():
+            profile = user.profiles.get(event=self.request.event)
+            profile.log_action('pretalx.user.password_reset', person=user)
 
         return redirect(reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug
@@ -110,7 +114,7 @@ class RecoverView(EventPageMixin, FormView):
         self.user.pw_reset_token = None
         self.user.pw_reset_time = None
         self.user.save()
-        messages.success(self.request, _('Awesome! You can now login using your new password.'))
+        messages.success(self.request, _('Awesome! You can now log in using your new password.'))
         return redirect(reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug
         }))

@@ -43,11 +43,15 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             if self.login_form.is_valid():
                 self.login_form.save()
                 messages.success(self.request, _('Your changes have been saved.'))
+                profile = self.request.user.profiles.get(event=self.request.event)
+                profile.log_action('pretalx.user.password.update', person=request.user)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
         elif self.profile_form.is_bound:
             if self.profile_form.is_valid():
                 self.profile_form.save()
                 messages.success(self.request, _('Your changes have been saved.'))
+                profile = self.request.user.profiles.get(event=self.request.event)
+                profile.log_action('pretalx.user.profile.update', person=request.user)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
 
         messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
@@ -71,6 +75,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
         self.object = self.get_object()
         self.object.state = SubmissionStates.WITHDRAWN
         self.object.save()
+        self.object.log_action('pretalx.submission.withdrawal', person=request.user)
         messages.success(self.request, _('Your submission has been withdrawn.'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
@@ -136,7 +141,11 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
         if self.can_edit:
             form.save()
             self.questions_save()
+            if form.has_changed():
+                form.instance.log_action('pretalx.submission.update', person=self.request.user)
             messages.success(self.request, _('Your changes have been saved.'))
+        else:
+            messages.error(self.request, _('This submission cannot be edited anymore.'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
     def questions_save(self):
@@ -146,6 +155,8 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
                 # We already have a cached answer object, so we don't
                 # have to create a new one
                 if v == '':
+                    # TODO: Deleting the answer removes the option to have a log here.
+                    # Maybe setting the answer to '' is the right way to go.
                     field.answer.delete()
                 else:
                     self._save_to_answer(field, field.answer, v)
@@ -159,6 +170,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
                 answer.save()
 
     def _save_to_answer(self, field, answer, value):
+        action = 'pretalx.submission.answer' + ('update' if answer.pk else 'create')
         if isinstance(field, forms.ModelMultipleChoiceField):
             answstr = ", ".join([str(o) for o in value])
             if not answer.pk:
@@ -176,3 +188,4 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
             answer.answer = value.answer
         else:
             answer.answer = value
+        answer.log_action(action, person=self.request.user, data={'answer': value})

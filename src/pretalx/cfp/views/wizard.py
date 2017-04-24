@@ -131,6 +131,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     answer.answer = value
                 answer.save()
 
+        sub.log_action('pretalx.submission.create', person=user)
         messages.success(self.request, 'Your talk has been submitted successfully!')
         login(self.request, user)
         return redirect(reverse('cfp:event.user.submissions', kwargs={
