@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-23 12:27-0500\n"
-"PO-Revision-Date: 2017-04-23 19:29+0200\n"
+"POT-Creation-Date: 2017-04-24 01:30-0500\n"
+"PO-Revision-Date: 2017-04-24 08:32+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Username or email address"
 msgstr "Username oder E-Mail_Adresse"
 
-#: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:80
+#: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:79
 #: pretalx/person/forms.py:16 pretalx/person/forms.py:24
 msgid "Password"
 msgstr "Passwort"
@@ -75,7 +75,7 @@ msgstr "Du bist als <a %(attr)s>%(nick)s</a> angemeldet."
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
 #: pretalx/orga/templates/orga/submission/list.html:37
-#: pretalx/submission/models/submission.py:18
+#: pretalx/submission/models/submission.py:19
 msgid "submitted"
 msgstr "eingereicht"
 
@@ -85,23 +85,24 @@ msgstr "abgelehnt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:7
 #: pretalx/orga/templates/orga/submission/list.html:41
-#: pretalx/submission/models/submission.py:20
+#: pretalx/submission/models/submission.py:21
 msgid "accepted"
 msgstr "angenommen"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:9
 #: pretalx/orga/templates/orga/submission/list.html:43
-#: pretalx/submission/models/submission.py:21
+#: pretalx/submission/models/submission.py:22
 msgid "confirmed"
 msgstr "bestätigt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
-#: pretalx/submission/models/submission.py:22
+#: pretalx/submission/models/submission.py:23
 msgid "canceled"
 msgstr "abgesagt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:13
-#: pretalx/submission/models/submission.py:23
+#: pretalx/orga/templates/orga/submission/list.html:47
+#: pretalx/submission/models/submission.py:24
 msgid "withdrawn"
 msgstr "zurückgezogen"
 
@@ -388,16 +389,22 @@ msgstr ""
 msgid "Submit something now!"
 msgstr "Reich etwas ein!"
 
-#: pretalx/cfp/views/auth.py:51
+#: pretalx/cfp/views/auth.py:52
 msgid "You already requested a new password within the last 24 hours."
 msgstr ""
 "Du hast in den letzten 24 Stunden schon mal dein Passwort zurückgesetzt."
 
-#: pretalx/cfp/views/auth.py:62
+#: pretalx/cfp/views/auth.py:63
 msgid "Password recovery"
 msgstr "Passwortwiederherstellung"
 
-#: pretalx/cfp/views/auth.py:77
+#: pretalx/cfp/views/auth.py:79
+msgid "There was an error sending the mail. Please try again later."
+msgstr ""
+"Es gab ein Fehler beim Senden der E-Mail. Bitte probiere es später noch mal, "
+"wir sind dran."
+
+#: pretalx/cfp/views/auth.py:82
 msgid ""
 "We will send you an e-mail containing further instructions. If you don't see "
 "the email within the next minutes, check your spam inbox!"
@@ -405,13 +412,7 @@ msgstr ""
 "Wir werden dir eine Mail mit weiteren Schritten schicken. Wenn du in den "
 "nächsten Minuten keine Mail bekommst, guck mal im Spam-Ordner."
 
-#: pretalx/cfp/views/auth.py:80
-msgid "There was an error sending the mail. Please try again later."
-msgstr ""
-"Es gab ein Fehler beim Senden der E-Mail. Bitte probiere es später noch mal, "
-"wir sind dran."
-
-#: pretalx/cfp/views/auth.py:99
+#: pretalx/cfp/views/auth.py:104
 msgid ""
 "This link was not valid. Make sure you copied the complete URL from the "
 "email and that the email is no more than 24 hours old."
@@ -419,23 +420,37 @@ msgstr ""
 "Der Link war nicht valide - bitte prüfe, dass du wirklich die vollständige "
 "URL kopiert hast und die E-Mail nicht älter als 24 Stunden ist."
 
-#: pretalx/cfp/views/auth.py:112
-msgid "Awesome! You can now login using your new password."
+#: pretalx/cfp/views/auth.py:117
+msgid "Awesome! You can now log in using your new password."
 msgstr "Jupp, du kannst dich jetzt mit deinem neuen Passwort anmelden."
 
-#: pretalx/cfp/views/user.py:47 pretalx/cfp/views/user.py:52
-#: pretalx/cfp/views/user.py:141
+#: pretalx/cfp/views/locale.py:31
+msgid ""
+"Your locale preferences have been saved. We like to think that we have "
+"excellent support for pretalx, but if you encounter issues or errors, please "
+"contact us!"
+msgstr ""
+"Deine Spracheinstellungen wurden gespeichert. Wir bilden uns ein, hier gutes "
+"Deutsch zu schreiben, aber wenn du Probleme oder gar Fehler findest, sag uns "
+"bitte Bescheid!"
+
+#: pretalx/cfp/views/user.py:45 pretalx/cfp/views/user.py:52
+#: pretalx/cfp/views/user.py:146
 msgid "Your changes have been saved."
 msgstr "Deine Änderungen wurden gespeichert."
 
-#: pretalx/cfp/views/user.py:55
+#: pretalx/cfp/views/user.py:57
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
 
-#: pretalx/cfp/views/user.py:76
+#: pretalx/cfp/views/user.py:79
 msgid "Your submission has been withdrawn."
 msgstr "Deine Einreichung wurde zurückgezogen."
+
+#: pretalx/cfp/views/user.py:148
+msgid "This submission cannot be edited anymore."
+msgstr "Die Einreichung kann nicht mehr bearbeitet werden."
 
 #: pretalx/cfp/views/wizard.py:59 pretalx/cfp/views/wizard.py:65
 msgid "This event currently does not accept new submissions, sorry!"
@@ -472,11 +487,11 @@ msgstr ""
 "Grüße,\n"
 "deine {event}-Orga\n"
 
-#: pretalx/event/models/event.py:18 pretalx/person/forms.py:87
+#: pretalx/event/models/event.py:19 pretalx/person/forms.py:87
 msgid "Name"
 msgstr "Name"
 
-#: pretalx/event/models/event.py:22
+#: pretalx/event/models/event.py:23
 msgid ""
 "Should be short, only contain lowercase letters and numbers, and must be "
 "unique."
@@ -484,51 +499,51 @@ msgstr ""
 "Sollte kurz sein, nur Kleinbuchstaben und Zahlen enthalten, und muss "
 "einmalig sein."
 
-#: pretalx/event/models/event.py:26
+#: pretalx/event/models/event.py:27
 msgid "The slug may only contain letters, numbers, dots and dashes."
 msgstr ""
 "Die Kurzform darf nur Buchstaben, Zahlen, Punkte und Bindestriche enthalten."
 
-#: pretalx/event/models/event.py:29
+#: pretalx/event/models/event.py:30
 msgid "Short form"
 msgstr "Kurzform"
 
-#: pretalx/event/models/event.py:33
+#: pretalx/event/models/event.py:34
 msgid "Subitle"
 msgstr "Untertitel"
 
-#: pretalx/event/models/event.py:38
+#: pretalx/event/models/event.py:39
 msgid "Event is public"
 msgstr "Veranstaltung ist öffentlich"
 
-#: pretalx/event/models/event.py:47
+#: pretalx/event/models/event.py:48
 msgid "Event start date"
 msgstr "Veranstaltungsbeginn"
 
-#: pretalx/event/models/event.py:51
+#: pretalx/event/models/event.py:52
 msgid "Event end date"
 msgstr "Veranstaltungsende"
 
-#: pretalx/event/models/event.py:59
+#: pretalx/event/models/event.py:60
 msgid "Orga email address"
 msgstr "Orga-Adresse"
 
-#: pretalx/event/models/event.py:60
+#: pretalx/event/models/event.py:61
 msgid "Will be used as sender/reply-to in emails"
 msgstr "Wird als Absender und Reply-To verwendet"
 
-#: pretalx/event/models/event.py:65
+#: pretalx/event/models/event.py:66
 msgid "Main event color"
 msgstr "Veranstaltungsfarbe"
 
-#: pretalx/event/models/event.py:66
+#: pretalx/event/models/event.py:67
 msgid ""
 "Please provide a hex value like #00ff00 if you do not like pretalx colors."
 msgstr ""
 "Gib hier einen hex-Wert wie #00ff00 ein, wenn dir unsere Farben nicht "
 "gefallen."
 
-#: pretalx/event/models/event.py:73
+#: pretalx/event/models/event.py:74
 msgid "Default language"
 msgstr "Standardsprache"
 
@@ -581,31 +596,31 @@ msgstr ""
 msgid "Display deadline publicly"
 msgstr "Einreichungsschluss öffentlich anzeigen"
 
-#: pretalx/orga/forms/event.py:16
+#: pretalx/orga/forms/event.py:15
 msgid "Active languages"
 msgstr "Verfügbare Sprachen"
 
-#: pretalx/orga/forms/event.py:33
+#: pretalx/orga/forms/event.py:32
 msgid "This slug is already taken."
 msgstr "Diese Kurzform ist schon vergeben."
 
-#: pretalx/orga/forms/event.py:41
+#: pretalx/orga/forms/event.py:40
 msgid "Your default language needs to be one of your active languages."
 msgstr "Deine Standardsprache muss aktiviert sein."
 
-#: pretalx/orga/forms/event.py:59
+#: pretalx/orga/forms/event.py:58
 msgid "Sender address"
 msgstr "Absender-Adresse"
 
-#: pretalx/orga/forms/event.py:60
+#: pretalx/orga/forms/event.py:59
 msgid "Sender address for outgoing emails"
 msgstr "Absender-Adresse für ausgehende E-Mails"
 
-#: pretalx/orga/forms/event.py:63
+#: pretalx/orga/forms/event.py:62
 msgid "Use custom SMTP server"
 msgstr "Eigenen SMTP-Server verwenden"
 
-#: pretalx/orga/forms/event.py:64
+#: pretalx/orga/forms/event.py:63
 msgid ""
 "All mail related to your event will be sent over the smtp server specified "
 "by you."
@@ -613,35 +628,35 @@ msgstr ""
 "Alle E-Mails bezüglich deiner Veranstaltung werden über den von dir "
 "angegebenen SMTP-Server versendet."
 
-#: pretalx/orga/forms/event.py:68
+#: pretalx/orga/forms/event.py:67
 msgid "Hostname"
 msgstr "Hostname"
 
-#: pretalx/orga/forms/event.py:72
+#: pretalx/orga/forms/event.py:71
 msgid "Port"
 msgstr "Port"
 
-#: pretalx/orga/forms/event.py:76 pretalx/person/forms.py:19
+#: pretalx/orga/forms/event.py:75 pretalx/person/forms.py:19
 msgid "Username"
 msgstr "Username"
 
-#: pretalx/orga/forms/event.py:87
+#: pretalx/orga/forms/event.py:86
 msgid "Use STARTTLS"
 msgstr "STARTTLS verwenden"
 
-#: pretalx/orga/forms/event.py:88
+#: pretalx/orga/forms/event.py:87
 msgid "Commonly enabled on port 587."
 msgstr "Meistens auf Port 587 verfügbar."
 
-#: pretalx/orga/forms/event.py:92
+#: pretalx/orga/forms/event.py:91
 msgid "Use SSL"
 msgstr "SSL verwenden"
 
-#: pretalx/orga/forms/event.py:93
+#: pretalx/orga/forms/event.py:92
 msgid "Commonly enabled on port 465."
 msgstr "Meistens auf Port 465 verfügbar."
 
-#: pretalx/orga/forms/event.py:106
+#: pretalx/orga/forms/event.py:105
 msgid ""
 "You can activate either SSL or STARTTLS security, but not both at the same "
 "time."
@@ -1037,7 +1052,7 @@ msgid "Reject"
 msgstr "Ablehnen"
 
 #: pretalx/orga/templates/orga/submission/list.html:14
-#: pretalx/submission/models/submission.py:51
+#: pretalx/submission/models/submission.py:52
 msgid "Title"
 msgstr "Titel"
 
@@ -1046,7 +1061,7 @@ msgid "State"
 msgstr "Status"
 
 #: pretalx/orga/templates/orga/submission/list.html:39
-#: pretalx/submission/models/submission.py:19
+#: pretalx/submission/models/submission.py:20
 msgid "rejected"
 msgstr "abgelehnt"
 
@@ -1121,7 +1136,7 @@ msgstr "Der Einreichungstyp wurde zum Standard gemacht."
 msgid "The Submission Type has been deleted."
 msgstr "Der Einreichungstyp wurde gelöscht."
 
-#: pretalx/orga/views/settings.py:49
+#: pretalx/orga/views/settings.py:43
 msgid ""
 "Yay, a new event! Check the settings and configure a CfP and you're good to "
 "go!"
@@ -1129,12 +1144,16 @@ msgstr ""
 "Hui, eine neue Veranstaltung! Geh die Einstellungen durch und schreib einen "
 "CfP, und du kannst richtig loslegen!"
 
-#: pretalx/orga/views/settings.py:80
+#: pretalx/orga/views/settings.py:50
+msgid "The event settings have been saved."
+msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
+
+#: pretalx/orga/views/settings.py:76
 #, python-format
 msgid "An error occured while contacting the SMTP server: %s"
 msgstr "Ein Fehler trat auf beim Versuch, den SMTP-Server zu erreichen: %s"
 
-#: pretalx/orga/views/settings.py:84
+#: pretalx/orga/views/settings.py:80
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
@@ -1142,7 +1161,7 @@ msgstr ""
 "Ihre Änderungen wurden gespeichert und die Verbindung zum SMTP-Server war "
 "erfolgreich."
 
-#: pretalx/orga/views/settings.py:87
+#: pretalx/orga/views/settings.py:83
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
@@ -1152,11 +1171,11 @@ msgstr ""
 "\"Eigenen SMTP-Server verwenden\" zu setzen, damit der Server auch benutzt "
 "wird."
 
-#: pretalx/orga/views/settings.py:91
+#: pretalx/orga/views/settings.py:87
 msgid "Yay! We saved your changes."
 msgstr "Jupp, alle Änderungen wurden gespeichert."
 
-#: pretalx/orga/views/settings.py:127
+#: pretalx/orga/views/settings.py:123
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -1179,12 +1198,12 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/settings.py:137
+#: pretalx/orga/views/settings.py:133
 #, python-brace-format
 msgid "You have been invited to the orga crew of {event}"
 msgstr "Du wurdest zur \"{event}\"-Orga eingeladen"
 
-#: pretalx/orga/views/settings.py:144
+#: pretalx/orga/views/settings.py:140
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your team - more team members help distribute "
@@ -1193,7 +1212,7 @@ msgstr ""
 "<{email}> wurde zum Orga-Team eingeladen. Mehr Orga heißt weniger Arbeit für "
 "die Einzelnen - yay!"
 
-#: pretalx/orga/views/settings.py:206
+#: pretalx/orga/views/settings.py:202
 msgid "Your profile has been updated :)"
 msgstr "Dein Profil wurde angepasst :)"
 
@@ -1270,7 +1289,7 @@ msgstr "Aktuelles Passwort"
 msgid "Password (new)"
 msgstr "Neues Passwort"
 
-#: pretalx/person/models/permission.py:19
+#: pretalx/person/models/permission.py:21
 msgid "Organizes the event"
 msgstr "Organisiert die Veranstaltung"
 
@@ -1278,7 +1297,7 @@ msgstr "Organisiert die Veranstaltung"
 msgid "Preferred language"
 msgstr "Standardsprache"
 
-#: pretalx/schedule/models/schedule.py:17
+#: pretalx/schedule/models/schedule.py:19
 #, python-brace-format
 msgid "Schedule for {self.event}"
 msgstr "Programm für {self.event}"
@@ -1291,53 +1310,57 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: pretalx/submission/models/question.py:17
+#: pretalx/submission/models/question.py:18
 msgid "number"
 msgstr "Zahl"
 
-#: pretalx/submission/models/question.py:18
+#: pretalx/submission/models/question.py:19
 msgid "one-line text"
 msgstr "Text (einzeilig)"
 
-#: pretalx/submission/models/question.py:19
+#: pretalx/submission/models/question.py:20
 msgid "multi-line text"
 msgstr "Text (mehrzeilig)"
 
-#: pretalx/submission/models/question.py:20
+#: pretalx/submission/models/question.py:21
 msgid "yes/no"
 msgstr "Ja/Nein"
 
-#: pretalx/submission/models/question.py:21
+#: pretalx/submission/models/question.py:22
 msgid "single choice"
 msgstr "Auswahl (einzeln)"
 
-#: pretalx/submission/models/question.py:22
+#: pretalx/submission/models/question.py:23
 msgid "multiple choice"
 msgstr "Auswahl (mehrere)"
 
-#: pretalx/submission/models/submission.py:55
+#: pretalx/submission/models/submission.py:56
 msgid "Type of submission"
 msgstr "Einreichungsart"
 
-#: pretalx/submission/models/submission.py:61
+#: pretalx/submission/models/submission.py:62
 msgid "Submission state"
 msgstr "Einreichungsstatus"
 
-#: pretalx/submission/models/submission.py:67
+#: pretalx/submission/models/submission.py:68
 msgid "Description"
 msgstr "Beschreibung"
 
-#: pretalx/submission/models/submission.py:71
+#: pretalx/submission/models/submission.py:72
 msgid "Abstract"
 msgstr "Zusammenfassung"
 
-#: pretalx/submission/models/submission.py:75
+#: pretalx/submission/models/submission.py:76
 msgid "Notes for the organizer"
 msgstr "Notiz für den Veranstalter"
 
-#: pretalx/submission/models/submission.py:83
+#: pretalx/submission/models/submission.py:84
 msgid "Language of the submission"
 msgstr "Einreichungssprache"
+
+#: pretalx/submission/models/submission.py:87
+msgid "Don't record my talk."
+msgstr "Zeichnet meine Veranstaltung nicht auf."
 
 #~ msgid "Submission types"
 #~ msgstr "Einreichungsarten"
