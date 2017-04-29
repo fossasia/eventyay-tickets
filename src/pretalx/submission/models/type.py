@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
@@ -23,4 +24,7 @@ class SubmissionType(LogMixin, models.Model):
     )
 
     def __str__(self) -> str:
-        return str(self.name)
+        return _('{name} ({duration} minutes)').format(
+            name=self.name,
+            duration=self.default_duration,
+        )
