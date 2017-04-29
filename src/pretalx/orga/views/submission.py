@@ -91,9 +91,8 @@ class SubmissionSpeakers(OrgaPermissionRequired, TemplateView):
         return context
 
 
-class SubmissionQuestions(OrgaPermissionRequired, ListView):  # TODO: move from list to formset
-    template_name = 'orga/submission/questions.html'
-    context_object_name = 'questions'
+class SubmissionQuestions(OrgaPermissionRequired, TemplateView):
+    template_name = 'orga/submission/answer_list.html'
 
     def get_queryset(self):
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
@@ -101,7 +100,15 @@ class SubmissionQuestions(OrgaPermissionRequired, ListView):  # TODO: move from 
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        user_list = [{
+            'speaker': user,
+            'answers': submission.answers.all()  # TODO: filter
+        } for user in submission.speakers.all()]
+        context.update({
+            'user_list': user_list,
+            'submission': submission,
+        })
         return context
 
 

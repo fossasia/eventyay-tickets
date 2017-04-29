@@ -1,0 +1,16 @@
+{% extends "orga/submission/base.html" %}
+{% load i18n %}
+
+{% block submission_content %}
+
+    <legend>{% trans "Answers" %}</legend>
+
+        {% for entry in user_list %}
+            <h2>{{ entry.user.name }}</h2>
+            <ul>
+            {% for answer in entry.answers %}
+                <li><em>{{ answer.question }}</em> - {{ answer }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+{% endblock %}
