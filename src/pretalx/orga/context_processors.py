@@ -11,7 +11,7 @@ def add_events(request):
         except Http404:
             url_name = ''
         return {
-            'events': [e for e in Event.objects.filter(permissions__is_orga=True, permissions__user=request.user)],
+            'events': list(Event.objects.filter(permissions__is_orga=True, permissions__user=request.user).distinct()),
             'url_name': url_name,
         }
     return dict()
