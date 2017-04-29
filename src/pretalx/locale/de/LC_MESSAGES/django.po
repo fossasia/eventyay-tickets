@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-24 01:30-0500\n"
-"PO-Revision-Date: 2017-04-24 08:32+0200\n"
+"POT-Creation-Date: 2017-04-29 09:45-0500\n"
+"PO-Revision-Date: 2017-04-29 16:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -424,11 +424,11 @@ msgstr ""
 msgid "Awesome! You can now log in using your new password."
 msgstr "Jupp, du kannst dich jetzt mit deinem neuen Passwort anmelden."
 
-#: pretalx/cfp/views/locale.py:31
+#: pretalx/cfp/views/locale.py:32
 msgid ""
 "Your locale preferences have been saved. We like to think that we have "
-"excellent support for pretalx, but if you encounter issues or errors, please "
-"contact us!"
+"excellent support for English in pretalx, but if you encounter issues or "
+"errors, please contact us!"
 msgstr ""
 "Deine Spracheinstellungen wurden gespeichert. Wir bilden uns ein, hier gutes "
 "Deutsch zu schreiben, aber wenn du Probleme oder gar Fehler findest, sag uns "
@@ -1039,6 +1039,10 @@ msgstr "Einreichungen"
 msgid "speakers"
 msgstr "Vortragende"
 
+#: pretalx/orga/templates/orga/submission/answer_list.html:6
+msgid "Answers"
+msgstr "Antworten"
+
 #: pretalx/orga/templates/orga/submission/base.html:13
 msgid "Content"
 msgstr "Inhalt"
@@ -1124,15 +1128,15 @@ msgstr ""
 "Sogar die Orga, die nur am rotieren ist, sollte mindestens einen Talk "
 "anhören - welchen nimmst du?"
 
-#: pretalx/orga/views/cfp.py:85
+#: pretalx/orga/views/cfp.py:91
 msgid "The question has been deleted."
 msgstr "Die Frage wurde gelöscht."
 
-#: pretalx/orga/views/cfp.py:123
+#: pretalx/orga/views/cfp.py:133
 msgid "The Submission Type has been made default."
 msgstr "Der Einreichungstyp wurde zum Standard gemacht."
 
-#: pretalx/orga/views/cfp.py:134
+#: pretalx/orga/views/cfp.py:145
 msgid "The Submission Type has been deleted."
 msgstr "Der Einreichungstyp wurde gelöscht."
 
@@ -1144,16 +1148,16 @@ msgstr ""
 "Hui, eine neue Veranstaltung! Geh die Einstellungen durch und schreib einen "
 "CfP, und du kannst richtig loslegen!"
 
-#: pretalx/orga/views/settings.py:50
+#: pretalx/orga/views/settings.py:52
 msgid "The event settings have been saved."
 msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
 
-#: pretalx/orga/views/settings.py:76
+#: pretalx/orga/views/settings.py:78
 #, python-format
 msgid "An error occured while contacting the SMTP server: %s"
 msgstr "Ein Fehler trat auf beim Versuch, den SMTP-Server zu erreichen: %s"
 
-#: pretalx/orga/views/settings.py:80
+#: pretalx/orga/views/settings.py:82
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
@@ -1161,7 +1165,7 @@ msgstr ""
 "Ihre Änderungen wurden gespeichert und die Verbindung zum SMTP-Server war "
 "erfolgreich."
 
-#: pretalx/orga/views/settings.py:83
+#: pretalx/orga/views/settings.py:85
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
@@ -1171,11 +1175,11 @@ msgstr ""
 "\"Eigenen SMTP-Server verwenden\" zu setzen, damit der Server auch benutzt "
 "wird."
 
-#: pretalx/orga/views/settings.py:87
+#: pretalx/orga/views/settings.py:89
 msgid "Yay! We saved your changes."
 msgstr "Jupp, alle Änderungen wurden gespeichert."
 
-#: pretalx/orga/views/settings.py:123
+#: pretalx/orga/views/settings.py:125
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -1198,12 +1202,12 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/settings.py:133
+#: pretalx/orga/views/settings.py:135
 #, python-brace-format
 msgid "You have been invited to the orga crew of {event}"
 msgstr "Du wurdest zur \"{event}\"-Orga eingeladen"
 
-#: pretalx/orga/views/settings.py:140
+#: pretalx/orga/views/settings.py:143
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your team - more team members help distribute "
@@ -1212,7 +1216,7 @@ msgstr ""
 "<{email}> wurde zum Orga-Team eingeladen. Mehr Orga heißt weniger Arbeit für "
 "die Einzelnen - yay!"
 
-#: pretalx/orga/views/settings.py:202
+#: pretalx/orga/views/settings.py:207
 msgid "Your profile has been updated :)"
 msgstr "Dein Profil wurde angepasst :)"
 
@@ -1222,27 +1226,27 @@ msgstr ""
 "Eine Einreichung muss im eingereichten Zustand sein, um angenommen oder "
 "abgelehnt zu sein."
 
-#: pretalx/orga/views/submission.py:27
+#: pretalx/orga/views/submission.py:28
 msgid "The submission has been accepted."
 msgstr "Die Einreichung wurde angenommen."
 
-#: pretalx/orga/views/submission.py:42
+#: pretalx/orga/views/submission.py:43
 msgid "The submission has been rejected."
 msgstr "Die Einreichung wurde abgelehnt."
 
-#: pretalx/orga/views/submission.py:58
+#: pretalx/orga/views/submission.py:61
 msgid "The speaker has been added to the submission."
 msgstr "Der Vortragende wurde der Einreichung hinzugefügt."
 
-#: pretalx/orga/views/submission.py:60
+#: pretalx/orga/views/submission.py:63
 msgid "The speaker was already part of the submission."
 msgstr "Der Vortragende war bereits Teil der Einreichung."
 
-#: pretalx/orga/views/submission.py:73
+#: pretalx/orga/views/submission.py:77
 msgid "The speaker has been removed from the submission."
 msgstr "Der Vortragende wurde von der Einreichung entfernt."
 
-#: pretalx/orga/views/submission.py:75
+#: pretalx/orga/views/submission.py:79
 msgid "The speaker was not part of this submission."
 msgstr "Der Vortragende war nicht Teil der Einreichung."
 
@@ -1361,6 +1365,11 @@ msgstr "Einreichungssprache"
 #: pretalx/submission/models/submission.py:87
 msgid "Don't record my talk."
 msgstr "Zeichnet meine Veranstaltung nicht auf."
+
+#: pretalx/submission/models/type.py:26
+#, python-brace-format
+msgid "{name} ({duration} minutes)"
+msgstr "{name} ({duration} Minuten)"
 
 #~ msgid "Submission types"
 #~ msgstr "Einreichungsarten"
