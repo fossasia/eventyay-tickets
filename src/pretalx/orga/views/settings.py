@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
 from pretalx.common.mail import mail, mail_send_task
+from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.authorization import OrgaPermissionRequired
@@ -115,7 +116,7 @@ class EventTeamInvite(OrgaPermissionRequired, View):
         email = request.POST.get('email')
         event = request.event
         invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-        invitation_link = request.build_absolute_uri(reverse('orga:invitation.view', kwargs={'code': invitation_token}))
+        invitation_link = build_absolute_uri(reverse('orga:invitation.view', kwargs={'code': invitation_token}))
         EventPermission.objects.create(
             event=event,
             invitation_email=email,

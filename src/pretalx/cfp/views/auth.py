@@ -14,6 +14,7 @@ from django.views.generic import FormView, View
 from pretalx.cfp.forms.auth import LoginForm, RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException, mail
+from pretalx.common.urls import build_absolute_uri
 from pretalx.person.models import User
 
 
@@ -65,7 +66,7 @@ class ResetView(EventPageMixin, FormView):
                 {
                     'name': user.name or user.nick,
                     'event': self.request.event.name,
-                    'url': self.request.build_absolute_uri(
+                    'url': build_absolute_uri(
                         reverse('cfp:event.recover', kwargs={
                             'event': self.request.event.slug,
                             'token': user.pw_reset_token,
