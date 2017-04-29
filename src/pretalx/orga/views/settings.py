@@ -41,12 +41,14 @@ class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         ret = super().form_valid(form)
         if new_event:
             messages.success(self.request, _('Yay, a new event! Check the settings and configure a CfP and you\'re good to go!'))
+            form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
             EventPermission.objects.create(
                 event=form.instance,
                 user=self.request.user,
                 is_orga=True,
             )
         else:
+            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
             messages.success(self.request, _('The event settings have been saved.'))
         return ret
 
@@ -111,9 +113,9 @@ class EventTeamInvite(OrgaPermissionRequired, View):
 
     def post(self, request, event):
         email = request.POST.get('email')
-        event = self.request.event
+        event = request.event
         invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-        invitation_link = self.request.build_absolute_uri(reverse('orga:invitation.view', kwargs={'code': invitation_token}))
+        invitation_link = request.build_absolute_uri(reverse('orga:invitation.view', kwargs={'code': invitation_token}))
         EventPermission.objects.create(
             event=event,
             invitation_email=email,
@@ -130,13 +132,14 @@ See you there,
 The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
         mail_send_task.apply_async(args=(
             [email],
-            _('You have been invited to the orga crew of {event}').format(event=self.request.event.name),
+            _('You have been invited to the orga crew of {event}').format(event=request.event.name),
             invitation_text,
             request.event.email,
             event.pk
         ))
+        request.event.log_action('pretalx.event.invite.orga.send', person=request.user, orga=True)
         messages.success(
-            self.request,
+            request,
             _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
         )
         return redirect(reverse(
@@ -149,6 +152,7 @@ class EventTeamRetract(OrgaPermissionRequired, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, pk=pk).delete()
+        request.event.log_action('pretalx.event.invite.orga.retract', person=request.user, orga=True)
         return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
 
 
@@ -177,11 +181,12 @@ class InvitationView(FormView):
         user = User.objects.get(pk=form.cleaned_data.get('user_id'))
         if EventPermission.objects.filter(user=user, event=permission.event).exists():
             permission.delete()
-            permission = EventPermission.objects.filter(user=user, event=permission.event)
-            permission.is_orga = True
+            permission = EventPermission.objects.filter(user=user, event=permission.event).first()
 
+        permission.is_orga = True
         permission.user = user
         permission.save()
+        permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
         login(self.request, user)
         return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))
 

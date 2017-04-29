@@ -22,9 +22,12 @@ class OutboxSend(OrgaPermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            self.request.event.queued_mails.get(pk=self.kwargs.get('pk')).send()
+            mail = self.request.queued_mails.get(pk=self.kwargs.get('pk'))
+            mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
+            mail.send()
         else:
             for mail in self.request.event.queued_mails.all():
+                mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 mail.send()
         return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
 
@@ -33,9 +36,12 @@ class OutboxPurge(OrgaPermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            self.request.event.queued_mails.get(pk=self.kwargs.get('pk')).delete()
+            mail = self.request.queued_mails.get(pk=self.kwargs.get('pk'))
+            mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
+            mail.delete()
         else:
             self.request.event.queued_mails.all().delete()
+            self.request.event.log_action('pretalx.mail.delete_all')
         return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
 
 
@@ -53,6 +59,9 @@ class OutboxMail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'The email has been saved. When you send it, the updated text will be used.')
         form.instance.event = self.request.event
+        if form.has_changed():
+            action = 'pretalx.mail.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
         return super().form_valid(form)
 
 
@@ -98,6 +107,9 @@ class TemplateDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'The template has been saved - note that already pending emails that are based on this template will not be changed!')
         form.instance.event = self.request.event
+        if form.has_changed():
+            action = 'pretalx.mail_template.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
         return super().form_valid(form)
 
 
@@ -106,6 +118,7 @@ class TemplateDelete(OrgaPermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         template = MailTemplate.objects.filter(event=self.request.event).get(pk=self.kwargs.get('pk'))
+        template.log_action('pretalx.mail_template.delete', person=self.request.user, orga=True)
         template.delete()
         messages.success(request, 'The template has been deleted.')
         return redirect(reverse('orga:mails.templates.list', kwargs={'event': request.event.slug}))

@@ -45,6 +45,8 @@ class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
         messages.success(self.request, 'The CfP update has been saved.')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
+        if form.has_changed():
+            form.instance.log_action('pretalx.cfp.update', person=self.request.user, orga=True)
         self.sform.save()
         return ret
 
@@ -71,6 +73,9 @@ class CfPQuestionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
     def form_valid(self, form):
         messages.success(self.request, 'The question has been saved.')
         form.instance.event = self.request.event
+        if form.has_changed():
+            action = 'pretalx.question.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
         ret = super().form_valid(form)
         return ret
 
@@ -81,6 +86,7 @@ class CfPQuestionDelete(OrgaPermissionRequired, View):
         super().dispatch(request, *args, **kwargs)
 
         question = self.request.event.questions.get(pk=self.kwargs.get('pk'))
+        question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
         question.delete()
         messages.success(request, _('The question has been deleted.'))
         return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event}))
@@ -109,6 +115,9 @@ class SubmissionTypeDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdate
         messages.success(self.request, 'The Submission Type has been saved.')
         form.instance.event = self.request.event
         ret = super().form_valid(form)
+        if form.has_changed():
+            action = 'pretalx.submission_type.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
         return ret
 
 
@@ -118,6 +127,7 @@ class SubmissionTypeDefault(OrgaPermissionRequired, View):
         super().dispatch(request, *args, **kwargs)
 
         submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=['default_type'])
         messages.success(request, _('The Submission Type has been made default.'))
@@ -130,6 +140,7 @@ class SubmissionTypeDelete(OrgaPermissionRequired, View):
         super().dispatch(request, *args, **kwargs)
 
         submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        submission_type.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
         submission_type.delete()
         messages.success(request, _('The Submission Type has been deleted.'))
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))

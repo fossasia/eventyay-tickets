@@ -23,6 +23,7 @@ class SubmissionAccept(OrgaPermissionRequired, View):
 
         submission.state = SubmissionStates.ACCEPTED
         submission.save(update_fields=['state'])
+        submission.log_action('pretalx.submission.accept', person=request.user, orga=True)
         # TODO: ask for confirmation
         messages.success(request, _('The submission has been accepted.'))
         for speaker in submission.speakers.all():
@@ -40,6 +41,7 @@ class SubmissionReject(OrgaPermissionRequired, View):
         submission.state = SubmissionStates.REJECTED
         submission.save(update_fields=['state'])
         messages.success(request, _('The submission has been rejected.'))
+        submission.log_action('pretalx.submission.reject', person=request.user, orga=True)
         for speaker in submission.speakers.all():
             submission.event.accept_template.to_mail(
                 user=speaker, event=self.request.event, context=template_context_from_submission(submission),
@@ -55,6 +57,7 @@ class SubmissionSpeakersAdd(OrgaPermissionRequired, View):
         if submission not in speaker.submissions.all():
             speaker.submissions.add(submission)
             speaker.save(update_fields=['submissions'])
+            submission.log_action('pretalx.submission.speakers.add', person=request.user, orga=True)
             messages.success(request, _('The speaker has been added to the submission.'))
         else:
             messages.warning(request, _('The speaker was already part of the submission.'))
@@ -70,6 +73,7 @@ class SubmissionSpeakersDelete(OrgaPermissionRequired, View):
         if submission in speaker.submissions.all():
             speaker.submissions.remove(submission)
             speaker.save(update_fields=['submissions'])
+            submission.log_action('pretalx.submission.speakers.remove', person=request.user, orga=True)
             messages.success(request, _('The speaker has been removed from the submission.'))
         else:
             messages.warning(request, _('The speaker was not part of this submission.'))
@@ -119,6 +123,9 @@ class SubmissionContent(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
 
     def form_valid(self, form):
         messages.success(self.request, 'The submission has been updated!')
+        if form.has_changed():
+            action = 'pretalx.submission.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
         form.instance.event = self.request.event
         return super().form_valid(form)
 
