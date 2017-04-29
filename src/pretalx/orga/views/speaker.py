@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView
 
@@ -38,3 +39,10 @@ class SpeakerDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['submission_count'] = User.objects.filter(submissions__in=self.request.event.submissions.all()).count()
         return ctx
+
+    def form_valid(self, form):
+        messages.success(self.request, 'The speaker profile has been updated.')
+        if form.has_changed():
+            profile = self.get_object().profiles.get(event=self.request.event)
+            profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
+        return super().form_valid(form)
