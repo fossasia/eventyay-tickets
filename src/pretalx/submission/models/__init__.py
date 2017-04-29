@@ -11,7 +11,7 @@ __all__ = [
     'Question',
     'QuestionVariant',
     'Submission',
-    'SubmissionStates'
+    'SubmissionStates',
     'SubmissionType',
     'Track',
 ]

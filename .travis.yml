@@ -1,0 +1,14 @@
+language: python
+sudo: false
+python: 3.6
+install:
+  - pip install -U pip setuptools wheel typing codecov coverage
+  - pip install -r src/requirements.txt
+  - pip install -r src/requirements/dev.txt -r src/requirements/fancy.txt
+script:
+  - cd src/
+  - python manage.py collectstatic --noinput
+  - python manage.py compress
+  - pylama
+  - isort -rc -c .
+  - py.test --cov=pretalx tests/ && codecov

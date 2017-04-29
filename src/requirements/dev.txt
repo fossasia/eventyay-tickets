@@ -5,3 +5,4 @@ pytest-django
 pytest-mock
 beautifulsoup4
 lxml
+isort

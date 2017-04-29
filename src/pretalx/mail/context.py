@@ -1,4 +1,3 @@
-from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.urls import build_absolute_uri

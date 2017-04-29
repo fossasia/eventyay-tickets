@@ -20,7 +20,6 @@ def test_wizard_new_user(event, question, client):
         'info-description': 'Description',
         'info-abstract': 'Abstract',
         'info-notes': 'Notes',
-        'info-duration': '45'
     }
     inp_hidden = doc.select("input[name^=submit_wizard]")[0]
     data[inp_hidden['name']] = inp_hidden['value']
@@ -79,7 +78,6 @@ def test_wizard_new_user(event, question, client):
     assert sub.description == 'Description'
     assert sub.abstract == 'Abstract'
     assert sub.notes == 'Notes'
-    assert sub.duration == 45
     answ = sub.answers.first()
     assert answ.question == question
     assert answ.answer == '42'

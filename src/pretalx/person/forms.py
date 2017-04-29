@@ -27,41 +27,45 @@ class UserForm(forms.Form):
                                                label=_('Password (again)'),
                                                required=False)
 
+    def _clean_login(self, data):
+        if '@' in data.get('login_username'):
+            try:
+                uname = User.objects.get(email=data.get('login_username')).nick
+            except User.DoesNotExist:
+                uname = 'user@invalid'
+        else:
+            uname = data.get('login_username')
+
+        user = authenticate(username=uname, password=data.get('login_password'))
+
+        if user is None:
+            raise ValidationError(_('No user account matches the entered credentials. '
+                                    'Are you sure that you typed your password correctly?'))
+
+        if not user.is_active:
+            raise ValidationError(_('Sorry, your account is currently disabled.'))
+
+        data['user_id'] = user.pk
+
+    def _clean_register(self, data):
+        if data.get('register_password') != data.get('register_password_repeat'):
+            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
+
+        if User.objects.filter(nick=data.get('register_username')).exists():
+            raise ValidationError(_('We already have a user with that username. Did you already register before '
+                                    'and just need to log in?'))
+
+        if User.objects.filter(email=data.get('register_email')).exists():
+            raise ValidationError(_('We already have a user with that email address. Did you already register '
+                                    'before and just need to log in?'))
+
     def clean(self):
         data = super().clean()
 
         if data.get('login_username') and data.get('login_password'):
-            if '@' in data.get('login_username'):
-                try:
-                    uname = User.objects.get(email=data.get('login_username')).nick
-                except User.DoesNotExist:
-                    uname = 'user@invalid'
-            else:
-                uname = data.get('login_username')
-
-            user = authenticate(username=uname, password=data.get('login_password'))
-
-            if user is None:
-                raise ValidationError(_('No user account matches the entered credentials. '
-                                        'Are you sure that you typed your password correctly?'))
-
-            if not user.is_active:
-                raise ValidationError(_('Sorry, your account is currently disabled.'))
-
-            data['user_id'] = user.pk
-
+            self._clean_login(data)
         elif data.get('register_username') and data.get('register_email') and data.get('register_password'):
-            if data.get('register_password') != data.get('register_password_repeat'):
-                raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
-
-            if User.objects.filter(nick=data.get('register_username')).exists():
-                raise ValidationError(_('We already have a user with that username. Did you already register before '
-                                        'and just need to log in?'))
-
-            if User.objects.filter(email=data.get('register_email')).exists():
-                raise ValidationError(_('We already have a user with that email address. Did you already register '
-                                        'before and just need to log in?'))
-
+            self._clean_register(data)
         else:
             raise ValidationError(
                 _('You need to fill all fields of either the login or the registration form.')

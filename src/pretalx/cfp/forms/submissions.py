@@ -52,17 +52,10 @@ class QuestionsForm(forms.Form):
                 initial = q.default_answer
 
             if q.variant == QuestionVariant.BOOLEAN:
-                if q.required:
-                    # For some reason, django-bootstrap4 does not set the required attribute
-                    # itself.
-                    widget = forms.CheckboxInput(attrs={'required': 'required'})
-                else:
-                    widget = forms.CheckboxInput()
-
-                if initial:
-                    initialbool = (initial == "True")
-                else:
-                    initialbool = bool(q.default_answer)
+                # For some reason, django-bootstrap4 does not set the required attribute
+                # itself.
+                widget = forms.CheckboxInput(attrs={'required': 'required'}) if q.required else forms.CheckboxInput()
+                initialbool = (initial == 'True') if initial else bool(q.default_answer)
 
                 field = forms.BooleanField(
                     disabled=readonly,
