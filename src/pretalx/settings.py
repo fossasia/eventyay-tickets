@@ -1,14 +1,16 @@
 import os
 
+import sys
+from urllib.parse import urlparse
+
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
 
 
 # File system and directory settings
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = 'data'
+DATA_DIR = os.getenv('PRETALX_DATA_DIR', os.path.join(BASE_DIR, 'data'))
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
@@ -32,31 +34,48 @@ else:
         os.chown(SECRET_FILE, os.getuid(), os.getgid())
         f.write(SECRET_KEY)
 
-
 # General setup settings
-
-DEBUG = True
+debug_default = 'runserver' in sys.argv
+DEBUG = os.environ.get('PRETALX_DEBUG', str(debug_default)) == 'True'
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get('PRETALX_MAIL_FROM', 'admin@localhost')
+    EMAIL_HOST = os.environ.get('PRETALX_MAIL_HOST', 'localhost')
+    EMAIL_PORT = int(os.environ.get('PRETALX_MAIL_PORT', '25'))
+    EMAIL_HOST_USER = os.environ.get('PRETALX_MAIL_USER', '')
+    EMAIL_HOST_PASSOWRD = os.environ.get('PRETALX_MAIL_PASSWORD', '')
+    EMAIL_USE_TLS = os.environ.get('PRETALX_MAIL_TLS', 'False') == 'True'
+    EMAIL_USE_SSL = os.environ.get('PRETALX_MAIL_SSL', 'False') == 'True'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATA_DIR, 'db.sqlite3'),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.' + os.getenv('PRETALX_DB_TYPE', 'sqlite3'),
+        'NAME': os.getenv('PRETALX_DB_NAME', 'db.sqlite3'),
+        'USER': os.getenv('PRETALX_DB_USER', ''),
+        'PASSWORD': os.getenv('PRETALX_DB_PASS', ''),
+        'HOST': os.getenv('PRETALX_DB_HOST', ''),
+        'PORT': os.getenv('PRETALX_DB_PORT', ''),
         'CONN_MAX_AGE': 0,
     }
 }
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-SITE_URL = 'http://localhost'
 
-ALLOWED_HOSTS = ['*']
+SITE_URL = os.getenv('PRETALX_SITE_URL', 'http://localhost')
+if SITE_URL == 'http://localhost':
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [urlparse(SITE_URL).netloc]
+
+
+if os.getenv('PRETALX_COOKIE_DOMAIN', ''):
+    SESSION_COOKIE_DOMAIN = os.getenv('PRETALX_COOKIE_DOMAIN', '')
+    CSRF_COOKIE_DOMAIN = os.getenv('PRETALX_COOKIE_DOMAIN', '')
+
+SESSION_COOKIE_SECURE = os.getenv('PRETALX_HTTPS', 'True' if SITE_URL.startswith('https:') else 'False') == 'True'
 
 
 # Internal settings
@@ -103,8 +122,9 @@ except ImportError:
     pass
 
 MIDDLEWARE = [
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -182,8 +202,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pretalx', 'static')
 ] if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static')) else []
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
