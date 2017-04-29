@@ -1,3 +1,5 @@
+.. image:: https://github.com/openeventstack/pretalx/blob/master/assets/logo.png
+
 pretalx
 =======
 
