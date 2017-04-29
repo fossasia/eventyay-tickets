@@ -93,7 +93,7 @@ class SubmissionQuestions(OrgaPermissionRequired, ListView):  # TODO: move from 
 
     def get_queryset(self):
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        return submission.anwers.all()
+        return submission.answers.all()
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
