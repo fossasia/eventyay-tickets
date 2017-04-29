@@ -1,6 +1,8 @@
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.urls import build_absolute_uri
+
 
 def get_context_explanation():
     return [
@@ -29,7 +31,7 @@ def get_context_explanation():
 
 def template_context_from_event(event):
     return {
-        'all_submissions_url': reverse(
+        'all_submissions_url': build_absolute_uri(
             'cfp:event.user.submissions',
             kwargs={'event': event.slug}
         ),
@@ -42,7 +44,7 @@ def template_context_from_submission(submission):
         'confirmation_link': 'TODO',
         'event_name': submission.event.name,
         'submission_title': submission.title,
-        'submission_url': reverse(
+        'submission_url': build_absolute_uri(
             'cfp:event.user.submission.edit',
             kwargs={'event': submission.event.slug, 'id': submission.pk}
         ),
