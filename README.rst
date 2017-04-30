@@ -10,7 +10,7 @@ pretalx
    :target: https://codecov.io/gh/openeventstack/pretalx
 
 
-`pretalx` will try to provide a conference planning tool, featuring
+`pretalx` provides a conference planning tool, featuring
 
 - CfP and talk submission support with a clean interface
 - Accepting/rejecting proposals
@@ -18,6 +18,7 @@ pretalx
 - Tools for building and publishing a schedule
 - Interfaces and APIs for related tools
 - Easy-to-use orga interface
+- Different, pluggable review processes
 
 Project status
 --------------
