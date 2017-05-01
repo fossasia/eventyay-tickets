@@ -45,5 +45,6 @@ This project will be maintained by people to be determined once it is kind of st
 See the AUTHORS file for a list of all the awesome folks who contributed to this project.
 
 .. _frab: https://github.com/frab/frab
+.. _issues: https://github.com/openeventstack/pretalx/issues/
 .. _me: mailto:rixx@cutebit.de
 .. _pentabarf: http://pentabarf.org/
