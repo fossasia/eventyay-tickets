@@ -24,7 +24,7 @@ class EventPageMixin:
                 raise Http404()
 
             if not request.event.is_public:
-                is_permitted = EventPermission.objects.filter(
+                is_permitted = request.user.is_authenticated and EventPermission.objects.filter(
                     user=request.user,
                     event=request.event,
                     is_orga=True,
