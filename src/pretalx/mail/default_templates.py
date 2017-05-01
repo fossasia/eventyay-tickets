@@ -1,11 +1,9 @@
+from django.utils.translation import ugettext_noop as _
 from i18nfield.strings import LazyI18nString
 
-# GENERIC_SUBJECT = LazyI18nString.from_gettext(_('Your submission: {submission_title}'))
-# TODO: fix i18n
-GENERIC_SUBJECT = LazyI18nString('Your submission: {submission_title}')
+GENERIC_SUBJECT = LazyI18nString.from_gettext(_('Your submission: {submission_title}'))
 
-
-ACK_TEXT = LazyI18nString('''Hi!
+ACK_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
 We have received your submission "{submission_title}" to
 {event_name}. We will notify you once we have had time to consider all
@@ -14,10 +12,9 @@ submissions, but until then you can see and edit your submission at
 
 Please do not hesitate to contact us if you have any questions!
 
-The {event_name} orga''')
+The {event_name} orga'''))
 
-
-ACCEPT_TEXT = LazyI18nString('''Hi!
+ACCEPT_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
 We are happy to tell you that we accept your submission "{submission_title}"
 to {event_name}. Please click this link to confirm your attendance:
@@ -30,14 +27,13 @@ about your slot in the schedule and technical details concerning the room
 and presentation tech.
 
 See you there!
-The {event_name} orga''')
+The {event_name} orga'''))
 
-
-REJECT_TEXT = LazyI18nString('''Hi!
+REJECT_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
 We are sorry to tell you that we cannot accept your submission
 "{submission_title}" to {event_name}. There were just too many great
 submissions - we hope to see you at {event_name} as an attendee instead
 of a speaker!
 
-The {event_name} orga''')
+The {event_name} orga'''))
