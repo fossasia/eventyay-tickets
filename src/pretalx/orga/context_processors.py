@@ -5,7 +5,7 @@ from pretalx.event.models import Event
 
 
 def add_events(request):
-    if request.resolver_match.namespace == 'orga' and not request.user.is_anonymous:
+    if request.resolver_match and request.resolver_match.namespace == 'orga' and not request.user.is_anonymous:
         try:
             url_name = resolve(request.path_info).url_name
         except Http404:

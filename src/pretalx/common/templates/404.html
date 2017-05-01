@@ -1,0 +1,20 @@
+{% load compress %}
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %} :: pretalx</title>
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/error.scss" %}"/>
+    {% endcompress %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static "common/img/favicon.png" %}">
+</head>
+<body>
+    <div id="wrapper">
+        <img src="{% static "common/img/error_404.svg" %}" class="img">
+        <h2>{% trans "Page not found" %}</h2>
+    </div>
+</body>
+</html>

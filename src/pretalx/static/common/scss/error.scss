@@ -1,0 +1,28 @@
+@import "../../common/scss/_variables";
+@import "../../vendored/bootstrap-4-dev/scss/bootstrap";
+@import "../../vendored/fontawesome/scss/font-awesome";
+
+body {
+  background: $brand-inverse;
+}
+
+#wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  z-index: 1000;
+  color: white;
+}
+
+.img {
+  width: 15rem;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.card {
+  padding: 10px;
+  width: 20rem;
+}
