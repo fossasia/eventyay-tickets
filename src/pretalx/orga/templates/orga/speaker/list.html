@@ -7,10 +7,22 @@
 {% block content %}
 
     <legend>{{ speakers.count }} {% trans "speakers" %}</legend>
-
-    <ul>
-        {% for speaker in speakers %}
-        <li><a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.pk %}">{{ speaker.nick }}</a></li>
-        {% endfor %}
-    </ul>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Submissions" %}</th>
+                <th>{% trans "Accepted submissions" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for speaker in speakers %}
+                <tr>
+                    <td><a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.pk %}">{{ speaker.nick }}</a></td>
+                    <td>{{ speaker.submissions.count }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
