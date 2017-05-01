@@ -17,7 +17,16 @@
 </head>
 <body>
 <div id="wrapper">
-    <div id="top-bg" class="bg-primary"></div>
+    <div id="top-bg" class="bg-primary">
+        {% if not request.event.is_public %}
+            <div class="event-nonpublic">
+                <span class="fa fa-user-secret"></span>
+                {% blocktrans trimmed %}
+                    This event is currently non-public. Only the orga team can see it.
+                {% endblocktrans %}
+            </div>
+        {% endif %}
+    </div>
     <div class="container" id="main-container">
         <header>
             {% if request.event.locales|length > 1 %}

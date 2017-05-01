@@ -10,6 +10,7 @@ from django.utils.translation.trans_real import (
 from django.views.generic import TemplateView
 
 from pretalx.event.models import Event
+from pretalx.person.models import EventPermission
 
 
 class EventPageMixin:
@@ -23,7 +24,13 @@ class EventPageMixin:
                 raise Http404()
 
             if not request.event.is_public:
-                raise Http404()
+                is_permitted = EventPermission.objects.filter(
+                    user=request.user,
+                    event=request.event,
+                    is_orga=True,
+                ).exists()
+                if not is_permitted:
+                    raise Http404()
 
             self._select_locale(request)
 
