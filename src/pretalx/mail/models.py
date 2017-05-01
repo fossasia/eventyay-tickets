@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, override
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
@@ -37,20 +37,20 @@ class MailTemplate(LogMixin, models.Model):
         pass
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
-        # TODO correct handling of locale. translation.activate()?
-        context = TolerantDict(context or dict())
-        mail = QueuedMail(
-            event=self.event,
-            to=user.email,
-            reply_to=self.reply_to or event.email,
-            bcc=self.bcc,
-            subject=str(self.subject).format(**context),
-            text=str(self.text).format(**context)
-        )
-        if skip_queue:
-            mail.send()
-        else:
-            mail.save()
+        with override(locale):
+            context = TolerantDict(context or dict())
+            mail = QueuedMail(
+                event=self.event,
+                to=user.email,
+                reply_to=self.reply_to or event.email,
+                bcc=self.bcc,
+                subject=str(self.subject).format(**context),
+                text=str(self.text).format(**context)
+            )
+            if skip_queue:
+                mail.send()
+            else:
+                mail.save()
 
 
 class QueuedMail(LogMixin, models.Model):

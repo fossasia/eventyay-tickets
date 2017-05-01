@@ -29,6 +29,7 @@ class SubmissionAccept(OrgaPermissionRequired, View):
         for speaker in submission.speakers.all():
             submission.event.accept_template.to_mail(
                 user=speaker, event=self.request.event, context=template_context_from_submission(submission),
+                locale=speaker.locale
             )
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
@@ -45,6 +46,7 @@ class SubmissionReject(OrgaPermissionRequired, View):
         for speaker in submission.speakers.all():
             submission.event.accept_template.to_mail(
                 user=speaker, event=self.request.event, context=template_context_from_submission(submission),
+                locale=speaker.locale
             )
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 

@@ -109,7 +109,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         form_dict['profile'].save()
         sub.event.ack_template.to_mail(
             user=user, event=self.request.event, context=template_context_from_submission(sub),
-            skip_queue=True
+            skip_queue=True, locale=user.locale
         )
 
         if 'questions' in form_dict:
