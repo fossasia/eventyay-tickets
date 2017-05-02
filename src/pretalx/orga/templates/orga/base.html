@@ -49,6 +49,13 @@
                         </a>
                     {% endif %}
                 </li>
+                {% if request.event %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "cfp:event.start" event=request.event.slug %}">
+                            <span class="fa fa-eye"></span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
