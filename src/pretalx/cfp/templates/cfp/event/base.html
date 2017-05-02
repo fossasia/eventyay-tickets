@@ -43,6 +43,9 @@
             {% if request.user.is_authenticated %}
                 <div class="user-row">
                     <div class="pull-right">
+                        {% if request.is_orga %}
+                            <a href="{% url "orga:event.dashboard" event=request.event.slug %}">{% trans "Orga area" %}</a> &middot;
+                        {% endif %}
                         <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
                             {% trans "My submissions" %}
                         </a> &middot;
