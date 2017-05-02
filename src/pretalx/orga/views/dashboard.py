@@ -1,8 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from pretalx.orga.authorization import OrgaPermissionRequired
-
 
 class DashboardView(TemplateView):
     template_name = 'orga/dashboard.html'
@@ -14,5 +12,5 @@ class DashboardView(TemplateView):
         return super().dispatch(request)
 
 
-class EventDashboardView(OrgaPermissionRequired, TemplateView):
+class EventDashboardView(TemplateView):
     template_name = 'orga/event/dashboard.html'

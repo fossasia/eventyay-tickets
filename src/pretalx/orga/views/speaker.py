@@ -3,12 +3,11 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
-from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import SpeakerForm
 from pretalx.person.models import User
 
 
-class SpeakerList(OrgaPermissionRequired, ListView):
+class SpeakerList(ListView):
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
     model = User
@@ -20,7 +19,7 @@ class SpeakerList(OrgaPermissionRequired, ListView):
             .distinct()
 
 
-class SpeakerDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
     form_class = SpeakerForm
     model = User

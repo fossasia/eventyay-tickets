@@ -6,13 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, UpdateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
-from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
 from pretalx.orga.forms.cfp import CfPSettingsForm
 from pretalx.submission.models import CfP, Question, SubmissionType
 
 
-class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
+class CfPTextDetail(ActionFromUrl, UpdateView):
     form_class = CfPForm
     model = CfP
     template_name = 'orga/cfp/text.html'
@@ -51,7 +50,7 @@ class CfPTextDetail(OrgaPermissionRequired, ActionFromUrl, UpdateView):
         return ret
 
 
-class CfPQuestionList(OrgaPermissionRequired, ListView):
+class CfPQuestionList(ListView):
     template_name = 'orga/cfp/question_view.html'
     context_object_name = 'questions'
 
@@ -59,7 +58,7 @@ class CfPQuestionList(OrgaPermissionRequired, ListView):
         return self.request.event.questions.all()
 
 
-class CfPQuestionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm
     template_name = 'orga/cfp/question_form.html'
@@ -80,7 +79,7 @@ class CfPQuestionDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
         return ret
 
 
-class CfPQuestionDelete(OrgaPermissionRequired, View):
+class CfPQuestionDelete(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -92,7 +91,7 @@ class CfPQuestionDelete(OrgaPermissionRequired, View):
         return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event}))
 
 
-class SubmissionTypeList(OrgaPermissionRequired, ListView):
+class SubmissionTypeList(ListView):
     template_name = 'orga/cfp/submission_type_view.html'
     context_object_name = 'types'
 
@@ -100,7 +99,7 @@ class SubmissionTypeList(OrgaPermissionRequired, ListView):
         return self.request.event.submission_types.all()
 
 
-class SubmissionTypeDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class SubmissionTypeDetail(ActionFromUrl, CreateOrUpdateView):
     model = SubmissionType
     form_class = SubmissionTypeForm
     template_name = 'orga/cfp/submission_type_form.html'
@@ -121,7 +120,7 @@ class SubmissionTypeDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdate
         return ret
 
 
-class SubmissionTypeDefault(OrgaPermissionRequired, View):
+class SubmissionTypeDefault(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -134,7 +133,7 @@ class SubmissionTypeDefault(OrgaPermissionRequired, View):
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
 
 
-class SubmissionTypeDelete(OrgaPermissionRequired, View):
+class SubmissionTypeDelete(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)

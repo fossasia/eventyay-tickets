@@ -13,14 +13,13 @@ from pretalx.common.mail import mail, mail_send_task
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
-from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import EventForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, UserForm
 from pretalx.person.models import EventPermission, User
 
 
-class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class EventDetail(ActionFromUrl, CreateOrUpdateView):
     model = Event
     form_class = EventForm
     template_name = 'orga/settings/form.html'
@@ -54,7 +53,7 @@ class EventDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return ret
 
 
-class EventMailSettings(OrgaPermissionRequired, ActionFromUrl, FormView):
+class EventMailSettings(ActionFromUrl, FormView):
     form_class = MailSettingsForm
     template_name = 'orga/settings/mail.html'
 
@@ -93,7 +92,7 @@ class EventMailSettings(OrgaPermissionRequired, ActionFromUrl, FormView):
         return ret
 
 
-class EventTeam(OrgaPermissionRequired, TemplateView):
+class EventTeam(TemplateView):
     template_name = 'orga/settings/team.html'
 
     def get_object(self):
@@ -110,7 +109,7 @@ class EventTeam(OrgaPermissionRequired, TemplateView):
         return ctx
 
 
-class EventTeamInvite(OrgaPermissionRequired, View):
+class EventTeamInvite(View):
 
     def post(self, request, event):
         email = request.POST.get('email')
@@ -149,7 +148,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
         ))
 
 
-class EventTeamRetract(OrgaPermissionRequired, View):
+class EventTeamRetract(View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, pk=pk).delete()
@@ -157,7 +156,7 @@ class EventTeamRetract(OrgaPermissionRequired, View):
         return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
 
 
-class EventTeamDelete(OrgaPermissionRequired, View):
+class EventTeamDelete(View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_orga=False)
@@ -192,7 +191,7 @@ class InvitationView(FormView):
         return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))
 
 
-class UserSettings(OrgaPermissionRequired, FormView):
+class UserSettings(FormView):
     form_class = LoginInfoForm
     template_name = 'orga/user.html'
 

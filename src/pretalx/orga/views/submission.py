@@ -6,13 +6,12 @@ from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import template_context_from_submission
-from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
 from pretalx.submission.models import Submission, SubmissionStates
 
 
-class SubmissionAccept(OrgaPermissionRequired, View):
+class SubmissionAccept(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
@@ -34,7 +33,7 @@ class SubmissionAccept(OrgaPermissionRequired, View):
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
-class SubmissionReject(OrgaPermissionRequired, View):
+class SubmissionReject(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
 
@@ -51,7 +50,7 @@ class SubmissionReject(OrgaPermissionRequired, View):
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
-class SubmissionSpeakersAdd(OrgaPermissionRequired, View):
+class SubmissionSpeakersAdd(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
@@ -66,7 +65,7 @@ class SubmissionSpeakersAdd(OrgaPermissionRequired, View):
         return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
 
 
-class SubmissionSpeakersDelete(OrgaPermissionRequired, View):
+class SubmissionSpeakersDelete(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
@@ -82,7 +81,7 @@ class SubmissionSpeakersDelete(OrgaPermissionRequired, View):
         return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
 
 
-class SubmissionSpeakers(OrgaPermissionRequired, TemplateView):
+class SubmissionSpeakers(TemplateView):
     template_name = 'orga/submission/speakers.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -93,7 +92,7 @@ class SubmissionSpeakers(OrgaPermissionRequired, TemplateView):
         return context
 
 
-class SubmissionQuestions(OrgaPermissionRequired, TemplateView):
+class SubmissionQuestions(TemplateView):
     template_name = 'orga/submission/answer_list.html'
 
     def get_queryset(self):
@@ -114,7 +113,7 @@ class SubmissionQuestions(OrgaPermissionRequired, TemplateView):
         return context
 
 
-class SubmissionContent(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
@@ -139,7 +138,7 @@ class SubmissionContent(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateVie
         return super().form_valid(form)
 
 
-class SubmissionList(OrgaPermissionRequired, ListView):
+class SubmissionList(ListView):
     template_name = 'orga/submission/list.html'
     context_object_name = 'submissions'
 

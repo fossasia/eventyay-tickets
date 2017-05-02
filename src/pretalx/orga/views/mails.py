@@ -6,11 +6,10 @@ from django.views.generic import FormView, ListView, TemplateView, View
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate
-from pretalx.orga.authorization import OrgaPermissionRequired
 from pretalx.orga.forms.mails import MailTemplateForm, OutboxMailForm
 
 
-class OutboxList(OrgaPermissionRequired, ListView):
+class OutboxList(ListView):
     context_object_name = 'mails'
     template_name = 'orga/mails/outbox_list.html'
 
@@ -18,7 +17,7 @@ class OutboxList(OrgaPermissionRequired, ListView):
         return self.request.event.queued_mails.all()
 
 
-class OutboxSend(OrgaPermissionRequired, View):
+class OutboxSend(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
@@ -32,7 +31,7 @@ class OutboxSend(OrgaPermissionRequired, View):
         return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
 
 
-class OutboxPurge(OrgaPermissionRequired, View):
+class OutboxPurge(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
@@ -45,7 +44,7 @@ class OutboxPurge(OrgaPermissionRequired, View):
         return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
 
 
-class OutboxMail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class OutboxMail(ActionFromUrl, CreateOrUpdateView):
     model = MailTemplate
     form_class = OutboxMailForm
     template_name = 'orga/mails/outbox_form.html'
@@ -65,11 +64,11 @@ class OutboxMail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return super().form_valid(form)
 
 
-class SendMail(OrgaPermissionRequired, FormView):
+class SendMail(FormView):
     template_name = 'orga/mails/send_form.html'
 
 
-class TemplateList(OrgaPermissionRequired, TemplateView):
+class TemplateList(TemplateView):
     template_name = 'orga/mails/template_list.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -88,7 +87,7 @@ class TemplateList(OrgaPermissionRequired, TemplateView):
         return ctx
 
 
-class TemplateDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class TemplateDetail(ActionFromUrl, CreateOrUpdateView):
     model = MailTemplate
     form_class = MailTemplateForm
     template_name = 'orga/mails/template_form.html'
@@ -113,7 +112,7 @@ class TemplateDetail(OrgaPermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return super().form_valid(form)
 
 
-class TemplateDelete(OrgaPermissionRequired, View):
+class TemplateDelete(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
