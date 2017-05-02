@@ -8,6 +8,7 @@ from pretalx.person.models import EventPermission
 
 class EventPermissionMiddleware:
     UNAUTHENTICATED = (
+        'invitation.view',
         'login',
     )
 
