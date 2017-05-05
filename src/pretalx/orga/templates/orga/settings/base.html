@@ -4,32 +4,30 @@
     {% trans "Settings" %}
 {% endblock %}
 {% block content %}
-    {% if request.event %}
-        <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.event" in url_name %}active{% endif %}"
-              href="{% url "orga:settings.event.view" event=request.event.slug %}"
-            >
-                {% trans "Event" %}
-                    </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.team" in url_name %}active{% endif %}"
-              href="{% url "orga:settings.team.view" event=request.event.slug %}"
-            >
-                {% trans "Team" %}
-            </a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link {% if "settings.mail" in url_name %}active{% endif %}"
-                 href="{% url "orga:settings.mail.view" event=request.event.slug %}">
-                {% trans "E-mail" %}
-              </a>
-          </li>
-        </ul>
-    {% endif %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a
+          class="nav-link {% if "settings.event" in url_name %}active{% endif %}"
+          href="{% url "orga:settings.event.view" event=request.event.slug %}"
+        >
+            {% trans "Event" %}
+                </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link {% if "settings.team" in url_name %}active{% endif %}"
+          href="{% url "orga:settings.team.view" event=request.event.slug %}"
+        >
+            {% trans "Team" %}
+        </a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link {% if "settings.mail" in url_name %}active{% endif %}"
+             href="{% url "orga:settings.mail.view" event=request.event.slug %}">
+            {% trans "E-mail" %}
+          </a>
+      </li>
+    </ul>
 
     {% block settings_content %}
     {% endblock %}
