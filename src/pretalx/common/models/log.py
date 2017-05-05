@@ -8,7 +8,7 @@ LOG_NAMES = {
     'pretalx.event.create': _('The event has been created.'),
     'pretalx.event.invite.orga.send': _('An invitation to the event orga was sent.'),
     'pretalx.event.invite.orga.retract': _('An invitation to the event orga was retracted.'),
-    'pretalx.event.invite.orga.accept': _('An invitation to the event orga was accepted.'),
+    'pretalx.event.invite.orga.accept': _('The invitation to the event orga was accepted.'),
     'pretalx.event.update': _('The event was updated.'),
     'pretalx.mail.sent': _('An email was sent.'),
     'pretalx.mail.delete': _('A pending email was deleted.'),
