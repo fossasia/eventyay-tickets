@@ -89,8 +89,8 @@ class User(AbstractBaseUser):
         return self.nick
 
     def get_full_name(self) -> str:
-        if self.first_name and self.last_name:
-            return f"{self.first_name} '{self.nick}' {self.last_name}"
+        if self.name:
+            return f"{self.name} ('{self.nick}')"
         return self.nick
 
     def get_short_name(self) -> str:
