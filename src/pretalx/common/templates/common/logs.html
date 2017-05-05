@@ -1,0 +1,32 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<div class="panel panel-default">
+    <div class="panel-heading"><legend>
+        {% trans "History" %}
+    </legend></div>
+
+    <ul class="list-group">
+        {% for log in obj.logged_actions %}
+            <li class="list-group-item logentry">
+                <p class="meta">
+                    <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
+                    {% if log.person %}
+                        <br><span class="fa fa-user fa-fw"></span>
+                        {{ log.person.get_full_name }}
+                    {% endif %}
+                    {% if log.is_orga_action %}
+                        <span class="fa fa-check-circle fa-fw"
+                                data-toggle="tooltip"
+                                title="{% trans "This change was performed by a member of the event orga." %}">
+                        </span>
+                    {% endif %}
+                </p>
+
+                <p>
+                    {{ log.display }}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

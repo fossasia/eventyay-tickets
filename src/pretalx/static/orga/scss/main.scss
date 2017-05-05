@@ -67,3 +67,24 @@ table .btn-secondary {
 .notimplemented {
   text-decoration: line-through;
 }
+.flex-container {
+  display: flex;
+  flex-wrap: no-wrap;
+
+  .flex-content {
+    flex: 1 0 auto;
+    align-self: stretch;
+  }
+  .flex-sidebar {
+    max-width: 240px;
+    padding-left: 24px;
+
+    legend {
+      font-size: 16pt;
+    }
+    p {
+      margin: 0px 0px 0px 0px;
+    }
+
+  }
+}

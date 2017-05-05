@@ -29,7 +29,14 @@
       </li>
     </ul>
 
-    {% block settings_content %}
-    {% endblock %}
+    <div class="flex-container">
+        <div class="flex-content">
+            {% block settings_content %}
+            {% endblock %}
+        </div>
+        <div class="flex-sidebar">
+            {% include "common/logs.html" with obj=request.event %}
+        </div>
+    </div>
 
 {% endblock %}
