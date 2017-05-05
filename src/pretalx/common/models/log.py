@@ -34,6 +34,7 @@ class ActivityLog(models.Model):
     data = models.TextField(
         null=True, blank=True
     )
+    is_orga_action = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-timestamp', )

@@ -12,7 +12,7 @@ class LogMixin:
 
         ActivityLog.objects.create(
             event=self.event, person=person, content_object=self,
-            action_type=action, data=data
+            action_type=action, data=data, is_orga_action=orga,
         )
 
     def logged_actions(self):
