@@ -26,11 +26,12 @@ class EventPermissionMiddleware:
                 request.event = None
 
             if hasattr(request, 'event') and not request.user.is_anonymous:
-                request.is_orga = EventPermission.objects.filter(
+                request.is_orga = request.user.is_superuser or EventPermission.objects.filter(
                     user=request.user,
                     event=request.event,
                     is_orga=True
                 ).exists()
+
         if not request.user.is_anonymous:
             if request.user.is_superuser:
                 request.orga_events = Event.objects.all()
