@@ -31,6 +31,14 @@ class EventPermissionMiddleware:
                     event=request.event,
                     is_orga=True
                 ).exists()
+        if not request.user.is_anonymous:
+            if request.user.is_superuser:
+                request.orga_events = Event.objects.all()
+            else:
+                request.orga_events = Event.objects.filter(
+                    permissions__user=request.user,
+                    permissions__is_orga=True,
+                )
 
         if 'orga' in url.namespaces:
             if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED:
