@@ -1,6 +1,6 @@
 FROM python:3.6
 
-RUN apt-get update && apt-get install -y git \
+RUN apt-get update && apt-get install -y git gettext \
 	libmysqlclient-dev libpq-dev locales build-essential \
 	--no-install-recommends && \
 	apt-get clean && \
