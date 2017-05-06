@@ -28,7 +28,6 @@ table .btn-secondary {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  max-width: 33%;
 
   :hover {
     background: #EEEEEE;
@@ -41,6 +40,7 @@ table .btn-secondary {
   padding: 15px 5px;
   border: 5px solid white;
   min-height: 160px;
+  min-width: 300px;
   background: #F8F8F8;
 
 
