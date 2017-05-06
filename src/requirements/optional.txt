@@ -1,0 +1,6 @@
+# Cache backends
+pylibmc
+django-redis
+# Database backends
+mysqlclient
+psycopg2

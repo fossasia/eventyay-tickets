@@ -77,6 +77,53 @@ if os.getenv('PRETALX_COOKIE_DOMAIN', ''):
 
 SESSION_COOKIE_SECURE = os.getenv('PRETALX_HTTPS', 'True' if SITE_URL.startswith('https:') else 'False') == 'True'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+REAL_CACHE_USED = False
+SESSION_ENGINE = None
+
+HAS_MEMCACHED = bool(os.getenv('PRETALX_MEMCACHE', ''))
+if HAS_MEMCACHED:
+    REAL_CACHE_USED = True
+    CACHES['default'] = {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': os.getenv('PRETALX_MEMCACHE')
+    }
+
+HAS_REDIS = bool(os.getenv('PRETALX_REDIS', ''))
+if HAS_REDIS:
+    CACHES['redis'] = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv('PRETALX_REDIS'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+    CACHES['redis_sessions'] = {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv('PRETALX_REDIS'),
+        "TIMEOUT": 3600 * 24 * 30,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+    if not HAS_MEMCACHED:
+        CACHES['default'] = CACHES['redis']
+        REAL_CACHE_USED = True
+
+    if os.getenv('PRETALX_REDIS_SESSIONS', 'False') == 'True':
+        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+        SESSION_CACHE_ALIAS = "redis_sessions"
+
+if not SESSION_ENGINE:
+    if REAL_CACHE_USED:
+        SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+    else:
+        SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 
 # Internal settings
 LANGUAGES = [

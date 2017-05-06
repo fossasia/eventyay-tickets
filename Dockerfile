@@ -18,7 +18,8 @@ RUN mkdir /static && \
     cd /src && \
     pip3 install -U pip setuptools wheel typing && \
     pip3 install -r requirements.txt && \
-    pip3 install gunicorn mysqlclient && \
+    pip3 install -r requirements/optional.txt && \
+    pip3 install gunicorn && \
     python3 manage.py collectstatic --noinput && \
     python3 manage.py compress && \
     python3 manage.py compilemessages && \
