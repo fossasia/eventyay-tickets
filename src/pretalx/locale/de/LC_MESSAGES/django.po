@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-06 06:52-0500\n"
-"PO-Revision-Date: 2017-05-06 13:53+0200\n"
+"PO-Revision-Date: 2017-05-06 13:56+0200\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: pretalx/cfp/forms/auth.py:11 pretalx/cfp/forms/auth.py:43
 #: pretalx/person/forms.py:13
 msgid "Username or email address"
-msgstr "Username oder E-Mail_Adresse"
+msgstr "Username oder E-Mail-Adresse"
 
 #: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:79
 #: pretalx/person/forms.py:16 pretalx/person/forms.py:24
