@@ -21,6 +21,7 @@ RUN mkdir /static && \
     pip3 install gunicorn mysqlclient && \
     python3 manage.py collectstatic --noinput && \
     python3 manage.py compress && \
+    python3 manage.py compilemessages && \
     chmod +x /usr/local/bin/pretalx
 
 RUN mkdir /data
