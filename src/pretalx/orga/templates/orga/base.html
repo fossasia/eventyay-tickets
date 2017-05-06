@@ -28,12 +28,12 @@
         <div class="collapse navbar-collapse" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                    {% if events.length > 1 or request.user.is_superuser %}
+                    {% if request.orga_events.count > 1 %}
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown">
                             {% if request.event %}{{ request.event.name }}{% else %}{% trans "Events" %}{% endif %}
                         </a>
                         <div class="dropdown-menu">
-                            {% for e in events %}
+                            {% for e in request.orga_events %}
                                 {% if not request.event == e %}
                                     <a class="dropdown-item" href="{% url "orga:settings.event.view" event=e.slug %}">{{ e.name }}</a>
                                 {% endif %}
