@@ -38,10 +38,12 @@
                                     <a class="dropdown-item" href="{% url "orga:settings.event.view" event=e.slug %}">{{ e.name }}</a>
                                 {% endif %}
                             {% endfor %}
-                            <a class="dropdown-item" href="{% url "orga:event.create" %}">
-                                <span class="fa fa-plus"></span>
-                                {% trans "New event" %}
-                            </a>
+                            {% if request.user.is_superuser %}
+                                <a class="dropdown-item" href="{% url "orga:event.create" %}">
+                                    <span class="fa fa-plus"></span>
+                                    {% trans "New event" %}
+                                </a>
+                            {% endif %}
                         </div>
                     {% elif request.event %}
                         <a class="nav-link">
