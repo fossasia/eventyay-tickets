@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-06 06:52-0500\n"
-"PO-Revision-Date: 2017-05-06 13:56+0200\n"
+"POT-Creation-Date: 2017-05-06 07:45-0500\n"
+"PO-Revision-Date: 2017-05-06 14:46+0200\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -613,6 +613,7 @@ msgstr "Diese Aktion wurde von einem Orga-Mitglied durchgeführt."
 
 #: pretalx/event/models/event.py:19
 #: pretalx/orga/templates/orga/speaker/list.html:13 pretalx/person/forms.py:91
+#: pretalx/person/models/user.py:59
 msgid "Name"
 msgstr "Name"
 
@@ -1204,15 +1205,15 @@ msgstr "Eigene E-Mail"
 msgid "Delete template"
 msgstr "Vorlage löschen"
 
-#: pretalx/orga/templates/orga/settings/base.html:13
+#: pretalx/orga/templates/orga/settings/base.html:14
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: pretalx/orga/templates/orga/settings/base.html:21
+#: pretalx/orga/templates/orga/settings/base.html:22
 msgid "Team"
 msgstr "Team"
 
-#: pretalx/orga/templates/orga/settings/base.html:27
+#: pretalx/orga/templates/orga/settings/base.html:28
 msgid "E-mail"
 msgstr "E-Mail"
 
@@ -1525,9 +1526,37 @@ msgstr "Neues Passwort"
 msgid "Organizes the event"
 msgstr "Organisiert die Veranstaltung"
 
+#: pretalx/person/models/user.py:55
+msgid "Nickname"
+msgstr "Nick"
+
+#: pretalx/person/models/user.py:56
+msgid "Please use only characters in the latin alphabet, plus numbers and _-."
+msgstr "Bitte nur Buchstaben von A-Z/a-z, Zahlen und _- verwenden."
+
+#: pretalx/person/models/user.py:60
+msgid "Please enter the name you wish to be displayed."
+msgstr "Bitte gib den Namen ein, den du öffentlich angezeigt haben möchtest."
+
+#: pretalx/person/models/user.py:63
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: pretalx/person/models/user.py:64
+msgid ""
+"Your email address will be used for password resets and notification about "
+"your event/submissions."
+msgstr ""
+"Deine Adresse wird nur fürs Zurücksetzen von Passwörtern und "
+"Benachrichtigungen über deine Einreichungen/Veranstaltungen verwendet."
+
 #: pretalx/person/models/user.py:71
 msgid "Preferred language"
 msgstr "Standardsprache"
+
+#: pretalx/person/models/user.py:80
+msgid "Receive mails from pretalx?"
+msgstr "Mails von pretalx empfangen?"
 
 #: pretalx/schedule/models/schedule.py:19
 #, python-brace-format

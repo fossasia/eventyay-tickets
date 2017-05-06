@@ -52,16 +52,16 @@ class User(AbstractBaseUser):
 
     nick = models.CharField(
         max_length=60, unique=True, validators=[nick_validator],
-        verbose_name='Nickname',
-        help_text='Please use only characters in the latin alphabet, plus numbers and _-.',
+        verbose_name=_('Nickname'),
+        help_text=_('Please use only characters in the latin alphabet, plus numbers and _-.'),
     )
     name = models.CharField(
-        max_length=120, null=True, blank=True, verbose_name='Name',
-        help_text='Please enter your real name.',
+        max_length=120, null=True, blank=True, verbose_name=_('Name'),
+        help_text=_('Please enter the name you wish to be displayed.'),
     )
     email = models.EmailField(
-        verbose_name='E-Mail',
-        help_text='Your email address will be used for password resets and notification about your event/submissions.',
+        verbose_name=_('E-Mail'),
+        help_text=_('Your email address will be used for password resets and notification about your event/submissions.'),
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -77,7 +77,7 @@ class User(AbstractBaseUser):
 
     send_mail = models.BooleanField(
         default=False,
-        verbose_name='Receive mails from pretalx?',
+        verbose_name=_('Receive mails from pretalx?'),
     )
 
     pw_reset_token = models.CharField(null=True, max_length=160)
