@@ -13,7 +13,7 @@
                     <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
                     {% if log.person %}
                         <br><span class="fa fa-user fa-fw"></span>
-                        {{ log.person.get_full_name }}
+                        {{ log.person.name }}
                     {% endif %}
                     {% if log.is_orga_action %}
                         <span class="fa fa-check-circle fa-fw"
