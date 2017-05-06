@@ -9,7 +9,7 @@ orga_urls = [
     url('^$', dashboard.DashboardView.as_view(), name='dashboard'),
     url('^me$', settings.UserSettings.as_view(), name='user.view'),
     url('^invitation/(?P<code>\w+)$', settings.InvitationView.as_view(), name='invitation.view'),
-    url('^event/new$', settings.EventDetail.as_view(), name='event.create'),
+    url('^event/new/$', settings.EventDetail.as_view(), name='event.create'),
 
     url('^event/(?P<event>\w+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
