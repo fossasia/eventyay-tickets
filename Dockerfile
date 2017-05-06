@@ -1,7 +1,7 @@
 FROM python:3.6
 
 RUN apt-get update && apt-get install -y git gettext \
-	libmysqlclient-dev libpq-dev locales build-essential \
+	libmysqlclient-dev libpq-dev locales libmemcached-dev build-essential \
 	--no-install-recommends && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
