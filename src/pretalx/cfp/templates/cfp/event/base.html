@@ -71,9 +71,11 @@
             </div>
         </section>
         <footer>
-			<a href="https://github.com/openeventstack/pretalx" target="_blank">
-	            <img src="{% static "common/img/logo.svg" %}">
-			</a>
+            <a href="https://github.com/openeventstack/pretalx" target="_blank">
+                <img src="{% static "common/img/logo.svg" %}">
+            </a>
+            &middot;
+            <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
         </footer>
     </div>
 </div>
