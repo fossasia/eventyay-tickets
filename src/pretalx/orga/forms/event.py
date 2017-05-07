@@ -38,6 +38,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
         if data.get('locale') not in data.get('locales'):
             raise forms.ValidationError(_('Your default language needs to be one of your active languages.'))
+        if not data.get('email'):
+            raise forms.ValidationError(_('Please provide a contact address – your speakers and participants should be able to reach you easily.'))
 
         return data
 

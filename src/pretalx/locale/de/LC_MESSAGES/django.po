@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-06 07:45-0500\n"
-"PO-Revision-Date: 2017-05-06 14:46+0200\n"
+"POT-Creation-Date: 2017-05-07 03:44-0500\n"
+"PO-Revision-Date: 2017-05-07 10:45+0200\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Username or email address"
 msgstr "Username oder E-Mail-Adresse"
 
-#: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:79
+#: pretalx/cfp/forms/auth.py:14 pretalx/orga/forms/event.py:81
 #: pretalx/person/forms.py:16 pretalx/person/forms.py:24
 msgid "Password"
 msgstr "Passwort"
@@ -82,6 +82,10 @@ msgstr "Abmelden"
 #, python-format
 msgid "You are logged in as <a %(attr)s>%(nick)s</a>."
 msgstr "Du bist als <a %(attr)s>%(nick)s</a> angemeldet."
+
+#: pretalx/cfp/templates/cfp/event/base.html:78
+msgid "Contact us"
+msgstr "Kontakt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:3
 #: pretalx/orga/templates/orga/submission/list.html:37
@@ -607,7 +611,7 @@ msgstr "Interner Serverfehler, ups."
 msgid "History"
 msgstr "Verlauf"
 
-#: pretalx/common/templates/common/logs.html:21
+#: pretalx/common/templates/common/logs.html:25
 msgid "This change was performed by a member of the event orga."
 msgstr "Diese Aktion wurde von einem Orga-Mitglied durchgeführt."
 
@@ -832,19 +836,27 @@ msgstr "Diese Kurzform ist schon vergeben."
 msgid "Your default language needs to be one of your active languages."
 msgstr "Deine Standardsprache muss aktiviert sein."
 
-#: pretalx/orga/forms/event.py:58
+#: pretalx/orga/forms/event.py:42
+msgid ""
+"Please provide a contact address – your speakers and participants should be "
+"able to reach you easily."
+msgstr ""
+"Bitte gib eine Kontaktadresse ein – deine Teilnehmer sollten dich problemlos "
+"erreichen können!"
+
+#: pretalx/orga/forms/event.py:60
 msgid "Sender address"
 msgstr "Absender-Adresse"
 
-#: pretalx/orga/forms/event.py:59
+#: pretalx/orga/forms/event.py:61
 msgid "Sender address for outgoing emails"
 msgstr "Absender-Adresse für ausgehende E-Mails"
 
-#: pretalx/orga/forms/event.py:62
+#: pretalx/orga/forms/event.py:64
 msgid "Use custom SMTP server"
 msgstr "Eigenen SMTP-Server verwenden"
 
-#: pretalx/orga/forms/event.py:63
+#: pretalx/orga/forms/event.py:65
 msgid ""
 "All mail related to your event will be sent over the smtp server specified "
 "by you."
@@ -852,35 +864,35 @@ msgstr ""
 "Alle E-Mails bezüglich deiner Veranstaltung werden über den von dir "
 "angegebenen SMTP-Server versendet."
 
-#: pretalx/orga/forms/event.py:67
+#: pretalx/orga/forms/event.py:69
 msgid "Hostname"
 msgstr "Hostname"
 
-#: pretalx/orga/forms/event.py:71
+#: pretalx/orga/forms/event.py:73
 msgid "Port"
 msgstr "Port"
 
-#: pretalx/orga/forms/event.py:75 pretalx/person/forms.py:19
+#: pretalx/orga/forms/event.py:77 pretalx/person/forms.py:19
 msgid "Username"
 msgstr "Username"
 
-#: pretalx/orga/forms/event.py:86
+#: pretalx/orga/forms/event.py:88
 msgid "Use STARTTLS"
 msgstr "STARTTLS verwenden"
 
-#: pretalx/orga/forms/event.py:87
+#: pretalx/orga/forms/event.py:89
 msgid "Commonly enabled on port 587."
 msgstr "Meistens auf Port 587 verfügbar."
 
-#: pretalx/orga/forms/event.py:91
+#: pretalx/orga/forms/event.py:93
 msgid "Use SSL"
 msgstr "SSL verwenden"
 
-#: pretalx/orga/forms/event.py:92
+#: pretalx/orga/forms/event.py:94
 msgid "Commonly enabled on port 465."
 msgstr "Meistens auf Port 465 verfügbar."
 
-#: pretalx/orga/forms/event.py:105
+#: pretalx/orga/forms/event.py:107
 msgid ""
 "You can activate either SSL or STARTTLS security, but not both at the same "
 "time."
@@ -899,34 +911,34 @@ msgstr "Nick"
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: pretalx/orga/templates/orga/base.html:43
-#: pretalx/orga/templates/orga/dashboard.html:18
+#: pretalx/orga/templates/orga/base.html:44
+#: pretalx/orga/templates/orga/dashboard.html:22
 msgid "New event"
 msgstr "Neue Veranstaltung erstellen"
 
-#: pretalx/orga/templates/orga/base.html:79
+#: pretalx/orga/templates/orga/base.html:81
 #: pretalx/orga/templates/orga/dashboard.html:6
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: pretalx/orga/templates/orga/base.html:82
+#: pretalx/orga/templates/orga/base.html:84
 #: pretalx/orga/templates/orga/settings/base.html:4
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: pretalx/orga/templates/orga/base.html:85
+#: pretalx/orga/templates/orga/base.html:87
 #: pretalx/orga/templates/orga/cfp/base.html:4
 msgid "CfP"
 msgstr "CfP"
 
-#: pretalx/orga/templates/orga/base.html:88
+#: pretalx/orga/templates/orga/base.html:90
 #: pretalx/orga/templates/orga/speaker/list.html:14
 #: pretalx/orga/templates/orga/submission/base.html:4
 #: pretalx/orga/templates/orga/submission/list.html:5
 msgid "Submissions"
 msgstr "Einreichungen"
 
-#: pretalx/orga/templates/orga/base.html:91
+#: pretalx/orga/templates/orga/base.html:93
 #: pretalx/orga/templates/orga/speaker/form.html:5
 #: pretalx/orga/templates/orga/speaker/list.html:5
 #: pretalx/orga/templates/orga/submission/base.html:21
@@ -935,19 +947,19 @@ msgstr "Einreichungen"
 msgid "Speakers"
 msgstr "Vortragende"
 
-#: pretalx/orga/templates/orga/base.html:94
+#: pretalx/orga/templates/orga/base.html:96
 msgid "Review"
 msgstr "Review"
 
-#: pretalx/orga/templates/orga/base.html:97
+#: pretalx/orga/templates/orga/base.html:99
 msgid "Schedule"
 msgstr "Programm"
 
-#: pretalx/orga/templates/orga/base.html:100
+#: pretalx/orga/templates/orga/base.html:102
 msgid "Mails"
 msgstr "E-Mails"
 
-#: pretalx/orga/templates/orga/base.html:124
+#: pretalx/orga/templates/orga/base.html:126
 #, python-format
 msgid "powered by <a %(a_attr)s>pretalx</a>"
 msgstr "powered by <a %(a_attr)s>pretalx</a>"
@@ -1085,7 +1097,7 @@ msgstr ""
 msgid "Dates and location"
 msgstr "Datum und Ort"
 
-#: pretalx/orga/templates/orga/dashboard.html:19
+#: pretalx/orga/templates/orga/dashboard.html:23
 msgid "Uh, a new event? Head over here, please!"
 msgstr "Ui, eine neue Veranstaltung? Hier entlang, bitte!"
 
@@ -1563,11 +1575,11 @@ msgstr "Mails von pretalx empfangen?"
 msgid "Schedule for {self.event}"
 msgstr "Programm für {self.event}"
 
-#: pretalx/settings.py:83
+#: pretalx/settings.py:130
 msgid "English"
 msgstr "Englisch"
 
-#: pretalx/settings.py:84
+#: pretalx/settings.py:131
 msgid "German"
 msgstr "Deutsch"
 
