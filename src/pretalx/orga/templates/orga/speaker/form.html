@@ -8,7 +8,7 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "Speaker" %} {{ form.instance }} ({{ submission_count }} {% trans "submissions" %})</legend>
+        <legend>{% trans "Speaker" %} {{ form.instance.user }} ({{ submission_count }} {% trans "submissions" %})</legend>
         {% bootstrap_field form.name layout='horizontal' %}
         {% bootstrap_field form.biography layout='horizontal' %}
         <div class="form-group row">
