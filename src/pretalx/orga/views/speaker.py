@@ -4,6 +4,7 @@ from django.views.generic import ListView
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import SpeakerForm
+from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import User
 
 
@@ -21,7 +22,7 @@ class SpeakerList(ListView):
 
 class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
-    form_class = SpeakerForm
+    form_class = SpeakerProfileForm
     model = User
 
     def get_object(self):
@@ -45,3 +46,11 @@ class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
             profile = self.get_object().profiles.get(event=self.request.event)
             profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
         return super().form_valid(form)
+
+    def get_form_kwargs(self, *args, **kwargs):
+        ret = super().get_form_kwargs(*args, **kwargs)
+        ret.update({
+            'event': self.request.event,
+            'user': self.get_object(),
+        })
+        return ret
