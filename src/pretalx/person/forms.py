@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.forms import ReadOnlyFlag
 from pretalx.person.models import SpeakerProfile, User
 
 
@@ -86,7 +87,7 @@ class UserForm(forms.Form):
         return data['user_id']
 
 
-class SpeakerProfileForm(forms.ModelForm):
+class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
     name = forms.CharField(
         max_length=100, label=_('Name')
     )
