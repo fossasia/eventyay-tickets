@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
-from pretalx.orga.forms import SpeakerForm
 from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import User
 
