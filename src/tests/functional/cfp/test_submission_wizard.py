@@ -1,5 +1,3 @@
-import copy
-
 import bs4
 import pytest
 
@@ -83,7 +81,7 @@ class TestWizard:
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
         submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {f'questions-question_{question.pk}': '42',}
+        answer_data = {f'questions-question_{question.pk}': '42', }
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
@@ -111,11 +109,10 @@ class TestWizard:
         assert user.name == 'Jane Doe'
         assert user.profiles.get(event=event).biography == 'l337 hax0r'
 
-
     @pytest.mark.django_db
     def test_wizard_existing_user(self, event, client, question, user):
         submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {f'questions-question_{question.pk}': '42',}
+        answer_data = {f'questions-question_{question.pk}': '42', }
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
@@ -138,11 +135,10 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
 
-
     @pytest.mark.django_db
     def test_wizard_logged_in_user(self, event, client, question, user):
         submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {f'questions-question_{question.pk}': '42',}
+        answer_data = {f'questions-question_{question.pk}': '42', }
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client)
@@ -163,7 +159,6 @@ class TestWizard:
         assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
