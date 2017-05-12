@@ -1,8 +1,8 @@
+beautifulsoup4
+isort
+lxml
 pylama
 pytest
 pytest-cov
 pytest-django
 pytest-mock
-beautifulsoup4
-lxml
-isort

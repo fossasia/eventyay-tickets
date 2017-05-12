@@ -1,6 +1,7 @@
 # Cache backends
-pylibmc
 django-redis
+pylibmc
+
 # Database backends
 mysqlclient
 psycopg2

@@ -1,15 +1,14 @@
-# Functional requirements
-Django==1.10.*
-pytz
-django-compressor==2.1.*
-django-libsass==0.7
-git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
-Markdown
 bleach
-django-formtools==2.*
-django-i18nfield==1.1.*
-django-hierarkey==1.0.*
 celery==4.0.*
-django-csp
-whitenoise
 csscompressor
+Django==1.10.*
+git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
+django-compressor==2.1.*
+django-csp
+django-formtools==2.*
+django-hierarkey==1.0.*
+django-i18nfield==1.1.*
+django-libsass==0.7
+Markdown
+pytz
+whitenoise
