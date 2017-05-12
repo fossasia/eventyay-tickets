@@ -1,3 +1,5 @@
+import copy
+
 import bs4
 import pytest
 
@@ -5,43 +7,51 @@ from pretalx.submission.models import Submission, SubmissionType
 
 
 class TestWizard:
+    submission_data = {
+        'info-title': 'Submission title',
+        'info-content_locale': 'en',
+        'info-description': 'Description',
+        'info-abstract': 'Abstract',
+        'info-notes': 'Notes',
+    }
+    profile_data = {
+        'profile-name': 'John Doe',
+        'profile-biography': 'I\'m awesome',
+    }
+
+    def get_response_and_url(self, client, url, follow=True, method='POST', data=None):
+        if method == 'GET':
+            response = client.get(url, follow=follow, data=data)
+        elif method == 'POST':
+            response = client.post(url, follow=follow, data=data)
+        current_url = response.redirect_chain[-1][0]
+        return response, current_url
+
+    def get_form_name(self, response):
+        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
+        input_hidden = doc.select("input[name^=submit_wizard]")[0]
+        return input_hidden['name'], input_hidden['value']
 
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
         # Start wizard
-        resp = client.get('/test/submit/', follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        resp, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
         assert current_url.endswith('/info/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
-        # Submit first form
-        data = {
-            'info-title': 'Submission title',
-            'info-submission_type': SubmissionType.objects.filter(event=event).first().pk,
-            'info-content_locale': 'en',
-            'info-description': 'Description',
-            'info-abstract': 'Abstract',
-            'info-notes': 'Notes',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        # Submit info form
+        data = copy.copy(self.submission_data)
+        data['info-submission_type'] = SubmissionType.objects.filter(event=event).first().pk
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/questions/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit question form
-        data = {
-            'questions-question_' + str(question.pk): '42',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = {f'questions-question_{question.pk}': '42',}
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/user/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit user form
         data = {
@@ -50,25 +60,18 @@ class TestWizard:
             'user-register_password': 'testpassw0rd',
             'user-register_password_repeat': 'testpassw0rd',
         }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/profile/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit profile form
-        data = {
-            'profile-name': 'John Doe',
-            'profile-biography': 'I\'m awesome',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = self.profile_data
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/me/submissions')
+
         doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('.user-row')
@@ -93,65 +96,41 @@ class TestWizard:
     @pytest.mark.django_db
     def test_wizard_existing_user(self, event, client, question, user):
         # Start wizard
-        resp = client.get('/test/submit/', follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        resp, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
         assert current_url.endswith('/info/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
-        # Submit first form
-        data = {
-            'info-title': 'Submission title',
-            'info-submission_type': SubmissionType.objects.filter(event=event).first().pk,
-            'info-content_locale': 'en',
-            'info-description': 'Description',
-            'info-abstract': 'Abstract',
-            'info-notes': 'Notes',
-            'info-duration': '45'
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        # Submit info form
+        data = copy.copy(self.submission_data)
+        data['info-submission_type'] = SubmissionType.objects.filter(event=event).first().pk
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/questions/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit question form
-        data = {
-            'questions-question_' + str(question.pk): '42',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = {f'questions-question_{question.pk}': '42',}
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/user/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit user form
         data = {
             'user-login_username': 'testuser',
             'user-login_password': 'testpassw0rd',
         }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/profile/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit profile form
-        data = {
-            'profile-name': 'John Doe',
-            'profile-biography': 'I\'m awesome',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = self.profile_data
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/me/submissions')
+
         doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('.user-row')
@@ -173,56 +152,34 @@ class TestWizard:
         client.force_login(user)
 
         # Start wizard
-        resp = client.get('/test/submit/', follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        resp, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
         assert current_url.endswith('/info/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
-        # Submit first form
-        data = {
-            'info-title': 'Submission title',
-            'info-submission_type': SubmissionType.objects.filter(event=event).first().pk,
-            'info-content_locale': 'en',
-            'info-description': 'Description',
-            'info-abstract': 'Abstract',
-            'info-notes': 'Notes',
-            'info-duration': '45'
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        # Submit info form
+        data = copy.copy(self.submission_data)
+        data['info-submission_type'] = SubmissionType.objects.filter(event=event).first().pk
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/questions/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit question form
-        data = {
-            'questions-question_' + str(question.pk): '42',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = {f'questions-question_{question.pk}': '42',}
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/profile/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit profile form
-        data = {
-            'profile-name': 'John Doe',
-            'profile-biography': 'I\'m awesome',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = self.profile_data
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/me/submissions')
+
         doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('.user-row')
-
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         answ = sub.answers.first()
@@ -240,44 +197,27 @@ class TestWizard:
         client.force_login(user)
 
         # Start wizard
-        resp = client.get('/test/submit/', follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        resp, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
         assert current_url.endswith('/info/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
-        # Submit first form
-        data = {
-            'info-title': 'Submission title',
-            'info-submission_type': SubmissionType.objects.filter(event=event).first().pk,
-            'info-content_locale': 'en',
-            'info-description': 'Description',
-            'info-abstract': 'Abstract',
-            'info-notes': 'Notes',
-            'info-duration': '45'
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        # Submit info form
+        data = copy.copy(self.submission_data)
+        data['info-submission_type'] = SubmissionType.objects.filter(event=event).first().pk
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/profile/')
-        doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
 
         # Submit profile form
-        data = {
-            'profile-name': 'John Doe',
-            'profile-biography': 'I\'m awesome',
-        }
-        inp_hidden = doc.select("input[name^=submit_wizard]")[0]
-        data[inp_hidden['name']] = inp_hidden['value']
-
-        resp = client.post(current_url, data, follow=True)
-        current_url = resp.redirect_chain[-1][0]
+        data = self.profile_data
+        key, value = self.get_form_name(resp)
+        data[key] = value
+        resp, current_url = self.get_response_and_url(client, current_url, data=data)
         assert current_url.endswith('/me/submissions')
+
         doc = bs4.BeautifulSoup(resp.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('.user-row')
-
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         assert not sub.answers.exists()
