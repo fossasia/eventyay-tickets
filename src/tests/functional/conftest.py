@@ -59,12 +59,15 @@ def speaker():
 
 @pytest.fixture
 def submission(event, speaker, submission_type):
-    return Submission.objects.create(
-        title='A Submission', speakers=[speaker], event=event,
+    sub = Submission.objects.create(
+        title='A Submission', event=event,
         code='BLAKEKS', submission_type=submission_type,
         description='Some talk description', abstract='Fancy abstract',
         notes='I like cookies', content_locale='en'
     )
+    sub.save()
+    sub.speakers.add(speaker)
+    return sub
 
 
 @pytest.fixture
