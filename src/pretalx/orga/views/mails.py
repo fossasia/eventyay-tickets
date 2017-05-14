@@ -21,7 +21,7 @@ class OutboxSend(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            mail = self.request.queued_mails.get(pk=self.kwargs.get('pk'))
+            mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
             mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
             mail.send()
         else:
@@ -35,7 +35,7 @@ class OutboxPurge(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            mail = self.request.queued_mails.get(pk=self.kwargs.get('pk'))
+            mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
             mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
             mail.delete()
         else:
