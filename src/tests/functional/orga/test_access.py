@@ -23,3 +23,33 @@ def test_user_can_access_event_urls(orga_client, url, event):
     response = orga_client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
     assert response.status_code == 200, response.content
     assert event.slug in response.content.decode()
+
+
+@pytest.mark.parametrize('url,obj', [
+    ('cfp.question.edit', 'question'),
+    ('cfp.question.delete', 'question'),
+    ('cfp.type.delete', 'submission_type'),
+    ('cfp.type.edit', 'submission_type'),
+    ('mails.templates.edit', 'mail_template'),
+    ('mails.templates.delete', 'mail_template'),
+    ('mails.outbox.mail.view', 'mail'),
+    ('mails.outbox.mail.edit', 'mail'),
+    ('mails.outbox.mail.send', 'mail'),
+    ('mails.outbox.mail.delete', 'mail'),
+    ('submissions.content.view', 'submission'),
+    ('submissions.content.edit', 'submission'),
+    ('submissions.accept', 'submission'),
+    ('submissions.reject', 'submission'),
+    ('submissions.questions.edit', 'submission'),
+    ('submissions.speakers.view', 'submission'),
+    ('speakers.view', 'speaker'),
+    ('speakers.edit', 'speaker'),
+    ('settings.team.delete', 'other_orga_user'),
+    ('settings.team.retract', 'invitation'),
+])
+@pytest.mark.django_db
+def test_user_can_access_specific_urls(orga_client, url, obj, event, question, submission_type, mail_template, mail, submission, speaker, other_orga_user, invitation):
+    obj = locals().get(obj)
+    response = orga_client.get(reverse(f'orga:{url}', kwargs={'event': event.slug, 'pk': obj.pk}), follow=True)
+    assert response.status_code == 200, response.content
+    assert event.slug in response.content.decode()
