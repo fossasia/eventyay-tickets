@@ -89,7 +89,7 @@ class CfPQuestionDelete(View):
         question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
         question.delete()
         messages.success(request, _('The question has been deleted.'))
-        return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event}))
+        return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event.slug}))
 
 
 class SubmissionTypeList(ListView):
