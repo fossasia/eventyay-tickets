@@ -16,7 +16,9 @@
                 {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-secondary" href={% url "orga:speakers.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
+                    {% if form.instance.pk %}
+                        <a class="btn btn-secondary" href={% url "orga:speakers.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
