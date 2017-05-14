@@ -10,7 +10,7 @@ from pretalx.submission.models import (
 
 @pytest.fixture
 def event():
-    e = Event.objects.create(name='Fancy testevent', is_public=True, slug='test')
+    e = Event.objects.create(name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org')
     e.get_cfp()  # created on access
     return e
 
@@ -69,12 +69,12 @@ def submission(event, speaker, submission_type):
 
 @pytest.fixture
 def invitation(event):
-    return EventPermission.objects.create(event=event, is_orga=True, invitation_token='testtoken', invitation_mail='some@test.mail')
+    return EventPermission.objects.create(event=event, is_orga=True, invitation_token='testtoken', invitation_email='some@test.mail')
 
 
 @pytest.fixture
 def mail_template(event):
-    return MailTemplate.objects.create(event=event, subject='Some Mail', text='Whee mail content!')
+    return MailTemplate.objects.create(event=event, subject='Some Mail', text='Whee mail content!', reply_to='orga@orga.org')
 
 
 @pytest.fixture
