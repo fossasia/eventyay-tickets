@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -138,8 +139,11 @@ class SubmissionTypeDelete(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
 
-        submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
-        submission_type.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
-        submission_type.delete()
-        messages.success(request, _('The Submission Type has been deleted.'))
+        try:
+            submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+            submission_type.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
+            submission_type.delete()
+            messages.success(request, _('The Submission Type has been deleted.'))
+        except ProtectedError:  # TODO: show which/how many submissions are concerned
+            messages.error(request, _('This Submission Type is in use in a submission and cannot be deleted.'))
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
