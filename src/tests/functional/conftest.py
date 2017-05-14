@@ -3,7 +3,9 @@ import pytest
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
-from pretalx.submission.models import Question, QuestionVariant, Submission, SubmissionType
+from pretalx.submission.models import (
+    Question, QuestionVariant, Submission, SubmissionType,
+)
 
 
 @pytest.fixture
