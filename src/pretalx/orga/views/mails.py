@@ -28,7 +28,7 @@ class OutboxSend(View):
             for mail in self.request.event.queued_mails.all():
                 mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 mail.send()
-        return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
+        return redirect(reverse('orga:mails.outbox.list', kwargs={'event': self.request.event.slug}))
 
 
 class OutboxPurge(View):
@@ -41,7 +41,7 @@ class OutboxPurge(View):
         else:
             self.request.event.queued_mails.all().delete()
             self.request.event.log_action('pretalx.mail.delete_all')
-        return redirect(reverse('orga:mails.outbox.list', kwargs=self.kwargs))
+        return redirect(reverse('orga:mails.outbox.list', kwargs={'event': self.request.event.slug}))
 
 
 class OutboxMail(ActionFromUrl, CreateOrUpdateView):
