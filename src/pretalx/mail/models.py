@@ -51,6 +51,7 @@ class MailTemplate(LogMixin, models.Model):
                 mail.send()
             else:
                 mail.save()
+        return mail
 
 
 class QueuedMail(LogMixin, models.Model):
