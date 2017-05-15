@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, ListView, TemplateView, UpdateView
+from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
@@ -72,7 +72,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
     model = Submission
     context_object_name = "submission"
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):  # TODO: check object state beforehand
         self.object = self.get_object()
         self.object.state = SubmissionStates.WITHDRAWN
         self.object.save()
@@ -83,6 +83,30 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
     def get_object(self, queryset=None):
         try:
             return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
+                speakers__in=[self.request.user],
+                pk=self.kwargs.get('id')
+            )
+        except Submission.DoesNotExist:
+            raise Http404()
+
+
+class SubmissionConfirmView(LoggedInEventPageMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission.state == SubmissionStates.ACCEPTED:
+            submission.state = SubmissionStates.CONFIRMED
+            submission.save(update_fields=['state'])
+            messages.success(self.request, _('Your submission has been confirmed – we\'re looking forward to seeing you!'))
+        elif submission.state == SubmissionStates.CONFIRMED:
+            messages.success(self.request, _('This submission has already been confirmed – we\'re looking forward to seeing you!'))
+        else:
+            messages.error(self.request, _('This submission cannot be confirmed at this time – please contact us if you think this is an error.'))
+        return redirect('cfp:event.user.submissions', event=self.request.event.slug)
+
+    def get_object(self):
+        try:
+            return self.request.event.submissions.get(
                 speakers__in=[self.request.user],
                 pk=self.kwargs.get('id')
             )

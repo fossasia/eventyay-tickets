@@ -22,6 +22,8 @@ cfp_urls = [
         name='event.user.submission.edit'),
     url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/withdraw$', user.SubmissionsWithdrawView.as_view(),
         name='event.user.submission.withdraw'),
+    url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/confirm$', user.SubmissionConfirmView.as_view(),
+        name='event.user.submission.confirm'),
 
     url('^locale/set', locale.LocaleSet.as_view(),
         name='locale.set'),

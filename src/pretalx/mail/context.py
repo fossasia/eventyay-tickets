@@ -40,7 +40,10 @@ def template_context_from_event(event):
 def template_context_from_submission(submission):
     ctx = template_context_from_event(submission.event)
     ctx.update({
-        'confirmation_link': 'TODO',
+        'confirmation_link': build_absolute_uri(
+            'cfp:event.user.submission.confirm',
+            kwargs={'event': submission.event.slug, 'id': submission.pk}
+        ),
         'event_name': submission.event.name,
         'submission_title': submission.title,
         'submission_url': build_absolute_uri(
