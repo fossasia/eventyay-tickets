@@ -33,19 +33,7 @@
                         {% endfor %}
                     </td>
                     <td>
-                        {% if submission.state == 'submitted' %}
-                            <span class="fa fa-inbox" title="{% trans "submitted" %}"></span>
-                        {% elif submission.state == 'rejected' %}
-                            <span class="fa fa-ban" title="{% trans "rejected" %}"></span>
-                        {% elif submission.state == 'accepted' %}
-                            <span class="fa fa-check-circle-o" title="{% trans "accepted" %}"></span>
-                        {% elif submission.state == 'confirmed' %}
-                            <span class="fa fa-check-circle" title="{% trans "confirmed" %}"></span>
-                        {% elif submission.state == 'canceled' %}
-                            <span class="fa fa-times-circle" title="{% trans "cancelled" %}"></span>
-                        {% elif submission.state == 'withdrawn' %}
-                            <span class="fa fa-times-circle-o" title="{% trans "withdrawn" %}"></span>
-                        {% endif %}
+                        {% include "cfp/event/fragment_state.html" with state=submission.state %}
                     </td>
                     <td class="text-right">
                         <a href="{% url "orga:submissions.content.edit" event=request.event.slug pk=submission.pk %}"
