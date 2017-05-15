@@ -28,6 +28,7 @@
               href="{% url "orga:mails.outbox.list" event=request.event.slug %}"
             >
                 {% trans "Outbox" %}
+                {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}{% endif %}
             </a>
           </li>
         </ul>
