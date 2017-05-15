@@ -16,6 +16,7 @@ LOG_NAMES = {
     'pretalx.mail_template.delete': _('A mail template was deleted.'),
     'pretalx.question.delete': _('A question was deleted.'),
     'pretalx.submission.accept': _('The submission was accepted.'),
+    'pretalx.submission.confirmation': _('The submission was confirmed.'),
     'pretalx.submission.create': _('The submission was created.'),
     'pretalx.submission.reject': _('The submission was rejected.'),
     'pretalx.submission.speakers.add': _('A speaker was added to the submission.'),
