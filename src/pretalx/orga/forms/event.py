@@ -19,7 +19,6 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.initial['timezone'] = get_current_timezone_name()
         self.initial['locales'] = self.instance.locale_array.split(",")
 
     def clean_slug(self):
