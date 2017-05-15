@@ -4,7 +4,9 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
+from django.views.generic import (
+    DetailView, ListView, TemplateView, UpdateView, View,
+)
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
@@ -74,7 +76,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if submission.state == SubmissionStates.SUBMITTED:
+        if self.object.state == SubmissionStates.SUBMITTED:
             self.object.state = SubmissionStates.WITHDRAWN
             self.object.save(update_fields=['state'])
             self.object.log_action('pretalx.submission.withdrawal', person=request.user)
