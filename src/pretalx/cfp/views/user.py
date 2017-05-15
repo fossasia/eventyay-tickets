@@ -72,12 +72,15 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
     model = Submission
     context_object_name = "submission"
 
-    def post(self, request, *args, **kwargs):  # TODO: check object state beforehand
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.state = SubmissionStates.WITHDRAWN
-        self.object.save()
-        self.object.log_action('pretalx.submission.withdrawal', person=request.user)
-        messages.success(self.request, _('Your submission has been withdrawn.'))
+        if submission.state == SubmissionStates.SUBMITTED:
+            self.object.state = SubmissionStates.WITHDRAWN
+            self.object.save(update_fields=['state'])
+            self.object.log_action('pretalx.submission.withdrawal', person=request.user)
+            messages.success(self.request, _('Your submission has been withdrawn.'))
+        else:
+            messages.error(self.request, _('Your submission can\'t be withdrawn at this time – please contact us if you need to withdraw your submission!'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
     def get_object(self, queryset=None):
