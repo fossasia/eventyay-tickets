@@ -1,7 +1,6 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.timezone import get_current_timezone_name
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
