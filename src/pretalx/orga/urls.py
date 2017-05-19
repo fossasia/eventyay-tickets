@@ -1,6 +1,8 @@
 from django.conf.urls import include, url
 
-from .views import auth, cfp, dashboard, mails, settings, speaker, submission
+from .views import (
+    auth, cfp, dashboard, mails, person, settings, speaker, submission,
+)
 
 orga_urls = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
@@ -12,6 +14,8 @@ orga_urls = [
     url('^event/new/$', settings.EventDetail.as_view(), name='event.create'),
 
     url('^event/(?P<event>\w+)/', include([
+        url('^users$', person.UserList.as_view(), name='event.user_list'),
+
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
         url('^cfp/questions$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),
