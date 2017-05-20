@@ -127,9 +127,9 @@ class SubmissionTypeDefault(View):
         super().dispatch(request, *args, **kwargs)
 
         submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
-        submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=['default_type'])
+        submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
         messages.success(request, _('The Submission Type has been made default.'))
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
 
@@ -138,12 +138,17 @@ class SubmissionTypeDelete(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
+        submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
 
-        try:
-            submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
-            submission_type.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
-            submission_type.delete()
-            messages.success(request, _('The Submission Type has been deleted.'))
-        except ProtectedError:  # TODO: show which/how many submissions are concerned
-            messages.error(request, _('This Submission Type is in use in a submission and cannot be deleted.'))
+        if request.event.submission_types.count() == 1:
+            messages.error(request, _('You cannot delete the only submission type. Try creating another one first!'))
+        elif request.event.cfp.default_type == submission_type:
+            messages.error(request, _('You cannot delete the default submission type. Make another type default first!'))
+        else:
+            try:
+                submission_type.delete()
+                request.event.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
+                messages.success(request, _('The Submission Type has been deleted.'))
+            except ProtectedError:  # TODO: show which/how many submissions are concerned
+                messages.error(request, _('This Submission Type is in use in a submission and cannot be deleted.'))
         return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
