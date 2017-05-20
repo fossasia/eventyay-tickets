@@ -53,6 +53,11 @@ def submission_type(event):
 
 
 @pytest.fixture
+def default_submission_type(event):
+    return event.cfp.default_type
+
+
+@pytest.fixture
 def speaker():
     return User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker')
 
