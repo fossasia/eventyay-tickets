@@ -21,17 +21,23 @@ def test_user_can_access_url(orga_client, logged_in, url):
     'mails.outbox.purge', 'submissions.list', 'speakers.list', 'settings.event.view',
     'settings.event.edit', 'settings.mail.view', 'settings.mail.edit', 'settings.team.view',
 ])
-@pytest.mark.parametrize('logged_in', (True, False))
+@pytest.mark.parametrize('test_user', ('orga', 'speaker', 'None'))
 @pytest.mark.django_db
-def test_user_can_access_event_urls(orga_client, logged_in, url, event):
-    if not logged_in:
+def test_user_can_access_event_urls(orga_client, speaker, test_user, url, event):
+    if test_user == 'None':
         orga_client.logout()
+    elif test_user == 'speaker':
+        orga_client.force_login(speaker)
     response = orga_client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
 
-    assert response.status_code == 200, response.content
-    assert (event.slug in response.content.decode()) == logged_in
+    if test_user != 'speaker':
+        assert response.status_code == 200, response.status_code
+    else:
+        assert response.status_code == 403, response.status_code
 
-    if not logged_in:
+    assert (event.slug in response.content.decode()) == (test_user == 'orga')
+
+    if test_user == 'None':
         current_url = response.redirect_chain[-1][0]
         assert 'login' in current_url
 
