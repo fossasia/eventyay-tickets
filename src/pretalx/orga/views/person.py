@@ -10,7 +10,7 @@ class UserList(View):
     def dispatch(self, request, *args, **kwargs):
         search = request.GET.get('search')
         if not search or len(search) < 3:
-            return JsonResponse({'count': 0})
+            return JsonResponse({'count': 0, 'results': []})
 
         queryset = User.objects.filter(
             Q(nick__icontains=search) | Q(name__icontains=search)
