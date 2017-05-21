@@ -36,6 +36,32 @@ def test_can_confirm_submission(speaker_client, accepted_submission):
 
 
 @pytest.mark.django_db
+def test_can_reconfirm_submission(speaker_client, accepted_submission):
+    accepted_submission.state = SubmissionStates.CONFIRMED
+    accepted_submission.save()
+    response = speaker_client.get(
+        reverse(f'cfp:event.user.submission.confirm', kwargs={'event': accepted_submission.event.slug, 'id': accepted_submission.pk}),
+        follow=True,
+    )
+    accepted_submission.refresh_from_db()
+    assert response.status_code == 200
+    assert accepted_submission.state == SubmissionStates.CONFIRMED
+
+
+@pytest.mark.django_db
+def test_cannot_confirm_rejected_submission(speaker_client, rejected_submission):
+    rejected_submission.state = SubmissionStates.REJECTED
+    rejected_submission.save()
+    response = speaker_client.get(
+        reverse(f'cfp:event.user.submission.confirm', kwargs={'event': rejected_submission.event.slug, 'id': rejected_submission.pk}),
+        follow=True,
+    )
+    rejected_submission.refresh_from_db()
+    assert response.status_code == 200
+    assert rejected_submission.state == SubmissionStates.REJECTED
+
+
+@pytest.mark.django_db
 def test_can_withdraw_submission(speaker_client, submission):
     response = speaker_client.get(
         reverse(f'cfp:event.user.submission.withdraw', kwargs={'event': submission.event.slug, 'id': submission.pk}),

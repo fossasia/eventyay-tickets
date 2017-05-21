@@ -89,6 +89,13 @@ def accepted_submission(submission):
 
 
 @pytest.fixture
+def rejected_submission(submission):
+    submission.state = SubmissionStates.REJECTED
+    submission.save()
+    return submission
+
+
+@pytest.fixture
 def invitation(event):
     return EventPermission.objects.create(event=event, is_orga=True, invitation_token='testtoken', invitation_email='some@test.mail')
 
