@@ -90,3 +90,42 @@ def test_cannot_withdraw_accepted_submission(speaker_client, accepted_submission
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.ACCEPTED
+
+
+@pytest.mark.django_db
+def test_can_edit_submission(speaker_client, submission):
+    data = {
+        'title': 'Ein ganz neuer Titel',
+        'submission_type': submission.submission_type.pk,
+        'content_locale': submission.content_locale,
+        'description': submission.description,
+        'abstract': submission.abstract,
+        'notes': submission.notes,
+    }
+    response = speaker_client.post(
+        reverse(f'cfp:event.user.submission.edit', kwargs={'event': submission.event.slug, 'id': submission.pk}),
+        follow=True, data=data,
+    )
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.title == 'Ein ganz neuer Titel', response.content.decode()
+
+
+@pytest.mark.django_db
+def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
+    title = rejected_submission.title
+    data = {
+        'title': 'Ein ganz neuer Titel',
+        'submission_type': rejected_submission.submission_type.pk,
+        'content_locale': rejected_submission.content_locale,
+        'description': rejected_submission.description,
+        'abstract': rejected_submission.abstract,
+        'notes': rejected_submission.notes,
+    }
+    response = speaker_client.post(
+        reverse(f'cfp:event.user.submission.edit', kwargs={'event': rejected_submission.event.slug, 'id': rejected_submission.pk}),
+        follow=True, data=data,
+    )
+    assert response.status_code == 200
+    rejected_submission.refresh_from_db()
+    assert rejected_submission.title == title
