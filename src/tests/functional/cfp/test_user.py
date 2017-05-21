@@ -129,3 +129,16 @@ def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
     assert response.status_code == 200
     rejected_submission.refresh_from_db()
     assert rejected_submission.title == title
+
+
+@pytest.mark.django_db
+def test_can_edit_profile(speaker, event, speaker_client):
+    response = speaker_client.post(
+        reverse(f'cfp:event.user.view', kwargs={'event': event.slug}),
+        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.get(event=event).biography == 'Ruling since forever.'
+    assert speaker.name == 'Lady Imperator'
