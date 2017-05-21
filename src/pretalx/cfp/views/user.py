@@ -21,8 +21,8 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
     def login_form(self):
         return LoginInfoForm(user=self.request.user,
                              data=(self.request.POST
-                                   if self.request.method == "POST"
-                                   and self.request.POST.get("form") == "login"
+                                   if self.request.method == 'POST'
+                                   and self.request.POST.get('form') == 'login'
                                    else None))
 
     @cached_property
@@ -31,8 +31,8 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
                                   event=self.request.event,
                                   read_only=False,
                                   data=(self.request.POST
-                                        if self.request.method == "POST"
-                                        and self.request.POST.get("form") == "profile"
+                                        if self.request.method == 'POST'
+                                        and self.request.POST.get('form') == 'profile'
                                         else None))
 
     def get_context_data(self, event):
@@ -72,9 +72,9 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
 class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
     template_name = 'cfp/event/user_submission_withdraw.html'
     model = Submission
-    context_object_name = "submission"
+    context_object_name = 'submission'
 
-    def post(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.state == SubmissionStates.SUBMITTED:
             self.object.state = SubmissionStates.WITHDRAWN
@@ -124,7 +124,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
     template_name = 'cfp/event/user_submission_edit.html'
     model = Submission
     form_class = InfoForm
-    context_object_name = "submission"
+    context_object_name = 'submission'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -203,7 +203,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
     def _save_to_answer(self, field, answer, value):
         action = 'pretalx.submission.answer' + ('update' if answer.pk else 'create')
         if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ", ".join([str(o) for o in value])
+            answstr = ', '.join([str(o) for o in value])
             if not answer.pk:
                 answer.save()
             else:
