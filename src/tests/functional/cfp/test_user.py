@@ -25,6 +25,15 @@ def test_can_see_submission(speaker_client, submission):
 
 
 @pytest.mark.django_db
+def test_cannot_see_other_submission(speaker_client, other_submission):
+    response = speaker_client.get(
+        reverse(f'cfp:event.user.submission.edit', kwargs={'event': other_submission.event.slug, 'id': other_submission.pk}),
+        follow=True,
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_can_confirm_submission(speaker_client, accepted_submission):
     response = speaker_client.get(
         reverse(f'cfp:event.user.submission.confirm', kwargs={'event': accepted_submission.event.slug, 'id': accepted_submission.pk}),

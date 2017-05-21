@@ -69,6 +69,11 @@ def speaker_client(client, speaker):
 
 
 @pytest.fixture
+def other_speaker():
+    return User.objects.create_user('speaker2', 'speakerpwd', name='Krümelmonster')
+
+
+@pytest.fixture
 def submission(event, speaker, submission_type):
     sub = Submission.objects.create(
         title='A Submission', event=event,
@@ -78,6 +83,19 @@ def submission(event, speaker, submission_type):
     )
     sub.save()
     sub.speakers.add(speaker)
+    return sub
+
+
+@pytest.fixture
+def other_submission(event, other_speaker):
+    sub = Submission.objects.create(
+        title='Albrecht Dürer. Sein Leben, seine Zeit', event=event,
+        code='BLAKOKS', submission_type=event.cfp.default_type,
+        description='1 guter Talk', abstract='Verstehste?',
+        notes='I like cookies A LOT', content_locale='en'
+    )
+    sub.save()
+    sub.speakers.add(other_speaker)
     return sub
 
 
