@@ -4,7 +4,7 @@ from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
 from pretalx.submission.models import (
-    Question, QuestionVariant, Submission, SubmissionType,
+    Question, QuestionVariant, Submission, SubmissionStates, SubmissionType,
 )
 
 
@@ -63,6 +63,12 @@ def speaker():
 
 
 @pytest.fixture
+def speaker_client(client, speaker):
+    client.force_login(speaker)
+    return client
+
+
+@pytest.fixture
 def submission(event, speaker, submission_type):
     sub = Submission.objects.create(
         title='A Submission', event=event,
@@ -73,6 +79,13 @@ def submission(event, speaker, submission_type):
     sub.save()
     sub.speakers.add(speaker)
     return sub
+
+
+@pytest.fixture
+def accepted_submission(submission):
+    submission.state = SubmissionStates.ACCEPTED
+    submission.save()
+    return submission
 
 
 @pytest.fixture
