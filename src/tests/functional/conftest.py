@@ -16,6 +16,13 @@ def event():
 
 
 @pytest.fixture
+def other_event():
+    e = Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org')
+    e.get_cfp()  # created on access
+    return e
+
+
+@pytest.fixture
 def question(event):
     return Question.objects.create(event=event, question='How old are you?',
                                    variant=QuestionVariant.NUMBER,
