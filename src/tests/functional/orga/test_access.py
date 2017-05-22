@@ -53,6 +53,7 @@ def test_user_can_see_correct_events(orga_user, orga_client, speaker, event, oth
         current_url = response.redirect_chain[-1][0]
         assert 'login' in current_url
 
+
 @pytest.mark.parametrize('url,obj', [
     ('cfp.question.edit', 'question'),
     ('cfp.question.delete', 'question'),
