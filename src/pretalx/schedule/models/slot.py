@@ -25,3 +25,12 @@ class TalkSlot(LogMixin, models.Model):
     @property
     def event(self):
         return self.submission.event
+
+    def copy_to_schedule(self, new_schedule):
+        return TalkSlot.objects.create(
+            submission=self.submission,
+            room=self.room,
+            schedule=new_schedule,
+            start=self.start,
+            end=self.end,
+        )
