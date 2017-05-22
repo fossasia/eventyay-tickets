@@ -193,7 +193,7 @@ except ImportError:
 X_FRAME_OPTIONS = 'DENY'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-CSP_DEFAULT_SRC = ("'self'",)
+CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 
 # URL settings
 ROOT_URLCONF = 'pretalx.urls'

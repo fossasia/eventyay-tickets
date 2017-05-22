@@ -8,8 +8,12 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
     {% endcompress %}
+    {% block stylesheets %}
+    {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
+    {% block scripts %}
+    {% endblock %}
     {% compress js %}
         <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>

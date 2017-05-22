@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
 
 from .views import (
-    auth, cfp, dashboard, mails, person, settings, speaker, submission,
+    auth, cfp, dashboard, mails, person,
+    schedule, settings, speaker, submission,
 )
 
 orga_urls = [
@@ -70,5 +71,7 @@ orga_urls = [
         url('^settings/team/add$', settings.EventTeamInvite.as_view(), name='settings.team.add'),
         url('^settings/team/delete/(?P<pk>[0-9]+)$', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
         url('^settings/team/retract/(?P<pk>[0-9]+)$', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
+
+        url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
     ])),
 ]
