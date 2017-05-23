@@ -99,8 +99,8 @@
                 <a class="nav-link {% if "review." in url_name %}active{% endif %}" href="#">
                     <span class="notimplemented"><span class="fa fa-eye"></span> {% trans "Review" %}</span>
                 </a>
-                <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="#">
-                    <span class="notimplemented"><span class="fa fa-calendar-o"></span> {% trans "Schedule" %}</span>
+                <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="{% url "orga:schedule.main" event=request.event.slug %}">
+                    <span class="fa fa-calendar-o"></span> {% trans "Schedule" %}</span>
                 </a>
                 <a class="nav-link {% if "mails." in url_name %}active{% endif %}" href="{% url "orga:mails.templates.list" event=request.event.slug %}">
                     <span class="fa fa-envelope"></span> {% trans "Mails" %}
