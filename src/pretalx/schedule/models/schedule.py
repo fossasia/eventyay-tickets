@@ -15,6 +15,9 @@ class Schedule(LogMixin, models.Model):
         null=True, blank=True,
     )
 
+    class Meta:
+        unique_together = (('event', 'version'), )
+
     def freeze(self, name, user=None):
         if self.version:
             raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')

@@ -24,5 +24,8 @@ class Room(LogMixin, models.Model):
         null=True, blank=True,
     )
 
+    class Meta:
+        unique_together = (('event', 'name'), )
+
     def __str__(self) -> str:
         return str(self.name)

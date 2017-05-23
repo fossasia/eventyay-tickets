@@ -19,8 +19,11 @@ class TalkSlot(LogMixin, models.Model):
         on_delete=models.PROTECT,
         related_name='talks',
     )
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    start = models.DateTimeField(null=True)
+    end = models.DateTimeField(null=True)
+
+    class Meta:
+        unique_together = (('submission', 'schedule'), )
 
     @property
     def event(self):
