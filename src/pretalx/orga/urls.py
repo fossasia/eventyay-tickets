@@ -73,5 +73,8 @@ orga_urls = [
         url('^settings/team/retract/(?P<pk>[0-9]+)$', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
+        url('^schedule/api/rooms/$', schedule.RoomList.as_view(), name='schedule.api.rooms'),
+        url('^schedule/api/talks/$', schedule.TalkList.as_view(), name='schedule.api.talks'),
+        url('^schedule/api/talks/(?P<pk>[0-9]+)/$', schedule.TalkUpdate.as_view(), name='schedule.api.update'),
     ])),
 ]
