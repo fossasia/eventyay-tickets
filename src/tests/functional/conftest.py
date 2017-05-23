@@ -5,7 +5,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
 from pretalx.schedule.models import Room
 from pretalx.submission.models import (
-    Question, QuestionVariant, Submission, SubmissionStates, SubmissionType,
+    Question, QuestionVariant, Submission, SubmissionType,
 )
 
 
