@@ -40,12 +40,12 @@ class TalkList(View):
                 'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
                 'content_locale': slot.submission.content_locale,
                 'do_not_record': slot.submission.do_not_record,
-                'room': slot.room.pk,
+                'room': slot.room.pk if slot.room else None,
                 'start': slot.start,
                 'end': slot.end,
             }
             for slot in schedule.talks.all()
-        ]})
+        ]}, encoder=I18nJSONEncoder)
 
 
 class TalkUpdate(View):
