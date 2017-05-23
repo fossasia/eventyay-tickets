@@ -18,6 +18,7 @@ def test_accept_success(submission, state):
     assert submission.state == SubmissionStates.ACCEPTED
     assert submission.logged_actions().count() == (count + 1)
     assert submission.event.queued_mails.count() == 1
+    assert submission.event.wip_schedule.talks.count() == 1
 
 
 @pytest.mark.parametrize('state', (
@@ -39,12 +40,14 @@ def test_accept_fail(submission, state, force):
         assert submission.state == SubmissionStates.ACCEPTED
         assert submission.logged_actions().count() == (count + 1)
         assert submission.event.queued_mails.count() == 1
+        assert submission.event.wip_schedule.talks.count() == 1
 
     else:
         with pytest.raises(SubmissionError):
             submission.accept(force=force)
         assert submission.state == state
         assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize('state', (
@@ -66,3 +69,4 @@ def test_reject(submission, state):
     assert submission.state == SubmissionStates.REJECTED
     assert submission.logged_actions().count() == (count + 1)
     assert submission.event.queued_mails.count() == 1
+    assert submission.event.wip_schedule.talks.count() == 0
