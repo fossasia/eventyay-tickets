@@ -100,15 +100,13 @@ def other_submission(event, other_speaker):
 
 @pytest.fixture
 def accepted_submission(submission):
-    submission.state = SubmissionStates.ACCEPTED
-    submission.save()
+    submission.accept()
     return submission
 
 
 @pytest.fixture
 def rejected_submission(submission):
-    submission.state = SubmissionStates.REJECTED
-    submission.save()
+    submission.reject()
     return submission
 
 
