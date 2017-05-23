@@ -121,6 +121,10 @@ class Event(LogMixin, models.Model):
             from pretalx.submission.models import CfP
             CfP.objects.create(event=self, default_type=self._get_default_submission_type())
 
+        if not self.schedules.filter(version__isnull=True).exists():
+            from pretalx.schedule.models import Schedule
+            Schedule.objects.create(event=self)
+
         self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
