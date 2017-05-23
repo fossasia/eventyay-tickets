@@ -4,14 +4,21 @@ from pretalx.event.models import Event
 from pretalx.schedule.models import Room, Schedule, TalkSlot
 from pretalx.submission.models import Submission
 
+@pytest.fixture
+def event():
+    return Event.objects.create(name='Event')
+
 
 @pytest.fixture
-def talk_slot():
-    event = Event.objects.create(name='Event')
+def submission(event):
+    return Submission.objects.create(title='Submission', event=event, submission_type=event.cfp.default_type)
+
+
+@pytest.fixture
+def talk_slot(event, submission):
     schedule = event.schedules.first()
-    sub = Submission.objects.create(title='Submission', event=schedule.event, submission_type=event.cfp.default_type)
-    room = Room.objects.create(name='Room', event=schedule.event)
-    return TalkSlot.objects.create(submission=sub, room=room, schedule=schedule)
+    room = Room.objects.create(name='Room', event=event)
+    return TalkSlot.objects.create(submission=submission, room=room, schedule=schedule)
 
 
 @pytest.mark.django_db
