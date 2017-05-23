@@ -3,6 +3,7 @@ import pytest
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
+from pretalx.schedule.models import Room
 from pretalx.submission.models import (
     Question, QuestionVariant, Submission, SubmissionStates, SubmissionType,
 )
@@ -123,3 +124,8 @@ def mail_template(event):
 @pytest.fixture
 def mail(mail_template, speaker, event):
     return mail_template.to_mail(speaker, event)
+
+
+@pytest.fixture
+def room(event):
+    return Room.objects.create(event=event, name='Testroom', description='A fancy room', position=2, capacity=50)
