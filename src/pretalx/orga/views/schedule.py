@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views.generic import TemplateView, View
+from i18nfield.utils import I18nJSONEncoder
 
 
 class ScheduleView(TemplateView):
@@ -17,7 +18,7 @@ class RoomList(View):
                 'capacity': room.capacity,
             }
             for room in request.event.rooms.order_by('position')
-        ]})
+        ]}, encoder=I18nJSONEncoder)
 
 
 class TalkList(View):
