@@ -24,7 +24,7 @@ class RoomList(View):
 class TalkList(View):
 
     def get(self, request, event):
-        schedule = request.event.schedules.get(version__isnull=True)
+        schedule = request.event.wip_schedule
         return JsonResponse({'results': [
             {
                 'title': slot.submission.title,

@@ -31,3 +31,4 @@ def test_initial_data(event):
     assert event.ack_template
     assert event.reject_template
     assert event.schedules.count()
+    assert event.wip_schedule
