@@ -23,6 +23,14 @@
             </a>
           </li>
           <li class="nav-item">
+            <a
+              class="nav-link {% if "settings.room" in url_name %}active{% endif %}"
+              href="{% url "orga:settings.rooms.list" event=request.event.slug %}"
+            >
+                {% trans "Rooms" %}
+            </a>
+          </li>
+          <li class="nav-item">
               <a class="nav-link {% if "settings.mail" in url_name %}active{% endif %}"
                  href="{% url "orga:settings.mail.view" event=request.event.slug %}">
                 {% trans "E-mail" %}

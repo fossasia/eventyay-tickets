@@ -17,6 +17,8 @@ from pretalx.orga.forms import EventForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, UserForm
 from pretalx.person.models import EventPermission, User
+from pretalx.schedule.forms import RoomForm
+from pretalx.schedule.models import Room
 
 
 class EventDetail(ActionFromUrl, CreateOrUpdateView):
@@ -204,4 +206,42 @@ class UserSettings(FormView):
         messages.success(self.request, _('Your profile has been updated :)'))
         form.save()
         ret = super().form_valid(form)
+        return ret
+
+
+class RoomList(TemplateView):
+    template_name = 'orga/settings/room_list.html'
+
+
+class RoomDelete(View):
+
+    def dispatch(self, request, event, pk):
+        request.event.rooms.get(pk=pk).delete()
+        messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
+        return redirect(reverse('orga:settings.rooms.list', kwargs={'event': request.event.slug}))
+
+
+class RoomDetail(ActionFromUrl, CreateOrUpdateView):
+    model = Room
+    form_class = RoomForm
+    template_name = 'orga/settings/room_form.html'
+
+    def get_object(self):
+        try:
+            return self.request.event.rooms.get(pk=self.kwargs['pk'])
+        except (Room.DoesNotExist, KeyError):
+            return
+
+    def get_success_url(self) -> str:
+        return reverse('orga:settings.rooms.list', kwargs={'event': self.request.event.slug})
+
+    def form_valid(self, form):
+        created = not bool(form.instance.pk)
+        form.instance.event = self.request.event
+        ret = super().form_valid(form)
+        messages.success(self.request, _('Saved!'))
+        if created:
+            form.instance.log_action('pretalx.room.create', person=self.request.user, orga=True)
+        else:
+            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
         return ret

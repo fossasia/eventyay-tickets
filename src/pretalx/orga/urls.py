@@ -71,6 +71,11 @@ orga_urls = [
         url('^settings/team/add$', settings.EventTeamInvite.as_view(), name='settings.team.add'),
         url('^settings/team/delete/(?P<pk>[0-9]+)$', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
         url('^settings/team/retract/(?P<pk>[0-9]+)$', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
+        url('^settings/rooms$', settings.RoomList.as_view(), name='settings.rooms.list'),
+        url('^settings/rooms/new$', settings.RoomDetail.as_view(), name='settings.rooms.create'),
+        url('^settings/rooms/(?P<pk>[0-9]+)$', settings.RoomDetail.as_view(), name='settings.rooms.view'),
+        url('^settings/rooms/(?P<pk>[0-9]+)/edit$', settings.RoomDetail.as_view(), name='settings.rooms.edit'),
+        url('^settings/rooms/(?P<pk>[0-9]+)/delete$', settings.RoomDelete.as_view(), name='settings.rooms.delete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/api/rooms/$', schedule.RoomList.as_view(), name='schedule.api.rooms'),

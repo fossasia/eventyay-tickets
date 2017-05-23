@@ -1,0 +1,48 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block settings_content %}
+
+<div>
+    <legend>{{ request.event.rooms.count }} {% trans "Rooms" %}</legend>
+
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Capacity" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in request.event.rooms.all %}
+                <tr>
+                    <td>
+                        <a href="{% url "orga:settings.rooms.view" event=request.event.slug pk=room.pk %}">
+                            {{ room.name }}
+                        </a>
+                    </td>
+                    <td>{{ room.capacity }}</td>
+                    <td class="text-right">
+                        <a href="{% url "orga:settings.rooms.edit" event=request.event.slug pk=room.pk %}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a href="{% url "orga:settings.rooms.delete" event=request.event.slug pk=room.pk %}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td> {% trans "Please add at least one place in which talks can take place." %} </td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{% url "orga:settings.rooms.create" event=request.event.slug %}">
+        <span class="fa fa-cross"></span>
+        {% trans "New room" %}
+    </a>
+</div>
+{% endblock %}
