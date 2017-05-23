@@ -11,7 +11,6 @@ from pretalx.submission.models import (
 @pytest.fixture
 def event():
     e = Event.objects.create(name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org')
-    e.get_cfp()  # created on access
     return e
 
 
