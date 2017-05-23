@@ -13,6 +13,7 @@ class TalkSlot(LogMixin, models.Model):
         to='schedule.Room',
         on_delete=models.PROTECT,
         related_name='talks',
+        null=True, blank=True,
     )
     schedule = models.ForeignKey(
         to='schedule.Schedule',
