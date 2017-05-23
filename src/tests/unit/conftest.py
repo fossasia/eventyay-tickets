@@ -20,7 +20,11 @@ def submission(event):
 
 
 @pytest.fixture
-def talk_slot(event, submission):
+def room(event):
+    return Room.objects.create(name='Room', event=event)
+
+
+@pytest.fixture
+def talk_slot(event, submission, room):
     schedule = event.schedules.first()
-    room = Room.objects.create(name='Room', event=event)
     return TalkSlot.objects.create(submission=submission, room=room, schedule=schedule)

@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from pretalx.schedule.models import Schedule, TalkSlot
@@ -31,3 +33,12 @@ def test_freeze(talk_slot):
     assert new.talks.count() == 1
     assert old.version == 'Version'
     assert not new.version
+
+
+@pytest.mark.django_db
+def test_scheduled_talks(talk_slot, room):
+    assert talk_slot.schedule.scheduled_talks.count() == 0
+    talk_slot.room = room
+    talk_slot.start = datetime.datetime.now()
+    talk_slot.save()
+    assert talk_slot.schedule.scheduled_talks.count() == 1

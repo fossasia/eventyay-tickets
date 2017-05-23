@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
@@ -30,6 +31,13 @@ class Schedule(LogMixin, models.Model):
         for talk in self.talks.all():
             talk.copy_to_schedule(wip_schedule)
         return self, wip_schedule
+
+    @cached_property
+    def scheduled_talks(self):
+        return self.talks.filter(
+            room__isnull=False,
+            start__isnull=False,
+        )
 
     def __str__(self) -> str:
         return str(self.version) or _(f'WIP Schedule for {self.event}')
