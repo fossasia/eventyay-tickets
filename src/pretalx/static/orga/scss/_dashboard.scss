@@ -1,0 +1,40 @@
+.dashboard-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
+  :hover {
+    background: #EEEEEE;
+    text-decoration: none;
+  }
+}
+.dashboard-block {
+  flex: 1 0 auto;
+  align-self: stretch;
+  padding: 15px 5px;
+  border: 5px solid white;
+  min-height: 160px;
+  min-width: 300px;
+  background: #F8F8F8;
+
+
+  h1 {
+    display: block;
+    opacity: 0.5;
+    padding: 10px 0 10px;
+    text-align: center;
+    font-size: 30px;
+
+    .fa {
+      padding-right: 8px;
+    }
+  }
+
+  .dashboard-description {
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}

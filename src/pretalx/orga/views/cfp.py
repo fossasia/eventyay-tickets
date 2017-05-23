@@ -34,7 +34,7 @@ class CfPTextDetail(ActionFromUrl, UpdateView):
         )
 
     def get_object(self):
-        return self.request.event.get_cfp()
+        return self.request.event.cfp
 
     def get_success_url(self) -> str:
         return reverse('orga:cfp.text.view', kwargs={'event': self.object.event.slug})

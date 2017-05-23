@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load rich_text %}
 {% block title %}{{ request.event }}{% endblock %}
-{% block content %}{% with cfp=request.event.get_cfp %}
+{% block content %}{% with cfp=request.event.cfp %}
     <h2>{{ cfp.headline|default:"" }}</h2>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline %}

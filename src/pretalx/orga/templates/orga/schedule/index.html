@@ -1,0 +1,27 @@
+{% extends "orga/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block headline %}
+    {% trans "Schedule" %}
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+    {% if debug %}
+    <script type="text/javascript" src="{% static "vendored/vue.js" %}"></script>
+    {% else %}
+    <script type="text/javascript" src="{% static "vendored/vue.min.js" %}"></script>
+    {% endif %}
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+    <div id="fahrplan">
+    </div>
+
+    {% compress js %}
+    <script type="text/javascript" src="{% static "orga/js/schedule.js" %}"></script>
+    {% endcompress %}
+{% endblock %}

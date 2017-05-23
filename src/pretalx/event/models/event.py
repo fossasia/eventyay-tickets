@@ -99,13 +99,6 @@ class Event(LogMixin, models.Model):
         enabled = set(self.locale_array.split(","))
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
 
-    def get_cfp(self) -> 'submission.CfP':
-        if hasattr(self, 'cfp'):
-            return self.cfp
-        self._build_initial_data()
-        self.refresh_from_db()
-        return self.cfp
-
     def save(self, *args, **kwargs):
         was_created = not bool(self.pk)
         super().save(*args, **kwargs)
@@ -128,18 +121,22 @@ class Event(LogMixin, models.Model):
             from pretalx.submission.models import CfP
             CfP.objects.create(event=self, default_type=self._get_default_submission_type())
 
+        if not self.schedules.filter(version__isnull=True).exists():
+            from pretalx.schedule.models import Schedule
+            Schedule.objects.create(event=self)
+
         self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
         self.save()
 
     @cached_property
-    def cfp(self):
-        return self.get_cfp()
-
-    @cached_property
     def pending_mails(self):
         return self.queued_mails.count()
+
+    @cached_property
+    def wip_schedule(self):
+        return self.schedules.get(version__isnull=True)
 
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend

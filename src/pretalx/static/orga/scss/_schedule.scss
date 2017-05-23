@@ -1,0 +1,46 @@
+#fahrplan {
+  display: flex;
+  flex-wrap: no-wrap;
+}
+
+#tracks, #unassigned-talks {
+  display: flex;
+  flex: 1 0 auto;
+  flex-wrap: no-wrap;
+  align-self: stretch;
+  padding-left: 24px;
+  padding: 18px;
+
+  background: $gray-lighter;
+  border-color: white;
+  border-width: 4px;
+}
+.room-column {
+  flex: 1 0 auto;
+  align-self: stretch;
+  border: $black;
+  border-size: 4px;
+
+}
+.room-header {
+  font-size: 16pt;
+  font-decoration: underline;
+  margin-bottom: 8px;
+}
+#unassigned-talks {
+  flex-direction: column;
+  max-width: 360px;
+}
+
+.talk-box {
+  border-color: white;
+  border-width: 4px;
+  padding: 18px;
+}
+.talk-box.accepted {
+  background: $gray-light;
+  color: $white;
+}
+.talk-box.confirmed {
+  background: $green;
+}
