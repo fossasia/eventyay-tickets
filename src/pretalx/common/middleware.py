@@ -1,6 +1,6 @@
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import resolve
 from django.shortcuts import redirect
+from django.urls import resolve
 
 from pretalx.event.models import Event
 from pretalx.person.models import EventPermission

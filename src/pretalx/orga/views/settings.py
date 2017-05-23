@@ -3,7 +3,7 @@ import string
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _

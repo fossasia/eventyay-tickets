@@ -1,5 +1,5 @@
-from django.core.urlresolvers import resolve
 from django.http import Http404
+from django.urls import resolve
 
 from pretalx.event.models import Event
 

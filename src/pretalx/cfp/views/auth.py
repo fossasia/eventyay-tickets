@@ -2,9 +2,9 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.core.urlresolvers import reverse
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
