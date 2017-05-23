@@ -5,10 +5,9 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
-from pretalx.mail.context import template_context_from_submission
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Submission, SubmissionError
 
 
 class SubmissionAccept(View):
@@ -16,37 +15,21 @@ class SubmissionAccept(View):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
 
-        if submission.state not in [SubmissionStates.SUBMITTED, SubmissionStates.REJECTED]:
+        try:
+            submission.accept(person=request.user)
+            messages.success(request, _('The submission has been accepted.'))
+            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+        except SubmissionError:
             messages.error(request, _('A submission must be submitted or rejected to become accepted.'))
             return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
-
-        submission.state = SubmissionStates.ACCEPTED
-        submission.save(update_fields=['state'])
-        submission.log_action('pretalx.submission.accept', person=request.user, orga=True)
-        # TODO: ask for confirmation
-        messages.success(request, _('The submission has been accepted.'))
-        for speaker in submission.speakers.all():
-            submission.event.accept_template.to_mail(
-                user=speaker, event=self.request.event, context=template_context_from_submission(submission),
-                locale=speaker.locale
-            )
-        return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
 class SubmissionReject(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        submission.state = SubmissionStates.REJECTED
-        submission.save(update_fields=['state'])
+        submission.reject(person=request.user)
         messages.success(request, _('The submission has been rejected.'))
-        submission.log_action('pretalx.submission.reject', person=request.user, orga=True)
-        for speaker in submission.speakers.all():
-            submission.event.accept_template.to_mail(
-                user=speaker, event=self.request.event, context=template_context_from_submission(submission),
-                locale=speaker.locale
-            )
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
