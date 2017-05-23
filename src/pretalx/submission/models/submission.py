@@ -122,6 +122,9 @@ class Submission(LogMixin, models.Model):
         self.save(update_fields=['state'])
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule)
+
         for speaker in self.speakers.all():
             self.event.accept_template.to_mail(
                 user=speaker, event=self.event, context=template_context_from_submission(self),
@@ -132,6 +135,10 @@ class Submission(LogMixin, models.Model):
         self.state = SubmissionStates.REJECTED
         self.save(update_fields=['state'])
         self.log_action('pretalx.submission.reject', person=person, orga=True)
+
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
+
         for speaker in self.speakers.all():
             self.event.accept_template.to_mail(
                 user=speaker, event=self.event, context=template_context_from_submission(self),
