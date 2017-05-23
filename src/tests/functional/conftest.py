@@ -18,7 +18,6 @@ def event():
 @pytest.fixture
 def other_event():
     e = Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org')
-    e.get_cfp()  # created on access
     return e
 
 
