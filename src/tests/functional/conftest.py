@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from pretalx.event.models import Event
@@ -11,14 +13,16 @@ from pretalx.submission.models import (
 
 @pytest.fixture
 def event():
-    e = Event.objects.create(name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org')
-    return e
+    today = datetime.date.today()
+    return Event.objects.create(
+        name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
+        date_from=today, date_to=today + datetime.timedelta(days=3)
+    )
 
 
 @pytest.fixture
 def other_event():
-    e = Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org')
-    return e
+    return Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org')
 
 
 @pytest.fixture

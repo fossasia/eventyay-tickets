@@ -10,15 +10,19 @@ class ScheduleView(TemplateView):
 class RoomList(View):
 
     def get(self, request, event):
-        return JsonResponse({'results': [
-            {
-                'id': room.pk,
-                'name': room.name,
-                'description': room.description,
-                'capacity': room.capacity,
-            }
-            for room in request.event.rooms.order_by('position')
-        ]}, encoder=I18nJSONEncoder)
+        return JsonResponse({
+            'start': request.event.date_from,
+            'end': request.event.date_to,
+            'rooms': [
+                {
+                    'id': room.pk,
+                    'name': room.name,
+                    'description': room.description,
+                    'capacity': room.capacity,
+                }
+                for room in request.event.rooms.order_by('position')
+            ]
+        }, encoder=I18nJSONEncoder)
 
 
 class TalkList(View):

@@ -10,8 +10,10 @@ def test_room_list(orga_client, event):
     response = orga_client.get(reverse(f'orga:schedule.api.rooms', kwargs={'event': event.slug}), follow=True)
     content = json.loads(response.content.decode())
     assert response.status_code == 200
-    assert len(content['results']) == 1
-    assert content['results'][0]['name']
+    assert len(content['rooms']) == 1
+    assert content['rooms'][0]['name']
+    assert content['start']
+    assert content['end']
 
 
 @pytest.mark.django_db
