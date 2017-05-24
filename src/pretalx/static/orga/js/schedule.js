@@ -35,12 +35,21 @@ var api = {
 
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="talk.state">
+    <div class="talk-box" :class="talk.state" v-bind:style="style">
       {{ talk.title }} ({{ talk.duration }} minutes)
     </div>
   `,
   props: {
     talk: Object,
+    start: Object,
+  },
+  computed: {
+    style () {
+      return {
+        height: this.talk.duration + 'px',
+        transform: 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
+      }
+    }
   }
 })
 
@@ -48,18 +57,27 @@ Vue.component('room', {
   template: `
     <div class="room-column">
       <div class="room-header">{{ room.name.en }}</div>
-      <talk v-for="talk in myTalks" :talk="talk" :key="talk.id"></talk>
+      <div class="room-container" v-bind:style="style">
+        <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
+      </div>
     </div>
   `,
   props: {
     talks: Array,
     room: Object,
+    duration: Number,
+    start: Object,
   },
   computed: {
     myTalks () {
       return (this.talks || []).filter((element) =>
         element.room === this.room.id
       )
+    },
+    style () {
+      return {
+        height: this.duration + 'px'
+      }
     }
   }
 })
@@ -69,7 +87,7 @@ var app = new Vue({
   template: `
     <div id="fahrplan">
       <div id="tracks">
-        <room v-for="room in rooms" :room="room" :talks="talks" :key="room.id">
+        <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
       </div>
       <div id='unassigned-talks'>
@@ -80,9 +98,10 @@ var app = new Vue({
   `,
   data () {
     return {
-      day: null,
       talks: null,
       rooms: null,
+      start: null,
+      end: null,
     }
   },
   created () {
@@ -90,16 +109,16 @@ var app = new Vue({
       this.talks = result.results
     }) 
     api.fetchRooms().then((result) => {
-      this.rooms = result.results
+      this.rooms = result.rooms
+      this.start = moment(result.start)
+      this.end = moment(result.end)
     }) 
   },
   computed: {
-    unassignedTalks () {
-      return (this.talks || []).filter((element) => {
-        element.room != null
-      })
-    },
     currentDay () {
+    },
+    duration () {
+      return this.end.diff(this.start, 'minutes')
     }
   }
 })
