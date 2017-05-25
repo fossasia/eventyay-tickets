@@ -125,7 +125,7 @@ class LoginInfoForm(forms.ModelForm):
 
     old_password = forms.CharField(widget=forms.PasswordInput,
                                    label=_('Password (current)'),
-                                   required=False)
+                                   required=True)
     password = forms.CharField(widget=forms.PasswordInput,
                                label=_('Password (new)'),
                                required=False)
@@ -135,7 +135,7 @@ class LoginInfoForm(forms.ModelForm):
 
     def clean_old_password(self):
         old_pw = self.cleaned_data.get('old_password')
-        if old_pw and not check_password(old_pw, self.user.password):
+        if not check_password(old_pw, self.user.password):
             raise forms.ValidationError(
                 self.error_messages['pw_current_wrong'],
                 code='pw_current_wrong',
