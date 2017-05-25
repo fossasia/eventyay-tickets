@@ -118,6 +118,12 @@ class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
         fields = ('biography', )
 
 
+class OrgaProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('locale',)
+
+
 class LoginInfoForm(forms.ModelForm):
     error_messages = {
         'pw_current_wrong': _("The current password you entered was not correct."),

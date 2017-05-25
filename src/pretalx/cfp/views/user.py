@@ -46,14 +46,14 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             if self.login_form.is_valid():
                 self.login_form.save()
                 messages.success(self.request, _('Your changes have been saved.'))
-                profile = self.request.user.profiles.get(event=self.request.event)
+                profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
                 profile.log_action('pretalx.user.password.update', person=request.user)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
         elif self.profile_form.is_bound:
             if self.profile_form.is_valid():
                 self.profile_form.save()
                 messages.success(self.request, _('Your changes have been saved.'))
-                profile = self.request.user.profiles.get(event=self.request.event)
+                profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
                 profile.log_action('pretalx.user.profile.update', person=request.user)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
 

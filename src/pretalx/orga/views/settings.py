@@ -3,19 +3,20 @@ import string
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
-from pretalx.common.mail import mail, mail_send_task
+from pretalx.common.mail import mail_send_task
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.orga.forms import EventForm
 from pretalx.orga.forms.event import MailSettingsForm
-from pretalx.person.forms import LoginInfoForm, UserForm
+from pretalx.person.forms import LoginInfoForm, UserForm, OrgaProfileForm
 from pretalx.person.models import EventPermission, User
 from pretalx.schedule.forms import RoomForm
 from pretalx.schedule.models import Room
@@ -190,23 +191,49 @@ class InvitationView(FormView):
         return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))
 
 
-class UserSettings(FormView):
+class UserSettings(TemplateView):
     form_class = LoginInfoForm
     template_name = 'orga/user.html'
 
     def get_success_url(self) -> str:
         return reverse('orga:user.view')
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+    @cached_property
+    def login_form(self):
+        return LoginInfoForm(user=self.request.user,
+                             data=(self.request.POST
+                                   if self.request.method == 'POST' and self.request.POST.get('form') == 'login'
+                                   else None))
 
-    def form_valid(self, form):
-        messages.success(self.request, _('Your profile has been updated :)'))
-        form.save()
-        ret = super().form_valid(form)
-        return ret
+    @cached_property
+    def profile_form(self):
+        return OrgaProfileForm(instance=self.request.user,
+                               data=(self.request.POST
+                                     if self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
+                                     else None))
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['login_form'] = self.login_form
+        ctx['profile_form'] = self.profile_form
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        if self.login_form.is_bound:
+            if self.login_form.is_valid():
+                self.login_form.save()
+                messages.success(request, _('Your changes have been saved.'))
+                # TODO: Logging
+                return redirect(self.get_success_url())
+        elif self.profile_form.is_bound:
+            if self.profile_form.is_valid():
+                self.profile_form.save()
+                messages.success(request, _('Your changes have been saved.'))
+                # TODO: Logging
+                return redirect(self.get_success_url())
+
+        messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
+        return super().get(request, *args, **kwargs)
 
 
 class RoomList(TemplateView):
