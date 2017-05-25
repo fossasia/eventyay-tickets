@@ -2,4 +2,5 @@ django-debug-toolbar
 django-extensions
 ipython
 pytest-sugar
+pytest-xdist
 shell
