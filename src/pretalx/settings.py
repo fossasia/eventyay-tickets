@@ -234,6 +234,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'pretalx.orga.context_processors.add_events',
+                'pretalx.orga.context_processors.locale_context',
             ],
             'loaders': template_loaders
         },

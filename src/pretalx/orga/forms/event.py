@@ -51,6 +51,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
             'email', 'locale'
         ]
+        widgets = {
+            'date_from': forms.DateInput(attrs={'class': 'datepickerfield'}),
+            'date_to': forms.DateInput(attrs={'class': 'datepickerfield',
+                                              'data-date-after': '#id_date_from'}),
+        }
 
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):

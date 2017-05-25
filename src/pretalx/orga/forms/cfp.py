@@ -16,6 +16,9 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         fields = [
             'headline', 'text', 'deadline',
         ]
+        widgets = {
+            'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
+        }
 
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
@@ -25,6 +28,9 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
         fields = [
             'headline', 'text', 'deadline',
         ]
+        widgets = {
+            'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
+        }
 
 
 class QuestionForm(ReadOnlyFlag, I18nModelForm):

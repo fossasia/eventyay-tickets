@@ -17,9 +17,12 @@
     {% compress js %}
         <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script type="text/javascript" src="{% static "orga/js/main.js" %}"></script>
     {% endcompress %}
 </head>
-<body>
+<body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
 <div id="wrapper">
     <nav class="navbar navbar-toggleable-md navbar-inverse navbar-static-top bg-primary">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"

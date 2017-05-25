@@ -2,6 +2,7 @@ from django.http import Http404
 from django.urls import resolve
 
 from pretalx.event.models import Event
+from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
 def add_events(request):
@@ -15,3 +16,11 @@ def add_events(request):
             'url_name': url_name,
         }
     return dict()
+
+
+def locale_context(request):
+    ctx = {}
+    ctx['js_datetime_format'] = get_javascript_format('DATETIME_INPUT_FORMATS')
+    ctx['js_date_format'] = get_javascript_format('DATE_INPUT_FORMATS')
+    ctx['js_locale'] = get_moment_locale()
+    return ctx
