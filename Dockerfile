@@ -30,3 +30,4 @@ VOLUME /data
 
 EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/pretalx"]
+CMD ["web"]
