@@ -1,5 +1,7 @@
 #!/bin/bash
 # For use with Docker
+set -e
+
 cd /src
 export PRETALX_DATA_DIR=/data
 python3 manage.py migrate
