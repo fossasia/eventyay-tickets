@@ -223,13 +223,13 @@ class UserSettings(TemplateView):
             if self.login_form.is_valid():
                 self.login_form.save()
                 messages.success(request, _('Your changes have been saved.'))
-                # TODO: Logging
+                request.user.log_action('pretalx.user.password.update')
                 return redirect(self.get_success_url())
         elif self.profile_form.is_bound:
             if self.profile_form.is_valid():
                 self.profile_form.save()
                 messages.success(request, _('Your changes have been saved.'))
-                # TODO: Logging
+                request.user.log_action('pretalx.user.profile.update')
                 return redirect(self.get_success_url())
 
         messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))

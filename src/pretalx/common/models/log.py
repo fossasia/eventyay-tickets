@@ -26,8 +26,8 @@ LOG_NAMES = {
     'pretalx.submission_type.delete': _('A submission type was deleted.'),
     'pretalx.submission_type.make_default': _('The submission type was made default.'),
     'pretalx.user.password.update': _('The password was updated.'),
+    'pretalx.user.password.reset': _('The password was reset.'),
     'pretalx.user.profile.update': _('The profile was updated.'),
-    'pretalx.user.password_reset': _('The password was reset.'),
 }
 
 

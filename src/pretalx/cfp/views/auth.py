@@ -82,7 +82,7 @@ class ResetView(EventPageMixin, FormView):
 
         messages.success(self.request, _('We will send you an e-mail containing further instructions. If you don\'t '
                                          'see the email within the next minutes, check your spam inbox!'))
-        user.log_action('pretalx.user.password_reset', person=user)
+        user.log_action('pretalx.user.password.reset')
 
         return redirect(reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug
