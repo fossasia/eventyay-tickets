@@ -1,7 +1,7 @@
 Welcome to pretalx!
 ===================
 
-project status
+Project status
 --------------
 
 `pretalx` is currently unfinished. It supports everything required for talk submission, but has still

@@ -1,7 +1,7 @@
 The development setup
 =====================
 
-To contribute to pretalx, it's very useful to run pretalx locally on your device so you can rapidly test
+To contribute to pretalx, it's very useful to run pretalx locally on your device so you can test
 your changes. First of all, you need install a few things on your operating system:
 
 * git
@@ -11,9 +11,10 @@ your changes. First of all, you need install a few things on your operating syst
 
 On Arch Linux, that's a simple::
 
-    pacman -S python python-pip gettext git
+    sudo pacman -S python python-pip gettext git
 
-On Debian and Ubuntu, Python 3.6 is not yet in the repositories. You might need to `compile it yourself`_.
+On Debian and Ubuntu, Python 3.6 is not yet in the repositories. You might need to `compile it yourself`_
+or install it from the `unstable` or `experimental` repositories.
 
 Some Python dependencies might also need a compiler during installation, the Debian package ``build-essential``
 or something similar should suffice.
