@@ -9,7 +9,7 @@
 
 {% block scripts %}
     {% compress js %}
-    <script type="text/javascript" src="{% static "vendored/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
     {% if debug %}
     <script type="text/javascript" src="{% static "vendored/vue.js" %}"></script>
     {% else %}
