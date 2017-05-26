@@ -25,10 +25,6 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(null=True),
         ),
         migrations.AlterUniqueTogether(
-            name='room',
-            unique_together=set([('event', 'name')]),
-        ),
-        migrations.AlterUniqueTogether(
             name='schedule',
             unique_together=set([('event', 'version')]),
         ),

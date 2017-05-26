@@ -26,7 +26,6 @@ class Room(LogMixin, models.Model):
 
     class Meta:
         ordering = ('position', )
-        unique_together = (('event', 'name'), )
 
     def __str__(self) -> str:
         return str(self.name)
