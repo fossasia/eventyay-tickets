@@ -36,6 +36,7 @@ class ActivityLog(models.Model):
         to='event.Event',
         on_delete=models.PROTECT,
         related_name='log_entries',
+        null=True, blank=True,
     )
     person = models.ForeignKey(
         to='person.User',
