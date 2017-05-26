@@ -19,7 +19,7 @@ installation guides):
 * A `MySQL`_ or `PostgreSQL`_ database server
 * A `redis`_ server
 
-We also recommend that you use a firewall, although this is not a pretix-specific recommendation. If you're new to
+We also recommend that you use a firewall, although this is not a pretalx-specific recommendation. If you're new to
 Linux and firewalls, we recommend that you start with `ufw`_.
 
 .. note:: Please, do not run pretalx without HTTPS encryption. You'll handle user data and thanks to `Let's Encrypt`_
@@ -184,8 +184,8 @@ Next steps
 ----------
 
 Yay, you are done! You should now be able to reach pretalx at https://<yourdomain>/orga/ and log in as
-*admin@localhost* with a password of *admin*. Don't forget to change that password! Create an organizer first, then
-create an event and start selling tickets!
+*admin@localhost* with a password of *admin*. Don't forget to change that password! Set up an event,
+configure it as needed, and publish your CfP!
 
 Updates
 -------
@@ -195,7 +195,7 @@ Updates
 Updates are fairly simple, but require at least a short downtime:
 
 * Rebuild the docker image (git pull, then repeat the command from above)
-* ``systemctl restart pretix.service``
+* ``systemctl restart pretalx.service``
 
 Restarting the service can take a few seconds, especially if the update requires changes to the database.
 
@@ -203,7 +203,6 @@ Restarting the service can take a few seconds, especially if the update requires
 .. _Postfix: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
-.. _pretix.eu: https://pretix.eu/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
 .. _PostgreSQL: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-9-4-on-debian-8
 .. _redis: http://blog.programster.org/debian-8-install-redis-server/

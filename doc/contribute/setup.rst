@@ -106,7 +106,7 @@ and update the ``*.po`` files accordingly::
 
     python manage.py makemessages
 
-To actually see pretix in your language, you have to compile the ``*.po`` files to their
+To actually see pretalx in your language, you have to compile the ``*.po`` files to their
 optimized binary ``*.mo`` counterparts::
 
     python manage.py compilemessages
