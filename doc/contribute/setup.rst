@@ -11,7 +11,7 @@ your changes. First of all, you need install a few things on your operating syst
 
 On Arch Linux, that's a simple::
 
-    pacman -Qs python python-pip gettext git
+    pacman -S python python-pip gettext git
 
 On Debian and Ubuntu, Python 3.6 is not yet in the repositories. You might need to `compile it yourself`_.
 
