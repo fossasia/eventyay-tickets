@@ -1,9 +1,12 @@
+import json
 import re
 import string
+
 
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -99,3 +102,21 @@ class User(AbstractBaseUser):
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         return super().save(args, kwargs)
+
+    def log_action(self, action, data=None, orga=False):
+        from pretalx.common.models import ActivityLog
+        if data:
+            data = json.dumps(data)
+
+        ActivityLog.objects.create(
+            person=self, content_object=self, action_type=action,
+            data=data, is_orga_action=orga,
+        )
+
+    def logged_actions(self):
+        from pretalx.common.models import ActivityLog
+
+        return ActivityLog.objects.filter(
+            content_type=ContentType.objects.get_for_model(type(self)),
+            object_id=self.pk
+        )
