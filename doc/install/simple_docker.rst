@@ -1,10 +1,10 @@
 Simple installation using Docker
 ================================
 
-This guide helps you installing pretalx using a single docker container. The exact details of this might change
+This guide helps you to install pretalx using a single docker container. The exact details of this might change
 once we approach the first stable release, so be sure to check back here for major changes from time to time.
 
-We tested this guide on the Linux distribution **Debian 8.0** but it should work very similar on other
+We tested this guide on the Linux distribution **Debian 8.0** but it should work very similarly on other
 modern distributions, especially on all systemd-based ones.
 
 Prerequisites
@@ -14,8 +14,8 @@ Please set up the following systems beforehand, we'll not explain them here (but
 installation guides):
 
 * `Docker`_
-* A SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you have credentials for
-* A HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
+* An SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you have credentials for
+* An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ or `PostgreSQL`_ database server
 * A `redis`_ server
 

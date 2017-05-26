@@ -1,5 +1,5 @@
-I want to install it on my server!
-==================================
+I want to install pretalx on my server!
+=======================================
 
 That's great! Since pretalx is in a very early stage, there's currently only one supported installation method
 and it's not very polished -- but it works!
