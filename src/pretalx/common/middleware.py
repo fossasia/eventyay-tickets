@@ -3,9 +3,10 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.urls import resolve
-from django.utils import translation, timezone
-from django.utils.translation.trans_real import parse_accept_lang_header, language_code_re, \
-    get_supported_language_variant
+from django.utils import timezone, translation
+from django.utils.translation.trans_real import (
+    get_supported_language_variant, language_code_re, parse_accept_lang_header,
+)
 
 from pretalx.event.models import Event
 from pretalx.person.models import EventPermission
