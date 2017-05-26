@@ -10,6 +10,10 @@ pretalx
    :target: https://codecov.io/gh/openeventstack/pretalx
 
 
+.. image:: https://readthedocs.org/projects/pretalx/badge/?version=latest
+   :target: http://pretalx.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation
+
 `pretalx` provides a conference planning tool, featuring
 
 - CfP and talk submission support with a clean interface
