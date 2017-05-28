@@ -108,7 +108,7 @@ named ``/etc/systemd/system/pretalx.service`` with the following content::
         --name pretalx \
         -v /var/run/mysqld:/var/run/mysqld \
         -v /var/pretalx-data:/data \
-        -v /tmp/redis.sock:/tmp/redis.sock \
+        -v /var/run/redis/redis.sock:/tmp/redis.sock \
         -t openventstack/pretalx web
     ExecStop=/usr/bin/docker stop -t 2 pretalx ; /usr/bin/docker rm -f pretalx
 
