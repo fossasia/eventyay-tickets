@@ -184,8 +184,7 @@ Next steps
 ----------
 
 Yay, you are done! You should now be able to reach pretalx at https://<yourdomain>/orga/ and log in as
-*admin@localhost* with a password of *admin*. Don't forget to change that password! Set up an event,
-configure it as needed, and publish your CfP!
+your newly created superuser. Set up an event, configure it as needed, and publish your CfP!
 
 Updates
 -------
