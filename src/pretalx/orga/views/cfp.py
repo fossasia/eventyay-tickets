@@ -73,10 +73,10 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'The question has been saved.')
         form.instance.event = self.request.event
+        ret = super().form_valid(form)
         if form.has_changed():
             action = 'pretalx.question.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        ret = super().form_valid(form)
         return ret
 
 
