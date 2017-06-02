@@ -1,7 +1,7 @@
-bleach
+bleach==2.*
 celery==4.0.*
 csscompressor
-Django==1.10.*
+Django==1.11.*
 git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
 django-compressor==2.1.*
 django-csp
