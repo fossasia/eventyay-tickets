@@ -2,7 +2,6 @@ import json
 import re
 import string
 
-
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
