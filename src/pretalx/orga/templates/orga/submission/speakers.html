@@ -1,5 +1,7 @@
 {% extends "orga/submission/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block submission_content %}
 
@@ -25,6 +27,7 @@
             <tr>
                 <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
                     <td>
+                        <input id="input-nick" name="nick" class="typeahead" type="text" placeholder="{% trans "Additional speaker" %}">
                         <select name="nick">
                             {% for user in users %}
                                 <option value={{ user.nick }}>{{ user.get_short_name }}</option>
@@ -38,4 +41,10 @@
             </tr>
         </tbody>
     </table>
+
+    <span id="vars" remoteUrl="{% url "orga:event.user_list" event=request.event.slug %}?search=%QUERY"></span>
+    {% compress js %}
+    <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "orga/js/speakers.js" %}"></script>
+    {% endcompress %}
 {% endblock %}
