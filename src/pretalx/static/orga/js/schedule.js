@@ -107,12 +107,12 @@ var app = new Vue({
   created () {
     api.fetchTalks().then((result) => {
       this.talks = result.results
-    }) 
+    })
     api.fetchRooms().then((result) => {
       this.rooms = result.rooms
       this.start = moment(result.start)
       this.end = moment(result.end)
-    }) 
+    })
   },
   computed: {
     currentDay () {
