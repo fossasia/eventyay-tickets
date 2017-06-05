@@ -9,7 +9,7 @@ class UserList(View):
 
     def dispatch(self, request, *args, **kwargs):
         search = request.GET.get('search')
-        if not search or len(search) < 3:
+        if not search or len(search) < 2:
             return JsonResponse({'count': 0, 'results': []})
 
         queryset = User.objects.filter(
