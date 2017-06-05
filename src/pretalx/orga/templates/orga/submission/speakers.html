@@ -28,18 +28,13 @@
                     </td>
                 </tr>
             {% endfor %}
-            <tr>
-                <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
-                    <td>
-                        <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker" %}">
-                    </td>
-                    <td class="text-right">
-                        <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
-                    </td>
-                </form>
-            </tr>
         </tbody>
     </table>
+
+    <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
+            <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker" %}" />
+            <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
+    </form>
 
     <span id="vars" remoteUrl="{% url "orga:event.user_list" event=request.event.slug %}?search=%QUERY"></span>
     {% compress js %}
