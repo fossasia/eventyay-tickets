@@ -31,12 +31,7 @@
             <tr>
                 <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
                     <td>
-                        <input id="input-nick" name="nick" class="typeahead" type="text" placeholder="{% trans "Additional speaker" %}">
-                        <select name="nick">
-                            {% for user in users %}
-                                <option value={{ user.nick }}>{{ user.get_short_name }}</option>
-                            {% endfor %}
-                        </select>
+                        <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker" %}">
                     </td>
                     <td class="text-right">
                         <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
