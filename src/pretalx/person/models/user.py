@@ -95,6 +95,9 @@ class User(AbstractBaseUser):
             return f"{self.name} ('{self.nick}')"
         return self.nick
 
+    def get_display_name(self) -> str:
+        return self.name if self.name else self.nick
+
     def get_short_name(self) -> str:
         return self.nick
 
