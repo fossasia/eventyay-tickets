@@ -3,14 +3,14 @@
 
 {% block submission_content %}
 
-    <legend>{% trans "Answers" %}</legend>
+    <legend>{{ submission.title }} ({% include "cfp/event/fragment_state.html" with state=submission.state %})</legend>
 
-        {% for entry in user_list %}
-            <h2>{{ entry.user.name }}</h2>
-            <ul>
-            {% for answer in entry.answers %}
-                <li><em>{{ answer.question }}</em> - {{ answer }}</li>
-            {% endfor %}
-            </ul>
+    {% for entry in user_list %}
+        <h2>{{ entry.user.name }}</h2>
+        <ul>
+        {% for answer in entry.answers %}
+            <li><em>{{ answer.question }}</em> - {{ answer }}</li>
         {% endfor %}
+        </ul>
+    {% endfor %}
 {% endblock %}
