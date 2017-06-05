@@ -9,15 +9,21 @@ var speakers = new Bloodhound({
       var results = object.results
       var suggestions = []
       for (i = 0; i < results.length; i++) {
-        suggestions.push(results[i].nick)
+        suggestions.push({value: results[i].nick, name: results[i].name})
       }
-      return results
-    }
+      return suggestions
+    },
   }
 });
 
 $('#input-nick').typeahead(null, {
   name: 'nick',
   display: 'value',
-  source: speakers
+  source: speakers,
+  templates: {
+    suggestion: function(data) {
+      console.log(data)
+      return '<div class="tt-suggestion tt-selectable">' + data.value + ' (' + data.name + ')' + '</div>'
+    }
+  }
 });
