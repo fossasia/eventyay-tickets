@@ -17,7 +17,7 @@
                 <tr>
                     <td>
                         <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
-                            {{ speaker.get_short_name }}
+                            {{ speaker.get_full_name }}
                         </a>
                     </td>
                     <td class="text-right">
