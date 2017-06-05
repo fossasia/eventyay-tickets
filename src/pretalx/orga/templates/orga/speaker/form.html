@@ -6,9 +6,19 @@
 {% endblock %}
 {% block content %}
 
+    <legend>{% trans "Speaker" %} {{ form.instance.user }} ({{ submission_count }} {% trans "submissions" %})</legend>
+    <div class="alert alert-info">
+        <h5>{% trans "Submissions" %}</h5>
+        <ul>
+            {% for submission in submissions %}
+            <li>
+                <a href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}">{{ submission.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "Speaker" %} {{ form.instance.user }} ({{ submission_count }} {% trans "submissions" %})</legend>
         {% bootstrap_field form.name layout='horizontal' %}
         {% bootstrap_field form.biography layout='horizontal' %}
         <div class="form-group row">
