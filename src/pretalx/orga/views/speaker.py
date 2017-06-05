@@ -36,7 +36,9 @@ class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission_count'] = User.objects.filter(submissions__in=self.request.event.submissions.all()).count()
+        submissions = self.request.event.submissions.filter(speakers__in=[self.get_object()])
+        ctx['submission_count'] = submissions.count()
+        ctx['submissions'] = submissions
         return ctx
 
     def form_valid(self, form):
