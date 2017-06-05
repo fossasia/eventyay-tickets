@@ -22,8 +22,10 @@ $('#input-nick').typeahead(null, {
   source: speakers,
   templates: {
     suggestion: function(data) {
-      console.log(data)
       return '<div class="tt-suggestion tt-selectable">' + data.value + ' (' + data.name + ')' + '</div>'
     }
   }
+});
+$("#input-nick").bind("typeahead:select", function(ev, suggestion) {
+  $("#input-nick").text(suggestion.value);
 });
