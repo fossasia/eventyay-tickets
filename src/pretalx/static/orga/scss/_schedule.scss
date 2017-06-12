@@ -1,6 +1,7 @@
 #fahrplan {
   display: flex;
   flex-wrap: no-wrap;
+  position: relative;
 }
 
 #tracks, #unassigned-talks {
@@ -39,4 +40,7 @@
 }
 .talk-box.confirmed {
   background: $green;
+}
+.talk-box.dragged {
+  position: absolute;
 }

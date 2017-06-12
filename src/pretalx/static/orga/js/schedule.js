@@ -33,21 +33,39 @@ var api = {
   }
 }
 
+var dragController = {
+  draggedTalk: null,
+  startDragging (talk, event) {
+    this.draggedTalk = talk
+
+  },
+}
+
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="talk.state" v-bind:style="style">
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousemove="onMouseMove">
       {{ talk.title }} ({{ talk.duration }} minutes)
     </div>
   `,
   props: {
     talk: Object,
     start: Object,
+    isDragged: {type: Boolean, default: false},
   },
   computed: {
     style () {
-      return {
-        height: this.talk.duration + 'px',
-        transform: 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
+      var style = {height: this.talk.duration + 'px'}
+      if (this.isDragged) {
+      } else {
+        style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
+      }
+      return style
+    }
+  },
+  methods: {
+    onMouseMove (event) {
+      if (event.buttons === 1) {
+        dragController.startDragging(this.talk, event)
       }
     }
   }
@@ -86,6 +104,7 @@ var app = new Vue({
   el: '#fahrplan',
   template: `
     <div id="fahrplan">
+      <talk v-if="dragController.draggedTalk" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
@@ -102,6 +121,7 @@ var app = new Vue({
       rooms: null,
       start: null,
       end: null,
+      dragController: dragController,
     }
   },
   created () {
