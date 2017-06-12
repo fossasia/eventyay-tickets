@@ -35,15 +35,19 @@ var api = {
 
 var dragController = {
   draggedTalk: null,
-  startDragging (talk, event) {
+  event: null,
+  startDragging (talk) {
     this.draggedTalk = talk
-
   },
+  stopDragging () {
+    this.draggedTalk = null
+    this.event = null
+  }
 }
 
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousemove="onMouseMove">
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown" @mouseup="onMouseUp">
       {{ talk.title }} ({{ talk.duration }} minutes)
     </div>
   `,
@@ -56,6 +60,8 @@ Vue.component('talk', {
     style () {
       var style = {height: this.talk.duration + 'px'}
       if (this.isDragged) {
+        var rect = this.$parent.$el.getBoundingClientRect()
+        style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
@@ -63,10 +69,13 @@ Vue.component('talk', {
     }
   },
   methods: {
-    onMouseMove (event) {
+    onMouseDown (event) {
       if (event.buttons === 1) {
-        dragController.startDragging(this.talk, event)
+        dragController.startDragging(this.talk)
       }
+    },
+    onMouseUp (event) {
+      dragController.stopDragging()
     }
   }
 })
@@ -103,8 +112,8 @@ Vue.component('room', {
 var app = new Vue({
   el: '#fahrplan',
   template: `
-    <div id="fahrplan">
-      <talk v-if="dragController.draggedTalk" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
+    <div id="fahrplan" @mousemove="onMouseMove">
+      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
@@ -140,5 +149,12 @@ var app = new Vue({
     duration () {
       return this.end.diff(this.start, 'minutes')
     }
+  },
+  methods: {
+    onMouseMove (event) {
+      if (dragController.draggedTalk) {
+        dragController.event = event
+      }
+    },
   }
 })

@@ -9,8 +9,7 @@
   flex: 1 0 auto;
   flex-wrap: no-wrap;
   align-self: stretch;
-  padding-left: 24px;
-  padding: 18px;
+  padding-left: 24px; padding: 18px;
   background: $gray-lighter;
 
 }
@@ -33,6 +32,8 @@
   border-color: white;
   border-width: 4px;
   padding: 4px 8px;
+  user-select: none;
+  cursor: pointer;
 }
 .talk-box.accepted {
   background: $gray-light;
