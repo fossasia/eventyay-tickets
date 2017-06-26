@@ -268,7 +268,6 @@ COMPRESS_CSS_FILTERS = (
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': '',
 }
@@ -345,7 +344,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.SUCCESS: 'success',
 }
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # For now, to ease development
 CELERY_TASK_ALWAYS_EAGER = True
