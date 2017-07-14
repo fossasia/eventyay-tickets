@@ -165,6 +165,19 @@ var app = new Vue({
     onMouseMove (event) {
       if (dragController.draggedTalk) {
         dragController.event = event
+        var newRoomColumn = document.querySelector('.room-container:hover')
+        if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
+          console.log(newRoomColumn)
+          if (dragController.roomColumn)
+            dragController.roomColumn.classList.remove('hover-active')
+          newRoomColumn.classList.add('hover-active')
+          dragController.roomColumn = newRoomColumn
+        }
+        if (dragController.roomColumn) {
+          var start = event.clientY - dragController.roomColumn.offsetTop
+          start -= start % 5
+          dragController.start = this.start.add(start, 'minutes')
+        }
       }
     },
   }
