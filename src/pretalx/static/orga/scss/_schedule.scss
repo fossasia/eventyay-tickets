@@ -16,6 +16,9 @@
 .room-column {
   flex: 1 0 auto;
   align-self: stretch;
+  .hover-active {
+    background: #33c33c;
+  }
 }
 .room-header {
   font-size: 16pt;
@@ -33,6 +36,9 @@
   border-width: 4px;
   padding: 4px 8px;
   user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
   cursor: pointer;
 }
 .talk-box.accepted {
