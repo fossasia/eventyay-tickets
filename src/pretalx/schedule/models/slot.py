@@ -30,6 +30,10 @@ class TalkSlot(LogMixin, models.Model):
     def event(self):
         return self.submission.event
 
+    @property
+    def duration(self):
+        return self.submission.get_duration()
+
     def copy_to_schedule(self, new_schedule):
         return TalkSlot.objects.create(
             submission=self.submission,

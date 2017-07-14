@@ -8,8 +8,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.mail.context import template_context_from_submission
 
 
-class SubmissionError(Exception):
-    pass
+class SubmissionError(Exception): pass
 
 
 class SubmissionStates(Choices):
@@ -113,6 +112,11 @@ class Submission(LogMixin, models.Model):
         return self.state in (
             SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED, SubmissionStates.SUBMITTED
         ) and self.event.cfp.is_open
+
+    def get_duration(self):
+        if self.duration is None:
+            return self.submission_type.default_duration
+        return self.duration
 
     def accept(self, person=None, force=False):
         if self.state not in [SubmissionStates.SUBMITTED, SubmissionStates.REJECTED] and not force:
