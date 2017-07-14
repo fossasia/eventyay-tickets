@@ -30,6 +30,10 @@ var api = {
     return api.http('GET', window.location + 'api/rooms/', null)
   },
   saveTalk(talk) {
+    return api.http('PATCH', window.location + `api/talks/${talk.id}/`, {
+      room: talk.room,
+      start: talk.start.format(),
+    })
   }
 }
 
