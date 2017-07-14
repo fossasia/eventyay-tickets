@@ -25,31 +25,35 @@ class RoomList(View):
         }, encoder=I18nJSONEncoder)
 
 
+def serialize_slot(slot):
+    return {
+        'id': slot.pk,
+        'title': slot.submission.title,
+        'speakers': [
+            {'name': speaker.name, 'nick': speaker.nick}
+            for speaker in slot.submission.speakers.all()
+        ],
+        'submission_type': slot.submission.submission_type.name,
+        'state': slot.submission.state,
+        'description': slot.submission.description,
+        'abstract': slot.submission.abstract,
+        'notes': slot.submission.notes,
+        'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
+        'content_locale': slot.submission.content_locale,
+        'do_not_record': slot.submission.do_not_record,
+        'room': slot.room.pk if slot.room else None,
+        'start': slot.start,
+        'end': slot.end,
+    }
+
 class TalkList(View):
 
     def get(self, request, event):
         schedule = request.event.wip_schedule
-        return JsonResponse({'results': [
-            {
-                'title': slot.submission.title,
-                'speakers': [
-                    {'name': speaker.name, 'nick': speaker.nick}
-                    for speaker in slot.submission.speakers.all()
-                ],
-                'submission_type': slot.submission.submission_type.name,
-                'state': slot.submission.state,
-                'description': slot.submission.description,
-                'abstract': slot.submission.abstract,
-                'notes': slot.submission.notes,
-                'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
-                'content_locale': slot.submission.content_locale,
-                'do_not_record': slot.submission.do_not_record,
-                'room': slot.room.pk if slot.room else None,
-                'start': slot.start,
-                'end': slot.end,
-            }
-            for slot in schedule.talks.all()
-        ]}, encoder=I18nJSONEncoder)
+        return JsonResponse(
+            {'results': [serialize_slot(slot) for slot in schedule.talks.all()]},
+            encoder=I18nJSONEncoder
+        )
 
 
 class TalkUpdate(View):
