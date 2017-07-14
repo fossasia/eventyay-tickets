@@ -41,24 +41,21 @@ var dragController = {
   draggedTalk: null,
   event: null,
   roomColumn: null,
-  start: null,
   startDragging (talk) {
     this.draggedTalk = JSON.parse(JSON.stringify(talk))
   },
   stopDragging () {
     if (this.roomColumn) {
-      this.draggedTalk.room = this.roomColumn.dataset.id
-      this.draggedTalk.start = this.start
-      api.saveTalk(this.draggedTalk)
+      this.roomColumn.classList.remove('hover-active')
+      this.draggedTalk = null
+      this.event = null
     }
-    this.draggedTalk = null
-    this.event = null
   }
 }
 
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown" @mouseup="onMouseUp">
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown">
       {{ talk.title }} ({{ talk.duration }} minutes)
     </div>
   `,
@@ -73,6 +70,7 @@ Vue.component('talk', {
       if (this.isDragged) {
         var rect = this.$parent.$el.getBoundingClientRect()
         style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
+        style.background = '#1C4A3B'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
@@ -85,9 +83,6 @@ Vue.component('talk', {
         dragController.startDragging(this.talk)
       }
     },
-    onMouseUp (event) {
-      dragController.stopDragging()
-    }
   }
 })
 
@@ -123,7 +118,7 @@ Vue.component('room', {
 var app = new Vue({
   el: '#fahrplan',
   template: `
-    <div id="fahrplan" @mousemove="onMouseMove">
+    <div id="fahrplan" @mousemove="onMouseMove" @mouseup="onMouseUp">
       <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true" style="{pointer-events: none}"></talk>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
@@ -172,15 +167,26 @@ var app = new Vue({
               dragController.roomColumn.classList.remove('hover-active')
             newRoomColumn.classList.add('hover-active')
             dragController.roomColumn = newRoomColumn
+            dragController.draggedTalk.room = newRoomColumn.dataset.id
           }
           if (dragController.roomColumn) {
             var start = event.clientY - dragController.roomColumn.offsetTop
             start -= start % 5
-            dragController.start = this.start.add(start, 'minutes')
+            dragController.draggedTalk.start = this.start.add(start, 'minutes')
           }
         }
 
         }
     },
+    onMouseUp (event) {
+      api.saveTalk(dragController.draggedTalk).then((response) => {
+        this.talks.forEach((talk, index) => {
+          if (talk.id == response.id) {
+            this.talks[index] = response
+          }
+        })
+      })
+      dragController.stopDragging()
+    }
   }
 })
