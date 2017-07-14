@@ -47,7 +47,7 @@ var dragController = {
   },
   stopDragging () {
     if (this.roomColumn) {
-      this.draggedTalk.room = this.roomColumn.id
+      this.draggedTalk.room = this.roomColumn.dataset.id
       this.draggedTalk.start = this.start
       api.saveTalk(this.draggedTalk)
     }
@@ -95,7 +95,7 @@ Vue.component('room', {
   template: `
     <div class="room-column">
       <div class="room-header">{{ room.name.en }}</div>
-      <div class="room-container" v-bind:style="style">
+      <div class="room-container" v-bind:style="style" :data-id="room.id">
         <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
       </div>
     </div>
