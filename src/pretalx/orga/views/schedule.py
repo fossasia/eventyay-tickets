@@ -59,4 +59,11 @@ class TalkList(View):
 class TalkUpdate(View):
 
     def patch(self, request, event, pk):
-        pass
+        talk = request.event.wip_schedule.talks.get(pk=pk)
+        start_time = request.data.get('start')
+        room = request.event.rooms.get(pk=request.data.get('room'))
+        talk.start_time = start_time
+        talk.end_time = start_time + talk.duration
+        talk.room = room
+        talk.save(update_fields=['start', 'end', 'room'])
+        return JsonResponse(serialize_slot(talk))
