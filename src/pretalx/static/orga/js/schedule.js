@@ -124,7 +124,7 @@ var app = new Vue({
   el: '#fahrplan',
   template: `
     <div id="fahrplan" @mousemove="onMouseMove">
-      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
+      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true" style="{pointer-events: none}"></talk>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
@@ -165,20 +165,22 @@ var app = new Vue({
     onMouseMove (event) {
       if (dragController.draggedTalk) {
         dragController.event = event
-        var newRoomColumn = document.querySelector('.room-container:hover')
-        if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
-          console.log(newRoomColumn)
-          if (dragController.roomColumn)
-            dragController.roomColumn.classList.remove('hover-active')
-          newRoomColumn.classList.add('hover-active')
-          dragController.roomColumn = newRoomColumn
+        var newRoomColumn = document.elementFromPoint(event.clientX, event.clientY)
+        if (newRoomColumn.dataset.id) {
+          if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
+            if (dragController.roomColumn)
+              dragController.roomColumn.classList.remove('hover-active')
+            newRoomColumn.classList.add('hover-active')
+            dragController.roomColumn = newRoomColumn
+          }
+          if (dragController.roomColumn) {
+            var start = event.clientY - dragController.roomColumn.offsetTop
+            start -= start % 5
+            dragController.start = this.start.add(start, 'minutes')
+          }
         }
-        if (dragController.roomColumn) {
-          var start = event.clientY - dragController.roomColumn.offsetTop
-          start -= start % 5
-          dragController.start = this.start.add(start, 'minutes')
+
         }
-      }
     },
   }
 })
