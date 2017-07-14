@@ -43,7 +43,7 @@ var dragController = {
   roomColumn: null,
   start: null,
   startDragging (talk) {
-    this.draggedTalk = talk
+    this.draggedTalk = JSON.parse(JSON.stringify(talk))
   },
   stopDragging () {
     if (this.roomColumn) {
