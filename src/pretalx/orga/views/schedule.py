@@ -1,3 +1,7 @@
+from datetime import timedelta
+import dateutil.parser
+import json
+
 from django.http import JsonResponse
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
@@ -60,10 +64,11 @@ class TalkUpdate(View):
 
     def patch(self, request, event, pk):
         talk = request.event.wip_schedule.talks.get(pk=pk)
-        start_time = request.data.get('start')
-        room = request.event.rooms.get(pk=request.data.get('room'))
-        talk.start_time = start_time
-        talk.end_time = start_time + talk.duration
-        talk.room = room
+        data = json.loads(request.body.decode())
+
+        talk.start_time = dateutil.parser.parse(data.get('start'))
+        talk.room = request.event.rooms.get(pk=data.get('room'))
+        talk.end_time = talk.start_time + timedelta(minutes=talk.duration)
         talk.save(update_fields=['start', 'end', 'room'])
+
         return JsonResponse(serialize_slot(talk))
