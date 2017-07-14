@@ -28,15 +28,15 @@ class RoomList(View):
 def serialize_slot(slot):
     return {
         'id': slot.pk,
-        'title': slot.submission.title,
+        'title': str(slot.submission.title),
         'speakers': [
             {'name': speaker.name, 'nick': speaker.nick}
             for speaker in slot.submission.speakers.all()
         ],
-        'submission_type': slot.submission.submission_type.name,
+        'submission_type': str(slot.submission.submission_type.name),
         'state': slot.submission.state,
-        'description': slot.submission.description,
-        'abstract': slot.submission.abstract,
+        'description': str(slot.submission.description),
+        'abstract': str(slot.submission.abstract),
         'notes': slot.submission.notes,
         'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
         'content_locale': slot.submission.content_locale,
