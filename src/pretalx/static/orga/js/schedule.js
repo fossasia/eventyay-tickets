@@ -40,10 +40,17 @@ var api = {
 var dragController = {
   draggedTalk: null,
   event: null,
+  roomColumn: null,
+  start: null,
   startDragging (talk) {
     this.draggedTalk = talk
   },
   stopDragging () {
+    if (this.roomColumn) {
+      this.draggedTalk.room = this.roomColumn.id
+      this.draggedTalk.start = this.start
+      api.saveTalk(this.draggedTalk)
+    }
     this.draggedTalk = null
     this.event = null
   }
