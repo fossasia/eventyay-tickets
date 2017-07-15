@@ -36,6 +36,7 @@
 }
 .room-container {
   position: relative;
+  width: 100%;
 }
 
 #timeline {
@@ -45,9 +46,6 @@
   text-align: center;
   color: $gray-light;
   padding: 57px 0 18px;
-  .room-container {
-    width: 100%;
-  }
 }
 
 .timestep-box {
@@ -72,6 +70,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
 }
 .talk-box.accepted {
   background: $gray-light;
