@@ -17,7 +17,7 @@
   flex: 1 0 auto;
   align-self: stretch;
   .hover-active {
-    background: #33c33c;
+    background: lighten($gray-light, 30%);
   }
 }
 .room-header {
@@ -50,4 +50,7 @@
 }
 .talk-box.dragged {
   position: absolute;
+  background: #1C4A3B;
+  pointer-events: none;
+  z-index: 9001;
 }

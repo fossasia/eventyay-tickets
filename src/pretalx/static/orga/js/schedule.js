@@ -70,8 +70,6 @@ Vue.component('talk', {
       if (this.isDragged) {
         var rect = this.$parent.$el.getBoundingClientRect()
         style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
-        style.background = '#1C4A3B'
-        style.pointerEvents = 'none'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
