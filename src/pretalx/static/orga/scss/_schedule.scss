@@ -4,19 +4,22 @@
   position: relative;
 }
 
-#tracks, #unassigned-talks {
+#tracks, #unassigned-talks, #timeline {
   display: flex;
   flex: 1 0 auto;
   flex-wrap: no-wrap;
   align-self: stretch;
   padding-left: 24px; padding: 18px;
   background: $gray-lighter;
-
 }
+
+#tracks {
+  flex-grow: 1;
+}
+
 .room-column {
   flex: 1 0 auto;
   align-self: stretch;
-  flex-grow: 0;
   .hover-active {
     background: lighten($gray-light, 30%);
   }
@@ -31,6 +34,31 @@
   max-width: 360px;
   border-left: #000 4px solid;
 }
+.room-container {
+  position: relative;
+}
+
+#timeline {
+  width: 50px;
+  flex-grow: 0;
+  background: white;
+  text-align: center;
+  color: $gray-light;
+  padding: 57px 0 18px;
+  .room-container {
+    width: 100%;
+  }
+}
+
+.timestep-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  border-top: 1px solid $gray-light;
+  font-size: 12px;
+  width: 100%;
+}
 
 .talk-box {
   border-color: white;
@@ -41,6 +69,9 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .talk-box.accepted {
   background: $gray-light;

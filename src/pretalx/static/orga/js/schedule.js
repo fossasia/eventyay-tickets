@@ -54,25 +54,51 @@ var dragController = {
 }
 
 Vue.component('talk', {
-  template: `
+    template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown">
       {{ talk.title }} ({{ talk.duration }} minutes) – at {{ talk.start }}
     </div>
   `,
+    props: {
+        talk: Object,
+        start: Object,
+        isDragged: {type: Boolean, default: false},
+    },
+    computed: {
+        style () {
+            var style = {height: this.talk.duration + 'px'}
+            if (this.isDragged) {
+                var rect = this.$parent.$el.getBoundingClientRect()
+                style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
+            } else {
+                style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
+            }
+            return style
+        }
+    },
+    methods: {
+        onMouseDown (event) {
+            if (event.buttons === 1) {
+                dragController.startDragging(this.talk)
+            }
+        },
+    }
+})
+
+Vue.component('timestep', {
+  template: `
+    <div class="timestep-box" v-bind:style="style">
+      {{ timestep.format("HH:mm") }}
+    </div>
+  `,
   props: {
-    talk: Object,
+    timestep: Object,
     start: Object,
-    isDragged: {type: Boolean, default: false},
   },
   computed: {
     style () {
-      var style = {height: this.talk.duration + 'px'}
-      if (this.isDragged) {
-        var rect = this.$parent.$el.getBoundingClientRect()
-        style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
-      } else {
-        style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
-      }
+      var style = {height: '15px'}
+      style.transform = 'translatey(' + moment(this.timestep).diff(this.start, 'minutes') + 'px)'
       return style
     }
   },
@@ -119,6 +145,12 @@ var app = new Vue({
   template: `
     <div id="fahrplan" @mousemove="onMouseMove" @mouseup="onMouseUp">
       <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
+      <div id="timeline">
+        <div class="room-container">
+            <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
+            </timestep>
+        </div>
+      </div>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
@@ -153,6 +185,16 @@ var app = new Vue({
     },
     duration () {
       return this.end.diff(this.start, 'minutes')
+    },
+    timesteps () {
+      var steps = [],
+          d = moment(this.start);
+
+      while (d < this.end) {
+        steps.push(moment(d));
+        d.add(30, 'm');
+      }
+      return steps;
     }
   },
   methods: {
