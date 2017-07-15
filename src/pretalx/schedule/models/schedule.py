@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
@@ -15,6 +16,9 @@ class Schedule(LogMixin, models.Model):
         max_length=200,
         null=True, blank=True,
     )
+    published = models.DateTimeField(
+        null=True, blank=True
+    )
 
     class Meta:
         unique_together = (('event', 'version'), )
@@ -24,7 +28,8 @@ class Schedule(LogMixin, models.Model):
             raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')
 
         self.version = name
-        self.save(update_fields=['version'])
+        self.published = now()
+        self.save(update_fields=['published', 'version'])
         self.log_action('pretalx.schedule.release', person=user, orga=True)
 
         wip_schedule = Schedule.objects.create(event=self.event)
