@@ -56,7 +56,7 @@ var dragController = {
 Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
-         title="{{ talk.title }} ({{ talk.duration }} minutes)">
+         :title="title">
       <span class="time">
         {{ humanStart }}
       </span>
@@ -69,6 +69,9 @@ Vue.component('talk', {
     isDragged: {type: Boolean, default: false},
   },
   computed: {
+    title () {
+      return this.talk.title + ' (' + this.talk.duration + ' minutes)';
+    },
     style () {
       var style = {height: this.talk.duration + 'px'}
       if (this.isDragged) {
