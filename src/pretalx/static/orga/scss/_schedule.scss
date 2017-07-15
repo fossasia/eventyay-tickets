@@ -20,9 +20,13 @@
 .room-column {
   flex: 1 0 auto;
   align-self: stretch;
+  margin-right: 18px;
   .hover-active {
     background: lighten($gray-light, 30%);
   }
+}
+.room-column:last-child {
+  margin-right: 0;
 }
 .room-header {
   font-size: 16pt;
