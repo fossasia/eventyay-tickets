@@ -71,6 +71,7 @@ Vue.component('talk', {
         var rect = this.$parent.$el.getBoundingClientRect()
         style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
         style.background = '#1C4A3B'
+        style.pointerEvents = 'none'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
@@ -119,7 +120,7 @@ var app = new Vue({
   el: '#fahrplan',
   template: `
     <div id="fahrplan" @mousemove="onMouseMove" @mouseup="onMouseUp">
-      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true" style="{pointer-events: none}"></talk>
+      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
       <div id="tracks">
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
@@ -161,6 +162,8 @@ var app = new Vue({
       if (dragController.draggedTalk) {
         dragController.event = event
         var newRoomColumn = document.elementFromPoint(event.clientX, event.clientY)
+        while (!newRoomColumn.dataset.id && newRoomColumn.parentElement)
+          newRoomColumn = newRoomColumn.parentElement
         if (newRoomColumn.dataset.id) {
           if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
             if (dragController.roomColumn)
@@ -182,7 +185,7 @@ var app = new Vue({
       api.saveTalk(dragController.draggedTalk).then((response) => {
         this.talks.forEach((talk, index) => {
           if (talk.id == response.id) {
-            this.talks[index] = response
+            Object.assign(this.talks[index], response)
           }
         })
       })
