@@ -2,6 +2,10 @@
   display: flex;
   flex-wrap: no-wrap;
   position: relative;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 #tracks, #unassigned-talks, #timeline {
@@ -71,10 +75,6 @@
   border-color: white;
   border-width: 4px;
   padding: 4px 8px;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
   cursor: pointer;
   position: absolute;
   top: 0;
