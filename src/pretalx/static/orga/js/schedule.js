@@ -228,7 +228,8 @@ var app = new Vue({
           dragController.draggedTalk.room = newRoomColumn.dataset.id
           dragController.roomColumn.classList.add('hover-active')
           if (dragController.roomColumn) {
-            var position = event.clientY - dragController.roomColumn.offsetTop + window.scrollY
+            var rect = dragController.roomColumn.getBoundingClientRect()
+            var position = event.clientY - rect.top
             position -= position % 5
             dragController.draggedTalk.start = moment(this.start).add(position, 'minutes')
           }
