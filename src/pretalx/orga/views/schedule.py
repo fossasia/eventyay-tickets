@@ -1,7 +1,7 @@
-from datetime import timedelta
-import dateutil.parser
 import json
+from datetime import timedelta
 
+import dateutil.parser
 from django.http import JsonResponse
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
@@ -49,6 +49,7 @@ def serialize_slot(slot):
         'start': slot.start,
         'end': slot.end,
     }
+
 
 class TalkList(View):
 

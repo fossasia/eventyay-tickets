@@ -8,7 +8,8 @@ from pretalx.common.mixins import LogMixin
 from pretalx.mail.context import template_context_from_submission
 
 
-class SubmissionError(Exception): pass
+class SubmissionError(Exception):
+    pass
 
 
 class SubmissionStates(Choices):
