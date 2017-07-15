@@ -76,6 +76,13 @@
   top: 0;
   left: 0;
   width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .time {
+    display: inline-block;
+    min-width: 45px;
+  }
 }
 .talk-box.accepted {
   background: $gray-light;

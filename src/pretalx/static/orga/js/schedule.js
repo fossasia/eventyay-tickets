@@ -55,8 +55,12 @@ var dragController = {
 
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown">
-      {{ talk.title }} ({{ talk.duration }} minutes) – at {{ humanStart }}
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
+         title="{{ talk.title }} ({{ talk.duration }} minutes)">
+      <span class="time">
+        {{ humanStart }}
+      </span>
+      {{ talk.title }} ({{ talk.duration }} minutes)
     </div>
   `,
   props: {
@@ -93,7 +97,7 @@ Vue.component('talk', {
 Vue.component('timestep', {
   template: `
     <div class="timestep-box" v-bind:style="style" :class="[{midnight: isMidnight}]">
-      {{ isMidnight ? timestep.format("DD.MM.") : timestep.format("HH:mm") }}
+      {{ isMidnight ? timestep.format("MM-DD") : timestep.format("HH:mm") }}
     </div>
   `,
   props: {
@@ -155,8 +159,8 @@ var app = new Vue({
       <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
       <div id="timeline">
         <div class="room-container">
-            <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
-            </timestep>
+          <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
+          </timestep>
         </div>
       </div>
       <div id="tracks">
