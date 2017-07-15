@@ -92,6 +92,9 @@
   background: $gray-light;
   color: $white;
 }
+.talk-box.drag-source {
+  opacity: 0.5;
+}
 .talk-box.confirmed {
   background: $green;
 }

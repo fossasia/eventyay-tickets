@@ -43,15 +43,19 @@ var dragController = {
   roomColumn: null,
   dragPosX: null,
   dragPosY: null,
+  dragSource: null,
 
-  startDragging (talk, dragPosX, dragPosY) {
+  startDragging (talk, dragSource, dragPosX, dragPosY) {
     this.draggedTalk = JSON.parse(JSON.stringify(talk))
     this.dragPosX = dragPosX
+    this.dragSource = dragSource
     this.dragPosY = dragPosY
+    this.dragSource.classList.add('drag-source')
   },
   stopDragging () {
     if (this.roomColumn) {
       this.roomColumn.classList.remove('hover-active')
+      this.dragSource.classList.remove('drag-source')
       this.draggedTalk = null
       this.event = null
     }
@@ -101,7 +105,7 @@ Vue.component('talk', {
     onMouseDown (event) {
       if (event.buttons === 1) {
         var talkRect = this.$el.getBoundingClientRect()
-        dragController.startDragging(this.talk, event.clientX - talkRect.left, event.clientY - talkRect.top)
+        dragController.startDragging(this.talk, this.$el, event.clientX - talkRect.left, event.clientY - talkRect.top)
       }
     },
   }
