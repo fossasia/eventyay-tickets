@@ -120,6 +120,11 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
         form.instance.event = self.request.event
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
 
 class SubmissionList(ListView):
     template_name = 'orga/submission/list.html'
