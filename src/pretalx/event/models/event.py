@@ -1,3 +1,5 @@
+from datetime import datetime, time
+
 import pytz
 from django.conf import settings
 from django.core.mail import get_connection
@@ -5,6 +7,7 @@ from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
@@ -153,3 +156,17 @@ class Event(LogMixin, models.Model):
     @property
     def event(self):
         return self
+
+    @property
+    def datetime_from(self):
+        return make_aware(datetime.combine(
+            self.date_from,
+            time(hour=0, minute=0, second=0)
+        ), pytz.timezone(self.timezone))
+
+    @property
+    def datetime_to(self):
+        return make_aware(datetime.combine(
+            self.date_to,
+            time(hour=23, minute=59, second=59)
+        ), pytz.timezone(self.timezone))
