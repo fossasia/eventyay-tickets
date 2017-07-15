@@ -159,7 +159,7 @@ var app = new Vue({
   el: '#fahrplan',
   template: `
     <div id="fahrplan" @mousemove="onMouseMove" @mouseup="onMouseUp">
-      <talk v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
+      <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
       <div id="timeline">
         <div class="room-container">
           <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
@@ -227,9 +227,10 @@ var app = new Vue({
           dragController.roomColumn = newRoomColumn
           dragController.draggedTalk.room = newRoomColumn.dataset.id
           dragController.roomColumn.classList.add('hover-active')
-          if (dragController.roomColumn) {
-            var rect = dragController.roomColumn.getBoundingClientRect()
-            var position = event.clientY - rect.top
+          if (dragController.roomColumn && app.$refs.draggedTalk) {
+            var colRect = dragController.roomColumn.getBoundingClientRect()
+            var dragRect = app.$refs.draggedTalk.$el.getBoundingClientRect()
+            var position = dragRect.top - colRect.top
             position -= position % 5
             dragController.draggedTalk.start = moment(this.start).add(position, 'minutes')
           }
