@@ -15,8 +15,8 @@ class RoomList(View):
 
     def get(self, request, event):
         return JsonResponse({
-            'start': request.event.date_from,
-            'end': request.event.date_to,
+            'start': request.event.datetime_from.isoformat(),
+            'end': request.event.datetime_to.isoformat(),
             'rooms': [
                 {
                     'id': room.pk,
@@ -46,8 +46,8 @@ def serialize_slot(slot):
         'content_locale': slot.submission.content_locale,
         'do_not_record': slot.submission.do_not_record,
         'room': slot.room.pk if slot.room else None,
-        'start': slot.start,
-        'end': slot.end,
+        'start': slot.start.isoformat(),
+        'end': slot.end.isoformat(),
     }
 
 
