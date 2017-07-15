@@ -16,6 +16,7 @@
 .room-column {
   flex: 1 0 auto;
   align-self: stretch;
+  flex-grow: 0;
   .hover-active {
     background: lighten($gray-light, 30%);
   }
