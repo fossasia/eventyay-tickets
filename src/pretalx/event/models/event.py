@@ -139,6 +139,10 @@ class Event(LogMixin, models.Model):
     def wip_schedule(self):
         return self.schedules.get(version__isnull=True)
 
+    @cached_property
+    def current_schedule(self):
+        return self.schedules.order_by('published').filter(published__isnull=False).first()
+
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend
 
