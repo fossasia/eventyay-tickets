@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from pretalx.event.models import Event
@@ -7,7 +9,8 @@ from pretalx.event.models import Event
 def event():
     return Event.objects.create(
         name='Event', slug='event', subtitle='Event event', is_public=True,
-        email='orga@orga.org', locale_array='en,de', locale='en'
+        email='orga@orga.org', locale_array='en,de', locale='en',
+        date_from=datetime.date.today(), date_to=datetime.date.today()
     )
 
 

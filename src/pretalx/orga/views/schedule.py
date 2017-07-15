@@ -46,8 +46,8 @@ def serialize_slot(slot):
         'content_locale': slot.submission.content_locale,
         'do_not_record': slot.submission.do_not_record,
         'room': slot.room.pk if slot.room else None,
-        'start': slot.start.isoformat(),
-        'end': slot.end.isoformat(),
+        'start': slot.start.isoformat() if slot.start else None,
+        'end': slot.end.isoformat() if slot.end else None,
     }
 
 

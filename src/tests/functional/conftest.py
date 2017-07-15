@@ -22,7 +22,8 @@ def event():
 
 @pytest.fixture
 def other_event():
-    return Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org')
+    return Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org',
+                                date_from=datetime.date.today(), date_to=datetime.date.today())
 
 
 @pytest.fixture

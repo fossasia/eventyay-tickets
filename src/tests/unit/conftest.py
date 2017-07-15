@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from pretalx.event.models import Event
@@ -8,7 +10,8 @@ from pretalx.submission.models import Submission
 
 @pytest.fixture
 def event():
-    return Event.objects.create(name='Event', slug='event', email='orga@org.org')
+    return Event.objects.create(name='Event', slug='event', email='orga@org.org',
+                                date_from=datetime.date.today(), date_to=datetime.date.today())
 
 
 @pytest.fixture
