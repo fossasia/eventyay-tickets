@@ -41,8 +41,13 @@ var dragController = {
   draggedTalk: null,
   event: null,
   roomColumn: null,
-  startDragging (talk) {
+  dragPosX: null,
+  dragPosY: null,
+
+  startDragging (talk, dragPosX, dragPosY) {
     this.draggedTalk = JSON.parse(JSON.stringify(talk))
+    this.dragPosX = dragPosX
+    this.dragPosY = dragPosY
   },
   stopDragging () {
     if (this.roomColumn) {
@@ -77,9 +82,10 @@ Vue.component('talk', {
       if (this.isDragged) {
         var rect = this.$parent.$el.getBoundingClientRect()
         var colRect = dragController.roomColumn.getBoundingClientRect()
-        var dragTop = (Math.max(colRect.top, dragController.event.clientY - (this.talk.duration / 2)) - rect.top)
+        var dragTop = Math.max(colRect.top, dragController.event.clientY - dragController.dragPosY) - rect.top
+        var dragLeft = dragController.event.clientX - rect.left - dragController.dragPosX
 
-        style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + dragTop + 'px)'
+        style.transform = 'translate(' + dragLeft + 'px,' + dragTop + 'px)'
         style.width = dragController.roomColumn.offsetWidth + 'px'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
@@ -94,7 +100,8 @@ Vue.component('talk', {
   methods: {
     onMouseDown (event) {
       if (event.buttons === 1) {
-        dragController.startDragging(this.talk)
+        var talkRect = this.$el.getBoundingClientRect()
+        dragController.startDragging(this.talk, event.clientX - talkRect.left, event.clientY - talkRect.top)
       }
     },
   }
@@ -120,13 +127,6 @@ Vue.component('timestep', {
       return (this.timestep.hour() === 0 && this.timestep.minute() === 0);
     }
   },
-  methods: {
-    onMouseDown (event) {
-      if (event.buttons === 1) {
-        dragController.startDragging(this.talk)
-      }
-    },
-  }
 })
 
 Vue.component('room', {
