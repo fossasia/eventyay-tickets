@@ -166,10 +166,10 @@ var app = new Vue({
           if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
             if (dragController.roomColumn)
               dragController.roomColumn.classList.remove('hover-active')
-            newRoomColumn.classList.add('hover-active')
-            dragController.roomColumn = newRoomColumn
-            dragController.draggedTalk.room = newRoomColumn.dataset.id
           }
+          dragController.roomColumn = newRoomColumn
+          dragController.draggedTalk.room = newRoomColumn.dataset.id
+          dragController.roomColumn.classList.add('hover-active')
           if (dragController.roomColumn) {
             var position = event.clientY - dragController.roomColumn.offsetTop
             position -= position % 5
