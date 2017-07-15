@@ -56,7 +56,7 @@ var dragController = {
 Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown">
-      {{ talk.title }} ({{ talk.duration }} minutes)
+      {{ talk.title }} ({{ talk.duration }} minutes) – at {{ talk.start }}
     </div>
   `,
   props: {
@@ -170,9 +170,9 @@ var app = new Vue({
             dragController.draggedTalk.room = newRoomColumn.dataset.id
           }
           if (dragController.roomColumn) {
-            var start = event.clientY - dragController.roomColumn.offsetTop
-            start -= start % 5
-            dragController.draggedTalk.start = this.start.add(start, 'minutes')
+            var position = event.clientY - dragController.roomColumn.offsetTop
+            position -= position % 5
+            dragController.draggedTalk.start = moment(this.start).add(position, 'minutes')
           }
         }
 
