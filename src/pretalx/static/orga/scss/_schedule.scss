@@ -57,6 +57,11 @@
   font-size: 12px;
   width: 100%;
 }
+.timestep-box.midnight {
+  font-weight: bold;
+  background: $gray-light;
+  color: white;
+}
 
 .talk-box {
   border-color: white;
@@ -84,4 +89,5 @@
   background: #1C4A3B;
   pointer-events: none;
   z-index: 9001;
+  width: auto;
 }

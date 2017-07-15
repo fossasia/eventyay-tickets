@@ -54,45 +54,46 @@ var dragController = {
 }
 
 Vue.component('talk', {
-    template: `
+  template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown">
       {{ talk.title }} ({{ talk.duration }} minutes) – at {{ humanStart }}
     </div>
   `,
-    props: {
-        talk: Object,
-        start: Object,
-        isDragged: {type: Boolean, default: false},
+  props: {
+    talk: Object,
+    start: Object,
+    isDragged: {type: Boolean, default: false},
+  },
+  computed: {
+    style () {
+      var style = {height: this.talk.duration + 'px'}
+      if (this.isDragged) {
+        var rect = this.$parent.$el.getBoundingClientRect()
+        style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration / 2)) + 'px)'
+        style.width = dragController.roomColumn.offsetWidth + 'px'
+      } else {
+        style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
+      }
+      return style
     },
-    computed: {
-        style () {
-            var style = {height: this.talk.duration + 'px'}
-            if (this.isDragged) {
-                var rect = this.$parent.$el.getBoundingClientRect()
-                style.transform = 'translate(' + (dragController.event.clientX - rect.left - 50) + 'px,' + (dragController.event.clientY - rect.top - (this.talk.duration/2)) + 'px)'
-            } else {
-                style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
-            }
-            return style
-        },
-        humanStart () {
-            return moment(this.talk.start).format('HH:mm')
-        }
-
-    },
-    methods: {
-        onMouseDown (event) {
-            if (event.buttons === 1) {
-                dragController.startDragging(this.talk)
-            }
-        },
+    humanStart () {
+      return moment(this.talk.start).format('HH:mm')
     }
+
+  },
+  methods: {
+    onMouseDown (event) {
+      if (event.buttons === 1) {
+        dragController.startDragging(this.talk)
+      }
+    },
+  }
 })
 
 Vue.component('timestep', {
   template: `
-    <div class="timestep-box" v-bind:style="style">
-      {{ timestep.format("HH:mm") }}
+    <div class="timestep-box" v-bind:style="style" :class="[{midnight: isMidnight}]">
+      {{ isMidnight ? timestep.format("DD.MM.") : timestep.format("HH:mm") }}
     </div>
   `,
   props: {
@@ -101,9 +102,12 @@ Vue.component('timestep', {
   },
   computed: {
     style () {
-      var style = {height: '15px'}
+      var style = {height: '30px'}
       style.transform = 'translatey(' + moment(this.timestep).diff(this.start, 'minutes') + 'px)'
       return style
+    },
+    isMidnight () {
+      return (this.timestep.hour() === 0 && this.timestep.minute() === 0);
     }
   },
   methods: {
