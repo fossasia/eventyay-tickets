@@ -44,11 +44,9 @@ class Event(LogMixin, models.Model):
         related_name="events",
     )
     date_from = models.DateField(
-        null=True, blank=True,
         verbose_name=_('Event start date'),
     )
     date_to = models.DateField(
-        null=True, blank=True,
         verbose_name=_('Event end date'),
     )
     timezone = models.CharField(
