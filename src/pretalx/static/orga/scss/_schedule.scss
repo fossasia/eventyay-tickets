@@ -28,6 +28,8 @@
   .hover-active {
     background: lighten($gray-light, 30%);
   }
+  flex-grow: 1;
+  flex-basis: 0;
 }
 .room-column:last-child {
   margin-right: 0;
@@ -36,6 +38,10 @@
   font-size: 16pt;
   font-decoration: underline;
   margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 31px;
+
 }
 #unassigned-talks {
   flex-direction: column;
