@@ -143,6 +143,10 @@ class Event(LogMixin, models.Model):
     def current_schedule(self):
         return self.schedules.order_by('published').filter(published__isnull=False).first()
 
+    @property
+    def duration(self):
+        return (self.date_to - self.date_from).days + 1
+
     def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend
 
