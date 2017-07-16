@@ -66,7 +66,7 @@ Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
          :title="title">
-      <span class="time">
+      <span class="time" v-if="this.start">
         {{ humanStart }}
       </span>
       {{ talk.title }} ({{ talk.duration }} minutes)

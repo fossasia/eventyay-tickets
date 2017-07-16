@@ -47,6 +47,10 @@
   flex-direction: column;
   max-width: 360px;
   border-left: #000 4px solid;
+
+  .talk-box {
+    position: static;
+  }
 }
 .room-container {
   position: relative;
