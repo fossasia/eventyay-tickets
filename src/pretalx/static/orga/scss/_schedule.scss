@@ -6,6 +6,8 @@
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+  margin-right: 250px;
+  border-right: #000 4px solid;
 
   .hover-active {
     background: lighten($gray-light, 30%);
@@ -46,8 +48,28 @@
 }
 #unassigned-talks {
   flex-direction: column;
-  max-width: 360px;
-  border-left: #000 4px solid;
+  position: fixed;
+  right: 20px;
+  top: 114px;
+  width: 265px;
+  height: calc(100vh - 134px);
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
+  .input-group {
+    margin-bottom: 5px;
+  }
+
+  .hover-active {
+    background: lighten($gray-light, 30%);
+  }
+
+  .room-container {
+    overflow-y: scroll;
+    padding-right: 5px;
+  }
 
   .talk-box {
     position: static;

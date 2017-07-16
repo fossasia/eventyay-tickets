@@ -171,25 +171,31 @@ Vue.component('room', {
 var app = new Vue({
   el: '#fahrplan',
   template: `
-    <div id="fahrplan" @mousemove="onMouseMove" @mouseup="onMouseUp">
-      <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
-      <div id="timeline">
-        <div class="room-container">
-          <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
-          </timestep>
+    <div @mousemove="onMouseMove" @mouseup="onMouseUp">
+      <div id="fahrplan">
+        <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
+        <div id="timeline">
+          <div class="room-container">
+            <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start">
+            </timestep>
+          </div>
         </div>
-      </div>
-      <div id="tracks">
-        <div class="alert alert-danger room-column" v-if="rooms && rooms.length < 1">
-          Please configure some rooms first.
+        <div id="tracks">
+          <div class="alert alert-danger room-column" v-if="rooms && rooms.length < 1">
+            Please configure some rooms first.
+          </div>
+          <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
+          </room>
         </div>
-        <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
-        </room>
       </div>
       <div id='unassigned-talks'>
         <div class="room-header" ref="roomHeader">Unassigned Talks</div>
+        <div class="input-group">
+          <div class="input-group-addon"><span class="fa fa-search"></span></div>
+          <input type="text" class="form-control" placeholder="Search..." v-model="search">
+        </div>
         <div class="room-container" id="unassigned-container" ref="unassigned">
-            <talk v-for="talk in talks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
+            <talk v-for="talk in filteredTalks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
         </div>
       </div>
     </div>
@@ -201,6 +207,7 @@ var app = new Vue({
       start: null,
       end: null,
       timezone: null,
+      search: '',
       dragController: dragController,
     }
   },
@@ -231,6 +238,11 @@ var app = new Vue({
       }
       return steps;
     },
+    filteredTalks() {
+      return this.talks.filter(talk => {
+         return talk.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+      })
+    }
   },
   methods: {
     onMouseMove (event) {
