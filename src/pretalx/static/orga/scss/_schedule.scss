@@ -1,10 +1,23 @@
-h3, #schedule-release {
+h3, .schedule-header {
   margin-left: 50px;
 }
-#schedule-release {
+.schedule-header {
   margin-bottom: 24px;
   margin-top: 24px;
+  display: flex
+}
+#schedule-release {
+  padding-left: 12px;
   width: 260px;
+}
+#schedule-choice {
+  width: 200px;
+  select {
+    height: 38px;
+  }
+  option {
+    background-color: $white;
+  }
 }
 #fahrplan {
   display: flex;

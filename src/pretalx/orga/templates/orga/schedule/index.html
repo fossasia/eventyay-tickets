@@ -6,6 +6,9 @@
 
 {% block headline %}
     {% trans "Schedule" %}
+    {% if schedule_version %}
+        – version {{ schedule_version }}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -20,16 +23,33 @@
 {% endblock %}
 
 {% block content %}
-    {% if not schedule_version %}
-        <div id="schedule-release">
-            <form method="post" action="{% url "orga:schedule.release" event=request.event.slug %}">
-                <div class="input-group">
-                    <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{% trans 'Release as version' %}" title="" type="text">
-                    <button type="submit" class="btn btn-primary">{% trans "Release" %}</button>
-                </div>
-            </form>
+    <div class="schedule-header">
+        <div id="schedule-choice">
+            <div class="input-group">
+                <form>
+                    <select name="version">
+                        <option value="">{% trans "Editor version" %}</option>
+                        {% for schedule in request.event.schedules.all %}
+                            {% if schedule.version %}
+                                <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">{% trans "Go" %}</button>
+                </form>
+            </div>
         </div>
-    {% endif %}
+        {% if not schedule_version %}
+            <div id="schedule-release">
+                <form method="post" action="{% url "orga:schedule.release" event=request.event.slug %}">
+                    <div class="input-group">
+                        <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{% trans 'Release as version' %}" title="" type="text">
+                        <button type="submit" class="btn btn-primary">{% trans "Release" %}</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
     <div id="fahrplan">
     </div>
 

@@ -78,7 +78,12 @@ def serialize_slot(slot):
 class TalkList(View):
 
     def get(self, request, event):
-        schedule = request.event.wip_schedule
+        version = self.request.GET.get('version')
+        if version:
+            schedule = request.event.schedules.get(version=version)
+        else:
+            schedule = request.event.wip_schedule
+
         return JsonResponse(
             {'results': [serialize_slot(slot) for slot in schedule.talks.all()]},
             encoder=I18nJSONEncoder
