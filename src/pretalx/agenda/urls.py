@@ -1,8 +1,6 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 
-from .views import (
-    api, schedule, speaker, location
-)
+from .views import api, location, schedule, speaker
 
 agenda_urls = [
     url('^(P<event>\w+)$', schedule.ScheduleView.as_view(), name='schedule'),
