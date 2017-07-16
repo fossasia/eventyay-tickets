@@ -180,6 +180,9 @@ var app = new Vue({
         </div>
       </div>
       <div id="tracks">
+        <div class="alert alert-danger room-column" v-if="rooms.length < 1">
+          Please configure some rooms first.
+        </div>
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
         </room>
       </div>
