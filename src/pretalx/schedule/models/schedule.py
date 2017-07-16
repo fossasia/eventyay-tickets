@@ -37,6 +37,16 @@ class Schedule(LogMixin, models.Model):
             talk.copy_to_schedule(wip_schedule)
         return self, wip_schedule
 
+    def unfreeze(self, user=None):
+        if not self.version:
+            raise Exception('Cannot unfreeze schedule version: not released yet.')
+        self.event.wip_schedule.talks.all().delete()
+        self.event.wip_schedule.delete()
+        wip_schedule = Schedule.objects.create(event=self.event)
+        for talk in self.talks.all():
+            talk.copy_to_schedule(wip_schedule)
+        return self, wip_schedule
+
     @cached_property
     def scheduled_talks(self):
         return self.talks.filter(
