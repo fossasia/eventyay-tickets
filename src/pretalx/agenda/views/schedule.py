@@ -21,6 +21,7 @@ class ScheduleView(TemplateView):
             ctx['error'] = 'no-schedule'
             return ctx
         ctx['schedule'] = schedule
+        ctx['schedules'] = self.request.event.schedules.filter(published__isnull=False).values_list('version')
         return ctx
 
 
