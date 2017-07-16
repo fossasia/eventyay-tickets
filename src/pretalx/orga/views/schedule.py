@@ -68,9 +68,18 @@ class TalkUpdate(View):
         talk = request.event.wip_schedule.talks.get(pk=pk)
         data = json.loads(request.body.decode())
 
-        talk.start = dateutil.parser.parse(data.get('start'))
-        talk.room = request.event.rooms.get(pk=data.get('room'))
-        talk.end = talk.start + timedelta(minutes=talk.duration)
+        if data.get('start'):
+            talk.start = dateutil.parser.parse(data.get('start'))
+            talk.end = talk.start + timedelta(minutes=talk.duration)
+        else:
+            talk.start = None
+            talk.end = None
+
+        if data.get('room'):
+            talk.room = request.event.rooms.get(pk=data.get('room'))
+        else:
+            talk.room = None
+
         talk.save(update_fields=['start', 'end', 'room'])
 
         return JsonResponse(serialize_slot(talk))

@@ -97,7 +97,7 @@ Vue.component('talk', {
 
         style.transform = 'translate(' + dragLeft + 'px,' + dragTop + 'px)'
         style.width = colRect.width + 'px'
-      } else {
+      } else if (this.talk.room !== null) {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
       return style
@@ -187,8 +187,8 @@ var app = new Vue({
         </room>
       </div>
       <div id='unassigned-talks'>
-        <div class="room-header">Unassigned Talks</div>
-        <div class="room-container" ref="unassigned">
+        <div class="room-header" ref="roomHeader">Unassigned Talks</div>
+        <div class="room-container" id="unassigned-container" ref="unassigned">
             <talk v-for="talk in talks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
         </div>
       </div>
@@ -230,14 +230,14 @@ var app = new Vue({
         d.add(30, 'm');
       }
       return steps;
-    }
+    },
   },
   methods: {
     onMouseMove (event) {
       if (dragController.draggedTalk) {
         dragController.event = event
         var newRoomColumn = document.elementFromPoint(event.clientX, event.clientY)
-        while (!newRoomColumn.dataset.id && newRoomColumn.parentElement)
+        while (!newRoomColumn.dataset.id && !newRoomColumn.id === "unassigned-container" && newRoomColumn.parentElement)
           newRoomColumn = newRoomColumn.parentElement
         if (newRoomColumn.dataset.id) {
           if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
@@ -254,9 +254,17 @@ var app = new Vue({
             position -= position % 5
             dragController.draggedTalk.start = moment(this.start).add(position, 'minutes').format()
           }
+        } else if (newRoomColumn.id === "unassigned-container") {
+          if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
+            if (dragController.roomColumn)
+              dragController.roomColumn.classList.remove('hover-active')
+          }
+          dragController.roomColumn = newRoomColumn
+          dragController.draggedTalk.room = null
+          dragController.draggedTalk.start = null
+          dragController.roomColumn.classList.add('hover-active')
         }
-
-        }
+      }
     },
     onMouseUp (event) {
       if (dragController.draggedTalk) {

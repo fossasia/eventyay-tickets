@@ -6,6 +6,10 @@
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+
+  .hover-active {
+    background: lighten($gray-light, 30%);
+  }
 }
 
 #tracks, #unassigned-talks, #timeline {
@@ -25,9 +29,6 @@
   flex: 1 0 auto;
   align-self: stretch;
   margin-right: 18px;
-  .hover-active {
-    background: lighten($gray-light, 30%);
-  }
   flex-grow: 1;
   flex-basis: 0;
 }
@@ -56,6 +57,7 @@
 .room-container {
   position: relative;
   width: 100%;
+  height: 100%;
 }
 
 #timeline {
