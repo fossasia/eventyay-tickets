@@ -23,6 +23,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if schedule_version %}
+        <div class="alert alert-warning schedule-alert">
+            {% trans "You're currently viewing a released schedule version. Released versions cannot be edited anymore." %}
+        </div>
+    {% endif %}
     <div class="schedule-header">
         <div id="schedule-choice">
             <div class="input-group">

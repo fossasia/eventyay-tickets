@@ -1,4 +1,4 @@
-h3, .schedule-header {
+h3, .schedule-header, .schedule-alert {
   margin-left: 50px;
 }
 .schedule-header {
@@ -71,7 +71,7 @@ h3, .schedule-header {
   flex-direction: column;
   position: fixed;
   right: 20px;
-  top: 114px;
+  top: 193px;
   width: 265px;
   height: calc(100vh - 134px);
   user-select: none;
