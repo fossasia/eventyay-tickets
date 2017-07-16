@@ -2,16 +2,37 @@ import json
 from datetime import timedelta
 
 import dateutil.parser
+from django.contrib import messages
 from django.http import JsonResponse
-from django.views.generic import TemplateView, View
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView, TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.models import TalkSlot
 
 
 class ScheduleView(TemplateView):
     template_name = 'orga/schedule/index.html'
 
+    def get_context_data(self, event):
+        ctx = super().get_context_data()
+        ctx['schedule_version'] = self.request.GET.get('version')
+        ctx['release_form'] = ScheduleReleaseForm()
+        return ctx
+
+
+class ScheduleReleaseView(View):
+    form_class = ScheduleReleaseForm
+
+    def post(self, request, event):
+        form = ScheduleReleaseForm(self.request.POST)
+        form.is_valid()
+        self.request.event.release_schedule(form.cleaned_data['version'])
+        messages.success(self.request, _('Nice, your schedule has been released!'))
+        return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
 
 class RoomList(View):
 

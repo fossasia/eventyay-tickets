@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load staticfiles %}
@@ -19,6 +20,16 @@
 {% endblock %}
 
 {% block content %}
+    {% if not schedule_version %}
+        <div id="schedule-release">
+            <form method="post" action="{% url "orga:schedule.release" event=request.event.slug %}">
+                <div class="input-group">
+                    <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{% trans 'Release as version' %}" title="" type="text">
+                    <button type="submit" class="btn btn-primary">{% trans "Release" %}</button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
     <div id="fahrplan">
     </div>
 

@@ -78,6 +78,7 @@ orga_urls = [
         url('^settings/rooms/(?P<pk>[0-9]+)/delete$', settings.RoomDelete.as_view(), name='settings.rooms.delete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
+        url('^schedule/release$', schedule.ScheduleReleaseView.as_view(), name='schedule.release'),
         url('^schedule/api/rooms/$', schedule.RoomList.as_view(), name='schedule.api.rooms'),
         url('^schedule/api/talks/$', schedule.TalkList.as_view(), name='schedule.api.talks'),
         url('^schedule/api/talks/(?P<pk>[0-9]+)/$', schedule.TalkUpdate.as_view(), name='schedule.api.update'),
