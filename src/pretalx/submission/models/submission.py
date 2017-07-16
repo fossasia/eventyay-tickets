@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -149,6 +151,12 @@ class Submission(LogMixin, models.Model):
                 user=speaker, event=self.event, context=template_context_from_submission(self),
                 locale=speaker.locale
             )
+
+    @property
+    def uuid(self):
+        if len(self.code) < 16:
+            self.code = self.code + ' ' * (16 - len(self.code))
+        return UUID(bytes=self.code.encode())
 
     def __str__(self):
         return self.title
