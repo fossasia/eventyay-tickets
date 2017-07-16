@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.schedule.models import TalkSlot
+
 
 class ScheduleView(TemplateView):
     template_name = 'orga/schedule/index.html'
@@ -65,7 +67,10 @@ class TalkList(View):
 class TalkUpdate(View):
 
     def patch(self, request, event, pk):
-        talk = request.event.wip_schedule.talks.get(pk=pk)
+        try:
+            talk = request.event.wip_schedule.talks.get(pk=pk)
+        except TalkSlot.DoesNotExist:
+            return JsonResponse({})
         data = json.loads(request.body.decode())
 
         if data.get('start'):
