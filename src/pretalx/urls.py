@@ -6,8 +6,8 @@ from .cfp.urls import cfp_urls
 from .orga.urls import orga_urls
 
 urlpatterns = [
-    url(r'^agenda/', include(agenda_urls, namespace='agenda')),
     url(r'^orga/', include(orga_urls, namespace='orga')),
+    url(r'', include(agenda_urls, namespace='agenda')),
     url(r'', include(cfp_urls, namespace='cfp')),
 ]
 
