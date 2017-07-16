@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
