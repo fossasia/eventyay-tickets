@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<schedule>
+    <version>{{ schedule.version }}</version>
+    <conference>
+        <acronym>{{ request.event.slug }}</acronym>
+        <title>{{ request.event.name }}</title>
+        <start>{{ request.event.date_from|date:"c" }}</start>
+        <end>{{ request.event.date_to|date:"c" }}</end>
+        <days>{{ request.event.duration }}</days>
+        <timeslot_duration>00:05</timeslot_duration>
+    </conference>
+    {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start.isoformat }}' end='{{ day.end.isoformat }}'>
+        {% for room in day.rooms %}<room name='{{ room.name }}'>
+            {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
+                <date>{{ talk.start|date:"c" }}</date>
+                <duration>{{ talk.duration }}</duration>
+                <room>{{ room.name }}</room>
+                <slug></slug>
+                <recording>
+                    <license>{{ talk.submission.license }}</license>
+                    <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>
+                </recording>
+                <title>{{ talk.submission.title }}</title>
+                <subtitle></subtitle>
+                <track></track>
+                <type>{{ talk.submission.submission_type.name }}</type>
+                <language>{{ talk.submission.content_locale }}</language>
+                <abstract>{{ talk.submission.abstract }}</abstract>
+                <description>{{ talk.submission.description }}</description>
+                <persons>
+                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.name }}</person>{% endfor %}
+                </persons>
+                <links></links>
+            </event>
+            {% endfor %}
+        </room>
+        {% endfor %}
+    </day>
+    {% endfor %}
+</schedule>
