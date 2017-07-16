@@ -5,7 +5,7 @@
 {% load staticfiles %}
 
 {% block headline %}
-    {% trans "Schedule" %}
+    {% trans "Schedule editor" %}
     {% if schedule_version %}
         – version {{ schedule_version }}
     {% endif %}
@@ -48,6 +48,10 @@
                     </div>
                 </form>
             </div>
+        {% else %}
+            <form method="post" action="{% url "orga:schedule.reset" event=request.event.slug %}?{{ request.GET.urlencode }}">
+                <button type="submit" class="btn btn-secondary">{% trans "Edit this version" %}</button>
+            </form>
         {% endif %}
     </div>
     <div id="fahrplan">

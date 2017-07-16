@@ -79,6 +79,7 @@ orga_urls = [
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/release$', schedule.ScheduleReleaseView.as_view(), name='schedule.release'),
+        url('^schedule/reset$', schedule.ScheduleResetView.as_view(), name='schedule.reset'),
         url('^schedule/api/rooms/$', schedule.RoomList.as_view(), name='schedule.api.rooms'),
         url('^schedule/api/talks/$', schedule.TalkList.as_view(), name='schedule.api.talks'),
         url('^schedule/api/talks/(?P<pk>[0-9]+)/$', schedule.TalkUpdate.as_view(), name='schedule.api.update'),

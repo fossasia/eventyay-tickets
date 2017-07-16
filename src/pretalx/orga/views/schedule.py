@@ -34,6 +34,16 @@ class ScheduleReleaseView(View):
         messages.success(self.request, _('Nice, your schedule has been released!'))
         return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
 
+
+class ScheduleResetView(View):
+
+    def dispatch(self, request, event):
+        schedule_version = self.request.GET.get('version')
+        self.request.event.schedules.get(version=schedule_version).unfreeze(user=request.user)
+        messages.success(self.request, _('Reset successful – start editing the schedule from your selcted version!'))
+        return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
+
+
 class RoomList(View):
 
     def get(self, request, event):
