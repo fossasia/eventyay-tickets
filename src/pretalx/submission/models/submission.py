@@ -94,13 +94,13 @@ class Submission(LogMixin, models.Model):
         verbose_name=_('Don\'t record my talk.')
     )
 
-    def assign_code(self):
+    def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
         # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
         # handwriting (2/Z, 4/A, 5/S, 6/G).
         charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
         while True:
-            code = get_random_string(length=6, allowed_chars=charset)
+            code = get_random_string(length=length, allowed_chars=charset)
             if not Submission.objects.filter(code=code).exists():
                 self.code = code
                 return
