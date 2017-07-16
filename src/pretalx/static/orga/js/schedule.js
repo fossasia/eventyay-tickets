@@ -85,12 +85,18 @@ Vue.component('talk', {
       var style = {height: this.talk.duration + 'px'}
       if (this.isDragged) {
         var rect = this.$parent.$el.getBoundingClientRect()
-        var colRect = dragController.roomColumn.getBoundingClientRect()
+
+        var colRect
+        if (dragController.roomColumn) {
+          colRect = dragController.roomColumn.getBoundingClientRect()
+        } else {
+          colRect = app.$refs.unassigned.getBoundingClientRect()
+        }
         var dragTop = Math.max(colRect.top, dragController.event.clientY - dragController.dragPosY) - rect.top
         var dragLeft = dragController.event.clientX - rect.left - dragController.dragPosX
 
         style.transform = 'translate(' + dragLeft + 'px,' + dragTop + 'px)'
-        style.width = dragController.roomColumn.offsetWidth + 'px'
+        style.width = colRect.width + 'px'
       } else {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
@@ -179,7 +185,9 @@ var app = new Vue({
       </div>
       <div id='unassigned-talks'>
         <div class="room-header">Unassigned Talks</div>
-        <talk v-for="talk in talks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
+        <div class="room-container" ref="unassigned">
+            <talk v-for="talk in talks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
+        </div>
       </div>
     </div>
   `,
