@@ -24,13 +24,16 @@ var api = {
     })
   },
   fetchTalks () {
-    return api.http('GET', window.location + 'api/talks/', null)
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/talks/', window.location.search].join('')
+    return api.http('GET', url, null)
   },
   fetchRooms () {
-    return api.http('GET', window.location + 'api/rooms/', null)
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/rooms/', window.location.search].join('')
+    return api.http('GET', url, null)
   },
-saveTalk(talk) {
-    return api.http('PATCH', window.location + `api/talks/${talk.id}/`, {
+  saveTalk(talk) {
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, `api/talks/${talk.id}/`, window.location.search].join('')
+    return api.http('PATCH', url, {
       room: talk.room,
       start: talk.start,
     })
