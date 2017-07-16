@@ -179,5 +179,5 @@ class Event(LogMixin, models.Model):
             time(hour=23, minute=59, second=59)
         ), pytz.timezone(self.timezone))
 
-    def release_schedule(self, name):
-        self.wip_schedule.freeze(name=name)
+    def release_schedule(self, name, user=None):
+        self.wip_schedule.freeze(name=name, user=user)
