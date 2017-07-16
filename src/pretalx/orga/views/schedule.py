@@ -17,6 +17,7 @@ class RoomList(View):
         return JsonResponse({
             'start': request.event.datetime_from.isoformat(),
             'end': request.event.datetime_to.isoformat(),
+            'timezone': request.event.timezone,
             'rooms': [
                 {
                     'id': room.pk,

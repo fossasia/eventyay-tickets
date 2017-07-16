@@ -29,10 +29,10 @@ var api = {
   fetchRooms () {
     return api.http('GET', window.location + 'api/rooms/', null)
   },
-  saveTalk(talk) {
+saveTalk(talk) {
     return api.http('PATCH', window.location + `api/talks/${talk.id}/`, {
       room: talk.room,
-      start: talk.start.format(),
+      start: talk.start,
     })
   }
 }
@@ -66,7 +66,7 @@ Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
          :title="title">
-      <span class="time" v-if="this.start">
+      <span class="time" v-if="this.talk.start">
         {{ humanStart }}
       </span>
       {{ talk.title }} ({{ talk.duration }} minutes)
@@ -103,7 +103,7 @@ Vue.component('talk', {
       return style
     },
     humanStart () {
-      return moment(this.talk.start).format('HH:mm')
+      return moment.tz(this.talk.start, app.timezone).format('HH:mm')
     }
 
   },
@@ -180,7 +180,7 @@ var app = new Vue({
         </div>
       </div>
       <div id="tracks">
-        <div class="alert alert-danger room-column" v-if="rooms.length < 1">
+        <div class="alert alert-danger room-column" v-if="rooms && rooms.length < 1">
           Please configure some rooms first.
         </div>
         <room v-for="room in rooms" :room="room" :talks="talks" :duration="duration" :start="start" :key="room.id">
@@ -200,6 +200,7 @@ var app = new Vue({
       rooms: null,
       start: null,
       end: null,
+      timezone: null,
       dragController: dragController,
     }
   },
@@ -209,8 +210,9 @@ var app = new Vue({
     })
     api.fetchRooms().then((result) => {
       this.rooms = result.rooms
-      this.start = moment(result.start)
-      this.end = moment(result.end)
+      this.timezone = result.timezone
+      this.start = moment.tz(result.start, this.timezone)
+      this.end = moment.tz(result.end, this.timezone)
     })
   },
   computed: {
@@ -250,7 +252,7 @@ var app = new Vue({
             var dragRect = app.$refs.draggedTalk.$el.getBoundingClientRect()
             var position = dragRect.top - colRect.top
             position -= position % 5
-            dragController.draggedTalk.start = moment(this.start).add(position, 'minutes')
+            dragController.draggedTalk.start = moment(this.start).add(position, 'minutes').format()
           }
         }
 
