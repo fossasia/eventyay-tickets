@@ -37,6 +37,7 @@ class EventPermissionMiddleware:
                     event=request.event,
                     is_orga=True
                 ).exists()
+                timezone.activate(pytz.timezone(request.event.timezone))
 
         if not request.user.is_anonymous:
             if request.user.is_superuser:
