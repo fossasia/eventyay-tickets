@@ -13,7 +13,8 @@
         {% for room in day.rooms %}<room name='{{ room.name }}'>
             {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
                 <date>{{ talk.start|date:"c" }}</date>
-                <duration>{{ talk.duration }}</duration>
+                <start>{{ talk.start|date:"H:i" }}</start>
+                <duration>{{ talk.duration }}:00</duration>
                 <room>{{ room.name }}</room>
                 <slug></slug>
                 <recording>
