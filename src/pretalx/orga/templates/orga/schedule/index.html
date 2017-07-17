@@ -31,8 +31,8 @@
     <div class="schedule-header">
         <div id="schedule-choice">
             <div class="input-group">
-                <form>
-                    <select name="version">
+                <form class="form-inline">
+                    <select name="version" class="form-control">
                         <option value="">{% trans "Editor version" %}</option>
                         {% for schedule in request.event.schedules.all %}
                             {% if schedule.version %}
