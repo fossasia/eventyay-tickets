@@ -24,20 +24,7 @@ class ScheduleView(TemplateView):
             ctx['error'] = 'no-schedule'
             return ctx
         ctx['schedule'] = schedule
-        ctx['schedules'] = self.request.event.schedules.filter(published__isnull=False).values_list('version')
-        return ctx
-
-
-class FrabView(ScheduleView):
-    template_name = 'agenda/schedule.xml'
-
-    def get_context_data(self, event):
-        ctx = super().get_context_data(event)
-        event = self.request.event
-        schedule = ctx.get('schedule')
-        if not schedule:
-            return ctx
-
+        ctx['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
         ctx['data'] = [
             {
                 'index': index + 1,
@@ -54,6 +41,10 @@ class FrabView(ScheduleView):
             ])
         ]
         return ctx
+
+
+class FrabView(ScheduleView):
+    template_name = 'agenda/schedule.xml'
 
 
 class TalkView(View):
