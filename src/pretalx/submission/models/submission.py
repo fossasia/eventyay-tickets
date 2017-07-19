@@ -158,6 +158,11 @@ class Submission(LogMixin, models.Model):
             self.code = self.code + ' ' * (16 - len(self.code))
         return UUID(bytes=self.code.encode())
 
+    @property
+    def slot(self):
+        if self.event.current_schedule:
+            return self.event.current_schedule.slots.filter(submission=self).first()
+
     def __str__(self):
         return self.title
 
