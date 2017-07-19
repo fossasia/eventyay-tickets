@@ -14,6 +14,7 @@ class ScheduleView(TemplateView):
     def get_context_data(self, event):
         ctx = super().get_context_data()
         schedule = self.get_object()
+        event = self.request.event
 
         if not schedule and self.request.GET.get('version'):
             ctx['version'] = self.request.GET.get('version')
