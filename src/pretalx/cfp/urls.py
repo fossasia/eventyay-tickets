@@ -18,11 +18,11 @@ cfp_urls = [
 
     url('^(?P<event>\w+)/me$', user.ProfileView.as_view(), name='event.user.view'),
     url('^(?P<event>\w+)/me/submissions$', user.SubmissionsListView.as_view(), name='event.user.submissions'),
-    url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/$', user.SubmissionsEditView.as_view(),
+    url('^(?P<event>\w+)/me/submissions/(?P<code>\w+)/$', user.SubmissionsEditView.as_view(),
         name='event.user.submission.edit'),
-    url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/withdraw$', user.SubmissionsWithdrawView.as_view(),
+    url('^(?P<event>\w+)/me/submissions/(?P<code>\w+)/withdraw$', user.SubmissionsWithdrawView.as_view(),
         name='event.user.submission.withdraw'),
-    url('^(?P<event>\w+)/me/submissions/(?P<id>\d+)/confirm$', user.SubmissionConfirmView.as_view(),
+    url('^(?P<event>\w+)/me/submissions/(?P<code>\w+)/confirm$', user.SubmissionConfirmView.as_view(),
         name='event.user.submission.confirm'),
 
     url('^locale/set', locale.LocaleSet.as_view(),

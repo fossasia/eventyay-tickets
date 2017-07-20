@@ -42,13 +42,13 @@ def template_context_from_submission(submission):
     ctx.update({
         'confirmation_link': build_absolute_uri(
             'cfp:event.user.submission.confirm',
-            kwargs={'event': submission.event.slug, 'id': submission.pk}
+            kwargs={'event': submission.event.slug, 'code': submission.code}
         ),
         'event_name': submission.event.name,
         'submission_title': submission.title,
         'submission_url': build_absolute_uri(
             'cfp:event.user.submission.edit',
-            kwargs={'event': submission.event.slug, 'id': submission.pk}
+            kwargs={'event': submission.event.slug, 'code': submission.code}
         ),
     })
     return ctx

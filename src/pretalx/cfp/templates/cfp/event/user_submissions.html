@@ -16,7 +16,7 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}">
+                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug code=submission.code %}">
                             {{ submission.title }}
                         </a>
                     </td>
@@ -25,7 +25,7 @@
                     </td>
                     <td class="text-right">
                         {% if submission.editable %}
-                            <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.id %}"
+                            <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug code=submission.code %}"
                                     class="btn btn-sm btn-secondary">
                                 <span class="fa fa-pencil"></span>
                             </a>

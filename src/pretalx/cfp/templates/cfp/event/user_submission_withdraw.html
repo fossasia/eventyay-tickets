@@ -21,7 +21,7 @@
            class="btn pull-right btn-danger">
             {% trans "Withdraw" %}
         </button>
-        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug id=submission.pk %}"
+        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug code=submission.code %}"
            class="btn pull-right btn-link">
             {% trans "Go back" %}
         </a>

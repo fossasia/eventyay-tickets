@@ -60,6 +60,24 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
+class SubmissionViewMixin:
+    def get_object(self):
+        try:
+            return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
+                speakers__in=[self.request.user],
+                code=self.kwargs.get('code')
+            )
+        except Submission.DoesNotExist:
+            try:
+                # Backwards compatibility
+                return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
+                    speakers__in=[self.request.user],
+                    id=self.kwargs.get('code')
+                )
+            except Submission.DoesNotExist:
+                raise Http404()
+
+
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = 'cfp/event/user_submissions.html'
     context_object_name = 'submissions'
@@ -68,7 +86,7 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
 
 
-class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
+class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, DetailView):
     template_name = 'cfp/event/user_submission_withdraw.html'
     model = Submission
     context_object_name = 'submission'
@@ -84,17 +102,8 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, DetailView):
             messages.error(self.request, _('Your submission can\'t be withdrawn at this time – please contact us if you need to withdraw your submission!'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
-    def get_object(self, queryset=None):
-        try:
-            return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
-                speakers__in=[self.request.user],
-                pk=self.kwargs.get('id')
-            )
-        except Submission.DoesNotExist:
-            raise Http404()
 
-
-class SubmissionConfirmView(LoggedInEventPageMixin, View):
+class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         submission = self.get_object()
@@ -109,17 +118,8 @@ class SubmissionConfirmView(LoggedInEventPageMixin, View):
             messages.error(self.request, _('This submission cannot be confirmed at this time – please contact us if you think this is an error.'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
-    def get_object(self):
-        try:
-            return self.request.event.submissions.get(
-                speakers__in=[self.request.user],
-                pk=self.kwargs.get('id')
-            )
-        except Submission.DoesNotExist:
-            raise Http404()
 
-
-class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
+class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateView):
     template_name = 'cfp/event/user_submission_edit.html'
     model = Submission
     form_class = InfoForm
@@ -139,15 +139,6 @@ class SubmissionsEditView(LoggedInEventPageMixin, UpdateView):
             event=self.request.event,
             readonly=not self.can_edit
         )
-
-    def get_object(self, queryset=None):
-        try:
-            return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
-                speakers__in=[self.request.user],
-                pk=self.kwargs.get('id')
-            )
-        except Submission.DoesNotExist:
-            raise Http404()
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
