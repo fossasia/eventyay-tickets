@@ -1,27 +1,35 @@
 {% extends "agenda/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load staticfiles %}
+
+{% block custom_header %}
+    {% compress css %}
+        <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/agenda.scss" %}" />
+    {% endcompress %}
+{% endblock %}
 
 {% block content %}
 
-{{ schedule.version }}
-
 <div id="fahrplan">
     {% for day in data %}
-    <div class="day" id="#{{ day.date|date:"c" }}">
-        <span class="date">{{ day.date|date:"c" }}</span>
+    <div class="day" id="#{{ day.start.date|date:"c" }}" style='{"height": "{{ day.duration }}px"}'>
+        <div class="date">{{ day.start.date|date:"c" }}</div>
         {% if day.first_talk %}
-            {% for room in day.rooms %}
-            <div class="room">
-                <div class="room-header">{{ room.name }}</div>
-                {% for talk in room.talks %}
-                <div class="talk">{{ talk.submission.title }}</div>
+            <div class="rooms">
+                {% for room in day.rooms %}
+                <div class="room">
+                    <div class="room-header">{{ room.name }}</div>
+                    {% for talk in room.talks %}
+                    <div class="talk" id="{{ talk.submission.code }}">{{ talk.submission.title }}</div>
+                    {% endfor %}
+                </div>
                 {% endfor %}
             </div>
-            {% endfor %}
         {% else %}
             <div class="no-talks">
             {% blocktrans with day.start.date as current_day %}
-                No talks on {{ current_day }}.
+                <div class="no-talks">No talks on {{ current_day }}.</div>
             {% endblocktrans %}
             </div>
         {% endif %}
