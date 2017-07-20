@@ -131,4 +131,4 @@ class SubmissionList(ListView):
     context_object_name = 'submissions'
 
     def get_queryset(self):
-        return self.request.event.submissions.all()
+        return self.request.event.submissions.select_related('submission_type').all()

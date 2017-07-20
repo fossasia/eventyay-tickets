@@ -13,6 +13,7 @@
             <tr>
                 <th>{% trans "Title" %}</th>
                 <th>{% trans "Speakers" %}</th>
+                <th>{% trans "Type" %}</th>
                 <th>{% trans "State" %}</th>
                 <th></th>
             </tr>
@@ -31,6 +32,9 @@
                                 {{ speaker.get_short_name }}
                             </a><br>
                         {% endfor %}
+                    </td>
+                    <td>
+                        {{ submission.submission_type.name }}
                     </td>
                     <td>
                         {% include "cfp/event/fragment_state.html" with state=submission.state %}
