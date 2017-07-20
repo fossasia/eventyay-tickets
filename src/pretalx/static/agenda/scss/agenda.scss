@@ -1,0 +1,41 @@
+#fahrplan {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+
+    .day {
+        background-color: #eee;
+        border: 1px solid #000;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        width: 100%;
+
+        .rooms {
+            display: flex;
+            flex-direction: row;
+            .room {
+                // display: flex;
+                // flex-direction: column;
+                // flex-grow: 1;
+                width: 90%;
+
+                .room-header {
+                    border-bottom: 4px solid #1C4A3B;
+                    font-size: 16pt;
+                    font-weight: 500;
+                    text-align: center;
+                }
+
+                .talk {
+                    border: 1px solid #555;
+                    width: 100%;
+                }
+            }
+        }
+        .no-talks {
+            text-align: center;
+        }
+    }
+}
