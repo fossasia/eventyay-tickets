@@ -40,6 +40,9 @@ class ScheduleView(TemplateView):
                 event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
             ])
         ]
+        for date in ctx['data']:
+            date['duration'] = (date['last_talk'].end - date['first_talk'].start).seconds / 60 if date['first_talk'] else None
+
         return ctx
 
 
