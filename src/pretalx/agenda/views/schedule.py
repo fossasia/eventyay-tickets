@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from csp.decorators import csp_update
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, View
 
 
@@ -46,6 +48,7 @@ class ScheduleDataView(TemplateView):
         return ctx
 
 
+@method_decorator(csp_update(STYLE_SRC="'self', 'unsafe-inline'"), name='dispatch')
 class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
 
