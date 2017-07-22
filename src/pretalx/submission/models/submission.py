@@ -130,7 +130,7 @@ class Submission(LogMixin, models.Model):
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
-        TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule)
+        TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
 
         for speaker in self.speakers.all():
             self.event.accept_template.to_mail(
