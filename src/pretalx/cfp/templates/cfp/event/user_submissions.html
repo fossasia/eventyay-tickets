@@ -30,6 +30,12 @@
                                 <span class="fa fa-pencil"></span>
                             </a>
                         {% endif %}
+                        {% if submission.state == 'accepted' %}
+                            <a href="{% url "cfp:event.user.submission.confirm" event=request.event.slug code=submission.code %}"
+                                    class="btn btn-sm btn-secondary">
+                                <span class="fa fa-check"></span>{% trans "Confirm" %}
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
