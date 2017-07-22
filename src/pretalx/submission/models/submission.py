@@ -163,6 +163,10 @@ class Submission(LogMixin, models.Model):
         if self.event.current_schedule:
             return self.event.current_schedule.slots.filter(submission=self).first()
 
+    @property
+    def speaker_names(self):
+        return self.speakers.values_list('name', flat=True)
+
     def __str__(self):
         return self.title
 
