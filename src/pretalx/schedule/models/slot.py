@@ -43,3 +43,10 @@ class TalkSlot(LogMixin, models.Model):
             start=self.start,
             end=self.end,
         )
+
+    def update_visibility(self):
+        from pretalx.submission.models import SubmissionStates
+        self.is_visible = False
+        if self.start is not None and self.submission.state in [SubmissionStates.CONFIRMED, SubmissionStates.CANCELED]:
+            self.visible = True
+        self.save(update_fields=['is_visible'])

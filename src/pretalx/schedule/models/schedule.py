@@ -34,6 +34,7 @@ class Schedule(LogMixin, models.Model):
 
         wip_schedule = Schedule.objects.create(event=self.event)
         for talk in self.talks.all():
+            talk.update_visibility()
             talk.copy_to_schedule(wip_schedule)
         return self, wip_schedule
 
