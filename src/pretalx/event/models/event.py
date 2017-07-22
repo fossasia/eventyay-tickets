@@ -141,7 +141,7 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def current_schedule(self):
-        return self.schedules.order_by('published').filter(published__isnull=False).first()
+        return self.schedules.order_by('-published').filter(published__isnull=False).first()
 
     @property
     def duration(self):
