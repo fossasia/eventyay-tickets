@@ -1,0 +1,40 @@
+{% extends "agenda/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block custom_header %}
+    {% compress css %}
+        <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/speaker.scss" %}" />
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+
+<h3 class="talk-title">
+    »{{ talk.title }}«
+    <small>
+        {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
+    </small>
+</h3>
+<div class="talk">
+
+
+    <div class="content">
+        <div class="description">
+            {{ talk.description }}
+        </div>
+        <div class="abstact">
+            {{ talk.abstract }}
+        </div>
+    </div>
+    <div class="speakers">
+        {% for speaker in speakers %}
+        <div class="speaker-info">
+            <a class="speaker" href="{% url "agenda:speaker" event=request.event.slug name=speaker.nick %}">{{ speaker.name }}</a>
+            <div>{{ speaker.talk_profile.biography }}</div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

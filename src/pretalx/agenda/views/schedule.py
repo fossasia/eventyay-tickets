@@ -2,7 +2,9 @@ from datetime import timedelta
 
 from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, View
+from django.views.generic import DetailView, TemplateView, View
+
+from pretalx.submission.models import Submission
 
 
 class ScheduleDataView(TemplateView):
@@ -68,5 +70,16 @@ class FrabView(ScheduleDataView):
     template_name = 'agenda/schedule.xml'
 
 
-class TalkView(View):
-    pass
+class TalkView(DetailView):
+    context_object_name = 'talk'
+    model = Submission
+    slug_field = 'code'
+    template_name = 'agenda/talk.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['speakers'] = []
+        for speaker in self.object.speakers.all():  # TODO: there's bound to be an elegant annotation for this
+            speaker.talk_profile = speaker.profiles.get(event=self.request.event)
+            ctx['speakers'].append(speaker)
+        return ctx

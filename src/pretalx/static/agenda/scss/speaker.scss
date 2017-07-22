@@ -1,0 +1,31 @@
+.talk-title small {
+    color: #666;
+    font-size: 18px;
+    font-weight: 500;
+    padding-left: 12px;
+}
+.talk {
+    display: flex;
+    flex-direction: row;
+
+    .content, .speakers {
+        align-self: baseline;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content {
+        flex-grow: 3;
+        .description {
+            font-weight: 500;
+        }
+    }
+
+    .speakers {
+        flex-grow: 2;
+
+        a.speaker {
+            font-weight: 500;
+        }
+    }
+}
