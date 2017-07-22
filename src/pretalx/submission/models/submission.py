@@ -147,7 +147,7 @@ class Submission(LogMixin, models.Model):
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
         for speaker in self.speakers.all():
-            self.event.accept_template.to_mail(
+            self.event.reject_template.to_mail(
                 user=speaker, event=self.event, context=template_context_from_submission(self),
                 locale=speaker.locale
             )
