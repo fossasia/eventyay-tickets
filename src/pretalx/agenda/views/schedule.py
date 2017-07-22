@@ -4,8 +4,6 @@ from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, View
 
-from pretalx.submission.models import SubmissionStates
-
 
 class ScheduleDataView(TemplateView):
     template_name = 'agenda/schedule.html'
@@ -29,7 +27,7 @@ class ScheduleDataView(TemplateView):
             return ctx
         ctx['schedule'] = schedule
         ctx['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
-        talks = schedule.talks.filter(submission__state=SubmissionStates.CONFIRMED)
+        talks = schedule.talks.filter(is_visible=True)
 
         ctx['data'] = [
             {
