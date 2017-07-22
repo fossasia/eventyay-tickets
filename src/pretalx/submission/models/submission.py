@@ -161,7 +161,7 @@ class Submission(LogMixin, models.Model):
     @property
     def slot(self):
         if self.event.current_schedule:
-            return self.event.current_schedule.slots.filter(submission=self).first()
+            return self.event.current_schedule.talks.filter(submission=self).first()
 
     @property
     def speaker_names(self):
