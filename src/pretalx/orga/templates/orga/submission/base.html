@@ -6,12 +6,12 @@
 {% block content %}
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a 
+        <a
           class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
           href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}"
         >
             {% trans "Content" %}
-		</a>
+        </a>
       </li>
       <li class="nav-item">
           <a
@@ -27,7 +27,7 @@
             href="{% url "orga:submissions.questions.view" event=request.event.slug pk=submission.pk %}"
           >
             {% trans "Questions" %}
-	  </a>
+          </a>
       </li>
     </ul>
 
