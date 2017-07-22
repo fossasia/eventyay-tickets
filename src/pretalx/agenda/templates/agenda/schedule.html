@@ -13,16 +13,24 @@
 
 <div id="fahrplan">
     {% for day in data %}
-    <div class="day" id="#{{ day.start.date|date:"c" }}" style='{"height": "{{ day.duration }}px"}'>
-        <div class="date">{{ day.start.date|date:"c" }}</div>
+    <div class="day" id="{{ day.start.date|date:"c" }}">
+        <a href="#{{ day.start.date|date:"c" }}" class="date">{{ day.start.date|date:"c" }}</a>
         {% if day.first_talk %}
             <div class="rooms">
                 {% for room in day.rooms %}
                 <div class="room">
                     <div class="room-header">{{ room.name }}</div>
-                    {% for talk in room.talks %}
-                    <div class="talk" id="{{ talk.submission.code }}">{{ talk.submission.title }}</div>
-                    {% endfor %}
+                    <div class="talk-container" style="height: {{ day.height }}px">
+                        {% for talk in room.talks %}
+                        <a href="{% url "agenda:talk" event=request.event.slug code=talk.submission.code %}">
+                            <div class="talk" id="{{ talk.submission.code }}" href="{% url "agenda:talk" event=request.event.slug code=talk.submission.code %} "style='height: {{ talk.height }}px; top: {{ talk.top }}px'>
+                                <span class="talk-title">{{ talk.submission.title }}</span>
+                                <span class="talk-speakers">({{ talk.submission.speaker_names|join:', ' }})</span><br>
+                                <span class="talk-time">{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
