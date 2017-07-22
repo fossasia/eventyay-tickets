@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.views.generic import TemplateView, View
 
 
-class ScheduleView(TemplateView):
+class ScheduleDataView(TemplateView):
     template_name = 'agenda/schedule.html'
 
     def get_object(self):
@@ -46,7 +46,11 @@ class ScheduleView(TemplateView):
         return ctx
 
 
-class FrabView(ScheduleView):
+class ScheduleView(ScheduleDataView):
+    template_name = 'agenda/schedule.html'
+
+
+class FrabView(ScheduleDataView):
     template_name = 'agenda/schedule.xml'
 
 
