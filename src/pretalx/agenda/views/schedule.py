@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, TemplateView, View
+from django.views.generic import DetailView, TemplateView
 
 from pretalx.submission.models import Submission
 
