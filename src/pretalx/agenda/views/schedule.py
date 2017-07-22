@@ -44,15 +44,24 @@ class ScheduleDataView(TemplateView):
                 event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
             ])
         ]
-        for date in ctx['data']:
-            date['duration'] = (date['last_talk'].end - date['first_talk'].start).seconds / 60 if date['first_talk'] else 0
-
         return ctx
 
 
-@method_decorator(csp_update(STYLE_SRC="'self', 'unsafe-inline'"), name='dispatch')
+@method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        if 'data' in ctx:
+            for date in ctx['data']:
+                if 'first_talk' in date:
+                    date['height'] = int((date['last_talk'].end - date['first_talk'].start).seconds / 60 * 2)
+                    for room in date['rooms']:
+                        for talk in room.get('talks', []):
+                            talk.top = int((talk.start - date['first_talk'].start).seconds / 60 * 2)
+                            talk.height = talk.duration * 2
+        return ctx
 
 
 class FrabView(ScheduleDataView):
