@@ -20,6 +20,7 @@ class TalkSlot(LogMixin, models.Model):
         on_delete=models.PROTECT,
         related_name='talks',
     )
+    is_visible = models.BooleanField()
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
 
