@@ -9,8 +9,6 @@
 
 {% block submission_content %}
 
-    <legend>{{ submission.title }} ({% include "cfp/event/fragment_state.html" with state=submission.state %})</legend>
-
     <table class="table table-condensed">
         <tbody>
             {% for speaker in speakers %}

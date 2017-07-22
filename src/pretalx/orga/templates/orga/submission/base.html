@@ -31,6 +31,8 @@
       </li>
     </ul>
 
+    <legend>{{ submission.title }} ({% include "cfp/event/fragment_state.html" with state=submission.state %})</legend>
+
     {% block submission_content %}
     {% endblock %}
 
