@@ -36,13 +36,13 @@ class TalkSlot(LogMixin, models.Model):
         return self.submission.get_duration()
 
     def copy_to_schedule(self, new_schedule):
-        return TalkSlot.objects.create(
-            submission=self.submission,
-            room=self.room,
-            schedule=new_schedule,
-            start=self.start,
-            end=self.end,
-        )
+        new_slot = TalkSlot(schedule=new_schedule)
+
+        for field in [f for f in self._meta.fields if f.name not in ('id', 'schedule')]:
+            setattr(new_slot, field.name, getattr(self, field.name))
+
+        new_slot.save()
+        return new_slot
 
     def update_visibility(self):
         from pretalx.submission.models import SubmissionStates
