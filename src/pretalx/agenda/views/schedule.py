@@ -43,7 +43,7 @@ class ScheduleDataView(TemplateView):
             ])
         ]
         for date in ctx['data']:
-            date['duration'] = (date['last_talk'].end - date['first_talk'].start).seconds / 60 if date['first_talk'] else None
+            date['duration'] = (date['last_talk'].end - date['first_talk'].start).seconds / 60 if date['first_talk'] else 0
 
         return ctx
 
