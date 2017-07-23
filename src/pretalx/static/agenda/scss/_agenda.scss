@@ -97,3 +97,13 @@
         }
     }
 }
+@media (max-width: 640px) {
+    #fahrplan {
+        .rooms {
+            overflow-y: auto;
+        }
+        .room {
+            min-width: 150px;
+        }
+    }
+}
