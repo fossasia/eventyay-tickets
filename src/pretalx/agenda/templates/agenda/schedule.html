@@ -3,12 +3,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block custom_header %}
-    {% compress css %}
-        <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/agenda.scss" %}" />
-    {% endcompress %}
-{% endblock %}
-
 {% block content %}
 
 <div id="fahrplan">

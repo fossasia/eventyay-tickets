@@ -2,6 +2,11 @@
 {% load compress %}
 {% load staticfiles %}
 {% load i18n %}
+{% block custom_header %}
+    {% compress css %}
+        <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/main.scss" %}" />
+    {% endcompress %}
+{% endblock %}
 
 {% block content %}
 

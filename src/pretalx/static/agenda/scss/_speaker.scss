@@ -1,0 +1,24 @@
+.talk-title small {
+  color: #666;
+  font-size: 18px;
+  font-weight: 500;
+  padding-top: 5px;
+  display: block;
+}
+
+.talk {
+  display: flex;
+  flex-direction: row;
+
+  .talk-content {
+    .description {
+      font-weight: 500;
+    }
+  }
+
+  .speakers {
+    a.speaker {
+      font-weight: bold;
+    }
+  }
+}

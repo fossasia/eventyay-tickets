@@ -3,12 +3,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block custom_header %}
-    {% compress css %}
-        <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/speaker.scss" %}" />
-    {% endcompress %}
-{% endblock %}
-
 {% block content %}
 
 <h3 class="talk-title">
@@ -17,10 +11,9 @@
         {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
     </small>
 </h3>
-<div class="talk">
+<div class="talk row">
 
-
-    <div class="content">
+    <div class="talk-content col-lg-8 col-md-6 col-xs-12">
         <div class="description">
             {{ talk.description }}
         </div>
@@ -28,13 +21,13 @@
             {{ talk.abstract }}
         </div>
     </div>
-    <div class="speakers">
+    <div class="speakers col-lg-4 col-md-6 col-xs-12">
         {% for speaker in speakers %}
         <div class="speaker-info">
             <a class="speaker" href="{% url "agenda:speaker" event=request.event.slug name=speaker.nick %}">{{ speaker.name }}</a>
             <div>{{ speaker.talk_profile.biography }}</div>
+        </div>
         {% endfor %}
     </div>
-
 </div>
 {% endblock %}
