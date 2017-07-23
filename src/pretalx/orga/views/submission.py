@@ -24,12 +24,26 @@ class SubmissionAccept(View):
             return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
+class SubmissionConfirm(View):
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+
+        try:
+            submission.confirm(person=request.user, orga=True)
+            messages.success(request, _('The submission has been confirmed.'))
+            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+        except SubmissionError:
+            messages.error(request, _('A submission must be accepted to become confirmed.'))
+            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+
+
 class SubmissionReject(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        submission.reject(person=request.user)
-        messages.success(request, _('The submission has been rejected.'))
+        submission.confirm(person=request.user)
+        messages.success(request, _('The submission has been marked as confirmed.'))
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 

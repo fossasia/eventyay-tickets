@@ -121,6 +121,14 @@ class Submission(LogMixin, models.Model):
             return self.submission_type.default_duration
         return self.duration
 
+    def confirm(self, person=None, force=False, orga=False):
+        if self.state not in [SubmissionStates.ACCEPTED] and not force:
+            raise SubmissionError(f'Submission must be accepted, not {self.state} to be confirmed.')
+
+        self.state = SubmissionStates.CONFIRMED
+        self.save(update_fields=['state'])
+        self.log_action('pretalx.submission.confirmation', person=person, orga=orga)
+
     def accept(self, person=None, force=False):
         if self.state not in [SubmissionStates.SUBMITTED, SubmissionStates.REJECTED] and not force:
             raise SubmissionError(f'Submission must be submitted or rejected, not {self.state} to be accepted.')

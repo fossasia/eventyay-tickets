@@ -108,9 +108,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
-            submission.state = SubmissionStates.CONFIRMED
-            submission.save(update_fields=['state'])
-            submission.log_action('pretalx.submission.confirmation', person=request.user)
+            submission.confirm(person=request.user, orga=False)
             messages.success(self.request, _('Your submission has been confirmed – we\'re looking forward to seeing you!'))
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, _('This submission has already been confirmed – we\'re looking forward to seeing you!'))
