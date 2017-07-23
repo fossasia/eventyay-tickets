@@ -30,8 +30,11 @@ class ScheduleReleaseView(View):
     def post(self, request, event):
         form = ScheduleReleaseForm(self.request.POST)
         form.is_valid()
-        self.request.event.release_schedule(form.cleaned_data['version'], user=request.user)
-        messages.success(self.request, _('Nice, your schedule has been released!'))
+        if self.request.event.schedules.filter(version=form.cleaned_data['version']).exists():
+            messages.error(self.request, _('Please use a version number you did not use yet!'))
+        else:
+            self.request.event.release_schedule(form.cleaned_data['version'], user=request.user)
+            messages.success(self.request, _('Nice, your schedule has been released!'))
         return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
 
 
