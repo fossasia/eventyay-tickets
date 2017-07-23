@@ -42,8 +42,8 @@ class SubmissionReject(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        submission.confirm(person=request.user)
-        messages.success(request, _('The submission has been marked as confirmed.'))
+        submission.reject(person=request.user)
+        messages.success(request, _('The submission has been rejected.'))
         return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
 
 
