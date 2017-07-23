@@ -32,7 +32,7 @@ class ScheduleFeed(Feed):
         return f'Updates to the {obj.name} schedule.'
 
     def items(self, obj):
-        return obj.schedules.filter(version__isnull=False)
+        return obj.schedules.filter(version__isnull=False).order_by('-published')
 
     def item_title(self, item):
         return f'New {item.event.name} schedule released ({item.version})'
