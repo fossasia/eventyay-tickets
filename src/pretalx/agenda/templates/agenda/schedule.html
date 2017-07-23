@@ -25,10 +25,12 @@
                         <a href="{% url "agenda:talk" event=request.event.slug slug=talk.submission.code %}">
                             <div class="talk" id="{{ talk.submission.code }}"
                                     href="{% url "agenda:talk" event=request.event.slug slug=talk.submission.code %}"
-                                    style='height: {{ talk.height }}px; top: {{ talk.top }}px'>
-                                <span class="talk-title">{{ talk.submission.title }}</span>
-                                <span class="talk-speakers">({{ talk.submission.speaker_names|join:', ' }})</span><br>
-                                <span class="talk-time">{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}</span>
+                                    style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px">
+                                <div class="talk-content">
+                                    <span class="talk-title">{{ talk.submission.title }}</span>
+                                    <span class="talk-speakers">({{ talk.submission.speaker_names|join:', ' }})</span><br>
+                                    <span class="talk-time">{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}</span>
+                                </div>
                             </div>
                         </a>
                         {% endfor %}

@@ -23,6 +23,8 @@
         .rooms {
             display: flex;
             flex-direction: row;
+            margin-top: -32px;
+
             .room {
                 width: 90%;
 
@@ -36,20 +38,23 @@
                 .talk-container {
                     margin: 8px;
                     position: relative;
-                    :hover {
-                        background-color: #7a9;
-                    }
                 }
                 .talk {
                     background-color: #8ba;
                     display: block;
                     position: absolute;
                     width: 100%;
+                    overflow: hidden;
 
-
-                    .talk-title, .talk-time {
-                        margin-left: 12px;
+                    &:hover {
+                        height: auto !important;
+                        z-index: 1000;
+                        background-color: #7a9;
                     }
+                    .talk-content {
+                        padding: 5px 10px;
+                    }
+
                     .talk-title {
                         font-weight: 500;
                     }
@@ -61,6 +66,7 @@
             }
         }
         .no-talks {
+            margin-top: -14px;
             text-align: center;
         }
     }
