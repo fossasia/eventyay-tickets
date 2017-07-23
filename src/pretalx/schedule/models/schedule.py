@@ -61,7 +61,13 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def changes(self):
-        result = {'count': 0, 'action': 'update', 'new_talks': [], 'canceled_talks': []}
+        result = {
+            'count': 0,
+            'action': 'update',
+            'new_talks': [],
+            'canceled_talks': [],
+            'moved_talks': [],
+        }
         if not self.previous_schedule:
             result['action'] = 'create'
             return result
@@ -69,9 +75,21 @@ class Schedule(LogMixin, models.Model):
         new_slots = set(talk.submission for talk in self.talks.all())
         old_slots = set(talk.submission for talk in self.previous_schedule.talks.all())
 
+        for submission in (new_slots & old_slots):
+            old_slot = self.previous_schedule.talks.get(submission=submission)
+            new_slot = self.talks.get(submission=submission)
+            if old_slot.start != new_slot.start:
+                result['moved_talks'].append({
+                    'talk': submission,
+                    'old_start': old_slot.start,
+                    'new_start': new_slot.start,
+                    'old_room': old_slot.room.name,
+                    'new_room': new_slot.room.name,
+                })
+
         result['new_talks'] = list(new_slots - old_slots)
         result['canceled_talks'] = list(old_slots - new_slots)
-        result['count'] = len(result['new_talks']) + len(result['canceled_talks'])
+        result['count'] = len(result['new_talks']) + len(result['canceled_talks']) + len(result['moved_talks'])
         return result
 
     def __str__(self) -> str:
