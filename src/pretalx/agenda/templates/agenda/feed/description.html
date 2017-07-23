@@ -1,38 +1,48 @@
-A new {{ obj.event.name }} schedule has been released!
+{% if obj.changes.action == 'update' %}
+    A new {{ obj.event.name }} schedule has been released!
 
-The new version is called {{ obj.version }}, {% if obj.changes.count %} and brings a few changes:{% else %}but nothing has changed.{% endif %}
+    The new version is called "{{ obj.version }}", {% if obj.changes.count %} and brings a few changes:{% else %}but nothing has changed.{% endif %}
+    <br>
 
-{% if obj.changes.new_talks and obj.changes.new_talks == 1 %}
-    A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.speaker_names|join:', ' }}.
-{% elif obj.changes.new_talks > 1 %}
-    There are {{ obj.changes.new_talks|length }} new talks:
-    <ul>
-        {% for new_talk in obj.changes.new_talks %}
-        <li>»{{ new_talk.title }}« by {{ new_talk.speaker_names|join:', ' }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+    {% if obj.changes.new_talks.0 and obj.changes.new_talks.1 %}
+        A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.speaker_names|join:', ' }}.
+        <br>
+    {% elif obj.changes.new_talks.1 %}
+        There are {{ obj.changes.new_talks|length }} new talks:
+        <ul>
+            {% for new_talk in obj.changes.new_talks %}
+            <li>»{{ new_talk.title }}« by {{ new_talk.speaker_names|join:', ' }}</li>
+            {% endfor %}
+        </ul>
+        <br>
+    {% endif %}
 
-{% if obj.changes.canceled_talks %}
-    Sadly, a talk had to be canceled: »{{ obj.changes.canceled_talks.0.title }}« by {{ obj.changes.canceled_talks.0.speaker_names|join:', ' }}.
-{% elif obj.changes.canceled_talks > 1 %}
-    Sadly, {{ obj.changes.canceled_talks|length }} had to be canceled:
-    <ul>
-        {% for talk in obj.changes.canceled_talks %}
-        <li>»{{ talk.title }}« by {{ talk.speaker_names|join:', ' }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+    {% if obj.changes.canceled_talks.0 and not obj.changes.canceled_talks.1 %}
+        Sadly, a talk had to be canceled: »{{ obj.changes.canceled_talks.0.title }}« by {{ obj.changes.canceled_talks.0.speaker_names|join:', ' }}.
+        <br>
+    {% elif obj.changes.canceled_talks.1 %}
+        Sadly, {{ obj.changes.canceled_talks|length }} had to be canceled:
+        <ul>
+            {% for talk in obj.changes.canceled_talks %}
+            <li>»{{ talk.title }}« by {{ talk.speaker_names|join:', ' }}</li>
+            {% endfor %}
+        </ul>
+        <br>
+    {% endif %}
 
-{% if obj.changes.moved_talks %}
-    Also, talks were moved around:
-    <ul>
-        {% for talk in obj.changes.moved_talks %}
-        <li>
-            »{{ talk.talk.title }}«
-            by {{ talk.talk.speaker_names|join:', ' }},
-            from {{ talk.old_start|date:'c' }} ({{ talk.old_room }}) to {{ talk.new_start|date:'c' }} ({{ talk.new_room }})
-        </li>
-        {% endfor %}
-    </ul>
+    {% if obj.changes.moved_talks.0 %}
+        Some talks were moved around:
+        <ul>
+            {% for talk in obj.changes.moved_talks %}
+            <li>
+                »{{ talk.talk.title }}«
+                by {{ talk.talk.speaker_names|join:', ' }},
+                from {{ talk.old_start|date:'Y-m-d H:i' }} ({{ talk.old_room }})
+                to {{ talk.new_start|date:'Y-m-d H:i' }} ({{ talk.new_room }})
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% else %}
+    The first {{ obj.event.name }} schedule has been released!
 {% endif %}
