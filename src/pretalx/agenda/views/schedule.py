@@ -57,7 +57,7 @@ class ScheduleView(ScheduleDataView):
         ctx = super().get_context_data(*args, **kwargs)
         if 'data' in ctx:
             for date in ctx['data']:
-                if 'first_talk' in date:
+                if date.get('first_talk') and date.get('last_talk'):
                     date['height'] = int((date['last_talk'].end - date['first_talk'].start).seconds / 60 * 2)
                     for room in date['rooms']:
                         for talk in room.get('talks', []):
