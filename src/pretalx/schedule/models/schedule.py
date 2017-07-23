@@ -55,5 +55,24 @@ class Schedule(LogMixin, models.Model):
             start__isnull=False,
         )
 
+    @cached_property
+    def previous_schedule(self):
+        return self.event.schedules.filter(published__lt=self.published).order_by('-published').first()
+
+    @cached_property
+    def changes(self):
+        result = {'count': 0, 'action': 'update', 'new_talks': [], 'canceled_talks': []}
+        if not self.previous_schedule:
+            result['action'] = 'create'
+            return result
+
+        new_slots = set(talk.submission for talk in self.talks.all())
+        old_slots = set(talk.submission for talk in self.previous_schedule.talks.all())
+
+        result['new_talks'] = list(new_slots - old_slots)
+        result['canceled_talks'] = list(old_slots - new_slots)
+        result['count'] = len(result['new_talks']) + len(result['canceled_talks'])
+        return result
+
     def __str__(self) -> str:
         return str(self.version) or _(f'WIP Schedule for {self.event}')
