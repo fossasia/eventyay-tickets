@@ -71,3 +71,29 @@
         }
     }
 }
+
+@media (max-width: 1000px) {
+    #fahrplan {
+        width: 100%;
+
+        .day {
+            .date {
+                display: block;
+                margin-left: 0;
+                text-align: center;
+                font-weight: bold;
+                background: #000;
+                color: white;
+            }
+
+            .rooms {
+                margin-top: 0;
+            }
+            .no-talks {
+                margin-top: 0;
+                text-align: center;
+                padding: 10px;
+            }
+        }
+    }
+}
