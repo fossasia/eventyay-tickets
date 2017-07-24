@@ -26,7 +26,7 @@
           <li class="nav-item">
             <a
               class="nav-link {% if "mails.send" in url_name %}active{% endif %}"
-              href="{% url "orga:mails.send.recipients" event=request.event.slug %}"
+              href="{% url "orga:mails.send" event=request.event.slug %}"
             >
                 {% trans "Send Emails" %}
             </a>
