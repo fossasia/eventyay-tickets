@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
@@ -66,6 +67,7 @@ class QueuedMail(LogMixin, models.Model):
     bcc = models.CharField(max_length=1000, null=True, blank=True)
     subject = models.CharField(max_length=200)  # Use non-i18n fields; this is the final actual to-be-sent version
     text = models.TextField()
+    sent = models.DateTimeField(null=True, blank=True)
 
     def send(self):
         from pretalx.common.mail import mail_send_task
@@ -79,6 +81,5 @@ class QueuedMail(LogMixin, models.Model):
             }
         )
 
-        # TODO: log
-        if self.pk:
-            self.delete()
+        self.sent = now()
+        self.save()
