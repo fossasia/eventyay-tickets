@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
-from pretalx.mail.models import MailTemplate
+from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (
     MailTemplateForm, OutboxMailForm, WriteMailForm,
 )
@@ -66,14 +67,36 @@ class OutboxMail(ActionFromUrl, CreateOrUpdateView):
         return super().form_valid(form)
 
 
-class SendMailRecipients(FormView):
-    form_class = WriteMailForm
-    template_name = 'orga/mails/send_recipients.html'
-
-
-class SendMailEdit(FormView):
+class SendMail(FormView):
     form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('orga:mails.send', kwargs={'event': self.request.event.slug})
+
+    def form_valid(self, form):
+        email_set = set()
+
+        for state in form.cleaned_data.get('recipients'):
+            if state == 'selected_submissions':
+                submission_filter = {'code__in': form.cleaned_data.get('submissions')}
+            else:
+                submission_filter = {'state': state}
+            email_set.update(self.request.event.submissions.filter(**submission_filter).values_list('speakers__email', flat=True))
+
+        for email in email_set:
+            QueuedMail.objects.create(
+                event=self.request.event, to=email, reply_to=form.cleaned_data.get('reply_to'),
+                cc=form.cleaned_data.get('cc'), bcc=form.cleaned_data.get('bcc'),
+                subject=form.cleaned_data.get('subject'), text=form.cleaned_data.get('text')
+            )
+        messages.success(self.request, _('The emails have been saved to the outbox – you can make individual changes there or just send them all.'))
+        return super().form_valid(form)
 
 
 class TemplateList(TemplateView):
