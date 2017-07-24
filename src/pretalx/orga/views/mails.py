@@ -6,7 +6,9 @@ from django.views.generic import FormView, ListView, TemplateView, View
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate
-from pretalx.orga.forms.mails import MailTemplateForm, OutboxMailForm
+from pretalx.orga.forms.mails import (
+    MailTemplateForm, OutboxMailForm, WriteMailForm,
+)
 
 
 class OutboxList(ListView):
@@ -64,7 +66,13 @@ class OutboxMail(ActionFromUrl, CreateOrUpdateView):
         return super().form_valid(form)
 
 
-class SendMail(FormView):
+class SendMailRecipients(FormView):
+    form_class = WriteMailForm
+    template_name = 'orga/mails/send_recipients.html'
+
+
+class SendMailEdit(FormView):
+    form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
 
 

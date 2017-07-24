@@ -1,0 +1,17 @@
+{% extends "orga/mails/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block mail_content %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <legend>{% trans "Mail Editor" %}</legend>
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="offset-md-3 col-md-9">
+                <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

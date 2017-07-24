@@ -20,3 +20,7 @@ class OutboxMailForm(ReadOnlyFlag, forms.ModelForm):
         fields = [
             'to', 'reply_to', 'cc', 'bcc', 'subject', 'text',
         ]
+
+
+class WriteMailForm(OutboxMailForm):
+    pass
