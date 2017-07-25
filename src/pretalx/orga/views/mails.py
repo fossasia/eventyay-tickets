@@ -17,7 +17,7 @@ class OutboxList(ListView):
     template_name = 'orga/mails/outbox_list.html'
 
     def get_queryset(self):
-        return self.request.event.queued_mails.all()
+        return self.request.event.queued_mails.filter(sent__isnull=True)
 
 
 class OutboxSend(View):
@@ -28,7 +28,7 @@ class OutboxSend(View):
             mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
             mail.send()
         else:
-            for mail in self.request.event.queued_mails.all():
+            for mail in self.request.event.queued_mails.filter(sent__isnull=True):
                 mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 mail.send()
         return redirect(reverse('orga:mails.outbox.list', kwargs={'event': self.request.event.slug}))
