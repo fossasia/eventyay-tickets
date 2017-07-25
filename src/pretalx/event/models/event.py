@@ -133,7 +133,7 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def pending_mails(self):
-        return self.queued_mails.count()
+        return self.queued_mails.filter(sent__isnull=True).count()
 
     @cached_property
     def wip_schedule(self):
