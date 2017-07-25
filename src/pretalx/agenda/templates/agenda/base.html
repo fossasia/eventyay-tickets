@@ -1,11 +1,20 @@
-{% extends "cfp/event/base.html" %}
+{% extends "common/base.html" %}
 {% load compress %}
 {% load staticfiles %}
 {% load i18n %}
 {% block custom_header %}
     {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
         <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/main.scss" %}" />
     {% endcompress %}
+    {% compress js %}
+        <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block nav_link %}
+{% url "agenda:schedule" event=request.event.slug %}
 {% endblock %}
 
 {% block content %}

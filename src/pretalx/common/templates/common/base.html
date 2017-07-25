@@ -1,0 +1,81 @@
+{% load compress %}
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static "common/img/favicon.png" %}">
+    {% block custom_header %}
+    {% endblock %}
+</head>
+<body>
+<div id="wrapper">
+    <div id="top-bg" class="bg-primary">
+        {% if not request.event.is_public %}
+            <div class="event-nonpublic">
+                <span class="fa fa-user-secret"></span>
+                {% blocktrans trimmed %}
+                    This event is currently non-public. Only the orga team can see it.
+                {% endblocktrans %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="container" id="main-container">
+        <header>
+            {% if request.event.locales|length > 1 %}
+                <div class="pull-right locales">
+                    {% for l, name in request.event.named_locales %}
+                        <a href="{% url "cfp:locale.set" %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
+                                class="{% if l == request.LANGUAGE_CODE %}active{% endif %}">{{ name }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <h1>
+                <a href="{% block nav_link %}{% endblock %}">{{ request.event }}</a>
+            </h1>
+        </header>
+        <section class="card" id="main">
+            {% if request.user.is_authenticated %}
+                <div class="user-row">
+                    <div class="pull-right">
+                        {% if request.is_orga %}
+                            <a href="{% url "orga:event.dashboard" event=request.event.slug %}">{% trans "Orga area" %}</a> &middot;
+                        {% endif %}
+                        <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
+                            {% trans "My submissions" %}
+                        </a> &middot;
+                        <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
+                    </div>
+                    {% url "cfp:event.user.view" event=request.event.slug as userurl %}
+                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
+                        You are logged in as <a {{ attr }}>{{ nick }}</a>.
+                    {% endblocktrans %}
+                </div>
+            {% endif %}
+            <div class="content">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+        </section>
+        <footer>
+            <a href="https://github.com/openeventstack/pretalx" target="_blank">
+                <img src="{% static "common/img/logo.svg" %}">
+            </a>
+            &middot;
+            <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
+
