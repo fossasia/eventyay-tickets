@@ -7,6 +7,10 @@
 @import "_layout";
 @import "_schedule";
 
+h3 {
+  margin-left: 0px;
+}
+
 table .btn-secondary {
   background: $gray-lighter;
   border-color: white;
