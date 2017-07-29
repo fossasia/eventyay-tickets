@@ -4,6 +4,7 @@
     {% trans "Submissions" %}
 {% endblock %}
 {% block content %}
+{% if submission %}
     <ul class="nav nav-pills">
       <li class="nav-item">
         <a
@@ -36,6 +37,7 @@
         by {{ submission.speaker_names|join:", " }}
         ({% include "cfp/event/fragment_state.html" with state=submission.state %})
     </legend>
+{% endif %}
 
     {% block submission_content %}
     {% endblock %}

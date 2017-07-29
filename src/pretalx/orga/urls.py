@@ -47,6 +47,7 @@ orga_urls = [
         ])),
 
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),
+        url('^submissions/new$', submission.SubmissionContent.as_view(), name='submissions.create'),
         url('^submissions/(?P<pk>[0-9]+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^edit$', submission.SubmissionContent.as_view(), name='submissions.content.edit'),

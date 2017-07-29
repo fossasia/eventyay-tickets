@@ -2,6 +2,9 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block submission_content %}
+    {% if not submission %}
+    <legend>{% trans "Create submission as orga" %}</legend>
+    {% endif %}
 
     <form method="post" action="">
         {% csrf_token %}
