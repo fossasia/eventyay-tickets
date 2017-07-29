@@ -120,7 +120,7 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        context['submission'] = self.request.event.submissions.filter(pk=self.kwargs.get('pk')).first()
         return context
 
     def get_success_url(self) -> str:
