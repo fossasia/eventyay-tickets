@@ -1,10 +1,16 @@
+from datetime import timedelta
+
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
+from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
 from pretalx.submission.models import Submission, SubmissionError
@@ -124,15 +130,55 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
         return context
 
     def get_success_url(self) -> str:
+        self.kwargs.update({'pk': self.object.pk})
         return reverse('orga:submissions.content.view', kwargs=self.kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, 'The submission has been updated!')
-        if form.has_changed():
-            action = 'pretalx.submission.' + ('update' if self.object else 'create')
-            form.instance.log_action(action, person=self.request.user, orga=True)
+        created = not self.object
+
         form.instance.event = self.request.event
-        return super().form_valid(form)
+        ret = super().form_valid(form)
+        self.object = form.instance
+
+        if created:
+            # TODO: activate language by submission language
+            email = form.cleaned_data['speaker']
+            try:
+                user = User.objects.get(email__iexact=email)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    nick=email.lower(),
+                    password=get_random_string(32),
+                    email=email.lower(),
+                    pw_reset_token=get_random_string(32),
+                    pw_reset_time=now() + timedelta(days=7),
+                )
+                invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': self.request.event.slug, 'token': user.pw_reset_token})
+                invitation_text = _('''Hi!
+
+You have been set as the speaker of a submission to the Call for Participation
+of {event}, titled {title}. An account has been created for you – please follow
+this link to set your account password.
+
+    {invitation_link}
+
+Afterwards, you can edit your user profile and see the state of your submission.
+
+The {event} orga crew''').format(event=self.request.event.name, title=form.instance.title, invitation_link=invitation_link)
+                QueuedMail.objects.create(
+                    event=self.request.event,
+                    to=user.email,
+                    subject=str(_('You have been added to a submission for {event}').format(event=self.request.event.name)),
+                    text=invitation_text,
+                )
+
+            form.instance.speakers.add(user)
+
+        if form.has_changed():
+            action = 'pretalx.submission.' + 'create' if created else 'update'
+            form.instance.log_action(action, person=self.request.user, orga=True)
+        return ret
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
