@@ -137,7 +137,8 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def wip_schedule(self):
-        return self.schedules.get(version__isnull=True)
+        schedule, _ =  self.schedules.get_or_create(version__isnull=True)
+        return schedule
 
     @cached_property
     def current_schedule(self):
