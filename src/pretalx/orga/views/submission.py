@@ -134,8 +134,7 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
         return reverse('orga:submissions.content.view', kwargs=self.kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'The submission has been updated!')
-        created = not self.object
+        created = invited = not self.object
 
         form.instance.event = self.request.event
         ret = super().form_valid(form)
@@ -146,6 +145,7 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
             email = form.cleaned_data['speaker']
             try:
                 user = User.objects.get(email__iexact=email)
+                invited = False
             except User.DoesNotExist:
                 user = User.objects.create_user(
                     nick=email.lower(),
@@ -178,6 +178,12 @@ The {event} orga crew''').format(event=self.request.event.name, title=form.insta
         if form.has_changed():
             action = 'pretalx.submission.' + 'create' if created else 'update'
             form.instance.log_action(action, person=self.request.user, orga=True)
+        if created and invited:
+            messages.success(self.request, 'The submission has been created and the speaker has been invited to add an account!')
+        elif created:
+            messages.success(self.request, 'The submission has been created; the speaker already had an account on this system.')
+        else:
+            messages.success(self.request, 'The submission has been updated!')
         return ret
 
     def get_form_kwargs(self):
