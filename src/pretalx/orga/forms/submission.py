@@ -1,8 +1,8 @@
 from django import forms
+from django.utils.translation import ugettext as _
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.submission.models import Submission, SubmissionType
-from django.utils.translation import ugettext as _
 
 
 class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
