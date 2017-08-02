@@ -99,7 +99,7 @@ class Submission(LogMixin, models.Model):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
         withdraw = '{user_base}/withdraw'
         confirm = '{user_base}/confirm'
-        public = '{self.event.base}/talk/{self.code}'
+        public = '{self.event.urls.base}/talk/{self.code}'
 
     class orga_urls(Urls):
         base = '{self.event.orga_urls.submissions}/{self.pk}'
