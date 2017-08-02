@@ -18,17 +18,17 @@
             {% for room in request.event.rooms.all %}
                 <tr>
                     <td>
-                        <a href="{% url "orga:settings.rooms.view" event=request.event.slug pk=room.pk %}">
+                        <a href="{{ room.urls.settings_base }}">
                             {{ room.name }}
                         </a>
                     </td>
                     <td>{{ room.capacity }}</td>
                     <td class="text-right">
-                        <a href="{% url "orga:settings.rooms.edit" event=request.event.slug pk=room.pk %}"
+                        <a href="{{ room.urls.edit_settings }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
-                        <a href="{% url "orga:settings.rooms.delete" event=request.event.slug pk=room.pk %}"
+                        <a href="{{ room.urls.delete }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
                         </a>
@@ -40,7 +40,7 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{% url "orga:settings.rooms.create" event=request.event.slug %}">
+    <a class="btn btn-primary" href="{{ request.event.orga_urls.new_room }}">
         <span class="fa fa-cross"></span>
         {% trans "New room" %}
     </a>

@@ -12,9 +12,9 @@
                 {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:mails.outbox.mail.send" event=request.event.slug pk=form.instance.pk %}>{% trans "Send" %}</a>
-                    <a class="btn btn-secondary" href={% url "orga:mails.outbox.mail.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
-                    <a class="btn btn-danger" href={% url "orga:mails.outbox.mail.delete" event=request.event.slug pk=form.instance.pk %}>{% trans "Discard" %}</a>
+                    <a class="btn btn-primary" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
+                    <a class="btn btn-secondary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
+                    <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
                 {% endif %}
             </div>
         </div>

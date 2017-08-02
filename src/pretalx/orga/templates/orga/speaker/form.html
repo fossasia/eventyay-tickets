@@ -12,7 +12,7 @@
         <ul>
             {% for submission in submissions %}
             <li>
-                <a href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}">
+                <a href="{{ submission.orga_urls.base }}">
                     {{ submission.title }}
                     ({% include "cfp/event/fragment_state.html" with state=submission.state %})
                 </a>

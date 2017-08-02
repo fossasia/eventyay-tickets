@@ -8,7 +8,7 @@
       <li class="nav-item">
         <a 
           class="nav-link {% if "cfp.text" in url_name %}active{% endif %}"
-          href="{% url "orga:cfp.text.view" event=request.event.slug %}"
+          href="{{ request.event.cfp.urls.text }}"
         >
             {% trans "Text and deadline" %}
 		</a>
@@ -16,7 +16,7 @@
       <li class="nav-item">
           <a
             class="nav-link {% if "cfp.question" in url_name %}active{% endif %}"
-            href="{% url "orga:cfp.questions.view" event=request.event.slug %}"
+            href="{{ request.event.cfp.urls.questions }}"
           >
             {% trans "Questions" %}
 		</a>
@@ -24,7 +24,7 @@
       <li class="nav-item">
           <a
             class="nav-link {% if "cfp.types" in url_name %}active{% endif %}"
-            href="{% url "orga:cfp.types.view" event=request.event.slug %}"
+            href="{{ request.event.cfp.urls.types }}"
           >
             {% trans "Submission Types" %}
           </a>

@@ -16,9 +16,8 @@
                     <div class="room-header">{{ room.name }}</div>
                     <div class="talk-container" style="height: {{ day.height }}px">
                         {% for talk in room.talks %}
-                        <a href="{% url "agenda:talk" event=request.event.slug slug=talk.submission.code %}">
+                        <a href="{{ talk.submission.urls.public }}">
                             <div class="talk" id="{{ talk.submission.code }}"
-                                    href="{% url "agenda:talk" event=request.event.slug slug=talk.submission.code %}"
                                     style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px">
                                 <div class="talk-content">
                                     <span class="talk-title">{{ talk.submission.title }}</span>

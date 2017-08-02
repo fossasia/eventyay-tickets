@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
+from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import settings_hierarkey
@@ -87,6 +88,52 @@ class Event(LogMixin, models.Model):
     )
     # enable_feedback = models.BooleanField(default=False)
     # send_notifications = models.BooleanField(default=True)
+
+    class urls(Urls):
+        base = '/{self.slug}'
+        login = '{base}/login'
+        logout = '{base}/logout'
+        reset = '{base}/reset'
+        submit = '{base}/submit'
+        user = '{base}/me'
+        user_submissions = '{user}/submissions'
+        schedule = '{base}/schedule'
+        frab = '{schedule}.xml'
+        feed = '{schedule}/feed.xml'
+        location = '{schedule}/location'
+
+    class orga_urls(Urls):
+        create = '/orga/event/new'
+        base = '/orga/event/{self.slug}'
+        cfp = '{base}/cfp'
+        users = '{base}/users'
+        mail = '{base}/mails'
+        send_mails = '{mail}/send'
+        mail_templates = '{mail}/templates'
+        new_template = '{mail_templates}/new'
+        outbox = '{mail}/outbox'
+        send_outbox = '{outbox}/send'
+        purge_outbox = '{outbox}/purge'
+        submissions = '{base}/submissions'
+        new_submission = '{submissions}/new'
+        speakers = '{base}/speakers'
+        settings = '{base}/settings'
+        edit_settings = '{settings}/edit'
+        mail_settings = '{settings}/mail'
+        edit_mail_settings = '{mail_settings}/edit'
+        team_settings = '{settings}/team'
+        invite = '{team_settings}/add'
+        room_settings = '{settings}/rooms'
+        new_room = '{room_settings}/new'
+        schedule = '{base}/schedule'
+        release_schedule = '{schedule}/release'
+        reset_schedule = '{schedule}/reset'
+
+    class api_urls(Urls):
+        base = '/orga/event/{self.slug}'
+        schedule = '{base}/schedule/api'
+        rooms = '{schedule}/rooms'
+        talks = '{schedule}/talks'
 
     def __str__(self) -> str:
         return str(self.name)

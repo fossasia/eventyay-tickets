@@ -31,7 +31,7 @@
                                 class="{% if l == request.LANGUAGE_CODE %}active{% endif %}">{{ name }}</a>
                     {% endfor %}
                     {% if request.user.is_anonymous %}
-                    <a href="{% url "cfp:event.login" event=request.event.slug %}">• login</a>
+                    • <a href="{{ request.event.urls.login }}">login</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -44,7 +44,7 @@
                 <div class="user-row">
                     <div class="pull-right">
                         {% if request.is_orga %}
-                            <a href="{% url "orga:event.dashboard" event=request.event.slug %}">{% trans "Orga area" %}</a> &middot;
+                        <a href="{{ request.event.orga_urls.base }}">{% trans "Orga area" %}</a> &middot;
                         {% endif %}
                         <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
                             {% trans "My submissions" %}

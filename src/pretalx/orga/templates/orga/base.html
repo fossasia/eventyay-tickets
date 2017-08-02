@@ -43,7 +43,7 @@
                         <div class="dropdown-menu">
                             {% for e in request.orga_events %}
                                 {% if not request.event == e %}
-                                    <a class="dropdown-item" href="{% url "orga:settings.event.view" event=e.slug %}">{{ e.name }}</a>
+                                    <a class="dropdown-item" href="{{ e.orga_urls.settings }}">{{ e.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             {% if request.user.is_superuser %}
@@ -61,7 +61,7 @@
                 </li>
                 {% if request.event %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "cfp:event.start" event=request.event.slug %}">
+                        <a class="nav-link" href="{{ request.event.urls.base }}">
                             <span class="fa fa-eye"></span>
                         </a>
                     </li>
@@ -85,28 +85,28 @@
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
             {% if request.event %}
-                <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{% url "orga:event.dashboard" event=request.event.slug %}">
+                <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{{ request.event.orga_urls.base }}">
                     <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
                 </a>
-                <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{% url "orga:settings.event.view" event=request.event.slug %}">
+                <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.settings }}">
                     <span class="fa fa-wrench"></span> {% trans "Settings" %}
                 </a>
-                <a class="nav-link {% if "cfp." in url_name %}active{% endif %}" href="{% url "orga:cfp.text.view" event=request.event.slug %}">
+                <a class="nav-link {% if "cfp." in url_name %}active{% endif %}" href="{{ request.event.cfp.urls.text }}">
                     <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
                 </a>
-                <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{% url "orga:submissions.list" event=request.event.slug %}">
+                <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.submissions }}">
                     <span class="fa fa-sticky-note-o"></span> {% trans "Submissions" %}
                 </a>
-                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{% url "orga:speakers.list" event=request.event.slug %}">
+                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
                     <span class="fa fa-address-card-o"></span> {% trans "Speakers" %}
                 </a>
                 <a class="nav-link {% if "review." in url_name %}active{% endif %}" href="#">
                     <span class="notimplemented"><span class="fa fa-eye"></span> {% trans "Review" %}</span>
                 </a>
-                <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="{% url "orga:schedule.main" event=request.event.slug %}">
+                <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.schedule }}">
                     <span class="fa fa-calendar-o"></span> {% trans "Schedule" %}</span>
                 </a>
-                <a class="nav-link {% if "mails." in url_name %}active{% endif %}" href="{% url "orga:mails.outbox.list" event=request.event.slug %}">
+                <a class="nav-link {% if "mails." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.outbox }}">
                     <span class="fa fa-envelope"></span> {% trans "Mails" %}
                     {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}{% endif %}
                 </a>

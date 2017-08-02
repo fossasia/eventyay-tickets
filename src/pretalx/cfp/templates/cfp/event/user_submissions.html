@@ -16,7 +16,7 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug code=submission.code %}">
+                        <a href="{{ submission.urls.user_base }}">
                             {{ submission.title }}
                         </a>
                     </td>
@@ -25,13 +25,13 @@
                     </td>
                     <td class="text-right">
                         {% if submission.editable %}
-                            <a href="{% url "cfp:event.user.submission.edit" event=request.event.slug code=submission.code %}"
+                            <a href="{{ submission.urls.user_base }}"
                                     class="btn btn-sm btn-secondary">
                                 <span class="fa fa-pencil"></span>
                             </a>
                         {% endif %}
                         {% if submission.state == 'accepted' %}
-                            <a href="{% url "cfp:event.user.submission.confirm" event=request.event.slug code=submission.code %}"
+                            <a href="{{ submission.urls.confirm }}"
                                     class="btn btn-sm btn-secondary">
                                 <span class="fa fa-check"></span>{% trans "Confirm" %}
                             </a>
@@ -44,7 +44,7 @@
         <p>
             {% if request.event.cfp.is_open %}
                 <a class="btn btn-success btn-lg"
-                   href="{% url "cfp:event.submit" event=request.event.slug %}">
+                   href="{{ request.event.urls.submit }}">
                     {% trans "Create a new submission" %}
                 </a>
             {% endif %}
@@ -62,7 +62,7 @@
             </p>
             <p class="text-center">
                 <a class="btn btn-success btn-lg btn-block"
-                        href="{% url "cfp:event.submit" event=request.event.slug %}">
+                        href="{{ request.event.urls.submit }}">
                     {% trans "Submit something now!" %}
                 </a>
             </p>

@@ -11,7 +11,7 @@
         {% endblocktrans %}
     </div>
 
-    <div class="alert"><a href="{% url "orga:mails.templates.create" event=request.event.slug %}">
+    <div class="alert"><a href="{{ request.event.orga_urls.new_template }}">
         <button class="btn btn-primary pull-right">{% trans "New custom template" %}</button>
     </a></div>
 
@@ -20,7 +20,7 @@
         {% csrf_token %}
         <legend>{% trans "Acknowledge Mail" %}</legend>
         {% bootstrap_form ack layout='horizontal' %}
-        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=ack.instance.pk %}">
+        <div><a href="{{ ack.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
@@ -28,7 +28,7 @@
         {% csrf_token %}
         <legend>{% trans "Accept Mail" %}</legend>
         {% bootstrap_form accept layout='horizontal' %}
-        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=accept.instance.pk %}">
+        <div><a href="{{ accept.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
@@ -36,7 +36,7 @@
         {% csrf_token %}
         <legend>{% trans "Rejection Mail" %}</legend>
         {% bootstrap_form reject layout='horizontal' %}
-        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=reject.instance.pk %}">
+        <div><a href="{{ reject.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
@@ -46,10 +46,10 @@
         {% csrf_token %}
         <legend>{% trans "Custom Mail" %}</legend>
         {% bootstrap_form template layout='horizontal' %}
-        <div><a href="{% url "orga:mails.templates.delete" event=request.event.slug pk=template.instance.pk %}">
+        <div><a href="{{ template.instance.urls.delete }}">
             <button class="btn btn-danger">{% trans "Delete template" %}</button>
         </a></div>
-        <div><a href="{% url "orga:mails.templates.edit" event=request.event.slug pk=template.instance.pk %}">
+        <div><a href="{{ template.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>

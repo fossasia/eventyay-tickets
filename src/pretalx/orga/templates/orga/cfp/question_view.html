@@ -24,7 +24,7 @@
             {% for question in questions %}
                 <tr>
                     <td>
-                        <a href="{% url "orga:cfp.question.view" event=request.event.slug pk=question.pk %}">
+                        <a href="{{ question.urls.base }}">
                             {{ question.question }}
                         </a>
                     </td>
@@ -34,11 +34,11 @@
                         </span>
                     </td>
                     <td class="text-right">
-                        <a href="{% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}"
+                        <a href="{{ question.urls.edit }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
-                        <a href="{% url "orga:cfp.question.delete" event=request.event.slug pk=question.pk %}"
+                        <a href="{{ question.urls.delete }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
                         </a>
@@ -50,7 +50,7 @@
         </tbody>
     </table>
 
-    <a href="{% url "orga:cfp.questions.create" event=request.event.slug %}">
+    <a href="{{request.event.cfp.urls.new_question }}">
         <button class="btn btn-secondary">
             {% trans "New question" %}
         </button>

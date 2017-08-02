@@ -9,7 +9,7 @@
       <li class="nav-item">
         <a
           class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
-          href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}"
+          href="{{ submission.orga_urls.base }}"
         >
             {% trans "Content" %}
         </a>
@@ -17,7 +17,7 @@
       <li class="nav-item">
           <a
             class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
-            href="{% url "orga:submissions.speakers.view" event=request.event.slug pk=submission.pk %}"
+            href="{{ submission.orga_urls.speakers }}"
           >
             {% trans "Speakers" %}
           </a>
@@ -25,7 +25,7 @@
       <li class="nav-item">
           <a
             class="nav-link {% if "submissions.questions" in url_name %}active{% endif %}"
-            href="{% url "orga:submissions.questions.view" event=request.event.slug pk=submission.pk %}"
+            href="{{ submission.orga_urls.questions }}"
           >
             {% trans "Questions" %}
           </a>

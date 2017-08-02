@@ -10,7 +10,7 @@
 
     <div class="dashboard-list">
         {% for event in request.orga_events %}
-            <a href="{% url "orga:event.dashboard" event=event.slug %}"><div class="dashboard-block">
+            <a href="{{ event.orga_urls.base }}"><div class="dashboard-block">
                 <h1>{{ event.name }}</h1>
                 <span class="dashboard-description">
                     {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}

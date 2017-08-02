@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
+from urlman import Urls
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -47,6 +48,11 @@ class Question(LogMixin, models.Model):
     position = models.IntegerField(
         default=0,
     )
+
+    class urls(Urls):
+        base = '{self.event.cfp.urls.questions}/{self.pk}'
+        edit = '{base}/edit'
+        delete = '{base}/delete'
 
     def __str__(self):
         return str(self.question)

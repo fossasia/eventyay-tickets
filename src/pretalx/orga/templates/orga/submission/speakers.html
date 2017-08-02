@@ -19,7 +19,7 @@
                         </a>
                     </td>
                     <td class="text-right">
-                        <a href="{% url "orga:submissions.speakers.delete" event=request.event.slug pk=submission.pk %}?nick={{ speaker.nick }}"
+                        <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
                         </a>
@@ -29,12 +29,12 @@
         </tbody>
     </table>
 
-    <form method="POST" action="{% url "orga:submissions.speakers.add" event=request.event.slug pk=submission.pk %}">
+    <form method="POST" action="{{ submission.orga_urls.new_speaker }}">
             <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker" %}" />
             <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
     </form>
 
-    <span id="vars" remoteUrl="{% url "orga:event.user_list" event=request.event.slug %}?search=%QUERY"></span>
+    <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
     <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     <script type="text/javascript" src="{% static "orga/js/speakers.js" %}"></script>

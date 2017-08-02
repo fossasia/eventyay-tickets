@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
+from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
 
@@ -32,6 +33,11 @@ class MailTemplate(LogMixin, models.Model):
         verbose_name=_('BCC'),
         help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!')
     )
+
+    class urls(Urls):
+        base = '{self.event.orga_urls.mail_templates}/{self.pk}'
+        edit = '{base}/edit'
+        delete = '{base}/delete'
 
     def bulk_mail(self):
         # TODO: call to_mail
@@ -68,6 +74,12 @@ class QueuedMail(LogMixin, models.Model):
     subject = models.CharField(max_length=200)  # Use non-i18n fields; this is the final actual to-be-sent version
     text = models.TextField()
     sent = models.DateTimeField(null=True, blank=True)
+
+    class urls(Urls):
+        base = '{self.event.orga_urls.outbox}/{self.pk}'
+        edit = '{base}/edit'
+        delete = '{base}/delete'
+        send = '{base}/send'
 
     def send(self):
         from pretalx.common.mail import mail_send_task

@@ -9,7 +9,7 @@
     <legend>
         {{ submissions.count }} {% trans "submissions" %}
         <div class="pull-right">
-            <a href="{% url "orga:submissions.create" event=request.event.slug %}">
+            <a href="{{ request.event.orga_urls.new_submission }}">
                 <span class="fa fa-plus-square-o" />
             </a>
         </div>
@@ -29,7 +29,7 @@
             {% for submission in submissions %}
                 <tr>
                     <td>
-                        <a href="{% url "orga:submissions.content.view" event=request.event.slug pk=submission.pk %}">
+                        <a href="{{ submission.orga_urls.base }}">
                             {{ submission.title }}
                         </a>
                     </td>
@@ -47,7 +47,7 @@
                         {% include "cfp/event/fragment_state.html" with state=submission.state %}
                     </td>
                     <td class="text-right">
-                        <a href="{% url "orga:submissions.content.edit" event=request.event.slug pk=submission.pk %}"
+                        <a href="{{ submission.orga_urls.edit }}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>

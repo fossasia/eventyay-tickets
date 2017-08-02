@@ -31,18 +31,18 @@
                         {% if request.event.cfp.default_type == type %}
                             <span class="fa fa-check"></span> {% trans "Default" %}
                         {% else %}
-                            <a href="{% url "orga:cfp.type.default" event=request.event.slug pk=type.pk %}"
+                            <a href="{{ type.urls.default }}"
                                     class="btn btn-sm btn-secondary">
                                 Make default
                             </a>
                         {% endif %}
                     </td>
                     <td class="text-right">
-                        <a href="{% url "orga:cfp.type.edit" event=request.event.slug pk=type.pk %}"
+                        <a href="{{ type.urls.edit }}"
                                 class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
-                        <a href="{% url "orga:cfp.type.delete" event=request.event.slug pk=type.pk %}"
+                        <a href="{{ type.urls.delete }}"
                                 class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
                         </a>
@@ -52,7 +52,7 @@
         </tbody>
     </table>
 
-    <a href="{% url "orga:cfp.types.create" event=request.event.slug %}">
+    <a href="{{ request.event.cfp.urls.new_type }}">
         <button class="btn btn-secondary">
             {% trans "New type" %}
         </button>

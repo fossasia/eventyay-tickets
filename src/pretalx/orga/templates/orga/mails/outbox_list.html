@@ -4,10 +4,10 @@
 {% block mail_content %}
 
     <div class="row">
-        <a href="{% url "orga:mails.outbox.send" event=request.event.slug %}">
+        <a href="{{ request.event.orga_urls.send_outbox }}">
             <button class="btn btn-primary">{% trans "Send all" %}</button>
         </a>
-        <a href="{% url "orga:mails.outbox.purge" event=request.event.slug %}">
+        <a href="{{ request.event.orga_urls.purge_outbox }}">
             <button class="btn btn-danger">{% trans "Discard all" %}</button>
         </a>
     </div>
@@ -25,7 +25,7 @@
             {% for mail in mails %}
             <tr>
                 <td>
-                    <a href="{% url "orga:mails.outbox.mail.view" event=request.event.slug pk=mail.pk %}">
+                    <a href="{{ mail.urls.base }}">
                         {{ mail.subject }}
                     </a>
                 </td>
@@ -33,11 +33,11 @@
                     {{ mail.to }}
                 </td>
                 <td class="text-right">
-                    <a href="{% url "orga:mails.outbox.mail.edit" event=request.event.slug pk=mail.pk %}"
+                    <a href="{{ mail.urls.edit }}"
                         class="btn btn-sm btn-secondary">
                         <span class="fa fa-pencil"></span>
                     </a>
-                    <a href="{% url "orga:mails.outbox.mail.delete" event=request.event.slug pk=mail.pk %}"
+                    <a href="{{ mail.urls.delete }}"
                         class="btn btn-sm btn-secondary">
                         <span class="fa fa-trash"></span>
                     </a>

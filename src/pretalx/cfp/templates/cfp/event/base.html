@@ -14,5 +14,5 @@
 {% endblock %}
 
 {% block nav_link %}
-    {% url "cfp:event.start" event=request.event.slug %}
+    {{ request.event.urls.base }}
 {% endblock %}

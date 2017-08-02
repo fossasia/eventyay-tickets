@@ -14,7 +14,7 @@
                 {% elif action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:cfp.question.edit" event=request.event.slug pk=question.pk %}>{% trans "Edit" %}</a>
+                    <a class="btn btn-primary" href={{ question.urls.edit }}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

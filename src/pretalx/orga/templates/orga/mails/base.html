@@ -9,7 +9,7 @@
           <li class="nav-item">
             <a
               class="nav-link {% if "mails.outbox" in url_name %}active{% endif %}"
-              href="{% url "orga:mails.outbox.list" event=request.event.slug %}"
+              href="{{ request.event.orga_urls.outbox }}"
             >
                 {% trans "Outbox" %}
                 {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}{% endif %}
@@ -18,7 +18,7 @@
           <li class="nav-item">
             <a
               class="nav-link {% if "mails.templates" in url_name %}active{% endif %}"
-              href="{% url "orga:mails.templates.list" event=request.event.slug %}"
+              href="{{ request.event.orga_urls.mail_templates }}"
             >
                 {% trans "Edit Templates" %}
             </a>
@@ -26,7 +26,7 @@
           <li class="nav-item">
             <a
               class="nav-link {% if "mails.send" in url_name %}active{% endif %}"
-              href="{% url "orga:mails.send" event=request.event.slug %}"
+              href="{{ request.event.orga_urls.send_mails }}"
             >
                 {% trans "Send Emails" %}
             </a>

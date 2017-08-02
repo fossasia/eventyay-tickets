@@ -15,7 +15,7 @@
                         {% trans "Save and test custom SMTP connection" %}
                     </button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:settings.mail.edit" event=request.event.slug %}>{% trans "Edit" %}</a>
+                    <a class="btn btn-primary" href={{ request.event.orga_urls.edit_mail_settings }}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

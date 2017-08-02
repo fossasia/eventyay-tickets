@@ -14,7 +14,7 @@
                 {% elif action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={% url "orga:settings.rooms.edit" event=request.event.slug pk=form.instance.pk %}>{% trans "Edit" %}</a>
+                    <a class="btn btn-primary" href={{ form.instance.urls.edit_settings }}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

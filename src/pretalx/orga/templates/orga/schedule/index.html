@@ -46,7 +46,7 @@
         </div>
         {% if not schedule_version %}
             <div id="schedule-release">
-                <form method="post" action="{% url "orga:schedule.release" event=request.event.slug %}">
+                <form method="post" action="{{ request.event.orga_urls.release_schedule }}">
                     <div class="input-group">
                         <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{% trans 'Release as version' %}" title="" type="text">
                         <button type="submit" class="btn btn-primary">{% trans "Release" %}</button>
@@ -54,7 +54,7 @@
                 </form>
             </div>
         {% else %}
-            <form method="post" action="{% url "orga:schedule.reset" event=request.event.slug %}?{{ request.GET.urlencode }}">
+            <form method="post" action="{{ request.event.orga_urls.reset_schedule }}?{{ request.GET.urlencode }}">
                 <button type="submit" class="btn btn-secondary">{% trans "Edit this version" %}</button>
             </form>
         {% endif %}

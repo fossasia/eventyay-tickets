@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 from i18nfield.fields import I18nCharField, I18nTextField
+from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
 
@@ -21,6 +22,15 @@ class CfP(LogMixin, models.Model):
         related_name='+',
     )
     deadline = models.DateTimeField(null=True, blank=True)
+
+    class urls(Urls):
+        base = '{self.event.orga_urls.cfp}'
+        questions = '{base}/questions'
+        new_question = '{questions}/new'
+        text = '{base}/text'
+        edit_text = '{text}/edit'
+        types = '{base}/types'
+        new_type = '{types}/new'
 
     @property
     def is_open(self):

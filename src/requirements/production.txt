@@ -11,4 +11,5 @@ django-i18nfield==1.1.*
 django-libsass==0.7
 Markdown==2.6.*
 pytz
+urlman==1.1.*
 whitenoise==3.3.*

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
+from urlman import Urls
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -93,6 +94,23 @@ class Submission(LogMixin, models.Model):
         default=False,
         verbose_name=_('Don\'t record my talk.')
     )
+
+    class urls(Urls):
+        user_base = '{self.event.urls.user_submissions}/{self.code}'
+        withdraw = '{user_base}/withdraw'
+        confirm = '{user_base}/confirm'
+        public = '{self.event.base}/talk/{self.code}'
+
+    class orga_urls(Urls):
+        base = '{self.event.orga_urls.submissions}/{self.pk}'
+        edit = '{base}/edit'
+        accept = '{base}/accept'
+        reject = '{base}/reject'
+        confirm = '{base}/confirm'
+        questions = '{base}/questions'
+        speakers = '{base}/speakers'
+        new_speaker = '{speakers}/add'
+        delete_speaker = '{speakers}/delete'
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)

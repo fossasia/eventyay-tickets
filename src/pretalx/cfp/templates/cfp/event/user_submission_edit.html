@@ -32,7 +32,7 @@
         </p>
         <div class="row">
             <div class="col-md-3 offset-md-9">
-                <a href="{% url "cfp:event.user.submission.withdraw" event=request.event.slug code=submission.code %}"
+                <a href="{{ submission.urls.withdraw }}"
                    class="btn pull-right btn-danger btn-block">
                     {% trans "Withdraw" %}
                 </a>
