@@ -1,13 +1,16 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
-from dateutil.parser import parse
 
+from dateutil.parser import parse
 from django.core.management.base import BaseCommand
 from django.db import transaction
+
 from pretalx.event.models import Event
-from pretalx.person.models import EventPermission, User, SpeakerProfile
+from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
-from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
+from pretalx.submission.models import (
+    Submission, SubmissionStates, SubmissionType,
+)
 
 
 class Command(BaseCommand):
