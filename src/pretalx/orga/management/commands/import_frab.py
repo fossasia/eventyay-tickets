@@ -44,7 +44,7 @@ class Command(BaseCommand):
                     start = parse(date + ' ' + talk.find('start').text)
                     try:
                         end = parse(date + ' ' + talk.find('end').text)
-                    except:
+                    except AttributeError:
                         hours, minutes = talk.find('duration').text.split(':')
                         duration = timedelta(hours=int(hours), minutes=int(minutes))
                         end = start + duration
