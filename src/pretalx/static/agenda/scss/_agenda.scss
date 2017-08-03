@@ -2,64 +2,115 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    float: right;
-    width: 90%;
 
     .day {
-        background-color: #f1f4f9;
+        background: #eceeef;
         display: flex;
         flex-direction: column;
         margin-bottom: 20px;
         width: 100%;
 
-        .date {
-            background-color: #f1f4f9;
-            display: inline-block;
+
+        .header-row {
+            background: #eceeef;
+            border-bottom: 4px solid #1C4A3B;
+            display: flex;
+            flex-direction: row;
             font-weight: 500;
-            margin-left: -100px;
-            padding: 4px;
+
+            .date {
+                flex: 0 0 100px;
+                display: inline-block;
+                padding: 8px 0;
+            }
+            .room-header {
+                border-left: 2px solid #ccc;
+                flex: 1 0;
+                font-size: 16pt;
+                text-align: center;
+                padding: 8px 0;
+            }
         }
 
         .rooms {
             display: flex;
             flex-direction: row;
-            margin-top: -32px;
 
-            .room {
-                width: 90%;
-
-                .room-header {
-                    border-bottom: 4px solid #1C4A3B;
-                    font-size: 16pt;
-                    font-weight: 500;
-                    text-align: center;
+            .time-column {
+                flex: 0 0 100px;
+                .hour {
+                    height: 120px;
+                    line-height: 30px;
+                    padding-right: 16px;
+                    text-align: right;
                 }
+            }
+
+            background: repeating-linear-gradient(to bottom, #eee, #eee 2px, white 2px, white 30px, #eee 30px, #eee 31px, white 31px, white 60px);
+            .room {
+                border-left: 2px solid #ccc;
+                flex: 1 0;
 
                 .talk-container {
-                    margin: 8px;
                     position: relative;
                 }
                 .talk {
-                    background-color: #8ba;
+                    border: 1px solid #4CAF50;
+                    border-top: 4px solid #4CAF50;
+                    background-color: rgba(255, 255, 255, 0.76);
+                    box-sizing: border-box;
+                    color: rgba(0, 0, 0, 0.87);
                     display: block;
+                    padding: 5px 10px;
                     position: absolute;
-                    width: 100%;
-                    overflow: hidden;
+                    margin: 0 8px;
+                    width: calc(100% - 16px);
 
                     &:hover {
-                        height: auto !important;
-                        z-index: 1000;
-                        background-color: #7a9;
+                        background-color: #F5F5F5;
                     }
-                    .talk-content {
-                        padding: 5px 10px;
+                    &:hover .popover {
+                        display: block;
                     }
 
-                    .talk-title {
-                        font-weight: 500;
+                    .talk-content {
+                        overflow: hidden;
+
+                        .talk-title {
+                            line-height: 28px;
+                            font-weight: 500;
+                        }
+                        .talk-speakers {
+                            line-height: 28px;
+                            font-style: italic;
+                        }
                     }
-                    .talk-speakers {
-                        font-style: italic;
+
+                    &:hover {
+
+                        &::before {
+                            position: absolute;
+                            background-color: #1C4A3B;
+                            border-radius: 2px;
+                            color: rgba(255,255,255,0.87);
+                            content: attr(data-time);
+                            font-weight: 500;
+                            line-height: 1;
+                            padding: 8px 16px;
+                            top: -46px;
+                        }
+
+                        &::after {
+                            position: absolute;
+                            content: '';
+                            left: 24px;
+                            width: 0;
+                            height: 0;
+                            border-left: 8px solid transparent;
+                            border-right: 8px solid transparent;
+                            border-top: 8px solid #1C4A3B;
+                            top: -14px;
+                        }
                     }
 
                 }
