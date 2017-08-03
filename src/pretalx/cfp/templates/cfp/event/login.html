@@ -23,7 +23,7 @@
                 {% bootstrap_field form.login_username layout='inline' %}
                 {% bootstrap_field form.login_password layout='inline' %}
                 <button type="submit" class="btn btn-block btn-primary">{% trans "Log in" %}</button>
-                <a class="btn btn-block btn-link" href="{{ request:event.urls.reset }}">
+                <a class="btn btn-block btn-link" href="{{ request.event.urls.reset }}">
                     {% trans "Reset password" %}
                 </a>
             </div>
