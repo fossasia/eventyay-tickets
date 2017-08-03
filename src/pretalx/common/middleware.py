@@ -27,7 +27,7 @@ class EventPermissionMiddleware:
         event_slug = url.kwargs.get('event')
         if event_slug:
             try:
-                request.event = Event.objects.get(slug=event_slug)
+                request.event = Event.objects.get(slug__iexact=event_slug)
             except Event.DoesNotExist:
                 request.event = None
 
