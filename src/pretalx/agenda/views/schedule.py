@@ -58,10 +58,16 @@ class ScheduleView(ScheduleDataView):
         if 'data' in ctx:
             for date in ctx['data']:
                 if date.get('first_talk') and date.get('last_talk'):
-                    date['height'] = int((date['last_talk'].end - date['first_talk'].start).seconds / 60 * 2)
+                    start = date.get('first_talk').start.replace(second=0, minute=0)
+                    end = date.get('last_talk').end
+                    date['height'] = int((end - start).seconds / 60 * 2)
+                    date['hours'] = [
+                        (start + timedelta(hours=count)).strftime('%H:%M')
+                        for count in range(int((end-start).seconds/3600))
+                    ]
                     for room in date['rooms']:
                         for talk in room.get('talks', []):
-                            talk.top = int((talk.start - date['first_talk'].start).seconds / 60 * 2)
+                            talk.top = int((talk.start - start).seconds / 60 * 2)
                             talk.height = talk.duration * 2
         return ctx
 
