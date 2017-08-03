@@ -31,7 +31,7 @@ class EventPermissionMiddleware:
             except Event.DoesNotExist:
                 request.event = None
 
-            if hasattr(request, 'event') and not request.user.is_anonymous:
+            if hasattr(request, 'event') and request.event and not request.user.is_anonymous:
                 request.is_orga = request.user.is_superuser or EventPermission.objects.filter(
                     user=request.user,
                     event=request.event,
