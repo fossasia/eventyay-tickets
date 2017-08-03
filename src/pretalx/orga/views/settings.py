@@ -34,7 +34,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
-        return Event.objects.get(slug=self.kwargs.get('event'))
+        return self.request.event
 
     def get_success_url(self) -> str:
         return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
@@ -98,12 +98,9 @@ class EventMailSettings(ActionFromUrl, FormView):
 class EventTeam(TemplateView):
     template_name = 'orga/settings/team.html'
 
-    def get_object(self):
-        return Event.objects.get(slug=self.kwargs.get('event'))
-
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        event = self.get_object()
+        event = self.request.event
         ctx['team'] = User.objects.filter(
             permissions__is_orga=True,
             permissions__event=event,
@@ -162,7 +159,7 @@ class EventTeamRetract(View):
 class EventTeamDelete(View):
 
     def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_orga=False)
+        EventPermission.objects.filter(event=request.event, user__id=pk).update(is_orga=False)
         return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
 
 
@@ -175,7 +172,6 @@ class InvitationView(FormView):
         ctx['invitation'] = EventPermission.objects.get(
             invitation_token=self.kwargs.get('code'),
         )
-
         return ctx
 
     def form_valid(self, form):

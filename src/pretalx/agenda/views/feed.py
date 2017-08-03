@@ -14,7 +14,7 @@ class ScheduleFeed(Feed):
     description_template = 'agenda/feed/description.html'
 
     def get_object(self, request, event, *args, **kwargs):
-        return Event.objects.get(slug=event)
+        return request.event
 
     def title(self, obj):
         return f'{obj.name} schedule updates'

@@ -15,25 +15,19 @@ from pretalx.person.models import EventPermission
 
 class EventPageMixin:
     def dispatch(self, request, *args, **kwargs):
-        event_slug = kwargs.get('event')
+        if not request.event and 'event' in request.kwargs:
+            raise Http404()
 
-        if event_slug:
-            try:
-                request.event = Event.objects.get(slug=event_slug)
-            except Event.DoesNotExist:
+        if not request.event.is_public:
+            is_permitted = request.user.is_authenticated and EventPermission.objects.filter(
+                user=request.user,
+                event=request.event,
+                is_orga=True,
+            ).exists()
+            if not is_permitted:
                 raise Http404()
 
-            if not request.event.is_public:
-                is_permitted = request.user.is_authenticated and EventPermission.objects.filter(
-                    user=request.user,
-                    event=request.event,
-                    is_orga=True,
-                ).exists()
-                if not is_permitted:
-                    raise Http404()
-
-            self._select_locale(request)
-
+        self._select_locale(request)
         return super().dispatch(request, *args, **kwargs)
 
     def _language_from_browser(self, request, supported):
