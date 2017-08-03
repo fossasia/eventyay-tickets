@@ -3,6 +3,7 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 from urlman import Urls
 
@@ -157,6 +158,7 @@ class Submission(LogMixin, models.Model):
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
 
+        translation.activate(self.content_locale)
         for speaker in self.speakers.all():
             self.event.accept_template.to_mail(
                 user=speaker, event=self.event, context=template_context_from_submission(self),
@@ -171,6 +173,7 @@ class Submission(LogMixin, models.Model):
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
+        translation.activate(self.content_locale)
         for speaker in self.speakers.all():
             self.event.reject_template.to_mail(
                 user=speaker, event=self.event, context=template_context_from_submission(self),
