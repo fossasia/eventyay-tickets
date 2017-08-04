@@ -106,6 +106,8 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
 class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return redirect(request.event.urls.login)
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user, orga=False)
