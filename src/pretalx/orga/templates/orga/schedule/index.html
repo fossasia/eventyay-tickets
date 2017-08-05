@@ -14,6 +14,7 @@
 {% block scripts %}
     {% compress js %}
     <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
     {% if debug %}
     <script type="text/javascript" src="{% static "vendored/vue.js" %}"></script>
     {% else %}
