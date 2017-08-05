@@ -241,7 +241,7 @@ class RoomDelete(View):
     def dispatch(self, request, event, pk):
         request.event.rooms.get(pk=pk).delete()
         messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
-        return redirect(request.event.orga_url.room_settings)
+        return redirect(request.event.orga_urls.room_settings)
 
 
 class RoomDetail(ActionFromUrl, CreateOrUpdateView):
@@ -256,7 +256,7 @@ class RoomDetail(ActionFromUrl, CreateOrUpdateView):
             return
 
     def get_success_url(self) -> str:
-        return request.event.orga_url.room_settings
+        return self.request.event.orga_urls.room_settings
 
     def form_valid(self, form):
         created = not bool(form.instance.pk)

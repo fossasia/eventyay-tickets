@@ -5,7 +5,6 @@ import dateutil.parser
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
@@ -35,7 +34,7 @@ class ScheduleReleaseView(View):
         else:
             self.request.event.release_schedule(form.cleaned_data['version'], user=request.user)
             messages.success(self.request, _('Nice, your schedule has been released!'))
-        return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.orga_urls.schedule)
 
 
 class ScheduleResetView(View):
@@ -44,7 +43,7 @@ class ScheduleResetView(View):
         schedule_version = self.request.GET.get('version')
         self.request.event.schedules.get(version=schedule_version).unfreeze(user=request.user)
         messages.success(self.request, _('Reset successful – start editing the schedule from your selcted version!'))
-        return redirect(reverse('orga:schedule.main', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.orga_urls.schedule)
 
 
 class RoomList(View):

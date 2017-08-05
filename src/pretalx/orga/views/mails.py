@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
@@ -31,7 +30,7 @@ class OutboxSend(View):
             for mail in self.request.event.queued_mails.filter(sent__isnull=True):
                 mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 mail.send()
-        return redirect(reverse('orga:mails.outbox.list', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.orga_urls.outbox)
 
 
 class OutboxPurge(View):
@@ -44,7 +43,7 @@ class OutboxPurge(View):
         else:
             self.request.event.queued_mails.all().delete()
             self.request.event.log_action('pretalx.mail.delete_all')
-        return redirect(reverse('orga:mails.outbox.list', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.orga_urls.outbox)
 
 
 class OutboxMail(ActionFromUrl, CreateOrUpdateView):
@@ -56,7 +55,7 @@ class OutboxMail(ActionFromUrl, CreateOrUpdateView):
         return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self):
-        return reverse('orga:mails.outbox.list', kwargs={'event': self.object.event.slug})
+        return self.object.event.orga_urls.outbox
 
     def form_valid(self, form):
         messages.success(self.request, 'The email has been saved. When you send it, the updated text will be used.')
@@ -77,7 +76,7 @@ class SendMail(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('orga:mails.send', kwargs={'event': self.request.event.slug})
+        return self.request.event.orga_urls.send_mails
 
     def form_valid(self, form):
         email_set = set()
@@ -132,7 +131,7 @@ class TemplateDetail(ActionFromUrl, CreateOrUpdateView):
         return MailTemplate.objects.filter(event=self.request.event).get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self):
-        return reverse('orga:mails.templates.list', kwargs={'event': self.object.event.slug})
+        return self.request.event.orga_urls.mail_templates
 
     def form_valid(self, form):
         messages.success(self.request, 'The template has been saved - note that already pending emails that are based on this template will not be changed!')
@@ -151,4 +150,4 @@ class TemplateDelete(View):
         template.log_action('pretalx.mail_template.delete', person=self.request.user, orga=True)
         template.delete()
         messages.success(request, 'The template has been deleted.')
-        return redirect(reverse('orga:mails.templates.list', kwargs={'event': request.event.slug}))
+        return redirect(request.event.orga_urls.mail_templates)

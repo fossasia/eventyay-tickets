@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, UpdateView, View
@@ -37,7 +36,7 @@ class CfPTextDetail(ActionFromUrl, UpdateView):
         return self.request.event.cfp
 
     def get_success_url(self) -> str:
-        return reverse('orga:cfp.text.view', kwargs={'event': self.object.event.slug})
+        return self.get_object().urls.base
 
     def form_valid(self, form):
         if not self.sform.is_valid():
@@ -68,7 +67,7 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
         return self.request.event.questions.get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self) -> str:
-        return reverse('orga:cfp.questions.view', kwargs={'event': self.object.event.slug})
+        return self.request.event.cfp.urls.questions
 
     def form_valid(self, form):
         messages.success(self.request, 'The question has been saved.')
@@ -89,7 +88,7 @@ class CfPQuestionDelete(View):
         question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
         question.delete()
         messages.success(request, _('The question has been deleted.'))
-        return redirect(reverse('orga:cfp.questions.view', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.cfp.urls.questions)
 
 
 class SubmissionTypeList(ListView):
@@ -106,7 +105,7 @@ class SubmissionTypeDetail(ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/cfp/submission_type_form.html'
 
     def get_success_url(self) -> str:
-        return reverse('orga:cfp.types.view', kwargs={'event': self.object.event.slug})
+        return self.request.event.cfp.urls.types
 
     def get_object(self):
         return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
@@ -131,7 +130,7 @@ class SubmissionTypeDefault(View):
         self.request.event.cfp.save(update_fields=['default_type'])
         submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
         messages.success(request, _('The Submission Type has been made default.'))
-        return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.cfp.urls.types)
 
 
 class SubmissionTypeDelete(View):
@@ -151,4 +150,4 @@ class SubmissionTypeDelete(View):
                 messages.success(request, _('The Submission Type has been deleted.'))
             except ProtectedError:  # TODO: show which/how many submissions are concerned
                 messages.error(request, _('This Submission Type is in use in a submission and cannot be deleted.'))
-        return redirect(reverse('orga:cfp.types.view', kwargs={'event': self.request.event.slug}))
+        return redirect(self.request.event.cfp.urls.types)

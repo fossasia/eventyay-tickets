@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
@@ -24,10 +23,9 @@ class SubmissionAccept(View):
         try:
             submission.accept(person=request.user)
             messages.success(request, _('The submission has been accepted.'))
-            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
         except SubmissionError:
             messages.error(request, _('A submission must be submitted or rejected to become accepted.'))
-            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+        return redirect(submission.orga_urls.base)
 
 
 class SubmissionConfirm(View):
@@ -38,10 +36,9 @@ class SubmissionConfirm(View):
         try:
             submission.confirm(person=request.user, orga=True)
             messages.success(request, _('The submission has been confirmed.'))
-            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
         except SubmissionError:
             messages.error(request, _('A submission must be accepted to become confirmed.'))
-            return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+        return redirect(submission.orga_urls.base)
 
 
 class SubmissionReject(View):
@@ -50,7 +47,7 @@ class SubmissionReject(View):
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
         submission.reject(person=request.user)
         messages.success(request, _('The submission has been rejected.'))
-        return redirect(reverse('orga:submissions.content.view', kwargs=self.kwargs))
+        return redirect(submission.orga_urls.base)
 
 
 class SubmissionSpeakersAdd(View):
@@ -65,7 +62,7 @@ class SubmissionSpeakersAdd(View):
             messages.success(request, _('The speaker has been added to the submission.'))
         else:
             messages.warning(request, _('The speaker was already part of the submission.'))
-        return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
+        return redirect(submission.orga_urls.speakers)
 
 
 class SubmissionSpeakersDelete(View):
@@ -81,7 +78,7 @@ class SubmissionSpeakersDelete(View):
             messages.success(request, _('The speaker has been removed from the submission.'))
         else:
             messages.warning(request, _('The speaker was not part of this submission.'))
-        return redirect(reverse('orga:submissions.speakers.view', kwargs=self.kwargs))
+        return redirect(submission.orga_urls.speakers)
 
 
 class SubmissionSpeakers(TemplateView):
@@ -131,7 +128,7 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
 
     def get_success_url(self) -> str:
         self.kwargs.update({'pk': self.object.pk})
-        return reverse('orga:submissions.content.view', kwargs=self.kwargs)
+        return self.object.orga_urls.base
 
     def form_valid(self, form):
         created = invited = not self.object
