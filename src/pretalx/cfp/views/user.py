@@ -74,7 +74,7 @@ class SubmissionViewMixin:
                     speakers__in=[self.request.user],
                     id=self.kwargs.get('code')
                 )
-            except Submission.DoesNotExist:
+            except (Submission.DoesNotExist, ValueError):
                 raise Http404()
 
 
