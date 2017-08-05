@@ -34,10 +34,13 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
-        return self.request.event
+        try:
+            return self.request.event
+        except AttributeError:
+            return
 
     def get_success_url(self) -> str:
-        return reverse('orga:settings.event.view', kwargs={'event': self.object.slug})
+        return self.object.orga_urls.settings
 
     def form_valid(self, form):
         new_event = not bool(form.instance.pk)
@@ -61,7 +64,7 @@ class EventMailSettings(ActionFromUrl, FormView):
     template_name = 'orga/settings/mail.html'
 
     def get_success_url(self) -> str:
-        return reverse('orga:settings.mail.view', kwargs={'event': self.request.event.slug})
+        return self.request.event.orga_urls.mail_settings
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -142,25 +145,22 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             request,
             _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
         )
-        return redirect(reverse(
-            'orga:settings.team.view',
-            kwargs={'event': event.slug}
-        ))
+        return redirect(request.event.orga_urls.team_settings)
 
 
 class EventTeamRetract(View):
 
     def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event__slug=event, pk=pk).delete()
+        EventPermission.objects.filter(event=request.event, pk=pk).delete()
         request.event.log_action('pretalx.event.invite.orga.retract', person=request.user, orga=True)
-        return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
+        return redirect(request.event.orga_urls.team_settings)
 
 
 class EventTeamDelete(View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event=request.event, user__id=pk).update(is_orga=False)
-        return redirect(reverse('orga:settings.team.view', kwargs={'event': event}))
+        return redirect(request.event.orga_urls.team_settings)
 
 
 class InvitationView(FormView):
@@ -184,7 +184,7 @@ class InvitationView(FormView):
         permission.save()
         permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
         login(self.request, user)
-        return redirect(reverse('orga:event.dashboard', kwargs={'event': permission.event.slug}))
+        return redirect(permission.event.orga_urls.base)
 
 
 class UserSettings(TemplateView):
@@ -241,7 +241,7 @@ class RoomDelete(View):
     def dispatch(self, request, event, pk):
         request.event.rooms.get(pk=pk).delete()
         messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
-        return redirect(reverse('orga:settings.rooms.list', kwargs={'event': request.event.slug}))
+        return redirect(request.event.orga_url.room_settings)
 
 
 class RoomDetail(ActionFromUrl, CreateOrUpdateView):
@@ -256,7 +256,7 @@ class RoomDetail(ActionFromUrl, CreateOrUpdateView):
             return
 
     def get_success_url(self) -> str:
-        return reverse('orga:settings.rooms.list', kwargs={'event': self.request.event.slug})
+        return request.event.orga_url.room_settings
 
     def form_valid(self, form):
         created = not bool(form.instance.pk)
