@@ -4,8 +4,6 @@ from django.contrib.syndication.views import Feed
 from django.urls import reverse
 from django.utils import feedgenerator
 
-from pretalx.event.models import Event
-
 
 class ScheduleFeed(Feed):
 

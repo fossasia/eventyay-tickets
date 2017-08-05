@@ -9,7 +9,6 @@ from django.utils.translation.trans_real import (
 )
 from django.views.generic import TemplateView
 
-from pretalx.event.models import Event
 from pretalx.person.models import EventPermission
 
 
