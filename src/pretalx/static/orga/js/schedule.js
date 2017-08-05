@@ -242,6 +242,8 @@ var app = new Vue({
       return steps;
     },
     filteredTalks() {
+      if (!this.talks)
+        return []
       return this.talks.filter(talk => {
          return talk.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1
       })
