@@ -8,12 +8,16 @@
 
     <legend>
         {{ submissions.count }} {% trans "submissions" %}
-        <div class="pull-right">
-            <a href="{{ request.event.orga_urls.new_submission }}">
-                <span class="fa fa-plus-square-o" />
-            </a>
-        </div>
     </legend>
+
+    <p>
+        <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
+            <span class="fa fa-plus"></span> {% trans "Add new submission" %}
+        </a>
+        <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
+            <span class="fa fa-print"></span> {% trans "Print cards" %}
+        </a>
+    </p>
 
     <table class="table table-condensed">
         <thead>
