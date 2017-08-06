@@ -26,7 +26,7 @@ class SubmissionCard(Flowable):
         self.submission = submission
         self.styles = styles
         self.width = width
-        self.height = min(3 * max(submission.get_duration(), 30) * mm, A4[1])
+        self.height = min(2.5 * max(submission.get_duration(), 30) * mm, A4[1])
 
     def coord(self, x, y, unit=1):
         """
@@ -56,8 +56,9 @@ class SubmissionCard(Flowable):
         y += h + 2 * mm
         p.drawOn(self.canv, *self.coord(20 * mm, y))
 
-        p = Paragraph(_('{} minutes, {}, {}').format(
+        p = Paragraph(_('{} minutes, #{}, {}, {}').format(
             self.submission.get_duration(),
+            self.submission.code,
             self.submission.content_locale,
             self.submission.state
         ), style=self.styles["Meta"])
