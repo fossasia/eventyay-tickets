@@ -12,11 +12,34 @@
 
   .talk-content {
     .description {
-      font-weight: 500;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border: 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
   }
 
   .speakers {
+    border: 1px solid #4CAF50;
+    border-top: 4px solid #4CAF50;
+    background-color: rgba(255, 255, 255, 0.76);
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    display: block;
+    padding: 5px 10px;
+
+    .speaker-header {
+      font-weight: bold;
+    }
+
+    .speaker-info {
+      margin-top: 8px;
+      padding-top: 8px;
+      margin-bottom: 1rem;
+      border: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
     a.speaker {
       font-weight: bold;
     }

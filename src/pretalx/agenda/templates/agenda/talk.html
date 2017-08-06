@@ -1,6 +1,7 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
 {% load staticfiles %}
 
 {% block content %}
@@ -12,20 +13,28 @@
     </small>
 </h3>
 <div class="talk row">
-
     <div class="talk-content col-lg-8 col-md-6 col-xs-12">
         <div class="description">
-            {{ talk.description }}
+            {{ talk.description|rich_text }}
         </div>
         <div class="abstact">
-            {{ talk.abstract }}
+            {{ talk.abstract|rich_text }}
         </div>
     </div>
     <div class="speakers col-lg-4 col-md-6 col-xs-12">
+        <div class="speaker-header">
+            {% if speakers.1 %}
+                {% trans "Speakers" %}
+            {% elif speakers.0 %}
+                {% trans "Speaker" %}
+            {% endif %}
+        </div>
         {% for speaker in speakers %}
         <div class="speaker-info">
-            <a class="speaker" href="{% url "agenda:speaker" event=request.event.slug name=speaker.nick %}">{{ speaker.name }}</a>
-            <div>{{ speaker.talk_profile.biography }}</div>
+            <div class="speaker" href="{% url "agenda:speaker" event=request.event.slug name=speaker.nick %}">{{ speaker.get_display_name }}</div>
+            {% if speaker.talk_profile.biography %}
+                <div>{{ speaker.talk_profile.biography }}</div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
