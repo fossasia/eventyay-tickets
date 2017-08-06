@@ -288,15 +288,20 @@ var app = new Vue({
     },
     onMouseUp (event) {
       if (dragController.draggedTalk) {
-        api.saveTalk(dragController.draggedTalk).then((response) => {
-          this.talks.forEach((talk, index) => {
-            if (talk.id == response.id) {
-              Object.assign(this.talks[index], response)
-            }
+        if (dragController.event) {
+          api.saveTalk(dragController.draggedTalk).then((response) => {
+            this.talks.forEach((talk, index) => {
+              if (talk.id == response.id) {
+                Object.assign(this.talks[index], response)
+              }
+            })
           })
-        })
-        dragController.stopDragging()
+        } else {
+          window.open(dragController.draggedTalk.url)
+          dragController.stopDragging()
+        }
       }
+      dragController.stopDragging()
     }
   }
 })
