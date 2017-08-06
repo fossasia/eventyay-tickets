@@ -189,8 +189,8 @@ class Submission(LogMixin, models.Model):
             return self.event.current_schedule.talks.filter(submission=self).first()
 
     @property
-    def speaker_names(self):
-        return self.speakers.values_list('name', flat=True)
+    def display_speaker_names(self):
+        return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
 
     def __str__(self):
         return self.title

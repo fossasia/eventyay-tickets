@@ -21,12 +21,12 @@
                 {% trans "We have new talks:" %}
                 <ul>
                     {% for talk in schedule.changes.new_talks %}
-                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.speakers.all|join:', ' }}</li>
+                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
                 {% trans "We have a new talk: " %}
-                »{{ new_talks.0.title }}« {% trans "by" %} {{ new_talks.0.speakers.all|join:', ' }}
+                »{{ new_talks.0.submission.title }}« {% trans "by" %} {{ new_talks.0.submission.display_speaker_names }}
             {% endif %}
             <p>
         {% endif %}
@@ -36,12 +36,12 @@
                 {% trans "Sadly, we had to cancel talks:" %}
                 <ul>
                     {% for talk in schedule.changes.canceled_talks %}
-                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.speakers.all|join:', ' }}</li>
+                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
                 {% trans "We have sadly had to cancel a talk: " %}
-                »{{ schedule.changes.canceled_talks.0.submission.title }}« {% trans "by" %} {{ schedule.changes.canceled_talks.0.submission.speakers.all|join:', ' }}
+                »{{ schedule.changes.canceled_talks.0.submission.title }}« {% trans "by" %} {{ schedule.changes.canceled_talks.0.submission.display_speaker_names }}
             {% endif %}
             <p>
         {% endif %}
@@ -51,12 +51,12 @@
                 {% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}
                 <ul>
                     {% for talk in schedule.changes.moved_talks %}
-                    <li>»{{ talk.talk.title }}« {% trans "by" %} {{ talk.talk.speakers.all|join:', ' }}</li>
+                    <li>»{{ talk.talk.title }}« {% trans "by" %} {{ talk.talk.display_speaker_names }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
                 {% trans "We have moved a talk around: " %}
-                »{{ moved_talks.0.talk.title }}« {% trans "by" %} {{ moved_talks.0.talk.speakers.all|join:', ' }}
+                »{{ moved_talks.0.talk.title }}« {% trans "by" %} {{ moved_talks.0.talk.display_speaker_names }}
             {% endif %}
         {% endif %}
 

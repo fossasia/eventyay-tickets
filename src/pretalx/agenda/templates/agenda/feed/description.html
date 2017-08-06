@@ -5,26 +5,26 @@
     <br>
 
     {% if obj.changes.new_talks.0 and obj.changes.new_talks.1 %}
-        A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.speaker_names|join:', ' }}.
+        A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.display_speaker_names }}.
         <br>
     {% elif obj.changes.new_talks.1 %}
         There are {{ obj.changes.new_talks|length }} new talks:
         <ul>
             {% for new_talk in obj.changes.new_talks %}
-            <li>»{{ new_talk.title }}« by {{ new_talk.speaker_names|join:', ' }}</li>
+            <li>»{{ new_talk.title }}« by {{ new_talk.display_speaker_names }}</li>
             {% endfor %}
         </ul>
         <br>
     {% endif %}
 
     {% if obj.changes.canceled_talks.0 and not obj.changes.canceled_talks.1 %}
-        Sadly, a talk had to be canceled: »{{ obj.changes.canceled_talks.0.title }}« by {{ obj.changes.canceled_talks.0.speaker_names|join:', ' }}.
+        Sadly, a talk had to be canceled: »{{ obj.changes.canceled_talks.0.title }}« by {{ obj.changes.canceled_talks.0.display_speaker_names }}.
         <br>
     {% elif obj.changes.canceled_talks.1 %}
         Sadly, {{ obj.changes.canceled_talks|length }} had to be canceled:
         <ul>
             {% for talk in obj.changes.canceled_talks %}
-            <li>»{{ talk.title }}« by {{ talk.speaker_names|join:', ' }}</li>
+            <li>»{{ talk.title }}« by {{ talk.display_speaker_names }}</li>
             {% endfor %}
         </ul>
         <br>
@@ -36,7 +36,7 @@
             {% for talk in obj.changes.moved_talks %}
             <li>
                 »{{ talk.talk.title }}«
-                by {{ talk.talk.speaker_names|join:', ' }},
+                by {{ talk.talk.display_speaker_names }},
                 from {{ talk.old_start|date:'Y-m-d H:i' }} ({{ talk.old_room }})
                 to {{ talk.new_start|date:'Y-m-d H:i' }} ({{ talk.new_room }})
             </li>
