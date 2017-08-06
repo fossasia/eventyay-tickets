@@ -1,5 +1,7 @@
 from django.conf.urls import include, url
 
+from pretalx.orga.views import cards
+
 from .views import (
     auth, cfp, dashboard, mails, person,
     schedule, settings, speaker, submission,
@@ -48,6 +50,7 @@ orga_urls = [
 
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),
         url('^submissions/new$', submission.SubmissionContent.as_view(), name='submissions.create'),
+        url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
         url('^submissions/(?P<pk>[0-9]+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^edit$', submission.SubmissionContent.as_view(), name='submissions.content.edit'),

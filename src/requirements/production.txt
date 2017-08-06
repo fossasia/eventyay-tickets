@@ -13,3 +13,4 @@ Markdown==2.6.*
 pytz
 urlman==1.1.*
 whitenoise==3.3.*
+reportlab==3.4.*
