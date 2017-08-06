@@ -6,57 +6,52 @@
 {% block content %}
 
 <div id="fahrplan">
-    <div class="schedule-header">
-        <div class="header-right pull-right">
-            <span class="version">{% trans "Version" %} {{ schedule.version }}</span>
-            · <span class="changelog"><a href="{{ request.event.urls.changelog }}"><i class="fa fa-clock-o"></i></a></span>
-            · <span class="feed"><a href="{{ request.event.urls.feed }}"><i class="fa fa-feed"></i></a></span>
-        </div>
-    </div>
     {% for day in data %}
-    <div class="day" id="{{ day.start.date|date:"c" }}">
-        {% if day.first_talk %}
-            <div class="header-row">
-                <a href="#{{ day.start.date|date:"c" }}" class="date">{{ day.start.date|date:"c" }}</a>
-
-                {% for room in day.rooms %}
-                    <div class="room-header">{{ room.name }}</div>
-                {% endfor %}
-            </div>
-            <div class="rooms">
-                <div class="time-column">
-                    {% for hour in day.hours %}
-                        <div class="hour">{{ hour }}</div>
+        <h3 id="{{ day.start.date|date:"c" }}">
+            <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"DATE_FORMAT" }}</a>
+        </h3>
+        <div class="day">
+            {% if day.first_talk %}
+                <div class="header-row">
+                    <span class="date">{{ day.start.date|date:"c" }}</span>
+                    {% for room in day.rooms %}
+                        <div class="room-header">{{ room.name }}</div>
                     {% endfor %}
                 </div>
-                {% for room in day.rooms %}
-                <div class="room">
-                    <div class="talk-container" style="height: {{ day.height }}px">
-                        {% for talk in room.talks %}
-                        <a href="{{ talk.submission.urls.public }}">
-                                
-                            <div class="talk" id="{{ talk.submission.code }}" title="{{ talk.submission.title }} ({{ talk.submission.display_speaker_names }})"
-                                style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px"
-                                data-time="{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}">
-                                <div class="talk-content">
-                                    <span class="talk-title">{{ talk.submission.title }}</span>
-                                    <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
-                                </div>
-                            </div>
-                        </a>
+                <div class="rooms">
+                    <div class="time-column">
+                        {% for hour in day.hours %}
+                            <div class="hour">{{ hour }}</div>
                         {% endfor %}
                     </div>
+                    {% for room in day.rooms %}
+                    <div class="room">
+                        <div class="talk-container" style="height: {{ day.height }}px">
+                            {% for talk in room.talks %}
+                            <a href="{{ talk.submission.urls.public }}">
+
+                                <div class="talk" id="{{ talk.submission.code }}" title="{{ talk.submission.title }} ({{ talk.submission.display_speaker_names }})"
+                                    style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px"
+                                    data-time="{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}">
+                                    <div class="talk-content">
+                                        <span class="talk-title">{{ talk.submission.title }}</span>
+                                        <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
+                                    </div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="no-talks">
-            {% blocktrans with day.start.date as current_day %}
-                <div class="no-talks">No talks on {{ current_day }}.</div>
-            {% endblocktrans %}
-            </div>
-        {% endif %}
-    </div>
+            {% else %}
+                <div class="no-talks">
+                {% blocktrans with day.start.date as current_day %}
+                    <div class="no-talks">No talks on {{ current_day }}.</div>
+                {% endblocktrans %}
+                </div>
+            {% endif %}
+        </div>
     {% endfor %}
 </div>
 

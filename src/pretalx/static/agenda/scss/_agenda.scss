@@ -3,21 +3,14 @@
     flex-direction: column;
     flex-grow: 1;
 
-    .schedule-header {
-        padding-bottom: 16px;
-    }
-
     .day {
         background: #eceeef;
-        display: flex;
-        flex-direction: column;
         margin-bottom: 20px;
-        width: 100%;
+        width: auto;
 
 
         .header-row {
             background: #eceeef;
-            border-bottom: 4px solid #1C4A3B;
             display: flex;
             flex-direction: row;
             font-weight: 500;
@@ -26,9 +19,12 @@
                 flex: 0 0 100px;
                 display: inline-block;
                 padding: 8px 0;
+                border-bottom: 4px solid #1C4A3B;
+                text-align: center;
             }
             .room-header {
                 border-left: 2px solid #ccc;
+                border-bottom: 4px solid #1C4A3B;
                 flex: 1 0;
                 font-size: 16pt;
                 text-align: center;
@@ -48,12 +44,13 @@
                     padding-right: 16px;
                     text-align: right;
                 }
+                background: repeating-linear-gradient(to bottom, #eee, #eee 2px, white 2px, white 30px, #eee 30px, #eee 31px, white 31px, white 60px);
             }
 
-            background: repeating-linear-gradient(to bottom, #eee, #eee 2px, white 2px, white 30px, #eee 30px, #eee 31px, white 31px, white 60px);
             .room {
                 border-left: 2px solid #ccc;
                 flex: 1 0;
+                background: repeating-linear-gradient(to bottom, #eee, #eee 2px, white 2px, white 30px, #eee 30px, #eee 31px, white 31px, white 60px);
 
                 .talk-container {
                     position: relative;
@@ -133,18 +130,6 @@
         width: 100%;
 
         .day {
-            .date {
-                display: block;
-                margin-left: 0;
-                text-align: center;
-                font-weight: bold;
-                background: #000;
-                color: white;
-            }
-
-            .rooms {
-                margin-top: 0;
-            }
             .no-talks {
                 margin-top: 0;
                 text-align: center;
@@ -155,10 +140,11 @@
 }
 @media (max-width: 640px) {
     #fahrplan {
-        .rooms {
-            overflow-y: auto;
+        .day {
+            overflow-y: hidden;
+            overflow-x: auto;
         }
-        .room {
+        .room, .room-header {
             min-width: 150px;
         }
     }
