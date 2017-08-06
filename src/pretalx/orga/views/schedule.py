@@ -56,7 +56,7 @@ class RoomList(View):
             'rooms': [
                 {
                     'id': room.pk,
-                    'name': room.name,
+                    'name': str(room.name),
                     'description': room.description,
                     'capacity': room.capacity,
                 }

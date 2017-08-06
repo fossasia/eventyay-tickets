@@ -145,7 +145,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header">{{ room.name.en }}</div>
+      <div class="room-header">{{ room.name }}</div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
         <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
       </div>
