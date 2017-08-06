@@ -254,8 +254,11 @@ var app = new Vue({
       if (dragController.draggedTalk) {
         dragController.event = event
         var newRoomColumn = document.elementFromPoint(event.clientX, event.clientY)
-        while (!newRoomColumn.dataset.id && !newRoomColumn.id === "unassigned-container" && newRoomColumn.parentElement)
+
+        while (!newRoomColumn.className.match(/room-container/) && newRoomColumn.id !== "unassigned-container" && newRoomColumn.parentElement) {
           newRoomColumn = newRoomColumn.parentElement
+        }
+
         if (newRoomColumn.dataset.id) {
           if (newRoomColumn && (newRoomColumn !== dragController.roomColumn)) {
             if (dragController.roomColumn)
