@@ -69,6 +69,7 @@
                     position: absolute;
                     margin: 0 8px;
                     width: calc(100% - 16px);
+                    overflow: hidden;
 
                     &:hover {
                         background-color: #F5F5F5;
