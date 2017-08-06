@@ -86,6 +86,10 @@ class Event(LogMixin, models.Model):
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
     )
+    update_template = models.ForeignKey(
+        to='mail.MailTemplate', on_delete=models.CASCADE,
+        related_name='+', null=True, blank=True,
+    )
     # enable_feedback = models.BooleanField(default=False)
     # send_notifications = models.BooleanField(default=True)
 
@@ -164,7 +168,7 @@ class Event(LogMixin, models.Model):
         return sub_type
 
     def _build_initial_data(self):
-        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT
+        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT, UPDATE_TEXT
         from pretalx.mail.models import MailTemplate
 
         if not hasattr(self, 'cfp'):
@@ -178,6 +182,7 @@ class Event(LogMixin, models.Model):
         self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
+        self.update_template = self.update_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT)
         self.save()
 
     @cached_property

@@ -37,3 +37,12 @@ submissions - we hope to see you at {event_name} as an attendee instead
 of a speaker!
 
 The {event_name} orga'''))
+
+UPDATE_TEXT = LazyI18nString.from_gettext(_('''Hi!
+
+We have released a new schedule version, and your talk slot has moved:
+From {old_datetime} ({old_room}) to {new_datetime} ({new_room}).
+
+If this poses a problem, don't hesitate to contact us!
+
+The {event_name} orga'''))
