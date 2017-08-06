@@ -21,12 +21,12 @@
                 {% trans "We have new talks:" %}
                 <ul>
                     {% for talk in schedule.changes.new_talks %}
-                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
+                    <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
                 {% trans "We have a new talk: " %}
-                »{{ new_talks.0.submission.title }}« {% trans "by" %} {{ new_talks.0.submission.display_speaker_names }}
+                <a href="{{ new_talks.0.submission.urls.public }}">»{{ new_talks.0.submission.title }}« {% trans "by" %} {{ new_talks.0.submission.display_speaker_names }}</a>
             {% endif %}
             <p>
         {% endif %}
@@ -51,12 +51,12 @@
                 {% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}
                 <ul>
                     {% for talk in schedule.changes.moved_talks %}
-                    <li>»{{ talk.talk.title }}« {% trans "by" %} {{ talk.talk.display_speaker_names }}</li>
+                    <li><a href="{{ talk.talk.urls.public }}">»{{ talk.talk.title }}« {% trans "by" %} {{ talk.talk.display_speaker_names }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
                 {% trans "We have moved a talk around: " %}
-                »{{ moved_talks.0.talk.title }}« {% trans "by" %} {{ moved_talks.0.talk.display_speaker_names }}
+                <a href="{{ talk.talk.urls.public }}">»{{ moved_talks.0.talk.title }}« {% trans "by" %} {{ moved_talks.0.talk.display_speaker_names }}</a>
             {% endif %}
         {% endif %}
 
