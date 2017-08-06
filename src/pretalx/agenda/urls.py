@@ -4,6 +4,7 @@ from .views import feed, location, schedule, speaker
 
 agenda_urls = [
     url('^(?P<event>\w+)/schedule/$', schedule.ScheduleView.as_view(), name='schedule'),
+    url('^(?P<event>\w+)/schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
     url('^(?P<event>\w+)/schedule.xml$', schedule.FrabView.as_view(), name='frab'),
     url('^(?P<event>\w+)/schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
 

@@ -89,3 +89,7 @@ class TalkView(DetailView):
             speaker.talk_profile = speaker.profiles.get(event=self.request.event)
             ctx['speakers'].append(speaker)
         return ctx
+
+
+class ChangelogView(TemplateView):
+    template_name = 'agenda/changelog.html'
