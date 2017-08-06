@@ -3,6 +3,10 @@
     flex-direction: column;
     flex-grow: 1;
 
+    .schedule-header {
+        padding-bottom: 16px;
+    }
+
     .day {
         background: #eceeef;
         display: flex;
