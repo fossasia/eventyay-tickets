@@ -98,6 +98,7 @@ class Event(LogMixin, models.Model):
         user = '{base}/me'
         user_submissions = '{user}/submissions'
         schedule = '{base}/schedule'
+        changelog = '{schedule}/changelog'
         frab = '{schedule}.xml'
         feed = '{schedule}/feed.xml'
         location = '{schedule}/location'
