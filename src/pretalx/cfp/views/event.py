@@ -76,10 +76,7 @@ class EventPageMixin:
         request.LANGUAGE_CODE = translation.get_language()
 
         try:
-            if request.user.is_authenticated:
-                tzname = request.user.timezone
-            else:
-                tzname = request.event.timezone
+            tzname = request.event.timezone
             timezone.activate(pytz.timezone(tzname))
             request.timezone = tzname
         except pytz.UnknownTimeZoneError:
