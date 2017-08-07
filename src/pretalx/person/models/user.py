@@ -86,9 +86,7 @@ class User(AbstractBaseUser):
     pw_reset_time = models.DateTimeField(null=True)
 
     def __str__(self) -> str:
-        if self.email:
-            return f'{self.nick} ({self.email})'
-        return self.nick
+        return self.get_display_name()
 
     def get_full_name(self) -> str:
         if self.name:
