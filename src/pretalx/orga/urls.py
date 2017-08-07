@@ -34,6 +34,10 @@ orga_urls = [
         url('^cfp/types/(?P<pk>[0-9]+)/edit$', cfp.SubmissionTypeDetail.as_view(), name='cfp.type.edit'),
 
         url('^mails/', include([
+            url('^(?P<pk>[0-9]+)$', mails.MailDetail.as_view(), name='mails.outbox.mail.view'),
+            url('^(?P<pk>[0-9]+)/edit$', mails.MailDetail.as_view(), name='mails.outbox.mail.edit'),
+            url('^(?P<pk>[0-9]+)/delete$', mails.OutboxPurge.as_view(), name='mails.outbox.mail.delete'),
+            url('^(?P<pk>[0-9]+)/send$', mails.OutboxSend.as_view(), name='mails.outbox.mail.send'),
             url('^templates$', mails.TemplateList.as_view(), name='mails.templates.list'),
             url('^templates/new$', mails.TemplateDetail.as_view(), name='mails.templates.create'),
             url('^templates/(?P<pk>[0-9]+)/edit$', mails.TemplateDetail.as_view(), name='mails.templates.edit'),
@@ -43,10 +47,6 @@ orga_urls = [
             url('^outbox$', mails.OutboxList.as_view(), name='mails.outbox.list'),
             url('^outbox/send$', mails.OutboxSend.as_view(), name='mails.outbox.send'),
             url('^outbox/purge$', mails.OutboxPurge.as_view(), name='mails.outbox.purge'),
-            url('^outbox/(?P<pk>[0-9]+)$', mails.OutboxMail.as_view(), name='mails.outbox.mail.view'),
-            url('^outbox/(?P<pk>[0-9]+)/edit$', mails.OutboxMail.as_view(), name='mails.outbox.mail.edit'),
-            url('^outbox/(?P<pk>[0-9]+)/delete$', mails.OutboxPurge.as_view(), name='mails.outbox.mail.delete'),
-            url('^outbox/(?P<pk>[0-9]+)/send$', mails.OutboxSend.as_view(), name='mails.outbox.mail.send'),
         ])),
 
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),

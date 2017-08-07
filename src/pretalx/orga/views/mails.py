@@ -7,7 +7,7 @@ from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (
-    MailTemplateForm, OutboxMailForm, WriteMailForm,
+    MailTemplateForm, MailDetailForm, WriteMailForm,
 )
 
 
@@ -54,9 +54,9 @@ class OutboxPurge(View):
         return redirect(self.request.event.orga_urls.outbox)
 
 
-class OutboxMail(ActionFromUrl, CreateOrUpdateView):
+class MailDetail(ActionFromUrl, CreateOrUpdateView):
     model = MailTemplate
-    form_class = OutboxMailForm
+    form_class = MailDetailForm
     template_name = 'orga/mails/outbox_form.html'
 
     def get_object(self) -> MailTemplate:

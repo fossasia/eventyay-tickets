@@ -14,7 +14,7 @@ class MailTemplateForm(ReadOnlyFlag, forms.ModelForm):
         ]
 
 
-class OutboxMailForm(ReadOnlyFlag, forms.ModelForm):
+class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
 
     class Meta:
         model = QueuedMail

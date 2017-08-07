@@ -76,7 +76,7 @@ class QueuedMail(LogMixin, models.Model):
     sent = models.DateTimeField(null=True, blank=True)
 
     class urls(Urls):
-        base = '{self.event.orga_urls.outbox}/{self.pk}'
+        base = '{self.event.orga_urls.mail}/{self.pk}'
         edit = '{base}/edit'
         delete = '{base}/delete'
         send = '{base}/send'
