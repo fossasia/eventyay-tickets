@@ -55,6 +55,12 @@ class ScheduleDataView(EventPageMixin, TemplateView):
 class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
 
+    def get_object(self):
+        obj = super().get_object()
+        if not obj and self.request.is_orga:
+            return self.request.event.wip_schedule
+        return obj
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         tz = pytz.timezone(self.request.event.timezone)
