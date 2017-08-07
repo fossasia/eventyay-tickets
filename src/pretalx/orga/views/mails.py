@@ -24,7 +24,7 @@ class SentMail(ListView):
     template_name = 'orga/mails/sent_list.html'
 
     def get_queryset(self):
-        return self.request.event.queued_mails.filter(sent__isnull=False)
+        return self.request.event.queued_mails.filter(sent__isnull=False).order_by('-sent')
 
 
 class OutboxSend(View):
