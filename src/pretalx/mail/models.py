@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
@@ -80,6 +82,7 @@ class QueuedMail(LogMixin, models.Model):
         edit = '{base}/edit'
         delete = '{base}/delete'
         send = '{base}/send'
+        copy = '{base}/copy'
 
     def send(self):
         if self.sent:
@@ -98,3 +101,10 @@ class QueuedMail(LogMixin, models.Model):
 
         self.sent = now()
         self.save()
+
+    def copy_to_draft(self):
+        new_mail = deepcopy(self)
+        new_mail.pk = None
+        new_mail.sent = None
+        new_mail.save()
+        return new_mail

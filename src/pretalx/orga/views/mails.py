@@ -71,7 +71,16 @@ class MailDetail(ActionFromUrl, CreateOrUpdateView):
         if form.has_changed():
             action = 'pretalx.mail.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        return super().form_valid(form)
+        return ret
+
+
+class MailCopy(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        mail = self.request.event.queued_mails.get(pk=self.kwargs['pk'])
+        new_mail = mail.copy_to_draft()
+        messages.success(request, _('The mail has been copied, you can edit it now.'))
+        return redirect(new_mail.urls.edit)
 
 
 class SendMail(FormView):

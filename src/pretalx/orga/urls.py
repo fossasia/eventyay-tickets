@@ -36,6 +36,7 @@ orga_urls = [
         url('^mails/', include([
             url('^(?P<pk>[0-9]+)$', mails.MailDetail.as_view(), name='mails.outbox.mail.view'),
             url('^(?P<pk>[0-9]+)/edit$', mails.MailDetail.as_view(), name='mails.outbox.mail.edit'),
+            url('^(?P<pk>[0-9]+)/copy$', mails.MailCopy.as_view(), name='mails.outbox.mail.copy'),
             url('^(?P<pk>[0-9]+)/delete$', mails.OutboxPurge.as_view(), name='mails.outbox.mail.delete'),
             url('^(?P<pk>[0-9]+)/send$', mails.OutboxSend.as_view(), name='mails.outbox.mail.send'),
             url('^templates$', mails.TemplateList.as_view(), name='mails.templates.list'),
