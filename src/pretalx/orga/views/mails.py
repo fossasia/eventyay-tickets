@@ -28,30 +28,41 @@ class SentMail(ListView):
 
 
 class OutboxSend(View):
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
             mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
-            mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
-            mail.send()
+            if mail.sent:
+                messages.error(request, _('This mail had been sent already.'))
+            else:
+                mail.send()
+                mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
+                messages.success(request, _('The mail has been sent.'))
         else:
+            qs = self.request.event.queued_mails.filter(sent__isnull=True)
+            count = qs.count()
             for mail in self.request.event.queued_mails.filter(sent__isnull=True):
                 mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 mail.send()
+            messages.success(request, _('{count} mails have been sent.').format(count=count))
         return redirect(self.request.event.orga_urls.outbox)
 
 
 class OutboxPurge(View):
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
-            mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
+            mail = self.request.event.queued_mails.get(sent__isnull=True, pk=self.kwargs.get('pk'))
             mail.delete()
+            mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
+            messages.success(request, _('The mail has been deleted.'))
         else:
-            self.request.event.queued_mails.all().delete()
             self.request.event.log_action('pretalx.mail.delete_all')
-        return redirect(self.request.event.orga_urls.outbox)
+            self.request.event.queued_mails.filter(sent__isnull=True).delete()
+            messages.success(request, _('The mails have been deleted.'))
+        return redirect(request.event.orga_urls.outbox)
 
 
 class MailDetail(ActionFromUrl, CreateOrUpdateView):
@@ -66,7 +77,12 @@ class MailDetail(ActionFromUrl, CreateOrUpdateView):
         return self.object.event.orga_urls.outbox
 
     def form_valid(self, form):
-        messages.success(self.request, 'The email has been saved. When you send it, the updated text will be used.')
+        if form.instance.sent:
+            messages.error(self.request, _('The email has already been sent, you cannot edit it anymore.'))
+            return redirect(self.get_success_url())
+
+        ret = super().form_valid(form)
+        messages.success(self.request, _('The email has been saved. When you send it, the updated text will be used.'))
         form.instance.event = self.request.event
         if form.has_changed():
             action = 'pretalx.mail.' + ('update' if self.object else 'create')
