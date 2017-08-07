@@ -31,6 +31,14 @@
                 {% trans "Send Emails" %}
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if "mails.sent" in url_name %}active{% endif %}"
+              href="{{ request.event.orga_urls.sent_mails }}"
+            >
+                {% trans "Sent Emails" %}
+            </a>
+          </li>
         </ul>
     {% endif %}
 

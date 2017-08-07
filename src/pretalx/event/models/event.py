@@ -117,6 +117,7 @@ class Event(LogMixin, models.Model):
         mail_templates = '{mail}/templates'
         new_template = '{mail_templates}/new'
         outbox = '{mail}/outbox'
+        sent_mails = '{mail}/sent'
         send_outbox = '{outbox}/send'
         purge_outbox = '{outbox}/purge'
         submissions = '{base}/submissions'

@@ -19,6 +19,14 @@ class OutboxList(ListView):
         return self.request.event.queued_mails.filter(sent__isnull=True)
 
 
+class SentMail(ListView):
+    context_object_name = 'mails'
+    template_name = 'orga/mails/sent_list.html'
+
+    def get_queryset(self):
+        return self.request.event.queued_mails.filter(sent__isnull=False)
+
+
 class OutboxSend(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
