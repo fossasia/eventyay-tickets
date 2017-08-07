@@ -12,9 +12,13 @@
                 {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
-                    <a class="btn btn-secondary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
-                    <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
+                    {% if form.instance.sent %}
+                        <a class="btn btn-primary" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
+                    {% else %}
+                        <a class="btn btn-primary" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
+                        <a class="btn btn-secondary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
+                        <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
