@@ -9,7 +9,6 @@
             <tr>
                 <th>{% trans "Subject" %}</th>
                 <th>{% trans "To" %}</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -22,16 +21,6 @@
                 </td>
                 <td>
                     {{ mail.to }}
-                </td>
-                <td class="text-right">
-                    <a href="{{ mail.urls.edit }}"
-                        class="btn btn-sm btn-secondary">
-                        <span class="fa fa-pencil"></span>
-                    </a>
-                    <a href="{{ mail.urls.delete }}"
-                        class="btn btn-sm btn-secondary">
-                        <span class="fa fa-trash"></span>
-                    </a>
                 </td>
             </tr>
             {% endfor %}
