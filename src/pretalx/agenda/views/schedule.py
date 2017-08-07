@@ -1,13 +1,15 @@
 from datetime import timedelta
 
+import pytz
 from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
 
+from pretalx.cfp.views.event import EventPageMixin
 from pretalx.submission.models import Submission
 
 
-class ScheduleDataView(TemplateView):
+class ScheduleDataView(EventPageMixin, TemplateView):
     template_name = 'agenda/schedule.html'
 
     def get_object(self):
@@ -55,11 +57,12 @@ class ScheduleView(ScheduleDataView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
+        tz = pytz.timezone(self.request.event.timezone)
         if 'data' in ctx:
             for date in ctx['data']:
                 if date.get('first_talk') and date.get('last_talk'):
-                    start = date.get('first_talk').start.replace(second=0, minute=0)
-                    end = date.get('last_talk').end
+                    start = date.get('first_talk').start.astimezone(tz).replace(second=0, minute=0)
+                    end = date.get('last_talk').end.astimezone(tz)
                     date['height'] = int((end - start).seconds / 60 * 2)
                     date['hours'] = [
                         (start + timedelta(hours=count)).strftime('%H:%M')
@@ -67,7 +70,7 @@ class ScheduleView(ScheduleDataView):
                     ]
                     for room in date['rooms']:
                         for talk in room.get('talks', []):
-                            talk.top = int((talk.start - start).seconds / 60 * 2)
+                            talk.top = int((talk.start.astimezone(tz) - start).seconds / 60 * 2)
                             talk.height = talk.duration * 2
         return ctx
 

@@ -32,7 +32,7 @@
 
                                 <div class="talk" id="{{ talk.submission.code }}" title="{{ talk.submission.title }} ({{ talk.submission.display_speaker_names }})"
                                     style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px"
-                                    data-time="{{ talk.start.time|date:"H:i" }}–{{ talk.end.time|date:"H:i" }}">
+                                    data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
                                         <span class="talk-title">{{ talk.submission.title }}</span>
                                         <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
