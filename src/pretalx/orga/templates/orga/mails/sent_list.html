@@ -9,6 +9,7 @@
             <tr>
                 <th>{% trans "Subject" %}</th>
                 <th>{% trans "To" %}</th>
+                <th>{% trans "Sent" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,9 @@
                 </td>
                 <td>
                     {{ mail.to }}
+                </td>
+                <td>
+                    {{ mail.sent }}
                 </td>
             </tr>
             {% endfor %}
