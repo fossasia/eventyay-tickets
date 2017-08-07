@@ -6,6 +6,14 @@
 {% block content %}
 
 <div id="fahrplan">
+    <div class="schedule-header">
+        <div class="header-right pull-right">
+            <span class="version">{% trans "Version" %} {{ schedule.version }}</span>
+            · <span class="changelog"><a href="{{ request.event.urls.changelog }}"><i class="fa fa-clock-o"></i></a></span>
+            · <span class="feed"><a href="{{ request.event.urls.feed }}"><i class="fa fa-feed"></i></a></span>
+        </div>
+    </div>
+
     {% for day in data %}
         <h3 id="{{ day.start.date|date:"c" }}">
             <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"DATE_FORMAT" }}</a>
