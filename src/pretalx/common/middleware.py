@@ -31,12 +31,13 @@ class EventPermissionMiddleware:
             except Event.DoesNotExist:
                 request.event = None
 
-            if hasattr(request, 'event') and request.event and not request.user.is_anonymous:
-                request.is_orga = request.user.is_superuser or EventPermission.objects.filter(
-                    user=request.user,
-                    event=request.event,
-                    is_orga=True
-                ).exists()
+            if hasattr(request, 'event') and request.event:
+                if not request.user.is_anonymous:
+                    request.is_orga = request.user.is_superuser or EventPermission.objects.filter(
+                        user=request.user,
+                        event=request.event,
+                        is_orga=True
+                    ).exists()
                 timezone.activate(pytz.timezone(request.event.timezone))
 
         if not request.user.is_anonymous:
