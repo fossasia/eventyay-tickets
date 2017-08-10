@@ -21,6 +21,16 @@ class EventPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
+    def _set_orga_events(self, request):
+        if not request.user.is_anonymous:
+            if request.user.is_superuser:
+                request.orga_events = Event.objects.all()
+            else:
+                request.orga_events = Event.objects.filter(
+                    permissions__user=request.user,
+                    permissions__is_orga=True,
+                )
+
     def __call__(self, request):
         url = resolve(request.path_info)
 
@@ -40,14 +50,7 @@ class EventPermissionMiddleware:
                     ).exists()
                 timezone.activate(pytz.timezone(request.event.timezone))
 
-        if not request.user.is_anonymous:
-            if request.user.is_superuser:
-                request.orga_events = Event.objects.all()
-            else:
-                request.orga_events = Event.objects.filter(
-                    permissions__user=request.user,
-                    permissions__is_orga=True,
-                )
+        self._set_orga_events(request)
 
         if 'orga' in url.namespaces:
             if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED:
