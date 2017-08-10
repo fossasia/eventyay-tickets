@@ -7,7 +7,7 @@ from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (
-    MailTemplateForm, MailDetailForm, WriteMailForm,
+    MailDetailForm, MailTemplateForm, WriteMailForm,
 )
 
 
