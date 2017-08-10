@@ -114,7 +114,7 @@ class TalkUpdate(View):
 
         if data.get('start'):
             talk.start = dateutil.parser.parse(data.get('start'))
-            talk.end = talk.start + timedelta(minutes=talk.duration)
+            talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
         else:
             talk.start = None
             talk.end = None
