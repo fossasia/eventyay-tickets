@@ -9,6 +9,14 @@ from pretalx.cfp.views.event import EventPageMixin
 from pretalx.submission.models import Submission
 
 
+def day_start(dt):
+    return dt.replace(hour=0, minute=0, second=0)
+
+
+def day_end(dt):
+    return dt.replace(hour=23, minute=59, second=59)
+
+
 class ScheduleDataView(EventPageMixin, TemplateView):
     template_name = 'agenda/schedule.html'
 
@@ -38,11 +46,17 @@ class ScheduleDataView(EventPageMixin, TemplateView):
                 'index': index + 1,
                 'start': current_date,
                 'end': current_date + timedelta(days=1),
-                'first_talk': talks.filter(start__date=current_date.date()).order_by('start').first(),
-                'last_talk': talks.filter(end__date=current_date.date()).order_by('end').last(),
+                'first_talk': talks.filter(
+                    start__gte=day_start(current_date), start__lte=day_end(current_date)
+                ).order_by('start').first(),
+                'last_talk': talks.filter(
+                    start__gte=day_start(current_date), start__lte=day_end(current_date)
+                ).order_by('end').last(),
                 'rooms': [{
                     'name': room.name,
-                    'talks': [talk for talk in talks.filter(start__date=current_date.date(), room=room).order_by('start')],
+                    'talks': [talk for talk in talks.filter(
+                        start__gte=day_start(current_date), start__lte=day_end(current_date), room=room
+                    ).order_by('start')],
                 } for room in event.rooms.all()],
             } for index, current_date in enumerate([
                 event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
