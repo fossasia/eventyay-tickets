@@ -55,8 +55,8 @@ class OutboxPurge(View):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
             mail = self.request.event.queued_mails.get(sent__isnull=True, pk=self.kwargs.get('pk'))
-            mail.delete()
             mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
+            mail.delete()
             messages.success(request, _('The mail has been deleted.'))
         else:
             self.request.event.log_action('pretalx.mail.delete_all')
