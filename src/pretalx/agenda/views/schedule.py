@@ -110,7 +110,7 @@ class TalkView(DetailView):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['speakers'] = []
         for speaker in self.object.speakers.all():  # TODO: there's bound to be an elegant annotation for this
-            speaker.talk_profile = speaker.profiles.get(event=self.request.event)
+            speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()
             ctx['speakers'].append(speaker)
         return ctx
 
