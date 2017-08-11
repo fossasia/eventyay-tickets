@@ -106,7 +106,7 @@ class Schedule(LogMixin, models.Model):
         return result
 
     def notify_speakers(self):
-        if self.changes['count'] == self.changes['canceled_talks']:
+        if self.changes['count'] == len(self.changes['canceled_talks']):
             return
 
         speakers = defaultdict(lambda: {'create': [], 'update': []})
