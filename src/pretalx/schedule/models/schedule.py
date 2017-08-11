@@ -80,14 +80,21 @@ class Schedule(LogMixin, models.Model):
             result['action'] = 'create'
             return result
 
-        new_slots = set(talk.submission for talk in self.talks.all())
-        old_slots = set(talk.submission for talk in self.previous_schedule.talks.all())
-        result['new_talks'] = list(new_slots - old_slots)
-        result['canceled_talks'] = list(old_slots - new_slots)
+        new_slots = set(talk for talk in self.talks.select_related('submission', 'room').all())
+        old_slots = set(talk for talk in self.previous_schedule.talks.select_related('submission', 'room').all())
 
-        for submission in (new_slots & old_slots):
-            old_slot = self.previous_schedule.talks.get(submission=submission)
-            new_slot = self.talks.get(submission=submission)
+        new_submissions = set(talk.submission for talk in new_slots)
+        old_submissions = set(talk.submission for talk in old_slots)
+
+        new_slot_by_submission = {talk.submission: talk for talk in new_slots}
+        old_slot_by_submission = {talk.submission: talk for talk in old_slots}
+
+        result['new_talks'] = list(new_submissions - old_submissions)
+        result['canceled_talks'] = list(old_submissions - new_submissions)
+
+        for submission in (new_submissions & old_submissions):
+            old_slot = old_slot_by_submission.get(submission)
+            new_slot = new_slot_by_submission.get(submission)
             if new_slot.room and not old_slot.room:
                 result['new_talks'].append(new_slot)
             elif not new_slot.room and old_slot.room:
