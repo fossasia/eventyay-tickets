@@ -92,7 +92,7 @@ class ScheduleView(ScheduleDataView):
                     for room in date['rooms']:
                         for talk in room.get('talks', []):
                             talk.top = int((talk.start.astimezone(tz) - start).seconds / 60 * 2)
-                            talk.height = talk.duration * 2
+                            talk.height = int(talk.duration * 2)
         return ctx
 
 
