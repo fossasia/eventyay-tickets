@@ -37,18 +37,12 @@ class TalkSlot(LogMixin, models.Model):
             return (self.end - self.start).seconds / 60
         return self.submission.get_duration()
 
-    def copy_to_schedule(self, new_schedule):
+    def copy_to_schedule(self, new_schedule, save=True):
         new_slot = TalkSlot(schedule=new_schedule)
 
         for field in [f for f in self._meta.fields if f.name not in ('id', 'schedule')]:
             setattr(new_slot, field.name, getattr(self, field.name))
 
-        new_slot.save()
+        if save:
+            new_slot.save()
         return new_slot
-
-    def update_visibility(self):
-        from pretalx.submission.models import SubmissionStates
-        self.is_visible = False
-        if self.start is not None and self.submission.state == SubmissionStates.CONFIRMED:
-            self.is_visible = True
-        self.save(update_fields=['is_visible'])

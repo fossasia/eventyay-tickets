@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 import pytz
-from django.db import models
+from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
@@ -10,6 +10,7 @@ from django.utils.translation import override, ugettext_lazy as _
 from pretalx.common.mixins import LogMixin
 from pretalx.mail.models import QueuedMail
 from pretalx.person.models import User
+from pretalx.submission.models import SubmissionStates
 
 
 class Schedule(LogMixin, models.Model):
@@ -30,7 +31,9 @@ class Schedule(LogMixin, models.Model):
         ordering = ('-published', )
         unique_together = (('event', 'version'), )
 
+    @transaction.atomic
     def freeze(self, name, user=None):
+        from pretalx.schedule.models import TalkSlot
         if self.version:
             raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')
 
@@ -40,21 +43,34 @@ class Schedule(LogMixin, models.Model):
         self.log_action('pretalx.schedule.release', person=user, orga=True)
 
         wip_schedule = Schedule.objects.create(event=self.event)
-        for talk in self.talks.all():
-            talk.update_visibility()
-            talk.copy_to_schedule(wip_schedule)
+
+        # Set visibility
+        self.talks.filter(
+            start__isnull=False, submission__state=SubmissionStates.CONFIRMED, is_visible=False
+        ).update(is_visible=True)
+        self.talks.filter(is_visible=True).exclude(
+            start__isnull=False, submission__state=SubmissionStates.CONFIRMED
+        ).update(is_visible=False)
+
+        talks = []
+        for talk in self.talks.select_related('submission', 'room').all():
+            talks.append(talk.copy_to_schedule(wip_schedule, save=False))
+        TalkSlot.objects.bulk_create(talks)
 
         self.notify_speakers()
         return self, wip_schedule
 
     def unfreeze(self, user=None):
+        from pretalx.schedule.models import TalkSlot
         if not self.version:
             raise Exception('Cannot unfreeze schedule version: not released yet.')
         self.event.wip_schedule.talks.all().delete()
         self.event.wip_schedule.delete()
         wip_schedule = Schedule.objects.create(event=self.event)
+        talks = []
         for talk in self.talks.all():
-            talk.copy_to_schedule(wip_schedule)
+            talks.append(talk.copy_to_schedule(wip_schedule, save=False))
+        TalkSlot.objects.bulk_create(talks)
         return self, wip_schedule
 
     @cached_property
