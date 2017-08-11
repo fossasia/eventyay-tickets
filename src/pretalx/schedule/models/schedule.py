@@ -112,7 +112,7 @@ class Schedule(LogMixin, models.Model):
         speakers = defaultdict(lambda: {'create': [], 'update': []})
         if self.changes['action'] == 'create':
             speakers = {
-                speaker: {'create': self.slots.filter(submission__speakers=speaker), 'update': []}
+                speaker: {'create': self.talks.filter(submission__speakers=speaker), 'update': []}
                 for speaker in User.objects.filter(submissions__slots__schedule=self)
             }
         else:
