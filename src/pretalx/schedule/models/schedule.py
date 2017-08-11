@@ -1,9 +1,10 @@
 from collections import defaultdict
 
+import pytz
 from django.db import models
 from django.template.loader import get_template
 from django.utils.functional import cached_property
-from django.utils.timezone import now
+from django.utils.timezone import now, override as tzoverride
 from django.utils.translation import override, ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
@@ -69,6 +70,7 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def changes(self):
+        tz = pytz.timezone(self.event.timezone)
         result = {
             'count': 0,
             'action': 'update',
@@ -103,8 +105,8 @@ class Schedule(LogMixin, models.Model):
                 if new_slot.room:
                     result['moved_talks'].append({
                         'talk': submission,
-                        'old_start': old_slot.start,
-                        'new_start': new_slot.start,
+                        'old_start': old_slot.start.astimezone(tz),
+                        'new_start': new_slot.start.astimezone(tz),
                         'old_room': old_slot.room.name,
                         'new_room': new_slot.room.name,
                     })
@@ -113,6 +115,7 @@ class Schedule(LogMixin, models.Model):
         return result
 
     def notify_speakers(self):
+        tz = pytz.timezone(self.event.timezone)
         if self.changes['count'] == len(self.changes['canceled_talks']):
             return
 
@@ -130,8 +133,10 @@ class Schedule(LogMixin, models.Model):
                 for speaker in moved_talk['talk'].speakers.all():
                     speakers[speaker]['update'].append(moved_talk)
         for speaker in speakers:
-            with override(speaker.locale):
-                text = get_template('schedule/speaker_notification.txt').render({'speaker': speaker, **speakers[speaker]})
+            with override(speaker.locale), tzoverride(tz):
+                text = get_template('schedule/speaker_notification.txt').render(
+                    {'speaker': speaker, **speakers[speaker]}
+                )
             QueuedMail.objects.create(
                 event=self.event,
                 to=speaker.email,
