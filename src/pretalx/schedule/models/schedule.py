@@ -1,9 +1,14 @@
+from collections import defaultdict
+
 from django.db import models
+from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import override, ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
+from pretalx.mail.models import QueuedMail
+from pretalx.person.models import User
 
 
 class Schedule(LogMixin, models.Model):
@@ -37,6 +42,8 @@ class Schedule(LogMixin, models.Model):
         for talk in self.talks.all():
             talk.update_visibility()
             talk.copy_to_schedule(wip_schedule)
+
+        self.notify_speakers()
         return self, wip_schedule
 
     def unfreeze(self, user=None):
@@ -97,6 +104,34 @@ class Schedule(LogMixin, models.Model):
 
         result['count'] = len(result['new_talks']) + len(result['canceled_talks']) + len(result['moved_talks'])
         return result
+
+    def notify_speakers(self):
+        if self.changes['count'] == self.changes['canceled_talks']:
+            return
+
+        speakers = defaultdict(lambda: {'create': [], 'update': []})
+        if self.changes['action'] == 'create':
+            speakers = {
+                speaker: {'create': self.slots.filter(submission__speakers=speaker), 'update': []}
+                for speaker in User.objects.filter(submissions__slots__schedule=self)
+            }
+        else:
+            for new_talk in self.changes['new_talks']:
+                for speaker in new_talk.submission.speakers.all():
+                    speakers[speaker]['create'].append(new_talk)
+            for moved_talk in self.changes['moved_talks']:
+                for speaker in moved_talk['talk'].speakers.all():
+                    speakers[speaker]['update'].append(moved_talk)
+        for speaker in speakers:
+            with override(speaker.locale):
+                text = get_template('schedule/speaker_notification.txt').render({'speaker': speaker, **speakers[speaker]})
+            QueuedMail.objects.create(
+                event=self.event,
+                to=speaker.email,
+                reply_to=self.event.email,
+                subject=_('[{event}] New schedule!').format(event=self.event.slug),
+                text=text
+            )
 
     def __str__(self) -> str:
         return str(self.version) or _(f'WIP Schedule for {self.event}')
