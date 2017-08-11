@@ -101,7 +101,7 @@ class Schedule(LogMixin, models.Model):
                 result['new_talks'].append(new_slot)
             elif not new_slot.room and old_slot.room:
                 result['canceled_talks'].append(new_slot)
-            elif old_slot.start != new_slot.start:
+            elif old_slot.start != new_slot.start or old_slot.room != new_slot.room:
                 if new_slot.room:
                     result['moved_talks'].append({
                         'talk': submission,
