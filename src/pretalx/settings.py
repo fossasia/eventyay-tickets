@@ -140,6 +140,10 @@ LOCALE_PATHS = (
     os.path.join(os.path.dirname(__file__), 'locale'),
 )
 
+FORMAT_MODULE_PATH = [
+    'pretalx.common.formats',
+]
+
 SESSION_COOKIE_NAME = 'pretalx_session'
 CSRF_COOKIE_NAME = 'pretalx_csrftoken'
 SESSION_COOKIE_HTTPONLY = True
