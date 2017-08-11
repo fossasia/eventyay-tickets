@@ -132,9 +132,6 @@ class Schedule(LogMixin, models.Model):
 
     def notify_speakers(self):
         tz = pytz.timezone(self.event.timezone)
-        if self.changes['count'] == len(self.changes['canceled_talks']):
-            return
-
         speakers = defaultdict(lambda: {'create': [], 'update': []})
         if self.changes['action'] == 'create':
             speakers = {
@@ -142,6 +139,9 @@ class Schedule(LogMixin, models.Model):
                 for speaker in User.objects.filter(submissions__slots__schedule=self)
             }
         else:
+            if self.changes['count'] == len(self.changes['canceled_talks']):
+                return
+
             for new_talk in self.changes['new_talks']:
                 for speaker in new_talk.submission.speakers.all():
                     speakers[speaker]['create'].append(new_talk)
