@@ -929,6 +929,10 @@ msgstr ""
 "\n"
 "Wir haben eine neue Programmversion, und dein Vortrag wurde verlegt:\n"
 "Von {old_datetime} ({old_room}) nach {new_datetime} ({new_room}).\n"
+"\n"
+"Wenn das ein Problem ist, melde dich einfach!\n"
+"\n"
+"Die {event_name}-Orga"
 
 #: pretalx/mail/models.py:29
 msgid "Reply-To"
@@ -2006,7 +2010,7 @@ msgid ""
 "- Your talk »%(title)s« has been moved to %(start)s in %(location)s"
 msgstr ""
 "\n"
-"- Dein Vortrag «%(title)s« wurde auf %(start) in %(location) verschoben"
+"- Dein Vortrag »%(title)s« wurde auf %(start)s in %(location)s verschoben"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:8
 msgid ""
