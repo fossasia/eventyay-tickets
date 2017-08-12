@@ -51,4 +51,4 @@ See the AUTHORS file for a list of all the awesome folks who contributed to this
 .. _frab: https://github.com/frab/frab
 .. _issues: https://github.com/openeventstack/pretalx/issues/
 .. _me: mailto:rixx@cutebit.de
-.. _pentabarf: http://pentabarf.org/
+.. _pentabarf: https://github.com/nevs/pentabarf/
