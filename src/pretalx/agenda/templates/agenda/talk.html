@@ -14,6 +14,9 @@
     </h3>
     <div class="talk row">
         <div class="talk-content col-lg-8 col-md-6 col-xs-12">
+            {% if talk.do_not_record %}
+                <em>{% trans "This talk will not be recorded." %}</em>
+            {% endif %}
             <div class="description">
                 {{ talk.description|rich_text }}
             </div>
