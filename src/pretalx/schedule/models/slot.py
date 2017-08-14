@@ -34,7 +34,7 @@ class TalkSlot(LogMixin, models.Model):
     @property
     def duration(self):
         if self.start and self.end:
-            return (self.end - self.start).seconds / 60
+            return int((self.end - self.start).seconds / 60)
         return self.submission.get_duration()
 
     def copy_to_schedule(self, new_schedule, save=True):
