@@ -3,6 +3,7 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from urlman import Urls
 
@@ -191,6 +192,10 @@ class Submission(LogMixin, models.Model):
     @property
     def display_speaker_names(self):
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
+
+    @property
+    def export_slug(self):
+        return slugify(f'{self.event.name} {self.title}')
 
     def __str__(self):
         return self.title
