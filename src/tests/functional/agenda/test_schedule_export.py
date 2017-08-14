@@ -12,4 +12,4 @@ def test_schedule_export(slot, client, schedule_schema):
     assert slot.submission.title in content
 
     parser = etree.XMLParser(schema=schedule_schema)
-    root = etree.fromstring(response.content, parser)  # Will raise if the schedule does not match the schema
+    etree.fromstring(response.content, parser)  # Will raise if the schedule does not match the schema
