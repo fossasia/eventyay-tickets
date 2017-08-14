@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 
 from pretalx.common.mixins import LogMixin
@@ -36,6 +38,19 @@ class TalkSlot(LogMixin, models.Model):
         if self.start and self.end:
             return int((self.end - self.start).seconds / 60)
         return self.submission.get_duration()
+
+    @property
+    def export_duration(self):
+        duration = timedelta(minutes=self.duration)
+        days = duration.days
+        hours = duration.seconds // 3600
+        minutes = duration.seconds // 60
+        fmt = f'{minutes:02}:00'
+        if hours or days:
+            fmt = f'{hours:02}:{fmt}'
+        if days:
+            fmt = f'{days}:{fmt}'
+        return fmt
 
     def copy_to_schedule(self, new_schedule, save=True):
         new_slot = TalkSlot(schedule=new_schedule)
