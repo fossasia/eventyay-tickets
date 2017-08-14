@@ -157,3 +157,12 @@ def schedule(event):
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
     return TalkSlot.objects.create(start=now(), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+
+
+@pytest.fixture
+def schedule_schema():
+    from lxml import etree
+    with open('tests/functional/fixtures/schedule.xsd', 'r') as xsd:
+        source = xsd.read()
+    schema = etree.XML(source)
+    return etree.XMLSchema(schema)
