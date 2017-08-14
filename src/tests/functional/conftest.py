@@ -1,11 +1,12 @@
 import datetime
 
 import pytest
+from django.utils.timezone import now
 
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
-from pretalx.schedule.models import Room
+from pretalx.schedule.models import Room, Schedule, TalkSlot
 from pretalx.submission.models import (
     Question, QuestionVariant, Submission, SubmissionType,
 )
@@ -123,6 +124,12 @@ def rejected_submission(submission):
 
 
 @pytest.fixture
+def confirmed_submission(accepted_submission):
+    accepted_submission.confirm()
+    return accepted_submission
+
+
+@pytest.fixture
 def invitation(event):
     return EventPermission.objects.create(event=event, is_orga=True, invitation_token='testtoken', invitation_email='some@test.mail')
 
@@ -140,3 +147,13 @@ def mail(mail_template, speaker, event):
 @pytest.fixture
 def room(event):
     return Room.objects.create(event=event, name='Testroom', description='A fancy room', position=2, capacity=50)
+
+
+@pytest.fixture
+def schedule(event):
+    return Schedule.objects.create(event=event, version='Test Version', published=now())
+
+
+@pytest.fixture
+def slot(confirmed_submission, room, schedule):
+    return TalkSlot.objects.create(start=now(), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
