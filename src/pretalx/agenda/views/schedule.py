@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytz
 from csp.decorators import csp_update
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
 
@@ -96,8 +97,66 @@ class ScheduleView(ScheduleDataView):
         return ctx
 
 
-class FrabView(ScheduleDataView):
+class FrabXmlView(ScheduleDataView):
     template_name = 'agenda/schedule.xml'
+
+
+class FrabJsonView(ScheduleDataView):
+
+    def get(self, request, event, **kwargs):
+        ctx = self.get_context_data(event)
+        data = ctx['data']
+        schedule = self.get_object()
+        result = {
+            'version': schedule.version,
+            'conference': {
+                'acronym': request.event.slug,
+                'title': str(request.event.name),
+                'start': request.event.date_from.strftime('%Y-%m-%d'),
+                'end': request.event.date_to.strftime('%Y-%m-%d'),
+                'daysCount': request.event.duration,
+                'timeslot_duration': '00:05',
+                'days': [
+                    {
+                        'index': day['index'],
+                        'date': day['start'].strftime('%Y-%m-%d'),
+                        'day_start': day['start'].isoformat(),
+                        'day_end': day['end'].isoformat(),
+                        'rooms': {
+                            str(room['name']): [
+                                {
+                                    'id': talk.submission.id,
+                                    'guid': talk.submission.uuid,
+                                    'logo': None,
+                                    'date': talk.start.isoformat(),
+                                    'start': talk.start.strftime('%H:%M'),
+                                    'duration': talk.export_duration,
+                                    'room': str(room['name']),
+                                    'slug': talk.submission.export_slug,
+                                    'title': talk.submission.title,
+                                    'subtitle': '',
+                                    'track': None,
+                                    'type': str(talk.submission.submission_type.name),
+                                    'language': talk.submission.content_locale,
+                                    'abstract': talk.submission.abstract,
+                                    'description': talk.submission.description,
+                                    'recording_license': '',
+                                    'do_not_record': talk.submission.do_not_record,
+                                    'persons': [
+                                        {'id': person.id, 'name': person.get_display_name()}
+                                        for person in talk.submission.speakers.all()
+                                    ],
+                                    'links': [],
+                                    'attachments': [],
+                                } for talk in room['talks']
+                            ] for room in day['rooms']
+                        }
+
+                    } for day in data
+                ]
+            }
+        }
+        return JsonResponse({'schedule': result})
 
 
 class TalkView(DetailView):
