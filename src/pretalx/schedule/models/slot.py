@@ -45,11 +45,13 @@ class TalkSlot(LogMixin, models.Model):
         days = duration.days
         hours = duration.seconds // 3600 - days * 24
         minutes = duration.seconds // 60 % 60
-        fmt = f'{minutes:02}:00'
+        fmt = f'{minutes:02}'
         if hours or days:
             fmt = f'{hours:02}:{fmt}'
-        if days:
-            fmt = f'{days}:{fmt}'
+            if days:
+                fmt = f'{days}:{fmt}'
+        else:
+            fmt = f'00:{fmt}'
         return fmt
 
     def copy_to_schedule(self, new_schedule, save=True):
