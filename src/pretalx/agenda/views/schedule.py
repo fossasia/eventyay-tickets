@@ -106,6 +106,7 @@ class FrabJsonView(ScheduleDataView):
     def get(self, request, event, **kwargs):
         ctx = self.get_context_data(event)
         data = ctx['data']
+        tz = pytz.timezone(self.request.event.timezone)
         schedule = self.get_object()
         result = {
             'version': schedule.version,
@@ -120,16 +121,16 @@ class FrabJsonView(ScheduleDataView):
                     {
                         'index': day['index'],
                         'date': day['start'].strftime('%Y-%m-%d'),
-                        'day_start': day['start'].isoformat(),
-                        'day_end': day['end'].isoformat(),
+                        'day_start': day['start'].astimezone(tz).isoformat(),
+                        'day_end': day['end'].astimezone(tz).isoformat(),
                         'rooms': {
                             str(room['name']): [
                                 {
                                     'id': talk.submission.id,
                                     'guid': talk.submission.uuid,
                                     'logo': None,
-                                    'date': talk.start.isoformat(),
-                                    'start': talk.start.strftime('%H:%M'),
+                                    'date': talk.start.astimezone(tz).isoformat(),
+                                    'start': talk.start.astimezone(tz).strftime('%H:%M'),
                                     'duration': talk.export_duration,
                                     'room': str(room['name']),
                                     'slug': talk.submission.export_slug,
