@@ -43,8 +43,8 @@ class TalkSlot(LogMixin, models.Model):
     def export_duration(self):
         duration = timedelta(minutes=self.duration)
         days = duration.days
-        hours = duration.seconds // 3600
-        minutes = duration.seconds // 60
+        hours = duration.seconds // 3600 - days * 24
+        minutes = duration.seconds // 60 % 60
         fmt = f'{minutes:02}:00'
         if hours or days:
             fmt = f'{hours:02}:{fmt}'
