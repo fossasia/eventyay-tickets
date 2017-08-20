@@ -180,9 +180,10 @@ class Submission(LogMixin, models.Model):
 
     @property
     def uuid(self):
-        if len(self.code) < 16:
-            self.code = self.code + ' ' * (16 - len(self.code))
-        return UUID(bytes=self.code.encode())
+        code = self.code
+        if len(code) < 16:
+            code = code + ' ' * (16 - len(code))
+        return UUID(bytes=code.encode())
 
     @property
     def slot(self):
