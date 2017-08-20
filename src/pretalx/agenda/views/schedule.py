@@ -133,7 +133,7 @@ class FrabJsonView(ScheduleDataView):
                                     'start': talk.start.astimezone(tz).strftime('%H:%M'),
                                     'duration': talk.export_duration,
                                     'room': str(room['name']),
-                                    'slug': talk.submission.export_slug,
+                                    'slug': talk.submission.code,
                                     'title': talk.submission.title,
                                     'subtitle': '',
                                     'track': None,

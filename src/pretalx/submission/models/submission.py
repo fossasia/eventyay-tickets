@@ -193,10 +193,6 @@ class Submission(LogMixin, models.Model):
     def display_speaker_names(self):
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
 
-    @property
-    def export_slug(self):
-        return slugify(f'{self.event.name} {self.title}')
-
     def __str__(self):
         return self.title
 
