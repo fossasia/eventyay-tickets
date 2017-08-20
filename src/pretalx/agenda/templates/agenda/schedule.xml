@@ -14,7 +14,7 @@
             {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
                 <date>{{ talk.start|date:"c" }}</date>
                 <start>{{ talk.start|date:"H:i" }}</start>
-                <duration>{{ talk.export_duration }}:00</duration>
+                <duration>{{ talk.export_duration }}</duration>
                 <room>{{ room.name }}</room>
                 <slug>{{ talk.submission.export_slug }}</slug>
                 <recording>
