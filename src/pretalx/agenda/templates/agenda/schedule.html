@@ -8,9 +8,18 @@
 <div id="fahrplan">
     <div class="schedule-header">
         <div class="header-right pull-right">
-            <span class="version">{% trans "Version" %} {{ schedule.version }}</span>
-            · <span class="changelog"><a href="{{ request.event.urls.changelog }}"><i class="fa fa-clock-o"></i></a></span>
-            · <span class="feed"><a href="{{ request.event.urls.feed }}"><i class="fa fa-feed"></i></a></span>
+            <span class="icon">{% trans "Version" %} {{ schedule.version }}</span>
+            · <span class="icon"><a href="{{ request.event.urls.changelog }}"><i class="fa fa-clock-o"></i></a></span>
+            · <span class="icon"><a href="{{ request.event.urls.feed }}"><i class="fa fa-feed"></i></a></span>
+            · <span class="dropdown">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-code"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="exportDropdown">
+                    <a class="dropdown-item" href="{{ request.event.urls.frab_xml }}">XML (frab)</a>
+                    <a class="dropdown-item" href="{{ request.event.urls.frab_json }}">JSON (frab)</a>
+                </div>
+              </span>
         </div>
     </div>
 
