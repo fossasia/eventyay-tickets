@@ -9,7 +9,6 @@ class Migration(migrations.Migration):
 
     def strip_submission_codes(apps, schema_editor):
         Submission = apps.get_model("submission", "Submission")
-        db_alias = schema_editor.connection.alias
 
         for pk in Submission.objects.all().values_list('pk', flat=True):
             submission = Submission.objects.get(pk=pk)

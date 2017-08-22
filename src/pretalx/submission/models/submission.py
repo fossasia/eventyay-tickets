@@ -3,7 +3,6 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from urlman import Urls
 
