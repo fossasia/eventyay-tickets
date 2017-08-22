@@ -16,6 +16,8 @@ from pretalx.submission.models import Submission, SubmissionError
 
 
 def create_user_as_orga(email, submission=None):
+    if not email:
+        return
 
     user = User.objects.create_user(
         nick=email.split('@')[0].lower(),
@@ -89,13 +91,16 @@ class SubmissionSpeakersAdd(View):
             speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
         except User.DoesNotExist:
             speaker = create_user_as_orga(request.POST.get('nick'), submission=submission)
-        if submission not in speaker.submissions.all():
-            speaker.submissions.add(submission)
-            speaker.save(update_fields=['submissions'])
-            submission.log_action('pretalx.submission.speakers.add', person=request.user, orga=True)
-            messages.success(request, _('The speaker has been added to the submission.'))
+        if not speaker:
+            messages.error(_('Please provide a valid nick or email address!'))
         else:
-            messages.warning(request, _('The speaker was already part of the submission.'))
+            if submission not in speaker.submissions.all():
+                speaker.submissions.add(submission)
+                speaker.save(update_fields=['submissions'])
+                submission.log_action('pretalx.submission.speakers.add', person=request.user, orga=True)
+                messages.success(request, _('The speaker has been added to the submission.'))
+            else:
+                messages.warning(request, _('The speaker was already part of the submission.'))
         return redirect(submission.orga_urls.speakers)
 
 
