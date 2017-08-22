@@ -85,7 +85,10 @@ class SubmissionSpeakersAdd(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-        speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
+        try:
+            speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
+        except User.DoesNotExist:
+            speaker = create_user_as_orga(request.POST.get('nick'), submission=submission)
         if submission not in speaker.submissions.all():
             speaker.submissions.add(submission)
             speaker.save(update_fields=['submissions'])

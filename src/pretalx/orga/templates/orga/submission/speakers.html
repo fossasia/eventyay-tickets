@@ -29,10 +29,12 @@
         </tbody>
     </table>
 
-    <form method="POST" action="{{ submission.orga_urls.new_speaker }}">
-            <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker" %}" />
-            <button type="submit" class="btn btn-sm btn-secondary"><span class="fa fa-plus"></span></button>
-    </form>
+    <div class="content">
+        <form method="POST" action="{{ submission.orga_urls.new_speaker }}">
+            <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker – by nickname if registered, by email to send an invitation" %}">
+            <button type="submit" class="btn btn-secondary"><span class="fa fa-plus"></span></button>
+        </form>
+    </div>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
