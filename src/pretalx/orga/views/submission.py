@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
+from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.urls import build_absolute_uri
@@ -24,8 +24,9 @@ def create_user_as_orga(email, submission=None):
         pw_reset_token=get_random_string(32),
         pw_reset_time=now() + timedelta(days=7),
     )
-    invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': submission.event.slug, 'token': user.pw_reset_token})
-    invitation_text = _('''Hi!
+    with override(submission.content_locale):
+        invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': submission.event.slug, 'token': user.pw_reset_token})
+        invitation_text = _('''Hi!
 
 You have been set as the speaker of a submission to the Call for Participation
 of {event}, titled {title}. An account has been created for you – please follow
@@ -36,12 +37,12 @@ this link to set your account password.
 Afterwards, you can edit your user profile and see the state of your submission.
 
 The {event} orga crew''').format(event=submission.event.name, title=submission.title, invitation_link=invitation_link)
-    QueuedMail.objects.create(
-        event=submission.event,
-        to=user.email,
-        subject=str(_('You have been added to a submission for {event}').format(event=submission.event.name)),
-        text=invitation_text,
-    )
+        QueuedMail.objects.create(
+            event=submission.event,
+            to=user.email,
+            subject=str(_('You have been added to a submission for {event}').format(event=submission.event.name)),
+            text=invitation_text,
+        )
     return user
 
 
