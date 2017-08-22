@@ -15,6 +15,36 @@ from pretalx.person.models import User
 from pretalx.submission.models import Submission, SubmissionError
 
 
+def create_user_as_orga(email, submission=None):
+
+    user = User.objects.create_user(
+        nick=email.split('@')[0].lower(),
+        password=get_random_string(32),
+        email=email.lower(),
+        pw_reset_token=get_random_string(32),
+        pw_reset_time=now() + timedelta(days=7),
+    )
+    invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': submission.event.slug, 'token': user.pw_reset_token})
+    invitation_text = _('''Hi!
+
+You have been set as the speaker of a submission to the Call for Participation
+of {event}, titled {title}. An account has been created for you – please follow
+this link to set your account password.
+
+{invitation_link}
+
+Afterwards, you can edit your user profile and see the state of your submission.
+
+The {event} orga crew''').format(event=submission.event.name, title=submission.title, invitation_link=invitation_link)
+    QueuedMail.objects.create(
+        event=submission.event,
+        to=user.email,
+        subject=str(_('You have been added to a submission for {event}').format(event=submission.event.name)),
+        text=invitation_text,
+    )
+    return user
+
+
 class SubmissionAccept(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -144,31 +174,7 @@ class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
                 user = User.objects.get(email__iexact=email)
                 invited = False
             except User.DoesNotExist:
-                user = User.objects.create_user(
-                    nick=email.lower(),
-                    password=get_random_string(32),
-                    email=email.lower(),
-                    pw_reset_token=get_random_string(32),
-                    pw_reset_time=now() + timedelta(days=7),
-                )
-                invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': self.request.event.slug, 'token': user.pw_reset_token})
-                invitation_text = _('''Hi!
-
-You have been set as the speaker of a submission to the Call for Participation
-of {event}, titled {title}. An account has been created for you – please follow
-this link to set your account password.
-
-    {invitation_link}
-
-Afterwards, you can edit your user profile and see the state of your submission.
-
-The {event} orga crew''').format(event=self.request.event.name, title=form.instance.title, invitation_link=invitation_link)
-                QueuedMail.objects.create(
-                    event=self.request.event,
-                    to=user.email,
-                    subject=str(_('You have been added to a submission for {event}').format(event=self.request.event.name)),
-                    text=invitation_text,
-                )
+                user = create_user_as_orga(email=email, submission=form.instance)
 
             form.instance.speakers.add(user)
 
