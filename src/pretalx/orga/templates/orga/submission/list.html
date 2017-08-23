@@ -7,7 +7,12 @@
 {% block content %}
 
     <legend>
-        {{ submissions.count }} {% trans "submissions" %}
+        {{ submissions.count }}
+        {% blocktrans trimmed count count=submissions.count %}
+        submission
+        {% plural %}
+        submissions
+        {% endblocktrans %}
     </legend>
 
     <p>
