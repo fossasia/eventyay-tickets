@@ -4,7 +4,14 @@
 {% block settings_content %}
 
 <div>
-    <legend>{{ request.event.rooms.count }} {% trans "Rooms" %}</legend>
+    <legend>
+        {{ request.event.rooms.count }}
+        {% blocktrans trimmed count count=request.event.rooms.count %}
+        Room
+        {% plural %}
+        Rooms
+        {% endblocktrans %}
+    </legend>
 
     <table class="table table-condensed">
         <thead>

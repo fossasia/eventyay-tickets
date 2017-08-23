@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-12 09:24-0500\n"
-"PO-Revision-Date: 2017-08-12 16:45+0200\n"
+"POT-Creation-Date: 2017-08-23 15:11-0500\n"
+"PO-Revision-Date: 2017-08-23 22:13+0200\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -1454,7 +1454,6 @@ msgid "Team"
 msgstr "Team"
 
 #: pretalx/orga/templates/orga/settings/base.html:30
-#: pretalx/orga/templates/orga/settings/room_list.html:7
 msgid "Rooms"
 msgstr "Räume"
 
@@ -1475,8 +1474,11 @@ msgid "Save and test custom SMTP connection"
 msgstr "Speichern und SMTP-Einstellung testen"
 
 #: pretalx/orga/templates/orga/settings/room_form.html:8
+#: pretalx/orga/templates/orga/settings/room_list.html:9
 msgid "Room"
-msgstr "Raum"
+msgid_plural "Rooms"
+msgstr[0] "Raum"
+msgstr[1] "Räume"
 
 #: pretalx/orga/templates/orga/settings/room_form.html:13
 msgid "Create room"
@@ -1523,16 +1525,21 @@ msgid "submissions"
 msgstr "Einreichungen"
 
 #: pretalx/orga/templates/orga/speaker/form.html:9
+#: pretalx/orga/templates/orga/submission/list.html:11
 msgid "submission"
-msgstr "Einreichung"
+msgid_plural "submissions"
+msgstr[0] "Einreichung"
+msgstr[1] "Einreichungen"
 
 #: pretalx/orga/templates/orga/speaker/form.html:11
 msgid "Submission"
 msgstr "Einreichung"
 
-#: pretalx/orga/templates/orga/speaker/list.html:9
-msgid "speakers"
-msgstr "Vortragende"
+#: pretalx/orga/templates/orga/speaker/list.html:11
+msgid "speaker"
+msgid_plural "speakers"
+msgstr[0] "Vortragende"
+msgstr[1] "Vortragende"
 
 #: pretalx/orga/templates/orga/speaker/list.html:15
 msgid "Accepted submissions"

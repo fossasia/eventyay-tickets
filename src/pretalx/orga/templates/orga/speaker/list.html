@@ -6,7 +6,14 @@
 {% endblock %}
 {% block content %}
 
-    <legend>{{ speakers.count }} {% trans "speakers" %}</legend>
+    <legend>
+        {{ speakers.count }}
+        {% blocktrans trimmed count count=speakers.count %}
+        speaker
+        {% plural %}
+        speakers
+        {% endblocktrans %}
+    </legend>
     <table class="table table-condensed">
         <thead>
             <tr>
