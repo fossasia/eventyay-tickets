@@ -27,7 +27,7 @@
             {% else %}
                 {% trans "We have a new talk: " %}
                 {% for talk in schedule.changes.new_talks %}
-                    <a href="{{ talk.talk.urls.public }}">»{{ talk.talk.title }}« {% trans "by" %} {{ talk.talk.display_speaker_names }}</a>
+                    <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
                 {% endfor %}
             {% endif %}
             <p>

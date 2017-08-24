@@ -143,7 +143,7 @@ class Schedule(LogMixin, models.Model):
                 return
 
             for new_talk in self.changes['new_talks']:
-                for speaker in new_talk.submission.speakers.all():
+                for speaker in new_talk.speakers.all():
                     speakers[speaker]['create'].append(new_talk)
             for moved_talk in self.changes['moved_talks']:
                 for speaker in moved_talk['talk'].speakers.all():

@@ -4,7 +4,7 @@
     The new version is called "{{ obj.version }}", {% if obj.changes.count %} and brings a few changes:{% else %}but nothing has changed.{% endif %}
     <br>
 
-    {% if obj.changes.new_talks.0 and obj.changes.new_talks.1 %}
+    {% if obj.changes.new_talks.0 and not obj.changes.new_talks.1 %}
         A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.display_speaker_names }}.
         <br>
     {% elif obj.changes.new_talks.1 %}
