@@ -92,7 +92,7 @@ class SubmissionSpeakersAdd(View):
         except User.DoesNotExist:
             speaker = create_user_as_orga(request.POST.get('nick'), submission=submission)
         if not speaker:
-            messages.error(_('Please provide a valid nick or email address!'))
+            messages.error(request, _('Please provide a valid nick or email address!'))
         else:
             if submission not in speaker.submissions.all():
                 speaker.submissions.add(submission)
