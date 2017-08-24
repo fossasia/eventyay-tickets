@@ -40,15 +40,16 @@
         <div id="schedule-choice">
             <div class="input-group">
                 <form class="form-inline">
-                    <select name="version" class="form-control">
-                        <option value="">{% trans "Editor version" %}</option>
+                    <label for="version">{% trans "Version:" %}&nbsp;</label>
+                    <select name="version" id="version" class="form-control">
+                        <option value="">{% trans "Current draft" %}</option>
                         {% for schedule in request.event.schedules.all %}
                             {% if schedule.version %}
                                 <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-primary">{% trans "Go" %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans "View" %}</button>
                 </form>
             </div>
         </div>
@@ -63,7 +64,7 @@
             </div>
         {% else %}
             <form method="post" action="{{ request.event.orga_urls.reset_schedule }}?{{ request.GET.urlencode }}">
-                <button type="submit" class="btn btn-secondary">{% trans "Edit this version" %}</button>
+                <button type="submit" class="btn btn-secondary">{% trans "Reset to selected version" %}</button>
             </form>
         {% endif %}
     </div>
