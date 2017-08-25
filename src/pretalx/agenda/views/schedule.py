@@ -160,7 +160,7 @@ class FrabJsonView(ScheduleDataView):
         return JsonResponse({'schedule': result})
 
 
-class TalkView(DetailView):
+class TalkView(EventPageMixin, DetailView):
     context_object_name = 'talk'
     model = Submission
     slug_field = 'code'
