@@ -27,4 +27,6 @@ cfp_urls = [
 
     url('^locale/set', locale.LocaleSet.as_view(),
         name='locale.set'),
+
+    url('^$', event.GeneralView.as_view()),
 ]

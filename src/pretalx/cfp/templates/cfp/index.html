@@ -1,0 +1,18 @@
+{% load compress %}
+{% load staticfiles %}
+{% load i18n %}
+
+<html>
+    <head>
+        <title>pretalx</title>
+    </head>
+    <body>
+        <ul>
+            {% for event in events %}
+            <li>
+                <a href="{{ event.urls.base }}">{{ event.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

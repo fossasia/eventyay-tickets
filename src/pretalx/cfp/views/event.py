@@ -9,6 +9,7 @@ from django.utils.translation.trans_real import (
 )
 from django.views.generic import TemplateView
 
+from pretalx.event.models import Event
 from pretalx.person.models import EventPermission
 
 
@@ -92,3 +93,12 @@ class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):
 
 class EventStartpage(EventPageMixin, TemplateView):
     template_name = 'cfp/event/index.html'
+
+
+class GeneralView(TemplateView):
+    template_name = 'cfp/index.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['events'] = Event.objects.filter(is_public=True)
+        return ctx
