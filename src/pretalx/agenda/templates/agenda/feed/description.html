@@ -1,48 +1,56 @@
+{% load i18n %}
 {% if obj.changes.action == 'update' %}
     A new {{ obj.event.name }} schedule has been released!
 
     The new version is called "{{ obj.version }}", {% if obj.changes.count %} and brings a few changes:{% else %}but nothing has changed.{% endif %}
-    <br>
-
-    {% if obj.changes.new_talks.0 and not obj.changes.new_talks.1 %}
-        A new talk has been added: »{{ obj.changes.new_talks.0.title }}« by {{ obj.changes.new_talks.0.display_speaker_names }}.
-        <br>
-    {% elif obj.changes.new_talks.1 %}
-        There are {{ obj.changes.new_talks|length }} new talks:
-        <ul>
-            {% for new_talk in obj.changes.new_talks %}
-            <li>»{{ new_talk.title }}« by {{ new_talk.display_speaker_names }}</li>
+    {% if obj.changes.new_talks|length > 0 %}
+        {% if obj.changes.new_talks|length > 1 %}
+            <p>{% trans "We have new talks:" %}</p>
+            <ul>
+                {% for talk in obj.changes.new_talks %}
+                    <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{% trans "We have a new talk: " %}
+            {% for talk in obj.changes.new_talks %}
+                <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
             {% endfor %}
-        </ul>
-        <br>
+        {% endif %}</p>
     {% endif %}
 
-    {% if obj.changes.canceled_talks.0 and not obj.changes.canceled_talks.1 %}
-        Sadly, a talk had to be canceled: »{{ obj.changes.canceled_talks.0.title }}« by {{ obj.changes.canceled_talks.0.display_speaker_names }}.
-        <br>
-    {% elif obj.changes.canceled_talks.1 %}
-        Sadly, {{ obj.changes.canceled_talks|length }} had to be canceled:
-        <ul>
-            {% for talk in obj.changes.canceled_talks %}
-            <li>»{{ talk.title }}« by {{ talk.display_speaker_names }}</li>
-            {% endfor %}
-        </ul>
-        <br>
+    {% if obj.changes.canceled_talks|length > 0 %}
+        {% if obj.changes.canceled_talks|length > 1 %}
+            <p>{% trans "Sadly, we had to cancel talks:" %}</p>
+            <ul>
+                {% for talk in obj.changes.canceled_talks %}
+                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{% trans "We have sadly had to cancel a talk: " %}
+                {% for talk in obj.changes.canceled_talks %}
+                    »{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                {% endfor %}</p>
+        {% endif %}
     {% endif %}
 
-    {% if obj.changes.moved_talks.0 %}
-        Some talks were moved around:
-        <ul>
-            {% for talk in obj.changes.moved_talks %}
-            <li>
-                »{{ talk.talk.title }}«
-                by {{ talk.talk.display_speaker_names }},
-                from {{ talk.old_start|date:'Y-m-d H:i' }} ({{ talk.old_room }})
-                to {{ talk.new_start|date:'Y-m-d H:i' }} ({{ talk.new_room }})
-            </li>
-            {% endfor %}
-        </ul>
+    {% if obj.changes.moved_talks|length > 0 %}
+        {% if obj.changes.moved_talks|length > 1 %}
+            <p>{% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
+            <ul>
+                {% for talk in obj.changes.moved_talks %}
+                    <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{% trans "We have moved a talk around: " %}
+                {% for talk in obj.changes.moved_talks %}
+                    <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
+                {% endfor %}</p>
+        {% endif %}
     {% endif %}
+
 {% else %}
     The first {{ obj.event.name }} schedule has been released!
 {% endif %}

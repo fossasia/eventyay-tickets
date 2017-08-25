@@ -11,58 +11,56 @@
 
     {% if not schedule.changes.count %}
         {% if schedule.changes.action == 'update' %}
-            {% trans "Nothing has changed, we just wanted to change the version name. It was going out of style." %}
+            <p>{% trans "Nothing has changed, we just wanted to change the version name. It was going out of style." %}</p>
         {% else %}
-            {% trans "We released our first schedule!" %}
+            <p>{% trans "We released our first schedule!" %}</p>
         {% endif %}
     {% else %}
         {% if schedule.changes.new_talks|length > 0 %}
             {% if schedule.changes.new_talks|length > 1 %}
-                {% trans "We have new talks:" %}
+                <p>{% trans "We have new talks:" %}</p>
                 <ul>
                     {% for talk in schedule.changes.new_talks %}
                     <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
-                {% trans "We have a new talk: " %}
+                <p>{% trans "We have a new talk: " %}
                 {% for talk in schedule.changes.new_talks %}
                     <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
                 {% endfor %}
-            {% endif %}
-            <p>
+            {% endif %}</p>
         {% endif %}
 
         {% if schedule.changes.canceled_talks|length > 0 %}
             {% if schedule.changes.canceled_talks|length > 1 %}
-                {% trans "Sadly, we had to cancel talks:" %}
+                <p>{% trans "Sadly, we had to cancel talks:" %}</p>
                 <ul>
                     {% for talk in schedule.changes.canceled_talks %}
                     <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
-                {% trans "We have sadly had to cancel a talk: " %}
+                <p>{% trans "We have sadly had to cancel a talk: " %}
                 {% for talk in schedule.changes.canceled_talks %}
                     »{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                {% endfor %}
+                {% endfor %}</p>
             {% endif %}
-            <p>
         {% endif %}
 
         {% if schedule.changes.moved_talks|length > 0 %}
             {% if schedule.changes.moved_talks|length > 1 %}
-                {% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}
+                <p>{% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
                 <ul>
                     {% for talk in schedule.changes.moved_talks %}
                     <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
-                {% trans "We have moved a talk around: " %}
+                <p>{% trans "We have moved a talk around: " %}
                 {% for talk in schedule.changes.moved_talks %}
                     <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
-                {% endfor %}
+                {% endfor %}</p>
             {% endif %}
         {% endif %}
 
