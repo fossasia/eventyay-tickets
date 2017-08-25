@@ -3,6 +3,7 @@ import string
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -239,8 +240,12 @@ class RoomList(TemplateView):
 class RoomDelete(View):
 
     def dispatch(self, request, event, pk):
-        request.event.rooms.get(pk=pk).delete()
-        messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
+        try:
+            request.event.rooms.get(pk=pk).delete()
+            messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
+        except ProtectedError:  # TODO: show which/how many talks are concerned
+            messages.error(request, _('There is or was a talk scheduled in this room. It cannot be deleted.'))
+
         return redirect(request.event.orga_urls.room_settings)
 
 
