@@ -2,7 +2,7 @@
 
 {% trans "We have released a new schedule, and wanted to tell you:" %}
 {% for slot in create %}{% blocktrans with title=slot.submission.title location=slot.room.name start=slot.start|date:"SHORT_DATETIME_FORMAT" %}
-- Your talk »{{ title }}« will take place at {{ start }} in {{ location }}.{% endblocktrans %}{% endfor %}{% for slot in update %}{% blocktrans with title=slot.talk.title location=slot.new_room start=slot.new_start|date:"SHORT_DATETIME_FORMAT" %}
+- Your talk »{{ title }}« will take place at {{ start }} in {{ location }}.{% endblocktrans %}{% endfor %}{% for slot in update %}{% blocktrans with title=slot.submission.title location=slot.new_room start=slot.new_start|date:"SHORT_DATETIME_FORMAT" %}
 - Your talk »{{ title }}« has been moved to {{ start }} in {{ location }}{% endblocktrans %}
 {% endfor %}
 {% blocktrans %}

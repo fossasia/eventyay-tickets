@@ -107,8 +107,8 @@ class Schedule(LogMixin, models.Model):
         new_slot_by_submission = {talk.submission: talk for talk in new_slots}
         old_slot_by_submission = {talk.submission: talk for talk in old_slots}
 
-        result['new_talks'] = list(new_submissions - old_submissions)
-        result['canceled_talks'] = list(old_submissions - new_submissions)
+        result['new_talks'] = [new_slot_by_submission.get(s) for s in new_submissions - old_submissions]
+        result['canceled_talks'] = [old_slot_by_submission.get(s) for s in old_submissions - new_submissions]
 
         for submission in (new_submissions & old_submissions):
             old_slot = old_slot_by_submission.get(submission)
@@ -120,7 +120,7 @@ class Schedule(LogMixin, models.Model):
             elif old_slot.start != new_slot.start or old_slot.room != new_slot.room:
                 if new_slot.room:
                     result['moved_talks'].append({
-                        'talk': submission,
+                        'submission': submission,
                         'old_start': old_slot.start.astimezone(tz),
                         'new_start': new_slot.start.astimezone(tz),
                         'old_room': old_slot.room.name,
@@ -143,10 +143,10 @@ class Schedule(LogMixin, models.Model):
                 return
 
             for new_talk in self.changes['new_talks']:
-                for speaker in new_talk.speakers.all():
+                for speaker in new_talk.submission.speakers.all():
                     speakers[speaker]['create'].append(new_talk)
             for moved_talk in self.changes['moved_talks']:
-                for speaker in moved_talk['talk'].speakers.all():
+                for speaker in moved_talk['submission'].speakers.all():
                     speakers[speaker]['update'].append(moved_talk)
         for speaker in speakers:
             with override(speaker.locale), tzoverride(tz):
