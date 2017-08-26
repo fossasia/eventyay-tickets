@@ -218,6 +218,9 @@ class TalkView(EventPageMixin, DetailView):
     slug_field = 'code'
     template_name = 'agenda/talk.html'
 
+    def get_queryset(self):
+        return Submission.objects.filter(event=self.request.event)
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['speakers'] = []
