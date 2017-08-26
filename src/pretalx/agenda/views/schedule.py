@@ -1,11 +1,11 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import pytz
 import vobject
 from csp.decorators import csp_update
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
 
