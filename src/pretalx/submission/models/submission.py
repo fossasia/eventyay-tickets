@@ -94,6 +94,7 @@ class Submission(LogMixin, models.Model):
         default=False,
         verbose_name=_('Don\'t record my talk.')
     )
+    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     class urls(Urls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
@@ -116,9 +117,8 @@ class Submission(LogMixin, models.Model):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
         # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
         # handwriting (2/Z, 4/A, 5/S, 6/G).
-        charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
         while True:
-            code = get_random_string(length=length, allowed_chars=charset)
+            code = get_random_string(length=length, allowed_chars=self.CODE_CHARSET)
             if not Submission.objects.filter(code=code).exists():
                 self.code = code
                 return
@@ -183,6 +183,22 @@ class Submission(LogMixin, models.Model):
         if len(code) < 16:
             code = code + ' ' * (16 - len(code))
         return UUID(bytes=code.encode())
+
+    @property
+    def integer_uuid(self):
+        # For import into Engelsystem, we need to somehow convert our submission code into an unique integer. Luckily,
+        # codes can contain 34 different characters (including compatibility with frab imported data) and normally have
+        # 6 charactes. Since log2(34 **6) == 30.52, that just fits in to a positive 32-bit signed integer (that
+        # Engelsystem expects), if we do it correctly.
+        charset = self.CODE_CHARSET + ['1', '2', '4', '5', '6', '0']  # compatibility with imported frab data
+        base = len(charset)
+        table = {char: i for i, char in enumerate(charset)}
+
+        intval = 0
+        for char in self.code:
+            intval *= base
+            intval += table[char]
+        return intval
 
     @property
     def slot(self):

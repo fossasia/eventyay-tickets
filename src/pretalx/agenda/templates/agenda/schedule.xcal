@@ -9,7 +9,7 @@
         <vevent>
             <method>PUBLISH</method>
             <uid>{{ talk.submission.code }}@{{ request.event.slug }}@{{ domain }}</uid>
-            <pentabarf:event-id>{{ talk.submission.code }}</pentabarf:event-id>
+            <pentabarf:event-id>{{ talk.submission.integer_uuid }}</pentabarf:event-id>
             <pentabarf:event-slug>{{ request.event.slug }}-{{ talk.submission.code }}</pentabarf:event-slug>
             <pentabarf:title>{{ talk.submission.title }}</pentabarf:title>
             <pentabarf:subtitle></pentabarf:subtitle>
@@ -26,7 +26,7 @@
             <url>{{ url }}{{ talk.submission.urls.public }}</url>
             <location>{{ room.name }}</location>
             {% for person in talk.submission.speakers.all %}
-            <attendee>{{ person.name }}</attendee>
+            <attendee>{{ person.get_display_name }}</attendee>
             {% endfor %}
         </vevent>
         {% endfor %}{% endfor %}{% endfor %}

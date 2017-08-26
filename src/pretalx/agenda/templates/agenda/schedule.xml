@@ -29,7 +29,7 @@
                 <abstract>{{ talk.submission.abstract }}</abstract>
                 <description>{{ talk.submission.description }}</description>
                 <persons>
-                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.name }}</person>{% endfor %}
+                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name }}</person>{% endfor %}
                 </persons>
                 <links></links>
             </event>
