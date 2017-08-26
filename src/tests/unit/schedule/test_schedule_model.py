@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from pretalx.schedule.models import Schedule, TalkSlot
+from pretalx.submission.models import Submission
 
 
 @pytest.mark.django_db
@@ -61,6 +62,24 @@ def test_unfreeze(talk_slot):
 
     assert schedules[0].talks.first().room
     assert not schedules[1].talks.first().room
+
+
+@pytest.mark.django_db
+def test_unfreeze_bug72(talk_slot):
+    # https://github.com/openeventstack/pretalx/issues/72
+    event = talk_slot.event
+
+    schedule1, _ = talk_slot.schedule.freeze('Version 1')
+
+    sub = Submission.objects.create(title='Submission 2', event=event, submission_type=event.cfp.default_type)
+    TalkSlot.objects.create(submission=sub, room=talk_slot.room, schedule=event.wip_schedule, is_visible=True)
+    schedule2, _ = event.wip_schedule.freeze('Version 2')
+
+    schedule1.unfreeze()
+
+    assert event.wip_schedule.talks.count() == 2
+    # make sure the cache for wip_schedule is invalidated
+    assert event.wip_schedule.version is None
 
 
 @pytest.mark.django_db
