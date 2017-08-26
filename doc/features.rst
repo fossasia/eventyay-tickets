@@ -74,23 +74,15 @@ Planned features
 
 - More detailed permissions system: Crew and superusers were sufficient for the beginning, but
   now there needs to be clear separation between crew and reviewers, and maybe even track based
-  reviewer teams. (`issue 78`_)
-- Restrict room availability to configurable times (`issue 80`_)
-- Offer 'anywhere in the world' deadline timing. (`issue 81`_)
-- Warn when scheduling a speaker in multiple talks at the same time. (`issue 46`_)
+  reviewer teams. (`#78 <https://github.com/openeventstack/pretalx/issues/78>`_)
+- Restrict room availability to configurable times (`#80 <https://github.com/openeventstack/pretalx/issues/80>`_)
+- Offer 'anywhere in the world' deadline timing. (`#81 <https://github.com/openeventstack/pretalx/issues/81>`_)
+- Warn when scheduling a speaker in multiple talks at the same time. (`#46 <https://github.com/openeventstack/pretalx/issues/46>`_)
 - Offline schedule display, that saves a version of the schedule page in the browser cache
-  and displays it (with a warning) when the user is offline (`issue 15`_)
-- Allow questions per speaker, and not only per submission (`issue 42`_)
-- Allow speakers to upload profile pictures (and possibly other files) (`issue 44`_)
-- Provide an ICAL export (`issue 67`_)
-- Allow speakers to submit their availability (`issue 79`_)
+  and displays it (with a warning) when the user is offline (`#15 <https://github.com/openeventstack/pretalx/issues/15>`_)
+- Allow questions per speaker, and not only per submission (`#42 <https://github.com/openeventstack/pretalx/issues/42>`_)
+- Allow speakers to upload profile pictures (and possibly other files) (`#44 <https://github.com/openeventstack/pretalx/issues/44>`_)
+- Provide an ICAL export (`#67 <https://github.com/openeventstack/pretalx/issues/67>`_)
+- Allow speakers to submit their availability (`#79 <https://github.com/openeventstack/pretalx/issues/79>`_)
 
-.. _issue 15: https://github.com/openeventstack/pretalx/issues/15
-.. _issue 42: https://github.com/openeventstack/pretalx/issues/42
-.. _issue 44: https://github.com/openeventstack/pretalx/issues/44
-.. _issue 46: https://github.com/openeventstack/pretalx/issues/46
-.. _issue 67: https://github.com/openeventstack/pretalx/issues/67
-.. _issue 78: https://github.com/openeventstack/pretalx/issues/78
-.. _issue 79: https://github.com/openeventstack/pretalx/issues/79
-.. _issue 80: https://github.com/openeventstack/pretalx/issues/80
-.. _issue 81: https://github.com/openeventstack/pretalx/issues/81
+.. _issue: https://github.com/openeventstack/pretalx/issues/
