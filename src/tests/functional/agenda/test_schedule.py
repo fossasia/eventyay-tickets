@@ -23,3 +23,9 @@ def test_cannot_see_nonpublic_talk(client, event, slot):
     event.save()
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_cannot_see_other_events_talk(client, event, slot, other_event):
+    response = client.get(slot.submission.urls.public.replace(event.slug, other_event.slug), follow=True)
+    assert response.status_code == 404
