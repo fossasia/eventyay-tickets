@@ -38,3 +38,15 @@ def test_delete_room(orga_client, event, room):
     )
     assert response.status_code == 200
     assert event.rooms.count() == 0
+
+
+@pytest.mark.django_db
+def test_delete_used_room(orga_client, event, room, slot):
+    assert event.rooms.count() == 1
+    assert slot.room == room
+    response = orga_client.get(
+        reverse('orga:settings.rooms.delete', kwargs={'event': event.slug, 'pk': room.pk}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert event.rooms.count() == 1
