@@ -156,7 +156,7 @@ def schedule(event):
 
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
-    return TalkSlot.objects.create(start=now(), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    return TalkSlot.objects.create(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
 
 
 @pytest.fixture
