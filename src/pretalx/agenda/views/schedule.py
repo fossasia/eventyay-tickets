@@ -1,7 +1,9 @@
 from datetime import timedelta
+from urllib.parse import urlparse
 
 import pytz
 from csp.decorators import csp_update
+from django.conf import settings
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
@@ -99,6 +101,16 @@ class ScheduleView(ScheduleDataView):
 
 class FrabXmlView(ScheduleDataView):
     template_name = 'agenda/schedule.xml'
+
+
+class FrabXCalView(ScheduleDataView):
+    template_name = 'agenda/schedule.xcal'
+
+    def get_context_data(self, event):
+        ctx = super().get_context_data(event)
+        ctx['domain'] = urlparse(settings.SITE_URL).netloc
+        ctx['url'] = settings.SITE_URL
+        return ctx
 
 
 class FrabJsonView(ScheduleDataView):

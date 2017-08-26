@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<iCalendar xmlns:pentabarf='http://pentabarf.org' xmlns:xCal='urn:ietf:params:xml:ns:xcal'>
+    <vcalendar>
+        <version>2.0</version>
+        <prodid>-//Pentabarf//Schedule//EN</prodid>
+        <x-wr-caldesc>{{ request.event.name }}</x-wr-caldesc>
+        <x-wr-calname>{{ request.event.name }}</x-wr-calname>
+        {% for day in data %}{% for room in day.rooms %}{% for talk in room.talks %}
+        <vevent>
+            <method>PUBLISH</method>
+            <uid>{{ talk.submission.code }}@{{ request.event.slug }}@{{ domain }}</uid>
+            <pentabarf:event-id>{{ talk.submission.code }}</pentabarf:event-id>
+            <pentabarf:event-slug>{{ request.event.slug }}-{{ talk.submission.code }}</pentabarf:event-slug>
+            <pentabarf:title>{{ talk.submission.title }}</pentabarf:title>
+            <pentabarf:subtitle></pentabarf:subtitle>
+            <pentabarf:language>{{ talk.submission.content_locale }}</pentabarf:language>
+            <pentabarf:language-code>{{ talk.submission.content_locale }}</pentabarf:language-code>
+            <dtstart>{{ talk.start|date:"Ymd\THis" }}</dtstart>
+            <dtend>{{ talk.end|date:"Ymd\THis" }}</dtend>
+            <duration>{{ talk.pentabarf_export_duration }}</duration>
+            <summary>{{ talk.submission.title }}</summary>
+            <description>{{ talk.submission.description|default_if_none:"" }}</description>
+            <class>PUBLIC</class>
+            <status>CONFIRMED</status>
+            <category>{{ talk.submission.submission_type.name }}</category>
+            <url>{{ url }}{{ talk.submission.urls.public }}</url>
+            <location>{{ room.name }}</location>
+            {% for person in talk.submission.speakers.all %}
+            <attendee>{{ person.name }}</attendee>
+            {% endfor %}
+        </vevent>
+        {% endfor %}{% endfor %}{% endfor %}
+    </vcalendar>
+</iCalendar>

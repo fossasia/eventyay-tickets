@@ -54,6 +54,14 @@ class TalkSlot(LogMixin, models.Model):
             fmt = f'00:{fmt}'
         return fmt
 
+    @property
+    def pentabarf_export_duration(self):
+        duration = timedelta(minutes=self.duration)
+        days = duration.days
+        hours = duration.seconds // 3600 - days * 24
+        minutes = duration.seconds // 60 % 60
+        return f'{hours:02}{minutes:02}00'
+
     def copy_to_schedule(self, new_schedule, save=True):
         new_slot = TalkSlot(schedule=new_schedule)
 
