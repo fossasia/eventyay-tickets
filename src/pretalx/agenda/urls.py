@@ -8,6 +8,7 @@ agenda_urls = [
     url('^(?P<event>\w+)/schedule.xml$', schedule.FrabXmlView.as_view(), name='frab-xml'),
     url('^(?P<event>\w+)/schedule.xcal$', schedule.FrabXCalView.as_view(), name='frab-xcal'),
     url('^(?P<event>\w+)/schedule.json$', schedule.FrabJsonView.as_view(), name='frab-json'),
+    url('^(?P<event>\w+)/schedule.ics$', schedule.ICalView.as_view(), name='ical'),
     url('^(?P<event>\w+)/schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
 
     url('^(?P<event>\w+)/location/$', location.LocationView.as_view(), name='location'),

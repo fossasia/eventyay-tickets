@@ -106,6 +106,7 @@ class Event(LogMixin, models.Model):
         frab_xml = '{schedule}.xml'
         frab_json = '{schedule}.json'
         frab_xcal = '{schedule}.xcal'
+        ical = '{schedule}.ics'
         feed = '{schedule}/feed.xml'
         location = '{schedule}/location'
 

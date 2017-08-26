@@ -1,10 +1,11 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from urllib.parse import urlparse
 
 import pytz
+import vobject
 from csp.decorators import csp_update
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
 
@@ -111,6 +112,41 @@ class FrabXCalView(ScheduleDataView):
         ctx['domain'] = urlparse(settings.SITE_URL).netloc
         ctx['url'] = settings.SITE_URL
         return ctx
+
+
+class ICalView(ScheduleDataView):
+    def get(self, request, event, **kwargs):
+        tz = pytz.timezone(self.request.event.timezone)
+        schedule = self.get_object()
+        netloc = urlparse(settings.SITE_URL).netloc
+
+        cal = vobject.iCalendar()
+        cal.add('prodid').value = '-//pretalx//{}//'.format(netloc)
+        creation_time = datetime.now(pytz.utc)
+
+        talks = schedule.talks.filter(
+            is_visible=True
+        ).prefetch_related('submission__speakers').select_related('submission', 'room').order_by('start')
+        for talk in talks:
+            vevent = cal.add('vevent')
+
+            speakers = ', '.join([p.name for p in talk.submission.speakers.all()])
+            vevent.add('summary').value = f'{talk.submission.title} - {speakers}'
+            vevent.add('dtstamp').value = creation_time
+            vevent.add('location').value = str(talk.room.name)
+            vevent.add('uid').value = 'pretalx-{}-{}@{}'.format(
+                request.event.slug, talk.submission.code,
+                netloc
+            )
+
+            vevent.add('dtstart').value = talk.start.astimezone(tz)
+            vevent.add('dtend').value = talk.end.astimezone(tz)
+            vevent.add('description').value = talk.submission.abstract or ""
+            # URL
+
+        resp = HttpResponse(cal.serialize(), content_type='text/calendar')
+        resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}.ics"'
+        return resp
 
 
 class FrabJsonView(ScheduleDataView):

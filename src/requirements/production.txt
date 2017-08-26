@@ -14,3 +14,4 @@ pytz
 urlman==1.1.*
 whitenoise==3.3.*
 reportlab==3.4.*
+vobject==0.9.*
