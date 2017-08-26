@@ -14,15 +14,7 @@ pretalx
    :target: http://pretalx.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation
 
-`pretalx` provides a conference planning tool, featuring
-
-- CfP and talk submission support with a clean interface
-- Accepting/rejecting proposals
-- Communicating with speakers (availability times, further questions)
-- Tools for building and publishing a schedule
-- Interfaces and APIs for related tools
-- Easy-to-use orga interface
-- Different, pluggable review processes
+`pretalx` provides a conference planning tool – read our extensive `feature list`_ in our docs!
 
 Project status
 --------------
@@ -38,7 +30,9 @@ Alternatives
 
 Contributing
 ------------
-If you want to contribute to pretalx, please get in touch with `me`_.
+If you want to contribute to pretalx, please choose an issue and comment on it if anything is unclear. If
+you find bugs you want to fix yourself, please also open an issue, just for documentation purposes.
+Check our `developer documentation`_ on how to set up pretalx.
 
 License
 -------
@@ -52,3 +46,5 @@ See the AUTHORS file for a list of all the awesome folks who contributed to this
 .. _issues: https://github.com/openeventstack/pretalx/issues/
 .. _me: mailto:rixx@cutebit.de
 .. _pentabarf: https://github.com/nevs/pentabarf/
+.. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
+.. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html
