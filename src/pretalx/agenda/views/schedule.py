@@ -33,6 +33,7 @@ class ScheduleDataView(EventPageMixin, TemplateView):
         ctx = super().get_context_data()
         schedule = self.get_object()
         event = self.request.event
+        tz = pytz.timezone(self.request.event.timezone)
 
         if not schedule and self.request.GET.get('version'):
             ctx['version'] = self.request.GET.get('version')
@@ -43,25 +44,28 @@ class ScheduleDataView(EventPageMixin, TemplateView):
             return ctx
         ctx['schedule'] = schedule
         ctx['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
-        talks = schedule.talks.filter(is_visible=True)
+
+        talks = schedule.talks.filter(is_visible=True).select_related(
+            'submission', 'submission__event', 'room'
+        ).prefetch_related(
+            'submission__speakers'
+        ).order_by(
+            'start'
+        )
+        rooms = event.rooms.all()
 
         ctx['data'] = [
             {
                 'index': index + 1,
                 'start': current_date,
                 'end': current_date + timedelta(days=1),
-                'first_talk': talks.filter(
-                    start__gte=day_start(current_date), start__lte=day_end(current_date)
-                ).order_by('start').first(),
-                'last_talk': talks.filter(
-                    start__gte=day_start(current_date), start__lte=day_end(current_date)
-                ).order_by('end').last(),
+                'first_start': min([t.start for t in talks if t.start.astimezone(tz).date() == current_date.date()] or [0]),
+                'last_end': max([t.end for t in talks if t.start.astimezone(tz).date() == current_date.date()] or [0]),
                 'rooms': [{
                     'name': room.name,
-                    'talks': [talk for talk in talks.filter(
-                        start__gte=day_start(current_date), start__lte=day_end(current_date), room=room
-                    ).order_by('start')],
-                } for room in event.rooms.all()],
+                    'talks': [talk for talk in talks
+                              if talk.start.astimezone(tz).date() == current_date.date() and talk.room_id == room.pk],
+                } for room in rooms],
             } for index, current_date in enumerate([
                 event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
             ])
@@ -84,9 +88,9 @@ class ScheduleView(ScheduleDataView):
         tz = pytz.timezone(self.request.event.timezone)
         if 'data' in ctx:
             for date in ctx['data']:
-                if date.get('first_talk') and date.get('last_talk'):
-                    start = date.get('first_talk').start.astimezone(tz).replace(second=0, minute=0)
-                    end = date.get('last_talk').end.astimezone(tz)
+                if date.get('first_start') and date.get('last_end'):
+                    start = date.get('first_start').astimezone(tz).replace(second=0, minute=0)
+                    end = date.get('last_end').astimezone(tz)
                     date['height'] = int((end - start).seconds / 60 * 2)
                     date['hours'] = []
                     d = start
