@@ -30,7 +30,7 @@
             <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"DATE_FORMAT" }}</a>
         </h3>
         <div class="day">
-            {% if day.first_talk %}
+            {% if day.first_start %}
                 <div class="header-row">
                     <span class="date">{{ day.start.date|date:"c" }}</span>
                     {% for room in day.rooms %}
