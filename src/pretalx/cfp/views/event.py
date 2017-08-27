@@ -15,7 +15,7 @@ from pretalx.person.models import EventPermission
 
 class EventPageMixin:
     def dispatch(self, request, *args, **kwargs):
-        if not request.event and 'event' in request.kwargs:
+        if not request.event and 'event' in self.kwargs:
             raise Http404()
 
         if not request.event.is_public:
