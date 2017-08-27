@@ -30,9 +30,10 @@
     </table>
 
     <div class="content">
-        <form method="POST" action="{{ submission.orga_urls.new_speaker }}">
-            <input id="input-nick" name="nick" class="form-control typeahead" type="text" placeholder="{% trans "Additional speaker – by nickname if registered, by email to send an invitation" %}">
-            <button type="submit" class="btn btn-secondary"><span class="fa fa-plus"></span></button>
+        {% trans "Additional speaker – by nickname if registered, by email to send an invitation" %}:<br>
+        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="adder-textbox">
+            <input id="input-nick" name="nick" class="form-control typeahead" type="text">
+            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
         </form>
     </div>
 
