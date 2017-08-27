@@ -193,10 +193,11 @@ class Event(LogMixin, models.Model):
     def pending_mails(self):
         return self.queued_mails.filter(sent__isnull=True).count()
 
-    @cached_property
-    def wip_schedule(self):
+    def get_wip_schedule(self):
         schedule, _ = self.schedules.get_or_create(version__isnull=True)
         return schedule
+
+    wip_schedule = cached_property(get_wip_schedule, 'wip_schedule')
 
     @cached_property
     def current_schedule(self):
