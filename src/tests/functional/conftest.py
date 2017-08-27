@@ -139,9 +139,21 @@ def mail_template(event):
     return MailTemplate.objects.create(event=event, subject='Some Mail', text='Whee mail content!', reply_to='orga@orga.org')
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def mail(mail_template, speaker, event):
     return mail_template.to_mail(speaker, event)
+
+
+@pytest.fixture(scope='function')
+def other_mail(mail_template, event, speaker):
+    return mail_template.to_mail(speaker, event)
+
+
+@pytest.fixture
+def sent_mail(mail_template, speaker, event):
+    mail = mail_template.to_mail(speaker, event)
+    mail.send()
+    return mail
 
 
 @pytest.fixture

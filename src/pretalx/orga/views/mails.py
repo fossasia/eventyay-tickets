@@ -32,7 +32,11 @@ class OutboxSend(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+            try:
+                mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+            except QueuedMail.DoesNotExist:
+                messages.error(request, _('This mail either does not exist or cannot be discarded because it was sent already.'))
+                return redirect(self.request.event.orga_urls.outbox)
             if mail.sent:
                 messages.error(request, _('This mail had been sent already.'))
             else:
@@ -54,7 +58,11 @@ class OutboxPurge(View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
-            mail = self.request.event.queued_mails.get(sent__isnull=True, pk=self.kwargs.get('pk'))
+            try:
+                mail = self.request.event.queued_mails.get(sent__isnull=True, pk=self.kwargs.get('pk'))
+            except QueuedMail.DoesNotExist:
+                messages.error(request, _('This mail either does not exist or cannot be discarded because it was sent already.'))
+                return redirect(self.request.event.orga_urls.outbox)
             mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
             mail.delete()
             messages.success(request, _('The mail has been deleted.'))
