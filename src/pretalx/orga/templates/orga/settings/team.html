@@ -29,9 +29,9 @@
                 {% endif %}
             </li>
         {% endfor %}
-        <li><form method="post" action="{{ request.event.orga_urls.invite }}">
+        <li><form method="post" action="{{ request.event.orga_urls.invite }}" class="adder-textbox">
             <input type="text" name="email" />
-            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-check"></span></button>
+            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
         </form></li>
     </ul>
 

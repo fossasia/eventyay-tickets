@@ -37,6 +37,25 @@ table .btn-secondary {
   text-decoration: line-through;
 }
 
+.adder-textbox {
+  $height: 2rem;
+
+  display: inline-flex;
+
+  input {
+    height: $height;
+    max-width: 250px;
+  }
+
+  .btn {
+    height: $height;
+    width: $height + 0.1rem;
+    text-align: center;
+    vertical-align: top;
+    margin-left: 5px;
+  }
+}
+
 .flex-container {
   display: flex;
   flex-wrap: no-wrap;
