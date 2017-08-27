@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, TemplateView
 
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.submission.models import Submission
+from pretalx.submission.models import Submission, SubmissionStates
 
 
 def day_start(dt):
@@ -219,7 +219,7 @@ class TalkView(EventPageMixin, DetailView):
     template_name = 'agenda/talk.html'
 
     def get_queryset(self):
-        return Submission.objects.filter(event=self.request.event)
+        return Submission.objects.filter(event=self.request.event, state=SubmissionStates.CONFIRMED)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
