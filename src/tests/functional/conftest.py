@@ -48,7 +48,7 @@ def orga_user(event):
 
 @pytest.fixture
 def other_orga_user(event):
-    user = User.objects.create_user('evilorgauser', 'orgapassw0rd')
+    user = User.objects.create_user('evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org')
     EventPermission.objects.create(user=user, event=event, is_orga=True)
     return user
 
