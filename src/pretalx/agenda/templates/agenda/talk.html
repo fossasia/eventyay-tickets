@@ -34,11 +34,29 @@
                     {% endif %}
                 </div>
                 {% for speaker in speakers %}
-                    <div class="speaker-info">
-                        <div class="speaker">{{ speaker.get_display_name }}</div>
-                        {% if speaker.talk_profile.biography %}
-                            <div>{{ speaker.talk_profile.biography }}</div>
-                        {% endif %}
+                    <div class="speaker">
+                        <div class="name">{{ speaker.get_display_name }}</div>
+                        <div class="info">
+                            {% if speaker.talk_profile.biography %}
+                            <p class="biography">{{ speaker.talk_profile.biography }}</p>
+                            {% endif %}
+
+                            {% if speaker.other_talks.count > 1 %}
+                                {% trans 'Other talks by this speaker:' %}
+                                <ul class="speaker-talks">
+                                    {% for talk in speaker.other_talks %}
+                                    <li class="speaker-talk">
+                                        <a href='{{ talk.submission.urls.public }}'>{{ talk.submission.title }}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% elif speaker.other_talks.count == 1 %}
+                                <span class="speaker-talk">
+                                    {% trans 'This speaker also holds' %}
+                                    "<a href='{{ speaker.other_talks.0.submission.urls.public }}'>{{ speaker.other_talks.0.submission.title }}</a>".
+                                </span>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>

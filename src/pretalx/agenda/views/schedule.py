@@ -228,9 +228,11 @@ class TalkView(EventPageMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
+        event_talks = self.request.event.current_schedule.talks.exclude(submission=self.object)
         ctx['speakers'] = []
         for speaker in self.object.speakers.all():  # TODO: there's bound to be an elegant annotation for this
             speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()
+            speaker.other_talks = event_talks.filter(submission__speakers__in=[speaker])
             ctx['speakers'].append(speaker)
         return ctx
 
