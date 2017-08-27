@@ -6,6 +6,9 @@ from django.contrib.contenttypes.models import ContentType
 class LogMixin:
 
     def log_action(self, action, data=None, person=None, orga=False):
+        if not self.pk:
+            return
+
         from pretalx.common.models import ActivityLog
         if data:
             data = json.dumps(data)
