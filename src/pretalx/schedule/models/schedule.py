@@ -69,13 +69,25 @@ class Schedule(LogMixin, models.Model):
         from pretalx.schedule.models import TalkSlot
         if not self.version:
             raise Exception('Cannot unfreeze schedule version: not released yet.')
+
+        # collect all talks, which have been added since this schedule (#72)
+        submission_ids = self.talks.all().values_list('submission_id', flat=True)
+        talks = self.event.wip_schedule.talks \
+            .exclude(submission_id__in=submission_ids) \
+            .union(self.talks.all())
+
+        wip_schedule = Schedule.objects.create(event=self.event)
+        new_talks = []
+        for talk in talks:
+            new_talks.append(talk.copy_to_schedule(wip_schedule, save=False))
+        TalkSlot.objects.bulk_create(new_talks)
+
         self.event.wip_schedule.talks.all().delete()
         self.event.wip_schedule.delete()
-        wip_schedule = Schedule.objects.create(event=self.event)
-        talks = []
-        for talk in self.talks.all():
-            talks.append(talk.copy_to_schedule(wip_schedule, save=False))
-        TalkSlot.objects.bulk_create(talks)
+
+        with suppress(AttributeError):
+            del wip_schedule.event.wip_schedule
+
         return self, wip_schedule
 
     @cached_property
