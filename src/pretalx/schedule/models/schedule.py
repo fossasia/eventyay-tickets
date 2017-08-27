@@ -1,4 +1,5 @@
 from collections import defaultdict
+from contextlib import suppress
 
 import pytz
 from django.db import models, transaction
@@ -58,6 +59,10 @@ class Schedule(LogMixin, models.Model):
         TalkSlot.objects.bulk_create(talks)
 
         self.notify_speakers()
+
+        with suppress(AttributeError):
+            del wip_schedule.event.wip_schedule
+
         return self, wip_schedule
 
     def unfreeze(self, user=None):

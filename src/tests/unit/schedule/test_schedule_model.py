@@ -36,6 +36,13 @@ def test_freeze(talk_slot):
 
 
 @pytest.mark.django_db
+def test_freeze_cache(talk_slot):
+    talk_slot.event.wip_schedule.freeze('Version')
+    # make sure the cache for wip_schedule is invalidated
+    assert talk_slot.event.wip_schedule.version is None
+
+
+@pytest.mark.django_db
 def test_scheduled_talks(talk_slot, room):
     assert talk_slot.schedule.scheduled_talks.count() == 0
     talk_slot.room = room
