@@ -1280,7 +1280,7 @@ msgstr "Postausgang"
 
 #: pretalx/orga/templates/orga/mails/base.html:23
 msgid "Edit Templates"
-msgstr "Vorlagen edieren"
+msgstr "Vorlagen editieren"
 
 #: pretalx/orga/templates/orga/mails/base.html:31
 msgid "Send Emails"
@@ -1384,7 +1384,7 @@ msgstr "Bestätigungsmail"
 #: pretalx/orga/templates/orga/mails/template_list.html:40
 #: pretalx/orga/templates/orga/mails/template_list.html:53
 msgid "Edit template"
-msgstr "Vorlage edieren"
+msgstr "Vorlage editieren"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:29
 msgid "Accept Mail"
