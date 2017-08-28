@@ -1258,8 +1258,8 @@ msgid "Dates and location"
 msgstr "Datum und Ort"
 
 #: pretalx/orga/templates/orga/dashboard.html:23
-msgid "Uh, a new event? Head over here, please!"
-msgstr "Ui, eine neue Veranstaltung? Hier entlang, bitte!"
+msgid "Uh, a new event?<br>Head over here, please!"
+msgstr "Ui, eine neue Veranstaltung?<br>Hier entlang, bitte!"
 
 #: pretalx/orga/templates/orga/invitation.html:7
 #, python-format
