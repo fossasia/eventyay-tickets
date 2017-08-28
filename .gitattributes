@@ -1,1 +1,2 @@
-src/static/vendored/* linguist-vendored
+src/pretalx/static/vendored/* linguist-vendored
+doc/* linguist-documentation
