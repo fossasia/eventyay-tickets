@@ -33,7 +33,7 @@ class Schedule(LogMixin, models.Model):
         unique_together = (('event', 'version'), )
 
     @transaction.atomic
-    def freeze(self, name, user=None):
+    def freeze(self, name, user=None, notify_speakers=True):
         from pretalx.schedule.models import TalkSlot
         if self.version:
             raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')
@@ -58,7 +58,8 @@ class Schedule(LogMixin, models.Model):
             talks.append(talk.copy_to_schedule(wip_schedule, save=False))
         TalkSlot.objects.bulk_create(talks)
 
-        self.notify_speakers()
+        if notify_speakers:
+            self.notify_speakers()
 
         with suppress(AttributeError):
             del wip_schedule.event.wip_schedule
