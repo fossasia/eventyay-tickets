@@ -47,3 +47,14 @@ def test_event_talk_visibility_by_state(client, event, slot, state, expected_res
     slot.submission.save(update_fields=['state'])
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == expected_result
+
+
+@pytest.mark.django_db
+def test_talk_speaker_other_talks(client, event, speaker, slot, other_slot, other_submission):
+    other_submission.speakers.add(speaker)
+    response = client.get(other_submission.urls.public, follow=True)
+
+    assert response.context['speakers']
+    assert len(response.context['speakers'][0].other_talks) == 0
+    assert len(response.context['speakers'][1].other_talks) == 1
+    assert response.context['speakers'][1].other_talks[0].submission.title == 'A Submission'

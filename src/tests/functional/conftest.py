@@ -118,6 +118,12 @@ def accepted_submission(submission):
 
 
 @pytest.fixture
+def other_accepted_submission(other_submission):
+    other_submission.accept()
+    return other_submission
+
+
+@pytest.fixture
 def rejected_submission(submission):
     submission.reject()
     return submission
@@ -127,6 +133,12 @@ def rejected_submission(submission):
 def confirmed_submission(accepted_submission):
     accepted_submission.confirm()
     return accepted_submission
+
+
+@pytest.fixture
+def other_confirmed_submission(other_accepted_submission):
+    other_accepted_submission.confirm()
+    return other_accepted_submission
 
 
 @pytest.fixture
@@ -179,6 +191,11 @@ def past_slot(confirmed_submission, room, schedule):
 @pytest.fixture
 def feedback(past_slot):
     return Feedback.objects.create(talk=past_slot.submission, review='I liked it!')
+
+
+@pytest.fixture
+def other_slot(other_confirmed_submission, room, schedule):
+    return TalkSlot.objects.create(start=now(), end=now() + datetime.timedelta(minutes=30), submission=other_confirmed_submission, room=room, schedule=schedule, is_visible=True)
 
 
 @pytest.fixture
