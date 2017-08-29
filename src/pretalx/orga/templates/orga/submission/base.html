@@ -34,7 +34,9 @@
 
     <legend>
         »{{ submission.title }}«
-        by {{ submission.display_speaker_names }}
+        {% if submission.speakers.exists %}
+            by {{ submission.display_speaker_names }}
+        {% endif %}
         ({% include "cfp/event/fragment_state.html" with state=submission.state %})
     </legend>
 {% endif %}

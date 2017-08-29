@@ -8,13 +8,23 @@
             <p>{% trans "We have new talks:" %}</p>
             <ul>
                 {% for talk in obj.changes.new_talks %}
-                    <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
+                    <li><a href="{{ talk.submission.urls.public }}">
+                        »{{ talk.submission.title }}«
+                        {% if talk.submission.speakers.exists %}
+                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% endif %}
+                    </a></li>
                 {% endfor %}
             </ul>
         {% else %}
             <p>{% trans "We have a new talk: " %}
             {% for talk in obj.changes.new_talks %}
-                <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
+                <a href="{{ talk.submission.urls.public }}">
+                    »{{ talk.submission.title }}«
+                    {% if talk.submission.speakers.exists %}
+                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                    {% endif %}
+                </a>
             {% endfor %}
         {% endif %}</p>
     {% endif %}
@@ -24,13 +34,21 @@
             <p>{% trans "Sadly, we had to cancel talks:" %}</p>
             <ul>
                 {% for talk in obj.changes.canceled_talks %}
-                    <li>»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</li>
+                    <li>
+                        »{{ talk.submission.title }}«
+                        {% if talk.submission.speakers.exists %}
+                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
             <p>{% trans "We have sadly had to cancel a talk: " %}
                 {% for talk in obj.changes.canceled_talks %}
-                    »{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                    »{{ talk.submission.title }}«
+                    {% if talk.submission.speakers.exists %}
+                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                    {% endif %}
                 {% endfor %}</p>
         {% endif %}
     {% endif %}
@@ -40,13 +58,23 @@
             <p>{% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
             <ul>
                 {% for talk in obj.changes.moved_talks %}
-                    <li><a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a></li>
+                    <li><a href="{{ talk.submission.urls.public }}">
+                        »{{ talk.submission.title }}«
+                        {% if talk.submission.speakers.exists %}
+                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% endif %}
+                    </a></li>
                 {% endfor %}
             </ul>
         {% else %}
             <p>{% trans "We have moved a talk around: " %}
                 {% for talk in obj.changes.moved_talks %}
-                    <a href="{{ talk.submission.urls.public }}">»{{ talk.submission.title }}« {% trans "by" %} {{ talk.submission.display_speaker_names }}</a>
+                    <a href="{{ talk.submission.urls.public }}">
+                        »{{ talk.submission.title }}«
+                        {% if talk.submission.speakers.exists %}
+                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
+                        {% endif %}
+                    </a>
                 {% endfor %}</p>
         {% endif %}
     {% endif %}
