@@ -8,7 +8,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
 from pretalx.schedule.models import Room, Schedule, TalkSlot
 from pretalx.submission.models import (
-    Question, QuestionVariant, Submission, SubmissionType,
+    Feedback, Question, QuestionVariant, Submission, SubmissionType,
 )
 
 
@@ -169,6 +169,16 @@ def schedule(event):
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
     return TalkSlot.objects.create(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+
+
+@pytest.fixture
+def past_slot(confirmed_submission, room, schedule):
+    return TalkSlot.objects.create(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+
+
+@pytest.fixture
+def feedback(past_slot):
+    return Feedback.objects.create(talk=past_slot.submission, review='I liked it!')
 
 
 @pytest.fixture
