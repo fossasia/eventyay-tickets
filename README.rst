@@ -19,14 +19,9 @@ pretalx
 Project status
 --------------
 
-`pretalx` is currently unfinished. It supports everything required for talk submission, but has still
-limited support for review and schedule planning. You can monitor the current status in the issues_
-of this repository. Milestones show the current progress towards both of these goals.
-
-Alternatives
-------------
-
-`pretalx` tries to do the same things `frab`_ does, and hence owes a lot to both frab and `pentabarf`_.
+`pretalx` is under active development, but already very usable. It supports everything required for
+talk submission, speaker communication, and scheduling. You can see our currently supported features
+in the `feature list`_ in our documentation, and our issues_.
 
 Contributing
 ------------
@@ -42,9 +37,7 @@ See the LICENSE file for further information..
 This project will be maintained by people to be determined once it is kind of stable.
 See the AUTHORS file for a list of all the awesome folks who contributed to this project.
 
-.. _frab: https://github.com/frab/frab
 .. _issues: https://github.com/openeventstack/pretalx/issues/
 .. _me: mailto:rixx@cutebit.de
-.. _pentabarf: https://github.com/nevs/pentabarf/
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html
