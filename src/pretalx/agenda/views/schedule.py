@@ -5,12 +5,17 @@ import pytz
 import vobject
 from csp.decorators import csp_update
 from django.conf import settings
+from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, TemplateView
+from django.utils.translation import ugettext as _
+from django.views.generic import DetailView, FormView, TemplateView
 
+from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Feedback, Submission, SubmissionStates
 
 
 def day_start(dt):
@@ -232,3 +237,53 @@ class TalkView(EventPageMixin, DetailView):
 
 class ChangelogView(TemplateView):
     template_name = 'agenda/changelog.html'
+
+
+class FeedbackView(EventPageMixin, FormView):
+    model = Feedback
+    form_class = FeedbackForm
+    template_name = 'agenda/feedback_form.html'
+
+    def get(self, *args, **kwargs):
+        obj = self.get_object()
+        if obj and self.request.user in obj.speakers.all():
+            return render(
+                self.request,
+                'agenda/feedback.html',
+                context={
+                    'talk': obj,
+                    'feedback': obj.feedback.filter(Q(speaker__isnull=True) | Q(speaker=self.request.user)),
+                }
+            )
+        return super().get(*args, **kwargs)
+
+    def get_object(self):
+        sub = Submission.objects.filter(
+            event=self.request.event,
+            state=SubmissionStates.CONFIRMED,
+            code=self.kwargs['slug'],
+        ).first()
+        if sub and not sub.does_accept_feedback:
+            return None
+        return sub
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['talk'] = self.get_object()
+        return kwargs
+
+    def get_context_data(self):
+        ctx = super().get_context_data()
+        ctx['talk'] = self.get_object()
+        return ctx
+
+    def form_valid(self, form):
+        if not form.instance.talk.does_accept_feedback:
+            return super().form_invalid(form)
+        ret = super().form_valid(form)
+        form.save()
+        messages.success(self.request, _('Thank you for your feedback!'))
+        return ret
+
+    def get_success_url(self):
+        return self.get_object().urls.public

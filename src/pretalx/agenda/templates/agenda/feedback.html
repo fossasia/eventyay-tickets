@@ -1,0 +1,34 @@
+{% extends "agenda/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load rich_text %}
+{% load staticfiles %}
+
+{% block content %}
+
+    <h3 class="talk-title">
+        {% trans "Feedback for" %} »{{ talk.title }}«
+        <small>
+            {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
+        </small>
+    </h3>
+    <div class="talk feedback-list">
+    {% for opinion in feedback %}
+        <div class="speakers feedback-box">
+            {% if opinion.speaker and talk.speakers.count > 1 %}
+                <div><em>
+                {% trans "This review is for you personally, not for all speakers in this talk" %}
+                </em></div>
+            {% endif %}
+            <i class="fa fa-quote-left quote" aria-hidden="true"></i>
+            <div class="feedback-text">
+                {{ opinion.review|rich_text }}
+            </div>
+            <i class="fa fa-quote-right quote pull-right" aria-hidden="true"></i>
+        </div>
+    {% empty %}
+        {% trans "There has been no feedback for this talk yet." %}
+    {% endfor %}
+
+    </div>
+{% endblock %}

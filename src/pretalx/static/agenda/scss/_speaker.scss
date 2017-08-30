@@ -6,6 +6,21 @@
   display: block;
 }
 
+.talk.feedback-list {
+  flex-direction: column;
+
+  .feedback-box {
+    margin: 20px;
+
+    .fa.quote {
+      font-size: 1.5rem;
+      color: rgba(0, 0, 0, 0.56);
+    }
+    .feedback-text {
+      padding-left: 40px;
+    }
+  }
+}
 .talk {
   display: flex;
   flex-direction: row;

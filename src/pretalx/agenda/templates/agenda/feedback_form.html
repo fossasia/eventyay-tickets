@@ -1,0 +1,39 @@
+{% extends "agenda/base.html" %}
+{% load compress %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load rich_text %}
+{% load staticfiles %}
+
+{% block content %}
+    <h3 class="talk-title">
+        »{{ talk.title }}«
+        <small>
+            {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
+        </small>
+    </h3>
+    <div class="talk row col-lg-12">
+        <div class="talk-content"><div class="description">
+        {% blocktrans trimmed %}
+            Reviews are a valuable tool for speakers to improve their content and presentation.<br>
+            Even a very short review can prove very valuable to a speaker – but we'd like to ask you to
+            take the time and find a constructive way to communicate your feedback.
+        {% endblocktrans %}
+        {% if not talk.does_accept_feedback %}
+            {% trans "You can't give feedback for this talk at this time." %}
+        {% else %}
+
+            <form method="post" action="">
+                {% csrf_token %}
+                {% if talk.speakers.count > 1 %}
+                    {% bootstrap_field form.speaker layout='inline' %}
+                {% endif %}
+                {% bootstrap_field form.review layout='inline' %}
+
+                <button type="submit" class="btn btn-primary pull-right">{% trans "Send review" %}</button>
+            </form>
+        {% endif %}
+        </div></div>
+    </div>
+{% endblock %}
+
