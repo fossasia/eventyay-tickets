@@ -3,6 +3,7 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from urlman import Urls
 
@@ -92,7 +93,11 @@ class Submission(LogMixin, models.Model):
                                       verbose_name=_('Language of the submission'))
     do_not_record = models.BooleanField(
         default=False,
-        verbose_name=_('Don\'t record my talk.')
+        verbose_name=_('Don\'t record this talk.')
+    )
+    accept_feedback = models.BooleanField(
+        default=True,
+        verbose_name=_('Accept feedback'),
     )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
@@ -101,6 +106,7 @@ class Submission(LogMixin, models.Model):
         withdraw = '{user_base}/withdraw'
         confirm = '{user_base}/confirm'
         public = '{self.event.urls.base}/talk/{self.code}'
+        feedback = '{public}/feedback/'
 
     class orga_urls(Urls):
         base = '{self.event.orga_urls.submissions}/{self.pk}'
@@ -208,6 +214,11 @@ class Submission(LogMixin, models.Model):
     @property
     def display_speaker_names(self):
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
+
+    @property
+    def does_accept_feedback(self):
+        slot = self.slot
+        return self.accept_feedback and slot and slot.end < now()
 
     def __str__(self):
         return self.title
