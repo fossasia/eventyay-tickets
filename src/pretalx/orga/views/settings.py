@@ -118,14 +118,32 @@ class EventTeamInvite(View):
     def post(self, request, event):
         email = request.POST.get('email')
         event = request.event
-        invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
+
+        kwargs = {
+            'event': event,
+            'invitation_email': email,
+            'is_orga': True,
+        }
+
+        permission = EventPermission.objects.filter(user__isnull=True, **kwargs).first()
+        if not permission:
+            invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
+            permission = EventPermission.objects.create(
+                event=event,
+                invitation_email=email,
+                invitation_token=invitation_token,
+                is_orga=True,
+            )
+            messages.success(
+                request,
+                _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
+            )
+        else:
+            messages.info(
+                request,
+                _('<{email}> had already been invited – we\'ve resent the invitation instead :)').format(email=email),
+            )
         invitation_link = build_absolute_uri('orga:invitation.view', kwargs={'code': invitation_token})
-        EventPermission.objects.create(
-            event=event,
-            invitation_email=email,
-            invitation_token=invitation_token,
-            is_orga=True,
-        )
         invitation_text = _('''Hi!
 
 You have been invited to the orga crew of {event} - Please click here to accept:
@@ -142,10 +160,6 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             event.pk
         ))
         request.event.log_action('pretalx.event.invite.orga.send', person=request.user, orga=True)
-        messages.success(
-            request,
-            _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
-        )
         return redirect(request.event.orga_urls.team_settings)
 
 
