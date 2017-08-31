@@ -15,7 +15,7 @@ from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.submission.models import Feedback, Submission, SubmissionStates
+from pretalx.submission.models import Feedback, Submission
 
 
 def day_start(dt):
@@ -224,7 +224,7 @@ class TalkView(EventPageMixin, DetailView):
     template_name = 'agenda/talk.html'
 
     def get_queryset(self):
-        return Submission.objects.filter(event=self.request.event, state=SubmissionStates.CONFIRMED)
+        return Submission.objects.filter(slots__in=self.request.event.current_schedule.talks.all())
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -262,8 +262,8 @@ class FeedbackView(EventPageMixin, FormView):
     def get_object(self):
         sub = Submission.objects.filter(
             event=self.request.event,
-            state=SubmissionStates.CONFIRMED,
             code=self.kwargs['slug'],
+            slots__in=self.request.event.current_schedule.talks.all(),
         ).first()
         if sub and not sub.does_accept_feedback:
             return None
