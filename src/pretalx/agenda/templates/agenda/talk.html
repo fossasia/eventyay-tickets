@@ -8,6 +8,18 @@
 
     <h3 class="talk-title">
         »{{ talk.title }}«
+        {% if request.user in talk.speakers.all %}
+            <a href="{{ talk.urls.user_base }}"
+                    class="btn btn-sm btn-secondary">
+                <span class="fa fa-pencil"></span>{% trans "Edit" %}
+            </a>
+        {% endif %}
+        {% if talk.does_accept_feedback %}
+            <a href="{{ talk.urls.feedback }}"
+                    class="btn btn-sm btn-primary">
+                <span class="fa fa-comments"></span>{% trans "Feedback" %}
+            </a>
+        {% endif %}
         <small>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
         </small>

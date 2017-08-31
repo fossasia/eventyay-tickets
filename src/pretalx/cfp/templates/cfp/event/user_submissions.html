@@ -36,6 +36,18 @@
                                 <span class="fa fa-check"></span>{% trans "Confirm" %}
                             </a>
                         {% endif %}
+                        {% if submission.slot %}
+                            <a href="{{ submission.urls.public }}"
+                                    class="btn btn-sm btn-secondary">
+                                <span class="fa fa-calendar"></span>{% trans "Schedule" %}
+                            </a>
+                        {% endif %}
+                        {% if submission.does_accept_feedback %}
+                            <a href="{{ submission.urls.feedback }}"
+                                    class="btn btn-sm btn-secondary">
+                                <span class="fa fa-comments-o"></span>{% trans "Feedback" %}
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

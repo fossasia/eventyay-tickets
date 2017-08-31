@@ -81,6 +81,10 @@ footer {
   }
 }
 
+.btn-secondary .fa {
+  padding-right: 5px;
+}
+
 @include media-breakpoint-down(sm) {
   #main-container {
     padding-top: 20px;
