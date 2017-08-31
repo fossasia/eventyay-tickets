@@ -48,10 +48,16 @@ The {event} orga crew''').format(event=submission.event.name, title=submission.t
     return user
 
 
-class SubmissionAccept(View):
+class SubmissionViewMixin:
+
+    def get_object(self):
+        return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
+
+
+class SubmissionAccept(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
 
         try:
             submission.accept(person=request.user)
@@ -61,10 +67,10 @@ class SubmissionAccept(View):
         return redirect(submission.orga_urls.base)
 
 
-class SubmissionConfirm(View):
+class SubmissionConfirm(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
 
         try:
             submission.confirm(person=request.user, orga=True)
@@ -74,19 +80,19 @@ class SubmissionConfirm(View):
         return redirect(submission.orga_urls.base)
 
 
-class SubmissionReject(View):
+class SubmissionReject(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
         submission.reject(person=request.user)
         messages.success(request, _('The submission has been rejected.'))
         return redirect(submission.orga_urls.base)
 
 
-class SubmissionSpeakersAdd(View):
+class SubmissionSpeakersAdd(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
         try:
             speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
         except User.DoesNotExist:
@@ -104,10 +110,10 @@ class SubmissionSpeakersAdd(View):
         return redirect(submission.orga_urls.speakers)
 
 
-class SubmissionSpeakersDelete(View):
+class SubmissionSpeakersDelete(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
         speaker = User.objects.get(nick__iexact=request.GET.get('nick'))
 
         if submission in speaker.submissions.all():
@@ -120,27 +126,27 @@ class SubmissionSpeakersDelete(View):
         return redirect(submission.orga_urls.speakers)
 
 
-class SubmissionSpeakers(TemplateView):
+class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        context['submission'] = self.get_object()
         context['speakers'] = context['submission'].speakers.all()
         context['users'] = User.objects.all()  # TODO: yeah, no
         return context
 
 
-class SubmissionQuestions(TemplateView):
+class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/answer_list.html'
 
     def get_queryset(self):
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
         return submission.answers.all()
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        submission = self.request.event.submissions.get(pk=self.kwargs.get('pk'))
+        submission = self.get_object()
         user_list = [{
             'speaker': user,
             'answers': submission.answers.all()  # TODO: filter
@@ -152,17 +158,14 @@ class SubmissionQuestions(TemplateView):
         return context
 
 
-class SubmissionContent(ActionFromUrl, CreateOrUpdateView):
+class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
 
-    def get_object(self):
-        return self.request.event.submissions.get(pk=self.kwargs.get('pk'))
-
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.request.event.submissions.filter(pk=self.kwargs.get('pk')).first()
+        context['submission'] = self.get_object()
         return context
 
     def get_success_url(self) -> str:

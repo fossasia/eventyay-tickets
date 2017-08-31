@@ -53,7 +53,7 @@ orga_urls = [
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),
         url('^submissions/new$', submission.SubmissionContent.as_view(), name='submissions.create'),
         url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
-        url('^submissions/(?P<pk>[0-9]+)/', include([
+        url('^submissions/(?P<code>\w+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^edit$', submission.SubmissionContent.as_view(), name='submissions.content.edit'),
             url('^accept$', submission.SubmissionAccept.as_view(), name='submissions.accept'),

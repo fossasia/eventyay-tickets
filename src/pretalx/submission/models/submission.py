@@ -109,7 +109,7 @@ class Submission(LogMixin, models.Model):
         feedback = '{public}/feedback/'
 
     class orga_urls(Urls):
-        base = '{self.event.orga_urls.submissions}/{self.pk}'
+        base = '{self.event.orga_urls.submissions}/{self.code}'
         edit = '{base}/edit'
         accept = '{base}/accept'
         reject = '{base}/reject'
