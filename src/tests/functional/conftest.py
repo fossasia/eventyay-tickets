@@ -86,13 +86,21 @@ def other_speaker():
 
 
 @pytest.fixture
-def submission(event, speaker, submission_type):
-    sub = Submission.objects.create(
-        title='A Submission', event=event,
-        code='BLAKEKS', submission_type=submission_type,
-        description='Some talk description', abstract='Fancy abstract',
-        notes='I like cookies', content_locale='en'
-    )
+def submission_data(event, submission_type):
+    return {
+        'title': 'Lametta im Wandel der Zeiten',
+        # 'code': 'LAMETTA',
+        'submission_type': submission_type,
+        'description': 'Früher war es nämlich mehr. Und wir mussten es bügeln.',
+        'abstract': 'Ich habe Quellen!',
+        'notes': 'Und mein Enkel braucht auch noch ein Geschenk.',
+        'content_locale': 'en',
+        'event': event,
+    }
+
+@pytest.fixture
+def submission(submission_data, speaker):
+    sub = Submission.objects.create(**submission_data)
     sub.save()
     sub.speakers.add(speaker)
     return sub
@@ -112,9 +120,12 @@ def other_submission(event, other_speaker):
 
 
 @pytest.fixture
-def accepted_submission(submission):
-    submission.accept()
-    return submission
+def accepted_submission(speaker, submission_data):
+    sub = Submission.objects.create(**submission_data)
+    sub.save()
+    sub.speakers.add(speaker)
+    sub.accept()
+    return sub
 
 
 @pytest.fixture
@@ -124,21 +135,48 @@ def other_accepted_submission(other_submission):
 
 
 @pytest.fixture
-def rejected_submission(submission):
-    submission.reject()
-    return submission
+def rejected_submission(submission_data, speaker):
+    sub = Submission.objects.create(**submission_data)
+    sub.save()
+    sub.speakers.add(speaker)
+    sub.reject()
+    return sub
 
 
 @pytest.fixture
-def confirmed_submission(accepted_submission):
-    accepted_submission.confirm()
-    return accepted_submission
+def confirmed_submission(submission_data, speaker):
+    sub = Submission.objects.create(**submission_data)
+    sub.save()
+    sub.speakers.add(speaker)
+    sub.accept()
+    sub.confirm()
+    return sub
 
 
 @pytest.fixture
 def other_confirmed_submission(other_accepted_submission):
     other_accepted_submission.confirm()
     return other_accepted_submission
+
+
+@pytest.fixture
+def canceled_submission(submission_data, speaker):  # TODO: implement Submission.canceled
+    sub = Submission.objects.create(**submission_data)
+    sub.save()
+    sub.speakers.add(speaker)
+    sub.state = 'canceled'
+    sub.save()
+    return sub
+
+
+@pytest.fixture
+def withdrawn_submission(submission_data, speaker):  # TODO: implement Submission.withdraw()
+    sub = Submission.objects.create(**submission_data)
+    sub.save()
+    sub.speakers.add(speaker)
+    sub.state = 'withdrawn'
+    sub.save()
+    return sub
 
 
 @pytest.fixture
@@ -175,17 +213,26 @@ def room(event):
 
 @pytest.fixture
 def schedule(event):
-    return Schedule.objects.create(event=event, version='Test Version', published=now())
+    event.release_schedule('Best Version')
+    return event.current_schedule
 
 
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
-    return TalkSlot.objects.create(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot = schedule.talks.filter(submission=confirmed_submission)
+    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot = slot.first()
+    return slot
 
 
 @pytest.fixture
-def past_slot(confirmed_submission, room, schedule):
-    return TalkSlot.objects.create(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+def past_slot(submission_data, room, schedule, speaker):
+    sub = Submission.objects.create(**submission_data)
+    sub.speakers.add(speaker)
+    sub.save()
+    sub.accept()
+    sub.confirm()
+    return TalkSlot.objects.create(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), submission=sub, room=room, schedule=schedule, is_visible=True)
 
 
 @pytest.fixture
