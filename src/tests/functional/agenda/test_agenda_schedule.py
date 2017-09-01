@@ -5,6 +5,7 @@ from pretalx.submission.models import SubmissionStates
 
 @pytest.mark.django_db
 def test_can_see_schedule(client, event, slot):
+    del event.current_schedule
     response = client.get(event.urls.schedule, follow=True)
     assert event.schedules.count() == 2
     assert response.status_code == 200
@@ -34,19 +35,33 @@ def test_cannot_see_other_events_talk(client, event, slot, other_event):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(('state', 'expected_result'), (
-    (SubmissionStates.SUBMITTED, 404),
-    (SubmissionStates.REJECTED, 404),
-    (SubmissionStates.ACCEPTED, 404),
-    (SubmissionStates.CONFIRMED, 200),
-    (SubmissionStates.CANCELED, 404),
-    (SubmissionStates.WITHDRAWN, 404),
-))
-def test_event_talk_visibility_by_state(client, event, slot, state, expected_result):
-    slot.submission.state = state
-    slot.submission.save(update_fields=['state'])
-    response = client.get(slot.submission.urls.public, follow=True)
-    assert response.status_code == expected_result
+def test_event_talk_visiblity_submitted(client, event, submission):
+    response = client.get(submission.urls.public, follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_event_talk_visiblity_accepted(client, event, slot, accepted_submission):
+    response = client.get(accepted_submission.urls.public, follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_event_talk_visiblity_confirmed(client, event, slot, confirmed_submission):
+    response = client.get(confirmed_submission.urls.public, follow=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_event_talk_visiblity_canceled(client, event, slot, canceled_submission):
+    response = client.get(canceled_submission.urls.public, follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_event_talk_visiblity_withdrawn(client, event, slot, withdrawn_submission):
+    response = client.get(withdrawn_submission.urls.public, follow=True)
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -57,4 +72,4 @@ def test_talk_speaker_other_talks(client, event, speaker, slot, other_slot, othe
     assert response.context['speakers']
     assert len(response.context['speakers'][0].other_talks) == 0
     assert len(response.context['speakers'][1].other_talks) == 1
-    assert response.context['speakers'][1].other_talks[0].submission.title == 'A Submission'
+    assert response.context['speakers'][1].other_talks[0].submission.title == speaker.submissions.first().title
