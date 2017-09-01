@@ -1,7 +1,5 @@
 import pytest
 
-from pretalx.submission.models import SubmissionStates
-
 
 @pytest.mark.django_db
 def test_can_see_schedule(client, event, slot):

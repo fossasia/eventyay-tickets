@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, User
-from pretalx.schedule.models import Room, Schedule, TalkSlot
+from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import (
     Feedback, Question, QuestionVariant, Submission, SubmissionType,
 )
@@ -97,6 +97,7 @@ def submission_data(event, submission_type):
         'content_locale': 'en',
         'event': event,
     }
+
 
 @pytest.fixture
 def submission(submission_data, speaker):
