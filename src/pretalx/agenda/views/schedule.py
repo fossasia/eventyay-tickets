@@ -7,7 +7,7 @@ from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
@@ -15,6 +15,7 @@ from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
+from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Feedback, Submission
 
 
@@ -223,8 +224,16 @@ class TalkView(EventPageMixin, DetailView):
     slug_field = 'code'
     template_name = 'agenda/talk.html'
 
-    def get_queryset(self):
-        return Submission.objects.filter(slots__in=self.request.event.current_schedule.talks.all())
+    def get_object(self):
+        try:
+            slot = self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'])
+            if slot.is_visible:
+                return slot.submission
+        except AttributeError:  # if there is no released schedule yet
+            pass
+        except TalkSlot.DoesNotExist:
+            pass
+        raise Http404()
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
