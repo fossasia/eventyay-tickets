@@ -218,7 +218,10 @@ class Submission(LogMixin, models.Model):
     @property
     def does_accept_feedback(self):
         slot = self.slot
-        return self.accept_feedback and slot and slot.end < now()
+        if self.accept_feedback and slot and slot.start:
+            end = slot.end or slot.start + slot.submission.get_duration()
+            return end < now()
+        return False
 
     def __str__(self):
         return self.title
