@@ -63,6 +63,8 @@ class Schedule(LogMixin, models.Model):
 
         with suppress(AttributeError):
             del wip_schedule.event.wip_schedule
+        with suppress(AttributeError):
+            del wip_schedule.event.current_schedule
 
         return self, wip_schedule
 
