@@ -24,7 +24,7 @@ def test_accept_submission(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.get(
-        reverse(f'orga:submissions.accept', kwargs={'event': submission.event.slug, 'pk': submission.pk}),
+        submission.orga_urls.accept,
         follow=True,
     )
     submission.refresh_from_db()
@@ -40,7 +40,7 @@ def test_reject_submission(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.get(
-        reverse(f'orga:submissions.reject', kwargs={'event': submission.event.slug, 'pk': submission.pk}),
+        submission.orga_urls.reject,
         follow=True,
     )
     submission.refresh_from_db()
@@ -55,7 +55,7 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
     assert accepted_submission.state == SubmissionStates.ACCEPTED
 
     response = orga_client.get(
-        reverse(f'orga:submissions.confirm', kwargs={'event': accepted_submission.event.slug, 'pk': accepted_submission.pk}),
+        accepted_submission.orga_urls.confirm,
         follow=True,
     )
     accepted_submission.refresh_from_db()
