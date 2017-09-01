@@ -194,11 +194,11 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             action = 'pretalx.submission.' + 'create' if created else 'update'
             form.instance.log_action(action, person=self.request.user, orga=True)
         if created and invited:
-            messages.success(self.request, 'The submission has been created and the speaker has been invited to add an account!')
+            messages.success(self.request, _('The submission has been created and the speaker has been invited to add an account!'))
         elif created:
-            messages.success(self.request, 'The submission has been created; the speaker already had an account on this system.')
+            messages.success(self.request, _('The submission has been created; the speaker already had an account on this system.'))
         else:
-            messages.success(self.request, 'The submission has been updated!')
+            messages.success(self.request, _('The submission has been updated!'))
         return ret
 
     def get_form_kwargs(self):
