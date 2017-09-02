@@ -235,6 +235,10 @@ class TalkView(EventPageMixin, DetailView):
             pass
         raise Http404()
 
+    @csp_update(CHILD_SRC="https://media.ccc.de")  # TODO: only do this if obj.recording_url and obj.recording_source are set
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         event_talks = self.request.event.current_schedule.talks.exclude(submission=self.object)

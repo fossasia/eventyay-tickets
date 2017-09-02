@@ -29,6 +29,9 @@
             {% if talk.do_not_record %}
                 <em>{% trans "This talk will not be recorded." %}</em>
             {% endif %}
+            {% if talk.recording_url %}
+                {{ talk.rendered_recording_iframe|safe }}
+            {% endif %}
             <div class="description">
                 {{ talk.description|rich_text }}
             </div>
