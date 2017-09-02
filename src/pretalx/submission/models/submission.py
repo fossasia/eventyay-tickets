@@ -99,7 +99,6 @@ class Submission(LogMixin, models.Model):
         default=True,
         verbose_name=_('Accept feedback'),
     )
-    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
     recording_url = models.CharField(
         verbose_name=_('Recording URL'),
         max_length=200,
@@ -111,6 +110,7 @@ class Submission(LogMixin, models.Model):
         max_length=3,
         null=True, blank=True
     )
+    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     class urls(Urls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
