@@ -100,6 +100,17 @@ class Submission(LogMixin, models.Model):
         verbose_name=_('Accept feedback'),
     )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+    recording_url = models.CharField(
+        verbose_name=_('Recording URL'),
+        max_length=200,
+        null=True, blank=True
+    )
+    recording_source = models.CharField(
+        verbose_name=_('Recording Source'),
+        choices=(('VOC', 'media.ccc.de'), ),
+        max_length=3,
+        null=True, blank=True
+    )
 
     class urls(Urls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
@@ -222,6 +233,15 @@ class Submission(LogMixin, models.Model):
             end = slot.end or slot.start + slot.submission.get_duration()
             return end < now()
         return False
+
+    @property
+    def rendered_recording_iframe(self):
+        if not (self.recording_url and self.recording_source):
+            return
+        from django.template import engines
+        django_engine = engines['django']
+        template = django_engine.from_string('<iframe width="100%" height="380px" src="{{ url }}" frameborder="0" allowfullscreen></iframe>')
+        return template.render(context={'url': self.recording_url})
 
     def __str__(self):
         return self.title
