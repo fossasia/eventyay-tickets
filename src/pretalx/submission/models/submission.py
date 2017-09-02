@@ -45,7 +45,7 @@ class SubmissionStates(Choices):
 class Submission(LogMixin, models.Model):
     code = models.CharField(
         max_length=16,
-        db_index=True
+        unique=True,
     )
     speakers = models.ManyToManyField(
         to='person.User',
@@ -146,7 +146,7 @@ class Submission(LogMixin, models.Model):
 
     def confirm(self, person=None, force=False, orga=False):
         if self.state not in [SubmissionStates.ACCEPTED] and not force:
-            raise SubmissionError(_('Submission must be accepted, not {self.state} to be confirmed.').format(self=self))
+            raise SubmissionError(_('Submission must be accepted, not {state} to be confirmed.').format(state=self.state))
 
         self.state = SubmissionStates.CONFIRMED
         self.save(update_fields=['state'])
@@ -154,7 +154,7 @@ class Submission(LogMixin, models.Model):
 
     def accept(self, person=None, force=False):
         if self.state not in [SubmissionStates.SUBMITTED, SubmissionStates.REJECTED] and not force:
-            raise SubmissionError(_('Submission must be submitted or rejected, not {self.state} to be accepted.').format(self=self))
+            raise SubmissionError(_('Submission must be submitted or rejected, not {state} to be accepted.').format(state=self.state))
 
         self.state = SubmissionStates.ACCEPTED
         self.save(update_fields=['state'])
