@@ -50,6 +50,8 @@ Scheduling
   moved by the new release.
 - **Transparent updates:** pretalx provides a public changelog and an Atom feed, so that your
   participants can be notified as soon as a new schedule version has been released.
+- **Integrate recordings:** Unless the speakers have set the do-not-record flag, you may sync
+  and integrate the recording in the talk's page for the participants' convenience.
 
 Speaker management
 ~~~~~~~~~~~~~~~~~~
