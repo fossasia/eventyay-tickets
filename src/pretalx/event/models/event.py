@@ -69,7 +69,7 @@ class Event(LogMixin, models.Model):
         help_text=_('Will be used as sender/reply-to in emails'),
         null=True, blank=True,
     )
-    color = models.CharField(
+    primary_color = models.CharField(
         max_length=7,
         verbose_name=_('Main event color'),
         help_text=_('Please provide a hex value like #00ff00 if you do not like pretalx colors.'),
