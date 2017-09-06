@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
 from pretalx.common.mail import mail_send_task
+from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
@@ -57,6 +58,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         else:
             form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
             messages.success(self.request, _('The event settings have been saved.'))
+        regenerate_css.apply_async(args=(form.instance.pk,))
         return ret
 
 

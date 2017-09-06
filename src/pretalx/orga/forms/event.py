@@ -49,7 +49,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         model = Event
         fields = [
             'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
-            'email', 'locale', 'custom_css',
+            'email', 'locale', 'primary_color', 'custom_css',
         ]
         widgets = {
             'date_from': forms.DateInput(attrs={'class': 'datepickerfield'}),

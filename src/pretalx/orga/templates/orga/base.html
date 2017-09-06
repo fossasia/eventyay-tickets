@@ -5,9 +5,13 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %} :: pretalx</title>
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
-    {% endcompress %}
+    {% if request.event.settings.orga_css_file %}
+        <link rel="stylesheet" type="text/css" href="{{ request.event.settings.orga_css_file }}"/>
+    {% else %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
+        {% endcompress %}
+    {% endif %}
     {% block stylesheets %}
     {% endblock %}
     {% if request.event and request.event.custom_css %}
