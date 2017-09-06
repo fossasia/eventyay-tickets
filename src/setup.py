@@ -1,6 +1,4 @@
-import os
 from codecs import open
-from distutils.command.build import build
 from os import path
 
 from setuptools import find_packages, setup
@@ -11,7 +9,7 @@ here = path.abspath(path.dirname(__file__))
 try:
     with open(path.join(here, '../README.rst'), encoding='utf-8') as f:
         long_description = f.read()
-except:
+except:  # noqa
     long_description = ''
 
 setup(
