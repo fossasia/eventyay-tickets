@@ -10,6 +10,9 @@
     {% endcompress %}
     {% block stylesheets %}
     {% endblock %}
+    {% if request.event and request.event.custom_css %}
+        <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
     {% block scripts %}

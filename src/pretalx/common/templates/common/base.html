@@ -9,6 +9,11 @@
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
     {% block custom_header %}
     {% endblock %}
+    {% if request.event and request.event.custom_css %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{{ request.event.url }}"/>
+        {% endcompress %}
+    {% endif %}
 </head>
 <body>
 <div id="wrapper">

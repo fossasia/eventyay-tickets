@@ -3,7 +3,7 @@
 {% load i18n %}
 {% block settings_content %}
 
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         <legend>{% trans "Event settings" %}</legend>
         {% bootstrap_form form layout='horizontal' %}
