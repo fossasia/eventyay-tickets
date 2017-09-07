@@ -193,11 +193,22 @@ class InvitationView(FormView):
         form.save()
         permission = EventPermission.objects.get(invitation_token=self.kwargs.get('code'))
         user = User.objects.get(pk=form.cleaned_data.get('user_id'))
+        perm = EventPermission.objects.filter(user=user, event=self.request.event).exclude(pk=permission.pk).first()
 
-        permission.is_orga = True
-        permission.user = user
-        permission.save()
-        permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
+        if perm:
+            if perm.is_orga:
+                messages.info(self.request, _('Oh, it seems you were already part of this team.'))
+                permission.objects.delete()
+                permission = None
+            else:
+                permission = perm
+        if permission:
+            permission.is_orga = True
+            permission.user = user
+            permission.save()
+            permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
+            messages.info(self.request, _('You are now part of the event team!'))
+
         login(self.request, user)
         return redirect(permission.event.orga_urls.base)
 
