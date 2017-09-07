@@ -90,3 +90,18 @@ footer {
     padding-top: 20px;
   }
 }
+
+.url-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: stretch;
+  padding: 10px;
+
+  a {
+    margin: 5px;
+    flex-basis: 100px;
+    flex-grow: 1;
+  }
+}

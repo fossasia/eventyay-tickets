@@ -14,22 +14,18 @@
             </strong>
         </p>
     {% endif %}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
-                    href="{{ request.event.urls.submit }}">
-                {% if cfp.is_open %}
-                    {% trans "Submit a proposal" %}
-                {% else %}
-                    {% trans "Submissions are closed" %}
-                {% endif %}
-            </a>
-        </div>
-        <div class="col-md-6">
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                {% trans "Edit or view your submission" %}
-            </a>
-        </div>
+    <div class="row mb-4 url-links">
+        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
+                href="{{ request.event.urls.submit }}">
+            {% if cfp.is_open %}
+                {% trans "Submit a proposal" %}
+            {% else %}
+                {% trans "Submissions are closed" %}
+            {% endif %}
+        </a>
+        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
+            {% trans "Edit or view your submission" %}
+        </a>
     </div>
 {% endwith %}
 {% endblock %}
