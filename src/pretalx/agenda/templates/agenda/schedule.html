@@ -55,6 +55,9 @@
                                      style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px"
                                      data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
+                                        {% if talk.submission.do_not_record %}
+                                            <i class="fa fa-ban do-not-record" aria-hidden="true"></i>
+                                        {% endif %}
                                         <span class="talk-title">{{ talk.submission.title }}</span>
                                         {% if talk.submission.speakers.exists %}
                                             <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>

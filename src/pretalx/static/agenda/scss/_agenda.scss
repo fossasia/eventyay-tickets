@@ -78,6 +78,10 @@
                         height: 100%;
                         overflow: hidden;
 
+                        .do-not-record {
+                            color: rgba(180,20,23,0.87);
+                        }
+
                         .talk-title {
                             line-height: 28px;
                             font-weight: 500;
