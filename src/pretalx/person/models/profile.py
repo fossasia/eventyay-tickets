@@ -1,10 +1,15 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
 
 
 class SpeakerProfile(LogMixin, models.Model):
-    biography = models.TextField(null=True, blank=True)
+    biography = models.TextField(
+        verbose_name=_('Biography'),
+        help_text=_('You can use markdown here'),
+        null=True, blank=True,
+    )
     user = models.ForeignKey(
         to='person.User',
         related_name='profiles',

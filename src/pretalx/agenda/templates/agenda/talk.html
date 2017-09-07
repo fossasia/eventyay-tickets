@@ -54,7 +54,7 @@
                         <div class="name">{{ speaker.get_display_name }}</div>
                         <div class="info">
                             {% if speaker.talk_profile.biography %}
-                            <p class="biography">{{ speaker.talk_profile.biography }}</p>
+                            <p class="biography">{{ speaker.talk_profile.biography|rich_text }}</p>
                             {% endif %}
 
                             {% if speaker.other_talks.count > 1 %}
