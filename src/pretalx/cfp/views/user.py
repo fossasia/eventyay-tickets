@@ -1,7 +1,9 @@
+from csp.decorators import csp_update
 from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
@@ -14,6 +16,7 @@ from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.models import Answer, Submission, SubmissionStates
 
 
+@method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class ProfileView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_profile.html'
 
@@ -210,3 +213,18 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         else:
             answer.answer = value
         answer.log_action(action, person=self.request.user, data={'answer': value})
+
+
+class DeleteAccountView(View):
+
+    def post(self, request, event):
+
+        if request.POST.get('really'):
+            from django.contrib.auth import logout
+            request.user.deactivate()
+            logout(request)
+            messages.success(request, _('Your account has now been deleted.'))
+            return redirect(request.event.urls.base)
+        else:
+            messages.error(request, _('Are you really sure? Please tick the box'))
+            return redirect(request.event.urls.user + '?really')

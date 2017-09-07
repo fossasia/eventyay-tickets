@@ -23,7 +23,7 @@
     <p>
         {% trans "You can change your log in data here." %}
     </p>
-    <form action="" method="post">
+    <form action="" method="post" class="form">
         {% csrf_token %}
         {% bootstrap_field login_form.old_password %}
         {% bootstrap_field login_form.email %}
@@ -36,5 +36,21 @@
                 </button>
             </div>
         </div>
+    </form>
+    <div>&nbsp;</div>
+    <div class="alert alert-danger">
+        {% trans "You can delete your account here – all names, emails etc will be overwritten. <strong>This action is irreversible.</strong>" %}
+    </div>
+    <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
+        {% csrf_token %}
+        <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
+                <input type="checkbox" name="really">
+                <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
+            </div>
+            <div class="col-md-3 offset-md-9">
+                <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
+                    {% trans "Delete my account" %}
+                </button>
+            </div>
     </form>
 {% endblock %}

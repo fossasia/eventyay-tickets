@@ -18,6 +18,7 @@ cfp_urls = [
             name='event.submit'),
 
         url('^me$', user.ProfileView.as_view(), name='event.user.view'),
+        url('^me/delete$', user.DeleteAccountView.as_view(), name='event.user.delete'),
         url('^me/submissions$', user.SubmissionsListView.as_view(), name='event.user.submissions'),
         url('^me/submissions/(?P<code>\w+)/$', user.SubmissionsEditView.as_view(),
             name='event.user.submission.edit'),

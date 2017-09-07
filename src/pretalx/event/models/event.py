@@ -102,6 +102,7 @@ class Event(LogMixin, models.Model):
         reset = '{base}/reset'
         submit = '{base}/submit'
         user = '{base}/me'
+        user_delete = '{base}/me/delete'
         user_submissions = '{user}/submissions'
         schedule = '{base}/schedule'
         changelog = '{schedule}/changelog'
