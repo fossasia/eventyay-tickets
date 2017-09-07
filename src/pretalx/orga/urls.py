@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 
+from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
@@ -16,7 +17,7 @@ orga_urls = [
     url('^invitation/(?P<code>\w+)$', settings.InvitationView.as_view(), name='invitation.view'),
     url('^event/new/$', settings.EventDetail.as_view(), name='event.create'),
 
-    url('^event/(?P<event>\w+)/', include([
+    url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^users$', person.UserList.as_view(), name='event.user_list'),
 
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),

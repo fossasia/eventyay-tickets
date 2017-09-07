@@ -15,6 +15,8 @@ from urlman import Urls
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import settings_hierarkey
 
+SLUG_CHARS = 'a-zA-Z0-9.-'
+
 
 @settings_hierarkey.add()
 class Event(LogMixin, models.Model):
@@ -27,7 +29,7 @@ class Event(LogMixin, models.Model):
         help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique.'),
         validators=[
             RegexValidator(
-                regex="^[a-zA-Z0-9.-]+$",
+                regex=f"^[{SLUG_CHARS}]+$",
                 message=_('The slug may only contain letters, numbers, dots and dashes.'),
             ),
         ],
