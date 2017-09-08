@@ -42,17 +42,21 @@ class Command(BaseCommand):
                 for talk in rm.findall('event'):
                     date = talk.find('date').text
                     start = parse(date + ' ' + talk.find('start').text)
+                    hours, minutes = talk.find('duration').text.split(':')
+                    duration = timedelta(hours=int(hours), minutes=int(minutes))
+                    duration_in_minutes = duration.seconds / 60
                     try:
                         end = parse(date + ' ' + talk.find('end').text)
                     except AttributeError:
-                        hours, minutes = talk.find('duration').text.split(':')
-                        duration = timedelta(hours=int(hours), minutes=int(minutes))
                         end = start + duration
-                    sub_type = SubmissionType.objects.filter(event=event, name=talk.find('type').text).first()
+                    sub_type = SubmissionType.objects.filter(
+                        event=event, name=talk.find('type').text, duration=duration_in_minutes
+                    ).first()
 
                     if not sub_type:
-                        sub_type = SubmissionType(name=talk.find('type').text or 'default', event=event)
-                        sub_type.save()
+                        sub_type = SubmissionType.objects.create(
+                            name=talk.find('type').text or 'default', event=event, duration=duration_in_minutes
+                        )
 
                     sub = Submission.objects.create(
                         event=event,
