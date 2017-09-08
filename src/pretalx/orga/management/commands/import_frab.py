@@ -50,12 +50,12 @@ class Command(BaseCommand):
                     except AttributeError:
                         end = start + duration
                     sub_type = SubmissionType.objects.filter(
-                        event=event, name=talk.find('type').text, duration=duration_in_minutes
+                        event=event, name=talk.find('type').text, default_duration=duration_in_minutes
                     ).first()
 
                     if not sub_type:
                         sub_type = SubmissionType.objects.create(
-                            name=talk.find('type').text or 'default', event=event, duration=duration_in_minutes
+                            name=talk.find('type').text or 'default', event=event, default_duration=duration_in_minutes
                         )
 
                     sub = Submission.objects.create(
