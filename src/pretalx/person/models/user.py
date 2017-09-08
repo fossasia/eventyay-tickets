@@ -78,11 +78,6 @@ class User(AbstractBaseUser):
         default='UTC',
     )
 
-    send_mail = models.BooleanField(
-        default=False,
-        verbose_name=_('Receive mails from pretalx?'),
-    )
-
     pw_reset_token = models.CharField(null=True, max_length=160)
     pw_reset_time = models.DateTimeField(null=True)
 
@@ -131,7 +126,6 @@ class User(AbstractBaseUser):
         self.is_superuser = False
         self.locale = 'en'
         self.timezone = 'UTC'
-        self.send_mail = False
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.save()
