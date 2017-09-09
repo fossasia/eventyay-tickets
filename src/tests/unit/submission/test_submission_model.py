@@ -70,3 +70,77 @@ def test_reject(submission, state):
     assert submission.logged_actions().count() == (count + 1)
     assert submission.event.queued_mails.count() == 1
     assert submission.event.wip_schedule.talks.count() == 0
+
+
+@pytest.mark.parametrize('state', (
+    SubmissionStates.ACCEPTED,
+    SubmissionStates.CONFIRMED,
+))
+@pytest.mark.django_db
+def test_cancel_success(submission, state):
+    submission.state = state
+    submission.save()
+    count = submission.logged_actions().count()
+
+    submission.cancel()
+
+    assert submission.state == SubmissionStates.CANCELED
+    assert submission.logged_actions().count() == (count + 1)
+    assert submission.event.queued_mails.count() == 0
+    assert submission.event.wip_schedule.talks.count() == 0
+
+
+@pytest.mark.parametrize('state', (
+    SubmissionStates.SUBMITTED,
+    SubmissionStates.REJECTED,
+    SubmissionStates.CANCELED,
+    SubmissionStates.WITHDRAWN,
+))
+@pytest.mark.django_db
+def test_cancel_fail(submission, state):
+    submission.state = state
+    submission.save()
+    count = submission.logged_actions().count()
+
+    with pytest.raises(SubmissionError):
+        submission.cancel()
+    assert submission.state == state
+    assert submission.event.queued_mails.count() == 0
+    assert submission.event.wip_schedule.talks.count() == 0
+
+
+@pytest.mark.parametrize('state', (
+    SubmissionStates.SUBMITTED,
+))
+@pytest.mark.django_db
+def test_withdraw_success(submission, state):
+    submission.state = state
+    submission.save()
+    count = submission.logged_actions().count()
+
+    submission.withdraw()
+
+    assert submission.state == SubmissionStates.WITHDRAWN
+    assert submission.logged_actions().count() == (count + 1)
+    assert submission.event.queued_mails.count() == 0
+    assert submission.event.wip_schedule.talks.count() == 0
+
+
+@pytest.mark.parametrize('state', (
+    SubmissionStates.ACCEPTED,
+    SubmissionStates.CONFIRMED,
+    SubmissionStates.REJECTED,
+    SubmissionStates.CANCELED,
+    SubmissionStates.WITHDRAWN,
+))
+@pytest.mark.django_db
+def test_withdraw_fail(submission, state):
+    submission.state = state
+    submission.save()
+    count = submission.logged_actions().count()
+
+    with pytest.raises(SubmissionError):
+        submission.withdraw()
+    assert submission.state == state
+    assert submission.event.queued_mails.count() == 0
+    assert submission.event.wip_schedule.talks.count() == 0
