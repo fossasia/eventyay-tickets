@@ -100,13 +100,13 @@ def test_cancel_success(submission, state):
 def test_cancel_fail(submission, state):
     submission.state = state
     submission.save()
-    count = submission.logged_actions().count()
 
     with pytest.raises(SubmissionError):
         submission.cancel()
     assert submission.state == state
     assert submission.event.queued_mails.count() == 0
     assert submission.event.wip_schedule.talks.count() == 0
+    assert submission.logged_actions().count() == 0
 
 
 @pytest.mark.parametrize('state', (
@@ -137,10 +137,10 @@ def test_withdraw_success(submission, state):
 def test_withdraw_fail(submission, state):
     submission.state = state
     submission.save()
-    count = submission.logged_actions().count()
 
     with pytest.raises(SubmissionError):
         submission.withdraw()
     assert submission.state == state
     assert submission.event.queued_mails.count() == 0
     assert submission.event.wip_schedule.talks.count() == 0
+    assert submission.logged_actions().count() == 0
