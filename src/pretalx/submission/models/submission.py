@@ -194,6 +194,24 @@ class Submission(LogMixin, models.Model):
                 locale=self.content_locale
             )
 
+    def cancel(self, person=None):
+        if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+            raise SubmissionError(_('This submission was {state}, not accepted or confirmed, and cannot be canceled.').format(state=self.state))
+
+        self.state = SubmissionStates.CANCELED
+        self.save(update_fields=['state'])
+        self.log_action('pretalx.submission.cancel', person=person, orga=True)
+
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
+
+    def withdraw(self, person=None):
+        if self.state != SubmissionStates.SUBMITTED:
+            raise SubmissionError(_('This submission has already been processed and cannot be withdrawn, only canceled.'))
+        self.state = SubmissionStates.WITHDRAWN
+        self.save(update_fields=['state'])
+        self.log_action('pretalx.submission.withdraw', person=person, orga=False)
+
     @property
     def uuid(self):
         code = self.code
