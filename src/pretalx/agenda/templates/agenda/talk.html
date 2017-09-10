@@ -4,6 +4,12 @@
 {% load rich_text %}
 {% load staticfiles %}
 
+{% block agenda_custom_header %}
+<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="{{ talk.title }}" />
+<meta property="og:description" content="{{ talk.description|default:talk.abstract|default:"" }}" />
+{% endblock %}
+
 {% block content %}
 
     <h3 class="talk-title">

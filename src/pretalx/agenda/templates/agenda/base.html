@@ -12,6 +12,8 @@
         <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
     {% endcompress %}
+    {% block agenda_custom_header %}
+    {% endblock %}
 {% endblock %}
 
 {% block nav_link %}
