@@ -10,7 +10,7 @@ acceptable_css_keywords = set([
     'green', '!important', 'italic', 'left', 'lime', 'maroon', 'medium',
     'none', 'navy', 'normal', 'nowrap', 'olive', 'pointer', 'purple', 'red',
     'right', 'solid', 'silver', 'teal', 'top', 'transparent', 'underline',
-    'white', 'yellow',
+    'white', 'yellow', 'double',
 ])
 valid_css_values = re.compile('^(#[0-9a-f]+|rgb\(\d+%?,\d*%?,?\d*%?\)?|\d{0,2}\.?\d{0,2}(cm|em|ex|in|mm|pc|pt|px|%|,|\))?)$')
 acceptable_css_properties = set([
@@ -34,12 +34,12 @@ def get_key(style, key):
 
     while key.find('-') != -1:
         index = key.find('-')
-        key = key[:index] + key[index + 1:].capitalize()
+        key = key[:index] + key[index + 1].capitalize() + key[index + 2:]
 
     return getattr(style, key)
 
 
-def validate_key(* key, style):
+def validate_key(*, key, style):
     values = get_key(style, key)
     if key in acceptable_css_properties:
         return
