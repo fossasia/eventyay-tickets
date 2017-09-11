@@ -7,7 +7,7 @@
     <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
-    {% if request.event.settings.cfp_css_file %}
+    {% if request.event and request.event.settings.cfp_css_file != '' %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
     {% else %}
         {% compress css %}
@@ -16,11 +16,6 @@
     {% endif %}
     {% block custom_header %}
     {% endblock %}
-    {% if request.event and request.event.custom_css %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{{ request.event.url }}"/>
-        {% endcompress %}
-    {% endif %}
 </head>
 <body>
 <div id="wrapper">
