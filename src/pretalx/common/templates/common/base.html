@@ -11,7 +11,7 @@
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
     {% else %}
         {% compress css %}
-            <link rel="stylesheet" type="text/x-css" href="{% static "cfp/scss/main.scss" %}"/>
+            <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
         {% endcompress %}
     {% endif %}
     {% block custom_header %}
