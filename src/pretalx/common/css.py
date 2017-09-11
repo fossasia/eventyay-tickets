@@ -39,6 +39,20 @@ def get_key(style, key):
     return getattr(style, key)
 
 
+def validate_key(* key, style):
+    values = get_key(style, key)
+    if key in acceptable_css_properties:
+        return
+    if not values:
+        raise ValidationError(_('"{key}" attribute could not be parsed.').format(key=key))
+    elif key.split('-')[0].lower() in ['background', 'border', 'margin', 'padding']:
+        for value in values.split(' '):
+            if value not in acceptable_css_keywords and not valid_css_values.match(value):
+                raise ValidationError(_('"{value}" is not allowed as attribute of "{key}"').format(key=key, value=value))
+    elif key.lower() not in acceptable_svg_properties:
+        raise ValidationError(_('You are not allowed to include "{key}" keys in your CSS.').format(key=key))
+
+
 def validate_css(css):
     try:
         parser = CSSParser(raiseExceptions=True)
@@ -52,15 +66,5 @@ def validate_css(css):
     for rule in stylesheet.cssRules:
         style = rule.style
         for key in style.keys():
-            values = get_key(style, key)
-            if key in acceptable_css_properties:
-                continue
-            if not values:
-                raise ValidationError(_('"{key}" attribute could not be parsed.').format(key=key))
-            elif key.split('-')[0].lower() in ['background', 'border', 'margin', 'padding']:
-                for value in values.split(' '):
-                    if value not in acceptable_css_keywords and not valid_css_values.match(value):
-                        raise ValidationError(_('"{value}" is not allowed as attribute of "{key}"').format(key=key, value=value))
-            elif key.lower() not in acceptable_svg_properties:
-                raise ValidationError(_('You are not allowed to include "{key}" keys in your CSS.').format(key=key))
+            validate_key(key=key, style=style)
     return css
