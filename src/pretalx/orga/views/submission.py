@@ -224,8 +224,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 class SubmissionList(Sortable, Filterable, ListView):
     template_name = 'orga/submission/list.html'
     context_object_name = 'submissions'
-    model = Submission
-
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('code', 'speakers', 'title', 'state')
     sortable_fields = ('code', 'title', 'submission_type', 'state')

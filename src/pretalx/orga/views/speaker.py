@@ -10,7 +10,6 @@ from pretalx.person.models import User
 
 
 class SpeakerList(Sortable, Filterable, ListView):
-    model = User
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
     default_filters = ('nick__icontains', 'email__icontains', 'name__icontains')

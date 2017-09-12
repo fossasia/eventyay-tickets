@@ -43,12 +43,7 @@ class Sortable:
 
     sortable_fields = []
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return self.sort_queryset(qs)
-
     def sort_queryset(self, qs):
-        qs = super().get_queryset()
         sort_key = self.request.GET.get('sort')
         if sort_key:
             if sort_key in self.sortable_fields or (sort_key.startswith('-') and sort_key[1:] in self.sortable_fields):
@@ -60,10 +55,6 @@ class Filterable:
 
     filter_fields = []
     default_filters = []
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return self.filter_queryset(qs)
 
     def filter_queryset(self, qs):
         for key in self.request.GET:
