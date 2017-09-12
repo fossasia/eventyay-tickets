@@ -2,21 +2,29 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView
 
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.views import (
+    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+)
 from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import User
 
 
-class SpeakerList(ListView):
+class SpeakerList(Sortable, Filterable, ListView):
+    model = User
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
-    model = User
+    default_filters = ('nick__icontains', 'email__icontains', 'name__icontains')
+    filter_fields = ('nick', 'email', 'name')
+    sortable_fields = ('nick', 'email', 'name')
 
     def get_queryset(self):
-        return User.objects\
+        qs = User.objects\
             .filter(submissions__in=self.request.event.submissions.all())\
             .order_by('id')\
             .distinct()
+        qs = self.filter_queryset(qs)
+        qs = self.sort_queryset(qs)
+        return qs
 
 
 class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):

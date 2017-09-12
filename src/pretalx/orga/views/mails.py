@@ -3,7 +3,9 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.views import (
+    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+)
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (
@@ -11,20 +13,32 @@ from pretalx.orga.forms.mails import (
 )
 
 
-class OutboxList(ListView):
+class OutboxList(Sortable, Filterable, ListView):
     context_object_name = 'mails'
     template_name = 'orga/mails/outbox_list.html'
+    default_filters = ('to__icontains', 'subject__icontains')
+    filterable_fields = ('to', 'subject', )
+    sortable_fields = ('to', 'subject', )
 
     def get_queryset(self):
-        return self.request.event.queued_mails.filter(sent__isnull=True)
+        qs = self.request.event.queued_mails.filter(sent__isnull=True)
+        qs = self.filter_queryset(qs)
+        qs = self.sort_queryset(qs)
+        return qs
 
 
-class SentMail(ListView):
+class SentMail(Sortable, Filterable, ListView):
     context_object_name = 'mails'
     template_name = 'orga/mails/sent_list.html'
+    default_filters = ('to__icontains', 'subject__icontains')
+    filterable_fields = ('to', 'subject', )
+    sortable_fields = ('to', 'subject', 'sent', )
 
     def get_queryset(self):
-        return self.request.event.queued_mails.filter(sent__isnull=False).order_by('-sent')
+        qs = self.request.event.queued_mails.filter(sent__isnull=False).order_by('-sent')
+        qs = self.filter_queryset(qs)
+        qs = self.sort_queryset(qs)
+        return qs
 
 
 class OutboxSend(View):

@@ -9,7 +9,9 @@ from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.views import (
+    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+)
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
@@ -219,9 +221,17 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return kwargs
 
 
-class SubmissionList(ListView):
+class SubmissionList(Sortable, Filterable, ListView):
     template_name = 'orga/submission/list.html'
     context_object_name = 'submissions'
+    model = Submission
+
+    default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
+    filter_fields = ('code', 'speakers', 'title', 'state')
+    sortable_fields = ('code', 'title', 'state')
 
     def get_queryset(self):
-        return self.request.event.submissions.select_related('submission_type').all()
+        qs = self.request.event.submissions.select_related('submission_type').all()
+        qs = self.filter_queryset(qs)
+        qs = self.sort_queryset(qs)
+        return qs
