@@ -227,6 +227,7 @@ class SubmissionList(Sortable, Filterable, ListView):
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('code', 'speakers', 'title', 'state')
     sortable_fields = ('code', 'title', 'submission_type', 'state')
+    paginate_by = 25
 
     def get_queryset(self):
         qs = self.request.event.submissions.select_related('submission_type').all()

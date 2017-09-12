@@ -14,11 +14,11 @@ pretalx
    :target: http://pretalx.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation
 
-`pretalx` provides a conference planning tool – read our extensive `feature list`_ in our docs!
+`pretalx` provides a conference planning tool – read our extensive `feature list`_ in our docs to
+get a better idea of what `pretalx` can do for you.
 
 Project status
 --------------
-
 `pretalx` is under active development, but already very usable. It supports everything required for
 talk submission, speaker communication, and scheduling. You can see our currently supported features
 in the `feature list`_ in our documentation, and our issues_.

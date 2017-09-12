@@ -57,12 +57,13 @@ class Filterable:
     default_filters = []
 
     def filter_queryset(self, qs):
+        self._filter_model = qs.model
         for key in self.request.GET:
             lookup_key = key.split('__')[0]
             if lookup_key in self.filter_fields:
                 qs = qs.filter(**{key: self.request.GET.get(key)})
         if 'q' in self.request.GET:
-            query = self.request.GET['q']
+            query = self.request.GET['q']  # TODO: urldecode?
             _filters = [Q(**{field: query}) for field in self.default_filters]
             if len(_filters) > 1:
                 _filter = _filters[0]
@@ -72,3 +73,9 @@ class Filterable:
             elif len(_filters):
                 qs = qs.filter(_filters[0])
         return qs
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        # ctx['search_form'] = render a search form and pass the rendered template?
+        # ctx['filter_form'] = use a modelform_factory! that can be done, right?
+        return ctx

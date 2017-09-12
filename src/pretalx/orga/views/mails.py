@@ -19,6 +19,7 @@ class OutboxList(Sortable, Filterable, ListView):
     default_filters = ('to__icontains', 'subject__icontains')
     filterable_fields = ('to', 'subject', )
     sortable_fields = ('to', 'subject', )
+    paginate_by = 25
 
     def get_queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=True)
@@ -33,6 +34,7 @@ class SentMail(Sortable, Filterable, ListView):
     default_filters = ('to__icontains', 'subject__icontains')
     filterable_fields = ('to', 'subject', )
     sortable_fields = ('to', 'subject', 'sent', )
+    paginate_by = 25
 
     def get_queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=False).order_by('-sent')
