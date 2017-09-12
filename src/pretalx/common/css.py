@@ -24,10 +24,6 @@ acceptable_css_properties = set([
     'text-indent', 'unicode-bidi', 'vertical-align', 'voice-family', 'volume',
     'white-space', 'width',
 ])
-acceptable_svg_properties = set([
-    'fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-linecap',
-    'stroke-linejoin', 'stroke-opacity',
-])
 
 
 def get_key(style, key):
@@ -49,7 +45,7 @@ def validate_key(*, key, style):
         for value in values.split(' '):
             if value not in acceptable_css_keywords and not valid_css_values.match(value):
                 raise ValidationError(_('"{value}" is not allowed as attribute of "{key}"').format(key=key, value=value))
-    elif key not in acceptable_svg_properties:
+    else:
         raise ValidationError(_('You are not allowed to include "{key}" keys in your CSS.').format(key=key))
 
 
