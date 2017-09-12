@@ -64,21 +64,22 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('user', ('NICK', 'EMAIL', 'NEW_EMAIL'))
+@pytest.mark.parametrize('user', ('NICK', 'EMAIL', 'NEW_EMAIL', 'OVERLAPPING_EMAIL'))
 def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_user, user):
     assert submission.speakers.count() == 1
 
-    if user == 'TBD':
-        return
     if user == 'NICK':  # TODO: add NICK and EMAIL
         user = other_orga_user.nick
         nick = other_orga_user.nick
     elif user == 'EMAIL':
         user = other_orga_user.email
         nick = other_orga_user.nick
-    else:
+    elif user == 'NEW_EMAIL':
         user = 'some_unused@mail.org'
         nick = 'some_unused'
+    elif user == 'OVERLAPPING_EMAIL':
+        user = f'{other_orga_user.nick}@mail.org'
+        nick = None
 
     response = orga_client.post(submission.orga_urls.new_speaker, data={'nick': user}, follow=True)
     submission.refresh_from_db()
@@ -86,8 +87,12 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
     assert submission.speakers.count() == 2
     assert response.status_code == 200
 
-    response = orga_client.get(submission.orga_urls.delete_speaker, data={'nick': nick}, follow=True)
-    submission.refresh_from_db()
+    if nick:
+        response = orga_client.get(submission.orga_urls.delete_speaker, data={'nick': nick}, follow=True)
+        submission.refresh_from_db()
 
-    assert submission.speakers.count() == 1
-    assert response.status_code == 200
+        assert submission.speakers.count() == 1
+        assert response.status_code == 200
+    else:
+        assert other_orga_user.nick != submission.speakers.last().nick
+        assert submission.speakers.last().nick.startswith(other_orga_user.nick)

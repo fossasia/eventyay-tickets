@@ -1,3 +1,4 @@
+import random
 from datetime import timedelta
 
 from django.contrib import messages
@@ -19,8 +20,15 @@ def create_user_as_orga(email, submission=None):
     if not email:
         return
 
+    nick = email.split('@')[0].lower()
+    if User.objects.filter(nick__iexact=nick).exists():
+        nick += random.choice([
+            '_1', '_2', '_11', '_42', '_the_first', '_the_third',
+            '_speaker', '_third_of_their_name', '_', '123', nick
+        ])
+
     user = User.objects.create_user(
-        nick=email.split('@')[0].lower(),
+        nick=nick,
         password=get_random_string(32),
         email=email.lower(),
         pw_reset_token=get_random_string(32),
