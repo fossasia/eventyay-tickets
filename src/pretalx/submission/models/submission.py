@@ -73,12 +73,14 @@ class Submission(LogMixin, models.Model):
         choices=SubmissionStates.get_choices(),
         default=SubmissionStates.SUBMITTED,
     )
-    description = models.TextField(
-        verbose_name=_('Description'),
-        null=True, blank=True,
-    )
     abstract = models.TextField(
         verbose_name=_('Abstract'),
+        help_text=_('A concise summary of your talk in one or two sentences. You can use markdown here.'),
+        null=True, blank=True,
+    )
+    description = models.TextField(
+        verbose_name=_('Description'),
+        help_text=_('A full-text description of your talk and its contents. You can use markdown here.'),
         null=True, blank=True,
     )
     notes = models.TextField(

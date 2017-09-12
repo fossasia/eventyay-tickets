@@ -19,7 +19,7 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = Submission
         fields = [
-            'title', 'submission_type', 'description', 'abstract',
+            'title', 'submission_type', 'abstract', 'description',
             'notes', 'content_locale', 'do_not_record', 'accept_feedback',
             'duration',
         ]

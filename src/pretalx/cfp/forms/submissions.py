@@ -25,8 +25,8 @@ class InfoForm(forms.ModelForm):
     class Meta:
         model = Submission
         fields = [
-            'title', 'submission_type', 'content_locale', 'description',
-            'abstract', 'notes', 'do_not_record', 'accept_feedback',
+            'title', 'submission_type', 'content_locale', 'abstract',
+            'description', 'notes', 'do_not_record', 'accept_feedback',
         ]
 
 

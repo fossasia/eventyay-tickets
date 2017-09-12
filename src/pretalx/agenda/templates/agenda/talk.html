@@ -38,11 +38,11 @@
             {% if talk.recording_url %}
                 {{ talk.rendered_recording_iframe|safe }}
             {% endif %}
+            <div class="abstract">
+                {{ talk.abstract|rich_text }}
+            </div>
             <div class="description">
                 {{ talk.description|rich_text }}
-            </div>
-            <div class="abstact">
-                {{ talk.abstract|rich_text }}
             </div>
         </div>
         <div class="col-lg-4 col-md-6 col-xs-12">
