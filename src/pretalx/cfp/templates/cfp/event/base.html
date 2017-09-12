@@ -4,9 +4,6 @@
 {% load i18n %}
 <!DOCTYPE html>
 {% block custom_header %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
-    {% endcompress %}
     {% compress js %}
         <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>

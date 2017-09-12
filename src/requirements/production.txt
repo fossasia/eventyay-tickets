@@ -1,6 +1,7 @@
 bleach==2.*
 celery==4.0.*
 csscompressor==0.9.*
+cssutils==1.0.*
 Django==1.11.*
 git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4
 django-compressor==2.1.*

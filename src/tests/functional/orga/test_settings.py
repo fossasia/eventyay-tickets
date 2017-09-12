@@ -50,3 +50,27 @@ def test_delete_used_room(orga_client, event, room, slot):
     )
     assert response.status_code == 200
     assert event.rooms.count() == 1
+
+
+@pytest.mark.django_db
+def test_add_custom_css(event, orga_client):
+    assert not event.custom_css
+    with open('tests/functional/orga/fixtures/custom.css', 'r') as custom_css:
+        response = orga_client.post(
+            event.orga_urls.settings,
+            {
+                'name_0': event.name,
+                'slug': event.slug,
+                'is_public': event.is_public,
+                'date_from': event.date_from,
+                'date_to': event.date_to,
+                'timezone': event.timezone,
+                'email': event.email,
+                'primary_color': event.primary_color,
+                'custom_css': custom_css
+            },
+            follow=True
+        )
+    event.refresh_from_db()
+    assert response.status_code == 200
+    assert event.custom_css

@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
+from pretalx.common.css import validate_css
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.event.models import Event
 
@@ -31,6 +32,12 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
         return slug.lower()
 
+    def clean_custom_css(self, *args, **kwargs):
+        if self.cleaned_data['custom_css'] or self.files['custom_css']:
+            css = self.cleaned_data['custom_css'] or self.files['custom_css']
+            validate_css(css.read())
+            return css
+
     def clean(self):
         data = super().clean()
 
@@ -49,7 +56,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         model = Event
         fields = [
             'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
-            'email', 'locale'
+            'email', 'locale', 'primary_color', 'custom_css',
         ]
         widgets = {
             'date_from': forms.DateInput(attrs={'class': 'datepickerfield'}),

@@ -18,6 +18,10 @@ from pretalx.common.models.settings import settings_hierarkey
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
 
+def event_directory_path(instance, filename):
+    return f'custom_css/{instance.slug}/{filename}'
+
+
 @settings_hierarkey.add()
 class Event(LogMixin, models.Model):
     name = I18nCharField(
@@ -65,12 +69,18 @@ class Event(LogMixin, models.Model):
         help_text=_('Will be used as sender/reply-to in emails'),
         null=True, blank=True,
     )
-    color = models.CharField(
+    primary_color = models.CharField(
         max_length=7,
         verbose_name=_('Main event color'),
         help_text=_('Please provide a hex value like #00ff00 if you do not like pretalx colors.'),
         null=True, blank=True,
         validators=[],
+    )
+    custom_css = models.FileField(
+        upload_to=event_directory_path,
+        verbose_name=_('Custom Event CSS'),
+        help_text=_('Upload a custom CSS file if changing the primary color is not sufficient for you.'),
+        null=True, blank=True,
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
