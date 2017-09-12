@@ -18,7 +18,7 @@ Talk submission
 - **Publish a Call for Papers:** This is, at first, the most important part. pretalx allows you
   to publish a beautiful (we support full *markdown*) CfP in *multiple languages* and make it
   public after inspecting it.
-- **Build a great team:** Pretalx allows you to invite further members to your crew seamlessly,
+- **Build a great team:** pretalx allows you to invite further members to your crew seamlessly,
   and has already parts of a role-based permission system, where you differentiate between
   superusers, crew, reviewers, etc.
 - **Organize the talks:** You can offer multiple submission types, with default lengths, so that
@@ -45,7 +45,7 @@ Scheduling
   are happy with. Play around with it freely.
 - **Build your schedule offline:** The initial version of a schedule is often hard to figure
   out. You can print out proportionally sized cards of the talks to cut out and play around with.
-- **Publish your schedule:** Whenever something has changed noticably, publish a new schedule
+- **Publish your schedule:** Whenever something has changed noticeably, publish a new schedule
   just by naming it and clicking a button. Speakers will be notified if their talks have been
   moved by the new release.
 - **Transparent updates:** pretalx provides a public changelog and an Atom feed, so that your
@@ -65,6 +65,16 @@ Speaker management
   discarding.
 - **Resend:** Sent the email to the wrong address? Want to send the same email to an additional
   speaker? pretalx allows you to copy any sent email to a draft, edit it, and send it again.
+
+Customization
+~~~~~~~~~~~~~
+
+- **Comunicate:** Change the default mail templates to something that fits your event and says
+  exactly what you want it to say.
+- **Colorize:** Change your event's primary color to fit your event, your design, or your
+  organizer.
+- **Customize:** If changing the site's primary color is not sufficient for you, you can also
+  upload custom CSS files and change anything you want to look differently.
 
 Features being implemented
 --------------------------

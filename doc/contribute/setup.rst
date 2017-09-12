@@ -69,11 +69,11 @@ files::
 
 Run the development server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-To run the local development webserver, execute::
+To run the local development server, execute::
 
     python manage.py runserver
 
-and point your browser to http://localhost:8000/orga/ – You should be able to log in and play around!
+Now point your browser to http://localhost:8000/orga/ – You should be able to log in and play around!
 
 .. _`checksandtests`:
 
