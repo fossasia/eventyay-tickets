@@ -1,15 +1,28 @@
 {% extends "orga/mails/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load url_replace %}
 {% block mail_content %}
 
     <legend>{{ mails.count }} {% trans "sent e-mails" %}</legend>
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>{% trans "Subject" %}</th>
-                <th>{% trans "To" %}</th>
-                <th>{% trans "Sent" %}</th>
+                <th>
+                    {% trans "Subject" %}
+                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
+                <th>
+                    {% trans "To" %}
+                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
+                <th>
+                    {% trans "Sent" %}
+                    <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
             </tr>
         </thead>
         <tbody>

@@ -1,5 +1,6 @@
 {% extends "orga/cfp/base.html" %}
 {% load i18n %}
+{% load url_replace %}
 
 {% block headline %}
     {% trans "Submissions" %}
@@ -27,10 +28,22 @@
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>{% trans "Title" %}</th>
+                <th>
+                    {% trans "Title" %}
+                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
                 <th>{% trans "Speakers" %}</th>
-                <th>{% trans "Type" %}</th>
-                <th>{% trans "State" %}</th>
+                <th>
+                    {% trans "Type" %}
+                    <a href="?{% url_replace request 'sort' '-submission_type' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'submission_type' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
+                <th>
+                    {% trans "State" %}
+                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
                 <th></th>
             </tr>
         </thead>
