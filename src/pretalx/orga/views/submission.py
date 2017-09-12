@@ -93,8 +93,12 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
+        nick = request.POST.get('nick')
         try:
-            speaker = User.objects.get(nick__iexact=request.POST.get('nick'))
+            if '@' in nick:
+                speaker = User.objects.get(email__iexact=nick)
+            else:
+                speaker = User.objects.get(nick__iexact=nick)
         except User.DoesNotExist:
             speaker = create_user_as_orga(request.POST.get('nick'), submission=submission)
         if not speaker:

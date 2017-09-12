@@ -64,7 +64,7 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('user', ('TBD', 'NEW_EMAIL'))
+@pytest.mark.parametrize('user', ('NICK', 'EMAIL', 'NEW_EMAIL'))
 def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_user, user):
     assert submission.speakers.count() == 1
 
