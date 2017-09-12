@@ -23,7 +23,7 @@ def create_user_as_orga(email, submission=None):
         return
 
     nick = email.split('@')[0].lower()
-    if User.objects.filter(nick__iexact=nick).exists():
+    while User.objects.filter(nick__iexact=nick).exists():
         nick += random.choice([
             '_1', '_2', '_11', '_42', '_the_first', '_the_third',
             '_speaker', '_third_of_their_name', '_', '123', nick
@@ -228,7 +228,7 @@ class SubmissionList(Sortable, Filterable, ListView):
 
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('code', 'speakers', 'title', 'state')
-    sortable_fields = ('code', 'title', 'state')
+    sortable_fields = ('code', 'title', 'submission_type', 'state')
 
     def get_queryset(self):
         qs = self.request.event.submissions.select_related('submission_type').all()
