@@ -13,7 +13,7 @@ body {
 }
 .some-descriptor {
   border-style: dotted dashed solid double;
-  border-color: red green blue yellow;
+  BORDER-color: red green blue yellow;
 }
 #best-descriptor {
   border: 5px solid red;
