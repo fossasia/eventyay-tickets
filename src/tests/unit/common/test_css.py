@@ -1,7 +1,7 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from pretalx.common.css import get_key, validate_css
+from pretalx.common.css import validate_css
 
 
 @pytest.fixture
@@ -44,13 +44,3 @@ def test_valid_css(valid_css):
 def test_invalid_css(invalid_css):
     with pytest.raises(ValidationError):
         validate_css(invalid_css)
-
-
-@pytest.mark.parametrize('given,expected', (
-    ('some', 'some'),
-    ('some-thing', 'someThing'),
-    ('some-thing-eLse', 'someThingELse'),
-))
-def test_css_get_key(given, expected, some_object):
-    setattr(some_object, expected, 'YISS')
-    assert get_key(some_object, given) == 'YISS'

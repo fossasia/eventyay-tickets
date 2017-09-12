@@ -26,23 +26,11 @@ acceptable_css_properties = set([
 ])
 
 
-def get_key(style, key):
-
-    while key.find('-') != -1:
-        index = key.find('-')
-        key = key[:index] + key[index + 1].capitalize() + key[index + 2:]
-
-    return getattr(style, key)
-
-
 def validate_key(*, key, style):
-    values = get_key(style, key)
     if key in acceptable_css_properties:
         return
-    if not values:
-        raise ValidationError(_('"{key}" attribute could not be parsed.').format(key=key))
     elif key.split('-')[0] in ['background', 'border', 'margin', 'padding']:
-        for value in values.split(' '):
+        for value in style[key].split(' '):
             if value not in acceptable_css_keywords and not valid_css_values.match(value):
                 raise ValidationError(_('"{value}" is not allowed as attribute of "{key}"').format(key=key, value=value))
     else:
