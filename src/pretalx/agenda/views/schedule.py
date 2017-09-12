@@ -15,7 +15,7 @@ from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.schedule.models import TalkSlot
+from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Feedback, Submission
 
 
@@ -58,7 +58,7 @@ class ScheduleDataView(EventPageMixin, TemplateView):
         ).order_by(
             'start'
         )
-        rooms = event.rooms.all()
+        rooms = Room.objects.filter(pk__in=talks.values_list('room', flat=True).distinct())
 
         ctx['data'] = [
             {
