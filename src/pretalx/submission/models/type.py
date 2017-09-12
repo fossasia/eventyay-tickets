@@ -1,3 +1,5 @@
+import math
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
@@ -31,6 +33,16 @@ class SubmissionType(LogMixin, models.Model):
         delete = '{base}/delete'
 
     def __str__(self) -> str:
+        if self.default_duration > 60 * 24:
+            return _('{name} ({duration} hours)').format(
+                name=self.name,
+                duration=math.ceil(self.default_duration / 60 / 24),
+            )
+        if self.default_duration > 90:
+            return _('{name} ({duration} hours)').format(
+                name=self.name,
+                duration=round(self.default_duration / 60, 1),
+            )
         return _('{name} ({duration} minutes)').format(
             name=self.name,
             duration=self.default_duration,
