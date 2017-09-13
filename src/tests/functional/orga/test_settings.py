@@ -1,5 +1,10 @@
+from datetime import timedelta
+
 import pytest
 from django.urls import reverse
+from django.utils.timezone import now
+
+from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
@@ -74,3 +79,51 @@ def test_add_custom_css(event, orga_client):
     event.refresh_from_db()
     assert response.status_code == 200
     assert event.custom_css
+
+
+@pytest.mark.django_db
+def test_orga_cannot_create_event(orga_client):
+    count = Event.objects.count()
+    response = orga_client.post(
+        reverse('orga:event.create'),
+        {
+            'name_0': 'The bestest event',
+            'slug': 'testevent',
+            'is_public': False,
+            'date_from': now().strftime('%Y-%m-%d'),
+            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
+            'timezone': 'UTC',
+            'locale': 'en',
+            'locales': ['en'],
+            'email': 'orga@orga.org',
+            'primary_color': None,
+        },
+        follow=True
+    )
+    assert response.status_code == 403
+    assert not Event.objects.filter(slug='testevent').exists()
+    assert Event.objects.count() == count
+
+
+@pytest.mark.django_db
+def test_create_event(superuser_client):
+    count = Event.objects.count()
+    response = superuser_client.post(
+        reverse('orga:event.create'),
+        {
+            'name_0': 'The bestest event',
+            'slug': 'testevent',
+            'is_public': False,
+            'date_from': now().strftime('%Y-%m-%d'),
+            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
+            'timezone': 'UTC',
+            'locale': 'en',
+            'locales': ['en'],
+            'email': 'orga@orga.org',
+            'primary_color': None,
+        },
+        follow=True
+    )
+    assert response.status_code == 200
+    assert Event.objects.get(slug='testevent')
+    assert Event.objects.count() == count + 1

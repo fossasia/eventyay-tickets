@@ -35,8 +35,13 @@ def question(event):
 
 
 @pytest.fixture
-def user(event):
+def user():
     return User.objects.create_user('testuser', 'testpassw0rd')
+
+
+@pytest.fixture
+def superuser():
+    return User.objects.create_superuser('testuser', 'testpassw0rd')
 
 
 @pytest.fixture
@@ -56,6 +61,12 @@ def other_orga_user(event):
 @pytest.fixture
 def orga_client(orga_user, client):
     client.force_login(orga_user)
+    return client
+
+
+@pytest.fixture
+def superuser_client(superuser, client):
+    client.force_login(superuser)
     return client
 
 
