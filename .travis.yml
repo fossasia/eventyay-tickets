@@ -10,6 +10,7 @@ script:
   - cd src/
   - python manage.py collectstatic --noinput
   - python manage.py compress
+  - python manage.py compilemessages
   - pylama
   - isort -rc -c .
   - py.test --cov=pretalx tests/ && codecov
