@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS
@@ -29,5 +30,9 @@ cfp_urls = [
 
         url('^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
     ])),
-    url('^$', event.GeneralView.as_view()),
 ]
+
+if settings.DEBUG:
+    cfp_urls += [
+        url('^$', event.GeneralView.as_view()),
+    ]
