@@ -142,6 +142,12 @@
                             powered by <a {{ a_attr }}>pretalx</a>
                         {% endblocktrans %}
                     {% endwith %}
+                    {% if development_warning %}
+                        <span class="text-warning">&middot; {% trans "running in development mode" %}</span>
+                        {% if pretalx_version %}
+                            <span>&middot; <a href="https://github.com/openeventstack/pretalx/tree{{ pretalx_version }}/">{{ pretalx_version }}</a></span>
+                        {% endif %}
+                    {% endif %}
                 </footer>
             </div>
         </div>

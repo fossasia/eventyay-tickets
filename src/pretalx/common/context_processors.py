@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
 
@@ -23,4 +24,16 @@ def locale_context(request):
     ctx['js_datetime_format'] = get_javascript_format('DATETIME_INPUT_FORMATS')
     ctx['js_date_format'] = get_javascript_format('DATE_INPUT_FORMATS')
     ctx['js_locale'] = get_moment_locale()
+    return ctx
+
+
+def system_information(request):
+    ctx = {}
+    if settings.DEBUG:
+        ctx['development_warning'] = True
+        try:
+            import subprocess
+            ctx['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always'])
+        except Exception:
+            pass
     return ctx

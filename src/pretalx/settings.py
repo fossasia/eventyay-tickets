@@ -240,6 +240,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'pretalx.common.context_processors.add_events',
                 'pretalx.common.context_processors.locale_context',
+                'pretalx.common.context_processors.system_information',
             ],
             'loaders': template_loaders
         },
