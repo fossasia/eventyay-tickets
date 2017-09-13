@@ -28,6 +28,15 @@ def other_event():
 
 
 @pytest.fixture
+def multilingual_event():
+    today = datetime.date.today()
+    return Event.objects.create(
+        name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
+        date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
+    )
+
+
+@pytest.fixture
 def question(event):
     return Question.objects.create(event=event, question='How old are you?',
                                    variant=QuestionVariant.NUMBER,

@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 
 from pretalx.submission.models import SubmissionStates
 
@@ -141,3 +142,15 @@ def test_can_edit_profile(speaker, event, speaker_client):
     speaker.refresh_from_db()
     assert speaker.profiles.get(event=event).biography == 'Ruling since forever.'
     assert speaker.name == 'Lady Imperator'
+
+
+@pytest.mark.django_db
+def test_can_change_locale(multilingual_event, client):
+    first_response = client.get(multilingual_event.urls.base, follow=True)
+    assert 'submission' in first_response.content.decode()
+    assert 'Einreichung' not in first_response.content.decode()
+    second_response = client.get(
+        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug}) + f'?locale=de&next=/{multilingual_event.slug}/',
+        follow=True,
+    )
+    assert 'Einreichung' in second_response.content.decode()
