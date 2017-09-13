@@ -28,22 +28,25 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             qs = qs.exclude(pk=self.instance.pk)
 
         if qs.filter(slug__iexact=slug).exists():
-            raise forms.ValidationError(_('This slug is already taken.'))
+            raise forms.ValidationError(_('This short name is already taken, please choose another one (or ask the owner of that event to add you to their team).'))
 
         return slug.lower()
 
     def clean_custom_css(self, *args, **kwargs):
+        def handle_missing_css():
+            self.instance.custom_css = None
+            if self.instance.pk:
+                self.instance.save(update_fields=['custom_css'])
+
         if self.cleaned_data.get('custom_css') or self.files.get('custom_css'):
             css = self.cleaned_data['custom_css'] or self.files['custom_css']
             try:
                 validate_css(css.read())
                 return css
             except IsADirectoryError:
-                self.instance.custom_css = None
-                self.instance.save(update_fields=['custom_css'])
+                handle_missing_css()
         else:
-            self.instance.custom_css = None
-            self.instance.save(update_fields=['custom_css'])
+            handle_missing_css()
 
     def clean(self):
         data = super().clean()
