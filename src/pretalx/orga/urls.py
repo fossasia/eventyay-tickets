@@ -60,6 +60,7 @@ orga_urls = [
             url('^accept$', submission.SubmissionAccept.as_view(), name='submissions.accept'),
             url('^reject$', submission.SubmissionReject.as_view(), name='submissions.reject'),
             url('^confirm', submission.SubmissionConfirm.as_view(), name='submissions.confirm'),
+            url('^delete', submission.SubmissionDelete.as_view(), name='submissions.delete'),
             url('^questions$', submission.SubmissionQuestions.as_view(), name='submissions.questions.view'),
             url('^questions/edit$', submission.SubmissionQuestions.as_view(), name='submissions.questions.edit'),
             url('^speakers$', submission.SubmissionSpeakers.as_view(), name='submissions.speakers.view'),

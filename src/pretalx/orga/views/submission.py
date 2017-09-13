@@ -234,3 +234,17 @@ class SubmissionList(Sortable, Filterable, ListView):
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
+
+
+class SubmissionDelete(SubmissionViewMixin, TemplateView):
+    template_name = 'orga/submission/delete.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['submission'] = self.get_object()
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.get_object().remove(person=request.user)
+        messages.success(request, _('The submission has been deleted.'))
+        return redirect(request.event.orga_urls.submissions)

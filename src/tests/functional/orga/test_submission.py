@@ -1,6 +1,6 @@
 import pytest
 
-from pretalx.submission.models import SubmissionStates
+from pretalx.submission.models import Submission, SubmissionStates
 
 
 @pytest.mark.django_db
@@ -61,6 +61,30 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.CONFIRMED
+
+
+@pytest.mark.django_db
+def test_orga_can_delete_submission(orga_client, submission):
+    assert submission.state == SubmissionStates.SUBMITTED
+    assert Submission.objects.count() == 1
+
+    response = orga_client.get(
+        submission.orga_urls.delete,
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.state == SubmissionStates.SUBMITTED
+    assert Submission.objects.count() == 1
+
+    response = orga_client.post(
+        submission.orga_urls.delete,
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert Submission.objects.count() == 0
+    assert Submission.deleted_objects.count() == 1
+    assert Submission.deleted_objects.get(code=submission.code)
 
 
 @pytest.mark.django_db

@@ -1,0 +1,15 @@
+{% extends "orga/submission/base.html" %}
+{% load i18n %}
+{% load url_replace %}
+
+{% block content %}
+    {% trans "Do you really want to delete this submission?" %}
+    <form method="post" action="">
+        <a class="btn btn-secondary" href="{{ submission.orga_urls.base }}">
+            {% trans "Back" %}
+        </a>
+        <button type="submit" class="btn btn-danger">
+            {% trans "Yes, delete" %}
+        </button>
+    </form>
+{% endblock %}
