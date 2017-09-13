@@ -149,6 +149,7 @@ class Submission(LogMixin, models.Model):
         accept = '{base}/accept'
         reject = '{base}/reject'
         confirm = '{base}/confirm'
+        delete = '{base}/delete'
         questions = '{base}/questions'
         speakers = '{base}/speakers'
         new_speaker = '{speakers}/add'
@@ -234,11 +235,15 @@ class Submission(LogMixin, models.Model):
             raise SubmissionError(_('This submission has already been processed and cannot be withdrawn, only canceled.'))
         self.state = SubmissionStates.WITHDRAWN
         self.save(update_fields=['state'])
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
         self.log_action('pretalx.submission.withdraw', person=person, orga=False)
 
     def remove(self, person=None):
         self.state = SubmissionStates.DELETED
         self.save(update_fields=['state'])
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
         self.log_action('pretalx.submission.deleted', person=person, orga=False)
 
     @property
