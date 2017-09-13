@@ -28,7 +28,6 @@ cfp_urls = [
             name='event.user.submission.confirm'),
 
         url('^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
-
-        url('^$', event.GeneralView.as_view()),
     ])),
+    url('^$', event.GeneralView.as_view()),
 ]
