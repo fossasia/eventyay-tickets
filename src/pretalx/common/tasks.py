@@ -1,9 +1,7 @@
 import hashlib
-import os
 
 import django_libsass
 import sass
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.templatetags.static import static
@@ -15,23 +13,25 @@ from pretalx.event.models import Event
 @app.task()
 def regenerate_css(event_id: int):
     event = Event.objects.get(pk=event_id)
-    sassdirs = {
-        local_app: os.path.join(settings.STATIC_ROOT, f'{local_app}/scss')
-        for local_app in ['cfp', 'orga']
-    }
+    local_apps = ['cfp', 'orga']
 
-    for local_app, path in sassdirs.items():
+    if not event.primary_color:
+        for local_app in local_apps:
+            event.settings.delete(f'{local_app}_css_file')
+        return
+
+    for local_app in local_apps:
         sassrules = []
         if event.primary_color:
             sassrules.append('$brand-primary: {};'.format(event.primary_color))
 
-        sassrules.append('@import "main.scss";')
+        sassrules.append(f'@import "pretalx/static/{local_app}/scss/main.scss";')
 
         cf = dict(django_libsass.CUSTOM_FUNCTIONS)
         cf['static'] = static
         css = sass.compile(
             string="\n".join(sassrules),
-            include_paths=[path], output_style='compressed',
+            output_style='compressed',
             custom_functions=cf
         )
         checksum = hashlib.sha1(css.encode('utf-8')).hexdigest()
