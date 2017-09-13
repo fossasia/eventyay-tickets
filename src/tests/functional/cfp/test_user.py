@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from pretalx.submission.models import SubmissionStates
 
@@ -7,7 +6,7 @@ from pretalx.submission.models import SubmissionStates
 @pytest.mark.django_db
 def test_can_see_submission_list(speaker_client, submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submissions', kwargs={'event': submission.event.slug}),
+        submission.event.urls.user_submissions,
         follow=True,
     )
     assert response.status_code == 200
@@ -17,7 +16,7 @@ def test_can_see_submission_list(speaker_client, submission):
 @pytest.mark.django_db
 def test_can_see_submission(speaker_client, submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.edit', kwargs={'event': submission.event.slug, 'code': submission.pk}),
+        submission.urls.user_base,
         follow=True,
     )
     assert response.status_code == 200
@@ -27,7 +26,7 @@ def test_can_see_submission(speaker_client, submission):
 @pytest.mark.django_db
 def test_cannot_see_other_submission(speaker_client, other_submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.edit', kwargs={'event': other_submission.event.slug, 'code': other_submission.pk}),
+        other_submission.urls.user_base,
         follow=True,
     )
     assert response.status_code == 404
@@ -36,7 +35,7 @@ def test_cannot_see_other_submission(speaker_client, other_submission):
 @pytest.mark.django_db
 def test_can_confirm_submission(speaker_client, accepted_submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.confirm', kwargs={'event': accepted_submission.event.slug, 'code': accepted_submission.pk}),
+        accepted_submission.urls.confirm,
         follow=True,
     )
     accepted_submission.refresh_from_db()
@@ -49,7 +48,7 @@ def test_can_reconfirm_submission(speaker_client, accepted_submission):
     accepted_submission.state = SubmissionStates.CONFIRMED
     accepted_submission.save()
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.confirm', kwargs={'event': accepted_submission.event.slug, 'code': accepted_submission.pk}),
+        accepted_submission.urls.confirm,
         follow=True,
     )
     accepted_submission.refresh_from_db()
@@ -62,7 +61,7 @@ def test_cannot_confirm_rejected_submission(speaker_client, rejected_submission)
     rejected_submission.state = SubmissionStates.REJECTED
     rejected_submission.save()
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.confirm', kwargs={'event': rejected_submission.event.slug, 'code': rejected_submission.pk}),
+        rejected_submission.urls.confirm,
         follow=True,
     )
     rejected_submission.refresh_from_db()
@@ -73,7 +72,7 @@ def test_cannot_confirm_rejected_submission(speaker_client, rejected_submission)
 @pytest.mark.django_db
 def test_can_withdraw_submission(speaker_client, submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.withdraw', kwargs={'event': submission.event.slug, 'code': submission.pk}),
+        submission.urls.withdraw,
         follow=True,
     )
     submission.refresh_from_db()
@@ -84,7 +83,7 @@ def test_can_withdraw_submission(speaker_client, submission):
 @pytest.mark.django_db
 def test_cannot_withdraw_accepted_submission(speaker_client, accepted_submission):
     response = speaker_client.get(
-        reverse(f'cfp:event.user.submission.withdraw', kwargs={'event': accepted_submission.event.slug, 'code': accepted_submission.pk}),
+        accepted_submission.urls.withdraw,
         follow=True,
     )
     accepted_submission.refresh_from_db()
@@ -103,7 +102,7 @@ def test_can_edit_submission(speaker_client, submission):
         'notes': submission.notes,
     }
     response = speaker_client.post(
-        reverse(f'cfp:event.user.submission.edit', kwargs={'event': submission.event.slug, 'code': submission.pk}),
+        submission.urls.user_base + '/',
         follow=True, data=data,
     )
     assert response.status_code == 200
@@ -123,7 +122,7 @@ def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
         'notes': rejected_submission.notes,
     }
     response = speaker_client.post(
-        reverse(f'cfp:event.user.submission.edit', kwargs={'event': rejected_submission.event.slug, 'code': rejected_submission.pk}),
+        rejected_submission.urls.user_base,
         follow=True, data=data,
     )
     assert response.status_code == 200
@@ -134,7 +133,7 @@ def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
 @pytest.mark.django_db
 def test_can_edit_profile(speaker, event, speaker_client):
     response = speaker_client.post(
-        reverse(f'cfp:event.user.view', kwargs={'event': event.slug}),
+        event.urls.user,
         data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
         follow=True,
     )
