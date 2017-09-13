@@ -52,3 +52,10 @@ def test_user_can_see_correct_events(orga_user, orga_client, speaker, event, oth
     else:
         current_url = response.redirect_chain[-1][0]
         assert 'login' in current_url
+
+
+@pytest.mark.django_db
+def test_dev_settings_warning(orga_client, event, settings):
+    settings.DEBUG = True
+    response = orga_client.get(reverse('orga:event.dashboard', kwargs={'event': event.slug}), follow=True)
+    assert 'running in development mode' in response.content.decode()
