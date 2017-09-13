@@ -5,11 +5,13 @@
 {% block content %}
     {% trans "Do you really want to delete this submission?" %}
     <form method="post" action="">
-        <a class="btn btn-secondary" href="{{ submission.orga_urls.base }}">
-            {% trans "Back" %}
-        </a>
-        <button type="submit" class="btn btn-danger">
-            {% trans "Yes, delete" %}
-        </button>
+        <div class="form-group pull-right">
+            <a class="btn btn-secondary" href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
+                {% trans "Back" %}
+            </a>
+            <button type="submit" class="btn btn-danger">
+                {% trans "Yes, delete" %}
+            </button>
+        </div>
     </form>
 {% endblock %}

@@ -10,12 +10,19 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row">
-            <div class="offset-md-3 col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create submission" %}</button>
-                {% elif action == "edit" %}
+            {% if action == "create" %}
+                <div class="offset-md-3 col-md-9">
+                    <button type="submit" class="btn btn-primary pull-right">{% trans "Create submission" %}</button>
+                </div>
+            {% elif action == "edit" %}
+                <div class="offset-md-3 col-md-9">
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                {% elif action == "view" %}
+                </div>
+            {% elif action == "view" %}
+                <div class="col-md-3">
+                    <a class="btn btn-danger" href="{{ form.instance.orga_urls.delete }}?from=detail">{% trans "Delete" %}</a>
+                </div>
+                <div class="col-md-9">
                     {% if form.instance.state == "submitted" or form.instance.state == "rejected" %}
                         <a class="btn btn-primary" href="{{ form.instance.orga_urls.accept }}">{% trans "Accept" %}</a>
                     {% elif form.instance.state == "accepted" %}
@@ -23,8 +30,8 @@
                     {% endif %}
                     <a class="btn btn-secondary" href="{{ form.instance.orga_urls.edit }}">{% trans "Edit" %}</a>
                     <a class="btn btn-danger" href="{{ form.instance.orga_urls.reject }}">{% trans "Reject" %}</a>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
     </form>
 
