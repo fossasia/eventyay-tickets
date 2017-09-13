@@ -20,6 +20,10 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['locales'] = self.instance.locale_array.split(",")
+        if not self.instance or not self.instance.pk:
+            self.fields['is_public'].widget = forms.HiddenInput()
+            self.fields['primary_color'].widget = forms.HiddenInput()
+            self.fields['custom_css'].widget = forms.HiddenInput()
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']

@@ -48,7 +48,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         new_event = not bool(form.instance.pk)
         ret = super().form_valid(form)
         if new_event:
-            messages.success(self.request, _('Yay, a new event! Check the settings and configure a CfP and you\'re good to go!'))
+            messages.success(self.request, _('Yay, a new event! Check these settings and configure a CfP and you\'re good to go!'))
             form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
             EventPermission.objects.create(
                 event=form.instance,
