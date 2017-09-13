@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load i18n %}
 
+{% if obj.logged_actions.exists %}
 <div class="panel panel-default">
     <div class="panel-heading"><legend>
         {% trans "History" %}
@@ -34,3 +35,4 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}
