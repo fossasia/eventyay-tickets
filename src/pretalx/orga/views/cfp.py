@@ -36,7 +36,7 @@ class CfPTextDetail(ActionFromUrl, UpdateView):
         return self.request.event.cfp
 
     def get_success_url(self) -> str:
-        return self.get_object().urls.base
+        return self.get_object().urls.text
 
     def form_valid(self, form):
         if not self.sform.is_valid():
