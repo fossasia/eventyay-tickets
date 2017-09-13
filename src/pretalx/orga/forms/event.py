@@ -33,10 +33,17 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         return slug.lower()
 
     def clean_custom_css(self, *args, **kwargs):
-        if self.cleaned_data['custom_css'] or self.files['custom_css']:
+        if self.cleaned_data.get('custom_css') or self.files.get('custom_css'):
             css = self.cleaned_data['custom_css'] or self.files['custom_css']
-            validate_css(css.read())
-            return css
+            try:
+                validate_css(css.read())
+                return css
+            except IsADirectoryError:
+                self.instance.custom_css = None
+                self.instance.save(update_fields=['custom_css'])
+        else:
+            self.instance.custom_css = None
+            self.instance.save(update_fields=['custom_css'])
 
     def clean(self):
         data = super().clean()
