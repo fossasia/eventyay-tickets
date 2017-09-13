@@ -2,7 +2,11 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block headline %}
+{% if action == 'create' %}
     {% trans "Create a new event" %}
+{% else %}
+    {% trans "Settings" %}
+{% endif %}
 {% endblock %}
 {% block content %}
 
