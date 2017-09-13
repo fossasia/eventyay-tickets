@@ -22,7 +22,7 @@ class OutboxList(Sortable, Filterable, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True)
+        qs = self.request.event.queued_mails.filter(sent__isnull=True).order_by('id')
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
