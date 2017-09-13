@@ -23,6 +23,7 @@ class SubmissionStates(Choices):
     CONFIRMED = 'confirmed'
     CANCELED = 'canceled'
     WITHDRAWN = 'withdrawn'
+    DELETED = 'deleted'
 
     valid_choices = [
         (SUBMITTED, _('submitted')),
@@ -30,7 +31,8 @@ class SubmissionStates(Choices):
         (ACCEPTED, _('accepted')),
         (CONFIRMED, _('confirmed')),
         (CANCELED, _('canceled')),
-        (WITHDRAWN, _('withdrawn'))
+        (WITHDRAWN, _('withdrawn')),
+        (DELETED, _('deleted')),
     ]
 
     valid_next_states = {
@@ -38,8 +40,24 @@ class SubmissionStates(Choices):
         REJECTED: (ACCEPTED, SUBMITTED),
         ACCEPTED: (CONFIRMED, CANCELED, REJECTED, SUBMITTED),
         CONFIRMED: (ACCEPTED, CANCELED),
-        WITHDRAWN: (SUBMITTED,)
+        WITHDRAWN: (SUBMITTED,),
+        DELETED: None,
     }
+
+
+class SubmissionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(state=SubmissionStates.DELETED)
+
+
+class TalkManager(SubmissionManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
+
+
+class DeletedSubmissionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(state=SubmissionStates.DELETED)
 
 
 class Submission(LogMixin, models.Model):
@@ -113,6 +131,10 @@ class Submission(LogMixin, models.Model):
         null=True, blank=True
     )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+
+    objects = SubmissionManager()
+    talks = TalkManager()
+    deleted_objects = DeletedSubmissionManager()
 
     class urls(Urls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
@@ -213,6 +235,11 @@ class Submission(LogMixin, models.Model):
         self.state = SubmissionStates.WITHDRAWN
         self.save(update_fields=['state'])
         self.log_action('pretalx.submission.withdraw', person=person, orga=False)
+
+    def remove(self, person=None):
+        self.state = SubmissionStates.DELETED
+        self.save(update_fields=['state'])
+        self.log_action('pretalx.submission.deleted', person=person, orga=False)
 
     @property
     def uuid(self):
