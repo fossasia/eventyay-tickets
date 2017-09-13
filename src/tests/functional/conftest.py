@@ -31,7 +31,7 @@ def other_event():
 def multilingual_event():
     today = datetime.date.today()
     return Event.objects.create(
-        name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
+        name='Fancy testevent', is_public=True, slug='test2', email='orga@orga.org',
         date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
     )
 

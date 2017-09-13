@@ -154,3 +154,15 @@ def test_can_change_locale(multilingual_event, client):
         follow=True,
     )
     assert 'Einreichung' in second_response.content.decode()
+
+
+@pytest.mark.django_db
+def test_persists_changed_locale(multilingual_event, orga_user, orga_client):
+    assert orga_user.locale == 'en'
+    response = orga_client.get(
+        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug}) + f'?locale=de&next=/{multilingual_event.slug}/',
+        follow=True,
+    )
+    orga_user.refresh_from_db()
+    assert response.status_code == 200
+    assert orga_user.locale == 'de'
