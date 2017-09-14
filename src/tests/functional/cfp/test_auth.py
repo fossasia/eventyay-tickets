@@ -9,7 +9,7 @@ def test_can_login_with_username(speaker, client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert 'My submissions' in response.content.decode()
+    assert 'You are logged in as' in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -20,7 +20,7 @@ def test_can_login_with_email(speaker, client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert 'My submissions' in response.content.decode()
+    assert 'You are logged in as' in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -31,7 +31,7 @@ def test_cannot_login_with_incorrect_username(client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert 'My submissions' not in response.content.decode()
+    assert 'You are logged in as' not in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -42,4 +42,56 @@ def test_cannot_login_with_incorrect_email(client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert 'My submissions' not in response.content.decode()
+    assert 'You are logged in as' not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_reset_password_by_nick(speaker, client, event):
+    response = client.post(
+        event.urls.reset,
+        data={'login_username': speaker.nick, },
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.pw_reset_token
+    response = client.post(
+        event.urls.reset + f'/{speaker.pw_reset_token}',
+        data={'password': 'mynewpassword', 'password_repeat': 'mynewpassword'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert not speaker.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={'login_username': speaker.nick, 'login_password': 'mynewpassword'},
+        follow=True,
+    )
+    assert 'You are logged in as' in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_reset_password_by_email(speaker, client, event):
+    response = client.post(
+        event.urls.reset,
+        data={'login_username': speaker.email, },
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.pw_reset_token
+    response = client.post(
+        event.urls.reset + f'/{speaker.pw_reset_token}',
+        data={'password': 'mynewpassword', 'password_repeat': 'mynewpassword'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert not speaker.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={'login_username': speaker.email, 'login_password': 'mynewpassword'},
+        follow=True,
+    )
+    assert 'You are logged in as' in response.content.decode()
