@@ -91,7 +91,7 @@ def default_submission_type(event):
 
 @pytest.fixture
 def speaker(event):
-    user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker')
+    user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker', email='jane@speaker.org')
     SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
     return user
 
