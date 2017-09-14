@@ -46,6 +46,16 @@ def test_cannot_login_with_incorrect_email(client, event):
 
 
 @pytest.mark.django_db
+def test_cfp_logout(speaker_client, event):
+    response = speaker_client.get(
+        event.urls.logout,
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert 'You are logged in as' not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_can_reset_password_by_nick(speaker, client, event):
     response = client.post(
         event.urls.reset,
