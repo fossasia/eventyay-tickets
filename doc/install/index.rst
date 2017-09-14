@@ -1,8 +1,8 @@
 I want to install pretalx on my server!
 =======================================
 
-That's great! Since pretalx is in a very early stage, there's currently only one supported installation method
-and it's not very polished -- but it works!
+That's great! Due to documentation maintenance effort, we support a single installation way for
+production and it's not too polished -- but it works!
 
 .. toctree::
    :maxdepth: 2
