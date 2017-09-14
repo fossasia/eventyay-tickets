@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
@@ -225,14 +226,10 @@ class TalkView(EventPageMixin, DetailView):
     template_name = 'agenda/talk.html'
 
     def get_object(self):
-        try:
+        with suppress(AttributeError, TalkSlot.DoesNotExist):
             slot = self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'])
             if slot.is_visible:
                 return slot.submission
-        except AttributeError:  # if there is no released schedule yet
-            pass
-        except TalkSlot.DoesNotExist:
-            pass
         raise Http404()
 
     @csp_update(CHILD_SRC="https://media.ccc.de")  # TODO: only do this if obj.recording_url and obj.recording_source are set

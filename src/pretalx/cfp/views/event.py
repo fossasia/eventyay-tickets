@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 import pytz
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -48,21 +50,17 @@ class EventPageMixin:
 
     def _language_from_cookie(self, request, supported):
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-        try:
+        with suppress(LookupError):
             cookie_value = get_supported_language_variant(cookie_value)
             if cookie_value and cookie_value in supported:
                 return cookie_value
-        except LookupError:
-            pass
 
     def _language_from_user(self, request, supported):
         if request.user.is_authenticated:
-            try:
+            with suppress(LookupError):
                 value = get_supported_language_variant(request.user.locale)
                 if value and value in supported:
                     return value
-            except LookupError:
-                pass
 
     def _select_locale(self, request):
         supported = request.event.locales
@@ -76,12 +74,10 @@ class EventPageMixin:
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
-        try:
+        with suppress(pytz.UnknownTimeZoneError):
             tzname = request.event.timezone
             timezone.activate(pytz.timezone(tzname))
             request.timezone = tzname
-        except pytz.UnknownTimeZoneError:
-            pass
 
 
 class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):

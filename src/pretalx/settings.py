@@ -1,4 +1,5 @@
 import os
+from contextlib import suppress
 
 import sys
 from urllib.parse import urlparse
@@ -167,11 +168,9 @@ INSTALLED_APPS = [
     'pretalx.orga',
 ]
 
-try:
+with suppress(ImportError):
     import django_extensions  # noqa
     INSTALLED_APPS.append('django_extensions')
-except ImportError:
-    pass
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -185,13 +184,11 @@ MIDDLEWARE = [
     'pretalx.common.middleware.EventPermissionMiddleware',
 ]
 
-try:
+with suppress(ImportError):
     import debug_toolbar  # noqa
     if DEBUG:
         INSTALLED_APPS.append('debug_toolbar.apps.DebugToolbarConfig')
         MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-except ImportError:
-    pass
 
 
 # Security settings

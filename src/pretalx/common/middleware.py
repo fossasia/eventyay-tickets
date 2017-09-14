@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -74,7 +76,7 @@ class EventPermissionMiddleware:
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
-        try:
+        with suppress(pytz.UnknownTimeZoneError):
             if request.user.is_authenticated:
                 tzname = request.user.timezone
             elif hasattr(request, 'event'):
@@ -83,8 +85,6 @@ class EventPermissionMiddleware:
                 tzname = settings.TIME_ZONE
             timezone.activate(pytz.timezone(tzname))
             request.timezone = tzname
-        except pytz.UnknownTimeZoneError:
-            pass
 
     def _language_from_browser(self, request, supported):
         accept_value = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
@@ -104,18 +104,14 @@ class EventPermissionMiddleware:
 
     def _language_from_cookie(self, request, supported):
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-        try:
+        with suppress(LookupError):
             cookie_value = get_supported_language_variant(cookie_value)
             if cookie_value and cookie_value in supported:
                 return cookie_value
-        except LookupError:
-            pass
 
     def _language_from_user(self, request, supported):
         if request.user.is_authenticated:
-            try:
+            with suppress(LookupError):
                 value = get_supported_language_variant(request.user.locale)
                 if value and value in supported:
                     return value
-            except LookupError:
-                pass
