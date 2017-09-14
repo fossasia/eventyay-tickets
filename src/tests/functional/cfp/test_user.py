@@ -145,6 +145,23 @@ def test_can_edit_profile(speaker, event, speaker_client):
 
 
 @pytest.mark.django_db
+def test_can_delete_profile(speaker, event, speaker_client):
+    assert speaker.profiles.get(event=event).biography != ''
+    response = speaker_client.post(
+        event.urls.user_delete,
+        data={'really': True},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.get(event=event).biography == ''
+    assert speaker.name == 'Deleted User'
+    assert speaker.nick.startswith('deleted_user')
+    assert speaker.email.startswith('deleted_user')
+    assert speaker.email.endswith('@localhost')
+
+
+@pytest.mark.django_db
 def test_can_change_locale(multilingual_event, client):
     first_response = client.get(multilingual_event.urls.base, follow=True)
     assert 'submission' in first_response.content.decode()

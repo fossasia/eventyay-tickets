@@ -125,7 +125,7 @@ class User(AbstractBaseUser):
         from pretalx.person.models import EventPermission
         self.nick = f'deleted_user_{random.randint(0, 999)}'
         self.name = 'Deleted User'
-        self.email = 'deleted@localhost'
+        self.email = f'{self.nick}@localhost'
         self.is_active = False
         self.is_superuser = False
         self.locale = 'en'
@@ -133,5 +133,5 @@ class User(AbstractBaseUser):
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.save()
-
+        self.profiles.all().update(biography='')
         EventPermission.objects.filter(user=self).update(is_orga=False, invitation_email=None, invitation_token=None)

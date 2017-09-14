@@ -5,7 +5,7 @@ from django.utils.timezone import now
 
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
-from pretalx.person.models import EventPermission, User
+from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import (
     Feedback, Question, QuestionVariant, Submission, SubmissionType,
@@ -90,8 +90,10 @@ def default_submission_type(event):
 
 
 @pytest.fixture
-def speaker():
-    return User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker')
+def speaker(event):
+    user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker')
+    SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
+    return user
 
 
 @pytest.fixture
@@ -101,8 +103,10 @@ def speaker_client(client, speaker):
 
 
 @pytest.fixture
-def other_speaker():
-    return User.objects.create_user('speaker2', 'speakerpwd', name='Krümelmonster')
+def other_speaker(event):
+    user = User.objects.create_user('speaker2', 'speakerpwd', name='Krümelmonster')
+    SpeakerProfile.objects.create(user=user, event=event, biography='COOKIIIIES!!')
+    return user
 
 
 @pytest.fixture
