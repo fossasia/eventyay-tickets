@@ -117,6 +117,10 @@ class User(AbstractBaseUser):
             object_id=self.pk
         )
 
+    def own_actions(self):
+        from pretalx.common.models import ActivityLog
+        return ActivityLog.objects.filter(person=self)
+
     def deactivate(self):
         from pretalx.person.models import EventPermission
         self.nick = f'deleted_user_{random.randint(0, 999)}'
