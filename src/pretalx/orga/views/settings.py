@@ -141,6 +141,7 @@ class EventTeamInvite(View):
                 _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
             )
         else:
+            invitation_token = permission.invitation_token
             messages.info(
                 request,
                 _('<{email}> had already been invited – we\'ve resent the invitation instead :)').format(email=email),
