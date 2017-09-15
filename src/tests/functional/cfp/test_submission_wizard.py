@@ -181,6 +181,30 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
 
+    @pytest.mark.django_db
+    def test_wizard_logged_in_user_no_questions_broken_template(self, event, client, user):
+        submission_type = SubmissionType.objects.filter(event=event).first().pk
+
+        event.ack_template.text = str(event.ack_template.text) + '{name} and {nonexistent}'
+        event.ack_template.save()
+
+        client.force_login(user)
+        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type, next='profile')
+        response, current_url = self.perform_profile_form(client, response, current_url)
+
+        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
+        assert doc.select('.alert-success')
+        assert doc.select('.user-row')
+        sub = Submission.objects.last()
+        assert sub.title == 'Submission title'
+        assert not sub.answers.exists()
+        s_user = sub.speakers.first()
+        assert s_user.pk == user.pk
+        assert s_user.nick == 'testuser'
+        assert s_user.name == 'Jane Doe'
+        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+
 
 # TODO: test failed registration
 # TODO: test failed login
