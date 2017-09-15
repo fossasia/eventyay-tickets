@@ -6,6 +6,7 @@ from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 from urlman import Urls
 
+from pretalx.common.mail import SendMailException
 from pretalx.common.mixins import LogMixin
 
 
@@ -47,14 +48,20 @@ class MailTemplate(LogMixin, models.Model):
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
         with override(locale):
-            context = TolerantDict(context or dict())
+            context = context or dict()
+            try:
+                subject = str(self.subject).format(**context)
+                text = str(self.text).format(**context)
+            except KeyError as e:
+                raise SendMailException(f'Experienced KeyError when rendering Text: {str(e)}')
+
             mail = QueuedMail(
                 event=self.event,
                 to=user.email,
                 reply_to=self.reply_to or event.email,
                 bcc=self.bcc,
-                subject=str(self.subject).format(**context),
-                text=str(self.text).format(**context)
+                subject=subject,
+                text=text,
             )
             if skip_queue:
                 mail.send()

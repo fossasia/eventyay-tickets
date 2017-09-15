@@ -9,6 +9,7 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
+from pretalx.common.mail import SendMailException
 from pretalx.mail.context import template_context_from_submission
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
@@ -108,10 +109,13 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         sub = form_dict['info'].instance
         form_dict['profile'].user = user
         form_dict['profile'].save()
-        sub.event.ack_template.to_mail(
-            user=user, event=self.request.event, context=template_context_from_submission(sub),
-            skip_queue=True, locale=user.locale
-        )
+        try:
+            sub.event.ack_template.to_mail(
+                user=user, event=self.request.event, context=template_context_from_submission(sub),
+                skip_queue=True, locale=user.locale
+            )
+        except SendMailException:
+            messages.warning(self.request, _('We are experiencing difficulties when sending mails, but your talk was submitted successfully!'))
 
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
