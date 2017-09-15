@@ -1,9 +1,14 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 {% block headline %}
+{% if action and action == 'create' %}
+    {% trans "Create a new event" %}
+{% else %}
     {% trans "Settings" %}
+{% endif %}
 {% endblock %}
 {% block content %}
+{% if action and action != 'create' %}
     {% if request.event %}
         <ul class="nav nav-pills">
           <li class="nav-item">
@@ -38,6 +43,7 @@
           </li>
         </ul>
     {% endif %}
+{% endif %}
 
     <div class="flex-container">
         <div class="flex-content">

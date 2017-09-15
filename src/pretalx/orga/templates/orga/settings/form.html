@@ -1,14 +1,9 @@
-{% extends "orga/base.html" %}
+{% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
 {% block headline %}
-{% if action == 'create' %}
-    {% trans "Create a new event" %}
-{% else %}
-    {% trans "Settings" %}
-{% endif %}
 {% endblock %}
-{% block content %}
+{% block settings_content %}
 
 <div class="flex-container"><div class="flex-content">
 
