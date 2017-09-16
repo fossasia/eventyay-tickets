@@ -23,7 +23,7 @@ Get a copy of the source code
 -----------------------------
 You can clone our git repository::
 
-    git clone https://github.com/openeventstack/pretalx.git
+    git clone https://github.com/pretalx/pretalx.git
     cd pretalx/
 
 

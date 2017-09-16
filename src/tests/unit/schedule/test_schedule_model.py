@@ -66,7 +66,7 @@ def test_unfreeze(talk_slot):
 
 @pytest.mark.django_db
 def test_unfreeze_bug72(talk_slot):
-    # https://github.com/openeventstack/pretalx/issues/72
+    # https://github.com/pretalx/pretalx/issues/72
     event = talk_slot.event
 
     schedule1, _ = talk_slot.schedule.freeze('Version 1')

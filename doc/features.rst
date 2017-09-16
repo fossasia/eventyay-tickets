@@ -85,21 +85,21 @@ Planned features
 
 - More detailed permissions system: Crew and superusers were enough for the beginning, but now there
   needs to be clear separation between crew and reviewers, and even track based reviewer teams.
-  (`#78 <https://github.com/openeventstack/pretalx/issues/78>`_)
+  (`#78 <https://github.com/pretalx/pretalx/issues/78>`_)
 - Restrict room availability to configurable times (`#80
-  <https://github.com/openeventstack/pretalx/issues/80>`_)
+  <https://github.com/pretalx/pretalx/issues/80>`_)
 - Offer 'anywhere in the world' deadline timing. (`#81
-  <https://github.com/openeventstack/pretalx/issues/81>`_)
+  <https://github.com/pretalx/pretalx/issues/81>`_)
 - Warn when scheduling a speaker in more than one talk at the same time. (`#46
-  <https://github.com/openeventstack/pretalx/issues/46>`_)
+  <https://github.com/pretalx/pretalx/issues/46>`_)
 - Offline schedule display, that saves a version of the schedule page in the browser cache and
   displays it (with a warning) when the user is offline (`#15
-  <https://github.com/openeventstack/pretalx/issues/15>`_)
-- Allow questions per speaker (`#42 <https://github.com/openeventstack/pretalx/issues/42>`_)
+  <https://github.com/pretalx/pretalx/issues/15>`_)
+- Allow questions per speaker (`#42 <https://github.com/pretalx/pretalx/issues/42>`_)
 - Allow speakers to upload profile pictures (and possibly other files) (`#44
-  <https://github.com/openeventstack/pretalx/issues/44>`_)
-- Provide an ICAL export (`#67 <https://github.com/openeventstack/pretalx/issues/67>`_)
+  <https://github.com/pretalx/pretalx/issues/44>`_)
+- Provide an ICAL export (`#67 <https://github.com/pretalx/pretalx/issues/67>`_)
 - Allow speakers to submit their availability (`#79
-  <https://github.com/openeventstack/pretalx/issues/79>`_)
+  <https://github.com/pretalx/pretalx/issues/79>`_)
 
-.. _issue: https://github.com/openeventstack/pretalx/issues/
+.. _issue: https://github.com/pretalx/pretalx/issues/

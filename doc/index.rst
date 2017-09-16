@@ -43,4 +43,4 @@ Developer docs
    :maxdepth: 2
 
    contribute/index
-.. _issues: https://github.com/openeventstack/pretalx/issues/
+.. _issues: https://github.com/pretalx/pretalx/issues/

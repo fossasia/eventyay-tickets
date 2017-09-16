@@ -1,4 +1,4 @@
-.. image:: https://github.com/openeventstack/pretalx/blob/master/assets/logo.png
+.. image:: https://github.com/pretalx/pretalx/blob/master/assets/logo.png
 
 pretalx
 =======
@@ -6,8 +6,8 @@ pretalx
 .. image:: https://travis-ci.org/openeventstack/pretalx.svg?branch=master
    :target: https://travis-ci.org/openeventstack/pretalx
 
-.. image:: https://codecov.io/gh/openeventstack/pretalx/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/openeventstack/pretalx
+.. image:: https://codecov.io/gh/pretalx/pretalx/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/pretalx/pretalx
 
 
 .. image:: https://readthedocs.org/projects/pretalx/badge/?version=latest
@@ -40,7 +40,7 @@ The primary maintainer of this project is [@rixx](https://github.com/rixx).
 See the AUTHORS file for a list of all the awesome folks who contributed to
 this project.
 
-.. _issues: https://github.com/openeventstack/pretalx/issues/
+.. _issues: https://github.com/pretalx/pretalx/issues/
 .. _me: mailto:rixx@cutebit.de
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html

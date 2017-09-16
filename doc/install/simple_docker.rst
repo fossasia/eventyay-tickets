@@ -82,9 +82,9 @@ Step 4: Build the docker image
 
 You need to build the Docker image yourself::
 
-    git clone https://github.com/openeventstack/pretalx.git
+    git clone https://github.com/pretalx/pretalx.git
     cd pretalx/
-    docker build -t openeventstack/pretalx .
+    docker build -t pretalx/pretalx .
 
 Step 5: Add a system service
 ----------------------------
@@ -114,7 +114,7 @@ reboot. Create a file named ``/etc/systemd/system/pretalx.service`` with the fol
         -v /var/run/mysqld:/var/run/mysqld \
         -v /var/pretalx-data:/data \
         -v /var/run/redis/redis.sock:/tmp/redis.sock \
-        -t openeventstack/pretalx web
+        -t pretalx/pretalx web
     ExecStop=/usr/bin/docker stop -t 2 pretalx ; /usr/bin/docker rm -f pretalx
 
     [Install]
