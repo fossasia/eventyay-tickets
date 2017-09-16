@@ -25,6 +25,16 @@ class QuestionVariant(Choices):
     ]
 
 
+class QuestionTarget(Choices):
+    SUBMISSION = 'submission'
+    SPEAKER = 'speaker'
+
+    valid_choices = [
+        (SUBMISSION, _('per submission')),
+        (SPEAKER, _('per speaker')),
+    ]
+
+
 class Question(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
@@ -35,6 +45,11 @@ class Question(LogMixin, models.Model):
         max_length=QuestionVariant.get_max_length(),
         choices=QuestionVariant.get_choices(),
         default=QuestionVariant.STRING,
+    )
+    target = models.CharField (
+        max_length=QuestionTarget.get_max_length(),
+        choices=QuestionTarget.get_choices(),
+        default=QuestionTarget.SUBMISSION,
     )
     question = I18nCharField(
         max_length=200,
@@ -93,6 +108,13 @@ class Answer(LogMixin, models.Model):
         to='submission.Submission',
         on_delete=models.PROTECT,
         related_name='answers',
+        null=True, blank=True,
+    )
+    person = models.ForeignKey(
+        to='person.User',
+        on_delete=models.PROTECT,
+        related_name='answers',
+        null=True, blank=True,
     )
     answer = models.TextField()
     options = models.ManyToManyField(
