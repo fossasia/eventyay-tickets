@@ -3,7 +3,7 @@ from contextlib import suppress
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
@@ -56,7 +56,7 @@ class EventPermissionMiddleware:
 
         if 'orga' in url.namespaces:
             if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED:
-                return redirect('orga:login')
+                return redirect(reverse('orga:login') + f'?next={request.path}')
             if hasattr(request, 'event') and not request.is_orga:
                 raise PermissionDenied()
 
