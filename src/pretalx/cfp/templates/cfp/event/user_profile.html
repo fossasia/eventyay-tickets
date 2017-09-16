@@ -44,7 +44,7 @@
     <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
         {% csrf_token %}
         <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
-                <input type="checkbox" name="really">
+                <input type="checkbox" name="really" id="really">
                 <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
             </div>
             <div class="col-md-3 offset-md-9">
