@@ -13,6 +13,13 @@ class Availability(LogMixin, models.Model):
         to='person.User',
         related_name='availabilities',
         on_delete=models.PROTECT,
+        null=True, blank=True,
+    )
+    room = models.ForeignKey(
+        to='schedule.Room',
+        related_name='availabilities',
+        on_delete=models.PROTECT,
+        null=True, blank=True,
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
