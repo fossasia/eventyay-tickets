@@ -53,7 +53,7 @@ setup(
         'vobject==0.9.*',
     ],
     dependency_links=[
-        'git@github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4',
+        'git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4',
     ],
     extras_require={
         'dev': [
