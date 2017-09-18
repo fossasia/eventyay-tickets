@@ -1,4 +1,5 @@
 from codecs import open
+from distutils.command.build import build
 from os import path
 
 from setuptools import find_packages, setup
@@ -11,6 +12,29 @@ try:
         long_description = f.read()
 except:  # noqa
     long_description = ''
+
+
+class CustomBuild(build):
+    def run(self):
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
+        import django
+        django.setup()
+        from django.conf import settings
+        from django.core import management
+
+        settings.COMPRESS_ENABLED = True
+        settings.COMPRESS_OFFLINE = True
+
+        management.call_command('compilemessages', verbosity=1, interactive=False)
+        management.call_command('collectstatic', verbosity=1, interactive=False)
+        management.call_command('compress', verbosity=1, interactive=False)
+        build.run(self)
+
+
+cmdclass = {
+    'build': CustomBuild
+}
+
 
 setup(
     name='pretalx',
@@ -32,7 +56,7 @@ setup(
         'Framework :: Django :: 1.11'
     ],
 
-    keywords='tickets web shop ecommerce',
+    keywords='conference cfp event barcamp',
     install_requires=[
         'bleach==2.*',
         'celery==4.0.*',
@@ -73,4 +97,5 @@ setup(
 
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
+    cmdclass=cmdclass,
 )
