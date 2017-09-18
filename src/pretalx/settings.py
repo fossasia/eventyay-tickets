@@ -10,12 +10,19 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
 
 
+config = configparser.RawConfigParser()
+if 'PRETALX_CONFIG_FILE' in os.environ:
+    config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
+else:
+    config.read(['/etc/pretalx/pretalx.cfg', os.path.expanduser('~/.pretalx.cfg'), 'pretalx.cfg'],
+encoding='utf-8')
+
 # File system and directory settings
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.getenv('PRETALX_DATA_DIR', os.path.join(BASE_DIR, 'data'))
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
+STATIC_ROOT = config.get('django', 'static', fallback=os.path.join(os.path.dirname(__file__), 'static.dist'))
 
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
@@ -24,21 +31,24 @@ if not os.path.exists(LOG_DIR):
 if not os.path.exists(MEDIA_ROOT):
     os.mkdir(MEDIA_ROOT)
 
-SECRET_FILE = os.path.join(DATA_DIR, '.secret')
-if os.path.exists(SECRET_FILE):
-    with open(SECRET_FILE, 'r') as f:
-        SECRET_KEY = f.read().strip()
+if config.has_option('django', 'secret'):
+    SECRET_KEY = config.get('django', 'secret')
 else:
-    chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-    SECRET_KEY = get_random_string(50, chars)
-    with open(SECRET_FILE, 'w') as f:
-        os.chmod(SECRET_FILE, 0o600)
-        os.chown(SECRET_FILE, os.getuid(), os.getgid())
-        f.write(SECRET_KEY)
+    SECRET_FILE = os.path.join(DATA_DIR, '.secret')
+    if os.path.exists(SECRET_FILE):
+        with open(SECRET_FILE, 'r') as f:
+            SECRET_KEY = f.read().strip()
+    else:
+        chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+        SECRET_KEY = get_random_string(50, chars)
+        with open(SECRET_FILE, 'w') as f:
+            os.chmod(SECRET_FILE, 0o600)
+            os.chown(SECRET_FILE, os.getuid(), os.getgid())
+            f.write(SECRET_KEY)
 
 # General setup settings
-debug_default = 'runserver' in sys.argv
-DEBUG = os.environ.get('PRETALX_DEBUG', str(debug_default)) == 'True'
+debug_fallback = "runserver" in sys.argv
+DEBUG = config.getboolean('django', 'debug', fallback=debug_fallback)
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -51,22 +61,24 @@ else:
     EMAIL_USE_TLS = os.environ.get('PRETALX_MAIL_TLS', 'False') == 'True'
     EMAIL_USE_SSL = os.environ.get('PRETALX_MAIL_SSL', 'False') == 'True'
 
+
+db_backend = config.get('database', 'backend', fallback='sqlite3')
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.' + os.getenv('PRETALX_DB_TYPE', 'sqlite3'),
-        'NAME': os.getenv('PRETALX_DB_NAME', 'db.sqlite3'),
-        'USER': os.getenv('PRETALX_DB_USER', ''),
-        'PASSWORD': os.getenv('PRETALX_DB_PASS', ''),
-        'HOST': os.getenv('PRETALX_DB_HOST', ''),
-        'PORT': os.getenv('PRETALX_DB_PORT', ''),
-        'CONN_MAX_AGE': 0,
+        'ENGINE': 'django.db.backends.' + db_backend,
+        'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
+        'USER': config.get('database', 'user', fallback=''),
+        'PASSWORD': config.get('database', 'password', fallback=''),
+        'HOST': config.get('database', 'host', fallback=''),
+        'PORT': config.get('database', 'port', fallback=''),
+        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
     }
 }
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-SITE_URL = os.getenv('PRETALX_SITE_URL', 'http://localhost')
+SITE_URL = config.get('site', 'url', fallback='http://localhost')
 if SITE_URL == 'http://localhost':
     ALLOWED_HOSTS = ['*']
 else:
@@ -351,34 +363,3 @@ MESSAGE_TAGS = {
 
 # For now, to ease development
 CELERY_TASK_ALWAYS_EAGER = True
-
-
-config = configparser.RawConfigParser()
-if 'PRETALX_CONFIG_FILE' in os.environ:
-    config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
-else:
-    config.read(['/etc/pretalx/pretalx.cfg', os.path.expanduser('~/.pretalx.cfg'), 'pretalx.cfg'],
-encoding='utf-8')
-
-
-# User config
-if config.has_option('django', 'secret'):
-    SECRET_KEY = config.get('django', 'secret')
-
-debug_fallback = "runserver" in sys.argv
-DEBUG = config.getboolean('django', 'debug', fallback=debug_fallback)
-db_backend = config.get('database', 'backend', fallback='sqlite3')
-if db_backend != 'sqlite3':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.' + db_backend,
-            'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
-            'USER': config.get('database', 'user', fallback=''),
-            'PASSWORD': config.get('database', 'password', fallback=''),
-            'HOST': config.get('database', 'host', fallback=''),
-            'PORT': config.get('database', 'port', fallback=''),
-            'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
-        }
-    }
-
-STATIC_ROOT = config.get('django', 'static', fallback=os.path.join(os.path.dirname(__file__), 'static.dist'))
