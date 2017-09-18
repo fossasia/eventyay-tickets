@@ -378,6 +378,7 @@ if db_backend != 'sqlite3':
             'HOST': config.get('database', 'host', fallback=''),
             'PORT': config.get('database', 'port', fallback=''),
             'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
-            'OPTIONS': db_options
         }
     }
+
+STATIC_ROOT = config.get('django', 'static', fallback=os.path.join(os.path.dirname(__file__), 'static.dist'))
