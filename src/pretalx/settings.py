@@ -19,7 +19,7 @@ encoding='utf-8')
 
 # File system and directory settings
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = os.getenv('PRETALX_DATA_DIR', os.path.join(BASE_DIR, 'data'))
+DATA_DIR = config.get('django', 'data_dir', fallback=os.path.join(BASE_DIR, 'data'))
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 STATIC_ROOT = config.get('django', 'static', fallback=os.path.join(os.path.dirname(__file__), 'static.dist'))
