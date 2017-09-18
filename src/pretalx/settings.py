@@ -1,3 +1,4 @@
+import configparser
 import os
 from contextlib import suppress
 
@@ -350,3 +351,33 @@ MESSAGE_TAGS = {
 
 # For now, to ease development
 CELERY_TASK_ALWAYS_EAGER = True
+
+
+config = configparser.RawConfigParser()
+if 'PRETALX_CONFIG_FILE' in os.environ:
+    config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
+else:
+    config.read(['/etc/pretalx/pretalx.cfg', os.path.expanduser('~/.pretalx.cfg'), 'pretalx.cfg'],
+encoding='utf-8')
+
+
+# User config
+if config.has_option('django', 'secret'):
+    SECRET_KEY = config.get('django', 'secret')
+
+debug_fallback = "runserver" in sys.argv
+DEBUG = config.getboolean('django', 'debug', fallback=debug_fallback)
+db_backend = config.get('database', 'backend', fallback='sqlite3')
+if db_backend != 'sqlite3':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.' + db_backend,
+            'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
+            'USER': config.get('database', 'user', fallback=''),
+            'PASSWORD': config.get('database', 'password', fallback=''),
+            'HOST': config.get('database', 'host', fallback=''),
+            'PORT': config.get('database', 'port', fallback=''),
+            'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
+            'OPTIONS': db_options
+        }
+    }

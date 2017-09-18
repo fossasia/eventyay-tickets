@@ -1,3 +1,4 @@
+import os
 from codecs import open
 from distutils.command.build import build
 from os import path
