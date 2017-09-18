@@ -196,7 +196,7 @@ class InvitationView(FormView):
         form.save()
         permission = EventPermission.objects.get(invitation_token=self.kwargs.get('code'))
         user = User.objects.get(pk=form.cleaned_data.get('user_id'))
-        perm = EventPermission.objects.filter(user=user, event=self.request.event).exclude(pk=permission.pk).first()
+        perm = EventPermission.objects.filter(user=user, event=permission.event).exclude(pk=permission.pk).first()
 
         if perm:
             if perm.is_orga:
