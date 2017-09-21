@@ -9,6 +9,17 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
 
 
+def reduce_dict(data):
+    return {
+        section_name: {
+            key: value
+            for key, value in section_content.items()
+            if value is not None
+        }
+        for section_name, section_content in env_config.items()
+    }
+
+
 config = configparser.RawConfigParser()
 config.read_dict({
     'filesystem': {
@@ -40,6 +51,17 @@ config.read_dict({
 
     }
 })
+
+legacy_config = {
+    'filesystem': {
+        'data': config.get('django', 'data_dir', fallback=None),
+        'static': config.get('django', 'static', fallback=None),
+    },
+    'site': {
+        'debug': config.get('django', 'debug', fallback=None),
+        'secret': config.get('django', 'secret', fallback=None),
+    },
+}
 
 
 if 'PRETALX_CONFIG_FILE' in os.environ:
@@ -80,14 +102,8 @@ env_config = {
     },
 }
 
-config.read_dict({
-    section_name: {
-        key: value
-        for key, value in section_content.items()
-        if value is not None
-    }
-    for section_name, section_content in env_config.items()
-})
+config.read_dict(reduce_dict(legacy_config))
+config.read_dict(reduce_dict(env_config))
 
 # File system and directory settings
 BASE_DIR = config.get('filesystem', 'base')
