@@ -1,8 +1,7 @@
 import configparser
 import os
-from contextlib import suppress
-
 import sys
+from contextlib import suppress
 from urllib.parse import urlparse
 
 from django.contrib.messages import constants as messages  # NOQA
@@ -11,28 +10,98 @@ from django.utils.translation import ugettext_lazy as _  # NOQA
 
 
 config = configparser.RawConfigParser()
+config.read_dict({
+    'filesystem': {
+        'base': os.path.dirname(os.path.dirname(__file__)),
+    },  # defaults depend on the data dir and need to be set once the data dir is fixed
+    'site': {
+        'debug': 'runserver' in sys.argv,
+        'url': 'http://localhost',
+        'cookie_domain': '',
+    },  # the https setting is determined by url if not explicitly set
+    'database': {
+        'backend': 'sqlite3',
+        # 'name': '',
+        'user': '',
+        'password': '',
+        'host': '',
+        'port': '',
+    },
+    'mail': {
+        'from': 'admin@localhost',
+        'host': 'localhost',
+        'port': '25',
+        'user': '',
+        'password': '',
+        'tls': 'False',
+        'ssl': 'True',
+    },
+    'cache': {
+
+    }
+})
+
+
 if 'PRETALX_CONFIG_FILE' in os.environ:
     config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
 else:
-    config.read(['/etc/pretalx/pretalx.cfg', os.path.expanduser('~/.pretalx.cfg'), 'pretalx.cfg'],
-encoding='utf-8')
+    config.read([
+        '/etc/pretalx/pretalx.cfg',
+        os.path.expanduser('~/.pretalx.cfg'),
+        'pretalx.cfg',
+    ], encoding='utf-8')
+
+env_config = {
+    'filesystem': {
+        'data': os.getenv('PRETALX_DATA_DIR'),
+    },
+    'site': {
+        'debug': os.getenv('PRETALX_DEBUG'),
+        'url': os.getenv('PRETALX_SITE_URL'),
+        'https': os.getenv('PRETALX_HTTPS'),
+        'cookie_domain': os.getenv('PRETALX_COOKIE_DOMAIN'),
+    },
+    'mail': {
+        'from': os.getenv('PRETALX_MAIL_FROM'),
+        'host': os.getenv('PRETALX_MAIL_HOST'),
+        'port': os.getenv('PRETALX_MAIL_PORT'),
+        'user': os.getenv('PRETALX_MAIL_USER'),
+        'password': os.getenv('PRETALX_MAIL_PASSWORD'),
+        'tls': os.getenv('PRETALX_MAIL_TLS'),
+        'ssl': os.getenv('PRETALX_MAIL_SSL'),
+    },
+    'database': {
+        'type': os.getenv('PRETALX_DB_TYPE'),
+        'name': os.getenv('PRETALX_DB_NAME'),
+        'user': os.getenv('PRETALX_DB_USER'),
+        'password': os.getenv('PRETALX_DB_PASSWORD'),
+        'host': os.getenv('PRETALX_DB_HOST'),
+        'port': os.getenv('PRETALX_DB_PORT'),
+    },
+}
+
+config.read_dict({
+    section_name: {
+        key: value
+        for key, value in section_content.items()
+        if value is not None
+    }
+    for section_name, section_content in env_config.items()
+})
 
 # File system and directory settings
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = config.get('django', 'data_dir', fallback=os.path.join(BASE_DIR, 'data'))
-LOG_DIR = os.path.join(DATA_DIR, 'logs')
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = config.get('django', 'static', fallback=os.path.join(os.path.dirname(__file__), 'static.dist'))
+BASE_DIR = config.get('filesystem', 'base')
+DATA_DIR = config.get('filesystem', 'data', fallback=os.path.join(BASE_DIR, 'data'))
+LOG_DIR = config.get('filesystem', 'log', fallback=os.path.join(DATA_DIR, 'logs'))
+MEDIA_ROOT = config.get('filesystem', 'media', fallback=os.path.join(DATA_DIR, 'media'))
+STATIC_ROOT = config.get('filesystem', 'static', fallback=os.path.join(BASE_DIR, 'static.dist'))
 
-if not os.path.exists(DATA_DIR):
-    os.mkdir(DATA_DIR)
-if not os.path.exists(LOG_DIR):
-    os.mkdir(LOG_DIR)
-if not os.path.exists(MEDIA_ROOT):
-    os.mkdir(MEDIA_ROOT)
+for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
 
-if config.has_option('django', 'secret'):
-    SECRET_KEY = config.get('django', 'secret')
+if config.has_option('site', 'secret'):
+    SECRET_KEY = config.get('site', 'secret')
 else:
     SECRET_FILE = os.path.join(DATA_DIR, '.secret')
     if os.path.exists(SECRET_FILE):
@@ -47,50 +116,51 @@ else:
             f.write(SECRET_KEY)
 
 # General setup settings
-debug_fallback = "runserver" in sys.argv
-DEBUG = config.getboolean('django', 'debug', fallback=debug_fallback)
+DEBUG = config.getboolean('site', 'debug')
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get('PRETALX_MAIL_FROM', 'admin@localhost')
-    EMAIL_HOST = os.environ.get('PRETALX_MAIL_HOST', 'localhost')
-    EMAIL_PORT = int(os.environ.get('PRETALX_MAIL_PORT', '25'))
-    EMAIL_HOST_USER = os.environ.get('PRETALX_MAIL_USER', '')
-    EMAIL_HOST_PASSOWRD = os.environ.get('PRETALX_MAIL_PASSWORD', '')
-    EMAIL_USE_TLS = os.environ.get('PRETALX_MAIL_TLS', 'False') == 'True'
-    EMAIL_USE_SSL = os.environ.get('PRETALX_MAIL_SSL', 'False') == 'True'
+    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from')
+    EMAIL_HOST = config.get('mail', 'host')
+    EMAIL_PORT = config.get('mail', 'port')
+    EMAIL_HOST_USER = config.get('mail', 'user')
+    EMAIL_HOST_PASSWORD = config.get('mail', 'password')
+    EMAIL_USE_TLS = config.getboolean('mail', 'tls')
+    EMAIL_USE_SSL = config.getboolean('mail', 'ssl')
 
 
-db_backend = config.get('database', 'backend', fallback='sqlite3')
+# Database configuration
+db_backend = config.get('database', 'backend')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.' + db_backend,
         'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
-        'USER': config.get('database', 'user', fallback=''),
-        'PASSWORD': config.get('database', 'password', fallback=''),
-        'HOST': config.get('database', 'host', fallback=''),
-        'PORT': config.get('database', 'port', fallback=''),
+        'USER': config.get('database', 'user'),
+        'PASSWORD': config.get('database', 'password'),
+        'HOST': config.get('database', 'host'),
+        'PORT': config.get('database', 'port'),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
     }
 }
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
+# URL configuration
 SITE_URL = config.get('site', 'url', fallback='http://localhost')
 if SITE_URL == 'http://localhost':
     ALLOWED_HOSTS = ['*']
 else:
     ALLOWED_HOSTS = [urlparse(SITE_URL).netloc]
 
+if config.get('site', 'cookie_domain'):
+    SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = config.get('site', 'cookie_domain')
 
-if os.getenv('PRETALX_COOKIE_DOMAIN', ''):
-    SESSION_COOKIE_DOMAIN = os.getenv('PRETALX_COOKIE_DOMAIN', '')
-    CSRF_COOKIE_DOMAIN = os.getenv('PRETALX_COOKIE_DOMAIN', '')
+SESSION_COOKIE_SECURE = config.getboolean('site', 'https', fallback=SITE_URL.startswith('https:'))
 
-SESSION_COOKIE_SECURE = os.getenv('PRETALX_HTTPS', 'True' if SITE_URL.startswith('https:') else 'False') == 'True'
+ROOT_URLCONF = 'pretalx.urls'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
+# Cache configuration
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -210,9 +280,6 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 
-# URL settings
-ROOT_URLCONF = 'pretalx.urls'
-
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 
 USE_I18N = True
@@ -292,6 +359,7 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
+# Logging settings
 loglevel = 'DEBUG' if DEBUG else 'INFO'
 
 LOGGING = {
