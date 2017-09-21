@@ -9,3 +9,4 @@ production and it's not too polished -- but it works!
    :caption: Contents:
 
    simple_docker
+   configure

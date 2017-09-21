@@ -92,7 +92,7 @@ config.read_dict({
 # File system and directory settings
 BASE_DIR = config.get('filesystem', 'base')
 DATA_DIR = config.get('filesystem', 'data', fallback=os.path.join(BASE_DIR, 'data'))
-LOG_DIR = config.get('filesystem', 'log', fallback=os.path.join(DATA_DIR, 'logs'))
+LOG_DIR = config.get('filesystem', 'logs', fallback=os.path.join(DATA_DIR, 'logs'))
 MEDIA_ROOT = config.get('filesystem', 'media', fallback=os.path.join(DATA_DIR, 'media'))
 STATIC_ROOT = config.get('filesystem', 'static', fallback=os.path.join(BASE_DIR, 'static.dist'))
 
