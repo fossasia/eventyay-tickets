@@ -101,7 +101,7 @@ class EventMailSettings(ActionFromUrl, FormView):
         return ret
 
 
-class EventTeam(TemplateView):
+class EventTeam(ActionFromUrl, TemplateView):
     template_name = 'orga/settings/team.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -181,7 +181,7 @@ class EventTeamDelete(View):
         return redirect(request.event.orga_urls.team_settings)
 
 
-class InvitationView(FormView):
+class InvitationView(ActionFromUrl, FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
 
@@ -261,7 +261,7 @@ class UserSettings(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class RoomList(TemplateView):
+class RoomList(ActionFromUrl, TemplateView):
     template_name = 'orga/settings/room_list.html'
 
 
