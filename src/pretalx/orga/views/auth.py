@@ -1,4 +1,5 @@
 import random
+import urllib
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -27,7 +28,7 @@ class LoginView(TemplateView):
             return redirect('orga:login')
 
         login(request, user)
-        url = request.GET.get('next')
+        url = urllib.parse.unquote(request.GET.get('next', ''))
         if url and is_safe_url(url, request.get_host()):
             return redirect(url)
 

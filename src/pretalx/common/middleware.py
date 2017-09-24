@@ -1,3 +1,4 @@
+import urllib
 from contextlib import suppress
 
 import pytz
@@ -56,7 +57,8 @@ class EventPermissionMiddleware:
 
         if 'orga' in url.namespaces:
             if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED:
-                return redirect(reverse('orga:login') + f'?next={request.path}')
+                redirect_path = urllib.parse.quote(request.path)
+                return redirect(reverse('orga:login') + f'?next={redirect_path}')
             if hasattr(request, 'event') and not request.is_orga:
                 raise PermissionDenied()
 
