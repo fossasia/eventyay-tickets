@@ -1,7 +1,7 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 {% block headline %}
-{% if action and action == 'create' %}
+{% if 'event.create' in url_name %}
     {% trans "Create a new event" %}
 {% else %}
     {% trans "Settings" %}
