@@ -98,4 +98,4 @@ class QuestionsForm(forms.Form):
                 )
             field.question = q
             field.answer = initial_obj
-            self.fields['question_%s' % q.id] = field
+            self.fields[f'question_{q.pk}'] = field

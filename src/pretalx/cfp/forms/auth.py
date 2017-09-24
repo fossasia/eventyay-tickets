@@ -19,13 +19,13 @@ class LoginForm(forms.Form):
 
         if '@' in data.get('login_username'):
             try:
-                uname = User.objects.get(email=data.get('login_username')).nick
+                nick = User.objects.get(email=data.get('login_username')).nick
             except User.DoesNotExist:
-                uname = 'user@invalid'
+                nick = 'user@invalid'
         else:
-            uname = data.get('login_username')
+            nick = data.get('login_username')
 
-        user = authenticate(username=uname, password=data.get('login_password'))
+        user = authenticate(username=nick, password=data.get('login_password'))
 
         if user is None:
             raise ValidationError(_('No user account matches the entered credentials. '

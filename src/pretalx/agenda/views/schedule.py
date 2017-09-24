@@ -255,6 +255,16 @@ class FeedbackView(EventPageMixin, FormView):
     form_class = FeedbackForm
     template_name = 'agenda/feedback_form.html'
 
+    def get_object(self):
+        sub = Submission.objects.filter(
+            event=self.request.event,
+            code=self.kwargs['slug'],
+            slots__in=self.request.event.current_schedule.talks.all(),
+        ).first()
+        if sub and not sub.does_accept_feedback:
+            return None
+        return sub
+
     def get(self, *args, **kwargs):
         obj = self.get_object()
         if obj and self.request.user in obj.speakers.all():
@@ -267,16 +277,6 @@ class FeedbackView(EventPageMixin, FormView):
                 }
             )
         return super().get(*args, **kwargs)
-
-    def get_object(self):
-        sub = Submission.objects.filter(
-            event=self.request.event,
-            code=self.kwargs['slug'],
-            slots__in=self.request.event.current_schedule.talks.all(),
-        ).first()
-        if sub and not sub.does_accept_feedback:
-            return None
-        return sub
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
