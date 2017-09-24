@@ -197,11 +197,12 @@ class InvitationView(ActionFromUrl, FormView):
         permission = EventPermission.objects.get(invitation_token=self.kwargs.get('code'))
         user = User.objects.get(pk=form.cleaned_data.get('user_id'))
         perm = EventPermission.objects.filter(user=user, event=permission.event).exclude(pk=permission.pk).first()
+        event = permission.event
 
         if perm:
             if perm.is_orga:
                 messages.info(self.request, _('Oh, it seems you were already part of this team.'))
-                permission.objects.delete()
+                permission.delete()
                 permission = None
             else:
                 permission = perm
@@ -213,7 +214,7 @@ class InvitationView(ActionFromUrl, FormView):
             messages.info(self.request, _('You are now part of the event team!'))
 
         login(self.request, user)
-        return redirect(permission.event.orga_urls.base)
+        return redirect(event.orga_urls.base)
 
 
 class UserSettings(TemplateView):
