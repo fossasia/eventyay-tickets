@@ -152,7 +152,7 @@ class ICalView(ScheduleDataView):
             vevent.add('dtstart').value = talk.start.astimezone(tz)
             vevent.add('dtend').value = talk.end.astimezone(tz)
             vevent.add('description').value = talk.submission.abstract or ""
-            # URL
+            vevent.add('url').value = talk.submission.urls.public.full(scheme='https')
 
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
         resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}.ics"'
