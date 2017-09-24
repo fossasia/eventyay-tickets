@@ -6,6 +6,16 @@
 {% block content %}
 
 <div id="fahrplan">
+    {% if schedule != schedule.event.current_schedule %}
+        <div class="alert alert-warning">
+            {% if not schedule.version %}
+                {% trans "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
+            {% else %}
+                {% trans "You are currently viewing an older schedule version. You may find the current version " %}
+                <a href="{{ schedule.event.urls.schedule }}">{% trans "here" %}</a>.
+            {% endif %}
+        </div>
+    {% endif %}
     <div class="schedule-header">
         <div class="header-right pull-right">
             <span class="icon">{% trans "Version" %} {{ schedule.version }}</span>

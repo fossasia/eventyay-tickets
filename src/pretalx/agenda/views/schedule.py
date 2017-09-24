@@ -1,6 +1,6 @@
 from contextlib import suppress
 from datetime import datetime, timedelta
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import pytz
 import vobject
@@ -33,7 +33,8 @@ class ScheduleDataView(EventPageMixin, TemplateView):
 
     def get_object(self):
         if self.request.GET.get('version'):
-            return self.request.event.schedules.filter(version=self.request.GET.get('version')).first() or self.request.event.current_schedule
+            version = unquote(self.request.GET.get('version'))
+            return self.request.event.schedules.filter(version=version).first() or self.request.event.current_schedule
         return self.request.event.current_schedule
 
     def get_context_data(self, event):
