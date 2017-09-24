@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 from urlman import Urls
 
@@ -13,16 +14,23 @@ class Room(LogMixin, models.Model):
     )
     name = I18nCharField(
         max_length=100,
+        verbose_name=_('Name'),
     )
     description = I18nCharField(
         max_length=1000,
         null=True, blank=True,
+        verbose_name=_('Description'),
+        help_text=_('A description, for example directions.'),
     )
     capacity = models.PositiveIntegerField(
         null=True, blank=True,
+        verbose_name=_('Capacity'),
+        help_text=_('How many people can fit in the room?')
     )
     position = models.PositiveIntegerField(
         null=True, blank=True,
+        verbose_name=_('Position'),
+        help_text=_('This is the order that rooms are displayed in in the schedule (lower = left).'),
     )
 
     class Meta:

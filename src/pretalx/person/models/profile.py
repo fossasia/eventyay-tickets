@@ -7,7 +7,7 @@ from pretalx.common.mixins import LogMixin
 class SpeakerProfile(LogMixin, models.Model):
     biography = models.TextField(
         verbose_name=_('Biography'),
-        help_text=_('You can use markdown here'),
+        help_text=_('You can use markdown here.'),
         null=True, blank=True,
     )
     user = models.ForeignKey(

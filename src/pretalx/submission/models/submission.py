@@ -77,37 +77,39 @@ class Submission(LogMixin, models.Model):
         related_name='submissions',
     )
     title = models.CharField(
-        verbose_name=_('Title'),
         max_length=200,
+        verbose_name=_('Title'),
     )
     submission_type = models.ForeignKey(  # Reasonable default must be set in form/view
-        verbose_name=_('Type of submission'),
         to='submission.SubmissionType',
         related_name='submissions',
         on_delete=models.PROTECT,
+        verbose_name=_('Type of submission'),
     )
     state = models.CharField(
-        verbose_name=_('Submission state'),
         max_length=SubmissionStates.get_max_length(),
         choices=SubmissionStates.get_choices(),
         default=SubmissionStates.SUBMITTED,
+        verbose_name=_('Submission state'),
     )
     abstract = models.TextField(
+        null=True, blank=True,
         verbose_name=_('Abstract'),
         help_text=_('A concise summary of your talk in one or two sentences. You can use markdown here.'),
-        null=True, blank=True,
     )
     description = models.TextField(
+        null=True, blank=True,
         verbose_name=_('Description'),
         help_text=_('A full-text description of your talk and its contents. You can use markdown here.'),
-        null=True, blank=True,
     )
     notes = models.TextField(
-        verbose_name=_('Notes for the organizer'),
         null=True, blank=True,
+        verbose_name=_('Notes for the organizer'),
     )
     duration = models.PositiveIntegerField(
-        null=True, blank=True
+        null=True, blank=True,
+        verbose_name=_('Duration'),
+        help_text=_('The duration in minutes. Leave empty for default duration for this submission type.'),
     )
     content_locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
                                       choices=settings.LANGUAGES,
@@ -121,15 +123,15 @@ class Submission(LogMixin, models.Model):
         verbose_name=_('Accept feedback'),
     )
     recording_url = models.CharField(
-        verbose_name=_('Recording URL'),
         max_length=200,
-        null=True, blank=True
+        null=True, blank=True,
+        verbose_name=_('Recording URL'),
     )
     recording_source = models.CharField(
-        verbose_name=_('Recording Source'),
         choices=(('VOC', 'media.ccc.de'), ),
         max_length=3,
-        null=True, blank=True
+        null=True, blank=True,
+        verbose_name=_('Recording Source'),
     )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 

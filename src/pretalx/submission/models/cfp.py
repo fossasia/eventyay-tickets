@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 from i18nfield.fields import I18nCharField, I18nTextField
+from django.utils.translation import pgettext, ugettext_lazy as _
 from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
@@ -14,14 +15,24 @@ class CfP(LogMixin, models.Model):
     headline = I18nCharField(
         max_length=300,
         null=True, blank=True,
+        verbose_name=_('headline'),
     )
-    text = I18nTextField(null=True, blank=True)
+    text = I18nTextField(
+        null=True, blank=True,
+        verbose_name=_('text'),
+        help_text=_('You can use markdown here.'),
+    )
     default_type = models.ForeignKey(
         to='submission.SubmissionType',
         on_delete=models.PROTECT,
         related_name='+',
+        verbose_name=_('Default submission type'),
     )
-    deadline = models.DateTimeField(null=True, blank=True)
+    deadline = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name=_('deadline'),
+        help_text=_('Please put in the last date you want to accept submissions from users.'),
+    )
 
     class urls(Urls):
         base = '{self.event.orga_urls.cfp}'

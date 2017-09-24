@@ -16,14 +16,17 @@ class SubmissionType(LogMixin, models.Model):
     )
     name = I18nCharField(
         max_length=100,
+        verbose_name=_('name'),
     )
     default_duration = models.PositiveIntegerField(
         default=30,
-        help_text='Default duration in minutes',
+        verbose_name=_('default duration'),
+        help_text=_('Default duration in minutes'),
     )
     max_duration = models.PositiveIntegerField(
         default=60,
-        help_text='Maximum duration in minutes',
+        verbose_name=_('maximum duration'),
+        help_text=_('Maximum duration in minutes'),
     )
 
     class urls(Urls):

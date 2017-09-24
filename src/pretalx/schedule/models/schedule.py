@@ -23,6 +23,7 @@ class Schedule(LogMixin, models.Model):
     version = models.CharField(
         max_length=200,
         null=True, blank=True,
+        verbose_name=_('version'),
     )
     published = models.DateTimeField(
         null=True, blank=True

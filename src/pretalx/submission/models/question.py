@@ -38,15 +38,19 @@ class Question(LogMixin, models.Model):
     )
     question = I18nCharField(
         max_length=200,
+        verbose_name=_('question'),
     )
     default_answer = models.TextField(
         null=True, blank=True,
+        verbose_name=_('default answer'),
     )
     required = models.BooleanField(
         default=False,
+        verbose_name=_('required'),
     )
     position = models.IntegerField(
         default=0,
+        verbose_name=_('position'),
     )
 
     class urls(Urls):

@@ -30,7 +30,6 @@ class Event(LogMixin, models.Model):
     )
     slug = models.SlugField(
         max_length=50, db_index=True,
-        help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique.'),
         validators=[
             RegexValidator(
                 regex=f"^[{SLUG_CHARS}]+$",
@@ -38,11 +37,13 @@ class Event(LogMixin, models.Model):
             ),
         ],
         verbose_name=_("Short form"),
+        help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
     )
     subtitle = I18nCharField(
         max_length=200,
-        verbose_name=_('Subitle'),
         null=True, blank=True,
+        verbose_name=_('Subtitle'),
+        help_text=_('A tagline, or motto, or description. Not mandatory.')
     )
     is_public = models.BooleanField(
         default=False,
@@ -65,27 +66,30 @@ class Event(LogMixin, models.Model):
         default='UTC',
     )
     email = models.EmailField(
+        null=True, blank=True,
         verbose_name=_('Orga email address'),
         help_text=_('Will be used as sender/reply-to in emails'),
-        null=True, blank=True,
     )
     primary_color = models.CharField(
         max_length=7,
-        verbose_name=_('Main event color'),
-        help_text=_('Please provide a hex value like #00ff00 if you do not like pretalx colors.'),
         null=True, blank=True,
         validators=[],
+        verbose_name=_('Main event color'),
+        help_text=_('Please provide a hex value like #00ff00 if you do not like pretalx colors.'),
     )
     custom_css = models.FileField(
         upload_to=event_directory_path,
+        null=True, blank=True,
         verbose_name=_('Custom Event CSS'),
         help_text=_('Upload a custom CSS file if changing the primary color is not sufficient for you.'),
-        null=True, blank=True,
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
-    locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
-                              choices=settings.LANGUAGES,
-                              verbose_name=_('Default language'))
+    locale = models.CharField(
+        max_length=32,
+        default=settings.LANGUAGE_CODE,
+        choices=settings.LANGUAGES,
+        verbose_name=_('Default language'),
+    )
     accept_template = models.ForeignKey(
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
@@ -102,8 +106,6 @@ class Event(LogMixin, models.Model):
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
     )
-    # enable_feedback = models.BooleanField(default=False)
-    # send_notifications = models.BooleanField(default=True)
 
     class urls(Urls):
         base = '/{self.slug}'

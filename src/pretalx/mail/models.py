@@ -22,8 +22,13 @@ class MailTemplate(LogMixin, models.Model):
         on_delete=models.PROTECT,
         related_name='mail_templates',
     )
-    subject = I18nCharField(max_length=200)
-    text = I18nTextField()
+    subject = I18nCharField(
+        max_length=200,
+        verbose_name=_('Subject'),
+    )
+    text = I18nTextField(
+        verbose_name=_('Text'),
+    )
     reply_to = models.EmailField(
         max_length=200,
         blank=True, null=True,
@@ -34,7 +39,7 @@ class MailTemplate(LogMixin, models.Model):
         max_length=1000,
         blank=True, null=True,
         verbose_name=_('BCC'),
-        help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!')
+        help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!'),
     )
 
     class urls(Urls):
@@ -76,13 +81,35 @@ class QueuedMail(LogMixin, models.Model):
         on_delete=models.PROTECT,
         related_name='queued_mails',
     )
-    to = models.CharField(max_length=1000)  # allow multiple recipients: several perople per talk
-    reply_to = models.CharField(max_length=1000)
-    cc = models.CharField(max_length=1000, null=True, blank=True)
-    bcc = models.CharField(max_length=1000, null=True, blank=True)
-    subject = models.CharField(max_length=200)  # Use non-i18n fields; this is the final actual to-be-sent version
-    text = models.TextField()
-    sent = models.DateTimeField(null=True, blank=True)
+    to = models.CharField(
+        max_length=1000,
+        verbose_name=_('To'),
+        help_text=_('One email address or several addresses separated by commas.'),
+    )
+    reply_to = models.CharField(
+        max_length=1000,
+        null=True, blank=True,
+        verbose_name=_('Reply-To'),
+        help_text=_('By default, the orga address is used as Reply-To.'),
+    )
+    cc = models.CharField(
+        max_length=1000,
+        null=True, blank=True,
+        verbose_name=_('CC'),
+        help_text=_('One email address or several addresses separated by commas.'),
+    )
+    bcc = models.CharField(
+        max_length=1000,
+        null=True, blank=True,
+        verbose_name=_('BCC'),
+        help_text=_('One email address or several addresses separated by commas.'),
+    )
+    subject = models.CharField(
+        max_length=200,
+        verbose_name=_('Subject'),
+    )
+    text = models.TextField(verbose_name=_('Text'))
+    sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
 
     class urls(Urls):
         base = '{self.event.orga_urls.mail}/{self.pk}'
