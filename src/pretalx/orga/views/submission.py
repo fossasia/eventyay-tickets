@@ -41,7 +41,7 @@ def create_user_as_orga(email, submission=None):
         invitation_text = _('''Hi!
 
 You have been set as the speaker of a submission to the Call for Participation
-of {event}, titled {title}. An account has been created for you – please follow
+of {event}, titled »{title}«. An account has been created for you – please follow
 this link to set your account password.
 
 {invitation_link}

@@ -70,10 +70,12 @@
                     </td>
                     <td class="text-right">
                         <a href="{{ submission.orga_urls.edit }}"
+                            title="{% trans "edit" %}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-pencil"></span>
                         </a>
                         <a href="{{ submission.orga_urls.delete }}?from=list"
+                            title="{% trans "delete" %}"
                             class="btn btn-sm btn-secondary">
                             <span class="fa fa-trash"></span>
                         </a>
