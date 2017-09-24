@@ -12,6 +12,7 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
         {% endcompress %}
     {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     {% block stylesheets %}
     {% endblock %}
     {% if request.event and request.event.custom_css %}
@@ -27,6 +28,7 @@
         <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
         <script type="text/javascript" src="{% static "orga/js/main.js" %}"></script>
     {% endcompress %}
 </head>
