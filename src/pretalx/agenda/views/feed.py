@@ -1,14 +1,12 @@
 from urllib.parse import urlencode
 
 from django.contrib.syndication.views import Feed
-from django.urls import reverse
 from django.utils import feedgenerator
 
 
 class ScheduleFeed(Feed):
 
     feed_type = feedgenerator.Atom1Feed
-
     description_template = 'agenda/feed/description.html'
 
     def get_object(self, request, event, *args, **kwargs):
@@ -18,13 +16,13 @@ class ScheduleFeed(Feed):
         return f'{obj.name} schedule updates'
 
     def link(self, obj):
-        return reverse('agenda:schedule', kwargs={'event': obj.slug})
+        return obj.urls.schedule.full(scheme='https')
 
     def feed_url(self, obj):
-        return reverse('agenda:feed', kwargs={'event': obj.slug})
+        return obj.urls.feed.full(scheme='https')
 
     def feed_guid(self, obj):
-        return reverse('agenda:feed', kwargs={'event': obj.slug})
+        return obj.urls.feed.full(scheme='https')
 
     def description(self, obj):
         return f'Updates to the {obj.name} schedule.'
@@ -36,7 +34,7 @@ class ScheduleFeed(Feed):
         return f'New {item.event.name} schedule released ({item.version})'
 
     def item_link(self, item):
-        url = reverse('agenda:schedule', kwargs={'event': item.event.slug})
+        url = item.event.urls.schedule.full(scheme='https')
         version = {'version': item.version}
         return f'{url}={urlencode(version)}'
 
