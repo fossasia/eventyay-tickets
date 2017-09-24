@@ -65,9 +65,9 @@ legacy_config = {
 
 
 if 'PRETALX_CONFIG_FILE' in os.environ:
-    config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
+    config_files = config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
 else:
-    config.read([
+    config_files = config.read([
         '/etc/pretalx/pretalx.cfg',
         os.path.expanduser('~/.pretalx.cfg'),
         'pretalx.cfg',
@@ -148,10 +148,11 @@ else:
 
 # Database configuration
 db_backend = config.get('database', 'backend')
+db_name = config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.' + db_backend,
-        'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
+        'NAME': db_name,
         'USER': config.get('database', 'user'),
         'PASSWORD': config.get('database', 'password'),
         'HOST': config.get('database', 'host'),
@@ -447,3 +448,26 @@ MESSAGE_TAGS = {
 
 # For now, to ease development
 CELERY_TASK_ALWAYS_EAGER = True
+
+
+def log_initial():
+    from pretalx.common.console import start_box, end_box, print_line
+    mode = 'development' if DEBUG else 'production'
+    lines = [
+        (f'This is pretalx calling, running in {mode} mode.', True),
+        ('', False),
+        (f'Settings:', True),
+        (f'Read from: {config_files}', False),
+        (f'Database: {db_name} ({db_backend})', False),
+        (f'Logging:  {LOG_DIR}', False),
+        ('', False),
+    ]
+
+    size = max(len(line[0]) for line in lines) + 4
+    start_box(size)
+    for line in lines:
+        print_line(line[0], box=True, bold=line[1], size=size)
+    end_box(size)
+
+
+log_initial()
