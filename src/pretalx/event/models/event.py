@@ -66,7 +66,6 @@ class Event(LogMixin, models.Model):
         default='UTC',
     )
     email = models.EmailField(
-        null=True, blank=True,
         verbose_name=_('Orga email address'),
         help_text=_('Will be used as sender/reply-to in emails'),
     )

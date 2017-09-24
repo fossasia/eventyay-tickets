@@ -147,7 +147,7 @@ class SendMail(FormView):
 
         for email in email_set:
             QueuedMail.objects.create(
-                event=self.request.event, to=email, reply_to=form.cleaned_data.get('reply_to'),
+                event=self.request.event, to=email, reply_to=form.cleaned_data.get('reply_to', event=request.event.email),
                 cc=form.cleaned_data.get('cc'), bcc=form.cleaned_data.get('bcc'),
                 subject=form.cleaned_data.get('subject'), text=form.cleaned_data.get('text')
             )

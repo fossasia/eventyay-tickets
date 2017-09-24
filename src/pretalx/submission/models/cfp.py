@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
-from i18nfield.fields import I18nCharField, I18nTextField
 from django.utils.translation import pgettext, ugettext_lazy as _
+from i18nfield.fields import I18nCharField, I18nTextField
 from urlman import Urls
 
 from pretalx.common.mixins import LogMixin

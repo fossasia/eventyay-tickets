@@ -52,6 +52,7 @@ The {event} orga crew''').format(event=submission.event.name, title=submission.t
         QueuedMail.objects.create(
             event=submission.event,
             to=user.email,
+            reply_to=submission.event.email,
             subject=str(_('You have been added to a submission for {event}').format(event=submission.event.name)),
             text=invitation_text,
         )

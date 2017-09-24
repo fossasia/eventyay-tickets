@@ -130,8 +130,8 @@ class QueuedMail(LogMixin, models.Model):
                 'body': self.text,
                 'sender': self.reply_to,
                 'event': self.event.pk,
-                'cc': self.cc.split(','),
-                'bcc': self.bcc.split(','),
+                'cc': (self.cc or '').split(','),
+                'bcc': (self.bcc or '').split(','),
             }
         )
 

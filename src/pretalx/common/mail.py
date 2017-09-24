@@ -63,8 +63,8 @@ def mail(user: User, subject: str, template: Union[str, LazyI18nString],
 
 @app.task
 def mail_send_task(to: str, subject: str, body: str, sender: str,
-                   event: int=None, headers: dict=None):
-    email = EmailMultiAlternatives(subject, body, sender, to=to, headers=headers)
+                   event: int=None, cc: list=None, bcc: list=None, headers: dict=None):
+    email = EmailMultiAlternatives(subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers)
     if event:
         event = Event.objects.get(id=event)
         backend = event.get_mail_backend()
