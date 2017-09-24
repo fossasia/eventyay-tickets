@@ -33,7 +33,7 @@ class ScheduleDataView(EventPageMixin, TemplateView):
 
     def get_object(self):
         if self.request.GET.get('version'):
-            return self.request.event.schedules.filter(version=self.request.GET.get('version'))
+            return self.request.event.schedules.filter(version=self.request.GET.get('version')).first() or self.request.event.current_schedule
         return self.request.event.current_schedule
 
     def get_context_data(self, event):
@@ -85,10 +85,9 @@ class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
 
     def get_object(self):
-        obj = super().get_object()
-        if not obj and self.request.is_orga:
+        if self.request.GET.get('version') == 'wip' and self.request.is_orga:
             return self.request.event.wip_schedule
-        return obj
+        return super().get_object()
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
