@@ -116,11 +116,7 @@ class Submission(LogMixin, models.Model):
                                       verbose_name=_('Language of the submission'))
     do_not_record = models.BooleanField(
         default=False,
-        verbose_name=_('Don\'t record this talk.')
-    )
-    accept_feedback = models.BooleanField(
-        default=True,
-        verbose_name=_('Accept feedback'),
+        verbose_name=_('Don\'t record this talk.'),
     )
     recording_url = models.CharField(
         max_length=200,
@@ -291,7 +287,7 @@ class Submission(LogMixin, models.Model):
     @property
     def does_accept_feedback(self):
         slot = self.slot
-        if self.accept_feedback and slot and slot.start:
+        if slot and slot.start:
             end = slot.end or slot.start + slot.submission.get_duration()
             return end < now()
         return False
