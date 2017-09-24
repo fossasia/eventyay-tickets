@@ -18,7 +18,9 @@ class ScheduleView(TemplateView):
 
     def get_context_data(self, event):
         ctx = super().get_context_data()
-        ctx['schedule_version'] = self.request.GET.get('version')
+        version = self.request.GET.get('version')
+        ctx['schedule_version'] = version
+        ctx['active_schedule'] = self.request.event.schedules.get(version=version)
         ctx['release_form'] = ScheduleReleaseForm()
         return ctx
 

@@ -9,6 +9,11 @@
     {% if schedule_version %}
         – version {{ schedule_version }}
     {% endif %}
+    <a
+        class="btn btn-secondary"
+        title="view publically"
+        href="{{ active_schedule.urls.public }}"
+        ><i class="fa fa-eye"></i></a>
 {% endblock %}
 
 {% block scripts %}
@@ -33,7 +38,7 @@
 
     {% if schedule_version %}
         <div class="alert alert-warning schedule-alert">
-            {% trans "You're currently viewing a released schedule version. Released versions cannot be edited anymore." %}
+            {% trans "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
         </div>
     {% endif %}
     <div class="schedule-header">
