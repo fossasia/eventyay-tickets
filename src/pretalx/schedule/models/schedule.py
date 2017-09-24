@@ -1,5 +1,6 @@
 from collections import defaultdict
 from contextlib import suppress
+from urllib.parse import quote
 
 import pytz
 from django.db import models, transaction
@@ -7,6 +8,7 @@ from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
 from django.utils.translation import override, ugettext_lazy as _
+from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
 from pretalx.mail.models import QueuedMail
@@ -32,6 +34,9 @@ class Schedule(LogMixin, models.Model):
     class Meta:
         ordering = ('-published', )
         unique_together = (('event', 'version'), )
+
+    class urls(Urls):
+        public = '{self.event.urls.schedule}?version={self.url_version}'
 
     @transaction.atomic
     def freeze(self, name, user=None, notify_speakers=True):
@@ -189,6 +194,10 @@ class Schedule(LogMixin, models.Model):
                 subject=_('[{event}] New schedule!').format(event=self.event.slug),
                 text=text
             )
+
+    @property
+    def url_version(self):
+        return quote(self.version) if self.version else 'wip'
 
     def __str__(self) -> str:
         return str(self.version) or _(f'WIP Schedule for {self.event}')
