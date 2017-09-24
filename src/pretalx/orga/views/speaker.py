@@ -39,7 +39,7 @@ class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
             .get(pk=self.kwargs['pk'])
 
     def get_success_url(self) -> str:
-        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.object.pk})
+        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.get_object().pk})
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
