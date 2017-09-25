@@ -9,7 +9,7 @@ def _is_in_preparation(event):
 
 
 def _is_cfp_open(event):
-    return not _is_in_preparation(event) and not event.cfp.deadline > now()
+    return not _is_in_preparation(event) and event.cfp.deadline > now()
 
 
 def _is_in_review(event):
@@ -25,7 +25,7 @@ def _is_running(event):
 
 
 def _is_in_wrapup(event):
-    return event.datetime_to >= now()
+    return event.datetime_to <= now()
 
 
 STAGES = {
