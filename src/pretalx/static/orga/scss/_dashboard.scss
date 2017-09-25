@@ -86,14 +86,6 @@
       font-weight: 600;
     }
   }
-  .timeline-element.active {
-      background-color: #11f11c;
-      flex-grow: 2;
-      &::after {
-        background: transparent;
-        border-left: 50px solid #11f11c;
-      }
-  }
   .timeline-element.done {
     .timeline-heading {
       font-weight: normal;
@@ -140,5 +132,13 @@
     &::after {
       border-left: 50px solid #858585;
     }
+  }
+  .timeline-element.active {
+      background-color: #11f11c;
+      flex-grow: 2;
+      &::after {
+        background: transparent;
+        border-left: 50px solid #11f11c;
+      }
   }
 }
