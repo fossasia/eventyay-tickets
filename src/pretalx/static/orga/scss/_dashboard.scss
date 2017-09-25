@@ -105,64 +105,40 @@
       font-style: italic;
     }
   }
-  .timeline-element.done:nth-of-type(1) {
+  .timeline-element:nth-of-type(1) {
     background-color: #e5e5e5;
     &::after {
       border-left: 50px solid #e5e5e5;
     }
   }
-  .timeline-element.done:nth-of-type(2) {
+  .timeline-element:nth-of-type(2) {
     background-color: #d3d3d3;
     &::after {
       border-left: 50px solid #d3d3d3;
     }
   }
-  .timeline-element.done:nth-of-type(3) {
+  .timeline-element:nth-of-type(3) {
     background-color: #c2c2c2;
     &::after {
       border-left: 50px solid #c2c2c2;
     }
   }
-  .timeline-element.done:nth-of-type(4) {
+  .timeline-element:nth-of-type(4) {
     background-color: #b0b0b0;
     &::after {
       border-left: 50px solid #b0b0b0;
     }
   }
-  .timeline-element.done:nth-of-type(5) {
+  .timeline-element:nth-of-type(5) {
     background-color: #a1a1a1;
     &::after {
       border-left: 50px solid #a1a1a1;
     }
   }
-  .timeline-element.next:nth-of-type(2) {
-    background-color: #4CAF50;
-    &::after {
-      border-left: 50px solid #4CAF50;
-    }
-  }
-  .timeline-element.next:nth-of-type(3) {
-    background-color: #66BB6A;
-    &::after {
-      border-left: 50px solid #66BB6A;
-    }
-  }
-  .timeline-element.next:nth-of-type(4) {
-    background-color: #81C784;
-    &::after {
-      border-left: 50px solid #81C784;
-    }
-  }
-  .timeline-element.next:nth-of-type(5) {
-    background-color: #A5D6A7;
-    &::after {
-      border-left: 50px solid #A5D6A7;
-    }
-  }
   .timeline-element.next:nth-of-type(6) {
-    background-color: #C8E6C9;
+    background-color: #858585;
     &::after {
-      border-left: 50px solid #C8E6C9;
+      border-left: 50px solid #858585;
     }
   }
 }
