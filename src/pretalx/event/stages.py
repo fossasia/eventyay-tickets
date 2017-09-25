@@ -9,7 +9,7 @@ def _is_in_preparation(event):
 
 
 def _is_cfp_open(event):
-    return not _is_in_preparation(event) and event.cfp.deadline > now()
+    return not _is_in_preparation(event) and (event.cfp.deadline or now()) >= now()
 
 
 def _is_in_review(event):
