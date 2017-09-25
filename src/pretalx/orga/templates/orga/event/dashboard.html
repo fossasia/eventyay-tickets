@@ -1,4 +1,123 @@
 {% extends "orga/base.html" %}
+{% load i18n %}
 {% block content %}
-    Dashing dashboard to follow.
+
+<div class="timeline">
+    <div class="timeline-element {{ timeline.PREPARATION.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.PREPARATION.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li><a href="{{ request.event.orga_urls.settings }}">
+                            {% trans "Configure the event" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.team_settings }}">
+                            {% trans "Gather your team" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.cfp }}">
+                            {% trans "Write a CfP" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.mail_templates }}">
+                            {% trans "Customize mail templates" %}
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-element {{ timeline.CFP_OPEN.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.CFP_OPEN.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li><a href="{{ request.event.orga_urls.submissions }}">
+                            {% trans "Monitor submissions" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.new_submission }}">
+                            {% trans "Submit talks for your speakers" %}
+                    </a></li>
+                    <li><a href="">
+                            {% trans "Invite reviewers" %}
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-element {{ timeline.REVIEW.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.REVIEW.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li><a href="">
+                            {% trans "Let reviewers do their work" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.submissions }}">
+                            {% trans "Accept or reject submissions" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.schedule }}">
+                            {% trans "Build your initial schedule" %}
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-element {{ timeline.SCHEDULE.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.SCHEDULE.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li><a href="{{ request.event.orga_urls.schedule }}">
+                            {% trans "Release schedules as needed" %}
+                    </a></li>
+                    <li><a href="{{ request.event.orga_urls.send_mails }}">
+                            {% trans "Inform your speakers about the infrastructure" %}
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-element {{ timeline.EVENT.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.EVENT.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li>{% trans "Provide a point of contact for the speakers" %}</li>
+                    <li>{% trans "Enjoy the event!" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="timeline-element {{ timeline.WRAPUP.state }}">
+        <div class="timeline-box">
+            <div class="timeline-heading">
+                {{ timeline.WRAPUP.name }}
+            </div>
+            <div class="timeline-text">
+                <ul>
+                    <li>{% trans "Monitor incoming feedback" %}</li>
+                    <li>{% trans "Embed talk recordings if available" %}</li>
+                    <li>{% trans "Release next event date?" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-list">
+    <div class="dashboard-block">
+        <h1>Dashboard</h1>
+        <div class="dashboard-description">
+            Dashing dashboard to follow.
+        </div>
+    </div>
+</div>
 {% endblock %}
