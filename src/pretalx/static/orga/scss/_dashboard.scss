@@ -46,11 +46,12 @@
   padding-bottom: 90px;
 
   .timeline-element {
-    display:inline-block;
+    display: inline-block;
     flex-grow: 1;
-    padding:10px;
-    position:relative;
-    min-width:200px;
+      transition:flex-grow .15s;
+    padding: 10px;
+    position: relative;
+    min-width: 200px;
     height: 80px;
 
     max-width: 320px;
@@ -82,6 +83,7 @@
     }
     &:hover {
       flex-grow: 2;
+        transition:flex-grow .15s;
     }
     .timeline-heading {
       text-align: center;
@@ -140,6 +142,7 @@
   .timeline-element.active {
       background-color: #11f11c;
       flex-grow: 2;
+        transition:flex-grow .1s;
       &::after {
         background: transparent;
         border-left: 50px solid #11f11c;
