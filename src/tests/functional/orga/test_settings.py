@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 import pytest
+import json
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -8,30 +9,45 @@ from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
-def test_create_room(orga_client, event):
+def test_create_room(orga_client, event, availability):
     assert event.rooms.count() == 0
     response = orga_client.post(
         reverse('orga:settings.rooms.create', kwargs={'event': event.slug}),
         follow=True,
-        data={'name_0': 'A room'}
+        data={
+            'name_0': 'A room',
+            'availabilities': json.dumps({
+                'availabilities': [
+                    {
+                        'start': availability.start.strftime('%Y-%m-%d %H:%M:00Z'),
+                        'end': availability.end.strftime('%Y-%m-%d %H:%M:00Z'),
+                    }
+                ]
+            })
+        }
     )
     assert response.status_code == 200
     assert event.rooms.count() == 1
     assert str(event.rooms.first().name) == 'A room'
+    assert event.rooms.first().availabilities.count() == 1
+    assert event.rooms.first().availabilities.first().start == availability.start
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures('room_availability')
 def test_edit_room(orga_client, event, room):
     assert event.rooms.count() == 1
+    assert event.rooms.first().availabilities.count() == 1
     assert str(event.rooms.first().name) != 'A room'
     response = orga_client.post(
         reverse('orga:settings.rooms.edit', kwargs={'event': event.slug, 'pk': room.pk}),
         follow=True,
-        data={'name_0': 'A room'}
+        data={'name_0': 'A room', 'availabilities': '{"availabilities": []}'}
     )
     assert response.status_code == 200
     assert event.rooms.count() == 1
     assert str(event.rooms.first().name) == 'A room'
+    assert event.rooms.first().availabilities.count() == 0
 
 
 @pytest.mark.django_db

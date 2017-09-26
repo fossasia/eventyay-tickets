@@ -1,6 +1,7 @@
 import datetime
 
 import pytest
+import pytz
 from django.utils.timezone import now
 
 from pretalx.event.models import Event
@@ -237,8 +238,19 @@ def room(event):
 
 
 @pytest.fixture
-def room_availability(event, room):
-    return Availability.objects.create(event=event, room=room, start=event.date_from, end=event.date_to)
+def room_availability(event, room, availability):
+    availability.room = room
+    availability.save()
+    return availability
+
+
+@pytest.fixture
+def availability(event):
+    return Availability(
+        event=event,
+        start=datetime.datetime.combine(event.date_from, datetime.time.min, tzinfo=pytz.utc),
+        end=datetime.datetime.combine(event.date_to, datetime.time.max, tzinfo=pytz.utc),
+    )
 
 
 @pytest.fixture
