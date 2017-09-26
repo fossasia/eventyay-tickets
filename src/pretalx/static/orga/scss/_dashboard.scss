@@ -82,7 +82,7 @@
       opacity: 1;
     }
     &:hover {
-      flex-grow: 2;
+      flex-grow: 3 !important;
         transition:flex-grow .15s;
     }
     .timeline-heading {
