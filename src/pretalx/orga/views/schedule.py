@@ -61,6 +61,7 @@ class RoomList(View):
                     'name': str(room.name),
                     'description': room.description,
                     'capacity': room.capacity,
+                    'url': room.urls.edit_settings,
                 }
                 for room in request.event.rooms.order_by('position')
             ]
