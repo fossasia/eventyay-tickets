@@ -62,6 +62,7 @@ class RoomList(View):
                     'description': room.description,
                     'capacity': room.capacity,
                     'url': room.urls.edit_settings,
+                    'availabilities': [avail.serialize() for avail in room.availabilities.all()]
                 }
                 for room in request.event.rooms.order_by('position')
             ]

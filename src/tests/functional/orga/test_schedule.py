@@ -7,7 +7,7 @@ from pretalx.schedule.models import Schedule
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('room')
+@pytest.mark.usefixtures('room', 'room_availability')
 def test_room_list(orga_client, event):
     response = orga_client.get(reverse(f'orga:schedule.api.rooms', kwargs={'event': event.slug}), follow=True)
     content = json.loads(response.content.decode())
@@ -16,6 +16,11 @@ def test_room_list(orga_client, event):
     assert content['rooms'][0]['name']
     assert content['start']
     assert content['end']
+    availabilities = content['rooms'][0]['availabilities']
+    assert len(availabilities) == 1
+    assert availabilities[0]['id'] == 1
+    assert availabilities[0]['start']
+    assert availabilities[0]['end']
 
 
 @pytest.mark.django_db

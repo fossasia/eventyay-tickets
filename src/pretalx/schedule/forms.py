@@ -18,20 +18,10 @@ class AvailabilitiesFormMixin(forms.Form):
         widget=forms.TextInput(attrs={'class': 'availabilities-editor-data'}),
     )
 
-    def _serialize_availability(self, avail):
-        zerotime = datetime.time(0, 0)
-
-        # make sure all-day availabilities are displayed properly in fullcalendar
-        if avail.start.time() == zerotime and avail.end.time() == zerotime:
-            return {'start': str(avail.start.date()), 'end': str(avail.end.date())}
-        else:
-            # TODO: timezones
-            return {'start': str(avail.start), 'end': str(avail.end)}
-
     def _serialize(self, event, instance):
         if instance:
             availabilities = [
-                self._serialize_availability(avail)
+                avail.serialize()
                 for avail in instance.availabilities.all()
             ]
         else:

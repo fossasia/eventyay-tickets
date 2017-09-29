@@ -65,6 +65,35 @@ var dragController = {
   }
 }
 
+Vue.component('availability', {
+  template: `
+    <div class="room-availability" v-bind:style="style"></div>
+  `,
+  props: {
+    availability: Object,
+    start: Object,
+  },
+  computed: {
+    duration () {
+      if(this.availability.end) {
+        return moment(this.availability.end).diff(this.availability.start, 'minutes')
+      } else {
+        return 60 * 24
+      }
+    },
+    style () {
+      if(this.availability.end) {
+        var start = moment(this.availability.start)
+      } else {
+        var start = moment(this.availability.start + ' 00:00:00Z')
+      }
+      var style = {height: this.duration + 'px'}
+      style.transform = 'translatey(' + start.diff(this.start, 'minutes') + 'px)'
+      return style
+    },
+  }
+})
+
 Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
@@ -147,7 +176,8 @@ Vue.component('room', {
     <div class="room-column">
       <div class="room-header"><a :href="room.url">{{ room.name }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
-        <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
+      <availability v-for="avail in room.availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
+      <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
       </div>
     </div>
   `,

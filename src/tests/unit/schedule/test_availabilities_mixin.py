@@ -219,11 +219,12 @@ def test_replace_availabilities(availabilitiesform):
     ),
     (
         Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 2)),
-        {'start': '2017-01-01', 'end': '2017-01-02'}  # all day
+        {'start': '2017-01-01'}  # all day
     ),
 ))
 def test_serialize_availability(availabilitiesform, avail, expected):
-    actual = availabilitiesform._serialize_availability(avail)
+    actual = avail.serialize()
+    del actual['id']
     assert actual == expected
 
 
@@ -231,7 +232,7 @@ def test_serialize_availability(availabilitiesform, avail, expected):
 @pytest.mark.parametrize('avails,expected', (
     (
         [Availability(start=datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc))],
-        '{"availabilities": [{"start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00"}], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'
+        '{"availabilities": [{"id": 1, "start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00"}], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'
     ),
     ([], '{"availabilities": [], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'),
     (None, '{"availabilities": [], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'),

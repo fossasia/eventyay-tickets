@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from pretalx.event.models import Event
 from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, SpeakerProfile, User
-from pretalx.schedule.models import Room, TalkSlot
+from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
     Feedback, Question, QuestionVariant, Submission, SubmissionType,
 )
@@ -234,6 +234,11 @@ def sent_mail(mail_template, speaker, event):
 @pytest.fixture
 def room(event):
     return Room.objects.create(event=event, name='Testroom', description='A fancy room', position=2, capacity=50)
+
+
+@pytest.fixture
+def room_availability(event, room):
+    return Availability.objects.create(event=event, room=room, start=event.date_from, end=event.date_to)
 
 
 @pytest.fixture
