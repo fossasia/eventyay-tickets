@@ -2,6 +2,7 @@ import datetime
 import json
 
 import django.forms as forms
+import pytz
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
@@ -27,10 +28,10 @@ class AvailabilitiesFormMixin(forms.Form):
         else:
             availabilities = []
 
-        # TODO: tell client timezone
         return json.dumps({
             'availabilities': availabilities,
             'event': {
+                'timezone': event.timezone,
                 'date_from': str(event.date_from),
                 'date_to': str(event.date_to),
             }
@@ -55,6 +56,16 @@ class AvailabilitiesFormMixin(forms.Form):
         except (ValueError, AssertionError, LookupError):
             raise forms.ValidationError("Submitted json does not comply with format.")
 
+    def _parse_datetime(self, strdate):
+        tz = pytz.timezone(self.event.timezone)
+
+        obj = parse_datetime(strdate)
+        assert obj
+        if obj.tzinfo is None:
+            obj = tz.localize(obj)
+
+        return obj
+
     def _validate_availability(self, rawavail):
         try:
             assert isinstance(rawavail, dict)
@@ -66,11 +77,8 @@ class AvailabilitiesFormMixin(forms.Form):
             raise forms.ValidationError("Submitted availability does not comply with format.")
 
         try:
-            # TODO: timezones
-            rawavail['start'] = parse_datetime(rawavail['start'])
-            assert rawavail['start']
-            rawavail['end'] = parse_datetime(rawavail['end'])
-            assert rawavail['end']
+            rawavail['start'] = self._parse_datetime(rawavail['start'])
+            rawavail['end'] = self._parse_datetime(rawavail['end'])
         except (AssertionError, TypeError, ValueError):
             raise forms.ValidationError("Submitted availability contains an invalid date.")
 

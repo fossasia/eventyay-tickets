@@ -69,7 +69,6 @@ $(function () {
         function save_events() {
             data = {
                 availabilities: editor.fullCalendar('clientEvents').map(function(e) {
-                    // TODO: timezones
                     if(e.allDay) {
                         var start = e.start.utc().startOf('day');
                         return {
@@ -78,8 +77,8 @@ $(function () {
                         }
                     } else {
                         return {
-                            'start': e.start.utc().toISOString(),
-                            'end': e.end.utc().toISOString(),
+                            'start': e.start.toISOString(),
+                            'end': e.end.toISOString(),
                         }
                     }
                 })
@@ -90,8 +89,12 @@ $(function () {
         var editable = !Boolean(data_field.attr('disabled'));
 
         var data = JSON.parse(data_field.attr('value'));
+        var events = data.availabilities.map(function (e) {
+            e.start = moment(e.start).tz(data.event.timezone).format('YYYY-MM-DDTHH:mm:ss');
+            e.end = moment(e.end).tz(data.event.timezone).format('YYYY-MM-DDTHH:mm:ss');
+            return e;
+        });
         editor.fullCalendar({
-            // TODO: apply timezone form server
             views: {
                 agendaVariableDays: {
                     type: 'agenda',
@@ -104,7 +107,7 @@ $(function () {
                 start: data.event.date_from,
                 end: data.event.date_to,
             },
-            events: data.availabilities,
+            events: events,
             nowIndicator: false,
             navLinks: false,
             header: false,

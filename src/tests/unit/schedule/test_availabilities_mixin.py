@@ -112,6 +112,22 @@ def test_validate_availability_success(availabilitiesform, avail):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize('strdate,expected', (
+    ('2017-01-01 10:00:00', datetime.datetime(2017, 1, 1, 10)),
+    ('2017-01-01 10:00:00-05:00', datetime.datetime(2017, 1, 1, 10)),
+    ('2017-01-01 10:00:00-04:00', datetime.datetime(2017, 1, 1, 9)),
+))
+def test_parse_datetime(availabilitiesform, strdate, expected):
+    availabilitiesform.event.timezone = 'America/New_York'
+    availabilitiesform.event.save()
+
+    expected = pytz.timezone('America/New_York').localize(expected)
+    actual = availabilitiesform._parse_datetime(strdate)
+
+    assert actual == expected
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize('json,error', (
     ('{"availabilities": [{"start": "2017-01-01 10:00:00", "end": "2017-01-03 12:00:00"}]}', 'timeframe'),
     ('{{', 'not valid json'),
@@ -144,8 +160,8 @@ def test_clean_availabilities_success(availabilitiesform, json, expected):
     assert len(actual) == len(expected)
 
     for act, exp in zip(actual, expected):
-        assert act.start == exp.start
-        assert act.end == exp.end
+        assert act.start.replace(tzinfo=None) == exp.start
+        assert act.end.replace(tzinfo=None) == exp.end
         assert act.event_id == availabilitiesform.event.id
         assert act.id is None
 
@@ -229,15 +245,32 @@ def test_serialize_availability(availabilitiesform, avail, expected):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('avails,expected', (
+@pytest.mark.parametrize('avails,expected,tzname', (
     (
         [Availability(start=datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc))],
-        '{"availabilities": [{"id": 1, "start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00"}], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'
+        '{"availabilities": [{"id": 1, "start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00"}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+        'UTC',
     ),
-    ([], '{"availabilities": [], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'),
-    (None, '{"availabilities": [], "event": {"date_from": "2017-01-01", "date_to": "2017-01-02"}}'),
+    (
+        [],
+        '{"availabilities": [], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+        'UTC',
+    ),
+    (
+        None,
+        '{"availabilities": [], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+        'UTC',
+    ),
+    (
+        None,
+        '{"availabilities": [], "event": {"timezone": "America/New_York", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+        'America/New_York',
+    ),
 ))
-def test_serialize(availabilitiesform, avails, expected):
+def test_serialize(availabilitiesform, avails, expected, tzname):
+    availabilitiesform.event.timezone = tzname
+    availabilitiesform.event.save()
+
     if avails is not None:
         instance = Room.objects.create(event_id=availabilitiesform.event.id)
         for avail in avails:
