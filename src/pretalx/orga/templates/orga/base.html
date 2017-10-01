@@ -53,7 +53,7 @@
                         <div class="dropdown-menu">
                             {% for e in request.orga_events %}
                                 {% if not request.event == e %}
-                                    <a class="dropdown-item" href="{{ e.orga_urls.settings }}">{{ e.name }}</a>
+                                    <a class="dropdown-item" href="{{ e.orga_urls.base }}">{{ e.name }}</a>
                                 {% endif %}
                             {% endfor %}
                             {% if request.user.is_superuser %}
