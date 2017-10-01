@@ -12,7 +12,7 @@ class Availability(LogMixin, models.Model):
         on_delete=models.CASCADE,
     )
     person = models.ForeignKey(
-        to='person.User',
+        to='person.SpeakerProfile',
         related_name='availabilities',
         on_delete=models.CASCADE,
         null=True, blank=True,
