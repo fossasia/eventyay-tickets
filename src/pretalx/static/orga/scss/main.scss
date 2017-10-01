@@ -3,6 +3,7 @@
 @import "../../vendored/bootstrap-4-dev/scss/bootstrap";
 @import "../../vendored/fontawesome/scss/font-awesome";
 @import "../../vendored/datetimepicker/_bootstrap-datetimepicker";
+@import "../../common/scss/availabilities.scss";
 @import "_dashboard";
 @import "_layout";
 @import "_schedule";
@@ -79,34 +80,4 @@ table .btn-secondary {
 }
 
 .pagination {
-}
-
-input.availabilities-editor-data {
-  display: none;
-}
-
-.availabilities-editor {
-  max-width: 100vh;
-}
-
-.fc-event.delete {
-  background-color: #CC0000 !important;
-  border-color: #CC0000 !important;
-}
-
-.fc-event.delete::before {
-  font-family: FontAwesome;
-  content: $fa-var-trash-o;
-  position: absolute;
-  top: calc(50% - 1ex);
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 200%;
-  color: white;
-}
-
-.fc-day-grid-event.delete::before {
-  font-size: 100%;
-  top: 0;
 }
