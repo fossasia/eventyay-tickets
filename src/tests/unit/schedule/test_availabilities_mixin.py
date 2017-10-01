@@ -112,6 +112,42 @@ def test_validate_availability_success(availabilitiesform, avail):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize('avail', (
+    ({'start': '2017-01-01 00:00:00', 'end': '2017-01-01 08:00:00'}),  # local time, start
+    ({'start': '2017-01-02 05:00:00', 'end': '2017-01-03 00:00:00'}),  # local time, end
+    ({'start': '2017-01-01 00:00:00-05:00', 'end': '2017-01-01 00:00:00-05:00'}),  # explicit timezone, start
+    ({'start': '2017-01-02 05:00:00-05:00', 'end': '2017-01-03 00:00:00-05:00'}),  # explicit timezone, end
+    ({'start': '2017-01-01 05:00:00+00:00', 'end': '2017-01-01 00:00:00-05:00'}),  # UTC, start
+    ({'start': '2017-01-02 05:00:00-00:00', 'end': '2017-01-03 05:00:00-00:00'}),  # UTC, end
+))
+def test_validate_availability_tz_success(availabilitiesform, avail):
+    availabilitiesform.event.timezone = 'America/New_York'
+    availabilitiesform.event.save()
+
+    try:
+        availabilitiesform._validate_availability(avail)
+    except ValidationError:
+        pytest.fail("Unexpected ValidationError")
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('avail', (
+    ({'start': '2016-12-31 23:00:00', 'end': '2017-01-01 08:00:00'}),  # local time, start
+    ({'start': '2017-01-02 05:00:00', 'end': '2017-01-03 00:01:00'}),  # local time, end
+    ({'start': '2016-12-31 23:00:00-05:00', 'end': '2017-01-01 00:00:00-05:00'}),  # explicit timezone, start
+    ({'start': '2017-01-02 05:00:00-05:00', 'end': '2017-01-03 00:00:01-05:00'}),  # explicit timezone, end
+    ({'start': '2017-01-01 04:00:00+00:00', 'end': '2017-01-01 00:00:00-05:00'}),  # UTC, start
+    ({'start': '2017-01-02 05:00:00-00:00', 'end': '2017-01-03 06:00:00-00:00'}),  # UTC, end
+))
+def test_validate_availability_tz_fail(availabilitiesform, avail):
+    availabilitiesform.event.timezone = 'America/New_York'
+    availabilitiesform.event.save()
+
+    with pytest.raises(ValidationError) as excinfo:
+        availabilitiesform._validate_availability(avail)
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize('strdate,expected', (
     ('2017-01-01 10:00:00', datetime.datetime(2017, 1, 1, 10)),
     ('2017-01-01 10:00:00-05:00', datetime.datetime(2017, 1, 1, 10)),
@@ -219,23 +255,23 @@ def test_replace_availabilities(availabilitiesform):
 @pytest.mark.parametrize('avail,expected', (
     (
         Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)),
-        {'start': '2017-01-01 10:00:00', 'end': '2017-01-01 12:00:00'}
+        {'start': '2017-01-01 10:00:00', 'end': '2017-01-01 12:00:00', 'allDay': False}
     ),
     (
         Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 2)),
-        {'start': '2017-01-01 10:00:00', 'end': '2017-01-02 00:00:00'}
+        {'start': '2017-01-01 10:00:00', 'end': '2017-01-02 00:00:00', 'allDay': False}
     ),
     (
         Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 1, 10)),
-        {'start': '2017-01-01 00:00:00', 'end': '2017-01-01 10:00:00'}
+        {'start': '2017-01-01 00:00:00', 'end': '2017-01-01 10:00:00', 'allDay': False}
     ),
     (
         Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 2)),
-        {'start': '2017-01-01 10:00:00', 'end': '2017-01-02 00:00:00'}
+        {'start': '2017-01-01 10:00:00', 'end': '2017-01-02 00:00:00', 'allDay': False}
     ),
     (
         Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 2)),
-        {'start': '2017-01-01'}  # all day
+        {'start': '2017-01-01 00:00:00', 'end': '2017-01-02 00:00:00', 'allDay': True}
     ),
 ))
 def test_serialize_availability(availabilitiesform, avail, expected):
@@ -248,7 +284,7 @@ def test_serialize_availability(availabilitiesform, avail, expected):
 @pytest.mark.parametrize('avails,expected,tzname', (
     (
         [Availability(start=datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc))],
-        '{"availabilities": [{"id": 1, "start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00"}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+        '{"availabilities": [{"id": 1, "start": "2017-01-01 10:00:00+00:00", "end": "2017-01-01 12:00:00+00:00", "allDay": false}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
         'UTC',
     ),
     (
@@ -287,11 +323,21 @@ def test_serialize(availabilitiesform, avails, expected, tzname):
 @pytest.mark.django_db
 def test_chained(availabilitiesform, room):
     """ make sure the Mixin can actually deserialize the data it serialized """
+    room.event.timezone = 'America/New_York'
+    tz = pytz.timezone(room.event.timezone)
+    room.event.save()
     room.save()
+    # normal
     Availability.objects.create(
         event=availabilitiesform.event, room=room,
-        start=datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
-        end=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
+        start=tz.localize(datetime.datetime(2017, 1, 1, 10)),
+        end=tz.localize(datetime.datetime(2017, 1, 1, 12)),
+    )
+    # all day
+    Availability.objects.create(
+        event=availabilitiesform.event, room=room,
+        start=tz.localize(datetime.datetime(2017, 1, 1)),
+        end=tz.localize(datetime.datetime(2017, 1, 3)),
     )
 
     form = AvailabilitiesForm(
@@ -304,7 +350,10 @@ def test_chained(availabilitiesform, room):
     form.save()
 
     avails = Room.objects.first().availabilities.all()
-    assert len(avails) == 1
-    assert avails[0].id == 2
-    assert avails[0].start == datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc)
-    assert avails[0].end == datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc)
+    assert len(avails) == 2
+    assert avails[0].id == 3
+    assert avails[0].start == datetime.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
+    assert avails[0].end == datetime.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
+    assert avails[1].id == 4
+    assert avails[1].start == datetime.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
+    assert avails[1].end == datetime.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)

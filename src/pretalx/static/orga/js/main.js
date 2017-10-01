@@ -70,10 +70,9 @@ $(function () {
             data = {
                 availabilities: editor.fullCalendar('clientEvents').map(function(e) {
                     if(e.allDay) {
-                        var start = e.start.utc().startOf('day');
                         return {
-                            'start': start.toISOString(),
-                            'end': start.add(1, 'd').toISOString(),
+                            'start': e.start.format('YYYY-MM-DD HH:mm:ss'),
+                            'end': e.start.add(1, 'd').format('YYYY-MM-DD HH:mm:ss'),
                         }
                     } else {
                         return {
@@ -90,8 +89,13 @@ $(function () {
 
         var data = JSON.parse(data_field.attr('value'));
         var events = data.availabilities.map(function (e) {
-            e.start = moment(e.start).tz(data.event.timezone).format('YYYY-MM-DDTHH:mm:ss');
-            e.end = moment(e.end).tz(data.event.timezone).format('YYYY-MM-DDTHH:mm:ss');
+            e.start = moment(e.start).tz(data.event.timezone);
+            e.end = moment(e.end).tz(data.event.timezone);
+
+            if(e.start.format('HHmmss') == 0 && e.end.format('HHmmss') == 0) {
+                e.allDay = true;
+            }
+
             return e;
         });
         editor.fullCalendar({

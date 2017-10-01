@@ -82,13 +82,8 @@ Vue.component('availability', {
       }
     },
     style () {
-      if(this.availability.end) {
-        var start = moment(this.availability.start)
-      } else {
-        var start = moment(this.availability.start + ' 00:00:00Z')
-      }
       var style = {height: this.duration + 'px'}
-      style.transform = 'translatey(' + start.diff(this.start, 'minutes') + 'px)'
+      style.transform = 'translatey(' + moment(this.availability.start).diff(this.start, 'minutes') + 'px)'
       return style
     },
   }

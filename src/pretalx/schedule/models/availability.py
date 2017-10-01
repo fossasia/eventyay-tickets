@@ -28,10 +28,10 @@ class Availability(LogMixin, models.Model):
 
     def serialize(self):
         zerotime = datetime.time(0, 0)
-
-        # make sure all-day availabilities are displayed properly in fullcalendar
-        if self.start.time() == zerotime and self.end.time() == zerotime:
-            return {'id': self.id, 'start': str(self.start.date())}
-        else:
-            # TODO: timezones
-            return {'id': self.id, 'start': str(self.start), 'end': str(self.end)}
+        return {
+            'id': self.id,
+            'start': str(self.start),
+            'end': str(self.end),
+            # make sure all-day availabilities are displayed properly in fullcalendar
+            'allDay': (self.start.time() == zerotime and self.end.time() == zerotime)
+        }

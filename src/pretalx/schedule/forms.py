@@ -72,6 +72,7 @@ class AvailabilitiesFormMixin(forms.Form):
         try:
             assert isinstance(rawavail, dict)
             rawavail.pop('id', None)
+            rawavail.pop('allDay', None)
             assert len(rawavail) == 2
             assert 'start' in rawavail
             assert 'end' in rawavail
@@ -84,12 +85,14 @@ class AvailabilitiesFormMixin(forms.Form):
         except (AssertionError, TypeError, ValueError):
             raise forms.ValidationError("Submitted availability contains an invalid date.")
 
+        tz = pytz.timezone(self.event.timezone)
+
         try:
-            assert rawavail['start'].date() >= self.event.date_from
-            assert rawavail['end'].date() <= self.event.date_to or (
-                rawavail['end'].date() == self.event.date_to + datetime.timedelta(days=1) and
-                rawavail['end'].time() == datetime.time()
-            )
+            timeframe_start = tz.localize(datetime.datetime.combine(self.event.date_from, datetime.time()))
+            assert rawavail['start'] >= timeframe_start
+            timeframe_end = tz.localize(datetime.datetime.combine(self.event.date_to, datetime.time()))
+            timeframe_end += datetime.timedelta(days=1)
+            assert rawavail['end'] <= timeframe_end
         except AssertionError:
             raise forms.ValidationError("Submitted availability is not within the event timeframe.")
 
