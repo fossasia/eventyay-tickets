@@ -135,9 +135,10 @@ h3, .schedule-header, .schedule-alert {
 }
 
 .talk-box {
-  border-color: white;
-  border-width: 4px;
-  padding: 4px 8px;
+  border: 1px solid #1C4A3B;
+  border-top: 4px solid #1C4A3B;
+  border-width: 1;
+  padding: 0px 8px;
   cursor: pointer;
   position: absolute;
   top: 0;
