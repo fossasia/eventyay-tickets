@@ -38,7 +38,9 @@ class AvailabilitiesFormMixin(forms.Form):
         })
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop('event')
+        self.event = kwargs.pop('event', None)
+        if not self.event:
+            raise Exception('Please provide an event as kwarg to AvailabilitiesFormMixin.')
         super().__init__(*args, **kwargs)
         self.fields['availabilities'].initial = self._serialize(self.event, kwargs['instance'])
 
