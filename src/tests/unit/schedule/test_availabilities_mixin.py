@@ -146,6 +146,8 @@ def test_validate_availability_tz_fail(availabilitiesform, avail):
     with pytest.raises(ValidationError) as excinfo:
         availabilitiesform._validate_availability(avail)
 
+    assert 'timeframe' in str(excinfo)
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('strdate,expected', (
