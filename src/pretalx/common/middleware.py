@@ -1,9 +1,9 @@
-import urllib
 from contextlib import suppress
 
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
@@ -16,9 +16,14 @@ from pretalx.person.models import EventPermission
 
 
 class EventPermissionMiddleware:
-    UNAUTHENTICATED = (
+    UNAUTHENTICATED_ORGA_URLS = (
         'invitation.view',
         'login',
+    )
+    REVIEWER_URLS = (
+        'submissions.list',
+        'submissions.content.view',
+        'submissions.questions.view'
     )
 
     def __init__(self, get_response):
@@ -30,9 +35,32 @@ class EventPermissionMiddleware:
                 request.orga_events = Event.objects.all()
             else:
                 request.orga_events = Event.objects.filter(
+                    Q(permissions__is_orga=True) | Q(permissions__is_reviewer=True),
                     permissions__user=request.user,
-                    permissions__is_orga=True,
                 )
+
+    def _is_reviewer_url(self, url):
+        if url.url_name.startswith('reviews'):
+            return True
+        if url.url_name.endswith('dashboard'):
+            return True
+        if url.url_name in self.REVIEWER_URLS:
+            return True
+        return False
+
+    def _handle_orga_url(self, request, url):
+        if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
+            return reverse('orga:login') + f'?next={request.path}'
+        if hasattr(request, 'event') and request.event:
+            if not (request.is_orga or request.is_reviewer):
+                raise PermissionDenied()
+            if (request.is_orga and not request.user.is_superuser) and url.url_name.startswith('reviews'):
+                raise PermissionDenied()
+            if (request.is_reviewer and not request.user.is_superuser) and not self._is_reviewer_url(url):
+                raise PermissionDenied()
+        elif hasattr(request, 'event') and not request.user.is_superuser:
+            raise PermissionDenied()
+        self._select_locale(request)
 
     def __call__(self, request):
         url = resolve(request.path_info)
@@ -51,28 +79,28 @@ class EventPermissionMiddleware:
                         event=request.event,
                         is_orga=True
                     ).exists()
+                    request.is_reviewer = request.user.is_superuser or EventPermission.objects.filter(
+                        user=request.user,
+                        event=request.event,
+                        is_reviewer=True
+                    ).exists()
                 timezone.activate(pytz.timezone(request.event.timezone))
 
         self._set_orga_events(request)
 
         if 'orga' in url.namespaces:
-            if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED:
-                redirect_path = urllib.parse.quote(request.path)
-                return redirect(reverse('orga:login') + f'?next={redirect_path}')
-            if hasattr(request, 'event') and not request.is_orga:
-                raise PermissionDenied()
-
-            self._select_locale(request)
-
+            url = self._handle_orga_url(request, url)
+            if url:
+                return redirect(url)
         return self.get_response(request)
 
     def _select_locale(self, request):
-        supported = request.event.locales if hasattr(request, 'event') else settings.LANGUAGES
+        supported = request.event.locales if (hasattr(request, 'event') and request.event) else settings.LANGUAGES
         language = (
             self._language_from_user(request, supported)
             or self._language_from_browser(request, supported)
         )
-        if hasattr(request, 'event'):
+        if hasattr(request, 'event') and request.event:
             language = language or request.event.locale
 
         translation.activate(language)
@@ -81,7 +109,7 @@ class EventPermissionMiddleware:
         with suppress(pytz.UnknownTimeZoneError):
             if request.user.is_authenticated:
                 tzname = request.user.timezone
-            elif hasattr(request, 'event'):
+            elif hasattr(request, 'event') and request.event:
                 tzname = request.event.timezone
             else:
                 tzname = settings.TIME_ZONE
