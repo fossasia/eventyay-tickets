@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from contextlib import suppress
 from datetime import datetime, timedelta
 
 from dateutil.parser import parse
@@ -58,15 +59,26 @@ class Command(BaseCommand):
                             name=talk.find('type').text or 'default', event=event, default_duration=duration_in_minutes
                         )
 
+                    optout = False
+                    with suppress(AttributeError):
+                        optout = talk.find('recording').find('optout').text == 'true'
+
+                    if not Submission.objects.filter(code=talk.attrib['id']).exists():
+                        code = talk.attrib['id']
+                    elif not Submission.objects.filter(code=talk.attrib['guid'][:16]).exists():
+                        code = talk.attrib['guid'][:16]
+                    else:
+                        code = None
+
                     sub = Submission.objects.create(
                         event=event,
-                        code=talk.attrib['id'],
+                        code=code,
                         submission_type=sub_type,
                         title=talk.find('title').text,
                         description=talk.find('description').text,
                         abstract=talk.find('abstract').text,
                         content_locale=talk.find('language').text or 'en',
-                        do_not_record=talk.find('recording').find('optout').text == 'true',
+                        do_not_record=optout,
                         state=SubmissionStates.CONFIRMED,
                     )
                     for person in talk.find('persons').findall('person'):
