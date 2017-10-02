@@ -15,6 +15,9 @@ class UserList(View):
         queryset = User.objects.filter(
             Q(nick__icontains=search) | Q(name__icontains=search)
         )
+        if request.GET.get('orga', 'false') == 'true':
+            queryset = queryset.filter(permissions__is_orga=True)
+
         return JsonResponse({
             'count': len(queryset),
             'results': [

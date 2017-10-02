@@ -14,6 +14,7 @@
             {% trans "Content" %}
         </a>
       </li>
+      {% if request.is_orga %}
       <li class="nav-item">
           <a
             class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
@@ -30,8 +31,18 @@
             {% trans "Questions" %}
           </a>
       </li>
+    {% endif %}
+    {% if request.is_reviewer %}
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "reviews" in url_name %}active{% endif %}"
+            href="{{ submission.orga_urls.reviews }}"
+          >
+            {% trans "Reviews" %}
+          </a>
+      </li>
+    {% endif %}
     </ul>
-
     <legend>
         »{{ submission.title }}«
         {% if submission.speakers.exists %}

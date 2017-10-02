@@ -148,10 +148,12 @@ class Event(LogMixin, models.Model):
         team_settings = '{settings}/team'
         invite = '{team_settings}/add'
         room_settings = '{settings}/rooms'
+        review_settings = '{settings}/reviews'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
         release_schedule = '{schedule}/release'
         reset_schedule = '{schedule}/reset'
+        reviews = '{base}/reviews'
 
     class api_urls(Urls):
         base = '/orga/event/{self.slug}'

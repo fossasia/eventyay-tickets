@@ -40,12 +40,16 @@ table .btn-secondary {
 
 .adder-textbox {
   $height: 2rem;
-
-  display: inline-flex;
+  padding-top: 2px;
+  display: block;
 
   input {
     height: $height;
     max-width: 250px;
+    display: inline-block;
+  }
+  span.twitter-typeahead {
+    display: inline !important;
   }
 
   .btn {

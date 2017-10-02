@@ -32,7 +32,7 @@
     <div class="content">
         {% trans "Additional speaker – by nickname if registered, by email to send an invitation" %}:<br>
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="adder-textbox">
-            <input id="input-nick" name="nick" class="form-control typeahead" type="text">
+            <input type="text" name="nick" id="input-nick" class="form-control" />
             <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
         </form>
     </div>

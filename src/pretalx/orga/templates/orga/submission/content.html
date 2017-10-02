@@ -1,5 +1,6 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
+{% load review_score %}
 {% load i18n %}
 {% block submission_content %}
     {% if not submission %}
@@ -9,6 +10,16 @@
     <form method="post" action="">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
+	{% if form.instance.average_score %}
+        <div class="form-group row">
+	    <label class="col-md-3 form-control-label">
+		{% trans "Review score" %}
+	    </label>
+	    <div class="col-md-9">
+		    <label>{% review_score form.instance.average_score %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
+            </div>
+        </div>
+	{% endif %}
         <div class="form-group row">
             {% if action == "create" %}
                 <div class="offset-md-3 col-md-9">

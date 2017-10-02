@@ -1,0 +1,90 @@
+{% extends "orga/review/base.html" %}
+{% load review_score %}
+{% load i18n %}
+
+{% block review_content %}
+
+<div class="dashboard-list">
+{% if request.event.reviews.count %}
+    <div class="dashboard-block">
+	    <h1>{{ request.event.reviews.count  }}</h1>
+	<div class="dashboard-description">
+            {% trans "total reviews" %}
+        </div>
+    </div>
+{% else %}
+    <div class="dashboard-block">
+	<h1>{% trans "Zero" %}</h1>
+	<div class="dashboard-description">
+            {% trans "total reviews :(" %}
+        </div>
+    </div>
+{% endif %}
+    <{% if request.is_orga %}a href="{{ request.event.orga_urls.review_settings }}"{% else %}div{% endif %} class="dashboard-block">
+        <h1>{{ reviewers }}</h1>
+	<div class="dashboard-description">
+            {% trans "total reviewers" %}
+        </div>
+    </{% if request.is_orga %}a{% else %}div{% endif %}>
+{% if next_submission %}
+    <a class="dashboard-block" href="{{ next_submission.orga_urls.new_review }}">
+	<h1>{% trans "Review!" %}</h1>
+	<div class="dashboard-description">
+            {% trans "Click here to submit more reviews." %}
+        </div>
+    </a>
+{% endif %}
+</div>
+
+{% if missing_reviews.count %}
+<legend>{% trans "Please review" %}</legend>
+<ul>
+    {% for submission in missing_reviews %}
+    <li>
+        <a href="{{ submission.orga_urls.new_review }}">
+            {{ submission.title }} ({{ submission.display_speaker_names }})
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+    <div class="alert alert-info">
+        {% trans "There are no pending submissions to be reviewed at the moment! :)" %}
+    </div>
+{% endif %}
+
+{% if my_reviews.count %}
+<legend>{% trans "Your reviews" %}</legend>
+<ul>
+    {% for review in my_reviews %}
+    <li>
+        {% if review.user == request.user %}
+            <a href="{{ review.urls.edit }}">
+                <strong>{{ review.submission.title }} ({{ review.submission.display_speaker_names }}) – {% review_score review.score %}</strong>
+            </a>
+        {% else %}
+            <a href="{{ review.urls.base }}">
+                {{ review.submission.title }} ({{ review.submission.display_speaker_names }}) – {% review_score review.score %}
+            </a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<legend>{% trans "Submission scores" %}</legend>
+<ul>
+    {% for submission in pending_submissions %}
+    <li><a href="{{ submission.orga_urls.reviews}}">
+            {{ submission.title }} ({{ submission.display_speaker_names }}) –
+            {% if submission.avg_score != None %}
+                {% review_score submission.avg_score %} 
+                ({{ submission.reviews.all.count }} {% trans "reviews" %})
+            {% endif %}
+    </a></li>
+    {% endfor %}
+    {% if not pending_submissions %}
+        {% trans "You don't seem to have any reviews at the moment." %}
+    {% endif %}
+</ul>
+{% endblock %}
