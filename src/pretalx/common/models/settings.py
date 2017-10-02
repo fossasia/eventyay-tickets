@@ -11,6 +11,8 @@ class GlobalSettings(GlobalSettingsBase):
 
 
 settings_hierarkey.add_default('cfp_show_settings', 'False', bool)
+settings_hierarkey.add_default('review_min_score', 0, int)
+settings_hierarkey.add_default('review_max_score', 1, int)
 settings_hierarkey.add_default('mail_from', 'noreply@example.org', str)
 settings_hierarkey.add_default('smtp_use_custom', 'False', bool)
 settings_hierarkey.add_default('smtp_host', '', str)

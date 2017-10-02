@@ -94,24 +94,32 @@
     </nav>
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
-            {% if request.event %}
+            {% if request.event and request.is_orga or request.event and request.is_reviewer %}
                 <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{{ request.event.orga_urls.base }}">
                     <span class="fa fa-dashboard"></span> {% trans "Dashboard" %}
                 </a>
+            {% endif %}
+            {% if request.event and request.is_orga %}
                 <a class="nav-link {% if "settings." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.settings }}">
                     <span class="fa fa-wrench"></span> {% trans "Settings" %}
                 </a>
                 <a class="nav-link {% if "cfp." in url_name %}active{% endif %}" href="{{ request.event.cfp.urls.text }}">
                     <span class="fa fa-bullhorn"></span> {% trans "CfP" %}
                 </a>
+            {% endif %}
+            {% if request.event and request.is_orga or request.event and request.is_reviewer %}
                 <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.submissions }}">
                     <span class="fa fa-sticky-note-o"></span> {% trans "Submissions" %}
                 </a>
+            {% endif %}
+            {% if request.event and request.is_reviewer %}
+                <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
+                    <span class="fa fa-eye"></span> {% trans "Review" %}
+                </a>
+            {% endif %}
+            {% if request.event and request.is_orga %}
                 <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
                     <span class="fa fa-address-card-o"></span> {% trans "Speakers" %}
-                </a>
-                <a class="nav-link {% if "review." in url_name %}active{% endif %}" href="#">
-                    <span class="notimplemented"><span class="fa fa-eye"></span> {% trans "Review" %}</span>
                 </a>
                 <a class="nav-link {% if "schedule." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.schedule }}">
                     <span class="fa fa-calendar-o"></span> {% trans "Schedule" %}</span>

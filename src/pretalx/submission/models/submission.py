@@ -153,6 +153,9 @@ class Submission(LogMixin, models.Model):
         speakers = '{base}/speakers'
         new_speaker = '{speakers}/add'
         delete_speaker = '{speakers}/delete'
+        reviews = '{self.event.orga_urls.reviews}/{self.code}'
+        review_base = '{base}/reviews'
+        new_review = '{review_base}/add'
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
@@ -300,6 +303,10 @@ class Submission(LogMixin, models.Model):
         django_engine = engines['django']
         template = django_engine.from_string('<iframe width="100%" height="380px" src="{{ url }}" frameborder="0" allowfullscreen></iframe>')
         return template.render(context={'url': self.recording_url})
+
+    @property
+    def average_score(self):
+        return self.reviews.all().aggregate(avg=models.Avg('score'))['avg']
 
     def __str__(self):
         return self.title

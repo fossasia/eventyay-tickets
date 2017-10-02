@@ -140,6 +140,50 @@ def test_create_event(superuser_client):
         },
         follow=True
     )
-    assert response.status_code == 200
+    assert response.status_code == 200, response.content.decode()
     assert Event.objects.get(slug='testevent')
     assert Event.objects.count() == count + 1
+
+
+@pytest.mark.django_db
+def test_save_review_settings(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    response = orga_client.post(
+        reverse('orga:settings.review.view', kwargs={'event': event.slug}),
+        follow=True,
+        data={
+            'review_min_score': '0',
+            'review_max_score': '2',
+            'review_score_name_0': 'OK',
+            'review_score_name_1': 'Want',
+            'review_score_name_2': 'Super',
+        },
+    )
+    event = Event.objects.get(slug=event.slug)
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 2
+
+
+@pytest.mark.django_db
+def test_save_review_settings_invalid(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    response = orga_client.post(
+        reverse('orga:settings.review.view', kwargs={'event': event.slug}),
+        follow=True,
+        data={
+            'review_min_score': '2',
+            'review_max_score': '2',
+            'review_score_name_0': 'OK',
+            'review_score_name_1': 'Want',
+            'review_score_name_2': 'Super',
+        },
+    )
+    event = Event.objects.get(slug=event.slug)
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1

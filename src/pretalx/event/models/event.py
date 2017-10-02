@@ -148,10 +148,12 @@ class Event(LogMixin, models.Model):
         team_settings = '{settings}/team'
         invite = '{team_settings}/add'
         room_settings = '{settings}/rooms'
+        review_settings = '{settings}/reviews'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
         release_schedule = '{schedule}/release'
         reset_schedule = '{schedule}/reset'
+        reviews = '{base}/reviews'
 
     class api_urls(Urls):
         base = '/orga/event/{self.slug}'
@@ -251,6 +253,11 @@ class Event(LogMixin, models.Model):
             self.date_to,
             time(hour=23, minute=59, second=59)
         ), pytz.timezone(self.timezone))
+
+    @property
+    def reviews(self):
+        from pretalx.submission.models import Review
+        return Review.objects.filter(submission__event=self)
 
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)

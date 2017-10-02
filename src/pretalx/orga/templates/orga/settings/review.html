@@ -1,0 +1,63 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+{% block settings_content %}
+
+<div>
+    <form method="post" action="">
+        {% csrf_token %}
+        <legend>{% trans "Review settings" %}</legend>
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="offset-md-3 col-md-9">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </form>
+
+    <legend>{{ team|length }} {% trans "Reviewers" %}</legend>
+    <div class="alert alert-info">
+        {% if team|length < 4 %}{% if not pending or pending and pending|length < 3 %}
+            {% trans "Review teams of three people or less are somewhat small and provide more work for everyone. Why don't you invite some more reviewers?" %}<br>
+            {% endif %}{% endif %}
+        {% trans "To invite more members to your review team, enter an email address or username below." %}
+    </div>
+    <ul>
+        {% for member in team %}
+            <li>
+                {{ member.get_short_name }}
+                {% if member != request.user or team|length > 1 %}
+                    <a href="{% url "orga:settings.review.delete" event=request.event.slug pk=member.pk %}" class="btn btn-sm btn-secondary">
+                        <span class="fa fa-times"></span>
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        <li><form method="post" action="{% url "orga:settings.review.add" event=request.event.slug %}" class="adder-textbox">
+            <input type="text" name="nick" id="input-nick" class="form-control" />
+            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
+        </form></li>
+    </ul>
+
+    {% if pending %}
+        <legend>{{ pending|length }} {% trans "Pending Invitations" %}</legend>
+        <ul>
+            {% for email in pending %}
+                <li>
+                    {{ email.invitation_email }}
+                    <a href="{% url "orga:settings.review.retract" event=request.event.slug pk=email.pk %}" class="btn btn-sm btn-secondary">
+                        <span class="fa fa-times"></span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+    <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY&orga=true"></span>
+    {% compress js %}
+    <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "orga/js/speakers.js" %}"></script>
+    {% endcompress %}
+{% endblock %}

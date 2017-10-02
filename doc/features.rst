@@ -35,6 +35,8 @@ Talk submission
 - **Accept or reject submissions:** After careful consideration, you can accept or reject
   submissions. Speakers will then receive a notification (if you choose to), and asked to confirm
   their talk.
+- **Reviewing:** A reviewing system with both texts and scoring, configurable scales, average
+  scores, and reviewer teams that can work separately from the general orga team.
 
 Scheduling
 ~~~~~~~~~~
@@ -77,8 +79,9 @@ Customization
 Features under development
 --------------------------
 
-- **Reviewing:** A fancy reviewing system with configurable scales, average scores, and possibly
-  later on vetos in either direction.
+- **Strong opinions:** Permit reviewers to issue vetos or to force a submission to be accepted, for
+  a fixed amount of times per event.
+- **Tracks:** Introduce a concept of tracks that brings track colors, and track-bound review teams.
 
 Planned features
 ----------------

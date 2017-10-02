@@ -1,0 +1,45 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block headline %}
+    {% if submission %}
+        {% blocktrans with title=submission.title %}
+            Reviews for submission »{{ title }}«
+        {% endblocktrans %}
+        ({{ submission.display_speaker_names }})
+        <a href="{{ submission.orga_urls.base }}">
+            <span class="fa fa-external-link"></span>
+        </a>
+    {% else %}
+        {% trans "Reviews" %}
+    {% endif %}
+{% endblock %}
+{% block content %}
+    {% if submission %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a
+          class="nav-link {% if "reviews.submission.list" in url_name %}active{% endif %}"
+          href="{{ submission.orga_urls.reviews }}"
+        >
+            {% trans "All reviews" %}
+        </a>
+      </li>
+      <li class="nav-item">
+          <a
+          class="nav-link {% if "reviews.submission.create" in url_name  or "reviews.submission.update" in url_name %}active{% elif "reviews.submission.view" in url_name and review and review.user == request.user %}active{% endif %}"
+            {% if review %}
+                href="{{ review.urls.base }}"
+            {% else %}
+                href="{{ submission.orga_urls.new_review }}"
+            {% endif %}
+          >
+            {% trans "My review" %}
+          </a>
+      </li>
+    </ul>
+    {% endif %}
+
+    {% block review_content %}
+    {% endblock %}
+
+{% endblock %}

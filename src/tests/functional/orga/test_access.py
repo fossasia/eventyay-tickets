@@ -14,18 +14,33 @@ def test_user_can_access_url(orga_client, logged_in, url):
     assert response.status_code == 200, response.content
 
 
-@pytest.mark.parametrize('url', [
-    'event.dashboard', 'cfp.questions.view',
-    'cfp.questions.create', 'cfp.text.view', 'cfp.text.edit', 'cfp.types.view',
-    'cfp.types.create', 'mails.templates.list', 'mails.templates.create', 'mails.outbox.list',
-    'mails.outbox.purge', 'submissions.list', 'speakers.list', 'settings.event.view',
-    'settings.event.edit', 'settings.mail.view', 'settings.mail.edit', 'settings.team.view',
+@pytest.mark.parametrize('url,orga_access,reviewer_access', [
+    ('event.dashboard', 200, 200,),
+    ('event.user_list', 200, 403),
+    ('cfp.questions.view', 200, 403,),
+    ('cfp.text.view', 200, 403,),
+    ('cfp.types.view', 200, 403,),
+    ('mails.templates.list', 200, 403,),
+    ('mails.outbox.list', 200, 403,),
+    ('submissions.list', 200, 200,),
+    ('speakers.list', 200, 403,),
+    ('settings.event.view', 200, 403,),
+    ('settings.mail.view', 200, 403,),
+    ('settings.team.view', 200, 403,),
+    ('settings.review.view', 200, 403,),
+    ('reviews.dashboard', 403, 200,),
+    ('schedule.main', 200, 403,),
 ])
 @pytest.mark.django_db
-def test_user_can_access_event_urls(orga_client, url, event):
-    response = orga_client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
-    assert response.status_code == 200, response.status_code
-    assert event.slug in response.content.decode()
+def test_user_can_access_event_urls(orga_user, review_user, client, url, orga_access, reviewer_access, event):
+    client.force_login(orga_user)
+    orga_response = client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
+    client.force_login(review_user)
+    review_response = client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
+    assert orga_response.status_code == orga_access, orga_response.status_code
+    assert review_response.status_code == reviewer_access, review_response.status_code
+    if not url == 'event.user_list' and orga_access == 200:
+        assert event.slug in orga_response.content.decode()
 
 
 @pytest.mark.parametrize('test_user', ('orga', 'speaker', 'superuser', 'None'))

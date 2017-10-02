@@ -4,7 +4,7 @@ from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
-    auth, cfp, dashboard, mails, person,
+    auth, cfp, dashboard, mails, person, review,
     schedule, settings, speaker, submission,
 )
 
@@ -18,9 +18,9 @@ orga_urls = [
     url('^event/new/$', settings.EventDetail.as_view(), name='event.create'),
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
+        url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
         url('^users$', person.UserList.as_view(), name='event.user_list'),
 
-        url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
         url('^cfp/questions$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),
         url('^cfp/questions/(?P<pk>[0-9]+)$', cfp.CfPQuestionDetail.as_view(), name='cfp.question.view'),
@@ -66,11 +66,18 @@ orga_urls = [
             url('^speakers$', submission.SubmissionSpeakers.as_view(), name='submissions.speakers.view'),
             url('^speakers/add$', submission.SubmissionSpeakersAdd.as_view(), name='submissions.speakers.add'),
             url('^speakers/delete$', submission.SubmissionSpeakersDelete.as_view(), name='submissions.speakers.delete'),
+            url('^reviews/add$', review.ReviewMySubmission.as_view(), name='reviews.submission.create'),
+            url('^reviews/(?P<pk>[0-9]+)/$', review.ReviewSubmissionDetail.as_view(), name='reviews.submission.view'),
+            url('^reviews/(?P<pk>[0-9]+)/edit$', review.ReviewMySubmission.as_view(), name='reviews.submission.update'),
+            url('^reviews/(?P<pk>[0-9]+)/delete$', review.ReviewSubmissionDelete.as_view(), name='reviews.submission.delete'),
         ])),
 
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),
         url('^speakers/(?P<pk>[0-9]+)$', speaker.SpeakerDetail.as_view(), name='speakers.view'),
         url('^speakers/(?P<pk>[0-9]+)/edit$', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
+
+        url('^reviews$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
+        url('^reviews/(?P<code>\w+)/$', review.ReviewSubmissionList.as_view(), name='reviews.submission.list'),
 
         url('^settings$', settings.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/edit$', settings.EventDetail.as_view(), name='settings.event.edit'),
@@ -80,6 +87,10 @@ orga_urls = [
         url('^settings/team/add$', settings.EventTeamInvite.as_view(), name='settings.team.add'),
         url('^settings/team/delete/(?P<pk>[0-9]+)$', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
         url('^settings/team/retract/(?P<pk>[0-9]+)$', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
+        url('^settings/reviews$', settings.EventReview.as_view(), name='settings.review.view'),
+        url('^settings/reviews/add$', settings.EventReviewInvite.as_view(), name='settings.review.add'),
+        url('^settings/reviews/delete/(?P<pk>[0-9]+)$', settings.EventReviewDelete.as_view(), name='settings.review.delete'),
+        url('^settings/reviews/retract/(?P<pk>[0-9]+)$', settings.EventReviewRetract.as_view(), name='settings.review.retract'),
         url('^settings/rooms$', settings.RoomList.as_view(), name='settings.rooms.list'),
         url('^settings/rooms/new$', settings.RoomDetail.as_view(), name='settings.rooms.create'),
         url('^settings/rooms/(?P<pk>[0-9]+)$', settings.RoomDetail.as_view(), name='settings.rooms.view'),

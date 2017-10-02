@@ -1,0 +1,24 @@
+{% extends "orga/submission/review_base.html" %}
+{% load review_score %}
+{% load i18n %}
+
+{% block review_content %}
+
+<legend>{{ submission.reviews.count }} {% trans "reviews" %}, {% trans "average score " %} {% review_score submission.average_score %}</legend>
+
+<ul>
+    {% for review in submission.reviews.all %}
+    <li>
+        {% if review.user == request.user %}
+            <a href="{{ review.urls.edit }}">
+                <strong>{% trans "Your review" %}:</strong>
+        {% else %}
+            <a href="{{ review.urls.base }}">
+                {{ review.user.get_display_name }}:
+        {% endif %}
+        {% trans "Score" %} {% review_score review.score %}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
