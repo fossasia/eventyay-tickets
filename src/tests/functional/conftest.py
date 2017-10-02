@@ -9,7 +9,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
-    Feedback, Question, QuestionVariant, Submission, SubmissionType,
+    Feedback, Question, QuestionVariant, Review, Submission, SubmissionType,
 )
 
 
@@ -56,21 +56,53 @@ def superuser():
 
 @pytest.fixture
 def orga_user(event):
-    user = User.objects.create_user('orgauser', 'orgapassw0rd')
-    EventPermission.objects.create(user=user, event=event, is_orga=True)
+    user = User.objects.create_user('orgauser', 'orgapassw0rd', email='orgauser@orga.org')
+    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=False)
     return user
 
 
 @pytest.fixture
 def other_orga_user(event):
     user = User.objects.create_user('evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=True)
+    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=False)
+    return user
+
+
+@pytest.fixture
+def review_user(event):
+    user = User.objects.create_user('reviewuser', 'reviewpassw0rd', email='reviewuser@orga.org')
+    EventPermission.objects.create(user=user, event=event, is_orga=False, is_reviewer=True)
+    return user
+
+
+@pytest.fixture
+def other_review_user(event):
+    user = User.objects.create_user('evilreviewuser', 'reviewpassw0rd', email='evilreviewuser@orga.org')
+    EventPermission.objects.create(user=user, event=event, is_orga=False, is_reviewer=True)
     return user
 
 
 @pytest.fixture
 def orga_client(orga_user, client):
     client.force_login(orga_user)
+    return client
+
+
+@pytest.fixture
+def other_orga_client(other_orga_user, client):
+    client.force_login(other_orga_user)
+    return client
+
+
+@pytest.fixture
+def review_client(review_user, client):
+    client.force_login(review_user)
+    return client
+
+
+@pytest.fixture
+def other_review_client(other_review_user, client):
+    client.force_login(other_review_user)
     return client
 
 
@@ -294,3 +326,8 @@ def schedule_schema():
         source = xsd.read()
     schema = etree.XML(source)
     return etree.XMLSchema(schema)
+
+
+@pytest.fixture
+def review(submission, review_user):
+    return Review.objects.create(score=1, submission=submission, user=review_user, text='Looks great!')
