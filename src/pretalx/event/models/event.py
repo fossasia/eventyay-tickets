@@ -252,5 +252,10 @@ class Event(LogMixin, models.Model):
             time(hour=23, minute=59, second=59)
         ), pytz.timezone(self.timezone))
 
+    @property
+    def reviews(self):
+        from pretalx.submission.models import Review
+        return Review.objects.filter(submission__event=self)
+
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)
