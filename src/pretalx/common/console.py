@@ -18,6 +18,7 @@ def end_box(size):
 
 def print_line(string, box=False, bold=False, color=None, size=None):
     text_length = len(string)
+    alt_string = string
     if bold:
         string = f'{BOLD}{string}{RESET}'
     if color:
@@ -26,9 +27,13 @@ def print_line(string, box=False, bold=False, color=None, size=None):
         if size:
             if text_length + 2 < size:
                 string += ' ' * (size - text_length - 2)
+                alt_string += ' ' * (size - text_length - 2)
         string = f'┃ {string} ┃'
         alt_string = f'| {string} |'
     try:
         print(string)
     except (UnicodeDecodeError, UnicodeEncodeError):
-        print(alt_string)
+        try:
+            print(alt_string)
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            print('unprintable setting')
