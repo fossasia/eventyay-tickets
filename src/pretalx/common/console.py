@@ -5,14 +5,14 @@ RESET = '\033[0m'
 def start_box(size):
     try:
         print('┏' + '━' * size + '┓')
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, UnicodeEncodeError):
         print('-' * (size + 2))
 
 
 def end_box(size):
     try:
         print('┗' + '━' * size + '┛')
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, UnicodeEncodeError):
         print('-' * (size + 2))
 
 
@@ -30,5 +30,5 @@ def print_line(string, box=False, bold=False, color=None, size=None):
         alt_string = f'| {string} |'
     try:
         print(string)
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, UnicodeEncodeError):
         print(alt_string)
