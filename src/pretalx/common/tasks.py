@@ -1,7 +1,9 @@
+import os
 import hashlib
 
 import django_libsass
 import sass
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.templatetags.static import static
@@ -25,7 +27,8 @@ def regenerate_css(event_id: int):
         if event.primary_color:
             sassrules.append('$brand-primary: {};'.format(event.primary_color))
 
-        sassrules.append(f'@import "pretalx/static/{local_app}/scss/main.scss";')
+        path = os.path.join(settings.STATIC_ROOT, local_app, 'scss/main.scss')
+        sassrules.append(f'@import "{path}";')
 
         cf = dict(django_libsass.CUSTOM_FUNCTIONS)
         cf['static'] = static
