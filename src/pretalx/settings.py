@@ -93,7 +93,7 @@ env_config = {
         'ssl': os.getenv('PRETALX_MAIL_SSL'),
     },
     'database': {
-        'type': os.getenv('PRETALX_DB_TYPE'),
+        'backend': os.getenv('PRETALX_DB_TYPE'),
         'name': os.getenv('PRETALX_DB_NAME'),
         'user': os.getenv('PRETALX_DB_USER'),
         'password': os.getenv('PRETALX_DB_PASSWORD'),
