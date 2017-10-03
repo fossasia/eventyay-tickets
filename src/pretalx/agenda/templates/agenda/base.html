@@ -14,6 +14,10 @@
     {% endcompress %}
     {% block agenda_custom_header %}
     {% endblock %}
+    {% if request.event and request.event.custom_css %}
+        <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
+    {% endif %}
+
 {% endblock %}
 
 {% block nav_link %}

@@ -9,6 +9,10 @@
         <script type="text/javascript" src="{% static "vendored/tether/tether.min.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/bootstrap-4-dev/dist/js/bootstrap.js" %}"></script>
     {% endcompress %}
+    {% if request.event and request.event.custom_css %}
+        <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
+    {% endif %}
+
 {% endblock %}
 
 {% block nav_link %}
