@@ -67,7 +67,7 @@ class ScheduleDataView(EventPageMixin, TemplateView):
                 'index': index + 1,
                 'start': current_date,
                 'end': current_date + timedelta(days=1),
-                'first_start': min([t.start for t in talks if t.start.astimezone(tz).date() == current_date.date()] or [0]),
+                'first_start': min([t.start for t in talks if t.start and t.start.astimezone(tz).date() == current_date.date()] or [0]),
                 'last_end': max([t.end for t in talks if t.start.astimezone(tz).date() == current_date.date()] or [0]),
                 'rooms': [{
                     'name': room.name,
