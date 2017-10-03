@@ -1,5 +1,5 @@
-import os
 import hashlib
+import os
 
 import django_libsass
 import sass
