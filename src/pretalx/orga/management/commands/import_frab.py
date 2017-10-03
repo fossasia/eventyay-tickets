@@ -41,63 +41,66 @@ class Command(BaseCommand):
             for rm in day.findall('room'):
                 room, _ = Room.objects.get_or_create(event=event, name=rm.attrib['name'])
                 for talk in rm.findall('event'):
-                    date = talk.find('date').text
-                    start = parse(date + ' ' + talk.find('start').text)
-                    hours, minutes = talk.find('duration').text.split(':')
-                    duration = timedelta(hours=int(hours), minutes=int(minutes))
-                    duration_in_minutes = duration.seconds / 60
-                    try:
-                        end = parse(date + ' ' + talk.find('end').text)
-                    except AttributeError:
-                        end = start + duration
-                    sub_type = SubmissionType.objects.filter(
-                        event=event, name=talk.find('type').text, default_duration=duration_in_minutes
-                    ).first()
-
-                    if not sub_type:
-                        sub_type = SubmissionType.objects.create(
-                            name=talk.find('type').text or 'default', event=event, default_duration=duration_in_minutes
-                        )
-
-                    optout = False
-                    with suppress(AttributeError):
-                        optout = talk.find('recording').find('optout').text == 'true'
-
-                    if not Submission.objects.filter(code=talk.attrib['id']).exists():
-                        code = talk.attrib['id']
-                    elif not Submission.objects.filter(code=talk.attrib['guid'][:16]).exists():
-                        code = talk.attrib['guid'][:16]
-                    else:
-                        code = None
-
-                    sub = Submission.objects.create(
-                        event=event,
-                        code=code,
-                        submission_type=sub_type,
-                        title=talk.find('title').text,
-                        description=talk.find('description').text,
-                        abstract=talk.find('abstract').text,
-                        content_locale=talk.find('language').text or 'en',
-                        do_not_record=optout,
-                        state=SubmissionStates.CONFIRMED,
-                    )
-                    for person in talk.find('persons').findall('person'):
-                        user = User.objects.filter(nick=person.text).first()
-                        if not user:
-                            user = User(nick=person.text, name=person.text, email=f'{person.text}@localhost')
-                            user.save()
-                            SpeakerProfile.objects.create(user=user, event=event)
-                        sub.speakers.add(user)
-
-                    TalkSlot.objects.create(
-                        submission=sub,
-                        schedule=event.wip_schedule,
-                        room=room,
-                        is_visible=True,
-                        start=start,
-                        end=end
-                    )
+                    self._create_talk(talk=talk, room=room, event=event)
 
         schedule_version = root.find('version').text
         event.wip_schedule.freeze(schedule_version, notify_speakers=False)
         event.schedules.get(version=schedule_version).talks.update(is_visible=True)
+
+    def _create_talk(self, *, talk, room, event):
+        date = talk.find('date').text
+        start = parse(date + ' ' + talk.find('start').text)
+        hours, minutes = talk.find('duration').text.split(':')
+        duration = timedelta(hours=int(hours), minutes=int(minutes))
+        duration_in_minutes = duration.seconds / 60
+        try:
+            end = parse(date + ' ' + talk.find('end').text)
+        except AttributeError:
+            end = start + duration
+        sub_type = SubmissionType.objects.filter(
+            event=event, name=talk.find('type').text, default_duration=duration_in_minutes
+        ).first()
+
+        if not sub_type:
+            sub_type = SubmissionType.objects.create(
+                name=talk.find('type').text or 'default', event=event, default_duration=duration_in_minutes
+            )
+
+        optout = False
+        with suppress(AttributeError):
+            optout = talk.find('recording').find('optout').text == 'true'
+
+        if not Submission.objects.filter(code=talk.attrib['id']).exists():
+            code = talk.attrib['id']
+        elif not Submission.objects.filter(code=talk.attrib['guid'][:16]).exists():
+            code = talk.attrib['guid'][:16]
+        else:
+            code = None
+
+        sub = Submission.objects.create(
+            event=event,
+            code=code,
+            submission_type=sub_type,
+            title=talk.find('title').text,
+            description=talk.find('description').text,
+            abstract=talk.find('abstract').text,
+            content_locale=talk.find('language').text or 'en',
+            do_not_record=optout,
+            state=SubmissionStates.CONFIRMED,
+        )
+        for person in talk.find('persons').findall('person'):
+            user = User.objects.filter(nick=person.text).first()
+            if not user:
+                user = User(nick=person.text, name=person.text, email=f'{person.text}@localhost')
+                user.save()
+                SpeakerProfile.objects.create(user=user, event=event)
+            sub.speakers.add(user)
+
+        TalkSlot.objects.create(
+            submission=sub,
+            schedule=event.wip_schedule,
+            room=room,
+            is_visible=True,
+            start=start,
+            end=end
+        )
