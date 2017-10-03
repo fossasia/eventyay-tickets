@@ -96,7 +96,7 @@ env_config = {
         'backend': os.getenv('PRETALX_DB_TYPE'),
         'name': os.getenv('PRETALX_DB_NAME'),
         'user': os.getenv('PRETALX_DB_USER'),
-        'password': os.getenv('PRETALX_DB_PASSWORD'),
+        'password': os.getenv('PRETALX_DB_PASS'),
         'host': os.getenv('PRETALX_DB_HOST'),
         'port': os.getenv('PRETALX_DB_PORT'),
     },
