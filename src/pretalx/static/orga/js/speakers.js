@@ -16,7 +16,7 @@ var speakers = new Bloodhound({
   }
 });
 
-$('#input-nick').typeahead(null, {
+$('#id_speaker').typeahead(null, {
   name: 'nick',
   display: 'value',
   source: speakers,
@@ -26,6 +26,6 @@ $('#input-nick').typeahead(null, {
     }
   }
 });
-$("#input-nick").bind("typeahead:select", function(ev, suggestion) {
-  $("#input-nick").text(suggestion.value);
+$("#id_speaker").bind("typeahead:select", function(ev, suggestion) {
+  $("#id_speaker").text(suggestion.value);
 });

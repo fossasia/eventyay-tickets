@@ -195,22 +195,24 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         self.object = form.instance
 
         if created:
-            # TODO: activate language by submission language
             email = form.cleaned_data['speaker']
             try:
-                user = User.objects.get(email__iexact=email)
+                if '@' in email:
+                    speaker = User.objects.get(email__iexact=email)
+                else:
+                    speaker = User.objects.get(nick__iexact=email)
                 invited = False
             except User.DoesNotExist:
-                user = create_user_as_orga(email=email, submission=form.instance)
+                speaker = create_user_as_orga(email=email, submission=form.instance)
 
-            form.instance.speakers.add(user)
+            form.instance.speakers.add(speaker)
 
         if form.has_changed():
             action = 'pretalx.submission.' + 'create' if created else 'update'
             form.instance.log_action(action, person=self.request.user, orga=True)
         if created and invited:
             messages.success(self.request, _('The submission has been created and the speaker has been invited to add an account!'))
-        elif created:
+        elif created:  # TODO: send email!
             messages.success(self.request, _('The submission has been created; the speaker already had an account on this system.'))
         else:
             messages.success(self.request, _('The submission has been updated!'))

@@ -1,5 +1,7 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
+{% load staticfiles %}
 {% load review_score %}
 {% load i18n %}
 {% block submission_content %}
@@ -10,16 +12,16 @@
     <form method="post" action="">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
-	{% if form.instance.average_score %}
+        {% if form.instance.average_score %}
         <div class="form-group row">
-	    <label class="col-md-3 form-control-label">
-		{% trans "Review score" %}
-	    </label>
-	    <div class="col-md-9">
-		    <label>{% review_score form.instance.average_score %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
+            <label class="col-md-3 form-control-label">
+                {% trans "Review score" %}
+            </label>
+            <div class="col-md-9">
+                <label>{% review_score form.instance.average_score %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
             </div>
         </div>
-	{% endif %}
+        {% endif %}
         <div class="form-group row">
             {% if action == "create" %}
                 <div class="offset-md-3 col-md-9">
@@ -46,4 +48,9 @@
         </div>
     </form>
 
+    <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
+    {% compress js %}
+    <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "orga/js/speakers.js" %}"></script>
+    {% endcompress %}
 {% endblock %}

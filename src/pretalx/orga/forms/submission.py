@@ -12,8 +12,8 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=event)
 
         if not self.instance.pk:
-            self.fields['speaker'] = forms.EmailField(
-                help_text=_('Add the email of the speaker holding the talk. They will be invited to create an account.')
+            self.fields['speaker'] = forms.CharField(
+                help_text=_('Add the email or nickname of the speaker holding the talk. They will be invited to create an account.')
             )
 
     class Meta:
