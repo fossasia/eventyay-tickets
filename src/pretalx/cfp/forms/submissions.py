@@ -45,67 +45,70 @@ class QuestionsForm(forms.Form):
         queryset = self.event.questions.all()
         if self.target_type:
             queryset = queryset.filter(target=self.target_type)
-        for q in queryset.prefetch_related('options'):
+        for question in queryset.prefetch_related('options'):
             if target_object:
-                answers = [a for a in target_object.answers.all() if a.question_id == q.id]
+                answers = [a for a in target_object.answers.all() if a.question_id == question.id]
                 if answers:
-                    initial_obj = answers[0]
+                    initial_object = answers[0]
                     initial = answers[0].answer
                 else:
-                    initial_obj = None
-                    initial = q.default_answer
+                    initial_object = None
+                    initial = question.default_answer
             else:
-                initial_obj = None
-                initial = q.default_answer
+                initial_object = None
+                initial = question.default_answer
 
-            if q.variant == QuestionVariant.BOOLEAN:
-                # For some reason, django-bootstrap4 does not set the required attribute
-                # itself.
-                widget = forms.CheckboxInput(attrs={'required': 'required'}) if q.required else forms.CheckboxInput()
-                initialbool = (initial == 'True') if initial else bool(q.default_answer)
+            field = self.get_field(question=question, initial=initial, initial_object=initial_object, readonly=readonly)
+            field.question = question
+            field.answer = initial_object
+            self.fields[f'question_{question.pk}'] = field
 
-                field = forms.BooleanField(
-                    disabled=readonly,
-                    label=q.question, required=q.required,
-                    widget=widget, initial=initialbool
-                )
-            elif q.variant == QuestionVariant.NUMBER:
-                field = forms.DecimalField(
-                    disabled=readonly,
-                    label=q.question, required=q.required,
-                    min_value=Decimal('0.00'), initial=initial
-                )
-            elif q.variant == QuestionVariant.STRING:
-                field = forms.CharField(
-                    disabled=readonly,
-                    label=q.question, required=q.required, initial=initial
-                )
-            elif q.variant == QuestionVariant.TEXT:
-                field = forms.CharField(
-                    label=q.question, required=q.required,
-                    widget=forms.Textarea,
-                    disabled=readonly,
-                    initial=initial
-                )
-            elif q.variant == QuestionVariant.CHOICES:
-                field = forms.ModelChoiceField(
-                    queryset=q.options.all(),
-                    label=q.question, required=q.required,
-                    widget=forms.RadioSelect,
-                    initial=initial_obj.options.first() if initial_obj else q.default_answer,
-                    disabled=readonly,
-                )
-            elif q.variant == QuestionVariant.MULTIPLE:
-                field = forms.ModelMultipleChoiceField(
-                    queryset=q.options.all(),
-                    label=q.question, required=q.required,
-                    widget=forms.CheckboxSelectMultiple,
-                    initial=initial_obj.options.all() if initial_obj else q.default_answer,
-                    disabled=readonly,
-                )
-            field.question = q
-            field.answer = initial_obj
-            self.fields[f'question_{q.pk}'] = field
+    def get_field(self, *, question, initial, initial_object, readonly):
+        if question.variant == QuestionVariant.BOOLEAN:
+            # For some reason, django-bootstrap4 does not set the required attribute
+            # itself.
+            widget = forms.CheckboxInput(attrs={'required': 'required'}) if question.required else forms.CheckboxInput()
+            initialbool = (initial == 'True') if initial else bool(question.default_answer)
+
+            return forms.BooleanField(
+                disabled=readonly,
+                label=question.question, required=question.required,
+                widget=widget, initial=initialbool
+            )
+        elif question.variant == QuestionVariant.NUMBER:
+            return forms.DecimalField(
+                disabled=readonly,
+                label=question.question, required=question.required,
+                min_value=Decimal('0.00'), initial=initial
+            )
+        elif question.variant == QuestionVariant.STRING:
+            return forms.CharField(
+                disabled=readonly,
+                label=question.question, required=question.required, initial=initial
+            )
+        elif question.variant == QuestionVariant.TEXT:
+            return forms.CharField(
+                label=question.question, required=question.required,
+                widget=forms.Textarea,
+                disabled=readonly,
+                initial=initial
+            )
+        elif question.variant == QuestionVariant.CHOICES:
+            return forms.ModelChoiceField(
+                queryset=question.options.all(),
+                label=question.question, required=question.required,
+                widget=forms.RadioSelect,
+                initial=initial_object.options.first() if initial_object else question.default_answer,
+                disabled=readonly,
+            )
+        elif question.variant == QuestionVariant.MULTIPLE:
+            return forms.ModelMultipleChoiceField(
+                queryset=question.options.all(),
+                label=question.question, required=question.required,
+                widget=forms.CheckboxSelectMultiple,
+                initial=initial_object.options.all() if initial_object else question.default_answer,
+                disabled=readonly,
+            )
 
     def save(self):
         for k, v in self.cleaned_data.items():
