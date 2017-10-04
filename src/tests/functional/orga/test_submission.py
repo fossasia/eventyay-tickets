@@ -18,6 +18,13 @@ def test_orga_can_see_single_submission(orga_client, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_see_single_submission_feedback(orga_client, event, feedback):
+    response = orga_client.get(feedback.talk.orga_urls.feedback, follow=True)
+    assert response.status_code == 200
+    assert feedback.review in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_accept_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
