@@ -39,9 +39,34 @@ def multilingual_event():
 
 @pytest.fixture
 def question(event):
-    return Question.objects.create(event=event, question='How old are you?',
-                                   variant=QuestionVariant.NUMBER,
-                                   required=False)
+    return Question.objects.create(
+        event=event, question='How much do you like green, on a scale from 1-10?', variant=QuestionVariant.NUMBER,
+        target='submission', required=False,
+    )
+
+
+@pytest.fixture
+def speaker_question(event):
+    return Question.objects.create(
+        event=event, question='What is your favourite color?', variant=QuestionVariant.STRING,
+        target='speaker', required=False,
+    )
+
+
+@pytest.fixture
+def speaker_boolean_question(event):
+    return Question.objects.create(
+        event=event, question='Do you like green?', variant=QuestionVariant.BOOLEAN,
+        target='speaker', required=False,
+    )
+
+
+@pytest.fixture
+def speaker_text_question(event):
+    return Question.objects.create(
+        event=event, question='Please elaborat on your like/dislike of green.',
+        variant=QuestionVariant.TEXT, target='speaker', required=False,
+    )
 
 
 @pytest.fixture

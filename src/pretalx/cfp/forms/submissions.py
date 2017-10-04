@@ -32,7 +32,7 @@ class InfoForm(forms.ModelForm):
 
 class QuestionsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop('event', None)
+        self.event = kwargs.pop('event')
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
         self.request_user = kwargs.pop('request_user', None)
