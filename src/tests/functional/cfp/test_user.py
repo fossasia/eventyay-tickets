@@ -145,6 +145,38 @@ def test_can_edit_profile(speaker, event, speaker_client):
 
 
 @pytest.mark.django_db
+def test_can_edit_and_update_speaker_answers(
+        speaker, event, speaker_question, speaker_boolean_question, speaker_client,
+        speaker_text_question,
+):
+    answer = speaker.answers.filter(question_id=speaker_question.pk).first()
+    assert not answer
+    response = speaker_client.post(
+        event.urls.user,
+        data={
+            f'question_{speaker_question.id}': 'black as the night',
+            f'question_{speaker_boolean_question.id}': 'True',
+            f'question_{speaker_text_question.id}': 'Green is totally the best color.',
+            'form': 'questions'
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    answer = speaker.answers.get(question_id=speaker_question.pk)
+    assert answer.answer == 'black as the night'
+    assert speaker.answers.get(question_id=speaker_boolean_question.pk).answer == 'True'
+    assert speaker.answers.get(question_id=speaker_text_question.pk).answer == 'Green is totally the best color.'
+    response = speaker_client.post(
+        event.urls.user,
+        data={f'question_{speaker_question.id}': 'green as the sky', 'form': 'questions'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    answer.refresh_from_db()
+    assert answer.answer == 'green as the sky'
+
+
+@pytest.mark.django_db
 def test_can_delete_profile(speaker, event, speaker_client):
     assert speaker.profiles.get(event=event).biography != ''
     response = speaker_client.post(

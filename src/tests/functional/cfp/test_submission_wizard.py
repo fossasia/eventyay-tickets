@@ -110,9 +110,12 @@ class TestWizard:
         assert user.profiles.get(event=event).biography == 'l337 hax0r'
 
     @pytest.mark.django_db
-    def test_wizard_existing_user(self, event, client, question, user):
+    def test_wizard_existing_user(self, event, client, question, user, speaker_question):
         submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {f'questions-question_{question.pk}': '42', }
+        answer_data = {
+            f'questions-question_{question.pk}': '42',
+            f'questions-question_{speaker_question.pk}': 'green',
+        }
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
@@ -126,9 +129,12 @@ class TestWizard:
 
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
-        answ = sub.answers.first()
+        answ = sub.answers.filter(question__target='submission').first()
         assert answ.question == question
         assert answ.answer == '42'
+        answ = sub.answers.filter(question__target='speaker').first()
+        assert answ.question == speaker_question
+        assert answ.answer == 'green'
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
         assert s_user.nick == 'testuser'

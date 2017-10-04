@@ -1,5 +1,4 @@
 from csp.decorators import csp_update
-from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
@@ -13,7 +12,7 @@ from django.views.generic import (
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
-from pretalx.submission.models import Answer, Submission, SubmissionStates
+from pretalx.submission.models import Submission, SubmissionStates
 
 
 @method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'"), name='dispatch')
@@ -38,10 +37,21 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
                                         and self.request.POST.get('form') == 'profile'
                                         else None))
 
+    @cached_property
+    def questions_form(self):
+        return QuestionsForm(
+            data=self.request.POST if self.request.method == 'POST' else None,
+            speaker=self.request.user,
+            event=self.request.event,
+            target='speaker',
+            request_user=self.request.user,
+        )
+
     def get_context_data(self, event):
         ctx = super().get_context_data()
         ctx['login_form'] = self.login_form
         ctx['profile_form'] = self.profile_form
+        ctx['questions_form'] = self.questions_form
         return ctx
 
     def post(self, request, *args, **kwargs):
@@ -57,6 +67,11 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
                 messages.success(self.request, _('Your changes have been saved.'))
                 profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
                 profile.log_action('pretalx.user.profile.update', person=request.user)
+                return redirect('cfp:event.user.view', event=self.request.event.slug)
+        elif self.questions_form.is_bound:
+            if self.questions_form.is_valid():
+                self.questions_form.save()
+                messages.success(self.request, _('Your changes have been saved.'))
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
 
         messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
@@ -140,7 +155,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             data=self.request.POST if self.request.method == 'POST' else None,
             submission=self.object,
             event=self.request.event,
-            readonly=not self.can_edit
+            readonly=not self.can_edit,
         )
 
     def post(self, request, *args, **kwargs):
@@ -164,55 +179,13 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def form_valid(self, form):
         if self.can_edit:
             form.save()
-            self.questions_save()
+            self.qform.save()
             if form.has_changed():
                 form.instance.log_action('pretalx.submission.update', person=self.request.user)
             messages.success(self.request, _('Your changes have been saved.'))
         else:
             messages.error(self.request, _('This submission cannot be edited anymore.'))
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
-
-    def questions_save(self):
-        for k, v in self.qform.cleaned_data.items():
-            field = self.qform.fields[k]
-            if field.answer:
-                # We already have a cached answer object, so we don't
-                # have to create a new one
-                if v == '':
-                    # TODO: Deleting the answer removes the option to have a log here.
-                    # Maybe setting the answer to '' is the right way to go.
-                    field.answer.delete()
-                else:
-                    self._save_to_answer(field, field.answer, v)
-                    field.answer.save()
-            elif v != '':
-                answer = Answer(
-                    submission=self.object,
-                    question=field.question,
-                )
-                self._save_to_answer(field, answer, v)
-                answer.save()
-
-    def _save_to_answer(self, field, answer, value):
-        action = 'pretalx.submission.answer' + ('update' if answer.pk else 'create')
-        if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ', '.join([str(o) for o in value])
-            if not answer.pk:
-                answer.save()
-            else:
-                answer.options.clear()
-            answer.answer = answstr
-            answer.options.add(*value)
-        elif isinstance(field, forms.ModelChoiceField):
-            if not answer.pk:
-                answer.save()
-            else:
-                answer.options.clear()
-            answer.options.add(value)
-            answer.answer = value.answer
-        else:
-            answer.answer = value
-        answer.log_action(action, person=self.request.user, data={'answer': value})
 
 
 class DeleteAccountView(View):
