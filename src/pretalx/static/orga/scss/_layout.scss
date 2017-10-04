@@ -81,3 +81,9 @@ footer {
   text-align: center;
   font-size: 11px;
 }
+.feedback-card {
+  margin-bottom: 8px;
+  .card-body {
+    padding: 16px 16px 0px 16px;
+  }
+}

@@ -64,6 +64,11 @@ class SubmissionViewMixin:
     def get_object(self):
         return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['submission'] = self.get_object()
+        return ctx
+
 
 class SubmissionAccept(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
@@ -178,11 +183,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.get_object()
-        return context
-
     def get_success_url(self) -> str:
         self.kwargs.update({'pk': self.object.pk})
         return self.object.orga_urls.base
@@ -240,12 +240,16 @@ class SubmissionList(Sortable, Filterable, ListView):
 class SubmissionDelete(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/delete.html'
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission'] = self.get_object()
-        return ctx
-
     def post(self, request, *args, **kwargs):
         self.get_object().remove(person=request.user)
         messages.success(request, _('The submission has been deleted.'))
         return redirect(request.event.orga_urls.submissions)
+
+
+class FeedbackList(SubmissionViewMixin, ListView):
+    template_name = 'orga/submission/feedback_list.html'
+    context_object_name = 'feedback'
+    paginate_by = 25
+
+    def get_queryset(self):
+        return self.get_object().feedback.all().order_by('pk')

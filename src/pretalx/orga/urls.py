@@ -70,6 +70,7 @@ orga_urls = [
             url('^reviews/(?P<pk>[0-9]+)/$', review.ReviewSubmissionDetail.as_view(), name='reviews.submission.view'),
             url('^reviews/(?P<pk>[0-9]+)/edit$', review.ReviewMySubmission.as_view(), name='reviews.submission.update'),
             url('^reviews/(?P<pk>[0-9]+)/delete$', review.ReviewSubmissionDelete.as_view(), name='reviews.submission.delete'),
+            url('^feedback/$', submission.FeedbackList.as_view(), name='submissions.feedback.list'),
         ])),
 
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),

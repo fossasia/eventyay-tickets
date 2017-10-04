@@ -31,6 +31,14 @@
             {% trans "Questions" %}
           </a>
       </li>
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"
+            href="{{ submission.orga_urls.feedback }}"
+          >
+            {% trans "Feedback" %}
+          </a>
+      </li>
     {% endif %}
     {% if request.is_reviewer %}
       <li class="nav-item">

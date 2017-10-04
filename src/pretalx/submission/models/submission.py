@@ -156,6 +156,7 @@ class Submission(LogMixin, models.Model):
         reviews = '{self.event.orga_urls.reviews}/{self.code}'
         review_base = '{base}/reviews'
         new_review = '{review_base}/add'
+        feedback = '{base}/feedback'
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)

@@ -1,0 +1,15 @@
+{% extends "orga/submission/base.html" %}
+{% load i18n %}
+{% load rich_text %}
+
+{% block submission_content %}
+    {% for entry in feedback %}
+    <div class="card feedback-card">
+        <div class="card-body">
+            {{ entry.review|rich_text }}
+        </div>
+    </div>
+    {% empty %}
+        {% trans "There has been no feedback for this talk yet." %}
+    {% endfor %}
+{% endblock %}
