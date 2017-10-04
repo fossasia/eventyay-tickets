@@ -19,6 +19,20 @@
             </div>
         </div>
     </form>
+
+    <h2>{% trans "We have some questions" %}</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form questions_form %}
+        <div class="row">
+            <div class="col-md-3 offset-md-9">
+                <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </form>
+
     <h2>{% trans "Your Account" %}</h2>
     <p>
         {% trans "You can change your log in data here." %}

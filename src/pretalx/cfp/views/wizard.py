@@ -81,6 +81,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             elif self.request.user.is_authenticated:
                 kwargs['user'] = self.request.user
             kwargs['read_only'] = False
+        if step == 'questions':
+            kwargs['target'] = ''
         return kwargs
 
     def get_template_names(self):
