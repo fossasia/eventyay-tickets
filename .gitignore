@@ -117,3 +117,4 @@ atlassian-ide-plugin.xml
 
 # generic local files
 local/
+*.xml
