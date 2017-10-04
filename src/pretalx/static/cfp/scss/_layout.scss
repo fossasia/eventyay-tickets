@@ -22,8 +22,15 @@ h1 a {
   }
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 .locales {
   padding-top: 1.3rem;
+  padding-bottom: 4px;
 
   a {
     color: white;
@@ -36,7 +43,10 @@ h1 a {
     border-bottom: 1px solid white;
   }
 }
-
+#event-logo {
+  height: 95px;
+  margin-top: -25px;
+}
 #main {
   min-height: 300px;
   box-shadow: 0 5px 10px rgba($black, 0.2);

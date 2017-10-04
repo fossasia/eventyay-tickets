@@ -31,8 +31,17 @@
     </div>
     <div class="container" id="main-container">
         <header>
+            <h1>
+                <a href="{% block nav_link %}{% endblock %}">
+                    {% if request.event and request.event.logo %}
+                        <img src="{{ request.event.logo.url }}" id="event-logo"></img>
+                    {% else %}
+                        {{ request.event }}
+                    {% endif %}
+                </a>
+            </h1>
             {% if request.event.locales|length > 1 %}
-                <div class="pull-right locales">
+                <div class="locales">
                     {% for l, name in request.event.named_locales %}
                         <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
                                 class="{% if l == request.LANGUAGE_CODE %}active{% endif %}">{{ name }}</a>
@@ -42,9 +51,6 @@
                     {% endif %}
                 </div>
             {% endif %}
-            <h1>
-                <a href="{% block nav_link %}{% endblock %}">{{ request.event }}</a>
-            </h1>
         </header>
         <section class="card" id="main">
             {% if request.user.is_authenticated %}
