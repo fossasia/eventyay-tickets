@@ -3,7 +3,7 @@ from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, UpdateView, View
+from django.views.generic import ListView, TemplateView, UpdateView, View
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
@@ -50,12 +50,14 @@ class CfPTextDetail(ActionFromUrl, UpdateView):
         return ret
 
 
-class CfPQuestionList(ListView):
+class CfPQuestionList(TemplateView):
     template_name = 'orga/cfp/question_view.html'
-    context_object_name = 'questions'
 
-    def get_queryset(self):
-        return self.request.event.questions.all()
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['speaker_questions'] = self.request.event.questions.filter(target='speaker')
+        ctx['submission_questions'] = self.request.event.questions.filter(target='submission')
+        return ctx
 
 
 class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):

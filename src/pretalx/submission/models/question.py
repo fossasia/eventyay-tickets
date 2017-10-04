@@ -46,10 +46,11 @@ class Question(LogMixin, models.Model):
         choices=QuestionVariant.get_choices(),
         default=QuestionVariant.STRING,
     )
-    target = models.CharField (
+    target = models.CharField(
         max_length=QuestionTarget.get_max_length(),
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
+        verbose_name=_('question type'),
     )
     question = I18nCharField(
         max_length=200,

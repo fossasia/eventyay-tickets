@@ -3,15 +3,21 @@
 
 {% block cfp_content %}
 
-    <legend>Speaker questions</legend>
     <div class="alert alert-info">
         {% blocktrans trimmed %}
         Questions can help you sort out additional details with speakers, such as
         clothing sizes, special requirements such as dietary needs, or accomodation.
-        Questions will be asked on a per-submission level, so you will have multiple
-        answers of speakers with multiple submissions/talks.
+        Questions can be asked either on a per-submission level, or per speaker, as
+        you see fit.
         {% endblocktrans %}
     </div>
+
+    <a href="{{request.event.cfp.urls.new_question }}">
+        <button class="btn btn-secondary">
+            {% trans "New question" %}
+        </button>
+    </a>
+    <legend>{% trans "Speaker questions" %}</legend>
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -21,7 +27,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for question in questions %}
+            {% for question in speaker_questions %}
                 <tr>
                     <td>
                         <a href="{{ question.urls.base }}">
@@ -49,10 +55,42 @@
             {% endfor %}
         </tbody>
     </table>
+    <legend>{% trans "Submission questions" %}</legend>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>required</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in submission_questions %}
+                <tr>
+                    <td>
+                        <a href="{{ question.urls.base }}">
+                            {{ question.question }}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
 
-    <a href="{{request.event.cfp.urls.new_question }}">
-        <button class="btn btn-secondary">
-            {% trans "New question" %}
-        </button>
-    </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a href="{{ question.urls.edit }}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a href="{{ question.urls.delete }}"
+                            class="btn btn-sm btn-secondary">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td>{% trans "You have configured no questions yet." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
