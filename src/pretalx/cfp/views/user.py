@@ -52,6 +52,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         ctx['login_form'] = self.login_form
         ctx['profile_form'] = self.profile_form
         ctx['questions_form'] = self.questions_form
+        ctx['questions_exist'] = self.request.event.questions.filter(target='speaker').exists()
         return ctx
 
     def post(self, request, *args, **kwargs):
