@@ -85,11 +85,14 @@ class CfPQuestionDelete(View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-
         question = self.request.event.questions.get(pk=self.kwargs.get('pk'))
-        question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
-        question.delete()
-        messages.success(request, _('The question has been deleted.'))
+
+        try:
+            question.delete()
+            question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
+            messages.success(request, _('The question has been deleted.'))
+        except ProtectedError:
+            messages.error(request, _('You cannot delete a question that has already been answered.'))
         return redirect(self.request.event.cfp.urls.questions)
 
 

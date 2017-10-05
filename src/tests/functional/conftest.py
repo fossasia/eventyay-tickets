@@ -9,7 +9,8 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
-    Feedback, Question, QuestionVariant, Review, Submission, SubmissionType,
+    Answer, Feedback, Question, QuestionVariant,
+    Review, Submission, SubmissionType,
 )
 
 
@@ -43,6 +44,11 @@ def question(event):
         event=event, question='How much do you like green, on a scale from 1-10?', variant=QuestionVariant.NUMBER,
         target='submission', required=False,
     )
+
+
+@pytest.fixture
+def answer(event, submission, question):
+    return Answer.objects.create(answer='11', submission=submission, question=question)
 
 
 @pytest.fixture
