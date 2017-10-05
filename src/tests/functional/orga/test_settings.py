@@ -78,10 +78,12 @@ def test_add_custom_css(event, orga_client):
     assert not event.custom_css
     with open('tests/functional/orga/fixtures/custom.css', 'r') as custom_css:
         response = orga_client.post(
-            event.orga_urls.settings,
+            event.orga_urls.edit_settings,
             {
                 'name_0': event.name,
-                'slug': event.slug,
+                'slug': 'csstest',
+                'locales': ','.join(event.locales),
+                'locale': event.locale,
                 'is_public': event.is_public,
                 'date_from': event.date_from,
                 'date_to': event.date_to,
@@ -95,6 +97,39 @@ def test_add_custom_css(event, orga_client):
     event.refresh_from_db()
     assert response.status_code == 200
     assert event.custom_css
+    assert event.slug == 'csstest'
+
+
+@pytest.mark.django_db
+def test_add_logo(event, orga_client):
+    assert not event.logo
+    response = orga_client.get(event.urls.base, follow=True)
+    assert '<img "src="/media' not in response.content.decode()
+    with open('../assets/icon.svg', 'rb') as logo:
+        response = orga_client.post(
+            event.orga_urls.edit_settings,
+            {
+                'name_0': event.name,
+                'slug': 'logotest',
+                'locales': event.locales,
+                'locale': event.locale,
+                'is_public': event.is_public,
+                'date_from': event.date_from,
+                'date_to': event.date_to,
+                'timezone': event.timezone,
+                'email': event.email,
+                'primary_color': '',
+                'custom_css': None,
+                'logo': logo,
+            },
+            follow=True
+        )
+    event.refresh_from_db()
+    assert event.slug == 'logotest', response.content.decode()
+    assert response.status_code == 200
+    assert event.logo
+    response = orga_client.get(event.urls.base, follow=True)
+    assert '<img src="/media' in response.content.decode(), response.content.decode()
 
 
 @pytest.mark.django_db
