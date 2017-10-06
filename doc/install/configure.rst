@@ -8,7 +8,7 @@ combine those two options, and their precedence is in this order:
 2. The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg``
    file.
 3. The config file ``~/.pretalx.cfg`` in the home of the executing user.
-4. The config file ``/etc/pretalx.cfg``
+4. The config file ``/etc/pretalx/pretalx.cfg``
 5. Sensible defaults
 
 This page explains the options by configuration file section and notes the corresponding environment
