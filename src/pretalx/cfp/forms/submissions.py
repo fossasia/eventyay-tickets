@@ -71,35 +71,34 @@ class QuestionsForm(forms.Form):
             initialbool = (initial == 'True') if initial else bool(question.default_answer)
 
             return forms.BooleanField(
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
                 label=question.question, required=question.required,
                 widget=widget, initial=initialbool
             )
         elif question.variant == QuestionVariant.NUMBER:
             return forms.DecimalField(
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
                 label=question.question, required=question.required,
                 min_value=Decimal('0.00'), initial=initial
             )
         elif question.variant == QuestionVariant.STRING:
             return forms.CharField(
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
                 label=question.question, required=question.required, initial=initial
             )
         elif question.variant == QuestionVariant.TEXT:
             return forms.CharField(
                 label=question.question, required=question.required,
                 widget=forms.Textarea,
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
                 initial=initial
             )
         elif question.variant == QuestionVariant.CHOICES:
             return forms.ModelChoiceField(
                 queryset=question.options.all(),
                 label=question.question, required=question.required,
-                widget=forms.RadioSelect,
                 initial=initial_object.options.first() if initial_object else question.default_answer,
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
             )
         elif question.variant == QuestionVariant.MULTIPLE:
             return forms.ModelMultipleChoiceField(
@@ -107,7 +106,7 @@ class QuestionsForm(forms.Form):
                 label=question.question, required=question.required,
                 widget=forms.CheckboxSelectMultiple,
                 initial=initial_object.options.all() if initial_object else question.default_answer,
-                disabled=readonly,
+                disabled=readonly, help_text=question.help_text,
             )
 
     def save(self):

@@ -38,7 +38,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = Question
         fields = [
-            'target', 'question', 'variant', 'default_answer', 'required',
+            'target', 'question', 'help_text', 'variant', 'required',
         ]
 
 

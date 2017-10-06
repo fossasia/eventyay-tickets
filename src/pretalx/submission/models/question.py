@@ -13,15 +13,15 @@ class QuestionVariant(Choices):
     TEXT = 'text'
     BOOLEAN = 'boolean'
     CHOICES = 'choices'
-    MULTIPLE = 'muliple_choice'
+    MULTIPLE = 'multiple_choice'
 
     valid_choices = [
-        (NUMBER, _('number')),
-        (STRING, _('one-line text')),
-        (TEXT, _('multi-line text')),
-        (BOOLEAN, _('yes/no')),
-        (CHOICES, _('single choice')),
-        (MULTIPLE, _('multiple choice'))
+        (NUMBER, _('Number')),
+        (STRING, _('Text (one-line)')),
+        (TEXT, _('Multi-line text')),
+        (BOOLEAN, _('Yes/No')),
+        (CHOICES, _('Choose one from a list')),
+        (MULTIPLE, _('Choose multiple from a list'))
     ]
 
 
@@ -51,10 +51,17 @@ class Question(LogMixin, models.Model):
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
         verbose_name=_('question type'),
+        help_text=_('Do you require an answer from every speaker or for every talk?'),
     )
     question = I18nCharField(
         max_length=200,
         verbose_name=_('question'),
+    )
+    help_text = I18nCharField(
+        null=True, blank=True,
+        max_length=200,
+        verbose_name=_('help text'),
+        help_text=_('Will appear just like this text below the question input field.')
     )
     default_answer = models.TextField(
         null=True, blank=True,
