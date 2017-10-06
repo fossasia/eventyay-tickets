@@ -59,4 +59,18 @@ $(function () {
         update();
         earlier_field.on("dp.change", update);
     });
+    if ($("#answer-options").length) {
+
+        $("#id_variant").change(question_page_toggle_view);
+        $("#id_required").change(question_page_toggle_view);
+        question_page_toggle_view();
+    }
 });
+
+function question_page_toggle_view() {
+    var show = $("#id_variant").val() == "choices" || $("#id_variant").val() == "multiple_choice";
+    $("#answer-options").toggle(show);
+
+    show = $("#id_variant").val() == "boolean" && $("#id_required").prop("checked");
+    $(".alert-required-boolean").toggle(show);
+}

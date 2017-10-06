@@ -1,12 +1,87 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
+{% load formset_tags %}
 {% load i18n %}
+{% load staticfiles %}
 {% block cfp_content %}
+
+    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
 
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Event settings" %}</legend>
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_field form.target layout='horizontal' %}
+        {% bootstrap_field form.question layout='horizontal' %}
+        {% bootstrap_field form.variant layout='horizontal' %}
+        {% bootstrap_field form.help_text layout='horizontal' %}
+        {% bootstrap_field form.required layout='horizontal' %}
+
+        <fieldset id="answer-options">
+            <legend>{% trans "Answer options" %}</legend>
+            <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+                {{ formset.management_form }}
+                {% bootstrap_formset_errors formset %}
+                <div data-formset-body>
+                    {% for form in formset %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="question-option-row offset-3">
+                                <div class="question-option-input{% if action == 'view' %} disabled{% endif %}">
+                                    {% bootstrap_form_errors form %}
+                                    {% bootstrap_field form.answer layout='inline' form_group_class="" %}
+                                </div>
+                                {% if action != 'view' %}
+                                <div class="question-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ formset.empty_form.id }}
+                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="question-option-row offset-3">
+                                <div class="question-option-input">
+                                    {% bootstrap_field formset.empty_form.answer layout='inline' form_group_class="" %}
+                                </div>
+                                <div class="question-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
+                {% if action != 'view' %}
+                <p class="offset-3">
+                    <button type="button" class="btn btn-secondary" data-formset-add>
+                        <i class="fa fa-plus"></i> {% trans "Add a new option" %}</button>
+                </p>
+                {% endif %}
+            </div>
+                <script>jQuery(function($) {
+                    $(".formset").formset({
+                        animateForms: true
+                    });
+                    });</script>
+        </fieldset>
+        <div class="alert alert-info alert-required-boolean">
+            {% blocktrans trimmed %}
+                If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
+                accepted. If you want to allow both options, do not make this field required.
+            {% endblocktrans %}
+        </div>
+
         <div class="form-group row">
             <div class="offset-md-3 col-md-9">
                 {% if action == "create" %}
