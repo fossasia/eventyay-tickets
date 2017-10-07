@@ -85,8 +85,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['target'] = ''
         return kwargs
 
-    def get_context_data(self, *, form, event, tmpid, step=None):
-        ctx = super().get_context_data(form)
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        step = kwargs.get('step')
         if step == 'questions':
             ctx['speaker_question_names'] = [
                 'question_{}'.format(q)

@@ -134,19 +134,21 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
         return ctx
 
     def get_success_url(self) -> str:
-        return self.get_object().urls.base
+        obj = self.get_object() or self.instance
+        return obj.urls.base
 
     @transaction.atomic
     def form_valid(self, form):
         form.instance.event = self.request.event
+        self.instance = form.instance
+        ret = super().form_valid(form)
         if form.cleaned_data.get('variant') in ('choices', 'multiple_choice'):
-            result = self.save_formset(self.get_object())
+            result = self.save_formset(self.instance)
             if not result:
                 return self.get(self.request, *self.args, **self.kwargs)
         if form.has_changed():
             action = 'pretalx.question.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        ret = super().form_valid(form)
         messages.success(self.request, 'The question has been saved.')
         return ret
 

@@ -110,11 +110,13 @@ class TestWizard:
         assert user.profiles.get(event=event).biography == 'l337 hax0r'
 
     @pytest.mark.django_db
-    def test_wizard_existing_user(self, event, client, question, user, speaker_question):
+    def test_wizard_existing_user(self, event, client, question, user, speaker_question, choice_question, multiple_choice_question):
         submission_type = SubmissionType.objects.filter(event=event).first().pk
         answer_data = {
             f'questions-question_{question.pk}': '42',
             f'questions-question_{speaker_question.pk}': 'green',
+            f'questions-question_{choice_question.pk}': choice_question.options.first().pk,
+            f'questions-question_{multiple_choice_question.pk}': multiple_choice_question.options.first().pk,
         }
 
         response, current_url = self.perform_init_wizard(client)

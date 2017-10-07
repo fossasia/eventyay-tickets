@@ -9,8 +9,8 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
-    Answer, Feedback, Question, QuestionVariant,
-    Review, Submission, SubmissionType,
+    Answer, AnswerOption, Feedback, Question,
+    QuestionVariant, Review, Submission, SubmissionType,
 )
 
 
@@ -65,6 +65,28 @@ def speaker_boolean_question(event):
         event=event, question='Do you like green?', variant=QuestionVariant.BOOLEAN,
         target='speaker', required=False,
     )
+
+
+@pytest.fixture
+def choice_question(event):
+    question = Question.objects.create(
+        event=event, question='How much do you like green?', variant=QuestionVariant.CHOICES,
+        target='speaker', required=False,
+    )
+    for answer in ['very', 'incredibly', 'omggreen']:
+        AnswerOption.objects.create(question=question, answer=answer)
+    return question
+
+
+@pytest.fixture
+def multiple_choice_question(event):
+    question = Question.objects.create(
+        event=event, question='Which colors other than green do you like?', variant=QuestionVariant.MULTIPLE,
+        target='speaker', required=False,
+    )
+    for answer in ['yellow', 'blue', 'black']:
+        AnswerOption.objects.create(question=question, answer=answer)
+    return question
 
 
 @pytest.fixture
