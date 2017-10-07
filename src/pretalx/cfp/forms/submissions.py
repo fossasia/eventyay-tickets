@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django import forms
+from django.utils.functional import cached_property
 
 from pretalx import settings
 from pretalx.submission.models import (
@@ -31,6 +32,7 @@ class InfoForm(forms.ModelForm):
 
 
 class QuestionsForm(forms.Form):
+
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         self.submission = kwargs.pop('submission', None)
@@ -62,6 +64,14 @@ class QuestionsForm(forms.Form):
             field.question = question
             field.answer = initial_object
             self.fields[f'question_{question.pk}'] = field
+
+    @cached_property
+    def speaker_fields(self):
+        return [forms.BoundField(self, field, name) for name, field in self.fields.items() if field.question.target == 'speaker']
+
+    @cached_property
+    def submission_fields(self):
+        return [forms.BoundField(self, field, name) for name, field in self.fields.items() if field.question.target == 'submission']
 
     def get_field(self, *, question, initial, initial_object, readonly):
         if question.variant == QuestionVariant.BOOLEAN:
