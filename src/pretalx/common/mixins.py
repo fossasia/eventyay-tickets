@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.contenttypes.models import ContentType
+from i18nfield.utils import I18nJSONEncoder
 
 
 class LogMixin:
@@ -11,7 +12,7 @@ class LogMixin:
 
         from pretalx.common.models import ActivityLog
         if data:
-            data = json.dumps(data)
+            data = json.dumps(data, cls=I18nJSONEncoder)
 
         ActivityLog.objects.create(
             event=self.event, person=person, content_object=self,

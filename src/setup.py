@@ -66,6 +66,7 @@ setup(
         'Django==1.11.*',
         'django-compressor==2.1.*',
         'django-csp==3.3.*',
+        'django-formset-js-improved==0.5.0.1',
         'django-formtools==2.0.*',
         'django-hierarkey==1.0.*',
         'django-i18nfield==1.1.*',

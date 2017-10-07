@@ -87,3 +87,12 @@ footer {
     padding: 16px 16px 0px 16px;
   }
 }
+.question-option-row {
+  display: flex;
+  padding-bottom: 4px;
+}
+.question-option-input.disabled input {
+  background-color: #eceeef;
+  opacity: 1;
+  cursor: not-allowed;
+}

@@ -257,6 +257,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compressor',
     'bootstrap4',
+    'jquery',
+    'djangoformsetjs',
     'pretalx.common',
     'pretalx.event',
     'pretalx.mail',

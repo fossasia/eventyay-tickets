@@ -20,6 +20,7 @@
         </div>
     </form>
 
+    {% if questions_exist %}
     <h2>{% trans "We have some questions" %}</h2>
     <form action="" method="post">
         {% csrf_token %}
@@ -32,6 +33,7 @@
             </div>
         </div>
     </form>
+    {% endif %}
 
     <h2>{% trans "Your Account" %}</h2>
     <p>

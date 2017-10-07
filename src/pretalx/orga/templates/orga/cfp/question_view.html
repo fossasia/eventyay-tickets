@@ -12,10 +12,9 @@
         {% endblocktrans %}
     </div>
 
-    <a href="{{request.event.cfp.urls.new_question }}">
-        <button class="btn btn-secondary">
-            {% trans "New question" %}
-        </button>
+    <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-secondary">
+        <i class="fa fa-plus"></i>
+        {% trans "Add a new question" %}
     </a>
     <legend>{% trans "Speaker questions" %}</legend>
     <table class="table table-condensed">
@@ -51,7 +50,13 @@
                     </td>
                 </tr>
             {% empty %}
-                <tr><td>{% trans "You have configured no questions yet." %}</td></tr>
+                <tr><td>
+                    {% trans "You haven't configured any questions yet." %}
+                    <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-small btn-secondary">
+                        <i class="fa fa-plus"></i>
+                        {% trans "Add a question now!" %}
+                    </a>
+                </td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -89,7 +94,13 @@
                     </td>
                 </tr>
             {% empty %}
-                <tr><td>{% trans "You have configured no questions yet." %}</td></tr>
+                <tr><td>
+                    {% trans "You have configured no questions yet." %}
+                    <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-small btn-secondary">
+                        <i class="fa fa-plus"></i>
+                        {% trans "Add a question now!" %}
+                    </a>
+                </td></tr>
             {% endfor %}
         </tbody>
     </table>
