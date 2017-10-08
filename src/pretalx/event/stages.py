@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def _is_in_preparation(event):
-    return not event.is_public
+    return not event.is_public and now() <= event.datetime_from
 
 
 def _is_cfp_open(event):
