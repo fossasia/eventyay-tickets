@@ -5,6 +5,7 @@
 {% block mail_content %}
 
     <legend>{{ mails.count }} {% trans "sent e-mails" %}</legend>
+    {% include "common/search_form.html" %}
     <table class="table table-condensed">
         <thead>
             <tr>

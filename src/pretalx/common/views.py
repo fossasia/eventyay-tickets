@@ -1,7 +1,11 @@
+import urllib
+
 from django.db.models import Q
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from i18nfield.forms import I18nModelForm
+
+from pretalx.common.forms import SearchForm
 
 
 class ActionFromUrl:
@@ -63,7 +67,7 @@ class Filterable:
             if lookup_key in self.filter_fields:
                 qs = qs.filter(**{key: self.request.GET.get(key)})
         if 'q' in self.request.GET:
-            query = self.request.GET['q']  # TODO: urldecode?
+            query = urllib.parse.unquote(self.request.GET['q'])
             _filters = [Q(**{field: query}) for field in self.default_filters]
             if len(_filters) > 1:
                 _filter = _filters[0]
@@ -76,6 +80,6 @@ class Filterable:
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        # ctx['search_form'] = render a search form and pass the rendered template?
+        ctx['search_form'] = SearchForm(self.request.GET if 'q' in self.request.GET else {})
         # ctx['filter_form'] = use a modelform_factory! that can be done, right?
         return ctx

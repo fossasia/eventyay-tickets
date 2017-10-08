@@ -96,3 +96,12 @@ footer {
   opacity: 1;
   cursor: not-allowed;
 }
+.search-form {
+  display: flex;
+  .form-group label {
+    display: none;
+  }
+  .btn-search {
+    height: 100%;
+  }
+}

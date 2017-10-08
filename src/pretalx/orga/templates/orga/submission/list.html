@@ -1,4 +1,5 @@
 {% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
 {% load i18n %}
 {% load url_replace %}
 
@@ -24,6 +25,8 @@
             <span class="fa fa-print"></span> {% trans "Print cards" %}
         </a>
     </p>
+
+    {% include "common/search_form.html" %}
 
     <table class="table table-condensed">
         <thead>
