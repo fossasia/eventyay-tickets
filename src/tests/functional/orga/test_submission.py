@@ -11,6 +11,20 @@ def test_orga_can_see_submissions(orga_client, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_search_submissions(orga_client, event, submission):
+    response = orga_client.get(event.orga_urls.submissions + f'?q={submission.title[:5]}', follow=True)
+    assert response.status_code == 200
+    assert submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_can_miss_search_submissions(orga_client, event, submission):
+    response = orga_client.get(event.orga_urls.submissions + f'?q={submission.title[:5]}xxy', follow=True)
+    assert response.status_code == 200
+    assert submission.title not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_orga_can_see_single_submission(orga_client, event, submission):
     response = orga_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
