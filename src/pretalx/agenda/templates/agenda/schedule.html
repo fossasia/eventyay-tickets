@@ -11,8 +11,9 @@
             {% if not schedule.version %}
                 {% trans "You are currently viewing the editable schedule version, which is unreleased and may change at any time." %}
             {% else %}
-                {% trans "You are currently viewing an older schedule version. You may find the current version " %}
-                <a href="{{ schedule.event.urls.schedule }}">{% trans "here" %}</a>.
+                {% blocktrans trimmed with current_url=schedule.event.urls.schedule %}
+                    You are currently viewing an older schedule version. You may find the current version <a href="{{ current_url }}">here</a>.
+                {% endblocktrans %}
             {% endif %}
         </div>
     {% endif %}
@@ -82,9 +83,9 @@
                 </div>
             {% else %}
                 <div class="no-talks">
-                {% blocktrans with day.start.date as current_day %}
-                    <div class="no-talks">No talks on {{ current_day }}.</div>
-                {% endblocktrans %}
+                    {% blocktrans with day.start.date as current_day trimmed %}
+                        No talks on {{ current_day }}.
+                    {% endblocktrans %}
                 </div>
             {% endif %}
         </div>
