@@ -239,7 +239,7 @@ The {event} orga crew''').format(event=request.event.name)
         request.event.log_action('pretalx.event.invite.reviewer.send', person=request.user, orga=True)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': request.event.slug}))
 
-    def _handle_new_user(self, request):
+    def _handle_new_user(self, request, email):
         event = request.event
         invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
         invitation_link = build_absolute_uri('orga:invitation.view', kwargs={'code': invitation_token})
@@ -259,7 +259,7 @@ You have been invited to the submission review team of {event} - Please click he
 We look forward to have you on the team!,
 The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
         mail_send_task.apply_async(args=(
-            [nick],
+            [email],
             _('You have been invited to the reviewer team of {event}').format(event=request.event.name),
             invitation_text,
             request.event.email,
@@ -281,7 +281,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
         if user:
             return self._handle_existing_user(request, user)
         else:
-            return self._handle_new_user(request)
+            return self._handle_new_user(request, nick)
 
 
 class EventReviewRetract(View):
