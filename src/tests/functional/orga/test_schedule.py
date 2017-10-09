@@ -1,9 +1,11 @@
 import json
+from datetime import datetime
 
 import pytest
+import pytz
 from django.urls import reverse
 
-from pretalx.schedule.models import Schedule
+from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
 
 @pytest.mark.django_db
@@ -31,6 +33,28 @@ def test_talk_list(orga_client, event):
     assert response.status_code == 200
     assert len(content['results']) == 1
     assert content['results'][0]['title']
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('accepted_submission')
+def test_api_availabilities(orga_client, event, room, speaker, confirmed_submission):
+    talk = TalkSlot.objects.get(submission=confirmed_submission)
+    Availability.objects.create(event=event, room=room, start=datetime(2017, 1, 1, 1, tzinfo=pytz.utc), end=datetime(2017, 1, 1, 5, tzinfo=pytz.utc))
+    Availability.objects.create(event=event, person=speaker.profiles.first(), start=datetime(2017, 1, 1, 3, tzinfo=pytz.utc), end=datetime(2017, 1, 1, 6, tzinfo=pytz.utc))
+
+    response = orga_client.get(
+        reverse(f'orga:schedule.api.availabilities', kwargs={
+            'event': event.slug,
+            'talkid': talk.pk,
+            'roomid': room.pk
+        }), follow=True
+    )
+
+    content = json.loads(response.content.decode())
+    assert response.status_code == 200
+    assert len(content['results']) == 1
+    assert content['results'][0]['start'] == '2017-01-01 03:00:00+00:00'
+    assert content['results'][0]['end'] == '2017-01-01 05:00:00+00:00'
 
 
 @pytest.mark.django_db

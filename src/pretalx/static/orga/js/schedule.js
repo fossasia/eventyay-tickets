@@ -1,4 +1,5 @@
 var api = {
+  cache: {},
   http (verb, url, body) {
     var fullHeaders = {}
     fullHeaders['Content-Type'] = 'application/json'
@@ -30,6 +31,17 @@ var api = {
   fetchRooms () {
     var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/rooms/', window.location.search].join('')
     return api.http('GET', url, null)
+  },
+  fetchAvailabilities (talkid, roomid, check_cache=true) {
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, `api/availabilities/${talkid}/${roomid}/`, window.location.search].join('')
+
+    if (check_cache && api.cache[url]) {
+      return api.cache[url];
+    } else {
+      api.cache[url] = api.http('GET', url, null);
+    }
+
+    return api.cache[url];
   },
   saveTalk(talk) {
     var url = [window.location.protocol, '//', window.location.host, window.location.pathname, `api/talks/${talk.id}/`, window.location.search].join('')
@@ -171,7 +183,7 @@ Vue.component('room', {
     <div class="room-column">
       <div class="room-header"><a href="room.url">{{ room.name }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
-      <availability v-for="avail in room.availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
+      <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
       </div>
     </div>
@@ -181,6 +193,18 @@ Vue.component('room', {
     room: Object,
     duration: Number,
     start: Object,
+  },
+  asyncComputed: {
+    availabilities () {
+      if (dragController.draggedTalk) {
+        return api.fetchAvailabilities(
+          dragController.draggedTalk.id,
+          this.room.id,
+        ).then(result => result.results);
+      } else {
+        return this.room.availabilities;
+      }
+    },
   },
   computed: {
     myTalks () {
