@@ -1,0 +1,7 @@
+{% load bootstrap4 %}
+{% load i18n %}
+
+<form class="search-form">
+    {% bootstrap_form search_form %}
+    <button class="btn btn-secondary btn-search" type="submit">{% trans "Search" %}</button>
+</form>
