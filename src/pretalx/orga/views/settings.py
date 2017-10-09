@@ -279,9 +279,9 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
         nick = request.POST.get('nick')
         user = User.objects.filter(nick__iexact=nick).first() or User.objects.filter(email__iexact=nick).first()
         if user:
-            return _handle_existing_user(request, user)
+            return self._handle_existing_user(request, user)
         else:
-            return _handle_new_user(request)
+            return self._handle_new_user(request)
 
 
 class EventReviewRetract(View):
