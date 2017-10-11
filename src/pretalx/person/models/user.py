@@ -77,7 +77,11 @@ class User(AbstractBaseUser):
         max_length=30,
         default='UTC',
     )
-
+    avatar = models.ImageField(
+        null=True, blank=True,
+        verbose_name=_('Profile picture'),
+        help_text=_('Optional. Will be displayed publically.'),
+    )
     pw_reset_token = models.CharField(null=True, max_length=160)
     pw_reset_time = models.DateTimeField(null=True)
 

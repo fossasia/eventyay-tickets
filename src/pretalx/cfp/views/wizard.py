@@ -1,5 +1,9 @@
+import os
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -54,6 +58,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         'questions': show_questions_page,
         'user': show_user_page
     }
+    file_storage = FileSystemStorage(os.path.join(settings.MEDIA_ROOT, 'avatars'))
 
     def get(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:

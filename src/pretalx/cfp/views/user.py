@@ -29,13 +29,20 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @cached_property
     def profile_form(self):
-        return SpeakerProfileForm(user=self.request.user,
-                                  event=self.request.event,
-                                  read_only=False,
-                                  data=(self.request.POST
-                                        if self.request.method == 'POST'
-                                        and self.request.POST.get('form') == 'profile'
-                                        else None))
+        if self.request.method == 'POST' and self.request.POST.get('form') == 'profile':
+            return SpeakerProfileForm(
+                user=self.request.user,
+                event=self.request.event,
+                read_only=False,
+                data=self.request.POST,
+                files=self.request.FILES,
+            )
+        return SpeakerProfileForm(
+            user=self.request.user,
+            event=self.request.event,
+            read_only=False,
+            data=None,
+        )
 
     @cached_property
     def questions_form(self):

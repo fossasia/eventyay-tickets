@@ -95,6 +95,19 @@ footer {
   padding-right: 5px;
 }
 
+.bootstrap4-multi-input {
+  margin: auto;
+}
+.user-avatar-display {
+  display: flex;
+  align-items: flex-start;
+  img {
+    padding-right: 16px;
+    width: 160px;
+    height: auto;
+  }
+}
+
 @include media-breakpoint-down(sm) {
   #main-container {
     padding-top: 20px;

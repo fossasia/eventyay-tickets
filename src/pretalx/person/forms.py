@@ -91,6 +91,10 @@ class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
     name = forms.CharField(
         max_length=100, label=_('Name')
     )
+    avatar = forms.ImageField(
+        required=False, label=_('Profile picture'),
+        help_text=_('Optional. Will be displayed publically.'),
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -98,6 +102,7 @@ class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
         initial = kwargs.pop('initial', dict())
         if self.user:
             initial['name'] = self.user.name
+            initial['avatar'] = self.user.avatar
             kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
         else:
             kwargs['instance'] = SpeakerProfile()
@@ -105,10 +110,10 @@ class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def save(self, **kwargs):
-        name = self.cleaned_data.get('name')
-        if name:
-            self.user.name = name
-            self.user.save(update_fields=['name'])
+        for user_attribute in ('name', 'avatar'):
+            value = self.cleaned_data.get(user_attribute) or None
+            setattr(self.user, user_attribute, value)
+            self.user.save(update_fields=[user_attribute])
         self.instance.event = self.event
         self.instance.user = self.user
         super().save(**kwargs)
