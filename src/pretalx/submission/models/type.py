@@ -37,9 +37,9 @@ class SubmissionType(LogMixin, models.Model):
 
     def __str__(self) -> str:
         if self.default_duration > 60 * 24:
-            return _('{name} ({duration} hours)').format(
+            return _('{name} ({duration} days)').format(
                 name=self.name,
-                duration=math.ceil(self.default_duration / 60 / 24),
+                duration=round(self.default_duration / 60 / 24, 1),
             )
         if self.default_duration > 90:
             return _('{name} ({duration} hours)').format(
