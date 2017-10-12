@@ -101,6 +101,7 @@ class EventPermissionMiddleware:
         supported = request.event.locales if (hasattr(request, 'event') and request.event) else settings.LANGUAGES
         language = (
             self._language_from_user(request, supported)
+            or self._language_from_cookie(request, supported)
             or self._language_from_browser(request, supported)
         )
         if hasattr(request, 'event') and request.event:
