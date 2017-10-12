@@ -98,7 +98,7 @@ class ScheduleView(ScheduleDataView):
                 if date.get('first_start') and date.get('last_end'):
                     start = date.get('first_start').astimezone(tz).replace(second=0, minute=0)
                     end = date.get('last_end').astimezone(tz)
-                    date['height'] = int((end - start).seconds / 60 * 2)
+                    date['height'] = int((end - start).total_seconds() / 60 * 2)
                     date['hours'] = []
                     d = start
                     while d < end:
@@ -106,7 +106,7 @@ class ScheduleView(ScheduleDataView):
                         d += timedelta(hours=1)
                     for room in date['rooms']:
                         for talk in room.get('talks', []):
-                            talk.top = int((talk.start.astimezone(tz) - start).seconds / 60 * 2)
+                            talk.top = int((talk.start.astimezone(tz) - start).total_seconds() / 60 * 2)
                             talk.height = int(talk.duration * 2)
         return ctx
 

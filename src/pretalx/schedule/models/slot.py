@@ -36,14 +36,14 @@ class TalkSlot(LogMixin, models.Model):
     @property
     def duration(self):
         if self.start and self.end:
-            return int((self.end - self.start).seconds / 60)
+            return int((self.end - self.start).total_seconds() / 60)
         return self.submission.get_duration()
 
     @property
     def export_duration(self):
         duration = timedelta(minutes=self.duration)
         days = duration.days
-        hours = duration.seconds // 3600 - days * 24
+        hours = duration.total_seconds() // 3600 - days * 24
         minutes = duration.seconds // 60 % 60
         fmt = f'{minutes:02}'
         if hours or days:
@@ -58,7 +58,7 @@ class TalkSlot(LogMixin, models.Model):
     def pentabarf_export_duration(self):
         duration = timedelta(minutes=self.duration)
         days = duration.days
-        hours = duration.seconds // 3600 - days * 24
+        hours = duration.total_seconds() // 3600 - days * 24
         minutes = duration.seconds // 60 % 60
         return f'{hours:02}{minutes:02}00'
 
