@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, FormView, TemplateView
 
@@ -108,6 +109,7 @@ class ScheduleView(ScheduleDataView):
                         for talk in room.get('talks', []):
                             talk.top = int((talk.start.astimezone(tz) - start).total_seconds() / 60 * 2)
                             talk.height = int(talk.duration * 2)
+                            talk.is_active = talk.start <= now() <= talk.end
         return ctx
 
 
