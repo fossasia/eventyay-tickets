@@ -74,9 +74,14 @@ def test_delete_used_room(orga_client, event, room, slot):
 
 
 @pytest.mark.django_db
-def test_add_custom_css(event, orga_client):
+@pytest.mark.parametrize('path,allowed', (
+    ('tests/functional/orga/fixtures/custom.css', True),
+    ('tests/functional/orga/fixtures/malicious.css', False),
+    ('tests/functional/conftest.py', False),
+))
+def test_add_custom_css(event, orga_client, path, allowed):
     assert not event.custom_css
-    with open('tests/functional/orga/fixtures/custom.css', 'r') as custom_css:
+    with open(path, 'r') as custom_css:
         response = orga_client.post(
             event.orga_urls.edit_settings,
             {
@@ -96,8 +101,8 @@ def test_add_custom_css(event, orga_client):
         )
     event.refresh_from_db()
     assert response.status_code == 200
-    assert event.custom_css
-    assert event.slug == 'csstest'
+    assert bool(event.custom_css) == allowed
+    assert (event.slug == 'csstest') == allowed, event.slug
 
 
 @pytest.mark.django_db
