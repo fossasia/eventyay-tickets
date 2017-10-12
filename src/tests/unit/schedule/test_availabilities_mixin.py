@@ -347,7 +347,7 @@ def test_chained(availabilitiesform, room):
         instance=room,
     )
 
-    form.cleaned_data = {'availabilities': form.fields['availabilities'].initial}
+    form.cleaned_data = form.initial
     form.cleaned_data['availabilities'] = form.clean_availabilities()
     form.save()
 
