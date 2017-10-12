@@ -1,6 +1,7 @@
 from .cfp import CfP
 from .feedback import Feedback
 from .question import Answer, AnswerOption, Question, QuestionVariant
+from .resource import Resource
 from .review import Review
 from .submission import Submission, SubmissionError, SubmissionStates
 from .track import Track
@@ -13,6 +14,7 @@ __all__ = [
     'Feedback',
     'Question',
     'QuestionVariant',
+    'Resource',
     'Review',
     'Submission',
     'SubmissionError',
