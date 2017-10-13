@@ -46,6 +46,7 @@ class Command(BaseCommand):
         schedule_version = root.find('version').text
         event.wip_schedule.freeze(schedule_version, notify_speakers=False)
         event.schedules.get(version=schedule_version).talks.update(is_visible=True)
+        self.stdout.write(self.style.SUCCESS(f'Successfully imported "{event.name}" schedule version "{schedule_version}".'))
 
     def _create_talk(self, *, talk, room, event):
         date = talk.find('date').text
