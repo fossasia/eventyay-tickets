@@ -69,9 +69,6 @@
                     margin: 0 8px;
                     width: calc(100% - 16px);
 
-                    &:hover {
-                        background-color: #F5F5F5;
-                    }
                     &:hover .popover {
                         display: block;
                     }
@@ -95,6 +92,10 @@
                     }
 
                     &:hover {
+
+                        background-color: #F5F5F5;
+                        height: auto !important;
+                        z-index: 6;
 
                         &::before {
                             position: absolute;
