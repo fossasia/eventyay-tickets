@@ -62,7 +62,7 @@
 
                                 <div class="talk{% if request.user in talk.submission.speakers.all %} talk-personal{% endif %}{% if talk.is_active %} active{% endif %}"
                                      id="{{ talk.submission.code }}"
-                                     title="{{ talk.submission.title }} {% if talk.submission.speakers.exists %}({{ talk.submission.display_speaker_names }}{% endif %})"
+                                     title="{{ talk.submission.title }} {% if talk.submission.speakers.exists %}({{ talk.submission.display_speaker_names }}){% endif %}"
                                      style="height: {{ talk.height }}px; min-height: {{ talk.height }}px; top: {{ talk.top }}px"
                                      data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
