@@ -67,7 +67,10 @@
                                      data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
                                         {% if talk.submission.do_not_record %}
-                                            <i class="fa fa-ban do-not-record" aria-hidden="true"></i>
+                                            <span class="fa-stack">
+                                              <i class="fa fa-video-camera fa-stack-1x"></i>
+                                              <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{% trans "This talk will not be recorded." %}"></i>
+                                            </span>
                                         {% endif %}
                                         <span class="talk-title">{{ talk.submission.title }}</span>
                                         {% if talk.submission.speakers.exists %}

@@ -33,6 +33,10 @@
     <div class="talk row">
         <div class="talk-content col-lg-8 col-md-6 col-xs-12">
             {% if talk.do_not_record %}
+                <span class="fa-stack">
+                    <i class="fa fa-video-camera fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{% trans "This talk will not be recorded." %}"></i>
+                </span>
                 <em>{% trans "This talk will not be recorded." %}</em>
             {% endif %}
             {% if talk.recording_url %}
