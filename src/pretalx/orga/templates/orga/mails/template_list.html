@@ -40,6 +40,14 @@
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
+    <div class="alert">
+        {% csrf_token %}
+        <legend>{% trans "Update Mail" %}</legend>
+        {% bootstrap_form update layout='horizontal' %}
+        <div><a href="{{ update.instance.urls.edit }}">
+            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+        </a></div>
+    </div>
 
     {% for template in other %}
     <div class="alert">

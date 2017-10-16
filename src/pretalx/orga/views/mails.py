@@ -163,13 +163,15 @@ class TemplateList(TemplateView):
         accept = self.request.event.accept_template
         ack = self.request.event.ack_template
         reject = self.request.event.reject_template
+        update = self.request.event.update_template
         ctx['accept'] = MailTemplateForm(instance=accept, read_only=True)
         ctx['ack'] = MailTemplateForm(instance=ack, read_only=True)
         ctx['reject'] = MailTemplateForm(instance=reject, read_only=True)
+        ctx['update'] = MailTemplateForm(instance=update, read_only=True)
         ctx['other'] = [
             MailTemplateForm(instance=template, read_only=True)
             for template
-            in self.request.event.mail_templates.exclude(pk__in=[accept.pk, ack.pk, reject.pk])
+            in self.request.event.mail_templates.exclude(pk__in=[accept.pk, ack.pk, reject.pk, update.pk])
         ]
         return ctx
 
