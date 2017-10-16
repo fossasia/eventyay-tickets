@@ -41,8 +41,8 @@ Talk submission
 Scheduling
 ~~~~~~~~~~
 
-- **Configure your location:** Configure the rooms your talks will are taking place in, including
-  their names, descriptions, and capacities.
+- **Configure your location:** Configure the rooms your talks will be taking place in, including
+  their names, descriptions, capacities and availabilites.
 - **Build a schedule:** In the interactive drag'n'drop interface, build a schedule that you are
   happy with. Play around with it freely.
 - **Build your schedule offline:** The initial version of a schedule is often hard to figure out.
@@ -89,8 +89,6 @@ Planned features
 - More detailed permissions system: Crew and superusers were enough for the beginning, but now there
   needs to be clear separation between crew and reviewers, and even track based reviewer teams.
   (`#78 <https://github.com/pretalx/pretalx/issues/78>`_)
-- Restrict room availability to configurable times (`#80
-  <https://github.com/pretalx/pretalx/issues/80>`_)
 - Offer 'anywhere in the world' deadline timing. (`#81
   <https://github.com/pretalx/pretalx/issues/81>`_)
 - Warn when scheduling a speaker in more than one talk at the same time. (`#46
