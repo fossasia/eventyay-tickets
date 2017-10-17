@@ -132,3 +132,11 @@ footer {
     flex-grow: 1;
   }
 }
+.submission-abstract {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  .card-body {
+    margin: 0 16px;
+  }
+}
