@@ -1,4 +1,5 @@
 import pytest
+from django.core import mail as djmail
 from django.urls import reverse
 
 from pretalx.submission.models import SubmissionStates
@@ -215,3 +216,31 @@ def test_persists_changed_locale(multilingual_event, orga_user, orga_client):
     orga_user.refresh_from_db()
     assert response.status_code == 200
     assert orga_user.locale == 'de'
+
+
+@pytest.mark.django_db
+def test_can_invite_speaker(speaker_client, submission):
+    djmail.outbox = []
+    response = speaker_client.get(submission.urls.invite, follow=True)
+    assert response.status_code == 200
+    data = {
+        'speaker': 'other@speaker.org',
+        'subject': 'Please join!',
+        'text': 'C\'mon, it will be fun!',
+    }
+    response = speaker_client.post(
+        submission.urls.invite,
+        follow=True, data=data,
+    )
+    assert response.status_code == 200
+    assert len(djmail.outbox) == 1
+    assert djmail.outbox[0].to == ['other@speaker.org']
+
+
+@pytest.mark.django_db
+def test_can_accept_invitation(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.post(submission.urls.accept_invitation, follow=True)
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.speakers.count() == 2
