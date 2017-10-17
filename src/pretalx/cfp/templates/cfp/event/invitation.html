@@ -1,0 +1,40 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load rich_text %}
+
+{% block title %}{% trans "Accept invitation?" %}{% endblock %}
+
+{% block content %}
+
+<h2>{% trans "Accept invitation?" %}</h2>
+
+<p>{% blocktrans with name=request.user.get_display_name talk=submission.title %}
+    You, {{ name }}, have been invited to be a speaker for the submission
+    »{{ talk }}«. Do you accept the invitation?
+{% endblocktrans %}</p>
+
+{% if submission.abstract %}
+<div class="card submission-abstract">
+    <div class="card-header">
+        {% trans "Abstract:" %} {{ submission.title }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            {{ submission.abstract|rich_text }}
+        </p>
+    </div>
+</div>
+{% endif %}
+<form method="post" class="form">
+    <div class="row url-links">
+        <a href="/" class="btn btn-info btn-lg btn-block">
+            {% trans "Nope" %}
+        </a>
+        <button type="submit" class="btn btn-success btn-lg btn-block">
+            {% trans "Accept" %}
+        </button>
+    </div>
+</form>
+
+
+{% endblock %}

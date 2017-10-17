@@ -136,7 +136,8 @@ class QueuedMail(LogMixin, models.Model):
         )
 
         self.sent = now()
-        self.save()
+        if self.pk:
+            self.save()
 
     def copy_to_draft(self):
         new_mail = deepcopy(self)

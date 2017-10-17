@@ -6,8 +6,9 @@
     <h2>{% trans "Welcome back!" %}</h2>
     <p>
         {% blocktrans trimmed %}
-            If you do not have an account yet, don't worry, you can create one while you create your first submission.
-            You don't need one before that.
+            You do not need an account to view the event, or submit feedback, or receive
+            schedule updates. You'll only need an account if you participate in the
+            event as speaker or as orga.
         {% endblocktrans %}
     </p>
     <p>
@@ -19,13 +20,26 @@
     <form action="" method="post">
         {% bootstrap_form_errors form %}
         <div class="row">
-            <div class="col-md-6 offset-md-3">
-                {% bootstrap_field form.login_username layout='inline' %}
-                {% bootstrap_field form.login_password layout='inline' %}
-                <button type="submit" class="btn btn-block btn-primary">{% trans "Log in" %}</button>
+            <div class="col-md-6">
+                <h4 class="text-center">{% trans "I already have an account" %}</h4>
+                {% bootstrap_field form.login_username layout="inline" %}
+                {% bootstrap_field form.login_password layout="inline" %}
+                <button type="submit" class="btn btn-lg btn-success btn-block">
+                    {% trans "Log in" %}
+                </button>
                 <a class="btn btn-block btn-link" href="{{ request.event.urls.reset }}">
                     {% trans "Reset password" %}
                 </a>
+            </div>
+            <div class="col-md-6">
+                <h4 class="text-center">{% trans "I need a new account" %}</h4>
+                {% bootstrap_field form.register_username layout="inline" %}
+                {% bootstrap_field form.register_email layout="inline" %}
+                {% bootstrap_field form.register_password layout="inline" %}
+                {% bootstrap_field form.register_password_repeat layout="inline" %}
+                <button type="submit" class="btn btn-lg btn-info btn-block">
+                    {% trans "Register" %}
+                </button>
             </div>
         </div>
     </form>

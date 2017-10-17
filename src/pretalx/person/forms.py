@@ -28,6 +28,10 @@ class UserForm(forms.Form):
                                                label=_('Password (again)'),
                                                required=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['register_email'].widget.attrs = {'placeholder': _('Email address')}
+
     def _clean_login(self, data):
         if '@' in data.get('login_username'):
             try:

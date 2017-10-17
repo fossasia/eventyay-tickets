@@ -18,6 +18,8 @@ cfp_urls = [
             wizard.SubmitWizard.as_view(url_name='cfp:event.submit', done_step_name='finished'),
             name='event.submit'),
 
+        url('^invitation/(?P<code>\w+)/(?P<invitation>\w+)$', user.SubmissionInviteAcceptView.as_view(), name='invitation.view'),
+
         url('^me$', user.ProfileView.as_view(), name='event.user.view'),
         url('^me/delete$', user.DeleteAccountView.as_view(), name='event.user.delete'),
         url('^me/submissions$', user.SubmissionsListView.as_view(), name='event.user.submissions'),
@@ -27,6 +29,8 @@ cfp_urls = [
             name='event.user.submission.withdraw'),
         url('^me/submissions/(?P<code>\w+)/confirm$', user.SubmissionConfirmView.as_view(),
             name='event.user.submission.confirm'),
+        url('^me/submissions/(?P<code>\w+)/invite$', user.SubmissionInviteView.as_view(),
+            name='event.user.submission.invite'),
 
         url('^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
     ])),

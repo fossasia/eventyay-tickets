@@ -1,0 +1,38 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Your submission" %} :: {{ request.event }}{% endblock %}
+
+{% block content %}
+    <h2>
+        <a href="{{ submission.urls.user_base }}">
+            {% trans "Your submission:" %} {{ submission.title }}
+        </a>
+    </h2>
+    <p>
+        {% trans "Current state of your submission:" %}
+        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+    </p>
+    <div class="alert alert-info">
+        {% blocktrans trimmed %}
+            Invite another speaker to your submission here. Instead of letting us send an email,
+            you can also give them this link:
+        {% endblocktrans %}
+        <br>
+        {{ invite_url }}
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="row">
+            <div class="col-md-3 offset-md-9 url-links">
+                <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {% trans "Send" %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
