@@ -13,6 +13,7 @@
         {% endcompress %}
     {% endif %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}"/>
     {% block stylesheets %}
     {% endblock %}
     {% if request.event and request.event.custom_css %}
