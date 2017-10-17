@@ -12,6 +12,10 @@ from pretalx.common.mixins import LogMixin
 from pretalx.mail.context import template_context_from_submission
 
 
+def generate_invite_code(length=32):
+    return get_random_string(length=length, allowed_chars=Submission.CODE_CHARSET)
+
+
 class SubmissionError(Exception):
     pass
 
@@ -129,6 +133,10 @@ class Submission(LogMixin, models.Model):
         null=True, blank=True,
         verbose_name=_('Recording Source'),
     )
+    invitation_token = models.CharField(
+        max_length=32,
+        default=generate_invite_code,
+    )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = SubmissionManager()
@@ -141,6 +149,8 @@ class Submission(LogMixin, models.Model):
         confirm = '{user_base}/confirm'
         public = '{self.event.urls.base}/talk/{self.code}'
         feedback = '{public}/feedback/'
+        invite = '{user_base}/invite'
+        accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
 
     class orga_urls(Urls):
         base = '{self.event.orga_urls.submissions}/{self.code}'
