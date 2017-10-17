@@ -11,10 +11,11 @@ from django.utils.timezone import now
 from django.utils.translation import get_language, ugettext_lazy as _
 from django.views.generic import FormView, View
 
-from pretalx.cfp.forms.auth import LoginForm, RecoverForm, ResetForm
+from pretalx.cfp.forms.auth import RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException, mail
 from pretalx.common.urls import build_absolute_uri
+from pretalx.person.forms import UserForm
 from pretalx.person.models import User
 
 
@@ -28,10 +29,12 @@ class LogoutView(EventPageMixin, View):
 
 class LoginView(EventPageMixin, FormView):
     template_name = 'cfp/event/login.html'
-    form_class = LoginForm
+    form_class = UserForm
 
     def form_valid(self, form):
-        login(self.request, form.cleaned_data['user'])
+        pk = form.save()
+        user = User.objects.get(pk=pk)
+        login(self.request, user)
 
         url = self.request.GET.get('next')
         if url and is_safe_url(url, self.request.get_host()):

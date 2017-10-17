@@ -1,15 +1,21 @@
+import urllib
+
 from csp.decorators import csp_update
 from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
-    DetailView, ListView, TemplateView, UpdateView, View,
+    DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
 
-from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
+from pretalx.cfp.forms.submissions import (
+    InfoForm, QuestionsForm, SubmissionInvitationForm,
+)
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.models import Submission, SubmissionStates
@@ -91,7 +97,7 @@ class SubmissionViewMixin:
         try:
             return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
                 speakers__in=[self.request.user],
-                code=self.kwargs.get('code')
+                code__iexact=self.kwargs.get('code')
             )
         except Submission.DoesNotExist:
             try:
@@ -196,7 +202,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
-class DeleteAccountView(View):
+class DeleteAccountView(LoggedInEventPageMixin, View):
 
     def post(self, request, event):
 
@@ -209,3 +215,55 @@ class DeleteAccountView(View):
         else:
             messages.error(request, _('Are you really sure? Please tick the box'))
             return redirect(request.event.urls.user + '?really')
+
+
+class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
+    form_class = SubmissionInvitationForm
+    template_name = 'cfp/event/user_submission_invitation.html'
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['submission'] = self.get_object()
+        kwargs['speaker'] = self.request.user
+        if 'email' in self.request.GET and not self.request.method == 'POST':
+            initial = kwargs.get('initial', {})
+            initial['speaker'] = urllib.parse.unquote(self.request.GET['email'])
+            kwargs['initial'] = initial
+
+            try:
+                validate_email(initial['speaker'])
+            except ValidationError:
+                messages.warning(self.request, _('Please provide a valid email address.'))
+        return kwargs
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['submission'] = self.get_object()
+        ctx['invite_url'] = ctx['submission'].urls.accept_invitation.full(scheme='https')
+        return ctx
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('The invitation was sent!'))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.get_object().urls.user_base
+
+
+class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
+    template_name = 'cfp/event/invitation.html'
+    context_object_name = 'submission'
+
+    def get_object(self, *args, **kwargs):
+        return Submission.objects.get(
+            code__iexact=self.kwargs['code'],
+            invitation_token__iexact=self.kwargs['invitation'],
+        )
+
+    def post(self, *args, **kwargs):
+        submission = self.get_object()
+        submission.speakers.add(self.request.user)  # TODO logging
+        submission.save()
+        messages.success(self.request, _('You are now part of this submission! Please fill in your profile below.'))
+        return redirect('cfp:event.user.view', event=self.request.event.slug)
