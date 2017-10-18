@@ -36,11 +36,11 @@ header {
     color: white;
   }
   a:hover {
-    border-bottom: 1px dashed white;
+    border-bottom: 1px dashed $white;
     text-decoration: none;
   }
   a.active {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid $white;
   }
 }
 #event-logo {
