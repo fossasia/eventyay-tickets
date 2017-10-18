@@ -88,11 +88,12 @@ footer {
   }
 }
 .question-option-row {
+  margin-left: -4px;
   display: flex;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
 }
 .question-option-input.disabled input {
-  background-color: #eceeef;
+  background-color: $gray-lighter;
   opacity: 1;
   cursor: not-allowed;
 }

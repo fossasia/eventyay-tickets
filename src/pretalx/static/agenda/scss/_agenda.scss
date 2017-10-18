@@ -4,13 +4,13 @@
     flex-grow: 1;
 
     .day {
-        background: #eceeef;
+        background: $gray-lighter;
         margin-bottom: 20px;
         width: auto;
 
 
         .header-row {
-            background: #eceeef;
+            background: $gray-lighter;
             display: flex;
             flex-direction: row;
             font-weight: 500;
