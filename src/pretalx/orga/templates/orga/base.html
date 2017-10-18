@@ -37,22 +37,22 @@
 </head>
 <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
 <div id="wrapper">
-    <nav class="navbar navbar-toggleable-md navbar-inverse navbar-static-top bg-primary">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-                data-target="#navbartoggle">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <nav class="navbar navbar-expand-lg navbar-inverse navbar-static-top bg-primary">
         <a class="navbar-brand" href="/orga/">
             <img src="{% static "common/img/icon_white.svg" %}"> pretalx
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbartoggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown active">
                     {% if request.orga_events.count > 1 %}
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" id="eventDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if request.event %}{{ request.event.name }}{% else %}{% trans "Events" %}{% endif %}
                         </a>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" aria-labelledby="eventDropdown">
                             {% for e in request.orga_events %}
                                 {% if not request.event == e %}
                                     <a class="dropdown-item" href="{{ e.orga_urls.base }}">{{ e.name }}</a>

@@ -1,5 +1,7 @@
 /* compatibility */
 /* colors */
+$white:  #fff !default;
+$black: #000 !default;
 $brand-primary: #1C4A3B !default;
 $brand-success: #5caa8d;
 $brand-info: #6790b1;
@@ -7,8 +9,11 @@ $brand-warning: #fa993e;
 $brand-danger: #b34066;
 $brand-inverse: #032419;
 
+$brand-inverse: #032419;
+
+$enable-rounded: false;
+
 /* datetimepicker */
-$white:  #fff !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #e9ecef !default;
 $gray-800: #343a40 !default;
