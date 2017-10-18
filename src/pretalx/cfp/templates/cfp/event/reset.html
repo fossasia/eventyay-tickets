@@ -12,7 +12,7 @@
     <form action="" method="post">
         {% bootstrap_form_errors form %}
         <div class="row">
-            <div class="col-md-6 offset-md-3">
+            <div class="col-md-6 ml-auto">
                 {% bootstrap_field form.login_username layout='inline' %}
                 <button type="submit" class="btn btn-block btn-primary">{% trans "Send me a new one!" %}</button>
             </div>

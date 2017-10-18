@@ -19,7 +19,7 @@
         {% bootstrap_field profile_form.biography %}
         {% bootstrap_field profile_form.availabilities %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
                     {% trans "Save" %}
                 </button>
@@ -33,7 +33,7 @@
         {% csrf_token %}
         {% bootstrap_form questions_form %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
                     {% trans "Save" %}
                 </button>
@@ -53,7 +53,7 @@
         {% bootstrap_field login_form.password %}
         {% bootstrap_field login_form.password_repeat %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
                     {% trans "Save" %}
                 </button>
@@ -61,16 +61,17 @@
         </div>
     </form>
     <div>&nbsp;</div>
-    <div class="alert alert-danger">
-        {% trans "You can delete your account here – all names, emails etc will be overwritten. <strong>This action is irreversible.</strong>" %}
-    </div>
+    <h3>{% trans "Account deletion" %}</h3>
     <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
         {% csrf_token %}
+        <div class="alert alert-danger">
+            {% trans "You can delete your account here – all names, emails etc will be overwritten. <strong>This action is irreversible.</strong>" %}
+        </div>
         <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
                 <input type="checkbox" name="really" id="really">
                 <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
             </div>
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
                     {% trans "Delete my account" %}
                 </button>

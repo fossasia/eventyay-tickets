@@ -8,18 +8,18 @@
         {% block inner %}
         {% endblock %}
         <div class="row">
-            <div class="col-md-3 push-md-9">
-                <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% trans "Continue" %} &raquo;
-                </button>
-            </div>
-            <div class="col-md-3 pull-md-3">
+            <div class="col-md-3">
                 {% if wizard.steps.prev %}
-                    <button type="submit" class="btn btn-block btn-default btn-lg"
+                    <button type="submit" class="btn btn-block btn-info btn-lg"
                             value="{{ wizard.steps.prev }}" name="wizard_goto_step">
                         &laquo; {% trans "Back" %}
                     </button>
                 {% endif %}
+            </div>
+            <div class="col-md-3 ml-auto">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {% trans "Continue" %} &raquo;
+                </button>
             </div>
         </div>
     </form>

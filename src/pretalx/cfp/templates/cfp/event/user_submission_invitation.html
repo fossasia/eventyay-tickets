@@ -25,7 +25,7 @@
         {% csrf_token %}
         {% bootstrap_form form %}
         <div class="row">
-            <div class="col-md-3 offset-md-9 url-links">
+            <div class="col-md-3 ml-auto url-links">
                 <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
                     {% trans "Cancel" %}
                 </a>

@@ -81,13 +81,13 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "orga:user.view" %}">
+                    <a class="nav-link active" href="{% url "orga:user.view" %}">
                         <span class="fa fa-user"></span>
                         {{ request.user.nick }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "orga:logout" %}">
+                    <a class="nav-link active" href="{% url "orga:logout" %}">
                         <span class="fa fa-sign-out"></span>
                     </a>
                 </li>

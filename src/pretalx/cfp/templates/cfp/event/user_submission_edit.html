@@ -34,7 +34,7 @@
         {% bootstrap_form qform %}
         {% if can_edit %}
             <div class="row">
-                <div class="col-md-3 offset-md-9">
+                <div class="col-md-3 ml-auto">
                     <button type="submit" class="btn btn-block btn-success btn-lg">
                         {% trans "Save" %}
                     </button>
@@ -51,7 +51,7 @@
             {% endblocktrans %}
         </p>
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <a href="{{ submission.urls.withdraw }}"
                    class="btn pull-right btn-danger btn-block">
                     {% trans "Withdraw" %}
