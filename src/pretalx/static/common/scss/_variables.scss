@@ -3,11 +3,11 @@
 $white:  #fff !default;
 $black: #000 !default;
 $brand-primary: #1C4A3B !default;
-$brand-success: #5caa8d;
-$brand-info: #6790b1;
-$brand-warning: #fa993e;
-$brand-danger: #b34066;
-$brand-inverse: #032419;
+$brand-success: #5caa8d !default;
+$brand-info: #6790b1 !default;
+$brand-warning: #fa993e !default;
+$brand-danger: #b34066 !default;
+$brand-inverse: #032419 !default;
 
 $brand-inverse: #032419;
 
@@ -29,7 +29,7 @@ $btn-primary-color:              $white !default;
 
 /* colors */
 $theme-colors: (
-  primary: #1C4A3B,
+  primary: $brand-primary,
   // secondary: $gray-800,
   success: #5CAA8D,
   info: #6790B1,
@@ -38,7 +38,6 @@ $theme-colors: (
   light: $gray-100,
   dark: $gray-800
 );
-
 
 /* fix bootstrap 4 */
 h2, h3 {
@@ -49,6 +48,3 @@ h2, h3 {
 }
 
 $enable-rounded: false;
-
-$navbar-light-toggler-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !default;
-$navbar-inverse-toggler-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !default;
