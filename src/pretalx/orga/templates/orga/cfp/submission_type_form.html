@@ -6,7 +6,9 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Submission Type" %}</legend>
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_field form.name layout='horizontal' %}
+        {% bootstrap_field form.default_duration addon_after="minutes" layout='horizontal' %}
+        {% bootstrap_field form.max_duration addon_after="minutes" layout='horizontal' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "create" %}

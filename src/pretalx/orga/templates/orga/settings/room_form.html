@@ -6,7 +6,10 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Room" %}</legend>
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_field form.name layout='horizontal' %}
+        {% bootstrap_field form.description layout='horizontal' %}
+        {% bootstrap_field form.capacity addon_after='people' addon_after_class='input-group-addon' layout='horizontal' %}
+        {% bootstrap_field form.position layout='horizontal' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "create" %}
