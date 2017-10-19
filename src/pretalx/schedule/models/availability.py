@@ -36,6 +36,18 @@ class Availability(LogMixin, models.Model):
             'allDay': (self.start.time() == zerotime and self.end.time() == zerotime)
         }
 
+    def __str__(self):
+        result = f'start={self.start} end={self.end}'
+
+        if hasattr(self, 'event'):
+            result += f' event={self.event}'
+        if self.person:
+            result += f' person={self.person.user.get_display_name()}'
+        if self.room:
+            result += f' room={self.room}'
+
+        return result
+
     def overlaps(self, other, strict):
         """ test if two Availabilities overlap or are directly adjacent to eachother, if not in strict mode """
 

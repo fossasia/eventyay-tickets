@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from pretalx.event.models import Event
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Submission
 
@@ -24,10 +24,17 @@ def submission(event):
 
 @pytest.fixture
 def room(event):
-    return Room.objects.create(name='Room', event=event)
+    return Room.objects.create(name='Roomy', event=event)
 
 
 @pytest.fixture
 def talk_slot(event, submission, room):
     schedule = event.schedules.first()
     return TalkSlot.objects.create(submission=submission, room=room, schedule=schedule, is_visible=True)
+
+
+@pytest.fixture
+def speaker(event):
+    user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker', email='jane@speaker.org')
+    SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
+    return user
