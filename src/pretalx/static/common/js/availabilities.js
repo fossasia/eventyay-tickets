@@ -13,7 +13,7 @@ $(function () {
                     if(e.allDay) {
                         return {
                             'start': e.start.format('YYYY-MM-DD HH:mm:ss'),
-                            'end': e.start.add(1, 'd').format('YYYY-MM-DD HH:mm:ss'),
+                            'end': e.end.format('YYYY-MM-DD HH:mm:ss'),
                         }
                     } else {
                         return {
