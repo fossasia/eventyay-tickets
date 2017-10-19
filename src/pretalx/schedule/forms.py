@@ -17,6 +17,7 @@ class AvailabilitiesFormMixin(forms.Form):
         label=_('Availability'),
         help_text=_('When can you use this room for your conference?'),
         widget=forms.TextInput(attrs={'class': 'availabilities-editor-data'}),
+        required=False,
     )
 
     def _serialize(self, event, instance):
@@ -39,10 +40,15 @@ class AvailabilitiesFormMixin(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event', None)
+
         if not self.event:
             raise Exception('Please provide an event as kwarg to AvailabilitiesFormMixin.')
+
+        initial = kwargs.pop('initial', dict())
+        initial['availabilities'] = self._serialize(self.event, kwargs['instance'])
+        kwargs['initial'] = initial
+
         super().__init__(*args, **kwargs)
-        self.fields['availabilities'].initial = self._serialize(self.event, kwargs['instance'])
 
     def _parse_availabilities_json(self, jsonavailabilities):
         try:
@@ -97,6 +103,9 @@ class AvailabilitiesFormMixin(forms.Form):
             raise forms.ValidationError("Submitted availability is not within the event timeframe.")
 
     def clean_availabilities(self):
+        if self.cleaned_data['availabilities'] == '':
+            return None
+
         rawavailabilities = self._parse_availabilities_json(self.cleaned_data['availabilities'])
         availabilities = []
 
@@ -126,8 +135,9 @@ class AvailabilitiesFormMixin(forms.Form):
         instance = super().save(*args, **kwargs)
         availabilities = self.cleaned_data['availabilities']
 
-        self._set_foreignkeys(instance, availabilities)
-        self._replace_availabilities(instance, availabilities)
+        if availabilities is not None:
+            self._set_foreignkeys(instance, availabilities)
+            self._replace_availabilities(instance, availabilities)
 
         return instance
 

@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
-from pretalx.schedule.models import TalkSlot
+from pretalx.schedule.models import Availability, TalkSlot
 
 
 class ScheduleView(TemplateView):
@@ -131,3 +131,27 @@ class TalkUpdate(View):
         talk.save(update_fields=['start', 'end', 'room'])
 
         return JsonResponse(serialize_slot(talk))
+
+
+class RoomTalkAvailabilities(View):
+
+    def get(self, request, event, talkid, roomid):
+        talk = request.event.wip_schedule.talks.get(pk=talkid)
+        room = request.event.rooms.get(pk=roomid)
+
+        availabilitysets = [
+            room.availabilities.all(),
+            *[
+                speaker.profiles.filter(event=request.event).first().availabilities.all()
+                for speaker in talk.submission.speakers.all()
+                if speaker.profiles.filter(event=request.event).exists()
+            ],
+        ]
+
+        availabilities = Availability.intersection(*availabilitysets)
+
+        return JsonResponse({
+            'results': [
+                avail.serialize() for avail in availabilities
+            ],
+        })

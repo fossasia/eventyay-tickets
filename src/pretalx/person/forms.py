@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.forms import ReadOnlyFlag
 from pretalx.person.models import SpeakerProfile, User
+from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
 class UserForm(forms.Form):
@@ -91,7 +92,7 @@ class UserForm(forms.Form):
         return data['user_id']
 
 
-class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
+class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
     name = forms.CharField(
         max_length=100, label=_('Name')
     )
@@ -111,7 +112,7 @@ class SpeakerProfileForm(ReadOnlyFlag, forms.ModelForm):
         else:
             kwargs['instance'] = SpeakerProfile()
         kwargs['initial'] = initial
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs, event=self.event)
 
     def save(self, **kwargs):
         for user_attribute in ('name', 'avatar'):

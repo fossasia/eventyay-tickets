@@ -4,7 +4,7 @@ import pytest
 import pytz
 from django.forms import ModelForm, ValidationError
 
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.schedule.models import Availability, Room
 
@@ -207,7 +207,7 @@ def test_clean_availabilities_success(availabilitiesform, json, expected):
 @pytest.mark.django_db
 @pytest.mark.parametrize('instancegen,fk_name', (
     (lambda event_id: Room.objects.create(event_id=event_id), "room_id"),
-    (lambda event_id: User.objects.create_user(nick="testy"), "person_id"),
+    (lambda event_id: SpeakerProfile.objects.create(event_id=event_id), "person_id"),
 ))
 def test_set_foreignkeys(availabilitiesform, instancegen, fk_name):
     availabilities = [
@@ -347,7 +347,7 @@ def test_chained(availabilitiesform, room):
         instance=room,
     )
 
-    form.cleaned_data = {'availabilities': form.fields['availabilities'].initial}
+    form.cleaned_data = form.initial
     form.cleaned_data['availabilities'] = form.clean_availabilities()
     form.save()
 

@@ -104,5 +104,9 @@ orga_urls = [
         url('^schedule/api/rooms/$', schedule.RoomList.as_view(), name='schedule.api.rooms'),
         url('^schedule/api/talks/$', schedule.TalkList.as_view(), name='schedule.api.talks'),
         url('^schedule/api/talks/(?P<pk>[0-9]+)/$', schedule.TalkUpdate.as_view(), name='schedule.api.update'),
+        url(
+            '^schedule/api/availabilities/(?P<talkid>[0-9]+)/(?P<roomid>[0-9]+)/$',
+            schedule.RoomTalkAvailabilities.as_view(), name='schedule.api.availabilities'
+        ),
     ])),
 ]
