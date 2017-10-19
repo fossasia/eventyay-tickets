@@ -114,3 +114,23 @@ footer {
 .navbar-brand {
   color: $white;
 }
+.form-group {
+  display: flex;
+  input {
+    line-height: normal;
+  }
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
+}
+.help-block {
+  font-size: 80%;
+  padding-top: 2px;
+  color: #636c72;
+}
