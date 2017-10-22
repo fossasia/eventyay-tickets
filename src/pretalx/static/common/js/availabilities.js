@@ -90,6 +90,10 @@ $(function () {
             eventOverlap: false,
             eventColor: '#00DD00',
             eventClick: function(calEvent, jsEvent, view) {
+                if(!editable) {
+                    return;
+                }
+
                 if(calEvent.className.indexOf('delete') >= 0) {
                     editor.fullCalendar('removeEvents', function(searchEvent) {
                         return searchEvent._id === calEvent._id;
