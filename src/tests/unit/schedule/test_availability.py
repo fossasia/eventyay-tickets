@@ -290,6 +290,24 @@ def test_union(avails, expected):
     ),
     (
         #    0000000
+        #  0000   00000
+        #      00000
+        # ==============
+        #         00
+        [
+            [Availability(start=datetime.datetime(2017, 1, 1, 2), end=datetime.datetime(2017, 1, 1, 7))],
+            [
+                Availability(start=datetime.datetime(2017, 1, 1, 0), end=datetime.datetime(2017, 1, 1, 3)),
+                Availability(start=datetime.datetime(2017, 1, 1, 6), end=datetime.datetime(2017, 1, 1, 8)),
+            ],
+            [Availability(start=datetime.datetime(2017, 1, 1, 9), end=datetime.datetime(2017, 1, 1, 7))],
+        ],
+        [
+            Availability(start=datetime.datetime(2017, 1, 1, 6), end=datetime.datetime(2017, 1, 1, 7)),
+        ],
+    ),
+    (
+        #    0000000
         #  0000000
         # ==============
         #    00000
