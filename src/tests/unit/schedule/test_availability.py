@@ -303,7 +303,7 @@ def test_union(avails, expected):
             [Availability(start=datetime.datetime(2017, 1, 1, 9), end=datetime.datetime(2017, 1, 1, 7))],
         ],
         [
-            Availability(start=datetime.datetime(2017, 1, 1, 6), end=datetime.datetime(2017, 1, 1, 7)),
+            Availability(start=datetime.datetime(2017, 1, 1, 9), end=datetime.datetime(2017, 1, 1, 7)),
         ],
     ),
     (
