@@ -150,10 +150,14 @@ def test_overlaps(one, two, expected_strict, expected):
 def test_merge_with(one, two, expected):
     actual1 = one.merge_with(two)
     actual2 = two.merge_with(one)
+    actual1_magic = one | two
+    actual2_magic = two | one
     assert expected.start == actual1.start
     assert expected.end == actual1.end
     assert expected.start == actual2.start
     assert expected.end == actual2.end
+    assert actual1 == actual1_magic
+    assert actual2 == actual2_magic
 
 
 @pytest.mark.parametrize('method,args,expected', (
