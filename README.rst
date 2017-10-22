@@ -3,8 +3,8 @@
 pretalx
 =======
 
-.. image:: https://travis-ci.org/openeventstack/pretalx.svg?branch=master
-   :target: https://travis-ci.org/openeventstack/pretalx
+.. image:: https://travis-ci.org/pretalx/pretalx.svg?branch=master
+   :target: https://travis-ci.org/pretalx/pretalx
 
 .. image:: https://codecov.io/gh/pretalx/pretalx/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/pretalx/pretalx
