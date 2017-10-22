@@ -114,6 +114,12 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs, event=self.event)
 
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar and avatar.size > 10 * 1024 * 1024:
+            raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
+        return avatar
+
     def save(self, **kwargs):
         for user_attribute in ('name', 'avatar'):
             value = self.cleaned_data.get(user_attribute) or None
