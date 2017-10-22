@@ -37,6 +37,14 @@ class Availability(LogMixin, models.Model):
             result += f' room={self.room}'
         return result
 
+    def __eq__(self, other: 'Availability') -> bool:
+        if not isinstance(other, Availability):
+            return False
+        return all([
+            getattr(self, attribute, None) == getattr(other, attribute, None)
+            for attribute in ['event', 'person', 'room', 'start', 'end']
+        ])
+
     def serialize(self) -> dict:
         zerotime = datetime.time(0, 0)
         return {
@@ -77,6 +85,9 @@ class Availability(LogMixin, models.Model):
             end=max(self.end, other.end),
         )
 
+    def __or__(self, other: 'Availability') -> 'Availability':
+        return self.merge_with(other)
+
     def intersect_with(self, other: 'Availability') -> 'Availability':
         """ Return a new Availability which spans the range covered both by this one and the given one """
 
@@ -89,6 +100,9 @@ class Availability(LogMixin, models.Model):
             start=max(self.start, other.start),
             end=min(self.end, other.end),
         )
+
+    def __and__(self, other: 'Availability') -> 'Availability':
+        return self.intersect_with(other)
 
     @classmethod
     def union(cls, availabilities: List['Availability']) -> List['Availability']:
