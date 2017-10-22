@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 from django.db import models
 
@@ -26,7 +27,17 @@ class Availability(LogMixin, models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
 
-    def serialize(self):
+    def __str__(self) -> str:
+        result = f'start={self.start} end={self.end}'
+        if hasattr(self, 'event'):
+            result += f' event={self.event}'
+        if self.person:
+            result += f' person={self.person.user.get_display_name()}'
+        if self.room:
+            result += f' room={self.room}'
+        return result
+
+    def serialize(self) -> dict:
         zerotime = datetime.time(0, 0)
         return {
             'id': self.id,
@@ -36,20 +47,8 @@ class Availability(LogMixin, models.Model):
             'allDay': (self.start.time() == zerotime and self.end.time() == zerotime)
         }
 
-    def __str__(self):
-        result = f'start={self.start} end={self.end}'
-
-        if hasattr(self, 'event'):
-            result += f' event={self.event}'
-        if self.person:
-            result += f' person={self.person.user.get_display_name()}'
-        if self.room:
-            result += f' room={self.room}'
-
-        return result
-
-    def overlaps(self, other, strict):
-        """ test if two Availabilities overlap or are directly adjacent to eachother, if not in strict mode """
+    def overlaps(self, other: 'Availability', strict: bool) -> bool:
+        """ Test if two Availabilities overlap. Includes direct adjacency, if in strict mode """
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object')
@@ -65,12 +64,12 @@ class Availability(LogMixin, models.Model):
                    (other.start <= self.start <= other.end) or \
                    (other.start <= self.end <= other.end)
 
-    def merge_with(self, other):
-        """ return a new Availability, which spans the whole range of this one and the given one """
+    def merge_with(self, other: 'Availability') -> 'Availability':
+        """ Return a new Availability which spans the range of this one and the given one """
 
         if not isinstance(other, Availability):
-            raise Exception('Please provide an Availability object')
-        if not other.overlaps(self, False):
+            raise Exception('Please provide an Availability object.')
+        if not other.overlaps(self, strict=False):
             raise Exception('Only overlapping Availabilities can be merged.')
 
         return Availability(
@@ -78,11 +77,11 @@ class Availability(LogMixin, models.Model):
             end=max(self.end, other.end),
         )
 
-    def intersect_with(self, other):
-        """ return a new Availability, which spans the range covered by this one and the given one """
+    def intersect_with(self, other: 'Availability') -> 'Availability':
+        """ Return a new Availability which spans the range covered both by this one and the given one """
 
         if not isinstance(other, Availability):
-            raise Exception('Please provide an Availability object')
+            raise Exception('Please provide an Availability object.')
         if not other.overlaps(self, False):
             raise Exception('Only overlapping Availabilities can be intersected.')
 
@@ -92,8 +91,8 @@ class Availability(LogMixin, models.Model):
         )
 
     @classmethod
-    def union(cls, availabilities):
-        """ return the minimal, unique list of Availabilities, which are covered by at least one given Availability """
+    def union(cls, availabilities: List['Availability']) -> List['Availability']:
+        """ Return the minimal list of Availability objects which are covered by at least one given Availability """
         if not availabilities:
             return []
 
@@ -110,7 +109,7 @@ class Availability(LogMixin, models.Model):
         return result
 
     @classmethod
-    def _pair_intersection(cls, availabilities_a, availabilities_b):
+    def _pair_intersection(cls, availabilities_a: List['Availability'], availabilities_b: List['Availability']) -> List['Availability']:
         """ return the list of Availabilities, which are covered by each of the given sets """
         if not availabilities_a or not availabilities_b:
             return []
@@ -127,8 +126,8 @@ class Availability(LogMixin, models.Model):
         return result
 
     @classmethod
-    def intersection(cls, *availabilitysets):
-        """ return the list of Availabilities, which are covered by all of the given sets """
+    def intersection(cls, *availabilitysets: List['Availability']) -> List['Availability']:
+        """ Return the list of Availabilities which are covered by all of the given sets """
 
         # get rid of any overlaps and unmerged ranges in each set
         availabilitysets = [
