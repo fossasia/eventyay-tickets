@@ -41,8 +41,13 @@
                     {% elif form.instance.state == "accepted" %}
                         <a class="btn btn-secondary" href="{{ form.instance.orga_urls.confirm }}">{% trans "Confirm" %}</a>
                     {% endif %}
+                    {% if form.instance.state == "confirmed" %}
+                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.unconfirm }}">{% trans "Unconfirm" %}</a>
+                    {% endif %}
+                    {% if form.instance.state == "submitted" or form.instance.state == "accepted" %}
+                        <a class="btn btn-danger" href="{{ form.instance.orga_urls.reject }}">{% trans "Reject" %}</a>
+                    {% endif %}
                     <a class="btn btn-secondary" href="{{ form.instance.orga_urls.edit }}">{% trans "Edit" %}</a>
-                    <a class="btn btn-danger" href="{{ form.instance.orga_urls.reject }}">{% trans "Reject" %}</a>
                 </div>
             {% endif %}
         </div>

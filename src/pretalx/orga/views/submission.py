@@ -96,6 +96,19 @@ class SubmissionConfirm(SubmissionViewMixin, View):
         return redirect(submission.orga_urls.base)
 
 
+class SubmissionUnconfirm(SubmissionViewMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        submission = self.get_object()
+
+        try:
+            submission.unconfirm(person=request.user, orga=True)
+            messages.success(request, _('The submission has been unconfirmed. It is now accepted.'))
+        except SubmissionError:
+            messages.error(request, _('A submission must be confirmed to become accepted.'))
+        return redirect(submission.orga_urls.base)
+
+
 class SubmissionReject(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)

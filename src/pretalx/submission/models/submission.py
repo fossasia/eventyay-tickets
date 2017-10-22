@@ -158,6 +158,7 @@ class Submission(LogMixin, models.Model):
         accept = '{base}/accept'
         reject = '{base}/reject'
         confirm = '{base}/confirm'
+        unconfirm = '{base}/unconfirm'
         delete = '{base}/delete'
         questions = '{base}/questions'
         speakers = '{base}/speakers'
@@ -220,6 +221,10 @@ class Submission(LogMixin, models.Model):
     def confirm(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.CONFIRMED, force)
         self.log_action('pretalx.submission.confirmation', person=person, orga=orga)
+
+    def unconfirm(self, person=None, force=False, orga=False):
+        self._set_state(SubmissionStates.ACCEPTED, force)
+        self.log_action('pretalx.submission.unconfirm', person=person, orga=orga)
 
     def accept(self, person=None, force=False):
         self._set_state(SubmissionStates.ACCEPTED, force)
