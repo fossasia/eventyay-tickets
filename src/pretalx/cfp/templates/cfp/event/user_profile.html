@@ -8,16 +8,22 @@
     <p>
         {% trans "This data will be displayed next to your talk slots in the schedule." %}
     </p>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
-        {% bootstrap_field profile_form.get_gravatar %}
-        <div class="user-avatar-display">
+        <div class="avatar-form">
             <div class="col-md-3 control-label">
-            {% if request.user.avatar and request.user.avatar != 'False' %}
-                <img src="{{ request.user.avatar.url }}">
+            {% if request.user.get_gravatar %}
+                <img class="avatar" src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}" />
+            {% elif request.user.avatar and request.user.avatar != 'False' %}
+                <img class="avatar" src="{{ request.user.avatar.url }}">
             {% endif %}
             </div>
-            {% bootstrap_field profile_form.avatar layout='inline' %}
+            <div class="avatar-form-fields">
+                {% bootstrap_field profile_form.get_gravatar %}
+                <div class="user-avatar-display">
+                    {% bootstrap_field profile_form.avatar layout='inline' %}
+                </div>
+            </div>
         </div>
         {% bootstrap_field profile_form.name layout='horizontal' %}
         {% bootstrap_field profile_form.biography layout='horizontal' %}

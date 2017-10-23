@@ -99,13 +99,28 @@ footer {
 .bootstrap4-multi-input {
   margin: auto;
 }
-.user-avatar-display {
+.avatar-form {
   display: flex;
   align-items: flex-start;
-  img {
+  margin-left: 20px;
+  padding-bottom: 8px;
+
+  img.avatar {
     padding-right: 16px;
-    width: 160px;
+    margin-left: -16px;
+    max-width: 100%;
     height: auto;
+  }
+  .avatar-form-fields {
+    display: flex;
+    flex-direction: column;
+    .user-avatar-display .bootstrap4-multi-input {
+      margin: 0;
+    }
+    .form-group {
+      display: flex;
+    flex-direction: column;
+    }
   }
 }
 
