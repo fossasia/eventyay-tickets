@@ -1,9 +1,12 @@
+from csp.decorators import csp_update
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import SubmissionStates
 
 
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SpeakerView(DetailView):
     template_name = 'agenda/speaker.html'
     context_object_name = 'speaker'

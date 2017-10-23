@@ -12,9 +12,20 @@
     {{ speaker.get_display_name }}
 </h3>
 <div class="speaker-container">
-    <div class="speaker-biography">
-        {{ profile.biography|rich_text }}
-        <hr/>
+    <div class="speaker-info">
+        <div class="speaker-bio">
+            {{ profile.biography|rich_text }}
+        </div>
+        <div class="speaker-info">
+            {% if speaker.get_gravatar %}
+                <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" />
+            {% elif speaker.avatar %}
+                <img width="100%" src="{{ request.user.avatar.url }}">
+            {% endif %}
+        </div>
+    </div>
+    <hr/>
+    <div class="speaker-talks">
         <h4>{% trans "Talks" %}</h4>
         {% for talk in talks %}
         <a href="{{ talk.urls.public }}"><div class="talk">
@@ -26,12 +37,5 @@
             </div>
         </div></a>
         {% endfor %}
-    </div>
-    <div class="speaker-info">
-        {% if speaker.get_gravatar %}
-            <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" />
-        {% elif speaker.avatar %}
-            <img width="100%" src="{{ request.user.avatar.url }}">
-        {% endif %}
     </div>
 {% endblock %}
