@@ -12,11 +12,16 @@
         {% csrf_token %}
         <div class="avatar-form">
             <div class="col-md-3 control-label">
-            {% if request.user.get_gravatar %}
-                <img class="avatar" src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}" />
-            {% elif request.user.avatar and request.user.avatar != 'False' %}
-                <img class="avatar" src="{{ request.user.avatar.url }}">
-            {% endif %}
+            <img
+              class="avatar"
+              data-gravatar="{{ request.user.gravatar_parameter }}"
+              data-avatar="{{ request.user.avatar.url }}"
+              {% if request.user.get_gravatar %}
+              src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}"
+              {% elif request.user.avatar and request.user.avatar != 'False' %}
+              src="{{ request.user.avatar.url }}"
+              {% endif %}
+            />
             </div>
             <div class="avatar-form-fields">
                 {% bootstrap_field profile_form.get_gravatar %}
