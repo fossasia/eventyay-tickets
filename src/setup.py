@@ -64,6 +64,7 @@ setup(
         'csscompressor==0.9.*',
         'cssutils==1.0.*',
         'Django==1.11.*',
+        'django-bootstrap4==0.0.3',
         'django-compressor==2.1.*',
         'django-csp==3.3.*',
         'django-formset-js-improved==0.5.0.1',
@@ -78,9 +79,6 @@ setup(
         'whitenoise==3.3.*',
         'reportlab==3.4.*',
         'vobject==0.9.*',
-    ],
-    dependency_links=[
-        'git+https://github.com/GabrielUlici/django-bootstrap4.git#egg=django-bootstrap4',
     ],
     extras_require={
         'dev': [
