@@ -4,12 +4,3 @@
 @import "../../common/scss/availabilities";
 @import "../../common/scss/_forms";
 @import "_layout";
-
-table .btn-secondary {
-  background: $gray-lighter;
-  border-color: white;
-}
-
-.table-responsive {
-  display: table;
-}

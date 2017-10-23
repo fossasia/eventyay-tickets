@@ -113,6 +113,15 @@ footer {
   padding-left: 8px;
 }
 
+table .btn-secondary {
+  background: $gray-lighter;
+  border-color: white;
+}
+
+.table-responsive {
+  display: table;
+}
+
 @include media-breakpoint-down(sm) {
   #main-container {
     padding-top: 20px;
