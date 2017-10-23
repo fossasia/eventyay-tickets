@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 {% load bootstrap4 %}
+{% load staticfiles %}
 {% block title %}{% trans "Your Profile" %} :: {{ request.event }}{% endblock %}
 {% block content %}
     <h2>{% trans "Your Profile" %}</h2>
@@ -9,6 +10,7 @@
     </p>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        {% bootstrap_field profile_form.get_gravatar %}
         <div class="user-avatar-display">
             <div class="col-md-3 control-label">
             {% if request.user.avatar and request.user.avatar != 'False' %}
@@ -79,4 +81,5 @@
                 </button>
             </div>
     </form>
+    <script type="text/javascript" src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}
