@@ -10,14 +10,16 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="user-avatar-display">
+            <div class="col-md-3 control-label">
             {% if request.user.avatar and request.user.avatar != 'False' %}
                 <img src="{{ request.user.avatar.url }}">
             {% endif %}
-            {% bootstrap_field profile_form.avatar %}
+            </div>
+            {% bootstrap_field profile_form.avatar layout='inline' %}
         </div>
-        {% bootstrap_field profile_form.name %}
-        {% bootstrap_field profile_form.biography %}
-        {% bootstrap_field profile_form.availabilities %}
+        {% bootstrap_field profile_form.name layout='horizontal' %}
+        {% bootstrap_field profile_form.biography layout='horizontal' %}
+        {% bootstrap_field profile_form.availabilities layout='horizontal' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
@@ -31,7 +33,7 @@
     <h2>{% trans "We have some questions" %}</h2>
     <form action="" method="post">
         {% csrf_token %}
-        {% bootstrap_form questions_form %}
+        {% bootstrap_form questions_form layout='horizontal' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
@@ -48,10 +50,10 @@
     </p>
     <form action="" method="post" class="form">
         {% csrf_token %}
-        {% bootstrap_field login_form.old_password %}
-        {% bootstrap_field login_form.email %}
-        {% bootstrap_field login_form.password %}
-        {% bootstrap_field login_form.password_repeat %}
+        {% bootstrap_field login_form.old_password layout='horizontal' %}
+        {% bootstrap_field login_form.email layout='horizontal' %}
+        {% bootstrap_field login_form.password layout='horizontal' %}
+        {% bootstrap_field login_form.password_repeat layout='horizontal' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">

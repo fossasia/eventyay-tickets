@@ -13,6 +13,6 @@
     </p>
 
     {% bootstrap_form_errors wizard.form %}
-    {% bootstrap_field wizard.form.name %}
-    {% bootstrap_field wizard.form.biography %}
+    {% bootstrap_field wizard.form.name layout='horizontal' %}
+    {% bootstrap_field wizard.form.biography layout='horizontal' %}
 {% endblock %}

@@ -30,8 +30,8 @@
     </h5>
     <form action="" method="post">
         {% csrf_token %}
-        {% bootstrap_form form %}
-        {% bootstrap_form qform %}
+        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_form qform layout='horizontal' %}
         {% if can_edit %}
             <div class="row">
                 <div class="col-md-3 ml-auto">
