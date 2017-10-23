@@ -54,9 +54,47 @@
       margin-bottom: 1rem;
       border: 0;
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+      .name {
+        font-weight: bold;
+      }
       .info {
         margin-left: 8px;
       }
+    }
+  }
+}
+.speaker-container {
+  display: flex;
+  flex-direction: column;
+
+  .speaker-info {
+    display: flex;
+    flex-direction: row;
+    .speaker-bio {
+      min-width: 60%;
+      flex-grow: 1;
+    }
+    .speaker-info {
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  hr {
+    max-width: 95%;
+  }
+  .talk {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lighten($brand-primary, 25%);
+    border-top: 4px solid lighten($brand-primary, 25%);
+    padding: 8px;
+    margin-bottom: 16px;
+    color: black;
+
+    &:hover {
+      background-color: #eee;
+      text-decoration: none !important;
     }
   }
 }

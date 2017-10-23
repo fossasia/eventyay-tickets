@@ -1,21 +1,34 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 {% load bootstrap4 %}
+{% load staticfiles %}
 {% block title %}{% trans "Your Profile" %} :: {{ request.event }}{% endblock %}
 {% block content %}
     <h2>{% trans "Your Profile" %}</h2>
     <p>
         {% trans "This data will be displayed next to your talk slots in the schedule." %}
     </p>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
-        <div class="user-avatar-display">
+        <div class="avatar-form">
             <div class="col-md-3 control-label">
-            {% if request.user.avatar and request.user.avatar != 'False' %}
-                <img src="{{ request.user.avatar.url }}">
-            {% endif %}
+            <img
+              class="avatar"
+              data-gravatar="{{ request.user.gravatar_parameter }}"
+              data-avatar="{% if request.user.avatar %}{{ request.user.avatar.url }}{% endif %}"
+              {% if request.user.get_gravatar %}
+              src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}"
+              {% elif request.user.avatar and request.user.avatar != 'False' %}
+              src="{{ request.user.avatar.url }}"
+              {% endif %}
+            />
             </div>
-            {% bootstrap_field profile_form.avatar layout='inline' %}
+            <div class="avatar-form-fields">
+                {% bootstrap_field profile_form.get_gravatar %}
+                <div class="user-avatar-display">
+                    {% bootstrap_field profile_form.avatar layout='inline' %}
+                </div>
+            </div>
         </div>
         {% bootstrap_field profile_form.name layout='horizontal' %}
         {% bootstrap_field profile_form.biography layout='horizontal' %}
@@ -79,4 +92,5 @@
                 </button>
             </div>
     </form>
+    <script type="text/javascript" src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}

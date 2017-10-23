@@ -93,32 +93,41 @@ class UserForm(forms.Form):
 
 
 class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
-    name = forms.CharField(
-        max_length=100, label=_('Name')
-    )
-    avatar = forms.ImageField(
-        required=False, label=_('Profile picture'),
-        help_text=_('Optional. Will be displayed publically.'),
-    )
+    USER_FIELDS = ['name', 'avatar', 'get_gravatar']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
-        initial = kwargs.pop('initial', dict())
         if self.user:
-            initial['name'] = self.user.name
-            initial['avatar'] = self.user.avatar
             kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
         else:
             kwargs['instance'] = SpeakerProfile()
-        kwargs['initial'] = initial
         super().__init__(*args, **kwargs, event=self.event)
+        initials = dict()
+        if self.user:
+            initials = {
+                field: getattr(self.user, field)
+                for field in self.USER_FIELDS
+            }
+
+        for field in self.USER_FIELDS:
+            self.fields[field] = User._meta.get_field(field).formfield(initial=initials.get(field))
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar and avatar.file and hasattr(avatar, '_size') and avatar._size > 10 * 1024 * 1024:
+            raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
+        return avatar
 
     def save(self, **kwargs):
-        for user_attribute in ('name', 'avatar'):
-            value = self.cleaned_data.get(user_attribute) or None
-            setattr(self.user, user_attribute, value)
-            self.user.save(update_fields=[user_attribute])
+        for user_attribute in self.USER_FIELDS:
+            value = self.cleaned_data.get(user_attribute)
+            if (value is False and user_attribute == 'avatar'):
+                self.user.avatar = None
+            else:
+                setattr(self.user, user_attribute, value)
+                self.user.save(update_fields=[user_attribute])
+
         self.instance.event = self.event
         self.instance.user = self.user
         super().save(**kwargs)

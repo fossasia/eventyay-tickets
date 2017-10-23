@@ -61,13 +61,12 @@
                 </div>
                 {% for speaker in speakers %}
                     <div class="speaker">
-                        <div class="name">
-                            {{ speaker.get_display_name }}
-                        </div>
+                        <a href="{% url "agenda:speaker" code=speaker.code event=request.event.slug %}">
+                            <div class="name">
+                                {{ speaker.get_display_name }}
+                            </div>
+                        </a>
                         <div class="info">
-                            {% if speaker.talk_profile.biography %}
-                            <p class="biography">{{ speaker.talk_profile.biography|rich_text }}</p>
-                            {% endif %}
 
                             {% if speaker.other_talks.count > 1 %}
                                 {% trans 'Other talks by this speaker:' %}
