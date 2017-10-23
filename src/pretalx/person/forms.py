@@ -122,9 +122,12 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
     def save(self, **kwargs):
         for user_attribute in self.USER_FIELDS:
             value = self.cleaned_data.get(user_attribute)
-            if not (value is False and user_attribute == 'avatar'):
+            if (value is False and user_attribute == 'avatar'):
+                self.user.avatar = None
+            else:
                 setattr(self.user, user_attribute, value)
                 self.user.save(update_fields=[user_attribute])
+
         self.instance.event = self.event
         self.instance.user = self.user
         super().save(**kwargs)
