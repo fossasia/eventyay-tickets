@@ -17,6 +17,6 @@ agenda_urls = [
         url('^location/$', location.LocationView.as_view(), name='location'),
         url('^talk/(?P<slug>\w+)/$', schedule.TalkView.as_view(), name='talk'),
         url('^talk/(?P<slug>\w+)/feedback/$', schedule.FeedbackView.as_view(), name='feedback'),
-        url('^speaker/(?P<name>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
+        url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
     ])),
 ]

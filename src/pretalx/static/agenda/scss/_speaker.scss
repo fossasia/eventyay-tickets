@@ -54,9 +54,41 @@
       margin-bottom: 1rem;
       border: 0;
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+      .name {
+        font-weight: bold;
+      }
       .info {
         margin-left: 8px;
       }
     }
+  }
+}
+.speaker-container {
+  display: flex;
+  .speaker-biography {
+    min-width: 60%;
+    flex-grow: 1;
+    hr {
+      max-width: 95%;
+    }
+    .talk {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid lighten($brand-primary, 25%);
+      border-top: 4px solid lighten($brand-primary, 25%);
+      padding: 8px;
+      margin-bottom: 16px;
+      color: black;
+
+      &:hover {
+        background-color: #eee;
+        text-decoration: none !important;
+      }
+    }
+  }
+  .speaker-info {
+    max-width: 320px; 
+    display: flex;
+    flex-direction: column;
   }
 }
