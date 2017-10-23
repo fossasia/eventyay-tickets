@@ -19,10 +19,11 @@ list`_ in our docs to get a better idea of what `pretalx` can do for you.
 
 Project status
 --------------
-`pretalx` is under active development, but depending on your needs, it's
-already production ready. It supports everything required for talk submission,
-speaker communication, and scheduling. You can see our supported features in
-the `feature list`_ in our documentation, and our issues_.
+`pretalx` is under active development, but nevertheless, it's production ready
+and has already been used in several conferences. It supports everything
+required for talk submission, speaker communication, and scheduling. You can
+see our supported features in the `feature list`_ in our documentation, and our
+issues_.
 
 Contributing
 ------------
