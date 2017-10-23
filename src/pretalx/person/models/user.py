@@ -2,6 +2,7 @@ import json
 import random
 import re
 import string
+from hashlib import md5
 
 import pytz
 from django.conf import settings
@@ -82,6 +83,11 @@ class User(AbstractBaseUser):
         verbose_name=_('Profile picture'),
         help_text=_('Optional. Will be displayed publically.'),
     )
+    get_gravatar = models.BooleanField(
+        default=False,
+        verbose_name=_('Retrieve profile picture via gravatar'),
+        help_text=_('If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'),
+    )
     pw_reset_token = models.CharField(null=True, max_length=160)
     pw_reset_time = models.DateTimeField(null=True)
 
@@ -139,3 +145,7 @@ class User(AbstractBaseUser):
         self.save()
         self.profiles.all().update(biography='')
         EventPermission.objects.filter(user=self).update(is_orga=False, invitation_email=None, invitation_token=None)
+
+    @property
+    def gravatar_parameter(self):
+        return md5(self.email.strip().encode()).hexdigest()
