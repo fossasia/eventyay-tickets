@@ -115,7 +115,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
-        if avatar.file and hasattr(avatar, '_size') and avatar._size > 10 * 1024 * 1024:
+        if avatar and avatar.file and hasattr(avatar, '_size') and avatar._size > 10 * 1024 * 1024:
             raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
         return avatar
 
