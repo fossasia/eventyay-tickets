@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -44,6 +45,18 @@ class UserManager(BaseUserManager):
         return user
 
 
+def assign_code(obj, length=6):
+    # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
+    # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
+    # handwriting (2/Z, 4/A, 5/S, 6/G).
+    while True:
+        code = get_random_string(length=length, allowed_chars=User.CODE_CHARSET)
+
+        if not User.objects.filter(code=code).exists():
+            obj.code = code
+            return code
+
+
 class User(AbstractBaseUser):
     """
     The pretalx user model: We don't really need last names and fancy stuff, so
@@ -51,9 +64,14 @@ class User(AbstractBaseUser):
     """
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'nick'
+    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = UserManager()
 
+    code = models.CharField(
+        max_length=16,
+        unique=True, null=True,
+    )
     nick = models.CharField(
         max_length=60, unique=True, validators=[nick_validator],
         verbose_name=_('Nickname'),
@@ -107,6 +125,8 @@ class User(AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
+        if not self.code:
+            assign_code(self)
         return super().save(args, kwargs)
 
     def log_action(self, action, data=None, orga=False):
