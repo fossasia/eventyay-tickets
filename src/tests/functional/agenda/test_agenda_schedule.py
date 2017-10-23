@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 
 
 @pytest.mark.django_db
@@ -71,3 +72,10 @@ def test_talk_speaker_other_talks(client, event, speaker, slot, other_slot, othe
     assert len(response.context['speakers'][0].other_talks) == 0
     assert len(response.context['speakers'][1].other_talks) == 1
     assert response.context['speakers'][1].other_talks[0].submission.title == speaker.submissions.first().title
+
+
+@pytest.mark.django_db
+def test_speaker_page(client, event, speaker, slot):
+    response = client.get(reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug}), follow=True)
+    assert response.status_code == 200
+    assert speaker.profiles.get(event=event).biography in response.content.decode()
