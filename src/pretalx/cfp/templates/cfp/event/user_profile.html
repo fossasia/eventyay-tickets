@@ -15,7 +15,7 @@
             <img
               class="avatar"
               data-gravatar="{{ request.user.gravatar_parameter }}"
-              data-avatar="{{ request.user.avatar.url }}"
+              data-avatar="{% if request.user.avatar %}{{ request.user.avatar.url }}{% endif %}"
               {% if request.user.get_gravatar %}
               src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}"
               {% elif request.user.avatar and request.user.avatar != 'False' %}
