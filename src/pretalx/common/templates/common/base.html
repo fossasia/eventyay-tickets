@@ -7,16 +7,31 @@
     <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     {% if request.event and request.event.settings.cfp_css_file %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
     {% else %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
+            <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/main.scss" %}" />
         {% endcompress %}
     {% endif %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
+    {% compress js %}
+        <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/popper.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/tether/tether.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/bootstrap/js/bootstrap.js" %}"></script>
+
+        <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "common/js/availabilities.js" %}"></script>
+    {% endcompress %}
     {% block custom_header %}
     {% endblock %}
+    {% if request.event and request.event.custom_css %}
+        <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
+    {% endif %}
 </head>
 <body>
 <div id="wrapper">

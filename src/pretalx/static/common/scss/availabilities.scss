@@ -1,4 +1,3 @@
-
 input.availabilities-editor-data {
   display: none;
 }
@@ -8,8 +7,8 @@ input.availabilities-editor-data {
 }
 
 .fc-event.delete {
-  background-color: #CC0000 !important;
-  border-color: #CC0000 !important;
+  background-color: $brand-danger !important;
+  border-color: $brand-danger !important;
 }
 
 .fc-event.delete::before {

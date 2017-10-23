@@ -1,5 +1,5 @@
 @import "../../common/scss/_variables";
-@import "../../vendored/bootstrap-4-dev/scss/bootstrap";
+@import "../../vendored/bootstrap/scss/bootstrap";
 @import "../../vendored/fontawesome/scss/font-awesome";
 
 body {
@@ -13,7 +13,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   z-index: 1000;
-  color: white;
+  color: $white;
 }
 
 .img {

@@ -11,7 +11,14 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_field form.title layout='horizontal' %}
+        {% bootstrap_field form.submission_type layout='horizontal' %}
+        {% bootstrap_field form.abstract layout='horizontal' %}
+        {% bootstrap_field form.description layout='horizontal' %}
+        {% bootstrap_field form.notes layout='horizontal' %}
+        {% bootstrap_field form.content_locale layout='horizontal' %}
+        {% bootstrap_field form.do_not_record layout='horizontal' %}
+        {% bootstrap_field form.duration addon_after='minutes' layout='horizontal' %}
         {% if form.instance.average_score %}
         <div class="form-group row">
             <label class="col-md-3 form-control-label">
@@ -24,11 +31,11 @@
         {% endif %}
         <div class="form-group row">
             {% if action == "create" %}
-                <div class="offset-md-3 col-md-9">
+                <div class="ml-auto col-md-9">
                     <button type="submit" class="btn btn-primary pull-right">{% trans "Create submission" %}</button>
                 </div>
             {% elif action == "edit" %}
-                <div class="offset-md-3 col-md-9">
+                <div class="ml-auto col-md-9">
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 </div>
             {% elif action == "view" %}

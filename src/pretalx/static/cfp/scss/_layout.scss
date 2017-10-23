@@ -8,6 +8,7 @@ body {
   left: 0;
   width: 100%;
   height: 200px;
+  z-index: -1;
 }
 
 #main-container {
@@ -36,11 +37,11 @@ header {
     color: white;
   }
   a:hover {
-    border-bottom: 1px dashed white;
+    border-bottom: 1px dashed $white;
     text-decoration: none;
   }
   a.active {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid $white;
   }
 }
 #event-logo {
@@ -110,6 +111,15 @@ footer {
 
 .add-speaker .input-group {
   padding-left: 8px;
+}
+
+table .btn-secondary {
+  background: $gray-lighter;
+  border-color: white;
+}
+
+.table-responsive {
+  display: table;
 }
 
 @include media-breakpoint-down(sm) {

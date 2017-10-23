@@ -1,6 +1,6 @@
 @import "../../common/scss/_variables";
 @import "../../common/scss/_flags";
-@import "../../vendored/bootstrap-4-dev/scss/bootstrap";
+@import "../../vendored/bootstrap/scss/bootstrap";
 @import "../../vendored/fontawesome/scss/font-awesome";
 @import "../../vendored/datetimepicker/_bootstrap-datetimepicker";
 @import "../../common/scss/availabilities.scss";
@@ -14,7 +14,7 @@ h3 {
 
 table .btn-secondary {
   background: $gray-lighter;
-  border-color: white;
+  border-color: $white;
 }
 
 .i18n-form-group input,
@@ -81,7 +81,4 @@ table .btn-secondary {
     }
 
   }
-}
-
-.pagination {
 }

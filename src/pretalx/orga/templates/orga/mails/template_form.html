@@ -19,7 +19,7 @@
         <legend>{% trans "Mail Template Editor" %}</legend>
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row">
-            <div class="offset-md-3 col-md-9">
+            <div class="ml-auto col-md-9">
                 {% if action == "create" %}
                     <button type="submit" class="btn btn-primary">{% trans "Create template" %}</button>
                 {% elif action == "edit" %}

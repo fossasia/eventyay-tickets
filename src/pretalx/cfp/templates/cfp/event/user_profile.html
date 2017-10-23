@@ -10,16 +10,18 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="user-avatar-display">
+            <div class="col-md-3 control-label">
             {% if request.user.avatar and request.user.avatar != 'False' %}
                 <img src="{{ request.user.avatar.url }}">
             {% endif %}
-            {% bootstrap_field profile_form.avatar %}
+            </div>
+            {% bootstrap_field profile_form.avatar layout='inline' %}
         </div>
-        {% bootstrap_field profile_form.name %}
-        {% bootstrap_field profile_form.biography %}
-        {% bootstrap_field profile_form.availabilities %}
+        {% bootstrap_field profile_form.name layout='horizontal' %}
+        {% bootstrap_field profile_form.biography layout='horizontal' %}
+        {% bootstrap_field profile_form.availabilities layout='horizontal' %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
                     {% trans "Save" %}
                 </button>
@@ -31,9 +33,9 @@
     <h2>{% trans "We have some questions" %}</h2>
     <form action="" method="post">
         {% csrf_token %}
-        {% bootstrap_form questions_form %}
+        {% bootstrap_form questions_form layout='horizontal' %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
                     {% trans "Save" %}
                 </button>
@@ -48,12 +50,12 @@
     </p>
     <form action="" method="post" class="form">
         {% csrf_token %}
-        {% bootstrap_field login_form.old_password %}
-        {% bootstrap_field login_form.email %}
-        {% bootstrap_field login_form.password %}
-        {% bootstrap_field login_form.password_repeat %}
+        {% bootstrap_field login_form.old_password layout='horizontal' %}
+        {% bootstrap_field login_form.email layout='horizontal' %}
+        {% bootstrap_field login_form.password layout='horizontal' %}
+        {% bootstrap_field login_form.password_repeat layout='horizontal' %}
         <div class="row">
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
                     {% trans "Save" %}
                 </button>
@@ -61,16 +63,17 @@
         </div>
     </form>
     <div>&nbsp;</div>
-    <div class="alert alert-danger">
-        {% trans "You can delete your account here – all names, emails etc will be overwritten. <strong>This action is irreversible.</strong>" %}
-    </div>
+    <h3>{% trans "Account deletion" %}</h3>
     <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
         {% csrf_token %}
+        <div class="alert alert-danger">
+            {% trans "You can delete your account here – all names, emails etc will be overwritten. <strong>This action is irreversible.</strong>" %}
+        </div>
         <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
                 <input type="checkbox" name="really" id="really">
                 <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
             </div>
-            <div class="col-md-3 offset-md-9">
+            <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
                     {% trans "Delete my account" %}
                 </button>

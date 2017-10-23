@@ -23,12 +23,12 @@ def regenerate_css(event_id: int):
         return
 
     for local_app in local_apps:
+        path = os.path.join(settings.STATIC_ROOT, local_app, 'scss/main.scss')
         sassrules = []
+
         if event.primary_color:
             sassrules.append('$brand-primary: {};'.format(event.primary_color))
-
-        path = os.path.join(settings.STATIC_ROOT, local_app, 'scss/main.scss')
-        sassrules.append(f'@import "{path}";')
+            sassrules.append(f'@import "{path}";')
 
         cf = dict(django_libsass.CUSTOM_FUNCTIONS)
         cf['static'] = static

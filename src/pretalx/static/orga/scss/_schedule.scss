@@ -28,7 +28,7 @@ h3, .schedule-header, .schedule-alert {
   -webkit-user-select: none;
   -ms-user-select: none;
   margin-right: 250px;
-  border-right: #000 4px solid;
+  border-right: $gray-800 4px solid;
 
   .hover-active {
     background: lighten($gray-light, 30%);
@@ -135,8 +135,8 @@ h3, .schedule-header, .schedule-alert {
 }
 
 .talk-box {
-  border: 1px solid #1C4A3B;
-  border-top: 4px solid #1C4A3B;
+  border: 1px solid $brand-primary;
+  border-top: 4px solid $brand-primary;
   border-width: 1;
   padding: 0px 8px;
   cursor: pointer;
@@ -153,18 +153,18 @@ h3, .schedule-header, .schedule-alert {
   }
 }
 .talk-box.accepted {
-  background: $gray-light;
+  background: lighten($brand-success, 30%);
   color: $white;
 }
 .talk-box.drag-source {
   opacity: 0.5;
 }
 .talk-box.confirmed {
-  background: $green;
+  background: lighten($brand-success, 10%);
 }
 .talk-box.dragged {
   position: absolute;
-  background: #1C4A3B;
+  background: $brand-success;
   pointer-events: none;
   color: white;
   z-index: 9001;

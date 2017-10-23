@@ -1,14 +1,6 @@
 @import "../../common/scss/_variables";
-@import "../../vendored/bootstrap-4-dev/scss/bootstrap";
+@import "../../vendored/bootstrap/scss/bootstrap";
 @import "../../vendored/fontawesome/scss/font-awesome";
 @import "../../common/scss/availabilities";
+@import "../../common/scss/_forms";
 @import "_layout";
-
-table .btn-secondary {
-  background: $gray-lighter;
-  border-color: white;
-}
-
-.table-responsive {
-  display: table;
-}
