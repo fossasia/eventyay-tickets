@@ -11,6 +11,7 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+!src/pretalx/static/vendored/**/dist
 downloads/
 eggs/
 .eggs/
