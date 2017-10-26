@@ -99,6 +99,10 @@ footer {
 }
 .search-form {
   display: flex;
+  margin-bottom: 1rem;
+  .form-group {
+    margin-bottom: 0;
+  }
   .form-group label {
     display: none;
   }
