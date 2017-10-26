@@ -259,7 +259,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'jquery',
     'djangoformsetjs',
-    'pretalx.common',
+    'pretalx.common.CommonConfig',
     'pretalx.event',
     'pretalx.mail',
     'pretalx.person',
