@@ -164,7 +164,9 @@ class CfPQuestionDelete(View):
             question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
             messages.success(request, _('The question has been deleted.'))
         except ProtectedError:
-            messages.error(request, _('You cannot delete a question that has already been answered.'))
+            question.active = False
+            question.save()
+            messages.error(request, _('You cannot delete a question that has already been answered. We have deactivated the question instead.'))
         return redirect(self.request.event.cfp.urls.questions)
 
 
