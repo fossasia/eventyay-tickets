@@ -105,7 +105,7 @@ class SubmissionUnconfirm(SubmissionViewMixin, View):
             submission.unconfirm(person=request.user, orga=True)
             messages.success(request, _('The submission has been unconfirmed. It is now accepted.'))
         except SubmissionError:
-            messages.error(request, _('A submission must be confirmed to become accepted.'))
+            messages.error(request, _('A submission must be confirmed to be unconfirmed, naturally.'))
         return redirect(submission.orga_urls.base)
 
 

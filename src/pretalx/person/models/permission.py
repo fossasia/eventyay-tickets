@@ -22,7 +22,7 @@ class EventPermission(LogMixin, models.Model):
     )
     is_reviewer = models.BooleanField(
         default=False,
-        verbose_name=_('Reviews permissions to this event'),
+        verbose_name=_('May write reviews for this event'),
     )
     invitation_token = models.CharField(
         max_length=255,

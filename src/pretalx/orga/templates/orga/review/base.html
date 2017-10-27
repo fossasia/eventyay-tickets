@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block headline %}
     {% if submission %}
-        {% blocktrans with title=submission.title %}
+        {% blocktrans with title=submission.title trimmed %}
             Reviews for submission »{{ title }}«
         {% endblocktrans %}
         ({{ submission.display_speaker_names }})

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventpermission',
             name='is_reviewer',
-            field=models.BooleanField(default=False, verbose_name='Reviews permissions to this event'),
+            field=models.BooleanField(default=False, verbose_name='May write reviews for this event'),
         ),
         migrations.AlterField(
             model_name='speakerprofile',

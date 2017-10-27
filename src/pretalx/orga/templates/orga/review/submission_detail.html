@@ -4,7 +4,7 @@
 {% block review_content %}
 
 <legend>
-    {% blocktrans with name=form.instance.user.get_display_name %}
+    {% blocktrans with name=form.instance.user.get_display_name trimmed %}
         Review by {{ name }}
     {% endblocktrans %}
 </legend>
