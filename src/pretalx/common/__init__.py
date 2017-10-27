@@ -9,7 +9,7 @@ class CommonConfig(AppConfig):
     def ready(self):
         from pretalx.event.models import Event
         from pretalx.common.tasks import regenerate_css
-        from django.db import connection
+        from django.db import connection, utils
 
         if Event._meta.db_table not in connection.introspection.table_names():
             # commands like `compilemessages` execute ready(), but do not
@@ -17,8 +17,11 @@ class CommonConfig(AppConfig):
             # table has not been created yet.
             return
 
-        for event in Event.objects.all():
-            regenerate_css.apply_async(args=(event.pk,))
+        try:
+            for event in Event.objects.all():
+                regenerate_css.apply_async(args=(event.pk,))
+        except utils.OperationalError:
+            pass
 
 
 with suppress(ImportError):
