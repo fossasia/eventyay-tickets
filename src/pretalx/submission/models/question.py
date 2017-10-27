@@ -75,6 +75,11 @@ class Question(LogMixin, models.Model):
         default=0,
         verbose_name=_('position'),
     )
+    active = models.BooleanField(
+        default=True,
+        verbose_name=_('active'),
+        help_text=_('Inactive questions will no longer be asked.'),
+    )
 
     class urls(Urls):
         base = '{self.event.cfp.urls.questions}/{self.pk}'
