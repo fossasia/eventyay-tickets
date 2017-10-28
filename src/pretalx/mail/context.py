@@ -46,9 +46,8 @@ def template_context_from_submission(submission):
         ),
         'event_name': submission.event.name,
         'submission_title': submission.title,
-        'submission_url': build_absolute_uri(
-            'cfp:event.user.submission.edit',
-            kwargs={'event': submission.event.slug, 'code': submission.code}
-        ),
+        'submission_url': submission.urls.user_base.full(scheme='https'),
+        'speakers': submission.display_speaker_names,
+        'orga_url': submission.orga_urls.base.full(scheme='https'),
     })
     return ctx
