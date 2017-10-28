@@ -1,5 +1,6 @@
 import bs4
 import pytest
+from django.core import mail as djmail
 
 from pretalx.submission.models import Submission, SubmissionType
 
@@ -21,6 +22,7 @@ class TestWizard:
 
     def perform_init_wizard(self, client):
         # Start wizard
+        djmail.outbox = []
         response, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
         assert current_url.endswith('/info/')
         return response, current_url
@@ -80,6 +82,7 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
+        event.settings.set('mail_on_new_submission', True)
         submission_type = SubmissionType.objects.filter(event=event).first().pk
         answer_data = {f'questions-question_{question.pk}': '42', }
 
@@ -108,6 +111,7 @@ class TestWizard:
         assert user.email == 'testuser@example.org'
         assert user.name == 'Jane Doe'
         assert user.profiles.get(event=event).biography == 'l337 hax0r'
+        assert len(djmail.outbox) == 2  # user email plus orga email
 
     @pytest.mark.django_db
     def test_wizard_existing_user(self, event, client, question, user, speaker_question, choice_question, multiple_choice_question):
@@ -142,6 +146,7 @@ class TestWizard:
         assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+        assert len(djmail.outbox) == 1
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user(self, event, client, question, user):
@@ -167,6 +172,7 @@ class TestWizard:
         assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+        assert len(djmail.outbox) == 1
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
@@ -188,6 +194,7 @@ class TestWizard:
         assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+        assert len(djmail.outbox) == 1
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions_broken_template(self, event, client, user):
@@ -212,6 +219,7 @@ class TestWizard:
         assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+        assert len(djmail.outbox) == 0
 
 
 # TODO: test failed registration
