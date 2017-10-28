@@ -1,6 +1,7 @@
 import datetime
 
 import pytest
+from django.utils.timezone import now
 
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models import Submission
@@ -86,6 +87,6 @@ def test_unfreeze_bug72(talk_slot):
 def test_scheduled_talks(talk_slot, room):
     assert talk_slot.schedule.scheduled_talks.count() == 0
     talk_slot.room = room
-    talk_slot.start = datetime.datetime.now()
+    talk_slot.start = now()
     talk_slot.save()
     assert talk_slot.schedule.scheduled_talks.count() == 1
