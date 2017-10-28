@@ -36,10 +36,29 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
+        return self.object
+
+    @cached_property
+    def object(self):
         try:
             return self.request.event
         except AttributeError:
             return
+
+    @cached_property
+    def settings_form(self):
+        if self.object:
+            return EventSettingsForm(
+                obj=self.object,
+                prefix='settings',
+                attribute_name='settings',
+                data=self.request.POST if self.request.method == 'POST' else None,
+            )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['settings_form'] = self.settings_form
+        return context
 
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
@@ -56,10 +75,18 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
                 is_orga=True,
             )
         else:
+            self.settings_form.save()
             form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
             messages.success(self.request, _('The event settings have been saved.'))
         regenerate_css.apply_async(args=(form.instance.pk,))
         return ret
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid() and self.settings_form.is_valid():
+            return self.form_valid(form)
+        messages.error(request, _('Hm, we could not save your changes, please review the errors below.'))
+        return self.form_invalid(form)
 
 
 class EventMailSettings(ActionFromUrl, FormView):

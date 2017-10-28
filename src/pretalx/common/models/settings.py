@@ -34,3 +34,15 @@ If this wasn't you, you can just ignore this email.
 All the best,
 your {event} team.
 """)), LazyI18nString)
+settings_hierarkey.add_default('mail_on_new_submission', 'False', bool)
+settings_hierarkey.add_default('mail_text_new_submission', LazyI18nString.from_gettext(ugettext_noop("""Hi,
+
+you have received a new submission for your event {event}:
+»{title}« by {speakers}.
+You can see details at
+
+  {url}
+
+All the best,
+your {event} CfP system.
+""")), LazyI18nString)

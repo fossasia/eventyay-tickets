@@ -6,6 +6,7 @@ from .submission import SubmissionForm
 __all__ = [
     'CfPForm',
     'EventForm',
+    'EventCfPSettingsForm',
     'QuestionForm',
     'ReviewForm',
     'ReviewSettingsForm',

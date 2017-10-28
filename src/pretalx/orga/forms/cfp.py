@@ -12,15 +12,11 @@ from pretalx.submission.models import (
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_show_deadline = forms.BooleanField(label=_('Display deadline publicly'),
                                            required=False)
-
-    class Meta:
-        model = CfP
-        fields = [
-            'headline', 'text', 'deadline',
-        ]
-        widgets = {
-            'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
-        }
+    mail_on_new_submission = forms.BooleanField(
+        label=_('Send mail on new submission'),
+        help_text=_('If this setting is checked, you will receive an email to the orga address for every received submission.'),
+        required=False
+    )
 
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
