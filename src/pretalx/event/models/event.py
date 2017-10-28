@@ -115,6 +115,7 @@ class Event(LogMixin, models.Model):
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
     )
+    default_templates = [accept_template, ack_template, reject_template, update_template]
 
     class urls(Urls):
         base = '/{self.slug}'
