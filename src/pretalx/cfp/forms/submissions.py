@@ -46,7 +46,7 @@ class QuestionsForm(forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        queryset = self.event.questions.all()
+        queryset = self.event.questions.filter(active=True)
         if self.target_type:
             queryset = queryset.filter(target=self.target_type)
         for question in queryset.prefetch_related('options'):

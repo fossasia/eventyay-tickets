@@ -15,6 +15,9 @@
         {% bootstrap_field form.variant layout='horizontal' %}
         {% bootstrap_field form.help_text layout='horizontal' %}
         {% bootstrap_field form.required layout='horizontal' %}
+        {% if action != 'create' %}
+            {% bootstrap_field form.active layout='horizontal' %}
+        {% endif %}
 
         <fieldset id="answer-options">
             <legend>{% trans "Answer options" %}</legend>

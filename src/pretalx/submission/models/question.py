@@ -7,6 +7,15 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 
 
+class QuestionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(active=False)
+
+
+class AllQuestionManager(models.Manager):
+    pass
+
+
 class QuestionVariant(Choices):
     NUMBER = 'number'
     STRING = 'string'
@@ -75,6 +84,13 @@ class Question(LogMixin, models.Model):
         default=0,
         verbose_name=_('position'),
     )
+    active = models.BooleanField(
+        default=True,
+        verbose_name=_('active'),
+        help_text=_('Inactive questions will no longer be asked.'),
+    )
+    objects = QuestionManager()
+    all_objects = AllQuestionManager()
 
     class urls(Urls):
         base = '{self.event.cfp.urls.questions}/{self.pk}'

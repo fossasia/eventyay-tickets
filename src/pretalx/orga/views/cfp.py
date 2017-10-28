@@ -62,8 +62,8 @@ class CfPQuestionList(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['speaker_questions'] = self.request.event.questions.filter(target='speaker')
-        ctx['submission_questions'] = self.request.event.questions.filter(target='submission')
+        ctx['speaker_questions'] = Question.all_objects.filter(event=self.request.event, target='speaker')
+        ctx['submission_questions'] = Question.all_objects.filter(event=self.request.event, target='submission')
         return ctx
 
 
@@ -164,7 +164,9 @@ class CfPQuestionDelete(View):
             question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
             messages.success(request, _('The question has been deleted.'))
         except ProtectedError:
-            messages.error(request, _('You cannot delete a question that has already been answered.'))
+            question.active = False
+            question.save()
+            messages.error(request, _('You cannot delete a question that has already been answered. We have deactivated the question instead.'))
         return redirect(self.request.event.cfp.urls.questions)
 
 
