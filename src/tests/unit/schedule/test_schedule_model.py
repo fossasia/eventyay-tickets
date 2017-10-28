@@ -1,5 +1,3 @@
-import datetime
-
 import pytest
 
 from pretalx.schedule.models import Schedule, TalkSlot

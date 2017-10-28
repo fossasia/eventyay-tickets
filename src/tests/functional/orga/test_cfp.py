@@ -1,5 +1,7 @@
 import pytest
 
+from pretalx.submission.models import Question
+
 
 @pytest.mark.django_db
 def test_delete_submission_type(orga_client, submission_type, default_submission_type):
@@ -27,11 +29,21 @@ def test_delete_default_submission_type(orga_client, submission_type, default_su
 
 
 @pytest.mark.django_db
+def test_all_questions_in_list(orga_client, question, inactive_question, event):
+    assert event.questions.count() == 1
+    assert Question.all_objects.filter(event=event).count() == 2
+    response = orga_client.get(event.cfp.urls.questions, follow=True)
+    assert question.question in response.content.decode()
+    assert inactive_question.question in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_delete_question(orga_client, event, question):
     assert event.questions.count() == 1
     response = orga_client.get(question.urls.delete, follow=True)
     assert response.status_code == 200
     assert event.questions.count() == 0
+    assert Question.all_objects.filter(event=event).count() == 0
 
 
 @pytest.mark.django_db
@@ -39,7 +51,10 @@ def test_cannot_delete_answered_question(orga_client, event, question, answer):
     assert event.questions.count() == 1
     response = orga_client.get(question.urls.delete, follow=True)
     assert response.status_code == 200
-    assert event.questions.count() == 1
+    question = Question.all_objects.get(pk=question.pk)
+    assert question
+    assert not question.active
+    assert event.questions.count() == 0
 
 
 @pytest.mark.django_db
@@ -51,6 +66,7 @@ def test_can_add_simple_question(orga_client, event):
             'target': 'submission',
             'question_0': 'What is your name?',
             'variant': 'string',
+            'active': True,
             'help_text_0': 'Answer if you want to reach the other side!',
         }, follow=True,
     )
@@ -71,6 +87,7 @@ def test_can_add_choice_question(orga_client, event):
             'target': 'submission',
             'question_0': 'Is it an African or a European swallow?',
             'variant': 'choices',
+            'active': True,
             'help_text_0': 'Answer if you want to reach the other side!',
             'form-TOTAL_FORMS': 2,
             'form-INITIAL_FORMS': 0,
@@ -100,6 +117,7 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
             'target': 'submission',
             'question_0': 'Is it an African or a European swallow?',
             'variant': 'choices',
+            'active': True,
             'help_text_0': 'Answer if you want to reach the other side!',
             'form-TOTAL_FORMS': 3,
             'form-INITIAL_FORMS': 3,

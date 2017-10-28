@@ -47,6 +47,14 @@ def question(event):
 
 
 @pytest.fixture
+def inactive_question(event):
+    return Question.objects.create(
+        event=event, question='So, on a scale from 1–100, how much do you like red?', variant=QuestionVariant.NUMBER,
+        target='submission', required=False, active=False,
+    )
+
+
+@pytest.fixture
 def answer(event, submission, question):
     return Answer.objects.create(answer='11', submission=submission, question=question)
 
