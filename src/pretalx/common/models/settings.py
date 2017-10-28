@@ -37,12 +37,12 @@ your {event} team.
 settings_hierarkey.add_default('mail_on_new_submission', 'False', bool)
 settings_hierarkey.add_default('mail_text_new_submission', LazyI18nString.from_gettext(ugettext_noop("""Hi,
 
-you have received a new submission for your event {event}:
-»{title}« by {speakers}.
+you have received a new submission for your event {event_name}:
+»{submission_title}« by {speakers}.
 You can see details at
 
-  {url}
+  {orga_url}
 
 All the best,
-your {event} CfP system.
+your {event_name} CfP system.
 """)), LazyI18nString)
