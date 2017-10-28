@@ -171,7 +171,7 @@ class TemplateList(TemplateView):
         ctx['other'] = [
             MailTemplateForm(instance=template, read_only=True)
             for template
-            in self.request.event.mail_templates.exclude(pk__in=[t.pk for t in self.request.event.default_templates])
+            in self.request.event.mail_templates.exclude(pk__in=[accept.pk, ack.pk, reject.pk, update.pk])
         ]
         return ctx
 
