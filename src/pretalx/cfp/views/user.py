@@ -246,7 +246,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     def form_valid(self, form):
         form.save()
         messages.success(self.request, _('The invitation was sent!'))
-        submission.log_action('pretalx.submission.speakers.invite', person=self.request.user)
+        self.get_object().log_action('pretalx.submission.speakers.invite', person=self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self):
