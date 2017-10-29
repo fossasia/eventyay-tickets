@@ -165,3 +165,17 @@ table .btn-secondary {
     margin: 0 16px;
   }
 }
+
+.user-logs {
+  position: absolute;
+  left: 100%;
+  top: 5%;
+  width: 240px;
+  z-index: -1;
+
+  .panel-heading {
+    background-color: $gray-lightest;
+    margin-bottom: -10px;
+    padding: 8px;
+  }
+}
