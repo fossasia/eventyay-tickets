@@ -77,6 +77,7 @@ class SubmissionAccept(SubmissionViewMixin, View):
 
         try:
             submission.accept(person=request.user)
+            submission.log_action('pretalx.submission.accept', person=request.user, orga=True)
             messages.success(request, _('The submission has been accepted.'))
         except SubmissionError:
             messages.error(request, _('A submission must be submitted or rejected to become accepted.'))
@@ -90,6 +91,7 @@ class SubmissionConfirm(SubmissionViewMixin, View):
 
         try:
             submission.confirm(person=request.user, orga=True)
+            submission.log_action('pretalx.submission.confirm', person=request.user, orga=True)
             messages.success(request, _('The submission has been confirmed.'))
         except SubmissionError:
             messages.error(request, _('A submission must be accepted to become confirmed.'))
@@ -103,6 +105,7 @@ class SubmissionUnconfirm(SubmissionViewMixin, View):
 
         try:
             submission.unconfirm(person=request.user, orga=True)
+            submission.log_action('pretalx.submission.unconfirm', person=request.user, orga=True)
             messages.success(request, _('The submission has been unconfirmed. It is now accepted.'))
         except SubmissionError:
             messages.error(request, _('A submission must be confirmed to be unconfirmed, naturally.'))
@@ -256,7 +259,9 @@ class SubmissionDelete(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/delete.html'
 
     def post(self, request, *args, **kwargs):
-        self.get_object().remove(person=request.user)
+        submission = self.get_object()
+        submission.remove(person=request.user)
+        submission.log_action('pretalx.submission.delete', person=request.user, orga=True)
         messages.success(request, _('The submission has been deleted.'))
         return redirect(request.event.orga_urls.submissions)
 

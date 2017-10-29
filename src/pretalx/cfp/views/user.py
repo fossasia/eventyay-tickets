@@ -142,7 +142,8 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
             return redirect(request.event.urls.login)
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
-            submission.confirm(person=request.user, orga=False)
+            submission.confirm(person=request.user)
+            submission.log_action('pretalx.submission.confirm', person=request.user)
             messages.success(self.request, _('Your submission has been confirmed – we\'re looking forward to seeing you!'))
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, _('This submission has already been confirmed – we\'re looking forward to seeing you!'))
@@ -245,6 +246,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     def form_valid(self, form):
         form.save()
         messages.success(self.request, _('The invitation was sent!'))
+        submission.log_action('pretalx.submission.speakers.invite', person=self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self):
