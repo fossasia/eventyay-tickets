@@ -13,18 +13,23 @@
                 <p class="meta">
                     <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
                     {% if log.person %}
-                        <br><span class="fa fa-user fa-fw"></span>
-                        {% if log.person.name %}
-                            {{ log.person.name }}
+                        {% if log.is_orga_action %}
+                            <br><span class="fa fa-check-circle fa-fw"
+                                    data-toggle="tooltip"
+                                    title="{% trans "This change was performed by a member of the event orga." %}">
+                            </span>
                         {% else %}
-                            {{ log.person.nick }}
+                            <br><span class="fa fa-user fa-fw"></span>
                         {% endif %}
-                    {% endif %}
-                    {% if log.is_orga_action %}
-                        <span class="fa fa-check-circle fa-fw"
-                                data-toggle="tooltip"
-                                title="{% trans "This change was performed by a member of the event orga." %}">
-                        </span>
+                        {% if log.is_orga_action and hide_orga %}
+                            {% trans "An orga member" %}
+                        {% else %}
+                            {% if log.person.name %}
+                                {{ log.person.name }}
+                            {% else %}
+                                {{ log.person.nick }}
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
                 </p>
 
