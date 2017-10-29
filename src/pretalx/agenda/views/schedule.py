@@ -129,7 +129,6 @@ class FrabXCalView(ScheduleDataView):
 
 class ICalView(ScheduleDataView):
     def get(self, request, event, **kwargs):
-        tz = pytz.timezone(self.request.event.timezone)
         schedule = self.get_object()
         netloc = urlparse(settings.SITE_URL).netloc
 
@@ -141,21 +140,7 @@ class ICalView(ScheduleDataView):
             is_visible=True
         ).prefetch_related('submission__speakers').select_related('submission', 'room').order_by('start')
         for talk in talks:
-            vevent = cal.add('vevent')
-
-            speakers = ', '.join([p.name for p in talk.submission.speakers.all()])
-            vevent.add('summary').value = f'{talk.submission.title} - {speakers}'
-            vevent.add('dtstamp').value = creation_time
-            vevent.add('location').value = str(talk.room.name)
-            vevent.add('uid').value = 'pretalx-{}-{}@{}'.format(
-                request.event.slug, talk.submission.code,
-                netloc
-            )
-
-            vevent.add('dtstart').value = talk.start.astimezone(tz)
-            vevent.add('dtend').value = talk.end.astimezone(tz)
-            vevent.add('description').value = talk.submission.abstract or ""
-            vevent.add('url').value = talk.submission.urls.public.full(scheme='https')
+            talk.build_ical(cal, creation_time=creation_time, netloc=netloc)
 
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
         resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}.ics"'

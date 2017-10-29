@@ -1,5 +1,8 @@
 from datetime import timedelta
+from urllib.parse import urlparse
 
+import pytz
+from django.conf import settings
 from django.db import models
 
 from pretalx.common.mixins import LogMixin
@@ -71,3 +74,22 @@ class TalkSlot(LogMixin, models.Model):
         if save:
             new_slot.save()
         return new_slot
+
+    def build_ical(self, calendar, creation_time=None, netloc=None):
+        cretation_time = creation_time or datetime.now(pytz.utc)
+        netloc = netloc or urlparse(settings.SITE_URL).netloc
+        tz = pytz.timezone(self.submission.event.timezone)
+
+        vevent = calendar.add('vevent')
+        vevent.add('summary').value = f'{self.submission.title} - {self.submission.display_speaker_names}'
+        vevent.add('dtstamp').value = creation_time
+        vevent.add('location').value = str(self.room.name)
+        vevent.add('uid').value = 'pretalx-{}-{}@{}'.format(
+            self.submission.event.slug, self.submission.code,
+            netloc
+        )
+
+        vevent.add('dtstart').value = self.start.astimezone(tz)
+        vevent.add('dtend').value = self.end.astimezone(tz)
+        vevent.add('description').value = self.submission.abstract or ""
+        vevent.add('url').value = self.submission.urls.public.full(scheme='https')
