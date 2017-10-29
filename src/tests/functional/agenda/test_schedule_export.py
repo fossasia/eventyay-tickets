@@ -46,3 +46,12 @@ def test_schedule_ical_export(slot, client, schedule_schema):
 
     content = response.content.decode()
     assert slot.submission.title in content
+
+
+@pytest.mark.django_db
+def test_schedule_single_ical_export(slot, client, schedule_schema):
+    response = client.get(slot.submission.urls.ical, follow=True)
+    assert response.status_code == 200
+
+    content = response.content.decode()
+    assert slot.submission.title in content
