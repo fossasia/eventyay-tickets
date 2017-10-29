@@ -149,6 +149,7 @@ class Submission(LogMixin, models.Model):
         confirm = '{user_base}/confirm'
         public = '{self.event.urls.base}/talk/{self.code}'
         feedback = '{public}/feedback/'
+        ical = '{public}/ical/'
         invite = '{user_base}/invite'
         accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
 

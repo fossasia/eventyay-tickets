@@ -234,6 +234,26 @@ class TalkView(EventPageMixin, DetailView):
         return ctx
 
 
+class SingleICalView(EventPageMixin, DetailView):
+    model = Submission
+    slug_field = 'code'
+
+    def get(self, request, event, **kwargs):
+        schedule = self.get_object()
+        netloc = urlparse(settings.SITE_URL).netloc
+
+        cal = vobject.iCalendar()
+        cal.add('prodid').value = '-//pretalx//{}//'.format(netloc)
+        creation_time = datetime.now(pytz.utc)
+
+        talk = self.get_object()
+        talk.build_ical(cal)
+
+        resp = HttpResponse(cal.serialize(), content_type='text/calendar')
+        resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}-{talk.submission.code}.ics"'
+        return resp
+
+
 class ChangelogView(TemplateView):
     template_name = 'agenda/changelog.html'
 
