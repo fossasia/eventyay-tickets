@@ -239,14 +239,11 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = 'code'
 
     def get(self, request, event, **kwargs):
-        schedule = self.get_object()
+        talk = self.get_object().slots.get(schedule=self.request.event.current_schedule)
         netloc = urlparse(settings.SITE_URL).netloc
 
         cal = vobject.iCalendar()
-        cal.add('prodid').value = '-//pretalx//{}//'.format(netloc)
-        creation_time = datetime.now(pytz.utc)
-
-        talk = self.get_object()
+        cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
         talk.build_ical(cal)
 
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')

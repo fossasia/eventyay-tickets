@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import pytz
@@ -76,7 +76,7 @@ class TalkSlot(LogMixin, models.Model):
         return new_slot
 
     def build_ical(self, calendar, creation_time=None, netloc=None):
-        cretation_time = creation_time or datetime.now(pytz.utc)
+        creation_time = creation_time or datetime.now(pytz.utc)
         netloc = netloc or urlparse(settings.SITE_URL).netloc
         tz = pytz.timezone(self.submission.event.timezone)
 
