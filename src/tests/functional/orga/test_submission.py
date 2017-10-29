@@ -85,6 +85,20 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_unconfirm_submission(orga_client, confirmed_submission):
+    assert confirmed_submission.state == SubmissionStates.CONFIRMED
+
+    response = orga_client.get(
+        confirmed_submission.orga_urls.unconfirm,
+        follow=True,
+    )
+    confirmed_submission.refresh_from_db()
+
+    assert response.status_code == 200
+    assert confirmed_submission.state == SubmissionStates.ACCEPTED
+
+
+@pytest.mark.django_db
 def test_orga_can_delete_submission(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
     assert Submission.objects.count() == 1
