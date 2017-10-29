@@ -27,6 +27,9 @@
             </a>
         {% endif %}
         <small>
+            <a href="{{ talk.urls.ical }}">
+                <span class="fa fa-calendar"></span>
+            </a>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
         </small>
     </h3>
