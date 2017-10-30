@@ -29,6 +29,11 @@ def locale_context(request):
     return ctx
 
 
+def messages(request):
+    from pretalx.common.messages import phrases
+    return {'phrases': phrases}
+
+
 def system_information(request):
     ctx = {}
     if settings.DEBUG:

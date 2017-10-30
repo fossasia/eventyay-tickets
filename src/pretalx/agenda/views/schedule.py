@@ -16,6 +16,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
+from pretalx.common.messages import phrases
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Feedback, Submission
@@ -298,7 +299,7 @@ class FeedbackView(EventPageMixin, FormView):
             return super().form_invalid(form)
         ret = super().form_valid(form)
         form.save()
-        messages.success(self.request, _('Thank you for your feedback!'))
+        messages.success(self.request, phrases.agenda.feedback_success)
         return ret
 
     def get_success_url(self):

@@ -265,7 +265,7 @@ INSTALLED_APPS = [
     'pretalx.person',
     'pretalx.schedule',
     'pretalx.submission',
-    'pretalx.agenda',
+    'pretalx.agenda.AgendaConfig',
     'pretalx.cfp',
     'pretalx.orga',
 ]
@@ -338,6 +338,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'pretalx.common.context_processors.add_events',
                 'pretalx.common.context_processors.locale_context',
+                'pretalx.common.context_processors.messages',
                 'pretalx.common.context_processors.system_information',
             ],
             'loaders': template_loaders

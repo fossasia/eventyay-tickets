@@ -2,5 +2,7 @@ from django.apps import AppConfig
 
 
 class AgendaConfig(AppConfig):
-    label = 'pretalxagenda'
     name = 'pretalx.agenda'
+
+    def ready(self):
+        from .messages import AgendaMessages
