@@ -1,6 +1,9 @@
 import urllib
+from contextlib import suppress
 
-from django.db.models import Q
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models import CharField, Q
+from django.db.models.functions import Lower
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from i18nfield.forms import I18nModelForm
@@ -50,8 +53,19 @@ class Sortable:
     def sort_queryset(self, qs):
         sort_key = self.request.GET.get('sort')
         if sort_key:
-            if sort_key in self.sortable_fields or (sort_key.startswith('-') and sort_key[1:] in self.sortable_fields):
-                qs = qs.order_by(sort_key)
+            plain_key = sort_key[1:] if sort_key.startswith('-') else sort_key
+            reverse = not (plain_key == sort_key)
+            if plain_key in self.sortable_fields:
+                is_text = False
+                with suppress(FieldDoesNotExist):
+                    is_text = isinstance(qs.model._meta.get_field(plain_key), CharField)
+
+                if is_text:
+                    # TODO: this only sorts direct lookups case insensitively
+                    # A sorting field like 'speaker__name' will not be found
+                    qs = qs.annotate(key=Lower(plain_key)).order_by('-key' if reverse else 'key')
+                else:
+                    qs = qs.order_by(sort_key)
         return qs
 
 
