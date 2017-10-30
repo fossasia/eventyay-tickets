@@ -73,7 +73,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             if self.login_form.is_valid():
                 self.login_form.save()
                 messages.success(self.request, _('Your changes have been saved.'))
-                request.user.log_action('pretalx.user.password.update', person=request.user)
+                request.user.log_action('pretalx.user.password.update')
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
         elif self.profile_form.is_bound:
             if self.profile_form.is_valid():
