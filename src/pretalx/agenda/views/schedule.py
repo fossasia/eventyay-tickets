@@ -16,7 +16,7 @@ from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.messages import phrases
+from pretalx.common.phrases import phrases
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Feedback, Submission
 

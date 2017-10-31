@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext as _
 
-from pretalx.common.messages import BaseMessages, Messages
+from pretalx.common.phrases import BasePhrases, Phrases
 
 
-class AgendaMessages(Messages, app='agenda'):
+class AgendaPhrases(Phrases, app='agenda'):
     feedback_success = [
         _('Thank you for your feedback!'),
         _('Thanks, we (and our speakers) appreciate your feedback!'),
@@ -23,7 +23,7 @@ class AgendaMessages(Messages, app='agenda'):
     feedback = _('Feedback')
     feedback_personal = _('This review is for you personally, not for all speakers in this talk.')
     feedback_empty = _('There has been no feedback for this talk yet.')
-    feedback_send = BaseMessages.send + [
+    feedback_send = BasePhrases.send + [
         _('Send feedback'),
         _('Send review'),
     ]

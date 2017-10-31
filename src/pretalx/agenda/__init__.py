@@ -5,4 +5,4 @@ class AgendaConfig(AppConfig):
     name = 'pretalx.agenda'
 
     def ready(self):
-        from .messages import AgendaMessages  # noqa
+        from .phrases import AgendaPhrases  # noqa

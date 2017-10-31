@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 _phrase_book = dict()
 
 
-class MessagesMetaClass(ABCMeta):
+class PhrasesMetaClass(ABCMeta):
 
     def __new__(mcls, class_name, bases, namespace, app):
         new = super().__new__(mcls, class_name, bases, namespace)
@@ -17,7 +17,7 @@ class MessagesMetaClass(ABCMeta):
         super().__init__(*args, **kwargs)
 
 
-class Messages(metaclass=MessagesMetaClass, app=''):
+class Phrases(metaclass=PhrasesMetaClass, app=''):
 
     def __getattribute__(self, attribute):
         ret = super().__getattribute__(attribute)
@@ -35,11 +35,11 @@ class PhraseBook:
 phrases = PhraseBook()
 
 
-class BaseMessages(Messages, app='base'):
+class BasePhrases(Phrases, app='base'):
     """
-    This class contains base messages that are guaranteed to remain the same (i.e., are not
+    This class contains base phrases that are guaranteed to remain the same (i.e., are not
     randomly chosen). They are still provided as a list to make it possible to combine them
-    with new messages in other classes.
+    with new phrases in other classes.
     """
     send = [_('Send')]
     save = [_('Save')]

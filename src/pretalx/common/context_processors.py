@@ -30,7 +30,7 @@ def locale_context(request):
 
 
 def messages(request):
-    from pretalx.common.messages import phrases
+    from pretalx.common.phrases import phrases
     return {'phrases': phrases}
 
 
