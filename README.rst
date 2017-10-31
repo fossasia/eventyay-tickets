@@ -34,14 +34,14 @@ Check our `developer documentation`_ on how to set up pretalx.
 
 License
 -------
-We publish `pretalx` under the terms of the GNU Affero General Public License.
-See the LICENSE file for further information..
+We publish `pretalx` under the terms of the Apache 2 License. See the LICENSE
+file for further information..
 
-The primary maintainer of this project is [@rixx](https://github.com/rixx).
+The primary maintainer of this project is rixx_.
 See the AUTHORS file for a list of all the awesome folks who contributed to
 this project.
 
 .. _issues: https://github.com/pretalx/pretalx/issues/
-.. _me: mailto:rixx@cutebit.de
+.. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html
