@@ -266,7 +266,7 @@ INSTALLED_APPS = [
     'pretalx.schedule',
     'pretalx.submission',
     'pretalx.agenda.AgendaConfig',
-    'pretalx.cfp',
+    'pretalx.cfp.CfPConfig',
     'pretalx.orga',
 ]
 

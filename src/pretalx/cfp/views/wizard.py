@@ -14,6 +14,7 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException
+from pretalx.common.phrases import phrases
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
@@ -63,13 +64,13 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
 
     def get(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:
-            messages.error(request, _('This event currently does not accept new submissions, sorry!'))
+            messages.error(request, phrases.cfp.submissions_closed)
             return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:
-            messages.error(request, _('This event currently does not accept new submissions, sorry!'))
+            messages.error(request, phrases.cfp.submissions_closed)
             return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
         return super().post(request, *args, **kwargs)
 
@@ -151,10 +152,10 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     skip_queue=True, locale=self.request.event.locale
                 )
         except SendMailException:
-            messages.warning(self.request, _('We are experiencing difficulties when sending mails, but your talk was submitted successfully!'))
+            messages.warning(self.request, phrases.cfp.submission_email_fail)
 
         sub.log_action('pretalx.submission.create', person=user)
-        messages.success(self.request, _('Your talk has been submitted successfully!'))
+        messages.success(self.request, phrases.cfp.submission_success)
         login(self.request, user)
         return redirect(reverse('cfp:event.user.submissions', kwargs={
             'event': self.request.event.slug

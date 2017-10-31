@@ -14,6 +14,7 @@ from django.views.generic import FormView, View
 from pretalx.cfp.forms.auth import RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException, mail
+from pretalx.common.phrases import phrases
 from pretalx.common.urls import build_absolute_uri
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
@@ -53,7 +54,7 @@ class ResetView(EventPageMixin, FormView):
         user = form.cleaned_data['user']
 
         if user.pw_reset_time and (now() - user.pw_reset_time).total_seconds() < 3600 * 24:
-            messages.error(self.request, _('You already requested a new password within the last 24 hours.'))
+            messages.error(self.request, phrases.cfp.auth_already_requested)
             return redirect(reverse('cfp:event.reset', kwargs={
                 'event': self.request.event.slug
             }))
@@ -80,11 +81,10 @@ class ResetView(EventPageMixin, FormView):
                 locale=get_language()
             )
         except SendMailException:
-            messages.error(self.request, _('There was an error sending the mail. Please try again later.'))
+            messages.error(self.request, phrases.base.error_sending_mail)
             return self.get(self.request, *self.args, **self.kwargs)
 
-        messages.success(self.request, _('We will send you an e-mail containing further instructions. If you don\'t '
-                                         'see the email within the next minutes, check your spam inbox!'))
+        messages.success(self.request, phrases.cfp.auth_password_reset)
         user.log_action('pretalx.user.password.reset')
 
         return redirect(reverse('cfp:event.login', kwargs={
@@ -103,8 +103,7 @@ class RecoverView(EventPageMixin, FormView):
                 pw_reset_time__gte=now() - timedelta(days=1)
             )
         except User.DoesNotExist:
-            messages.error(self.request, _('This link was not valid. Make sure you copied the complete URL from the '
-                                           'email and that the email is no more than 24 hours old.'))
+            messages.error(self.request, phrases.cfp.auth_reset_fail)
             return redirect(reverse('cfp:event.reset', kwargs={
                 'event': kwargs.get('event')
             }))
@@ -116,7 +115,7 @@ class RecoverView(EventPageMixin, FormView):
         self.user.pw_reset_token = None
         self.user.pw_reset_time = None
         self.user.save()
-        messages.success(self.request, _('Awesome! You can now log in using your new password.'))
+        messages.success(self.request, phrases.cfp.auth_reset_success)
         return redirect(reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug
         }))

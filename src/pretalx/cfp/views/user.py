@@ -8,7 +8,6 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
     DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
@@ -17,6 +16,7 @@ from pretalx.cfp.forms.submissions import (
     InfoForm, QuestionsForm, SubmissionInvitationForm,
 )
 from pretalx.cfp.views.event import LoggedInEventPageMixin
+from pretalx.common.phrases import phrases
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.models import Submission, SubmissionStates
 
@@ -72,23 +72,23 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         if self.login_form.is_bound:
             if self.login_form.is_valid():
                 self.login_form.save()
-                messages.success(self.request, _('Your changes have been saved.'))
+                messages.success(self.request, phrases.base.saved)
                 request.user.log_action('pretalx.user.password.update')
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
         elif self.profile_form.is_bound:
             if self.profile_form.is_valid():
                 self.profile_form.save()
-                messages.success(self.request, _('Your changes have been saved.'))
+                messages.success(self.request, phrases.base.saved)
                 profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
                 profile.log_action('pretalx.user.profile.update', person=request.user)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
         elif self.questions_form.is_bound:
             if self.questions_form.is_valid():
                 self.questions_form.save()
-                messages.success(self.request, _('Your changes have been saved.'))
+                messages.success(self.request, phrases.base.saved)
                 return redirect('cfp:event.user.view', event=self.request.event.slug)
 
-        messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
+        messages.error(self.request, phrases.base.error_saving_changes)
         return super().get(request, *args, **kwargs)
 
 
@@ -129,9 +129,9 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
             self.object.state = SubmissionStates.WITHDRAWN
             self.object.save(update_fields=['state'])
             self.object.log_action('pretalx.submission.withdrawal', person=request.user)
-            messages.success(self.request, _('Your submission has been withdrawn.'))
+            messages.success(self.request, phrases.cfp.submission_withdrawn)
         else:
-            messages.error(self.request, _('Your submission can\'t be withdrawn at this time – please contact us if you need to withdraw your submission!'))
+            messages.error(self.request, phrases.cfp.submission_not_withdrawn)
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
@@ -144,11 +144,11 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user)
             submission.log_action('pretalx.submission.confirm', person=request.user)
-            messages.success(self.request, _('Your submission has been confirmed – we\'re looking forward to seeing you!'))
+            messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
-            messages.success(self.request, _('This submission has already been confirmed – we\'re looking forward to seeing you!'))
+            messages.success(self.request, phrases.cfp.submission_was_confirmed)
         else:
-            messages.error(self.request, _('This submission cannot be confirmed at this time – please contact us if you think this is an error.'))
+            messages.error(self.request, phrases.cfp.submission_not_confirmed)
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
@@ -197,9 +197,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             self.qform.save()
             if form.has_changed():
                 form.instance.log_action('pretalx.submission.update', person=self.request.user)
-            messages.success(self.request, _('Your changes have been saved.'))
+            messages.success(self.request, phrases.base.saved)
         else:
-            messages.error(self.request, _('This submission cannot be edited anymore.'))
+            messages.error(self.request, phrases.cfp.submission_uneditable)
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
@@ -211,10 +211,10 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
             from django.contrib.auth import logout
             request.user.deactivate()
             logout(request)
-            messages.success(request, _('Your account has now been deleted.'))
+            messages.success(request, phrases.cfp.account_deleted)
             return redirect(request.event.urls.base)
         else:
-            messages.error(request, _('Are you really sure? Please tick the box'))
+            messages.error(request, phrases.cfp.account_delete_confirm)
             return redirect(request.event.urls.user + '?really')
 
 
@@ -234,7 +234,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
             try:
                 validate_email(initial['speaker'])
             except ValidationError:
-                messages.warning(self.request, _('Please provide a valid email address.'))
+                messages.warning(self.request, phrases.cfp.invite_invalid_email)
         return kwargs
 
     def get_context_data(self, *args, **kwargs):
@@ -245,7 +245,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _('The invitation was sent!'))
+        messages.success(self.request, phrases.cfp.invite_sent)
         self.get_object().log_action('pretalx.submission.speakers.invite', person=self.request.user)
         return super().form_valid(form)
 
@@ -265,7 +265,8 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
 
     def post(self, *args, **kwargs):
         submission = self.get_object()
-        submission.speakers.add(self.request.user)  # TODO logging
+        submission.speakers.add(self.request.user)
+        submission.log_action('pretalx.submission.speakers.add', person=self.request.user)
         submission.save()
-        messages.success(self.request, _('You are now part of this submission! Please fill in your profile below.'))
+        messages.success(self.request, phrases.cfp.invite_accepted)
         return redirect('cfp:event.user.view', event=self.request.event.slug)

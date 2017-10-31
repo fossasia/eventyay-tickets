@@ -45,3 +45,8 @@ class BasePhrases(Phrases, app='base'):
     save = [_('Save')]
     cancel = [_('Cancel')]
     edit = [_('Edit')]
+
+    saved = [_('Your changes have been saved.')]
+
+    error_sending_mail = [_('There was an error sending the mail. Please try again later.')]
+    error_saving_changes = [_('Huh. We had trouble saving your input – Please see below for details. 🠯')]
