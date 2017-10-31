@@ -14,14 +14,10 @@
     </h3>
     <div class="talk row col-lg-12">
         <div class="talk-content"><div class="description">
-        {% blocktrans trimmed %}
-            Reviews are a valuable tool for speakers to improve their content and presentation.<br>
-            Even a very short review can prove very valuable to a speaker – but we'd like to ask you to
-            take the time and find a constructive way to communicate your feedback.
-        {% endblocktrans %}
-        {{ phrases.agenda.feedback_success }}
+            {{ phrases.agenda.feedback_explanation }}
+            {{ phrases.agenda.feedback_success }}
         {% if not talk.does_accept_feedback %}
-            {% trans "You can't give feedback for this talk at this time." %}
+            {{ phrases.agenda.feedback_not_now }}
         {% else %}
 
             <form method="post" action="">
@@ -31,7 +27,9 @@
                 {% endif %}
                 {% bootstrap_field form.review layout='inline' %}
 
-                <button type="submit" class="btn btn-primary pull-right">{% trans "Send review" %}</button>
+                <button type="submit" class="btn btn-primary pull-right">
+                    {{ phrases.agenda.feedback_send }}
+                </button>
             </form>
         {% endif %}
         </div></div>

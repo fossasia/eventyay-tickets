@@ -11,14 +11,14 @@
 
     {% if not schedule.changes.count %}
         {% if schedule.changes.action == 'update' %}
-            <p>{% trans "Nothing has changed, we just wanted to change the version name. It was going out of style." %}</p>
+            <p>{{ phrases.agenda.changelog_unchanged }}</p>
         {% else %}
-            <p>{% trans "We released our first schedule!" %}</p>
+            <p>{{ phrases.agenda.changelog_first }}</p>
         {% endif %}
     {% else %}
         {% if schedule.changes.new_talks|length > 0 %}
             {% if schedule.changes.new_talks|length > 1 %}
-                <p>{% trans "We have new talks:" %}</p>
+                <p>{{ phrases.agenda.changelog_new_talks }}</p>
                 <ul>
                     {% for talk in schedule.changes.new_talks %}
                     <li><a href="{{ talk.submission.urls.public }}">
@@ -30,7 +30,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>{% trans "We have a new talk: " %}
+                <p>{{ phrases.agenda.changelog_new_talk }}
                 {% for talk in schedule.changes.new_talks %}
                     <a href="{{ talk.submission.urls.public }}">
                         »{{ talk.submission.title }}«
@@ -44,7 +44,7 @@
 
         {% if schedule.changes.canceled_talks|length > 0 %}
             {% if schedule.changes.canceled_talks|length > 1 %}
-                <p>{% trans "Sadly, we had to cancel talks:" %}</p>
+                <p>{{ phrases.agenda.changelog_canceled_talks }}</p>
                 <ul>
                     {% for talk in schedule.changes.canceled_talks %}
                     <li>
@@ -56,7 +56,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>{% trans "We have sadly had to cancel a talk: " %}
+                <p>{{ phrases.agenda.changelog_canceled_talk }}
                 {% for talk in schedule.changes.canceled_talks %}
                     »{{ talk.submission.title }}«
                     {% if talk.submission.speakers.exists %}
@@ -68,7 +68,7 @@
 
         {% if schedule.changes.moved_talks|length > 0 %}
             {% if schedule.changes.moved_talks|length > 1 %}
-                <p>{% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
+                <p>{{ phrases.agenda.changelog_moved_talks }}</p>
                 <ul>
                     {% for talk in schedule.changes.moved_talks %}
                     <li><a href="{{ talk.submission.urls.public }}">
@@ -80,7 +80,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>{% trans "We have moved a talk around: " %}
+                <p>{{ phrases.agenda.changelog_moved_talk }}
                 {% for talk in schedule.changes.moved_talks %}
                     <a href="{{ talk.submission.urls.public }}">
                         »{{ talk.submission.title }}«

@@ -1,6 +1,8 @@
 import random
 from abc import ABCMeta
 
+from django.utils.translation import ugettext as _
+
 _phrase_book = dict()
 
 
@@ -31,3 +33,15 @@ class PhraseBook:
 
 
 phrases = PhraseBook()
+
+
+class BaseMessages(Messages, app='base'):
+    """
+    This class contains base messages that are guaranteed to remain the same (i.e., are not
+    randomly chosen). They are still provided as a list to make it possible to combine them
+    with new messages in other classes.
+    """
+    send = [_('Send')]
+    save = [_('Save')]
+    cancel = [_('Cancel')]
+    edit = [_('Edit')]

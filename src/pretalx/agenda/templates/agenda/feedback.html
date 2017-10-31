@@ -17,7 +17,7 @@
         <div class="speakers feedback-box">
             {% if opinion.speaker and talk.speakers.count > 1 %}
                 <div><em>
-                {% trans "This review is for you personally, not for all speakers in this talk" %}
+                {{ phrases.agenda.feedback_personal }}
                 </em></div>
             {% endif %}
             <i class="fa fa-quote-left quote" aria-hidden="true"></i>
@@ -27,7 +27,7 @@
             <i class="fa fa-quote-right quote pull-right" aria-hidden="true"></i>
         </div>
     {% empty %}
-        {% trans "There has been no feedback for this talk yet." %}
+        {{ phrases.agenda.feedback_empty }}
     {% endfor %}
 
     </div>

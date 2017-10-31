@@ -17,13 +17,13 @@
         {% if request.user in talk.speakers.all %}
             <a href="{{ talk.urls.user_base }}"
                     class="btn btn-sm btn-secondary">
-                <span class="fa fa-pencil"></span>{% trans "Edit" %}
+                <span class="fa fa-pencil"></span>{{ phrases.base.edit }}
             </a>
         {% endif %}
         {% if talk.does_accept_feedback %}
             <a href="{{ talk.urls.feedback }}"
                     class="btn btn-sm btn-primary">
-                <span class="fa fa-comments"></span>{% trans "Feedback" %}
+                <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}
             </a>
         {% endif %}
         <small>
@@ -38,9 +38,9 @@
             {% if talk.do_not_record %}
                 <span class="fa-stack">
                     <i class="fa fa-video-camera fa-stack-1x"></i>
-                    <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{% trans "This talk will not be recorded." %}"></i>
+                    <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
                 </span>
-                <em>{% trans "This talk will not be recorded." %}</em>
+                <em>{{ phrases.agenda.schedule.do_not_record }}</em>
             {% endif %}
             {% if talk.recording_url %}
                 {{ talk.rendered_recording_iframe|safe }}
@@ -72,6 +72,7 @@
                         <div class="info">
 
                             {% if speaker.other_talks.count > 1 %}
+                                {{ phrases.agenda.speaker_other_talks }}
                                 {% trans 'Other talks by this speaker:' %}
                                 <ul class="speaker-talks">
                                     {% for talk in speaker.other_talks %}
@@ -82,7 +83,7 @@
                                 </ul>
                             {% elif speaker.other_talks.count == 1 %}
                                 <span class="speaker-talk">
-                                    {% trans 'This speaker also holds' %}
+                                    {{ phrases.agenda.speaker_other_talk }}
                                     "<a href='{{ speaker.other_talks.0.submission.urls.public }}'>{{ speaker.other_talks.0.submission.title }}</a>".
                                 </span>
                             {% endif %}

@@ -12,12 +12,11 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, FormView, TemplateView
 
 from pretalx.agenda.forms import FeedbackForm
-from pretalx.common.messages import phrases
 from pretalx.cfp.views.event import EventPageMixin
+from pretalx.common.messages import phrases
 from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Feedback, Submission
 
