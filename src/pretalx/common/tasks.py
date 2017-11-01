@@ -20,6 +20,7 @@ def regenerate_css(event_id: int):
     if not event.primary_color:
         for local_app in local_apps:
             event.settings.delete(f'{local_app}_css_file')
+            event.settings.delete(f'{local_app}_css_checksum')
         return
 
     for local_app in local_apps:
