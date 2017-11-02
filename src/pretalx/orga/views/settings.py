@@ -11,7 +11,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
-from pretalx.common.mail import mail_send_task
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
@@ -159,13 +158,11 @@ You have been invited to the orga crew of {event} - Please click here to accept:
 
 See you there,
 The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
-        mail_send_task.apply_async(args=(
-            [email],
-            _('You have been invited to the orga crew of {event}').format(event=request.event.name),
-            invitation_text,
-            request.event.email,
-            event.pk
-        ))
+        invitation_subject = _('You have been invited to the orga crew of {event}').format(event=request.event.name)
+        QueuedMail(
+            event=event, to=email, reply_to=request.event.email, subject=str(invitation_subject),
+            text=str(invitation_text)
+        ).send()
         request.event.log_action('pretalx.event.invite.orga.send', person=request.user, orga=True)
         return redirect(request.event.orga_urls.team_settings)
 
@@ -230,13 +227,11 @@ You have been added to the submission reviewer team of {event}!
 
 We are happy to have you on the team,
 The {event} orga crew''').format(event=request.event.name)
-            mail_send_task.apply_async(args=(
-                [user.email],
-                _('You have been added to the review team of {event}').format(event=request.event.name),
-                invitation_text,
-                request.event.email,
-                request.event.pk,
-            ))
+            invitation_subject = _('You have been added to the review team of {event}').format(event=request.event.name)
+            QueuedMail(
+                event=request.event, to=user.email, reply_to=request.event.email,
+                subject=str(invitation_subject), text=str(invitation_text),
+            ).send()
             messages.success(request, _('The user already existed and is now a reviewer.'))
         else:
             messages.success(request, _('You successfully made yourself a reviewer!'))
@@ -262,13 +257,11 @@ You have been invited to the submission review team of {event} - Please click he
 
 We look forward to have you on the team!,
 The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
-        mail_send_task.apply_async(args=(
-            [email],
-            _('You have been invited to the reviewer team of {event}').format(event=request.event.name),
-            invitation_text,
-            request.event.email,
-            event.pk,
-        ))
+        invitation_subject = _('You have been invited to the reviewer team of {event}').format(event=request.event.name)
+        QueuedMail(
+            event=request.event, to=email, reply_to=request.event.email,
+            subject=str(invitation_subject), text=str(invitation_text),
+        ).send()
         request.event.log_action('pretalx.event.invite.reviewer.send', person=request.user, orga=True)
         messages.success(
             request,
