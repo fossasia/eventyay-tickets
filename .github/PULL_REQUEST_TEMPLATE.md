@@ -21,3 +21,4 @@ This PR closes/references issue #XX. It does so by …
 - [ ] I have updated the documentation accordingly.
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
+- [ ] My change is listed in the CHANGELOG.rst if appropriate.

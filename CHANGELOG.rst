@@ -15,7 +15,7 @@ Features
 Bug fixes
 ~~~~~~~~~
 
-None.
+- Don't crash when using incorrect invite tokens, show a 404 page instead (#204).
 
 
 v0.1.0
