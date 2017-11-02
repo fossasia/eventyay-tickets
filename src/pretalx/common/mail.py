@@ -47,6 +47,7 @@ class SendMailException(Exception):
 def mail(user: User, subject: str, template: Union[str, LazyI18nString],
          context: Dict[str, Any]=None, event: Event=None, locale: str=None,
          headers: dict=None):
+    from pretalx.mail.models import QueuedMail
     headers = headers or {}
 
     with override(locale):
@@ -54,11 +55,10 @@ def mail(user: User, subject: str, template: Union[str, LazyI18nString],
         if context:
             body = body.format_map(TolerantDict(context))
 
-        sender = event.settings.get('mail_from')
-        subject = str(subject)
-        body_plain = body
-        return mail_send_task.apply_async(args=([user.email], subject, body_plain, sender,
-                                                event.id if event else None,  headers))
+        QueuedMail(
+            event=event, to=user.email, subject=str(subject), text=body,
+            reply_to=headers.get('reply-to'), bcc=headers.get('bcc'),
+        ).send()
 
 
 @app.task
