@@ -6,6 +6,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.mail.backends.smtp import EmailBackend
 from django.utils.translation import override
 from i18nfield.strings import LazyI18nString
+from inlinestyler.utils import inline_css
 
 from pretalx.celery_app import app
 from pretalx.event.models import Event
@@ -62,14 +63,21 @@ def mail(user: User, subject: str, template: Union[str, LazyI18nString],
 
 
 @app.task
-def mail_send_task(to: str, subject: str, body: str, sender: str,
+def mail_send_task(to: str, subject: str, body: str, html: str, sender: str,
                    event: int=None, cc: list=None, bcc: list=None, headers: dict=None):
-    email = EmailMultiAlternatives(subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers)
+    headers = headers or dict()
     if event:
         event = Event.objects.get(id=event)
+        sender = sender or event.settings.get('mail_from')
+        headers['reply-to'] = headers.get('reply-to', event.settings.get('mail_from'))
         backend = event.get_mail_backend()
     else:
         backend = get_connection(fail_silently=False)
+
+    email = EmailMultiAlternatives(subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers)
+
+    if html is not None:
+        email.attach_alternative(inline_css(html), 'text/html')
 
     try:
         backend.send_messages([email])

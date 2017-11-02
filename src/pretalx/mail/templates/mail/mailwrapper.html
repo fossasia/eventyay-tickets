@@ -1,0 +1,131 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=false">
+</head>
+<style type="text/css">
+    body {
+        background-color: #f8f8f8;
+        background-position: top;
+        background-repeat: repeat-x;
+        font-family: "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 20px;
+        color: #333;
+        margin: 0;
+    }
+
+    .header h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .header h1 a {
+        text-decoration: none;
+    }
+
+    a {
+        color: {{ color }};
+        font-weight: bold;
+    }
+
+    a:hover, a:focus {
+        color: {{ color }};
+        text-decoration: underline;
+    }
+
+    a:hover, a:active {
+        outline: 0;
+    }
+
+    p {
+        margin: 0 0 10px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        /* This is the dangerous one in WebKit, as it breaks things wherever */
+        word-break: break-all;
+        /* Instead use this non-standard one: */
+        word-break: break-word;
+
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .footer {
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .content {
+        padding: 8px 18px 8px;
+    }
+
+    ::selection {
+        background: {{ color }};
+        color: #FFF;
+    }
+
+    table {
+        width: 90%;
+        max-width: 900px;
+        border-spacing: 0px;
+        border-collapse: separate;
+        margin: auto;
+    }
+
+    @media (max-width: 480px) {
+        .header h1 {
+            font-size: 19px;
+            line-height: 24px;
+            margin: 0 9px 3px 0;
+            border-radius: 5px 5px;
+            -webkit-border-radius: 5px 5px;
+            -moz-border-radius: 5px 5px;
+        }
+
+        .header h1 a {
+            padding: 3px 9px;
+            display: block;
+        }
+
+        .header {
+            margin: 0;
+            padding: 12px 0 8px;
+        }
+    }
+
+    td.containertd {
+        background-color: #fff;
+        border: 1px solid #ccc;
+    }
+
+    {% block addcss %}{% endblock %}
+</style>
+<body>
+    <table>
+        <tr>
+            <td class="header" background="">
+                {% if event %}
+                    <h1><a href="{{ url }}" target="_blank">{{ event.name }}</a></h1>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="containertd">
+                <div class="content">
+                    {{ body|safe }}
+                </div>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <br/>
+</body>
+</html>

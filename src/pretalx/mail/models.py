@@ -1,6 +1,9 @@
 from copy import deepcopy
 
+import bleach
+import markdown
 from django.db import models
+from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
@@ -122,12 +125,23 @@ class QueuedMail(LogMixin, models.Model):
         if self.sent:
             raise Exception('This mail has been sent already. It cannot be sent again.')
 
+        body_md = bleach.linkify(bleach.clean(markdown.markdown(self.text), tags=bleach.ALLOWED_TAGS + [
+            'p', 'pre'
+        ]))
+        html_context = {
+            'body': body_md,
+            'event': self.event,
+            'color': self.event.primary_color or '#1c4a3b',
+        }
+        body_html = get_template('mail/mailwrapper.html').render(html_context)
+
         from pretalx.common.mail import mail_send_task
         mail_send_task.apply_async(
             kwargs={
                 'to': self.to.split(','),
                 'subject': self.subject,
                 'body': self.text,
+                'html': body_html,
                 'sender': self.reply_to,
                 'event': self.event.pk,
                 'cc': (self.cc or '').split(','),

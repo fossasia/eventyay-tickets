@@ -72,6 +72,7 @@ setup(
         'django-hierarkey==1.0.*',
         'django-i18nfield==1.1.*',
         'django-libsass==0.7',
+        'inlinestyler==0.2.*',
         'Markdown==2.6.*',
         'pytz',
         'requests',
