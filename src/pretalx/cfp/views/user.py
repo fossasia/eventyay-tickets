@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views.generic import (
@@ -258,7 +258,8 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
     context_object_name = 'submission'
 
     def get_object(self, *args, **kwargs):
-        return Submission.objects.get(
+        return get_object_or_404(
+            Submission,
             code__iexact=self.kwargs['code'],
             invitation_token__iexact=self.kwargs['invitation'],
         )
