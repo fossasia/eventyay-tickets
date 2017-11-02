@@ -1,6 +1,23 @@
 Changelog
 =========
 
+vx.x.x
+------
+
+*Unreleased*
+
+Features
+~~~~~~~~
+
+- E-mails are now sent with a multipart/HTML version, featuring very plain text
+  in a box, styled with the event's primary color. (#159)
+
+Bug fixes
+~~~~~~~~~
+
+None.
+
+
 v0.1.0
 ------
 
