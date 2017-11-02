@@ -244,3 +244,12 @@ def test_can_accept_invitation(orga_client, submission):
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.speakers.count() == 2
+
+
+@pytest.mark.django_db
+def test_wrong_acceptance_link(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.post(submission.urls.accept_invitation + 'olololol', follow=True)
+    submission.refresh_from_db()
+    assert response.status_code == 404
+    assert submission.speakers.count() == 1
