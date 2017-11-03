@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.conf import settings
@@ -151,7 +152,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     user=user, event=self.request.event, context=template_context_from_submission(sub),
                     skip_queue=True, locale=self.request.event.locale
                 )
-        except SendMailException:
+        except SendMailException as e:
+            logging.getLogger('').warning(str(e))
             messages.warning(self.request, phrases.cfp.submission_email_fail)
 
         sub.log_action('pretalx.submission.create', person=user)
