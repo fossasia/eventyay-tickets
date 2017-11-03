@@ -13,4 +13,19 @@
 {% endblock %}
 
 {% block content %}
+{% if event.settings.show_schedule or request.is_orga %}
+
+    {% if not event.settings.show_schedule %}
+        <div class="event-nonpublic">
+            <span class="fa fa-user-secret"></span>
+            {% blocktrans trimmed %}
+                This schedule-related page is non-public. Only orga members can see it.
+            {% endblocktrans %}
+        </div>
+
+    {% endif %}
+
+    {% block agenda_content %}
+    {% endblock %}
+{% endif %}
 {% endblock %}
