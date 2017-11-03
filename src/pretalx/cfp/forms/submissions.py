@@ -5,7 +5,6 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx import settings
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.models import (
     Answer, QuestionVariant, Submission, SubmissionType,
