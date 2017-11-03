@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block mail_content %}
+    {% if placeholders %}
     <div class="alert alert-info">
         {% blocktrans trimmed %}
             You have some variables available that will be rendered into the mails
@@ -13,6 +14,7 @@
         {% endfor %}
         </ul>
     </div>
+    {% endif %}
 
     <form method="post" action="">
         {% csrf_token %}

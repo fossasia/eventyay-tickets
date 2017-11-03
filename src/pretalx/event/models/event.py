@@ -198,6 +198,10 @@ class Event(LogMixin, models.Model):
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return sub_type
 
+    @cached_property
+    def fixed_templates(self):
+        return [self.accept_template, self.ack_template, self.reject_template, self.update_template]
+
     def _build_initial_data(self):
         from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT, UPDATE_TEXT
         from pretalx.mail.models import MailTemplate

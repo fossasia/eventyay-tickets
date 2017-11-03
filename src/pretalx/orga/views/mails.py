@@ -183,11 +183,18 @@ class TemplateDetail(ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['placeholders'] = get_context_explanation()
+        obj = self.get_object()
+        if obj and obj in obj.event.fixed_templates:
+            ctx['placeholders'] = get_context_explanation()
         return ctx
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['event'] = self.request.event
+        return kwargs
+
     def get_object(self) -> MailTemplate:
-        return MailTemplate.objects.filter(event=self.request.event).get(pk=self.kwargs.get('pk'))
+        return MailTemplate.objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
 
     def get_success_url(self):
         return self.request.event.orga_urls.mail_templates

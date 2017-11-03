@@ -11,6 +11,10 @@ Features
 
 - E-mails are now sent with a multipart/HTML version, featuring very plain text
   in a box, styled with the event's primary color. (#159)
+- You can now choose to hide the public schedule (including talk pages and
+  speaker pages, but excluding feedback pages and the schedule.xml export) (#126)
+- Mail template placeholders are now validated so that invalid placeholders
+  cannot be saved at all. (#215)
 
 Bug fixes
 ~~~~~~~~~
