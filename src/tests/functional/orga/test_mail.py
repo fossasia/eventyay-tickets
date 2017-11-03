@@ -119,6 +119,18 @@ def test_orga_can_edit_template(orga_client, event, mail_template):
 
 
 @pytest.mark.django_db
+def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
+    assert MailTemplate.objects.count() == 4
+    mail_template = event.ack_template
+    response = orga_client.post(mail_template.urls.edit, follow=True,
+                                data={'subject_0': 'COMPLETELY NEW AND UNHEARD OF', 'text_0': str(mail_template.text) + '{wrong_placeholder}'})
+    assert response.status_code == 200
+    mail_template.refresh_from_db()
+    assert 'COMPLETELY' not in str(mail_template.subject)
+    assert '{wrong_placeholder}' not in str(mail_template.text)
+
+
+@pytest.mark.django_db
 def test_orga_can_delete_template(orga_client, event, mail_template):
     assert MailTemplate.objects.count() == 5
     response = orga_client.post(mail_template.urls.delete, follow=True)
