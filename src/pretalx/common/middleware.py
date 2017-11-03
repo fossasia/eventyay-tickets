@@ -1,3 +1,4 @@
+import urllib
 from contextlib import suppress
 
 import pytz
@@ -50,7 +51,8 @@ class EventPermissionMiddleware:
 
     def _handle_orga_url(self, request, url):
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
-            return reverse('orga:login') + f'?next={request.path}'
+            params = '&' + request.GET.urlencode() if request.GET else ''
+            return reverse('orga:login') + f'?next={urllib.parse.quote(request.path)}' + params
         if hasattr(request, 'event') and request.event:
             if not (request.is_orga or request.is_reviewer):
                 raise PermissionDenied()
