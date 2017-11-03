@@ -28,9 +28,10 @@ class LoginView(TemplateView):
             return redirect('orga:login')
 
         login(request, user)
-        url = urllib.parse.unquote(request.GET.get('next', ''))
+        params = request.GET.copy()
+        url = urllib.parse.unquote(params.pop('next', [''])[0])
         if url and is_safe_url(url, request.get_host()):
-            return redirect(url)
+            return redirect(url + ('?' + params.urlencode() if params else ''))
 
         # check where to reasonably redirect:
         # orga of a running event? go to that event.
