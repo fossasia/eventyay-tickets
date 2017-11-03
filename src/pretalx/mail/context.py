@@ -19,12 +19,12 @@ def get_context_explanation():
             'explanation': _('The title of the submission in question. Only usable in default templates.'),
         },
         {
-            'name': 'submission_link',
+            'name': 'submission_url',
             'explanation': _('The link to a submission. Only usable in default templates.'),
         },
         {
-            'name': 'all_submissions_url',
-            'explanation': _('The link to all submissions of this user.'),
+            'name': 'speakers',
+            'explanation': _('The name(s) of all speakers in this submissoin.'),
         },
     ]
 
