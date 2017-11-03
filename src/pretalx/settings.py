@@ -163,6 +163,7 @@ DATABASES = {
 
 # URL configuration
 SITE_URL = config.get('site', 'url', fallback='http://localhost')
+SITE_NETLOC = urlparse(SITE_URL).netloc
 if SITE_URL == 'http://localhost':
     ALLOWED_HOSTS = ['*']
 else:

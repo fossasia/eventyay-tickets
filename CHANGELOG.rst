@@ -16,6 +16,7 @@ Bug fixes
 ~~~~~~~~~
 
 - Don't crash when using incorrect invite tokens, show a 404 page instead (#204).
+- Use actual hostname and not localhost when building absolute URLs.
 
 
 v0.1.0

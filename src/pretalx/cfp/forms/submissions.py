@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django import forms
+from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
@@ -188,7 +189,7 @@ at {event}. Please follow this link to join:
 I'm looking forward to it!
 {speaker}''').format(
             event=submission.event.name, title=submission.title,
-            url=submission.urls.accept_invitation.full(scheme='https'),
+            url=submission.urls.accept_invitation.full(scheme='https', hostname=settings.SITE_NETLOC),
             speaker=speaker.name or speaker.nick,
         )
         super().__init__(*args, **kwargs)
