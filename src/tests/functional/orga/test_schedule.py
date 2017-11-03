@@ -79,4 +79,18 @@ def test_orga_can_release_and_reset_schedule(orga_client, event):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
+def test_orga_can_toggle_schedule_visibility(orga_client, event):
+    from pretalx.event.models import Event
+    assert event.settings.show_schedule is True
+
+    response = orga_client.get(event.orga_urls.toggle_schedule, follow=True)
+    assert response.status_code == 200
+    event = Event.objects.get(pk=event.pk)
+    assert event.settings.show_schedule is False
+
+    response = orga_client.get(event.orga_urls.toggle_schedule, follow=True)
+    assert response.status_code == 200
+    event = Event.objects.get(pk=event.pk)
+    assert event.settings.show_schedule is True
 # TODO: test talk update view
