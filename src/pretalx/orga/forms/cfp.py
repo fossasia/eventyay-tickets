@@ -4,6 +4,7 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.phrases import phrases
 from pretalx.submission.models import (
     AnswerOption, CfP, Question, SubmissionType,
 )
@@ -21,6 +22,18 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['headline'].widget.attrs['placeholder'] = _('The Call for Participation for this year\'s senate is open!')
+        self.fields['text'].widget.attrs['placeholder'] = _(
+            'Join us in this year\'s senate with fascinating discussions on '
+            'the **Public Good**! '
+            'We accept short-form and long-form speeches, as well as workshops '
+            'on our greatest military achievements. Know details about how to '
+            'build walls? Were you working with Hadrian, or stationed at the '
+            'Lîmes? We want your expertise!'
+        )
+
     class Meta:
         model = CfP
         fields = [
@@ -33,6 +46,11 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
 
 class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['question'].widget.attrs['placeholder'] = _('What have the Romans ever done for us?')
+        self.fields['help_text'].widget.attrs['placeholder'] = _('Please give an exhaustive list of your view on Rome\'s most impressive achievements.')
+
     class Meta:
         model = Question
         fields = [
@@ -42,6 +60,10 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
 class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['answer'].widget.attrs['placeholder'] = phrases.orga.example_answer
+
     class Meta:
         model = AnswerOption
         fields = [
@@ -50,6 +72,10 @@ class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
 
 class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['placeholder'] = _('Long speech')
 
     class Meta:
         model = SubmissionType

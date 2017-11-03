@@ -4,6 +4,7 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin
 
 from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.phrases import phrases
 from pretalx.submission.models import Review
 
 
@@ -57,6 +58,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
         self.fields['score'] = forms.ChoiceField(choices=choices, required=False, disabled=kwargs.get('read_only', False))
         self.fields['text'].widget.attrs['rows'] = 2
+        self.fields['text'].widget.attrs['placeholder'] = phrases.orga.example_review
 
     def clean_score(self):
         score = self.cleaned_data.get('score')

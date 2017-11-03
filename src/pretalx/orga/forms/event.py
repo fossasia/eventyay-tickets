@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
@@ -24,6 +25,12 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             self.fields['is_public'].widget = forms.HiddenInput()
             self.fields['primary_color'].widget = forms.HiddenInput()
             self.fields['custom_css'].widget = forms.HiddenInput()
+
+        year = str(now().year)
+        self.fields['name'].widget.attrs['placeholder'] = _('Senatus Populusque Romanus') + ' ' + year
+        self.fields['slug'].widget.attrs['placeholder'] = _('spqr') + year[2:]
+        self.fields['email'].widget.attrs['placeholder'] = 'consul@senatus.it'
+        self.fields['primary_color'].widget.attrs['placeholder'] = '#ab01de'
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
@@ -91,8 +98,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     mail_from = forms.EmailField(
         label=_("Sender address"),
-        help_text=_("Sender address for outgoing emails")
-    )
+        help_text=_("Sender address for outgoing emails"))
     smtp_use_custom = forms.BooleanField(
         label=_("Use custom SMTP server"),
         help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
@@ -127,6 +133,12 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_("Commonly enabled on port 465."),
         required=False
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['mail_from'].widget.attrs['placeholder'] = 'consul@senatus.it'
+        self.fields['smtp_host'].widget.attrs['placeholder'] = 'mail.senatus.it'
+        self.fields['smtp_port'].widget.attrs['placeholder'] = '25'
 
     def clean(self):
         data = self.cleaned_data

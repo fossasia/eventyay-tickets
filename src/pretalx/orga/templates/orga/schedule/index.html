@@ -91,7 +91,7 @@
             <div id="schedule-release">
                 <form method="post" action="{{ request.event.orga_urls.release_schedule }}">
                     <div class="input-group">
-                        <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{% trans 'Release as version' %}" title="" type="text">
+                        <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{{ phrases.orga.schedule_example_version }}" title="" type="text">
                         <button type="submit" class="btn btn-primary">{% trans "Release" %}</button>
                     </div>
                 </form>

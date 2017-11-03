@@ -268,7 +268,7 @@ INSTALLED_APPS = [
     'pretalx.submission',
     'pretalx.agenda.AgendaConfig',
     'pretalx.cfp.CfPConfig',
-    'pretalx.orga',
+    'pretalx.orga.OrgaConfig',
 ]
 
 with suppress(ImportError):
