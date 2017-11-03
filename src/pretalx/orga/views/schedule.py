@@ -48,6 +48,13 @@ class ScheduleResetView(View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
+class ScheduleToggleView(View):
+
+    def dispatch(self, request, event):
+        self.request.event.settings.set('show_schedule', not self.request.event.settings.show_schedule)
+        return redirect(self.request.event.orga_urls.schedule)
+
+
 class RoomList(View):
 
     def get(self, request, event):

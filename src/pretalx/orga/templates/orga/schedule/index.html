@@ -5,6 +5,7 @@
 {% load staticfiles %}
 
 {% block headline %}
+    <span class="orga-title">
     {% trans "Schedule editor" %}
     {% if schedule_version %}
         – version {{ schedule_version }}
@@ -14,6 +15,7 @@
         title="view publically"
         href="{{ active_schedule.urls.public }}"
         ><i class="fa fa-eye"></i></a>
+    </span>
 {% endblock %}
 
 {% block scripts %}
@@ -35,6 +37,32 @@
             {% trans "You can start planning your schedule once you have configured some rooms for talks to take place in." %}
             <a href="{{ request.event.orga_urls.room_settings }}">{% trans "Configure rooms" %}</a>
         </div>
+    {% endif %}
+
+    {% if request.event.current_schedule %}
+        {% if request.event.settings.show_schedule %}
+            <div class="alert alert-info schedule-alert">
+                {% trans "Your schedule is currently publicly visible." %}
+                <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Hide schedule" %}</a>
+            </div>
+        {% else %}
+            <div class="alert alert-info schedule-alert">
+                {% trans "Your schedule is currently only visible to orga members." %}
+                <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Make schedule public" %}</a>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if request.event.settings.show_schedule %}
+            <div class="alert alert-info schedule-alert">
+                {% trans "Once you release your schedule, it will be publicly visible." %}
+                <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Hide schedule" %}</a>
+            </div>
+        {% else %}
+            <div class="alert alert-info schedule-alert">
+                {% trans "Once you release your schedule, it will be only visible to orga members." %}
+                <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Make schedule public" %}</a>
+            </div>
+        {% endif %}
     {% endif %}
 
     {% if schedule_version %}

@@ -163,6 +163,7 @@ class Event(LogMixin, models.Model):
         schedule = '{base}/schedule'
         release_schedule = '{schedule}/release'
         reset_schedule = '{schedule}/reset'
+        toggle_schedule = '{schedule}/toggle'
         reviews = '{base}/reviews'
 
     class api_urls(Urls):
