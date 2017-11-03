@@ -133,6 +133,14 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
         ctx['formset'] = self.formset
         return ctx
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        if not self.get_object():
+            initial = kwargs['initial'] or dict()
+            initial['target'] = self.request.GET.get('type')
+            kwargs['initial'] = initial
+        return kwargs
+
     def get_success_url(self) -> str:
         obj = self.get_object() or self.instance
         return obj.urls.base
