@@ -15,7 +15,7 @@ from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
-from pretalx.orga.forms import EventForm, ReviewSettingsForm
+from pretalx.orga.forms import EventForm, ReviewSettingsForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, UserForm, OrgaProfileForm
 from pretalx.person.models import EventPermission, User
@@ -44,12 +44,35 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         except AttributeError:
             return
 
+    @cached_property
+    def sform(self):
+        if not hasattr(self.request, 'event') or not self.request.event:
+            return
+        return EventSettingsForm(
+            read_only=(self._action == 'view'),
+            locales=self.request.event.locales,
+            obj=self.request.event,
+            attribute_name='settings',
+            data=self.request.POST if self.request.method == "POST" else None,
+            prefix='settings'
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['sform'] = self.sform
+        return context
+
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
 
     def form_valid(self, form):
         new_event = not bool(form.instance.pk)
+        if not new_event:
+            if not self.sform.is_valid():
+                return self.form_invalid(form)
+
         ret = super().form_valid(form)
+
         if new_event:
             messages.success(self.request, _('Yay, a new event! Check these settings and configure a CfP and you\'re good to go!'))
             form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
@@ -59,6 +82,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
                 is_orga=True,
             )
         else:
+            self.sform.save()
             form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
             messages.success(self.request, _('The event settings have been saved.'))
         regenerate_css.apply_async(args=(form.instance.pk,))

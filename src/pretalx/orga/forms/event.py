@@ -79,6 +79,15 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         }
 
 
+class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+
+    show_schedule = forms.BooleanField(
+        label=_('Show schedule publicly'),
+        help_text=_('Unset to hide your schedule, e.g. if you want to use the HTML export exclusively.'),
+        required=False,
+    )
+
+
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     mail_from = forms.EmailField(
         label=_("Sender address"),

@@ -10,7 +10,8 @@ class GlobalSettings(GlobalSettingsBase):
     pass
 
 
-settings_hierarkey.add_default('cfp_show_settings', 'False', bool)
+settings_hierarkey.add_default('show_schedule', 'True', bool)
+
 settings_hierarkey.add_default('review_min_score', 0, int)
 settings_hierarkey.add_default('review_max_score', 1, int)
 settings_hierarkey.add_default('mail_from', 'noreply@example.org', str)
@@ -21,6 +22,7 @@ settings_hierarkey.add_default('smtp_username', '', str)
 settings_hierarkey.add_default('smtp_password', '', str)
 settings_hierarkey.add_default('smtp_use_tls', 'True', bool)
 settings_hierarkey.add_default('smtp_use_ssl', 'False', bool)
+
 settings_hierarkey.add_default('mail_text_reset', LazyI18nString.from_gettext(ugettext_noop("""Hello {name},
 
 you have requested a new password for your submission account at {event}.
