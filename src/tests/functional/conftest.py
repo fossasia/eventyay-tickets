@@ -15,6 +15,12 @@ from pretalx.submission.models import (
 
 
 @pytest.fixture
+def template_patch(monkeypatch):
+    # Patch out template rendering for performance improvements
+    monkeypatch.setattr("django.template.backends.django.Template.render", lambda *args, **kwargs: "mocked template")
+
+
+@pytest.fixture
 def event():
     today = datetime.date.today()
     return Event.objects.create(

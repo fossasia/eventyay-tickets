@@ -2,18 +2,12 @@ import pytest
 from django.urls import reverse
 
 
-@pytest.fixture
-def template_patch(monkeypatch):
-    # Patch out template rendering for performance improvements
-    monkeypatch.setattr("django.template.backends.django.Template.render", lambda *args, **kwargs: "mocked template")
-
-
 @pytest.mark.parametrize('url', [
     'login', 'logout', 'dashboard', 'user.view',
 ])
 @pytest.mark.parametrize('logged_in', (True, False))
 @pytest.mark.django_db
-def test_user_can_access_url(orga_client, logged_in, url):
+def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     if not logged_in:
         orga_client.logout()
     response = orga_client.get(reverse(f'orga:{url}'), follow=True)
