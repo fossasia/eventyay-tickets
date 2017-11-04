@@ -7,3 +7,4 @@ omit = */admin.py
        */urls.py
        */tests/*
        */wsgi.py
+       */__init__.py
