@@ -30,61 +30,65 @@
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
 	<h1>{% trans "Review!" %}</h1>
 	<div class="dashboard-description">
-            {% trans "Click here to submit more reviews." %}
+            {% blocktrans with count=missing_reviews.count trimmed %}
+                Click here to submit more reviews, there are still {{ count }} missing!
+            {% endblocktrans %}
+        </div>
+    </a>
+{% else %}
+    <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
+	<h1>{% trans "Bravo!!" %}</h1>
+	<div class="dashboard-description">
+            {% trans "There are no submissions left to review!" %}
         </div>
     </a>
 {% endif %}
 </div>
 
-{% if missing_reviews.count %}
-<legend>{% trans "Please review" %}</legend>
-<ul>
-    {% for submission in missing_reviews %}
-    <li>
-        <a href="{{ submission.orga_urls.reviews }}">
-            {{ submission.title }} ({{ submission.display_speaker_names }})
-        </a>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-    <div class="alert alert-info">
-        {% trans "There are no pending submissions to be reviewed at the moment! :)" %}
-    </div>
-{% endif %}
 
-{% if my_reviews.count %}
-<legend>{% trans "Your reviews" %}</legend>
-<ul>
-    {% for review in my_reviews %}
-    <li>
-        {% if review.user == request.user %}
-            <a href="{{ review.urls.base }}">
-                <strong>{{ review.submission.title }} ({{ review.submission.display_speaker_names }}) – {% review_score review.score %}</strong>
-            </a>
-        {% else %}
-            <a href="{{ review.urls.base }}">
-                {{ review.submission.title }} ({{ review.submission.display_speaker_names }}) – {% review_score review.score %}
-            </a>
-        {% endif %}
-    </li>
+<table class="table table-condensed review-table">
+    <thead>
+        <tr>
+            <th>{% trans "Score" %} <i class="fa fa-caret-down"></i></th>
+            <th>{% trans "Reviews" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "State" %}</th>
+            <th>{% trans "Speakers" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for submission in submissions %}
+        <tr class="{{ submission.state }}">
+            <td>
+                {% if submission.avg_score != None %}
+                    {% review_score submission.avg_score %} 
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+            <td>
+                {% if submission.reviews.all.count %}
+                    {{ submission.reviews.all.count }}
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ submission.orga_urls.reviews }}">
+                    {{ submission.title }}
+                </a>
+            </td>
+            <td>
+                {% include "cfp/event/fragment_state.html" with state=submission.state %}
+            </td>
+            <td>{{ submission.display_speaker_names }}
+        </tr>
+    {% empty %}
+        <tr>
+            {% trans "You don't seem to have any reviews at the moment." %}
+        </tr>
     {% endfor %}
-</ul>
-{% endif %}
-
-<legend>{% trans "Submission scores" %}</legend>
-<ul>
-    {% for submission in pending_submissions %}
-    <li><a href="{{ submission.orga_urls.reviews }}">
-            {{ submission.title }} ({{ submission.display_speaker_names }}) –
-            {% if submission.avg_score != None %}
-                {% review_score submission.avg_score %} 
-                ({{ submission.reviews.all.count }} {% trans "reviews" %})
-            {% endif %}
-    </a></li>
-    {% endfor %}
-    {% if not pending_submissions %}
-        {% trans "You don't seem to have any reviews at the moment." %}
-    {% endif %}
-</ul>
+    </tbody>
+</table>
+{% include "orga/pagination.html" %}
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import TemplateView
+from django.views.generic import ListView, TemplateView
 
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
@@ -19,18 +19,22 @@ class ReviewContext():
         return ctx
 
 
-class ReviewDashboard(TemplateView):
+class ReviewDashboard(ListView):
+    template_name = 'orga/review/dashboard.html'
+    paginate_by = 25
+    context_object_name = 'submissions'
+
+    def get_queryset(self, *args, **kwargs):
+        return self.request.event.submissions\
+            .annotate(avg_score=models.Avg('reviews__score'))\
+            .order_by('-avg_score')
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['my_reviews'] = Review.objects.filter(user=self.request.user, submission__event=self.request.event)
         ctx['missing_reviews'] = Review.find_missing_reviews(self.request.event, self.request.user)
-        ctx['pending_submissions'] = self.request.event.submissions.filter(state=SubmissionStates.SUBMITTED).annotate(avg_score=models.Avg('reviews__score')).order_by('-avg_score')
         ctx['reviewers'] = EventPermission.objects.filter(is_reviewer=True, event=self.request.event).count()
         ctx['next_submission'] = Review.find_missing_reviews(self.request.event, self.request.user).first()
         return ctx
-
-    template_name = 'orga/review/dashboard.html'
 
 
 class ReviewSubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
