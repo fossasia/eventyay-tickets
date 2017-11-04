@@ -6,7 +6,7 @@ from django.views.generic import ListView, TemplateView
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission
-from pretalx.submission.models import Review, SubmissionStates
+from pretalx.submission.models import Review
 
 
 class ReviewContext():
