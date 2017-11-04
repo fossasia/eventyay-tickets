@@ -55,3 +55,10 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
 
     content = response.content.decode()
     assert slot.submission.title in content
+
+
+@pytest.mark.django_db
+def test_feed_view(slot, client, schedule_schema):
+    response = client.get(slot.submission.event.urls.feed)
+    assert response.status_code == 200
+    assert slot.submission.event.schedules.first().version in response.content.decode()
