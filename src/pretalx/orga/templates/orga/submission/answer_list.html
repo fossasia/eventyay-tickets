@@ -7,7 +7,16 @@
         <h2>{{ entry.user.name }}</h2>
         <ul>
         {% for answer in entry.answers %}
-            <li><em>{{ answer.question }}</em> - {{ answer }}</li>
+            {% if answer.question.variant == 'file' %}
+                {% if answer.answer_file %}
+                    <li>
+                        <em>{{ answer.question }}</em>
+                            - <span class="fa fa-file"></span> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li><em>{{ answer.question }}</em> - {{ answer }}</li>
+            {% endif %}
         {% endfor %}
         </ul>
     {% endfor %}

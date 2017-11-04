@@ -55,6 +55,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
     def questions_form(self):
         return QuestionsForm(
             data=self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
             speaker=self.request.user,
             event=self.request.event,
             target='speaker',
@@ -169,6 +170,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def qform(self):
         return QuestionsForm(
             data=self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
             submission=self.object,
             event=self.request.event,
             readonly=not self.can_edit,

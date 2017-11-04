@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django import forms
 from django.conf import settings
+from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
@@ -54,7 +55,7 @@ class QuestionsForm(forms.Form):
                 answers = [a for a in target_object.answers.all() if a.question_id == question.id]
                 if answers:
                     initial_object = answers[0]
-                    initial = answers[0].answer
+                    initial = answers[0].answer_file if question.variant == QuestionVariant.FILE else answers[0].answer
                 else:
                     initial_object = None
                     initial = question.default_answer
@@ -102,6 +103,12 @@ class QuestionsForm(forms.Form):
             return forms.CharField(
                 label=question.question, required=question.required,
                 widget=forms.Textarea,
+                disabled=readonly, help_text=question.help_text,
+                initial=initial
+            )
+        elif question.variant == QuestionVariant.FILE:
+            return forms.FileField(
+                label=question.question, required=question.required,
                 disabled=readonly, help_text=question.help_text,
                 initial=initial
             )
@@ -162,6 +169,11 @@ class QuestionsForm(forms.Form):
                 answer.options.clear()
             answer.options.add(value)
             answer.answer = value.answer
+        elif isinstance(field, forms.FileField):
+            if isinstance(value, UploadedFile):
+                answer.answer_file.save(value.name, value)
+                answer.answer = 'file://' + value.name
+                value = answer.answer
         else:
             answer.answer = value
         answer.log_action(action, person=self.request_user, data={'answer': value})

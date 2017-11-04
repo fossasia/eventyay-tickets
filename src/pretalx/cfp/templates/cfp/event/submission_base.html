@@ -3,7 +3,7 @@
 {% load rich_text %}
 {% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
 {% block content %}
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {{ wizard.management_form }}
         {% block inner %}
         {% endblock %}
