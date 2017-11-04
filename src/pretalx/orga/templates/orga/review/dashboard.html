@@ -7,38 +7,38 @@
 <div class="dashboard-list">
 {% if request.event.reviews.count %}
     <div class="dashboard-block">
-	    <h1>{{ request.event.reviews.count  }}</h1>
-	<div class="dashboard-description">
+        <h1>{{ request.event.reviews.count  }}</h1>
+        <div class="dashboard-description">
             {% trans "total reviews" %}
         </div>
     </div>
 {% else %}
     <div class="dashboard-block">
-	<h1>{% trans "Zero" %}</h1>
-	<div class="dashboard-description">
+        <h1>{% trans "Zero" %}</h1>
+        <div class="dashboard-description">
             {% trans "total reviews :(" %}
         </div>
     </div>
 {% endif %}
     <{% if request.is_orga %}a href="{{ request.event.orga_urls.review_settings }}"{% else %}div{% endif %} class="dashboard-block">
         <h1>{{ reviewers }}</h1>
-	<div class="dashboard-description">
+        <div class="dashboard-description">
             {% trans "total reviewers" %}
         </div>
     </{% if request.is_orga %}a{% else %}div{% endif %}>
 {% if request.is_reviewer and next_submission %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
-	<h1>{% trans "Review!" %}</h1>
-	<div class="dashboard-description">
-            {% blocktrans with count=missing_reviews.count trimmed %}
+        <h1>{% trans "Review!" %}</h1>
+        <div class="dashboard-description">
+        {% blocktrans with count=missing_reviews.count trimmed %}
                 Click here to submit more reviews, there are still {{ count }} missing!
             {% endblocktrans %}
         </div>
     </a>
 {% elif request.is_reviewer %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
-	<h1>{% trans "Bravo!!" %}</h1>
-	<div class="dashboard-description">
+        <h1>{% trans "Bravo!!" %}</h1>
+        <div class="dashboard-description">
             {% trans "There are no submissions left to review!" %}
         </div>
     </a>
@@ -61,7 +61,7 @@
         <tr class="{{ submission.state }}">
             <td>
                 {% if submission.avg_score != None %}
-                    {% review_score submission.avg_score %} 
+                    {% review_score submission.avg_score %}
                 {% else %}
                     –
                 {% endif %}
@@ -79,7 +79,12 @@
                 </a>
             </td>
             <td>
-                {% include "cfp/event/fragment_state.html" with state=submission.state %}
+                {% if submission.state == 'submitted' and request.is_orga %}
+                    <a class="btn btn-primary btn-xs" href="{{ submission.orga_urls.accept }}">{% trans "Accept" %}</a>
+                    <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
+                {% else %}
+                    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+                {% endif %}
             </td>
             <td>{{ submission.display_speaker_names }}
         </tr>
