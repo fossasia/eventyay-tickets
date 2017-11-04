@@ -144,6 +144,13 @@ def other_review_user(event):
 
 
 @pytest.fixture
+def orga_reviewer_user(event):
+    user = User.objects.create_user('multitalentuser', 'orgapassw0rd', email='multiuser@orga.org')
+    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=True)
+    return user
+
+
+@pytest.fixture
 def orga_client(orga_user, client):
     client.force_login(orga_user)
     return client
