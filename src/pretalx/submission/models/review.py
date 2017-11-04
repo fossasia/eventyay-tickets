@@ -31,6 +31,5 @@ class Review(models.Model):
             .exclude(speakers__in=[user])
 
     class urls(Urls):
-        base = '{self.submission.orga_urls.review_base}/{self.pk}'
-        edit = '{base}/edit'
-        delete = '{base}/delete'
+        base = '{self.submission.orga_urls.reviews}'
+        delete = '{base}/{self.pk}/delete'

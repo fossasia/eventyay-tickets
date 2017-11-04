@@ -27,7 +27,7 @@
         </div>
     </{% if request.is_orga %}a{% else %}div{% endif %}>
 {% if next_submission %}
-    <a class="dashboard-block" href="{{ next_submission.orga_urls.new_review }}">
+    <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
 	<h1>{% trans "Review!" %}</h1>
 	<div class="dashboard-description">
             {% trans "Click here to submit more reviews." %}
@@ -41,7 +41,7 @@
 <ul>
     {% for submission in missing_reviews %}
     <li>
-        <a href="{{ submission.orga_urls.new_review }}">
+        <a href="{{ submission.orga_urls.reviews }}">
             {{ submission.title }} ({{ submission.display_speaker_names }})
         </a>
     </li>
@@ -59,7 +59,7 @@
     {% for review in my_reviews %}
     <li>
         {% if review.user == request.user %}
-            <a href="{{ review.urls.edit }}">
+            <a href="{{ review.urls.base }}">
                 <strong>{{ review.submission.title }} ({{ review.submission.display_speaker_names }}) – {% review_score review.score %}</strong>
             </a>
         {% else %}
@@ -75,7 +75,7 @@
 <legend>{% trans "Submission scores" %}</legend>
 <ul>
     {% for submission in pending_submissions %}
-    <li><a href="{{ submission.orga_urls.reviews}}">
+    <li><a href="{{ submission.orga_urls.reviews }}">
             {{ submission.title }} ({{ submission.display_speaker_names }}) –
             {% if submission.avg_score != None %}
                 {% review_score submission.avg_score %} 

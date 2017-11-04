@@ -67,7 +67,7 @@ orga_urls = [
             url('^speakers$', submission.SubmissionSpeakers.as_view(), name='submissions.speakers.view'),
             url('^speakers/add$', submission.SubmissionSpeakersAdd.as_view(), name='submissions.speakers.add'),
             url('^speakers/delete$', submission.SubmissionSpeakersDelete.as_view(), name='submissions.speakers.delete'),
-            url('^reviews/$', review.ReviewSubmission.as_view(), name='submissions.reviews'),
+            url('^reviews$', review.ReviewSubmission.as_view(), name='submissions.reviews'),
             url('^reviews/delete$', review.ReviewSubmissionDelete.as_view(), name='submissions.reviews.submission.delete'),
             url('^feedback/$', submission.FeedbackList.as_view(), name='submissions.feedback.list'),
         ])),
