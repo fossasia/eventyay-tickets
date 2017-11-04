@@ -3,6 +3,13 @@ from django.urls import reverse
 
 
 @pytest.mark.django_db
+def test_orga_can_access_speakers_list(orga_client, speaker, event, submission):
+    response = orga_client.get(reverse('orga:speakers.list', kwargs={'event': event.slug}), follow=True)
+    assert response.status_code == 200
+    assert speaker.name in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_orga_can_access_speaker_page(orga_client, speaker, event, submission):
     response = orga_client.get(reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}), follow=True)
     assert response.status_code == 200
