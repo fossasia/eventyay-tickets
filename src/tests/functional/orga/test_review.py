@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.django_db
 def test_reviewer_can_add_review(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.new_review, follow=True,
+        submission.orga_urls.reviews, follow=True,
         data={
             'score': 1,
             'text': 'LGTM',
@@ -14,14 +14,14 @@ def test_reviewer_can_add_review(review_client, submission):
     assert submission.reviews.count() == 1
     assert submission.reviews.first().score == 1
     assert submission.reviews.first().text == 'LGTM'
-    response = review_client.get(submission.orga_urls.new_review, follow=True)
+    response = review_client.get(submission.orga_urls.reviews, follow=True)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
 def test_reviewer_can_add_review_with_redirect(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.new_review, follow=True,
+        submission.orga_urls.reviews, follow=True,
         data={
             'score': 1,
             'text': 'LGTM',
@@ -34,7 +34,7 @@ def test_reviewer_can_add_review_with_redirect(review_client, submission):
 @pytest.mark.django_db
 def test_reviewer_can_add_review_without_score(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.new_review, follow=True,
+        submission.orga_urls.reviews, follow=True,
         data={
             'text': 'LGTM',
         }
@@ -43,14 +43,14 @@ def test_reviewer_can_add_review_without_score(review_client, submission):
     assert submission.reviews.count() == 1
     assert submission.reviews.first().score is None
     assert submission.reviews.first().text == 'LGTM'
-    response = review_client.get(submission.orga_urls.new_review, follow=True)
+    response = review_client.get(submission.orga_urls.reviews, follow=True)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
 def test_reviewer_cannot_use_wrong_score(review_client, submission):
     response = review_client.post(
-        submission.orga_urls.new_review, follow=True,
+        submission.orga_urls.reviews, follow=True,
         data={
             'score': 100,
             'text': 'LGTM',
@@ -65,7 +65,7 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
     submission.speakers.add(review_user)
     submission.save()
     response = review_client.post(
-        submission.orga_urls.new_review, follow=True,
+        submission.orga_urls.reviews,
         data={
             'score': 100,
             'text': 'LGTM',
@@ -78,7 +78,7 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
 @pytest.mark.django_db
 def test_reviewer_can_edit_review(review_client, review):
     response = review_client.post(
-        review.urls.edit, follow=True,
+        review.urls.base, follow=True,
         data={
             'score': 0,
             'text': 'My mistake.',
@@ -92,13 +92,13 @@ def test_reviewer_can_edit_review(review_client, review):
 
 
 @pytest.mark.django_db
-def test_cannot_edit_but_see_other_review(other_review_client, review):
+def test_cannot_see_other_review_before_own(other_review_client, review):
     response = other_review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200
-    assert review.text in response.content.decode()
+    assert review.text not in response.content.decode()
 
     response = other_review_client.post(
-        review.urls.edit, follow=True,
+        review.urls.base, follow=True,
         data={
             'score': 0,
             'text': 'My mistake.',
@@ -109,6 +109,8 @@ def test_cannot_edit_but_see_other_review(other_review_client, review):
     assert review.submission.reviews.count() == 2
     assert review.score != 0
     assert review.text != 'My mistake.'
+    assert review.text in response.content.decode()
+    assert 'My mistake' in response.content.decode()
 
 
 @pytest.mark.django_db
