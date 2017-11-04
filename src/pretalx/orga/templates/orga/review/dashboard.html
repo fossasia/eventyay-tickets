@@ -26,7 +26,7 @@
             {% trans "total reviewers" %}
         </div>
     </{% if request.is_orga %}a{% else %}div{% endif %}>
-{% if next_submission %}
+{% if request.is_reviewer and next_submission %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
 	<h1>{% trans "Review!" %}</h1>
 	<div class="dashboard-description">
@@ -35,7 +35,7 @@
             {% endblocktrans %}
         </div>
     </a>
-{% else %}
+{% elif request.is_reviewer %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
 	<h1>{% trans "Bravo!!" %}</h1>
 	<div class="dashboard-description">

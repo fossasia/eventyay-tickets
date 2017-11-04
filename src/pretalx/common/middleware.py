@@ -58,8 +58,6 @@ class EventPermissionMiddleware:
         if hasattr(request, 'event') and request.event:
             if not (request.is_orga or request.is_reviewer):
                 raise PermissionDenied()
-            if (request.is_orga and not (request.is_reviewer or request.user.is_superuser)) and url.url_name.startswith('reviews'):
-                raise PermissionDenied()
             if (request.is_reviewer and not (request.is_orga or request.user.is_superuser)) and not self._is_reviewer_url(url):
                 raise PermissionDenied()
         elif hasattr(request, 'event') and not request.user.is_superuser:
