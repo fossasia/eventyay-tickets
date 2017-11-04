@@ -7,6 +7,10 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 
 
+def answer_file_path(instance, filename):
+    return f'{instance.question.event.slug}/question_uploads/{filename}'
+
+
 class QuestionManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(active=False)
@@ -21,6 +25,7 @@ class QuestionVariant(Choices):
     STRING = 'string'
     TEXT = 'text'
     BOOLEAN = 'boolean'
+    FILE = 'file'
     CHOICES = 'choices'
     MULTIPLE = 'multiple_choice'
 
@@ -29,6 +34,7 @@ class QuestionVariant(Choices):
         (STRING, _('Text (one-line)')),
         (TEXT, _('Multi-line text')),
         (BOOLEAN, _('Yes/No')),
+        (FILE, _('File upload')),
         (CHOICES, _('Choose one from a list')),
         (MULTIPLE, _('Choose multiple from a list'))
     ]
@@ -141,6 +147,10 @@ class Answer(LogMixin, models.Model):
         null=True, blank=True,
     )
     answer = models.TextField()
+    answer_file = models.FileField(
+        upload_to=answer_file_path,
+        null=True, blank=True,
+    )
     options = models.ManyToManyField(
         to='submission.AnswerOption',
         related_name='answers',
