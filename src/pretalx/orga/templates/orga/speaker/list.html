@@ -19,18 +19,19 @@
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
+                <th>{% trans "Talks" %}</th>
                 <th>{% trans "Submissions" %}</th>
-                <th>{% trans "Accepted submissions" %}</th>
             </tr>
         </thead>
         <tbody>
-            {% for speaker in speakers %}
+            {% for profile in speakers %}
                 <tr>
-                    <td><a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.pk %}">{{ speaker.nick }}</a></td>
-                    <td>{{ speaker.submissions.count }}</td>
-                    <td></td>
+                    <td><a href="{% url "orga:speakers.view" event=request.event.slug pk=profile.user.pk %}">{{ profile.user.get_display_name }}</a></td>
+                    <td>{{ profile.talks.count }}</td>
+                    <td>{{ profile.submissions.count }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% include "orga/pagination.html" %}
 {% endblock %}

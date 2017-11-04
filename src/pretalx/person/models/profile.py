@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
@@ -21,3 +22,12 @@ class SpeakerProfile(LogMixin, models.Model):
         related_name='+',
         on_delete=models.CASCADE,
     )
+
+    @cached_property
+    def submissions(self):
+        return self.user.submissions.filter(event=self.event)
+
+    @cached_property
+    def talks(self):
+        from pretalx.submission.models import SubmissionStates
+        return self.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])

@@ -6,21 +6,19 @@ from pretalx.common.views import (
     ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
 )
 from pretalx.person.forms import SpeakerProfileForm
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile, User
 
 
 class SpeakerList(Sortable, Filterable, ListView):
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
-    default_filters = ('nick__icontains', 'email__icontains', 'name__icontains')
-    filter_fields = ('nick', 'email', 'name')
-    sortable_fields = ('nick', 'email', 'name')
+    default_filters = ('user__nick__icontains', 'user__email__icontains', 'user__name__icontains')
+    filter_fields = ('user__nick', 'user__email', 'user__name')
+    sortable_fields = ('user__nick', 'user__email', 'user__name')
+    paginate_by = 25
 
     def get_queryset(self):
-        qs = User.objects\
-            .filter(submissions__in=self.request.event.submissions.all())\
-            .order_by('id')\
-            .distinct()
+        qs = SpeakerProfile.objects.filter(event=self.request.event).order_by('user__pk')
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
