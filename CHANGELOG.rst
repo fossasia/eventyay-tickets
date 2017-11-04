@@ -15,6 +15,7 @@ Features
   speaker pages, but excluding feedback pages and the schedule.xml export) (#126)
 - Mail template placeholders are now validated so that invalid placeholders
   cannot be saved at all. (#215)
+- You can now add questions that take a file upload as an answer. (#208)
 
 Bug fixes
 ~~~~~~~~~
