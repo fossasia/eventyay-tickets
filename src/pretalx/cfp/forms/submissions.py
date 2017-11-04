@@ -173,7 +173,7 @@ class QuestionsForm(forms.Form):
             if isinstance(value, UploadedFile):
                 answer.answer_file.save(value.name, value)
                 answer.answer = 'file://' + value.name
-                value = answer.answer
+            value = answer.answer
         else:
             answer.answer = value
         answer.log_action(action, person=self.request_user, data={'answer': value})

@@ -82,6 +82,14 @@ def speaker_boolean_question(event):
 
 
 @pytest.fixture
+def speaker_file_question(event):
+    return Question.objects.create(
+        event=event, question='Please submit your CV.', variant=QuestionVariant.FILE,
+        target='speaker', required=False,
+    )
+
+
+@pytest.fixture
 def choice_question(event):
     question = Question.objects.create(
         event=event, question='How much do you like green?', variant=QuestionVariant.CHOICES,

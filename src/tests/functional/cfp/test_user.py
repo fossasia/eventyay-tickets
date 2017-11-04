@@ -1,5 +1,9 @@
+import os
+
 import pytest
+from django.conf import settings
 from django.core import mail as djmail
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from pretalx.submission.models import SubmissionStates
@@ -148,25 +152,34 @@ def test_can_edit_profile(speaker, event, speaker_client):
 @pytest.mark.django_db
 def test_can_edit_and_update_speaker_answers(
         speaker, event, speaker_question, speaker_boolean_question, speaker_client,
-        speaker_text_question,
+        speaker_text_question, speaker_file_question,
 ):
     answer = speaker.answers.filter(question_id=speaker_question.pk).first()
     assert not answer
+    f = SimpleUploadedFile('testfile.txt', b'file_content')
     response = speaker_client.post(
         event.urls.user,
         data={
             f'question_{speaker_question.id}': 'black as the night',
             f'question_{speaker_boolean_question.id}': 'True',
+            f'question_{speaker_file_question.id}': f,
             f'question_{speaker_text_question.id}': 'Green is totally the best color.',
             'form': 'questions'
         },
         follow=True,
     )
     assert response.status_code == 200
+
     answer = speaker.answers.get(question_id=speaker_question.pk)
     assert answer.answer == 'black as the night'
     assert speaker.answers.get(question_id=speaker_boolean_question.pk).answer == 'True'
     assert speaker.answers.get(question_id=speaker_text_question.pk).answer == 'Green is totally the best color.'
+
+    file_answer = speaker.answers.get(question_id=speaker_file_question.pk)
+    assert file_answer.answer.startswith('file://')
+    assert file_answer.answer_file.read() == b'file_content'
+    assert os.path.exists(os.path.join(settings.MEDIA_ROOT, file_answer.answer_file.name))
+
     response = speaker_client.post(
         event.urls.user,
         data={f'question_{speaker_question.id}': 'green as the sky', 'form': 'questions'},
