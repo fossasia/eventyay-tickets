@@ -22,12 +22,13 @@
             <tr>
                 <th>Question</th>
                 <th>required</th>
+                <th>active</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% for question in speaker_questions %}
-                <tr>
+                <tr {% if not question.active %}class="table-secondary"{% endif %}>
                     <td>
                         <a href="{{ question.urls.base }}">
                             {{ question.question }}
@@ -35,6 +36,11 @@
                     </td>
                     <td>
                         <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
+
+                        </span>
+                    </td>
+                    <td>
+                        <span class="fa fa-{% if question.active %}check-circle{% else %}times-circle{% endif %}">
 
                         </span>
                     </td>
@@ -66,12 +72,13 @@
             <tr>
                 <th>Question</th>
                 <th>required</th>
+                <th>active</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% for question in submission_questions %}
-                <tr>
+                <tr {% if not question.active %}class="table-secondary"{% endif %}>
                     <td>
                         <a href="{{ question.urls.base }}">
                             {{ question.question }}
@@ -79,6 +86,11 @@
                     </td>
                     <td>
                         <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
+
+                        </span>
+                    </td>
+                    <td>
+                        <span class="fa fa-{% if question.active %}check-circle{% else %}times-circle{% endif %}">
 
                         </span>
                     </td>

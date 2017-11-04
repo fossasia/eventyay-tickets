@@ -74,7 +74,7 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/cfp/question_form.html'
 
     def get_object(self) -> Question:
-        return self.request.event.questions.filter(pk=self.kwargs.get('pk')).first()
+        return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
 
     @cached_property
     def formset(self):
