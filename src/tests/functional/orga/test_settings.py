@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from pretalx.event.models import Event
+from pretalx.person.models import EventPermission
 
 
 @pytest.mark.django_db
@@ -227,3 +228,67 @@ def test_save_review_settings_invalid(orga_client, event):
     assert response.status_code == 200
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
+
+
+@pytest.mark.django_db
+def test_invite_orga_member(orga_client, event):
+    assert EventPermission.objects.filter(event=event).count() == 1
+    response = orga_client.post(
+        event.orga_urls.invite,
+        {'email': 'other@user.org'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert EventPermission.objects.filter(event=event).count() == 2
+    perm = EventPermission.objects.get(event=event, invitation_token__isnull=False)
+    assert perm.is_orga
+    assert not perm.is_reviewer
+
+
+@pytest.mark.django_db
+def test_retract_invitation(orga_client, event):
+    assert EventPermission.objects.filter(event=event).count() == 1
+    response = orga_client.post(
+        event.orga_urls.invite,
+        {'email': 'other@user.org'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert EventPermission.objects.filter(event=event).count() == 2
+    perm = EventPermission.objects.get(event=event, invitation_token__isnull=False)
+    response = orga_client.post(
+        reverse('orga:settings.team.retract', kwargs={'event': event.slug, 'pk': perm.pk}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert EventPermission.objects.filter(event=event).count() == 1
+
+
+@pytest.mark.parametrize('target', ('email', 'nick'))
+@pytest.mark.django_db
+def test_add_orga_to_review(orga_client, event, target):
+    perm = EventPermission.objects.get(event=event)
+    assert perm.is_reviewer is False
+    response = orga_client.post(
+        event.orga_urls.invite_reviewer,
+        {'nick': getattr(perm.user, target)},
+        follow=True,
+    )
+    assert response.status_code == 200
+    perm.refresh_from_db()
+    assert perm.is_reviewer is True
+
+
+@pytest.mark.django_db
+def test_invite_new_reviewer(orga_client, event):
+    perm = EventPermission.objects.get(event=event)
+    assert perm.is_reviewer is False
+    response = orga_client.post(
+        event.orga_urls.invite_reviewer,
+        {'nick': 'new@user_to_be_review.er'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    perm.refresh_from_db()
+    assert perm.is_reviewer is False
+    assert EventPermission.objects.count() == 2
