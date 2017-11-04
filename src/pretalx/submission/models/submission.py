@@ -165,9 +165,7 @@ class Submission(LogMixin, models.Model):
         speakers = '{base}/speakers'
         new_speaker = '{speakers}/add'
         delete_speaker = '{speakers}/delete'
-        reviews = '{self.event.orga_urls.reviews}/{self.code}'
-        review_base = '{base}/reviews'
-        new_review = '{review_base}/add'
+        reviews = '{base}/reviews'
         feedback = '{base}/feedback'
 
     def assign_code(self, length=6):

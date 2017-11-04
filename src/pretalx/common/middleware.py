@@ -24,7 +24,9 @@ class EventPermissionMiddleware:
     REVIEWER_URLS = (
         'submissions.list',
         'submissions.content.view',
-        'submissions.questions.view'
+        'submissions.questions.view',
+        'submissions.reviews',
+        'submissions.reviews.delete',
     )
 
     def __init__(self, get_response):
@@ -41,7 +43,7 @@ class EventPermissionMiddleware:
                 )
 
     def _is_reviewer_url(self, url):
-        if url.url_name.startswith('reviews'):
+        if url.url_name.startswith('review'):
             return True
         if url.url_name.endswith('dashboard'):
             return True

@@ -1,0 +1,60 @@
+{% extends "orga/submission/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block submission_content %}
+
+    <div class="alert alert-info">
+    {% blocktrans trimmed %}
+        Please give a fair review on why you'd like to see this submission at the conference,
+        or why you think it would not be a good fit.
+    {% endblocktrans %}
+    {% if not form.instance.pk %}
+    {% blocktrans trimmed %}
+        You will be able to see other reviews once you have given yours.
+    {% endblocktrans %}
+    {% endif %}
+    </div>
+
+    {% if not form.instance.pk %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row">
+            <div class="ml-auto col-md-9">
+                <button type="submit" class="btn btn-primary" name="show_next" value="1">{% trans "Save and next" %}</button>
+                <button type="submit" class="btn btn-secondary">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+
+    {% if form.instance.pk %}
+    <table class="table review-table">
+            <tr>
+                <th>{% trans "Points" %}</th>
+                <th>{% trans "Review" %}</th>
+                <th>{% trans "Reviewer" %}</th>
+            </tr>
+        <tbody>
+            <tr><form method="post">
+                {% csrf_token %}
+                <td>{% bootstrap_field form.score layout="inline" %}</td>
+                <td>{% bootstrap_field form.text layout="inline" %}</td>
+                <td><button type="submit" class="btn btn-primary">{% trans "Save" %}</td>
+            </form></tr>
+            {% for review in submission.reviews.all %}
+                {% if review != form.instance %}
+                    <tr>
+                        <td>{{ review.score }}</td>
+                        <td>{{ review.text }}</td>
+                        <td>{{ review.user.get_display_name }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+
+{% endblock %}
+

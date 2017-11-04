@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.db import models
-from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
@@ -34,19 +33,15 @@ class ReviewDashboard(TemplateView):
     template_name = 'orga/review/dashboard.html'
 
 
-class ReviewSubmissionList(ReviewContext, TemplateView):
-    template_name = 'orga/review/submission_list.html'
-
-
-class ReviewMySubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
+class ReviewSubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
 
     form_class = ReviewForm
     model = Review
-    template_name = 'orga/review/submission_create.html'
+    template_name = 'orga/submission/review.html'
 
     @property
     def submission(self):
-        return self.request.event.submissions.get(code=self.kwargs['code'])
+        return self.request.event.submissions.get(code__iexact=self.kwargs['code'])
 
     def get_object(self):
         return self.submission.reviews.exclude(user__in=self.submission.speakers.all()).filter(user=self.request.user).first()
@@ -75,26 +70,6 @@ class ReviewMySubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
                 return self.request.event.orga_urls.reviews
 
         return self.submission.orga_urls.reviews
-
-
-class ReviewSubmissionDetail(ReviewContext, CreateOrUpdateView):
-
-    form_class = ReviewForm
-    model = Review
-    template_name = 'orga/review/submission_detail.html'
-
-    def get_object(self):
-        self.submission = self.request.event.submissions.get(code=self.kwargs['code'])
-        if 'pk' in self.kwargs:
-            return self.submission.reviews.get(pk=self.kwargs['pk'])
-        raise Http404()
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['event'] = self.request.event
-        kwargs['read_only'] = True
-        kwargs['user'] = self.request.user
-        return kwargs
 
 
 class ReviewSubmissionDelete(ReviewContext, TemplateView):

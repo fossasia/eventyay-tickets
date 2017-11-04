@@ -67,10 +67,8 @@ orga_urls = [
             url('^speakers$', submission.SubmissionSpeakers.as_view(), name='submissions.speakers.view'),
             url('^speakers/add$', submission.SubmissionSpeakersAdd.as_view(), name='submissions.speakers.add'),
             url('^speakers/delete$', submission.SubmissionSpeakersDelete.as_view(), name='submissions.speakers.delete'),
-            url('^reviews/add$', review.ReviewMySubmission.as_view(), name='reviews.submission.create'),
-            url('^reviews/(?P<pk>[0-9]+)/$', review.ReviewSubmissionDetail.as_view(), name='reviews.submission.view'),
-            url('^reviews/(?P<pk>[0-9]+)/edit$', review.ReviewMySubmission.as_view(), name='reviews.submission.update'),
-            url('^reviews/(?P<pk>[0-9]+)/delete$', review.ReviewSubmissionDelete.as_view(), name='reviews.submission.delete'),
+            url('^reviews/$', review.ReviewSubmission.as_view(), name='submissions.reviews'),
+            url('^reviews/delete$', review.ReviewSubmissionDelete.as_view(), name='submissions.reviews.submission.delete'),
             url('^feedback/$', submission.FeedbackList.as_view(), name='submissions.feedback.list'),
         ])),
 
@@ -79,7 +77,6 @@ orga_urls = [
         url('^speakers/(?P<pk>[0-9]+)/edit$', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
 
         url('^reviews$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
-        url('^reviews/(?P<code>\w+)/$', review.ReviewSubmissionList.as_view(), name='reviews.submission.list'),
 
         url('^settings$', settings.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/edit$', settings.EventDetail.as_view(), name='settings.event.edit'),

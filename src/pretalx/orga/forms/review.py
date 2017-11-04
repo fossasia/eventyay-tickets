@@ -56,6 +56,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             choices.append((value, name))
 
         self.fields['score'] = forms.ChoiceField(choices=choices, required=False, disabled=kwargs.get('read_only', False))
+        self.fields['text'].widget.attrs['rows'] = 2
 
     def clean_score(self):
         score = self.cleaned_data.get('score')
