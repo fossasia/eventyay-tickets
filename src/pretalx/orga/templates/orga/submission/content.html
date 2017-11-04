@@ -19,6 +19,10 @@
         {% bootstrap_field form.content_locale layout='horizontal' %}
         {% bootstrap_field form.do_not_record layout='horizontal' %}
         {% bootstrap_field form.duration addon_after='minutes' layout='horizontal' %}
+        {% if action == "create" %}
+            {% bootstrap_field form.speaker layout='horizontal' %}
+        {% endif %}
+
         {% if form.instance.average_score %}
         <div class="form-group row">
             <label class="col-md-3 form-control-label">

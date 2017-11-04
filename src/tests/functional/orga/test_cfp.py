@@ -4,6 +4,43 @@ from pretalx.submission.models import Question
 
 
 @pytest.mark.django_db
+def test_edit_cfp(orga_client, event):
+    response = orga_client.post(
+        event.cfp.urls.edit_text,
+        {'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    event.cfp.refresh_from_db()
+    assert str(event.cfp.headline) == 'new headline'
+
+
+@pytest.mark.django_db
+def test_make_submission_type_default(orga_client, submission_type, default_submission_type):
+    assert default_submission_type.event.submission_types.count() == 2
+    assert submission_type.event.cfp.default_type == default_submission_type
+    response = orga_client.get(submission_type.urls.default, follow=True)
+    assert response.status_code == 200
+    assert default_submission_type.event.submission_types.count() == 2
+    submission_type.event.cfp.refresh_from_db()
+    assert submission_type.event.cfp.default_type == submission_type
+
+
+@pytest.mark.django_db
+def test_edit_submission_type(orga_client, submission_type):
+    response = orga_client.post(
+        submission_type.urls.edit,
+        {'default_duration': 31, 'max_duration': 61, 'name_0': 'New Type!'},
+        follow=True,
+    )
+    submission_type.refresh_from_db()
+    assert response.status_code == 200
+    assert submission_type.default_duration == 31
+    assert submission_type.max_duration == 61
+    assert str(submission_type.name) == 'New Type!'
+
+
+@pytest.mark.django_db
 def test_delete_submission_type(orga_client, submission_type, default_submission_type):
     assert default_submission_type.event.submission_types.count() == 2
     response = orga_client.get(submission_type.urls.delete, follow=True)

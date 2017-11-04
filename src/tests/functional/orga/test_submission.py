@@ -39,6 +39,19 @@ def test_orga_can_see_single_submission_feedback(orga_client, event, feedback):
 
 
 @pytest.mark.django_db
+def test_orga_can_see_single_submission_speakers(orga_client, event, submission):
+    response = orga_client.get(submission.orga_urls.speakers, follow=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_orga_can_see_single_submission_answers(orga_client, event, answer):
+    response = orga_client.get(answer.submission.orga_urls.questions, follow=True)
+    assert response.status_code == 200
+    assert answer.answer in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_accept_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
@@ -155,3 +168,28 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
     else:
         assert other_orga_user.nick != submission.speakers.last().nick
         assert submission.speakers.last().nick.startswith(other_orga_user.nick)
+
+
+@pytest.mark.django_db
+def test_orga_can_create_submission(orga_client, event):
+    assert event.submissions.count() == 0
+
+    response = orga_client.post(
+        event.orga_urls.new_submission,
+        data={
+            'abstract': 'abstract',
+            'content_locale': 'en',
+            'description': 'description',
+            'duration': '',
+            'notes': 'notes',
+            'speaker': 'foo@bar.com',
+            'title': 'title',
+            'submission_type': event.submission_types.first().pk,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert event.submissions.count() == 1
+    sub = event.submissions.first()
+    assert sub.title == 'title'
+    assert sub.speakers.count() == 1
