@@ -17,18 +17,18 @@
     <div class="row">
         <div class="col-md-6">
             <h4 class="text-center">{% trans "I already have an account" %}</h4>
-            {% bootstrap_field form.login_username %}
-            {% bootstrap_field form.login_password %}
+            {% bootstrap_field form.login_username layout='inline' %}
+            {% bootstrap_field form.login_password layout='inline' %}
             <button type="submit" class="btn btn-block btn-success btn-lg">
                 {% trans "Log in" %} &raquo;
             </button>
         </div>
         <div class="col-md-6">
             <h4 class="text-center">{% trans "I need a new account" %}</h4>
-            {% bootstrap_field form.register_username %}
-            {% bootstrap_field form.register_email %}
-            {% bootstrap_field form.register_password %}
-            {% bootstrap_field form.register_password_repeat %}
+            {% bootstrap_field form.register_username layout='inline' %}
+            {% bootstrap_field form.register_email layout='inline' %}
+            {% bootstrap_field form.register_password layout='inline' %}
+            {% bootstrap_field form.register_password_repeat layout='inline' %}
             <button type="submit" class="btn btn-block btn-success btn-lg">
                 {% trans "Register" %} &raquo;
             </button>
