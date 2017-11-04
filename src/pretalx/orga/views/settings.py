@@ -15,6 +15,7 @@ from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.event.models import Event
+from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import EventForm, ReviewSettingsForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, UserForm, OrgaProfileForm
