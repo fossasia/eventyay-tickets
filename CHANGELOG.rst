@@ -21,6 +21,7 @@ Bug fixes
 
 - Don't crash when using incorrect invite tokens, show a 404 page instead (#204).
 - Use actual hostname and not localhost when building absolute URLs.
+- Fix an access rights issue that made it impossible to be both reviewer and orga.
 
 
 v0.1.0
