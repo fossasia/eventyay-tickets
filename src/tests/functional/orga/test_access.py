@@ -34,7 +34,7 @@ def test_user_can_access_url(orga_client, logged_in, url):
     ('settings.mail.view', 200, 403,),
     ('settings.team.view', 200, 403,),
     ('settings.review.view', 200, 403,),
-    ('reviews.dashboard', 403, 200,),
+    ('reviews.dashboard', 200, 200,),
     ('schedule.main', 200, 403,),
 ])
 @pytest.mark.django_db
