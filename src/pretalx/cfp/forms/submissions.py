@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.models import (
-    Answer, QuestionVariant, Submission, SubmissionType,
+    Answer, QuestionVariant, Resource, Submission, SubmissionType,
 )
 
 
@@ -212,3 +212,12 @@ I'm looking forward to it!
             subject=self.cleaned_data['subject'],
             text=self.cleaned_data['text'],
         ).send()
+
+
+class ResourceForm(forms.ModelForm):
+
+    class Meta:
+        model = Resource
+        fields = [
+            'resource', 'description',
+        ]

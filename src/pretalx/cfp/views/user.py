@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -14,12 +15,12 @@ from django.views.generic import (
 )
 
 from pretalx.cfp.forms.submissions import (
-    InfoForm, QuestionsForm, SubmissionInvitationForm,
+    InfoForm, QuestionsForm, ResourceForm, SubmissionInvitationForm,
 )
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Resource, Submission, SubmissionStates
 
 
 @method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'", IMG_SRC="https://www.gravatar.com"), name='dispatch')
@@ -154,6 +155,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateView):
     template_name = 'cfp/event/user_submission_edit.html'
     model = Submission
@@ -163,8 +165,58 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['qform'] = self.qform
+        ctx['formset'] = self.formset
+        print(self.formset)
         ctx['can_edit'] = self.can_edit
         return ctx
+
+    @cached_property
+    def formset(self):
+        formset_class = inlineformset_factory(
+            Submission, Resource, form=ResourceForm, formset=BaseModelFormSet,
+            can_delete=True, extra=0,
+        )
+        obj = self.get_object()
+        return formset_class(
+            self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
+            queryset=obj.resources.all() if obj else Resource.objects.none(),
+        )
+
+    def save_formset(self, obj):
+        if self.formset.is_valid():
+            for form in self.formset.initial_forms:
+                if form in self.formset.deleted_forms:
+                    if not form.instance.pk:
+                        continue
+                    obj.log_action(
+                        'pretalx.submission.resource.deleted', person=self.request.user, data={
+                            'id': form.instance.pk,
+                        }
+                    )
+                    form.instance.delete()
+                    form.instance.pk = None
+                elif form.has_changed():
+                    form.instance.submission = obj
+                    form.save()
+                    change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                    change_data['id'] = form.instance.pk
+                    obj.log_action('pretalx.submission.resource.changed', person=self.request.user)
+
+            for form in self.formset.extra_forms:
+                if not form.has_changed():
+                    continue
+                if self.formset._should_delete_form(form):
+                    continue
+                form.instance.submission = obj
+                form.save()
+                obj.log_action(
+                    'pretalx.submission.resource.added',
+                    person=self.request.user, orga=True, data={'id': form.instance.pk}
+                )
+
+            return True
+        return False
 
     @cached_property
     def qform(self):
@@ -198,6 +250,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         if self.can_edit:
             form.save()
             self.qform.save()
+            result = self.save_formset(form.instance)
+            if not result:
+                return self.get(self.request, *self.args, **self.kwargs)
             if form.has_changed():
                 form.instance.log_action('pretalx.submission.update', person=self.request.user)
             messages.success(self.request, phrases.base.saved)

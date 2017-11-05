@@ -1,8 +1,11 @@
 {% extends "cfp/event/base.html" %}
-{% load i18n %}
 {% load bootstrap4 %}
+{% load formset_tags %}
+{% load i18n %}
+{% load staticfiles %}
 {% block title %}{% trans "Your submission" %} :: {{ request.event }}{% endblock %}
 {% block content %}
+    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>
         {% trans "Current state of your submission:" %}
@@ -32,6 +35,68 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         {% bootstrap_form qform layout='horizontal' %}
+            <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+                {{ formset.management_form }}
+                {% bootstrap_formset_errors formset %}
+                <div class="col-md-3">{% trans "Resources" %}</div>
+                <div class="alert alert-info col-md-9 ml-auto">
+                    {% trans "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
+                </div>
+                <div data-formset-body>
+                    {% for form in formset %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="resource-option-row ml-auto col-md-9">
+                                <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
+                                    {% bootstrap_form_errors form %}
+                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
+                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                                </div>
+                                {% if action != 'view' %}
+                                <div class="resource-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ formset.empty_form.id }}
+                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="resource-option-row ml-auto col-md-9">
+                                <div class="resource-option-input">
+                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
+                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                                </div>
+                                <div class="resource-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
+                {% if action != 'view' %}
+                <div class="col-md-9 ml-auto">
+                    <button type="button" class="btn btn-info" data-formset-add>
+                        <i class="fa fa-plus"></i> {% trans "Add a new option" %}</button>
+                </div>
+                {% endif %}
+            </div>
+                <script>jQuery(function($) {
+                    $(".formset").formset({
+                        animateForms: true
+                    });
+                    });</script>
         {% if can_edit %}
             <div class="row">
                 <div class="col-md-3 ml-auto">
