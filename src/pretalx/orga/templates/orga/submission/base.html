@@ -1,8 +1,5 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
-{% block headline %}
-    {% trans "Submissions" %}
-{% endblock %}
 {% block content %}
 {% if submission %}
     <ul class="nav nav-pills">
@@ -23,14 +20,16 @@
             {% trans "Speakers" %}
           </a>
       </li>
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "submissions.questions" in url_name %}active{% endif %}"
-            href="{{ submission.orga_urls.questions }}"
-          >
-            {% trans "Questions" %}
-          </a>
-      </li>
+      {% if request.event.submission_questions.count %}
+          <li class="nav-item">
+              <a
+                class="nav-link {% if "submissions.questions" in url_name %}active{% endif %}"
+                href="{{ submission.orga_urls.questions }}"
+              >
+                {% trans "Questions" %}
+              </a>
+          </li>
+      {% endif %}
       <li class="nav-item">
           <a
             class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"

@@ -275,5 +275,9 @@ class Event(LogMixin, models.Model):
         from pretalx.submission.models import Review
         return Review.objects.filter(submission__event=self)
 
+    @property
+    def submission_questions(self):
+        return self.questions.filter(target='submission')
+
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)
