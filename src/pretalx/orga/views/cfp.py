@@ -71,7 +71,11 @@ class CfPQuestionList(TemplateView):
 class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm
-    template_name = 'orga/cfp/question_form.html'
+
+    def get_template_names(self):
+        if self._action == 'view':
+            return 'orga/cfp/question_detail.html'
+        return 'orga/cfp/question_form.html'
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
@@ -131,6 +135,7 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['formset'] = self.formset
+        ctx['question'] = self.get_object()
         return ctx
 
     def get_form_kwargs(self, *args, **kwargs):

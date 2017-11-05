@@ -1,0 +1,66 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load formset_tags %}
+{% load i18n %}
+{% load staticfiles %}
+{% block cfp_content %}
+
+<h4>
+    »{{ question.question }}«
+    <small>({{ question.get_variant_display }})</small>
+    <a href="{{ question.urls.edit }}" class="btn btn-xs btn-secondary">
+        <i class="fa fa-pencil"></i>
+    </a>
+</h4>
+
+{% if not question.answers.count %}
+    {% trans "Nobody has answered this question at the moment." %}
+{% else %}
+    {% if question.missing_answers %}
+        {% blocktrans with count=question.answers.count missing=question.missing_answers trimmed %}
+            This question has been answered <strong>{{ count }}</strong> times, <strong>{{ missing }}</strong> answers are still missing.
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans with count=question.answers.count trimmed %}
+            This question has been answered <strong>{{ count }}</strong> times, and no answers are missing.
+        {% endblocktrans %}
+    {% endif %}
+
+    <ul>
+        {% for answer in question.grouped_answers %}
+            <li>
+                {% if question.variant == "file" %}
+                    {% if answer.answer.answer_file %}
+                        <i class="fa fa-file-o"></i>
+                        <a href="{{ answer.answer.answer_file.url }}">
+                            {{ answer.answer.answer }}
+                        </a>
+                    {% else %}
+                        <i class="fa fa-file-o"></i>
+                        {{ answer.answer.answer }} ({% trans "lost file" %})
+                    {% endif %}
+                {% else %}
+                    {% if answer.answer %}
+                        {% if question.variant == 'boolean' %}
+                            {% if answer.answer == "True" %}
+                                »{% trans "Yes" %}«:
+                            {% else %}
+                                »{% trans "No" %}«:
+                            {% endif %}
+                        {% else %}
+                            »{{ answer.answer }}«:
+                        {% endif %}
+                    {% elif answer.options %}
+                        »{{ answer.options__answer }}«:
+                    {% else %}
+                        {% trans "Empty answer" %}:
+                    {% endif %}
+                    {{ answer.count }} {% trans "times" %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endif %}
+
+{% endblock %}

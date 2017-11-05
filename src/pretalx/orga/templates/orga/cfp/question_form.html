@@ -9,7 +9,6 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "Event settings" %}</legend>
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning">
                 {% blocktrans trimmed %}

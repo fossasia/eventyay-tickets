@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 from urlman import Urls
@@ -105,6 +106,33 @@ class Question(LogMixin, models.Model):
 
     def __str__(self):
         return str(self.question)
+
+    @cached_property
+    def grouped_answers(self):
+        if self.variant == QuestionVariant.FILE:
+            return [
+                {'answer': answer, 'count': 1}
+                for answer in self.answers.all()
+            ]
+        elif self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
+            return self.answers\
+                .order_by('options')\
+                .values('options', 'options__answer')\
+                .annotate(count=models.Count('id'))\
+                .order_by('-count')
+        else:
+            return list(self.answers.order_by('answer').values('answer').annotate(count=models.Count('id')).order_by('-count'))
+
+    @cached_property
+    def missing_answers(self):
+        from pretalx.person.models import User
+        answer_count = self.answers.all().count()
+        if self.target == QuestionTarget.SUBMISSION:
+            # TODO: if we are still in the submission phase, count all submissions
+            # If we are already later in the event, only count accepted submissions here
+            return self.event.submissions.count() - answer_count
+        elif self.target == QuestionTarget.SPEAKER:
+            return User.objects.filter(submissions__event_id=self.event.pk).count()
 
     class Meta:
         ordering = ['position']
