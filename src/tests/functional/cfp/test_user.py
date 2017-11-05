@@ -106,6 +106,10 @@ def test_can_edit_submission(speaker_client, submission):
         'description': submission.description,
         'abstract': submission.abstract,
         'notes': submission.notes,
+        'resource-TOTAL_FORMS': 0,
+        'resource-INITIAL_FORMS': 0,
+        'resource-MIN_NUM_FORMS': 0,
+        'resource-MAX_NUM_FORMS': 1000,
     }
     response = speaker_client.post(
         submission.urls.user_base + '/',
@@ -126,6 +130,10 @@ def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
         'description': rejected_submission.description,
         'abstract': rejected_submission.abstract,
         'notes': rejected_submission.notes,
+        'resource-TOTAL_FORMS': 0,
+        'resource-INITIAL_FORMS': 0,
+        'resource-MIN_NUM_FORMS': 0,
+        'resource-MAX_NUM_FORMS': 1000,
     }
     response = speaker_client.post(
         rejected_submission.urls.user_base,
