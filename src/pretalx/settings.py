@@ -48,8 +48,11 @@ config.read_dict({
         'ssl': 'True',
     },
     'cache': {
-
-    }
+    },
+    'celery': {
+        'broker': '',
+        'backend': '',
+    },
 })
 
 legacy_config = {
@@ -99,6 +102,10 @@ env_config = {
         'password': os.getenv('PRETALX_DB_PASS'),
         'host': os.getenv('PRETALX_DB_HOST'),
         'port': os.getenv('PRETALX_DB_PORT'),
+    },
+    'celery': {
+        'broker': os.getenv('PRETALX_CELERY_BROKER'),
+        'backend': os.getenv('PRETALX_CELERY_BACKEND'),
     },
 }
 
@@ -226,6 +233,12 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
+HAS_CELERY = bool(config.get('celery', 'broker'))
+if HAS_CELERY:
+    CELERY_BROKER_URL = config.get('celery', 'broker')
+    CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+else:
+    CELERY_TASK_ALWAYS_EAGER = True
 
 # Internal settings
 LANGUAGES = [
@@ -451,9 +464,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.SUCCESS: 'success',
 }
-
-# For now, to ease development
-CELERY_TASK_ALWAYS_EAGER = True
 
 
 def log_initial():
