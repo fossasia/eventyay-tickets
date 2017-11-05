@@ -16,6 +16,7 @@ Features
 - Mail template placeholders are now validated so that invalid placeholders
   cannot be saved at all. (#215)
 - You can now add questions that take a file upload as an answer. (#208)
+- Speakers can now upload files which will be shown on their talk page. (#209)
 
 Bug fixes
 ~~~~~~~~~

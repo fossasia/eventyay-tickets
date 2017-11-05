@@ -29,7 +29,8 @@ Talk submission
   talk. Subsequently, speakers will receive all emails in that language.
 - **Ask custom questions:** If you need custom information from your submitters, you can add
   questions to your CfP. We support a wide variety of answer types, such as free-text, number input,
-  and choices. (Answers can be optional, too.)
+  and choices. (Answers can be optional, too.) You'll see the results as easily manageable
+  statistics.
 - **Set a deadline:** You can configure a deadline for your CfP and choose to show the countdown
   publicly.
 - **Accept or reject submissions:** After careful consideration, you can accept or reject
@@ -50,6 +51,8 @@ Scheduling
 - **Publish your schedule:** Whenever something has changed noticeably, publish a new schedule by
   naming it and clicking a button. Speakers will receive notifications if the new release changes
   their talk.
+- **Interface:** You can export your schedule in machine readable format (a JSON, XML, or XCAL),
+  and use it elsewhere or even import it in other pretalx instances.
 - **Transparent updates:** pretalx provides a public changelog and an Atom feed, so that your
   participants can receive notifications as soon as you release a new schedule version.
 - **Integrate recordings:** Unless the speakers have set the do-not-record flag, you may sync and
@@ -66,6 +69,7 @@ Speaker management
   Until then, pretalx collects the emails in an Outbox, ready for editing, sending, or discarding.
 - **Resend:** Sent the email to the wrong address? Want to send the same email to a new speaker?
   pretalx allows you to copy any sent email to a draft, edit it, and send it again.
+- **Educate:** Speakers can upload files (such as presentations, or papers) along with their talks.
 
 Customization
 ~~~~~~~~~~~~~
@@ -96,10 +100,6 @@ Planned features
 - Offline schedule display, that saves a version of the schedule page in the browser cache and
   displays it (with a warning) when the user is offline (`#15
   <https://github.com/pretalx/pretalx/issues/15>`_)
-- Allow questions per speaker (`#42 <https://github.com/pretalx/pretalx/issues/42>`_)
-- Allow speakers to upload profile pictures (and possibly other files) (`#44
-  <https://github.com/pretalx/pretalx/issues/44>`_)
-- Provide an ICAL export (`#67 <https://github.com/pretalx/pretalx/issues/67>`_)
 - Allow speakers to submit their availability (`#79
   <https://github.com/pretalx/pretalx/issues/79>`_)
 
