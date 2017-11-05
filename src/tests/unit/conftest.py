@@ -5,7 +5,7 @@ import pytest
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
-from pretalx.submission.models import Submission
+from pretalx.submission.models import Question, Submission
 
 
 @pytest.fixture
@@ -38,3 +38,11 @@ def speaker(event):
     user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker', email='jane@speaker.org')
     SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
     return user
+
+
+@pytest.fixture
+def question(submission):
+    return Question.objects.create(
+        event=submission.event, target='submission', variant='boolean',
+        question='Do you agree?',
+    )

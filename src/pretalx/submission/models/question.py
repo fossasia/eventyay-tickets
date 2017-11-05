@@ -132,7 +132,7 @@ class Question(LogMixin, models.Model):
             # If we are already later in the event, only count accepted submissions here
             return self.event.submissions.count() - answer_count
         elif self.target == QuestionTarget.SPEAKER:
-            return User.objects.filter(submissions__event_id=self.event.pk).count()
+            return User.objects.filter(submissions__event_id=self.event.pk).count() - answer_count
 
     class Meta:
         ordering = ['position']
