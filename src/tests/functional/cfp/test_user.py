@@ -98,7 +98,11 @@ def test_cannot_withdraw_accepted_submission(speaker_client, accepted_submission
 
 
 @pytest.mark.django_db
-def test_can_edit_submission(speaker_client, submission):
+def test_can_edit_submission(speaker_client, submission, resource, other_resource):
+    assert submission.resources.count() == 2
+    resource_one = submission.resources.first()
+    resource_two = submission.resources.last()
+    f = SimpleUploadedFile('testfile.txt', b'file_content')
     data = {
         'title': 'Ein ganz neuer Titel',
         'submission_type': submission.submission_type.pk,
@@ -106,8 +110,18 @@ def test_can_edit_submission(speaker_client, submission):
         'description': submission.description,
         'abstract': submission.abstract,
         'notes': submission.notes,
-        'resource-TOTAL_FORMS': 0,
-        'resource-INITIAL_FORMS': 0,
+        'resource-0-id': resource_one.id,
+        'resource-0-description': 'new resource name',
+        'resource-0-resource': resource_one.resource,
+        'resource-1-id': resource_two.id,
+        'resource-1-DELETE': True,
+        'resource-1-description': resource_two.description,
+        'resource-1-resource': resource_two.resource,
+        'resource-2-id': '',
+        'resource-2-description': 'new resource',
+        'resource-2-resource': f,
+        'resource-TOTAL_FORMS': 3,
+        'resource-INITIAL_FORMS': 2,
         'resource-MIN_NUM_FORMS': 0,
         'resource-MAX_NUM_FORMS': 1000,
     }
@@ -117,7 +131,13 @@ def test_can_edit_submission(speaker_client, submission):
     )
     assert response.status_code == 200
     submission.refresh_from_db()
+    resource_one.refresh_from_db()
+    new_resource = submission.resources.exclude(pk=resource_one.pk).first()
     assert submission.title == 'Ein ganz neuer Titel', response.content.decode()
+    assert submission.resources.count() == 2
+    assert new_resource.description == 'new resource'
+    assert new_resource.resource.read() == b'file_content'
+    assert not submission.resources.filter(pk=resource_two.pk).exists()
 
 
 @pytest.mark.django_db

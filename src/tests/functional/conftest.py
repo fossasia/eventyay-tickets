@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 import pytz
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
 
 from pretalx.event.models import Event
@@ -9,8 +10,8 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import EventPermission, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
-    Answer, AnswerOption, Feedback, Question,
-    QuestionVariant, Review, Submission, SubmissionType,
+    Answer, AnswerOption, Feedback, Question, QuestionVariant,
+    Resource, Review, Submission, SubmissionType,
 )
 
 
@@ -42,6 +43,18 @@ def multilingual_event():
         name='Fancy testevent', is_public=True, slug='test2', email='orga@orga.org',
         date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
     )
+
+
+@pytest.fixture
+def resource(submission):
+    f = SimpleUploadedFile('testresource.txt', b'a resource')
+    return Resource.objects.create(submission=submission, resource=f, description='Test resource')
+
+
+@pytest.fixture
+def other_resource(submission):
+    f = SimpleUploadedFile('testresource2.txt', b'another resource')
+    return Resource.objects.create(submission=submission, resource=f, description='Test resource 2')
 
 
 @pytest.fixture
