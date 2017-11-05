@@ -187,9 +187,18 @@ table .btn-secondary {
   .resource-option-delete {
     float: right;
     padding-right: 8px;
+    flex-grow: 0;
   }
   .form-group {
-    padding-right: 8px;
-    flex-grow: 1;
+    display: flex;
+    padding-right: 16px;
+
+    .bootstrap-multi-input {
+      flex-grow: 1;
+    }
+
+    input {
+      width: 280px;
+    }
   }
 }

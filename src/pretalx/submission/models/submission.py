@@ -323,6 +323,10 @@ class Submission(LogMixin, models.Model):
     def average_score(self):
         return self.reviews.all().aggregate(avg=models.Avg('score'))['avg']
 
+    @property
+    def active_resources(self):
+        return self.resources.filter(resource__isnull=False)
+
     def __str__(self):
         return self.title
 

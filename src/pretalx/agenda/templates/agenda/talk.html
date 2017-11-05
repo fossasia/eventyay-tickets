@@ -31,10 +31,6 @@
                 <span class="fa fa-calendar"></span>
             </a>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
-        </small>
-    </h3>
-    <div class="talk row">
-        <div class="talk-content col-lg-8 col-md-6 col-xs-12">
             {% if talk.do_not_record %}
                 <span class="fa-stack">
                     <i class="fa fa-video-camera fa-stack-1x"></i>
@@ -42,6 +38,10 @@
                 </span>
                 <em>{{ phrases.agenda.schedule.do_not_record }}</em>
             {% endif %}
+        </small>
+    </h3>
+    <div class="talk row">
+        <div class="talk-content col-lg-8 col-md-6 col-xs-12">
             {% if talk.recording_url %}
                 {{ talk.rendered_recording_iframe|safe }}
             {% endif %}
@@ -51,6 +51,29 @@
             <div class="description">
                 {{ talk.description|rich_text }}
             </div>
+            {% if talk.active_resources.count %}
+                <div class="resources">
+                    {% trans "See also:" %}
+                    {% if talk.active_resources.count == 1 %}
+                        <a href="{{ talk.active_resources.first.resource.url }}">
+                            <i class="fa fa-file"></i>
+                            {{ talk.active_resources.first.description }}
+                        </a>
+                    {% else %}
+                        <ul>
+                            {% for resource in talk.active_resources %}
+                                <li>
+                                    <a href="{{ resource.resource.url }}">
+                                        <i class="fa fa-file"></i>
+                                        {{ resource.description }}
+                                        ({{ resource.resource.size|filesizeformat }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
         <div class="col-lg-4 col-md-6 col-xs-12">
             {% if speakers|length %}
@@ -73,7 +96,6 @@
 
                             {% if speaker.other_talks.count > 1 %}
                                 {{ phrases.agenda.speaker_other_talks }}
-                                {% trans 'Other talks by this speaker:' %}
                                 <ul class="speaker-talks">
                                     {% for talk in speaker.other_talks %}
                                     <li class="speaker-talk">

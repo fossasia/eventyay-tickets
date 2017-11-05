@@ -166,7 +166,6 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         ctx = super().get_context_data(**kwargs)
         ctx['qform'] = self.qform
         ctx['formset'] = self.formset
-        print(self.formset)
         ctx['can_edit'] = self.can_edit
         return ctx
 
@@ -181,6 +180,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             self.request.POST if self.request.method == 'POST' else None,
             files=self.request.FILES if self.request.method == 'POST' else None,
             queryset=obj.resources.all() if obj else Resource.objects.none(),
+            prefix='resource',
         )
 
     def save_formset(self, obj):

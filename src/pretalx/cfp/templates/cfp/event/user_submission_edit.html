@@ -52,8 +52,8 @@
                             <div class="resource-option-row ml-auto col-md-9">
                                 <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
                                     {% bootstrap_form_errors form %}
-                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
-                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                                    {% bootstrap_field form.description layout='inline' %}
+                                    {% bootstrap_field form.resource layout='inline'  %}
                                 </div>
                                 {% if action != 'view' %}
                                 <div class="resource-option-delete">
