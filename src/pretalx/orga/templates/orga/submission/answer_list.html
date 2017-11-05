@@ -3,21 +3,19 @@
 
 {% block submission_content %}
 
-    {% for entry in user_list %}
-        <h2>{{ entry.user.name }}</h2>
-        <ul>
-        {% for answer in entry.answers %}
-            {% if answer.question.variant == 'file' %}
-                {% if answer.answer_file %}
-                    <li>
-                        <em>{{ answer.question }}</em>
-                            - <span class="fa fa-file"></span> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
-                    </li>
-                {% endif %}
-            {% else %}
-                <li><em>{{ answer.question }}</em> - {{ answer }}</li>
+    {% for answer in answer_list %}
+        <h5>
+            {{ answer.question.question }}
+            <small>({{ answer.question.get_variant_display }})</small>
+        </h5>
+        {% if answer.question.variant == 'file' %}
+            {% if answer.answer_file %}
+                <span class="fa fa-file"></span> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
             {% endif %}
-        {% endfor %}
-        </ul>
+        {% else %}
+            »{{ answer.answer }}«
+        {% endif %}
+    {% empty %}
+        {% trans "No questions have been answered at the moment." %}
     {% endfor %}
 {% endblock %}

@@ -15,7 +15,7 @@ from pretalx.common.views import (
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User
-from pretalx.submission.models import Submission, SubmissionError
+from pretalx.submission.models import Question, Submission, SubmissionError
 
 
 def create_user_as_orga(email, submission=None):
@@ -183,12 +183,12 @@ class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         submission = self.get_object()
-        user_list = [{
-            'speaker': user,
-            'answers': submission.answers.all()  # TODO: filter
-        } for user in submission.speakers.all()]
+        answers = [
+            question.answers.filter(submission=submission).first()
+            for question in Question.all_objects.filter(event=submission.event, target='submission')
+        ]
         context.update({
-            'user_list': user_list,
+            'answer_list': [a for a in answers if a],
             'submission': submission,
         })
         return context
