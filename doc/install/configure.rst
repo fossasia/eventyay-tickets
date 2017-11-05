@@ -183,3 +183,22 @@ The mail section
 - Should SSL be used when sending mail? Only one of TLS and SSL may be used.
 - **Environment variable:** ``PRETALX_MAIL_SSL``
 - **Default:** ``True``
+
+The celery section
+------------------
+
+``backend``
+~~~~~~~~~~~
+
+- The celery backend to be used. If you use a simple redis-based setup,
+  ``'redis://127.0.0.1/1'`` woould be a sensible value.
+- **Environment variable:** ``PRETALX_CELERY_BACKEND``
+- **Default:** ``''``
+
+``broker``
+~~~~~~~~~~~
+
+- The celery broker to be used. If you use a simple redis-based setup,
+  ``'redis://127.0.0.1/2'`` woould be a sensible value.
+- **Environment variable:** ``PRETALX_CELERY_BROKER``
+- **Default:** ``''``
