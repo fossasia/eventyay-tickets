@@ -52,7 +52,7 @@ def assign_code(obj, length=6):
     while True:
         code = get_random_string(length=length, allowed_chars=User.CODE_CHARSET)
 
-        if not User.objects.filter(code=code).exists():
+        if not User.objects.filter(code__iexact=code).exists():
             obj.code = code
             return code
 

@@ -13,7 +13,7 @@ class ReviewContext():
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        submission = self.request.event.submissions.get(code=self.kwargs['code'])
+        submission = self.request.event.submissions.get(code__iexact=self.kwargs['code'])
         ctx['submission'] = submission
         ctx['review'] = submission.reviews.filter(user=self.request.user).first()
         return ctx

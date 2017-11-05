@@ -174,7 +174,7 @@ class Submission(LogMixin, models.Model):
         # handwriting (2/Z, 4/A, 5/S, 6/G).
         while True:
             code = get_random_string(length=length, allowed_chars=self.CODE_CHARSET)
-            if not Submission.objects.filter(code=code).exists():
+            if not Submission.objects.filter(code__iexact=code).exists():
                 self.code = code
                 return
 

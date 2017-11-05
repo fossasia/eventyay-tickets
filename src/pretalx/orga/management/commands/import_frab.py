@@ -71,9 +71,9 @@ class Command(BaseCommand):
         with suppress(AttributeError):
             optout = talk.find('recording').find('optout').text == 'true'
 
-        if not Submission.objects.filter(code=talk.attrib['id']).exists():
+        if not Submission.objects.filter(code__iexact=talk.attrib['id']).exists():
             code = talk.attrib['id']
-        elif not Submission.objects.filter(code=talk.attrib['guid'][:16]).exists():
+        elif not Submission.objects.filter(code__iexact=talk.attrib['guid'][:16]).exists():
             code = talk.attrib['guid'][:16]
         else:
             code = None
