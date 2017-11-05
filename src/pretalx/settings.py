@@ -263,16 +263,21 @@ SESSION_COOKIE_NAME = 'pretalx_session'
 CSRF_COOKIE_NAME = 'pretalx_csrftoken'
 SESSION_COOKIE_HTTPONLY = True
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+EXTERNAL_APPS = [
     'compressor',
     'bootstrap4',
-    'jquery',
     'djangoformsetjs',
+    'jquery',
+    'rules',
+]
+LOCAL_APPS = [
     'pretalx.common.CommonConfig',
     'pretalx.event',
     'pretalx.mail',
@@ -283,10 +288,16 @@ INSTALLED_APPS = [
     'pretalx.cfp.CfPConfig',
     'pretalx.orga.OrgaConfig',
 ]
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS
 
 with suppress(ImportError):
     import django_extensions  # noqa
     INSTALLED_APPS.append('django_extensions')
+
+AUTHENTICATION_BACKENDS = (
+    'rules.permissions.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

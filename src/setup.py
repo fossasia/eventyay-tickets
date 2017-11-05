@@ -76,6 +76,7 @@ setup(
         'Markdown==2.6.*',
         'pytz',
         'requests',
+        'rules==1.2.*',
         'urlman==1.1.*',
         'whitenoise==3.3.*',
         'reportlab==3.4.*',
