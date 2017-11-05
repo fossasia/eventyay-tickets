@@ -114,10 +114,10 @@
                 <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.submissions }}">
                     <span class="fa fa-sticky-note-o"></span> {% trans "Submissions" %}
                 </a>
+                <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
+                    <span class="fa fa-eye"></span> {% trans "Review" %}
+                </a>
             {% endif %}
-            <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
-                <span class="fa fa-eye"></span> {% trans "Review" %}
-            </a>
             {% if request.event and request.is_orga %}
                 <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
                     <span class="fa fa-address-card-o"></span> {% trans "Speakers" %}
