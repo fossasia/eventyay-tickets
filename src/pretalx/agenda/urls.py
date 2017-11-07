@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import feed, location, schedule, speaker
+from .views import feed, location, schedule, speaker, talk
 
 agenda_urls = [
     url(f'^(?P<event>[{SLUG_CHARS}]+)/', include([
@@ -15,9 +15,9 @@ agenda_urls = [
         url('^schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
 
         url('^location/$', location.LocationView.as_view(), name='location'),
-        url('^talk/(?P<slug>\w+)/$', schedule.TalkView.as_view(), name='talk'),
-        url('^talk/(?P<slug>\w+)/feedback/$', schedule.FeedbackView.as_view(), name='feedback'),
-        url('^talk/(?P<slug>\w+)/ical/$', schedule.SingleICalView.as_view(), name='ical'),
+        url('^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
+        url('^talk/(?P<slug>\w+)/feedback/$', talk.FeedbackView.as_view(), name='feedback'),
+        url('^talk/(?P<slug>\w+)/ical/$', talk.SingleICalView.as_view(), name='ical'),
         url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
     ])),
 ]

@@ -10,7 +10,6 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
-from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.permissions import PermissionRequired
 from pretalx.schedule.models import Room
 
@@ -23,7 +22,7 @@ def day_end(dt):
     return dt.replace(hour=23, minute=59, second=59)
 
 
-class ScheduleDataView(EventPageMixin, TemplateView):
+class ScheduleDataView(TemplateView):
     template_name = 'agenda/schedule.html'
 
     def get_object(self):

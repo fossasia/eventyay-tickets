@@ -13,8 +13,6 @@
 {% endblock %}
 
 {% block content %}
-{% if request.event.settings.show_schedule or request.is_orga %}
-
     {% if not request.event.settings.show_schedule %}
         <div class="event-nonpublic">
             <span class="fa fa-user-secret"></span>
@@ -27,5 +25,4 @@
 
     {% block agenda_content %}
     {% endblock %}
-{% endif %}
 {% endblock %}

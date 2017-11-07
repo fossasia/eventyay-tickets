@@ -6,8 +6,8 @@
 
 {% block agenda_custom_header %}
 <meta name="twitter:card" content="summary" />
-<meta property="og:title" content="{{ talk.title }}" />
-<meta property="og:description" content="{{ talk.description|default:talk.abstract|default:"" }}" />
+<meta property="og:title" content="{{ talk.submission.title }}" />
+<meta property="og:description" content="{{ talk.submission.description|default:talk.submission.abstract|default:"" }}" />
 {% endblock %}
 
 {% block agenda_content %}
@@ -46,26 +46,26 @@
     </h3>
     <div class="talk row">
         <div class="talk-content col-lg-8 col-md-6 col-xs-12">
-            {% if talk.recording_url %}
-                {{ talk.rendered_recording_iframe|safe }}
+            {% if talk.submission.recording_url %}
+                {{ talk.submission.rendered_recording_iframe|safe }}
             {% endif %}
             <div class="abstract">
-                {{ talk.abstract|rich_text }}
+                {{ talk.submission.abstract|rich_text }}
             </div>
             <div class="description">
-                {{ talk.description|rich_text }}
+                {{ talk.submission.description|rich_text }}
             </div>
-            {% if talk.active_resources.count %}
+            {% if talk.submission.active_resources.count %}
                 <div class="resources">
                     {% trans "See also:" %}
-                    {% if talk.active_resources.count == 1 %}
-                        <a href="{{ talk.active_resources.first.resource.url }}">
+                    {% if talk.submission.active_resources.count == 1 %}
+                        <a href="{{ talk.submission.active_resources.first.resource.url }}">
                             <i class="fa fa-file"></i>
-                            {{ talk.active_resources.first.description }}
+                            {{ talk.submission.active_resources.first.description }}
                         </a>
                     {% else %}
                         <ul>
-                            {% for resource in talk.active_resources %}
+                            {% for resource in talk.submission.active_resources %}
                                 <li>
                                     <a href="{{ resource.resource.url }}">
                                         <i class="fa fa-file"></i>

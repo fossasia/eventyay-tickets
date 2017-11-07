@@ -18,7 +18,7 @@ from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Feedback, Submission
 
 
-class TalkView(PermissionRequired, EventPageMixin, DetailView):
+class TalkView(PermissionRequired, DetailView):
     context_object_name = 'talk'
     model = Submission
     slug_field = 'code'
@@ -62,7 +62,7 @@ class SingleICalView(EventPageMixin, DetailView):
         return resp
 
 
-class FeedbackView(PermissionRequired, EventPageMixin, FormView):
+class FeedbackView(PermissionRequired, FormView):
     model = Feedback
     form_class = FeedbackForm
     template_name = 'agenda/feedback_form.html'
