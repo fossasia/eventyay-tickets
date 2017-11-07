@@ -20,7 +20,7 @@ from pretalx.person.forms import UserForm
 from pretalx.person.models import User
 
 
-class LogoutView(EventPageMixin, View):
+class LogoutView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         logout(request)
         return redirect(reverse('cfp:event.start', kwargs={
@@ -28,14 +28,14 @@ class LogoutView(EventPageMixin, View):
         }))
 
 
-class LoginView(EventPageMixin, FormView):
+class LoginView(FormView):
     template_name = 'cfp/event/login.html'
     form_class = UserForm
 
     def form_valid(self, form):
         pk = form.save()
         user = User.objects.get(pk=pk)
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         url = self.request.GET.get('next')
         if url and is_safe_url(url, self.request.get_host()):
@@ -92,7 +92,7 @@ class ResetView(EventPageMixin, FormView):
         }))
 
 
-class RecoverView(EventPageMixin, FormView):
+class RecoverView(FormView):
     template_name = 'cfp/event/recover.html'
     form_class = RecoverForm
 

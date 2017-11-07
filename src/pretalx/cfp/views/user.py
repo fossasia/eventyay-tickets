@@ -96,6 +96,8 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
 
 class SubmissionViewMixin:
+    permission_required = 'submission.edit_submission'
+
     def get_object(self):
         try:
             return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
@@ -125,6 +127,10 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
     template_name = 'cfp/event/user_submission_withdraw.html'
     model = Submission
     context_object_name = 'submission'
+    permission_required = 'submission.withdraw_submission'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -139,6 +145,10 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
 
 
 class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
+    permission_required = 'submission.confirm_submission'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_anonymous:
@@ -161,6 +171,10 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     model = Submission
     form_class = InfoForm
     context_object_name = 'submission'
+    permission_required = 'submission.edit_submission'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -279,6 +293,10 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
 class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
     form_class = SubmissionInvitationForm
     template_name = 'cfp/event/user_submission_invitation.html'
+    permission_required = 'submission.edit_submission'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)

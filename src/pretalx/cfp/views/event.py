@@ -3,7 +3,6 @@ from contextlib import suppress
 import pytz
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
@@ -11,24 +10,17 @@ from django.utils.translation.trans_real import (
 )
 from django.views.generic import TemplateView
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.event.models import Event
-from pretalx.person.models import EventPermission
 
 
-class EventPageMixin:
+class EventPageMixin(PermissionRequired):
+    permission_required = 'cfp.view_event'
+
+    def get_permission_object(self):
+        return getattr(self.request, 'event', None)
+
     def dispatch(self, request, *args, **kwargs):
-        if not request.event and 'event' in self.kwargs:
-            raise Http404()
-
-        if not request.event.is_public:
-            is_permitted = request.user.is_authenticated and EventPermission.objects.filter(
-                user=request.user,
-                event=request.event,
-                is_orga=True,
-            ).exists()
-            if not is_permitted:
-                raise Http404()
-
         self._select_locale(request)
         return super().dispatch(request, *args, **kwargs)
 
@@ -81,6 +73,7 @@ class EventPageMixin:
 
 
 class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):
+
     def get_login_url(self) -> str:
         return reverse('cfp:event.login', kwargs={
             'event': self.request.event.slug

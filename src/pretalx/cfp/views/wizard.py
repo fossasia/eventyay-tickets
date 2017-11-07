@@ -158,7 +158,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
 
         sub.log_action('pretalx.submission.create', person=user)
         messages.success(self.request, phrases.cfp.submission_success)
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect(reverse('cfp:event.user.submissions', kwargs={
             'event': self.request.event.slug
         }))
