@@ -16,20 +16,20 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
 
 @pytest.mark.parametrize('url,orga_access,reviewer_access', [
     ('event.dashboard', 200, 200,),
-    ('event.user_list', 200, 403),
-    ('cfp.questions.view', 200, 403,),
-    ('cfp.text.view', 200, 403,),
-    ('cfp.types.view', 200, 403,),
-    ('mails.templates.list', 200, 403,),
-    ('mails.outbox.list', 200, 403,),
+    ('event.user_list', 200, 404),
+    ('cfp.questions.view', 200, 404,),
+    ('cfp.text.view', 200, 404,),
+    ('cfp.types.view', 200, 404,),
+    ('mails.templates.list', 200, 404,),
+    ('mails.outbox.list', 200, 404,),
     ('submissions.list', 200, 200,),
-    ('speakers.list', 200, 403,),
+    ('speakers.list', 200, 404,),
     ('settings.event.view', 200, 403,),
-    ('settings.mail.view', 200, 403,),
-    ('settings.team.view', 200, 403,),
-    ('settings.review.view', 200, 403,),
+    ('settings.mail.view', 200, 404,),
+    ('settings.team.view', 200, 404,),
+    ('settings.review.view', 200, 404,),
     ('reviews.dashboard', 200, 200,),
-    ('schedule.main', 200, 403,),
+    ('schedule.main', 200, 404,),
 ])
 @pytest.mark.django_db
 def test_user_can_access_event_urls(
@@ -61,7 +61,7 @@ def test_user_can_see_correct_events(orga_user, orga_client, speaker, event, oth
     response = orga_client.get(reverse('orga:event.dashboard', kwargs={'event': event.slug}), follow=True)
 
     if test_user == 'speaker':
-        assert response.status_code == 403, response.status_code
+        assert response.status_code == 404, response.status_code
     elif test_user == 'orga':
         assert event.slug in response.content.decode()
         assert other_event.slug not in response.content.decode()

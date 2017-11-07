@@ -3,7 +3,6 @@ from contextlib import suppress
 
 import pytz
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect, reverse
 from django.urls import resolve
@@ -21,13 +20,6 @@ class EventPermissionMiddleware:
         'invitation.view',
         'login',
     )
-    REVIEWER_URLS = (
-        'submissions.list',
-        'submissions.content.view',
-        'submissions.questions.view',
-        'submissions.reviews',
-        'submissions.reviews.delete',
-    )
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -42,26 +34,10 @@ class EventPermissionMiddleware:
                     permissions__user=request.user,
                 )
 
-    def _is_reviewer_url(self, url):
-        if url.url_name.startswith('review'):
-            return True
-        if url.url_name.endswith('dashboard'):
-            return True
-        if url.url_name in self.REVIEWER_URLS:
-            return True
-        return False
-
     def _handle_orga_url(self, request, url):
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
             params = '&' + request.GET.urlencode() if request.GET else ''
             return reverse('orga:login') + f'?next={urllib.parse.quote(request.path)}' + params
-        if hasattr(request, 'event') and request.event:
-            if not (request.is_orga or request.is_reviewer):
-                raise PermissionDenied()
-            if (request.is_reviewer and not (request.is_orga or request.user.is_superuser)) and not self._is_reviewer_url(url):
-                raise PermissionDenied()
-        elif hasattr(request, 'event') and not request.user.is_superuser:
-            raise PermissionDenied()
         self._select_locale(request)
 
     def __call__(self, request):

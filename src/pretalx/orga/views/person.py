@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.http import JsonResponse, Http404
+from django.http import Http404, JsonResponse
 from django.views.generic import View
 
 from pretalx.person.models import User
