@@ -7,7 +7,9 @@
 
 {% block content %}
     <h3 class="talk-title">
-        »{{ talk.title }}«
+        <a href="{{ talk.urls.public }}">
+            »{{ talk.title }}«
+        </a>
         <small>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
         </small>
