@@ -283,7 +283,7 @@ LOCAL_APPS = [
     'pretalx.mail',
     'pretalx.person',
     'pretalx.schedule',
-    'pretalx.submission',
+    'pretalx.submission.SubmissionConfig',
     'pretalx.agenda.AgendaConfig',
     'pretalx.cfp.CfPConfig',
     'pretalx.orga.OrgaConfig',

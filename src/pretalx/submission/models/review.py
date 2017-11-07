@@ -30,6 +30,10 @@ class Review(models.Model):
             .exclude(reviews__user=user) \
             .exclude(speakers__in=[user])
 
+    @property
+    def event(self):
+        return self.submission.event
+
     class urls(Urls):
         base = '{self.submission.orga_urls.reviews}'
         delete = '{base}/{self.pk}/delete'

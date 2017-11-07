@@ -5,5 +5,5 @@ class AgendaConfig(AppConfig):
     name = 'pretalx.agenda'
 
     def ready(self):
-        from .phrases import AgendaPhrases  # noqa
         from . import permissions  # noqa
+        from .phrases import AgendaPhrases  # noqa
