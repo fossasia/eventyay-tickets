@@ -48,7 +48,7 @@ class SubmitStartView(EventPageMixin, View):
 
 
 def show_questions_page(wizard):
-    return wizard.request.event.questions.filter(active=True).exists()
+    return wizard.request.event.questions.all().exists()
 
 
 def show_user_page(wizard):
@@ -122,7 +122,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
                 qid = k.split('_')[1]
-                question = Question.objects.get(pk=qid, event=self.request.event, active=True)
+                question = self.request.event.questions.get(pk=qid)
                 answer = Answer(question=question, submission=sub)
 
                 if question.variant == QuestionVariant.MULTIPLE:
