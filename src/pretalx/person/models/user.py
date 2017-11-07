@@ -6,7 +6,9 @@ from hashlib import md5
 
 import pytz
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import (
+    AbstractBaseUser, BaseUserManager, PermissionsMixin,
+)
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -57,7 +59,7 @@ def assign_code(obj, length=6):
             return code
 
 
-class User(AbstractBaseUser):
+class User(PermissionsMixin, AbstractBaseUser):
     """
     The pretalx user model: We don't really need last names and fancy stuff, so
     we stick with a nick, and optionally a name and an email address.
