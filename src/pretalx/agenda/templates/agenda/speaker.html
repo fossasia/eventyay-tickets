@@ -20,7 +20,7 @@
             {% if speaker.get_gravatar %}
                 <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" />
             {% elif speaker.avatar %}
-                <img width="100%" src="{{ request.user.avatar.url }}">
+                <img width="100%" src="{{ speaker.avatar.url }}">
             {% endif %}
         </div>
     </div>
