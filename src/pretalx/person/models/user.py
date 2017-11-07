@@ -153,6 +153,7 @@ class User(AbstractBaseUser):
 
     def deactivate(self):
         from pretalx.person.models import EventPermission
+        from pretalx.submission.models import Answer
         self.nick = f'deleted_user_{random.randint(0, 999)}'
         self.name = 'Deleted User'
         self.email = f'{self.nick}@localhost'
@@ -165,6 +166,7 @@ class User(AbstractBaseUser):
         self.save()
         self.profiles.all().update(biography='')
         EventPermission.objects.filter(user=self).update(is_orga=False, invitation_email=None, invitation_token=None)
+        Answer.objects.filter(person=self, question__contains_personal_data=True).delete()
 
     @property
     def gravatar_parameter(self):

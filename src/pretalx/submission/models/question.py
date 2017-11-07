@@ -96,6 +96,11 @@ class Question(LogMixin, models.Model):
         verbose_name=_('active'),
         help_text=_('Inactive questions will no longer be asked.'),
     )
+    contains_personal_data = models.BooleanField(
+        default=True,
+        verbose_name=_('Answers contain personal data'),
+        help_text=_('If a user deletes their account, answers of questions for personal data will be removed, too.'),
+    )
     objects = QuestionManager()
     all_objects = AllQuestionManager()
 
