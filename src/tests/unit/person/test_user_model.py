@@ -37,3 +37,16 @@ def test_nick_validator_invalid_nicks(nick):
 def test_gravatar_parameter(email, expected):
     user = User(email=email)
     assert user.gravatar_parameter == expected
+
+
+@pytest.mark.django_db
+def test_user_deactivate(speaker):
+    name = speaker.name
+    nick = speaker.nick
+    email = speaker.email
+    speaker.deactivate()
+    speaker.refresh_from_db()
+    assert speaker.profiles.first().biography == ''
+    assert speaker.name != name
+    assert speaker.nick != nick
+    assert speaker.email != email
