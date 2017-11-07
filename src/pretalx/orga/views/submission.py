@@ -8,6 +8,7 @@ from django.utils.timezone import now
 from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import (
     ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
@@ -59,7 +60,7 @@ The {event} orga crew''').format(event=submission.event.name, title=submission.t
     return user
 
 
-class SubmissionViewMixin:
+class SubmissionViewMixin(PermissionRequired):
 
     def get_object(self):
         return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
@@ -71,6 +72,8 @@ class SubmissionViewMixin:
 
 
 class SubmissionAccept(SubmissionViewMixin, View):
+    permission_required = 'submission.accept_submission'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -85,6 +88,8 @@ class SubmissionAccept(SubmissionViewMixin, View):
 
 
 class SubmissionConfirm(SubmissionViewMixin, View):
+    permission_required = 'submission.confirm_submission'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -99,6 +104,8 @@ class SubmissionConfirm(SubmissionViewMixin, View):
 
 
 class SubmissionUnconfirm(SubmissionViewMixin, View):
+    permission_required = 'submission.unconfirm_submission'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -113,6 +120,8 @@ class SubmissionUnconfirm(SubmissionViewMixin, View):
 
 
 class SubmissionReject(SubmissionViewMixin, View):
+    permission_required = 'submission.reject_submission'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -122,6 +131,8 @@ class SubmissionReject(SubmissionViewMixin, View):
 
 
 class SubmissionSpeakersAdd(SubmissionViewMixin, View):
+    permission_required = 'submission.add_speaker'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -147,6 +158,8 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
 
 
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
+    permission_required = 'submission.add_speaker'
+
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
@@ -164,6 +177,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
 class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
+    permission_required = 'submission.edit_submission'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -175,6 +189,7 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
 
 class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/answer_list.html'
+    permission_required = 'submission.edit_submission'
 
     def get_queryset(self):
         submission = self.get_object()
@@ -198,14 +213,24 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
+    permission_required = 'submission.view_submission'
+
+    def get_permission_object(self):
+        if self._action == 'create':
+            self.permission_required = 'orga.view_orga_area'
+            return self.request.event
+        return super().get_permission_object()
 
     def get_success_url(self) -> str:
         self.kwargs.update({'pk': self.object.pk})
         return self.object.orga_urls.base
 
     def form_valid(self, form):
-        created = invited = not self.object
+        if self._action == 'edit' and not self.request.user.has_perm('submission.edit_submission', self.get_object()):
+            messages.error(self.request, _('You are not allowed to edit this submission.'))
+            return super().form_invalid(form)
 
+        created = invited = not self.object
         form.instance.event = self.request.event
         ret = super().form_valid(form)
         self.object = form.instance
@@ -240,13 +265,17 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return kwargs
 
 
-class SubmissionList(Sortable, Filterable, ListView):
+class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
     template_name = 'orga/submission/list.html'
     context_object_name = 'submissions'
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('code', 'speakers', 'title', 'state')
     sortable_fields = ('code', 'title', 'submission_type', 'state')
+    permission_required = 'orga.view_submissions'
     paginate_by = 25
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_queryset(self):
         qs = self.request.event.submissions.select_related('submission_type').order_by('title').all()
@@ -257,6 +286,7 @@ class SubmissionList(Sortable, Filterable, ListView):
 
 class SubmissionDelete(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/delete.html'
+    permission_required = 'submission.remove_submission'
 
     def post(self, request, *args, **kwargs):
         submission = self.get_object()
@@ -270,6 +300,7 @@ class FeedbackList(SubmissionViewMixin, ListView):
     template_name = 'orga/submission/feedback_list.html'
     context_object_name = 'feedback'
     paginate_by = 25
+    permission_required = 'submission.view_feedback'
 
     def get_queryset(self):
         return self.get_object().feedback.all().order_by('pk')

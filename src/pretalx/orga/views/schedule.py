@@ -9,12 +9,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
-from pretalx.schedule.models import Availability, TalkSlot
+from pretalx.schedule.models import Availability
 
 
-class ScheduleView(TemplateView):
+class ScheduleView(PermissionRequired, TemplateView):
     template_name = 'orga/schedule/index.html'
+    permission_required = 'orga.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_context_data(self, event):
         ctx = super().get_context_data()
@@ -25,8 +30,12 @@ class ScheduleView(TemplateView):
         return ctx
 
 
-class ScheduleReleaseView(View):
+class ScheduleReleaseView(PermissionRequired, View):
     form_class = ScheduleReleaseForm
+    permission_required = 'orga.release_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def post(self, request, event):
         form = ScheduleReleaseForm(self.request.POST)
@@ -39,7 +48,11 @@ class ScheduleReleaseView(View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
-class ScheduleResetView(View):
+class ScheduleResetView(PermissionRequired, View):
+    permission_required = 'orga.edit_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def dispatch(self, request, event):
         schedule_version = self.request.GET.get('version')
@@ -48,14 +61,22 @@ class ScheduleResetView(View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
-class ScheduleToggleView(View):
+class ScheduleToggleView(PermissionRequired, View):
+    permission_required = 'orga.edit_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def dispatch(self, request, event):
         self.request.event.settings.set('show_schedule', not self.request.event.settings.show_schedule)
         return redirect(self.request.event.orga_urls.schedule)
 
 
-class RoomList(View):
+class RoomList(PermissionRequired, View):
+    permission_required = 'orga.view_room'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get(self, request, event):
         return JsonResponse({
@@ -99,7 +120,11 @@ def serialize_slot(slot):
     }
 
 
-class TalkList(View):
+class TalkList(PermissionRequired, View):
+    permission_required = 'orga.edit_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get(self, request, event):
         version = self.request.GET.get('version')
@@ -114,13 +139,14 @@ class TalkList(View):
         )
 
 
-class TalkUpdate(View):
+class TalkUpdate(PermissionRequired, View):
+    permission_required = 'orga.schedule_talk'
+
+    def get_object(self):
+        return self.request.event.wip_schedule.talks.filter(pk=self.kwargs.get('pk')).first()
 
     def patch(self, request, event, pk):
-        try:
-            talk = request.event.wip_schedule.talks.get(pk=pk)
-        except TalkSlot.DoesNotExist:
-            return JsonResponse({})
+        talk = self.get_object()
         data = json.loads(request.body.decode())
 
         if data.get('start'):
@@ -140,7 +166,11 @@ class TalkUpdate(View):
         return JsonResponse(serialize_slot(talk))
 
 
-class RoomTalkAvailabilities(View):
+class RoomTalkAvailabilities(PermissionRequired, View):
+    permission_required = 'orga.edit_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get(self, request, event, talkid, roomid):
         talk = request.event.wip_schedule.talks.get(pk=talkid)

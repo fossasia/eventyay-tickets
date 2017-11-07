@@ -3,31 +3,26 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission
 from pretalx.submission.models import Review
 
 
-class ReviewContext():
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        submission = self.request.event.submissions.get(code__iexact=self.kwargs['code'])
-        ctx['submission'] = submission
-        ctx['review'] = submission.reviews.filter(user=self.request.user).first()
-        return ctx
-
-
-class ReviewDashboard(ListView):
+class ReviewDashboard(PermissionRequired, ListView):
     template_name = 'orga/review/dashboard.html'
     paginate_by = 25
     context_object_name = 'submissions'
+    permission_required = 'orga.view_review_dashboard'
 
     def get_queryset(self, *args, **kwargs):
         return self.request.event.submissions\
             .annotate(avg_score=models.Avg('reviews__score'))\
             .order_by('-avg_score')
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -37,11 +32,12 @@ class ReviewDashboard(ListView):
         return ctx
 
 
-class ReviewSubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
+class ReviewSubmission(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     form_class = ReviewForm
     model = Review
     template_name = 'orga/submission/review.html'
+    permission_required = 'orga.edit_review'
 
     @property
     def submission(self):
@@ -49,6 +45,16 @@ class ReviewSubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
 
     def get_object(self):
         return self.submission.reviews.exclude(user__in=self.submission.speakers.all()).filter(user=self.request.user).first()
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        submission = self.request.event.submissions.get(code__iexact=self.kwargs['code'])
+        ctx['submission'] = submission
+        ctx['review'] = submission.reviews.filter(user=self.request.user).first()
+        return ctx
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -76,5 +82,9 @@ class ReviewSubmission(ReviewContext, ActionFromUrl, CreateOrUpdateView):
         return self.submission.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(ReviewContext, TemplateView):
+class ReviewSubmissionDelete(PermissionRequired, TemplateView):
     template_name = 'orga/review/submission_delete.html'
+    permission_required = 'orga.remove_review'
+
+    def get_permission_object(self):
+        return self.request.event

@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView, UpdateView, View
 
 from pretalx.common.forms import I18nFormSet
+from pretalx.common.permissions import PermissionRequired
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
@@ -18,10 +19,11 @@ from pretalx.submission.models import (
 )
 
 
-class CfPTextDetail(ActionFromUrl, UpdateView):
+class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     form_class = CfPForm
     model = CfP
     template_name = 'orga/cfp/text.html'
+    permission_required = 'orga.edit_cfp'
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -57,8 +59,12 @@ class CfPTextDetail(ActionFromUrl, UpdateView):
         return ret
 
 
-class CfPQuestionList(TemplateView):
+class CfPQuestionList(PermissionRequired, TemplateView):
     template_name = 'orga/cfp/question_view.html'
+    permission_required = 'orga.view_question'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -68,14 +74,18 @@ class CfPQuestionList(TemplateView):
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
-class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
+class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm
+    permission_required = 'orga.edit_question'
 
     def get_template_names(self):
         if self._action == 'view':
             return 'orga/cfp/question_detail.html'
         return 'orga/cfp/question_form.html'
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
@@ -166,11 +176,15 @@ class CfPQuestionDetail(ActionFromUrl, CreateOrUpdateView):
         return ret
 
 
-class CfPQuestionDelete(View):
+class CfPQuestionDelete(PermissionRequired, View):
+    permission_required = 'orga.remove_question'
+
+    def get_object(self) -> Question:
+        return self.request.event.questions.get(pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        question = self.request.event.questions.get(pk=self.kwargs.get('pk'))
+        question = self.get_object()
 
         try:
             question.delete()
@@ -183,21 +197,29 @@ class CfPQuestionDelete(View):
         return redirect(self.request.event.cfp.urls.questions)
 
 
-class SubmissionTypeList(ListView):
+class SubmissionTypeList(PermissionRequired, ListView):
     template_name = 'orga/cfp/submission_type_view.html'
     context_object_name = 'types'
+    permission_required = 'orga.view_submission_type'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_queryset(self):
         return self.request.event.submission_types.all()
 
 
-class SubmissionTypeDetail(ActionFromUrl, CreateOrUpdateView):
+class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = SubmissionType
     form_class = SubmissionTypeForm
     template_name = 'orga/cfp/submission_type_form.html'
+    permission_required = 'orga.edit_submission_type'
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
 
     def get_object(self):
         return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
@@ -212,12 +234,15 @@ class SubmissionTypeDetail(ActionFromUrl, CreateOrUpdateView):
         return ret
 
 
-class SubmissionTypeDefault(View):
+class SubmissionTypeDefault(PermissionRequired, View):
+    permission_required = 'orga.edit_submission_type'
+
+    def get_object(self):
+        return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-
-        submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        submission_type = self.get_object()
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=['default_type'])
         submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
@@ -225,11 +250,15 @@ class SubmissionTypeDefault(View):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class SubmissionTypeDelete(View):
+class SubmissionTypeDelete(PermissionRequired, View):
+    permission_required = 'orga.remove_submission_type'
+
+    def get_object(self):
+        return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission_type = self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        submission_type = self.get_object()
 
         if request.event.submission_types.count() == 1:
             messages.error(request, _('You cannot delete the only submission type. Try creating another one first!'))

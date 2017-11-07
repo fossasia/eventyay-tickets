@@ -11,6 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
@@ -24,6 +25,13 @@ from pretalx.schedule.forms import RoomForm
 from pretalx.schedule.models import Room
 
 
+class EventSettingsPermission(PermissionRequired):
+    permission_required = 'orga.change_settings'
+
+    def get_permission_object(self):
+        return self.request.event
+
+
 class EventDetail(ActionFromUrl, CreateOrUpdateView):
     model = Event
     form_class = EventForm
@@ -33,7 +41,11 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         if self._action == 'create':
             if not request.user.is_anonymous and not request.user.is_superuser:
                 raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
+        ret = super().dispatch(request, *args, **kwargs)
+        if self._action != 'create':
+            if not request.user.has_perm('orga.change_settings', self.object):
+                raise PermissionDenied()
+        return ret
 
     def get_object(self):
         return self.object
@@ -90,7 +102,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         return ret
 
 
-class EventMailSettings(ActionFromUrl, FormView):
+class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
     form_class = MailSettingsForm
     template_name = 'orga/settings/mail.html'
 
@@ -129,7 +141,7 @@ class EventMailSettings(ActionFromUrl, FormView):
         return ret
 
 
-class EventTeam(ActionFromUrl, TemplateView):
+class EventTeam(EventSettingsPermission, ActionFromUrl, TemplateView):
     template_name = 'orga/settings/team.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -143,7 +155,7 @@ class EventTeam(ActionFromUrl, TemplateView):
         return ctx
 
 
-class EventTeamInvite(View):
+class EventTeamInvite(EventSettingsPermission, View):
 
     def post(self, request, event):
         email = request.POST.get('email')
@@ -192,7 +204,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
         return redirect(request.event.orga_urls.team_settings)
 
 
-class EventTeamRetract(View):
+class EventTeamRetract(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event=request.event, pk=pk).delete()
@@ -200,14 +212,14 @@ class EventTeamRetract(View):
         return redirect(request.event.orga_urls.team_settings)
 
 
-class EventTeamDelete(View):
+class EventTeamDelete(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event=request.event, user__id=pk).update(is_orga=False)
         return redirect(request.event.orga_urls.team_settings)
 
 
-class EventReview(ActionFromUrl, FormView):
+class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
     form_class = ReviewSettingsForm
     template_name = 'orga/settings/review.html'
 
@@ -236,7 +248,7 @@ class EventReview(ActionFromUrl, FormView):
         return ctx
 
 
-class EventReviewInvite(View):
+class EventReviewInvite(EventSettingsPermission, View):
 
     def _handle_existing_user(self, request, user):
         permission = user.permissions.filter(event=request.event).first()
@@ -306,7 +318,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             return self._handle_new_user(request, nick)
 
 
-class EventReviewRetract(View):
+class EventReviewRetract(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, pk=pk).delete()
@@ -314,14 +326,14 @@ class EventReviewRetract(View):
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
-class EventReviewDelete(View):
+class EventReviewDelete(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_reviewer=False)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
-class InvitationView(FormView):
+class InvitationView(EventSettingsPermission, FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
 
@@ -352,7 +364,7 @@ class InvitationView(FormView):
             permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
             messages.info(self.request, _('You are now part of the event team!'))
 
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect(event.orga_urls.base)
 
 
@@ -401,11 +413,11 @@ class UserSettings(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class RoomList(ActionFromUrl, TemplateView):
+class RoomList(EventSettingsPermission, ActionFromUrl, TemplateView):
     template_name = 'orga/settings/room_list.html'
 
 
-class RoomDelete(View):
+class RoomDelete(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         try:
@@ -417,7 +429,7 @@ class RoomDelete(View):
         return redirect(request.event.orga_urls.room_settings)
 
 
-class RoomDetail(ActionFromUrl, CreateOrUpdateView):
+class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     model = Room
     form_class = RoomForm
     template_name = 'orga/settings/room_form.html'

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.common.views import (
     ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
 )
@@ -9,13 +10,17 @@ from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import SpeakerProfile, User
 
 
-class SpeakerList(Sortable, Filterable, ListView):
+class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
     default_filters = ('user__nick__icontains', 'user__email__icontains', 'user__name__icontains')
     filter_fields = ('user__nick', 'user__email', 'user__name')
     sortable_fields = ('user__nick', 'user__email', 'user__name')
     paginate_by = 25
+    permission_required = 'orga.view_speakers'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(event=self.request.event).order_by('user__pk')
@@ -24,10 +29,11 @@ class SpeakerList(Sortable, Filterable, ListView):
         return qs
 
 
-class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
+class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
     form_class = SpeakerProfileForm
     model = User
+    permission_required = 'orga.change_speaker'
 
     def get_object(self):
         return User.objects\
@@ -35,6 +41,9 @@ class SpeakerDetail(ActionFromUrl, CreateOrUpdateView):
             .order_by('id')\
             .distinct()\
             .get(pk=self.kwargs['pk'])
+
+    def get_permission_object(self):
+        return self.get_object().profiles.filter(event=self.request.event).first()
 
     def get_success_url(self) -> str:
         return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.get_object().pk})

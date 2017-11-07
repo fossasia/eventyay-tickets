@@ -3,7 +3,7 @@ import rules
 from pretalx.person.permissions import is_orga, is_reviewer
 
 rules.add_perm('orga.view_orga_area', is_orga | is_reviewer)
-rules.add_perm('orga.search_all_users', is_orga | is_reviewer)
+rules.add_perm('orga.search_all_users', is_orga)
 rules.add_perm('orga.change_settings', is_orga)
 rules.add_perm('orga.view_submission_cards', is_orga)
 rules.add_perm('orga.edit_cfp', is_orga)

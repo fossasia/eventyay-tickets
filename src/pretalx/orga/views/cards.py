@@ -10,6 +10,7 @@ from reportlab.platypus import (
     BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph,
 )
 
+from pretalx.common.permissions import PermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 
@@ -79,7 +80,12 @@ class SubmissionCard(Flowable):
             p.drawOn(self.canv, *self.coord(20 * mm, y))
 
 
-class SubmissionCards(View):
+class SubmissionCards(PermissionRequired, View):
+    permission_required = 'orga.view_submission_cards'
+
+    def get_permission_object(self):
+        return self.request.event
+
     def get_queryset(self):
         return self.request.event.submissions.select_related(
             'submission_type'
