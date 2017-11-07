@@ -13,23 +13,27 @@
 {% block agenda_content %}
 
     <h3 class="talk-title">
+        <div>
         »{{ talk.title }}«
-        {% if request.user in talk.speakers.all %}
-            <a href="{{ talk.urls.user_base }}"
-                    class="btn btn-sm btn-secondary">
-                <span class="fa fa-pencil"></span>{{ phrases.base.edit }}
+        <div class="buttons pull-right">
+            <a class="btn btn-outline-primary" href="{{ talk.urls.ical }}">
+                <span class="fa fa-calendar"></span> .ical
             </a>
-        {% endif %}
-        {% if talk.does_accept_feedback %}
-            <a href="{{ talk.urls.feedback }}"
-                    class="btn btn-sm btn-primary">
-                <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}
-            </a>
-        {% endif %}
+            {% if talk.does_accept_feedback %}
+                <a href="{{ talk.urls.feedback }}"
+                        class="btn btn-primary">
+                    <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}
+                </a>
+            {% endif %}
+            {% if request.user in talk.speakers.all %}
+                <a href="{{ talk.urls.user_base }}"
+                        class="btn btn-secondary">
+                    <span class="fa fa-pencil"></span>{{ phrases.base.edit }}
+                </a>
+            {% endif %}
+        </div>
+        </div>
         <small>
-            <a href="{{ talk.urls.ical }}">
-                <span class="fa fa-calendar"></span>
-            </a>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
             {% if talk.do_not_record %}
                 <span class="fa-stack">
