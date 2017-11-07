@@ -20,7 +20,7 @@ from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
-from pretalx.submission.models import Answer, Question, QuestionVariant
+from pretalx.submission.models import Answer, QuestionVariant
 
 FORMS = [
     ("info", InfoForm),
