@@ -10,10 +10,10 @@ from django.utils.functional import cached_property
 from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
-from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import settings_hierarkey
+from pretalx.common.urls import EventUrls
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
@@ -121,7 +121,7 @@ class Event(LogMixin, models.Model):
         null=True, blank=True,
     )
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '/{self.slug}'
         login = '{base}/login'
         logout = '{base}/logout'
@@ -139,7 +139,7 @@ class Event(LogMixin, models.Model):
         feed = '{schedule}/feed.xml'
         location = '{schedule}/location'
 
-    class orga_urls(Urls):
+    class orga_urls(EventUrls):
         create = '/orga/event/new'
         base = '/orga/event/{self.slug}'
         cfp = '{base}/cfp'
@@ -172,7 +172,7 @@ class Event(LogMixin, models.Model):
         toggle_schedule = '{schedule}/toggle'
         reviews = '{base}/reviews'
 
-    class api_urls(Urls):
+    class api_urls(EventUrls):
         base = '/orga/event/{self.slug}'
         schedule = '{base}/schedule/api'
         rooms = '{schedule}/rooms'

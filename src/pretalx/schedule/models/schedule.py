@@ -8,9 +8,9 @@ from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
 from django.utils.translation import override, ugettext_lazy as _
-from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 from pretalx.mail.models import QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.models import SubmissionStates
@@ -35,7 +35,7 @@ class Schedule(LogMixin, models.Model):
         ordering = ('-published', )
         unique_together = (('event', 'version'), )
 
-    class urls(Urls):
+    class urls(EventUrls):
         public = '{self.event.urls.schedule}?version={self.url_version}'
 
     @transaction.atomic

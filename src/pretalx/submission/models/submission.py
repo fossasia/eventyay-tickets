@@ -5,10 +5,10 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.utils.translation import pgettext, ugettext_lazy as _
-from urlman import Urls
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_submission
 
 
@@ -143,7 +143,7 @@ class Submission(LogMixin, models.Model):
     talks = TalkManager()
     deleted_objects = DeletedSubmissionManager()
 
-    class urls(Urls):
+    class urls(EventUrls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
         withdraw = '{user_base}/withdraw'
         confirm = '{user_base}/confirm'
@@ -153,7 +153,7 @@ class Submission(LogMixin, models.Model):
         invite = '{user_base}/invite'
         accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
 
-    class orga_urls(Urls):
+    class orga_urls(EventUrls):
         base = '{self.event.orga_urls.submissions}/{self.code}'
         edit = '{base}/edit'
         accept = '{base}/accept'

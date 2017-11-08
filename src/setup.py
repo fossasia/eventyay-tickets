@@ -77,10 +77,12 @@ setup(
         'pytz',
         'requests',
         'rules==1.2.*',
-        'urlman==1.1.*',
         'whitenoise==3.3.*',
         'reportlab==3.4.*',
         'vobject==0.9.*',
+    ],
+    dependency_links=[
+        'git+https://github.com/andrewgodwin/urlman.git@74e1fd6#egg=urlman',
     ],
     extras_require={
         'dev': [

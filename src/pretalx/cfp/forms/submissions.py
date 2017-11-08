@@ -200,7 +200,7 @@ at {event}. Please follow this link to join:
 I'm looking forward to it!
 {speaker}''').format(
             event=submission.event.name, title=submission.title,
-            url=submission.urls.accept_invitation.full(scheme='https', hostname=settings.SITE_NETLOC),
+            url=submission.urls.accept_invitation.full(),
             speaker=speaker.name or speaker.nick,
         )
         super().__init__(*args, **kwargs)

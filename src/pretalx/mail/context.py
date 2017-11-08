@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.urls import build_absolute_uri
@@ -47,8 +46,8 @@ def template_context_from_submission(submission):
         ),
         'event_name': submission.event.name,
         'submission_title': submission.title,
-        'submission_url': submission.urls.user_base.full(scheme='https', hostname=settings.SITE_NETLOC),
+        'submission_url': submission.urls.user_base.full(),
         'speakers': submission.display_speaker_names,
-        'orga_url': submission.orga_urls.base.full(scheme='https', hostname=settings.SITE_NETLOC),
+        'orga_url': submission.orga_urls.base.full(),
     })
     return ctx

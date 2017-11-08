@@ -1,7 +1,6 @@
 import urllib
 
 from csp.decorators import csp_update
-from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -316,7 +315,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['submission'] = self.get_object()
-        ctx['invite_url'] = ctx['submission'].urls.accept_invitation.full(scheme='https', hostname=settings.SITE_NETLOC)
+        ctx['invite_url'] = ctx['submission'].urls.accept_invitation.full()
         return ctx
 
     def form_valid(self, form):

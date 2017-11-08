@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
-from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class SubmissionType(LogMixin, models.Model):
@@ -27,7 +27,7 @@ class SubmissionType(LogMixin, models.Model):
         help_text=_('Maximum duration in minutes'),
     )
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.event.cfp.urls.types}/{self.pk}'
         default = '{base}/default'
         edit = '{base}/edit'

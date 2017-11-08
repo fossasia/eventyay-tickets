@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from urlman import Urls
+
+from pretalx.common.urls import EventUrls
 
 
 class Review(models.Model):
@@ -34,6 +35,6 @@ class Review(models.Model):
     def event(self):
         return self.submission.event
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.submission.orga_urls.reviews}'
         delete = '{base}/{self.pk}/delete'

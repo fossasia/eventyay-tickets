@@ -92,4 +92,4 @@ class TalkSlot(LogMixin, models.Model):
         vevent.add('dtstart').value = self.start.astimezone(tz)
         vevent.add('dtend').value = self.end.astimezone(tz)
         vevent.add('description').value = self.submission.abstract or ""
-        vevent.add('url').value = self.submission.urls.public.full(scheme='https', hostname=settings.SITE_NETLOC)
+        vevent.add('url').value = self.submission.urls.public.full()

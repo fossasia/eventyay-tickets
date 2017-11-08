@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
-from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class Room(LogMixin, models.Model):
@@ -36,7 +36,7 @@ class Room(LogMixin, models.Model):
     class Meta:
         ordering = ('position', )
 
-    class urls(Urls):
+    class urls(EventUrls):
         settings_base = '{self.event.orga_urls.room_settings}/{self.pk}'
         edit_settings = '{settings_base}/edit'
         delete = '{settings_base}/delete'

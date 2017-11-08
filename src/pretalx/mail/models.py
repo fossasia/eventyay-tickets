@@ -7,10 +7,10 @@ from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
-from urlman import Urls
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class TolerantDict(dict):
@@ -45,7 +45,7 @@ class MailTemplate(LogMixin, models.Model):
         help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!'),
     )
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.event.orga_urls.mail_templates}/{self.pk}'
         edit = '{base}/edit'
         delete = '{base}/delete'
@@ -114,7 +114,7 @@ class QueuedMail(LogMixin, models.Model):
     text = models.TextField(verbose_name=_('Text'))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.event.orga_urls.mail}/{self.pk}'
         edit = '{base}/edit'
         delete = '{base}/delete'

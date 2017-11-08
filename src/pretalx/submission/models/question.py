@@ -2,10 +2,10 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
-from urlman import Urls
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 def answer_file_path(instance, filename):
@@ -104,7 +104,7 @@ class Question(LogMixin, models.Model):
     objects = QuestionManager()
     all_objects = AllQuestionManager()
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.event.cfp.urls.questions}/{self.pk}'
         edit = '{base}/edit'
         delete = '{base}/delete'

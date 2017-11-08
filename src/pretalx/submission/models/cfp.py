@@ -2,9 +2,9 @@ from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
-from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class CfP(LogMixin, models.Model):
@@ -34,7 +34,7 @@ class CfP(LogMixin, models.Model):
         help_text=_('Please put in the last date you want to accept submissions from users.'),
     )
 
-    class urls(Urls):
+    class urls(EventUrls):
         base = '{self.event.orga_urls.cfp}'
         questions = '{base}/questions'
         new_question = '{questions}/new'
