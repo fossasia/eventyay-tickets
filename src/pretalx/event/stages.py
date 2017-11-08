@@ -12,12 +12,13 @@ def _is_cfp_open(event):
     return not _is_in_preparation(event) and (event.cfp.deadline or now()) >= now()
 
 
-def _is_in_review(event):
-    return (not _is_cfp_open(event) and event.cfp.deadline) and event.schedules.count() <= 1
-
-
 def _is_schedule_released(event):
-    return (not _is_in_review(event) and event.submissions.count()) and now() < event.datetime_from
+    return event.schedules.count() > 1
+
+
+def _is_in_review(event):
+    is_cfp_closed = not _is_cfp_open(event) and event.cfp.deadline and event.cfp.deadline < now()
+    return is_cfp_closed and not _is_schedule_released(event)
 
 
 def _is_running(event):
