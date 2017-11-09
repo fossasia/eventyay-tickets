@@ -190,7 +190,7 @@ class EventTeamInvite(EventSettingsPermission, View):
                 request,
                 _('<{email}> had already been invited – we\'ve resent the invitation instead :)').format(email=email),
             )
-        invitation_link = build_absolute_uri('orga:invitation.view', kwargs={'code': invitation_token})
+        invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': invitation_token})
         invitation_text = _('''Hi!
 
 You have been invited to the orga crew of {event} - Please click here to accept:
@@ -282,7 +282,7 @@ The {event} orga crew''').format(event=request.event.name)
     def _handle_new_user(self, request, email):
         event = request.event
         invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-        invitation_link = build_absolute_uri('orga:invitation.view', kwargs={'code': invitation_token})
+        invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': invitation_token})
         EventPermission.objects.create(
             event=event,
             invitation_email=email,

@@ -71,7 +71,7 @@ class ResetView(EventPageMixin, FormView):
                     'name': user.name or user.nick,
                     'event': self.request.event.name,
                     'url': build_absolute_uri(
-                        'cfp:event.recover', kwargs={
+                        'cfp:event.recover', event=self.request.event, kwargs={
                             'event': self.request.event.slug,
                             'token': user.pw_reset_token,
                         }
