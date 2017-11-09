@@ -89,6 +89,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
 class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
+    custom_domain = forms.URLField(
+        label=_('Custom domain'),
+        help_text=_('Enter a custom domain, such as https://my.event.org'),
+        required=False,
+    )
     show_schedule = forms.BooleanField(
         label=_('Show schedule publicly'),
         help_text=_('Unset to hide your schedule, e.g. if you want to use the HTML export exclusively.'),
