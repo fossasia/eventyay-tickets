@@ -146,7 +146,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user)
-            submission.log_action('pretalx.submission.confirm', person=request.user)
+            submission.log_action('pretalx.submission.confirmation', person=request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, phrases.cfp.submission_was_confirmed)

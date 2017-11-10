@@ -91,7 +91,7 @@ class SubmissionConfirm(SubmissionViewMixin, View):
 
         try:
             submission.confirm(person=request.user, orga=True)
-            submission.log_action('pretalx.submission.confirm', person=request.user, orga=True)
+            submission.log_action('pretalx.submission.confirmation', person=request.user, orga=True)
             messages.success(request, _('The submission has been confirmed.'))
         except SubmissionError:
             messages.error(request, _('A submission must be accepted to become confirmed.'))
