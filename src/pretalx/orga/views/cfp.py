@@ -218,11 +218,11 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types
 
+    def get_object(self):
+        return self.request.event.submission_types.filter(pk=self.kwargs.get('pk')).first()
+
     def get_permission_object(self):
         return self.get_object() or self.request.event
-
-    def get_object(self):
-        return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
 
     def form_valid(self, form):
         messages.success(self.request, 'The Submission Type has been saved.')

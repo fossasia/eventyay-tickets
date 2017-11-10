@@ -31,6 +31,8 @@ Features
   (#207)
 - Questions may now be marked as 'answers contain personal data'. Answers of
   these questions are deleted when users delete their accounts. (#233)
+- We moved to a new permission system that allows for more flexible roles.
+  Please report any bugs that may relate to incorrect permissions. (#78)
 
 Fixed bugs
 ~~~~~~~~~~~

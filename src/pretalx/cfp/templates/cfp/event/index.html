@@ -1,8 +1,13 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 {% load rich_text %}
+{% load rules %}
+
 {% block title %}{{ request.event }}{% endblock %}
+
 {% block content %}{% with cfp=request.event.cfp %}
+{% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
+
     <h2>{{ cfp.headline|default:"" }}</h2>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline %}
@@ -26,7 +31,7 @@
         <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
             {% trans "Edit or view your submission" %}
         </a>
-        {% if request.event.current_schedule %}
+        {% if can_view_schedule %}
         <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
             {% trans "View conference schedule" %}
         </a>

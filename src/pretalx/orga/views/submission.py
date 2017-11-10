@@ -131,7 +131,7 @@ class SubmissionReject(SubmissionViewMixin, View):
 
 
 class SubmissionSpeakersAdd(SubmissionViewMixin, View):
-    permission_required = 'submission.add_speaker'
+    permission_required = 'submission.edit_speaker_list'
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -158,7 +158,7 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
 
 
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
-    permission_required = 'submission.add_speaker'
+    permission_required = 'submission.edit_speaker_list'
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -177,7 +177,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
 class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
-    permission_required = 'submission.edit_submission'
+    permission_required = 'submission.view_submission'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -189,7 +189,7 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
 
 class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/answer_list.html'
-    permission_required = 'submission.edit_submission'
+    permission_required = 'submission.view_submission'
 
     def get_queryset(self):
         submission = self.get_object()
@@ -217,8 +217,10 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
     def get_permission_object(self):
         if self._action == 'create':
-            self.permission_required = 'orga.view_orga_area'
+            self.permission_required = 'orga.create_submission'
             return self.request.event
+        elif self._action == 'edit':
+            self.permission_required = 'submission.edit_submission'
         return super().get_permission_object()
 
     def get_success_url(self) -> str:
@@ -226,10 +228,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return self.object.orga_urls.base
 
     def form_valid(self, form):
-        if self._action == 'edit' and not self.request.user.has_perm('submission.edit_submission', self.get_object()):
-            messages.error(self.request, _('You are not allowed to edit this submission.'))
-            return super().form_invalid(form)
-
         created = invited = not self.object
         form.instance.event = self.request.event
         ret = super().form_valid(form)

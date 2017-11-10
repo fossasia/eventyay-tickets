@@ -280,7 +280,7 @@ EXTERNAL_APPS = [
 LOCAL_APPS = [
     'pretalx.common.CommonConfig',
     'pretalx.event',
-    'pretalx.mail',
+    'pretalx.mail.MailConfig',
     'pretalx.person',
     'pretalx.schedule',
     'pretalx.submission.SubmissionConfig',

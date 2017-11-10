@@ -37,7 +37,7 @@ class ReviewSubmission(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     form_class = ReviewForm
     model = Review
     template_name = 'orga/submission/review.html'
-    permission_required = 'orga.edit_review'
+    permission_required = 'submission.review_submission'
 
     @property
     def submission(self):
@@ -47,7 +47,7 @@ class ReviewSubmission(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.submission.reviews.exclude(user__in=self.submission.speakers.all()).filter(user=self.request.user).first()
 
     def get_permission_object(self):
-        return self.get_object() or self.request.event
+        return self.submission
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)

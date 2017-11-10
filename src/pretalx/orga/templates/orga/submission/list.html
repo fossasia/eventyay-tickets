@@ -1,12 +1,15 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load rules %}
 {% load url_replace %}
 
 {% block headline %}
     {% trans "Submissions" %}
 {% endblock %}
 {% block content %}
+
+{% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
 
     <legend>
         {{ submissions.count }}
@@ -18,9 +21,11 @@
     </legend>
 
     <p>
+        {% if can_create_submission %}
         <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
             <span class="fa fa-plus"></span> {% trans "Add new submission" %}
         </a>
+        {% endif %}
         <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
             <span class="fa fa-print"></span> {% trans "Print cards" %}
         </a>

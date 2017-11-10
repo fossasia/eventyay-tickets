@@ -49,6 +49,11 @@ def can_be_edited(user, obj):
     return obj.editable
 
 
+@rules.predicate
+def is_review_author(user, obj):
+    return obj.user == user
+
+
 rules.add_perm('submission.withdraw_submission', can_be_withdrawn & is_speaker)
 rules.add_perm('submission.reject_submission', can_be_rejected & is_orga)
 rules.add_perm('submission.accept_submission', can_be_accepted & is_orga)
@@ -56,7 +61,8 @@ rules.add_perm('submission.confirm_submission', can_be_confirmed & (is_speaker |
 rules.add_perm('submission.cancel_submission', can_be_canceled & (is_speaker | is_orga))
 rules.add_perm('submission.unconfirm_submission', can_be_unconfirmed & (is_speaker | is_orga))
 rules.add_perm('submission.remove_submission', can_be_removed & is_orga)
-rules.add_perm('submission.edit_submission', can_be_edited & (is_speaker | is_orga))
+rules.add_perm('submission.edit_submission', (can_be_edited & is_speaker) | is_orga)
+rules.add_perm('submission.review_submission', is_reviewer & ~is_speaker)
 rules.add_perm('submission.view_submission', is_speaker | is_orga | is_reviewer)
-rules.add_perm('submission.add_speaker', is_speaker | is_orga)
-rules.add_perm('submission.view_feedback', is_speaker | is_orga)
+rules.add_perm('submission.edit_speaker_list', is_speaker | is_orga)
+rules.add_perm('submission.view_feedback', is_speaker | is_orga | is_reviewer)

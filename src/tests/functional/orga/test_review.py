@@ -71,7 +71,7 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
             'text': 'LGTM',
         }
     )
-    assert response.status_code == 200
+    assert response.status_code == 404
     assert submission.reviews.count() == 0
 
 

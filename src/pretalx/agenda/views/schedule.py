@@ -84,7 +84,7 @@ class ScheduleView(PermissionRequired, ScheduleDataView):
         return self.request.event
 
     def get_object(self):
-        if self.request.GET.get('version') == 'wip' and self.request.is_orga:
+        if self.request.GET.get('version') == 'wip' and self.request.user.has_perm('orga.view_schedule', self.request.event):
             return self.request.event.wip_schedule
         return super().get_object()
 

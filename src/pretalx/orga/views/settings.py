@@ -41,11 +41,10 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         if self._action == 'create':
             if not request.user.is_anonymous and not request.user.is_superuser:
                 raise PermissionDenied()
-        ret = super().dispatch(request, *args, **kwargs)
-        if self._action != 'create':
+        else:
             if not request.user.has_perm('orga.change_settings', self.object):
                 raise PermissionDenied()
-        return ret
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         return self.object
@@ -333,7 +332,7 @@ class EventReviewDelete(EventSettingsPermission, View):
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
-class InvitationView(EventSettingsPermission, FormView):
+class InvitationView(FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
 
@@ -418,6 +417,7 @@ class RoomList(EventSettingsPermission, ActionFromUrl, TemplateView):
 
 
 class RoomDelete(EventSettingsPermission, View):
+    permission_required = 'orga.edit_room'
 
     def dispatch(self, request, event, pk):
         try:
@@ -433,6 +433,7 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     model = Room
     form_class = RoomForm
     template_name = 'orga/settings/room_form.html'
+    permission_required = 'orga.view_room'
 
     def get_object(self):
         try:
@@ -449,8 +450,17 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        created = not bool(form.instance.pk)
         form.instance.event = self.request.event
+
+        created = not bool(form.instance.pk)
+        if created:
+            permission = 'orga.change_settings'
+        else:
+            permission = 'orga.edit_room'
+        if not self.request.user.has_perm(permission, form.instance):
+            messages.error(self.request, _('You are not allowed to perform this action, sorry.'))
+            return
+
         ret = super().form_valid(form)
         messages.success(self.request, _('Saved!'))
         if created:

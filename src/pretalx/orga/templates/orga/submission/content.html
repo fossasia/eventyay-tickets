@@ -4,6 +4,7 @@
 {% load staticfiles %}
 {% load review_score %}
 {% load i18n %}
+{% load rules %}
 {% block submission_content %}
     {% if not submission %}
     <legend>{% trans "Create submission as orga" %}</legend>
@@ -43,22 +44,34 @@
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 </div>
             {% elif action == "view" %}
+                {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
+                {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
+                {% has_perm 'submission.confirm_submission' request.user submission as can_confirm_submission %}
+                {% has_perm 'submission.unconfirm_submission' request.user submission as can_unconfirm_submission %}
+                {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
+                {% has_perm 'submission.remove_submission' request.user submission as can_remove_submission %}
                 <div class="col-md-3">
+                    {% if can_remove_submission %}
                     <a class="btn btn-danger" href="{{ form.instance.orga_urls.delete }}?from=detail">{% trans "Delete" %}</a>
+                    {% endif %}
                 </div>
                 <div class="col-md-9">
-                    {% if form.instance.state == "submitted" or form.instance.state == "rejected" %}
+
+
+                    {% if can_unconfirm_submission %}
+                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.unconfirm }}">{% trans "Unconfirm" %}</a>
+                    {% elif can_accept_submission %}
                         <a class="btn btn-primary" href="{{ form.instance.orga_urls.accept }}">{% trans "Accept" %}</a>
-                    {% elif form.instance.state == "accepted" %}
+                    {% endif %}
+                    {% if can_confirm_submission %}
                         <a class="btn btn-secondary" href="{{ form.instance.orga_urls.confirm }}">{% trans "Confirm" %}</a>
                     {% endif %}
-                    {% if form.instance.state == "confirmed" %}
-                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.unconfirm }}">{% trans "Unconfirm" %}</a>
-                    {% endif %}
-                    {% if form.instance.state == "submitted" or form.instance.state == "accepted" %}
+                    {% if can_reject_submission %}
                         <a class="btn btn-danger" href="{{ form.instance.orga_urls.reject }}">{% trans "Reject" %}</a>
                     {% endif %}
+                    {% if can_edit_submission %}
                     <a class="btn btn-secondary" href="{{ form.instance.orga_urls.edit }}">{% trans "Edit" %}</a>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

@@ -167,7 +167,7 @@ class TalkUpdate(PermissionRequired, View):
 
 
 class RoomTalkAvailabilities(PermissionRequired, View):
-    permission_required = 'orga.edit_schedule'
+    permission_required = 'orga.edit_room'
 
     def get_permission_object(self):
         return self.request.event

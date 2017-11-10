@@ -1,9 +1,12 @@
 {% extends "orga/review/base.html" %}
 {% load review_score %}
 {% load i18n %}
+{% load rules %}
 
 {% block review_content %}
 
+{% has_perm 'orga.change_settings' request.user request.event as can_see_settings %}
+{% has_perm 'orga.view_reviews' request.user request.event as can_review %}
 <div class="dashboard-list">
 {% if request.event.reviews.count %}
     <div class="dashboard-block">
@@ -20,13 +23,13 @@
         </div>
     </div>
 {% endif %}
-    <{% if request.is_orga %}a href="{{ request.event.orga_urls.review_settings }}"{% else %}div{% endif %} class="dashboard-block">
+    <{% if can_see_settings %}a href="{{ request.event.orga_urls.review_settings }}"{% else %}div{% endif %} class="dashboard-block">
         <h1>{{ reviewers }}</h1>
         <div class="dashboard-description">
             {% trans "total reviewers" %}
         </div>
-    </{% if request.is_orga %}a{% else %}div{% endif %}>
-{% if request.is_reviewer and next_submission %}
+    </{% if can_see_settings %}a{% else %}div{% endif %}>
+{% if can_review and next_submission %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
         <h1>{% trans "Review!" %}</h1>
         <div class="dashboard-description">
@@ -35,7 +38,7 @@
             {% endblocktrans %}
         </div>
     </a>
-{% elif request.is_reviewer %}
+{% elif can_review %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
         <h1>{% trans "Bravo!!" %}</h1>
         <div class="dashboard-description">
@@ -58,6 +61,8 @@
     </thead>
     <tbody>
     {% for submission in submissions %}
+        {% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
+        {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
         <tr class="{{ submission.state }}">
             <td>
                 {% if submission.avg_score != None %}
@@ -74,12 +79,12 @@
                 {% endif %}
             </td>
             <td>
-                <a href="{{ submission.orga_urls.reviews }}">
+                <a href="{% if can_review_submission %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
                     {{ submission.title }}
                 </a>
             </td>
             <td>
-                {% if submission.state == 'submitted' and request.is_orga %}
+                {% if can_reject_submission %}
                     <a class="btn btn-primary btn-xs" href="{{ submission.orga_urls.accept }}">{% trans "Accept" %}</a>
                     <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
                 {% else %}

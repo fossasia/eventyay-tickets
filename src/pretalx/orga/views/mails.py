@@ -53,7 +53,7 @@ class SentMail(PermissionRequired, Sortable, Filterable, ListView):
 
 
 class OutboxSend(PermissionRequired, View):
-    permission_required = 'orga.view_mails'
+    permission_required = 'orga.send_mails'
 
     def get_permission_object(self):
         return self.request.event
@@ -83,7 +83,7 @@ class OutboxSend(PermissionRequired, View):
 
 
 class OutboxPurge(PermissionRequired, View):
-    permission_required = 'orga.view_mails'
+    permission_required = 'orga.purge_mails'
 
     def get_permission_object(self):
         if 'pk' in self.kwargs:
@@ -109,25 +109,28 @@ class OutboxPurge(PermissionRequired, View):
 
 
 class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
-    model = MailTemplate
+    model = QueuedMail
     form_class = MailDetailForm
     template_name = 'orga/mails/outbox_form.html'
     permission_required = 'orga.view_mails'
 
-    def get_object(self) -> MailTemplate:
+    def get_object(self) -> QueuedMail:
         return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
 
     def get_success_url(self):
         return self.object.event.orga_urls.outbox
 
     def form_valid(self, form):
+        form.instance.event = self.request.event
         if form.instance.sent:
             messages.error(self.request, _('The email has already been sent, you cannot edit it anymore.'))
+            return redirect(self.get_success_url())
+        if not self.request.user.has_perm('orga.edit_mails', form.instance):
+            messages.error(self.request, _('You do not have permission to edit this email.'))
             return redirect(self.get_success_url())
 
         ret = super().form_valid(form)
         messages.success(self.request, _('The email has been saved. When you send it, the updated text will be used.'))
-        form.instance.event = self.request.event
         if form.has_changed():
             action = 'pretalx.mail.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
@@ -135,9 +138,9 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
 
 class MailCopy(PermissionRequired, View):
-    permission_required = 'orga.view_mails'
+    permission_required = 'orga.edit_mails'
 
-    def get_object(self) -> MailTemplate:
+    def get_object(self) -> QueuedMail:
         return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
@@ -150,7 +153,7 @@ class MailCopy(PermissionRequired, View):
 class SendMail(PermissionRequired, FormView):
     form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
-    permission_required = 'orga.send_mails'
+    permission_required = 'orga.edit_mails'
 
     def get_permission_object(self):
         return self.request.event
@@ -185,7 +188,7 @@ class SendMail(PermissionRequired, FormView):
 
 class TemplateList(PermissionRequired, TemplateView):
     template_name = 'orga/mails/template_list.html'
-    permission_required = 'orga.view_mails'
+    permission_required = 'orga.view_mail_templates'
 
     def get_permission_object(self):
         return self.request.event
@@ -212,7 +215,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = MailTemplate
     form_class = MailTemplateForm
     template_name = 'orga/mails/template_form.html'
-    permission_required = 'orga.view_mails'
+    permission_required = 'orga.view_mail_templates'
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -236,16 +239,19 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.request.event.orga_urls.mail_templates
 
     def form_valid(self, form):
-        messages.success(self.request, 'The template has been saved - note that already pending emails that are based on this template will not be changed!')
         form.instance.event = self.request.event
+        if not self.request.user.has_perm('orga.edit_mail_templates', form.instance):
+            messages.error(self.request, _('You cannot edit this mail template.'))
+            return redirect(self.get_success_url())
         if form.has_changed():
             action = 'pretalx.mail_template.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
+        messages.success(self.request, 'The template has been saved - note that already pending emails that are based on this template will not be changed!')
         return super().form_valid(form)
 
 
 class TemplateDelete(PermissionRequired, View):
-    permission_required = 'orga.purge_mails'
+    permission_required = 'orga.edit_mail_templates'
 
     def get_object(self) -> MailTemplate:
         return MailTemplate.objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
