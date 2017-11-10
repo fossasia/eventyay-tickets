@@ -29,6 +29,8 @@ Features
 - A ``rebuild`` command was introduced that recompiles all static assets.
 - Question answers now receive a nice evaluation, aggregating all given answers.
   (#207)
+- Questions may now be marked as 'answers contain personal data'. Answers of
+  these questions are deleted when users delete their accounts. (#233)
 
 Fixed bugs
 ~~~~~~~~~~~

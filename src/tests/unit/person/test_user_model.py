@@ -2,6 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from pretalx.person.models.user import User, nick_validator
+from pretalx.submission.models.question import Answer
 
 
 @pytest.mark.parametrize('nick', (
@@ -40,7 +41,8 @@ def test_gravatar_parameter(email, expected):
 
 
 @pytest.mark.django_db
-def test_user_deactivate(speaker):
+def test_user_deactivate(speaker, personal_answer, impersonal_answer):
+    assert Answer.objects.count() == 2
     name = speaker.name
     nick = speaker.nick
     email = speaker.email
@@ -50,3 +52,5 @@ def test_user_deactivate(speaker):
     assert speaker.name != name
     assert speaker.nick != nick
     assert speaker.email != email
+    assert Answer.objects.count() == 1
+    assert Answer.objects.first().question.contains_personal_data is False

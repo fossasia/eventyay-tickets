@@ -5,7 +5,7 @@ import pytest
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
-from pretalx.submission.models import Question, Submission
+from pretalx.submission.models import Answer, Question, Submission
 
 
 @pytest.fixture
@@ -15,9 +15,8 @@ def event():
 
 
 @pytest.fixture
-def submission(event):
+def submission(event, speaker):
     sub = Submission.objects.create(title='Submission', event=event, submission_type=event.cfp.default_type)
-    speaker = User.objects.create_user(name='Speaker', nick='speaker', password='speakerpwd')
     sub.speakers.add(speaker)
     return sub
 
@@ -44,5 +43,23 @@ def speaker(event):
 def question(submission):
     return Question.objects.create(
         event=submission.event, target='submission', variant='boolean',
-        question='Do you agree?',
+        question='Do you agree?', contains_personal_data=False,
     )
+
+
+@pytest.fixture
+def personal_question(submission):
+    return Question.objects.create(
+        event=submission.event, target='submission', variant='boolean',
+        question='Do you identify as a hacker?', contains_personal_data=True,
+    )
+
+
+@pytest.fixture
+def impersonal_answer(question, speaker):
+    return Answer.objects.create(answer='True', person=speaker, question=question)
+
+
+@pytest.fixture
+def personal_answer(personal_question, speaker):
+    return Answer.objects.create(answer='True', person=speaker, question=personal_question)
