@@ -63,7 +63,7 @@ setup(
         'celery==4.0.*',
         'csscompressor==0.9.*',
         'cssutils==1.0.*',
-        'Django==1.11.*',
+        'Django>=1.11.7,<2.0',
         'django-bootstrap4==0.0.4',
         'django-compressor==2.1.*',
         'django-csp==3.3.*',
