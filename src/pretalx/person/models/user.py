@@ -155,6 +155,8 @@ class User(AbstractBaseUser):
         from pretalx.person.models import EventPermission
         from pretalx.submission.models import Answer
         self.nick = f'deleted_user_{random.randint(0, 999)}'
+        while self.__class__.objects.filter(nick__iexact=self.nick).exists():
+            self.nick = f'deleted_user_{random.randint(0, 999)}'
         self.name = 'Deleted User'
         self.email = f'{self.nick}@localhost'
         self.is_active = False
