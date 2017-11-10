@@ -1,9 +1,6 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block headline %}
-    {% trans "Speakers" %}
-{% endblock %}
 {% block content %}
 
 <legend>{{ form.instance.user.get_display_name }} ({{ submission_count }} {% if submission_count > 1 %}{% trans "submissions" %}{% else %}{% trans "submission" %}{% endif %})</legend>

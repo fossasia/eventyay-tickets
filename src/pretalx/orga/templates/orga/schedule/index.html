@@ -4,20 +4,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block headline %}
-    <span class="orga-title">
-    {% trans "Schedule editor" %}
-    {% if schedule_version %}
-        – version {{ schedule_version }}
-    {% endif %}
-    <a
-        class="btn btn-secondary"
-        title="view publically"
-        href="{{ active_schedule.urls.public }}"
-        ><i class="fa fa-eye"></i></a>
-    </span>
-{% endblock %}
-
 {% block scripts %}
     {% compress js %}
     <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
@@ -44,11 +30,23 @@
             <div class="alert alert-info schedule-alert">
                 {% trans "Your schedule is currently publicly visible." %}
                 <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Hide schedule" %}</a>
+                <a
+                    class="btn btn-secondary"
+                    title="view publically"
+                    href="{{ active_schedule.urls.public }}"
+                    ><i class="fa fa-eye"></i>
+                </a>
             </div>
         {% else %}
             <div class="alert alert-info schedule-alert">
                 {% trans "Your schedule is currently only visible to orga members." %}
                 <a class="btn btn-xs btn-secondary" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Make schedule public" %}</a>
+                <a
+                    class="btn btn-secondary"
+                    title="view publically"
+                    href="{{ active_schedule.urls.public }}"
+                    ><i class="fa fa-eye"></i> {% trans "View in frontend" %}
+                </a>
             </div>
         {% endif %}
     {% else %}

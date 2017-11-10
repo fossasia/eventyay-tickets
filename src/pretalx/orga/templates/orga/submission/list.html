@@ -4,9 +4,6 @@
 {% load rules %}
 {% load url_replace %}
 
-{% block headline %}
-    {% trans "Submissions" %}
-{% endblock %}
 {% block content %}
 
 {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
