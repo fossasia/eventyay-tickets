@@ -19,3 +19,8 @@ def is_reviewer(user, obj):
     return user.is_superuser or EventPermission.objects.filter(
         user=user, event=obj.event, is_reviewer=True
     ).exists()
+
+
+@rules.predicate
+def is_superuser(user, obj):
+    return user.is_superuser
