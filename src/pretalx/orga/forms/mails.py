@@ -14,14 +14,18 @@ class MailTemplateForm(ReadOnlyFlag, forms.ModelForm):
 
     def clean_text(self):
         text = self.cleaned_data['text']
-        if self.instance and self.instance.id and self.instance in [t for t in self.instance.event.fixed_templates if t != self.event.update_template]:
-            context = {item['name']: 'test' for item in get_context_explanation()}
-            try:
-                for language, local_text in text.data.items():
-                    local_text.format(**context)
-            except KeyError as e:
-                msg = _('Unknown template key: "{key}", locale: {locale}').format(key=e.args[0], locale=language)
-                raise forms.ValidationError(msg)
+        if self.instance and self.instance.id:
+            _is_template_with_submission_context = self.instance in [
+                t for t in self.instance.event.fixed_templates if t != self.event.update_template
+            ]
+            if _is_template_with_submission_context:
+                context = {item['name']: 'test' for item in get_context_explanation()}
+                try:
+                    for language, local_text in text.data.items():
+                        local_text.format(**context)
+                except KeyError as e:
+                    msg = _('Unknown template key: "{key}", locale: {locale}').format(key=e.args[0], locale=language)
+                    raise forms.ValidationError(msg)
         return text
 
     class Meta:
