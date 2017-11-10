@@ -92,6 +92,23 @@ def test_reviewer_can_edit_review(review_client, review):
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_edit_review_after_accept(review_client, review):
+    review.submission.accept()
+    response = review_client.post(
+        review.urls.base, follow=True,
+        data={
+            'score': 0,
+            'text': 'My mistake.',
+        }
+    )
+    review.refresh_from_db()
+    assert response.status_code == 200
+    assert review.submission.reviews.count() == 1
+    assert review.score != 0
+    assert review.text != 'My mistake.'
+
+
+@pytest.mark.django_db
 def test_cannot_see_other_review_before_own(other_review_client, review):
     response = other_review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200

@@ -52,7 +52,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     @cached_property
     def read_only(self):
-        return not self.request.user.has_perm('submission.edit_review', self.submission)
+        return not self.request.user.has_perm('submission.edit_review', self.get_object() or self.submission)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
