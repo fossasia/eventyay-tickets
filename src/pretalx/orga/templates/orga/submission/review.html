@@ -4,15 +4,22 @@
 {% block submission_content %}
 
     <div class="alert alert-info">
-    {% blocktrans trimmed %}
-        Please give a fair review on why you'd like to see this submission at the conference,
-        or why you think it would not be a good fit.
-    {% endblocktrans %}
-    {% if not form.instance.pk %}
-    {% blocktrans trimmed %}
-        You will be able to see other reviews once you have given yours.
-    {% endblocktrans %}
-    {% endif %}
+        {% if not read_only %}
+            {% blocktrans trimmed %}
+                Please give a fair review on why you'd like to see this submission at the conference,
+                or why you think it would not be a good fit.
+            {% endblocktrans %}
+            {% if not form.instance.pk %}
+            {% blocktrans trimmed %}
+                You will be able to see other reviews once you have given yours.
+            {% endblocktrans %}
+            {% endif %}
+        {% else %}
+            {% blocktrans trimmed %}
+                This submission can no longer be reviewed, as a decision regarding its
+                role in this event has already been made.
+            {% endblocktrans %}
+        {% endif %}
     </div>
 
     {% if not form.instance.pk %}
@@ -33,14 +40,20 @@
             <tr>
                 <th>{% trans "Points" %}</th>
                 <th>{% trans "Review" %}</th>
-                <th>{% trans "Reviewer" %}</th>
+                <th></th>
             </tr>
         <tbody>
             <tr><form method="post">
                 {% csrf_token %}
                 <td>{% bootstrap_field form.score layout="inline" %}</td>
                 <td>{% bootstrap_field form.text layout="inline" %}</td>
-                <td><button type="submit" class="btn btn-primary">{% trans "Save" %}</td>
+                <td>
+                    {% if not read_only %}
+                        <button type="submit" class="btn btn-primary">{% trans "Save" %}
+                    {% else %}
+                        {{ request.user.get_display_name }}
+                    {% endif %}
+                </td>
             </form></tr>
             {% for review in submission.reviews.all %}
                 {% if review != form.instance %}

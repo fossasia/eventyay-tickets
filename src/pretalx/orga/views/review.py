@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
 from pretalx.common.permissions import PermissionRequired
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission
 from pretalx.submission.models import Review
@@ -32,7 +33,7 @@ class ReviewDashboard(PermissionRequired, ListView):
         return ctx
 
 
-class ReviewSubmission(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     form_class = ReviewForm
     model = Review
@@ -49,17 +50,23 @@ class ReviewSubmission(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_permission_object(self):
         return self.submission
 
+    @cached_property
+    def read_only(self):
+        return not self.request.user.has_perm('submission.edit_review', self.submission)
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         submission = self.request.event.submissions.get(code__iexact=self.kwargs['code'])
         ctx['submission'] = submission
         ctx['review'] = submission.reviews.filter(user=self.request.user).first()
+        ctx['read_only'] = self.read_only
         return ctx
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
         kwargs['user'] = self.request.user
+        kwargs['read_only'] = self.read_only
         return kwargs
 
     def form_valid(self, form):
