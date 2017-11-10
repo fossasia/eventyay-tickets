@@ -4,13 +4,13 @@ from urllib.parse import unquote, urlparse
 import pytz
 import vobject
 from csp.decorators import csp_update
-from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.urls import get_base_url
 from pretalx.schedule.models import Room
 
 
@@ -119,15 +119,16 @@ class FrabXCalView(ScheduleDataView):
 
     def get_context_data(self, event):
         ctx = super().get_context_data(event)
-        ctx['domain'] = urlparse(settings.SITE_URL).netloc
-        ctx['url'] = settings.SITE_URL
+        url = get_base_url(self.request.event)
+        ctx['url'] = url
+        ctx['domain'] = urlparse(url).netloc
         return ctx
 
 
 class ICalView(ScheduleDataView):
     def get(self, request, event, **kwargs):
         schedule = self.get_object()
-        netloc = urlparse(settings.SITE_URL).netloc
+        netloc = urlparse(get_base_url(request.event)).netloc
 
         cal = vobject.iCalendar()
         cal.add('prodid').value = '-//pretalx//{}//'.format(netloc)

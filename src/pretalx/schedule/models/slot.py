@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import pytz
-from django.conf import settings
 from django.db import models
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import get_base_url
 
 
 class TalkSlot(LogMixin, models.Model):
@@ -77,7 +77,7 @@ class TalkSlot(LogMixin, models.Model):
 
     def build_ical(self, calendar, creation_time=None, netloc=None):
         creation_time = creation_time or datetime.now(pytz.utc)
-        netloc = netloc or urlparse(settings.SITE_URL).netloc
+        netloc = netloc or urlparse(get_base_url(self.event)).netloc
         tz = pytz.timezone(self.submission.event.timezone)
 
         vevent = calendar.add('vevent')

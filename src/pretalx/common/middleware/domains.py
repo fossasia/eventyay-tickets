@@ -43,7 +43,7 @@ class MultiDomainMiddleware:
         request.host = domain
         request.port = int(port) if port else None
 
-        default_domain, default_port = split_domain_port(urlparse(settings.SITE_URL).netloc)
+        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
         if domain == default_domain:
             return
 
@@ -51,8 +51,8 @@ class MultiDomainMiddleware:
         if event_slug:
             event = Event.objects.filter(slug__iexact=event_slug).first()
             if event and event.settings.custom_domain:
-                event_domain = urlparse(event.settings.custom_domain)
-                event_domain, event_port = split_domain_port(urlparse.netloc)
+                custom_domain = urlparse(event.settings.custom_domain)
+                event_domain, event_port = split_domain_port(custom_domain.netloc)
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     request.event = event
@@ -183,7 +183,7 @@ def get_cookie_domain(request):
         # e.g. "localhost", see http://curl.haxx.se/rfc/cookie_spec.html
         return None
 
-    default_domain, default_port = split_domain_port(urlparse(settings.SITE_URL).netloc)
+    default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
     if request.host == default_domain:
         # We are on our main domain, set the cookie domain the user has chosen
         return settings.SESSION_COOKIE_DOMAIN
