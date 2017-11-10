@@ -10,26 +10,28 @@
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         <legend>
-            {% if action == "create" %}
-                {% trans "Step One: Fill in your basic information." %}
-            {% else %}
-                {% trans "Event settings" %}
-            {% endif %}
+            {% trans "General information" %}
         </legend>
-        {% if action == "create" %}
-            <div class="alert alert-info">
-                {% trans "Don't worry if you don't know something yet – you can always come back later!" %}
-            </div>
-        {% endif %}
-        {% bootstrap_form form layout='horizontal' %}
-        {% if sform %}
-            {% bootstrap_form sform layout='horizontal' %}
-        {% endif %}
+
+        {% bootstrap_field form.name layout='horizontal' %}
+        {% bootstrap_field form.slug layout='horizontal' %}
+        {% bootstrap_field form.date_from layout='horizontal' %}
+        {% bootstrap_field form.date_to layout='horizontal' %}
+        {% bootstrap_field form.email layout='horizontal' %}
+
+        <legend>
+            {% trans "Display settings" %}
+        </legend>
+        {% bootstrap_field form.timezone layout='horizontal' %}
+        {% bootstrap_field form.locale layout='horizontal' %}
+        {% bootstrap_field form.primary_color layout='horizontal' %}
+        {% bootstrap_field form.custom_css layout='horizontal' %}
+        {% bootstrap_field form.logo layout='horizontal' %}
+        {% bootstrap_field sform.show_schedule layout='horizontal' %}
+
         <div class="form-group row">
             <div class="ml-auto col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create event" %}</button>
-                {% elif action == "edit" %}
+                {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
                     <a class="btn btn-primary" href={{ request.event.orga_urls.edit_settings }}>{% trans "Edit" %}</a>

@@ -35,7 +35,11 @@ class EventSettingsPermission(PermissionRequired):
 class EventDetail(ActionFromUrl, CreateOrUpdateView):
     model = Event
     form_class = EventForm
-    template_name = 'orga/settings/form.html'
+
+    def get_template_names(self):
+        if self._action == 'create':
+            return 'orga/settings/create_event.html'
+        return 'orga/settings/form.html'
 
     def dispatch(self, request, *args, **kwargs):
         if self._action == 'create':
