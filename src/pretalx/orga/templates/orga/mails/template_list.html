@@ -19,7 +19,7 @@
     <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Acknowledge Mail" %}</legend>
-        {% bootstrap_form ack layout='horizontal' %}
+        {% bootstrap_form ack layout='event' %}
         <div><a href="{{ ack.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
@@ -27,7 +27,7 @@
     <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Accept Mail" %}</legend>
-        {% bootstrap_form accept layout='horizontal' %}
+        {% bootstrap_form accept layout='event' %}
         <div><a href="{{ accept.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
@@ -35,7 +35,7 @@
     <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Rejection Mail" %}</legend>
-        {% bootstrap_form reject layout='horizontal' %}
+        {% bootstrap_form reject layout='event' %}
         <div><a href="{{ reject.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
@@ -43,7 +43,7 @@
     <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Update Mail" %}</legend>
-        {% bootstrap_form update layout='horizontal' %}
+        {% bootstrap_form update layout='event' %}
         <div><a href="{{ update.instance.urls.edit }}">
             <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
         </a></div>
@@ -53,7 +53,7 @@
     <div class="alert">
         {% csrf_token %}
         <legend>{% trans "Custom Mail" %}</legend>
-        {% bootstrap_form template layout='horizontal' %}
+        {% bootstrap_form template layout='event' %}
         <div><a href="{{ template.instance.urls.delete }}">
             <button class="btn btn-danger">{% trans "Delete template" %}</button>
         </a></div>

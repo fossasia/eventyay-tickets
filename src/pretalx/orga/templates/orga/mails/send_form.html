@@ -6,13 +6,13 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Mail Editor" %}</legend>
-        {% bootstrap_field form.recipients layout='horizontal' %}
-        {% bootstrap_field form.submissions layout='horizontal' %}
-        {% bootstrap_field form.reply_to layout='horizontal' %}
-        {% bootstrap_field form.cc layout='horizontal' %}
-        {% bootstrap_field form.bcc layout='horizontal' %}
-        {% bootstrap_field form.subject layout='horizontal' %}
-        {% bootstrap_field form.text layout='horizontal' %}
+        {% bootstrap_field form.recipients layout='event' %}
+        {% bootstrap_field form.submissions layout='event' %}
+        {% bootstrap_field form.reply_to layout='event' %}
+        {% bootstrap_field form.cc layout='event' %}
+        {% bootstrap_field form.bcc layout='event' %}
+        {% bootstrap_field form.subject layout='event' %}
+        {% bootstrap_field form.text layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>

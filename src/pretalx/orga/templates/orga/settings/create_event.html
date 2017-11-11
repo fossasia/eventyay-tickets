@@ -13,9 +13,9 @@
         <div class="alert alert-info">
             {% trans "Don't worry if you don't know something yet – you can always come back later!" %}
         </div>
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_form form layout='event' %}
         {% if sform %}
-            {% bootstrap_form sform layout='horizontal' %}
+            {% bootstrap_form sform layout='event' %}
         {% endif %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">

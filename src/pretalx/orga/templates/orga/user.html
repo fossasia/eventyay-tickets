@@ -8,7 +8,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "User settings" %}</legend>
-        {% bootstrap_form profile_form layout='horizontal' %}
+        {% bootstrap_form profile_form layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 <button type="submit" class="btn btn-primary" name="form" value="profile">
@@ -19,7 +19,7 @@
     </form>
     <form method="post" action="">
         <legend>{% trans "Login settings" %}</legend>
-        {% bootstrap_form login_form layout='horizontal' %}
+        {% bootstrap_form login_form layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 <button type="submit" class="btn btn-primary" name="form" value="login">

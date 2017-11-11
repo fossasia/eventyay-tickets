@@ -6,7 +6,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "E-mail settings" %}</legend>
-        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_form form layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" %}

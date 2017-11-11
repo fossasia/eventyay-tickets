@@ -476,6 +476,14 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
 }
 
+BOOTSTRAP4 = {
+    'field_renderers': {
+        'default': 'bootstrap4.renderers.FieldRenderer',
+        'inline': 'bootstrap4.renderers.InlineFieldRenderer',
+        'event': 'pretalx.common.forms.renderers.EventFieldRenderer',
+    },
+}
+
 
 def log_initial():
     from pretalx.common.console import start_box, end_box, print_line

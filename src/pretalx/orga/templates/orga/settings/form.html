@@ -11,21 +11,21 @@
             {% trans "General information" %}
         </legend>
 
-        {% bootstrap_field form.name layout='horizontal' %}
-        {% bootstrap_field form.slug layout='horizontal' %}
-        {% bootstrap_field form.date_from layout='horizontal' %}
-        {% bootstrap_field form.date_to layout='horizontal' %}
-        {% bootstrap_field form.email layout='horizontal' %}
+        {% bootstrap_field form.name layout='event' %}
+        {% bootstrap_field form.slug layout='event' %}
+        {% bootstrap_field form.date_from layout='event' %}
+        {% bootstrap_field form.date_to layout='event' %}
+        {% bootstrap_field form.email layout='event' %}
 
         <legend>
             {% trans "Display settings" %}
         </legend>
-        {% bootstrap_field form.timezone layout='horizontal' %}
-        {% bootstrap_field form.locale layout='horizontal' %}
-        {% bootstrap_field form.primary_color layout='horizontal' %}
-        {% bootstrap_field form.custom_css layout='horizontal' %}
-        {% bootstrap_field form.logo layout='horizontal' %}
-        {% bootstrap_field sform.show_schedule layout='horizontal' %}
+        {% bootstrap_field form.timezone layout='event' %}
+        {% bootstrap_field form.locale layout='event' %}
+        {% bootstrap_field form.primary_color layout='event' %}
+        {% bootstrap_field form.custom_css layout='event' %}
+        {% bootstrap_field form.logo layout='event' %}
+        {% bootstrap_field sform.show_schedule layout='event' %}
 
         <div class="form-group row">
             <div class="ml-auto col-md-9">

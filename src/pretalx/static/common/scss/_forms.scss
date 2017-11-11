@@ -22,3 +22,14 @@ input[type=number] {
   padding-top: 2px;
   color: #636c72;
 }
+
+form label.col-form-label {
+  padding-top: 6px;
+  text-align: right;
+  font-weight: 500;
+
+  .optional {
+    font-weight: 300;
+    color: #999;
+  }
+}

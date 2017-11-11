@@ -33,8 +33,8 @@
     </h5>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form form layout='horizontal' %}
-        {% bootstrap_form qform layout='horizontal' %}
+        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form qform layout='event' %}
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}

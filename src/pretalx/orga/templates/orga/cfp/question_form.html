@@ -18,13 +18,13 @@
                 {% endblocktrans %}
             </div>
         {% endif %}
-        {% bootstrap_field form.target layout='horizontal' %}
-        {% bootstrap_field form.question layout='horizontal' %}
-        {% bootstrap_field form.variant layout='horizontal' %}
-        {% bootstrap_field form.help_text layout='horizontal' %}
-        {% bootstrap_field form.required layout='horizontal' %}
-        {% bootstrap_field form.contains_personal_data layout='horizontal' %}
-        {% bootstrap_field form.active layout='horizontal' %}
+        {% bootstrap_field form.target layout='event' %}
+        {% bootstrap_field form.question layout='event' %}
+        {% bootstrap_field form.variant layout='event' %}
+        {% bootstrap_field form.help_text layout='event' %}
+        {% bootstrap_field form.required layout='event' %}
+        {% bootstrap_field form.contains_personal_data layout='event' %}
+        {% bootstrap_field form.active layout='event' %}
 
         <fieldset id="answer-options">
             <legend>{% trans "Answer options" %}</legend>

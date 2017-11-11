@@ -14,13 +14,13 @@
     {% if wizard.form.submission_fields %}
     <h4>{% trans "… about your submission:" %}</h4>
         {% for field in wizard.form.submission_fields %}
-            {% bootstrap_field field layout='horizontal' %}
+            {% bootstrap_field field layout='event' %}
         {% endfor %}
     {% endif %}
     {% if wizard.form.speaker_fields %}
         <h4>{% trans "… about yourself:" %}</h4>
         {% for field in wizard.form.speaker_fields %}
-            {% bootstrap_field field layout='horizontal' %}
+            {% bootstrap_field field layout='event' %}
         {% endfor %}
     {% endif %}
 {% endblock %}

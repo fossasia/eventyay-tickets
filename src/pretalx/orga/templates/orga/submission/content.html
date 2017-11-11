@@ -12,16 +12,16 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        {% bootstrap_field form.title layout='horizontal' %}
-        {% bootstrap_field form.submission_type layout='horizontal' %}
-        {% bootstrap_field form.abstract layout='horizontal' %}
-        {% bootstrap_field form.description layout='horizontal' %}
-        {% bootstrap_field form.notes layout='horizontal' %}
-        {% bootstrap_field form.content_locale layout='horizontal' %}
-        {% bootstrap_field form.do_not_record layout='horizontal' %}
-        {% bootstrap_field form.duration addon_after='minutes' layout='horizontal' %}
+        {% bootstrap_field form.title layout='event' %}
+        {% bootstrap_field form.submission_type layout='event' %}
+        {% bootstrap_field form.abstract layout='event' %}
+        {% bootstrap_field form.description layout='event' %}
+        {% bootstrap_field form.notes layout='event' %}
+        {% bootstrap_field form.content_locale layout='event' %}
+        {% bootstrap_field form.do_not_record layout='event' %}
+        {% bootstrap_field form.duration addon_after='minutes' layout='event' %}
         {% if action == "create" %}
-            {% bootstrap_field form.speaker layout='horizontal' %}
+            {% bootstrap_field form.speaker layout='event' %}
         {% endif %}
 
         {% if form.instance.average_score %}

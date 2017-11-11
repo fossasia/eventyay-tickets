@@ -30,9 +30,9 @@
                 </div>
             </div>
         </div>
-        {% bootstrap_field profile_form.name layout='horizontal' %}
-        {% bootstrap_field profile_form.biography layout='horizontal' %}
-        {% bootstrap_field profile_form.availabilities layout='horizontal' %}
+        {% bootstrap_field profile_form.name layout='event' %}
+        {% bootstrap_field profile_form.biography layout='event' %}
+        {% bootstrap_field profile_form.availabilities layout='event' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
@@ -46,7 +46,7 @@
     <h2>{% trans "We have some questions" %}</h2>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form questions_form layout='horizontal' %}
+        {% bootstrap_form questions_form layout='event' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
@@ -63,10 +63,10 @@
     </p>
     <form action="" method="post" class="form">
         {% csrf_token %}
-        {% bootstrap_field login_form.old_password layout='horizontal' %}
-        {% bootstrap_field login_form.email layout='horizontal' %}
-        {% bootstrap_field login_form.password layout='horizontal' %}
-        {% bootstrap_field login_form.password_repeat layout='horizontal' %}
+        {% bootstrap_field login_form.old_password layout='event' %}
+        {% bootstrap_field login_form.email layout='event' %}
+        {% bootstrap_field login_form.password layout='event' %}
+        {% bootstrap_field login_form.password_repeat layout='event' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
