@@ -10,7 +10,13 @@ from pretalx.submission.models import Answer, Question, Submission
 
 @pytest.fixture
 def event():
-    return Event.objects.create(name='Event', slug='event', email='orga@org.org',
+    return Event.objects.create(name='Event', slug='event', email='orga@org.org', is_public=True,
+                                date_from=datetime.date.today(), date_to=datetime.date.today())
+
+
+@pytest.fixture
+def other_event():
+    return Event.objects.create(name='Other Event', slug='event2', email='orga@org.org', is_public=True,
                                 date_from=datetime.date.today(), date_to=datetime.date.today())
 
 

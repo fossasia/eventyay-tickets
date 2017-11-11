@@ -298,10 +298,10 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',  # Security first
+    'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
     'pretalx.common.middleware.MultiDomainMiddleware',  # Verifying the proper domain next
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Next up: static files
     'pretalx.common.middleware.SessionMiddleware',  # Add session handling
-    'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
     'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Uses sessions
     'django.contrib.messages.middleware.MessageMiddleware',  # Uses sessions
