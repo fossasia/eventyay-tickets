@@ -76,6 +76,21 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_review_accepted_submission(review_user, review_client, submission):
+    submission.accept()
+    response = review_client.post(
+        submission.orga_urls.reviews,
+        data={
+            'score': 100,
+            'text': 'LGTM',
+        },
+        follow=True,
+    )
+    assert response.status_code == 404
+    assert submission.reviews.count() == 0
+
+
+@pytest.mark.django_db
 def test_reviewer_can_edit_review(review_client, review):
     response = review_client.post(
         review.urls.base, follow=True,

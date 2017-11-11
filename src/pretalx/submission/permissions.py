@@ -55,7 +55,7 @@ def is_review_author(user, obj):
 
 
 @rules.predicate
-def can_review_be_edited(user, obj):
+def can_be_reviewed(user, obj):
     if not obj:
         return False
     if hasattr(obj, 'submission'):
@@ -72,7 +72,7 @@ rules.add_perm('submission.unconfirm_submission', can_be_unconfirmed & (is_speak
 rules.add_perm('submission.remove_submission', can_be_removed & is_orga)
 rules.add_perm('submission.edit_submission', (can_be_edited & is_speaker) | is_orga)
 rules.add_perm('submission.view_submission', is_speaker | is_orga | is_reviewer)
-rules.add_perm('submission.review_submission', is_reviewer & ~is_speaker)
-rules.add_perm('submission.edit_review', can_review_be_edited)
+rules.add_perm('submission.review_submission', is_reviewer & ~is_speaker & can_be_reviewed)
+rules.add_perm('submission.edit_review', can_be_reviewed)
 rules.add_perm('submission.edit_speaker_list', is_speaker | is_orga)
 rules.add_perm('submission.view_feedback', is_speaker | is_orga | is_reviewer)

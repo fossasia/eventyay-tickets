@@ -72,11 +72,13 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.submission = self.submission
         form.instance.user = self.request.user
+        if not form.instance.pk and not self.request.user.has_perm('submission.review_submission', self.submission):
+            messages.error(self.request, _('You cannot review this submission at this time.'))
+            return super().form_valid(form)
         form.save()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-
         if self.request.POST.get('show_next', '0').strip() == '1':
             next_submission = Review.find_missing_reviews(self.request.event, self.request.user).first()
             if next_submission:
