@@ -237,7 +237,7 @@ def test_can_delete_profile(speaker, event, speaker_client):
 
 @pytest.mark.django_db
 def test_can_change_locale(multilingual_event, client):
-    first_response = client.get(multilingual_event.urls.base, follow=True)
+    first_response = client.get(multilingual_event.cfp.urls.public, follow=True)
     assert 'submission' in first_response.content.decode()
     assert 'Einreichung' not in first_response.content.decode()
     second_response = client.get(

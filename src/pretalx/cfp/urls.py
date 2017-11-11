@@ -7,12 +7,13 @@ from .views import auth, event, locale, user, wizard
 
 cfp_urls = [
     url(f'^(?P<event>[{SLUG_CHARS}]+)/', include([
-        url('^$', event.EventStartpage.as_view(), name='event.start'),
+        url('^$', event.EventStartpage.as_view(), name='event.landing'),
         url('^logout$', auth.LogoutView.as_view(), name='event.logout'),
         url('^reset$', auth.ResetView.as_view(), name='event.reset'),
         url('^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='event.recover'),
         url('^login', auth.LoginView.as_view(), name='event.login'),
 
+        url('^cfp$', event.EventCfP.as_view(), name='event.start'),
         url('^submit/$', wizard.SubmitStartView.as_view(), name='event.submit'),
         url('^submit/(?P<tmpid>.+)/(?P<step>.+)/$',
             wizard.SubmitWizard.as_view(url_name='cfp:event.submit', done_step_name='finished'),

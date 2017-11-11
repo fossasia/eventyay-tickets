@@ -42,6 +42,7 @@ class CfP(LogMixin, models.Model):
         edit_text = '{text}/edit'
         types = '{base}/types'
         new_type = '{types}/new'
+        public = '{self.event.urls.base}/cfp'
 
     @property
     def is_open(self):

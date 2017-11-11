@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
-from i18nfield.fields import I18nCharField
+from i18nfield.fields import I18nCharField, I18nTextField
 from urlman import Urls
 
 from pretalx.common.mixins import LogMixin
@@ -114,6 +114,11 @@ class Event(LogMixin, models.Model):
     update_template = models.ForeignKey(
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
+    )
+    landing_page_text = I18nTextField(
+        verbose_name=_('Landing page text'),
+        help_text=_('This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'),
+        null=True, blank=True,
     )
 
     class urls(Urls):

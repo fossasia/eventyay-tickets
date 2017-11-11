@@ -78,6 +78,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         fields = [
             'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
             'email', 'locale', 'primary_color', 'custom_css', 'logo',
+            'landing_page_text',
         ]
         widgets = {
             'date_from': forms.DateInput(attrs={'class': 'datepickerfield'}),

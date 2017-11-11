@@ -8,33 +8,25 @@
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
 
-    <h2>{{ cfp.headline|default:"" }}</h2>
-    {{ cfp.text|rich_text }}
-    {% if request.event.settings.cfp_show_deadline %}
-        <p>
-            <strong>
-                {% blocktrans with deadline=cfp.deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
-                    You can enter submissions until {{ deadline }} ({{ timezone }}).
-                {% endblocktrans %}
-            </strong>
-        </p>
+    {% if request.event.landing_page_text %}
+        {{ request.event.landing_page_text|rich_text }}
     {% endif %}
+
     <div class="row mb-4 url-links">
-        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
-                href="{{ request.event.urls.submit }}">
-            {% if cfp.is_open %}
+        {% if cfp.is_open %}
+            <a class="btn btn-success btn-lg btn-block" href="{{ request.event.cfp.urls.public }}">
                 {% trans "Submit a proposal" %}
-            {% else %}
-                {% trans "Submissions are closed" %}
-            {% endif %}
-        </a>
-        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-            {% trans "Edit or view your submission" %}
-        </a>
+            </a>
+        {% endif %}
+        {% if not request.user.is_anonymous and request.user.submissions.all.exists %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
+                {% trans "Edit or view your submission" %}
+            </a>
+        {% endif %}
         {% if can_view_schedule %}
-        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-            {% trans "View conference schedule" %}
-        </a>
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
+                {% trans "View conference schedule" %}
+            </a>
         {% endif %}
     </div>
 {% endwith %}

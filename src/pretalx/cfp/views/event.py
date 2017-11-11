@@ -84,6 +84,10 @@ class EventStartpage(EventPageMixin, TemplateView):
     template_name = 'cfp/event/index.html'
 
 
+class EventCfP(EventPageMixin, TemplateView):
+    template_name = 'cfp/event/cfp.html'
+
+
 class GeneralView(TemplateView):
     template_name = 'cfp/index.html'
 
