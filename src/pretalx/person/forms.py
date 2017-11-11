@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 

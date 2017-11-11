@@ -2,7 +2,7 @@ from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.person.models import SpeakerProfile
 from pretalx.submission.models import SubmissionStates
 

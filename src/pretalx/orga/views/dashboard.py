@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.event.stages import get_stages
 
 

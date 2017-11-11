@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.models import Availability
 

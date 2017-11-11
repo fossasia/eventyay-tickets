@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.schedule.models import Availability, Room
 
 

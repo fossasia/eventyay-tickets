@@ -3,10 +3,10 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
-from pretalx.common.permissions import PermissionRequired
-from pretalx.common.views import (
-    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+from pretalx.common.mixins.views import (
+    ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import (

@@ -11,10 +11,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import ActionFromUrl
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import EventForm, ReviewSettingsForm, EventSettingsForm

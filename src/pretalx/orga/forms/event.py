@@ -7,7 +7,7 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.css import validate_css
-from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event
 
 

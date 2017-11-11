@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.schedule.models import Room
 
 

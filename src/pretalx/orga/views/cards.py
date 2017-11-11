@@ -10,7 +10,7 @@ from reportlab.platypus import (
     BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph,
 )
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 

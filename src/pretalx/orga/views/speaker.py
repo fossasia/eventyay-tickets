@@ -2,10 +2,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView
 
-from pretalx.common.permissions import PermissionRequired
-from pretalx.common.views import (
-    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+from pretalx.common.mixins.views import (
+    ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import SpeakerProfile, User
 

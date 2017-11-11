@@ -12,7 +12,7 @@ from django.views.generic import DetailView, FormView
 
 from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.phrases import phrases
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Feedback, Submission

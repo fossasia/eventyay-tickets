@@ -8,11 +8,11 @@ from django.utils.timezone import now
 from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
-from pretalx.common.permissions import PermissionRequired
-from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import (
-    ActionFromUrl, CreateOrUpdateView, Filterable, Sortable,
+from pretalx.common.mixins.views import (
+    ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
+from pretalx.common.urls import build_absolute_uri
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import User

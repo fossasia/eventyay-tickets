@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView, UpdateView, View
 
 from pretalx.common.forms import I18nFormSet
-from pretalx.common.permissions import PermissionRequired
-from pretalx.common.views import ActionFromUrl, CreateOrUpdateView
+from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
 from pretalx.submission.models import (

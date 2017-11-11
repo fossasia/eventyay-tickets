@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx.common.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 

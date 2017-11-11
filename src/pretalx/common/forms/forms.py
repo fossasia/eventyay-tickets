@@ -7,14 +7,6 @@ class SearchForm(forms.Form):
     q = forms.CharField(label=_('Search'), required=False)
 
 
-class ReadOnlyFlag:
-    def __init__(self, *args, read_only=False, **kwargs):
-        super().__init__(*args, **kwargs)
-        if read_only:
-            for field_name, field in self.fields.items():
-                field.disabled = True
-
-
 class I18nFormSet(i18nfield.forms.I18nModelFormSet):
     # compatibility shim for django-i18nfield library
 

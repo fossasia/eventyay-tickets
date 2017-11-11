@@ -10,7 +10,7 @@ from django.utils.translation.trans_real import (
 )
 from django.views.generic import TemplateView
 
-from pretalx.common.permissions import PermissionRequired
+from pretalx.common.mixins.views import PermissionRequired
 from pretalx.event.models import Event
 
 
