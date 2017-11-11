@@ -18,6 +18,7 @@
         </div>
     </form>
     <form method="post" action="">
+        {% csrf_token %}
         <legend>{% trans "Login settings" %}</legend>
         {% bootstrap_form login_form layout='event' %}
         <div class="form-group row">

@@ -18,6 +18,7 @@
         {% endblocktrans %}
     </p>
     <form action="" method="post">
+        {% csrf_token %}
         {% bootstrap_form_errors form %}
         <div class="row">
             <div class="col-md-6">

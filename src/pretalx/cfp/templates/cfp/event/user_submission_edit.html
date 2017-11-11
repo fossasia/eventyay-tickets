@@ -13,6 +13,7 @@
     </p>
     <h5>
         <form class="add-speaker" action="{{ submission.urls.invite }}">
+            {% csrf_token %}
             <div class="form-group form-inline">
                 {% blocktrans trimmed count count=submission.speakers.count %}
                     Speaker:

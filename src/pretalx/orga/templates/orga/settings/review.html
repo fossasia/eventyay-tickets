@@ -36,6 +36,7 @@
             </li>
         {% endfor %}
         <li><form method="post" action="{% url "orga:settings.review.add" event=request.event.slug %}" class="adder-textbox">
+            {% csrf_token %}
             <input type="text" name="nick" id="id_speaker" class="form-control" />
             <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
         </form></li>

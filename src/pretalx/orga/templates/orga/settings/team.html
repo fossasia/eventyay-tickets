@@ -30,6 +30,7 @@
             </li>
         {% endfor %}
         <li><form method="post" action="{{ request.event.orga_urls.invite }}" class="adder-textbox">
+            {% csrf_token %}
             <input type="text" name="email" class="form-control tt-input" />
             <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-check"></span></button>
         </form></li>
