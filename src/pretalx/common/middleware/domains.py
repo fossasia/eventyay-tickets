@@ -43,20 +43,21 @@ class MultiDomainMiddleware:
         request.host = domain
         request.port = int(port) if port else None
 
-        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
-        if domain == default_domain:
-            return
-
         event_slug = resolve(request.path).kwargs.get('event')
         if event_slug:
             event = Event.objects.filter(slug__iexact=event_slug).first()
-            if event and event.settings.custom_domain:
-                custom_domain = urlparse(event.settings.custom_domain)
-                event_domain, event_port = split_domain_port(custom_domain.netloc)
-                if event_domain == domain and event_port == port:
-                    request.uses_custom_domain = True
-                    request.event = event
-                    return
+            if event:
+                request.event = event
+                if event.settings.custom_domain:
+                    custom_domain = urlparse(event.settings.custom_domain)
+                    event_domain, event_port = split_domain_port(custom_domain.netloc)
+                    if event_domain == domain and event_port == port:
+                        request.uses_custom_domain = True
+                        return
+
+        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+        if domain == default_domain:
+            return
 
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return
