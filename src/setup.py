@@ -64,7 +64,7 @@ setup(
         'csscompressor==0.9.*',
         'cssutils==1.0.*',
         'Django==1.11.*',
-        'django-bootstrap4==0.0.3',
+        'django-bootstrap4==0.0.4',
         'django-compressor==2.1.*',
         'django-csp==3.3.*',
         'django-formset-js-improved==0.5.0.1',
