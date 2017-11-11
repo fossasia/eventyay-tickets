@@ -297,17 +297,17 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'pretalx.common.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'csp.middleware.CSPMiddleware',
-    'pretalx.common.middleware.CsrfViewMiddleware',
-    'pretalx.common.middleware.MultiDomainMiddleware',
-    'pretalx.common.middleware.EventPermissionMiddleware',
+    'django.middleware.security.SecurityMiddleware',  # Security first
+    'pretalx.common.middleware.MultiDomainMiddleware',  # Verifying the proper domain next
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Next up: static files
+    'pretalx.common.middleware.SessionMiddleware',  # Add session handling
+    'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
+    'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Uses sessions
+    'django.contrib.messages.middleware.MessageMiddleware',  # Uses sessions
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Protects against clickjacking
+    'pretalx.common.middleware.EventPermissionMiddleware',  # Sets locales, mostly
+    'csp.middleware.CSPMiddleware',  # Modifies/sets CSP headers
 ]
 
 with suppress(ImportError):
