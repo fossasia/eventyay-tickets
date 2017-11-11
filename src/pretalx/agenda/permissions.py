@@ -5,7 +5,7 @@ from pretalx.person.permissions import is_orga
 
 @rules.predicate
 def is_agenda_visible(user, event):
-    return event.is_public and event.settings.show_schedule
+    return event and event.is_public and event.settings.show_schedule
 
 
 @rules.predicate
