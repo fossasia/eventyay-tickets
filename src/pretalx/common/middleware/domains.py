@@ -6,6 +6,7 @@ from django.contrib.sessions.middleware import (
     SessionMiddleware as BaseSessionMiddleware,
 )
 from django.core.exceptions import DisallowedHost
+from django.http import Http404
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
 from django.urls import resolve
@@ -22,7 +23,7 @@ class MultiDomainMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def process_request(self, request):
+    def get_host(self, request):
         # We try three options, in order of decreasing preference.
         if settings.USE_X_FORWARDED_HOST and ('HTTP_X_FORWARDED_HOST' in request.META):
             host = request.META['HTTP_X_FORWARDED_HOST']
@@ -34,14 +35,20 @@ class MultiDomainMiddleware:
             server_port = str(request.META['SERVER_PORT'])
             if server_port != ('443' if request.is_secure() else '80'):
                 host = f'{host}:{server_port}'
+        return host
 
+    def process_request(self, request):
+        host = self.get_host(request)
         domain, port = split_domain_port(host)
-
         if not domain:
             raise DisallowedHost(f'Invalid HTTP_HOST header: {host}.')
 
         request.host = domain
         request.port = int(port) if port else None
+
+        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+        if domain == default_domain:
+            return
 
         event_slug = resolve(request.path).kwargs.get('event')
         if event_slug:
@@ -54,10 +61,8 @@ class MultiDomainMiddleware:
                     if event_domain == domain and event_port == port:
                         request.uses_custom_domain = True
                         return
-
-        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
-        if domain == default_domain:
-            return
+            else:
+                raise Http404()
 
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return
