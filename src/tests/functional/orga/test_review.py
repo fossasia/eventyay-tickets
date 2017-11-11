@@ -86,7 +86,7 @@ def test_reviewer_cannot_review_accepted_submission(review_user, review_client, 
         },
         follow=True,
     )
-    assert response.status_code == 404
+    assert response.status_code == 200
     assert submission.reviews.count() == 0
 
 
@@ -146,11 +146,40 @@ def test_cannot_see_other_review_before_own(other_review_client, review):
 
 
 @pytest.mark.django_db
+def test_can_see_review(review_client, review):
+    response = review_client.get(review.urls.base, follow=True)
+    assert response.status_code == 200
+    assert review.text in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_see_review_after_accept(review_client, review):
+    review.submission.accept()
+    response = review_client.get(review.urls.base, follow=True)
+    assert response.status_code == 200
+    assert review.text in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_cannot_see_review(orga_client, review):
+    response = orga_client.get(review.urls.base, follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_reviewer_can_see_dashboard(review_client, submission, review):
     response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
 
 
-# def test_orga_cannot_see_review
-# def test_orga_cannot_add_review
-# def test_cannot_see_own_submissions_reviews
+@pytest.mark.django_db
+def test_orga_cannot_add_review(orga_client, submission):
+    response = orga_client.post(
+        submission.orga_urls.reviews, follow=True,
+        data={
+            'score': 1,
+            'text': 'LGTM',
+        }
+    )
+    assert response.status_code == 404
+    assert submission.reviews.count() == 0

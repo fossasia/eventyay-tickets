@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.db import models
+from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
@@ -38,7 +39,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     form_class = ReviewForm
     model = Review
     template_name = 'orga/submission/review.html'
-    permission_required = 'submission.review_submission'
+    permission_required = 'submission.view_reviews'
 
     @property
     def submission(self):
@@ -52,7 +53,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     @cached_property
     def read_only(self):
-        return not self.request.user.has_perm('submission.edit_review', self.get_object() or self.submission)
+        return not self.request.user.has_perm('submission.review_submission', self.get_object() or self.submission)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -72,9 +73,13 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.submission = self.submission
         form.instance.user = self.request.user
-        if not form.instance.pk and not self.request.user.has_perm('submission.review_submission', self.submission):
+        if not form.instance.pk:
+            if not self.request.user.has_perm('submission.review_submission', self.submission):
+                messages.error(self.request, _('You cannot review this submission at this time.'))
+                return redirect(self.get_success_url())
+        if form.instance.pk and not self.request.user.has_perm('submission.edit_review', form.instance):
             messages.error(self.request, _('You cannot review this submission at this time.'))
-            return super().form_valid(form)
+            return redirect(self.get_success_url())
         form.save()
         return super().form_valid(form)
 
