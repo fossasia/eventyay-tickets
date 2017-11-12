@@ -17,9 +17,10 @@
             to log in for this event.
         {% endblocktrans %}
     </p>
-    <form action="" method="post">
+    <form action="" class="password-input-form" method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
+        {{ form.media }}
         <div class="row">
             <div class="col-md-6">
                 <h4 class="text-center">{% trans "I already have an account" %}</h4>

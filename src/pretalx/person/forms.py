@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
+from zxcvbn_password.fields import PasswordConfirmationField, PasswordField
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.person.models import SpeakerProfile, User
@@ -22,12 +23,15 @@ class UserForm(forms.Form):
                                         required=False)
     register_email = forms.EmailField(label=_('Email address'),
                                       required=False)
-    register_password = forms.CharField(widget=forms.PasswordInput,
-                                        label=_('Password'),
-                                        required=False)
-    register_password_repeat = forms.CharField(widget=forms.PasswordInput,
-                                               label=_('Password (again)'),
-                                               required=False)
+    register_password = PasswordField(
+        label=_('Password'),
+        required=False,
+    )
+    register_password_repeat = PasswordConfirmationField(
+        label=_('Password (again)'),
+        required=False,
+        confirm_with='register_password',
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -151,12 +155,15 @@ class LoginInfoForm(forms.ModelForm):
     old_password = forms.CharField(widget=forms.PasswordInput,
                                    label=_('Password (current)'),
                                    required=True)
-    password = forms.CharField(widget=forms.PasswordInput,
-                               label=_('Password (new)'),
-                               required=False)
-    password_repeat = forms.CharField(widget=forms.PasswordInput,
-                                      label=_('Password (again)'),
-                                      required=False)
+    password = PasswordField(
+        label=_('New password'),
+        required=False,
+    )
+    password_repeat = PasswordConfirmationField(
+        label=_('New password (again)'),
+        required=False,
+        confirm_with='password',
+    )
 
     def clean_old_password(self):
         old_pw = self.cleaned_data.get('old_password')

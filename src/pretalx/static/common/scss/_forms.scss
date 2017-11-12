@@ -33,3 +33,28 @@ form label.col-form-label {
     color: #999;
   }
 }
+.password-input-form {
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+
+  .form-group {
+    flex-direction: column;
+  }
+
+  input.password_strength, input.password_confirmation {
+    height: 100%;
+    display: block;
+    width: 100%;
+    flex-grow: 1;
+  }
+  p.text-muted {
+    font-size: 80%;
+    padding-top: 2px;
+    padding: 0;
+    color: #636c72;
+  }
+}
+.password_strength_info.hidden {
+  display: none;
+}

@@ -273,6 +273,7 @@ EXTERNAL_APPS = [
     'djangoformsetjs',
     'jquery',
     'rules',
+    'zxcvbn_password',
 ]
 LOCAL_APPS = [
     'pretalx.common.CommonConfig',
@@ -465,6 +466,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'zxcvbn_password.ZXCVBNValidator',
+        'OPTIONS': {
+            'min_score': 3,
+            'user_attributes': ('nick', 'email', 'name'),
+        },
     },
 ]
 

@@ -63,6 +63,7 @@
     </p>
     <form action="" method="post" class="form">
         {% csrf_token %}
+        {{ login_form.media }}
         {% bootstrap_field login_form.old_password layout='event' %}
         {% bootstrap_field login_form.email layout='event' %}
         {% bootstrap_field login_form.password layout='event' %}

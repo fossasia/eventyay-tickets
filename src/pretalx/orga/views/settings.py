@@ -1,5 +1,6 @@
 import string
 
+from csp.decorators import csp_update
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
@@ -7,6 +8,7 @@ from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
@@ -337,6 +339,7 @@ class EventReviewDelete(EventSettingsPermission, View):
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class InvitationView(FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
@@ -372,6 +375,7 @@ class InvitationView(FormView):
         return redirect(event.orga_urls.base)
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class UserSettings(TemplateView):
     form_class = LoginInfoForm
     template_name = 'orga/user.html'

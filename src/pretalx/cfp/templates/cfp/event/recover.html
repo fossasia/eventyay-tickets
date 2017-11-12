@@ -3,21 +3,20 @@
 {% load bootstrap4 %}
 {% block title %}{% trans "Password reset" %} :: {{ request.event }}{% endblock %}
 {% block content %}
-    <h2>{% trans "OK, this looks good!" %}</h2>
-    <p>
-        {% blocktrans trimmed %}
-            Now you just need to decide for your new password and then we are ready to go.
-        {% endblocktrans %}
-    </p>
     <form action="" method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <div class="row">
-            <div class="col-md-6 ml-auto">
-                {% bootstrap_field form.password layout='inline' %}
-                {% bootstrap_field form.password_repeat layout='inline' %}
-                <button type="submit" class="btn btn-block btn-primary">{% trans "Save this!" %}</button>
-            </div>
+        {{ form.media }}
+       <div class="col-md-8 password-input-form">
+            <h2>{% trans "OK, this looks good!" %}</h2>
+            <p>
+                {% blocktrans trimmed %}
+                    Now you just need to decide for your new password and then we are ready to go.
+                {% endblocktrans %}
+            </p>
+            {% bootstrap_field form.password layout='inline' %}
+            {% bootstrap_field form.password_repeat layout='inline' %}
+            <button type="submit" class="btn btn-block btn-primary">{% trans "Save this!" %}</button>
         </div>
     </form>
 {% endblock %}

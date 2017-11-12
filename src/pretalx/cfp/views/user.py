@@ -22,7 +22,7 @@ from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.models import Resource, Submission, SubmissionStates
 
 
-@method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'", IMG_SRC="https://www.gravatar.com"), name='dispatch')
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com", SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class ProfileView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_profile.html'
 

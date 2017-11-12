@@ -1,11 +1,13 @@
 from datetime import timedelta
 
+from csp.decorators import csp_update
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import get_language, ugettext_lazy as _
@@ -28,6 +30,7 @@ class LogoutView(View):
         }))
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class LoginView(FormView):
     template_name = 'cfp/event/login.html'
     form_class = UserForm
@@ -92,6 +95,7 @@ class ResetView(EventPageMixin, FormView):
         }))
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class RecoverView(FormView):
     template_name = 'cfp/event/recover.html'
     form_class = RecoverForm
