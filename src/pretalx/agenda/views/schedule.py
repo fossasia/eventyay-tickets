@@ -31,8 +31,8 @@ class ScheduleDataView(TemplateView):
             return self.request.event.schedules.filter(version=version).first() or self.request.event.current_schedule
         return self.request.event.current_schedule
 
-    def get_context_data(self, event):
-        ctx = super().get_context_data()
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
         schedule = self.get_object()
         event = self.request.event
         tz = pytz.timezone(self.request.event.timezone)
@@ -117,8 +117,8 @@ class FrabXmlView(ScheduleDataView):
 class FrabXCalView(ScheduleDataView):
     template_name = 'agenda/schedule.xcal'
 
-    def get_context_data(self, event):
-        ctx = super().get_context_data(event)
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
         url = get_base_url(self.request.event)
         ctx['url'] = url
         ctx['domain'] = urlparse(url).netloc
@@ -148,7 +148,7 @@ class ICalView(ScheduleDataView):
 class FrabJsonView(ScheduleDataView):
 
     def get(self, request, event, **kwargs):
-        ctx = self.get_context_data(event)
+        ctx = self.get_context_data()
         data = ctx['data']
         tz = pytz.timezone(self.request.event.timezone)
         schedule = self.get_object()
