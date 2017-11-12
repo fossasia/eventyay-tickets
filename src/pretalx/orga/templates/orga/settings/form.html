@@ -20,6 +20,7 @@
         <legend>
             {% trans "Display settings" %}
         </legend>
+        {% bootstrap_field form.is_public layout='event' %}
         {% bootstrap_field form.landing_page_text layout='event' %}
         {% bootstrap_field form.timezone layout='event' %}
         {% bootstrap_field form.locale layout='event' %}
