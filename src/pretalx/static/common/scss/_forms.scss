@@ -54,7 +54,27 @@ form label.col-form-label {
     padding: 0;
     color: #636c72;
   }
+
+  .progress-bloc {
+    margin-top: 0 !important;
+
+    .progress {
+      height: 0.4rem;
+      margin-bottom: 0 !important;
+    }
+  }
+}
+.password_strength_info {
+  margin-bottom: 0;
 }
 .password_strength_info.hidden {
   display: none;
+  display: block;
+  visibility: hidden;
+}
+.progress-bar-warning {
+  background-color: $brand-warning;
+}
+.progress-bar-danger {
+  background-color: $brand-danger;
 }
