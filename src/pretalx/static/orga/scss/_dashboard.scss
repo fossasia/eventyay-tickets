@@ -2,6 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  padding-bottom: 20px;
 
   :hover {
     background: $gray-200;
@@ -147,5 +148,10 @@
         background: transparent;
         border-left: 50px solid #11f11c;
       }
+  }
+}
+.dashboard-history {
+  .time {
+    color: #858585
   }
 }

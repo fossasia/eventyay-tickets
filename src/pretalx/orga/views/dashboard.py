@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.models.log import ActivityLog
 from pretalx.event.stages import get_stages
 
 
@@ -18,4 +19,5 @@ class EventDashboardView(PermissionRequired, TemplateView):
     def get_context_data(self, event):
         ctx = super().get_context_data()
         ctx['timeline'] = get_stages(self.request.event)
+        ctx['history'] = ActivityLog.objects.filter(event=self.get_object())[:20]
         return ctx
