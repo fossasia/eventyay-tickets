@@ -17,7 +17,7 @@
             </div>
         </div>
     </form>
-    <form method="post" action="">
+    <form method="post" action="" class="password-input-form">
         {% csrf_token %}
         <legend>{% trans "Login settings" %}</legend>
         {{ login_form.media }}

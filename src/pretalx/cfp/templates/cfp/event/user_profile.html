@@ -61,7 +61,7 @@
     <p>
         {% trans "You can change your log in data here." %}
     </p>
-    <form action="" method="post" class="form">
+    <form action="" method="post" class="form password-input-form">
         {% csrf_token %}
         {{ login_form.media }}
         {% bootstrap_field login_form.old_password layout='event' %}
