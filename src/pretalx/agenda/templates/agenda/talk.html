@@ -19,7 +19,7 @@
             <a class="btn btn-outline-primary" href="{{ talk.submission.urls.ical }}">
                 <span class="fa fa-calendar"></span> .ical
             </a>
-            {% if talk.submission.does_accept_feedback %}
+            {% if talk.submission.does_accept_feedback and not is_html_export %}
                 <a href="{{ talk.submission.urls.feedback }}"
                         class="btn btn-primary">
                     <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}

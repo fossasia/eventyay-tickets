@@ -38,7 +38,7 @@
 <body>
 <div id="wrapper">
     <div id="top-bg" class="bg-primary">
-        {% if not request.event.is_public %}
+        {% if not request.event.is_public and not is_html_export %}
             <div class="event-nonpublic">
                 <span class="fa fa-user-secret"></span>
                 {% blocktrans trimmed %}
@@ -71,7 +71,7 @@
             {% endif %}
         </header>
         <section class="card" id="main">
-            {% if request.user.is_authenticated %}
+            {% if request.user.is_authenticated and not is_html_export %}
                 <div class="user-row">
                     <div class="pull-right">
                         {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
