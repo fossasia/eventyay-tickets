@@ -7,6 +7,7 @@
 <head>
     <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
     <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     {% if request.event and request.event.settings.cfp_css_file %}
