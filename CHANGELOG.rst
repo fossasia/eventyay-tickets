@@ -33,6 +33,8 @@ Features
   these questions are deleted when users delete their accounts. (#233)
 - We moved to a new permission system that allows for more flexible roles.
   Please report any bugs that may relate to incorrect permissions. (#78)
+- You can now configure a custom domain to use with your event, in case
+  you have an event specific domain for each of your events. (#171)
 
 Fixed bugs
 ~~~~~~~~~~~

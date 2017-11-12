@@ -79,6 +79,8 @@ Customization
 - **Colorize:** Change your event's primary color to fit your event, your design, or your organizer.
 - **Customize:** If changing the site's primary color is not adequate for you, you can also upload
   custom CSS files and change anything you want to look differently.
+- **Link:** You can configure a separate domain for each of your events, in case you have event-
+  specific domains, but want to keep all your events on the same instance.
 
 Features under development
 --------------------------
