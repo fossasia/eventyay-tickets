@@ -404,6 +404,10 @@ COMPRESS_CSS_FILTERS = (
 # django-bakery / HTML export
 BUILD_DIR = HTMLEXPORT_ROOT
 BAKERY_VIEWS = (
+    'pretalx.agenda.views.htmlexport.ExportScheduleView',
+    'pretalx.agenda.views.htmlexport.ExportScheduleVersionsView',
+    'pretalx.agenda.views.htmlexport.ExportTalkView',
+    'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
