@@ -89,7 +89,7 @@ class TestWizard:
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
         response, current_url = self.perform_question_wizard(client, response, current_url, answer_data, next='user')
-        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd', email='testuser@example.org', register=True)
+        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd!', email='testuser@example.org', register=True)
         response, current_url = self.perform_profile_form(client, response, current_url)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
@@ -126,7 +126,7 @@ class TestWizard:
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
         response, current_url = self.perform_question_wizard(client, response, current_url, answer_data, next='user')
-        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd')
+        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd!')
         response, current_url = self.perform_profile_form(client, response, current_url)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")

@@ -134,12 +134,12 @@ def speaker_text_question(event):
 
 @pytest.fixture
 def user():
-    return User.objects.create_user('testuser', 'testpassw0rd')
+    return User.objects.create_user('testuser', 'testpassw0rd!')
 
 
 @pytest.fixture
 def superuser():
-    return User.objects.create_superuser('testuser', 'testpassw0rd')
+    return User.objects.create_superuser('testuser', 'testpassw0rd!')
 
 
 @pytest.fixture
@@ -219,7 +219,7 @@ def default_submission_type(event):
 
 @pytest.fixture
 def speaker(event):
-    user = User.objects.create_user('speaker', 'speakerpwd', name='Jane Speaker', email='jane@speaker.org')
+    user = User.objects.create_user('speaker', 'speakerpwd1!', name='Jane Speaker', email='jane@speaker.org')
     SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
     return user
 
@@ -232,7 +232,7 @@ def speaker_client(client, speaker):
 
 @pytest.fixture
 def other_speaker(event):
-    user = User.objects.create_user('speaker2', 'speakerpwd', name='Krümelmonster')
+    user = User.objects.create_user('speaker2', 'speakerpwd1!', name='Krümelmonster')
     SpeakerProfile.objects.create(user=user, event=event, biography='COOKIIIIES!!')
     return user
 
