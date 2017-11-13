@@ -14,19 +14,19 @@
 
     <h3 class="talk-title">
         <div>
-        »{{ talk.title }}«
+        »{{ talk.submission.title }}«
         <div class="buttons pull-right">
-            <a class="btn btn-outline-primary" href="{{ talk.urls.ical }}">
+            <a class="btn btn-outline-primary" href="{{ talk.submission.urls.ical }}">
                 <span class="fa fa-calendar"></span> .ical
             </a>
-            {% if talk.does_accept_feedback %}
-                <a href="{{ talk.urls.feedback }}"
+            {% if talk.submission.does_accept_feedback %}
+                <a href="{{ talk.submission.urls.feedback }}"
                         class="btn btn-primary">
                     <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}
                 </a>
             {% endif %}
-            {% if request.user in talk.speakers.all %}
-                <a href="{{ talk.urls.user_base }}"
+            {% if request.user in talk.submission.speakers.all %}
+                <a href="{{ talk.submission.urls.user_base }}"
                         class="btn btn-secondary">
                     <span class="fa fa-pencil"></span>{{ phrases.base.edit }}
                 </a>
@@ -34,8 +34,8 @@
         </div>
         </div>
         <small>
-            {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
-            {% if talk.do_not_record %}
+            {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+            {% if talk.submission.do_not_record %}
                 <span class="fa-stack">
                     <i class="fa fa-video-camera fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>

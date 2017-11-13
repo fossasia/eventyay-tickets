@@ -1,5 +1,8 @@
+import datetime
+
 import pytest
 from django.urls import reverse
+from django.utils import formats
 
 
 @pytest.mark.django_db
@@ -16,7 +19,42 @@ def test_can_see_talk(client, event, slot):
     response = client.get(slot.submission.urls.public, follow=True)
     assert event.schedules.count() == 2
     assert response.status_code == 200
-    assert slot.submission.title in response.content.decode()
+    content = response.content.decode()
+    assert content.count(slot.submission.title) >= 2  # meta+h1
+    assert slot.submission.abstract in content
+    assert slot.submission.description in content
+    assert formats.date_format(slot.start, 'Y-m-d, H:i') in content
+    assert formats.date_format(slot.end, 'H:i') in content
+    assert str(slot.room.name) in content
+    assert 'fa-pencil' not in content  # edit btn
+    assert 'fa-video-camera' not in content  # do not record
+
+
+@pytest.mark.django_db
+def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
+    slot.submission.speakers.add(orga_user)
+    response = orga_client.get(slot.submission.urls.public, follow=True)
+    assert response.status_code == 200
+    assert 'fa-pencil' in response.content.decode()  # edit btn
+
+
+@pytest.mark.django_db
+def test_can_see_talk_do_not_record(client, event, slot):
+    slot.submission.do_not_record = True
+    slot.submission.save()
+    response = client.get(slot.submission.urls.public, follow=True)
+    assert response.status_code == 200
+    assert 'fa-video-camera' in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_see_talk_does_accept_feedback(client, event, slot):
+    slot.start = (datetime.datetime.now() - datetime.timedelta(days=1))
+    slot.end = slot.start + datetime.timedelta(hours=1)
+    slot.save()
+    response = client.get(slot.submission.urls.public, follow=True)
+    assert response.status_code == 200
+    assert 'fa-comments' in response.content.decode()
 
 
 @pytest.mark.django_db
