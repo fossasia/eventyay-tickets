@@ -1,4 +1,3 @@
-import configparser
 import os
 import sys
 from contextlib import suppress
@@ -8,118 +7,24 @@ from django.contrib.messages import constants as messages  # NOQA
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
 
-from pretalx.common.settings.utils import log_initial, reduce_dict
+from pretalx.common.settings.config import build_config
+from pretalx.common.settings.utils import log_initial
 
 
-config = configparser.RawConfigParser()
-config.read_dict({
-    'filesystem': {
-        'base': os.path.dirname(os.path.dirname(__file__)),
-    },  # defaults depend on the data dir and need to be set once the data dir is fixed
-        # 'base'
-        # 'logs': 'logs',
-        # 'media': 'media'
-        # 'static': 'static.dist'
-    'site': {
-        'debug': 'runserver' in sys.argv,
-        'url': 'http://localhost',
-        'cookie_domain': '',
-    },  # the https setting is determined by url if not explicitly set
-    'database': {
-        'backend': 'sqlite3',
-        # 'name': '',
-        'user': '',
-        'password': '',
-        'host': '',
-        'port': '',
-    },
-    'mail': {
-        'from': 'admin@localhost',
-        'host': 'localhost',
-        'port': '25',
-        'user': '',
-        'password': '',
-        'tls': 'False',
-        'ssl': 'False',
-    },
-    'cache': {
-    },
-    'celery': {
-        'broker': '',
-        'backend': '',
-    },
-    'logging': {
-        'email': '',
-        'email_level': '',
-    },
-})
+config, config_files = build_config()
 
-legacy_config = {
-    'filesystem': {
-        'data': config.get('django', 'data_dir', fallback=None),
-        'static': config.get('django', 'static', fallback=None),
-    },
-    'site': {
-        'debug': config.get('django', 'debug', fallback=None),
-        'secret': config.get('django', 'secret', fallback=None),
-    },
-}
+##
+# This settings file is rather lengthy. It follows this structure:
+# Directories, Apps, Url, Security, Databases, Logging, Email, Caching (and Sessions)
+# I18n, Auth, Middleware, Templates and Staticfiles, External Apps
+#
+# Search for "## {AREA} SETTINGS" to navigate this file
+##
+
+DEBUG = config.getboolean('site', 'debug')
 
 
-if 'PRETALX_CONFIG_FILE' in os.environ:
-    config_files = config.read_file(open(os.environ.get('PRETALX_CONFIG_FILE'), encoding='utf-8'))
-else:
-    config_files = config.read([
-        '/etc/pretalx/pretalx.cfg',
-        os.path.expanduser('~/.pretalx.cfg'),
-        'pretalx.cfg',
-    ], encoding='utf-8')
-
-env_config = {
-    'filesystem': {
-        'data': os.getenv('PRETALX_DATA_DIR'),
-        # 'base'
-        # 'logs': 'logs',
-        # 'media': 'media'
-        # 'static': 'static.dist'
-    },
-    'site': {
-        'debug': os.getenv('PRETALX_DEBUG'),
-        'url': os.getenv('PRETALX_SITE_URL'),
-        'https': os.getenv('PRETALX_HTTPS'),
-        'cookie_domain': os.getenv('PRETALX_COOKIE_DOMAIN'),
-    },
-    'mail': {
-        'from': os.getenv('PRETALX_MAIL_FROM'),
-        'host': os.getenv('PRETALX_MAIL_HOST'),
-        'port': os.getenv('PRETALX_MAIL_PORT'),
-        'user': os.getenv('PRETALX_MAIL_USER'),
-        'password': os.getenv('PRETALX_MAIL_PASSWORD'),
-        'tls': os.getenv('PRETALX_MAIL_TLS'),
-        'ssl': os.getenv('PRETALX_MAIL_SSL'),
-    },
-    'database': {
-        'backend': os.getenv('PRETALX_DB_TYPE'),
-        'name': os.getenv('PRETALX_DB_NAME'),
-        'user': os.getenv('PRETALX_DB_USER'),
-        'password': os.getenv('PRETALX_DB_PASS'),
-        'host': os.getenv('PRETALX_DB_HOST'),
-        'port': os.getenv('PRETALX_DB_PORT'),
-    },
-    'celery': {
-        'broker': os.getenv('PRETALX_CELERY_BROKER'),
-        'backend': os.getenv('PRETALX_CELERY_BACKEND'),
-    },
-    'logging': {
-        'email': os.getenv('PRETALX_LOGGING_EMAIL'),
-        'email_level': os.getenv('PRETALX_LOGGING_EMAIL_LEVEL'),
-    },
-}
-
-config.read_dict(reduce_dict(legacy_config))
-config.read_dict(reduce_dict(env_config))
-
-# File system and directory settings
+## DIRECTORY SETTINGS
 BASE_DIR = config.get('filesystem', 'base')
 DATA_DIR = config.get('filesystem', 'data', fallback=os.path.join(BASE_DIR, 'data'))
 LOG_DIR = config.get('filesystem', 'logs', fallback=os.path.join(DATA_DIR, 'logs'))
@@ -129,6 +34,64 @@ STATIC_ROOT = config.get('filesystem', 'static', fallback=os.path.join(BASE_DIR,
 for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT):
     if not os.path.exists(directory):
         os.mkdir(directory)
+
+
+## APP SETTINGS
+DJANGO_APPS = [
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+EXTERNAL_APPS = [
+    'compressor',
+    'bootstrap4',
+    'djangoformsetjs',
+    'jquery',
+    'rules',
+]
+LOCAL_APPS = [
+    'pretalx.common.CommonConfig',
+    'pretalx.event',
+    'pretalx.mail.MailConfig',
+    'pretalx.person',
+    'pretalx.schedule',
+    'pretalx.submission.SubmissionConfig',
+    'pretalx.agenda.AgendaConfig',
+    'pretalx.cfp.CfPConfig',
+    'pretalx.orga.OrgaConfig',
+]
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS
+
+
+## URL SETTINGS
+SITE_URL = config.get('site', 'url', fallback='http://localhost')
+SITE_NETLOC = urlparse(SITE_URL).netloc
+INTERNAL_IPS = ('127.0.0.1', '::1')
+ALLOWED_HOSTS = ['*']  # We have our own security middleware to allow for custom event URLs
+
+ROOT_URLCONF = 'pretalx.urls'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+
+## SECURITY SETTINGS
+X_FRAME_OPTIONS = 'DENY'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:")
+
+CSRF_COOKIE_NAME = 'pretalx_csrftoken'
+SESSION_COOKIE_NAME = 'pretalx_session'
+SESSION_COOKIE_HTTPONLY = True
+if config.get('site', 'cookie_domain'):
+    SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = config.get('site', 'cookie_domain')
+
+SESSION_COOKIE_SECURE = config.getboolean('site', 'https', fallback=SITE_URL.startswith('https:'))
 
 if config.has_option('site', 'secret'):
     SECRET_KEY = config.get('site', 'secret')
@@ -145,22 +108,8 @@ else:
             os.chown(SECRET_FILE, os.getuid(), os.getgid())
             f.write(SECRET_KEY)
 
-# General setup settings
-DEBUG = config.getboolean('site', 'debug')
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from')
-    EMAIL_HOST = config.get('mail', 'host')
-    EMAIL_PORT = config.get('mail', 'port')
-    EMAIL_HOST_USER = config.get('mail', 'user')
-    EMAIL_HOST_PASSWORD = config.get('mail', 'password')
-    EMAIL_USE_TLS = config.getboolean('mail', 'tls')
-    EMAIL_USE_SSL = config.getboolean('mail', 'ssl')
-
-
-# Database configuration
+## DATABASE SETTINGS
 db_backend = config.get('database', 'backend')
 db_name = config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3'))
 DATABASES = {
@@ -175,21 +124,78 @@ DATABASES = {
     }
 }
 
-# URL configuration
-SITE_URL = config.get('site', 'url', fallback='http://localhost')
-SITE_NETLOC = urlparse(SITE_URL).netloc
-ALLOWED_HOSTS = ['*']
 
-if config.get('site', 'cookie_domain'):
-    SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = config.get('site', 'cookie_domain')
+## LOGGING SETTINGS
+loglevel = 'DEBUG' if DEBUG else 'INFO'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': loglevel,
+            'class': 'logging.StreamHandler',
+            'formatter': 'default'
+        },
+        'file': {
+            'level': loglevel,
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'pretalx.log'),
+            'formatter': 'default'
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file', 'console'],
+            'level': loglevel,
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['file', 'console'],
+            'level': loglevel,
+            'propagate': True,
+        },
+        'django.security': {
+            'handlers': ['file', 'console'],
+            'level': loglevel,
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',  # Do not output all the queries
+            'propagate': True,
+        }
+    },
+}
 
-SESSION_COOKIE_SECURE = config.getboolean('site', 'https', fallback=SITE_URL.startswith('https:'))
+email_level = config.get('logging', 'email_level', fallback='ERROR') or 'ERROR'
+emails = config.get('logging', 'email', fallback='').split(',')
+MANAGERS = ADMINS = [(email, email) for email in emails if email]
+if ADMINS:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': email_level,
+        'class': 'django.utils.log.AdminEmailHandler',
+    }
 
-ROOT_URLCONF = 'pretalx.urls'
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 
-# Cache configuration
+## EMAIL SETTINGS
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from')
+    EMAIL_HOST = config.get('mail', 'host')
+    EMAIL_PORT = config.get('mail', 'port')
+    EMAIL_HOST_USER = config.get('mail', 'user')
+    EMAIL_HOST_PASSWORD = config.get('mail', 'password')
+    EMAIL_USE_TLS = config.getboolean('mail', 'tls')
+    EMAIL_USE_SSL = config.getboolean('mail', 'ssl')
+
+
+## CACHE SETTINGS
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -243,8 +249,19 @@ if HAS_CELERY:
     CELERY_RESULT_BACKEND = config.get('celery', 'backend')
 else:
     CELERY_TASK_ALWAYS_EAGER = True
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+MESSAGE_TAGS = {
+    messages.INFO: 'info',
+    messages.ERROR: 'danger',
+    messages.WARNING: 'warning',
+    messages.SUCCESS: 'success',
+}
 
-# Internal settings
+
+## I18N SETTINGS
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 LANGUAGES = [
     ('en', _('English')),
     ('de', _('German')),
@@ -254,56 +271,38 @@ LANGUAGES_NATURAL_NAMES = [
     ('de', 'Deutsch'),
 ]
 LANGUAGE_CODE = 'en'
-
 LOCALE_PATHS = (
     os.path.join(os.path.dirname(__file__), 'locale'),
 )
-
 FORMAT_MODULE_PATH = [
     'pretalx.common.formats',
 ]
 
-SESSION_COOKIE_NAME = 'pretalx_session'
-CSRF_COOKIE_NAME = 'pretalx_csrftoken'
-SESSION_COOKIE_HTTPONLY = True
 
-DJANGO_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
-EXTERNAL_APPS = [
-    'compressor',
-    'bootstrap4',
-    'djangoformsetjs',
-    'jquery',
-    'rules',
-    'zxcvbn_password',
-]
-LOCAL_APPS = [
-    'pretalx.common.CommonConfig',
-    'pretalx.event',
-    'pretalx.mail.MailConfig',
-    'pretalx.person',
-    'pretalx.schedule',
-    'pretalx.submission.SubmissionConfig',
-    'pretalx.agenda.AgendaConfig',
-    'pretalx.cfp.CfPConfig',
-    'pretalx.orga.OrgaConfig',
-]
-INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS
-
-with suppress(ImportError):
-    import django_extensions  # noqa
-    INSTALLED_APPS.append('django_extensions')
-
+## AUTHENTICATION SETTINGS
+AUTH_USER_MODEL = 'person.User'
+LOGIN_URL = '/orga/login'
 AUTHENTICATION_BACKENDS = (
     'rules.permissions.ObjectPermissionBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
+
+## MIDDLEWARE SETTINGS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',  # Security first
     'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
@@ -318,30 +317,8 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',  # Modifies/sets CSP headers
 ]
 
-with suppress(ImportError):
-    import debug_toolbar  # noqa
-    if DEBUG:
-        INSTALLED_APPS.append('debug_toolbar.apps.DebugToolbarConfig')
-        MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
-
-# Security settings
-X_FRAME_OPTIONS = 'DENY'
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
-CSP_IMG_SRC = ("'self'", "data:")
-
-WSGI_APPLICATION = 'pretalx.wsgi.application'
-
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
-
-AUTH_USER_MODEL = 'person.User'
-LOGIN_URL = '/login'  # global login does not yet exist
-
+## TEMPLATE AND STATICFILES SETTINGS
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -383,122 +360,22 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pretalx', 'static')
 ] if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static')) else []
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-
-COMPRESS_CSS_FILTERS = (
-    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
-    # However, we don't need it if we consequently use the static() function in Sass
-    # 'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.CSSCompressorFilter',
-)
-
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
-DEBUG_TOOLBAR_CONFIG = {
-    'JQUERY_URL': '',
-}
-
-INTERNAL_IPS = ('127.0.0.1', '::1')
-
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
-emails = config.get('logging', 'email', fallback='').split(',')
-ADMIN = [(email, email) for email in emails if email]
-
-# Logging settings
-loglevel = 'DEBUG' if DEBUG else 'INFO'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': loglevel,
-            'class': 'logging.StreamHandler',
-            'formatter': 'default'
-        },
-        'file': {
-            'level': loglevel,
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'pretalx.log'),
-            'formatter': 'default'
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['file', 'console'],
-            'level': loglevel,
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['file', 'console'],
-            'level': loglevel,
-            'propagate': True,
-        },
-        'django.security': {
-            'handlers': ['file', 'console'],
-            'level': loglevel,
-            'propagate': True,
-        },
-        'django.db.backends': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',  # Do not output all the queries
-            'propagate': True,
-        }
-    },
-}
-email_level = config.get('logging', 'email_level', fallback='ERROR') or 'ERROR'
-if ADMIN:
-    LOGGING['handlers']['mail_admins'] = {
-        'level': email_level,
-        'class': 'django.utils.log.AdminEmailHandler',
-    }
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-    {
-        'NAME': 'zxcvbn_password.ZXCVBNValidator',
-        'OPTIONS': {
-            'min_score': 3,
-            'user_attributes': ('nick', 'email', 'name'),
-        },
-    },
-]
-
-MESSAGE_TAGS = {
-    messages.INFO: 'info',
-    messages.ERROR: 'danger',
-    messages.WARNING: 'warning',
-    messages.SUCCESS: 'success',
-}
-
+## EXTERNAL APP SETTINGS
+with suppress(ImportError):
+    import django_extensions  # noqa
+    INSTALLED_APPS.append('django_extensions')
+with suppress(ImportError):
+    import debug_toolbar  # noqa
+    if DEBUG:
+        INSTALLED_APPS.append('debug_toolbar.apps.DebugToolbarConfig')
+        MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 BOOTSTRAP4 = {
     'field_renderers': {
         'default': 'bootstrap4.renderers.FieldRenderer',
@@ -506,6 +383,21 @@ BOOTSTRAP4 = {
         'event': 'pretalx.common.forms.renderers.EventFieldRenderer',
     },
 }
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': '',
+}
+COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+COMPRESS_CSS_FILTERS = (
+    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
+    # However, we don't need it if we consequently use the static() function in Sass
+    # 'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
 
 
+WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR)
