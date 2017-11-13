@@ -11,13 +11,12 @@
 }
 .dashboard-block {
   flex: 1 0 auto;
-  align-self: stretch;
   padding: 15px 5px;
   border: 5px solid white;
   min-height: 160px;
+  height: 100%;
   width: 340px;
   background: lighten($gray-200, 3%);
-
 
   h1 {
     display: block;
