@@ -13,7 +13,7 @@ def _is_cfp_open(event):
 
 
 def _is_schedule_released(event):
-    return event.schedules.count() > 1
+    return event.schedules.count() > 1 and not _is_running(event) and not _is_in_wrapup(event)
 
 
 def _is_in_review(event):
