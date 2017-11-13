@@ -91,7 +91,7 @@
                 </div>
                 {% for speaker in speakers %}
                     <div class="speaker">
-                        <a href="{% url "agenda:speaker" code=speaker.code event=request.event.slug %}">
+                        <a href="{{ speaker.talk_profile.urls.public }}">
                             <div class="name">
                                 {{ speaker.get_display_name }}
                             </div>

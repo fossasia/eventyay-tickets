@@ -3,6 +3,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class SpeakerProfile(LogMixin, models.Model):
@@ -22,6 +23,9 @@ class SpeakerProfile(LogMixin, models.Model):
         related_name='+',
         on_delete=models.CASCADE,
     )
+
+    class urls(EventUrls):
+        public = '{self.event.urls.base}/speaker/{self.user.code}'
 
     @cached_property
     def submissions(self):
