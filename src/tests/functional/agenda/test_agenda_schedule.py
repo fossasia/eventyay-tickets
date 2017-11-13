@@ -35,7 +35,10 @@ def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
     slot.submission.speakers.add(orga_user)
     response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
-    assert 'fa-pencil' in response.content.decode()  # edit btn
+    content = response.content.decode()
+    assert 'fa-pencil' in content  # edit btn
+    assert 'fa-video-camera' not in content
+    assert 'fa-comments' not in content
 
 
 @pytest.mark.django_db
@@ -44,7 +47,10 @@ def test_can_see_talk_do_not_record(client, event, slot):
     slot.submission.save()
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
-    assert 'fa-video-camera' in response.content.decode()
+    content = response.content.decode()
+    assert 'fa-pencil' not in content  # edit btn
+    assert 'fa-video-camera' in content
+    assert 'fa-comments' not in content
 
 
 @pytest.mark.django_db
@@ -54,7 +60,10 @@ def test_can_see_talk_does_accept_feedback(client, event, slot):
     slot.save()
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
-    assert 'fa-comments' in response.content.decode()
+    content = response.content.decode()
+    assert 'fa-pencil' not in content  # edit btn
+    assert 'fa-comments' in content
+    assert 'fa-video-camera' not in content
 
 
 @pytest.mark.django_db
