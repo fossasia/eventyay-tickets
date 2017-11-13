@@ -20,7 +20,7 @@ class CommonConfig(AppConfig):
         try:
             for event in Event.objects.all():
                 regenerate_css.apply_async(args=(event.pk,))
-        except utils.OperationalError:
+        except (utils.OperationalError, utils.ProgrammingError):
             pass
 
 
