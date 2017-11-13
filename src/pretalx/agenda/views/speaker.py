@@ -12,6 +12,7 @@ class SpeakerView(PermissionRequired, DetailView):
     template_name = 'agenda/speaker.html'
     context_object_name = 'profile'
     permission_required = 'agenda.view_speaker'
+    slug_field = 'code'
 
     def get_object(self):
         return SpeakerProfile.objects.filter(

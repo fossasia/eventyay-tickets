@@ -28,6 +28,10 @@ class SpeakerProfile(LogMixin, models.Model):
         public = '{self.event.urls.base}/speaker/{self.user.code}'
 
     @cached_property
+    def code(self):
+        return self.user.code
+
+    @cached_property
     def submissions(self):
         return self.user.submissions.filter(event=self.event)
 
