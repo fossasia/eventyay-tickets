@@ -202,3 +202,20 @@ The celery section
   ``'redis://127.0.0.1/2'`` woould be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BROKER``
 - **Default:** ``''``
+
+The logging section
+-------------------
+
+``email``
+~~~~~~~~~
+
+- The email address (or addresses, comma separated) to send system logs to.
+- **Environment variable:** ``PRETALX_LOGGING_EMAIL``
+- **Default:** ``''``
+
+``email_level``
+~~~~~~~~~~~~~~~
+
+- The loglevel to start sending emails at. Any of ``[DEBUG, INFO, WARNING, ERROR, CRITICAL]``.
+- **Environment variable:** ``PRETALX_LOGGING_EMAIL_LEVEL``
+- **Default:** ``'ERROR'``

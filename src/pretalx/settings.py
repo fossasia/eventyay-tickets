@@ -25,6 +25,10 @@ config.read_dict({
     'filesystem': {
         'base': os.path.dirname(os.path.dirname(__file__)),
     },  # defaults depend on the data dir and need to be set once the data dir is fixed
+        # 'base'
+        # 'logs': 'logs',
+        # 'media': 'media'
+        # 'static': 'static.dist'
     'site': {
         'debug': 'runserver' in sys.argv,
         'url': 'http://localhost',
@@ -53,6 +57,10 @@ config.read_dict({
         'broker': '',
         'backend': '',
     },
+    'logging': {
+        'email': '',
+        'email_level': '',
+    },
 })
 
 legacy_config = {
@@ -79,6 +87,10 @@ else:
 env_config = {
     'filesystem': {
         'data': os.getenv('PRETALX_DATA_DIR'),
+        # 'base'
+        # 'logs': 'logs',
+        # 'media': 'media'
+        # 'static': 'static.dist'
     },
     'site': {
         'debug': os.getenv('PRETALX_DEBUG'),
@@ -106,6 +118,10 @@ env_config = {
     'celery': {
         'broker': os.getenv('PRETALX_CELERY_BROKER'),
         'backend': os.getenv('PRETALX_CELERY_BACKEND'),
+    },
+    'logging': {
+        'email': os.getenv('PRETALX_LOGGING_EMAIL'),
+        'email_level': os.getenv('PRETALX_LOGGING_EMAIL_LEVEL'),
     },
 }
 
@@ -406,6 +422,9 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
+emails = config.get('logging', 'email', fallback='').split(',')
+ADMIN = [(email, email) for email in emails if email]
+
 # Logging settings
 loglevel = 'DEBUG' if DEBUG else 'INFO'
 
@@ -453,6 +472,12 @@ LOGGING = {
         }
     },
 }
+email_level = config.get('logging', 'email_level', fallback='ERROR') or 'ERROR'
+if ADMIN:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': email_level,
+        'class': 'django.utils.log.AdminEmailHandler',
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
