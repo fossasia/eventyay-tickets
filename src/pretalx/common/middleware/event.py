@@ -4,6 +4,7 @@ from contextlib import suppress
 import pytz
 from django.conf import settings
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
@@ -49,6 +50,7 @@ class EventPermissionMiddleware:
                 request.event = Event.objects.get(slug__iexact=event_slug)
             except Event.DoesNotExist:
                 request.event = None
+                raise Http404()
 
             if hasattr(request, 'event') and request.event:
                 if not request.user.is_anonymous:
