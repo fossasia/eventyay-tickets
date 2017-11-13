@@ -45,7 +45,7 @@ config.read_dict({
         'user': '',
         'password': '',
         'tls': 'False',
-        'ssl': 'True',
+        'ssl': 'False',
     },
     'cache': {
     },

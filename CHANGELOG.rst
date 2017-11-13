@@ -9,6 +9,12 @@ vx.x.x
 
 *Released on 2017-xx-xx*
 
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- The default value for email SSL usage is now ``False``, permitting the default
+  configuration of ``localhost:25`` to work on more machines out of the box.
+
 Features
 ~~~~~~~~
 

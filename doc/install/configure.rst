@@ -182,7 +182,7 @@ The mail section
 
 - Should SSL be used when sending mail? Only one of TLS and SSL may be used.
 - **Environment variable:** ``PRETALX_MAIL_SSL``
-- **Default:** ``True``
+- **Default:** ``False``
 
 The celery section
 ------------------
