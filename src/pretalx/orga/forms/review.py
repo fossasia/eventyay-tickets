@@ -5,7 +5,17 @@ from i18nfield.forms import I18nFormMixin
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
+from pretalx.person.models import EventPermission
 from pretalx.submission.models import Review
+
+
+class ReviewPermissionForm(forms.ModelForm):
+
+    class Meta:
+        model = EventPermission
+        fields = (
+            'review_override_count',
+        )
 
 
 class ReviewSettingsForm(I18nFormMixin, HierarkeyForm):

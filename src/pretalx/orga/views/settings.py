@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.db.models.deletion import ProtectedError
+from django.forms.models import inlineformset_factory
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -20,7 +21,7 @@ from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.mail.models import QueuedMail
-from pretalx.orga.forms import EventForm, ReviewSettingsForm, EventSettingsForm
+from pretalx.orga.forms import EventForm, ReviewSettingsForm, EventSettingsForm, ReviewPermissionForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, UserForm, OrgaProfileForm
 from pretalx.person.models import EventPermission, User
@@ -236,20 +237,38 @@ class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
         kwargs['locales'] = self.request.event.locales
         return kwargs
 
+    @cached_property
+    def permission_forms(self):
+        qs = EventPermission.objects.filter(event=self.request.event, is_reviewer=True)
+        return [
+            ReviewPermissionForm(instance=perm, prefix=str(perm.id), data=self.request.POST if self.request.method == 'POST' else None)
+            for perm in qs.all()
+        ]
+
+    def save_formset(self):
+        for form in self.permission_forms:
+            if form.is_valid():
+                if form.has_changed():
+                    form.save()
+            else:
+                return False
+        return True
+
     def form_valid(self, form):
         form.save()
+        ret = super().form_valid(form)
+        if not self.save_formset():
+            messages.error(self.request, _('We had trouble saving your input.'))
+            return redirect(self.get_success_url())
+        messages.success(self.request, _('Your settings have been saved.'))
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        messages.success(self.request, _('Your settings have been saved.'))
         return reverse('orga:settings.review.view', kwargs={'event': self.request.event.slug})
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['team'] = User.objects.filter(
-            permissions__is_reviewer=True,
-            permissions__event=self.request.event,
-        )
+        ctx['formset'] = self.permission_forms
         ctx['pending'] = EventPermission.objects.filter(event=self.request.event, user__isnull=True, is_reviewer=True)
         return ctx
 
@@ -327,7 +346,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
 class EventReviewRetract(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event__slug=event, pk=pk).delete()
+        EventPermission.objects.filter(event=request.event, pk=pk).delete()
         request.event.log_action('pretalx.event.invite.reviewer.retract', person=request.user, orga=True)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
