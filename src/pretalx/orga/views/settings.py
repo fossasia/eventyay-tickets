@@ -246,20 +246,21 @@ class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
         ]
 
     def save_formset(self):
-        for form in self.permission_forms:
-            if form.is_valid():
-                if form.has_changed():
-                    form.save()
-            else:
-                return False
+        if self.request.event.settings.allow_override_votes:
+            for form in self.permission_forms:
+                if form.is_valid():
+                    if form.has_changed():
+                        form.save()
+                else:
+                    return False
         return True
 
     def form_valid(self, form):
-        form.save()
-        ret = super().form_valid(form)
         if not self.save_formset():
             messages.error(self.request, _('We had trouble saving your input.'))
             return redirect(self.get_success_url())
+        ret = super().form_valid(form)
+        form.save()
         messages.success(self.request, _('Your settings have been saved.'))
         return super().form_valid(form)
 

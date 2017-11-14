@@ -19,6 +19,11 @@ class ReviewPermissionForm(forms.ModelForm):
 
 
 class ReviewSettingsForm(I18nFormMixin, HierarkeyForm):
+    allow_override_votes = forms.BooleanField(
+        label=_('Allow override votes'),
+        help_text=_('With this setting, individual reviewers can be assigned a fixed amount of "override votes" functioning like vetos.'),
+        required=False,
+    )
     review_min_score = forms.IntegerField(
         label=_('Minimum score'),
         help_text=_('The minimum score reviewers can assign'),
