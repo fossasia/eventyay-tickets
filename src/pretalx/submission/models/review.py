@@ -18,7 +18,11 @@ class Review(models.Model):
         null=True, blank=True,
     )
     score = models.IntegerField(
-        null=True, blank=True
+        verbose_name=_('Score'),
+        null=True, blank=True,
+    )
+    override_vote = models.NullBooleanField(
+        default=None, null=True, blank=True,
     )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

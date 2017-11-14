@@ -24,6 +24,11 @@ class EventPermission(LogMixin, models.Model):
         default=False,
         verbose_name=_('May write reviews for this event'),
     )
+    review_override_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Override votes for reviews'),
+        help_text=_('How many times may this user cast an overriding votes or vetos?'),
+    )
     invitation_token = models.CharField(
         max_length=255,
         null=True, blank=True,
