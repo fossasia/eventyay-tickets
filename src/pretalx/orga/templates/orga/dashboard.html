@@ -14,10 +14,12 @@
                 </span>
             </a>
         {% endfor %}
-        <a href="{% url "orga:event.create" %}" class="dashboard-block">
-            <h1><span class="fa fa-plus"></span>{% trans "New event" %}</h1>
-            <span class="dashboard-description">{% trans "Uh, a new event?<br>Head over here, please!" %}</span>
-        </a>
+        {% if request.user.is_superuser %}
+            <a href="{% url "orga:event.create" %}" class="dashboard-block">
+                <h1><span class="fa fa-plus"></span>{% trans "New event" %}</h1>
+                <span class="dashboard-description">{% trans "Uh, a new event?<br>Head over here, please!" %}</span>
+            </a>
+        {% endif %}
     </div>
 
 {% endblock %}
