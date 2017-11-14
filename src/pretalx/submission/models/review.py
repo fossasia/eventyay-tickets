@@ -39,6 +39,16 @@ class Review(models.Model):
     def event(self):
         return self.submission.event
 
+    @property
+    def display_score(self):
+        if self.override_vote is True:
+            return _('Positive override')
+        if self.override_vote is False:
+            return _('Negative override (Veto)')
+        if self.score is None:
+            return 'ø'
+        return self.submission.event.settings.get(f'review_score_name_{self.score}') or str(self.score)
+
     class urls(EventUrls):
         base = '{self.submission.orga_urls.reviews}'
         delete = '{base}/{self.pk}/delete'

@@ -63,7 +63,7 @@
             {% for review in submission.reviews.all %}
                 {% if review != form.instance %}
                     <tr>
-                        <td>{{ review.score }}</td>
+                        <td>{{ review.display_score }}</td>
                         <td>{{ review.text }}</td>
                         <td>{{ review.user.get_display_name }}</td>
                     </tr>
