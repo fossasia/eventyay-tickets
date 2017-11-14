@@ -34,6 +34,7 @@ class EventPermissionMiddleware:
                     Q(permissions__is_orga=True) | Q(permissions__is_reviewer=True),
                     permissions__user=request.user,
                 )
+            request.orga_events = request.orga_events.order_by('-date_from')
 
     def _handle_orga_url(self, request, url):
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
