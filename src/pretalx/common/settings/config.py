@@ -4,7 +4,6 @@ import sys
 
 from pretalx.common.settings.utils import reduce_dict
 
-
 CONFIG = {
     'filesystem': {
         'base': {
