@@ -20,6 +20,11 @@
                 role in this event has already been made.
             {% endblocktrans %}
         {% endif %}
+        {% if override_left %}
+            {% blocktrans trimmed with count=override_left %}
+                You have <strong>{{ count }}</strong> override votes left.
+            {% endblocktrans %}
+        {% endif %}
     </div>
 
     {% if not form.instance.pk %}

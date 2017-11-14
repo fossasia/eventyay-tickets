@@ -56,20 +56,32 @@ class ReviewSettingsForm(I18nFormMixin, HierarkeyForm):
 
 class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
-    def __init__(self, event, user, *args, **kwargs):
+    def __init__(self, event, user, *args, instance=None, **kwargs):
         self.event = event
-        super().__init__(*args, **kwargs)
-        min_value = int(event.settings.review_min_score)
-        max_value = int(event.settings.review_max_score)
+        self.may_override = event.settings.allow_override_votes and user.remaining_override_votes(event)
+        self.may_override = self.may_override or (instance and instance.override_vote is not None)
+        self.min_value = int(event.settings.review_min_score)
+        self.max_value = int(event.settings.review_max_score)
+        if instance:
+            if instance.override_vote is True:
+                instance.score = self.max_value + 1
+            elif instance.override_vote is False:
+                instance.score = self.min_value - 1
+
+        super().__init__(*args, instance=instance, **kwargs)
         choices = [(None, _('No score'))]
-        for counter in range(abs(max_value - min_value) + 1):
-            value = min_value + counter
+        if self.may_override:
+            choices.append((self.min_value - 1, _('Negative override (Veto)')))
+        for counter in range(abs(self.max_value - self.min_value) + 1):
+            value = self.min_value + counter
             name = event.settings.get(f'review_score_name_{value}')
             if name:
                 name = f'{value} (»{name}«)'
             else:
                 name = value
             choices.append((value, name))
+        if self.may_override:
+            choices.append((self.max_value + 1, _('Positive override')))
 
         self.fields['score'] = forms.ChoiceField(choices=choices, required=False, disabled=kwargs.get('read_only', False))
         self.fields['text'].widget.attrs['rows'] = 2
@@ -78,11 +90,26 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
     def clean_score(self):
         score = self.cleaned_data.get('score')
         score = int(score) if score else None
-        minimum = int(self.event.settings.review_min_score)
-        maximum = int(self.event.settings.review_max_score)
-        if score and not minimum <= score <= maximum:
-            raise forms.ValidationError(_(f'Please assign a score between {minimum} and {maximum}!'))
+        if score and not self.min_value <= score <= self.max_value:
+            if not ((score == self.min_value - 1 or score == self.max_value + 1) and self.may_override):
+                raise forms.ValidationError(_(f'Please assign a score between {self.min_value} and {self.max_value}!'))
         return score
+
+    def clean(self):
+        cleaned_data = super().clean()
+        score = cleaned_data.get('score')
+        if score == self.min_value - 1:
+            cleaned_data['score'] = None
+            if self.may_override:
+                self.instance.override_vote = False
+                self.instance.save(update_fields=['override_vote'])
+        elif score == self.max_value + 1:
+            cleaned_data['score'] = None
+            if self.may_override:
+                self.instance.override_vote = True
+        else:
+            self.instance.override_vote = None
+            self.instance.save(update_fields=['override_vote'])
 
     class Meta:
         model = Review

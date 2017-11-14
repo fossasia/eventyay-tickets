@@ -61,6 +61,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         ctx['submission'] = submission
         ctx['review'] = submission.reviews.filter(user=self.request.user).first()
         ctx['read_only'] = self.read_only
+        ctx['override_left'] = self.request.user.remaining_override_votes(self.request.event)
         return ctx
 
     def get_form_kwargs(self):

@@ -175,3 +175,12 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def gravatar_parameter(self):
         return md5(self.email.strip().encode()).hexdigest()
+
+    def remaining_override_votes(self, event):
+        permission = self.permissions.filter(event=event).first()
+        if not permission:
+            return 0
+        if permission.review_override_count:
+            overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
+            return max(permission.review_override_count - overridden, 0)
+        return 0
