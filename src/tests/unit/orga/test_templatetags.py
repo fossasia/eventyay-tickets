@@ -30,4 +30,8 @@ def event_with_score_context(event):
 ))
 @pytest.mark.django_db()
 def test_templatetag_review_score(score, expected, event_with_score_context):
-    assert review_score(event_with_score_context, score) == expected
+    class FakeSubmission:
+        def __init__(self, score):
+            self.average_score = score
+    fake_submission = FakeSubmission(score)
+    assert review_score(event_with_score_context, fake_submission) == expected

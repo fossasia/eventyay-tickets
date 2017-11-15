@@ -30,7 +30,7 @@
                 {% trans "Review score" %}
             </label>
             <div class="col-md-9">
-                <label>{% review_score form.instance.average_score %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
+                <label>{% review_score form.instance %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
             </div>
         </div>
         {% endif %}

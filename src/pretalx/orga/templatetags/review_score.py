@@ -4,7 +4,8 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def review_score(context, score):
+def review_score(context, submission):
+    score = submission.average_score
     max_score = context['request'].event.settings.get('review_max_score')
     if score is None:
         return 'ø'
