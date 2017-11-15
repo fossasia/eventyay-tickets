@@ -5,11 +5,13 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 
 from .agenda.urls import agenda_urls
+from .api.urls import api_urls
 from .cfp.urls import cfp_urls
 from .orga.urls import orga_urls
 
 urlpatterns = [
     url(r'^orga/', include(orga_urls, namespace='orga')),
+    url(r'^api/', include(api_urls, namespace='api')),
     url(r'', include(agenda_urls, namespace='agenda')),
     url(r'', include(cfp_urls, namespace='cfp')),
 ]

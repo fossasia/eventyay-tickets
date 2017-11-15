@@ -50,11 +50,13 @@ EXTERNAL_APPS = [
     'bootstrap4',
     'djangoformsetjs',
     'jquery',
+    'rest_framework',
     'rules',
     'zxcvbn_password',
     'bakery',
 ]
 LOCAL_APPS = [
+    'pretalx.api.APIConfig',
     'pretalx.common.CommonConfig',
     'pretalx.event',
     'pretalx.mail.MailConfig',
@@ -409,6 +411,9 @@ BAKERY_VIEWS = (
     'pretalx.agenda.views.htmlexport.ExportTalkView',
     'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 25,
+}
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR)
