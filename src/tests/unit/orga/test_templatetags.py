@@ -1,6 +1,8 @@
 import pytest
 
-from pretalx.orga.templatetags.review_score import review_score
+from pretalx.orga.templatetags.review_score import (
+    _review_score_number, _review_score_override,
+)
 
 
 @pytest.fixture
@@ -30,8 +32,16 @@ def event_with_score_context(event):
 ))
 @pytest.mark.django_db()
 def test_templatetag_review_score(score, expected, event_with_score_context):
-    class FakeSubmission:
-        def __init__(self, score):
-            self.average_score = score
-    fake_submission = FakeSubmission(score)
-    assert review_score(event_with_score_context, fake_submission) == expected
+    assert _review_score_number(event_with_score_context, score) == expected
+
+
+@pytest.mark.parametrize('positive,negative,expected', (
+    (1, 0, '<i class="fa fa-arrow-circle-up override text-success"></i>'),
+    (0, 1, '<i class="fa fa-arrow-circle-down override text-danger"></i>'),
+    (2, 0, '<i class="fa fa-arrow-circle-up override text-success"></i> 2'),
+    (0, 2, '<i class="fa fa-arrow-circle-down override text-danger"></i> 2'),
+    (1, 1, '<i class="fa fa-arrow-circle-up override text-success"></i> 1<i class="fa fa-arrow-circle-down override text-danger"></i> 1'),
+))
+@pytest.mark.django_db()
+def test_templatetag_review_score_overrid(positive, negative, expected):
+    assert _review_score_override(positive, negative) == expected
