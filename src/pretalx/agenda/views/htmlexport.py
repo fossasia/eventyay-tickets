@@ -1,26 +1,21 @@
 from bakery.views import BuildableDetailView
-from django.utils import translation
 
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.agenda.views.speaker import SpeakerView
 from pretalx.agenda.views.talk import TalkView
-from pretalx.event.models import Event
 from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission
 
-# TODO: use the default langauge for each event
-translation.activate('en-gb')
-
 
 class PretalxExportContextMixin():
-    def build_object(self, obj):
-        self._object = obj
-        super().build_object(obj)
+    def __init__(self, *args, **kwargs):
+        self._exporting_event = kwargs.pop('_exporting_event')
+        super().__init__(*args, **kwargs)
 
     def create_request(self, *args, **kwargs):
         request = super().create_request(*args, **kwargs)
-        request.event = self._object.event  # django-bakery/RequestFactory does not support middlewares
+        request.event = self._exporting_event
         return request
 
     def get_context_data(self, *args, **kwargs):
@@ -35,9 +30,7 @@ class PretalxExportContextMixin():
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # TODO: make exported event configurable somehow
-        qs = qs.filter(event=Event.objects.all().first())
-        return qs
+        return qs.filter(event=self._exporting_event)
 
 
 # current schedule
