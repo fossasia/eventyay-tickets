@@ -14,6 +14,9 @@ Breaking Changes
 
 - The default value for email SSL usage is now ``False``, permitting the default
   configuration of ``localhost:25`` to work on more machines out of the box.
+- We removed the ``whitenoise`` dependency, meaning that you will have to
+  configure static file delivery in your webserver, as we always recommended
+  in our documentation.
 
 Features
 ~~~~~~~~

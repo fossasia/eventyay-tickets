@@ -77,7 +77,6 @@ setup(
         'pytz',
         'requests',
         'rules==1.2.*',
-        'whitenoise==3.3.*',
         'reportlab==3.4.*',
         'vobject==0.9.*',
     ],
