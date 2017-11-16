@@ -363,7 +363,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pretalx', 'static')
 ] if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static')) else []
 
-
 ## EXTERNAL APP SETTINGS
 with suppress(ImportError):
     import django_extensions  # noqa
@@ -394,7 +393,9 @@ COMPRESS_CSS_FILTERS = (
     # 'compressor.filters.css_default.CssAbsoluteFilter',
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
-
+if DEBUG:
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR)
