@@ -50,6 +50,7 @@ EXTERNAL_APPS = [
     'djangoformsetjs',
     'jquery',
     'rules',
+    'zxcvbn_password',
 ]
 LOCAL_APPS = [
     'pretalx.common.CommonConfig',
