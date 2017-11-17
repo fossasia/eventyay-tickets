@@ -307,6 +307,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',  # Security first
     'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
     'pretalx.common.middleware.MultiDomainMiddleware',  # Verifying the proper domain next
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Next up: static files
     'pretalx.common.middleware.SessionMiddleware',  # Add session handling
     'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Uses sessions
@@ -362,6 +363,8 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pretalx', 'static')
 ] if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static')) else []
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 ## EXTERNAL APP SETTINGS

@@ -18,5 +18,6 @@ pytz
 requests
 rules==1.2.*
 git+https://github.com/andrewgodwin/urlman.git@74e1fd6#egg=urlman
+whitenoise==3.3.*
 reportlab==3.4.*
 vobject==0.9.*
