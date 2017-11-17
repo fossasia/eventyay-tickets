@@ -18,13 +18,30 @@
                 {% endblocktrans %}
             </div>
         {% endif %}
+
+        {% if action != 'create' %}
+          {% if question.active %}
+            <div class="alert alert-info">
+              {% trans "This question is currently active, it will be asked during submission." %}
+              <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+            </div>
+          {% else %}
+            <div class="alert alert-info">
+              {% trans "This question is currently inactive, and will not be asked during submission." %}
+              <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+            </div>
+          {% endif %}
+        {% endif %}
+
         {% bootstrap_field form.target layout='event' %}
         {% bootstrap_field form.question layout='event' %}
         {% bootstrap_field form.variant layout='event' %}
         {% bootstrap_field form.help_text layout='event' %}
         {% bootstrap_field form.required layout='event' %}
         {% bootstrap_field form.contains_personal_data layout='event' %}
-        {% bootstrap_field form.active layout='event' %}
+        {% if action == 'create' %}
+          {% bootstrap_field form.active layout='event' %}
+        {% endif %}
 
         <fieldset id="answer-options">
             <legend>{% trans "Answer options" %}</legend>

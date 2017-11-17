@@ -120,3 +120,6 @@ atlassian-ide-plugin.xml
 local/
 *.xml
 pretalx.cfg
+
+# OS X
+.DS_Store

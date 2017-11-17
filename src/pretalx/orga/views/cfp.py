@@ -197,6 +197,21 @@ class CfPQuestionDelete(PermissionRequired, View):
         return redirect(self.request.event.cfp.urls.questions)
 
 
+class CfPQuestionToggle(PermissionRequired, View):
+    permission_required = 'orga.edit_question'
+
+    def get_object(self) -> Question:
+        return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
+
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        question = self.get_object()
+
+        question.active = not question.active
+        question.save(update_fields=['active'])
+        return redirect(question.urls.base)
+
+
 class SubmissionTypeList(PermissionRequired, ListView):
     template_name = 'orga/cfp/submission_type_view.html'
     context_object_name = 'types'

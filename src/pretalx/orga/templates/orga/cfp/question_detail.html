@@ -13,6 +13,18 @@
     </a>
 </h4>
 
+{% if question.active %}
+  <div class="alert alert-info">
+    {% trans "This question is currently active, it will be asked during submission." %}
+    <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    {% trans "This question is currently inactive, and will not be asked during submission." %}
+    <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+  </div>
+{% endif %}
+
 {% if not question.answers.count %}
     {% trans "Nobody has answered this question at the moment." %}
 {% else %}

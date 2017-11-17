@@ -6,7 +6,7 @@ from django.core import mail as djmail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from pretalx.submission.models import SubmissionStates
+from pretalx.submission.models import Question, SubmissionStates
 
 
 @pytest.mark.django_db
@@ -285,6 +285,28 @@ def test_can_accept_invitation(orga_client, submission):
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.speakers.count() == 2
+
+
+@pytest.mark.django_db
+def test_can_hide_question(orga_client, question):
+    assert question.active
+
+    response = orga_client.get(question.urls.toggle, follow=True)
+    question = Question.all_objects.get(pk=question.pk)
+
+    assert response.status_code == 200
+    assert not question.active
+
+
+@pytest.mark.django_db
+def test_can_activate_inactive_question(orga_client, inactive_question):
+    assert not inactive_question.active
+
+    response = orga_client.get(inactive_question.urls.toggle, follow=True)
+    inactive_question.refresh_from_db()
+
+    assert response.status_code == 200
+    assert inactive_question.active
 
 
 @pytest.mark.django_db

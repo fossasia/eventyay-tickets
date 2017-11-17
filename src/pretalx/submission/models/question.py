@@ -108,6 +108,7 @@ class Question(LogMixin, models.Model):
         base = '{self.event.cfp.urls.questions}/{self.pk}'
         edit = '{base}/edit'
         delete = '{base}/delete'
+        toggle = '{base}/toggle'
 
     def __str__(self):
         return str(self.question)
