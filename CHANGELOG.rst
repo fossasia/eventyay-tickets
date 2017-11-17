@@ -41,6 +41,8 @@ Features
   Please report any bugs that may relate to incorrect permissions. (#78)
 - You can now configure a custom domain to use with your event, in case
   you have an event specific domain for each of your events. (#171)
+- You can assign "override votes" to reviewers, which function like vetos
+  (both positive and negative), on an individual basis. (#156)
 
 Fixed bugs
 ~~~~~~~~~~~

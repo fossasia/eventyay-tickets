@@ -102,18 +102,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             cleaned_data['score'] = None
             if self.may_override:
                 self.instance.override_vote = False
-                if self.instance.id:
-                    self.instance.save()
         elif score == self.max_value + 1:
             cleaned_data['score'] = None
             if self.may_override:
                 self.instance.override_vote = True
-                if self.instance.id:
-                    self.instance.save()
         else:
             self.instance.override_vote = None
-            if self.instance.id:
-                self.instance.save()
+        if self.instance.id:
+            self.instance.save()
 
     class Meta:
         model = Review
