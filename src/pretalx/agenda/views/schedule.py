@@ -4,7 +4,10 @@ from urllib.parse import unquote, urlparse
 import pytz
 import vobject
 from csp.decorators import csp_update
-from django.http import HttpResponse, JsonResponse
+from django.http import (
+    HttpResponse, HttpResponsePermanentRedirect, JsonResponse,
+)
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -20,19 +23,23 @@ class ScheduleDataView(TemplateView):
 
     @cached_property
     def version(self):
-        version = None
-
         if 'version' in self.kwargs:
-            version = unquote(self.kwargs['version'])
+            return unquote(self.kwargs['version'])
+        else:
+            return None
 
-        if 'version' in self.request.GET:
-            if version:
-                raise Exception("Two schedule versions (querystring and URL) provided. Please only provide one.")
+    def get(self, request, *args, **kwargs):
+        if 'version' in request.GET:
+            if request.resolver_match.url_name.startswith('versioned-'):
+                raise Exception('The schedule version can be supplied in the path or querystring, but not both.')
 
-            # TODO: redirect this to new schema and simplify this method
-            version = unquote(self.request.GET['version'])
-
-        return version
+            kwargs['version'] = request.GET['version']
+            return HttpResponsePermanentRedirect(reverse(
+                f'agenda:versioned-{request.resolver_match.url_name}',
+                args=args, kwargs=kwargs
+            ))
+        else:
+            return super().get(request, *args, **kwargs)
 
     def get_object(self):
         if self.version:
