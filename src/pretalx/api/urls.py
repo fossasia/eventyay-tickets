@@ -1,15 +1,13 @@
 from django.conf.urls import include, url
 from rest_framework import routers
 
-from pretalx.api.views import event, speaker, submission
+from pretalx.api.views import event, submission
 
 
 default_router = routers.DefaultRouter()
 default_router.register(r'events', event.EventViewSet)
 
 event_router = routers.DefaultRouter()
-event_router.register(r'submitters', speaker.SubmitterViewSet)
-event_router.register(r'speakers', speaker.SubmitterViewSet)
 event_router.register(r'submissions', submission.SubmissionViewSet)
 event_router.register(r'talks', submission.SubmissionViewSet)
 event_router.register(r'schedules', submission.ScheduleViewSet)
