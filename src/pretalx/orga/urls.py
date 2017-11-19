@@ -5,7 +5,7 @@ from pretalx.orga.views import cards
 
 from .views import (
     auth, cfp, dashboard, mails, person, review,
-    schedule, settings, speaker, submission,
+    schedule, event, speaker, submission,
 )
 
 orga_urls = [
@@ -13,9 +13,9 @@ orga_urls = [
     url('^logout/$', auth.logout_view, name='logout'),
 
     url('^$', dashboard.DashboardView.as_view(), name='dashboard'),
-    url('^me$', settings.UserSettings.as_view(), name='user.view'),
-    url('^invitation/(?P<code>\w+)$', settings.InvitationView.as_view(), name='invitation.view'),
-    url('^event/new/$', settings.EventDetail.as_view(), name='event.create'),
+    url('^me$', event.UserSettings.as_view(), name='user.view'),
+    url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
+    url('^event/new/$', event.EventDetail.as_view(), name='event.create'),
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
@@ -79,23 +79,23 @@ orga_urls = [
 
         url('^reviews$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
 
-        url('^settings$', settings.EventDetail.as_view(), name='settings.event.view'),
-        url('^settings/edit$', settings.EventDetail.as_view(), name='settings.event.edit'),
-        url('^settings/mail$', settings.EventMailSettings.as_view(), name='settings.mail.view'),
-        url('^settings/mail/edit$', settings.EventMailSettings.as_view(), name='settings.mail.edit'),
-        url('^settings/team$', settings.EventTeam.as_view(), name='settings.team.view'),
-        url('^settings/team/add$', settings.EventTeamInvite.as_view(), name='settings.team.add'),
-        url('^settings/team/delete/(?P<pk>[0-9]+)$', settings.EventTeamDelete.as_view(), name='settings.team.delete'),
-        url('^settings/team/retract/(?P<pk>[0-9]+)$', settings.EventTeamRetract.as_view(), name='settings.team.retract'),
-        url('^settings/reviews$', settings.EventReview.as_view(), name='settings.review.view'),
-        url('^settings/reviews/add$', settings.EventReviewInvite.as_view(), name='settings.review.add'),
-        url('^settings/reviews/delete/(?P<pk>[0-9]+)$', settings.EventReviewDelete.as_view(), name='settings.review.delete'),
-        url('^settings/reviews/retract/(?P<pk>[0-9]+)$', settings.EventReviewRetract.as_view(), name='settings.review.retract'),
-        url('^settings/rooms$', settings.RoomList.as_view(), name='settings.rooms.list'),
-        url('^settings/rooms/new$', settings.RoomDetail.as_view(), name='settings.rooms.create'),
-        url('^settings/rooms/(?P<pk>[0-9]+)$', settings.RoomDetail.as_view(), name='settings.rooms.view'),
-        url('^settings/rooms/(?P<pk>[0-9]+)/edit$', settings.RoomDetail.as_view(), name='settings.rooms.edit'),
-        url('^settings/rooms/(?P<pk>[0-9]+)/delete$', settings.RoomDelete.as_view(), name='settings.rooms.delete'),
+        url('^settings$', event.EventDetail.as_view(), name='settings.event.view'),
+        url('^settings/edit$', event.EventDetail.as_view(), name='settings.event.edit'),
+        url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
+        url('^settings/mail/edit$', event.EventMailSettings.as_view(), name='settings.mail.edit'),
+        url('^settings/team$', event.EventTeam.as_view(), name='settings.team.view'),
+        url('^settings/team/add$', event.EventTeamInvite.as_view(), name='settings.team.add'),
+        url('^settings/team/delete/(?P<pk>[0-9]+)$', event.EventTeamDelete.as_view(), name='settings.team.delete'),
+        url('^settings/team/retract/(?P<pk>[0-9]+)$', event.EventTeamRetract.as_view(), name='settings.team.retract'),
+        url('^settings/reviews$', event.EventReview.as_view(), name='settings.review.view'),
+        url('^settings/reviews/add$', event.EventReviewInvite.as_view(), name='settings.review.add'),
+        url('^settings/reviews/delete/(?P<pk>[0-9]+)$', event.EventReviewDelete.as_view(), name='settings.review.delete'),
+        url('^settings/reviews/retract/(?P<pk>[0-9]+)$', event.EventReviewRetract.as_view(), name='settings.review.retract'),
+        url('^settings/rooms$', event.RoomList.as_view(), name='settings.rooms.list'),
+        url('^settings/rooms/new$', event.RoomDetail.as_view(), name='settings.rooms.create'),
+        url('^settings/rooms/(?P<pk>[0-9]+)$', event.RoomDetail.as_view(), name='settings.rooms.view'),
+        url('^settings/rooms/(?P<pk>[0-9]+)/edit$', event.RoomDetail.as_view(), name='settings.rooms.edit'),
+        url('^settings/rooms/(?P<pk>[0-9]+)/delete$', event.RoomDelete.as_view(), name='settings.rooms.delete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/release$', schedule.ScheduleReleaseView.as_view(), name='schedule.release'),
