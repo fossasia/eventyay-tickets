@@ -113,3 +113,45 @@ def test_orga_can_see_all_talks_even_nonpublic(orga_client, slot, accepted_submi
     assert response.status_code == 200
     assert content['count'] == 1
     assert content['results'][0]['title'] == slot.submission.title
+
+
+@pytest.mark.django_db
+def test_user_can_see_schedule(client, slot):
+    assert slot.submission.event.schedules.count() == 2
+    response = client.get(slot.submission.event.api_urls.schedules, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 1
+
+
+@pytest.mark.django_db
+def test_user_cannot_see_schedule_if_not_public(client, slot):
+    slot.submission.event.settings.set('show_schedule', False)
+    assert slot.submission.event.schedules.count() == 2
+    response = client.get(slot.submission.event.api_urls.schedules, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_see_schedule(orga_client, slot):
+    assert slot.submission.event.schedules.count() == 2
+    response = orga_client.get(slot.submission.event.api_urls.schedules, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 2
+
+
+@pytest.mark.django_db
+def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
+    slot.submission.event.settings.set('show_schedule', False)
+    assert slot.submission.event.schedules.count() == 2
+    response = orga_client.get(slot.submission.event.api_urls.schedules, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 2

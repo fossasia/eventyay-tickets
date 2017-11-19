@@ -108,6 +108,11 @@ class Schedule(LogMixin, models.Model):
         )
 
     @cached_property
+    def slots(self):
+        from pretalx.submission.models import Submission
+        return Submission.objects.filter(id__in=self.scheduled_talks.values_list('submission', flat=True))
+
+    @cached_property
     def previous_schedule(self):
         return self.event.schedules.filter(published__lt=self.published).order_by('-published').first()
 

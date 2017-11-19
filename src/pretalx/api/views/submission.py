@@ -30,15 +30,15 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.none()
-    lookup_field = 'version'
-    # TODO: implement /current
 
     def get_queryset(self):
         qs = self.queryset
         is_public = self.request.event.is_public and self.request.event.settings.show_schedule
+        current_schedule = self.request.event.current_schedule.pk if self.request.event.current_schedule else None
+        wip_schedule = self.request.event.wip_schedule.pk if self.request.event.wip_schedule else None
 
         if self.request.user.has_perm('orga.view_schedule', self.request.event):
-            return self.request.event.schedules.all()
+            return self.request.event.schedules.filter(pk__in=[current_schedule, wip_schedule])
         if is_public:
-            return self.request.event.schedules.filter(version__isnull=False)
+            return self.request.event.schedules.filter(pk=current_schedule)
         return qs

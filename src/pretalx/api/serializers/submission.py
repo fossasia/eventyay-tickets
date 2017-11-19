@@ -17,10 +17,10 @@ class SubmissionSerializer(ModelSerializer):
 
 
 class ScheduleSerializer(ModelSerializer):
-    talks = SubmissionSerializer(many=True)
+    slots = SubmissionSerializer(many=True)
 
     class Meta:
         model = Schedule
         fields = (
-            'talks', 'version',
+            'slots', 'version',
         )
