@@ -4,8 +4,8 @@ from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
-    auth, cfp, dashboard, mails, person, review,
-    schedule, event, speaker, submission,
+    auth, cfp, dashboard, event, mails, person,
+    review, schedule, speaker, submission,
 )
 
 orga_urls = [
