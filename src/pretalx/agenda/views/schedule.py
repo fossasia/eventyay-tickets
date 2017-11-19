@@ -6,6 +6,7 @@ import vobject
 from csp.decorators import csp_update
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
@@ -17,11 +18,29 @@ from pretalx.schedule.models import Room
 class ScheduleDataView(TemplateView):
     template_name = 'agenda/schedule.html'
 
+    @cached_property
+    def version(self):
+        version = None
+
+        if 'version' in self.kwargs:
+            version = unquote(self.kwargs['version'])
+
+        if 'version' in self.request.GET:
+            if version:
+                raise Exception("Two schedule versions (querystring and URL) provided. Please only provide one.")
+
+            # TODO: redirect this to new schema and simplify this method
+            version = unquote(self.request.GET['version'])
+
+        return version
+
     def get_object(self):
-        if self.request.GET.get('version'):
-            version = unquote(self.request.GET.get('version'))
-            return self.request.event.schedules.filter(version=version).first() or self.request.event.current_schedule
-        return self.request.event.current_schedule
+        if self.version:
+            return \
+                self.request.event.schedules.filter(version=self.version).first() or \
+                self.request.event.current_schedule
+        else:
+            return self.request.event.current_schedule
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -29,8 +48,8 @@ class ScheduleDataView(TemplateView):
         event = self.request.event
         tz = pytz.timezone(self.request.event.timezone)
 
-        if not schedule and self.request.GET.get('version'):
-            ctx['version'] = self.request.GET.get('version')
+        if not schedule and self.version:
+            ctx['version'] = self.version
             ctx['error'] = 'wrong-version'
             return ctx
         elif not schedule:
@@ -76,7 +95,7 @@ class ScheduleView(PermissionRequired, ScheduleDataView):
         return self.request.event
 
     def get_object(self):
-        if self.request.GET.get('version') == 'wip' and self.request.user.has_perm('orga.view_schedule', self.request.event):
+        if self.version == 'wip' and self.request.user.has_perm('orga.view_schedule', self.request.event):
             return self.request.event.wip_schedule
         return super().get_object()
 

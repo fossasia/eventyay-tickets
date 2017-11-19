@@ -36,7 +36,7 @@ class Schedule(LogMixin, models.Model):
         unique_together = (('event', 'version'), )
 
     class urls(EventUrls):
-        public = '{self.event.urls.schedule}?version={self.url_version}'
+        public = '{self.event.urls.schedule}/v/{self.url_version}'
 
     @transaction.atomic
     def freeze(self, name, user=None, notify_speakers=True):
