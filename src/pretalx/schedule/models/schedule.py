@@ -104,6 +104,7 @@ class Schedule(LogMixin, models.Model):
         return self.talks.filter(
             room__isnull=False,
             start__isnull=False,
+            is_visible=True,
         )
 
     @cached_property

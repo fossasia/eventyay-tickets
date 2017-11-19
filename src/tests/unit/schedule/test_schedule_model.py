@@ -88,13 +88,15 @@ def test_unfreeze_bug72(slot):
 @pytest.mark.django_db
 def test_scheduled_talks(slot, room):
     slot_count = slot.schedule.scheduled_talks.count()
-    current_slot = slot.submission.slots.filter(schedule=slot.submission.event.wip_schedule).first()
+    current_slot = slot.submission.slots.filter(schedule__version__isnull=True).first()
     current_slot.room = slot.room
     current_slot.start = now()
     current_slot.save()
-    assert current_slot.schedule.scheduled_talks.count() == slot_count
-    current_slot = current_slot.submission.slots.filter(schedule=slot.submission.event.wip_schedule).first()
+    old, new = current_slot.schedule.freeze('test-version')
+    assert new.scheduled_talks.count() == slot_count
+    current_slot = current_slot.submission.slots.filter(schedule__version__isnull=True).first()
     current_slot.room = None
     current_slot.start = now()
     current_slot.save()
-    assert current_slot.schedule.scheduled_talks.count() == slot_count - 1
+    old, new = current_slot.schedule.freeze('test-version2')
+    assert new.scheduled_talks.count() == slot_count - 1
