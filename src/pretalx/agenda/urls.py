@@ -29,7 +29,7 @@ urlpatterns = [
     url(f'^(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
         *get_schedule_urls('^schedule'),
-        *get_schedule_urls('^schedule/v/(?P<version>\w+)', 'versioned-'),
+        *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),
         url('^location/$', location.LocationView.as_view(), name='location'),
         url('^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
         url('^talk/(?P<slug>\w+)/feedback/$', talk.FeedbackView.as_view(), name='feedback'),
