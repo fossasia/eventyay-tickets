@@ -1,4 +1,5 @@
 from bakery.management.commands.build import Command as BakeryBuildCommand
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.core.urlresolvers import get_callable
@@ -23,6 +24,8 @@ class Command(BakeryBuildCommand):
         self._exporting_event = event
         translation.activate(event.locale)
 
+        settings.COMPRESS_ENABLED = True
+        settings.COMPRESS_OFFLINE = True
         call_command('rebuild')  # collect static files and combine/compress them
 
         super().handle(*args, **options)
