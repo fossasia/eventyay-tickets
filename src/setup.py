@@ -72,7 +72,7 @@ setup(
         'django-formset-js-improved==0.5.0.1',
         'django-formtools==2.0.*',
         'django-hierarkey==1.0.*',
-        'django-i18nfield==1.1.*',
+        'django-i18nfield==1.3.*',
         'django-libsass==0.7',
         'django-zxcvbn-password==2.0.*',
         'djangorestframework==3.7.*',

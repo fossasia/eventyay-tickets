@@ -412,7 +412,7 @@ BAKERY_VIEWS = (
     'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
+    'DEFAULT_RENDERER_CLASSES': ('i18nfield.rest_framework.I18nJSONRenderer',),
     # TODO:
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'pretix.api.auth.token.TeamTokenAuthentication',

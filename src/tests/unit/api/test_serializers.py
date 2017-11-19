@@ -26,7 +26,7 @@ def test_submitter_serializer(submission):
 @pytest.mark.django_db
 def test_submission_serializer(submission):
     data = SubmissionSerializer(submission, context={'event': submission.event}).data
-    assert data.keys() == {
+    assert set(data.keys()) == {
         'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
         'description', 'duration', 'do_not_record', 'content_locale',
     }
@@ -35,3 +35,4 @@ def test_submission_serializer(submission):
         'name': submission.speakers.first().name,
         'code': submission.speakers.first().code,
     }
+    assert data['submission_type'] == str(submission.submission_type.name)

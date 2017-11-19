@@ -1,12 +1,14 @@
-from rest_framework.serializers import ModelSerializer
+from i18nfield.rest_framework import I18nAwareModelSerializer
+from rest_framework.serializers import ModelSerializer, SlugRelatedField
 
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission
 
 
-class SubmissionSerializer(ModelSerializer):
+class SubmissionSerializer(I18nAwareModelSerializer):
     speakers = SubmitterSerializer(many=True)
+    submission_type = SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = Submission
