@@ -412,6 +412,7 @@ BAKERY_VIEWS = (
     'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
     # TODO:
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'pretix.api.auth.token.TeamTokenAuthentication',
@@ -428,6 +429,9 @@ REST_FRAMEWORK = {
     'ORDERING_PARAM': 'o',
     'VERSIONING_PARAM': 'v',
 }
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ('rest_framework.renderers.BrowsableAPIRenderer',)
+    REST_FRAMEWORK['COMPACT_JSON'] = False
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR)
