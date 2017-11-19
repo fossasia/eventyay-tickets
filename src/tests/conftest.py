@@ -61,7 +61,7 @@ def other_resource(submission):
 def question(event):
     return Question.objects.create(
         event=event, question='How much do you like green, on a scale from 1-10?', variant=QuestionVariant.NUMBER,
-        target='submission', required=False,
+        target='submission', required=False, contains_personal_data=False,
     )
 
 
@@ -130,6 +130,24 @@ def speaker_text_question(event):
         event=event, question='Please elaborat on your like/dislike of green.',
         variant=QuestionVariant.TEXT, target='speaker', required=False,
     )
+
+
+@pytest.fixture
+def personal_question(submission):
+    return Question.objects.create(
+        event=submission.event, target='submission', variant='boolean',
+        question='Do you identify as a hacker?', contains_personal_data=True,
+    )
+
+
+@pytest.fixture
+def impersonal_answer(question, speaker):
+    return Answer.objects.create(answer='True', person=speaker, question=question)
+
+
+@pytest.fixture
+def personal_answer(personal_question, speaker):
+    return Answer.objects.create(answer='True', person=speaker, question=personal_question)
 
 
 @pytest.fixture
