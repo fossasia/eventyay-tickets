@@ -171,12 +171,15 @@ class Event(LogMixin, models.Model):
         reset_schedule = '{schedule}/reset'
         toggle_schedule = '{schedule}/toggle'
         reviews = '{base}/reviews'
+        schedule_api = '{base}/schedule/api'
+        rooms_api = '{schedule_api}/rooms'
+        talks_api = '{schedule_api}/talks'
 
     class api_urls(EventUrls):
-        base = '/orga/event/{self.slug}'
-        schedule = '{base}/schedule/api'
-        rooms = '{schedule}/rooms'
-        talks = '{schedule}/talks'
+        base = '/api/events/{self.slug}'
+        submissions = '{base}/submissions'
+        talks = '{base}/talks'
+        schedules = '{base}/schedules'
 
     def __str__(self) -> str:
         return str(self.name)

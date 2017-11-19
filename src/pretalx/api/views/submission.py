@@ -4,7 +4,7 @@ from pretalx.api.serializers.submission import (
     ScheduleSerializer, SubmissionSerializer,
 )
 from pretalx.schedule.models import Schedule
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Submission
 
 
 class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -17,13 +17,13 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     def get_base_queryset(self):
         if self.request.user.has_perm('orga.view_submissions', self.request.event):
             return self.request.event.submissions.all()
-        if self.request.event.current_schedule:
+        if self.request.event.current_schedule and self.request.event.settings.show_schedule:
             return self.request.event.submissions.filter(slots__in=self.request.event.current_schedule.talks.all())
 
     def get_queryset(self):
         qs = self.get_base_queryset() or self.queryset
         if 'talks' in self.request._request.path:
-            qs = qs.filter(state=SubmissionStates.CONFIRMED)
+            qs = qs.filter(slots__schedule=self.request.event.current_schedule)
         return qs
 
 
