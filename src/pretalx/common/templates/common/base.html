@@ -103,6 +103,14 @@
             </div>
         </section>
         <footer>
+            {% if is_html_export %}
+            <div id="exporttimestamp" class="text-muted">
+                {% now "Y-m-d H:i T" as timestamp %}
+                {% blocktrans trimmed %}
+                    This is a static export generated at {{ timestamp }}
+                {% endblocktrans %}
+            </div>
+            {% endif %}
             <a href="http://pretalx.org" target="_blank" rel="noopener">
                 <img src="{% static "common/img/logo.svg" %}">
             </a>
