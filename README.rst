@@ -1,4 +1,4 @@
-.. image:: https://github.com/pretalx/pretalx/blob/master/assets/logo.png
+.. image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/logo.png
 
 pretalx
 =======
@@ -25,6 +25,9 @@ required for talk submission, speaker communication, and scheduling. You can
 see our supported features in the `feature list`_ in our documentation, and our
 issues_.
 
+`pretalx` has regular releases – you can download the latest releases with
+their respective changelogs on GitHub_ or install pretalx via PyPI_.
+
 Contributing
 ------------
 If you want to contribute to pretalx, please choose an issue and comment on it
@@ -45,3 +48,5 @@ this project.
 .. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html
+.. _GitHub: https://github.com/pretalx/pretalx/release/
+.. _PyPI: https://pypi.python.org/pypi/pretalx
