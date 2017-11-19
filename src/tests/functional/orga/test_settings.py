@@ -78,7 +78,7 @@ def test_delete_used_room(orga_client, event, room, slot):
 @pytest.mark.parametrize('path,allowed', (
     ('tests/functional/orga/fixtures/custom.css', True),
     ('tests/functional/orga/fixtures/malicious.css', False),
-    ('tests/functional/conftest.py', False),
+    ('tests/conftest.py', False),
 ))
 def test_add_custom_css(event, orga_client, path, allowed):
     assert not event.custom_css

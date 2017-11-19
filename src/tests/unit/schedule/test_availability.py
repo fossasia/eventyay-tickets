@@ -7,7 +7,7 @@ from pretalx.schedule.models import Availability
 
 @pytest.mark.django_db
 def test_availability_str_person(speaker):
-    assert 'person=Jane Speaker' in str(Availability(
+    assert f'person={speaker.name}' in str(Availability(
         start=datetime.datetime(2017, 1, 1, 0),
         end=datetime.datetime(2017, 1, 1, 5),
         person=speaker.profiles.first(),
@@ -16,7 +16,7 @@ def test_availability_str_person(speaker):
 
 @pytest.mark.django_db
 def test_availability_str_room(room):
-    assert 'room=Roomy' in str(Availability(
+    assert f'room={room.name}' in str(Availability(
         start=datetime.datetime(2017, 1, 1, 0),
         end=datetime.datetime(2017, 1, 1, 5),
         room=room,
@@ -31,13 +31,13 @@ def test_availability_str_person_room(room, speaker):
         person=speaker.profiles.first(),
         room=room,
     ))
-    assert 'room=Roomy' in actual
-    assert 'person=Jane Speaker' in actual
+    assert f'room={room.name}' in actual
+    assert f'person={speaker.name}' in actual
 
 
 @pytest.mark.django_db
 def test_availability_str_event(event):
-    assert 'event=Event' in str(Availability(
+    assert f'event={event.name}' in str(Availability(
         start=datetime.datetime(2017, 1, 1, 0),
         end=datetime.datetime(2017, 1, 1, 5),
         event=event

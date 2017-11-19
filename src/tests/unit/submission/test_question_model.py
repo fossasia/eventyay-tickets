@@ -21,7 +21,7 @@ def test_missing_answers_submission_question(submission, target, question):
 @pytest.mark.django_db
 def test_question_base_properties(submission, question):
     a = Answer.objects.create(answer='True', submission=submission, question=question)
-    assert str(question) == 'Do you agree?'
+    assert str(question) == question.question
     assert a.event == question.event
     assert str(a) == 'True'
 
