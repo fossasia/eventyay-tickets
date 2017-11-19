@@ -11,6 +11,8 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.none()
     lookup_field = 'code__iexact'
+    filter_fields = ('state', 'content_locale', 'submission_type')
+    search_fields = ('title', 'speakers__name')
 
     def get_base_queryset(self):
         if self.request.user.has_perm('orga.view_submissions', self.request.event):
@@ -29,7 +31,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.none()
     lookup_field = 'version'
-    """ TODO: implement /current """
+    # TODO: implement /current
 
     def get_queryset(self):
         qs = self.queryset

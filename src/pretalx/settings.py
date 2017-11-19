@@ -412,7 +412,21 @@ BAKERY_VIEWS = (
     'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
 REST_FRAMEWORK = {
+    # TODO:
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'pretix.api.auth.token.TeamTokenAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    # ),
+    # 'DEFAULT_PERMISSION_CLASSES': ('pretalx.api.permissions.ApiPermission',)
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.SearchFilter',
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25,
+    'SEARCH_PARAM': 'q',
+    'ORDERING_PARAM': 'o',
+    'VERSIONING_PARAM': 'v',
 }
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
