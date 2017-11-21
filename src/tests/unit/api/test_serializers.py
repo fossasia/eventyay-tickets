@@ -28,7 +28,7 @@ def test_submission_serializer(submission):
     data = SubmissionSerializer(submission, context={'event': submission.event}).data
     assert set(data.keys()) == {
         'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-        'description', 'duration', 'do_not_record', 'content_locale',
+        'description', 'duration', 'do_not_record', 'content_locale', 'slot',
     }
     assert isinstance(data['speakers'], list)
     assert data['speakers'][0] == {
@@ -36,3 +36,15 @@ def test_submission_serializer(submission):
         'code': submission.speakers.first().code,
     }
     assert data['submission_type'] == str(submission.submission_type.name)
+    assert data['slot'] is None
+
+
+@pytest.mark.django_db
+def test_submission_slot_serializer(slot):
+    data = SubmissionSerializer(slot.submission, context={'event': slot.submission.event}).data
+    assert set(data.keys()) == {
+        'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
+        'description', 'duration', 'do_not_record', 'content_locale', 'slot',
+    }
+    assert set(data['slot'].keys()) == {'start', 'end', 'room'}
+    assert data['slot']['room'] == slot.room.name
