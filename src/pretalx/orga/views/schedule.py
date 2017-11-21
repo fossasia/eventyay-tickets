@@ -25,7 +25,7 @@ class ScheduleView(PermissionRequired, TemplateView):
         ctx = super().get_context_data()
         version = self.request.GET.get('version')
         ctx['schedule_version'] = version
-        ctx['active_schedule'] = self.request.event.schedules.get(version=version)
+        ctx['active_schedule'] = self.request.event.schedules.get(version=version) if version else self.request.event.wip_schedule
         ctx['release_form'] = ScheduleReleaseForm()
         return ctx
 
