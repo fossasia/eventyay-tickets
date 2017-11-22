@@ -38,6 +38,8 @@ Talk submission
   their talk.
 - **Reviewing:** A reviewing system with both texts and scoring, configurable scales, average
   scores, and reviewer teams that can work separately from the general orga team.
+- **Strong opinions:** Permit reviewers to issue vetos or to force a submission to be accepted, for
+  a fixed amount of times per event.
 
 Scheduling
 ~~~~~~~~~~
@@ -85,9 +87,8 @@ Customization
 Features under development
 --------------------------
 
-- **Strong opinions:** Permit reviewers to issue vetos or to force a submission to be accepted, for
-  a fixed amount of times per event.
 - **Tracks:** Introduce a concept of tracks that brings track colors, and track-bound review teams.
+- **Automate:** Use our REST API to automate anything related to your conference.
 
 Planned features
 ----------------

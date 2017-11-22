@@ -43,6 +43,8 @@ Features
   you have an event specific domain for each of your events. (#171)
 - You can assign "override votes" to reviewers, which function like vetos
   (both positive and negative), on an individual basis. (#156)
+- A read only REST API was introduced. At the moment, it only supports
+  resources for events and submissions.
 
 Fixed bugs
 ~~~~~~~~~~~

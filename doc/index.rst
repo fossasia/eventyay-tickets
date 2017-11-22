@@ -43,4 +43,13 @@ Developer docs
    :maxdepth: 2
 
    contribute/index
+
+API docs
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   api/index
+
 .. _issues: https://github.com/pretalx/pretalx/issues/
