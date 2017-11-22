@@ -46,14 +46,15 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 EXTERNAL_APPS = [
+    'bakery',
     'compressor',
     'bootstrap4',
     'djangoformsetjs',
     'jquery',
     'rest_framework',
+    'rest_framework.authtoken',
     'rules',
     'zxcvbn_password',
-    'bakery',
 ]
 LOCAL_APPS = [
     'pretalx.api.APIConfig',
@@ -413,11 +414,10 @@ BAKERY_VIEWS = (
 )
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('i18nfield.rest_framework.I18nJSONRenderer',),
-    # TODO:
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'pretix.api.auth.token.TeamTokenAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     # 'DEFAULT_PERMISSION_CLASSES': ('pretalx.api.permissions.ApiPermission',)
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.SearchFilter',

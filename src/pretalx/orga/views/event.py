@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
+from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.tasks import regenerate_css
@@ -427,6 +428,7 @@ class UserSettings(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        ctx['token'] = Token.objects.filter(user=self.request.user).first() or Token.objects.create(user=self.request.user)
         ctx['login_form'] = self.login_form
         ctx['profile_form'] = self.profile_form
         return ctx
