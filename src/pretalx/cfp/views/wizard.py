@@ -131,12 +131,14 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                 if question.variant == QuestionVariant.MULTIPLE:
                     answstr = ", ".join([str(o) for o in value])
                     answer.save()
-                    answer.answer = answstr
-                    answer.options.add(*value)
+                    if value:
+                        answer.answer = answstr
+                        answer.options.add(*value)
                 elif question.variant == QuestionVariant.CHOICES:
                     answer.save()
-                    answer.options.add(value)
-                    answer.answer = value.answer
+                    if value:
+                        answer.options.add(value)
+                        answer.answer = value.answer
                 else:
                     answer.answer = value
                 answer.save()
