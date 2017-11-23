@@ -74,9 +74,15 @@
                                               <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
                                             </span>
                                         {% endif %}
-                                        <span class="talk-title">{{ talk.submission.title }}</span>
-                                        {% if talk.submission.speakers.exists %}
-                                            <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
+
+                                        {% if talk.submission.is_deleted %}
+                                          <span class="talk-title">[deleted]</span>
+                                        {% else %}
+                                            <span class="talk-title">{{ talk.submission.title }}</span>
+
+                                            {% if talk.submission.speakers.exists %}
+                                              <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </div>

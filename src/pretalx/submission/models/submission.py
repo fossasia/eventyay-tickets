@@ -268,8 +268,6 @@ class Submission(LogMixin, models.Model):
 
     def remove(self, person=None, force=False):
         self._set_state(SubmissionStates.DELETED, force)
-        from pretalx.schedule.models import TalkSlot
-        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
         self.log_action('pretalx.submission.deleted', person=person, orga=False)
 
     @property
@@ -328,6 +326,10 @@ class Submission(LogMixin, models.Model):
     @property
     def active_resources(self):
         return self.resources.filter(resource__isnull=False)
+
+    @property
+    def is_deleted(self):
+        return self.state == SubmissionStates.DELETED
 
     def __str__(self):
         return self.title

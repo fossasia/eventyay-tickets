@@ -62,11 +62,11 @@ class ScheduleDataView(TemplateView):
                 'start': current_date,
                 'end': current_date + timedelta(days=1),
                 'first_start': min([t.start for t in talks if t.start and t.start.astimezone(tz).date() == current_date.date()] or [0]),
-                'last_end': max([t.end for t in talks if t.start.astimezone(tz).date() == current_date.date()] or [0]),
+                'last_end': max([t.end for t in talks if t.start and t.start.astimezone(tz).date() == current_date.date()] or [0]),
                 'rooms': [{
                     'name': room.name,
                     'talks': [talk for talk in talks
-                              if talk.start.astimezone(tz).date() == current_date.date() and talk.room_id == room.pk],
+                              if talk.start and talk.start.astimezone(tz).date() == current_date.date() and talk.room_id == room.pk],
                 } for room in rooms],
             } for index, current_date in enumerate([
                 event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
