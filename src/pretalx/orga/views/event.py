@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.db.models.deletion import ProtectedError
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -368,10 +368,11 @@ class InvitationView(FormView):
 
     @property
     def object(self):
-        return EventPermission.objects.filter(
-            invitation_token=self.kwargs.get('code'),
-            user__isnull=True
-        ).first()
+        return get_object_or_404(
+            EventPermission,
+            invitation_token__iexact=self.kwargs.get('code'),
+            user__isnull=True,
+        )
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
