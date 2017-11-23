@@ -76,7 +76,7 @@
                                         {% endif %}
 
                                         {% if talk.submission.is_deleted %}
-                                          <span class="talk-title">[deleted]</span>
+                                          <span class="talk-title">[{% trans deleted %}]</span>
                                         {% else %}
                                             <span class="talk-title">{{ talk.submission.title }}</span>
 
