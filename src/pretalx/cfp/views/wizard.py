@@ -109,6 +109,25 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             'event': self.kwargs.get('event')
         })
 
+    def _handle_question_answer(self, sub, qid, value):
+        question = self.request.event.questions.get(pk=qid)
+        answer = Answer(question=question, submission=sub)
+
+        if question.variant == QuestionVariant.MULTIPLE:
+            answstr = ", ".join([str(o) for o in value])
+            answer.save()
+            if value:
+                answer.answer = answstr
+                answer.options.add(*value)
+        elif question.variant == QuestionVariant.CHOICES:
+            answer.save()
+            if value:
+                answer.options.add(value)
+                answer.answer = value.answer
+        else:
+            answer.answer = value
+        answer.save()
+
     def done(self, form_list, form_dict, **kwargs):
         if self.request.user.is_authenticated:
             user = self.request.user
@@ -125,23 +144,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
                 qid = k.split('_')[1]
-                question = self.request.event.questions.get(pk=qid)
-                answer = Answer(question=question, submission=sub)
-
-                if question.variant == QuestionVariant.MULTIPLE:
-                    answstr = ", ".join([str(o) for o in value])
-                    answer.save()
-                    if value:
-                        answer.answer = answstr
-                        answer.options.add(*value)
-                elif question.variant == QuestionVariant.CHOICES:
-                    answer.save()
-                    if value:
-                        answer.options.add(value)
-                        answer.answer = value.answer
-                else:
-                    answer.answer = value
-                answer.save()
+                self._handle_question_answer(sub, qid, value)
 
         try:
             sub.event.ack_template.to_mail(
