@@ -82,18 +82,18 @@ todo_include_todos = False
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = [
     '_static',
-    os.path.abspath('../src/pretalx/static/vendored/fontawesome'),
+    os.path.abspath('../src/pretalx/static/vendored/fontawesome/fonts/'),
 ]
 html_additional_pages = {
     'index': 'index.html'
 }
 html_theme = 'pretalx_theme'
-html_logo = '/_static/logo.svg'
 html_theme_path = [os.path.abspath('_themes')]
 html_theme_options = {
     'logo_only': True,
     'display_version': False,
 }
+html_logo = 'images/logo.svg'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
