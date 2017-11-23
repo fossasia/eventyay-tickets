@@ -40,6 +40,11 @@ def test_orga_accept_invitation_once(client, event, invitation):
     assert response.status_code == 200
     invitation.refresh_from_db()
     assert invitation.user.nick == 'newuser'
+    response = client.get(
+        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token}),
+        follow=True
+    )
+    assert response.status_code == 404
     response = client.post(
         reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token}),
         {
@@ -53,3 +58,13 @@ def test_orga_accept_invitation_once(client, event, invitation):
     assert response.status_code == 404
     invitation.refresh_from_db()
     assert invitation.user.nick == 'newuser'
+
+
+@pytest.mark.django_db
+def test_orga_incorrect_invite_token(client, event, invitation):
+    assert invitation.user is None
+    response = client.get(
+        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token + 'WRONG'}),
+        follow=True
+    )
+    assert response.status_code == 404
