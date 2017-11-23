@@ -88,7 +88,7 @@ html_additional_pages = {
     'index': 'index.html'
 }
 html_theme = 'pretalx_theme'
-html_logo = '_static/logo.svg'
+html_logo = '/_static/logo.svg'
 html_theme_path = [os.path.abspath('_themes')]
 html_theme_options = {
     'logo_only': True,
