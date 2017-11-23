@@ -58,7 +58,9 @@
                     <div class="room">
                         <div class="talk-container" style="height: {{ day.height }}px">
                             {% for talk in room.talks %}
-                            <a href="{{ talk.submission.urls.public }}">
+                                {% if not schedule.is_archived %}
+                                  <a href="{{ talk.submission.urls.public }}">
+                                {% endif %}
 
                                 <div class="talk{% if request.user in talk.submission.speakers.all %} talk-personal{% endif %}{% if talk.is_active %} active{% endif %}"
                                      id="{{ talk.submission.code }}"

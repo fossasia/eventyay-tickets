@@ -205,5 +205,12 @@ class Schedule(LogMixin, models.Model):
     def url_version(self):
         return quote(self.version) if self.version else 'wip'
 
+    @property
+    def is_archived(self):
+        if not self.version:
+            return False
+
+        return self != self.event.current_schedule
+
     def __str__(self) -> str:
         return str(self.version) or _(f'WIP Schedule for {self.event}')
