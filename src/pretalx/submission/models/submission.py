@@ -220,10 +220,12 @@ class Submission(LogMixin, models.Model):
     def confirm(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.CONFIRMED, force)
         self.log_action('pretalx.submission.confirmation', person=person, orga=orga)
+        self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=True)
 
     def unconfirm(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.ACCEPTED, force)
         self.log_action('pretalx.submission.unconfirm', person=person, orga=orga)
+        self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=False)
 
     def accept(self, person=None, force=False):
         self._set_state(SubmissionStates.ACCEPTED, force)

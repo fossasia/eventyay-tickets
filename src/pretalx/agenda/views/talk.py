@@ -27,7 +27,10 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_object(self):
         with suppress(AttributeError, TalkSlot.DoesNotExist):
-            return self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'])
+            return self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
+        if self.request.is_orga:
+            with suppress(AttributeError, TalkSlot.DoesNotExist):
+                return self.request.event.wip_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
         raise Http404()
 
     @csp_update(CHILD_SRC="https://media.ccc.de")  # TODO: only do this if obj.recording_url and obj.recording_source are set
@@ -36,7 +39,13 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        event_talks = self.request.event.current_schedule.talks.exclude(submission=self.object.submission)
+        if self.request.event.current_schedule:
+            qs = self.request.event.current_schedule.talks
+        elif self.request.is_orga:
+            qs = self.request.event.wip_schedule.talks
+        else:
+            qs = TalkSlot.objects.none()
+        event_talks = qs.exclude(submission=self.object.submission)
         ctx['speakers'] = []
         for speaker in self.object.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
             speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()
@@ -72,7 +81,7 @@ class FeedbackView(PermissionRequired, FormView):
         return Submission.objects.filter(
             event=self.request.event,
             code__iexact=self.kwargs['slug'],
-            slots__in=self.request.event.current_schedule.talks.all(),
+            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True),
         ).first()
 
     def get(self, *args, **kwargs):

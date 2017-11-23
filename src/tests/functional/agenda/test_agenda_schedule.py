@@ -31,6 +31,31 @@ def test_can_see_talk(client, event, slot):
 
 
 @pytest.mark.django_db
+def test_cannot_see_new_talk(client, event, unreleased_slot):
+    slot = unreleased_slot
+    response = client.get(slot.submission.urls.public, follow=True)
+    assert event.schedules.count() == 1
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_orga_can_see_new_talk(orga_client, event, unreleased_slot):
+    slot = unreleased_slot
+    response = orga_client.get(slot.submission.urls.public, follow=True)
+    assert event.schedules.count() == 1
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert content.count(slot.submission.title) >= 2  # meta+h1
+    assert slot.submission.abstract in content
+    assert slot.submission.description in content
+    assert formats.date_format(slot.start, 'Y-m-d, H:i') in content
+    assert formats.date_format(slot.end, 'H:i') in content
+    assert str(slot.room.name) in content
+    assert 'fa-pencil' not in content  # edit btn
+    assert 'fa-video-camera' not in content  # do not record
+
+
+@pytest.mark.django_db
 def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
     slot.submission.speakers.add(orga_user)
     response = orga_client.get(slot.submission.urls.public, follow=True)

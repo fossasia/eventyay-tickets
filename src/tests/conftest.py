@@ -413,6 +413,15 @@ def slot(confirmed_submission, room, schedule):
 
 
 @pytest.fixture
+def unreleased_slot(confirmed_submission, room):
+    schedule = confirmed_submission.event.wip_schedule
+    slot = schedule.talks.filter(submission=confirmed_submission)
+    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot = slot.first()
+    return slot
+
+
+@pytest.fixture
 def past_slot(submission_data, room, schedule, speaker):
     sub = Submission.objects.create(**submission_data)
     sub.speakers.add(speaker)
