@@ -1,7 +1,7 @@
 .. _`rest-api`:
 
-REST API
-========
+API documentation
+=================
 
 pretalx currently contains a REST-style API.  This API is not yet considered
 stable, so please tread carefully, and don't be surprised at API changes (which

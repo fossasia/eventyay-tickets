@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+{% set title = 'Overview' %}
+{% block body %}
+    <h1>Welcome to pretalx's documentation!</h1>
+    <p>
+
+        <p>pretalx is an open source conference management tool – it allows you to
+        create Calls for Participation, customize them, read and review
+        submissions, choose your conference's talks, schedule them (on the days
+        and in as rooms you need), and release versioned schedules. And it can
+        do even more – check the <a href="/en/latest/features">features</a>
+        page for details.</p>
+
+        We work a lot to make our documentation as up to date, usable and
+        complete as possible. We want you to understand, use, run, and improve
+        pretalx, but of course, this website will never be perfect, or even
+        comprete.  If ther eis anything unclear or specifically missing, we'd
+        be happy if you'd
+        <a href="https://github.com/pretalx/pretalx/issues/new">let us know</a>.
+    </p>
+
+    <h2>Documentation structure</h2>
+
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="admin/index.html">
+                <span class="fa fa-server fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="admin/index.html">
+                <strong>Administrator docs</strong>
+            </a>
+            <p>Find out how to install pretalx on your own server and how to
+            maintain an installation of pretalx.</p>
+        </div>
+    </div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="api/index.html">
+                <span class="fa fa-plug fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="api/index.html">
+                <strong>REST API</strong>
+            </a>
+            <p>
+                Documentation and reference of the RESTful API exposed by
+                pretalx for interaction with external components.
+            </p>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="contribute/index.html">
+                <span class="fa fa-wrench fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="contribute/index.html">
+                <strong>Developer docs</strong>
+            </a>
+            <p>Get information on how to contribute to pretalx itself and how
+            to build plugins that interact with pretalx.</p>
+        </div>
+    </div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="contents.html">
+                <span class="fa fa-list fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="contents.html">
+                <strong>Table of contents</strong>
+            </a>
+            <p>Detailled overview of everything contained in this documentation.</p>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <!-- <div class="sectionbox"> -->
+    <!--     <div class="icon"> -->
+    <!--         <a href="user/index.html"> -->
+    <!--             <span class="fa fa-user fa-fw"></span> -->
+    <!--         </a> -->
+    <!--     </div> -->
+    <!--     <div class="text"> -->
+    <!--         <a href="user/index.html"> -->
+    <!--             <strong>User Guide</strong> -->
+    <!--         </a> -->
+    <!--         <p>You'd go here if we had a user guide ready, but we haven't -->
+    <!--         gotten that far yet.</p> -->
+    <!--     </div> -->
+    <!-- </div> -->
+
+    <h2>Useful links</h2>
+
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="https://pretalx.org" target="_blank">
+                <span class="fa fa-globe fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="https://pretalx.org" target="_blank">
+                <strong>Project website</strong>
+            </a>
+            <p>pretalx.org is the central entrypoint to the project and also the home of the commercial hosting
+                service.</p>
+        </div>
+    </div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="https://github.com/pretalx/pretalx" target="_blank">
+                <span class="fa fa-github fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="https://github.com/pretalx/pretalx" target="_blank">
+                <strong>GitHub repository</strong>
+            </a>
+            <p>
+                The open source repository contains all code relevant to the project, and some additional
+                related projects within the same GitHub organization.
+            </p>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="https://pretalx.org/blog" target="_blank">
+                <span class="fa fa-newspaper-o fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="https://pretalx.org/blog" target="_blank">
+                <strong>Project blog</strong>
+            </a>
+            <p>
+                Any relevant news about releases (and pretalx in general) will be presented in our blog.
+            </p>
+        </div>
+    </div>
+    <div class="sectionbox">
+        <div class="icon">
+            <a href="https://twitter.com/pretalx" target="_blank">
+                <span class="fa fa-twitter fa-fw"></span>
+            </a>
+        </div>
+        <div class="text">
+            <a href="https://twitter.com/pretalx" target="_blank">
+                <strong>Twitter</strong>
+            </a>
+            <p>Keep in touch and stay up to date by following our project account on Twitter.</p>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+{% endblock %}

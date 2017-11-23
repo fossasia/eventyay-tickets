@@ -1,5 +1,5 @@
-I want to install pretalx on my server!
-=======================================
+Installing pretalx
+==================
 
 That's great! We have two ways of installation documented: installation via
 Docker, and manual installation. Both only document a simple development setup
