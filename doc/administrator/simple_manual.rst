@@ -9,8 +9,8 @@ will be suitable to smaller events and not extreme amounts of traffic.
 We also provide an `ansible role`_ that basically follows this guide, in case you
 already have an ansible-based setup.
 
-Prerequisites
--------------
+Step 0: Prerequisites
+---------------------
 
 Please set up the following systems beforehand, we'll not explain them here (but see these links for
 external installation guides):
@@ -28,8 +28,8 @@ If you're new to Linux and firewalls, we recommend that you start with `ufw`_.
           to `Let's Encrypt`_, SSL certificates are free these days. We also *do not* provide
           support for HTTP-exclusive installations except for evaluation purposes.
 
-Unix user
----------
+Step 1: Unix user
+-----------------
 
 As we do not want to run pretalx as root, we first create a new unprivileged user::
 
@@ -39,8 +39,8 @@ In this guide, all code lines prepended with a ``#`` symbol are commands that yo
 ``root`` user (e.g. using ``sudo``); all lines prepended with a ``$`` symbol should be run by the unprivileged user.
 
 
-Database
---------
+Step 2: Database setup
+----------------------
 
 Having the database server installed, we still need a database and a database user. We can create these with any kind
 of database managing tool or directly on our database's shell, e.g. for MySQL::
@@ -55,16 +55,16 @@ connect to the database. For PostgreSQL, be sure to configure the interface bind
 firewall so that the docker container can reach PostgreSQL.
 
 
-Package dependencies
---------------------
+Step 3: Package dependencies
+----------------------------
 
 To build and run pretalx, you will need the following debian packages beyond the dependencies
 mentioned above::
 
     # apt-get install git build-essential python-virtualenv libssl-dev gettext libmysqlclient-dev
 
-Config file
------------
+Step 4: Configuration
+---------------------
 
 We now create a config directory and config file for pretalx::
 
@@ -78,8 +78,8 @@ Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following cont
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
 
-Install pretalx from PyPI
--------------------------
+Step 5: Installation
+--------------------
 
 Now we will install pretalx itself. The following steps are to be executed as the ``pretalx`` user. Before we
 actually install pretalx, we will create a virtual environment to isolate the python packages from your global
@@ -98,8 +98,8 @@ Finally, we compile static files and translation data and create the database st
     (venv)$ python -m pretalx migrate
     (venv)$ python -m pretalx rebuild
 
-Start pretalx as a service
---------------------------
+Step 6: Starting pretalx as a service
+-------------------------------------
 
 We recommend starting pretalx using systemd to make sure it runs correctly after a reboot. Create a file
 named ``/etc/systemd/system/pretalx-web.service`` with the following content::
@@ -148,8 +148,8 @@ You can now run the following commands to enable and start the services::
     # systemctl start pretalx-web pretalx-worker
 
 
-SSL
----
+Step 7: SSL
+-----------
 
 The following snippet is an example on how to configure a nginx proxy for pretalx::
 
@@ -196,15 +196,12 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-Next steps
-----------
-
 Yay, you are done! You should now be able to reach pretalx at https://pretalx.yourdomain.com/control/ and log in as
 the superuser you configured above. You can now create an event, and off you go!
 
 
-Updates
--------
+Next Steps: Updates
+-------------------
 
 .. warning:: While we try hard not to break things, **please perform a backup before every upgrade**.
 

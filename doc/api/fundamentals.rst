@@ -119,7 +119,7 @@ Multi-lingual string  Object of strings            ``{"en": "red", "de": "rot"}`
 ===================== ============================ ===================================
 
 Query parameters
-^^^^^^^^^^^^^^^^
+----------------
 
 Most list endpoints allow a filtering of the results using query parameters. In
 this case, booleans should be passed as the string values ``true`` and

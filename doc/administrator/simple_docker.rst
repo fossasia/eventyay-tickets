@@ -8,8 +8,8 @@ changes from time to time.
 We tested this guide on the Linux distribution **Debian 8.0** but it should work similarly on other
 modern distributions.
 
-Prerequisites
--------------
+Step 0: Prerequisites
+---------------------
 
 Please set up the following systems beforehand, we'll not explain them here (but see these links for
 external installation guides):
@@ -135,8 +135,8 @@ Now, create an admin user by running::
     docker exec -it pretalx pretalx createsuperuser
 
 
-SSL
----
+Step 6: SSL
+-----------
 
 The following snippet is an example on how to configure a nginx proxy for pretalx utilizing nginx'
 caching features for static files::
@@ -186,14 +186,11 @@ caching features for static files::
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-Next steps
-----------
-
 Yay, you made it! You should now be able to reach pretalx at https://<yourdomain>/orga/ and log in
 as your newly created superuser. Set up an event, configure it as needed, and publish your CfP!
 
-Updates
--------
+Next Steps: Updates
+-------------------
 
 .. warning:: While we try hard not to break anything, **please perform a backup before every upgrade**.
 
