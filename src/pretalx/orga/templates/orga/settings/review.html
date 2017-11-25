@@ -23,7 +23,7 @@
     {% csrf_token %}
     {% if formset %}
     <legend>{{ formset|length }} {% trans "Reviewers" %}</legend>
-    <table class="table table-condensed">
+    <table class="table table-condensed table-responsive-md">
         <tr>
             <th>{% trans "Reviewer" %}</th>
             {% if request.event.settings.allow_override_votes %}
