@@ -154,3 +154,25 @@ def test_speaker_page(client, event, speaker, slot):
     response = client.get(reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug}), follow=True)
     assert response.status_code == 200
     assert speaker.profiles.get(event=event).biography in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_schedule_page(client, event, speaker, slot, schedule):
+    response = client.get(reverse('agenda:schedule', kwargs={'event': event.slug}), follow=True)
+    assert response.status_code == 200
+    assert slot.submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_versioned_schedule_page(client, event, speaker, slot, schedule):
+    event.wip_schedule.slots.all().delete()
+    event.release_schedule('new schedule')
+
+    response = client.get(reverse('agenda:schedule', kwargs={'event': event.slug}), follow=True)
+    assert slot.submission.title not in response.content.decode()
+
+    response = client.get(reverse('agenda:versioned-schedule', kwargs={
+        'event': event.slug, 'version': schedule.version
+    }), follow=True)
+    assert response.status_code == 200
+    assert slot.submission.title in response.content.decode()

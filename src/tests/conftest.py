@@ -408,7 +408,7 @@ def availability(event):
 
 @pytest.fixture
 def schedule(event):
-    event.release_schedule('Best Version')
+    event.release_schedule('🍪 Version')
     return event.current_schedule
 
 
