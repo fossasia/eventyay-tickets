@@ -3,17 +3,21 @@ pretalx |logo|
 
 .. image:: https://travis-ci.org/pretalx/pretalx.svg?branch=master
    :target: https://travis-ci.org/pretalx/pretalx
+   :alt: Continuous integration
 
 .. image:: https://codecov.io/gh/pretalx/pretalx/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/pretalx/pretalx
+   :alt: Coverage
 
 
 .. image:: https://readthedocs.org/projects/pretalx/badge/?version=latest
-   :target: http://pretalx.readthedocs.io/en/latest/?badge=latest
+   :target: https://docs.pretalx.org/en/latest/
    :alt: Documentation
 
 `pretalx` provides a conference planning tool – read our extensive `feature
-list`_ in our docs to get a better idea of what `pretalx` can do for you.
+list`_ in our docs to get a better idea of what `pretalx` can do for you,
+but it probably involves everything you'll need to curate submissions and
+contents for a conference with up to 100 talks.
 
 Project status
 --------------
