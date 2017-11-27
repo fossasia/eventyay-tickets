@@ -7,18 +7,20 @@ from pretalx.person.models import User
 
 
 class ResetForm(forms.Form):
-    login_username = forms.CharField(max_length=60,
-                                     label=_('Username or email address'),
-                                     required=True)
+    login_username = forms.CharField(
+        max_length=60,
+        label=_('Username or email address'),
+        required=True,
+    )
 
     def clean(self):
         data = super().clean()
 
         try:
             if '@' in data.get('login_username'):
-                user = User.objects.get(email=data.get('login_username'))
+                user = User.objects.get(email__iexact=data.get('login_username'))
             else:
-                user = User.objects.get(nick=data.get('login_username'))
+                user = User.objects.get(nick__iexact=data.get('login_username'))
         except User.DoesNotExist:
             raise ValidationError(_('We are unable to find a user matching this information. Sorry!'))
 
