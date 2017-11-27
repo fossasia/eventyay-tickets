@@ -14,14 +14,6 @@ from pretalx.common.urls import get_base_url
 from pretalx.schedule.models import Room
 
 
-def day_start(dt):
-    return dt.replace(hour=0, minute=0, second=0)
-
-
-def day_end(dt):
-    return dt.replace(hour=23, minute=59, second=59)
-
-
 class ScheduleDataView(TemplateView):
     template_name = 'agenda/schedule.html'
 
