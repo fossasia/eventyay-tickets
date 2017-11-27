@@ -1,18 +1,31 @@
+{% extends "common/base.html" %}
 {% load compress %}
 {% load staticfiles %}
 {% load i18n %}
 
-<html>
-    <head>
-        <title>pretalx</title>
-    </head>
-    <body>
-        <ul>
-            {% for event in events %}
-            <li>
-                <a href="{{ event.urls.base }}">{{ event.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+{% block title %}{% trans "events" %}{% endblock %}
+{% block content %}
+    {% if events or orga_events %}
+        <h1>{% trans "Events" %}</h1>
+    {% endif %}
+    <div class="dashboard-list">
+        {% for event in events %}
+            <a href="{{ event.orga_urls.base }}" class="dashboard-block">
+                <h1>{{ event.name }}</h1>
+                <span class="dashboard-description">
+                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
+                    /{{ event.slug }}
+                </span>
+            </a>
+        {% endfor %}
+        {% for event in orga_events %}
+            <a href="{{ event.orga_urls.base }}" class="dashboard-block dashboard-special-block">
+                <h1>{{ event.name }}</h1>
+                <span class="dashboard-description">
+                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
+                    /{{ event.slug }}
+                </span>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

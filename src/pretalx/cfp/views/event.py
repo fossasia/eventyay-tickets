@@ -94,4 +94,5 @@ class GeneralView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['events'] = Event.objects.filter(is_public=True)
+        ctx['orga_events'] = [e for e in Event.objects.filter(is_public=False) if self.request.user.has_perm('cfp.view_event', e)]
         return ctx

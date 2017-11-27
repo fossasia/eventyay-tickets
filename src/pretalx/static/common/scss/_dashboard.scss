@@ -38,6 +38,9 @@
     padding-right: 8px;
   }
 }
+.dashboard-special-block {
+  background: lighten($brand_warning, 33%);
+}
 .timeline {
   display: flex;
   flex-direction: row;
