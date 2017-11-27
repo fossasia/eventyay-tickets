@@ -219,6 +219,19 @@ def test_can_edit_and_update_speaker_answers(
 
 
 @pytest.mark.django_db
+def test_cannot_delete_profile_on_first_try(speaker, event, speaker_client):
+    assert speaker.profiles.get(event=event).biography != ''
+    response = speaker_client.post(
+        event.urls.user_delete,
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.get(event=event).biography != ''
+    assert speaker.name != 'Deleted User'
+
+
+@pytest.mark.django_db
 def test_can_delete_profile(speaker, event, speaker_client):
     assert speaker.profiles.get(event=event).biography != ''
     response = speaker_client.post(
@@ -262,7 +275,7 @@ def test_persists_changed_locale(multilingual_event, orga_user, orga_client):
 @pytest.mark.django_db
 def test_can_invite_speaker(speaker_client, submission):
     djmail.outbox = []
-    response = speaker_client.get(submission.urls.invite, follow=True)
+    response = speaker_client.get(submission.urls.invite, follow=True, data={'email': 'invalidemail'})
     assert response.status_code == 200
     data = {
         'speaker': 'other@speaker.org',
