@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS

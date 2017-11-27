@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.forms.models import BaseModelFormSet, inlineformset_factory
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -92,20 +91,11 @@ class SubmissionViewMixin:
     permission_required = 'submission.edit_submission'
 
     def get_object(self):
-        try:
-            return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
-                speakers__in=[self.request.user],
-                code__iexact=self.kwargs.get('code')
-            )
-        except Submission.DoesNotExist:
-            try:
-                # Backwards compatibility
-                return self.request.event.submissions.prefetch_related('answers', 'answers__options').get(
-                    speakers__in=[self.request.user],
-                    id=self.kwargs.get('code')
-                )
-            except (Submission.DoesNotExist, ValueError):
-                raise Http404()
+        return get_object_or_404(
+            self.request.event.submissions.prefetch_related('answers', 'answers__options'),
+            speakers__in=[self.request.user],
+            code__iexact=self.kwargs.get('code'),
+        )
 
 
 class SubmissionsListView(LoggedInEventPageMixin, ListView):
