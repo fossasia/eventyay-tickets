@@ -6,9 +6,9 @@ from django.contrib.sessions.middleware import (
     SessionMiddleware as BaseSessionMiddleware,
 )
 from django.core.exceptions import DisallowedHost
-from django.http import Http404
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
+from django.shortcuts import get_object_or_404
 from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import cookie_date
@@ -52,17 +52,14 @@ class MultiDomainMiddleware:
 
         event_slug = resolve(request.path).kwargs.get('event')
         if event_slug:
-            event = Event.objects.filter(slug__iexact=event_slug).first()
-            if event:
-                request.event = event
-                if event.settings.custom_domain:
-                    custom_domain = urlparse(event.settings.custom_domain)
-                    event_domain, event_port = split_domain_port(custom_domain.netloc)
-                    if event_domain == domain and event_port == port:
-                        request.uses_custom_domain = True
-                        return
-            else:
-                raise Http404()
+            event = get_object_or_404(Event, slug__iexact=event_slug)
+            request.event = event
+            if event.settings.custom_domain:
+                custom_domain = urlparse(event.settings.custom_domain)
+                event_domain, event_port = split_domain_port(custom_domain.netloc)
+                if event_domain == domain and event_port == port:
+                    request.uses_custom_domain = True
+                    return
 
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return

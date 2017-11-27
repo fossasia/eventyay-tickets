@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.db.models.deletion import ProtectedError
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -382,8 +381,6 @@ class InvitationView(FormView):
     def form_valid(self, form):
         form.save()
         permission = self.object
-        if not permission:
-            raise Http404()
         user = User.objects.get(pk=form.cleaned_data.get('user_id'))
         perm = EventPermission.objects.filter(user=user, event=permission.event).exclude(pk=permission.pk).first()
         event = permission.event
