@@ -71,27 +71,21 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-        if self.login_form.is_bound:
-            if self.login_form.is_valid():
-                self.login_form.save()
-                messages.success(self.request, phrases.base.saved)
-                request.user.log_action('pretalx.user.password.update')
-                return redirect('cfp:event.user.view', event=self.request.event.slug)
-        elif self.profile_form.is_bound:
-            if self.profile_form.is_valid():
-                self.profile_form.save()
-                messages.success(self.request, phrases.base.saved)
-                profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
-                profile.log_action('pretalx.user.profile.update', person=request.user)
-                return redirect('cfp:event.user.view', event=self.request.event.slug)
-        elif self.questions_form.is_bound:
-            if self.questions_form.is_valid():
-                self.questions_form.save()
-                messages.success(self.request, phrases.base.saved)
-                return redirect('cfp:event.user.view', event=self.request.event.slug)
+        if self.login_form.is_bound and self.login_form.is_valid():
+            self.login_form.save()
+            request.user.log_action('pretalx.user.password.update')
+        elif self.profile_form.is_bound and self.profile_form.is_valid():
+            self.profile_form.save()
+            profile = self.request.user.profiles.get_or_create(event=self.request.event)[0]
+            profile.log_action('pretalx.user.profile.update', person=request.user)
+        elif self.questions_form.is_bound and self.questions_form.is_valid():
+            self.questions_form.save()
+        else:
+            messages.error(self.request, phrases.base.error_saving_changes)
+            return super().get(request, *args, **kwargs)
 
-        messages.error(self.request, phrases.base.error_saving_changes)
-        return super().get(request, *args, **kwargs)
+        messages.success(self.request, phrases.base.saved)
+        return redirect('cfp:event.user.view', event=self.request.event.slug)
 
 
 class SubmissionViewMixin:
