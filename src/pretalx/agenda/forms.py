@@ -6,10 +6,8 @@ from pretalx.submission.models import Feedback
 
 
 class FeedbackForm(ReadOnlyFlag, forms.ModelForm):
-    def __init__(self, talk=None, **kwargs):
+    def __init__(self, talk, **kwargs):
         super().__init__(**kwargs)
-        if not talk:
-            raise Exception('Cannot provide feedback form without talk')
         self.instance.talk = talk
         self.fields['speaker'].queryset = self.instance.talk.speakers.all()
         self.fields['speaker'].empty_label = _('All speakers')
