@@ -22,7 +22,7 @@ class ResetForm(forms.Form):
             else:
                 user = User.objects.get(nick__iexact=data.get('login_username'))
         except User.DoesNotExist:
-            raise ValidationError(_('We are unable to find a user matching this information. Sorry!'))
+            user = None
 
         data['user'] = user
         return data
