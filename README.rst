@@ -47,7 +47,7 @@ See the AUTHORS file for a list of all the awesome folks who contributed to
 this project.
 
 
-.. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon.png
+.. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon-32x32.png
    :alt: pretalx logo
    :target: https://pretalx.org
 .. _issues: https://github.com/pretalx/pretalx/issues/
