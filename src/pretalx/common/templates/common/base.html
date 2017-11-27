@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %} :: {{ request.event }} :: pretalx</title>
+    <title>{% block title %}{% endblock %} {% if request.event %}:: {{ request.event }} {% endif %}:: pretalx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <link rel="icon" href="{% static "common/img/favicon.png" %}">
@@ -38,7 +38,7 @@
 <body>
 <div id="wrapper">
     <div id="top-bg" class="bg-primary">
-        {% if not request.event.is_public and not is_html_export %}
+        {% if request.event and not request.event.is_public and not is_html_export %}
             <div class="event-nonpublic">
                 <span class="fa fa-user-secret"></span>
                 {% blocktrans trimmed %}
@@ -53,12 +53,12 @@
                 <a href="{% block nav_link %}{% endblock %}">
                     {% if request.event and request.event.logo %}
                         <img src="{{ request.event.logo.url }}" id="event-logo"></img>
-                    {% else %}
+                    {% elif request.event %}
                         {{ request.event }}
                     {% endif %}
                 </a>
             </h1>
-            {% if request.event.locales|length > 1 %}
+            {% if request.event and request.event.locales|length > 1 %}
                 <div class="locales">
                     {% for l, name in request.event.named_locales %}
                         <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
@@ -71,7 +71,7 @@
             {% endif %}
         </header>
         <section class="card" id="main">
-            {% if request.user.is_authenticated and not is_html_export %}
+            {% if request.event and request.user.is_authenticated and not is_html_export %}
                 <div class="user-row">
                     <div class="pull-right">
                         {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
@@ -114,8 +114,10 @@
             <a href="http://pretalx.org" target="_blank" rel="noopener">
                 <img src="{% static "common/img/logo.svg" %}">
             </a>
-            &middot;
-            <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
+            {% if request.event %}
+                &middot;
+                <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
+            {% endif %}
         </footer>
     </div>
 </div>
