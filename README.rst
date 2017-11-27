@@ -1,7 +1,5 @@
-.. image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/logo.png
-
-pretalx
-=======
+pretalx |logo|
+==============
 
 .. image:: https://travis-ci.org/pretalx/pretalx.svg?branch=master
    :target: https://travis-ci.org/pretalx/pretalx
@@ -44,6 +42,10 @@ The primary maintainer of this project is rixx_.
 See the AUTHORS file for a list of all the awesome folks who contributed to
 this project.
 
+
+.. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon.png
+   :alt: pretalx logo
+   :target: https://pretalx.org
 .. _issues: https://github.com/pretalx/pretalx/issues/
 .. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
