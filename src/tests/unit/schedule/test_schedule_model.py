@@ -100,3 +100,17 @@ def test_scheduled_talks(slot, room):
     current_slot.save()
     old, new = current_slot.schedule.freeze('test-version2')
     assert new.scheduled_talks.count() == slot_count - 1
+
+
+@pytest.mark.django_db
+def test_is_archived(event):
+    event.release_schedule(name='v1')
+    event.release_schedule(name='v2')
+
+    v1_schedule = Schedule.objects.get(version='v1')
+    v2_schedule = Schedule.objects.get(version='v2')
+    unreleased_schedule = event.schedules.filter(version=None).first()
+
+    assert v1_schedule.is_archived
+    assert not v2_schedule.is_archived
+    assert not unreleased_schedule.is_archived

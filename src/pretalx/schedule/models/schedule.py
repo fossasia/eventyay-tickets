@@ -133,12 +133,12 @@ class Schedule(LogMixin, models.Model):
         new_slots = set(
             talk
             for talk in self.talks.select_related('submission', 'submission__event', 'room').all()
-            if talk.is_visible
+            if talk.is_visible and not talk.submission.is_deleted
         )
         old_slots = set(
             talk
             for talk in self.previous_schedule.talks.select_related('submission', 'submission__event', 'room').all()
-            if talk.is_visible
+            if talk.is_visible and not talk.submission.is_deleted
         )
 
         new_submissions = set(talk.submission for talk in new_slots)

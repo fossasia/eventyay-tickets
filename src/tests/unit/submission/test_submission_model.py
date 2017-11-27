@@ -179,3 +179,15 @@ def test_set_state_error_msg(submission):
         submission._set_state(SubmissionStates.SUBMITTED)
 
     assert 'must be rejected or accepted or withdrawn not submitted to be submitted' in str(excinfo.value)
+
+
+@pytest.mark.parametrize('state,expected', (
+    (SubmissionStates.ACCEPTED, False),
+    (SubmissionStates.DELETED, True)
+))
+@pytest.mark.django_db
+def test_is_deleted(submission, state, expected):
+    submission.state = state
+    submission.save()
+
+    assert submission.is_deleted == expected
