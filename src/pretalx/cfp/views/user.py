@@ -120,7 +120,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
         if self.object.state == SubmissionStates.SUBMITTED:
             self.object.state = SubmissionStates.WITHDRAWN
             self.object.save(update_fields=['state'])
-            self.object.log_action('pretalx.submission.withdrawal', person=request.user)
+            self.object.log_action('pretalx.submission.withdraw', person=request.user)
             messages.success(self.request, phrases.cfp.submission_withdrawn)
         else:
             messages.error(self.request, phrases.cfp.submission_not_withdrawn)
@@ -139,7 +139,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user)
-            submission.log_action('pretalx.submission.confirmation', person=request.user)
+            submission.log_action('pretalx.submission.confirm', person=request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, phrases.cfp.submission_was_confirmed)
@@ -187,7 +187,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                     if not form.instance.pk:
                         continue
                     obj.log_action(
-                        'pretalx.submission.resource.deleted', person=self.request.user, data={
+                        'pretalx.submission.resource.delete', person=self.request.user, data={
                             'id': form.instance.pk,
                         }
                     )
@@ -198,7 +198,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                     form.save()
                     change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
                     change_data['id'] = form.instance.pk
-                    obj.log_action('pretalx.submission.resource.changed', person=self.request.user)
+                    obj.log_action('pretalx.submission.resource.update', person=self.request.user)
 
             for form in self.formset.extra_forms:
                 if not form.has_changed():
@@ -208,7 +208,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                 form.instance.submission = obj
                 form.save()
                 obj.log_action(
-                    'pretalx.submission.resource.added',
+                    'pretalx.submission.resource.create',
                     person=self.request.user, orga=True, data={'id': form.instance.pk}
                 )
 

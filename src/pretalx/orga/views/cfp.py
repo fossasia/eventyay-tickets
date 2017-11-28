@@ -109,7 +109,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                     if not form.instance.pk:
                         continue
                     obj.log_action(
-                        'pretalx.event.question.option.deleted', person=self.request.user, orga=True, data={
+                        'pretalx.question.option.delete', person=self.request.user, orga=True, data={
                             'id': form.instance.pk
                         }
                     )
@@ -121,7 +121,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                     change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
                     change_data['id'] = form.instance.pk
                     obj.log_action(
-                        'pretalx.event.question.option.changed',
+                        'pretalx.question.option.update',
                         person=self.request.user, orga=True, data=change_data
                     )
 
@@ -135,7 +135,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
                 change_data['id'] = form.instance.pk
                 obj.log_action(
-                    'pretalx.event.question.option.added',
+                    'pretalx.question.option.create',
                     person=self.request.user, orga=True, data=change_data
                 )
 

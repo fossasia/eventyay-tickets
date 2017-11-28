@@ -208,7 +208,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             event=event, to=email, reply_to=request.event.email, subject=str(invitation_subject),
             text=str(invitation_text)
         ).send()
-        request.event.log_action('pretalx.event.invite.orga.send', person=request.user, orga=True)
+        request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
         return redirect(request.event.orga_urls.team_settings)
 
 
@@ -216,7 +216,7 @@ class EventTeamRetract(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event=request.event, pk=pk).delete()
-        request.event.log_action('pretalx.event.invite.orga.retract', person=request.user, orga=True)
+        request.event.log_action('pretalx.invite.orga.retract', person=request.user, orga=True)
         return redirect(request.event.orga_urls.team_settings)
 
 
@@ -299,7 +299,7 @@ The {event} orga crew''').format(event=request.event.name)
             messages.success(request, _('The user already existed and is now a reviewer.'))
         else:
             messages.success(request, _('You successfully made yourself a reviewer!'))
-        request.event.log_action('pretalx.event.invite.reviewer.send', person=request.user, orga=True)
+        request.event.log_action('pretalx.invite.reviewer.send', person=request.user, orga=True)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': request.event.slug}))
 
     def _handle_new_user(self, request, email):
@@ -326,7 +326,7 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             event=request.event, to=email, reply_to=request.event.email,
             subject=str(invitation_subject), text=str(invitation_text),
         ).send()
-        request.event.log_action('pretalx.event.invite.reviewer.send', person=request.user, orga=True)
+        request.event.log_action('pretalx.invite.reviewer.send', person=request.user, orga=True)
         messages.success(
             request,
             _('<{email}> has been invited to your reviewer team - more reviewers help gain perspective, so … yay!').format(email=email)
@@ -349,7 +349,7 @@ class EventReviewRetract(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         EventPermission.objects.filter(event=request.event, pk=pk).delete()
-        request.event.log_action('pretalx.event.invite.reviewer.retract', person=request.user, orga=True)
+        request.event.log_action('pretalx.invite.reviewer.retract', person=request.user, orga=True)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
@@ -395,7 +395,7 @@ class InvitationView(FormView):
         if permission:
             permission.user = user
             permission.save()
-            permission.event.log_action('pretalx.event.invite.orga.accept', person=user, orga=True)
+            permission.event.log_action('pretalx.invite.orga.accept', person=user, orga=True)
             messages.info(self.request, _('You are now part of the event team!'))
 
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
