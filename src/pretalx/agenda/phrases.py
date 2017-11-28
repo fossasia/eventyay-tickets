@@ -28,8 +28,8 @@ class AgendaPhrases(Phrases, app='agenda'):
         _('Send review'),
     ]
     feedback_explanation = _(
-        'Reviews are a valuable tool for speakers to improve their content and presentation.'
-        'Even a very short review can prove very valuable to a speaker – but we\'d like to ask you to'
+        'Reviews are a valuable tool for speakers to improve their content and presentation. '
+        'Even a very short review can prove very valuable to a speaker – but we\'d like to ask you to '
         'take the time and find a constructive way to communicate your feedback.'
     )
     feedback_not_now = _('You can\'t give feedback for this talk at this time.')

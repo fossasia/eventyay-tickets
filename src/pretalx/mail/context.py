@@ -21,7 +21,7 @@ def get_context_explanation():
         },
         {
             'name': 'speakers',
-            'explanation': _('The name(s) of all speakers in this submissoin.'),
+            'explanation': _('The name(s) of all speakers in this submission.'),
         },
     ]
 
