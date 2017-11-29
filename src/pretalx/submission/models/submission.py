@@ -268,6 +268,8 @@ class Submission(LogMixin, models.Model):
 
     def remove(self, person=None, force=False):
         self._set_state(SubmissionStates.DELETED, force)
+        for answer in self.answers.all():
+            answer.remove(person=person, force=force)
         self.log_action('pretalx.submission.deleted', person=person, orga=False)
 
     @property

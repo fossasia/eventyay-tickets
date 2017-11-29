@@ -196,3 +196,7 @@ class Answer(LogMixin, models.Model):
 
     def __str__(self):
         return self.answer
+
+    def remove(self, person=None, force=False):
+        self.options.all().delete()
+        self.delete()
