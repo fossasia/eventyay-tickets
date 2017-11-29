@@ -8,7 +8,7 @@
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
 
-    <h2>{{ cfp.headline|default:"" }}</h2>
+    <h1>{{ cfp.headline|default:"" }}</h1>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline %}
         <p>
