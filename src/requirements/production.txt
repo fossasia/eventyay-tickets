@@ -16,6 +16,7 @@ django-libsass==0.7
 django-zxcvbn-password==2.0.*
 djangorestframework==3.7.*
 inlinestyler==0.2.*
+libsass<=0.13.1  # May be removed once https://github.com/dahlia/libsass-python/pull/227 is merged
 Markdown==2.6.*
 pytz
 reportlab==3.4.*
