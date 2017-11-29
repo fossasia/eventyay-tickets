@@ -61,6 +61,7 @@ Fixed bugs
 - In some places, gravatar images of the visiting user were shown instead of
   the speaker.
 - The event stage display could show several conflicting phases as active.
+- The default submission type was not, in fact, suggested by default. (#287)
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
