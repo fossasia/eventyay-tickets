@@ -21,7 +21,7 @@
     <ul>
         {% for member in team %}
             <li>
-                {{ member.get_short_name }}
+                {{ member.get_display_name }}
                 {% if member != request.user or team|length > 1 %}
                     <a href="{% url "orga:settings.team.delete" event=request.event.slug pk=member.pk %}" class="btn btn-sm btn-secondary">
                         <span class="fa fa-times"></span>
