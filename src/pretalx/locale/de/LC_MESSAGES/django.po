@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-28 10:04-0600\n"
-"PO-Revision-Date: 2017-11-28 17:29+0100\n"
+"POT-Creation-Date: 2017-12-01 05:38-0600\n"
+"PO-Revision-Date: 2017-12-01 12:38+0100\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -237,28 +237,28 @@ msgstr ""
 "Du hast zwei unterschiedliche Passwörter eingegeben. Bitte probier es noch "
 "einmal."
 
-#: pretalx/cfp/forms/submissions.py:183
+#: pretalx/cfp/forms/submissions.py:184
 msgid "Speaker E-Mail"
 msgstr "E-Mail der Vortragenden"
 
-#: pretalx/cfp/forms/submissions.py:184 pretalx/mail/models.py:30
+#: pretalx/cfp/forms/submissions.py:185 pretalx/mail/models.py:30
 #: pretalx/mail/models.py:112
 #: pretalx/orga/templates/orga/mails/outbox_list.html:22
 #: pretalx/orga/templates/orga/mails/sent_list.html:13
 msgid "Subject"
 msgstr "Betreff"
 
-#: pretalx/cfp/forms/submissions.py:185 pretalx/mail/models.py:33
+#: pretalx/cfp/forms/submissions.py:186 pretalx/mail/models.py:33
 #: pretalx/mail/models.py:114
 msgid "Text"
 msgstr "Text"
 
-#: pretalx/cfp/forms/submissions.py:190
+#: pretalx/cfp/forms/submissions.py:191
 #, python-brace-format
 msgid "[{event}] {speaker} invites you to join their talk!"
 msgstr "[{event}] {speaker} lädt dich zu einem Talk ein"
 
-#: pretalx/cfp/forms/submissions.py:193
+#: pretalx/cfp/forms/submissions.py:194
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -642,7 +642,7 @@ msgstr "Diese Daten werden neben deiner Einreichung im Programm angezeigt."
 #: pretalx/cfp/templates/cfp/event/user_profile.html:74
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:105
 #: pretalx/common/phrases.py:45
-#: pretalx/orga/templates/orga/cfp/question_form.html:117
+#: pretalx/orga/templates/orga/cfp/question_form.html:114
 #: pretalx/orga/templates/orga/cfp/submission_type_form.html:17
 #: pretalx/orga/templates/orga/cfp/text.html:27
 #: pretalx/orga/templates/orga/mails/outbox_form.html:20
@@ -734,7 +734,7 @@ msgstr ""
 "16MB zu halten."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:92
-#: pretalx/orga/templates/orga/cfp/question_form.html:95
+#: pretalx/orga/templates/orga/cfp/question_form.html:92
 msgid "Add a new option"
 msgstr "Option hinzufügen"
 
@@ -1145,7 +1145,7 @@ msgstr ""
 "Das {event_name}-System\n"
 
 #: pretalx/common/phrases.py:47
-#: pretalx/orga/templates/orga/cfp/question_form.html:119
+#: pretalx/orga/templates/orga/cfp/question_form.html:116
 #: pretalx/orga/templates/orga/cfp/text.html:29
 #: pretalx/orga/templates/orga/mails/outbox_form.html:26
 #: pretalx/orga/templates/orga/settings/form.html:38
@@ -1559,43 +1559,46 @@ msgstr ""
 "Benachrichtigung über jede neue Einreichung."
 
 #: pretalx/orga/forms/cfp.py:27
-msgid "The Call for Participation for this year's senate is open!"
-msgstr ""
+msgid "The Call for Participation for this year's Serious Conference is open!"
+msgstr "Der CfP für die Seriöse Konferenz ist eröffnet!"
 
 #: pretalx/orga/forms/cfp.py:29
 msgid ""
-"Join us in this year's senate with fascinating discussions on the **Public "
-"Good**! We accept short-form and long-form speeches, as well as workshops on "
-"our greatest military achievements. Know details about how to build walls? "
-"Were you working with Hadrian, or stationed at the Lîmes? We want your "
-"expertise!"
+"Join us in this year's serious conference with fascinating discussions on "
+"**Serious Business Matters**! We accept short-form and long-form talks, as "
+"well as workshops on our greatest serious achievements. Know details about "
+"how to manage serious companies? Were you working on a seriously serious "
+"project? We want your expertise!"
 msgstr ""
+"Nimm mit teil an der diesjährigen Seriösen Konferenz, die sich auf **Seriöse "
+"Themen** konzentriert! Wir akzeptieren kurze und lange Vorträge sowie "
+"Workshops über seriöse Errungenschaften. Sie haben Erfahrungen mit seriösen "
+"Firmenmanagement? Sie arbeiten an ernstlich seriösen Projekten? Wir wollen "
+"mehr darüber wissen!"
 
 #: pretalx/orga/forms/cfp.py:51
-msgid "What have the Romans ever done for us?"
-msgstr ""
+msgid "What kind of dessert do you prefer?"
+msgstr "Was für eine Nachspeise ist gewünscht?"
 
 #: pretalx/orga/forms/cfp.py:52
-msgid ""
-"Please give an exhaustive list of your view on Rome's most impressive "
-"achievements."
-msgstr ""
+msgid "Please include things you will not eat at all, too."
+msgstr "Bitte auch Dinge erwähnen, die Unverträglichkeiten verursachen."
 
 #: pretalx/orga/forms/cfp.py:79
-msgid "Long speech"
-msgstr ""
+msgid "Long talk"
+msgstr "Langer Vortrag"
 
 #: pretalx/orga/forms/event.py:16
 msgid "Active languages"
 msgstr "Verfügbare Sprachen"
 
 #: pretalx/orga/forms/event.py:30
-msgid "Senatus Populusque Romanus"
-msgstr ""
+msgid "Serious Conference"
+msgstr "Seriöse Konferenz"
 
 #: pretalx/orga/forms/event.py:31
-msgid "spqr"
-msgstr ""
+msgid "sercon"
+msgstr "serkon"
 
 #: pretalx/orga/forms/event.py:42
 msgid ""
@@ -1690,6 +1693,14 @@ msgstr "SSL verwenden"
 msgid "Commonly enabled on port 465."
 msgstr "Meistens auf Port 465 verfügbar."
 
+#: pretalx/orga/forms/event.py:145
+msgid "contact@sercon.com"
+msgstr "kontakt@serkon.de"
+
+#: pretalx/orga/forms/event.py:146
+msgid "mail.sercon.com"
+msgstr "mail.serkon.de"
+
 #: pretalx/orga/forms/event.py:158
 msgid ""
 "You can activate either SSL or STARTTLS security, but not both at the same "
@@ -1778,25 +1789,30 @@ msgid "Please assign a score between {self.min_value} and {self.max_value}!"
 msgstr "Bitte vergib Punkte zwischen {self.min_value} und {self.max_value}!"
 
 #: pretalx/orga/forms/submission.py:13
-msgid "Should we destroy Catharge?"
-msgstr ""
+msgid "This is a serious talk"
+msgstr "Dies ist ein seriöser Vortrag"
 
 #: pretalx/orga/forms/submission.py:14
-msgid "I think we should destroy Catharge."
-msgstr ""
+msgid "I am going to go into serious detail."
+msgstr "Ich werde sehr seriös Details darlegen."
 
 #: pretalx/orga/forms/submission.py:16
 msgid ""
-"I think the situation in and around Catharge has gotten out of hand. We "
-"should definitely concentrate on annihilating Catharge, and I am prepared to "
-"hold many, many speeches on this topic."
+"In my opinion, there is too much frivolity and chaos in the world. This is "
+"why I feel we should concentrate on seriousness, as the Serious Conference "
+"always does. I will detail good methods to introduce seriousness in silly "
+"places."
 msgstr ""
+"Meiner Meinung nach gibt es zu viel unseröse Unterfangen in der Welt. Ich "
+"finde, wir sollten uns auf seriöse Vorhaben konzentrieren, wie es die "
+"Seriöse Konferenz seit Jahren tut. Ich werde gute Methoden darlegen, um "
+"Albernheit und unseriöse Vorgehensweisen zu unterbinden."
 
-#: pretalx/orga/forms/submission.py:20
+#: pretalx/orga/forms/submission.py:21
 msgid "I am a well-known speaker on this topic."
-msgstr ""
+msgstr "Ich habe schon viele Vorträge über dieses Thema gehalten."
 
-#: pretalx/orga/forms/submission.py:24
+#: pretalx/orga/forms/submission.py:25
 msgid ""
 "Add the email or nickname of the speaker holding the talk. They will be "
 "invited to create an account."
@@ -1805,41 +1821,33 @@ msgstr ""
 "zur Account-Einrichtung eingeladen."
 
 #: pretalx/orga/phrases.py:12
-msgid "Built bridges"
-msgstr ""
+msgid "Pudding"
+msgstr "Pudding"
 
 #: pretalx/orga/phrases.py:12
-msgid "Built aqueducts"
-msgstr ""
+msgid "Panna cotta"
+msgstr "Panna cotta"
 
 #: pretalx/orga/phrases.py:12
-msgid "Built roads"
-msgstr ""
+msgid "Chocolate chip cookies"
+msgstr "Schokokekse"
 
-#: pretalx/orga/phrases.py:13
-msgid "Introduced medicine"
-msgstr ""
-
-#: pretalx/orga/phrases.py:13
-msgid "Expanded education"
-msgstr ""
-
-#: pretalx/orga/phrases.py:16
+#: pretalx/orga/phrases.py:15
 msgid "I think this talk is well-suited to this conference, because ..."
 msgstr ""
 "Meiner Meinung nach passt diese Einreichung gut zur Veranstaltung, weil …"
 
-#: pretalx/orga/phrases.py:17
+#: pretalx/orga/phrases.py:16
 msgid "I think this talk might fit the conference better, if ..."
 msgstr "Ich denke dieser Vorträg könnte besser sein, wenn"
 
-#: pretalx/orga/phrases.py:18
+#: pretalx/orga/phrases.py:17
 msgid "I think this talk sounds like a perfect fit for Day 2, since ..."
 msgstr ""
 "Dieser Vortrag passt meiner Ansicht nach sehr gut zum Programm an Tag 2, "
 "denn …"
 
-#: pretalx/orga/phrases.py:19
+#: pretalx/orga/phrases.py:18
 msgid "I think this talk might be improved by adding ..."
 msgstr "Dieser Talk könnte vielleicht verbessert werden, indem …"
 
@@ -1977,11 +1985,11 @@ msgstr ""
 "modifiziere sie nicht sinnentstellend. Du kannst auch diese Frage "
 "deaktivieren und eine neue erstellen."
 
-#: pretalx/orga/templates/orga/cfp/question_form.html:47
+#: pretalx/orga/templates/orga/cfp/question_form.html:44
 msgid "Answer options"
 msgstr "Antwortoptionen"
 
-#: pretalx/orga/templates/orga/cfp/question_form.html:106
+#: pretalx/orga/templates/orga/cfp/question_form.html:103
 msgid ""
 "If you mark a Yes/No question as required, it means that the user has to "
 "select Yes and No is not accepted. If you want to allow both options, do not "
@@ -1991,7 +1999,7 @@ msgstr ""
 "auswählen, und 'Nein' wird nicht akzeptiert. Wenn du beide Antworten "
 "erlauben willst, markiere diese Frage nicht als benötigt."
 
-#: pretalx/orga/templates/orga/cfp/question_form.html:115
+#: pretalx/orga/templates/orga/cfp/question_form.html:112
 msgid "Create question"
 msgstr "Neue Frage erstellen"
 
@@ -2519,6 +2527,10 @@ msgid ""
 msgstr ""
 "Um mehr Leute ins Review-Team einzuladen, gib unten eine Mailadresse oder "
 "einen Nutzernamen ein."
+
+#: pretalx/orga/templates/orga/settings/review.html:17
+msgid "reviewer@example.org"
+msgstr "reviewer@example.de"
 
 #: pretalx/orga/templates/orga/settings/review.html:25
 msgid "Reviewers"
@@ -3345,12 +3357,12 @@ msgid "When can you use this room for your conference?"
 msgstr "Wann kannst du diesen Raum auf der Veranstaltung nutzen?"
 
 #: pretalx/schedule/forms.py:149
-msgid "The Senate"
-msgstr ""
+msgid "Room I"
+msgstr "Raum I"
 
 #: pretalx/schedule/forms.py:150
 msgid "Our main meeting place, Room I, enter from the right."
-msgstr ""
+msgstr "Unser Hauptraum, Raum I, bitte die rechte Tür nutzen."
 
 #: pretalx/schedule/models/room.py:22
 #: pretalx/submission/models/submission.py:106

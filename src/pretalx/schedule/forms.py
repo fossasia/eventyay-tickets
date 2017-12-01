@@ -146,7 +146,7 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['placeholder'] = _('The Senate')
+        self.fields['name'].widget.attrs['placeholder'] = _('Room I')
         self.fields['description'].widget.attrs['placeholder'] = _('Our main meeting place, Room I, enter from the right.')
         self.fields['capacity'].widget.attrs['placeholder'] = '300'
 

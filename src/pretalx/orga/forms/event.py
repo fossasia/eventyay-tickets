@@ -27,9 +27,9 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             self.fields['custom_css'].widget = forms.HiddenInput()
 
         year = str(now().year)
-        self.fields['name'].widget.attrs['placeholder'] = _('Senatus Populusque Romanus') + ' ' + year
-        self.fields['slug'].widget.attrs['placeholder'] = _('spqr') + year[2:]
-        self.fields['email'].widget.attrs['placeholder'] = 'consul@senatus.it'
+        self.fields['name'].widget.attrs['placeholder'] = _('Serious Conference') + ' ' + year
+        self.fields['slug'].widget.attrs['placeholder'] = _('sercon') + year[2:]
+        self.fields['email'].widget.attrs['placeholder'] = 'contact@sercon.com'
         self.fields['primary_color'].widget.attrs['placeholder'] = '#ab01de'
 
     def clean_slug(self):
@@ -142,8 +142,8 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['mail_from'].widget.attrs['placeholder'] = 'consul@senatus.it'
-        self.fields['smtp_host'].widget.attrs['placeholder'] = 'mail.senatus.it'
+        self.fields['mail_from'].widget.attrs['placeholder'] = _('contact@sercon.com')
+        self.fields['smtp_host'].widget.attrs['placeholder'] = _('mail.sercon.com')
         self.fields['smtp_port'].widget.attrs['placeholder'] = '25'
 
     def clean(self):

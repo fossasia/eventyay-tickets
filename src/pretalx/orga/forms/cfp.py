@@ -1,4 +1,4 @@
-from django import forms
+from django import form
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
@@ -24,14 +24,14 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['headline'].widget.attrs['placeholder'] = _('The Call for Participation for this year\'s senate is open!')
+        self.fields['headline'].widget.attrs['placeholder'] = _('The Call for Participation for this year\'s Serious Conference is open!')
         self.fields['text'].widget.attrs['placeholder'] = _(
-            'Join us in this year\'s senate with fascinating discussions on '
-            'the **Public Good**! '
-            'We accept short-form and long-form speeches, as well as workshops '
-            'on our greatest military achievements. Know details about how to '
-            'build walls? Were you working with Hadrian, or stationed at the '
-            'Lîmes? We want your expertise!'
+            'Join us in this year\'s serious conference with fascinating discussions '
+            'on **Serious Business Matters**! '
+            'We accept short-form and long-form talks, as well as workshops '
+            'on our greatest serious achievements. Know details about how to '
+            'manage serious companies? Were you working on a seriously serious '
+            'project? We want your expertise!'
         )
 
     class Meta:
@@ -48,8 +48,8 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['question'].widget.attrs['placeholder'] = _('What have the Romans ever done for us?')
-        self.fields['help_text'].widget.attrs['placeholder'] = _('Please give an exhaustive list of your view on Rome\'s most impressive achievements.')
+        self.fields['question'].widget.attrs['placeholder'] = _('What kind of dessert do you prefer?')
+        self.fields['help_text'].widget.attrs['placeholder'] = _('Please include things you will not eat at all, too.')
 
     class Meta:
         model = Question
@@ -76,7 +76,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['placeholder'] = _('Long speech')
+        self.fields['name'].widget.attrs['placeholder'] = _('Long talk')
 
     class Meta:
         model = SubmissionType

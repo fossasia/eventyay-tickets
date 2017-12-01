@@ -9,8 +9,7 @@ class OrgaPhrases(Phrases, app='orga'):
         'v1', 'v2', 'v4.0', 'v0.1', '♥',
     ]
     example_answer = [
-        _('Built bridges'), _('Built aqueducts'), _('Built roads'),
-        _('Introduced medicine'), _('Expanded education'),
+        _('Pudding'), _('Panna cotta'), _('Chocolate chip cookies'),
     ]
     example_review = [
         _('I think this talk is well-suited to this conference, because ...'),

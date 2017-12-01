@@ -10,12 +10,13 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
     def __init__(self, event, **kwargs):
         super().__init__(**kwargs)
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=event)
-        self.fields['title'].widget.attrs['placeholder'] = _('Should we destroy Catharge?')
-        self.fields['abstract'].widget.attrs['placeholder'] = _('I think we should destroy Catharge.')
+        self.fields['title'].widget.attrs['placeholder'] = _('This is a serious talk')
+        self.fields['abstract'].widget.attrs['placeholder'] = _('I am going to go into serious detail.')
         self.fields['description'].widget.attrs['placeholder'] = _(
-            'I think the situation in and around Catharge has gotten out of hand. '
-            'We should definitely concentrate on annihilating Catharge, and I am '
-            'prepared to hold many, many speeches on this topic.'
+            'In my opinion, there is too much frivolity and chaos in the world. '
+            'This is why I feel we should concentrate on seriousness, as the '
+            'Serious Conference always does. I will detail good methods to '
+            'introduce seriousness in silly places.'
         )
         self.fields['notes'].widget.attrs['placeholder'] = _('I am a well-known speaker on this topic.')
 
