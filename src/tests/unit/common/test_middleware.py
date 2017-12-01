@@ -31,7 +31,7 @@ def test_event_on_custom_domain(event_on_foobar, client):
 
 
 @pytest.mark.django_db
-@pytest.mark.skipif(date.today() < date(2017, 12, 1), reason='Not implemented yet')
+@pytest.mark.skipif(date.today() < date(2017, 12, 15), reason='Not implemented yet')
 def test_event_with_custom_domain_on_main_domain(event_on_foobar, client):
     """ redirect from common domain to custom domain """
     r = client.get(f'/{event_on_foobar.slug}/', HTTP_HOST='example.com')
