@@ -39,9 +39,6 @@
         {% bootstrap_field form.help_text layout='event' %}
         {% bootstrap_field form.required layout='event' %}
         {% bootstrap_field form.contains_personal_data layout='event' %}
-        {% if action == 'create' %}
-          {% bootstrap_field form.active layout='event' %}
-        {% endif %}
 
         <fieldset id="answer-options">
             <legend>{% trans "Answer options" %}</legend>
