@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-vx.x.x
+v0.2.0
 ------
 
-*Released on 2017-xx-xx*
+*Released on 2017-12-01*
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
@@ -55,7 +55,7 @@ Fixed bugs
   was used instead of the actual configured URL.
 - If an account was configured to be both an orga member and a reviewer, it
   encountered access rights issues.
-- When removing the custom orga color, and then adding it again, caching issues
+- When removing the custom event color, and then adding it again, caching issues
   could be encountered.
 - Inactive questions (questions not shown to speakers) could not be edited.
 - In some places, gravatar images of the visiting user were shown instead of
