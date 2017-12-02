@@ -185,12 +185,13 @@ class CfPQuestionDelete(PermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         question = self.get_object()
-        question.options.all().delete()
 
         try:
-            question.delete()
-            question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
-            messages.success(request, _('The question has been deleted.'))
+            with transaction.atomic():
+                question.options.all().delete()
+                question.delete()
+                question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
+                messages.success(request, _('The question has been deleted.'))
         except ProtectedError:
             question.active = False
             question.save()

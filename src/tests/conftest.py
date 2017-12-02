@@ -114,6 +114,14 @@ def choice_question(event):
 
 
 @pytest.fixture
+def answered_choice_question(speaker, choice_question):
+    a = Answer.objects.create(person=speaker, question=choice_question)
+    a.options = [choice_question.options.first()]
+    a.save()
+    return choice_question
+
+
+@pytest.fixture
 def multiple_choice_question(event):
     question = Question.objects.create(
         event=event, question='Which colors other than green do you like?', variant=QuestionVariant.MULTIPLE,

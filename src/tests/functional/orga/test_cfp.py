@@ -102,14 +102,18 @@ def test_delete_choice_question(orga_client, event, choice_question):
 
 
 @pytest.mark.django_db
-def test_cannot_delete_answered_question(orga_client, event, question, answer):
+def test_cannot_delete_answered_question(orga_client, event, answered_choice_question):
     assert event.questions.count() == 1
-    response = orga_client.get(question.urls.delete, follow=True)
+    assert answered_choice_question.answers.count() == 1
+    assert answered_choice_question.options.count() == 3
+    response = orga_client.get(answered_choice_question.urls.delete, follow=True)
     assert response.status_code == 200
-    question = Question.all_objects.get(pk=question.pk)
-    assert question
-    assert not question.active
+    answered_choice_question = Question.all_objects.get(pk=answered_choice_question.pk)
+    assert answered_choice_question
+    assert not answered_choice_question.active
     assert event.questions.count() == 0
+    assert answered_choice_question.answers.count() == 1
+    assert answered_choice_question.options.count() == 3
 
 
 @pytest.mark.django_db
