@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, FormView
 
 from pretalx.agenda.forms import FeedbackForm
