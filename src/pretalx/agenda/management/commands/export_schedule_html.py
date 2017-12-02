@@ -2,7 +2,7 @@ from bakery.management.commands.build import Command as BakeryBuildCommand
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.core.urlresolvers import get_callable
+from django.urls import get_callable
 from django.utils import translation
 
 from pretalx.event.models import Event
