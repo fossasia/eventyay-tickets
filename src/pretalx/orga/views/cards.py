@@ -51,7 +51,7 @@ class SubmissionCard(Flowable):
         p.drawOn(self.canv, *self.coord(20 * mm, y))
 
         p = Paragraph(", ".join(
-            [s.get_short_name() for s in self.submission.speakers.all()]
+            [s.get_display_name() for s in self.submission.speakers.all()]
         ), style=self.styles["Speaker"])
         w, h = p.wrapOn(self.canv, self.width - 30 * mm, 50 * mm)
         y += h + 2 * mm

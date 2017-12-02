@@ -115,15 +115,15 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.get_display_name()
 
     def get_full_name(self) -> str:
-        if self.name:
-            return f"{self.name} ('{self.nick}')"
-        return self.nick
+        # TODO: Django 2.0: remove
+        return ''
 
     def get_display_name(self) -> str:
         return self.name if self.name else self.nick
 
     def get_short_name(self) -> str:
-        return self.nick
+        # TODO: Django 2.0: remove
+        return ''
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
