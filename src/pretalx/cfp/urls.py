@@ -4,7 +4,8 @@ from pretalx.event.models.event import SLUG_CHARS
 
 from .views import auth, event, locale, user, wizard
 
-cfp_urls = [
+app_name = 'cfp'
+urlpatterns = [
     url(f'^(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', event.EventStartpage.as_view(), name='event.landing'),
         url('^logout$', auth.LogoutView.as_view(), name='event.logout'),

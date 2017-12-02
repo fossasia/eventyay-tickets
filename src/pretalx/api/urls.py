@@ -13,7 +13,8 @@ event_router.register(r'submissions', submission.SubmissionViewSet)
 event_router.register(r'talks', submission.SubmissionViewSet)
 event_router.register(r'schedules', submission.ScheduleViewSet)
 
-api_urls = [
+app_name = 'api'
+urlpatterns = [
     url(r'^', include(default_router.urls)),
     url(r'^auth/', obtain_auth_token),
     url(r'^events/(?P<event>[^/]+)/', include(event_router.urls)),

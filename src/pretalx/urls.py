@@ -4,16 +4,12 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 
-from .agenda.urls import agenda_urls
-from .api.urls import api_urls
-from .cfp.urls import cfp_urls
-from .orga.urls import orga_urls
 
 urlpatterns = [
-    url(r'^orga/', include(orga_urls, namespace='orga')),
-    url(r'^api/', include(api_urls, namespace='api')),
-    url(r'', include(agenda_urls, namespace='agenda')),
-    url(r'', include(cfp_urls, namespace='cfp')),
+    url(r'^orga/', include('pretalx.orga.urls', namespace='orga')),
+    url(r'^api/', include('pretalx.api.urls', namespace='api')),
+    url(r'', include('pretalx.agenda.urls', namespace='agenda')),
+    url(r'', include('pretalx.cfp.urls', namespace='cfp')),
 ]
 
 if settings.DEBUG:

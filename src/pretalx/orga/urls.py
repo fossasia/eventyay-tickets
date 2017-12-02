@@ -8,7 +8,8 @@ from .views import (
     review, schedule, speaker, submission,
 )
 
-orga_urls = [
+app_name = 'orga'
+urlpatterns = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
     url('^logout/$', auth.logout_view, name='logout'),
 

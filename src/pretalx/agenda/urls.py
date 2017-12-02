@@ -4,7 +4,8 @@ from pretalx.event.models.event import SLUG_CHARS
 
 from .views import feed, location, schedule, speaker, talk
 
-agenda_urls = [
+app_name = 'agenda'
+urlpatterns = [
     url(f'^(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule'),
         url('^schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
