@@ -4,11 +4,11 @@
 {% load rich_text %}
 {% load staticfiles %}
 
-{% block agenda_custom_header %}
-<meta name="twitter:card" content="summary" />
-<meta property="og:title" content="{{ talk.submission.title }}" />
-<meta property="og:description" content="{{ talk.submission.description|default:talk.submission.abstract|default:"" }}" />
-{% endblock %}
+{% block title %}{{ talk.submission.title }}{% endblock %}
+{% block meta_title %}{{ talk.submission.title }}{% endblock %}
+{% block social_title %}{{ talk.submission.title }}{% endblock %}
+{% block meta_description %}{{ submission_description }}{% endblock %}
+{% block social_description %}{{ submission_description }}{% endblock %}
 
 {% block agenda_content %}
 

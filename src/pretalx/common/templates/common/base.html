@@ -5,10 +5,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %} {% if request.event %}:: {{ request.event }} {% endif %}:: pretalx</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#1C4A3B">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}- pretalx">
+    <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx.org{% endif %}{% endblock %}">
+    {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
+    {% if request.event and request.event.logo %}<meta property="og:image" content="{{ request.event.urls.logo.full }}">{% endif %}
+    <meta name="og:title" content="{% block social_title %}{% endblock %} {% if request.event %}{{ request.event.name }} {% endif %}">
+    <meta name="og:description" content="{% block social_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by pretalx.org{% endif %}{% endblock %}">
+    <meta name="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:card" content="summary">
+
+    <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% endif %}schedule, talks, cfp, call for papers">
+    <meta name="generator" content="pretalx.org">
+    <meta name="robots" content="index,follow">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#1C4A3B{% endif %}">
+    <meta name="HandheldFriendly" content="True"/>
+
+    <title>{% block title %}{% endblock %} {% if request.event %}:: {{ request.event.name }} {% endif %}:: pretalx</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">

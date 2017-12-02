@@ -125,6 +125,7 @@ class Event(LogMixin, models.Model):
         base = '/{self.slug}'
         login = '{base}/login'
         logout = '{base}/logout'
+        logo = '{self.logo.url}'
         reset = '{base}/reset'
         submit = '{base}/submit'
         user = '{base}/me'
