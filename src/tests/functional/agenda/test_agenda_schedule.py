@@ -141,9 +141,12 @@ def test_talk_speaker_other_talks(client, event, speaker, slot, other_slot, othe
     response = client.get(other_submission.urls.public, follow=True)
 
     assert response.context['speakers']
-    assert len(response.context['speakers'][0].other_talks) == 0
-    assert len(response.context['speakers'][1].other_talks) == 1
-    assert response.context['speakers'][1].other_talks[0].submission.title == speaker.submissions.first().title
+    assert len(response.context['speakers']) == 2, response.context['speakers']
+    speaker_response = [s for s in response.context['speakers'] if s.name == speaker.name][0]
+    other_response = [s for s in response.context['speakers'] if s.name != speaker.name][0]
+    assert len(speaker_response.other_talks) == 1
+    assert len(other_response.other_talks) == 0
+    assert speaker_response.other_talks[0].submission.title == speaker.submissions.first().title
 
 
 @pytest.mark.django_db
