@@ -70,7 +70,7 @@ setup(
         'django-csp==3.3.*',
         'django-filter==1.1.*',
         'django-formset-js-improved==0.5.0.1',
-        'django-formtools==2.0.*',
+        'django-formtools==2.1.*',
         'django-hierarkey==1.0.*',
         'django-i18nfield==1.3.*',
         'django-libsass==0.7',
