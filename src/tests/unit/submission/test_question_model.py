@@ -36,9 +36,9 @@ def test_question_grouped_answers_choice(submission, question):
     two.refresh_from_db()
 
     answers = [Answer.objects.create(submission=submission, question=question, answer='True') for _ in range(3)]
-    answers[0].options = [one]
-    answers[1].options = [two]
-    answers[2].options = [two]
+    answers[0].options.set([one])
+    answers[1].options.set([two])
+    answers[2].options.set([two])
     [a.save() for a in answers]
 
     assert list(question.grouped_answers) == [
