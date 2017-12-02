@@ -48,7 +48,7 @@ class TalkView(PermissionRequired, DetailView):
             qs = TalkSlot.objects.none()
         event_talks = qs.exclude(submission=self.object.submission)
         obj = self.get_object()
-        ctx['submission_description'] = obj.submission.description or obj.submission.abstract or _('The talk {title} at {event}').format(title=obj.submission.title, event=obj.submission.event)
+        ctx['submission_description'] = obj.submission.description or obj.submission.abstract or _('The talk »{title}« at {event}').format(title=obj.submission.title, event=obj.submission.event)
         ctx['speakers'] = []
         for speaker in self.object.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
             speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()

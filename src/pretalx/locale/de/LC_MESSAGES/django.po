@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-01 05:38-0600\n"
-"PO-Revision-Date: 2017-12-01 12:38+0100\n"
+"POT-Creation-Date: 2017-12-02 14:47-0600\n"
+"PO-Revision-Date: 2017-12-02 21:47+0100\n"
 "Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -217,6 +217,11 @@ msgstr "Vortragende"
 #: pretalx/submission/models/feedback.py:19
 msgid "Speaker"
 msgstr "Vortragende"
+
+#: pretalx/agenda/views/talk.py:51
+#, python-brace-format
+msgid "The talk »{title}« at {event}"
+msgstr "Der Vortrag »{title}«, {event}"
 
 #: pretalx/cfp/forms/auth.py:12 pretalx/person/forms.py:16
 msgid "Username or email address"
@@ -1184,35 +1189,35 @@ msgstr "Seite nicht gefunden :("
 msgid "Internal Server Error"
 msgstr "Interner Serverfehler, ups."
 
-#: pretalx/common/templates/common/base.html:48
+#: pretalx/common/templates/common/base.html:63
 msgid "This event is currently non-public. Only the orga team can see it."
 msgstr ""
 "Die Veranstaltung ist derzeit nicht öffentlich. Nur das Orga-Team kann sie "
 "sehen."
 
-#: pretalx/common/templates/common/base.html:83
+#: pretalx/common/templates/common/base.html:98
 msgid "Orga area"
 msgstr "Orga-Bereich"
 
-#: pretalx/common/templates/common/base.html:86
+#: pretalx/common/templates/common/base.html:101
 msgid "My submissions"
 msgstr "Meine Einreichungen"
 
-#: pretalx/common/templates/common/base.html:88
+#: pretalx/common/templates/common/base.html:103
 msgid "Logout"
 msgstr "Abmelden"
 
-#: pretalx/common/templates/common/base.html:91
+#: pretalx/common/templates/common/base.html:106
 #, python-format
 msgid "You are logged in as <a %(attr)s>%(nick)s</a>."
 msgstr "Du bist als <a %(attr)s>%(nick)s</a> angemeldet."
 
-#: pretalx/common/templates/common/base.html:113
+#: pretalx/common/templates/common/base.html:128
 #, python-format
 msgid "This is a static export generated at %(timestamp)s"
 msgstr "Dieser Export wurde um %(timestamp)s generiert"
 
-#: pretalx/common/templates/common/base.html:123
+#: pretalx/common/templates/common/base.html:138
 msgid "Contact us"
 msgstr "Kontakt"
 
