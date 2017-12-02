@@ -185,6 +185,7 @@ class CfPQuestionDelete(PermissionRequired, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         question = self.get_object()
+        question.options.all().delete()
 
         try:
             question.delete()
