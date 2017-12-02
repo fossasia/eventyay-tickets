@@ -20,6 +20,7 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 
+- Inactive questions could not be deleted (making them active first worked as a workaround). (#289)
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases

@@ -180,7 +180,7 @@ class CfPQuestionDelete(PermissionRequired, View):
     permission_required = 'orga.remove_question'
 
     def get_object(self) -> Question:
-        return self.request.event.questions.get(pk=self.kwargs.get('pk'))
+        return Question.all_objects.get(event=self.request.event, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)

@@ -84,6 +84,15 @@ def test_delete_question(orga_client, event, question):
 
 
 @pytest.mark.django_db
+def test_delete_inactive_question(orga_client, event, inactive_question):
+    assert Question.all_objects.filter(event=event).count() == 1
+    response = orga_client.get(inactive_question.urls.delete, follow=True)
+    assert response.status_code == 200
+    assert event.questions.count() == 0
+    assert Question.all_objects.filter(event=event).count() == 0
+
+
+@pytest.mark.django_db
 def test_cannot_delete_answered_question(orga_client, event, question, answer):
     assert event.questions.count() == 1
     response = orga_client.get(question.urls.delete, follow=True)
