@@ -8,10 +8,12 @@ class Review(models.Model):
     submission = models.ForeignKey(
         to='submission.Submission',
         related_name='reviews',
+        on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
         to='person.User',
         related_name='reviews',
+        on_delete=models.CASCADE,
     )
     text = models.TextField(
         verbose_name=_('What do you think?'),
