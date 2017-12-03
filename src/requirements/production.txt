@@ -2,7 +2,7 @@ bleach==2.1.*,>=2.1.2
 celery==4.1.*
 csscompressor==0.9.*
 cssutils==1.0.*
-Django>=1.11.7,<2.0
+Django==2.0.*
 django-bakery==0.11.*
 django-bootstrap4==0.0.4
 django-compressor==2.2.*
@@ -21,7 +21,7 @@ Markdown==2.6.*
 pytz
 reportlab==3.4.*
 requests
-rules==1.2.*
+rules==1.3.*
 urlman==1.2.*
 vobject==0.9.*
 whitenoise==3.3.*
