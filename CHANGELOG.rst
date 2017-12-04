@@ -16,6 +16,8 @@ Breaking Changes
 Features
 ~~~~~~~~
 
+- Added better meta tags, which leads to better display in social media. (#122)
+
 
 Fixed bugs
 ~~~~~~~~~~~
