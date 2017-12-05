@@ -39,7 +39,11 @@
                     {{ permission.instance.user.get_display_name }}
                 {% else %}
                     <i>
-                        {{ permission.instance.invitation_email }}
+                        {% if permission.instance.invitation_email %}
+                            {{ permission.instance.invitation_email }}
+                        {% else %}
+                            {{ permission.instance.user.get_display_name }}
+                        {% endif %}
                         ({% trans "pending" %})
                     </i>
                 {% endif %}
