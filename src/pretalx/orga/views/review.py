@@ -98,7 +98,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             next_submission = Review.find_missing_reviews(self.request.event, self.request.user).first()
             if next_submission:
                 messages.success(self.request, _('You are on a roll!'))  # TODO: choose from a list of messages
-                return next_submission.orga_urls.new_review
+                return next_submission.orga_urls.reviews
             else:
                 messages.success(self.request, _('Nice, you have no submissions left to review!'))
                 return self.request.event.orga_urls.reviews

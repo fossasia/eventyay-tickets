@@ -362,7 +362,7 @@ class EventReviewRetract(EventSettingsPermission, View):
 class EventReviewDelete(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event__slug=event, user__id=pk).update(is_reviewer=False)
+        EventPermission.objects.filter(event__slug=event, pk=pk).update(is_reviewer=False)
         return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
