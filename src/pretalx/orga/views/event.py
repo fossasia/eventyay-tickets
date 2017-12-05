@@ -4,6 +4,7 @@ from csp.decorators import csp_update
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -15,6 +16,7 @@ from django.views.generic import FormView, TemplateView, View
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.phrases import phrases
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
@@ -300,7 +302,7 @@ The {event} orga crew''').format(event=request.event.name)
         else:
             messages.success(request, _('You successfully made yourself a reviewer!'))
         request.event.log_action('pretalx.invite.reviewer.send', person=request.user, orga=True)
-        return redirect(reverse('orga:settings.review.view', kwargs={'event': request.event.slug}))
+        return redirect(request.event.orga_urls.review_settings)
 
     def _handle_new_user(self, request, email):
         event = request.event
@@ -331,18 +333,20 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             request,
             _('<{email}> has been invited to your reviewer team - more reviewers help gain perspective, so … yay!').format(email=email)
         )
-        return redirect(reverse(
-            'orga:settings.review.view',
-            kwargs={'event': event.slug}
-        ))
+        return redirect(event.orga_urls.review_settings)
 
     def post(self, request, event):
         nick = request.POST.get('nick')
         user = User.objects.filter(nick__iexact=nick).first() or User.objects.filter(email__iexact=nick).first()
-        if user:
-            return self._handle_existing_user(request, user)
-        else:
-            return self._handle_new_user(request, nick)
+        try:
+            with transaction.atomic():
+                if user:
+                    return self._handle_existing_user(request, user)
+                else:
+                    return self._handle_new_user(request, nick)
+        except Exception:
+            messages.error(request, phrases.common.error_saving_changes)
+            return redirect(request.event.orga_urls.review_settings)
 
 
 class EventReviewRetract(EventSettingsPermission, View):
