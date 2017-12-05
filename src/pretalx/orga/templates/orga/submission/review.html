@@ -1,6 +1,7 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load rich_text %}
 {% block submission_content %}
 
     <div class="alert alert-info">
@@ -30,6 +31,24 @@
     {% if not form.instance.pk %}
     <form method="post" action="">
         {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
+            <div class="col-md-9">
+                {{ submission.abstract|rich_text }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="id_text">{% trans "Description" %}</label>
+            <div class="col-md-9">
+                {{ submission.description|rich_text }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes for the organizer" %}</label>
+            <div class="col-md-9">
+                {{ submission.notes|rich_text }}
+            </div>
+        </div>
         {% bootstrap_form form layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
