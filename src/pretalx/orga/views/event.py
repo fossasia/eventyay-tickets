@@ -342,11 +342,13 @@ The {event} orga crew (minus you)''').format(event=event.name, invitation_link=i
             with transaction.atomic():
                 if user:
                     return self._handle_existing_user(request, user)
-                else:
+                elif nick:
                     return self._handle_new_user(request, nick)
+                else:
+                    messages.error(request, phrases.common.error_saving_changes)
         except Exception:
             messages.error(request, phrases.common.error_saving_changes)
-            return redirect(request.event.orga_urls.review_settings)
+        return redirect(request.event.orga_urls.review_settings)
 
 
 class EventReviewRetract(EventSettingsPermission, View):
