@@ -18,7 +18,7 @@ def build_absolute_uri(urlname, event=None, args=None, kwargs=None):
 
 class EventUrls(Urls):
 
-    def get_netloc(self, url):
+    def get_hostname(self, url):
         url = get_base_url(self.instance.event)
         return urlparse(url).netloc
 

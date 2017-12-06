@@ -27,6 +27,7 @@ Fixed bugs
 - Review team invitations sometimes failed, resulting in useless invitation objects.
 - When clicking the "Save & next" button when reviewing, an internal error was encountered after the review was saved.
 - Reviewers could not be removed from their team.
+- URLs were always generated with 'localhost' as their host.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
