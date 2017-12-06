@@ -12,6 +12,11 @@ LOG_NAMES = {
     'pretalx.invite.orga.send': _('An invitation to the event orga was sent.'),
     'pretalx.invite.reviewer.retract': _('The invitation to the review team was retracted.'),
     'pretalx.invite.reviewer.send': _('The invitation to the review team was sent.'),
+    'pretalx.event.invite.orga.accept': _('The invitation to the event orga was accepted.'),  # compat
+    'pretalx.event.invite.orga.retract': _('An invitation to the event orga was retracted.'),  # compat
+    'pretalx.event.invite.orga.send': _('An invitation to the event orga was sent.'),  # compat
+    'pretalx.event.invite.reviewer.retract': _('The invitation to the review team was retracted.'),  # compat
+    'pretalx.event.invite.reviewer.send': _('The invitation to the review team was sent.'),  # compat
     'pretalx.mail.create': _('An email was modified.'),
     'pretalx.mail.delete': _('A pending email was deleted.'),
     'pretalx.mail.delete_all': _('All pending emails were deleted.'),
@@ -45,6 +50,7 @@ LOG_NAMES = {
     'pretalx.submission.update': _('The submission was modified.'),
     'pretalx.submission.withdraw': _('The submission was withdrawn.'),
     'pretalx.submission.answer.update': _('A submission answer was modified.'),
+    'pretalx.submission.answerupdate': _('A submission answer was modified.'),  # compat
     'pretalx.submission.answer.create': _('A submission answer was added.'),
     'pretalx.submission_type.create': _('A submission type was added.'),
     'pretalx.submission_type.delete': _('A submission type was deleted.'),
