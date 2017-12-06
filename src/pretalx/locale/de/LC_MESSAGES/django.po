@@ -1,15 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# pretalx translation files
+# Copyright (C) Tobias 'rixx' Kunze 2017
+# This file is distributed under the same license as the pretalx package.
+# Tobias Kunze <rixx@cutebit.de>, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 14:47-0600\n"
-"PO-Revision-Date: 2017-12-02 21:47+0100\n"
-"Last-Translator: Raphael Michel <michel@rami.io>\n"
+"POT-Creation-Date: 2017-12-05 18:49-0600\n"
+"PO-Revision-Date: 2017-12-06 01:49+0100\n"
+"Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -654,12 +654,12 @@ msgstr "Diese Daten werden neben deiner Einreichung im Programm angezeigt."
 #: pretalx/orga/templates/orga/mails/template_form.html:28
 #: pretalx/orga/templates/orga/settings/form.html:36
 #: pretalx/orga/templates/orga/settings/mail.html:13
-#: pretalx/orga/templates/orga/settings/review.html:66
+#: pretalx/orga/templates/orga/settings/review.html:70
 #: pretalx/orga/templates/orga/settings/room_form.html:18
 #: pretalx/orga/templates/orga/speaker/form.html:28
 #: pretalx/orga/templates/orga/submission/content.html:44
-#: pretalx/orga/templates/orga/submission/review.html:37
-#: pretalx/orga/templates/orga/submission/review.html:57
+#: pretalx/orga/templates/orga/submission/review.html:56
+#: pretalx/orga/templates/orga/submission/review.html:76
 #: pretalx/orga/templates/orga/user.html:15
 #: pretalx/orga/templates/orga/user.html:37
 msgid "Save"
@@ -918,179 +918,179 @@ msgstr "Die Veranstaltung wurde erstellt."
 msgid "The event was modified."
 msgstr "Die Veranstaltung wurde geändert."
 
-#: pretalx/common/models/log.py:10
+#: pretalx/common/models/log.py:10 pretalx/common/models/log.py:15
 msgid "The invitation to the event orga was accepted."
 msgstr "Die Einladung zum Orga-Team wurde angenommen."
 
-#: pretalx/common/models/log.py:11
+#: pretalx/common/models/log.py:11 pretalx/common/models/log.py:16
 msgid "An invitation to the event orga was retracted."
 msgstr "Eine Einladung zum Orga-Team wurde zurückgezogen."
 
-#: pretalx/common/models/log.py:12
+#: pretalx/common/models/log.py:12 pretalx/common/models/log.py:17
 msgid "An invitation to the event orga was sent."
 msgstr "Eine Einladung zum Orga-Team wurde verschickt."
 
-#: pretalx/common/models/log.py:13
+#: pretalx/common/models/log.py:13 pretalx/common/models/log.py:18
 msgid "The invitation to the review team was retracted."
 msgstr "Eine Einladung zum Review-Team wurde zurückgezogen."
 
-#: pretalx/common/models/log.py:14
+#: pretalx/common/models/log.py:14 pretalx/common/models/log.py:19
 msgid "The invitation to the review team was sent."
 msgstr "Eine Einladung zum Review-Team wurde verschickt."
 
-#: pretalx/common/models/log.py:15 pretalx/common/models/log.py:19
+#: pretalx/common/models/log.py:20 pretalx/common/models/log.py:24
 msgid "An email was modified."
 msgstr "Eine E-Mail wurde verändert."
 
-#: pretalx/common/models/log.py:16
+#: pretalx/common/models/log.py:21
 msgid "A pending email was deleted."
 msgstr "Eine ausstehende E-Mail wurde gelöscht."
 
-#: pretalx/common/models/log.py:17
+#: pretalx/common/models/log.py:22
 msgid "All pending emails were deleted."
 msgstr "Alle ausstehenden E-Mails wurden gelöscht."
 
-#: pretalx/common/models/log.py:18
+#: pretalx/common/models/log.py:23
 msgid "An email was sent."
 msgstr "Eine E-Mail wurde verschickt."
 
-#: pretalx/common/models/log.py:20
+#: pretalx/common/models/log.py:25
 msgid "A mail template was added."
 msgstr "Eine E-Mail-Vorlage wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:21
+#: pretalx/common/models/log.py:26
 msgid "A mail template was deleted."
 msgstr "Eine E-Mail-Vorlage wurde gelöscht."
 
-#: pretalx/common/models/log.py:22
+#: pretalx/common/models/log.py:27
 msgid "A mail template was modified."
 msgstr "Eine E-Mail-Vorlage wurde verändert."
 
-#: pretalx/common/models/log.py:23
+#: pretalx/common/models/log.py:28
 msgid "A question was added."
 msgstr "Eine Frage wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:24
+#: pretalx/common/models/log.py:29
 msgid "A question was deleted."
 msgstr "Eine Frage wurde gelöscht."
 
-#: pretalx/common/models/log.py:25
+#: pretalx/common/models/log.py:30
 msgid "A question was modified."
 msgstr "Eine Frage wurde geändert."
 
-#: pretalx/common/models/log.py:26
+#: pretalx/common/models/log.py:31
 msgid "A question option was added."
 msgstr "Eine Frage-Option wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:27
+#: pretalx/common/models/log.py:32
 msgid "A question option was deleted."
 msgstr "Eine Frage-Option wurde gelöscht."
 
-#: pretalx/common/models/log.py:28
+#: pretalx/common/models/log.py:33
 msgid "A question option was modified."
 msgstr "Eine Frage wurde verändert."
 
-#: pretalx/common/models/log.py:29
+#: pretalx/common/models/log.py:34
 msgid "A new room was added."
 msgstr "Ein Raum wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:30
+#: pretalx/common/models/log.py:35
 msgid "A new schedule version was released."
 msgstr "Eine neue Programmversion wurde veröffentlicht."
 
-#: pretalx/common/models/log.py:31
+#: pretalx/common/models/log.py:36
 msgid "The submission was accepted."
 msgstr "Die Einreichung wurde angenommen."
 
-#: pretalx/common/models/log.py:32
+#: pretalx/common/models/log.py:37
 msgid "The submission was cancelled."
 msgstr "Der Vortrag wurde abgesagt."
 
-#: pretalx/common/models/log.py:33 pretalx/common/models/log.py:34
+#: pretalx/common/models/log.py:38 pretalx/common/models/log.py:39
 msgid "The submission was confirmed."
 msgstr "Die Einreichung wurde bestätigt."
 
-#: pretalx/common/models/log.py:35
+#: pretalx/common/models/log.py:40
 msgid "The submission was added."
 msgstr "Die Einreichung wurde erstellt."
 
-#: pretalx/common/models/log.py:36
+#: pretalx/common/models/log.py:41
 msgid "The submission was deleted."
 msgstr "Die Einreichung wurde gelöscht."
 
-#: pretalx/common/models/log.py:37
+#: pretalx/common/models/log.py:42
 msgid "The submission was rejected."
 msgstr "Die Einreichung wurde abgelehnt."
 
-#: pretalx/common/models/log.py:38
+#: pretalx/common/models/log.py:43
 msgid "A submission resource was added."
 msgstr "Eine Ressource wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:39
+#: pretalx/common/models/log.py:44
 msgid "A submission resource was deleted."
 msgstr "Eine Ressource wurde gelöscht."
 
-#: pretalx/common/models/log.py:40
+#: pretalx/common/models/log.py:45
 msgid "A submission resource was modified."
 msgstr "Eine Ressource wurde verändert."
 
-#: pretalx/common/models/log.py:41
+#: pretalx/common/models/log.py:46
 msgid "A speaker was added to the submission."
 msgstr "Ein Vortragende wurde der Einreichung hinzugefügt."
 
-#: pretalx/common/models/log.py:42
+#: pretalx/common/models/log.py:47
 msgid "A speaker was invited to the submission."
 msgstr "Eine weitere Vortragende wurde zur Einreichung eingeladen."
 
-#: pretalx/common/models/log.py:43
+#: pretalx/common/models/log.py:48
 msgid "A speaker was removed from the submission."
 msgstr "Eine Vortragende wurde von der Einreichung entfernt."
 
-#: pretalx/common/models/log.py:44
+#: pretalx/common/models/log.py:49
 msgid "The submission was unconfirmed."
 msgstr "Die Bestätigung der Einreichung wurde zurückgenommen."
 
-#: pretalx/common/models/log.py:45
+#: pretalx/common/models/log.py:50
 msgid "The submission was modified."
 msgstr "Die Einreichung wurde verändert."
 
-#: pretalx/common/models/log.py:46
+#: pretalx/common/models/log.py:51
 msgid "The submission was withdrawn."
 msgstr "Die Einreichung wurde zurückgezogen."
 
-#: pretalx/common/models/log.py:47
+#: pretalx/common/models/log.py:52 pretalx/common/models/log.py:53
 msgid "A submission answer was modified."
 msgstr "Eine Antwort wurde verändert."
 
-#: pretalx/common/models/log.py:48
+#: pretalx/common/models/log.py:54
 msgid "A submission answer was added."
 msgstr "Eine Antwort wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:49
+#: pretalx/common/models/log.py:55
 msgid "A submission type was added."
 msgstr "Ein Einreichungstyp wurde hinzugefügt."
 
-#: pretalx/common/models/log.py:50
+#: pretalx/common/models/log.py:56
 msgid "A submission type was deleted."
 msgstr "Ein Einreichungstyp wurde gelöscht."
 
-#: pretalx/common/models/log.py:51
+#: pretalx/common/models/log.py:57
 msgid "The submission type was made default."
 msgstr "Der Einreichungstyp wurde zum Standard gemacht."
 
-#: pretalx/common/models/log.py:52
+#: pretalx/common/models/log.py:58
 msgid "A submission type was modified."
 msgstr "Ein Einreichungstyp wurde verändert."
 
-#: pretalx/common/models/log.py:53
+#: pretalx/common/models/log.py:59
 msgid "The password was reset."
 msgstr "Das Passwort wurde zurückgesetzt."
 
-#: pretalx/common/models/log.py:54
+#: pretalx/common/models/log.py:60
 msgid "The password was modified."
 msgstr "Das Passwort wurde verändert."
 
-#: pretalx/common/models/log.py:55
+#: pretalx/common/models/log.py:61
 msgid "The profile was modified."
 msgstr "Das Profil wurde angepasst."
 
@@ -1161,8 +1161,8 @@ msgstr ""
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:438
-#: pretalx/orga/views/event.py:444
+#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:444
+#: pretalx/orga/views/event.py:450
 msgid "Your changes have been saved."
 msgstr "Deine Änderungen wurden gespeichert."
 
@@ -1347,7 +1347,7 @@ msgstr "CfP läuft"
 
 #: pretalx/event/stages.py:42 pretalx/orga/templates/orga/base.html:127
 #: pretalx/orga/templates/orga/settings/base.html:36
-#: pretalx/orga/templates/orga/submission/review.html:47
+#: pretalx/orga/templates/orga/submission/review.html:66
 #: pretalx/submission/models/feedback.py:26
 msgid "Review"
 msgstr "Review"
@@ -1780,11 +1780,11 @@ msgstr ""
 msgid "No score"
 msgstr "Keine Punkte"
 
-#: pretalx/orga/forms/review.py:74 pretalx/submission/models/review.py:47
+#: pretalx/orga/forms/review.py:74 pretalx/submission/models/review.py:49
 msgid "Negative override (Veto)"
 msgstr "Negativer Override (Veto)"
 
-#: pretalx/orga/forms/review.py:84 pretalx/submission/models/review.py:45
+#: pretalx/orga/forms/review.py:84 pretalx/submission/models/review.py:47
 msgid "Positive override"
 msgstr "Positiver Override"
 
@@ -2348,16 +2348,13 @@ msgid "%(count)s elements"
 msgstr "%(count)s Elemente"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:15
+#: pretalx/orga/templates/orga/review/dashboard.html:22
 msgid "total reviews"
 msgstr "Reviews insgesamt"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:20
 msgid "Zero"
 msgstr "Keine"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:22
-msgid "total reviews :("
-msgstr "Reviews insgesamt :("
 
 #: pretalx/orga/templates/orga/review/dashboard.html:29
 msgid "total reviewers"
@@ -2382,7 +2379,7 @@ msgid "There are no submissions left to review!"
 msgstr "Du hast keine Einreichungen mehr zu bewerten!"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:55
-#: pretalx/submission/models/review.py:21
+#: pretalx/submission/models/review.py:23
 msgid "Score"
 msgstr "Punkte"
 
@@ -2549,11 +2546,11 @@ msgstr "Reviewer"
 msgid "Override Votes"
 msgstr "Override-Stimmen"
 
-#: pretalx/orga/templates/orga/settings/review.html:43
+#: pretalx/orga/templates/orga/settings/review.html:47
 msgid "pending"
 msgstr "ausstehend"
 
-#: pretalx/orga/templates/orga/settings/review.html:61
+#: pretalx/orga/templates/orga/settings/review.html:65
 msgid "Review settings"
 msgstr "Review-Einstellungen"
 
@@ -2677,7 +2674,7 @@ msgstr "Karten drucken"
 msgid "Type"
 msgstr "Typ"
 
-#: pretalx/orga/templates/orga/submission/review.html:8
+#: pretalx/orga/templates/orga/submission/review.html:9
 msgid ""
 "Please give a fair review on why you'd like to see this submission at the "
 "conference, or why you think it would not be a good fit."
@@ -2686,12 +2683,12 @@ msgstr ""
 "gerne bei der Veranstaltung sehen würdest, oder warum du meinst, dass sie "
 "eher nicht gut hineinpassen würde."
 
-#: pretalx/orga/templates/orga/submission/review.html:13
+#: pretalx/orga/templates/orga/submission/review.html:14
 msgid "You will be able to see other reviews once you have given yours."
 msgstr ""
 "Du wirst andere Bewertungen sehen können, sobald du deine erstellt hast."
 
-#: pretalx/orga/templates/orga/submission/review.html:18
+#: pretalx/orga/templates/orga/submission/review.html:19
 msgid ""
 "This submission can no longer be reviewed, as a decision regarding its role "
 "in this event has already been made."
@@ -2699,16 +2696,32 @@ msgstr ""
 "Diese Einreichung kann nicht mehr bewertet werden, über sie wurde schon "
 "entschieden."
 
-#: pretalx/orga/templates/orga/submission/review.html:24
+#: pretalx/orga/templates/orga/submission/review.html:25
 #, python-format
 msgid "You have <strong>%(count)s</strong> override votes left."
 msgstr "Du hast noch <strong>%(count)s</strong> Override-Stimmen übrig."
 
-#: pretalx/orga/templates/orga/submission/review.html:36
+#: pretalx/orga/templates/orga/submission/review.html:35
+#: pretalx/submission/models/submission.py:101
+msgid "Abstract"
+msgstr "Zusammenfassung"
+
+#: pretalx/orga/templates/orga/submission/review.html:41
+#: pretalx/schedule/models/room.py:22
+#: pretalx/submission/models/submission.py:106
+msgid "Description"
+msgstr "Beschreibung"
+
+#: pretalx/orga/templates/orga/submission/review.html:47
+#: pretalx/submission/models/submission.py:111
+msgid "Notes for the organizer"
+msgstr "Notiz für den Veranstalter"
+
+#: pretalx/orga/templates/orga/submission/review.html:55
 msgid "Save and next"
 msgstr "Speichern und zur nächsten"
 
-#: pretalx/orga/templates/orga/submission/review.html:46
+#: pretalx/orga/templates/orga/submission/review.html:65
 msgid "Points"
 msgstr "Punkte"
 
@@ -2790,11 +2803,11 @@ msgstr ""
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} Minuten, #{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:192
+#: pretalx/orga/views/cfp.py:194
 msgid "The question has been deleted."
 msgstr "Die Frage wurde gelöscht."
 
-#: pretalx/orga/views/cfp.py:196
+#: pretalx/orga/views/cfp.py:198
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -2802,18 +2815,18 @@ msgstr ""
 "Du kannst eine Frage, die schon beantwortet wurde, nicht löschen. Wir haben "
 "die Frage stattdessen deaktiviert."
 
-#: pretalx/orga/views/cfp.py:264
+#: pretalx/orga/views/cfp.py:266
 msgid "The Submission Type has been made default."
 msgstr "Der Einreichungstyp wurde zum Standard gemacht."
 
-#: pretalx/orga/views/cfp.py:279
+#: pretalx/orga/views/cfp.py:281
 msgid ""
 "You cannot delete the only submission type. Try creating another one first!"
 msgstr ""
 "Du kannst nicht den einzigen Einreichungstypen löschen. Erstell doch vorher "
 "einen anderen!"
 
-#: pretalx/orga/views/cfp.py:281
+#: pretalx/orga/views/cfp.py:283
 msgid ""
 "You cannot delete the default submission type. Make another type default "
 "first!"
@@ -2821,17 +2834,17 @@ msgstr ""
 "Du kannst nicht den Standardeinreichungstypen löschen. Mach doch einen "
 "anderen zuerst zum Standard."
 
-#: pretalx/orga/views/cfp.py:286
+#: pretalx/orga/views/cfp.py:288
 msgid "The Submission Type has been deleted."
 msgstr "Der Einreichungstyp wurde gelöscht."
 
-#: pretalx/orga/views/cfp.py:288
+#: pretalx/orga/views/cfp.py:290
 msgid "This Submission Type is in use in a submission and cannot be deleted."
 msgstr ""
 "Der Einreichungstyp hängt schon an einer Einreichung und kann nicht gelöscht "
 "werden."
 
-#: pretalx/orga/views/event.py:98
+#: pretalx/orga/views/event.py:100
 msgid ""
 "Yay, a new event! Check these settings and configure a CfP and you're good "
 "to go!"
@@ -2839,16 +2852,16 @@ msgstr ""
 "Hui, eine neue Veranstaltung! Geh diese Einstellungen durch und schreib "
 "einen CfP, und du kannst richtig loslegen!"
 
-#: pretalx/orga/views/event.py:108
+#: pretalx/orga/views/event.py:110
 msgid "The event settings have been saved."
 msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
 
-#: pretalx/orga/views/event.py:135
+#: pretalx/orga/views/event.py:137
 #, python-format
 msgid "An error occured while contacting the SMTP server: %s"
 msgstr "Ein Fehler trat auf beim Versuch, den SMTP-Server zu erreichen: %s"
 
-#: pretalx/orga/views/event.py:139
+#: pretalx/orga/views/event.py:141
 msgid ""
 "Yay, your changes have been saved and the connection attempt to your SMTP "
 "server was successful."
@@ -2856,7 +2869,7 @@ msgstr ""
 "Ihre Änderungen wurden gespeichert und die Verbindung zum SMTP-Server war "
 "erfolgreich."
 
-#: pretalx/orga/views/event.py:142
+#: pretalx/orga/views/event.py:144
 msgid ""
 "We've been able to contact the SMTP server you configured. Remember to check "
 "the \"use custom SMTP server\" checkbox, otherwise your SMTP server will not "
@@ -2866,11 +2879,11 @@ msgstr ""
 "\"Eigenen SMTP-Server verwenden\" zu setzen, damit der Server auch benutzt "
 "wird."
 
-#: pretalx/orga/views/event.py:146
+#: pretalx/orga/views/event.py:148
 msgid "Yay! We saved your changes."
 msgstr "Jupp, alle Änderungen wurden gespeichert."
 
-#: pretalx/orga/views/event.py:189
+#: pretalx/orga/views/event.py:191
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your team - more team members help distribute "
@@ -2879,7 +2892,7 @@ msgstr ""
 "<{email}> wurde zum Orga-Team eingeladen. Mehr Orga heißt weniger Arbeit für "
 "die Einzelnen - yay!"
 
-#: pretalx/orga/views/event.py:195
+#: pretalx/orga/views/event.py:197
 #, python-brace-format
 msgid ""
 "<{email}> had already been invited – we've resent the invitation instead :)"
@@ -2887,7 +2900,7 @@ msgstr ""
 "<{email}> wurde schon eingeladen – wir haben die Einladung noch mal "
 "verschickt :)"
 
-#: pretalx/orga/views/event.py:198
+#: pretalx/orga/views/event.py:200
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2910,20 +2923,20 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/event.py:206
+#: pretalx/orga/views/event.py:208
 #, python-brace-format
 msgid "You have been invited to the orga crew of {event}"
 msgstr "Du wurdest zur \"{event}\"-Orga eingeladen"
 
-#: pretalx/orga/views/event.py:261
+#: pretalx/orga/views/event.py:263
 msgid "We had trouble saving your input."
 msgstr "Oh :( Wir konnten deine Änderungen leider nicht speichern."
 
-#: pretalx/orga/views/event.py:265
+#: pretalx/orga/views/event.py:267
 msgid "Your settings have been saved."
 msgstr "Deine Einstellungen wurden gespeichert."
 
-#: pretalx/orga/views/event.py:288
+#: pretalx/orga/views/event.py:290
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2940,20 +2953,20 @@ msgstr ""
 "Wir freuen uns, dich dabei zu haben.\n"
 "Die {event}-Orga"
 
-#: pretalx/orga/views/event.py:294
+#: pretalx/orga/views/event.py:296
 #, python-brace-format
 msgid "You have been added to the review team of {event}"
 msgstr "Du wurdest zum {event}-Review-Team hinzugefügt"
 
-#: pretalx/orga/views/event.py:299
+#: pretalx/orga/views/event.py:301
 msgid "The user already existed and is now a reviewer."
 msgstr "Diese Person kannten wir schon; jetzt ist sie als Reviewer markiert."
 
-#: pretalx/orga/views/event.py:301
+#: pretalx/orga/views/event.py:303
 msgid "You successfully made yourself a reviewer!"
 msgstr "Du hast dich erfolgreich zum Review-Team hinzugefügt! ;)"
 
-#: pretalx/orga/views/event.py:316
+#: pretalx/orga/views/event.py:318
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2976,12 +2989,12 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/event.py:324
+#: pretalx/orga/views/event.py:326
 #, python-brace-format
 msgid "You have been invited to the reviewer team of {event}"
 msgstr "Du wurdest zum {event}-Review-Team eingeladen"
 
-#: pretalx/orga/views/event.py:332
+#: pretalx/orga/views/event.py:334
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your reviewer team - more reviewers help gain "
@@ -2990,34 +3003,34 @@ msgstr ""
 "<{email}> wurde zum Review-Team eingeladen. Ein größeres Team heißt mehr "
 "Reviews, mehr Meinungen, mehr Perspektiven - yay!"
 
-#: pretalx/orga/views/event.py:390
+#: pretalx/orga/views/event.py:396
 msgid "Oh, it seems you were already part of this team."
 msgstr "Oh, du warst bereits im Team :)"
 
-#: pretalx/orga/views/event.py:399
+#: pretalx/orga/views/event.py:405
 msgid "You are now part of the event team!"
 msgstr "Du bist jetzt Teil des Team – Willkommen!"
 
-#: pretalx/orga/views/event.py:448
+#: pretalx/orga/views/event.py:454
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
 
-#: pretalx/orga/views/event.py:462
+#: pretalx/orga/views/event.py:468
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Raum gelöscht … hoffentlich war da niemand mehr drin."
 
-#: pretalx/orga/views/event.py:464
+#: pretalx/orga/views/event.py:470
 msgid "There is or was a talk scheduled in this room. It cannot be deleted."
 msgstr ""
 "Es findet oder fand ein Talk in diesem Raum statt, deshalb kann er nicht "
 "gelöscht werden."
 
-#: pretalx/orga/views/event.py:498
+#: pretalx/orga/views/event.py:504
 msgid "You are not allowed to perform this action, sorry."
 msgstr "Das darfst du nicht, sorry."
 
-#: pretalx/orga/views/event.py:502
+#: pretalx/orga/views/event.py:508
 msgid "Saved!"
 msgstr "Gespeichert!"
 
@@ -3193,15 +3206,15 @@ msgstr "Der Vortragende wurde der Einreichung hinzugefügt."
 msgid "The speaker was already part of the submission."
 msgstr "Der Vortragende war bereits Teil der Einreichung."
 
-#: pretalx/orga/views/submission.py:172
+#: pretalx/orga/views/submission.py:174
 msgid "The speaker has been removed from the submission."
 msgstr "Der Vortragende wurde von der Einreichung entfernt."
 
-#: pretalx/orga/views/submission.py:174
+#: pretalx/orga/views/submission.py:176
 msgid "The speaker was not part of this submission."
 msgstr "Der Vortragende war nicht Teil der Einreichung."
 
-#: pretalx/orga/views/submission.py:253
+#: pretalx/orga/views/submission.py:255
 msgid ""
 "The submission has been created and the speaker has been invited to add an "
 "account!"
@@ -3209,7 +3222,7 @@ msgstr ""
 "Die Einreichung wurde erstellt und die Vortragende wurde eingeladen, einen "
 "Account zu erstellen."
 
-#: pretalx/orga/views/submission.py:255
+#: pretalx/orga/views/submission.py:257
 msgid ""
 "The submission has been created; the speaker already had an account on this "
 "system."
@@ -3217,11 +3230,11 @@ msgstr ""
 "Die Einreichung wurde erstellt; die Vortragende hatte bereits einen Account "
 "im System."
 
-#: pretalx/orga/views/submission.py:257
+#: pretalx/orga/views/submission.py:259
 msgid "The submission has been updated!"
 msgstr "Die Einreichung wurde gespeichert."
 
-#: pretalx/orga/views/submission.py:293
+#: pretalx/orga/views/submission.py:295
 msgid "The submission has been deleted."
 msgstr "Die Einreichung wurde gelöscht."
 
@@ -3368,11 +3381,6 @@ msgstr "Raum I"
 #: pretalx/schedule/forms.py:150
 msgid "Our main meeting place, Room I, enter from the right."
 msgstr "Unser Hauptraum, Raum I, bitte die rechte Tür nutzen."
-
-#: pretalx/schedule/models/room.py:22
-#: pretalx/submission/models/submission.py:106
-msgid "Description"
-msgstr "Beschreibung"
 
 #: pretalx/schedule/models/room.py:23
 msgid "A description, for example directions."
@@ -3582,7 +3590,7 @@ msgstr "Bitte versuch den Upload klein zu halten, am besten unter 16 MB."
 msgid "description"
 msgstr "Beschreibung"
 
-#: pretalx/submission/models/review.py:17
+#: pretalx/submission/models/review.py:19
 msgid "What do you think?"
 msgstr "Was denkst du?"
 
@@ -3602,10 +3610,6 @@ msgstr "Einreichungsart"
 msgid "Submission state"
 msgstr "Einreichungsstatus"
 
-#: pretalx/submission/models/submission.py:101
-msgid "Abstract"
-msgstr "Zusammenfassung"
-
 #: pretalx/submission/models/submission.py:102
 msgid ""
 "A concise summary of your talk in one or two sentences. You can use markdown "
@@ -3621,10 +3625,6 @@ msgid ""
 msgstr ""
 "Eine umfassende Beschreibung deiner Veranstaltung und ihres Inhalts. Du "
 "kannst hier Markdown schreiben."
-
-#: pretalx/submission/models/submission.py:111
-msgid "Notes for the organizer"
-msgstr "Notiz für den Veranstalter"
 
 #: pretalx/submission/models/submission.py:115
 msgid "Duration"
@@ -3702,6 +3702,9 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
+
+#~ msgid "total reviews :("
+#~ msgstr "Reviews insgesamt :("
 
 #~ msgid "We are unable to find a user matching this information. Sorry!"
 #~ msgstr ""

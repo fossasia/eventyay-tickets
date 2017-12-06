@@ -28,6 +28,7 @@ Fixed bugs
 - When clicking the "Save & next" button when reviewing, an internal error was encountered after the review was saved.
 - Reviewers could not be removed from their team.
 - URLs were always generated with 'localhost' as their host.
+- When adding a submission in the orga backend with an orga user as speaker, the orga user did not receive a speaker profile.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
