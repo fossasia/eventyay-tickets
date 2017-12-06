@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-vX.Y.Z
+v0.2.1
 ------
 
-*Released on 20XX-XX-XX*
+*Released on 2017-12-06*
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
