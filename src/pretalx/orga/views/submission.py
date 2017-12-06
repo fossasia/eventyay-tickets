@@ -15,7 +15,7 @@ from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
-from pretalx.person.models import User
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import Question, Submission, SubmissionError
 
 
@@ -154,6 +154,8 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
                 messages.success(request, _('The speaker has been added to the submission.'))
             else:
                 messages.warning(request, _('The speaker was already part of the submission.'))
+        if not speaker.profiles.filter(event=request.event).exists():
+            SpeakerProfile.objects.create(user=speaker, event=request.event)
         return redirect(submission.orga_urls.speakers)
 
 
