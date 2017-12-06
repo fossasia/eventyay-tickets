@@ -28,5 +28,6 @@ Takeoff and landing
 7. Sign the release: ``gpg --default-key F0DAD3990F9C816CFD30F8F329C085265D94C052 --detach-sign -a dist/pretalx-x.y.z.tar.gz``
 8. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
 9. Push the release: ``git push && git push --tags``
-10. Add the release on GitHub (upload the tar.gz you uploaded to PyPI, and add the CHANGELOG section): https://github.com/pretalx/pretalx/releases
-11. Push the blog post.
+10. Install/update the package somewhere.
+11. Add the release on GitHub (upload the tar.gz you uploaded to PyPI, and add the CHANGELOG section): https://github.com/pretalx/pretalx/releases
+12. Push the blog post.
