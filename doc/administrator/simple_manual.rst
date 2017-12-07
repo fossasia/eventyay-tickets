@@ -199,7 +199,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-Yay, you are done! You should now be able to reach pretalx at https://pretalx.yourdomain.com/control/ and log in as
+Yay, you are done! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
 the superuser you configured above. You can now create an event, and off you go!
 
 
