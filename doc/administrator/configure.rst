@@ -73,8 +73,8 @@ The site section
 - **Default:** None
 
 
-The databases section
----------------------
+The database section
+--------------------
 
 ``backend``
 ~~~~~~~~~~~
