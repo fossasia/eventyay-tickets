@@ -187,7 +187,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
         }
 
         location /static/ {
-            alias /var/pretalx/venv/lib/python3.6/site-packages/pretalx/static.dist/;
+            alias /var/pretalx/venv/lib/python3.6/site-packages/static.dist/;
             access_log off;
             expires 365d;
             add_header Cache-Control "public";
