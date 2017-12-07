@@ -98,6 +98,10 @@ Finally, we compile static files and translation data and create the database st
     (venv)$ python -m pretalx migrate
     (venv)$ python -m pretalx rebuild
 
+Now, create an admin user by running::
+
+    (venv)$ python -m pretalx createsuperuser
+
 Step 6: Starting pretalx as a service
 -------------------------------------
 
@@ -146,7 +150,6 @@ You can now run the following commands to enable and start the services::
     # systemctl daemon-reload
     # systemctl enable pretalx-web pretalx-worker
     # systemctl start pretalx-web pretalx-worker
-
 
 Step 7: SSL
 -----------
