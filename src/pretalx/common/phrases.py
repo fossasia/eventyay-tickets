@@ -50,3 +50,4 @@ class BasePhrases(Phrases, app='base'):
 
     error_sending_mail = [_('There was an error sending the mail. Please try again later.')]
     error_saving_changes = [_('Huh. We had trouble saving your input – Please see below for details. 🠯')]
+    error_permissions_action = [_('You do not have permission to perform this action.')]

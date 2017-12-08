@@ -1,8 +1,10 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block content %}
+{% load rules %}
 
+{% block content %}
+{% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
 <legend>{{ form.instance.user.get_display_name }} ({{ submission_count }} {% if submission_count > 1 %}{% trans "submissions" %}{% else %}{% trans "submission" %}{% endif %})</legend>
     <div class="alert alert-info">
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
@@ -27,7 +29,7 @@
                 {% if action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    {% if form.instance.pk %}
+                    {% if form.instance.pk and can_edit_speaker %}
                         <a class="btn btn-secondary" href={% url "orga:speakers.edit" event=request.event.slug pk=object.pk %}>{% trans "Edit" %}</a>
                     {% endif %}
                 {% endif %}
