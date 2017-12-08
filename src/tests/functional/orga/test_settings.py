@@ -292,3 +292,26 @@ def test_invite_new_reviewer(orga_client, event):
     perm.refresh_from_db()
     assert perm.is_reviewer is False
     assert EventPermission.objects.count() == 2
+    assert EventPermission.objects.exclude(pk=perm.pk).first().is_reviewer
+
+
+@pytest.mark.django_db
+def test_invite_new_reviewer_twice(orga_client, event):
+    perm = EventPermission.objects.get(event=event)
+    assert perm.is_reviewer is False
+    response = orga_client.post(
+        event.orga_urls.invite_reviewer,
+        {'nick': 'new@user_to_be_review.er'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    response = orga_client.post(
+        event.orga_urls.invite_reviewer,
+        {'nick': 'new@user_to_be_review.er'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    perm.refresh_from_db()
+    assert perm.is_reviewer is False
+    assert EventPermission.objects.count() == 2
+    assert EventPermission.objects.exclude(pk=perm.pk).first().is_reviewer
