@@ -33,3 +33,15 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
     assert response.status_code == 200
     speaker.refresh_from_db()
     assert speaker.name == 'BESTSPEAKAR', response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission):
+    response = review_client.post(
+        reverse('orga:speakers.edit', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        data={'name': 'BESTSPEAKAR', 'biography': 'I rule!'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.name != 'BESTSPEAKAR', response.content.decode()
