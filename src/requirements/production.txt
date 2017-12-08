@@ -1,4 +1,4 @@
-bleach==2.*
+bleach==2.1.*,>=2.1.2
 celery==4.0.*
 csscompressor==0.9.*
 cssutils==1.0.*

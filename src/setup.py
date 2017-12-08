@@ -59,7 +59,7 @@ setup(
 
     keywords='conference cfp event barcamp',
     install_requires=[
-        'bleach==2.*',
+        'bleach>=2.1.2,==2.1.*',
         'celery==4.0.*',
         'csscompressor==0.9.*',
         'cssutils==1.0.*',
