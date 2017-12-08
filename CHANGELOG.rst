@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.2.1
+vX.Y.Z
 ------
 
-*Released on 2017-12-06*
+*Released on 201X-XX-XX*
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
@@ -16,19 +16,12 @@ Breaking Changes
 Features
 ~~~~~~~~
 
-- Added better meta tags, which leads to better display in social media. (#122)
 
 
 Fixed bugs
 ~~~~~~~~~~~
 
-- Inactive questions could not be deleted (making them active first worked as a workaround). (#289)
-- Choice questions could not be deleted as long as they still had answer options. (#288)
-- Review team invitations sometimes failed, resulting in useless invitation objects.
-- When clicking the "Save & next" button when reviewing, an internal error was encountered after the review was saved.
-- Reviewers could not be removed from their team.
-- URLs were always generated with 'localhost' as their host.
-- When adding a submission in the orga backend with an orga user as speaker, the orga user did not receive a speaker profile.
+- Reviewers are now allowed to view speaker pages.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases

@@ -23,7 +23,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('mails.templates.list', 200, 404,),
     ('mails.outbox.list', 200, 404,),
     ('submissions.list', 200, 200,),
-    ('speakers.list', 200, 404,),
+    ('speakers.list', 200, 200,),
     ('settings.event.view', 200, 403,),
     ('settings.mail.view', 200, 404,),
     ('settings.team.view', 200, 404,),
