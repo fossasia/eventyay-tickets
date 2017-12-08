@@ -83,11 +83,9 @@ setup(
         'reportlab==3.4.*',
         'requests',
         'rules==1.2.*',
+        'urlman==1.2.*',
         'vobject==0.9.*',
         'whitenoise==3.3.*',
-    ],
-    dependency_links=[
-        'git+https://github.com/andrewgodwin/urlman.git@74e1fd6#egg=urlman',
     ],
     extras_require={
         'dev': [
