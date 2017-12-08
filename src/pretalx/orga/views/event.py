@@ -280,7 +280,7 @@ class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
 class EventReviewInvite(EventSettingsPermission, View):
 
     def _handle_existing_user(self, request, user):
-        if user and not permission:
+        if user:
             permission = user.permissions.filter(event=request.event).first()
         if not permission:
             EventPermission.objects.create(event=request.event, is_orga=False, is_reviewer=True)
