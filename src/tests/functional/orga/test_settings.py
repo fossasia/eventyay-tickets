@@ -269,6 +269,7 @@ def test_retract_invitation(orga_client, event):
 def test_add_orga_to_review(orga_client, event, target):
     perm = EventPermission.objects.get(event=event)
     assert perm.is_reviewer is False
+    assert perm.is_orga is True
     response = orga_client.post(
         event.orga_urls.invite_reviewer,
         {'nick': getattr(perm.user, target)},
@@ -277,10 +278,29 @@ def test_add_orga_to_review(orga_client, event, target):
     assert response.status_code == 200
     perm.refresh_from_db()
     assert perm.is_reviewer is True
+    assert perm.is_orga is True
+
+
+@pytest.mark.parametrize('target', ('email', 'nick'))
+@pytest.mark.django_db
+def test_add_reviewer_to_orga(orga_client, review_user, event, target):
+    perm = EventPermission.objects.get(event=event, is_orga=False)
+    assert perm.is_reviewer is True
+    assert perm.is_orga is False
+    response = orga_client.post(
+        event.orga_urls.invite,
+        {'email': getattr(perm.user, target)},
+        follow=True,
+    )
+    assert response.status_code == 200
+    perm.refresh_from_db()
+    assert perm.is_reviewer is True
+    assert perm.is_orga is True
 
 
 @pytest.mark.django_db
 def test_invite_new_reviewer(orga_client, event):
+    count = EventPermission.objects.count()
     perm = EventPermission.objects.get(event=event)
     assert perm.is_reviewer is False
     response = orga_client.post(
@@ -291,12 +311,13 @@ def test_invite_new_reviewer(orga_client, event):
     assert response.status_code == 200
     perm.refresh_from_db()
     assert perm.is_reviewer is False
-    assert EventPermission.objects.count() == 2
+    assert EventPermission.objects.count() == count + 1
     assert EventPermission.objects.exclude(pk=perm.pk).first().is_reviewer
 
 
 @pytest.mark.django_db
 def test_invite_new_reviewer_twice(orga_client, event):
+    count = EventPermission.objects.count()
     perm = EventPermission.objects.get(event=event)
     assert perm.is_reviewer is False
     response = orga_client.post(
@@ -305,6 +326,7 @@ def test_invite_new_reviewer_twice(orga_client, event):
         follow=True,
     )
     assert response.status_code == 200
+    assert EventPermission.objects.count() == count + 1
     response = orga_client.post(
         event.orga_urls.invite_reviewer,
         {'nick': 'new@user_to_be_review.er'},
@@ -313,5 +335,5 @@ def test_invite_new_reviewer_twice(orga_client, event):
     assert response.status_code == 200
     perm.refresh_from_db()
     assert perm.is_reviewer is False
-    assert EventPermission.objects.count() == 2
+    assert EventPermission.objects.count() == count + 1
     assert EventPermission.objects.exclude(pk=perm.pk).first().is_reviewer

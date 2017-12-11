@@ -167,21 +167,34 @@ class EventTeam(EventSettingsPermission, ActionFromUrl, TemplateView):
 
 class EventTeamInvite(EventSettingsPermission, View):
 
-    def post(self, request, event):
-        email = request.POST.get('email')
-        event = request.event
+    def _handle_existing_user(self, request, user):
+        if user:
+            permission = user.permissions.filter(event=request.event).first()
+        if not permission:
+            EventPermission.objects.create(event=request.event, is_orga=True)
+        else:
+            permission.is_orga = True
+            permission.save(update_fields=['is_orga'])
+        invitation_text = _('''Hi!
 
-        kwargs = {
-            'event': event,
-            'invitation_email': email,
-            'is_orga': True,
-        }
+You have been added to the organizer team of {event}!
 
-        permission = EventPermission.objects.filter(user__isnull=True, **kwargs).first()
+We are happy to have you on the team,
+The {event} orga crew''').format(event=request.event.name)
+        invitation_subject = _('You have been added to the organizer team of {event}').format(event=request.event.name)
+        QueuedMail(
+            event=request.event, to=user.email, reply_to=request.event.email,
+            subject=str(invitation_subject), text=str(invitation_text),
+        ).send()
+        messages.success(request, _('The user already existed and is now part of the orga.'))
+        request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
+        return redirect(request.event.orga_urls.team_settings)
+
+    def _handle_new_user(self, request, email, permission=None):
         if not permission:
             invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
             permission = EventPermission.objects.create(
-                event=event,
+                event=request.event,
                 invitation_email=email,
                 invitation_token=invitation_token,
                 is_orga=True,
@@ -191,12 +204,14 @@ class EventTeamInvite(EventSettingsPermission, View):
                 _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=email)
             )
         else:
+            permission.is_orga = True
+            permission.save()
             invitation_token = permission.invitation_token
             messages.info(
                 request,
                 _('<{email}> had already been invited – we\'ve resent the invitation instead :)').format(email=email),
             )
-        invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': invitation_token})
+        invitation_link = build_absolute_uri('orga:invitation.view', event=request.event, kwargs={'code': invitation_token})
         invitation_text = _('''Hi!
 
 You have been invited to the orga crew of {event} - Please click here to accept:
@@ -204,13 +219,37 @@ You have been invited to the orga crew of {event} - Please click here to accept:
     {invitation_link}
 
 See you there,
-The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
+The {event} orga crew (minus you)''').format(event=request.event.name, invitation_link=invitation_link)
         invitation_subject = _('You have been invited to the orga crew of {event}').format(event=request.event.name)
         QueuedMail(
-            event=event, to=email, reply_to=request.event.email, subject=str(invitation_subject),
+            event=request.event, to=email, reply_to=request.event.email, subject=str(invitation_subject),
             text=str(invitation_text)
         ).send()
         request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
+        return redirect(request.event.orga_urls.team_settings)
+
+    def post(self, request, event):
+        permission = None
+        email = request.POST.get('email')
+        user = User.objects.filter(nick__iexact=email).first() or User.objects.filter(email__iexact=email).first()
+        if not user:
+            kwargs = {
+                'event': request.event,
+                'invitation_email': email,
+            }
+            permission = EventPermission.objects.filter(user__isnull=True, **kwargs).first()
+        try:
+            with transaction.atomic():
+                if user:
+                    return self._handle_existing_user(request, user)
+                elif permission:
+                    return self._handle_new_user(request, email, permission=permission)
+                elif email:
+                    return self._handle_new_user(request, email)
+                else:
+                    messages.error(request, phrases.common.error_saving_changes)
+        except Exception:
+            messages.error(request, phrases.base.error_saving_changes)
         return redirect(request.event.orga_urls.team_settings)
 
 
@@ -309,14 +348,14 @@ The {event} orga crew''').format(event=request.event.name)
         event = request.event
         if not permission:
             invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-            invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': invitation_token})
-            EventPermission.objects.create(
+            permission = EventPermission.objects.create(
                 event=event,
                 invitation_email=email,
                 invitation_token=invitation_token,
                 is_orga=False,
                 is_reviewer=True,
             )
+        invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': permission.invitation_token})
         invitation_text = _('''Hi!
 
 You have been invited to the submission review team of {event} - Please click here to accept:

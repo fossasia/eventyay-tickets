@@ -21,8 +21,9 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 
-- Reviewers are now allowed to view speaker pages.
-- Inviting somebody twice does not issue a second invitation object.
+- Reviewers could not view speaker pages.
+- Inviting somebody twice did not issue a second invitation object.
+- Somebody who was reviewer first could not be added to the organizer team.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
