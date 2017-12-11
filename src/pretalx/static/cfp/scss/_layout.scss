@@ -59,6 +59,9 @@ header {
   }
 
   .user-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     background: $brand-info;
     padding: 5px 20px;
     color: white;
@@ -139,7 +142,47 @@ table .btn-secondary {
 
 @include media-breakpoint-down(sm) {
   #main-container {
+    padding: 0;
     padding-top: 20px;
+    width: 100%;
+
+    .content {
+      width: 100%;
+    }
+    header {
+      padding: 10px 20px;
+    }
+    .user-row {
+      flex-direction: column;
+    }
+    .btn-success {
+      width: 100%;
+    }
+    .col-form-label {
+      text-align: left;
+      display: flex;
+      span {
+        padding-left: 4px;
+      }
+    }
+    .formset {
+      padding-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      .resource-option-input {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px $gray-lighter solid;
+        margin-bottom: 8px;
+      }
+      .btn-info {
+        width: 100%;
+      }
+      .resource-option-delete {
+        float: none;
+        padding-left: -8px;
+      }
+    }
   }
 }
 

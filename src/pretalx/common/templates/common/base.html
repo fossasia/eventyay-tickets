@@ -92,7 +92,13 @@
         <section class="card" id="main">
             {% if request.event and request.user.is_authenticated and not is_html_export %}
                 <div class="user-row">
-                    <div class="pull-right">
+                    {% url "cfp:event.user.view" event=request.event.slug as userurl %}
+                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
+                    <div>
+                        You are logged in as <a {{ attr }}>{{ nick }}</a>.
+                    </div>
+                    {% endblocktrans %}
+                    <div>
                         {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
                         {% if can_see_orga_area %}
                         <a href="{{ request.event.orga_urls.base }}">{% trans "Orga area" %}</a> &middot;
@@ -102,10 +108,6 @@
                         </a> &middot;
                         <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
                     </div>
-                    {% url "cfp:event.user.view" event=request.event.slug as userurl %}
-                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
-                        You are logged in as <a {{ attr }}>{{ nick }}</a>.
-                    {% endblocktrans %}
                 </div>
             {% endif %}
             <div class="content">
