@@ -438,17 +438,18 @@ class InvitationView(FormView):
         event = permission.event
 
         if perm:
-            if perm.is_orga:
-                messages.info(self.request, _('Oh, it seems you were already part of this team.'))
-                permission.delete()
-                permission = None
-            else:
-                permission = perm
-        if permission:
-            permission.user = user
-            permission.save()
-            permission.event.log_action('pretalx.invite.orga.accept', person=user, orga=True)
-            messages.info(self.request, _('You are now part of the event team!'))
+            if permission.is_orga:
+                perm.is_orga = True
+            if permission.is_reviewer:
+                perm.is_reviewer = True
+            perm.save()
+            permission.delete()
+            permission = perm
+
+        permission.user = user
+        permission.save()
+        permission.event.log_action('pretalx.invite.orga.accept', person=user, orga=True)
+        messages.info(self.request, _('You are now part of the event team!'))
 
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect(event.orga_urls.base)
