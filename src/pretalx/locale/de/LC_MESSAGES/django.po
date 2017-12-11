@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-05 18:49-0600\n"
-"PO-Revision-Date: 2017-12-06 01:49+0100\n"
+"POT-Creation-Date: 2017-12-11 06:55-0600\n"
+"PO-Revision-Date: 2017-12-11 13:56+0100\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -656,7 +656,7 @@ msgstr "Diese Daten werden neben deiner Einreichung im Programm angezeigt."
 #: pretalx/orga/templates/orga/settings/mail.html:13
 #: pretalx/orga/templates/orga/settings/review.html:70
 #: pretalx/orga/templates/orga/settings/room_form.html:18
-#: pretalx/orga/templates/orga/speaker/form.html:28
+#: pretalx/orga/templates/orga/speaker/form.html:30
 #: pretalx/orga/templates/orga/submission/content.html:44
 #: pretalx/orga/templates/orga/submission/review.html:56
 #: pretalx/orga/templates/orga/submission/review.html:76
@@ -1156,13 +1156,13 @@ msgstr ""
 #: pretalx/orga/templates/orga/settings/form.html:38
 #: pretalx/orga/templates/orga/settings/mail.html:18
 #: pretalx/orga/templates/orga/settings/room_form.html:20
-#: pretalx/orga/templates/orga/speaker/form.html:31
+#: pretalx/orga/templates/orga/speaker/form.html:33
 #: pretalx/orga/templates/orga/submission/content.html:73
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:444
-#: pretalx/orga/views/event.py:450
+#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:491
+#: pretalx/orga/views/event.py:497
 msgid "Your changes have been saved."
 msgstr "Deine Änderungen wurden gespeichert."
 
@@ -1176,6 +1176,10 @@ msgstr ""
 msgid "Huh. We had trouble saving your input – Please see below for details. 🠯"
 msgstr ""
 "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr. 🠯"
+
+#: pretalx/common/phrases.py:53
+msgid "You do not have permission to perform this action."
+msgstr "Dir fehlen Zugriffsrechte für diese Aktion."
 
 #: pretalx/common/templates/403.html:20
 msgid "Permission denied"
@@ -1883,7 +1887,7 @@ msgid "CfP"
 msgstr "CfP"
 
 #: pretalx/orga/templates/orga/base.html:124
-#: pretalx/orga/templates/orga/speaker/form.html:8
+#: pretalx/orga/templates/orga/speaker/form.html:10
 #: pretalx/orga/templates/orga/speaker/list.html:20
 msgid "Submissions"
 msgstr "Einreichungen"
@@ -2605,18 +2609,18 @@ msgid_plural "Pending Invitations"
 msgstr[0] "Ausstehende Einladung"
 msgstr[1] "Ausstehende Einladungen"
 
-#: pretalx/orga/templates/orga/speaker/form.html:6
+#: pretalx/orga/templates/orga/speaker/form.html:8
 msgid "submissions"
 msgstr "Einreichungen"
 
-#: pretalx/orga/templates/orga/speaker/form.html:6
+#: pretalx/orga/templates/orga/speaker/form.html:8
 #: pretalx/orga/templates/orga/submission/list.html:13
 msgid "submission"
 msgid_plural "submissions"
 msgstr[0] "Einreichung"
 msgstr[1] "Einreichungen"
 
-#: pretalx/orga/templates/orga/speaker/form.html:8
+#: pretalx/orga/templates/orga/speaker/form.html:10
 msgid "Submission"
 msgstr "Einreichung"
 
@@ -2883,7 +2887,33 @@ msgstr ""
 msgid "Yay! We saved your changes."
 msgstr "Jupp, alle Änderungen wurden gespeichert."
 
-#: pretalx/orga/views/event.py:191
+#: pretalx/orga/views/event.py:178
+#, python-brace-format
+msgid ""
+"Hi!\n"
+"\n"
+"You have been added to the organizer team of {event}!\n"
+"\n"
+"We are happy to have you on the team,\n"
+"The {event} orga crew"
+msgstr ""
+"Hi!\n"
+"\n"
+"Du wurdest zum Orga--Team ({event}) eingeladen!\n"
+"\n"
+"Wir freuen uns, dich dabei zu haben.\n"
+"Die {event}-Orga"
+
+#: pretalx/orga/views/event.py:184
+#, python-brace-format
+msgid "You have been added to the organizer team of {event}"
+msgstr "Du wurdest zum {event}-Orga-Team hinzugefügt"
+
+#: pretalx/orga/views/event.py:189
+msgid "The user already existed and is now part of the orga."
+msgstr "Diese Person kannten wir schon; jetzt ist sie als Orga markiert."
+
+#: pretalx/orga/views/event.py:204
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your team - more team members help distribute "
@@ -2892,7 +2922,7 @@ msgstr ""
 "<{email}> wurde zum Orga-Team eingeladen. Mehr Orga heißt weniger Arbeit für "
 "die Einzelnen - yay!"
 
-#: pretalx/orga/views/event.py:197
+#: pretalx/orga/views/event.py:212
 #, python-brace-format
 msgid ""
 "<{email}> had already been invited – we've resent the invitation instead :)"
@@ -2900,7 +2930,7 @@ msgstr ""
 "<{email}> wurde schon eingeladen – wir haben die Einladung noch mal "
 "verschickt :)"
 
-#: pretalx/orga/views/event.py:200
+#: pretalx/orga/views/event.py:215
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2923,20 +2953,20 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/event.py:208
+#: pretalx/orga/views/event.py:223
 #, python-brace-format
 msgid "You have been invited to the orga crew of {event}"
 msgstr "Du wurdest zur \"{event}\"-Orga eingeladen"
 
-#: pretalx/orga/views/event.py:263
+#: pretalx/orga/views/event.py:302
 msgid "We had trouble saving your input."
 msgstr "Oh :( Wir konnten deine Änderungen leider nicht speichern."
 
-#: pretalx/orga/views/event.py:267
+#: pretalx/orga/views/event.py:306
 msgid "Your settings have been saved."
 msgstr "Deine Einstellungen wurden gespeichert."
 
-#: pretalx/orga/views/event.py:290
+#: pretalx/orga/views/event.py:330
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2953,20 +2983,20 @@ msgstr ""
 "Wir freuen uns, dich dabei zu haben.\n"
 "Die {event}-Orga"
 
-#: pretalx/orga/views/event.py:296
+#: pretalx/orga/views/event.py:336
 #, python-brace-format
 msgid "You have been added to the review team of {event}"
 msgstr "Du wurdest zum {event}-Review-Team hinzugefügt"
 
-#: pretalx/orga/views/event.py:301
+#: pretalx/orga/views/event.py:341
 msgid "The user already existed and is now a reviewer."
 msgstr "Diese Person kannten wir schon; jetzt ist sie als Reviewer markiert."
 
-#: pretalx/orga/views/event.py:303
+#: pretalx/orga/views/event.py:343
 msgid "You successfully made yourself a reviewer!"
 msgstr "Du hast dich erfolgreich zum Review-Team hinzugefügt! ;)"
 
-#: pretalx/orga/views/event.py:318
+#: pretalx/orga/views/event.py:359
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -2989,12 +3019,12 @@ msgstr ""
 "Wir freuen uns auf dich\n"
 "Die {event} Orga (außer dir)"
 
-#: pretalx/orga/views/event.py:326
+#: pretalx/orga/views/event.py:367
 #, python-brace-format
 msgid "You have been invited to the reviewer team of {event}"
 msgstr "Du wurdest zum {event}-Review-Team eingeladen"
 
-#: pretalx/orga/views/event.py:334
+#: pretalx/orga/views/event.py:375
 #, python-brace-format
 msgid ""
 "<{email}> has been invited to your reviewer team - more reviewers help gain "
@@ -3003,34 +3033,30 @@ msgstr ""
 "<{email}> wurde zum Review-Team eingeladen. Ein größeres Team heißt mehr "
 "Reviews, mehr Meinungen, mehr Perspektiven - yay!"
 
-#: pretalx/orga/views/event.py:396
-msgid "Oh, it seems you were already part of this team."
-msgstr "Oh, du warst bereits im Team :)"
-
-#: pretalx/orga/views/event.py:405
+#: pretalx/orga/views/event.py:452
 msgid "You are now part of the event team!"
 msgstr "Du bist jetzt Teil des Team – Willkommen!"
 
-#: pretalx/orga/views/event.py:454
+#: pretalx/orga/views/event.py:501
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
 
-#: pretalx/orga/views/event.py:468
+#: pretalx/orga/views/event.py:515
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Raum gelöscht … hoffentlich war da niemand mehr drin."
 
-#: pretalx/orga/views/event.py:470
+#: pretalx/orga/views/event.py:517
 msgid "There is or was a talk scheduled in this room. It cannot be deleted."
 msgstr ""
 "Es findet oder fand ein Talk in diesem Raum statt, deshalb kann er nicht "
 "gelöscht werden."
 
-#: pretalx/orga/views/event.py:504
+#: pretalx/orga/views/event.py:551
 msgid "You are not allowed to perform this action, sorry."
 msgstr "Das darfst du nicht, sorry."
 
-#: pretalx/orga/views/event.py:508
+#: pretalx/orga/views/event.py:555
 msgid "Saved!"
 msgstr "Gespeichert!"
 
@@ -3702,6 +3728,9 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
+
+#~ msgid "Oh, it seems you were already part of this team."
+#~ msgstr "Oh, du warst bereits im Team :)"
 
 #~ msgid "total reviews :("
 #~ msgstr "Reviews insgesamt :("
