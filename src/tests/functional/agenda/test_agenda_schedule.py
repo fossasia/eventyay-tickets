@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import quote
 
 import pytest
 from django.urls import reverse
@@ -158,7 +159,7 @@ def test_speaker_page(client, event, speaker, slot):
 
 @pytest.mark.django_db
 def test_schedule_page(client, event, speaker, slot, schedule):
-    response = client.get(reverse('agenda:schedule', kwargs={'event': event.slug}), follow=True)
+    response = client.get(event.urls.schedule, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
@@ -168,11 +169,13 @@ def test_versioned_schedule_page(client, event, speaker, slot, schedule):
     event.wip_schedule.slots.all().delete()
     event.release_schedule('new schedule')
 
-    response = client.get(reverse('agenda:schedule', kwargs={'event': event.slug}), follow=True)
+    response = client.get(event.urls.schedule, follow=True)
     assert slot.submission.title not in response.content.decode()
 
-    response = client.get(reverse('agenda:versioned-schedule', kwargs={
-        'event': event.slug, 'version': schedule.version
-    }), follow=True)
+    response = client.get(schedule.urls.public, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
+
+    version = quote(schedule.version)
+    redirected_response = client.get(f'/{event.slug}/schedule?version={version}', follow=True)
+    assert redirected_response._request.path == response._request.path

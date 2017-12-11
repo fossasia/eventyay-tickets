@@ -4,6 +4,7 @@ from pretalx.event.models.event import SLUG_CHARS
 
 from .views import feed, location, schedule, speaker, talk
 
+
 def get_schedule_urls(regex_prefix, name_prefix=""):
     """
     given a prefix (e.g. /schedule) generate matching schedule-ruls (e.g. /schedule.json, /schedule/feed.xml, ...)
