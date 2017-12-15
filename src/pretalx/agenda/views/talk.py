@@ -11,11 +11,11 @@ from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, FormView
 
-from pretalx.agenda.forms import FeedbackForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.phrases import phrases
 from pretalx.schedule.models import TalkSlot
+from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import Feedback, Submission
 
 
