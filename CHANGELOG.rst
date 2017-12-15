@@ -16,6 +16,7 @@ Breaking Changes
 Features
 ~~~~~~~~
 
+- Speakers can now be marked as "arrived". (#243)
 
 
 Fixed bugs
