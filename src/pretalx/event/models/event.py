@@ -169,6 +169,8 @@ class Event(LogMixin, models.Model):
         invite_reviewer = '{review_settings}/add'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
+        schedule_export = '{base}/schedule/export'
+        schedule_export_trigger = '{base}/schedule/export/trigger'
         release_schedule = '{schedule}/release'
         reset_schedule = '{schedule}/reset'
         toggle_schedule = '{schedule}/toggle'

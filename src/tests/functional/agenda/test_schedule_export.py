@@ -120,6 +120,17 @@ def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
+def test_schedule_orga_trigger_export(mocker, orga_client, event):
+    from pretalx.agenda.tasks import export_schedule_html
+
+    mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
+
+    response = orga_client.get(event.orga_urls.schedule_export_trigger, follow=True)
+    assert response.status_code == 200
+    export_schedule_html.apply_async.assert_called_once_with(kwargs={'event_id': event.id})
+
+
+@pytest.mark.django_db
 def test_html_export(event, other_event, slot, past_slot):
     from django.core.management import call_command
     from django.conf import settings

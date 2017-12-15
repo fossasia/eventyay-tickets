@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.models import Availability
@@ -28,6 +29,26 @@ class ScheduleView(PermissionRequired, TemplateView):
         ctx['active_schedule'] = self.request.event.schedules.get(version=version) if version else self.request.event.wip_schedule
         ctx['release_form'] = ScheduleReleaseForm()
         return ctx
+
+
+class ScheduleExportView(PermissionRequired, TemplateView):
+    template_name = 'orga/schedule/export.html'
+    permission_required = 'orga.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
+
+
+class ScheduleExportTriggerView(PermissionRequired, View):
+    permission_required = 'orga.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get(self, request, event):
+        export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
+        messages.success(self.request, _('A new export is beging generated and will be avialiable soon.'))
+        return redirect(self.request.event.orga_urls.schedule_export)
 
 
 class ScheduleReleaseView(PermissionRequired, View):

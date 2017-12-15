@@ -10,6 +10,15 @@
             {% trans "Editor" %}
           </a>
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link {% if "schedule.export" in url_name %}active{% endif %}"
+          href="{{ request.event.orga_urls.schedule_export }}"
+        >
+            {% trans "Export" %}
+        </a>
+      </li>
+    </ul>
 
     {% block schedule_content %}
     {% endblock %}
