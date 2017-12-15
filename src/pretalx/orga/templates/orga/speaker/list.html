@@ -18,6 +18,7 @@
                 <th>{% trans "Name" %}</th>
                 <th>{% trans "Talks" %}</th>
                 <th>{% trans "Submissions" %}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,15 @@
                     <td><a href="{% url "orga:speakers.view" event=request.event.slug pk=profile.user.pk %}">{{ profile.user.get_display_name }}</a></td>
                     <td>{{ profile.talks.count }}</td>
                     <td>{{ profile.submissions.count }}</td>
+                    <td>
+                        <a class="btn btn-xs {% if profile.has_arrived %}btn-success{% else %}btn-info{% endif %}" href="{% url "orga:speakers.arrived" event=request.event.slug pk=profile.user.pk %}?from=list">
+                            {% if profile.has_arrived %}
+                                {% trans "Mark speaker as not arrived" %}
+                            {% else %}
+                                {% trans "Mark speaker as arrived" %}
+                            {% endif %}
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
