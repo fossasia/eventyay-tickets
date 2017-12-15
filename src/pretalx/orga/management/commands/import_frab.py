@@ -105,6 +105,7 @@ class Command(BaseCommand):
         slot, _ = TalkSlot.objects.get_or_create(
             submission=sub,
             schedule=event.wip_schedule,
+            is_visible=True,
         )
         slot.room = room
         slot.is_visible = True
