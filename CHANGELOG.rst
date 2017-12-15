@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.2.2
+vx.x.x
 ------
 
-*Released on 2017-12-11*
+*Released on 201x-xx-xx*
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
@@ -21,9 +21,7 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 
-- Reviewers could not view speaker pages.
-- Inviting somebody twice did not issue a second invitation object.
-- Somebody who was reviewer first could not be added to the organizer team.
+- Non-superusers could not access the email sending form.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
