@@ -4,8 +4,8 @@
 {% block content %}
 
     <legend>
-        {{ speakers.count }}
-        {% blocktrans trimmed count count=speakers.count %}
+        {{ page_obj.paginator.count }}
+        {% blocktrans trimmed count count=page_obj.paginator.count %}
         speaker
         {% plural %}
         speakers
