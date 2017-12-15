@@ -27,15 +27,17 @@ class Command(BaseCommand):
         root = tree.getroot()
 
         event_data = root.find('conference')
-        event = Event(
-            name=event_data.find('title').text,
-            slug=event_data.find('acronym').text,
-            date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
-            date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
-        )
-        event.save()
+        event = Event.objects.filter(slug__iexact=event_data.find('acronym').text).first()
+        if not event:
+            event = Event(
+                name=event_data.find('title').text,
+                slug=event_data.find('acronym').text,
+                date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
+                date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
+            )
+            event.save()
         for user in User.objects.filter(is_superuser=True):
-            EventPermission.objects.create(event=event, user=user, is_orga=True)
+            EventPermission.objects.get_or_create(event=event, user=user, is_orga=True)
 
         for day in root.findall('day'):
             for rm in day.findall('room'):
@@ -71,24 +73,27 @@ class Command(BaseCommand):
         with suppress(AttributeError):
             optout = talk.find('recording').find('optout').text == 'true'
 
-        if not Submission.objects.filter(code__iexact=talk.attrib['id']).exists():
+        code = None
+        if Submission.objects.filter(code__iexact=talk.attrib['id'], event=event).exists() or not Submission.objects.filter(code__iexact=talk.attrib['id']).exists():
             code = talk.attrib['id']
-        elif not Submission.objects.filter(code__iexact=talk.attrib['guid'][:16]).exists():
+        elif Submission.objects.filter(code__iexact=talk.attrib['guid'][:16], event=event).exists() or not Submission.objects.filter(code__iexact=talk.attrib['guid'][:16]).exists():
             code = talk.attrib['guid'][:16]
         else:
             code = None
 
-        sub = Submission.objects.create(
+        sub, _ = Submission.objects.get_or_create(
             event=event,
             code=code,
             submission_type=sub_type,
-            title=talk.find('title').text,
-            description=talk.find('description').text,
-            abstract=talk.find('abstract').text,
-            content_locale=talk.find('language').text or 'en',
-            do_not_record=optout,
-            state=SubmissionStates.CONFIRMED,
         )
+        sub.title = talk.find('title').text
+        sub.description = talk.find('description').text
+        sub.abstract = talk.find('abstract').text
+        sub.content_locale = talk.find('language').text or 'en'
+        sub.do_not_record = optout
+        sub.state = SubmissionStates.CONFIRMED
+        sub.save()
+
         for person in talk.find('persons').findall('person'):
             user = User.objects.filter(nick=person.text[:60]).first()
             if not user:
@@ -97,11 +102,12 @@ class Command(BaseCommand):
                 SpeakerProfile.objects.create(user=user, event=event)
             sub.speakers.add(user)
 
-        TalkSlot.objects.create(
+        slot, _ = TalkSlot.objects.get_or_create(
             submission=sub,
             schedule=event.wip_schedule,
-            room=room,
-            is_visible=True,
-            start=start,
-            end=end
         )
+        slot.room = room
+        slot.is_visible = True
+        slot.start = start
+        slot.end = end
+        slot.save()
