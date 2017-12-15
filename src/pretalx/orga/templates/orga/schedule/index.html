@@ -1,4 +1,4 @@
-{% extends "orga/base.html" %}
+{% extends "orga/schedule/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -17,7 +17,7 @@
     {% endcompress %}
 {% endblock %}
 
-{% block content %}
+{% block schedule_content %}
     {% if not request.event.rooms.count %}
         <div class="alert alert-warning schedule-alert">
             {% trans "You can start planning your schedule once you have configured some rooms for talks to take place in." %}

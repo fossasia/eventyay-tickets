@@ -1,0 +1,16 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block content %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "schedule.main" in url_name %}active{% endif %}"
+            href="{{ request.event.orga_urls.schedule }}"
+          >
+            {% trans "Editor" %}
+          </a>
+      </li>
+
+    {% block schedule_content %}
+    {% endblock %}
+{% endblock %}
