@@ -15,7 +15,7 @@ from pretalx.event.models import Event
 @app.task()
 def regenerate_css(event_id: int):
     event = Event.objects.get(pk=event_id)
-    local_apps = ['cfp', 'orga']
+    local_apps = ['agenda', 'cfp', 'orga']
 
     if not event.primary_color:
         for local_app in local_apps:

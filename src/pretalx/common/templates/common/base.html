@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     {% if request.event and request.event.settings.cfp_css_file %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ request.event.settings.agenda_css_file }}"/>
     {% else %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
