@@ -12,12 +12,11 @@ from django.views.generic import (
     DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
 
-from pretalx.cfp.forms.submissions import (
-    InfoForm, QuestionsForm, ResourceForm, SubmissionInvitationForm,
-)
+from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
+from pretalx.submission.forms import InfoForm, QuestionsForm, ResourceForm
 from pretalx.submission.models import Resource, Submission, SubmissionStates
 
 

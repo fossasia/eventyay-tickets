@@ -14,7 +14,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
 
-from pretalx.cfp.forms.submissions import InfoForm, QuestionsForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
@@ -22,6 +21,7 @@ from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
+from pretalx.submission.forms import InfoForm, QuestionsForm
 from pretalx.submission.models import Answer, QuestionVariant
 
 FORMS = [
