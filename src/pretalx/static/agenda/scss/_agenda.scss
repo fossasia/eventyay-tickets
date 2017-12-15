@@ -64,6 +64,7 @@
                     color: rgba(0, 0, 0, 0.87);
                     display: block;
                     padding: 5px 10px;
+                    padding-top: 0;
                     position: absolute;
                     margin: 0 8px;
                     width: calc(100% - 16px);
@@ -81,11 +82,11 @@
                         }
 
                         .talk-title {
-                            line-height: 28px;
+                            line-height: 26px;
                             font-weight: 500;
                         }
                         .talk-speakers {
-                            line-height: 28px;
+                            line-height: 26px;
                             font-style: italic;
                         }
                     }
@@ -95,6 +96,7 @@
                         background-color: $gray-200;
                         height: auto !important;
                         z-index: 6;
+                        box-shadow: 0 3px 3px 0 rgba(0,0,0,0.16) ,0 5px 8px 0 rgba(0,0,0,0.12);
 
                         &::before {
                             position: absolute;
