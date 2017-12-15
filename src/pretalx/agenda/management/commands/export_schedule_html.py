@@ -1,3 +1,5 @@
+import os.path
+
 from bakery.management.commands.build import Command as BakeryBuildCommand
 from django.conf import settings
 from django.core.management import call_command
@@ -15,6 +17,10 @@ class Command(BakeryBuildCommand):
         super().add_arguments(parser)
         parser.add_argument('event', type=str)
 
+    @classmethod
+    def get_output_dir(cls, event):
+        return os.path.join(settings.HTMLEXPORT_ROOT, event.slug)
+
     def handle(self, *args, **options):
         try:
             event = Event.objects.get(slug__iexact=options['event'])
@@ -27,6 +33,8 @@ class Command(BakeryBuildCommand):
         settings.COMPRESS_ENABLED = True
         settings.COMPRESS_OFFLINE = True
         call_command('rebuild')  # collect static files and combine/compress them
+
+        settings.BUILD_DIR = self.get_output_dir(event)
 
         super().handle(*args, **options)
 

@@ -93,7 +93,7 @@ def test_html_export_language(event, slot):
     event.save()
     call_command('export_schedule_html', event.slug)
 
-    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule/index.html')).read()
+    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')).read()
     assert 'Kontakt' in schedule_html
 
 
@@ -115,19 +115,19 @@ def test_html_export(event, other_event, slot, past_slot):
     ]
 
     for path in paths:
-        full_path = os.path.join(settings.HTMLEXPORT_ROOT, path)
+        full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test', path)
         assert os.path.exists(full_path)
 
     assert not os.path.exists(os.path.join(settings.HTMLEXPORT_ROOT, 'test2')), "wrong event exported"
 
     # views and templates are the same for export and online viewing, so we just need a very basic test here
-    talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/talk/{past_slot.submission.code}/index.html')).read()
+    talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/talk/{past_slot.submission.code}/index.html')).read()
     assert talk_html.count(past_slot.submission.title) >= 2
 
     speaker = slot.submission.speakers.all()[0]
-    speaker_html = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/speaker/{speaker.code}/index.html')).read()
+    speaker_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/speaker/{speaker.code}/index.html')).read()
     assert speaker.name in speaker_html
 
-    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule/index.html')).read()
+    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')).read()
     assert 'Contact us' in schedule_html  # locale
     assert past_slot.submission.title in schedule_html
