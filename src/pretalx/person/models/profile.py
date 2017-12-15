@@ -7,11 +7,6 @@ from pretalx.common.urls import EventUrls
 
 
 class SpeakerProfile(LogMixin, models.Model):
-    biography = models.TextField(
-        verbose_name=_('Biography'),
-        help_text=_('You can use markdown here.'),
-        null=True, blank=True,
-    )
     user = models.ForeignKey(
         to='person.User',
         related_name='profiles',
@@ -22,6 +17,15 @@ class SpeakerProfile(LogMixin, models.Model):
         to='event.Event',
         related_name='+',
         on_delete=models.CASCADE,
+    )
+    biography = models.TextField(
+        verbose_name=_('Biography'),
+        help_text=_('You can use markdown here.'),
+        null=True, blank=True,
+    )
+    has_arrived = models.BooleanField(
+        default=False,
+        verbose_name=_('The speaker has arrived'),
     )
 
     class urls(EventUrls):
