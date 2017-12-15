@@ -1,18 +1,21 @@
 pretalx |logo|
 ==============
 
-.. image:: https://travis-ci.org/pretalx/pretalx.svg?branch=master
+.. image:: https://img.shields.io/travis/pretalx/pretalx.svg
    :target: https://travis-ci.org/pretalx/pretalx
    :alt: Continuous integration
 
-.. image:: https://codecov.io/gh/pretalx/pretalx/branch/master/graph/badge.svg
+.. image:: https://img.shields.io/readthedocs/pretalx.svg
+   :target: https://docs.pretalx.org/en/latest/
+   :alt: Documentation
+
+.. image:: https://img.shields.io/codecov/c/github/pretalx/pretalx.svg?colorB=1c4a3b
    :target: https://codecov.io/gh/pretalx/pretalx
    :alt: Coverage
 
-
-.. image:: https://readthedocs.org/projects/pretalx/badge/?version=latest
-   :target: https://docs.pretalx.org/en/latest/
-   :alt: Documentation
+.. image:: https://img.shields.io/pypi/v/pretalx.svg?colorB=1c4a3b
+   :target: https://pypi.python.org/pypi/pretalx
+   :alt: PyPI
 
 `pretalx` provides a conference planning tool – read our extensive `feature
 list`_ in our docs to get a better idea of what `pretalx` can do for you,
@@ -21,11 +24,11 @@ contents for a conference with up to 100 talks.
 
 Project status
 --------------
-`pretalx` is under active development, but nevertheless, it's production ready
-and has already been used in several conferences. It supports everything
-required for talk submission, speaker communication, and scheduling. You can
-see our supported features in the `feature list`_ in our documentation, and our
-issues_.
+`pretalx` is under active development. It is production ready and has already
+been used in several conferences. It supports everything required for talk
+submission, speaker communication, and scheduling. You can see our supported
+features in the `feature list`_ in our documentation, and our planned features
+in our open issues_.
 
 `pretalx` has regular releases – you can download the latest releases with
 their respective changelogs on GitHub_ or install pretalx via PyPI_.
@@ -40,11 +43,11 @@ Check our `developer documentation`_ on how to set up pretalx.
 License
 -------
 We publish `pretalx` under the terms of the Apache 2 License. See the LICENSE
-file for further information..
+file for further information.
 
 The primary maintainer of this project is rixx_.
-See the AUTHORS file for a list of all the awesome folks who contributed to
-this project.
+See the CONTRIBUTORS file for a list of all the awesome folks who contributed
+to this project.
 
 
 .. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon-32x32.png
