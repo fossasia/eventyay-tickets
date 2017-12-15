@@ -9,6 +9,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
 from django.utils.translation import override, ugettext_lazy as _
 
+from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 from pretalx.mail.models import QueuedMail
@@ -71,6 +72,8 @@ class Schedule(LogMixin, models.Model):
             del wip_schedule.event.wip_schedule
         with suppress(AttributeError):
             del wip_schedule.event.current_schedule
+
+        export_schedule_html.apply_async(kwargs={'event_id': self.event.id})
 
         return self, wip_schedule
 
