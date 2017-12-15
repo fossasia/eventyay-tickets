@@ -1,5 +1,5 @@
 import time
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
 from django.contrib.sessions.middleware import (
@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import (
 from django.core.exceptions import DisallowedHost
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import cookie_date
@@ -46,10 +46,6 @@ class MultiDomainMiddleware:
         request.host = domain
         request.port = int(port) if port else None
 
-        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
-        if domain == default_domain:
-            return
-
         event_slug = resolve(request.path).kwargs.get('event')
         if event_slug:
             event = get_object_or_404(Event, slug__iexact=event_slug)
@@ -60,6 +56,13 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return
+                else:
+                    request.needs_redirect = True
+                    return redirect(urljoin(event.settings.custom_domain, request.path))
+
+        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+        if domain == default_domain:
+            return
 
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return
@@ -67,8 +70,8 @@ class MultiDomainMiddleware:
         raise DisallowedHost(f'Unknown host: {host}')
 
     def __call__(self, request):
-        self.process_request(request)
-        return self.get_response(request)
+        response = self.process_request(request)
+        return response or self.get_response(request)
 
 
 class SessionMiddleware(BaseSessionMiddleware):

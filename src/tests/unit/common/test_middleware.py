@@ -1,4 +1,3 @@
-from datetime import date
 from urllib.parse import urlparse
 
 import pytest
@@ -31,12 +30,11 @@ def test_event_on_custom_domain(event_on_foobar, client):
 
 
 @pytest.mark.django_db
-@pytest.mark.skipif(date.today() < date(2017, 12, 15), reason='Not implemented yet')
 def test_event_with_custom_domain_on_main_domain(event_on_foobar, client):
     """ redirect from common domain to custom domain """
     r = client.get(f'/{event_on_foobar.slug}/', HTTP_HOST='example.com')
     assert r.status_code == 302
-    assert r['Location'] == f'http://foobar/{event_on_foobar.slug}/'
+    assert r['Location'] == f'https://foobar/{event_on_foobar.slug}/'
 
 
 @pytest.mark.django_db
