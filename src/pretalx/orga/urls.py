@@ -77,6 +77,7 @@ urlpatterns = [
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),
         url('^speakers/(?P<pk>[0-9]+)$', speaker.SpeakerDetail.as_view(), name='speakers.view'),
         url('^speakers/(?P<pk>[0-9]+)/edit$', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
+        url('^speakers/(?P<pk>[0-9]+)/toggle-arrived$', speaker.SpeakerToggleArrived.as_view(), name='speakers.arrived'),
 
         url('^reviews$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
 

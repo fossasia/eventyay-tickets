@@ -1,6 +1,7 @@
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 
 from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
@@ -73,3 +74,21 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             'user': self.get_object(),
         })
         return ret
+
+
+class SpeakerToggleArrived(PermissionRequired, View):
+    permission_required = 'orga.change_speaker'
+
+    def get_object(self):
+        return get_object_or_404(SpeakerProfile, event=self.request.event, user_id=self.kwargs['pk'])
+
+    def dispatch(self, request, event, pk):
+        profile = self.get_object()
+        profile.has_arrived = not profile.has_arrived
+        profile.save()
+        if request.GET.get('from') == 'list':
+            return redirect(reverse('orga:speakers.list', kwargs={'event': self.kwargs['event']}))
+        return redirect(reverse(
+            'orga:speakers.view',
+            kwargs=self.kwargs,
+        ))

@@ -36,6 +36,25 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
+    assert speaker.profiles.first().has_arrived is False
+    response = orga_client.get(
+        reverse('orga:speakers.arrived', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.first().has_arrived is True
+    response = orga_client.get(
+        reverse('orga:speakers.arrived', kwargs={'event': event.slug, 'pk': speaker.pk}) + '?from=list',
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.first().has_arrived is False
+
+
+@pytest.mark.django_db
 def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission):
     response = review_client.post(
         reverse('orga:speakers.edit', kwargs={'event': event.slug, 'pk': speaker.pk}),
