@@ -10,7 +10,7 @@ def test_event_serializer(event):
     data = EventSerializer(event).data
     assert data.keys() == {
         'name', 'slug', 'subtitle', 'is_public', 'date_from', 'date_to',
-        'timezone',
+        'timezone', 'html_export_url',
     }
 
 

@@ -13,7 +13,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import settings_hierarkey
-from pretalx.common.urls import EventUrls
+from pretalx.common.urls import EventUrls, get_base_url
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
@@ -194,6 +194,10 @@ class Event(LogMixin, models.Model):
     def named_locales(self) -> list:
         enabled = set(self.locale_array.split(","))
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
+
+    @property
+    def html_export_url(self) -> str:
+        return get_base_url(self) + self.urls.html_export
 
     def save(self, *args, **kwargs):
         was_created = not bool(self.pk)

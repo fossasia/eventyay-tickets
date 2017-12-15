@@ -9,5 +9,5 @@ class EventSerializer(ModelSerializer):
         model = Event
         fields = (
             'name', 'slug', 'subtitle', 'is_public', 'date_from', 'date_to',
-            'timezone',
+            'timezone', 'html_export_url'
         )
