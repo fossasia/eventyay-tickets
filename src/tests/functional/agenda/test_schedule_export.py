@@ -98,6 +98,28 @@ def test_html_export_language(event, slot):
 
 
 @pytest.mark.django_db
+def test_schedule_export_schedule_html_task(mocker, orga_client, event):
+    mocker.patch('django.core.management.call_command')
+
+    from pretalx.agenda.tasks import export_schedule_html
+    export_schedule_html.apply_async(kwargs={'event_id': event.id})
+
+    from django.core.management import call_command
+    call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
+
+
+@pytest.mark.django_db
+def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event):
+    mocker.patch('django.core.management.call_command')
+
+    from pretalx.agenda.tasks import export_schedule_html
+    export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': False})
+
+    from django.core.management import call_command
+    call_command.assert_called_with('export_schedule_html', event.slug)
+
+
+@pytest.mark.django_db
 def test_html_export(event, other_event, slot, past_slot):
     from django.core.management import call_command
     from django.conf import settings

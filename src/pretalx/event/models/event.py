@@ -139,6 +139,7 @@ class Event(LogMixin, models.Model):
         ical = '{schedule}.ics'
         feed = '{schedule}/feed.xml'
         location = '{schedule}/location'
+        html_export = f'{settings.MEDIA_URL}/{{self.slug}}/schedule_{{self.slug}}.zip'
 
     class orga_urls(EventUrls):
         create = '/orga/event/new'
