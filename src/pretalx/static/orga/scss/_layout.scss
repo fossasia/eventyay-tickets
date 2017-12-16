@@ -127,6 +127,11 @@ footer {
 .fa.override {
   padding-left: 4px;
 }
+.history-sidebar {
+  max-height: 80vh;
+  overflow-y: scroll;
+  border-bottom: 1px solid rgba(0,0,0,0.125);
+}
 @include media-breakpoint-down(sm) {
   .container-fluid {
     padding: 0;
