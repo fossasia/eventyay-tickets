@@ -103,7 +103,7 @@ def test_html_export(event, other_event, slot, past_slot):
     from django.conf import settings
     import os.path
 
-    call_command('export_schedule_html', event.slug)
+    call_command('export_schedule_html', event.slug, '--zip')
 
     paths = [
         'static/common/img/logo.svg',
@@ -117,6 +117,9 @@ def test_html_export(event, other_event, slot, past_slot):
     for path in paths:
         full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test', path)
         assert os.path.exists(full_path)
+
+    full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test.zip')
+    assert os.path.exists(full_path)
 
     assert not os.path.exists(os.path.join(settings.HTMLEXPORT_ROOT, 'test2')), "wrong event exported"
 
