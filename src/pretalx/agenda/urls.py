@@ -34,7 +34,7 @@ urlpatterns = [
         url('^location/$', location.LocationView.as_view(), name='location'),
         url('^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
         url('^talk/(?P<slug>\w+)/feedback/$', talk.FeedbackView.as_view(), name='feedback'),
-        url('^talk/(?P<slug>\w+)/ical/$', talk.SingleICalView.as_view(), name='ical'),
+        url('^talk/(?P<slug>\w+).ics$', talk.SingleICalView.as_view(), name='ical'),
         url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
         url('^speaker/(?P<code>\w+)/talks.ics$', speaker.SpeakerTalksIcalView.as_view(), name='speaker.talks.ical'),
     ])),

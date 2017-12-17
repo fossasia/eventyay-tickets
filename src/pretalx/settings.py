@@ -408,8 +408,13 @@ COMPRESS_CSS_FILTERS = (
 BUILD_DIR = HTMLEXPORT_ROOT
 BAKERY_VIEWS = (
     'pretalx.agenda.views.htmlexport.ExportScheduleView',
+    'pretalx.agenda.views.htmlexport.ExportFrabXmlView',
+    'pretalx.agenda.views.htmlexport.ExportFrabXCalView',
+    'pretalx.agenda.views.htmlexport.ExportFrabJsonView',
+    'pretalx.agenda.views.htmlexport.ExportICalView',
     'pretalx.agenda.views.htmlexport.ExportScheduleVersionsView',
     'pretalx.agenda.views.htmlexport.ExportTalkView',
+    'pretalx.agenda.views.htmlexport.ExportTalkICalView',
     'pretalx.agenda.views.htmlexport.ExportSpeakerView',
 )
 REST_FRAMEWORK = {

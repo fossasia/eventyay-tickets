@@ -1,8 +1,12 @@
+import os
+
 from bakery.views import BuildableDetailView
 
-from pretalx.agenda.views.schedule import ScheduleView
+from django.conf import settings
+
+from pretalx.agenda.views.schedule import ScheduleView, FrabJsonView, FrabXmlView, ICalView, FrabXCalView
 from pretalx.agenda.views.speaker import SpeakerView
-from pretalx.agenda.views.talk import TalkView
+from pretalx.agenda.views.talk import TalkView, SingleICalView
 from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission
@@ -36,6 +40,14 @@ class PretalxExportContextMixin():
         qs = super().get_queryset()
         return qs.filter(event=self._exporting_event)
 
+    def get_file_build_path(self, obj):
+        dir_path, file_name = os.path.split(self.get_url(obj))
+
+        path = os.path.join(settings.BUILD_DIR, dir_path[1:])
+        os.path.exists(path) or os.makedirs(path)
+
+        return os.path.join(path, file_name)
+
 
 # current schedule
 class ExportScheduleView(PretalxExportContextMixin, BuildableDetailView, ScheduleView):
@@ -45,6 +57,52 @@ class ExportScheduleView(PretalxExportContextMixin, BuildableDetailView, Schedul
         return obj.event.urls.schedule
 
 
+class ExportFrabXmlView(PretalxExportContextMixin, BuildableDetailView, FrabXmlView):
+    queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
+
+    def get_url(self, obj):
+        return obj.event.urls.frab_xml
+
+    def get_build_path(self, obj):
+        return self.get_file_build_path(obj)
+
+
+class ExportFrabXCalView(PretalxExportContextMixin, BuildableDetailView, FrabXCalView):
+    queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
+
+    def get_url(self, obj):
+        return obj.event.urls.frab_xcal
+
+    def get_build_path(self, obj):
+        return self.get_file_build_path(obj)
+
+
+class ExportFrabJsonView(PretalxExportContextMixin, BuildableDetailView, FrabJsonView):
+    queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
+
+    def get_url(self, obj):
+        return obj.event.urls.frab_json
+
+    def get_content(self):
+        return self.get(self.request, self._exporting_event).content
+
+    def get_build_path(self, obj):
+        return self.get_file_build_path(obj)
+
+
+class ExportICalView(PretalxExportContextMixin, BuildableDetailView, ICalView):
+    queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
+
+    def get_url(self, obj):
+        return obj.event.urls.ical
+
+    def get_content(self):
+        return self.get(self.request, self._exporting_event).content
+
+    def get_build_path(self, obj):
+        return self.get_file_build_path(obj)
+
+
 # all schedule versions
 class ExportScheduleVersionsView(PretalxExportContextMixin, BuildableDetailView, ScheduleView):
     queryset = Schedule.objects.filter(version__isnull=False)
@@ -52,6 +110,19 @@ class ExportScheduleVersionsView(PretalxExportContextMixin, BuildableDetailView,
 
 class ExportTalkView(PretalxExportContextMixin, BuildableDetailView, TalkView):
     queryset = Submission.objects.filter(slots__schedule__published__isnull=False).distinct()
+
+
+class ExportTalkICalView(PretalxExportContextMixin, BuildableDetailView, SingleICalView):
+    queryset = Submission.objects.filter(slots__schedule__published__isnull=False).distinct()
+
+    def get_url(self, obj):
+        return obj.urls.ical
+
+    def get_content(self):
+        return self.get(self.request, self._exporting_event).content
+
+    def get_build_path(self, obj):
+        return self.get_file_build_path(obj)
 
 
 class ExportSpeakerView(PretalxExportContextMixin, BuildableDetailView, SpeakerView):
