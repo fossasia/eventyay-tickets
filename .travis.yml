@@ -14,6 +14,4 @@ script:
   - pylama
   - isort -rc -c .
   - py.test --cov=pretalx tests/ && codecov
-  - du -hs *
-  - du -hs */*
   - pip list -o --format=columns
