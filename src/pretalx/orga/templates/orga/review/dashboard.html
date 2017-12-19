@@ -62,6 +62,7 @@
     <tbody>
     {% for submission in submissions %}
         {% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
+        {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
         {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
         <tr class="{{ submission.state }}">
             <td>
@@ -84,8 +85,9 @@
                 </a>
             </td>
             <td>
-                {% if can_reject_submission %}
+                {% if can_accept_submission %}
                     <a class="btn btn-primary btn-xs" href="{{ submission.orga_urls.accept }}">{% trans "Accept" %}</a>
+                {% elif can_reject_submission %}
                     <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
                 {% else %}
                     {% include "cfp/event/fragment_state.html" with state=submission.state %}
