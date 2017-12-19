@@ -12,13 +12,12 @@ def _is_cfp_open(event):
     return not _is_in_preparation(event) and (event.cfp.deadline or now()) >= now()
 
 
+def _is_in_review(event):
+    return not _is_cfp_open(event) and not _is_schedule_released(event)
+
+
 def _is_schedule_released(event):
     return event.schedules.count() > 1 and not _is_running(event) and not _is_in_wrapup(event)
-
-
-def _is_in_review(event):
-    is_cfp_closed = not _is_cfp_open(event) and event.cfp.deadline and event.cfp.deadline < now()
-    return is_cfp_closed and not _is_schedule_released(event)
 
 
 def _is_running(event):
@@ -67,7 +66,7 @@ def get_stages(event):
     stages = copy.deepcopy(STAGES)
 
     for stage in STAGES:
-        is_stage_active = in_stage(event, stage)
+        is_stage_active = inactive_state == 'done' and in_stage(event, stage)
         if is_stage_active:
             inactive_state = 'next'
         stages[stage]['state'] = 'active' if is_stage_active else inactive_state
