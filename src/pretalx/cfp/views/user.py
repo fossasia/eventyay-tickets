@@ -92,7 +92,7 @@ class SubmissionViewMixin:
     def get_object(self):
         return get_object_or_404(
             self.request.event.submissions.prefetch_related('answers', 'answers__options'),
-            speakers__in=[self.request.user],
+            speakers__in=[self.request.user] if not self.request.user.is_anonymous else [],
             code__iexact=self.kwargs.get('code'),
         )
 
