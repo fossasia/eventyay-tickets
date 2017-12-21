@@ -84,8 +84,9 @@ class Command(BaseCommand):
         sub, _ = Submission.objects.get_or_create(
             event=event,
             code=code,
-            submission_type=sub_type,
+            defaults={'submission_type': sub_type}
         )
+        sub.submission_type = sub_type
         sub.title = talk.find('title').text
         sub.description = talk.find('description').text
         sub.abstract = talk.find('abstract').text
