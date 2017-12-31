@@ -84,6 +84,28 @@ def test_html_export_event_unknown():
 
 
 @pytest.mark.django_db
+def test_html_export_release(mocker, event):
+    mocker.patch('django.core.management.call_command')
+
+    event.settings.export_html_on_schedule_release = True
+    event.wip_schedule.freeze(name="ohaio means hello")
+
+    from django.core.management import call_command
+    call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
+
+
+@pytest.mark.django_db
+def test_html_export_release_disabled(mocker, event):
+    mocker.patch('django.core.management.call_command')
+
+    event.settings.export_html_on_schedule_release = False
+    event.wip_schedule.freeze(name="ohaio means hello")
+
+    from django.core.management import call_command
+    call_command.assert_not_called()
+
+
+@pytest.mark.django_db
 def test_html_export_language(event, slot):
     from django.core.management import call_command
     from django.conf import settings
