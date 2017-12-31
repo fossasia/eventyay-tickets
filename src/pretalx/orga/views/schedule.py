@@ -4,14 +4,16 @@ from datetime import timedelta
 
 import dateutil.parser
 from django.contrib import messages
-from django.http import JsonResponse, FileResponse
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.agenda.management.commands.export_schedule_html import (
+    Command as ExportScheduleHtml,
+)
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.agenda.management.commands.export_schedule_html import Command as ExportScheduleHtml
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.models import Availability

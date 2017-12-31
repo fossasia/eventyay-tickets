@@ -3,8 +3,6 @@ from shutil import make_archive
 
 from bakery.management.commands.build import Command as BakeryBuildCommand
 from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.urls import get_callable
