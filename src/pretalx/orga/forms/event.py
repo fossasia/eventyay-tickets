@@ -99,6 +99,11 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_('Unset to hide your schedule, e.g. if you want to use the HTML export exclusively.'),
         required=False,
     )
+    export_html_on_schedule_release = forms.BooleanField(
+        label=_('Generate HTML export on schedule release'),
+        help_text=_('Set to make pretalx generate a static HTML version of your schedule, each time a new version is released.'),
+        required=False,
+    )
 
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):

@@ -24,25 +24,35 @@ def template_patch(monkeypatch):
 @pytest.fixture
 def event():
     today = datetime.date.today()
-    return Event.objects.create(
+    event = Event.objects.create(
         name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
         date_from=today, date_to=today + datetime.timedelta(days=3)
     )
+    # exporting takes quite some time, so this speeds up our tests
+    event.settings.export_html_on_schedule_release = False
+    return event
 
 
 @pytest.fixture
 def other_event():
-    return Event.objects.create(name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org',
-                                date_from=datetime.date.today(), date_to=datetime.date.today())
+    event = Event.objects.create(
+        name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org',
+        date_from=datetime.date.today(), date_to=datetime.date.today()
+    )
+    event.settings.export_html_on_schedule_release = False
+    return event
 
 
 @pytest.fixture
 def multilingual_event():
     today = datetime.date.today()
-    return Event.objects.create(
+    event = Event.objects.create(
         name='Fancy testevent', is_public=True, slug='test2', email='orga@orga.org',
         date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
     )
+    event.settings.export_html_on_schedule_release = False
+    return event
+
 
 
 @pytest.fixture

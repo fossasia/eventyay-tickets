@@ -73,7 +73,8 @@ class Schedule(LogMixin, models.Model):
         with suppress(AttributeError):
             del wip_schedule.event.current_schedule
 
-        export_schedule_html.apply_async(kwargs={'event_id': self.event.id})
+        if self.event.settings.export_html_on_schedule_release:
+            export_schedule_html.apply_async(kwargs={'event_id': self.event.id})
 
         return self, wip_schedule
 

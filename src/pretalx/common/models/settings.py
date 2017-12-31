@@ -11,6 +11,7 @@ class GlobalSettings(GlobalSettingsBase):
 
 
 settings_hierarkey.add_default('show_schedule', 'True', bool)
+settings_hierarkey.add_default('export_html_on_schedule_release', 'True', bool)
 settings_hierarkey.add_default('custom_domain', '', str)
 
 settings_hierarkey.add_default('allow_override_votes', 'False', bool)
