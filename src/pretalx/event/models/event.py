@@ -139,7 +139,6 @@ class Event(LogMixin, models.Model):
         ical = '{schedule}.ics'
         feed = '{schedule}/feed.xml'
         location = '{schedule}/location'
-        html_export = f'{settings.MEDIA_URL}/{{self.slug}}/schedule_{{self.slug}}.zip'
 
     class orga_urls(EventUrls):
         create = '/orga/event/new'
@@ -171,6 +170,7 @@ class Event(LogMixin, models.Model):
         schedule = '{base}/schedule'
         schedule_export = '{base}/schedule/export'
         schedule_export_trigger = '{base}/schedule/export/trigger'
+        schedule_export_download = '{base}/schedule/export/download'
         release_schedule = '{schedule}/release'
         reset_schedule = '{schedule}/reset'
         toggle_schedule = '{schedule}/toggle'
@@ -199,7 +199,7 @@ class Event(LogMixin, models.Model):
 
     @property
     def html_export_url(self) -> str:
-        return get_base_url(self) + self.urls.html_export
+        return get_base_url(self) + self.orga_urls.schedule_export_download
 
     def save(self, *args, **kwargs):
         was_created = not bool(self.pk)

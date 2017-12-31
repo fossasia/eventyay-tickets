@@ -25,6 +25,10 @@ class Command(BakeryBuildCommand):
     def get_output_dir(cls, event):
         return os.path.join(settings.HTMLEXPORT_ROOT, event.slug)
 
+    @classmethod
+    def get_output_zip_path(cls, event):
+        return cls.get_output_dir(event) + '.zip'
+
     def handle(self, *args, **options):
         try:
             event = Event.objects.get(slug__iexact=options['event'])
@@ -43,16 +47,7 @@ class Command(BakeryBuildCommand):
         super().handle(*args, **options)
 
         if options.get('zip'):
-            self.make_zip(event, settings.BUILD_DIR)
-
-    def make_zip(self, event, output_dir):
-        destination = output_dir
-        make_archive(destination, 'zip', destination, destination)
-
-        with open(destination + '.zip', 'br') as f:
-            contentfile = ContentFile(f.read())
-
-        default_storage.save(f'{event.slug}/schedule_{event.slug}.zip', contentfile)
+            make_archive(settings.BUILD_DIR, 'zip', settings.BUILD_DIR, settings.BUILD_DIR)
 
     def build_views(self):
         for view_str in self.view_list:

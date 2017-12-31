@@ -1,15 +1,17 @@
 import json
+import os.path
 from datetime import timedelta
 
 import dateutil.parser
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.agenda.management.commands.export_schedule_html import Command as ExportScheduleHtml
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.models import Availability
@@ -49,6 +51,20 @@ class ScheduleExportTriggerView(PermissionRequired, View):
         export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
         messages.success(self.request, _('A new export is beging generated and will be avialiable soon.'))
         return redirect(self.request.event.orga_urls.schedule_export)
+
+
+class ScheduleExportDownloadView(PermissionRequired, View):
+    permission_required = 'orga.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get(self, request, event):
+        zip_path = ExportScheduleHtml.get_output_zip_path(self.request.event)
+        zip_name = os.path.basename(zip_path)
+        response = FileResponse(open(zip_path, 'rb'), content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=' + zip_name
+        return response
 
 
 class ScheduleReleaseView(PermissionRequired, View):
