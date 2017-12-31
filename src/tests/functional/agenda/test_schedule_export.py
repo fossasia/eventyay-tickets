@@ -153,6 +153,14 @@ def test_schedule_orga_trigger_export(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
+def test_schedule_orga_download_export(mocker, orga_client, event):
+    from pretalx.agenda.tasks import export_schedule_html
+    export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
+    response = orga_client.get(event.orga_urls.schedule_export_download, follow=True)
+    assert len(b"".join(response.streaming_content)) > 1000000  # 1MB
+
+
+@pytest.mark.django_db
 def test_html_export(event, other_event, slot, past_slot):
     from django.core.management import call_command
     from django.conf import settings
