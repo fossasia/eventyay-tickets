@@ -54,7 +54,6 @@ def multilingual_event():
     return event
 
 
-
 @pytest.fixture
 def resource(submission):
     f = SimpleUploadedFile('testresource.txt', b'a resource')
