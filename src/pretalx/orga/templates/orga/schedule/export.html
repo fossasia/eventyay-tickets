@@ -15,9 +15,12 @@ release, but you can also trigger that action here.
     <i class="fa fa-download"></i>
     {% trans "Download ZIP" %}
 </a>
-<a href='{{ request.event.orga_urls.schedule_export_trigger }}' class="btn btn-secondary">
-    <i class="fa fa-refresh"></i>
-    {% trans "Regenerate Export" %}
-</a>
+<form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">
+        <i class="fa fa-refresh"></i>
+        {% trans "Regenerate Export" %}
+    </button>
+</form>
 
 {% endblock %}

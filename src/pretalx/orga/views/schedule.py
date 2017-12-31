@@ -47,7 +47,7 @@ class ScheduleExportTriggerView(PermissionRequired, View):
     def get_permission_object(self):
         return self.request.event
 
-    def get(self, request, event):
+    def post(self, request, event):
         export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
         messages.success(self.request, _('A new export is beging generated and will be avialiable soon.'))
         return redirect(self.request.event.orga_urls.schedule_export)

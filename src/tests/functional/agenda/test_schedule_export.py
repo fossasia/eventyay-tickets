@@ -125,7 +125,7 @@ def test_schedule_orga_trigger_export(mocker, orga_client, event):
 
     mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
 
-    response = orga_client.get(event.orga_urls.schedule_export_trigger, follow=True)
+    response = orga_client.post(event.orga_urls.schedule_export_trigger, follow=True)
     assert response.status_code == 200
     export_schedule_html.apply_async.assert_called_once_with(kwargs={'event_id': event.id})
 
