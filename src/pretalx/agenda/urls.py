@@ -36,5 +36,6 @@ urlpatterns = [
         url('^talk/(?P<slug>\w+)/feedback/$', talk.FeedbackView.as_view(), name='feedback'),
         url('^talk/(?P<slug>\w+)/ical/$', talk.SingleICalView.as_view(), name='ical'),
         url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
+        url('^speaker/(?P<code>\w+)/talks.ical$', speaker.SpeakerTalksIcalView.as_view(), name='speaker.talks.ical'),
     ])),
 ]

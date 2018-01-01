@@ -10,6 +10,11 @@
     {{ event }} speaker:
     {% endblocktrans %}
     {{ speaker.get_display_name }}
+    <div class="buttons pull-right">
+        <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
+            <span class="fa fa-calendar"></span> .ical
+        </a>
+    </div>
 </h3>
 <div class="speaker-container">
     <div class="speaker-info">

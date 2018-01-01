@@ -30,6 +30,7 @@ class SpeakerProfile(LogMixin, models.Model):
 
     class urls(EventUrls):
         public = '{self.event.urls.base}/speaker/{self.user.code}'
+        talks_ical = '{self.urls.public}/talks.ical'
 
     @cached_property
     def code(self):

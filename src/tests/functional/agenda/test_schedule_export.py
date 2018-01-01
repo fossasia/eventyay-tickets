@@ -59,6 +59,18 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
+def test_schedule_speaker_ical_export(slot, other_slot, client):
+    speaker = slot.submission.speakers.all()[0]
+    profile = speaker.profiles.get(event=slot.event)
+    response = client.get(profile.urls.talks_ical, follow=True)
+    assert response.status_code == 200
+
+    content = response.content.decode()
+    assert slot.submission.title in content
+    assert other_slot.submission.title not in content
+
+
+@pytest.mark.django_db
 def test_feed_view(slot, client, schedule_schema):
     response = client.get(slot.submission.event.urls.feed)
     assert response.status_code == 200
