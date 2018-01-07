@@ -25,7 +25,7 @@ RUN mkdir /static && \
     python3 manage.py compilemessages && \
     chmod +x /usr/local/bin/pretalx
 
-RUN mkdir /data
+RUN mkdir -p /data/logs /data/media
 VOLUME /data
 
 EXPOSE 80
