@@ -94,11 +94,11 @@
             {% if request.event and request.user.is_authenticated and not is_html_export %}
                 <div class="user-row">
                     {% url "cfp:event.user.view" event=request.event.slug as userurl %}
-                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
                     <div>
+                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
                         You are logged in as <a {{ attr }}>{{ nick }}</a>.
-                    </div>
                     {% endblocktrans %}
+                    </div>
                     <div>
                         {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
                         {% if can_see_orga_area %}
