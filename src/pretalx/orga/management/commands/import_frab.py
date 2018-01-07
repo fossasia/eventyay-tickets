@@ -89,6 +89,8 @@ class Command(BaseCommand):
         sub.submission_type = sub_type
         sub.title = talk.find('title').text
         sub.description = talk.find('description').text
+        if talk.find('subtitle').text.strip():
+            sub.description = talk.find('subtitle').text + '\n' + sub.description
         sub.abstract = talk.find('abstract').text
         sub.content_locale = talk.find('language').text or 'en'
         sub.do_not_record = optout
