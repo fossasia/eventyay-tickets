@@ -63,10 +63,10 @@ def test_can_reconfirm_submission(speaker_client, accepted_submission):
 
 
 @pytest.mark.django_db
-def test_cannot_confirm_rejected_submission(speaker_client, rejected_submission):
+def test_cannot_confirm_rejected_submission(other_speaker_client, rejected_submission):
     rejected_submission.state = SubmissionStates.REJECTED
     rejected_submission.save()
-    response = speaker_client.get(
+    response = other_speaker_client.get(
         rejected_submission.urls.confirm,
         follow=True,
     )
@@ -141,7 +141,7 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
 
 
 @pytest.mark.django_db
-def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
+def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submission):
     title = rejected_submission.title
     data = {
         'title': 'Ein ganz neuer Titel',
@@ -155,7 +155,7 @@ def test_cannot_edit_rejected_submission(speaker_client, rejected_submission):
         'resource-MIN_NUM_FORMS': 0,
         'resource-MAX_NUM_FORMS': 1000,
     }
-    response = speaker_client.post(
+    response = other_speaker_client.post(
         rejected_submission.urls.user_base,
         follow=True, data=data,
     )

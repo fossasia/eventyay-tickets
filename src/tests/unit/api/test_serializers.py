@@ -18,7 +18,7 @@ def test_event_serializer(event):
 def test_submitter_serializer(submission):
     user = submission.speakers.first()
     data = SubmitterSerializer(user, context={'event': submission.event}).data
-    assert data.keys() == {'name', 'code'}
+    assert data.keys() == {'name', 'code', 'biography'}
     assert data['name'] == user.name
     assert data['code'] == user.code
 
@@ -34,6 +34,7 @@ def test_submission_serializer(submission):
     assert data['speakers'][0] == {
         'name': submission.speakers.first().name,
         'code': submission.speakers.first().code,
+        'biography': '',  # Biography can only be derived from request associated event
     }
     assert data['submission_type'] == str(submission.submission_type.name)
     assert data['slot'] is None
