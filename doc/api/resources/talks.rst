@@ -13,7 +13,7 @@ either accepted or confirmed.  It contains the following public fields:
 Field                                 Type                       Description
 ===================================== ========================== =======================================================
 code                                  string                     A unique, alphanumeric identifier, also used in URLs
-speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF"}]``
+speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": ""}]``
 title                                 string                     The submission's title
 submission_type                       string                     The submission type (e.g. "talk", "workshop")
 state                                 string                     The submission's state, one of "submitted", "accepted", "rejected", "confirmed"
@@ -57,7 +57,7 @@ Endpoints
         "results": [
           {
             "code": "ABCDE",
-            "speakers": [{"name": "Jane", "code": "DEFAB"}],
+            "speakers": [{"name": "Jane", "code": "DEFAB", "biography": ""}],
             "title": "A talk",
             "submission_type": "talk",
             "state": "confirmed",
@@ -102,7 +102,7 @@ Endpoints
 
       {
         "code": "ABCDE",
-        "speakers": [{"name": "Jane", "code": "DEFAB"}],
+        "speakers": [{"name": "Jane", "code": "DEFAB", "biography": ""}],
         "title": "A talk",
         "submission_type": "talk",
         "state": "confirmed",
