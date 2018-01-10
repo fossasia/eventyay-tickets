@@ -4,7 +4,7 @@ Speakers
 Resource description
 --------------------
 
-The submission resource contains the following public fields:
+The speaker resource contains the following public fields:
 
 .. rst-class:: rest-resource-table
 
@@ -57,7 +57,7 @@ Endpoints
 
    :param event: The ``slug`` field of the event to fetch
    :query page: The page number in case of a multi-page result set, default is 1
-   :query q: Search through submissions by speaker name
+   :query q: Search through speakers by name
 
 .. http:get:: /api/events/(event)/speakers/{code}/
 
@@ -67,7 +67,7 @@ Endpoints
 
    .. sourcecode:: http
 
-      GET /api/events/sampleconf/submissions/ABCDE HTTP/1.1
+      GET /api/events/sampleconf/speakers/ABCDE HTTP/1.1
       Accept: application/json, text/javascript
 
    **Example response**:

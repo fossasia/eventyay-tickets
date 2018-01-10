@@ -6,3 +6,5 @@ Resources and endpoints
 
    events
    submissions
+   talks
+   speakers

@@ -1,10 +1,11 @@
-Submissions
-===========
+Talks
+=====
 
 Resource description
 --------------------
 
-The submission resource contains the following public fields:
+The talk resource is the same as the submission resource, only guaranteed to be
+either accepted or confirmed.  It contains the following public fields:
 
 .. rst-class:: rest-resource-table
 
@@ -27,18 +28,18 @@ slot                                  object                     If the submissi
 Endpoints
 ---------
 
-.. http:get:: /api/events/{event}/submissions
+.. http:get:: /api/events/{event}/talks
 
-   Returns a list of all submissions the authenticated user/token has access to, or
+   Returns a list of all accepted and confirmed submissions the authenticated user/token has access to, or
    all confirmed, publicly scheduled submissions for unauthenticated users.
-   For a list of only accepted or confirmed submissions, authenticated users may choose
-   to use the ``/api/events/{event}/talks`` endpoint instead.
+   For a list of all submissions regardless of their state, authenticated users may choose
+   to use the ``/api/events/{event}/submissions`` endpoint instead.
 
    **Example request**:
 
    .. sourcecode:: http
 
-      GET /api/events/sampleconf/submissions HTTP/1.1
+      GET /api/events/sampleconf/talks HTTP/1.1
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -80,7 +81,7 @@ Endpoints
    :query submission_type: Filter submissions by submission type
    :query state: Filter submission by state
 
-.. http:get:: /api/events/(event)/submissions/{code}
+.. http:get:: /api/events/(event)/talks/{code}
 
    Returns information on one event, identified by its slug.
 
@@ -88,7 +89,7 @@ Endpoints
 
    .. sourcecode:: http
 
-      GET /api/events/sampleconf/submissions/ABCDE HTTP/1.1
+      GET /api/events/sampleconf/talks/ABCDE HTTP/1.1
       Accept: application/json, text/javascript
 
    **Example response**:
