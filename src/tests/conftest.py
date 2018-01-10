@@ -323,10 +323,10 @@ def other_accepted_submission(other_submission):
 
 
 @pytest.fixture
-def rejected_submission(submission_data, speaker):
+def rejected_submission(submission_data, other_speaker):
     sub = Submission.objects.create(**submission_data)
     sub.save()
-    sub.speakers.add(speaker)
+    sub.speakers.add(other_speaker)
     sub.reject()
     return sub
 
