@@ -6,11 +6,17 @@ from pretalx.person.models import SpeakerProfile, User
 
 
 class SubmitterSerializer(ModelSerializer):
+    biography = SerializerMethodField()
+
+    def get_biography(self, obj):
+        if self.context.get('request') and self.context['request'].event:
+            return obj.profiles.filter(event=self.context['request'].event).first().biography
+        return ''
 
     class Meta:
         model = User
         fields = (
-            'code', 'name',
+            'code', 'name', 'biography'
         )
 
 
