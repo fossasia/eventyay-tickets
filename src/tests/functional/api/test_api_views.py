@@ -155,3 +155,42 @@ def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
 
     assert response.status_code == 200
     assert content['count'] == 2
+
+
+@pytest.mark.django_db
+def test_can_only_see_public_speakerss(client, slot, accepted_submission, rejected_submission, submission):
+    response = client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 1
+    assert content['results'][0]['name'] == accepted_submission.speakers.first().name
+
+
+@pytest.mark.django_db
+def test_can_only_see_public_speakerss_if_public_schedule(client, slot, accepted_submission, rejected_submission, submission):
+    submission.event.settings.set('show_schedule', False)
+    response = client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_see_all_speakers(orga_client, slot, accepted_submission, rejected_submission, submission):
+    response = orga_client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 2
+
+
+@pytest.mark.django_db
+def test_orga_can_see_all_speakers_even_nonpublic(orga_client, slot, accepted_submission, rejected_submission, submission):
+    submission.event.settings.set('show_schedule', False)
+    response = orga_client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 2

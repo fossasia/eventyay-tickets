@@ -184,6 +184,7 @@ class Event(LogMixin, models.Model):
         submissions = '{base}/submissions'
         talks = '{base}/talks'
         schedules = '{base}/schedules'
+        speakers = '{base}/speakers'
 
     def __str__(self) -> str:
         return str(self.name)
