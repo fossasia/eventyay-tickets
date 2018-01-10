@@ -273,6 +273,12 @@ def other_speaker(event):
 
 
 @pytest.fixture
+def other_speaker_client(client, other_speaker):
+    client.force_login(other_speaker)
+    return client
+
+
+@pytest.fixture
 def submission_data(event, submission_type):
     return {
         'title': 'Lametta im Wandel der Zeiten',
