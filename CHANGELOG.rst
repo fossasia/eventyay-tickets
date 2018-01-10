@@ -19,6 +19,7 @@ Features
 - Speakers can now be marked as "arrived". (#243)
 - Visitors can download an ical file containing all talks of a single speaker (#67)
 - There is now an API for speakers.
+- The speaker biography is now shown in submissions in the API endpoint.
 
 
 Fixed bugs
