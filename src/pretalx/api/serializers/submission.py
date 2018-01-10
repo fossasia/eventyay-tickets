@@ -1,5 +1,7 @@
 from i18nfield.rest_framework import I18nAwareModelSerializer
-from rest_framework.serializers import ModelSerializer, SlugRelatedField
+from rest_framework.serializers import (
+    ModelSerializer, SerializerMethodField, SlugRelatedField,
+)
 
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
@@ -26,6 +28,19 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         fields = (
             'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
             'description', 'duration', 'do_not_record', 'content_locale', 'slot',
+        )
+
+
+class ScheduleListSerializer(ModelSerializer):
+    version = SerializerMethodField()
+
+    def get_version(self, obj):
+        return obj.version or 'wip'
+
+    class Meta:
+        model = Schedule
+        fields = (
+            'version',
         )
 
 

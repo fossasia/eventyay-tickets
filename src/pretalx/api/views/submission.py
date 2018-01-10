@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
 from pretalx.api.serializers.submission import (
-    ScheduleSerializer, SubmissionSerializer,
+    ScheduleListSerializer, ScheduleSerializer, SubmissionSerializer,
 )
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission
@@ -30,15 +30,29 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.none()
+    lookup_field = 'version__iexact'
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ScheduleSerializer
+        elif self.action == 'list':
+            return ScheduleListSerializer
+
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Exception as e:
+            if self.request.user.has_perm('orga.view_schedule', self.request.event) and self.kwargs.get(self.lookup_field) == 'wip':
+                return self.request.event.wip_schedule
+            raise
 
     def get_queryset(self):
         qs = self.queryset
         is_public = self.request.event.is_public and self.request.event.settings.show_schedule
         current_schedule = self.request.event.current_schedule.pk if self.request.event.current_schedule else None
-        wip_schedule = self.request.event.wip_schedule.pk if self.request.event.wip_schedule else None
 
         if self.request.user.has_perm('orga.view_schedule', self.request.event):
-            return self.request.event.schedules.filter(pk__in=[current_schedule, wip_schedule])
+            return self.request.event.schedules.all()
         if is_public:
             return self.request.event.schedules.filter(pk=current_schedule)
         return qs
