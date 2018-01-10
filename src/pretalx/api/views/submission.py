@@ -42,8 +42,13 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             return super().get_object()
         except Exception as e:
-            if self.request.user.has_perm('orga.view_schedule', self.request.event) and self.kwargs.get(self.lookup_field) == 'wip':
+            is_public = self.request.event.is_public and self.request.event.settings.show_schedule
+            has_perm = self.request.user.has_perm('orga.view_schedule', self.request.event)
+            query = self.kwargs.get(self.lookup_field)
+            if has_perm and query == 'wip':
                 return self.request.event.wip_schedule
+            elif (has_perm or is_public) and query == 'latest' and self.request.event.current_schedule:
+                return self.request.event.current_schedule
             raise
 
     def get_queryset(self):
