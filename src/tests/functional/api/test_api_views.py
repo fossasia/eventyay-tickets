@@ -158,13 +158,14 @@ def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
 
 
 @pytest.mark.django_db
-def test_can_only_see_public_speakerss(client, slot, accepted_submission, rejected_submission, submission):
+def test_can_only_see_public_speakerss(client, slot, accepted_submission, rejected_submission, submission, impersonal_answer):
     response = client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
     assert content['count'] == 1
     assert content['results'][0]['name'] == accepted_submission.speakers.first().name
+    assert set(content['results'][0].keys()) == {'name', 'code', 'biography', 'submissions'}
 
 
 @pytest.mark.django_db
@@ -178,12 +179,15 @@ def test_can_only_see_public_speakerss_if_public_schedule(client, slot, accepted
 
 
 @pytest.mark.django_db
-def test_orga_can_see_all_speakers(orga_client, slot, accepted_submission, rejected_submission, submission):
+def test_orga_can_see_all_speakers(orga_client, slot, accepted_submission, rejected_submission, submission, impersonal_answer):
     response = orga_client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
     assert content['count'] == 2
+    assert set(content['results'][0].keys()) == {'name', 'code', 'biography', 'submissions', 'answers'}
+    assert set(content['results'][0]['answers'][0].keys()) == {'answer', 'answer_file', 'person', 'question', 'submission'}
+    assert set(content['results'][0]['answers'][0]['question'].keys()) == {'target', 'required', 'question'}
 
 
 @pytest.mark.django_db
