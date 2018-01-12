@@ -11,10 +11,10 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SpeakerProfile.objects.none()
     lookup_field = 'user__code__iexact'
     filter_fields = ('user__name', )
-    search_fields = ('user_name', )
+    search_fields = ('user__name', )
 
     def get_serializer_class(self):
-        if self.request.is_orga:
+        if self.request.user.has_perm('orga.view_speakers', self.request.event):
             return SpeakerOrgaSerializer
         return SpeakerSerializer
 

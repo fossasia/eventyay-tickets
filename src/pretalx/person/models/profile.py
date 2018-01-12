@@ -44,3 +44,9 @@ class SpeakerProfile(LogMixin, models.Model):
     def talks(self):
         from pretalx.submission.models import SubmissionStates
         return self.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
+
+    @cached_property
+    def answers(self):
+        from pretalx.submission.models import Answer, Submission
+        submissions = Submission.objects.filter(event=self.event, speakers__in=[self.user])
+        return Answer.objects.filter(models.Q(submission__in=submissions) | models.Q(person=self.user))

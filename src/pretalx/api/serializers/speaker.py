@@ -42,7 +42,7 @@ class SpeakerSerializer(ModelSerializer):
 
 
 class SpeakerOrgaSerializer(SpeakerSerializer):
-    answers = AnswerSerializer(Answer.objects.all(), source='user.answers', many=True, read_only=True)
+    answers = AnswerSerializer(Answer.objects.all(), many=True, read_only=True)
 
     def get_submissions(self, obj):
         return obj.user.submissions\
