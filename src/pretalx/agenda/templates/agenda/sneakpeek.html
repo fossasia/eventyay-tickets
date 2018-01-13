@@ -5,12 +5,21 @@
 
 {% block agenda_content %}
 <p>
+    {% if talks %}
     {% blocktrans %}
     <b>Welcome to our schedule sneak peek!</b><br><br>
     We prepared a list of exciting talks, so you canget a feel for our
     conference. Please keep in mind that this is not our full schedule.
     That will follow in due time.
     {% endblocktrans %}
+    {% else %}
+    {% blocktrans %}
+    <b>Welcome to our schedule sneak peek!</b><br><br>
+    In the near future you will see a curated list of talks we'd like
+    to show off here. Right now we are busy reviewing submissions.<br>
+    Check back later!
+    {% endblocktrans %}
+    {% endif %}
 </p>
 <div id="sneakpeak">
     {% for talk in talks %}

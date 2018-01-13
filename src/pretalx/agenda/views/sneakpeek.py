@@ -12,7 +12,5 @@ class SneakpeekView(PermissionRequired, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['talks'] = self.request.event.submissions.filter(
-            state=SubmissionStates.CONFIRMED,
-        ).order_by('id')[:15]
+        ctx['talks'] = self.request.event.submissions.filter(is_featured=True).order_by('id')
         return ctx
