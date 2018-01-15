@@ -126,6 +126,14 @@ def test_user_can_see_schedule(client, slot):
 
 
 @pytest.mark.django_db
+def test_user_cannot_see_wip_schedule(client, slot):
+    assert slot.submission.event.schedules.count() == 2
+    response = client.get(slot.submission.event.api_urls.schedules + '/wip', follow=True)
+    json.loads(response.content.decode())
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_user_cannot_see_schedule_if_not_public(client, slot):
     slot.submission.event.settings.set('show_schedule', False)
     assert slot.submission.event.schedules.count() == 2
@@ -147,6 +155,14 @@ def test_orga_can_see_schedule(orga_client, slot):
 
 
 @pytest.mark.django_db
+def test_orga_can_see_wip_schedule(orga_client, slot):
+    assert slot.submission.event.schedules.count() == 2
+    response = orga_client.get(slot.submission.event.api_urls.schedules + '/wip', follow=True)
+    json.loads(response.content.decode())
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
     slot.submission.event.settings.set('show_schedule', False)
     assert slot.submission.event.schedules.count() == 2
@@ -158,7 +174,7 @@ def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
 
 
 @pytest.mark.django_db
-def test_can_only_see_public_speakerss(client, slot, accepted_submission, rejected_submission, submission, impersonal_answer):
+def test_can_only_see_public_speakers(client, slot, accepted_submission, rejected_submission, submission, impersonal_answer):
     response = client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 
