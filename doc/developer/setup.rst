@@ -67,7 +67,7 @@ files::
     python manage.py compilemessages
 
 If you need to test more complicated features, you should probably look into the
-:doc:`manual setup</install/manual_setup>` documentation to find the bits and pieces you
+:doc:`manual setup</administrator/simple_manual>` documentation to find the bits and pieces you
 want to add to your development setup.
 
 Run the development server

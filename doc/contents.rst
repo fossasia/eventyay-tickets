@@ -7,3 +7,5 @@ Documentation contents
    administrator/index
    api/index
    developer/index
+
+   features
