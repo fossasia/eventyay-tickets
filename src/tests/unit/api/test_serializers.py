@@ -1,7 +1,8 @@
 import pytest
 
 from pretalx.api.serializers.event import EventSerializer
-from pretalx.api.serializers.speaker import SubmitterSerializer
+from pretalx.api.serializers.question import AnswerSerializer
+from pretalx.api.serializers.speaker import SubmitterSerializer, SpeakerSerializer
 from pretalx.api.serializers.submission import SubmissionSerializer
 
 
@@ -15,12 +16,34 @@ def test_event_serializer(event):
 
 
 @pytest.mark.django_db
+def test_question_serializer(answer):
+    data = AnswerSerializer(answer).data
+    assert data.keys() == {
+        'question', 'answer', 'answer_file', 'submission', 'person',
+    }
+    assert data['question'].keys() == {
+        'question', 'required', 'target',
+    }
+
+
+@pytest.mark.django_db
 def test_submitter_serializer(submission):
     user = submission.speakers.first()
     data = SubmitterSerializer(user, context={'event': submission.event}).data
     assert data.keys() == {'name', 'code', 'biography'}
     assert data['name'] == user.name
     assert data['code'] == user.code
+
+
+@pytest.mark.django_db
+def test_speaker_serializer(slot):
+    user_profile = slot.submission.speakers.first().profiles.first()
+    user = user_profile.user
+    data = SpeakerSerializer(user_profile).data
+    assert data.keys() == {'name', 'code', 'biography', 'submissions'}
+    assert data['name'] == user.name
+    assert data['code'] == user.code
+    assert slot.submission.code in data['submissions']
 
 
 @pytest.mark.django_db

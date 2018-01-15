@@ -30,8 +30,9 @@ class SpeakerSerializer(ModelSerializer):
     submissions = SerializerMethodField()
 
     def get_submissions(self, obj):
+        talks = obj.event.current_schedule.talks.all() if obj.event.current_schedule else []
         return obj.user.submissions\
-            .filter(event=obj.event, slots__in=obj.event.current_schedule.talks.all())\
+            .filter(event=obj.event, slots__in=talks)\
             .values_list('code', flat=True)
 
     class Meta:
