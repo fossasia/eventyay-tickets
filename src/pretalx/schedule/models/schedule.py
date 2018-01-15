@@ -42,6 +42,8 @@ class Schedule(LogMixin, models.Model):
     @transaction.atomic
     def freeze(self, name, user=None, notify_speakers=True):
         from pretalx.schedule.models import TalkSlot
+        if name in ['wip', 'latest']:
+            raise Exception(f'Cannot use reserved name "{name}" for schedule version.')
         if self.version:
             raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')
 
