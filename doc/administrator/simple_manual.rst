@@ -73,7 +73,7 @@ We now create a config directory and config file for pretalx::
     # chown -R pretalx:pretalx /etc/pretalx/
     # chmod 0600 /etc/pretalx/pretalx.cfg
 
-Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following content (adjusted to your environment)::
+Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following content (adjusted to your environment):
 
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
