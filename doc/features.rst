@@ -8,9 +8,9 @@ of these lists are complete, and we're looking forward to what you come up with!
 Features
 --------
 
-While pretalx is still unfinished, it already comes with a wide range of features. Once our
-documentation is more complete, we will introduce user guides for these features, but for now their
-descriptions will have to suffice.
+pretalx is under active development, so features will be added here on a regular basis.
+Once our documentation is more complete, we will introduce user guides for
+these features, but for now their descriptions will have to suffice.
 
 Talk submission
 ~~~~~~~~~~~~~~~
