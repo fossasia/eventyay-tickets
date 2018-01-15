@@ -2,7 +2,9 @@ import pytest
 
 from pretalx.api.serializers.event import EventSerializer
 from pretalx.api.serializers.question import AnswerSerializer
-from pretalx.api.serializers.speaker import SubmitterSerializer, SpeakerSerializer
+from pretalx.api.serializers.speaker import (
+    SpeakerSerializer, SubmitterSerializer,
+)
 from pretalx.api.serializers.submission import SubmissionSerializer
 
 

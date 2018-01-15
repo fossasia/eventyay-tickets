@@ -22,7 +22,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import Answer, QuestionVariant
+from pretalx.submission.models import Answer, QuestionTarget, QuestionVariant
 
 FORMS = [
     ("info", InfoForm),
@@ -109,9 +109,12 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             'event': self.kwargs.get('event')
         })
 
-    def _handle_question_answer(self, sub, qid, value):
+    def _handle_question_answer(self, sub, qid, value, user=None):
         question = self.request.event.questions.get(pk=qid)
-        answer = Answer(question=question, submission=sub)
+        if question.target == QuestionTarget.SUBMISSION:
+            answer = Answer(question=question, submission=sub)
+        elif question.target == QuestionTarget.SPEAKER:
+            answer = Answer(question=question, person=user)
 
         if question.variant == QuestionVariant.MULTIPLE:
             answstr = ", ".join([str(o) for o in value])
@@ -144,7 +147,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if 'questions' in form_dict:
             for k, value in form_dict['questions'].cleaned_data.items():
                 qid = k.split('_')[1]
-                self._handle_question_answer(sub, qid, value)
+                self._handle_question_answer(sub, qid, value, user=user)
 
         try:
             sub.event.ack_template.to_mail(

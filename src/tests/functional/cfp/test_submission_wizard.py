@@ -138,8 +138,12 @@ class TestWizard:
         answ = sub.answers.filter(question__target='submission').first()
         assert answ.question == question
         assert answ.answer == '42'
-        answ = sub.answers.filter(question__target='speaker').first()
+        assert answ.submission == sub
+        assert not answ.person
+        answ = user.answers.filter(question__target='speaker').first()
         assert answ.question == speaker_question
+        assert answ.person == user
+        assert not answ.submission
         assert answ.answer == 'green'
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
