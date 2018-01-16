@@ -28,6 +28,7 @@ Fixed bugs
 - Non-superusers could not access the email sending form.
 - More than one event stage could be shown as active.
 - Trying to look at entered submissions without being logged in produced a server error instead of a 404.
+- If notifications about new submissions were turned on, they were sent to the submitter instead of the organizer.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases

@@ -55,6 +55,7 @@ class MailTemplate(LogMixin, models.Model):
         pass
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
+        address = user.email if hasattr(user, 'email') else user
         with override(locale):
             context = context or dict()
             try:
@@ -65,7 +66,7 @@ class MailTemplate(LogMixin, models.Model):
 
             mail = QueuedMail(
                 event=self.event,
-                to=user.email,
+                to=address,
                 reply_to=self.reply_to or event.email,
                 bcc=self.bcc,
                 subject=subject,

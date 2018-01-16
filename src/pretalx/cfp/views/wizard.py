@@ -160,7 +160,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     subject=_('[{event}] New submission!').format(event=self.request.event.slug),
                     text=self.request.event.settings.mail_text_new_submission,
                 ).to_mail(
-                    user=user, event=self.request.event, context=template_context_from_submission(sub),
+                    user=self.request.event.email, event=self.request.event,
+                    context=template_context_from_submission(sub),
                     skip_queue=True, locale=self.request.event.locale
                 )
         except SendMailException as e:
