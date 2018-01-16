@@ -1,7 +1,9 @@
 import pytest
 
 from pretalx.api.serializers.event import EventSerializer
-from pretalx.api.serializers.question import AnswerSerializer
+from pretalx.api.serializers.question import (
+    AnswerSerializer, QuestionSerializer,
+)
 from pretalx.api.serializers.speaker import (
     SpeakerSerializer, SubmitterSerializer,
 )
@@ -20,11 +22,12 @@ def test_event_serializer(event):
 @pytest.mark.django_db
 def test_question_serializer(answer):
     data = AnswerSerializer(answer).data
-    assert data.keys() == {
-        'question', 'answer', 'answer_file', 'submission', 'person',
+    assert set(data.keys()) == {
+        'id', 'question', 'answer', 'answer_file', 'submission', 'person', 'options',
     }
-    assert data['question'].keys() == {
-        'question', 'required', 'target',
+    data = QuestionSerializer(answer.question).data
+    assert set(data.keys()) == {
+        'id', 'question', 'required', 'target', 'options',
     }
 
 

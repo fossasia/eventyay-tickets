@@ -202,8 +202,7 @@ def test_orga_can_see_all_speakers(orga_client, slot, accepted_submission, rejec
     assert response.status_code == 200
     assert content['count'] == 2
     assert set(content['results'][0].keys()) == {'name', 'code', 'biography', 'submissions', 'answers'}
-    assert set(content['results'][0]['answers'][0].keys()) == {'answer', 'answer_file', 'person', 'question', 'submission'}
-    assert set(content['results'][0]['answers'][0]['question'].keys()) == {'target', 'required', 'question'}
+    assert set(content['results'][0]['answers'][0].keys()) == {'answer', 'answer_file', 'person', 'question', 'submission', 'options', 'id'}
 
 
 @pytest.mark.django_db
