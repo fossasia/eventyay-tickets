@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-07 09:43-0600\n"
+"POT-Creation-Date: 2018-01-16 17:13-0600\n"
 "PO-Revision-Date: 2018-01-07 16:43+0100\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
@@ -192,7 +192,7 @@ msgstr "Keine Vorträge an %(current_day)s."
 msgid "%(event)s speaker:"
 msgstr "%(event)s Vortragende"
 
-#: pretalx/agenda/templates/agenda/speaker.html:29
+#: pretalx/agenda/templates/agenda/speaker.html:34
 #: pretalx/orga/templates/orga/speaker/list.html:19
 msgid "Talks"
 msgstr "Vorträge"
@@ -243,14 +243,14 @@ msgid "Speaker E-Mail"
 msgstr "E-Mail der Vortragenden"
 
 #: pretalx/cfp/forms/submissions.py:9 pretalx/mail/models.py:30
-#: pretalx/mail/models.py:112
+#: pretalx/mail/models.py:113
 #: pretalx/orga/templates/orga/mails/outbox_list.html:22
 #: pretalx/orga/templates/orga/mails/sent_list.html:13
 msgid "Subject"
 msgstr "Betreff"
 
 #: pretalx/cfp/forms/submissions.py:10 pretalx/mail/models.py:33
-#: pretalx/mail/models.py:114
+#: pretalx/mail/models.py:115
 msgid "Text"
 msgstr "Text"
 
@@ -873,7 +873,7 @@ msgstr "Veranstaltungen"
 msgid "Password recovery"
 msgstr "Passwortwiederherstellung"
 
-#: pretalx/cfp/views/wizard.py:157
+#: pretalx/cfp/views/wizard.py:160
 #, python-brace-format
 msgid "[{event}] New submission!"
 msgstr "[{event}] Neue Einreichung!"
@@ -1501,7 +1501,7 @@ msgstr ""
 "\n"
 "Die {event_name}-Orga"
 
-#: pretalx/mail/models.py:38 pretalx/mail/models.py:95
+#: pretalx/mail/models.py:38 pretalx/mail/models.py:96
 msgid "Reply-To"
 msgstr "Reply-To"
 
@@ -1511,7 +1511,7 @@ msgid ""
 "address"
 msgstr "Trag hier etwas ein, wenn nicht die Orga-Adresse genutzt werden soll"
 
-#: pretalx/mail/models.py:44 pretalx/mail/models.py:107
+#: pretalx/mail/models.py:44 pretalx/mail/models.py:108
 msgid "BCC"
 msgstr "BCC"
 
@@ -1524,26 +1524,26 @@ msgstr ""
 "jeder Mail erhalten, die von diesem Template erstellt werden. Das kann eine "
 "RIESEN-Menge sein!"
 
-#: pretalx/mail/models.py:89
+#: pretalx/mail/models.py:90
 #: pretalx/orga/templates/orga/mails/outbox_list.html:27
 #: pretalx/orga/templates/orga/mails/sent_list.html:18
 msgid "To"
 msgstr "An"
 
-#: pretalx/mail/models.py:90 pretalx/mail/models.py:102
-#: pretalx/mail/models.py:108
+#: pretalx/mail/models.py:91 pretalx/mail/models.py:103
+#: pretalx/mail/models.py:109
 msgid "One email address or several addresses separated by commas."
 msgstr "Eine E-Mail-Adresse, oder mehrere durch Kommas getrennt."
 
-#: pretalx/mail/models.py:96
+#: pretalx/mail/models.py:97
 msgid "By default, the orga address is used as Reply-To."
 msgstr "Normalerweise wird die Orga-Adresse als Reply-To verwendet."
 
-#: pretalx/mail/models.py:101
+#: pretalx/mail/models.py:102
 msgid "CC"
 msgstr "CC"
 
-#: pretalx/mail/models.py:115
+#: pretalx/mail/models.py:116
 msgid "Sent at"
 msgstr "Verschickt"
 
@@ -3481,12 +3481,12 @@ msgstr ""
 msgid "version"
 msgstr "Version"
 
-#: pretalx/schedule/models/schedule.py:204
+#: pretalx/schedule/models/schedule.py:206
 #, python-brace-format
 msgid "[{event}] New schedule!"
 msgstr "[{event}] Neues Programm!"
 
-#: pretalx/schedule/models/schedule.py:220
+#: pretalx/schedule/models/schedule.py:222
 #, python-brace-format
 msgid "WIP Schedule for {self.event}"
 msgstr "Programm für {self.event} (WIP)"
