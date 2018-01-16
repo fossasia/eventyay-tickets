@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-vx.x.x
+v0.3.0
 ------
 
-*Released on 201x-xx-xx*
+*Released on 2018-01-17*
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
