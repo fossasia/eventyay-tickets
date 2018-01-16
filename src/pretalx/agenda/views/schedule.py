@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
+from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.urls import get_base_url
@@ -206,11 +207,30 @@ class FrabJsonView(ScheduleDataView):
                                     'recording_license': '',
                                     'do_not_record': talk.submission.do_not_record,
                                     'persons': [
-                                        {'id': person.id, 'name': person.get_display_name()}
+                                        {
+                                            'id': person.id,
+                                            'name': person.get_display_name(),
+                                            'answers': [
+                                                {
+                                                    'question': answer.question.id,
+                                                    'answer': answer.answer,
+                                                    'options': [option.answer for option in answer.options.all()],
+                                                }
+                                                for answer in person.answers.all()
+                                            ] if self.request.is_orga else [],
+                                        }
                                         for person in talk.submission.speakers.all()
                                     ],
                                     'links': [],
                                     'attachments': [],
+                                    'answers': [
+                                        {
+                                            'question': answer.question.id,
+                                            'answer': answer.answer,
+                                            'options': [option.answer for option in answer.options.all()],
+                                        }
+                                        for answer in talk.submission.answers.all()
+                                    ] if self.request.is_orga else [],
                                 } for talk in room['talks']
                             ] for room in day['rooms']
                         }
@@ -219,7 +239,7 @@ class FrabJsonView(ScheduleDataView):
                 ]
             }
         }
-        return JsonResponse({'schedule': result})
+        return JsonResponse({'schedule': result}, encoder=I18nJSONEncoder)
 
 
 class ChangelogView(TemplateView):

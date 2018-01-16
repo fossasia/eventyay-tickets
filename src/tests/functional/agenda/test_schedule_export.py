@@ -19,16 +19,27 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
-def test_schedule_frab_json_export(slot, client, schedule_schema):
-    response = client.get(reverse(f'agenda:frab-json', kwargs={'event': slot.submission.event.slug}), follow=True)
-    assert response.status_code == 200
+def test_schedule_frab_json_export(slot, answered_choice_question, personal_answer, client, orga_user, schedule_schema):
+    regular_response = client.get(reverse(f'agenda:frab-json', kwargs={'event': slot.submission.event.slug}), follow=True)
+    client.force_login(orga_user)
+    orga_response = client.get(reverse(f'agenda:frab-json', kwargs={'event': slot.submission.event.slug}), follow=True)
+    assert regular_response.status_code == 200
+    assert orga_response.status_code == 200
 
-    content = response.content.decode()
-    assert slot.submission.title in content
+    regular_content = regular_response.content.decode()
+    orga_content = orga_response.content.decode()
 
-    parsed_content = json.loads(content)
-    print(parsed_content['schedule'].keys())
-    assert parsed_content['schedule']
+    assert slot.submission.title in regular_content
+    assert slot.submission.title in orga_content
+    assert personal_answer.answer in orga_content
+    assert personal_answer.answer not in regular_content
+
+    regular_content = json.loads(regular_content)
+    orga_content = json.loads(orga_content)
+    assert regular_content['schedule']
+    assert orga_content['schedule']
+
+    assert regular_content != orga_content
 
 
 @pytest.mark.django_db
