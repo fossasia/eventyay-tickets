@@ -210,6 +210,7 @@ class FrabJsonView(ScheduleDataView):
                                         {
                                             'id': person.id,
                                             'name': person.get_display_name(),
+                                            'biography': getattr(person.profiles.filter(event=self.request.event).first(), 'biography', ''),
                                             'answers': [
                                                 {
                                                     'question': answer.question.id,
