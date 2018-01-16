@@ -8,7 +8,7 @@ class QuestionSerializer(ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('question', 'required', 'target')
+        fields = ('id', 'question', 'required', 'target', 'options')
 
 
 class AnswerSerializer(ModelSerializer):
@@ -18,4 +18,4 @@ class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('question', 'answer', 'answer_file', 'submission', 'person', )
+        fields = ('id', 'question', 'answer', 'answer_file', 'submission', 'person', 'options')
