@@ -56,10 +56,10 @@ class ScheduleDataView(TemplateView):
 
         if not schedule and self.version:
             ctx['version'] = self.version
-            ctx['error'] = 'wrong-version'
+            ctx['error'] = f'Schedule "{self.version}" not found.'
             return ctx
         elif not schedule:
-            ctx['error'] = 'no-schedule'
+            ctx['error'] = 'Schedule not found.'
             return ctx
         ctx['schedule'] = schedule
         ctx['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
@@ -169,6 +169,8 @@ class FrabJsonView(ScheduleDataView):
     def get(self, request, event, **kwargs):
         ctx = self.get_context_data()
         data = ctx.get('data', dict())
+        if not data and 'error' in ctx:
+            return JsonResponse({'error': ctx['error']})
         tz = pytz.timezone(self.request.event.timezone)
         schedule = self.get_object()
         if not schedule:
