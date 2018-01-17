@@ -38,11 +38,10 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     permission_required = 'orga.view_speaker'
 
     def get_object(self):
-        return User.objects\
-            .filter(submissions__in=self.request.event.submissions.all())\
-            .order_by('id')\
-            .distinct()\
-            .get(pk=self.kwargs['pk'])
+        return get_object_or_404(
+            User.objects.filter(submissions__in=self.request.event.submissions.all()).order_by('id').distinct(),
+            pk=self.kwargs['pk'],
+        )
 
     def get_permission_object(self):
         return self.get_object().profiles.filter(event=self.request.event).first()
