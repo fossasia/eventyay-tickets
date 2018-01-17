@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
@@ -115,7 +115,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     permission_required = 'orga.view_mails'
 
     def get_object(self) -> QueuedMail:
-        return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+        return self.request.event.queued_mails.filter(pk=self.kwargs.get('pk')).first()
 
     def get_success_url(self):
         return self.object.event.orga_urls.outbox
@@ -141,7 +141,7 @@ class MailCopy(PermissionRequired, View):
     permission_required = 'orga.edit_mails'
 
     def get_object(self) -> QueuedMail:
-        return self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+        return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         mail = self.get_object()
@@ -254,7 +254,7 @@ class TemplateDelete(PermissionRequired, View):
     permission_required = 'orga.edit_mail_templates'
 
     def get_object(self) -> MailTemplate:
-        return MailTemplate.objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
+        return get_object_or_404(MailTemplate.objects.all(), event=self.request.event, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
