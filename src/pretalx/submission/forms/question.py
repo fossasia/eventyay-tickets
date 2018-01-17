@@ -134,14 +134,18 @@ class QuestionsForm(forms.Form):
             else:
                 answer.options.clear()
             answer.answer = answstr
-            answer.options.add(*value)
+            if value:
+                answer.options.add(*value)
         elif isinstance(field, forms.ModelChoiceField):
             if not answer.pk:
                 answer.save()
             else:
                 answer.options.clear()
-            answer.options.add(value)
-            answer.answer = value.answer
+            if value:
+                answer.options.add(value)
+                answer.answer = value.answer
+            else:
+                answer.answer = ''
         elif isinstance(field, forms.FileField):
             if isinstance(value, UploadedFile):
                 answer.answer_file.save(value.name, value)
