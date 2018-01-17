@@ -2,7 +2,7 @@ import random
 from datetime import timedelta
 
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext as _
@@ -63,7 +63,10 @@ The {event} orga crew''').format(event=submission.event.name, title=submission.t
 class SubmissionViewMixin(PermissionRequired):
 
     def get_object(self):
-        return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
+        return get_object_or_404(
+            self.request.event.submissions,
+            code__iexact=self.kwargs.get('code'),
+        )
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -183,7 +186,6 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.get_object()
         context['speakers'] = context['submission'].speakers.all()
         context['users'] = User.objects.all()  # TODO: yeah, no
         return context
@@ -199,7 +201,7 @@ class SubmissionQuestions(SubmissionViewMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        submission = self.get_object()
+        submission = context['submission']
         answers = [
             question.answers.filter(submission=submission).first()
             for question in Question.all_objects.filter(event=submission.event, target='submission')
@@ -216,6 +218,9 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
     permission_required = 'submission.view_submission'
+
+    def get_object(self):
+        return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
 
     def get_permission_object(self):
         if self._action == 'create':

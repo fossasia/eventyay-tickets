@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.db import models
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
@@ -52,7 +52,10 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     @property
     def submission(self):
-        return self.request.event.submissions.get(code__iexact=self.kwargs['code'])
+        return get_object_or_404(
+            self.request.event.submissions,
+            code__iexact=self.kwargs['code'],
+        )
 
     def get_object(self):
         return self.submission.reviews.exclude(user__in=self.submission.speakers.all()).filter(user=self.request.user).first()
