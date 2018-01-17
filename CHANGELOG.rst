@@ -20,7 +20,8 @@ Features
 
 Fixed bugs
 ~~~~~~~~~~~
-
+- Make various 404 errors more helpful.
+- Re-introduce support for the documented ``PRETALX_DATA_DIR`` environment variable.
 
 
 .. _releases: https://github.com/pretalx/pretalx/releases
