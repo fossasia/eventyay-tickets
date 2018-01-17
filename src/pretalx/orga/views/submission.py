@@ -128,8 +128,11 @@ class SubmissionReject(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.get_object()
-        submission.reject(person=request.user)
-        messages.success(request, _('The submission has been rejected.'))
+        try:
+            submission.reject(person=request.user)
+            messages.success(request, _('The submission has been rejected.'))
+        except SubmissionError:
+            messages.error(request, _('The submission has to be accepted or submitted to be rejected.'))
         return redirect(submission.orga_urls.base)
 
 
