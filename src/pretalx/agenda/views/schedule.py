@@ -5,7 +5,7 @@ import pytz
 import vobject
 from csp.decorators import csp_update
 from django.http import (
-    HttpResponse, HttpResponsePermanentRedirect, JsonResponse,
+    Http404, HttpResponse, HttpResponsePermanentRedirect, JsonResponse,
 )
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -44,10 +44,8 @@ class ScheduleDataView(TemplateView):
 
     def get_object(self):
         if self.version:
-            return \
-                self.request.event.schedules.filter(version=self.version).first() or \
-                self.request.event.current_schedule
-        else:
+            return self.request.event.schedules.filter(version=self.version).first()
+        if self.request.event.current_schedule:
             return self.request.event.current_schedule
 
     def get_context_data(self, *args, **kwargs):
@@ -147,6 +145,8 @@ class FrabXCalView(ScheduleDataView):
 class ICalView(ScheduleDataView):
     def get(self, request, event, **kwargs):
         schedule = self.get_object()
+        if not schedule:
+            raise Http404()
         netloc = urlparse(get_base_url(request.event)).netloc
 
         cal = vobject.iCalendar()
@@ -168,9 +168,11 @@ class FrabJsonView(ScheduleDataView):
 
     def get(self, request, event, **kwargs):
         ctx = self.get_context_data()
-        data = ctx['data']
+        data = ctx.get('data', dict())
         tz = pytz.timezone(self.request.event.timezone)
         schedule = self.get_object()
+        if not schedule:
+            raise Http404()
         result = {
             'version': schedule.version,
             'conference': {
