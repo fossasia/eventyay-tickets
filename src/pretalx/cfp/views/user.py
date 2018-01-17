@@ -90,10 +90,13 @@ class SubmissionViewMixin:
     permission_required = 'submission.edit_submission'
 
     def get_object(self):
+        if self.request.user.is_anonymous:
+            users = []
+        else:
+            users = [self.request.user]
         return get_object_or_404(
             self.request.event.submissions.prefetch_related('answers', 'answers__options'),
-            speakers__in=[self.request.user] if not self.request.user.is_anonymous else [],
-            code__iexact=self.kwargs.get('code'),
+            speakers__in=users, code__iexact=self.kwargs.get('code'),
         )
 
 
