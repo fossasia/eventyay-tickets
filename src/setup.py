@@ -39,7 +39,7 @@ cmdclass = {
 
 setup(
     name='pretalx',
-    version='0.3.0',
+    version='0.3.1',
     description='Conference organization: CfPs, scheduling, much more',
     long_description=long_description,
     url='http://pretalx.org',
