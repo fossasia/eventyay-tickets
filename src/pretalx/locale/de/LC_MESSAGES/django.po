@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-16 17:13-0600\n"
-"PO-Revision-Date: 2018-01-07 16:43+0100\n"
+"POT-Creation-Date: 2018-01-18 02:45-0600\n"
+"PO-Revision-Date: 2018-01-18 09:46+0100\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -3163,15 +3163,15 @@ msgstr ""
 msgid "You cannot edit this mail template."
 msgstr "Du darfst dieses Mail-Template nicht editieren."
 
-#: pretalx/orga/views/review.py:88 pretalx/orga/views/review.py:91
+#: pretalx/orga/views/review.py:91 pretalx/orga/views/review.py:94
 msgid "You cannot review this submission at this time."
 msgstr "Derzeit kann für diese Veranstaltung kein Feedback gegeben werden."
 
-#: pretalx/orga/views/review.py:100
+#: pretalx/orga/views/review.py:103
 msgid "You are on a roll!"
 msgstr "Weiter so!"
 
-#: pretalx/orga/views/review.py:103
+#: pretalx/orga/views/review.py:106
 msgid "Nice, you have no submissions left to review!"
 msgstr "Yay, du hast keine Einreichungen mehr zu bewerten!"
 
@@ -3231,63 +3231,69 @@ msgstr ""
 msgid "You have been added to a submission for {event}"
 msgstr "Du wurdest zu einer Einreichung für {event} eingeladen"
 
-#: pretalx/orga/views/submission.py:84
+#: pretalx/orga/views/submission.py:87
 msgid "The submission has been accepted."
 msgstr "Die Einreichung wurde angenommen."
 
-#: pretalx/orga/views/submission.py:86
+#: pretalx/orga/views/submission.py:89
 msgid "A submission must be submitted or rejected to become accepted."
 msgstr ""
 "Eine Einreichung muss im eingereichten Zustand sein, um angenommen oder "
 "abgelehnt zu sein."
 
-#: pretalx/orga/views/submission.py:100
+#: pretalx/orga/views/submission.py:103
 msgid "The submission has been confirmed."
 msgstr "Die Einreichung wurde bestätigt."
 
-#: pretalx/orga/views/submission.py:102
+#: pretalx/orga/views/submission.py:105
 msgid "A submission must be accepted to become confirmed."
 msgstr ""
 "Eine Einreichung muss im eingereichten Zustand sein, um angenommen oder "
 "abgelehnt zu werden."
 
-#: pretalx/orga/views/submission.py:116
+#: pretalx/orga/views/submission.py:119
 msgid "The submission has been unconfirmed. It is now accepted."
 msgstr ""
 "Die Einreichung ist jetzt nicht mehr \"bestätigt\", nur noch \"akzeptiert\"."
 
-#: pretalx/orga/views/submission.py:118
+#: pretalx/orga/views/submission.py:121
 msgid "A submission must be confirmed to be unconfirmed, naturally."
 msgstr ""
 "Eine Einreichung muss naheliegenderweise im bestätigten Zustand sein, um die "
 "Bestätigung wieder zu entfernen."
 
-#: pretalx/orga/views/submission.py:129
+#: pretalx/orga/views/submission.py:133
 msgid "The submission has been rejected."
 msgstr "Die Einreichung wurde abgelehnt."
 
-#: pretalx/orga/views/submission.py:148
+#: pretalx/orga/views/submission.py:135
+msgid "The submission has to be accepted or submitted to be rejected."
+msgstr ""
+"Eine Einreichung muss angenommen worden oder \"eingereicht\" sein, um "
+"abgelehnt zu werden."
+
+#: pretalx/orga/views/submission.py:154
 msgid "Please provide a valid nick or email address!"
 msgstr ""
 "Bitte gib einen bestehenden Nutzernamen oder eine gültige Mailadresse an!"
 
-#: pretalx/orga/views/submission.py:154
+#: pretalx/orga/views/submission.py:160
 msgid "The speaker has been added to the submission."
 msgstr "Der Vortragende wurde der Einreichung hinzugefügt."
 
-#: pretalx/orga/views/submission.py:156
+#: pretalx/orga/views/submission.py:162
 msgid "The speaker was already part of the submission."
 msgstr "Der Vortragende war bereits Teil der Einreichung."
 
-#: pretalx/orga/views/submission.py:174
+#: pretalx/orga/views/submission.py:180
 msgid "The speaker has been removed from the submission."
 msgstr "Der Vortragende wurde von der Einreichung entfernt."
 
-#: pretalx/orga/views/submission.py:176
+#: pretalx/orga/views/submission.py:182
 msgid "The speaker was not part of this submission."
 msgstr "Der Vortragende war nicht Teil der Einreichung."
 
-#: pretalx/orga/views/submission.py:255
+#: pretalx/orga/views/submission.py:263
 msgid ""
 "The submission has been created and the speaker has been invited to add an "
 "account!"
@@ -3295,7 +3301,7 @@ msgstr ""
 "Die Einreichung wurde erstellt und die Vortragende wurde eingeladen, einen "
 "Account zu erstellen."
 
-#: pretalx/orga/views/submission.py:257
+#: pretalx/orga/views/submission.py:265
 msgid ""
 "The submission has been created; the speaker already had an account on this "
 "system."
@@ -3303,11 +3309,11 @@ msgstr ""
 "Die Einreichung wurde erstellt; die Vortragende hatte bereits einen Account "
 "im System."
 
-#: pretalx/orga/views/submission.py:259
+#: pretalx/orga/views/submission.py:267
 msgid "The submission has been updated!"
 msgstr "Die Einreichung wurde gespeichert."
 
-#: pretalx/orga/views/submission.py:295
+#: pretalx/orga/views/submission.py:303
 msgid "The submission has been deleted."
 msgstr "Die Einreichung wurde gelöscht."
 
@@ -3880,11 +3886,6 @@ msgstr "{name} ({duration} Minuten)"
 
 #~ msgid "multiple choice"
 #~ msgstr "Auswahl (mehrere)"
-
-#~ msgid "Submission must be accepted, not {state} to be confirmed."
-#~ msgstr ""
-#~ "Eine Einreichung muss angenommen worden sein, nicht {state}, um bestätigt "
-#~ "zu werden."
 
 #~ msgid ""
 #~ "Submission must be submitted or rejected, not {state} to be accepted."
