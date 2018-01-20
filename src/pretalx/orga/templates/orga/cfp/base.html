@@ -1,32 +1,6 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 {% block content %}
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <a 
-          class="nav-link {% if "cfp.text" in url_name %}active{% endif %}"
-          href="{{ request.event.cfp.urls.text }}"
-        >
-            {% trans "Text and deadline" %}
-		</a>
-      </li>
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "cfp.question" in url_name %}active{% endif %}"
-            href="{{ request.event.cfp.urls.questions }}"
-          >
-            {% trans "Questions" %}
-		</a>
-      </li>
-      <li class="nav-item">
-          <a
-            class="nav-link {% if "cfp.types" in url_name %}active{% endif %}"
-            href="{{ request.event.cfp.urls.types }}"
-          >
-            {% trans "Submission Types" %}
-          </a>
-      </li>
-    </ul>
 
     {% block cfp_content %}
     {% endblock %}

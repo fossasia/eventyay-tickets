@@ -1,59 +1,13 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 {% block content %}
-{% if action and action != 'create' %}
-    {% if request.event %}
-        <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.event" in url_name %}active{% endif %}"
-              href="{{ request.event.orga_urls.settings }}"
-            >
-                {% trans "Event" %}
-                    </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.team" in url_name %}active{% endif %}"
-              href="{{ request.event.orga_urls.team_settings }}"
-            >
-                {% trans "Team" %}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.room" in url_name %}active{% endif %}"
-              href="{{ request.event.orga_urls.room_settings }}"
-            >
-                {% trans "Rooms" %}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if "settings.review" in url_name %}active{% endif %}"
-              href="{% url "orga:settings.review.view" event=request.event.slug %}"
-            >
-                {% trans "Review" %}
-            </a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link {% if "settings.mail" in url_name %}active{% endif %}"
-                 href="{{ request.event.orga_urls.mail_settings }}">
-                {% trans "E-mail" %}
-              </a>
-          </li>
-        </ul>
-    {% endif %}
-{% endif %}
-
-    <div class="flex-container">
-        <div class="flex-content">
-            {% block settings_content %}
-            {% endblock %}
-        </div>
-        <div class="flex-sidebar">
-            {% include "common/logs.html" with obj=request.event %}
-        </div>
+<div class="flex-container">
+    <div class="flex-content">
+        {% block settings_content %}
+        {% endblock %}
     </div>
-
+    <div class="flex-sidebar">
+        {% include "common/logs.html" with obj=request.event %}
+    </div>
+</div>
 {% endblock %}
