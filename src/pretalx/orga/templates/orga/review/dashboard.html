@@ -23,7 +23,7 @@
         </div>
     </div>
 {% endif %}
-    <{% if can_see_settings %}a href="{{ request.event.orga_urls.review_settings }}"{% else %}div{% endif %} class="dashboard-block">
+    <{% if can_see_settings %}a href="{{ request.event.cfp.urls.text }}"{% else %}div{% endif %} class="dashboard-block">
         <h1>{{ reviewers }}</h1>
         <div class="dashboard-description">
             {% trans "total reviewers" %}

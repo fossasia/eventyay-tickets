@@ -49,6 +49,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
 
     def form_valid(self, form):
         if not self.sform.is_valid():
+            messages.error(self.request, _('We had trouble saving your input.'))
             return self.form_invalid(form)
         messages.success(self.request, 'The CfP update has been saved.')
         form.instance.event = self.request.event

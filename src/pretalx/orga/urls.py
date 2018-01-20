@@ -86,7 +86,6 @@ urlpatterns = [
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
         url('^settings/mail/edit$', event.EventMailSettings.as_view(), name='settings.mail.edit'),
         url('^settings/team$', event.EventTeam.as_view(), name='settings.team.view'),
-        url('^settings/reviews$', event.EventReview.as_view(), name='settings.review.view'),
         url('^settings/rooms$', event.RoomList.as_view(), name='settings.rooms.list'),
         url('^settings/rooms/new$', event.RoomDetail.as_view(), name='settings.rooms.create'),
         url('^settings/rooms/(?P<pk>[0-9]+)$', event.RoomDetail.as_view(), name='settings.rooms.view'),

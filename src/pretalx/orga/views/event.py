@@ -23,9 +23,7 @@ from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.event.models import Event
 from pretalx.mail.models import QueuedMail
-from pretalx.orga.forms import (
-    EventForm, EventSettingsForm, ReviewPermissionForm, ReviewSettingsForm,
-)
+from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import EventPermission, User
@@ -224,27 +222,6 @@ class EventTeam(EventSettingsPermission, TemplateView):
             mail.send()
 
         return redirect(self.request.event.orga_urls.team_settings)
-
-
-class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
-    form_class = ReviewSettingsForm
-    template_name = 'orga/settings/review.html'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['obj'] = self.request.event
-        kwargs['attribute_name'] = 'settings'
-        kwargs['locales'] = self.request.event.locales
-        return kwargs
-
-    def form_valid(self, form):
-        ret = super().form_valid(form)
-        form.save()
-        messages.success(self.request, _('Your settings have been saved.'))
-        return ret
-
-    def get_success_url(self) -> str:
-        return reverse('orga:settings.review.view', kwargs={'event': self.request.event.slug})
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')

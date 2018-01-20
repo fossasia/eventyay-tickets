@@ -18,6 +18,39 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_('If this setting is checked, you will receive an email to the orga address for every received submission.'),
         required=False
     )
+    allow_override_votes = forms.BooleanField(
+        label=_('Allow override votes'),
+        help_text=_('With this setting, individual reviewers can be assigned a fixed amount of "override votes" functioning like vetos.'),
+        required=False,
+    )
+    review_min_score = forms.IntegerField(
+        label=_('Minimum score'),
+        help_text=_('The minimum score reviewers can assign'),
+    )
+    review_max_score = forms.IntegerField(
+        label=_('Maximum score'),
+        help_text=_('The maximum score reviewers can assign'),
+    )
+
+    def __init__(self, obj, *args, **kwargs):
+        kwargs.pop('read_only')  # added in ActionFromUrl view mixin, but not needed here.
+        super().__init__(*args, obj=obj, **kwargs)
+        minimum = int(obj.settings.review_min_score)
+        maximum = int(obj.settings.review_max_score)
+        for number in range(abs(maximum - minimum + 1)):
+            index = minimum + number
+            self.fields[f'review_score_name_{index}'] = forms.CharField(
+                label=_('Score label ({})').format(index),
+                required=False
+            )
+
+    def clean(self):
+        data = self.cleaned_data
+        minimum = int(data.get('review_min_score'))
+        maximum = int(data.get('review_max_score'))
+        if not minimum < maximum:
+            raise forms.ValidationError(_('Please assign a minimum score smaller than the maximum score!'))
+        return data
 
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
