@@ -40,5 +40,6 @@ def system_information(request):
         ctx['development_warning'] = True
         with suppress(Exception):
             import subprocess
-            ctx['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always'])
+            ctx['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
+
     return ctx
