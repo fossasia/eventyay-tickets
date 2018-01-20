@@ -35,10 +35,13 @@ class EventDashboardView(PermissionRequired, TemplateView):
                 'large': (today - event.date_from).days,
                 'small': _('days since event end'),
             })
-        ctx['tiles'].append({
-            'url': event.urls.base,
-            'small': _('Go to CfP'),
-        })
+        else:
+            day = (today - event.date_from).days + 1
+            ctx['tiles'].append({
+                'large': _('Day {number}').format(number=day),
+                'small': _('of {total_days} days').format(total_days=(event.date_to - event.date_from).days + 1),
+                'url': event.urls.schedule + f'#{today.isoformat()}',
+            })
         if event.current_schedule:
             ctx['tiles'].append({
                 'large': event.current_schedule.version,
