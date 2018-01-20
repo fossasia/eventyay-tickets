@@ -113,12 +113,14 @@
 </div>
 
 <div class="dashboard-list">
-    <div class="dashboard-block">
-        <h1>Dashboard</h1>
-        <div class="dashboard-description">
-            Dashing dashboard to follow.
-        </div>
-    </div>
+    {% for tile in tiles %}
+    <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block">
+            <h1>{{ tile.large }}</h1>
+            <div class="dashboard-description">
+                {{ tile.small }}
+            </div>
+            </{% if tile.url %}a{% else %}div{% endif %}>
+    {% endfor %}
 </div>
 
 {% if history %}

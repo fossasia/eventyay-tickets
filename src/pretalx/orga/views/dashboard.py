@@ -1,3 +1,5 @@
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
@@ -18,6 +20,56 @@ class EventDashboardView(PermissionRequired, TemplateView):
 
     def get_context_data(self, event):
         ctx = super().get_context_data()
-        ctx['timeline'] = get_stages(self.request.event)
+        event = self.request.event
+        ctx['timeline'] = get_stages(event)
         ctx['history'] = ActivityLog.objects.filter(event=self.get_object())[:20]
+        ctx['tiles'] = []
+        today = now().date()
+        if today < event.date_from:
+            ctx['tiles'].append({
+                'large': (event.date_from - today).days,
+                'small': _('days until event start'),
+            })
+        elif today > event.date_to:
+            ctx['tiles'].append({
+                'large': (today - event.date_from).days,
+                'small': _('days since event end'),
+            })
+        ctx['tiles'].append({
+            'url': event.urls.base,
+            'small': _('Go to CfP'),
+        })
+        if event.current_schedule:
+            ctx['tiles'].append({
+                'large': event.current_schedule.version,
+                'small': _('current schedule'),
+                'url': event.urls.schedule,
+            })
+        ctx['tiles'].append({
+            'url': event.urls.base,
+            'small': _('Go to CfP'),
+        })
+        if event.submissions.count():
+            ctx['tiles'].append({
+                'large': event.submissions.count(),
+                'small': _('total submissions'),
+                'url': event.orga_urls.submissions,
+            })
+            if event.talks.count():
+                ctx['tiles'].append({
+                    'large': event.talks.count(),
+                    'small': _('total talks'),
+                    'url': event.orga_urls.submissions,
+                })
+        if event.speakers.count():
+            ctx['tiles'].append({
+                'large': event.speakers.count(),
+                'small': _('speakers'),
+                'url': event.orga_urls.speakers,
+            })
+        ctx['tiles'].append({
+            'large': event.queued_mails.filter(sent__isnull=False).count(),
+            'small': _('sent emails'),
+            'url': event.orga_urls.send_mails,
+        })
         return ctx
