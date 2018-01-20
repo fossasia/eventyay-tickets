@@ -17,15 +17,18 @@
 }
 
 .sidebar {
-  background-color: $gray-lightest;
+  background-color: $gray-lighter;
   width: 250px;
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
 
   .nav-link {
-    border-bottom: 1px solid $gray-lighter;
+    border-bottom: 1px solid $gray-light;
     padding: 10px 15px;
+  }
+  .nav-link:first-child {
+    border-top: 1px solid $gray-light;
   }
 
   .nav-link .fa {
@@ -33,7 +36,10 @@
   }
 
   .nav-link:hover, .nav-link.active {
-    background: $gray-lighter;
+    background-color: $brand-primary;
+    filter: brightness(200%);
+    font-weight: 200;
+    color: $gray-lighter;
   }
 }
 .sidebar.sidebar-collapsed {
