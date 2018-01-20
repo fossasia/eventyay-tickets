@@ -38,6 +38,7 @@
 
   .nav-link:hover, .nav-link.active {
     background-color: $gray-light;
+    border-bottom: 1px solid $gray-lightest;
     color: $gray-lighter;
   }
 }
