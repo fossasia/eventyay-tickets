@@ -36,9 +36,7 @@
   }
 
   .nav-link:hover, .nav-link.active {
-    background-color: $brand-primary;
-    filter: brightness(200%);
-    font-weight: 200;
+    background-color: $gray-light;
     color: $gray-lighter;
   }
 }
