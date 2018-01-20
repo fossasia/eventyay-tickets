@@ -1,18 +1,58 @@
 import pytest
 
+from pretalx.event.models import Event
 from pretalx.submission.models import Question
 
 
 @pytest.mark.django_db
 def test_edit_cfp(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
     response = orga_client.post(
         event.cfp.urls.edit_text,
-        {'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20'},
+        {
+            'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20',
+            'settings-review_min_score': '0',
+            'settings-review_max_score': '2',
+            'settings-review_score_name_0': 'OK',
+            'settings-review_score_name_1': 'Want',
+            'settings-review_score_name_2': 'Super',
+        },
         follow=True,
     )
     assert response.status_code == 200
-    event.cfp.refresh_from_db()
+    event = Event.objects.get(slug=event.slug)
     assert str(event.cfp.headline) == 'new headline'
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 2
+
+
+@pytest.mark.django_db
+def test_edit_cfp_invalid(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    old_headline = event.cfp.headline or ''
+    response = orga_client.post(
+        event.cfp.urls.edit_text,
+        {
+            'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20',
+            'settings-review_min_score': '2',
+            'settings-review_max_score': '2',
+            'settings-review_score_name_0': 'OK',
+            'settings-review_score_name_1': 'Want',
+            'settings-review_score_name_2': 'Super',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(slug=event.slug)
+    assert str(event.cfp.headline) == str(old_headline)
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
 
 
 @pytest.mark.django_db

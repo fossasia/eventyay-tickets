@@ -29,7 +29,6 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('settings.event.view', 200, 403,),
     ('settings.mail.view', 200, 404,),
     ('settings.team.view', 200, 404,),
-    ('settings.review.view', 200, 404,),
     ('reviews.dashboard', 200, 200,),
     ('schedule.main', 200, 404,),
 ])
