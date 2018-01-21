@@ -31,6 +31,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields['slug'].widget.attrs['placeholder'] = _('sercon') + year[2:]
         self.fields['email'].widget.attrs['placeholder'] = 'contact@sercon.com'
         self.fields['primary_color'].widget.attrs['placeholder'] = '#ab01de'
+        if self.instance and self.instance.slug:
+            self.fields['slug'].disabled = True
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
