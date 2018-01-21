@@ -83,6 +83,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['sform'] = self.sform
+        context['url_placeholder'] = f'https://{self.request.host}/'
         return context
 
     def get_success_url(self) -> str:
