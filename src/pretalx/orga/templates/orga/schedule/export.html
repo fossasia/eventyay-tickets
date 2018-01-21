@@ -1,13 +1,13 @@
 {% extends "orga/schedule/base.html" %}
 {% load i18n %}
 {% block schedule_content %}
-<legend>Schedule Export</legend>
+<legend>HTML Export</legend>
 
 <p>
 {% blocktrans trimmed %}
-The event schedule can be exported to a static html dump, so you can upload it to a
-normal file-serving webserver like nginx. This is done automatically on schedule
-release, but you can also trigger that action here.
+The event schedule can be exported to a static HTML dump, so you can upload it
+to a normal file-serving webserver like nginx. This is done automatically on
+schedule release, but you can also trigger that action here.
 {% endblocktrans %}
 </p>
 
@@ -22,5 +22,54 @@ release, but you can also trigger that action here.
         {% trans "Regenerate Export" %}
     </button>
 </form>
+
+<p></p>
+<legend>{% trans "Data Export" %}</legend>
+
+<ul>
+    <li>
+        <a href="{{ request.event.urls.frab_json }}">
+            {  }
+            {% trans "Download JSON export" %}
+        </a>
+    </li>
+    <li>
+        <a href="{{ request.event.urls.frab_xml }}">
+            <span class="fa fa-code"></span>
+            {% trans "Download XML export" %}
+        </a>
+    </li>
+    <li>
+        <a href="{{ request.event.urls.frab_xcal }}">
+            <span class="fa fa-calendar-o"></span>
+            {% trans "Download XCal export" %}
+        </a>
+    </li>
+    <li>
+        <a href="{{ request.event.urls.ical }}">
+            <span class="fa fa-calendar"></span>
+            {% trans "Download iCal export" %}
+        </a>
+    </li>
+    <li>
+        <a href="{{ request.event.urls.ical }}">
+            <span class="fa fa-feed"></span>
+            {% trans "Visit Atom feed" %}
+        </a>
+    </li>
+</ul>
+
+<p></p>
+<legend>{% trans "API" %}</legend>
+
+{% trans "You can also use the API to export or use data." %}
+
+<a class="btn btn-xs btn-primary" href="{{ request.event.api_urls.base }}">
+    {% trans "Go to API" %}
+</a>
+<a class="btn btn-xs btn-secondary" href="https://docs.pretalx.org/en/latest/api/index.html">
+    <span class="fa fa-book"></span>
+    {% trans "Documentation" %}
+</a>
 
 {% endblock %}
