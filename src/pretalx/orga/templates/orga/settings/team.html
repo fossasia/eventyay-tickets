@@ -11,50 +11,11 @@
         {% trans "To invite more members to your team, enter an email address below." %}
     </div>
     <legend>
-        {{ team|length }}
-        {% blocktrans trimmed count count=team.count %}
         Team Member
         {% plural %}
         Team Members
         {% endblocktrans %}
     </legend>
-    <ul>
-        {% for member in team %}
-            <li>
-                {{ member.get_display_name }}
-                {% if member != request.user or team|length > 1 %}
-                    <a href="{% url "orga:settings.team.delete" event=request.event.slug pk=member.pk %}" class="btn btn-sm btn-secondary">
-                        <span class="fa fa-times"></span>
-                    </a>
-                {% endif %}
-            </li>
-        {% endfor %}
-        <li><form method="post" action="{{ request.event.orga_urls.invite }}" class="adder-textbox">
-            {% csrf_token %}
-            <input type="text" name="email" class="form-control tt-input" />
-            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-check"></span></button>
-        </form></li>
-    </ul>
-
-    {% if pending %}
-        <legend>
-            {{ pending|length }}
-            {% blocktrans trimmed count count=pending.count %}
-            Pending Invitation
-            {% plural %}
-            Pending Invitations
-            {% endblocktrans %}
-        </legend>
-        <ul>
-            {% for email in pending %}
-                <li>
-                    {{ email.invitation_email }}
-                    <a href="{% url "orga:settings.team.retract" event=request.event.slug pk=email.pk %}" class="btn btn-sm btn-secondary">
-                        <span class="fa fa-times"></span>
-                    </a>
-                </li>
             {% endfor %}
-        </ul>
-    {% endif %}
 </div>
 {% endblock %}
