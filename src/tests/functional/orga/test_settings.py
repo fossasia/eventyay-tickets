@@ -103,7 +103,6 @@ def test_add_custom_css(event, orga_client, path, allowed):
     event.refresh_from_db()
     assert response.status_code == 200
     assert bool(event.custom_css) == allowed
-    assert (event.slug == 'csstest') == allowed, event.slug
 
 
 @pytest.mark.django_db
@@ -124,14 +123,15 @@ def test_add_logo(event, orga_client):
                 'date_to': event.date_to,
                 'timezone': event.timezone,
                 'email': event.email,
-                'primary_color': '',
+                'primary_color': '#00ff00',
                 'custom_css': None,
                 'logo': logo,
             },
             follow=True
         )
     event.refresh_from_db()
-    assert event.slug == 'logotest', response.content.decode()
+    assert event.slug != 'logotest'
+    assert event.primary_color == '#00ff00'
     assert response.status_code == 200
     assert event.logo
     response = orga_client.get(event.urls.base, follow=True)
