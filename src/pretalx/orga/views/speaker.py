@@ -85,6 +85,8 @@ class SpeakerToggleArrived(PermissionRequired, View):
         profile = self.get_object()
         profile.has_arrived = not profile.has_arrived
         profile.save()
+        action = 'pretalx.speaker.arrived' if profile.has_arrived else 'pretalx.speaker.unarrived'
+        profile.user.log_action(action, data={'event': self.request.event.slug}, person=self.request.user, orga=True)
         if request.GET.get('from') == 'list':
             return redirect(reverse('orga:speakers.list', kwargs={'event': self.kwargs['event']}))
         return redirect(reverse(
