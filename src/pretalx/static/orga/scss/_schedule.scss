@@ -150,10 +150,9 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-
-  .time {
-    display: inline-block;
-    min-width: 45px;
+  display: flex; flex-direction: row;
+  span {
+    padding-right: 8px;
   }
 }
 .talk-box.accepted {
@@ -164,7 +163,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   opacity: 0.5;
 }
 .talk-box.confirmed {
-  background: lighten($brand-success, 10%);
+  background: lighten($brand-success, 15%);
 }
 .talk-box.dragged {
   position: absolute;
