@@ -118,7 +118,15 @@ footer {
     height: 100%;
   }
 }
-
+.event-logo-field {
+  img.event-logo-display {
+    margin-left: 12px;
+    margin-right: 16px;
+    padding: 2px;
+    border:1px solid $gray-light;
+    max-width: 180px;
+  }
+}
 .bootstrap4-multi-input {
   margin: auto;
 }

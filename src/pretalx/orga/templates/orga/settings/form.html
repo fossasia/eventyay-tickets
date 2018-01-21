@@ -1,6 +1,7 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load staticfiles %}
 {% block settings_content %}
 
 <div class="flex-container"><div class="flex-content">
@@ -27,7 +28,19 @@
         {% bootstrap_field form.locales layout='event' %}
         {% bootstrap_field form.primary_color layout='event' %}
         {% bootstrap_field form.custom_css layout='event' %}
-        {% bootstrap_field form.logo layout='event' %}
+        <div class="event-logo-field form-group row">
+            <label class="col-md-3 col-form-label" for="id_custom_css">{% trans "Event logo" %}<br><span class="optional">Optional</span></label>
+            <img class="event-logo-display"
+              {% if request.event.logo %}
+              src="{{ request.event.logo.url }}"
+              {% else %}
+              src="{% static "common/img/logo.svg" %}"
+              {% endif %}
+            />
+            <div class="event-logo-form-fields">
+                {% bootstrap_field form.logo layout='inline' %}
+            </div>
+        </div>
         {% bootstrap_field sform.show_schedule layout='event' %}
         {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
 
