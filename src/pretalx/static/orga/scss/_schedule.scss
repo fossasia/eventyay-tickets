@@ -28,8 +28,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  margin-right: 250px;
-  border-right: $gray-800 4px solid;
+  margin-right: 270px;
 
   .hover-active {
     background: lighten($gray-light, 30%);
@@ -41,8 +40,8 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   flex: 1 0 auto;
   flex-wrap: no-wrap;
   align-self: stretch;
-  padding-left: 24px; padding: 18px;
-  background: $gray-lighter;
+  padding: 18px;
+  padding-left: 0;
 }
 
 #tracks {
@@ -50,6 +49,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 
 .room-column {
+  background: $gray-lighter;
   flex: 1 0 auto;
   align-self: stretch;
   margin-right: 18px;
@@ -60,25 +60,29 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   margin-right: 0;
 }
 .room-header {
+  border-bottom: 1px solid $gray-light;
   font-size: 16pt;
   font-decoration: underline;
   margin-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   height: 31px;
-
+  display: flex;
+  justify-content: center;
 }
 #unassigned-talks {
   flex-direction: column;
+  background: $gray-lighter;
   position: fixed;
   right: 20px;
-  top: 193px;
+  top: 123px;
   width: 265px;
-  height: calc(100vh - 193px - 20px);
+  height: calc(100vh - 123px - 20px);
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+  padding: 5px;
 
   .input-group {
     margin-bottom: 5px;
@@ -89,8 +93,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   }
 
   .room-container {
-    overflow-y: scroll;
-    padding-right: 5px;
+    overflow-y: auto;
   }
 
   .talk-box {
