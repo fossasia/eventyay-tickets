@@ -1,7 +1,11 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load static %}
+{% load formset_tags %}
 {% block settings_content %}
+
+<script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
 
 <div>
     <div class="alert alert-info">
@@ -11,11 +15,100 @@
         {% trans "To invite more members to your team, enter an email address below." %}
     </div>
     <legend>
+        {{ formset|length }}
+        {% blocktrans trimmed count count=count_members %}
         Team Member
         {% plural %}
         Team Members
         {% endblocktrans %}
     </legend>
+    <form method="post" action="" class="formset teameditor" data-formset data-formset-prefix="{{ formset.prefix }}">
+    {{ formset.management_form }}
+    {% csrf_token %}
+    {% bootstrap_formset_errors formset %}
+    <table class="table table-condensed table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Member" %}</th>
+                <th>{% trans "Orga" %}</th>
+                <th>{% trans "Reviewer" %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-formset-body>
+            {% for form in formset %}
+            <tr data-formset-form>
+                <td>
+                    {% bootstrap_field form.invitation_email form_group_class="d-none" %}
+                    {% if form.instance.invitation_email %}
+                        {{ form.instance.invitation_email }} (invited)
+                    {% else %}
+                        {{ form.instance.user }}
+                    {% endif %}
+                </td>
+                <td>{{ form.is_orga }}</td>
+                <td class="reviewer">
+                    {{ form.is_reviewer }}
+                    <span>{{ form.review_override_count }} {% trans "Override Votes" %}</span>
+                </td>
+                <td>
+                    {% bootstrap_field form.id %}
+                    {% bootstrap_field form.DELETE field_class="sr-only" form_group_class="" %}
+                    <div class="question-option-delete">
+                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                            <i class="fa fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
             {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-info" data-formset-add>
+        <i class="fa fa-plus"></i> {% trans "Add a new member" %}
+    </button>
+    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    <script type="form-template" data-formset-empty-form>
+        {% escapescript %}
+        <tr data-formset-form>
+            <td>
+                {% bootstrap_field formset.empty_form.invitation_email form_group_class="" layout="inline" %}
+            </td>
+            <td>{{ formset.empty_form.is_orga }}</td>
+            <td class="reviewer">
+                {{ formset.empty_form.is_reviewer }}
+                <span>{{ formset.empty_form.review_override_count }} {% trans "Override Votes" %}</span>
+            </td>
+            <td>
+                {% bootstrap_field formset.empty_form.id field_class="hidden" %}
+                {% bootstrap_field formset.empty_form.DELETE field_class="sr-only" form_group_class="" %}
+                <div class="question-option-delete">
+                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <i class="fa fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>
+        {% endescapescript %}
+    </script>
+    </form>
+    <script>
+    jQuery(function($) {
+        $(".formset").formset({
+            animateForms: true
+        });
+    });
+
+    function updateOverrideCountInput() {
+        var $input = $(this).siblings().filter('span');
+        if($(this).is(":checked")) {
+            $input.removeClass('invisible');
+        } else {
+            $input.addClass('invisible');
+        }
+    }
+
+    jQuery('.formset').on('change', 'td.reviewer input[type=checkbox]', updateOverrideCountInput);
+    jQuery('.formset td.reviewer input[type=checkbox]').each(updateOverrideCountInput);
+    </script>
 </div>
 {% endblock %}

@@ -84,3 +84,16 @@ table .btn-secondary {
 
   }
 }
+
+.teameditor {
+  input[type=checkbox] {
+    vertical-align: middle;
+  }
+  input[type=email] {
+    max-width: 15em;
+  }
+  input[type=number] {
+    max-width: 2.5em;
+    text-align: center;
+  }
+}

@@ -1,6 +1,7 @@
 import string
 
 from csp.decorators import csp_update
+from django import forms
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
@@ -152,22 +153,74 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return ret
 
 
-class EventTeam(EventSettingsPermission, ActionFromUrl, TemplateView):
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='get')
+class EventTeam(EventSettingsPermission, TemplateView):
     template_name = 'orga/settings/team.html'
+
+    @cached_property
+    def formset(self):
+        formset_class = forms.inlineformset_factory(
+            Event, EventPermission, can_delete=True, extra=0,
+            fields=[
+                'is_orga',
+                'is_reviewer',
+                'review_override_count',
+                'invitation_email',
+            ],
+        )
+        return formset_class(
+            self.request.POST if self.request.method == 'POST' else None,
+            queryset=EventPermission.objects.filter(event=self.request.event),
+            instance=self.request.event,
+        )
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
+        ctx['formset'] = self.formset
         return ctx
 
+    @classmethod
+    def _find_user(cls, email):
+        from pretalx.person.models import User
+        return User.objects.filter(nick=email).first() or User.objects.filter(email=email).first()
 
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        permissions = self.formset.save(commit=False)
+        mails = []
 
+        for permission in self.formset.deleted_objects:
+            permission.delete()
 
+        for permission in permissions:
+            if permission.invitation_email:
+                user = self._find_user(permission.invitation_email)
 
                 if user:
+                    permission.user = user
+                    permission.invitation_email = None
+                    permission.invitation_token = None
+                elif not permission.invitation_token:
+                    mails.append(permission.send_invite_email())
+                    request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
+                    messages.success(
+                        request,
+                        _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=permission.invitation_email)
+                    )
 
+            permission.save()
 
+        for permission in permissions:
+            if permission.user:
+                EventPermission.objects \
+                    .filter(event=permission.event, user=permission.user) \
+                    .exclude(id=permission.id) \
+                    .delete()
 
+        for mail in mails:
+            mail.send()
 
+        return redirect(self.request.event.orga_urls.team_settings)
 
 
 class EventReview(EventSettingsPermission, ActionFromUrl, FormView):

@@ -234,9 +234,15 @@ def test_save_review_settings_invalid(orga_client, event):
 def test_invite_orga_member(orga_client, event):
     assert EventPermission.objects.filter(event=event).count() == 1
     response = orga_client.post(
-        event.orga_urls.invite,
-        {'email': 'other@user.org'},
-        follow=True,
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 1,
+            'permissions-INITIAL_FORMS': 0,
+            'permissions-0-invitation_email':'other@user.org',
+            'permissions-0-is_orga':'on',
+            'permissions-0-review_override_count':'0',
+            'permissions-0-id': '',
+        }, follow=True,
     )
     assert response.status_code == 200
     assert EventPermission.objects.filter(event=event).count() == 2
