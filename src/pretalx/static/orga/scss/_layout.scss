@@ -32,8 +32,11 @@
     }
     .arrow {
       flex-grow: 0;
-      min-width: 50px;
+      width: 50px;
       border: none;
+      display: flex;
+      justify-content: center;
+      span {padding-top: 4px;}
     }
 
   }
@@ -51,11 +54,6 @@
     .fa {
       margin-right: 5px;
     }
-    &:hover, &.active {
-      border-top: 1px solid $gray-lightest;
-      background-color: $gray-light;
-      color: $gray-lighter;
-    }
     &.nav-link-second-level span {
       padding-left: 1.6em;
     }
@@ -64,8 +62,9 @@
   .nav-link.nav-link-second-level, .nav-link.nav-link-inner, .nav-link.nav-link-inner.active {
     border: none;
   }
-  .nav-link.nav-link-second-level.active, .nav-link.nav-link-second-level:hover {
-    background-color: lighten($gray-light, 25%);
+  .nav-link.active, .nav-link:hover, .nav-link.nav-link-second-level.active, .nav-link.nav-link-second-level:hover {
+    background-color: lighten($gray-light, 45%);
+    color: $brand-primary;
   }
 }
 .sidebar.sidebar-collapsed {
