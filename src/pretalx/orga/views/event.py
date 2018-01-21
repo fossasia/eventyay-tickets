@@ -280,28 +280,7 @@ class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
         kwargs['locales'] = self.request.event.locales
         return kwargs
 
-    @cached_property
-    def permission_forms(self):
-        qs = EventPermission.objects.filter(event=self.request.event, is_reviewer=True)
-        return [
-            ReviewPermissionForm(instance=perm, prefix=str(perm.id), data=self.request.POST if self.request.method == 'POST' else None)
-            for perm in qs.all()
-        ]
-
-    def save_formset(self):
-        if self.request.event.settings.allow_override_votes:
-            for form in self.permission_forms:
-                if form.is_valid():
-                    if form.has_changed():
-                        form.save()
-                else:
-                    return False
-        return True
-
     def form_valid(self, form):
-        if not self.save_formset():
-            messages.error(self.request, _('We had trouble saving your input.'))
-            return redirect(self.get_success_url())
         ret = super().form_valid(form)
         form.save()
         messages.success(self.request, _('Your settings have been saved.'))
@@ -309,108 +288,6 @@ class EventReview(EventSettingsPermission, ActionFromUrl, FormView):
 
     def get_success_url(self) -> str:
         return reverse('orga:settings.review.view', kwargs={'event': self.request.event.slug})
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['formset'] = self.permission_forms
-        ctx['pending'] = EventPermission.objects.filter(event=self.request.event, user__isnull=True, is_reviewer=True)
-        return ctx
-
-
-class EventReviewInvite(EventSettingsPermission, View):
-
-    def _handle_existing_user(self, request, user):
-        if user:
-            permission = user.permissions.filter(event=request.event).first()
-        if not permission:
-            EventPermission.objects.create(event=request.event, is_orga=False, is_reviewer=True)
-        else:
-            permission.is_reviewer = True
-            permission.save(update_fields=['is_reviewer'])
-        if user != request.user:
-            invitation_text = _('''Hi!
-
-You have been added to the submission reviewer team of {event}!
-
-We are happy to have you on the team,
-The {event} orga crew''').format(event=request.event.name)
-            invitation_subject = _('You have been added to the review team of {event}').format(event=request.event.name)
-            QueuedMail(
-                event=request.event, to=user.email, reply_to=request.event.email,
-                subject=str(invitation_subject), text=str(invitation_text),
-            ).send()
-            messages.success(request, _('The user already existed and is now a reviewer.'))
-        else:
-            messages.success(request, _('You successfully made yourself a reviewer!'))
-        request.event.log_action('pretalx.invite.reviewer.send', person=request.user, orga=True)
-        return redirect(request.event.orga_urls.review_settings)
-
-    def _handle_new_user(self, request, email, permission=None):
-        event = request.event
-        if not permission:
-            invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-            permission = EventPermission.objects.create(
-                event=event,
-                invitation_email=email,
-                invitation_token=invitation_token,
-                is_orga=False,
-                is_reviewer=True,
-            )
-        invitation_link = build_absolute_uri('orga:invitation.view', event=event, kwargs={'code': permission.invitation_token})
-        invitation_text = _('''Hi!
-
-You have been invited to the submission review team of {event} - Please click here to accept:
-
-    {invitation_link}
-
-We look forward to have you on the team!,
-The {event} orga crew (minus you)''').format(event=event.name, invitation_link=invitation_link)
-        invitation_subject = _('You have been invited to the reviewer team of {event}').format(event=request.event.name)
-        QueuedMail(
-            event=request.event, to=email, reply_to=request.event.email,
-            subject=str(invitation_subject), text=str(invitation_text),
-        ).send()
-        request.event.log_action('pretalx.invite.reviewer.send', person=request.user, orga=True)
-        messages.success(
-            request,
-            _('<{email}> has been invited to your reviewer team - more reviewers help gain perspective, so … yay!').format(email=email)
-        )
-        return redirect(event.orga_urls.review_settings)
-
-    def post(self, request, event):
-        permission = None
-        nick = request.POST.get('nick')
-        user = User.objects.filter(nick__iexact=nick).first() or User.objects.filter(email__iexact=nick).first()
-        if not user:
-            permission = EventPermission.objects.filter(event=request.event, invitation_email__iexact=nick)
-        try:
-            with transaction.atomic():
-                if user:
-                    return self._handle_existing_user(request, user)
-                elif permission:
-                    return self._handle_new_user(request, nick, permission=permission)
-                elif nick:
-                    return self._handle_new_user(request, nick)
-                else:
-                    messages.error(request, phrases.common.error_saving_changes)
-        except Exception:
-            messages.error(request, phrases.base.error_saving_changes)
-        return redirect(request.event.orga_urls.review_settings)
-
-
-class EventReviewRetract(EventSettingsPermission, View):
-
-    def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event=request.event, pk=pk).delete()
-        request.event.log_action('pretalx.invite.reviewer.retract', person=request.user, orga=True)
-        return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
-
-
-class EventReviewDelete(EventSettingsPermission, View):
-
-    def dispatch(self, request, event, pk):
-        EventPermission.objects.filter(event__slug=event, pk=pk).update(is_reviewer=False)
-        return redirect(reverse('orga:settings.review.view', kwargs={'event': event}))
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')

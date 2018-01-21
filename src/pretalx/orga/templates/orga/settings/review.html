@@ -5,63 +5,8 @@
 {% load staticfiles %}
 {% block settings_content %}
 
-<div class="alert alert-info">
-    {% if formset|length < 4 %}
-        {% trans "Review teams of three people or less are somewhat small and provide more work for everyone. Why don't you invite some more reviewers?" %}<br>
-    {% endif %}
-    {% trans "To invite more members to your review team, enter an email address or username below." %}
-</div>
-<div class="col-md-3 ml-auto">
-    <form method="post" action="{% url "orga:settings.review.add" event=request.event.slug %}" class="adder-textbox">
-        {% csrf_token %}
-        <input type="text" name="nick" id="id_speaker" class="form-control" placeholder="{% trans "reviewer@example.org" %}"/>
-        <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
-    </form>
-</div>
-
 <form method="post" action="">
     {% csrf_token %}
-    {% if formset %}
-    <legend>{{ formset|length }} {% trans "Reviewers" %}</legend>
-    <table class="table table-condensed table-responsive-md">
-        <tr>
-            <th>{% trans "Reviewer" %}</th>
-            {% if request.event.settings.allow_override_votes %}
-                <th>{% trans "Override Votes" %}</th>
-            {% endif %}
-            <th></th>
-        </tr>
-
-        {% for permission in formset %}
-        <tr>
-            <td>
-                {% if permission.instance.user %}
-                    {{ permission.instance.user.get_display_name }}
-                {% else %}
-                    <i>
-                        {% if permission.instance.invitation_email %}
-                            {{ permission.instance.invitation_email }}
-                        {% else %}
-                            {{ permission.instance.user.get_display_name }}
-                        {% endif %}
-                        ({% trans "pending" %})
-                    </i>
-                {% endif %}
-            </td>
-            {% if request.event.settings.allow_override_votes %}
-                <td>{% bootstrap_field permission.review_override_count layout='inline' %}</td>
-            {% endif %}
-            <td>
-                {% if permission.instance.user != request.user or formset|length > 1 %}
-                    <a href="{% url "orga:settings.review.delete" event=request.event.slug pk=permission.instance.pk %}" class="btn btn-sm btn-warning">
-                        <span class="fa fa-times"></span>
-                    </a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    {% endif %}
-    </table>
     <legend>{% trans "Review settings" %}</legend>
     {% bootstrap_form form layout='event' %}
 
