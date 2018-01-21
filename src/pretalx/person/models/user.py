@@ -131,13 +131,13 @@ class User(PermissionsMixin, AbstractBaseUser):
             assign_code(self)
         return super().save(args, kwargs)
 
-    def log_action(self, action, data=None, orga=False):
+    def log_action(self, action, data=None, person=None, orga=False):
         from pretalx.common.models import ActivityLog
         if data:
             data = json.dumps(data)
 
         ActivityLog.objects.create(
-            person=self, content_object=self, action_type=action,
+            person=person or self, content_object=self, action_type=action,
             data=data, is_orga_action=orga,
         )
 
