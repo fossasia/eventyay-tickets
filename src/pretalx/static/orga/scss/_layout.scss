@@ -22,16 +22,12 @@
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
-  border-right: 1px solid $gray-light;
+  border-right: 1px solid lighten($gray-light, 40%);
 
   .nav-link {
-    border-bottom: 1px solid $gray-light;
+    border-bottom: 1px solid lighten($gray-light, 40%);
     padding: 10px 15px;
   }
-  .nav-link:first-child {
-    border-top: 1px solid $gray-light;
-  }
-
   .nav-link .fa {
     margin-right: 5px;
   }
