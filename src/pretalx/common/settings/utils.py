@@ -10,6 +10,17 @@ def log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR):
         (f'Logging:  {LOG_DIR}', False),
         ('', False),
     ]
+    image = '''
+┏━━━━━━━━━━┓
+┃  ┌─·──╮  ┃
+┃  │  O │  ┃
+┃  │ ┌──╯  ┃
+┃  └─┘     ┃
+┗━━━┯━┯━━━━┛
+    ╰─╯
+    '''.strip().split('\n')
+
+    lines = [(f'{image[n]}  {lines[n][0]}', lines[n][1]) for n in range(len(lines))]
 
     size = max(len(line[0]) for line in lines) + 4
     start_box(size)
