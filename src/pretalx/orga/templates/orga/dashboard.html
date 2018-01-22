@@ -14,7 +14,7 @@
                 </span>
             </a>
         {% endfor %}
-        {% if request.user.is_superuser %}
+        {% if request.user.is_administrator %}
             <a href="{% url "orga:event.create" %}" class="dashboard-block">
                 <h1><span class="fa fa-plus"></span>{% trans "New event" %}</h1>
                 <span class="dashboard-description">{% trans "Uh, a new event?<br>Head over here, please!" %}</span>

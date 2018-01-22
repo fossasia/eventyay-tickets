@@ -32,7 +32,7 @@ class Command(BaseCommand):
             )
             event.save()
 
-        for user in User.objects.filter(is_superuser=True):
+        for user in User.objects.filter(is_administrator=True):
             EventPermission.objects.get_or_create(event=event, user=user, is_orga=True)
 
         self.stdout.write(self.style.SUCCESS(process_frab(root, event)))

@@ -44,7 +44,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         if self._action == 'create':
-            if not request.user.is_anonymous and not request.user.is_superuser:
+            if not request.user.is_anonymous and not request.user.is_administrator:
                 raise PermissionDenied()
         else:
             if not request.user.has_perm('orga.change_settings', self.object):

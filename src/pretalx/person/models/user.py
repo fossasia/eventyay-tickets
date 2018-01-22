@@ -42,8 +42,9 @@ class UserManager(BaseUserManager):
     def create_superuser(self, nick: str, password: str, **kwargs):
         user = self.create_user(nick=nick, password=password, **kwargs)
         user.is_staff = True
+        user.is_administrator = True
         user.is_superuser = True
-        user.save(update_fields=['is_staff', 'is_superuser'])
+        user.save(update_fields=['is_staff', 'is_administrator', 'is_superuser'])
         return user
 
 
@@ -89,6 +90,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_administrator = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
                               choices=settings.LANGUAGES,
@@ -163,6 +165,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         self.email = f'{self.nick}@localhost'
         self.is_active = False
         self.is_superuser = False
+        self.is_administrator = False
         self.locale = 'en'
         self.timezone = 'UTC'
         self.pw_reset_token = None

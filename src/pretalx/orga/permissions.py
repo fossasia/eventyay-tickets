@@ -1,6 +1,6 @@
 import rules
 
-from pretalx.person.permissions import is_orga, is_reviewer, is_superuser
+from pretalx.person.permissions import is_orga, is_reviewer, is_administrator
 from pretalx.submission.permissions import is_review_author
 
 rules.add_perm('orga.view_orga_area', is_orga | is_reviewer)
@@ -22,7 +22,7 @@ rules.add_perm('orga.view_mail_templates', is_orga)
 rules.add_perm('orga.edit_mail_templates', is_orga)
 rules.add_perm('orga.view_review_dashboard', is_orga | is_reviewer)
 rules.add_perm('orga.view_reviews', is_reviewer)
-rules.add_perm('orga.remove_review', is_superuser | is_review_author)
+rules.add_perm('orga.remove_review', is_administrator | is_review_author)
 rules.add_perm('orga.view_schedule', is_orga)
 rules.add_perm('orga.release_schedule', is_orga)
 rules.add_perm('orga.edit_schedule', is_orga)

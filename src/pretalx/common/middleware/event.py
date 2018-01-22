@@ -26,7 +26,7 @@ class EventPermissionMiddleware:
 
     def _set_orga_events(self, request):
         if not request.user.is_anonymous:
-            if request.user.is_superuser:
+            if request.user.is_administrator:
                 request.orga_events = Event.objects.all()
             else:
                 request.orga_events = Event.objects.filter(
@@ -53,12 +53,12 @@ class EventPermissionMiddleware:
 
             if hasattr(request, 'event') and request.event:
                 if not request.user.is_anonymous:
-                    request.is_orga = request.user.is_superuser or EventPermission.objects.filter(
+                    request.is_orga = request.user.is_administrator or EventPermission.objects.filter(
                         user=request.user,
                         event=request.event,
                         is_orga=True
                     ).exists()
-                    request.is_reviewer = request.user.is_superuser or EventPermission.objects.filter(
+                    request.is_reviewer = request.user.is_administrator or EventPermission.objects.filter(
                         user=request.user,
                         event=request.event,
                         is_reviewer=True

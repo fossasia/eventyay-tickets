@@ -22,5 +22,6 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 - The schedule export could change project settings, requiring pretalx to be restarted to reset the settings.
+- When running pretalx as (in-application) superuser, permission issues could arise. pretalx now warns and offers to migrate the account to an administrator account. (#259)
 
 .. _releases: https://github.com/pretalx/pretalx/releases

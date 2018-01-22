@@ -56,7 +56,7 @@ def test_user_can_see_correct_events(orga_user, orga_client, speaker, event, oth
     elif test_user == 'None':
         orga_client.logout()
     elif test_user == 'superuser':
-        orga_user.is_superuser = True
+        orga_user.is_administrator = True
         orga_user.save()
 
     response = orga_client.get(reverse('orga:event.dashboard', kwargs={'event': event.slug}), follow=True)
