@@ -1,5 +1,3 @@
-import string
-
 from csp.decorators import csp_update
 from django import forms
 from django.contrib import messages
@@ -9,7 +7,6 @@ from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -19,10 +16,8 @@ from rest_framework.authtoken.models import Token
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.phrases import phrases
 from pretalx.common.tasks import regenerate_css
-from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.event.models import Event
-from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
