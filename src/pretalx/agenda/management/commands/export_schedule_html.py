@@ -7,6 +7,7 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.urls import get_callable
 from django.utils import translation
+from django.test import override_settings
 
 from pretalx.event.models import Event
 
@@ -36,16 +37,10 @@ class Command(BakeryBuildCommand):
         self._exporting_event = event
         translation.activate(event.locale)
 
-        settings.COMPRESS_ENABLED = True
-        settings.COMPRESS_OFFLINE = True
-        call_command('rebuild')  # collect static files and combine/compress them
-
-        settings.BUILD_DIR = self.get_output_dir(event)
-
-        super().handle(*args, **options)
-
-        if options.get('zip'):
-            make_archive(settings.BUILD_DIR, 'zip', settings.BUILD_DIR, settings.BUILD_DIR)
+        with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True, BUILD_DIR=self.get_output_dir(event)):
+            super().handle(*args, **options)
+            if options.get('zip'):
+                make_archive(settings.BUILD_DIR, 'zip', settings.BUILD_DIR, settings.BUILD_DIR)
 
     def build_views(self):
         for view_str in self.view_list:
