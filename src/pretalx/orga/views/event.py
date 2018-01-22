@@ -186,6 +186,9 @@ class EventTeam(EventSettingsPermission, TemplateView):
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
+        if not self.formset.is_valid():
+            messages.error(request, phrases.base.error_saving_changes)
+            return redirect(self.request.event.orga_urls.team_settings)
         permissions = self.formset.save(commit=False)
         mails = []
 
