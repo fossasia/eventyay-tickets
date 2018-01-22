@@ -197,6 +197,9 @@
                         <a href="{{ request.event.orga_urls.schedule_export }}" class="nav-link nav-link-second-level{% if "schedule.export" in url_name %} active{% endif %}">
                             <span>{% trans "Export" %}</span>
                         </a>
+                        <a href="{{ request.event.orga_urls.schedule_import }}" class="nav-link nav-link-second-level{% if "schedule.import" in url_name %} active{% endif %}">
+                            <span>{% trans "Import" %}</span>
+                        </a>
                     </div>
                 </li>
 

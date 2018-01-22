@@ -93,6 +93,7 @@ urlpatterns = [
         url('^settings/rooms/(?P<pk>[0-9]+)/delete$', event.RoomDelete.as_view(), name='settings.rooms.delete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
+        url('^schedule/import$', schedule.ScheduleImportView.as_view(), name='schedule.import'),
         url('^schedule/export$', schedule.ScheduleExportView.as_view(), name='schedule.export'),
         url('^schedule/export/trigger$', schedule.ScheduleExportTriggerView.as_view(), name='schedule.export.trigger'),
         url('^schedule/export/download$', schedule.ScheduleExportDownloadView.as_view(), name='schedule.export.download'),
