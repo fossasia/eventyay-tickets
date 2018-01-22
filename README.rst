@@ -22,9 +22,12 @@ list`_ in our docs to get a better idea of what `pretalx` can do for you,
 but it probably involves everything you'll need to curate submissions and
 contents for a conference with up to 100 talks.
 
+You can host pretalx yourself, as detailed in our `administrator documentation`_,
+or use our public instance at `pretalx.org`_.
+
 Project status
 --------------
-`pretalx` is under active development. It is production ready and has already
+`pretalx` is under `active development`_. It is production ready and has already
 been used in several conferences. It supports everything required for talk
 submission, speaker communication, and scheduling. You can see our supported
 features in the `feature list`_ in our documentation, and our planned features
@@ -56,6 +59,9 @@ to this project.
 .. _issues: https://github.com/pretalx/pretalx/issues/
 .. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
-.. _developer documentation: https://pretalx.readthedocs.io/en/latest/contribute/index.html
+.. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
+.. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
+.. _pretalx.org: https://pretalx.org/
+.. _active deveolopment: https://github.com/pretalx/pretalx/pulse
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx

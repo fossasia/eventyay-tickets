@@ -15,7 +15,8 @@ Breaking Changes
 
 Features
 ~~~~~~~~
-
+- Import XML files to release a new schedule. (#322)
+- New team management interface to see all team members and permissions in one place. (#292)
 
 
 Fixed bugs
