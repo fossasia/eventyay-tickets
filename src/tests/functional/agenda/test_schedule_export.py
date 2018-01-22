@@ -3,6 +3,7 @@ import json
 import pytest
 from django.core.management.base import CommandError
 from django.urls import reverse
+from django.test import override_settings
 from lxml import etree
 
 
@@ -136,8 +137,9 @@ def test_html_export_language(event, slot):
 
     event.locale = 'de'
     event.save()
-    call_command('rebuild')
-    call_command('export_schedule_html', event.slug)
+    with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
+        call_command('rebuild')
+        call_command('export_schedule_html', event.slug)
 
     schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')).read()
     assert 'Kontakt' in schedule_html
@@ -190,8 +192,9 @@ def test_html_export(event, other_event, slot, past_slot):
     from django.conf import settings
     import os.path
 
-    call_command('rebuild')
-    call_command('export_schedule_html', event.slug, '--zip')
+    with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
+        call_command('rebuild')
+        call_command('export_schedule_html', event.slug, '--zip')
 
     paths = [
         'static/common/img/logo.svg',
