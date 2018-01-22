@@ -136,6 +136,7 @@ def test_html_export_language(event, slot):
 
     event.locale = 'de'
     event.save()
+    call_command('rebuild')
     call_command('export_schedule_html', event.slug)
 
     schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')).read()
@@ -189,6 +190,7 @@ def test_html_export(event, other_event, slot, past_slot):
     from django.conf import settings
     import os.path
 
+    call_command('rebuild')
     call_command('export_schedule_html', event.slug, '--zip')
 
     paths = [

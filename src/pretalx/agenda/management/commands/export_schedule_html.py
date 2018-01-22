@@ -3,11 +3,10 @@ from shutil import make_archive
 
 from bakery.management.commands.build import Command as BakeryBuildCommand
 from django.conf import settings
-from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.test import override_settings
 from django.urls import get_callable
 from django.utils import translation
-from django.test import override_settings
 
 from pretalx.event.models import Event
 
