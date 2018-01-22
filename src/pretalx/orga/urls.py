@@ -15,6 +15,7 @@ urlpatterns = [
 
     url('^$', dashboard.DashboardView.as_view(), name='dashboard'),
     url('^me$', event.UserSettings.as_view(), name='user.view'),
+    url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
     url('^event/new/$', event.EventDetail.as_view(), name='event.create'),
 

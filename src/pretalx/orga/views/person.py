@@ -1,5 +1,11 @@
+import urllib
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.contrib import messages
 from django.db.models import Q
+from django.utils.http import is_safe_url
 from django.http import Http404, JsonResponse
+from django.utils.translation import ugettext as _
 from django.views.generic import View
 
 from pretalx.person.models import User
@@ -31,3 +37,17 @@ class UserList(View):
                 for user in queryset
             ],
         })
+
+
+class SubuserView(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        request.user.is_administrator = request.user.is_superuser
+        request.user.is_superuser = False
+        request.user.save(update_fields=['is_administrator', 'is_superuser'])
+        messages.success(request, _('You are now an administrator instead of a superuser.'))
+        params = request.GET.copy()
+        url = urllib.parse.unquote(params.pop('next', [''])[0])
+        if url and is_safe_url(url, request.get_host()):
+            return redirect(url + ('?' + params.urlencode() if params else ''))
+        return redirect(reverse('orga:dashboard'))
