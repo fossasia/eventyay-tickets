@@ -97,3 +97,14 @@ table .btn-secondary {
     text-align: center;
   }
 }
+.superuser-warning {
+  background: $brand-danger;
+  padding: 5px 20px;
+  color: white;
+  text-align: center;
+
+  a {
+    color: white;
+    font-weight: bold;
+  }
+}

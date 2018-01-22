@@ -103,6 +103,14 @@
             </ul>
         </div>
     </nav>
+    {% if request.user.is_superuser %}
+        <div class="superuser-warning">
+            <span class="fa fa-danger"></span>
+            {% blocktrans trimmed %}
+                You're using pretalx as a superuser. This is not recommended. Please consider switching to an administrator account.
+            {% endblocktrans %}
+        </div>
+    {% endif %}
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
 
