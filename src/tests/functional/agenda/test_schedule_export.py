@@ -2,8 +2,8 @@ import json
 
 import pytest
 from django.core.management.base import CommandError
-from django.urls import reverse
 from django.test import override_settings
+from django.urls import reverse
 from lxml import etree
 
 
