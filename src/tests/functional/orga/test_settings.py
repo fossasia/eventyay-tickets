@@ -233,15 +233,20 @@ def test_save_review_settings_invalid(orga_client, event):
 @pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
     assert EventPermission.objects.filter(event=event).count() == 1
+    perm = EventPermission.objects.filter(event=event).first()
     response = orga_client.post(
         event.orga_urls.team_settings,
         {
-            'permissions-TOTAL_FORMS': 1,
-            'permissions-INITIAL_FORMS': 0,
-            'permissions-0-invitation_email':'other@user.org',
+            'permissions-TOTAL_FORMS': 2,
+            'permissions-INITIAL_FORMS': 1,
+            'permissions-0-invitation_email': '',
             'permissions-0-is_orga':'on',
             'permissions-0-review_override_count':'0',
-            'permissions-0-id': '',
+            'permissions-0-id': str(perm.id),
+            'permissions-1-invitation_email':'other@user.org',
+            'permissions-1-is_orga':'on',
+            'permissions-1-review_override_count':'0',
+            'permissions-1-id': '',
         }, follow=True,
     )
     assert response.status_code == 200
@@ -253,33 +258,61 @@ def test_invite_orga_member(orga_client, event):
 
 @pytest.mark.django_db
 def test_retract_invitation(orga_client, event):
-    assert EventPermission.objects.filter(event=event).count() == 1
+    perm = EventPermission.objects.filter(event=event).first()
     response = orga_client.post(
-        event.orga_urls.invite,
-        {'email': 'other@user.org'},
-        follow=True,
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 2,
+            'permissions-INITIAL_FORMS': 1,
+            'permissions-0-invitation_email': '',
+            'permissions-0-is_orga':'on',
+            'permissions-0-review_override_count':'0',
+            'permissions-0-id': str(perm.id),
+            'permissions-1-invitation_email':'other@user.org',
+            'permissions-1-is_orga':'on',
+            'permissions-1-review_override_count':'0',
+            'permissions-1-id': '',
+        }, follow=True,
     )
     assert response.status_code == 200
     assert EventPermission.objects.filter(event=event).count() == 2
-    perm = EventPermission.objects.get(event=event, invitation_token__isnull=False)
+    perm_new = EventPermission.objects.get(event=event, invitation_token__isnull=False)
     response = orga_client.post(
-        reverse('orga:settings.team.retract', kwargs={'event': event.slug, 'pk': perm.pk}),
-        follow=True,
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 2,
+            'permissions-INITIAL_FORMS': 2,
+            'permissions-0-invitation_email': '',
+            'permissions-0-is_orga':'on',
+            'permissions-0-review_override_count':'0',
+            'permissions-0-id': str(perm.id),
+            'permissions-1-invitation_email':'other@user.org',
+            'permissions-1-is_orga':'on',
+            'permissions-1-review_override_count':'0',
+            'permissions-1-id': str(perm_new.id),
+            'permissions-1-DELETE': 'on',
+        }, follow=True,
     )
     assert response.status_code == 200
     assert EventPermission.objects.filter(event=event).count() == 1
 
 
-@pytest.mark.parametrize('target', ('email', 'nick'))
 @pytest.mark.django_db
-def test_add_orga_to_review(orga_client, event, target):
+def test_add_orga_to_review(orga_client, event):
     perm = EventPermission.objects.get(event=event)
     assert perm.is_reviewer is False
     assert perm.is_orga is True
     response = orga_client.post(
-        event.orga_urls.invite_reviewer,
-        {'nick': getattr(perm.user, target)},
-        follow=True,
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 1,
+            'permissions-INITIAL_FORMS': 1,
+            'permissions-0-invitation_email': '',
+            'permissions-0-is_orga':'on',
+            'permissions-0-is_reviewer':'on',
+            'permissions-0-review_override_count':'0',
+            'permissions-0-id': str(perm.id),
+        }, follow=True,
     )
     assert response.status_code == 200
     perm.refresh_from_db()
@@ -290,15 +323,27 @@ def test_add_orga_to_review(orga_client, event, target):
 @pytest.mark.parametrize('target', ('email', 'nick'))
 @pytest.mark.django_db
 def test_add_reviewer_to_orga(orga_client, review_user, event, target):
-    perm = EventPermission.objects.get(event=event, is_orga=False)
-    assert perm.is_reviewer is True
-    assert perm.is_orga is False
+    review_perm = EventPermission.objects.get(event=event, is_orga=False)
+    orga_perm = EventPermission.objects.get(event=event, is_orga=True)
+    assert review_perm.is_reviewer is True
+    assert review_perm.is_orga is False
     response = orga_client.post(
-        event.orga_urls.invite,
-        {'email': getattr(perm.user, target)},
-        follow=True,
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 2,
+            'permissions-INITIAL_FORMS': 2,
+            'permissions-0-invitation_email': '',
+            'permissions-0-is_orga':'on',
+            'permissions-0-review_override_count':'0',
+            'permissions-0-id': str(orga_perm.id),
+            'permissions-1-invitation_email': '',
+            'permissions-1-is_orga':'on',
+            'permissions-1-is_reviewer':'on',
+            'permissions-1-review_override_count':'0',
+            'permissions-1-id': str(review_perm.id),
+        }, follow=True,
     )
     assert response.status_code == 200
-    perm.refresh_from_db()
-    assert perm.is_reviewer is True
-    assert perm.is_orga is True
+    review_perm.refresh_from_db()
+    assert review_perm.is_reviewer is True
+    assert review_perm.is_orga is True
