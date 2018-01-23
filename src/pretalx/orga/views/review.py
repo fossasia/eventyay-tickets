@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission

@@ -8,3 +8,5 @@ omit = */admin.py
        */tests/*
        */wsgi.py
        */__init__.py
+       */__main__.py
+       */celery_app.py

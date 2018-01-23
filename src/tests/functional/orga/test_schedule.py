@@ -4,6 +4,7 @@ from datetime import datetime
 import pytest
 import pytz
 from django.urls import reverse
+from django.utils.timezone import now
 
 from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
@@ -36,7 +37,57 @@ def test_talk_list(orga_client, event):
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures('accepted_submission', 'slot')
+def test_talk_list_with_filter(orga_client, event, schedule):
+    response = orga_client.get(
+        reverse(f'orga:schedule.api.talks', kwargs={'event': event.slug}),
+        data={'version': schedule.version},
+        follow=True,
+    )
+    content = json.loads(response.content.decode())
+    assert response.status_code == 200
+    assert len(content['results']) == 2
+    assert content['results'][0]['title']
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
+    slot = event.wip_schedule.talks.first()
+    start = now()
+    assert slot.start != start
+    response = orga_client.patch(
+        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.submission.pk}),
+        data=json.dumps({'room': room.pk, 'start': start.isoformat()}),
+        follow=True,
+    )
+    slot.refresh_from_db()
+    content = json.loads(response.content.decode())
+    assert content['title'] == slot.submission.title
+    assert slot.start == start
+    assert slot.room == room
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room):
+    slot = event.wip_schedule.talks.first()
+    slot.start = now()
+    slot.room = room
+    slot.save()
+    assert slot.start
+    response = orga_client.patch(
+        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.submission.pk}),
+        data=json.dumps(dict()),
+        follow=True,
+    )
+    slot.refresh_from_db()
+    content = json.loads(response.content.decode())
+    assert content['title'] == slot.submission.title
+    assert not slot.start
+    assert not slot.room
+
+
 @pytest.mark.usefixtures('accepted_submission')
+@pytest.mark.django_db
 def test_api_availabilities(orga_client, event, room, speaker, confirmed_submission):
     talk = TalkSlot.objects.get(submission=confirmed_submission)
     Availability.objects.create(event=event, room=room, start=datetime(2017, 1, 1, 1, tzinfo=pytz.utc), end=datetime(2017, 1, 1, 5, tzinfo=pytz.utc))
@@ -77,6 +128,7 @@ def test_orga_can_release_and_reset_schedule(orga_client, event):
     assert Schedule.objects.get(version='Test version 2')
     response = orga_client.post(event.orga_urls.reset_schedule, follow=True, data={'version': 'Test version 2'})
     assert response.status_code == 200
+    assert Schedule.objects.count() == 2
 
 
 @pytest.mark.django_db

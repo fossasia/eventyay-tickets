@@ -7,9 +7,6 @@ from django.db import transaction
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
-from pretalx.event.models import Event
-from pretalx.person.models import EventPermission, User
-
 
 class Command(BaseCommand):
     help = 'Initializes your pretalx instance. Only to be used once.'

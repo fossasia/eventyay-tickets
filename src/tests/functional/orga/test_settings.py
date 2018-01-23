@@ -10,6 +10,26 @@ from pretalx.person.models import EventPermission
 
 
 @pytest.mark.django_db
+def test_edit_mail_settings(orga_client, event, availability):
+    assert event.settings.mail_from != 'foo@bar.com'
+    assert event.settings.smtp_port != '25'
+    response = orga_client.post(
+        reverse('orga:settings.mail.edit', kwargs={'event': event.slug}),
+        follow=True,
+        data={
+            'mail_from': 'foo@bar.com',
+            'smtp_host': 'foo.bar.com',
+            'smtp_password': '',
+            'smtp_port': '25',
+        }
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(pk=event.pk)
+    assert event.settings.mail_from == 'foo@bar.com'
+    assert event.settings.smtp_port == 25
+
+
+@pytest.mark.django_db
 def test_create_room(orga_client, event, availability):
     assert event.rooms.count() == 0
     response = orga_client.post(

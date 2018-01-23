@@ -198,10 +198,6 @@ class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/answer_list.html'
     permission_required = 'submission.view_submission'
 
-    def get_queryset(self):
-        submission = self.get_object()
-        return submission.answers.all()
-
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         submission = context['submission']

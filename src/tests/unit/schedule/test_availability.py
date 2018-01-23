@@ -137,7 +137,7 @@ def test_merge_with(one, two, expected):
     (Availability.merge_with, ['i_am_no_availability'], 'Availability object'),
     (Availability.merge_with, [Availability(start=datetime.datetime(2017, 1, 2), end=datetime.datetime(2017, 1, 2, 1))], 'overlap'),
     (Availability.intersect_with, ['i_am_no_availability'], 'Availability object'),
-    (Availability.intersect_with, [Availability(start=datetime.datetime(2017, 1, 2), end=datetime.datetime(2017, 1, 2, 1))], 'overlap'),
+    (Availability.__and__, [Availability(start=datetime.datetime(2017, 1, 2), end=datetime.datetime(2017, 1, 2, 1))], 'overlap'),
 ))
 def test_availability_fail(method, args, expected):
     avail = Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 1, 1))
@@ -356,3 +356,12 @@ def test_intersection(availsets, expected):
     for act1, act2, exp in zip(actual1, actual2, expected):
         assert act1.start == act2.start == exp.start
         assert act1.end == act2.end == exp.end
+        assert act1 == act2 == exp
+
+
+def test_equality():
+    avail = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7)),
+    avail2 = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7)),
+
+    assert avail == avail2
+    assert avail != 'avail2'

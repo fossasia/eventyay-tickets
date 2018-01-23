@@ -2,6 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from pretalx.common.css import validate_css
+from pretalx.event.models import Event
 
 
 @pytest.fixture
@@ -44,3 +45,27 @@ def test_valid_css(valid_css):
 def test_invalid_css(invalid_css):
     with pytest.raises(ValidationError):
         validate_css(invalid_css)
+
+
+@pytest.mark.django_db
+def test_regenerate_css(event):
+    from pretalx.common.tasks import regenerate_css
+    event.primary_color = '#00ff00'
+    event.save()
+    regenerate_css(event.pk)
+    event = Event.objects.get(pk=event.pk)
+    for local_app in ['agenda', 'cfp', 'orga']:
+        assert event.settings.get(f'{local_app}_css_file')
+        assert event.settings.get(f'{local_app}_css_checksum')
+
+
+@pytest.mark.django_db
+def test_regenerate_css_no_color(event):
+    from pretalx.common.tasks import regenerate_css
+    event.primary_color = None
+    event.save()
+    regenerate_css(event.pk)
+    event = Event.objects.get(pk=event.pk)
+    for local_app in ['agenda', 'cfp', 'orga']:
+        assert not event.settings.get(f'{local_app}_css_file')
+        assert not event.settings.get(f'{local_app}_css_checksum')

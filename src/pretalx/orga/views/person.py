@@ -9,7 +9,7 @@ from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
 from django.views.generic import View
 
-from pretalx.person.models import User, EventPermission
+from pretalx.person.models import EventPermission, User
 
 
 class UserList(View):

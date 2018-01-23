@@ -29,7 +29,7 @@
                             {{ room.name }}
                         </a>
                     </td>
-                    <td>{{ room.capacity }}</td>
+                    <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ room.urls.edit_settings }}"
                             class="btn btn-sm btn-secondary">

@@ -1,4 +1,3 @@
-import random
 import urllib
 
 from django.contrib import messages
@@ -38,6 +37,8 @@ class LoginView(TemplateView):
         # check where to reasonably redirect:
         # orga of a running event? go to that event.
         messages.success(request, phrases.orga.logged_in)
+        if request.user.permissions.count() == 1:
+            return redirect(reverse('orga:event.dashboard', kwargs={'event': request.user.permissions.first().event.slug}))
         return redirect(reverse('orga:dashboard'))
 
 

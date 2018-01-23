@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 import bs4
 import pytest
 from django.core import mail as djmail
+from django.utils.timezone import now
 
 from pretalx.submission.models import Submission, SubmissionType
 
@@ -20,11 +23,11 @@ class TestWizard:
         input_hidden = doc.select("input[name^=submit_wizard]")[0]
         return input_hidden['name'], input_hidden['value']
 
-    def perform_init_wizard(self, client):
+    def perform_init_wizard(self, client, success=True):
         # Start wizard
         djmail.outbox = []
         response, current_url = self.get_response_and_url(client, '/test/submit/', method='GET')
-        assert current_url.endswith('/info/')
+        assert current_url.endswith('/info/') is success
         return response, current_url
 
     def perform_info_wizard(
@@ -225,8 +228,9 @@ class TestWizard:
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 0
 
-
-# TODO: test failed registration
-# TODO: test failed login
-# TODO: test required fields
-# TODO: test required questions
+    @pytest.mark.django_db
+    def test_wizard_cfp_closed(self, event, client, user):
+        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.save()
+        client.force_login(user)
+        response, current_url = self.perform_init_wizard(client, success=False)

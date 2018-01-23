@@ -41,6 +41,17 @@ def test_submitter_serializer(submission):
 
 
 @pytest.mark.django_db
+def test_submitter_serializer_without_profile(submission):
+    user = submission.speakers.first()
+    user.profiles.all().delete()
+    data = SubmitterSerializer(user, context={'event': submission.event}).data
+    assert data.keys() == {'name', 'code', 'biography'}
+    assert data['name'] == user.name
+    assert data['code'] == user.code
+    assert data['biography'] == ''
+
+
+@pytest.mark.django_db
 def test_speaker_serializer(slot):
     user_profile = slot.submission.speakers.first().profiles.first()
     user = user_profile.user
