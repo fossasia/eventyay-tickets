@@ -100,7 +100,7 @@ Finally, we compile static files and translation data and create the database st
 
 Now, create an admin user by running::
 
-    (venv)$ python -m pretalx createsuperuser
+    (venv)$ python -m pretalx init
 
 Step 6: Starting pretalx as a service
 -------------------------------------
@@ -200,7 +200,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
 Yay, you are done! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
-the superuser you configured above. You can now create an event, and off you go!
+the administrator you configured above. You can now create an event, and off you go!
 
 
 Next Steps: Updates

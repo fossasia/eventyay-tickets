@@ -43,7 +43,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(nick=nick, password=password, **kwargs)
         user.is_staff = True
         user.is_administrator = True
-        user.is_superuser = True
+        user.is_superuser = False
         user.save(update_fields=['is_staff', 'is_administrator', 'is_superuser'])
         return user
 

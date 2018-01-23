@@ -132,7 +132,7 @@ You can now run the following commands to enable and start the service::
 
 Now, create an admin user by running::
 
-    docker exec -it pretalx pretalx createsuperuser
+    docker exec -it pretalx pretalx init
 
 
 Step 6: SSL
@@ -187,7 +187,7 @@ caching features for static files::
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
 Yay, you made it! You should now be able to reach pretalx at https://<yourdomain>/orga/ and log in
-as your newly created superuser. Set up an event, configure it as needed, and publish your CfP!
+as your newly created administrator. Set up an event, configure it as needed, and publish your CfP!
 
 Next Steps: Updates
 -------------------

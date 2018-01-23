@@ -1,6 +1,6 @@
 import rules
 
-from pretalx.person.permissions import is_orga, is_reviewer, is_administrator
+from pretalx.person.permissions import is_administrator, is_orga, is_reviewer
 from pretalx.submission.permissions import is_review_author
 
 rules.add_perm('orga.view_orga_area', is_orga | is_reviewer)

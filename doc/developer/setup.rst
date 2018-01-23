@@ -59,7 +59,7 @@ Then, create the local database::
 
 To be able to log in, you should also create an admin user::
 
-    python manage.py createsuperuser
+    python manage.py init
 
 If you want to see pretalx in a different language than English, you have to compile our language
 files::
