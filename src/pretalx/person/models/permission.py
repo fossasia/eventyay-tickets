@@ -50,18 +50,20 @@ class EventPermission(LogMixin, models.Model):
         invitation_link = build_absolute_uri('orga:invitation.view', event=self.event, kwargs={'code': self.invitation_token})
 
         if self.is_orga and not self.is_reviewer:
-            team = _('orga crew')
+            team = _('organiser')
         elif self.is_orga and not self.is_reviewer:
-            team = _('review crew')
+            team = _('reviewer')
         elif self.is_orga and self.is_reviewer:
-            team = _('orga and review crews')
+            role = _('organiser and reviewer')
 
         invitation_text = _('''Hi!
-You have been invited to the {team} of {event} - Please click here to accept:
+You have been invited to the {event} team as a {role} - Please click here to accept:
+
     {invitation_link}
+
 See you there,
-The {event} orga crew (minus you)''').format(team=team, event=self.event.name, invitation_link=invitation_link)
-        invitation_subject = _('You have been invited to the orga crew of {event}').format(event=self.event.name)
+The {event} crew (minus you)''').format(role=role, event=self.event.name, invitation_link=invitation_link)
+        invitation_subject = _('You have been invited to the {event} crew').format(event=self.event.name)
 
         return QueuedMail(
             to=self.invitation_email, reply_to=self.event.email,
