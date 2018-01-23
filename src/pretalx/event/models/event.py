@@ -166,7 +166,7 @@ class Event(LogMixin, models.Model):
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
         schedule_import = '{schedule}/import'
-        schedule_export = '{schedule}/schedule/export'
+        schedule_export = '{schedule}/export'
         schedule_export_trigger = '{schedule_export}/trigger'
         schedule_export_download = '{schedule_export}/download'
         release_schedule = '{schedule}/release'
