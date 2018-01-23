@@ -50,10 +50,6 @@ class MailTemplate(LogMixin, models.Model):
         edit = '{base}/edit'
         delete = '{base}/delete'
 
-    def bulk_mail(self):
-        # TODO: call to_mail
-        pass
-
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
         address = user.email if hasattr(user, 'email') else user
         with override(locale):
