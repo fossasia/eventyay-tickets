@@ -100,7 +100,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         if self.request.POST.get('show_next', '0').strip() == '1':
             next_submission = Review.find_missing_reviews(self.request.event, self.request.user).first()
             if next_submission:
-                messages.success(self.request, _('You are on a roll!'))  # TODO: choose from a list of messages
+                messages.success(self.request, phrases.orga.another_review)
                 return next_submission.orga_urls.reviews
             else:
                 messages.success(self.request, _('Nice, you have no submissions left to review!'))

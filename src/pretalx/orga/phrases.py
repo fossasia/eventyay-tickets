@@ -26,3 +26,8 @@ class OrgaPhrases(Phrases, app='orga'):
         _('I think this talk sounds like a perfect fit for Day 2, since ...'),
         _('I think this talk might be improved by adding ...'),
     ]
+    another_review = [
+        _('You\'re on a roll!'),
+        _('"Just ONE more review, promise …"'),
+        _('Review saved, thanks.'),
+    ]
