@@ -9,7 +9,7 @@ from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
 from django.views.generic import View
 
-from pretalx.person.models import User
+from pretalx.person.models import User, EventPermission
 
 
 class UserList(View):
@@ -25,8 +25,9 @@ class UserList(View):
         queryset = User.objects.filter(
             Q(nick__icontains=search) | Q(name__icontains=search)
         )
-        if request.GET.get('orga', 'false') == 'true':
-            queryset = queryset.filter(permissions__is_orga=True)
+        if request.GET.get('orga', 'false').lower() == 'true':
+            permissions = EventPermission.objects.filter(event=self.request.event, is_orga=True)
+            queryset = queryset.filter(permissions__in=permissions)
 
         return JsonResponse({
             'count': len(queryset),
