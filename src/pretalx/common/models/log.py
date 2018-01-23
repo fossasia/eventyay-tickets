@@ -104,5 +104,8 @@ class ActivityLog(models.Model):
     def display(self):
         response = LOG_NAMES.get(self.action_type)
         if response is None:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f'Unknown log action "{self.action_type}".')
             return self.action_type
         return response
