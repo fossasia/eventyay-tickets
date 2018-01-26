@@ -26,7 +26,6 @@
                 <tr>
                     <td>{{ type.name }}</td>
                     <td>{{ type.default_duration }}</td>
-                    <td>{{ type.max_duration }}</td>
                     <td>
                         {% if request.event.cfp.default_type == type %}
                             <span class="fa fa-check"></span> {% trans "Default" %}

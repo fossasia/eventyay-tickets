@@ -70,13 +70,12 @@ def test_make_submission_type_default(orga_client, submission_type, default_subm
 def test_edit_submission_type(orga_client, submission_type):
     response = orga_client.post(
         submission_type.urls.edit,
-        {'default_duration': 31, 'max_duration': 61, 'name_0': 'New Type!'},
+        {'default_duration': 31, 'name_0': 'New Type!'},
         follow=True,
     )
     submission_type.refresh_from_db()
     assert response.status_code == 200
     assert submission_type.default_duration == 31
-    assert submission_type.max_duration == 61
     assert str(submission_type.name) == 'New Type!'
 
 

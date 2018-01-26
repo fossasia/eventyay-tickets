@@ -21,11 +21,6 @@ class SubmissionType(LogMixin, models.Model):
         verbose_name=_('default duration'),
         help_text=_('Default duration in minutes'),
     )
-    max_duration = models.PositiveIntegerField(
-        default=60,
-        verbose_name=_('maximum duration'),
-        help_text=_('Maximum duration in minutes'),
-    )
 
     class urls(EventUrls):
         base = '{self.event.cfp.urls.types}/{self.pk}'

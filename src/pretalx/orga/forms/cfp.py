@@ -114,5 +114,5 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = SubmissionType
         fields = [
-            'name', 'default_duration', 'max_duration',
+            'name', 'default_duration',
         ]

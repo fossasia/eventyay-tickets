@@ -15,9 +15,11 @@ Breaking Changes
 
 Features
 ~~~~~~~~
+- List all currently possible exports in export page.
 - Import XML files to release a new schedule. (#322)
 - New team management interface to see all team members and permissions in one place. (#292)
 - New init command for project setup.
+- Remove unused `max_duration` property of submission types. (#327)
 
 Fixed bugs
 ~~~~~~~~~~~
