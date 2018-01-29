@@ -1,12 +1,13 @@
 import os
 
 from bakery.views import BuildableDetailView
-
 from django.conf import settings
 
-from pretalx.agenda.views.schedule import ScheduleView, FrabJsonView, FrabXmlView, ICalView, FrabXCalView
+from pretalx.agenda.views.schedule import (
+    FrabJsonView, FrabXCalView, FrabXmlView, ICalView, ScheduleView,
+)
 from pretalx.agenda.views.speaker import SpeakerView
-from pretalx.agenda.views.talk import TalkView, SingleICalView
+from pretalx.agenda.views.talk import SingleICalView, TalkView
 from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission

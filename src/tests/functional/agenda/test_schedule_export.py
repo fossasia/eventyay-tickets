@@ -232,20 +232,20 @@ def test_html_export(event, other_event, slot, past_slot):
     assert 'Contact us' in schedule_html  # locale
     assert past_slot.submission.title in schedule_html
 
-    schedule_json = json.load(open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule.json')))
+    schedule_json = json.load(open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.json')))
     assert schedule_json['schedule']['conference']['title'] == event.name
 
-    schedule_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule.ics')).read()
+    schedule_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.ics')).read()
     assert slot.submission.code in schedule_ics
     assert past_slot.submission.code in schedule_ics
 
-    schedule_xcal = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule.xcal')).read()
+    schedule_xcal = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xcal')).read()
     assert event.slug in schedule_xcal
     assert speaker.name in schedule_xcal
 
-    schedule_xml = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/schedule.xml')).read()
+    schedule_xml = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')).read()
     assert slot.submission.title in schedule_xml
     assert past_slot.submission.code in schedule_xml
 
-    talk_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/talk/{slot.submission.code}.ics')).read()
+    talk_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics')).read()
     assert slot.submission.title in talk_ics
