@@ -222,7 +222,7 @@ class FrabJsonView(ScheduleDataView):
                                                     'options': [option.answer for option in answer.options.all()],
                                                 }
                                                 for answer in person.answers.all()
-                                            ] if self.request.is_orga else [],
+                                            ] if getattr(self.request, 'is_orga', False) else [],
                                         }
                                         for person in talk.submission.speakers.all()
                                     ],
@@ -235,7 +235,7 @@ class FrabJsonView(ScheduleDataView):
                                             'options': [option.answer for option in answer.options.all()],
                                         }
                                         for answer in talk.submission.answers.all()
-                                    ] if self.request.is_orga else [],
+                                    ] if getattr(self.request, 'is_orga', False) else [],
                                 } for talk in room['talks']
                             ] for room in day['rooms']
                         }
