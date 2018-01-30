@@ -13,12 +13,16 @@ $brand-inverse: #032419;
 
 $enable-rounded: false;
 
-/* datetimepicker */
-$gray-100: #f8f9fa !default;
-$gray-200: #e9ecef !default;
+$offwhite: #f8f9fa !default;
+$gray: #636c72 !default;
+
+$gray-100: mix(#f8f9fa, $brand-primary, 95) !default;
+$gray-200: mix(#e9ecef, $brand-primary, 95) !default;
+$gray-300: mix(#dae0e4, $brand-primary, 90) !default;
+$gray-500: mix(#636c72, $brand-primary, 90) !default;
 $gray-800: #343a40 !default;
 
-$gray-light: #636c72 !default;
+$gray-light: $gray-300 !default;
 $gray-lighter: $gray-200 !default;
 $gray-lightest: $gray-100 !default;
 

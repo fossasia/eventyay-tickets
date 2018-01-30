@@ -1,7 +1,9 @@
 from django.contrib.auth.password_validation import validate_password
 from django.forms import CharField
 
-from pretalx.common.forms.widgets import PasswordConfirmationInput, PasswordStrengthInput
+from pretalx.common.forms.widgets import (
+    PasswordConfirmationInput, PasswordStrengthInput,
+)
 
 
 class GlobalValidator:

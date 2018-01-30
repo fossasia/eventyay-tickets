@@ -17,12 +17,12 @@
 }
 
 .sidebar {
-  background-color: $gray-lighter;
+  background-color: $gray-lightest;
   width: 250px;
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
-  border-right: 1px solid lighten($gray-light, 40%);
+  border-right: 1px solid $gray-lighter;
 
   li span.has-children {
     display: flex;
@@ -41,12 +41,12 @@
 
   }
   .nav-link, li.nav-fold {
-    border-top: 1px solid lighten($gray-light, 40%);
+    border-top: 1px solid $gray-light;
   }
   .nav-link {
     padding: 10px 15px;
     &:last-child {
-      border-bottom: 1px solid lighten($gray-light, 40%);
+      border-bottom: 1px solid $gray-light;
     }
   }
 
@@ -63,7 +63,7 @@
     border: none;
   }
   .nav-link.active, .nav-link:hover, .nav-link.nav-link-second-level.active, .nav-link.nav-link-second-level:hover {
-    background-color: lighten($gray-light, 45%);
+    background-color: $gray-lighter;
     color: $brand-primary;
   }
 }
@@ -75,7 +75,7 @@
 }
 .navbar {
   color: $brand-primary;
-  background-color: $gray-lightest;
+  background-color: $offwhite;
   border-bottom: 4px $brand-primary solid;
   padding: 0.25rem;
 }

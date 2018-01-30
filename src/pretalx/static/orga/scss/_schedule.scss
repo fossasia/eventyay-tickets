@@ -31,7 +31,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   margin-right: 270px;
 
   .hover-active {
-    background: lighten($gray-light, 30%);
+    background: $gray-lighter;
   }
 }
 
@@ -49,7 +49,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 
 .room-column {
-  background: $gray-lighter;
+  background: $gray-lightest;
   flex: 1 0 auto;
   align-self: stretch;
   margin-right: 18px;
@@ -72,7 +72,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 #unassigned-talks {
   flex-direction: column;
-  background: $gray-lighter;
+  background: $gray-lightest;
   position: fixed;
   right: 20px;
   top: 123px;
@@ -89,7 +89,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   }
 
   .hover-active {
-    background: lighten($gray-light, 30%);
+    background: $gray-lighter;
   }
 
   .room-container {
@@ -119,7 +119,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   flex-grow: 0;
   background: white;
   text-align: center;
-  color: $gray-light;
+  color: $gray;
   padding: 57px 0 18px;
 }
 
@@ -128,13 +128,13 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   top: 0;
   left: 0;
   white-space: nowrap;
-  border-top: 1px solid $gray-light;
+  border-top: 1px solid $gray;
   font-size: 12px;
   width: 100%;
 }
 .timestep-box.midnight {
   font-weight: bold;
-  background: $gray-light;
+  background: $gray;
   color: white;
 }
 
@@ -145,7 +145,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   padding: 0px 8px;
   cursor: pointer;
   position: absolute;
-  background-color: $gray-lightest;
+  background-color: $offwhite;
   top: 0;
   left: 0;
   text-overflow: ellipsis;
