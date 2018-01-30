@@ -32,6 +32,9 @@ form label.col-form-label {
     color: $gray;
   }
 }
+form .form-control:disabled, .form-control[readonly] {
+  background-color: $gray-lightest !important;
+}
 .labelless-password-input-form {
   flex-direction: column;
   margin-left: auto;
