@@ -213,3 +213,21 @@ footer {
     }
   }
 }
+
+form #id_settings-display_header_pattern {
+  display: flex;
+  flex-direction: row;
+  input {
+    opacity: 1;
+  }
+
+  .mini-header {
+    width: 100px;
+    height: 100px;
+    background-color: $brand-primary;
+    margin: 8px;
+  }
+  label {
+    margin-top: -16px;
+  }
+}

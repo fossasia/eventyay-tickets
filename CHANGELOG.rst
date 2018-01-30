@@ -25,6 +25,7 @@ Features
 - New init command for project setup.
 - Remove unused `max_duration` property of submission types. (#327)
 - Add `--clear` flag to `rebuild` manage command.
+- You can choose a pattern for the header hero strip in your event color.
 
 Fixed bugs
 ~~~~~~~~~~~

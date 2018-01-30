@@ -9,6 +9,7 @@ from i18nfield.forms import I18nFormMixin, I18nModelForm
 from pretalx.common.css import validate_css
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event
+from pretalx.orga.forms.widgets import HeaderSelect
 
 
 class EventForm(ReadOnlyFlag, I18nModelForm):
@@ -105,6 +106,18 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         label=_('Generate HTML export on schedule release'),
         help_text=_('Set to make pretalx generate a static HTML version of your schedule, each time a new version is released.'),
         required=False,
+    )
+    display_header_pattern = forms.ChoiceField(
+        label=_('Frontpage header pattern'),
+        help_text=_('Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'),
+        choices=(
+            ('', _('Plain')),
+            ('pcb', _('Circuits')),
+            ('bubbles', _('Circles')),
+            ('signal', _('Signal')),
+        ),
+        required=False,
+        widget=HeaderSelect,
     )
 
 
