@@ -1,7 +1,7 @@
 .dashboard-list {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
   padding-bottom: 20px;
 
   :hover {
@@ -14,7 +14,6 @@
   padding: 15px 5px;
   border: 5px solid white;
   min-height: 160px;
-  height: 100%;
   width: 340px;
   background: lighten($gray-200, 3%);
 
