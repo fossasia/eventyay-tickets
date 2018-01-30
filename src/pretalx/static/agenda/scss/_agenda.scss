@@ -5,7 +5,7 @@
 
     .day {
         background: $gray-lighter;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         width: auto;
 
         .header-row {
@@ -58,7 +58,7 @@
                 }
                 .talk {
                     border: 1px solid lighten($brand-primary, 25%);
-                    border-top: 4px solid lighten($brand-primary, 25%);
+                    border-left: 4px solid lighten($brand-primary, 25%);
                     background-color: rgba(255, 255, 255, 0.76);
                     box-sizing: border-box;
                     color: rgba(0, 0, 0, 0.87);

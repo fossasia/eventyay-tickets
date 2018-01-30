@@ -140,30 +140,32 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 
 .talk-box {
   border: 1px solid $brand-primary;
-  border-top: 4px solid $brand-primary;
+  border-left: 4px solid $brand-primary;
   border-width: 1;
   padding: 0px 8px;
   cursor: pointer;
   position: absolute;
+  background-color: $gray-lightest;
   top: 0;
   left: 0;
-  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   display: flex; flex-direction: row;
+  width: calc(100% - 16px);
+  margin: 0 8px;
   span {
     padding-right: 8px;
   }
 }
 .talk-box.accepted {
-  background: lighten($brand-success, 30%);
+  border-color: lighten($brand-success, 30%);
   color: $white;
 }
 .talk-box.drag-source {
   opacity: 0.5;
 }
 .talk-box.confirmed {
-  background: lighten($brand-success, 15%);
+  border-color: lighten($brand-success, 15%);
 }
 .talk-box.dragged {
   position: absolute;
