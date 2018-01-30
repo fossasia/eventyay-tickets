@@ -19,9 +19,7 @@ RUN mkdir /static && \
     pip3 install pretalx &&
     pip3 install django-redis pylibmc mysqlclient psycopg2 && \
     pip3 install gunicorn && \
-    python3 -m pretalx collectstatic --noinput && \
-    python3 -m pretalx compress && \
-    python3 -m pretalx compilemessages && \
+    python3 -m pretalx rebuild --clear
     chmod +x /usr/local/bin/pretalx
 
 RUN mkdir -p /data/logs /data/media

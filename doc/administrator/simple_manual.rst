@@ -213,7 +213,7 @@ To upgrade to a new pretalx release, pull the latest code changes and run the fo
     $ source /var/pretalx/venv/bin/activate
     (venv)$ pip3 install -U pretalx gunicorn
     (venv)$ python -m pretalx migrate
-    (venv)$ python -m pretalx rebuild
+    (venv)$ python -m pretalx rebuild --clear
     # systemctl restart pretalx-web pretalx-worker
 
 

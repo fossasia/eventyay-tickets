@@ -11,6 +11,8 @@ vx.y.z
 
 This release removes the dependecy `django-zxcvbn-password`. Depending on your setup, you can remove it with `pip uninstall django-zxcvbn-password` or a similar command.
 
+This release also expanded the `rebuild` command to take a flag `--clear`, which discards all existing compiled static files and rebuilds them from scratch. This command invocation is encouraged after an update, if any event on the instance uses custom styling or custom colors.
+
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
@@ -22,6 +24,7 @@ Features
 - New team management interface to see all team members and permissions in one place. (#292)
 - New init command for project setup.
 - Remove unused `max_duration` property of submission types. (#327)
+- Add `--clear` flag to `rebuild` manage command.
 
 Fixed bugs
 ~~~~~~~~~~~
