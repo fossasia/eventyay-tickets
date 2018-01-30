@@ -73,15 +73,19 @@
     display: none;
   }
 }
-
+.navbar {
+  color: $brand-primary;
+  background-color: $gray-lightest;
+  border-bottom: 4px $brand-primary solid;
+  padding: 0.25rem;
+}
+.nav-item:hover {
+  background-color: $gray-lighter;
+}
 .navbar-brand img {
   height: 30px;
   width: auto;
   margin: auto;
-}
-
-.navbar-inverse .navbar-nav .nav-link {
-  color: $white;
 }
 .orga-headline {
   font-weight: bold;
@@ -160,9 +164,6 @@ footer {
   margin: auto;
 }
 
-.navbar-brand {
-  color: $white;
-}
 .fa.override {
   padding-left: 4px;
 }
