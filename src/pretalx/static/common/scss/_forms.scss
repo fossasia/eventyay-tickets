@@ -19,18 +19,17 @@ input[type=number] {
 }
 .help-block {
   font-size: 80%;
-  padding-top: 2px;
-  color: #636c72;
+  color: $gray-light;
 }
 
 form label.col-form-label {
-  padding-top: 6px;
+  padding-top: 4px;
   text-align: right;
   font-weight: 500;
 
   .optional {
     font-weight: 300;
-    color: #999;
+    color: $gray-light;
   }
 }
 .labelless-password-input-form {
@@ -57,11 +56,11 @@ form label.col-form-label {
     color: #636c72;
   }
 
-  .progress-bloc {
+  .password-progress {
     margin-top: 0 !important;
 
-    .progress {
-      height: 0.4rem;
+    .password-progress-bar {
+      height: 4px;
       margin-bottom: 0 !important;
     }
   }

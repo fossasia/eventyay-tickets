@@ -54,7 +54,6 @@ EXTERNAL_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rules',
-    'zxcvbn_password',
 ]
 LOCAL_APPS = [
     'pretalx.api.APIConfig',

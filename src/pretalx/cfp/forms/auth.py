@@ -1,8 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from zxcvbn_password.fields import PasswordConfirmationField, PasswordField
 
+from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
 from pretalx.person.models import User
 
 

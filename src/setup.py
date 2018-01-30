@@ -74,7 +74,6 @@ setup(
         'django-hierarkey==1.0.*',
         'django-i18nfield==1.3.*',
         'django-libsass==0.7',
-        'django-zxcvbn-password==2.0.*',
         'djangorestframework==3.7.*',
         'inlinestyler==0.2.*',
         'libsass<=0.13.1',  # May be removed once https://github.com/dahlia/libsass-python/pull/227 is merged

@@ -9,6 +9,8 @@ vx.y.z
 
 *Released on 201x-xx-xx*
 
+This release removes the dependecy `django-zxcvbn-password`. Depending on your setup, you can remove it with `pip uninstall django-zxcvbn-password` or a similar command.
+
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
@@ -25,5 +27,6 @@ Fixed bugs
 ~~~~~~~~~~~
 - The schedule export could change project settings, requiring pretalx to be restarted to reset the settings.
 - When running pretalx as (in-application) superuser, permission issues could arise. pretalx now warns and offers to migrate the account to an administrator account. (#259)
+- Frontend password validation was broken, and never displayed interactive password statistics. This was a display issue only.
 
 .. _releases: https://github.com/pretalx/pretalx/releases
