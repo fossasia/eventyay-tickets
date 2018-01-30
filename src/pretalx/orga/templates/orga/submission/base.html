@@ -7,7 +7,14 @@
 {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
 {% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
 
-    <ul class="nav nav-pills">
+    <legend>
+        »{{ submission.title }}«
+        {% if submission.speakers.exists %}
+            by {{ submission.display_speaker_names }}
+        {% endif %}
+        ({% include "cfp/event/fragment_state.html" with state=submission.state %})
+    </legend>
+    <ul class="nav nav-tabs">
       <li class="nav-item">
         <a
           class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
@@ -53,13 +60,6 @@
       </li>
     {% endif %}
     </ul>
-    <legend>
-        »{{ submission.title }}«
-        {% if submission.speakers.exists %}
-            by {{ submission.display_speaker_names }}
-        {% endif %}
-        ({% include "cfp/event/fragment_state.html" with state=submission.state %})
-    </legend>
 {% endif %}
 
     {% block submission_content %}

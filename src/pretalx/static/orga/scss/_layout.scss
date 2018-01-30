@@ -91,23 +91,22 @@
   font-weight: bold;
 }
 
-.nav-pills {
-  margin-bottom: 10px;
+.nav-tabs {
+  border-bottom: $gray-light solid 1px;
+  margin-bottom: 16px;
 
-  > li {
-    float: left;
-    font-size: 14px;
-    &.active > a {
-      &,
-      &:hover,
-      &:focus {
-        color: #fff;
-        background-color: $brand-primary;
-      }
-    }
-    + li {
-      margin-left: 20px;
-    }
+  .nav-link {
+    border: none;
+  }
+  .nav-link:hover, .nav-link:focus {
+    border-bottom: $gray-light solid 2px;
+  }
+  .nav-link:hover, .nav-link:focus .nav-link.active {
+    border-bottom: $brand-primary 2px solid;
+    background-color: $white;
+  }
+  .nav-link.active {
+    border-bottom: $brand-primary 4px solid;
   }
 
 }
