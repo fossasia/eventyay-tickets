@@ -6,6 +6,7 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %} :: pretalx</title>
+    <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
     {% if request.event.settings.orga_css_file %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.orga_css_file }}"/>
     {% else %}

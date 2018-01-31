@@ -2,19 +2,16 @@
 /* colors */
 $white:  #fff !default;
 $black: #000 !default;
+$offwhite: #f8f9fa !default;
+$gray: #636c72 !default;
+
 $brand-primary: #1C4A3B !default;
 $brand-success: #5caa8d !default;
 $brand-info: #6790b1 !default;
 $brand-warning: #fa993e !default;
 $brand-danger: #b34066 !default;
-$brand-inverse: #032419 !default;
 
-$brand-inverse: #032419;
-
-$enable-rounded: false;
-
-$offwhite: #f8f9fa !default;
-$gray: #636c72 !default;
+$brand-light: fade-out($brand-primary, 0.2) !default;
 
 $gray-100: mix(#f8f9fa, $brand-primary, 95) !default;
 $gray-200: mix(#e9ecef, $brand-primary, 95) !default;

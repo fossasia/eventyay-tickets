@@ -29,6 +29,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
 
     <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
     {% if request.event and request.event.settings.cfp_css_file %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.agenda_css_file }}"/>
