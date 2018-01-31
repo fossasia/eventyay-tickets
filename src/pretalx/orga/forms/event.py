@@ -115,6 +115,8 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             ('pcb', _('Circuits')),
             ('bubbles', _('Circles')),
             ('signal', _('Signal')),
+            ('topo', _('Topography')),
+            ('graph', _('Graph Paper')),
         ),
         required=False,
         widget=HeaderSelect,
