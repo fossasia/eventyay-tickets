@@ -62,12 +62,13 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background: $brand-info;
+    border-bottom: $brand-light solid 4px;
+    background-color: $gray-lightest;
     padding: 5px 20px;
-    color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
     a {
-      color: white;
+      color: $brand-primary;
       font-weight: bold;
     }
   }
