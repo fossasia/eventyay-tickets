@@ -6,6 +6,7 @@ from datetime import timedelta
 import dateutil.parser
 from django.contrib import messages
 from django.db import transaction
+from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
@@ -16,9 +17,12 @@ from pretalx.agenda.management.commands.export_schedule_html import (
     Command as ExportScheduleHtml,
 )
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
-from pretalx.schedule.models import Availability
+from pretalx.orga.views.event import EventSettingsPermission
+from pretalx.schedule.forms import RoomForm
+from pretalx.schedule.models import Availability, Room
 
 
 class ScheduleView(PermissionRequired, TemplateView):
@@ -113,7 +117,7 @@ class ScheduleToggleView(PermissionRequired, View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
-class RoomList(PermissionRequired, View):
+class RoomListApi(PermissionRequired, View):
     permission_required = 'orga.view_room'
 
     def get_permission_object(self):
@@ -260,3 +264,61 @@ class ScheduleImportView(PermissionRequired, FormView):
         except Exception as e:
             messages.error(self.request, _('Unable to release new schedule: ' + str(e)))
         return super().form_invalid(form)
+
+
+class RoomList(EventSettingsPermission, ActionFromUrl, TemplateView):
+    template_name = 'orga/schedule/room_list.html'
+
+
+class RoomDelete(EventSettingsPermission, View):
+    permission_required = 'orga.edit_room'
+
+    def dispatch(self, request, event, pk):
+        try:
+            request.event.rooms.get(pk=pk).delete()
+            messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
+        except ProtectedError:  # TODO: show which/how many talks are concerned
+            messages.error(request, _('There is or was a talk scheduled in this room. It cannot be deleted.'))
+
+        return redirect(request.event.orga_urls.room_settings)
+
+
+class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
+    model = Room
+    form_class = RoomForm
+    template_name = 'orga/schedule/room_form.html'
+    permission_required = 'orga.view_room'
+
+    def get_object(self):
+        try:
+            return self.request.event.rooms.get(pk=self.kwargs['pk'])
+        except (Room.DoesNotExist, KeyError):
+            return
+
+    def get_success_url(self) -> str:
+        return self.request.event.orga_urls.room_settings
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.event = self.request.event
+
+        created = not bool(form.instance.pk)
+        if created:
+            permission = 'orga.change_settings'
+        else:
+            permission = 'orga.edit_room'
+        if not self.request.user.has_perm(permission, form.instance):
+            messages.error(self.request, _('You are not allowed to perform this action, sorry.'))
+            return
+
+        ret = super().form_valid(form)
+        messages.success(self.request, _('Saved!'))
+        if created:
+            form.instance.log_action('pretalx.room.create', person=self.request.user, orga=True)
+        else:
+            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
+        return ret

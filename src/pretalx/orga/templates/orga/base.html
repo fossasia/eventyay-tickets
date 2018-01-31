@@ -145,9 +145,6 @@
                         <a href="{{ request.event.orga_urls.team_settings }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
                             <span>{% trans "Team" %}</span>
                         </a>
-                        <a href="{{ request.event.orga_urls.room_settings }}" class="nav-link nav-link-second-level{% if "settings.rooms." in url_name %} active{% endif %}">
-                            <span>{% trans "Rooms" %}</span>
-                        </a>
                         <a href="{{ request.event.orga_urls.mail_settings }}" class="nav-link nav-link-second-level{% if "settings.mail." in url_name %} active{% endif %}">
                             <span>{% trans "E-mail" %}</span>
                         </a>
@@ -205,6 +202,9 @@
                     <div class="collapse in{% if "schedule." in url_name %} show{% endif %}" aria-expand="true" id="collapseSchedule">
                         <a href="{{ request.event.orga_urls.schedule }}" class="nav-link nav-link-second-level{% if "schedule.main" in url_name %} active{% endif %}">
                             <span>{% trans "Editor" %}</span>
+                        </a>
+                        <a href="{{ request.event.orga_urls.room_settings }}" class="nav-link nav-link-second-level{% if "schedule.rooms." in url_name %} active{% endif %}">
+                            <span>{% trans "Rooms" %}</span>
                         </a>
                         <a href="{{ request.event.orga_urls.schedule_export }}" class="nav-link nav-link-second-level{% if "schedule.export" in url_name %} active{% endif %}">
                             <span>{% trans "Export" %}</span>

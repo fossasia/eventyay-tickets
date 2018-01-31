@@ -162,7 +162,7 @@ class Event(LogMixin, models.Model):
         mail_settings = '{settings}/mail'
         edit_mail_settings = '{mail_settings}/edit'
         team_settings = '{settings}/team'
-        room_settings = '{settings}/rooms'
+        room_settings = '{schedule}/rooms'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
         schedule_import = '{schedule}/import'

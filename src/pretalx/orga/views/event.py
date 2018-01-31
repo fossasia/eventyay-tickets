@@ -4,13 +4,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, TemplateView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
@@ -22,8 +21,6 @@ from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import EventPermission, User
-from pretalx.schedule.forms import RoomForm
-from pretalx.schedule.models import Room
 
 
 class EventSettingsPermission(PermissionRequired):
@@ -307,61 +304,3 @@ class UserSettings(TemplateView):
 
         messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
         return super().get(request, *args, **kwargs)
-
-
-class RoomList(EventSettingsPermission, ActionFromUrl, TemplateView):
-    template_name = 'orga/settings/room_list.html'
-
-
-class RoomDelete(EventSettingsPermission, View):
-    permission_required = 'orga.edit_room'
-
-    def dispatch(self, request, event, pk):
-        try:
-            request.event.rooms.get(pk=pk).delete()
-            messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
-        except ProtectedError:  # TODO: show which/how many talks are concerned
-            messages.error(request, _('There is or was a talk scheduled in this room. It cannot be deleted.'))
-
-        return redirect(request.event.orga_urls.room_settings)
-
-
-class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
-    model = Room
-    form_class = RoomForm
-    template_name = 'orga/settings/room_form.html'
-    permission_required = 'orga.view_room'
-
-    def get_object(self):
-        try:
-            return self.request.event.rooms.get(pk=self.kwargs['pk'])
-        except (Room.DoesNotExist, KeyError):
-            return
-
-    def get_success_url(self) -> str:
-        return self.request.event.orga_urls.room_settings
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        kwargs['event'] = self.request.event
-        return kwargs
-
-    def form_valid(self, form):
-        form.instance.event = self.request.event
-
-        created = not bool(form.instance.pk)
-        if created:
-            permission = 'orga.change_settings'
-        else:
-            permission = 'orga.edit_room'
-        if not self.request.user.has_perm(permission, form.instance):
-            messages.error(self.request, _('You are not allowed to perform this action, sorry.'))
-            return
-
-        ret = super().form_valid(form)
-        messages.success(self.request, _('Saved!'))
-        if created:
-            form.instance.log_action('pretalx.room.create', person=self.request.user, orga=True)
-        else:
-            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
-        return ret
