@@ -13,5 +13,5 @@ script:
   - python manage.py compilemessages
   - pylama
   - isort -rc -c .
-  - py.test --cov=pretalx tests/ && codecov
+  - py.test -p no:sugar --cov=pretalx tests/ && codecov  # Until https://github.com/Frozenball/pytest-sugar/pull/133 or similar is merged
   - pip list -o --format=columns
