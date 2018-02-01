@@ -4,7 +4,6 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 from pretalx.api.views import event, speaker, submission
 
-
 default_router = routers.DefaultRouter()
 default_router.register(r'events', event.EventViewSet)
 
