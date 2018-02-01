@@ -134,7 +134,7 @@ class RoomListApi(PermissionRequired, View):
                     'name': str(room.name),
                     'description': room.description,
                     'capacity': room.capacity,
-                    'url': room.urls.edit_settings,
+                    'url': room.urls.edit,
                     'availabilities': [avail.serialize() for avail in room.availabilities.all()]
                 }
                 for room in request.event.rooms.order_by('position')

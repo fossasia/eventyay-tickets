@@ -159,4 +159,68 @@ def test_orga_can_toggle_schedule_visibility(orga_client, event):
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
     assert event.settings.show_schedule is True
-# TODO: test talk update view
+
+
+@pytest.mark.django_db
+def test_create_room(orga_client, event, availability):
+    assert event.rooms.count() == 0
+    response = orga_client.post(
+        event.orga_urls.new_room,
+        follow=True,
+        data={
+            'name_0': 'A room',
+            'availabilities': json.dumps({
+                'availabilities': [
+                    {
+                        'start': availability.start.strftime('%Y-%m-%d %H:%M:00Z'),
+                        'end': availability.end.strftime('%Y-%m-%d %H:%M:00Z'),
+                    }
+                ]
+            })
+        }
+    )
+    assert response.status_code == 200
+    assert event.rooms.count() == 1
+    assert str(event.rooms.first().name) == 'A room'
+    assert event.rooms.first().availabilities.count() == 1
+    assert event.rooms.first().availabilities.first().start == availability.start
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('room_availability')
+def test_edit_room(orga_client, event, room):
+    assert event.rooms.count() == 1
+    assert event.rooms.first().availabilities.count() == 1
+    assert str(event.rooms.first().name) != 'A room'
+    response = orga_client.post(
+        room.urls.edit,
+        follow=True,
+        data={'name_0': 'A room', 'availabilities': '{"availabilities": []}'}
+    )
+    assert response.status_code == 200
+    assert event.rooms.count() == 1
+    assert str(event.rooms.first().name) == 'A room'
+    assert event.rooms.first().availabilities.count() == 0
+
+
+@pytest.mark.django_db
+def test_delete_room(orga_client, event, room):
+    assert event.rooms.count() == 1
+    response = orga_client.get(
+        room.urls.delete,
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert event.rooms.count() == 0
+
+
+@pytest.mark.django_db
+def test_delete_used_room(orga_client, event, room, slot):
+    assert event.rooms.count() == 1
+    assert slot.room == room
+    response = orga_client.get(
+        room.urls.delete,
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert event.rooms.count() == 1

@@ -17,7 +17,7 @@
                 {% elif action == "edit" %}
                     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ form.instance.urls.edit_settings }}>{% trans "Edit" %}</a>
+                    <a class="btn btn-primary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>
