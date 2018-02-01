@@ -265,9 +265,12 @@
                 {% endwith %}
                 {% if development_warning %}
                     <span class="text-warning">&middot; {% trans "running in development mode" %}</span>
-                    {% if pretalx_version %}
-                        <span>&middot; <a href="https://github.com/pretalx/pretalx/tree/{{ pretalx_version }}/">{{ pretalx_version }}</a></span>
-                    {% endif %}
+                {% endif %}
+                {% if pretalx_version %}
+                    <span>&middot;
+                        {% if development_warning %}<a href="https://github.com/pretalx/pretalx/tree/{{ pretalx_version }}/">{{ pretalx_version }}</a>
+                        {% else %}v{{ pretalx_version }}{% endif %}
+                    </span>
                 {% endif %}
             </footer>
         </div>

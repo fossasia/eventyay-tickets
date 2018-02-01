@@ -41,5 +41,9 @@ def system_information(request):
         with suppress(Exception):
             import subprocess
             ctx['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
+    else:
+        with suppress(Exception):
+            import pretalx
+            ctx['pretalx_version'] = pretalx.__version__
 
     return ctx
