@@ -50,6 +50,9 @@ class MailTemplate(LogMixin, models.Model):
         edit = '{base}/edit'
         delete = '{base}/delete'
 
+    def __str__(self):
+        return f'MailTemplate(event={self.event.slug}, subject={self.subject})'
+
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
         address = user.email if hasattr(user, 'email') else user
         with override(locale):
@@ -117,6 +120,10 @@ class QueuedMail(LogMixin, models.Model):
         delete = '{base}/delete'
         send = '{base}/send'
         copy = '{base}/copy'
+
+    def __str__(self):
+        sent = self.sent.isoformat() if self.sent else None
+        return f'MailTemplate(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
 
     def send(self):
         if self.sent:

@@ -75,7 +75,7 @@
                     {% if request.event and request.event.logo %}
                         <img src="{{ request.event.logo.url }}" id="event-logo"></img>
                     {% elif request.event %}
-                        {{ request.event }}
+                        {{ request.event.name }}
                     {% endif %}
                 </a>
             </h1>

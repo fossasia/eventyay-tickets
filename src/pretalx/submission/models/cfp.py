@@ -44,11 +44,11 @@ class CfP(LogMixin, models.Model):
         new_type = '{types}/new'
         public = '{self.event.urls.base}/cfp'
 
+    def __str__(self) -> str:
+        return f'CfP(event={self.event.slug})'
+
     @property
     def is_open(self):
         if self.deadline is not None:
             return now() <= self.deadline
         return True
-
-    def __str__(self) -> str:
-        return str(self.headline)

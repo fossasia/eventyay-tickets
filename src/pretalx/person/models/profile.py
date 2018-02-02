@@ -32,6 +32,10 @@ class SpeakerProfile(LogMixin, models.Model):
         public = '{self.event.urls.base}/speaker/{self.user.code}'
         talks_ical = '{self.urls.public}/talks.ics'
 
+    def __str__(self):
+        user = getattr(self.user, 'nick', None)
+        return f'SpeakerProfile(event={self.event.slug}, user={user})'
+
     @cached_property
     def code(self):
         return self.user.code

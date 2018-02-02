@@ -18,4 +18,4 @@ class Track(LogMixin, models.Model):
     )
 
     def __str__(self) -> str:
-        return str(self.name)
+        return f'Track(event={self.event.slug}, name={self.name})'

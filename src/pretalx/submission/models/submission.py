@@ -334,8 +334,4 @@ class Submission(LogMixin, models.Model):
         return self.state == SubmissionStates.DELETED
 
     def __str__(self):
-        return self.title
-
-
-class SubmissionAttachment:
-    pass
+        return f'Submission(event={self.event.slug}, code={self.code}, title={self.title}, state={self.state})'

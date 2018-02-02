@@ -28,14 +28,9 @@ class Availability(LogMixin, models.Model):
     end = models.DateTimeField()
 
     def __str__(self) -> str:
-        result = f'start={self.start} end={self.end}'
-        if hasattr(self, 'event'):
-            result += f' event={self.event}'
-        if self.person:
-            result += f' person={self.person.user.get_display_name()}'
-        if self.room:
-            result += f' room={self.room}'
-        return result
+        person = getattr(self.person, 'nick', None)
+        room = getattr(self.room, 'name', None)
+        return f'Availability(event={self.event.slug}, person={person}, room={room})'
 
     def __eq__(self, other: 'Availability') -> bool:
         if not isinstance(other, Availability):

@@ -101,6 +101,11 @@ class ActivityLog(models.Model):
     class Meta:
         ordering = ('-timestamp', )
 
+    def __str__(self):
+        event = getattr(self.event, 'slug', 'None')
+        person = getattr(self.person, 'nick', 'None')
+        return f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})'
+
     def display(self):
         response = LOG_NAMES.get(self.action_type)
         if response is None:

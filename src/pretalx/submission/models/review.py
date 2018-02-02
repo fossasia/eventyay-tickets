@@ -29,6 +29,9 @@ class Review(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.nick}, score={self.score})'
+
     @classmethod
     def find_missing_reviews(cls, event, user):
         from pretalx.submission.models import SubmissionStates

@@ -26,3 +26,6 @@ class Feedback(LogMixin, models.Model):
         verbose_name=_('Review'),
         help_text=_('You can use markdown here.'),
     )
+
+    def __str__(self):
+        return f'Feedback(event={self.talk.event.slug}, talk={self.talk.title}, rating={self.rating})'

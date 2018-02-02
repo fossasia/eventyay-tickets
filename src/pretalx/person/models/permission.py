@@ -72,4 +72,5 @@ The {event} crew (minus you)''').format(role=role, event=self.event.name, invita
         )
 
     def __str__(self):
-        return '{} on {}'.format(self.user, self.event)
+        user = getattr(self.user, 'nick', self.invitation_email)
+        return f'EventPermission(event={self.event.slug}, user={user}, is_orga={self.is_orga}, is_reviewer={self.is_reviewer}'

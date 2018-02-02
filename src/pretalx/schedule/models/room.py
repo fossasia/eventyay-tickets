@@ -42,4 +42,4 @@ class Room(LogMixin, models.Model):
         delete = '{settings_base}/delete'
 
     def __str__(self) -> str:
-        return str(self.name)
+        return f'Room(event={self.event.slug}, name={self.name})'

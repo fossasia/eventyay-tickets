@@ -185,7 +185,7 @@ class Event(LogMixin, models.Model):
         speakers = '{base}/speakers'
 
     def __str__(self) -> str:
-        return str(self.name)
+        return f'Event(slug={self.slug}, date_from={self.date_from.isoformat()})'
 
     @property
     def locales(self) -> list:

@@ -19,3 +19,6 @@ class Resource(LogMixin, models.Model):
         max_length=1000,
         verbose_name=_('description'),
     )
+
+    def __str__(self):
+        return f'Resource(event={self.submission.event.slug}, submission={self.submission.title})'

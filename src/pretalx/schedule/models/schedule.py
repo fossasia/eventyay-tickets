@@ -219,4 +219,4 @@ class Schedule(LogMixin, models.Model):
         return self != self.event.current_schedule
 
     def __str__(self) -> str:
-        return str(self.version) or _(f'WIP Schedule for {self.event}')
+        return f'Schedule(event={self.event.slug}, version={self.version})'

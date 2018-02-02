@@ -32,6 +32,9 @@ class TalkSlot(LogMixin, models.Model):
     class Meta:
         unique_together = (('submission', 'schedule'), )
 
+    def __str__(self):
+        return f'TalkSlot(event={self.submission.event.slug}, submission={self.submission.title}, schedule={self.schedule.version})'
+
     @property
     def event(self):
         return self.submission.event
