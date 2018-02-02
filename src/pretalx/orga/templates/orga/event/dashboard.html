@@ -130,7 +130,7 @@
     {% for log in history %}
         <li>
             <span class="time">
-                <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}:
+                <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
             </span>
             {{ log.display }}
             {% if log.person %}
