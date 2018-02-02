@@ -13,6 +13,7 @@ Step 0: Prerequisites
 Please set up the following systems beforehand, we'll not explain them here (but see these links for
 external installation guides):
 
+* Python 3.6 and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you
   have credentials for
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
