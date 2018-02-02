@@ -14,10 +14,13 @@ from pretalx.submission.models import SubmissionType
     (datetime(year=2200, month=10, day=20), [], True),  # CfP deadline future
     (datetime(year=2200, month=10, day=20), [datetime(year=2000, month=11, day=20)], True),  # CfP deadline future with past other deadlines
     (datetime(year=2200, month=10, day=20), [datetime(year=2000, month=11, day=20), datetime(2200, month=10, day=20)], True),  # CfP deadline future with past and future other deadlines
+    (None, [], True),  # no CfP deadline
+    (None, [datetime(year=2000, month=11, day=20)], True),  # no CfP deadline with past other deadlines
+    (None, [datetime(year=2000, month=11, day=20), datetime(2200, month=10, day=20)], True),  # no CfP deadline with past and future other deadlines
 ))
 def test_cfp_model_is_open(event, deadline, deadlines, is_open):
     tz = pytz.timezone(event.timezone)
-    event.cfp.deadline = tz.localize(deadline)
+    event.cfp.deadline = tz.localize(deadline) if deadline else deadline
     event.cfp.save()
 
     assert event.submission_types.count() == 1
