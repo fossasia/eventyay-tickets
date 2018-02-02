@@ -48,6 +48,15 @@ tool or directly on our database's shell, e.g. for MySQL::
     mysql> GRANT ALL PRIVILEGES ON pretalx.* TO pretalx@'localhost' IDENTIFIED BY '*********';
     mysql> FLUSH PRIVILEGES;
 
+Or for PostgreSQL::
+
+  postgres $ createuser pretalx -P
+  Enter password for new role:
+  Enter it again:
+  postgres $ createdb pretalx
+  postgres $ psql
+  postgres=# GRANT ALL PRIVILEGES ON DATABASE pretalx to pretalx;
+
 Replace the asterisks with a password of your own. For MySQL, we will use a unix domain socket to
 connect to the database. For PostgreSQL, be sure to configure the interface binding and your
 firewall so that the docker container can reach PostgreSQL.
