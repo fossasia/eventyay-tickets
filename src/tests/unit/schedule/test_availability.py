@@ -6,45 +6,6 @@ from pretalx.schedule.models import Availability
 
 
 @pytest.mark.django_db
-def test_availability_str_person(speaker):
-    assert f'person={speaker.name}' in str(Availability(
-        start=datetime.datetime(2017, 1, 1, 0),
-        end=datetime.datetime(2017, 1, 1, 5),
-        person=speaker.profiles.first(),
-    ))
-
-
-@pytest.mark.django_db
-def test_availability_str_room(room):
-    assert f'room={room.name}' in str(Availability(
-        start=datetime.datetime(2017, 1, 1, 0),
-        end=datetime.datetime(2017, 1, 1, 5),
-        room=room,
-    ))
-
-
-@pytest.mark.django_db
-def test_availability_str_person_room(room, speaker):
-    actual = str(Availability(
-        start=datetime.datetime(2017, 1, 1, 0),
-        end=datetime.datetime(2017, 1, 1, 5),
-        person=speaker.profiles.first(),
-        room=room,
-    ))
-    assert f'room={room.name}' in actual
-    assert f'person={speaker.name}' in actual
-
-
-@pytest.mark.django_db
-def test_availability_str_event(event):
-    assert f'event={event.name}' in str(Availability(
-        start=datetime.datetime(2017, 1, 1, 0),
-        end=datetime.datetime(2017, 1, 1, 5),
-        event=event
-    ))
-
-
-@pytest.mark.django_db
 @pytest.mark.parametrize('one,two,expected_strict,expected', (
     (
         #    0000
