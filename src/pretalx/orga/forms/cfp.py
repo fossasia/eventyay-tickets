@@ -114,5 +114,8 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = SubmissionType
         fields = [
-            'name', 'default_duration',
+            'name', 'default_duration', 'deadline',
         ]
+        widgets = {
+            'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
+        }
