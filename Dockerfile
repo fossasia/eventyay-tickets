@@ -16,14 +16,15 @@ COPY src /src
 
 RUN mkdir /static && \
     pip3 install -U pip setuptools wheel typing && \
-    pip3 install pretalx &&
+    pip3 install pretalx && \
     pip3 install django-redis pylibmc mysqlclient psycopg2 && \
     pip3 install gunicorn && \
-    python3 -m pretalx rebuild --clear
     chmod +x /usr/local/bin/pretalx
 
 RUN mkdir -p /data/logs /data/media
 VOLUME /data
+
+RUN python3 -m pretalx migrate && python3 -m pretalx rebuild
 
 EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/pretalx"]
