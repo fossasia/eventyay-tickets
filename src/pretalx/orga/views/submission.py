@@ -253,7 +253,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             form.instance.speakers.add(speaker)
 
         if form.has_changed():
-            action = 'pretalx.submission.' + 'create' if created else 'update'
+            action = 'pretalx.submission.' + ('create' if created else 'update')
             form.instance.log_action(action, person=self.request.user, orga=True)
         if created and invited:
             messages.success(self.request, _('The submission has been created and the speaker has been invited to add an account!'))
