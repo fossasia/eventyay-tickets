@@ -90,26 +90,24 @@ Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following cont
 Step 5: Installation
 --------------------
 
-Now we will install pretalx itself. The following steps are to be executed as the ``pretalx`` user. Before we
-actually install pretalx, we will create a virtual environment to isolate the python packages from your global
-python installation::
+Now we will install pretalx itself. The following steps are to be executed as the ``pretalx`` user. We will
+install all Python packages, including pretalx, in the user's Python environment, so that your global Python
+installation will not know of them::
 
-    $ virtualenv -p python3 /var/pretalx/venv
-    $ source /var/pretalx/venv/bin/activate
-    (venv)$ pip3 install -U pip setuptools wheel pretalx redis gunicorn
+    $ pip install --user -U pip setuptools wheel pretalx redis gunicorn
 
 We also need to create a data directory::
 
-    (venv)$ mkdir -p /var/pretalx/data/media
+    $ mkdir -p /var/pretalx/data/media
 
 Finally, we compile static files and translation data and create the database structure::
 
-    (venv)$ python -m pretalx migrate
-    (venv)$ python -m pretalx rebuild
+    $ python -m pretalx migrate
+    $ python -m pretalx rebuild
 
 Now, create an admin user by running::
 
-    (venv)$ python -m pretalx init
+    $ python -m pretalx init
 
 Step 6: Starting pretalx as a service
 -------------------------------------
@@ -217,12 +215,12 @@ Next Steps: Updates
 
 .. warning:: While we try hard not to break things, **please perform a backup before every upgrade**.
 
-To upgrade to a new pretalx release, pull the latest code changes and run the following commands::
+To upgrade to a new pretalx release, pull the latest code changes and run the following commands as the ``pretalx``
+user::
 
-    $ source /var/pretalx/venv/bin/activate
-    (venv)$ pip3 install -U pretalx gunicorn
-    (venv)$ python -m pretalx migrate
-    (venv)$ python -m pretalx rebuild --clear
+    $ pip3 install -U pretalx gunicorn
+    $ python -m pretalx migrate
+    $ python -m pretalx rebuild --clear
     # systemctl restart pretalx-web pretalx-worker
 
 
