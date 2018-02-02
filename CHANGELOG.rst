@@ -26,6 +26,7 @@ Features
 - Remove unused `max_duration` property of submission types. (#327)
 - Add `--clear` flag to `rebuild` manage command.
 - You can choose a pattern for the header hero strip in your event color.
+- You can now choose different datetimes per submission type, overriding the default deadline. (#320)
 
 Fixed bugs
 ~~~~~~~~~~~
