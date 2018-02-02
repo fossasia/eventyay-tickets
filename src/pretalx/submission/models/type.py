@@ -21,6 +21,11 @@ class SubmissionType(LogMixin, models.Model):
         verbose_name=_('default duration'),
         help_text=_('Default duration in minutes'),
     )
+    deadline = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name=_('deadline'),
+        help_text=_('If you want a different deadline than the global deadline for this submission type, enter it here.'),
+    )
 
     class urls(EventUrls):
         base = '{self.event.cfp.urls.types}/{self.pk}'

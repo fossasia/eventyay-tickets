@@ -49,6 +49,9 @@ class CfP(LogMixin, models.Model):
 
     @property
     def is_open(self):
-        if self.deadline is not None:
-            return now() <= self.deadline
-        return True
+        _now = now()
+        if self.deadline is None:
+            return True
+        if self.deadline >= _now:
+            return True
+        return any(t.deadline >= _now for t in self.event.submission_types.filter(deadline__isnull=False))
