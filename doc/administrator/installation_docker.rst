@@ -1,5 +1,5 @@
-Simple installation using Docker
-================================
+Installation using Docker
+=========================
 
 This guide helps you to install pretalx using a single docker container. The exact details of this
 might change once we approach the first stable release, so be sure to check back here for major
@@ -203,7 +203,7 @@ Next Steps: Updates
 
 .. warning:: While we try hard not to break anything, **please perform a backup before every upgrade**.
 
-Updates are as simple as we could make them, but require at least a short downtime:
+Updates currently require a short downtime:
 
 * Rebuild the docker image (git pull, then repeat the command from above)
 * ``systemctl restart pretalx.service``

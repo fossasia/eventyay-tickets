@@ -1,10 +1,8 @@
-Simple manual installation
-==========================
+Installation using pip
+=======================
 
 This guide will help you to install pretalx on a Linux distribution. It should be
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.
-By "simple", we mean a setup that will run with fairly few moving parts, and that
-will be suitable to smaller events and not extreme amounts of traffic.
 
 We also provide an `ansible role`_ that basically follows this guide, in case you
 already have an ansible-based setup.

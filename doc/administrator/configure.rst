@@ -190,7 +190,7 @@ The celery section
 ``backend``
 ~~~~~~~~~~~
 
-- The celery backend to be used. If you use a simple redis-based setup,
+- The celery backend to be used. If you use a standard redis-based setup,
   ``'redis://127.0.0.1/1'`` woould be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BACKEND``
 - **Default:** ``''``
@@ -198,7 +198,7 @@ The celery section
 ``broker``
 ~~~~~~~~~~~
 
-- The celery broker to be used. If you use a simple redis-based setup,
+- The celery broker to be used. If you use a standard redis-based setup,
   ``'redis://127.0.0.1/2'`` woould be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BROKER``
 - **Default:** ``''``

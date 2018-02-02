@@ -9,7 +9,7 @@ changes. First of all, you need install some packages on your operating system:
 * A recent version of pip
 * gettext (Debian package: ``gettext``)
 
-On Arch Linux, that's a simple::
+On Arch Linux, Python 3.6 is already in the default repositories::
 
     sudo pacman -S python python-pip gettext git
 
@@ -67,7 +67,7 @@ files::
     python manage.py compilemessages
 
 If you need to test more complicated features, you should probably look into the
-:doc:`manual setup</administrator/simple_manual>` documentation to find the bits and pieces you
+:doc:`manual setup</administrator/installation_pip>` documentation to find the bits and pieces you
 want to add to your development setup.
 
 Run the development server
