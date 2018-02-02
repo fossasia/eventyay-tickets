@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
@@ -47,11 +48,15 @@ class CfP(LogMixin, models.Model):
     def __str__(self) -> str:
         return f'CfP(event={self.event.slug})'
 
-    @property
+    @cached_property
     def is_open(self):
-        _now = now()
         if self.deadline is None:
             return True
-        if self.deadline >= _now:
-            return True
-        return any(t.deadline >= _now for t in self.event.submission_types.filter(deadline__isnull=False))
+        return self.max_deadline >= now()
+
+    @cached_property
+    def max_deadline(self):
+        deadlines = list(self.event.submission_types.filter(deadline__isnull=False).values_list('deadline', flat=True))
+        if self.deadline:
+            deadlines += [self.deadline]
+        return max(deadlines)
