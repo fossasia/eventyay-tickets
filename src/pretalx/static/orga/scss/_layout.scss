@@ -69,12 +69,6 @@
     color: $brand-primary;
   }
 }
-.sidebar.sidebar-collapsed {
-  width: auto;
-  .sidebar-text {
-    display: none;
-  }
-}
 .navbar {
   color: $brand-primary;
   background-color: $offwhite;
@@ -179,17 +173,25 @@ footer {
     padding: 0;
     width: 100%;
   }
-  .sidebar {
-    width: auto;
+  .navbar {
+    padding: 0.1rem 1rem;
+
+    ul {
+      flex-direction: row;
+      .fa {
+        padding-left: 12px;
+      }
+    }
+  }
+  nav.sidebar {
+    position: absolute;
+    display: none;
+  }
+  nav.sidebar-uncollapsed {
+    display: inherit;
   }
   .history-sidebar {
     display: none;
-  }
-  .sidebar-text {
-    display: none;
-  }
-  .sidebar.sidebar-collapsed .sidebar-text {
-    display: inherit;
   }
   #page-content {
     padding: 4px 8px;

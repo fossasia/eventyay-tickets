@@ -1,3 +1,3 @@
 $('[data-toggle=sidebar]').click(function() {
-    $('.sidebar').toggleClass('sidebar-collapsed');
+    $('.flex-column.sidebar').toggleClass('sidebar-uncollapsed');
 });
