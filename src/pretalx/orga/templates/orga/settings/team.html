@@ -43,10 +43,10 @@
             <tr data-formset-form>
                 <td>
                     {% bootstrap_field form.invitation_email form_group_class="d-none" %}
-                    {% if form.instance.invitation_email %}
-                        {{ form.instance.invitation_email }} (invited)
-                    {% else %}
+                    {% if form.instance.user %}
                         {{ form.instance.user }}
+                    {% else %}
+                        {{ form.instance.invitation_email }} (invited)
                     {% endif %}
                 </td>
                 <td>{{ form.is_orga }}</td>
