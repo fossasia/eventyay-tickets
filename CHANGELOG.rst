@@ -19,19 +19,20 @@ Breaking Changes
 
 Features
 ~~~~~~~~
-- List all currently possible exports in export page.
-- Import XML files to release a new schedule. (#322)
-- New team management interface to see all team members and permissions in one place. (#292)
-- New init command for project setup.
-- Remove unused `max_duration` property of submission types. (#327)
-- Add `--clear` flag to `rebuild` manage command.
+- There is now a page in the organiser area listing and linking all currently possible data exports in one export page.
+- You may now import XML files to release a new schedule. (#322)
+- We added a new team management interface to manage all team members and permissions in one place. (#292)
+- There is an `init` command for project setup. Currently it only adds the initial user, but in time it should ask for basic configuration, aswell.
+- The `rebuild` command now supports a `--clear` flag to remove all static assets prior to the rebuild.
 - You can choose a pattern for the header hero strip in your event color.
-- You can now choose different datetimes per submission type, overriding the default deadline. (#320)
+- You can now choose different deadlines per submission type, overriding the default deadline. (#320)
 
 Fixed bugs
 ~~~~~~~~~~~
-- The schedule export could change project settings, requiring pretalx to be restarted to reset the settings.
+- The schedule export could change project settings, requiring pretalx to be restarted to reset the settings. This could be avoided by unchecking "Generate HTML export on schedule release".
 - When running pretalx as (in-application) superuser, permission issues could arise. pretalx now warns and offers to migrate the account to an administrator account. (#259)
 - Frontend password validation was broken, and never displayed interactive password statistics. This was a display issue only.
+- We removed the unused `max_duration` property of submission types. (#327)
+- Users always saw the default submission type instead of their chosen one. (#329)
 
 .. _releases: https://github.com/pretalx/pretalx/releases
