@@ -49,9 +49,8 @@ class EventPermission(LogMixin, models.Model):
 
         invitation_link = build_absolute_uri('orga:invitation.view', event=self.event, kwargs={'code': self.invitation_token})
 
-        if self.is_orga and not self.is_reviewer:
-            role = _('organiser')
-        elif self.is_orga and not self.is_reviewer:
+        role = _('organiser')
+        if not self.is_orga and self.is_reviewer:
             role = _('reviewer')
         elif self.is_orga and self.is_reviewer:
             role = _('organiser and reviewer')
