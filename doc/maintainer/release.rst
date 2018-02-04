@@ -19,7 +19,7 @@ System checks
 Takeoff and landing
 -------------------
 
-1. Bump version in ``src/pretalx/__init__.py`` and ``src/setup.py``.
+1. Bump version in ``src/pretalx/__init__.py``.
 2. Fill in the version and the release date in ``CHANGELOG.rst``.
 3. Make a commit with the message ``Release vx.y.z``
 4. Tag the commit: ``git tag -u F0DAD3990F9C816CFD30F8F329C085265D94C052 vx.y.z -m 'Release vx.y.z'``
