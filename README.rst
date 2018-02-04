@@ -62,6 +62,6 @@ to this project.
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
 .. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
 .. _pretalx.org: https://pretalx.org/
-.. _active deveolopment: https://github.com/pretalx/pretalx/pulse
+.. _active development: https://github.com/pretalx/pretalx/pulse
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx
