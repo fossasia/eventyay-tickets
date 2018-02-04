@@ -1,1 +1,1 @@
-{% if wrap_label %}<label{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{% endif %}{% if wrap_label %}<div class="header mini-header {{ widget.value }}" data-label="{{ widget.label }}">{% include "django/forms/widgets/input.html" %}</div></label>{% endif %}
+{% include "django/forms/widgets/input.html" %}<label{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}><div class="header mini-header {{ widget.value }}" data-label="{{ widget.label }}"></div></label>

@@ -85,3 +85,55 @@ form .form-control:disabled, .form-control[readonly] {
 .header {
   background-color: $brand-primary;
 }
+table .radio, table .checkbox {
+  margin-top: -8px;
+}
+.radio, .checkbox {
+  position: relative;
+  padding: 4px 0 4px 36px;
+
+  label {
+    cursor: pointer;
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+    }
+    &:before {
+      left: 0;
+      width: 24px;
+      height: 24px;
+      background: $offwhite;
+      box-shadow: 0 0 1px $gray-500;
+    }
+    &:after {
+      left: 4px;
+      width: 16px;
+      height: 16px;
+      margin: 4px 0px 0;
+      opacity: 0;
+      background: $brand-success;
+    }
+  }
+  input {
+    position: absolute;
+    top: 0;
+    left: -9999px;
+    visibility: hidden;
+
+    &:checked + label {
+      &:before {
+      }
+      &:after {
+        opacity: 1;
+      }
+    }
+  }
+}
+.radio {
+  input {
+    + label:before, + label:after {
+        border-radius: 50% !important;
+    }
+  }
+}

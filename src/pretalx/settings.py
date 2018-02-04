@@ -3,6 +3,7 @@ import sys
 from contextlib import suppress
 from urllib.parse import urlparse
 
+import django
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
@@ -67,7 +68,10 @@ LOCAL_APPS = [
     'pretalx.cfp.CfPConfig',
     'pretalx.orga.OrgaConfig',
 ]
-INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS
+FALLBACK_APPS = [
+    'django.forms',
+]
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS + FALLBACK_APPS
 
 
 ## URL SETTINGS
@@ -333,12 +337,14 @@ if not DEBUG:
         ('django.template.loaders.cached.Loader', template_loaders),
     )
 
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(DATA_DIR, 'templates'),
             os.path.join(BASE_DIR, 'templates'),
+            # os.path.join(django.__path__[0], '/forms/templates'),
         ],
         'OPTIONS': {
             'context_processors': [
@@ -386,6 +392,7 @@ BOOTSTRAP4 = {
         'default': 'bootstrap4.renderers.FieldRenderer',
         'inline': 'bootstrap4.renderers.InlineFieldRenderer',
         'event': 'pretalx.common.forms.renderers.EventFieldRenderer',
+        'event-inline': 'pretalx.common.forms.renderers.EventInlineFieldRenderer',
     },
 }
 DEBUG_TOOLBAR_PATCH_SETTINGS = False

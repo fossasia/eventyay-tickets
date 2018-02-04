@@ -216,20 +216,29 @@ footer {
   }
 }
 
+td.reviewer {
+  display: flex;
+  flex-direction: row;
+}
+
 form #id_settings-display_header_pattern {
   display: flex;
   flex-direction: row;
-  input {
-    opacity: 1;
+  label {
+    padding-right: 16px;
+    &:before {
+      left: 4px;
+      top: 8px;
+    }
+    &:after {
+      left: 8px;
+      top: 8px;
+    }
   }
-
   .mini-header {
     width: 100px;
     height: 100px;
     background-color: $brand-primary;
-    margin: 8px;
-  }
-  label {
-    margin-top: -16px;
+    margin: 0 0 0 -36px;
   }
 }

@@ -49,9 +49,11 @@
                         {{ form.instance.invitation_email }} (invited)
                     {% endif %}
                 </td>
-                <td>{{ form.is_orga }}</td>
+                <td>
+                    {% bootstrap_field form.is_orga use_label=False layout='event-inline' %}
+                </td>
                 <td class="reviewer">
-                    {{ form.is_reviewer }}
+                    {% bootstrap_field form.is_reviewer use_label=False layout='event-inline' %}
                     <span>{{ form.review_override_count }} {% trans "Override Votes" %}</span>
                 </td>
                 <td>
