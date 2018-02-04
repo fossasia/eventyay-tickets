@@ -5,6 +5,8 @@ from os import path
 
 from setuptools import find_packages, setup
 
+from pretalx import __version__ as pretalx_version
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
@@ -39,7 +41,7 @@ cmdclass = {
 
 setup(
     name='pretalx',
-    version='0.3.1',
+    version=pretalx_version,
     description='Conference organization: CfPs, scheduling, much more',
     long_description=long_description,
     url='http://pretalx.org',
