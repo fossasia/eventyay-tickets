@@ -30,22 +30,20 @@ urlpatterns = [
         url('^cfp/questions/(?P<pk>[0-9]+)/edit$', cfp.CfPQuestionDetail.as_view(), name='cfp.question.edit'),
         url('^cfp/questions/(?P<pk>[0-9]+)/toggle$', cfp.CfPQuestionToggle.as_view(), name='cfp.question.toggle'),
         url('^cfp/text$', cfp.CfPTextDetail.as_view(), name='cfp.text.view'),
-        url('^cfp/text/edit$', cfp.CfPTextDetail.as_view(), name='cfp.text.edit'),
         url('^cfp/types$', cfp.SubmissionTypeList.as_view(), name='cfp.types.view'),
         url('^cfp/types/new$', cfp.SubmissionTypeDetail.as_view(), name='cfp.types.create'),
+        url('^cfp/types/(?P<pk>[0-9]+)$', cfp.SubmissionTypeDetail.as_view(), name='cfp.types.view'),
         url('^cfp/types/(?P<pk>[0-9]+)/delete$', cfp.SubmissionTypeDelete.as_view(), name='cfp.type.delete'),
         url('^cfp/types/(?P<pk>[0-9]+)/default$', cfp.SubmissionTypeDefault.as_view(), name='cfp.type.default'),
-        url('^cfp/types/(?P<pk>[0-9]+)/edit$', cfp.SubmissionTypeDetail.as_view(), name='cfp.type.edit'),
 
         url('^mails/', include([
             url('^(?P<pk>[0-9]+)$', mails.MailDetail.as_view(), name='mails.outbox.mail.view'),
-            url('^(?P<pk>[0-9]+)/edit$', mails.MailDetail.as_view(), name='mails.outbox.mail.edit'),
             url('^(?P<pk>[0-9]+)/copy$', mails.MailCopy.as_view(), name='mails.outbox.mail.copy'),
             url('^(?P<pk>[0-9]+)/delete$', mails.OutboxPurge.as_view(), name='mails.outbox.mail.delete'),
             url('^(?P<pk>[0-9]+)/send$', mails.OutboxSend.as_view(), name='mails.outbox.mail.send'),
             url('^templates$', mails.TemplateList.as_view(), name='mails.templates.list'),
             url('^templates/new$', mails.TemplateDetail.as_view(), name='mails.templates.create'),
-            url('^templates/(?P<pk>[0-9]+)/edit$', mails.TemplateDetail.as_view(), name='mails.templates.edit'),
+            url('^templates/(?P<pk>[0-9]+)$', mails.TemplateDetail.as_view(), name='mails.templates.view'),
             url('^templates/(?P<pk>[0-9]+)/delete$', mails.TemplateDelete.as_view(), name='mails.templates.delete'),
             url('^send$', mails.SendMail.as_view(), name='mails.send'),
             url('^sent$', mails.SentMail.as_view(), name='mails.sent'),
@@ -59,7 +57,6 @@ urlpatterns = [
         url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
         url('^submissions/(?P<code>\w+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
-            url('^edit$', submission.SubmissionContent.as_view(), name='submissions.content.edit'),
             url('^accept$', submission.SubmissionAccept.as_view(), name='submissions.accept'),
             url('^reject$', submission.SubmissionReject.as_view(), name='submissions.reject'),
             url('^confirm', submission.SubmissionConfirm.as_view(), name='submissions.confirm'),
@@ -77,15 +74,12 @@ urlpatterns = [
 
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),
         url('^speakers/(?P<pk>[0-9]+)$', speaker.SpeakerDetail.as_view(), name='speakers.view'),
-        url('^speakers/(?P<pk>[0-9]+)/edit$', speaker.SpeakerDetail.as_view(), name='speakers.edit'),
         url('^speakers/(?P<pk>[0-9]+)/toggle-arrived$', speaker.SpeakerToggleArrived.as_view(), name='speakers.arrived'),
 
         url('^reviews$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
 
         url('^settings$', event.EventDetail.as_view(), name='settings.event.view'),
-        url('^settings/edit$', event.EventDetail.as_view(), name='settings.event.edit'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
-        url('^settings/mail/edit$', event.EventMailSettings.as_view(), name='settings.mail.edit'),
         url('^settings/team$', event.EventTeam.as_view(), name='settings.team.view'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
@@ -99,7 +93,6 @@ urlpatterns = [
         url('^schedule/rooms$', schedule.RoomList.as_view(), name='schedule.rooms.list'),
         url('^schedule/rooms/new$', schedule.RoomDetail.as_view(), name='schedule.rooms.create'),
         url('^schedule/rooms/(?P<pk>[0-9]+)$', schedule.RoomDetail.as_view(), name='schedule.rooms.view'),
-        url('^schedule/rooms/(?P<pk>[0-9]+)/edit$', schedule.RoomDetail.as_view(), name='schedule.rooms.edit'),
         url('^schedule/rooms/(?P<pk>[0-9]+)/delete$', schedule.RoomDelete.as_view(), name='schedule.rooms.delete'),
         url('^schedule/api/rooms/$', schedule.RoomListApi.as_view(), name='schedule.api.rooms'),
         url('^schedule/api/talks/$', schedule.TalkList.as_view(), name='schedule.api.talks'),

@@ -13,9 +13,26 @@ from pretalx.common.forms import SearchForm
 
 
 class ActionFromUrl:
+    write_permission_required = None
+
+    def get_object(self):
+        return None
+
+    @cached_property
+    def object(self):
+        return self.get_object()
+
+    @cached_property
+    def permission_object(self):
+        return self.object
+
     @cached_property
     def _action(self):
-        return self.request.resolver_match.url_name.split('.')[-1]
+        if not any(_id in self.kwargs for _id in ['pk', 'code']):
+            return 'create'
+        if self.request.user.has_perm(self.write_permission_required, self.permission_object):
+            return 'edit'
+        return 'view'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

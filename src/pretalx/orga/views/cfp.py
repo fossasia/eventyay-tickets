@@ -24,6 +24,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     model = CfP
     template_name = 'orga/cfp/text.html'
     permission_required = 'orga.edit_cfp'
+    write_permission_required = 'orga.edit_cfp'
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -79,11 +80,12 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm
     permission_required = 'orga.edit_question'
+    write_permission_required = 'orga.edit_question'
 
     def get_template_names(self):
-        if self._action == 'view':
-            return 'orga/cfp/question_detail.html'
-        return 'orga/cfp/question_form.html'
+        if self.request.path.lstrip('/').endswith('edit'):
+            return 'orga/cfp/question_form.html'
+        return 'orga/cfp/question_detail.html'
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
@@ -232,6 +234,7 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     form_class = SubmissionTypeForm
     template_name = 'orga/cfp/submission_type_form.html'
     permission_required = 'orga.edit_submission_type'
+    write_permission_required = 'orga.edit_submission_type'
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types

@@ -218,19 +218,25 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     template_name = 'orga/submission/content.html'
     permission_required = 'submission.view_submission'
 
+    @property
+    def write_permission_required(self):
+        if 'code' in self.kwargs:
+            return 'submission.edit_submission'
+        return 'orga.create_submission'
+
+    def get_permission_required(self):
+        if 'code' in self.kwargs:
+            return ['submission.view_submission']
+        return ['orga.create_submission']
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
+
     def get_object(self):
         return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
 
-    def get_permission_object(self):
-        if self._action == 'create':
-            self.permission_required = 'orga.create_submission'
-            return self.request.event
-        elif self._action == 'edit':
-            self.permission_required = 'submission.edit_submission'
-        return super().get_permission_object()
-
     def get_success_url(self) -> str:
-        self.kwargs.update({'pk': self.object.pk})
+        self.kwargs.update({'code': self.object.code})
         return self.object.orga_urls.base
 
     def form_valid(self, form):

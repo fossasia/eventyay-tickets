@@ -13,7 +13,7 @@ def test_edit_mail_settings(orga_client, event, availability):
     assert event.settings.mail_from != 'foo@bar.com'
     assert event.settings.smtp_port != '25'
     response = orga_client.post(
-        reverse('orga:settings.mail.edit', kwargs={'event': event.slug}),
+        event.orga_urls.mail_settings,
         follow=True,
         data={
             'mail_from': 'foo@bar.com',

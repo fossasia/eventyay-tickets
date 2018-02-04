@@ -26,7 +26,7 @@ def test_reviewer_can_access_speaker_page(review_client, speaker, event, submiss
 @pytest.mark.django_db
 def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
     response = orga_client.post(
-        reverse('orga:speakers.edit', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
         data={'name': 'BESTSPEAKAR', 'biography': 'I rule!'},
         follow=True,
     )
@@ -60,7 +60,7 @@ def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
 @pytest.mark.django_db
 def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission):
     response = review_client.post(
-        reverse('orga:speakers.edit', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
         data={'name': 'BESTSPEAKAR', 'biography': 'I rule!'},
         follow=True,
     )

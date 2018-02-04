@@ -46,8 +46,7 @@ class MailTemplate(LogMixin, models.Model):
     )
 
     class urls(EventUrls):
-        base = '{self.event.orga_urls.mail_templates}/{self.pk}'
-        edit = '{base}/edit'
+        base = edit = '{self.event.orga_urls.mail_templates}/{self.pk}'
         delete = '{base}/delete'
 
     def __str__(self):
@@ -115,8 +114,7 @@ class QueuedMail(LogMixin, models.Model):
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
 
     class urls(EventUrls):
-        base = '{self.event.orga_urls.mail}/{self.pk}'
-        edit = '{base}/edit'
+        base = edit = '{self.event.orga_urls.mail}/{self.pk}'
         delete = '{base}/delete'
         send = '{base}/send'
         copy = '{base}/copy'

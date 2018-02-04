@@ -33,6 +33,15 @@ class EventSettingsPermission(PermissionRequired):
 class EventDetail(ActionFromUrl, CreateOrUpdateView):
     model = Event
     form_class = EventForm
+    write_permission_required = 'orga.change_settings'
+
+    @cached_property
+    def _action(self):
+        if 'event' not in self.kwargs:
+            return 'create'
+        if self.request.user.has_perm(self.write_permission_required, self.object):
+            return 'edit'
+        return 'view'
 
     def get_template_names(self):
         if self._action == 'create':
@@ -107,6 +116,10 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
     form_class = MailSettingsForm
     template_name = 'orga/settings/mail.html'
+    write_permission_required = 'orga.change_settings'
+
+    def get_object(self):
+        return self.request.event
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.mail_settings
@@ -127,7 +140,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                 backend.test(self.request.event.settings.mail_from)
             except Exception as e:
                 messages.warning(self.request, _('An error occured while contacting the SMTP server: %s') % str(e))
-                return redirect(reverse('orga:settings.mail.edit', kwargs={'event': self.request.event.slug}))
+                return redirect(self.request.event.orga_urls.mail_settings)
             else:
                 if form.cleaned_data.get('smtp_use_custom'):
                     messages.success(self.request, _('Yay, your changes have been saved and the connection attempt to '

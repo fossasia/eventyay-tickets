@@ -6,7 +6,6 @@ from django.views.generic import ListView, View
 from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
-from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.person.forms import SpeakerProfileForm
 from pretalx.person.models import SpeakerProfile, User
@@ -36,6 +35,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     form_class = SpeakerProfileForm
     model = User
     permission_required = 'orga.view_speaker'
+    write_permission_required = 'orga.change_speaker'
 
     def get_object(self):
         return get_object_or_404(
@@ -45,6 +45,10 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_permission_object(self):
         return self.get_object().profiles.filter(event=self.request.event).first()
+
+    @property
+    def permission_object(self):
+        return self.get_permission_object()
 
     def get_success_url(self) -> str:
         return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.get_object().pk})
@@ -57,9 +61,6 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return ctx
 
     def form_valid(self, form):
-        if not self.request.user.has_perm('orga.change_speaker', form.instance):
-            messages.error(self.request, phrases.base.error_permissions_action)
-            return super().form_invalid(form)
         messages.success(self.request, 'The speaker profile has been updated.')
         if form.has_changed():
             profile = self.get_object().profiles.get(event=self.request.event)

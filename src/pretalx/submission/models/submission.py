@@ -154,8 +154,7 @@ class Submission(LogMixin, models.Model):
         accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
 
     class orga_urls(EventUrls):
-        base = '{self.event.orga_urls.submissions}/{self.code}'
-        edit = '{base}/edit'
+        base = edit = '{self.event.orga_urls.submissions}/{self.code}'
         accept = '{base}/accept'
         reject = '{base}/reject'
         confirm = '{base}/confirm'

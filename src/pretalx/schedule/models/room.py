@@ -37,8 +37,7 @@ class Room(LogMixin, models.Model):
         ordering = ('position', )
 
     class urls(EventUrls):
-        settings_base = '{self.event.orga_urls.room_settings}/{self.pk}'
-        edit = '{settings_base}/edit'
+        settings_base = edit = '{self.event.orga_urls.room_settings}/{self.pk}'
         delete = '{settings_base}/delete'
 
     def __str__(self) -> str:

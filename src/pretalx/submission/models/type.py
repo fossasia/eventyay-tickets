@@ -28,9 +28,8 @@ class SubmissionType(LogMixin, models.Model):
     )
 
     class urls(EventUrls):
-        base = '{self.event.cfp.urls.types}/{self.pk}'
+        base = edit = '{self.event.cfp.urls.types}/{self.pk}'
         default = '{base}/default'
-        edit = '{base}/edit'
         delete = '{base}/delete'
 
     def __str__(self) -> str:

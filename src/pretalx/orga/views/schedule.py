@@ -266,7 +266,7 @@ class ScheduleImportView(PermissionRequired, FormView):
         return super().form_invalid(form)
 
 
-class RoomList(EventSettingsPermission, ActionFromUrl, TemplateView):
+class RoomList(EventSettingsPermission, TemplateView):
     template_name = 'orga/schedule/room_list.html'
 
 
@@ -289,6 +289,12 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/schedule/room_form.html'
     permission_required = 'orga.view_room'
 
+    @property
+    def write_permission_required(self):
+        if 'pk' not in self.kwargs:
+            return 'orga.change_settings'
+        return 'orga.edit_room'
+
     def get_object(self):
         try:
             return self.request.event.rooms.get(pk=self.kwargs['pk'])
@@ -305,16 +311,7 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
 
     def form_valid(self, form):
         form.instance.event = self.request.event
-
         created = not bool(form.instance.pk)
-        if created:
-            permission = 'orga.change_settings'
-        else:
-            permission = 'orga.edit_room'
-        if not self.request.user.has_perm(permission, form.instance):
-            messages.error(self.request, _('You are not allowed to perform this action, sorry.'))
-            return
-
         ret = super().form_valid(form)
         messages.success(self.request, _('Saved!'))
         if created:
