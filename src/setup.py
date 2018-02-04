@@ -85,6 +85,7 @@ setup(
         'urlman==1.2.*',
         'vobject==0.9.*',
         'whitenoise==3.3.*',
+        'zxcvbn-python==4.4.*',
     ],
     extras_require={
         'dev': [
