@@ -4,14 +4,14 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-vx.y.z
+v0.4.0
 ------
 
-*Released on 201x-xx-xx*
+*Released on 2018-02-04*
 
 This release removes the dependecy `django-zxcvbn-password`. Depending on your setup, you can remove it with `pip uninstall django-zxcvbn-password` or a similar command.
 
-This release also expanded the `rebuild` command to take a flag `--clear`, which discards all existing compiled static files and rebuilds them from scratch. This command invocation is encouraged after an update, if any event on the instance uses custom styling or custom colors.
+This release also expanded the `rebuild` command to take a flag `--clear`, which discards all existing compiled static files and rebuilds them from scratch. This command invocation is encouraged after an update if any event on the instance uses custom styling or custom colors.
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
@@ -26,6 +26,7 @@ Features
 - The `rebuild` command now supports a `--clear` flag to remove all static assets prior to the rebuild.
 - You can choose a pattern for the header hero strip in your event color.
 - You can now choose different deadlines per submission type, overriding the default deadline. (#320)
+- All forms are instantly editable if you are allowed to edit them, and disabled otherwise. No more need to click "Edit"! (#325)
 
 Fixed bugs
 ~~~~~~~~~~~
