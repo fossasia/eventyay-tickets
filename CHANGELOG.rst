@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.4.1
+v0.x.x
 ------
 
-*Released on 2018-02-05*
+*Released on 201x-xx-xx*
 
 
 Breaking Changes
@@ -17,9 +17,11 @@ Breaking Changes
 Features
 ~~~~~~~~
 
+
 Fixed bugs
 ~~~~~~~~~~~
-- CfP was uneditable due to missing "Save" button. (#335)
-- No new questions could be added due to the wront template being loaded. (#336)
+- In the dashboard, an incorrect link was given to add new reviewers. (#344)
+- The "save" button was missing on the mail settings page. (#341)
+
 
 .. _releases: https://github.com/pretalx/pretalx/releases
