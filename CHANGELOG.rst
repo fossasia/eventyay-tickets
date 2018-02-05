@@ -16,12 +16,11 @@ Breaking Changes
 
 Features
 ~~~~~~~~
-
+- Organisers can now decide if reviewers should be required to submit a score or a text with their review. (#340)
 
 Fixed bugs
 ~~~~~~~~~~~
 - In the dashboard, an incorrect link was given to add new reviewers. (#344)
 - The "save" button was missing on the mail settings page. (#341)
-
 
 .. _releases: https://github.com/pretalx/pretalx/releases

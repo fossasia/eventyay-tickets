@@ -21,7 +21,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
                 instance.score = self.min_value - 1
 
         super().__init__(*args, instance=instance, **kwargs)
-        choices = [(None, _('No score'))]
+        choices = [(None, _('No score'))] if not event.settings.review_score_mandatory else []
         if self.may_override:
             choices.append((self.min_value - 1, _('Negative override (Veto)')))
         for counter in range(abs(self.max_value - self.min_value) + 1):
@@ -35,9 +35,14 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         if self.may_override:
             choices.append((self.max_value + 1, _('Positive override')))
 
-        self.fields['score'] = forms.ChoiceField(choices=choices, required=False, disabled=kwargs.get('read_only', False))
+        self.fields['score'] = forms.ChoiceField(
+            choices=choices,
+            required=event.settings.review_score_mandatory,
+            disabled=kwargs.get('read_only', False),
+        )
         self.fields['text'].widget.attrs['rows'] = 2
         self.fields['text'].widget.attrs['placeholder'] = phrases.orga.example_review
+        self.fields['text'].required = event.settings.review_text_mandatory
 
     def clean_score(self):
         score = self.cleaned_data.get('score')

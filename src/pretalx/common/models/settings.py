@@ -19,6 +19,8 @@ settings_hierarkey.add_default('display_header_pattern', '', str)
 settings_hierarkey.add_default('allow_override_votes', 'False', bool)
 settings_hierarkey.add_default('review_min_score', 0, int)
 settings_hierarkey.add_default('review_max_score', 1, int)
+settings_hierarkey.add_default('review_score_mandatory', 'False', bool)
+settings_hierarkey.add_default('review_text_mandatory', 'False', bool)
 
 settings_hierarkey.add_default('mail_from', 'noreply@example.org', str)
 settings_hierarkey.add_default('smtp_use_custom', 'False', bool)

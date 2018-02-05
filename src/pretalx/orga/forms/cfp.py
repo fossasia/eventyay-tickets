@@ -13,6 +13,14 @@ from pretalx.submission.models import (
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_show_deadline = forms.BooleanField(label=_('Display deadline publicly'),
                                            required=False)
+    review_score_mandatory = forms.BooleanField(
+        label=_('Require reviewers to submit a score'),
+        required=False,
+    )
+    review_text_mandatory = forms.BooleanField(
+        label=_('Require reviewers to submit a text'),
+        required=False,
+    )
     mail_on_new_submission = forms.BooleanField(
         label=_('Send mail on new submission'),
         help_text=_('If this setting is checked, you will receive an email to the orga address for every received submission.'),
