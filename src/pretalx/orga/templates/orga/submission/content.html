@@ -10,7 +10,7 @@
     <legend>{% trans "Create submission as orga" %}</legend>
     {% endif %}
 
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}
         {% bootstrap_field form.submission_type layout='event' %}
@@ -20,6 +20,7 @@
         {% bootstrap_field form.content_locale layout='event' %}
         {% bootstrap_field form.do_not_record layout='event' %}
         {% bootstrap_field form.duration addon_after='minutes' layout='event' %}
+        {% bootstrap_field form.image layout='event' %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
         {% endif %}

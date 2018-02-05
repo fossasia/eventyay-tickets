@@ -43,7 +43,12 @@
     color: rgba(0, 0, 0, 0.87);
     display: block;
     padding: 5px 10px;
-
+    &.image {
+      padding: 10px;
+    }
+    img {
+      max-width: 100%;
+    }
     .speaker-header {
       font-weight: bold;
     }

@@ -20,6 +20,10 @@ class SubmissionError(Exception):
     pass
 
 
+def submission_image_path(instance, filename):
+    return f'{instance.event.slug}/images/{instance.code}/{filename}'
+
+
 class SubmissionStates(Choices):
     SUBMITTED = 'submitted'
     REJECTED = 'rejected'
@@ -121,6 +125,12 @@ class Submission(LogMixin, models.Model):
     do_not_record = models.BooleanField(
         default=False,
         verbose_name=_('Don\'t record this talk.'),
+    )
+    image = models.ImageField(
+        null=True, blank=True,
+        upload_to=submission_image_path,
+        verbose_name=_('Talk image'),
+        help_text=_('Optional. Will be displayed publically.'),
     )
     recording_url = models.CharField(
         max_length=200,

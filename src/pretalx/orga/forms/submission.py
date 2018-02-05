@@ -30,4 +30,5 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
         fields = [
             'title', 'submission_type', 'abstract', 'description',
             'notes', 'content_locale', 'do_not_record', 'duration',
+            'image',
         ]

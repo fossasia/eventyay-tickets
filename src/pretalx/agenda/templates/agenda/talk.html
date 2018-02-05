@@ -80,6 +80,13 @@
             {% endif %}
         </div>
         <div class="col-lg-4 col-md-6 col-xs-12">
+            {% if talk.submission.image %}
+            <div class="image speakers">
+                <a href="{{ talk.submission.image.url }}">
+                    <img src="{{ talk.submission.image.url }}"></img>
+                </a>
+            </div>
+            {% endif %}
             {% if speakers|length %}
             <div class="speakers">
                 <div class="speaker-header">
