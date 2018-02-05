@@ -19,8 +19,21 @@
         <form method="post" action="">
             {% csrf_token %}
             <legend>{% trans "Text and deadline" %}</legend>
-            {% bootstrap_form form layout='event' %}
-            {% bootstrap_form sform layout='event' %}
+            {% bootstrap_field form.headline layout='event' %}
+            {% bootstrap_field form.text layout='event' %}
+            {% bootstrap_field form.deadline layout='event' %}
+            {% bootstrap_field sform.cfp_show_deadline layout='event' %}
+            {% bootstrap_field sform.mail_on_new_submission layout='event' %}
+
+            <legend>{% trans "Review settings" %}</legend>
+            {% bootstrap_field sform.allow_override_votes layout='event' %}
+            {% bootstrap_field sform.review_min_score layout='event' %}
+            {% bootstrap_field sform.review_max_score layout='event' %}
+            {% for field in sform %}
+                {% if 'review_score_name_' in field.name %}
+                    {% bootstrap_field field layout='event' %}
+                {% endif %}
+            {% endfor %}
             <div class="form-group row">
                 <div class="ml-auto col-md-9">
                     {% if action == "edit" or action == "create" %}
