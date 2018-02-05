@@ -4,16 +4,18 @@
 {% load url_replace %}
 {% block mail_content %}
 
-    <div class="nav">
-        <a href="{{ request.event.orga_urls.send_outbox }}">
-            <button class="btn btn-primary">{% trans "Send all" %}</button>
-        </a>
-        <a href="{{ request.event.orga_urls.purge_outbox }}">
-            <button class="btn btn-danger">{% trans "Discard all" %}</button>
-        </a>
-    </div>
 
-    <legend>{{ mails.count }} {% trans "pending e-mails" %}</legend>
+    <legend>
+        {{ mails.count }} {% trans "pending e-mails" %}
+        <div class="legend-buttons">
+            <a href="{{ request.event.orga_urls.send_outbox }}">
+                <button class="btn btn-primary">{% trans "Send all" %}</button>
+            </a>
+            <a href="{{ request.event.orga_urls.purge_outbox }}">
+                <button class="btn btn-danger">{% trans "Discard all" %}</button>
+            </a>
+        </div>
+    </legend>
     {% include "common/search_form.html" %}
     <table class="table table-condensed table-responsive-md">
         <thead>
