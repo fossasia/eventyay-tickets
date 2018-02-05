@@ -111,6 +111,9 @@
 legend {
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 footer {
@@ -137,15 +140,19 @@ footer {
 .search-form {
   display: flex;
   margin-bottom: 1rem;
+  align-content: center;
   .form-group {
-    margin-bottom: 0;
+    min-width: 300px;
+    display: flex;
+    margin: 8px;
+    label {
+      display: none;
+    }
   }
-  .form-group label {
-    display: none;
+  .btn {
+    align-self: center;
   }
-  .btn-search {
-    height: 100%;
-  }
+
 }
 .event-logo-field {
   img.event-logo-display {

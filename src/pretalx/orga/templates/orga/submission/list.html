@@ -15,20 +15,23 @@
         {% plural %}
         submissions
         {% endblocktrans %}
+        <p class="legend-buttons">
+            {% if can_create_submission %}
+            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
+                <span class="fa fa-plus"></span> {% trans "Add new submission" %}
+            </a>
+            {% endif %}
+            <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
+                <span class="fa fa-print"></span> {% trans "Print cards" %}
+            </a>
+        </p>
+
     </legend>
-
-    <p>
-        {% if can_create_submission %}
-        <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
-            <span class="fa fa-plus"></span> {% trans "Add new submission" %}
-        </a>
-        {% endif %}
-        <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
-            <span class="fa fa-print"></span> {% trans "Print cards" %}
-        </a>
-    </p>
-
-    {% include "common/search_form.html" %}
+    <form class="search-form">
+        {% bootstrap_form search_form %}
+        {% bootstrap_form filter_form %}
+        <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
+    </form>
 
     <table class="table table-condensed table-responsive-md">
         <thead>

@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.utils.timezone import now
+from django.utils.translation import ugettext as _
 
 from pretalx.submission.models import Submission, SubmissionType
 
@@ -37,4 +38,22 @@ class InfoForm(forms.ModelForm):
         fields = [
             'title', 'submission_type', 'content_locale', 'abstract',
             'description', 'notes', 'do_not_record',
+        ]
+
+
+class SubmissionFilterForm(forms.ModelForm):
+
+    def __init__(self, event, *args, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+        self.fields['submission_type'].queryset = self.fields['submission_type'].queryset.filter(event=event)
+        self.fields['submission_type'].required = False
+        self.fields['state'].required = False
+        self.fields['state'].choices = [('', _('All states'))] + self.fields['state'].choices
+        self.fields['state'].initial = ''
+
+    class Meta:
+        model = Submission
+        fields = [
+            'submission_type', 'state',
         ]

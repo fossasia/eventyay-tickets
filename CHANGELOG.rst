@@ -18,6 +18,7 @@ Features
 ~~~~~~~~
 - Organisers can now decide if reviewers should be required to submit a score or a text with their review. (#340)
 - Organisers can provide room-based information for speakers, which will be provided in emails about talk scheduling. (#93)
+- The list of submissions is now better searchable. (#318)
 
 Fixed bugs
 ~~~~~~~~~~~

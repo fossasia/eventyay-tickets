@@ -16,6 +16,7 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import SpeakerProfile, User
+from pretalx.submission.forms import SubmissionFilterForm
 from pretalx.submission.models import Question, Submission, SubmissionError
 
 
@@ -276,10 +277,12 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
 
 class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
-    template_name = 'orga/submission/list.html'
+    model = Submission
     context_object_name = 'submissions'
+    template_name = 'orga/submission/list.html'
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
-    filter_fields = ('code', 'speakers', 'title', 'state')
+    filter_fields = ('submission_type', 'state')
+    filter_form_class = SubmissionFilterForm
     sortable_fields = ('code', 'title', 'submission_type', 'state')
     permission_required = 'orga.view_submissions'
     paginate_by = 25
