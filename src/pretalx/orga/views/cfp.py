@@ -83,7 +83,8 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     write_permission_required = 'orga.edit_question'
 
     def get_template_names(self):
-        if self.request.path.lstrip('/').endswith('edit'):
+        action = self.request.path.lstrip('/').rpartition('/')[2]
+        if action in ('edit', 'new'):
             return 'orga/cfp/question_form.html'
         return 'orga/cfp/question_detail.html'
 
