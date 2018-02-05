@@ -77,11 +77,12 @@ class Filterable:
 
     def filter_queryset(self, qs):
         self._filter_model = qs.model
-        for key, value in self.request.GET.items():
-            if value:
-                lookup_key = key.split('__')[0]
-                if lookup_key in self.filter_fields:
-                    qs = qs.filter(**{key: self.request.GET.get(key)})
+        if self.filter_fields:
+            for key, value in self.request.GET.items():
+                if value:
+                    lookup_key = key.split('__')[0]
+                    if lookup_key in self.filter_fields:
+                        qs = qs.filter(**{key: self.request.GET.get(key)})
         if 'q' in self.request.GET:
             query = urllib.parse.unquote(self.request.GET['q'])
             _filters = [Q(**{field: query}) for field in self.default_filters]
@@ -100,7 +101,7 @@ class Filterable:
         ctx['search_form'] = SearchForm(self.request.GET if 'q' in self.request.GET else {})
         if hasattr(self, 'filter_form_class'):
             ctx['filter_form'] = self.filter_form_class(self.request.event, self.request.GET)
-        else:
+        elif self.filter_fields:
             ctx['filter_form'] = forms.modelform_factory(self.model, fields=self.filter_fields)(self.request.GET)
             for field in ctx['filter_form'].fields.values():
                 field.required = False

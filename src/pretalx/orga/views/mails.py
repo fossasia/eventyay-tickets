@@ -15,6 +15,7 @@ from pretalx.orga.forms.mails import (
 
 
 class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
+    model = QueuedMail
     context_object_name = 'mails'
     template_name = 'orga/mails/outbox_list.html'
     default_filters = ('to__icontains', 'subject__icontains')
@@ -34,6 +35,7 @@ class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
 
 
 class SentMail(PermissionRequired, Sortable, Filterable, ListView):
+    model = QueuedMail
     context_object_name = 'mails'
     template_name = 'orga/mails/sent_list.html'
     default_filters = ('to__icontains', 'subject__icontains')

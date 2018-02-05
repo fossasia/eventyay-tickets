@@ -12,10 +12,10 @@ from pretalx.person.models import SpeakerProfile, User
 
 
 class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
+    model = SpeakerProfile
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
     default_filters = ('user__nick__icontains', 'user__email__icontains', 'user__name__icontains')
-    filter_fields = ('user__nick', 'user__email', 'user__name')
     sortable_fields = ('user__nick', 'user__email', 'user__name')
     paginate_by = 25
     permission_required = 'orga.view_speakers'
