@@ -7,6 +7,7 @@ import django
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _  # NOQA
+from pkg_resources import iter_entry_points
 
 from pretalx.common.settings.config import build_config
 from pretalx.common.settings.utils import log_initial
@@ -73,6 +74,10 @@ FALLBACK_APPS = [
 ]
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS + FALLBACK_APPS
 
+PLUGINS = []
+for entry_point in iter_entry_points(group='pretalx.plugin', name=None):
+    PLUGINS.append(entry_point.module_name)
+    INSTALLED_APPS.append(entry_point.module_name)
 
 ## URL SETTINGS
 SITE_URL = config.get('site', 'url', fallback='http://localhost')
