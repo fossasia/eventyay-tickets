@@ -44,19 +44,19 @@ setup(
     version=pretalx_version,
     description='Conference organization: CfPs, scheduling, much more',
     long_description=long_description,
-    url='http://pretalx.org',
+    url='https://pretalx.org',
     author='Tobias Kunze',
     author_email='rixx@cutebit.de',
     license='Apache License 2.0',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Other Audience',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Environment :: Web Environment',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.6',
-        'Framework :: Django :: 1.11'
+        'Framework :: Django :: 2.0'
     ],
 
     keywords='conference cfp event barcamp',
