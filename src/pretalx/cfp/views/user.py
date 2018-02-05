@@ -156,7 +156,8 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     model = Submission
     form_class = InfoForm
     context_object_name = 'submission'
-    permission_required = 'submission.edit_submission'
+    permission_required = 'submission.view_submission'
+    write_permission_required = 'submission.edit_submission'
 
     def get_permission_object(self):
         return self.get_object()

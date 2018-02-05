@@ -22,5 +22,6 @@ Fixed bugs
 ~~~~~~~~~~~
 - In the dashboard, an incorrect link was given to add new reviewers. (#344)
 - The "save" button was missing on the mail settings page. (#341)
+- Users could not see (instead not change) their submissions after CfP end, until they were either rejected or accepted. (#333)
 
 .. _releases: https://github.com/pretalx/pretalx/releases
