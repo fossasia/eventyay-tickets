@@ -3,8 +3,6 @@
 {% load rich_text %}
 {% load rules %}
 
-{% block title %}{{ request.event }}{% endblock %}
-
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
 

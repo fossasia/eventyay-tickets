@@ -23,7 +23,7 @@
     <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#1C4A3B{% endif %}">
     <meta name="HandheldFriendly" content="True"/>
 
-    <title>{% block title %}{% endblock %} {% if request.event %}:: {{ request.event.name }} {% endif %}:: pretalx</title>
+    <title>{% block title %}{% endblock %} {% if request.event %} {{ request.event.name }} {% endif %}:: pretalx</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">

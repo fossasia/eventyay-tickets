@@ -3,7 +3,7 @@
 {% load formset_tags %}
 {% load i18n %}
 {% load staticfiles %}
-{% block title %}{% trans "Your submission" %} :: {{ request.event }}{% endblock %}
+{% block title %}{% trans "Your submission" %} :: {% endblock %}
 {% block content %}
     <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
