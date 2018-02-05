@@ -171,6 +171,7 @@ class Schedule(LogMixin, models.Model):
                         'new_start': new_slot.start.astimezone(tz),
                         'old_room': old_slot.room.name,
                         'new_room': new_slot.room.name,
+                        'new_info': new_slot.room.speaker_info,
                     })
 
         result['count'] = len(result['new_talks']) + len(result['canceled_talks']) + len(result['moved_talks'])

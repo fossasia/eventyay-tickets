@@ -2,8 +2,8 @@
 
 {% trans "We have released a new schedule, and wanted to tell you:" %}
 {% for slot in create %}{% blocktrans with title=slot.submission.title location=slot.room.name start=slot.start|date:"SHORT_DATETIME_FORMAT" %}
-- Your talk »{{ title }}« will take place at {{ start }} in {{ location }}.{% endblocktrans %}{% endfor %}{% for slot in update %}{% blocktrans with title=slot.submission.title location=slot.new_room start=slot.new_start|date:"SHORT_DATETIME_FORMAT" %}
-- Your talk »{{ title }}« has been moved to {{ start }} in {{ location }}{% endblocktrans %}
+- Your talk »{{ title }}« will take place at {{ start }} in {{ location }}{% endblocktrans %}{% if slot.room.speaker_info %}({{ slot.room.speaker_info }}){% endif %}.{% endfor %}{% for slot in update %}{% blocktrans with title=slot.submission.title location=slot.new_room start=slot.new_start|date:"SHORT_DATETIME_FORMAT" %}
+- Your talk »{{ title }}« has been moved to {{ start }} in {{ location }}{% endblocktrans %}{% if new_info %}({{ new_info }}){% endif %}.
 {% endfor %}
 {% blocktrans %}
 We look forward to seeing you, and please contact us if there is any problem with your talk or assigned slot.
