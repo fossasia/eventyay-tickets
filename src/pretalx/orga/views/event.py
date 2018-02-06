@@ -250,7 +250,11 @@ class InvitationView(FormView):
     def form_valid(self, form):
         form.save()
         permission = self.object
-        user = User.objects.get(pk=form.cleaned_data.get('user_id'))
+        user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
+        if not user:
+            messages.error(self.request, _('There was a problem with your authentication. Please contact the organiser for further help.'))
+            return redirect(self.request.event.urls.base)
+
         perm = EventPermission.objects.filter(user=user, event=permission.event).exclude(pk=permission.pk).first()
         event = permission.event
 

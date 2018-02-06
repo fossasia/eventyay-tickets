@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.files.storage import FileSystemStorage
+from django.forms import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -138,7 +139,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             user = self.request.user
         else:
             uid = form_dict['user'].save()
-            user = User.objects.get(pk=uid)
+            user = User.objects.filter(pk=uid).first()
+        if not user:
+            raise ValidationError(_('There was an error with your user account. Please contact the organiser for further help.'))
 
         form_dict['info'].instance.event = self.request.event
         form_dict['info'].save()

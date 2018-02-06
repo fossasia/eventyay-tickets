@@ -38,7 +38,7 @@ LOG_NAMES = {
     'pretalx.submission.confirm': _('The submission was confirmed.'),
     'pretalx.submission.confirmation': _('The submission was confirmed.'),  # Legacy
     'pretalx.submission.create': _('The submission was added.'),
-    'pretalx.submission.delete': _('The submission was deleted.'),
+    'pretalx.submission.deleted': _('The submission was deleted.'),
     'pretalx.submission.reject': _('The submission was rejected.'),
     'pretalx.submission.resource.create': _('A submission resource was added.'),
     'pretalx.submission.resource.delete': _('A submission resource was deleted.'),

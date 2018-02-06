@@ -36,7 +36,7 @@ class ScheduleView(PermissionRequired, TemplateView):
         ctx = super().get_context_data()
         version = self.request.GET.get('version')
         ctx['schedule_version'] = version
-        ctx['active_schedule'] = self.request.event.schedules.get(version=version) if version else self.request.event.wip_schedule
+        ctx['active_schedule'] = self.request.event.schedules.filter(version=version).first() if version else self.request.event.wip_schedule
         ctx['release_form'] = ScheduleReleaseForm()
         return ctx
 
@@ -101,8 +101,12 @@ class ScheduleResetView(PermissionRequired, View):
 
     def dispatch(self, request, event):
         schedule_version = self.request.GET.get('version')
-        self.request.event.schedules.get(version=schedule_version).unfreeze(user=request.user)
-        messages.success(self.request, _('Reset successful – start editing the schedule from your selcted version!'))
+        schedule = self.request.event.schedules.filter(version=schedule_version).first()
+        if schedule:
+            schedule.unfreeze(user=request.user)
+            messages.success(self.request, _('Reset successful – start editing the schedule from your selcted version!'))
+        else:
+            messages.error(self.request, _('Error retrieving the schedule version to reset to.'))
         return redirect(self.request.event.orga_urls.schedule)
 
 
@@ -174,10 +178,12 @@ class TalkList(PermissionRequired, View):
     def get(self, request, event):
         version = self.request.GET.get('version')
         if version:
-            schedule = request.event.schedules.get(version=version)
+            schedule = request.event.schedules.filter(version=version).first()
         else:
             schedule = request.event.wip_schedule
 
+        if not schedule:
+            return JsonResponse({'results': []})
         return JsonResponse(
             {'results': [serialize_slot(slot) for slot in schedule.talks.all()]},
             encoder=I18nJSONEncoder
@@ -192,6 +198,8 @@ class TalkUpdate(PermissionRequired, View):
 
     def patch(self, request, event, pk):
         talk = self.get_object()
+        if not talk:
+            return JsonResponse({'error': 'Talk not found'})
         data = json.loads(request.body.decode())
 
         if data.get('start'):
@@ -218,8 +226,10 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         return self.request.event
 
     def get(self, request, event, talkid, roomid):
-        talk = request.event.wip_schedule.talks.get(pk=talkid)
-        room = request.event.rooms.get(pk=roomid)
+        talk = request.event.wip_schedule.talks.filter(pk=talkid).first()
+        room = request.event.rooms.filter(pk=roomid).first()
+        if not (talk and room):
+            return JsonResponse({'results': []})
 
         availabilitysets = [
             room.availabilities.all(),
@@ -229,7 +239,6 @@ class RoomTalkAvailabilities(PermissionRequired, View):
                 if speaker.profiles.filter(event=request.event).exists()
             ],
         ]
-
         availabilities = Availability.intersection(*availabilitysets)
 
         return JsonResponse({
@@ -275,7 +284,7 @@ class RoomDelete(EventSettingsPermission, View):
 
     def dispatch(self, request, event, pk):
         try:
-            request.event.rooms.get(pk=pk).delete()
+            request.event.rooms.filter(pk=pk).delete()
             messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
         except ProtectedError:  # TODO: show which/how many talks are concerned
             messages.error(request, _('There is or was a talk scheduled in this room. It cannot be deleted.'))

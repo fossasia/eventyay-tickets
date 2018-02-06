@@ -67,7 +67,8 @@ def mail_send_task(to: str, subject: str, body: str, html: str, sender: str,
                    event: int=None, cc: list=None, bcc: list=None, headers: dict=None):
     headers = headers or dict()
     if event:
-        event = Event.objects.get(id=event)
+        event = Event.objects.filter(id=event).first()
+    if event:
         sender = sender or event.settings.get('mail_from')
         headers['reply-to'] = headers.get('reply-to', event.settings.get('mail_from'))
         backend = event.get_mail_backend()

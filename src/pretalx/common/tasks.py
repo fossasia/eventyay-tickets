@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import os
 
 import django_libsass
@@ -11,12 +12,16 @@ from django.templatetags.static import static
 from pretalx.celery_app import app
 from pretalx.event.models import Event
 
+logger = logging.getLogger(__name__)
+
 
 @app.task()
 def regenerate_css(event_id: int):
-    event = Event.objects.get(pk=event_id)
-    local_apps = ['agenda', 'cfp', 'orga']
+    event = Event.objects.filter(pk=event_id).first()
+    if not event:
+        logger.error(f'In regenerate_css: Event ID {event_id} not found.')
 
+    local_apps = ['agenda', 'cfp', 'orga']
     if not event.primary_color:
         for local_app in local_apps:
             event.settings.delete(f'{local_app}_css_file')

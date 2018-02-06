@@ -23,7 +23,11 @@ def process_frab(root, event):
 
     schedule_version = root.find('version').text
     event.wip_schedule.freeze(schedule_version, notify_speakers=False)
-    event.schedules.get(version=schedule_version).talks.update(is_visible=True)
+    schedule = event.schedules.filter(version=schedule_version).first()
+    if not schedule:
+        raise Exception(f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.')
+
+    schedule.talks.update(is_visible=True)
     return f'Successfully imported "{event.name}" schedule version "{schedule_version}".'
 
 

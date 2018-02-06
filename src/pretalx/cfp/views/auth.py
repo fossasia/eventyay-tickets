@@ -37,16 +37,18 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         pk = form.save()
-        user = User.objects.get(pk=pk)
+        user = User.objects.filter(pk=pk).first()
+        if not user:
+            messages.error(self.request, _('There was an error when logging in. Please contact the organiser for further help.'))
+            return redirect(self.request.event.urls.base)
+
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         url = self.request.GET.get('next')
         if url and is_safe_url(url, self.request.get_host()):
             return redirect(url)
 
-        return redirect(reverse('cfp:event.user.submissions', kwargs={
-            'event': self.request.event.slug
-        }))
+        return redirect(self.request.event.urls.user_submissions)
 
 
 class ResetView(EventPageMixin, FormView):

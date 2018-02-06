@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -185,7 +185,7 @@ class CfPQuestionDelete(PermissionRequired, View):
     permission_required = 'orga.remove_question'
 
     def get_object(self) -> Question:
-        return Question.all_objects.get(event=self.request.event, pk=self.kwargs.get('pk'))
+        return get_object_or_404(Question.all_objects, event=self.request.event, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -261,7 +261,7 @@ class SubmissionTypeDefault(PermissionRequired, View):
     permission_required = 'orga.edit_submission_type'
 
     def get_object(self):
-        return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -277,7 +277,7 @@ class SubmissionTypeDelete(PermissionRequired, View):
     permission_required = 'orga.remove_submission_type'
 
     def get_object(self):
-        return self.request.event.submission_types.get(pk=self.kwargs.get('pk'))
+        return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)

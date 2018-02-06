@@ -62,15 +62,19 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = 'code'
 
     def get(self, request, event, **kwargs):
-        talk = self.get_object().slots.get(schedule=self.request.event.current_schedule)
+        talk = self.get_object().slots.filter(schedule=self.request.event.current_schedule).first()
         netloc = urlparse(settings.SITE_URL).netloc
 
         cal = vobject.iCalendar()
-        cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
-        talk.build_ical(cal)
+        if talk:
+            cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
+            talk.build_ical(cal)
+            code = talk.submission.code
+        else:
+            code = 'NONE'
 
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
-        resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}-{talk.submission.code}.ics"'
+        resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}-{code}.ics"'
         return resp
 
 

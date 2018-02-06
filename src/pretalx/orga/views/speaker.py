@@ -64,8 +64,9 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'The speaker profile has been updated.')
         if form.has_changed():
-            profile = self.get_object().profiles.get(event=self.request.event)
-            profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
+            profile = self.get_object().profiles.filter(event=self.request.event).first()
+            if profile:
+                profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
         return super().form_valid(form)
 
     def get_form_kwargs(self, *args, **kwargs):
