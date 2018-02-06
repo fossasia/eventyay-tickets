@@ -9,12 +9,14 @@
 {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
 
     <legend>
-        {{ page_obj.paginator.count }}
-        {% blocktrans trimmed count count=page_obj.paginator.count %}
-        submission
-        {% plural %}
-        submissions
-        {% endblocktrans %}
+        <span>
+            {{ page_obj.paginator.count }}
+            {% blocktrans trimmed count count=page_obj.paginator.count %}
+            submission
+            {% plural %}
+            submissions
+            {% endblocktrans %}
+        </span>
         <p class="legend-buttons">
             {% if can_create_submission %}
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">

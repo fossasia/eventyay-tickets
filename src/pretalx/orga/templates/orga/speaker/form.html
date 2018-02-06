@@ -5,7 +5,14 @@
 
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
-<legend>{{ form.instance.user.get_display_name }} ({{ submission_count }} {% if submission_count > 1 %}{% trans "submissions" %}{% else %}{% trans "submission" %}{% endif %})</legend>
+    <legend>
+        {{ form.instance.user.get_display_name }} ({{ submission_count }}
+        {% blocktrans trimmed count count=submission_count %}
+        submission
+        {% plural %}
+        submissions
+        {% endblocktrans %}
+    </legend>
     <div class="alert alert-info">
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
         <ul>

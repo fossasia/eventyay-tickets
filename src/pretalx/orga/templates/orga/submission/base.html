@@ -8,11 +8,13 @@
 {% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
 
     <legend>
-        »{{ submission.title }}«
-        {% if submission.speakers.exists %}
-            by {{ submission.display_speaker_names }}
-        {% endif %}
-        ({% include "cfp/event/fragment_state.html" with state=submission.state %})
+        <span>
+            »{{ submission.title }}«
+            {% if submission.speakers.exists %}
+                by {{ submission.display_speaker_names }}
+            {% endif %}
+            ({% include "cfp/event/fragment_state.html" with state=submission.state %})
+        </span>
     </legend>
     <ul class="nav nav-tabs">
       <li class="nav-item">

@@ -6,7 +6,9 @@
 
 
     <legend>
-        {{ mails.count }} {% trans "pending e-mails" %}
+        <span>
+            {{ mails.count }} {% trans "Pending Mails" %}
+        </span>
         <div class="legend-buttons">
             <a href="{{ request.event.orga_urls.send_outbox }}">
                 <button class="btn btn-primary">{% trans "Send all" %}</button>
