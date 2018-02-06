@@ -39,9 +39,10 @@ class ReviewDashboard(PermissionRequired, ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['missing_reviews'] = Review.find_missing_reviews(self.request.event, self.request.user)
+        missing_reviews = Review.find_missing_reviews(self.request.event, self.request.user)
+        ctx['missing_reviews'] = missing_reviews
         ctx['reviewers'] = EventPermission.objects.filter(is_reviewer=True, event=self.request.event).count()
-        ctx['next_submission'] = Review.find_missing_reviews(self.request.event, self.request.user).first()
+        ctx['next_submission'] = missing_reviews.first()
         return ctx
 
 

@@ -38,7 +38,9 @@ class Review(models.Model):
 
         return event.submissions.filter(state=SubmissionStates.SUBMITTED) \
             .exclude(reviews__user=user) \
-            .exclude(speakers__in=[user])
+            .exclude(speakers__in=[user]) \
+            .annotate(review_count=models.Count('reviews')) \
+            .order_by('-review_count', '?')
 
     @property
     def event(self):
