@@ -4,7 +4,6 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.common.phrases import phrases
 from pretalx.submission.models import (
     AnswerOption, CfP, Question, SubmissionType,
 )

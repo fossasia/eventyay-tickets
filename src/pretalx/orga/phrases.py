@@ -25,9 +25,15 @@ class OrgaPhrases(Phrases, app='orga'):
         _('I think this talk might fit the conference better, if ...'),
         _('I think this talk sounds like a perfect fit for Day 2, since ...'),
         _('I think this talk might be improved by adding ...'),
+        _('I have heard a similar talk by this speaker, and I think ...'),
+        _('In my opinion, this talk will appeal to ...'),
+        _('While I think the talk is a great fit, it might be improved by ...'),
     ]
     another_review = [
         _('You\'re on a roll!'),
         _('"Just ONE more review, promise …"'),
-        _('Review saved, thanks.'),
+        _('Review saved, thanks!'),
+        _('One down, ... some more to go!'),
+        _('Conferences build on good talk selection – which builds on reviewers like you!'),
+        _('Remember to take a break between reviews, occasionally.'),
     ]

@@ -12,7 +12,11 @@
     <div class="dashboard-block">
         <h1>{{ request.event.reviews.count  }}</h1>
         <div class="dashboard-description">
-            {% trans "total reviews" %}
+            {% blocktrans trimmed count count=request.event.reviews.count %}
+            lonely review
+            {% plural %}
+            total reviews
+            {% endblocktrans %}
         </div>
     </div>
 {% else %}
@@ -26,7 +30,11 @@
     <{% if can_see_settings %}a href="{{ request.event.cfp.urls.text }}"{% else %}div{% endif %} class="dashboard-block">
         <h1>{{ reviewers }}</h1>
         <div class="dashboard-description">
-            {% trans "total reviewers" %}
+            {% blocktrans trimmed count count=reviewers %}
+            lonely reviewer
+            {% plural %}
+            total reviewers
+            {% endblocktrans %}
         </div>
     </{% if can_see_settings %}a{% else %}div{% endif %}>
 {% if can_review and next_submission %}
