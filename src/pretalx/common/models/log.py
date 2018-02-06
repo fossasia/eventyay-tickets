@@ -52,6 +52,7 @@ LOG_NAMES = {
     'pretalx.submission.answer.update': _('A submission answer was modified.'),
     'pretalx.submission.answerupdate': _('A submission answer was modified.'),  # compat
     'pretalx.submission.answer.create': _('A submission answer was added.'),
+    'pretalx.submission.answercreate': _('A submission answer was added.'),
     'pretalx.submission_type.create': _('A submission type was added.'),
     'pretalx.submission_type.delete': _('A submission type was deleted.'),
     'pretalx.submission_type.make_default': _('The submission type was made default.'),

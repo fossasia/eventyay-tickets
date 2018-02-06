@@ -182,7 +182,7 @@
                     <span class="fa fa-eye"></span>
                     <span class="sidebar-text">{% trans "Review" %}</span>
                 </a>
-                <a class="nav-link {% if "speakers." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
+                <a class="nav-link {% if "speakers." in url_name|slice:":9" %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
                     <span class="fa fa-address-card-o"></span>
                     <span class="sidebar-text">{% trans "Speakers" %}</span>
                 </a>
