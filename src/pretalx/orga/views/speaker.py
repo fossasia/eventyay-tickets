@@ -17,6 +17,7 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     context_object_name = 'speakers'
     default_filters = ('user__nick__icontains', 'user__email__icontains', 'user__name__icontains')
     sortable_fields = ('user__nick', 'user__email', 'user__name')
+    default_sort_field = 'user__name'
     paginate_by = 25
     permission_required = 'orga.view_speakers'
 
@@ -24,7 +25,7 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
         return self.request.event
 
     def get_queryset(self):
-        qs = SpeakerProfile.objects.filter(event=self.request.event).order_by('user__pk')
+        qs = SpeakerProfile.objects.filter(event=self.request.event)
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs

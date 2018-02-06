@@ -52,14 +52,22 @@ class Sortable:
     sortable_fields = []
 
     def sort_queryset(self, qs):
-        sort_key = self.request.GET.get('sort')
+        sort_key = self.request.GET.get('sort') or getattr(self, 'default_sort_field', '')
         if sort_key:
             plain_key = sort_key[1:] if sort_key.startswith('-') else sort_key
             reverse = not (plain_key == sort_key)
             if plain_key in self.sortable_fields:
                 is_text = False
-                with suppress(FieldDoesNotExist):
-                    is_text = isinstance(qs.model._meta.get_field(plain_key), CharField)
+                if not '__' in plain_key:
+                    with suppress(FieldDoesNotExist):
+                        is_text = isinstance(qs.model._meta.get_field(plain_key), CharField)
+                else:
+                    split_key = plain_key.split('__')
+                    if len(split_key) == 2:
+                        is_text = isinstance(
+                            qs.model._meta.get_field(split_key[0]).related_model._meta.get_field(split_key[1]),
+                            CharField
+                        )
 
                 if is_text:
                     # TODO: this only sorts direct lookups case insensitively
