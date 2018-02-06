@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='target',
-            field=models.CharField(choices=[('submission', 'per submission'), ('speaker', 'per speaker')], default='submission', help_text='Do you require an answer from every speaker or for every talk?', max_length=10, verbose_name='question type'),
+            field=models.CharField(choices=[('submission', 'per submission'), ('speaker', 'per speaker'), ('reviewer', 'for reviewers')], default='submission', help_text='Do you require an answer from every speaker or for every talk?', max_length=10, verbose_name='question type'),
         ),
         migrations.AlterField(
             model_name='question',

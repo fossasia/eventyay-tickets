@@ -14,11 +14,16 @@ def answer_file_path(instance, filename):
 
 class QuestionManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().exclude(active=False)
+        return super().get_queryset().exclude(active=False).exclude(target=QuestionTarget.REVIEWER)
 
 
 class AllQuestionManager(models.Manager):
     pass
+
+
+class ReviewQuestionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(active=False).filter(target=QuestionTarget.REVIEWER)
 
 
 class QuestionVariant(Choices):
@@ -44,10 +49,12 @@ class QuestionVariant(Choices):
 class QuestionTarget(Choices):
     SUBMISSION = 'submission'
     SPEAKER = 'speaker'
+    REVIEWER = 'reviewer'
 
     valid_choices = [
         (SUBMISSION, _('per submission')),
         (SPEAKER, _('per speaker')),
+        (REVIEWER, _('for reviewers')),
     ]
 
 
