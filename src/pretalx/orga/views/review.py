@@ -10,7 +10,7 @@ from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission
-from pretalx.submission.models import Review
+from pretalx.submission.models import Review, SubmissionStates
 
 
 class ReviewDashboard(PermissionRequired, ListView):
@@ -22,6 +22,7 @@ class ReviewDashboard(PermissionRequired, ListView):
     def get_queryset(self, *args, **kwargs):
         overridden_reviews = Review.objects.filter(override_vote__isnull=False, submission_id=models.OuterRef('pk'))
         return self.request.event.submissions\
+            .filter(state__in=[SubmissionStates.SUBMITTED, SubmissionStates.ACCEPTED, SubmissionStates.REJECTED, SubmissionStates.CONFIRMED])\
             .order_by('review_id')\
             .annotate(has_override=models.Exists(overridden_reviews))\
             .annotate(avg_score=models.Case(
