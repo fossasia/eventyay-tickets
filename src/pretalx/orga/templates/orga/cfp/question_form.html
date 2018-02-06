@@ -10,7 +10,7 @@
     <form method="post" action="">
         {% csrf_token %}
         {% if action == "edit" and question.answers.count %}
-            <div class="alert alert-warning">
+            <div class="alert alert-warning col-md-9 offset-3">
                 {% blocktrans trimmed %}
                     This question has already been answered by some speakers – please consider
                     carefully if modifying it would render those answers obsolete. You could also
@@ -21,12 +21,12 @@
 
         {% if action != 'create' %}
           {% if question.active %}
-            <div class="alert alert-info">
+            <div class="alert alert-info col-md-9 offset-3">
               {% trans "This question is currently active, it will be asked during submission." %}
               <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
             </div>
           {% else %}
-            <div class="alert alert-info">
+            <div class="alert alert-info col-md-9 offset-3">
               {% trans "This question is currently inactive, and will not be asked during submission." %}
               <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
             </div>
@@ -37,6 +37,12 @@
         {% bootstrap_field form.question layout='event' %}
         {% bootstrap_field form.variant layout='event' %}
         {% bootstrap_field form.help_text layout='event' %}
+        <div class="alert alert-info alert-required-boolean col-md-9 offset-3">
+            {% blocktrans trimmed %}
+                If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
+                accepted. If you want to allow both options, do not make this field required.
+            {% endblocktrans %}
+        </div>
         {% bootstrap_field form.required layout='event' %}
         {% bootstrap_field form.contains_personal_data layout='event' %}
 
@@ -99,13 +105,6 @@
                     });
                     });</script>
         </fieldset>
-        <div class="alert alert-info alert-required-boolean">
-            {% blocktrans trimmed %}
-                If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
-                accepted. If you want to allow both options, do not make this field required.
-            {% endblocktrans %}
-        </div>
-
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "create" %}
