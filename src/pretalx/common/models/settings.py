@@ -1,3 +1,5 @@
+import json
+
 from django.utils.translation import ugettext_noop
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
@@ -8,6 +10,18 @@ settings_hierarkey = Hierarkey(attribute_name='settings')
 @settings_hierarkey.set_global()
 class GlobalSettings(GlobalSettingsBase):
     pass
+
+
+def i18n_uns(v):
+    try:
+        return LazyI18nString(json.loads(v))
+    except ValueError:
+        return LazyI18nString(str(v))
+
+
+settings_hierarkey.add_type(LazyI18nString,
+                            serialize=lambda s: json.dumps(s.data),
+                            unserialize=i18n_uns)
 
 
 settings_hierarkey.add_default('show_schedule', 'True', bool)
