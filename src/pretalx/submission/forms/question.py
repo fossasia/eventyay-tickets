@@ -128,7 +128,7 @@ class QuestionsForm(forms.Form):
                 answer.save()
 
     def _save_to_answer(self, field, answer, value):
-        action = 'pretalx.submission.answer' + ('update' if answer.pk else 'create')
+        action = 'pretalx.submission.answer.' + ('update' if answer.pk else 'create')
         if isinstance(field, forms.ModelMultipleChoiceField):
             answstr = ', '.join([str(o) for o in value])
             if not answer.pk:
