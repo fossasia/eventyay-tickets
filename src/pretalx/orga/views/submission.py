@@ -190,7 +190,15 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['speakers'] = context['submission'].speakers.all()
+        submission = context['submission']
+        context['speakers'] = [{
+                'id': speaker.id,
+                'name': speaker.get_display_name(),
+                'nick': speaker.nick,
+                'biography': speaker.profiles.get_or_create(event=submission.event)[0].biography,
+                'other_submissions': speaker.submissions.filter(event=submission.event).exclude(code=submission.code),
+            } for speaker in submission.speakers.all()
+        ]
         context['users'] = User.objects.all()  # TODO: yeah, no
         return context
 

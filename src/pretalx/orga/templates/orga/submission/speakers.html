@@ -1,38 +1,53 @@
 {% extends "orga/submission/base.html" %}
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
+{% load rules %}
 {% load staticfiles %}
 
 {% block submission_content %}
-
-    <table class="table table-condensed table-responsive-md">
-        <tbody>
-            {% for speaker in speakers %}
-                <tr>
-                    <td>
-                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
-                            {{ speaker.get_display_name }}
-                        </a>
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
-                            class="btn btn-sm btn-secondary">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="content">
-        {% trans "Additional speaker – by nickname if registered, by email to send an invitation" %}:<br>
-        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="adder-textbox">
+    {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
+    {% if can_edit_speakers %}<div class="alert">
+        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="adder-textbox form">
+            <label>
+                {% trans "Add a speaker – by nickname if registered, by email to send an invitation" %}:<br>
+            </label>
             {% csrf_token %}
             <input type="text" name="nick" id="id_speaker" class="form-control" />
             <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
         </form>
-    </div>
+    </div>{% endif %}
+
+    {% for speaker in speakers %}
+        <legend>
+            <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
+                {{ speaker.name }}
+            </a>
+            {% if can_edit_speakers %}
+                <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
+                    class="btn btn-sm btn-secondary">
+                    <span class="fa fa-trash"></span> {% trans "Remove" %}
+                </a>
+            {% endif %}
+        </legend>
+        <p>
+            <h5>{% trans "Biography" %}:</h5>
+            {{ speaker.biography|rich_text|default:"-" }}
+        </p>
+        <p>
+        {% if speaker.other_submissions %}
+            <h5>{% trans "Other submissions by this speaker:" %}</h5>
+            <ul>
+                {% for submission in speaker.other_submissions %}
+                <li>
+                    <a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </p>
+    {% endfor %}
+
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
