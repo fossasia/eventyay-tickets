@@ -88,8 +88,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if step == 'profile':
             user_data = self.get_cleaned_data_for_step('user')
             if user_data and user_data.get('user_id'):
-                kwargs['user'] = User.objects.get(pk=user_data['user_id'])
-            elif self.request.user.is_authenticated:
+                kwargs['user'] = User.objects.filter(pk=user_data['user_id']).first()
+            if not kwargs.get('user') and self.request.user.is_authenticated:
                 kwargs['user'] = self.request.user
             kwargs['read_only'] = False
         if step == 'questions':
@@ -110,7 +110,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         })
 
     def _handle_question_answer(self, sub, qid, value, user=None):
-        question = self.request.event.questions.get(pk=qid)
+        question = self.request.event.questions.filter(pk=qid).first()
+        if not question:
+            return
         if question.target == QuestionTarget.SUBMISSION:
             answer = Answer(question=question, submission=sub)
         elif question.target == QuestionTarget.SPEAKER:
