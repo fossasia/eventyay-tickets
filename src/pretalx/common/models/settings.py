@@ -21,6 +21,7 @@ settings_hierarkey.add_default('review_min_score', 0, int)
 settings_hierarkey.add_default('review_max_score', 1, int)
 settings_hierarkey.add_default('review_score_mandatory', 'False', bool)
 settings_hierarkey.add_default('review_text_mandatory', 'False', bool)
+settings_hierarkey.add_default('review_help_text', LazyI18nString.from_gettext(ugettext_noop("Please give a fair review on why you'd like to see this submission at the conference, or why you think it would not be a good fit.")), LazyI18nString)
 
 settings_hierarkey.add_default('mail_from', 'noreply@example.org', str)
 settings_hierarkey.add_default('smtp_use_custom', 'False', bool)

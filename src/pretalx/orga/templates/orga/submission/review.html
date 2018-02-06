@@ -4,8 +4,9 @@
 {% load rich_text %}
 {% block submission_content %}
 
-    <div class="alert alert-info offset-3 col-md-9">
+    <div class="alert alert-info{% if not form.instance.pk %} offset-3 col-md-9{% endif %}">
         {% if not read_only %}
+            {{ request.event.settings.review_help_text|rich_text }}
             {% blocktrans trimmed %}
                 Please give a fair review on why you'd like to see this submission at the conference,
                 or why you think it would not be a good fit.

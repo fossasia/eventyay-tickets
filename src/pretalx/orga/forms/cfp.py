@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
+from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
@@ -37,6 +38,12 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     review_max_score = forms.IntegerField(
         label=_('Maximum score'),
         help_text=_('The maximum score reviewers can assign'),
+    )
+    review_help_text = I18nFormField(
+        label=_('Help text for reviewers'),
+        help_text=_('This text will be shown at the top of every review, as long as reviews can be created or edited. You can use markdown here.'),
+        widget=I18nTextarea,
+        required=False,
     )
 
     def __init__(self, obj, *args, **kwargs):

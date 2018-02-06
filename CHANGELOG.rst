@@ -20,6 +20,7 @@ Features
 - Organisers can provide room-based information for speakers, which will be provided in emails about talk scheduling. (#93)
 - The list of submissions is now better searchable. (#318)
 - Speakers can now upload an image that will be displayed next to their talk information. (#294)
+- Reviewers can now also be asked custom questions during their review, with all capabilities that speaker questions have.
 
 Fixed bugs
 ~~~~~~~~~~~
