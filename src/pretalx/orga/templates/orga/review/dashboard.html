@@ -55,8 +55,9 @@
             <th>{% trans "Score" %} <i class="fa fa-caret-down"></i></th>
             <th>{% trans "Reviews" %}</th>
             <th>{% trans "Title" %}</th>
-            <th>{% trans "State" %}</th>
             <th>{% trans "Speakers" %}</th>
+            <th>{% trans "State" %}</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -84,16 +85,20 @@
                     {{ submission.title }}
                 </a>
             </td>
+            <td>{{ submission.display_speaker_names }}</td>
             <td>
-                {% if can_accept_submission %}
-                    <a class="btn btn-primary btn-xs" href="{{ submission.orga_urls.accept }}">{% trans "Accept" %}</a>
-                {% elif can_reject_submission %}
-                    <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
-                {% else %}
-                    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+                {% include "cfp/event/fragment_state.html" with state=submission.state %}
+            </td>
+            <td class="review-buttons">
+                {% if submission.state == 'submitted' %}
+                    {% if can_accept_submission %}
+                        <a class="btn btn-success btn-xs" href="{{ submission.orga_urls.accept }}">{% trans "Accept" %}</a>
+                    {% endif %}
+                    {% if can_reject_submission %}
+                        <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
+                    {% endif %}
                 {% endif %}
             </td>
-            <td>{{ submission.display_speaker_names }}
         </tr>
     {% empty %}
         <tr>

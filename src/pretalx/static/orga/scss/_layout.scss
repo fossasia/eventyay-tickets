@@ -227,6 +227,10 @@ td.reviewer {
   display: flex;
   flex-direction: row;
 }
+td.review-buttons {
+  display: flex;
+  flex-direction: row;
+}
 
 form #id_settings-display_header_pattern {
   display: flex;
