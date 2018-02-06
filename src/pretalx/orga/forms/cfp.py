@@ -63,18 +63,6 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 class CfPForm(ReadOnlyFlag, I18nModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['headline'].widget.attrs['placeholder'] = _('The Call for Participation for this year\'s Serious Conference is open!')
-        self.fields['text'].widget.attrs['placeholder'] = _(
-            'Join us in this year\'s serious conference with fascinating discussions '
-            'on **Serious Business Matters**! '
-            'We accept short-form and long-form talks, as well as workshops '
-            'on our greatest serious achievements. Know details about how to '
-            'manage serious companies? Were you working on a seriously serious '
-            'project? We want your expertise!'
-        )
-
     class Meta:
         model = CfP
         fields = [
@@ -87,11 +75,6 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
 
 class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['question'].widget.attrs['placeholder'] = _('What kind of dessert do you prefer?')
-        self.fields['help_text'].widget.attrs['placeholder'] = _('Please include things you will not eat at all, too.')
-
     class Meta:
         model = Question
         fields = [
@@ -102,10 +85,6 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
 class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['answer'].widget.attrs['placeholder'] = phrases.orga.example_answer
-
     class Meta:
         model = AnswerOption
         fields = [
@@ -114,10 +93,6 @@ class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
 
 class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['placeholder'] = _('Long talk')
 
     class Meta:
         model = SubmissionType
