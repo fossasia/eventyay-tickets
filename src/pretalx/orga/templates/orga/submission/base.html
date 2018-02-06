@@ -5,7 +5,7 @@
 {% if submission %}
 
 {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
-{% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
+{% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
 
     <legend>
         <span>
@@ -53,7 +53,7 @@
               </a>
           </li>
       {% endif %}
-      {% if can_review_submission %}
+      {% if can_view_reviews %}
       <li class="nav-item">
           <a
             class="nav-link {% if "reviews" in url_name %}active{% endif %}"

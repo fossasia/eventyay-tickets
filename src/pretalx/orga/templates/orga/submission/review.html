@@ -4,17 +4,13 @@
 {% load rich_text %}
 {% block submission_content %}
 
-    <div class="alert alert-info{% if not form.instance.pk %} offset-3 col-md-9{% endif %}">
+    <div class="alert alert-info{% if not form.instance.pk and not read_only %} offset-3 col-md-9{% endif %}">
         {% if not read_only %}
             {{ request.event.settings.review_help_text|rich_text }}
-            {% blocktrans trimmed %}
-                Please give a fair review on why you'd like to see this submission at the conference,
-                or why you think it would not be a good fit.
-            {% endblocktrans %}
             {% if not form.instance.pk %}
-            {% blocktrans trimmed %}
-                You will be able to see other reviews once you have given yours.
-            {% endblocktrans %}
+                {% blocktrans trimmed %}
+                    You will be able to see other reviews once you have given yours.
+                {% endblocktrans %}
             {% endif %}
         {% else %}
             {% blocktrans trimmed %}
@@ -29,7 +25,7 @@
         {% endif %}
     </div>
 
-    {% if not form.instance.pk %}
+    {% if not form.instance.pk and not read_only %}
     <form method="post" action="">
         {% csrf_token %}
         <div class="form-group row">
@@ -62,7 +58,7 @@
     </form>
     {% endif %}
 
-    {% if form.instance.pk %}
+    {% if form.instance.pk or read_only %}
     <table class="table review-table table-responsive-md">
             <tr>
                 <th>{% trans "Points" %}</th>
