@@ -12,108 +12,23 @@
         {% endblocktrans %}
     </div>
 
-    <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-secondary">
-        <i class="fa fa-plus"></i>
-        {% trans "Add a new question" %}
-    </a>
-    <legend>{% trans "Speaker questions" %}</legend>
-    <table class="table table-condensed table-responsive-md">
-        <thead>
-            <tr>
-                <th>Question</th>
-                <th>required</th>
-                <th>active</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for question in speaker_questions %}
-                <tr {% if not question.active %}class="table-secondary"{% endif %}>
-                    <td>
-                        <a href="{{ question.urls.base }}">
-                            {{ question.question }}
-                        </a>
-                    </td>
-                    <td>
-                        <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
-
-                        </span>
-                    </td>
-                    <td>
-                        <span class="fa fa-{% if question.active %}check-circle{% else %}times-circle{% endif %}">
-
-                        </span>
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ question.urls.edit }}"
-                            class="btn btn-sm btn-secondary">
-                            <span class="fa fa-pencil"></span>
-                        </a>
-                        <a href="{{ question.urls.delete }}"
-                            class="btn btn-sm btn-secondary">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td>
-                    {% trans "You haven't configured any questions yet." %}
-                    <a href="{{request.event.cfp.urls.new_question }}?type=speaker" class="btn btn-small btn-secondary">
-                        <i class="fa fa-plus"></i>
-                        {% trans "Add a question now!" %}
-                    </a>
-                </td></tr>
-            {% endfor %}
-        </tbody>
+    <legend>
+        {% trans "Speaker questions" %}
+        <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-secondary">
+            <i class="fa fa-plus"></i>
+            {% trans "Add a new question" %}
+        </a>
+    </legend>
+    {% with questions=speaker_questions type='speaker' %}
+        {% include 'orga/cfp/question_table.html' %}
+    {% endwith %}
     </table>
     <legend>{% trans "Submission questions" %}</legend>
-    <table class="table table-condensed table-responsive-md">
-        <thead>
-            <tr>
-                <th>Question</th>
-                <th>required</th>
-                <th>active</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for question in submission_questions %}
-                <tr {% if not question.active %}class="table-secondary"{% endif %}>
-                    <td>
-                        <a href="{{ question.urls.base }}">
-                            {{ question.question }}
-                        </a>
-                    </td>
-                    <td>
-                        <span class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
-
-                        </span>
-                    </td>
-                    <td>
-                        <span class="fa fa-{% if question.active %}check-circle{% else %}times-circle{% endif %}">
-
-                        </span>
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ question.urls.edit }}"
-                            class="btn btn-sm btn-secondary">
-                            <span class="fa fa-pencil"></span>
-                        </a>
-                        <a href="{{ question.urls.delete }}"
-                            class="btn btn-sm btn-secondary">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td>
-                    {% trans "You have configured no questions yet." %}
-                    <a href="{{request.event.cfp.urls.new_question }}?type=submission" class="btn btn-small btn-secondary">
-                        <i class="fa fa-plus"></i>
-                        {% trans "Add a question now!" %}
-                    </a>
-                </td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% with questions=submission_questions type='submission' %}
+        {% include 'orga/cfp/question_table.html' %}
+    {% endwith %}
+    <legend>{% trans "Reviewer questions" %}</legend>
+    {% with questions=reviewer_questions type='reviewer' %}
+        {% include 'orga/cfp/question_table.html' %}
+    {% endwith %}
 {% endblock %}

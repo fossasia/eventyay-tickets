@@ -72,6 +72,7 @@ class CfPQuestionList(PermissionRequired, TemplateView):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['speaker_questions'] = Question.all_objects.filter(event=self.request.event, target='speaker')
         ctx['submission_questions'] = Question.all_objects.filter(event=self.request.event, target='submission')
+        ctx['reviewer_questions'] = Question.all_objects.filter(event=self.request.event, target='reviewer')
         return ctx
 
 
