@@ -58,7 +58,7 @@ class Sortable:
             reverse = not (plain_key == sort_key)
             if plain_key in self.sortable_fields:
                 is_text = False
-                if not '__' in plain_key:
+                if '__' not in plain_key:
                     with suppress(FieldDoesNotExist):
                         is_text = isinstance(qs.model._meta.get_field(plain_key), CharField)
                 else:

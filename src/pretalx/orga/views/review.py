@@ -10,6 +10,7 @@ from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import EventPermission
+from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models import Review, SubmissionStates
 
 
@@ -53,15 +54,19 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     template_name = 'orga/submission/review.html'
     permission_required = 'submission.view_reviews'
 
-    @property
+    @cached_property
     def submission(self):
         return get_object_or_404(
             self.request.event.submissions,
             code__iexact=self.kwargs['code'],
         )
 
-    def get_object(self):
+    @cached_property
+    def object(self):
         return self.submission.reviews.exclude(user__in=self.submission.speakers.all()).filter(user=self.request.user).first()
+
+    def get_object(self):
+        return self.object
 
     def get_permission_object(self):
         return self.submission
@@ -70,13 +75,35 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     def read_only(self):
         return not self.request.user.has_perm('submission.review_submission', self.get_object() or self.submission)
 
+    @cached_property
+    def qform(self):
+        return QuestionsForm(
+            target='reviewer', event=self.request.event,
+            data=(self.request.POST if self.request.method == 'POST' else None),
+            files=(self.request.FILES if self.request.method == 'POST' else None),
+            submission=self.submission,
+            speaker=self.request.user,
+            review=self.object,
+            readonly=self.read_only,
+        )
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        submission = self.request.event.submissions.get(code__iexact=self.kwargs['code'])
-        ctx['submission'] = submission
-        ctx['review'] = submission.reviews.filter(user=self.request.user).first()
+        ctx['submission'] = self.submission
+        ctx['review'] = self.object
         ctx['read_only'] = self.read_only
         ctx['override_left'] = self.request.user.remaining_override_votes(self.request.event)
+        ctx['qform'] = self.qform
+        ctx['reviews'] = [{
+                'score': review.display_score,
+                'text': review.text,
+                'user': review.user.get_display_name(),
+                'answers': [
+                    review.answers.filter(question=question).first()
+                    for question in self.qform.queryset
+                ]
+            } for review in self.submission.reviews.exclude(pk=(self.object.pk if self.object else None))
+        ]
         return ctx
 
     def get_form_kwargs(self):
@@ -87,6 +114,9 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         return kwargs
 
     def form_valid(self, form):
+        if not self.qform.is_valid():
+            messages.error(self.request, _('There have been erros with your input.'))
+            return redirect(self.get_success_url())
         form.instance.submission = self.submission
         form.instance.user = self.request.user
         if not form.instance.pk:
@@ -97,6 +127,8 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             messages.error(self.request, _('You cannot review this submission at this time.'))
             return redirect(self.get_success_url())
         form.save()
+        self.qform.review = form.instance
+        self.qform.save()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

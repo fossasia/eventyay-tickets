@@ -187,6 +187,12 @@ class Answer(LogMixin, models.Model):
         related_name='answers',
         null=True, blank=True,
     )
+    review = models.ForeignKey(
+        to='submission.Review',
+        on_delete=models.PROTECT,
+        related_name='answers',
+        null=True, blank=True,
+    )
     answer = models.TextField()
     answer_file = models.FileField(
         upload_to=answer_file_path,

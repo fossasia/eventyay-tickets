@@ -4,7 +4,7 @@ from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 
-from pretalx.submission.models import Answer, QuestionVariant
+from pretalx.submission.models import Answer, Question, QuestionVariant
 
 
 class QuestionsForm(forms.Form):
@@ -13,17 +13,18 @@ class QuestionsForm(forms.Form):
         self.event = kwargs.pop('event')
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
+        self.review = kwargs.pop('review', None)
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', 'submission')
-        target_object = self.submission or self.speaker if self.target_type else None
+        target_object = self.review or self.submission or self.speaker if self.target_type else None
         readonly = kwargs.pop('readonly', False)
 
         super().__init__(*args, **kwargs)
 
-        queryset = self.event.questions.all()
+        self.queryset = Question.all_objects.filter(event=self.event, active=True)
         if self.target_type:
-            queryset = queryset.filter(target=self.target_type)
-        for question in queryset.prefetch_related('options'):
+            self.queryset = self.queryset.filter(target=self.target_type)
+        for question in self.queryset.prefetch_related('options'):
             if target_object:
                 answers = [a for a in target_object.answers.all() if a.question_id == question.id]
                 if answers:
@@ -115,9 +116,10 @@ class QuestionsForm(forms.Form):
                     self._save_to_answer(field, field.answer, v)
                     field.answer.save()
             elif v != '':
-                # Not distinguishing between the question types helps to make
+                # Not distinguishing between the external question types helps to make
                 # experiences smoother if orga changes a question type.
                 answer = Answer(
+                    review=self.review,
                     submission=self.submission,
                     person=self.speaker,
                     question=field.question,
