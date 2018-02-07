@@ -81,7 +81,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             target='reviewer', event=self.request.event,
             data=(self.request.POST if self.request.method == 'POST' else None),
             files=(self.request.FILES if self.request.method == 'POST' else None),
-            submission=self.submission,
             speaker=self.request.user,
             review=self.object,
             readonly=self.read_only,
