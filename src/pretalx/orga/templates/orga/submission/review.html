@@ -29,6 +29,12 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="id_text">{% trans "Submission Type" %}</label>
+            <div class="col-md-9">
+                {{ submission.submission_type }}
+            </div>
+        </div>
+        <div class="form-group row">
             <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
             <div class="col-md-9">
                 {{ submission.abstract|rich_text }}
