@@ -60,10 +60,10 @@ EXTERNAL_APPS = [
 LOCAL_APPS = [
     'pretalx.api.APIConfig',
     'pretalx.common.CommonConfig',
-    'pretalx.event',
+    'pretalx.event.EventConfig',
     'pretalx.mail.MailConfig',
     'pretalx.person',
-    'pretalx.schedule',
+    'pretalx.schedule.ScheduleConfig',
     'pretalx.submission.SubmissionConfig',
     'pretalx.agenda.AgendaConfig',
     'pretalx.cfp.CfPConfig',
