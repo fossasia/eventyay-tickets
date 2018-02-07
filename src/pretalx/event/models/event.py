@@ -304,3 +304,35 @@ class Event(LogMixin, models.Model):
 
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)
+
+    def send_orga_mail(self, text, stats=False):
+        from django.utils.translation import override
+        from pretalx.common.mail import mail_send_task
+        from pretalx.mail.models import QueuedMail
+        ctx = {
+            'event_dashboard': self.orga_urls.base.full(),
+            'event_review': self.orga_urls.reviews.full(),
+            'event_schedule': self.orga_urls.schedule.full(),
+            'event_submissions': self.orga_urls.submissions.full(),
+            'event_team': self.orga_urls.team_settings.full(),
+            'submission_count': self.submissions.all().count(),
+        }
+        if stats:
+            ctx.update({
+                'talk_count': self.current_schedule.talks.filter(is_visible=True).count(),
+                'reviewer_count': self.permissions.filter(is_reviewer=True).count(),
+                'review_count': self.reviews.count(),
+                'schedule_count': self.schedules.count() - 1,
+                'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
+            })
+        with override(self.locale):
+            text = str(text).format(**ctx) + '-- '
+            text += _('''
+This mail was sent to you by the content system of your event {name}.''').format(name=self.name)
+        mail_send_task.apply_async(kwargs={
+            'to': [self.email],
+            'subject': _('[{slug}] News from your content system').format(slug=self.slug),
+            'body': text,
+            'html': QueuedMail.text_to_html(text, event=self),
+            'sender': settings.MAIL_FROM or f'noreply@{settings.SITE_NETLOC}',
+        })

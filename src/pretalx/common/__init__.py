@@ -10,6 +10,7 @@ class CommonConfig(AppConfig):
         from pretalx.event.models import Event
         from pretalx.common.tasks import regenerate_css
         from django.db import connection, utils
+        from . import signals  # noqa
 
         if Event._meta.db_table not in connection.introspection.table_names():
             # commands like `compilemessages` execute ready(), but do not

@@ -123,20 +123,23 @@ class QueuedMail(LogMixin, models.Model):
         sent = self.sent.isoformat() if self.sent else None
         return f'MailTemplate(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
 
-    def send(self):
-        if self.sent:
-            raise Exception('This mail has been sent already. It cannot be sent again.')
-
-        body_md = bleach.linkify(bleach.clean(markdown.markdown(self.text), tags=bleach.ALLOWED_TAGS + [
+    @classmethod
+    def text_to_html(cls, text, event=None):
+        body_md = bleach.linkify(bleach.clean(markdown.markdown(text), tags=bleach.ALLOWED_TAGS + [
             'p', 'pre'
         ]))
         html_context = {
             'body': body_md,
-            'event': self.event,
-            'color': self.event.primary_color or '#1c4a3b',
+            'event': event,
+            'color': (event.primary_color if event else '') or '#1c4a3b',
         }
-        body_html = get_template('mail/mailwrapper.html').render(html_context)
+        return get_template('mail/mailwrapper.html').render(html_context)
 
+    def send(self):
+        if self.sent:
+            raise Exception('This mail has been sent already. It cannot be sent again.')
+
+        body_html = self.text_to_html(self.text)
         from pretalx.common.mail import mail_send_task
         mail_send_task.apply_async(
             kwargs={

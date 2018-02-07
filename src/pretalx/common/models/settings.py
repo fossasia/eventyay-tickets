@@ -71,3 +71,45 @@ You can see details at
 All the best,
 your {event_name} CfP system.
 """)), LazyI18nString)
+
+settings_hierarkey.add_default('sent_mail_event_created', 'False', bool)
+settings_hierarkey.add_default('sent_mail_cfp_closed', 'False', bool)
+settings_hierarkey.add_default('sent_mail_event_over', 'False', bool)
+settings_hierarkey.add_default('mail_text_event_created', LazyI18nString.from_gettext(ugettext_noop("""Hi,
+
+we hope you're happy with pretalx as your event's CfP system.
+These links may be helpful in the coming days and weeks:
+
+- Your event's dashboard: {event_dashboard}
+- A list of submissions: {event_submissions}
+- Your schedule editor: {event_schedule}
+
+If there is anything you're missing, come tell us about it
+at https://github.com/pretalx/pretalx/issues/new or via an
+email to mailto:rixx@cutebit.de!
+""")), LazyI18nString)
+settings_hierarkey.add_default('mail_text_cfp_closed', LazyI18nString.from_gettext(ugettext_noop("""Hi,
+
+just writing you to let you know that your Call for Participation is now
+closed. You'll find a list of all your {submission_count} submissions here:
+{event_submissions}
+
+You can add reviewers here: {event_team}
+You can review submissions here: {event_review}
+And create your schedule here, once you have accepted submissions: {event_schedule}
+""")), LazyI18nString)
+settings_hierarkey.add_default('mail_text_event_over', LazyI18nString.from_gettext(ugettext_noop("""Hi,
+
+congratulations, your event is over! Hopefully it went well. Here are some
+statistics you might find interesting:
+
+- You had {submission_count} talk submissions,
+- Of which you selected {talk_count} talks.
+- {reviewer_count} reviewers wrote {review_count} reviews.
+- You released {schedule_count} schedules in total.
+- Over the course of the event, you sent {mail_count} mails.
+
+If there is anything you're missing, come tell us about it
+at https://github.com/pretalx/pretalx/issues/new or via an
+email to mailto:rixx@cutebit.de!
+""")), LazyI18nString)
