@@ -40,7 +40,7 @@ class Review(models.Model):
             .exclude(reviews__user=user) \
             .exclude(speakers__in=[user]) \
             .annotate(review_count=models.Count('reviews')) \
-            .order_by('-review_count', '?')
+            .order_by('review_count', '?')
 
     @property
     def event(self):
