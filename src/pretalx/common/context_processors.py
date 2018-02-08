@@ -11,12 +11,16 @@ from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 def add_events(request):
     if request.resolver_match and request.resolver_match.namespace == 'orga' and not request.user.is_anonymous:
         try:
-            url_name = resolve(request.path_info).url_name
+            url = resolve(request.path_info)
+            url_name = url.url_name
+            url_namespace = url.namespace
         except Http404:
             url_name = ''
+            url_namespace = ''
         return {
             'events': list(Event.objects.filter(permissions__is_orga=True, permissions__user=request.user).distinct()),
             'url_name': url_name,
+            'url_namespace': url_namespace,
         }
     return dict()
 

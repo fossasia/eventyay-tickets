@@ -1,7 +1,4 @@
-from django.dispatch import Signal
-
 from pretalx.common.signals import EventPluginSignal
-
 
 nav_event = EventPluginSignal(
     providing_args=["request"]
