@@ -120,6 +120,10 @@ class Event(LogMixin, models.Model):
         help_text=_('This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'),
         null=True, blank=True,
     )
+    plugins = models.TextField(
+        null=True, blank=True,
+        verbose_name=_('Plugins'),
+    )
 
     class urls(EventUrls):
         base = '/{self.slug}'
@@ -174,6 +178,7 @@ class Event(LogMixin, models.Model):
         schedule_api = '{base}/schedule/api'
         rooms_api = '{schedule_api}/rooms'
         talks_api = '{schedule_api}/talks'
+        plugins = '{base}/plugins'
 
     class api_urls(EventUrls):
         base = '/api/events/{self.slug}'
@@ -204,6 +209,11 @@ class Event(LogMixin, models.Model):
 
         if was_created:
             self._build_initial_data()
+
+    def get_plugins(self):
+        if not self.plugins:
+            return []
+        return self.plugins.split('.')
 
     def _get_default_submission_type(self):
         from pretalx.submission.models import Submission, SubmissionType
