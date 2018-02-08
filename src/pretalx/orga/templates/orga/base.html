@@ -243,6 +243,34 @@
                         </a>
                     </div>
                 </li>
+                <li class="nav-fold">
+                    <span class="has-children">
+                        <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.plugins }}">
+                            <span class="fa fa-puzzle"></span>
+                            <span class="sidebar-text">
+                                {% trans "Plugins" %}
+                            </span>
+                        </a>
+                        <a class="arrow nav-link" data-toggle="collapse" href="#collapseMails" aria-controls="collapsePlugins">
+                            <span class="fa fa-angle-down"></span>
+                        </a>
+                    </span>
+                    <div class="collapse in{% if "plugins" in url_namespace or "plugins" in url_name %} show{% endif %}" aria-expand="true" id="collapsePlugins">
+                        <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "plugins.settings" in url_name %} active{% endif %}">
+                            <span>{% trans "Settings" %}</span>
+                        </a>
+                        {% for nav_element in nav_event %}
+                            <a class="nav-link nav-link-second-level{% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
+                                {% if nav_element.icon and "." in nav_element.icon %}
+                                    <img src="{% static nav_element.icon %}" class="fa-img">
+                                {% elif nav_element.icon %}
+                                    <span class="fa fa-{{ nav_element.icon }}"></span>
+                                {% endif %}
+                                <span class="sidebar-text">{{ nav_element.label }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </li>
             {% endif %}
         {% endif %}
         </nav>

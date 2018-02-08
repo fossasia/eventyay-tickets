@@ -365,6 +365,7 @@ TEMPLATES = [
                 'pretalx.common.context_processors.locale_context',
                 'pretalx.common.context_processors.messages',
                 'pretalx.common.context_processors.system_information',
+                'pretalx.orga.context_processors.orga_events',
             ],
             'loaders': template_loaders
         },
