@@ -18,3 +18,4 @@ documentation to help the next one who is running into the same problem ;)
    :caption: Contents:
 
    setup
+   plugins/index
