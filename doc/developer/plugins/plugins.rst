@@ -115,7 +115,7 @@ Views
 -----
 
 Your plugin may define custom views. If you put an ``urls`` submodule into your
-plugin module, pretalxx will automatically import it and include it into the root
+plugin module, pretalx will automatically import it and include it into the root
 URL configuration with the namespace ``plugins:<label>:``, where ``<label>`` is
 your Django app label.
 
