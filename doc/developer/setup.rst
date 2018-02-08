@@ -4,6 +4,8 @@ The development setup
 To contribute to pretalx, it's useful to run pretalx locally on your device so you can test your
 changes. First of all, you need install some packages on your operating system:
 
+If you want to install pretalx on a server for actual usage, go to the :ref:`administrator-index` instead.
+
 * git
 * Python 3.6(!) or newer
 * A recent version of pip
@@ -43,28 +45,28 @@ you use to work with pretalx (or configure your shell to do so automatically). I
 Ubuntu or Debian, we strongly recommend upgrading your pip and setuptools installation inside the
 virtual environment, otherwise some of the dependencies might fail::
 
-    pip3 install -U pip setuptools wheel
+    (env)$ pip3 install -U pip setuptools wheel
 
 
 Working with the code
 ---------------------
 The first thing you need are all the main application's dependencies::
 
-    cd src/
-    pip3 install -r requirements/production.txt -r requirements/dev.txt -r requirements/fancy.txt
+    (env)$ cd src/
+    (env)$ pip3 install -r requirements/production.txt -r requirements/dev.txt -r requirements/fancy.txt
 
 Then, create the local database::
 
-    python manage.py migrate
+    (env)$ python manage.py migrate
 
 To be able to log in, you should also create an admin user::
 
-    python manage.py init
+    (env)$ python manage.py init
 
 If you want to see pretalx in a different language than English, you have to compile our language
 files::
 
-    python manage.py compilemessages
+    (env)$ python manage.py compilemessages
 
 If you need to test more complicated features, you should probably look into the
 :doc:`manual setup</administrator/installation_pip>` documentation to find the bits and pieces you
@@ -74,7 +76,7 @@ Run the development server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 To run the local development server, execute::
 
-    python manage.py runserver
+    (env)$ python manage.py runserver
 
 Now point your browser to http://localhost:8000/orga/ – You should be able to log in and play
 around!
@@ -85,10 +87,10 @@ Code checks and unit tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Before you check in your code into git, always run the static checkers and unit tests::
 
-    pylama
-    isort -c -rc .
-    python manage.py check
-    py.test tests
+    (env)$ pylama
+    (env)$ isort -c -rc .
+    (env)$ python manage.py check
+    (env)$ py.test tests
 
 .. note:: If you have more than one CPU core and want to speed up the test suite, you can run
           ``py.test -n NUM`` with ``NUM`` being the number of threads you want to use.
@@ -97,10 +99,24 @@ It's a good idea to put the style checks into your git hook ``.git/hooks/pre-com
 for example::
 
     #!/bin/sh
+    set -e
     cd $GIT_DIR/../src
     source ../env/bin/activate
     pylama
     isort -c -rc .
+
+Working with mails
+^^^^^^^^^^^^^^^^^^
+If you want to test anything regarding emails in your development setup, we recommend
+starting Python's debugging SMTP server in a separate shell and configuring pretalx to use it.
+Every email will then be printed to the debugging SMTP server's stdout.
+
+Add this to your ``src/pretalx.cfg``::
+
+    [mail]
+    port = 1025
+
+Then execute ``python -m smtpd -n -c DebuggingServer localhost:1025``.
 
 Working with translations
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -108,12 +124,12 @@ If you want to translate new strings that are not yet known to the translation s
 the following command to scan the source code for strings we want to translate and update the
 ``*.po`` files accordingly::
 
-    python manage.py makemessages
+    (env)$ python manage.py makemessages
 
 To actually see pretalx in your language, you have to compile the ``*.po`` files to their optimized
 binary ``*.mo`` counterparts::
 
-    python manage.py compilemessages
+    (env)$ python manage.py compilemessages
 
 
 Working with the documentation
@@ -122,12 +138,12 @@ First, you should install the requirements necessary for building the documentat
 have your virtual python environment activated (see above). Then, install the packages by
 executing::
 
-    cd doc/
-    pip3 install -r requirements.txt
+    (env)$ cd doc/
+    (env)$ pip3 install -r requirements.txt
 
 To build the documentation, run the following command from the ``doc/`` directory::
 
-    make html
+    (env)$ make html
 
 You will now find the generated documentation in the ``doc/_build/html/`` subdirectory.
 

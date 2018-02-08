@@ -1,3 +1,5 @@
+.. _`administator-index`:
+
 Administrator documentation
 ===========================
 
