@@ -14,6 +14,8 @@ def _review_score_number(context, score):
         name = context['request'].event.settings.get(f'review_score_name_{score}')
         if name:
             return f'{score}/{max_score} (»{name}«)'
+    else:
+        score = round(score, 1)
 
     return f'{score}/{max_score}'
 
