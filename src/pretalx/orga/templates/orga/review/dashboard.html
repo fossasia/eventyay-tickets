@@ -8,15 +8,18 @@
 {% has_perm 'orga.change_settings' request.user request.event as can_see_settings %}
 {% has_perm 'orga.view_reviews' request.user request.event as can_review %}
 <div class="dashboard-list">
-{% if request.event.reviews.count %}
+{% if review_count %}
     <div class="dashboard-block">
-        <h1>{{ request.event.reviews.count  }}</h1>
+        <h1>{{ review_count }}</h1>
         <div class="dashboard-description">
             {% blocktrans trimmed count count=request.event.reviews.count %}
             lonely review
             {% plural %}
             total reviews
             {% endblocktrans %}
+            {% if avg_reviews %}
+                <br>({% blocktrans with avg=avg_reviews %}{{ avg }} reviews/reviewer{% endblocktrans %})
+            {% endif %}
         </div>
     </div>
 {% else %}
@@ -24,17 +27,21 @@
         <h1>{% trans "Zero" %}</h1>
         <div class="dashboard-description">
             {% trans "total reviews" %}
+            <br>
         </div>
     </div>
 {% endif %}
     <{% if can_see_settings %}a href="{{ request.event.cfp.urls.text }}"{% else %}div{% endif %} class="dashboard-block">
-        <h1>{{ reviewers }}</h1>
+        <h1>{{ active_reviewers }}</h1>
         <div class="dashboard-description">
-            {% blocktrans trimmed count count=reviewers %}
-            lonely reviewer
+            {% blocktrans trimmed count count=active_reviewers %}
+            lonely active reviewer
             {% plural %}
-            total reviewers
+            total active reviewers
             {% endblocktrans %}
+            {% if reviewers != active_reviewers %}
+                <br>({% blocktrans with count=reviewers %}{{ count }} total{% endblocktrans %})
+            {% endif %}
         </div>
     </{% if can_see_settings %}a{% else %}div{% endif %}>
 {% if can_review and next_submission %}
