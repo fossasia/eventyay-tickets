@@ -1,7 +1,6 @@
 import os
 from codecs import open
 from distutils.command.build import build
-from pip.req import parse_requirements
 from os import path
 
 from setuptools import find_packages, setup
@@ -61,7 +60,35 @@ setup(
     ],
 
     keywords='conference cfp event barcamp',
-    install_requires=[str(req.req) for req in parse_requirements('requirements.txt', session=False)],
+    install_requires=[
+        'bleach>=2.1.2,==2.1.*',
+        'celery==4.1.*',
+        'csscompressor==0.9.*',
+        'cssutils==1.0.*',
+        'Django==2.0.*',
+        'django-bakery==0.11.*',
+        'django-bootstrap4==0.0.4',
+        'django-compressor==2.2.*',
+        'django-csp==3.3.*',
+        'django-filter==1.1.*',
+        'django-formset-js-improved==0.5.0.1',
+        'django-formtools==2.1.*',
+        'django-hierarkey==1.0.*',
+        'django-i18nfield==1.3.*',
+        'django-libsass==0.7',
+        'djangorestframework==3.7.*',
+        'inlinestyler==0.2.*',
+        'libsass<=0.13.1',  # May be removed once https://github.com/dahlia/libsass-python/pull/227 is merged
+        'Markdown==2.6.*',
+        'pytz',
+        'reportlab==3.4.*',
+        'requests',
+        'rules==1.3.*',
+        'urlman==1.2.*',
+        'vobject==0.9.*',
+        'whitenoise==3.3.*',
+        'zxcvbn-python==4.4.*',
+    ],
     extras_require={
         'dev': [
             'beautifulsoup4',
