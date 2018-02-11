@@ -1,3 +1,4 @@
+import importlib
 from contextlib import suppress
 
 from django.apps import apps
@@ -7,16 +8,12 @@ from django.conf.urls.static import static
 
 plugin_patterns = []
 for app in apps.get_app_configs():
-    if hasattr(app, 'PretixPluginMeta'):
+    if hasattr(app, 'PretalxPluginMeta'):
         if importlib.util.find_spec(app.name + '.urls'):
             urlmod = importlib.import_module(app.name + '.urls')
             single_plugin_patterns = []
             if hasattr(urlmod, 'urlpatterns'):
                 single_plugin_patterns += urlmod.urlpatterns
-            if hasattr(urlmod, 'event_patterns'):
-                patterns = plugin_event_urls(urlmod.event_patterns, plugin=app.name)
-                single_plugin_patterns.append(url(r'^(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
-                                                  include(patterns)))
             plugin_patterns.append(
                 url(r'', include((single_plugin_patterns, app.label)))
             )
