@@ -58,16 +58,16 @@ EXTERNAL_APPS = [
     'rules',
 ]
 LOCAL_APPS = [
-    'pretalx.api.APIConfig',
-    'pretalx.common.CommonConfig',
-    'pretalx.event.EventConfig',
-    'pretalx.mail.MailConfig',
+    'pretalx.api',
+    'pretalx.common',
+    'pretalx.event',
+    'pretalx.mail',
     'pretalx.person',
-    'pretalx.schedule.ScheduleConfig',
-    'pretalx.submission.SubmissionConfig',
-    'pretalx.agenda.AgendaConfig',
-    'pretalx.cfp.CfPConfig',
-    'pretalx.orga.OrgaConfig',
+    'pretalx.schedule',
+    'pretalx.submission',
+    'pretalx.agenda',
+    'pretalx.cfp',
+    'pretalx.orga',
 ]
 FALLBACK_APPS = [
     'django.forms',

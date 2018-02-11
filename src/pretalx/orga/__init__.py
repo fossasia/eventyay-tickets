@@ -8,3 +8,6 @@ class OrgaConfig(AppConfig):
         from . import permissions  # noqa
         from .phrases import OrgaPhrases  # noqa
         from . import signals  # noqa
+
+
+default_app_config = 'pretalx.orga.OrgaConfig'

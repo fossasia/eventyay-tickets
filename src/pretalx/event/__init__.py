@@ -6,3 +6,6 @@ class EventConfig(AppConfig):
 
     def ready(self):
         from . import services  # noqa
+
+
+default_app_config = 'pretalx.event.EventConfig'
