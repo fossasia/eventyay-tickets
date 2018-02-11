@@ -8,7 +8,6 @@ install:
   - pip install -Ur requirements/dev.txt -r requirements/fancy.txt
   - pip install -Ur requirements.txt
 script:
-  - cd src/
   - python manage.py collectstatic --noinput
   - python manage.py compress
   - python manage.py compilemessages

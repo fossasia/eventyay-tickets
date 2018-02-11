@@ -1,15 +1,18 @@
-def log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR):
+def log_initial(*, DEBUG, config_files, db_name, db_backend, LOG_DIR, plugins):
     from pretalx.common.console import start_box, end_box, print_line
     mode = 'development' if DEBUG else 'production'
     lines = [
         (f'This is pretalx calling, running in {mode} mode.', True),
         ('', False),
         (f'Settings:', True),
-        (f'Read from: {config_files}', False),
-        (f'Database: {db_name} ({db_backend})', False),
-        (f'Logging:  {LOG_DIR}', False),
-        ('', False),
+        (f'Read from: {", ".join(config_files)}', False),
+        (f'Database:  {db_name} ({db_backend})', False),
+        (f'Logging:   {LOG_DIR}', False),
     ]
+    if plugins:
+        lines += [(f'Plugins:   {",".join(plugins)}', False)]
+    else:
+        lines += [('', False)]
     image = '''
 ┏━━━━━━━━━━┓
 ┃  ┌─·──╮  ┃
@@ -19,6 +22,9 @@ def log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR):
 ┗━━━┯━┯━━━━┛
     ╰─╯
     '''.strip().split('\n')
+    img_width = len(image[0])
+    image[-1] += ' ' * (img_width - len(image[-1]))
+    image += [' ' * img_width for _ in range((len(lines) - len(image)))]
 
     lines = [(f'{image[n]}  {lines[n][0]}', lines[n][1]) for n in range(len(lines))]
 

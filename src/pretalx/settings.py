@@ -451,4 +451,11 @@ if DEBUG:
     REST_FRAMEWORK['COMPACT_JSON'] = False
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
-log_initial(DEBUG, config_files, db_name, db_backend, LOG_DIR)
+log_initial(
+    DEBUG=DEBUG,
+    config_files=config_files,
+    db_name=db_name,
+    db_backend=db_backend,
+    LOG_DIR=LOG_DIR,
+    plugins=PLUGINS
+)
