@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from pretalx.orga.signals import nav_event
 
 
@@ -11,4 +13,7 @@ def orga_events(request):
         for receiver, response in nav_event.send(request.event, request=request):
             _nav_event += response
 
-    return {'nav_event': _nav_event}
+    return {
+        'nav_event': _nav_event,
+        'settings': settings,
+    }

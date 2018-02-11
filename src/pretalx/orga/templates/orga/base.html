@@ -243,6 +243,7 @@
                         </a>
                     </div>
                 </li>
+                {% if settings.PLUGINS %}
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.plugins }}">
@@ -256,8 +257,8 @@
                         </a>
                     </span>
                     <div class="collapse in{% if "plugins" in url_namespace or "plugins" in url_name %} show{% endif %}" aria-expand="true" id="collapsePlugins">
-                        <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "plugins.settings" in url_name %} active{% endif %}">
-                            <span>{% trans "Settings" %}</span>
+                        <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "plugins.select" in url_name %} active{% endif %}">
+                            <span>{% trans "Select Plugins" %}</span>
                         </a>
                         {% for nav_element in nav_event %}
                             <a class="nav-link nav-link-second-level{% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
@@ -271,6 +272,7 @@
                         {% endfor %}
                     </div>
                 </li>
+                {% endif %}
             {% endif %}
         {% endif %}
         </nav>

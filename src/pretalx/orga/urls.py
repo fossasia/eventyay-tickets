@@ -101,6 +101,6 @@ urlpatterns = [
             '^schedule/api/availabilities/(?P<talkid>[0-9]+)/(?P<roomid>[0-9]+)/$',
             schedule.RoomTalkAvailabilities.as_view(), name='schedule.api.availabilities'
         ),
-        url('^plugins$', plugins.EventPluginsView.as_view(), name='plugins.view'),
+        url('^plugins$', plugins.EventPluginsView.as_view(), name='plugins.select'),
     ])),
 ]
