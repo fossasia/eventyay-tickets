@@ -8,3 +8,4 @@ Contents:
 
    plugins
    general
+   customview
