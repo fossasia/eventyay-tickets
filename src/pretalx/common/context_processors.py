@@ -9,7 +9,7 @@ from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
 def add_events(request):
-    if request.resolver_match and request.resolver_match.namespace == 'orga' and not request.user.is_anonymous:
+    if request.resolver_match and set(request.resolver_match.namespaces) & {'orga', 'plugins'} and not request.user.is_anonymous:
         try:
             url = resolve(request.path_info)
             url_name = url.url_name
