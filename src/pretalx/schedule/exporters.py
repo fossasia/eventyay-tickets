@@ -1,7 +1,11 @@
-import pytz
+import json
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
+import pytz
+import vobject
+from django.template.loader import get_template
+from django.utils.functional import cached_property
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.common.exporter import BaseExporter
@@ -16,7 +20,7 @@ class ScheduleData(BaseExporter):
         self.schedule = schedule
 
     @cached_property
-    def data:
+    def data(self):
         event = self.event
         schedule = self.schedule
         tz = pytz.timezone(event.timezone)
@@ -81,11 +85,11 @@ class FrabJsonExporter(ScheduleData):
         content = {
             'version': schedule.version,
             'conference': {
-                'acronym': request.event.slug,
-                'title': str(request.event.name),
-                'start': request.event.date_from.strftime('%Y-%m-%d'),
-                'end': request.event.date_to.strftime('%Y-%m-%d'),
-                'daysCount': request.event.duration,
+                'acronym': self.event.slug,
+                'title': str(self.event.name),
+                'start': self.event.date_from.strftime('%Y-%m-%d'),
+                'end': self.event.date_to.strftime('%Y-%m-%d'),
+                'daysCount': self.event.duration,
                 'timeslot_duration': '00:05',
                 'days': [
                     {
@@ -117,7 +121,7 @@ class FrabJsonExporter(ScheduleData):
                                         {
                                             'id': person.id,
                                             'name': person.get_display_name(),
-                                            'biography': getattr(person.profiles.filter(event=self.request.event).first(), 'biography', ''),
+                                            'biography': getattr(person.profiles.filter(event=self.event).first(), 'biography', ''),
                                             'answers': [
                                                 {
                                                     'question': answer.question.id,
@@ -125,7 +129,7 @@ class FrabJsonExporter(ScheduleData):
                                                     'options': [option.answer for option in answer.options.all()],
                                                 }
                                                 for answer in person.answers.all()
-                                            ] if getattr(self.request, 'is_orga', False) else [],
+                                            ] if getattr(self, 'is_orga', False) else [],
                                         }
                                         for person in talk.submission.speakers.all()
                                     ],
@@ -138,7 +142,7 @@ class FrabJsonExporter(ScheduleData):
                                             'options': [option.answer for option in answer.options.all()],
                                         }
                                         for answer in talk.submission.answers.all()
-                                    ] if getattr(self.request, 'is_orga', False) else [],
+                                    ] if getattr(self, 'is_orga', False) else [],
                                 } for talk in room['talks']
                             ] for room in day['rooms']
                         }
@@ -159,7 +163,7 @@ class ICalExporter(BaseExporter):
     def __init__(self, event, schedule=None):
         super().__init__(event)
         self.schedule = schedule
-    
+
     def render(self, **kwargs):
         netloc = urlparse(get_base_url(self.event)).netloc
         cal = vobject.iCalendar()

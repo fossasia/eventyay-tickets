@@ -1,22 +1,18 @@
-from datetime import datetime, timedelta
-from urllib.parse import unquote, urlparse
+from datetime import timedelta
+from urllib.parse import unquote
 
 import pytz
-import vobject
 from csp.decorators import csp_update
 from django.http import (
-    Http404, HttpResponse, HttpResponsePermanentRedirect, JsonResponse,
+    Http404, HttpResponse, HttpResponsePermanentRedirect,
 )
-from django.urls import reverse, resolve
+from django.urls import resolve, reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
-from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.common.mixins.views import PermissionRequired
-from pretalx.common.urls import get_base_url
-from pretalx.schedule.models import Room
 
 
 class ScheduleDataView(TemplateView):
@@ -72,7 +68,7 @@ class ExporterView(ScheduleDataView):
 
         url = resolve(request.path_info)
         if url.url_name == 'export':
-            exporter = self.request.GET.get('exporter')
+            exporter = unquote(self.request.GET.get('exporter'))
         else:
             exporter = url.url_name
 
@@ -88,11 +84,11 @@ class ExporterView(ScheduleDataView):
         if not exporter:
             raise Http404()
         exporter.schedule = self.get_object()
+        exporter.is_orga = getattr(self.request, 'is_orga', False)
         file_name, file_type, data = exporter.render()
-        if file_type == 'application/json':
-            return JsonResponse(data)
         resp = HttpResponse(data, content_type=file_type)
-        resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
+        if file_type not in ['application/json', 'text/xml']:
+            resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
         return resp
 
 

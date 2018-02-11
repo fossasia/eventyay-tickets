@@ -20,7 +20,7 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
             ('.xcal$', schedule.ExporterView.as_view(), 'XCal (frab)'),
             ('.json$', schedule.ExporterView.as_view(), 'JSON (frab)'),
             ('.ics$', schedule.ExporterView.as_view(), 'iCal'),
-            ('/export$', schedule.ExporterView.as_view(), 'exporter'),
+            ('/export$', schedule.ExporterView.as_view(), 'export'),
             ('/feed.xml$', feed.ScheduleFeed(), 'feed'),
         ]
     ]
