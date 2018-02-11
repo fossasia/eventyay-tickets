@@ -69,8 +69,18 @@ Step 3: Package dependencies
 To build and run pretalx, you will need the following debian packages beyond the dependencies
 mentioned above::
 
-    # apt-get install git build-essential python-virtualenv libssl-dev gettext libmysqlclient-dev
+    # apt-get install git build-essential python3-virtualenv libssl-dev gettext libmysqlclient-dev
 
+
+For Ubuntu 16.04/Debian 9 you need the package "python3.6"::
+
+    # add-apt-repository ppa:jonathonf/python3.6
+    # apt-get update
+    # apt-get install python3.6 python3.6-dev python3.6-venv
+    # wget https://bootstrap.pypa.io/get-pip.py
+    # python3.6 get-pip.py
+
+Replace all further "pip" commands with "pip3.6"    
 Step 4: Configuration
 ---------------------
 
