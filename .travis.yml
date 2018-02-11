@@ -3,9 +3,10 @@ sudo: false
 python: 3.6
 dist: trusty
 install:
+  - cd src/
   - pip install -U pip setuptools wheel typing codecov coverage
-  - pip install -Ur src/requirements/dev.txt -r src/requirements/fancy.txt
-  - cd src && pip install -Ur requirements.txt
+  - pip install -Ur requirements/dev.txt -r requirements/fancy.txt
+  - pip install -Ur requirements.txt
 script:
   - cd src/
   - python manage.py collectstatic --noinput
