@@ -102,97 +102,12 @@ idempotent, i.e. it should not make a difference if this is sent out more often
 than expected.
 """
 
-event_live_issues = EventPluginSignal(
-    providing_args=[]
-)
-"""
-This signal is sent out to determine whether an event can be taken live. If you want to
-prevent the event from going live, return a string that will be displayed to the user
-as the error message. If you don't, your receiver should return ``None``.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-
 register_data_exporters = EventPluginSignal(
     providing_args=[]
 )
 """
 This signal is sent out to get all known data exporters. Receivers should return a
-subclass of pretix.base.exporter.BaseExporter
+subclass of pretalx.common.exporter.BaseExporter
 
 As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-entry_submitted = EventPluginSignal(
-    providing_args=['submission']
-)
-"""
-This signal is sent out every time an entry is submitted. The submission object is given
-as the first argument. This signal is also sent out if the submission has been added
-for the speaker by an organiser, so take care to handle that case, aswell.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-submission_accepted = EventPluginSignal(
-    providing_args=['submission']
-)
-"""
-This signal is sent out every time as submission is accepted. The submission object is given
-as the first argument.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-submission_rejected = EventPluginSignal(
-    providing_args=['submission']
-)
-"""
-This signal is sent out every time as submission is rejected. The submission object is given
-as the first argument.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-submission_confirmed = EventPluginSignal(
-    providing_args=['submission']
-)
-"""
-This signal is sent out every time as submission is confirmed. The submission object is given
-as the first argument.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-logentry_display = EventPluginSignal(
-    providing_args=["logentry"]
-)
-"""
-To display an instance of the ``LogEntry`` model to a human user,
-``pretalx.common.signals.logentry_display`` will be sent out with a ``logentry`` argument.
-
-The first received response that is not ``None`` will be used to display the log entry
-to the user. The receivers are expected to return plain text.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-"""
-
-register_global_settings = django.dispatch.Signal()
-"""
-All plugins that are installed may send fields for the global settings form, as
-an OrderedDict of (setting name, form field).
-"""
-
-email_filter = EventPluginSignal(
-    providing_args=['message', 'submission']
-)
-"""
-This signal allows you to implement a middleware-style filter on all outgoing emails. You are expected to
-return a (possibly modified) copy of the message object passed to you.
-
-As with all event plugin signals, the ``sender`` keyword argument will contain the event.
-The ``message`` argument will contain an ``EmailMultiAlternatives`` object.
-If the email is associated with a specific submission, the ``submission`` argument will be passed as well,
-otherwise it will be ``None``.
 """
