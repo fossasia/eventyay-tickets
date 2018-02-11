@@ -16,10 +16,11 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
         url(f"{regex_prefix}{regex}", view, name=f"{name_prefix}{name}")
         for regex, view, name in [
             ('/$', schedule.ScheduleView.as_view(), 'schedule'),
-            ('.xml$', schedule.FrabXmlView.as_view(), 'frab-xml'),
-            ('.xcal$', schedule.FrabXCalView.as_view(), 'frab-xcal'),
-            ('.json$', schedule.FrabJsonView.as_view(), 'frab-json'),
-            ('.ics$', schedule.ICalView.as_view(), 'ical'),
+            ('.xml$', schedule.ExporterView.as_view(), 'XML (frab)'),
+            ('.xcal$', schedule.ExporterView.as_view(), 'XCal (frab)'),
+            ('.json$', schedule.ExporterView.as_view(), 'JSON (frab)'),
+            ('.ics$', schedule.ExporterView.as_view(), 'iCal'),
+            ('/export$', schedule.ExporterView.as_view(), 'exporter'),
             ('/feed.xml$', feed.ScheduleFeed(), 'feed'),
         ]
     ]
