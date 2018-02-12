@@ -143,7 +143,10 @@
 #exporttimestamp {
     margin-bottom: 1em;
 }
-
+span.export-icon {
+    width: 1.5em;
+    display: inline-block;
+}
 @media (max-width: 1000px) {
     #fahrplan {
         width: 100%;

@@ -27,10 +27,16 @@
                     <i class="fa fa-code"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                    <a class="dropdown-item" href="{{ request.event.urls.ical }}">iCal</a>
-                    <a class="dropdown-item" href="{{ request.event.urls.frab_xml }}">XML (frab)</a>
-                    <a class="dropdown-item" href="{{ request.event.urls.frab_json }}">JSON (frab)</a>
-                    <a class="dropdown-item" href="{{ request.event.urls.frab_xcal }}">xCal (frab)</a>
+                    {% for exporter in exporters %}{% if exporter.public %}
+                    <a class="dropdown-item" href="{{ request.event.urls.export }}?exporter={{ exporter.identifier|iriencode }}">
+                        {% if exporter.icon|slice:":3" == "fa-" %}
+                            <span class="fa {{ exporter.icon }} export-icon"></span>
+                        {% else %}
+                            <span class="export-icon">{{ exporter.icon }}</span>
+                        {% endif %}
+                        {{ exporter.verbose_name }}
+                    </a>
+                    {% endif %}{% endfor %}
                 </div>
               </span>
         </div>

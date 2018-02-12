@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.signals import register_data_exporters
 
 
 class ScheduleDataView(TemplateView):
@@ -106,6 +107,7 @@ class ScheduleView(PermissionRequired, ScheduleDataView):
     def get_context_data(self, *args, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
         ctx = super().get_context_data(*args, **kwargs)
+        ctx['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
         tz = pytz.timezone(self.request.event.timezone)
         if 'schedule' not in ctx:
             return ctx

@@ -50,8 +50,8 @@ class ScheduleData(BaseExporter):
 
 
 class FrabXmlExporter(ScheduleData):
-    identifier = 'XML (frab)'
-    verbose_name = 'frab compatible XML exporter for the current schedule release'
+    identifier = 'core-frab-xml'
+    verbose_name = 'XML (frab compatible)'
     public = True
     icon = 'fa-code'
 
@@ -62,8 +62,8 @@ class FrabXmlExporter(ScheduleData):
 
 
 class FrabXCalExporter(ScheduleData):
-    identifier = 'XCal (frab)'
-    verbose_name = 'frab compatible XCal exporter for the current schedule release'
+    identifier = 'core-frab-xcal'
+    verbose_name = 'XCal (frab compatible)'
     public = True
     icon = 'fa-calendar-o'
 
@@ -75,10 +75,10 @@ class FrabXCalExporter(ScheduleData):
 
 
 class FrabJsonExporter(ScheduleData):
-    identifier = 'JSON (frab)'
-    verbose_name = 'frab compatible JSON exporter for the current schedule release'
+    identifier = 'core-frab-json'
+    verbose_name = 'JSON (frab compatible)'
     public = True
-    icon = '{}'
+    icon = '{ }'
 
     def render(self, **kwargs):
         tz = pytz.timezone(self.event.timezone)
@@ -156,8 +156,8 @@ class FrabJsonExporter(ScheduleData):
 
 
 class ICalExporter(BaseExporter):
-    identifier = 'iCal'
-    verbose_name = 'iCal export of all talks in the current schedule'
+    identifier = 'core-iCal'
+    verbose_name = 'iCal'
     public = True
     icon = 'fa-calendar'
 

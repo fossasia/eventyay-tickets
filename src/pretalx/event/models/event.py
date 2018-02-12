@@ -142,6 +142,7 @@ class Event(LogMixin, models.Model):
         frab_xcal = '{schedule}.xcal'
         ical = '{schedule}.ics'
         feed = '{schedule}/feed.xml'
+        export = '{schedule}/export'
         location = '{schedule}/location'
 
     class orga_urls(EventUrls):

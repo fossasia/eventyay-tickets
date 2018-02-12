@@ -18,6 +18,7 @@ from pretalx.agenda.management.commands.export_schedule_html import (
 )
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
 from pretalx.orga.views.event import EventSettingsPermission
@@ -44,6 +45,11 @@ class ScheduleView(PermissionRequired, TemplateView):
 class ScheduleExportView(PermissionRequired, TemplateView):
     template_name = 'orga/schedule/export.html'
     permission_required = 'orga.view_schedule'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
+        return ctx
 
     def get_permission_object(self):
         return self.request.event
