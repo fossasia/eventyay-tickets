@@ -3,9 +3,7 @@ import os
 from bakery.views import BuildableDetailView
 from django.conf import settings
 
-from pretalx.agenda.views.schedule import (
-    FrabJsonView, FrabXCalView, FrabXmlView, ICalView, ScheduleView,
-)
+from pretalx.agenda.views.schedule import ExporterView, ScheduleView
 from pretalx.agenda.views.speaker import SpeakerView
 from pretalx.agenda.views.talk import SingleICalView, TalkView
 from pretalx.person.models import SpeakerProfile
@@ -58,27 +56,33 @@ class ExportScheduleView(PretalxExportContextMixin, BuildableDetailView, Schedul
         return obj.event.urls.schedule
 
 
-class ExportFrabXmlView(PretalxExportContextMixin, BuildableDetailView, FrabXmlView):
+class ExportFrabXmlView(PretalxExportContextMixin, BuildableDetailView, ExporterView):
     queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
 
     def get_url(self, obj):
         return obj.event.urls.frab_xml
 
+    def get_content(self):
+        return self.get(self.request, self._exporting_event).content
+
     def get_build_path(self, obj):
         return self.get_file_build_path(obj)
 
 
-class ExportFrabXCalView(PretalxExportContextMixin, BuildableDetailView, FrabXCalView):
+class ExportFrabXCalView(PretalxExportContextMixin, BuildableDetailView, ExporterView):
     queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
 
     def get_url(self, obj):
         return obj.event.urls.frab_xcal
 
+    def get_content(self):
+        return self.get(self.request, self._exporting_event).content
+
     def get_build_path(self, obj):
         return self.get_file_build_path(obj)
 
 
-class ExportFrabJsonView(PretalxExportContextMixin, BuildableDetailView, FrabJsonView):
+class ExportFrabJsonView(PretalxExportContextMixin, BuildableDetailView, ExporterView):
     queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
 
     def get_url(self, obj):
@@ -91,7 +95,7 @@ class ExportFrabJsonView(PretalxExportContextMixin, BuildableDetailView, FrabJso
         return self.get_file_build_path(obj)
 
 
-class ExportICalView(PretalxExportContextMixin, BuildableDetailView, ICalView):
+class ExportICalView(PretalxExportContextMixin, BuildableDetailView, ExporterView):
     queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
 
     def get_url(self, obj):

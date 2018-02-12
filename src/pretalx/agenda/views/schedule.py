@@ -3,9 +3,7 @@ from urllib.parse import unquote
 
 import pytz
 from csp.decorators import csp_update
-from django.http import (
-    Http404, HttpResponse, HttpResponsePermanentRedirect,
-)
+from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.urls import resolve, reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property

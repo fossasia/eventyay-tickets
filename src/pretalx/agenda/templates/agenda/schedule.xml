@@ -2,11 +2,11 @@
 <schedule>
     <version>{{ schedule.version }}</version>
     <conference>
-        <acronym>{{ request.event.slug }}</acronym>
-        <title>{{ request.event.name }}</title>
-        <start>{{ request.event.date_from|date:"c" }}</start>
-        <end>{{ request.event.date_to|date:"c" }}</end>
-        <days>{{ request.event.duration }}</days>
+        <acronym>{{ event.slug }}</acronym>
+        <title>{{ event.name }}</title>
+        <start>{{ event.date_from|date:"c" }}</start>
+        <end>{{ event.date_to|date:"c" }}</end>
+        <days>{{ event.duration }}</days>
         <timeslot_duration>00:05</timeslot_duration>
     </conference>
     {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start.isoformat }}' end='{{ day.end.isoformat }}'>

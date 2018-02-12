@@ -56,7 +56,8 @@ class FrabXmlExporter(ScheduleData):
     icon = 'fa-code'
 
     def render(self, **kwargs):
-        content = get_template('agenda/schedule.xml').render(context={'data': self.data})
+        context = {'data': self.data, 'schedule': self.schedule, 'event': self.event}
+        content = get_template('agenda/schedule.xml').render(context=context)
         return f'{self.event.slug}-schedule.xml', 'text/xml', content
 
 
@@ -151,7 +152,7 @@ class FrabJsonExporter(ScheduleData):
                 ]
             }
         }
-        return f'{self.event.slug}.json'.format(self.event.slug), 'application/json', json.dumps(content, cls=I18nJSONEncoder)
+        return f'{self.event.slug}.json'.format(self.event.slug), 'application/json', json.dumps({'schedule': content}, cls=I18nJSONEncoder)
 
 
 class ICalExporter(BaseExporter):
