@@ -257,7 +257,7 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-HAS_CELERY = bool(config.get('celery', 'broker'))
+HAS_CELERY = bool(config.get('celery', 'broker', fallback=None))
 if HAS_CELERY:
     CELERY_BROKER_URL = config.get('celery', 'broker')
     CELERY_RESULT_BACKEND = config.get('celery', 'backend')
