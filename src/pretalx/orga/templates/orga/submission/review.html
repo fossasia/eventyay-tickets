@@ -15,7 +15,7 @@
         {% else %}
             {% blocktrans trimmed %}
                 This submission can no longer be reviewed, as a decision regarding its
-                role in this event has already been made.
+                role in this event has already been made, or the review deadline is over.
             {% endblocktrans %}
         {% endif %}
         {% if override_left %}
@@ -75,6 +75,7 @@
                 <th></th>
             </tr>
         <tbody>
+            {% if form.instance.pk or not read_only %}
             <tr><form method="post">
                 {% csrf_token %}
                 <td>{% bootstrap_field form.score layout="inline" %}</td>
@@ -90,6 +91,7 @@
                     {% endif %}
                 </td>
             </form></tr>
+            {% endif %}
             {% for review in reviews %}
                 {% if review != form.instance %}
                     <tr>

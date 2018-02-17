@@ -6,7 +6,7 @@
 {% block content %}
 
 {% has_perm 'orga.change_settings' request.user request.event as can_see_settings %}
-{% has_perm 'orga.view_reviews' request.user request.event as can_review %}
+{% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
 <div class="dashboard-list">
 {% if review_count %}
     <div class="dashboard-block">

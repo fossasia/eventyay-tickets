@@ -13,6 +13,10 @@ from pretalx.submission.models import (
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_show_deadline = forms.BooleanField(label=_('Display deadline publicly'),
                                            required=False)
+    review_deadline = forms.DateTimeField(
+        label=_('Review deadline'),
+        required=False,
+    )
     review_score_mandatory = forms.BooleanField(
         label=_('Require reviewers to submit a score'),
         required=False,
@@ -51,6 +55,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         super().__init__(*args, obj=obj, **kwargs)
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)
+        self.fields['review_deadline'].widget = forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
         for number in range(abs(maximum - minimum + 1)):
             index = minimum + number
             self.fields[f'review_score_name_{index}'] = forms.CharField(

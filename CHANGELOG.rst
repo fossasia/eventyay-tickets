@@ -21,6 +21,7 @@ Features
 - The list of submissions is now better searchable. (#318)
 - Speakers can now upload an image that will be displayed next to their talk information. (#294)
 - Reviewers can now also be asked custom questions during their review, with all capabilities that speaker questions have.
+- There are now optional review deadlines, preventing reviews to be added, modified, or removed after a certain date. (#352)
 
 Fixed bugs
 ~~~~~~~~~~~

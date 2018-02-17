@@ -78,11 +78,15 @@ def is_review_author(user, obj):
 
 @rules.predicate
 def can_be_reviewed(user, obj):
+    from django.utils.timezone import now
     if not obj:
         return False
     if hasattr(obj, 'submission'):
         obj = obj.submission
-    return obj.state == SubmissionStates.SUBMITTED
+    deadline = obj.event.settings.review_deadline
+    state = obj.state == SubmissionStates.SUBMITTED
+    time = True if not deadline else now() <= deadline
+    return state and time
 
 
 rules.add_perm('submission.withdraw_submission', can_be_withdrawn & is_speaker)
