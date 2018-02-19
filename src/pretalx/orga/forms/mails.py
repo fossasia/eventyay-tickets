@@ -1,15 +1,18 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from i18nfield.forms import I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 
 
-class MailTemplateForm(ReadOnlyFlag, forms.ModelForm):
+class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
+        if event:
+            kwargs['locales'] = event.locales
         super().__init__(*args, **kwargs)
 
     def clean_text(self):
