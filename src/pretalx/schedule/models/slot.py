@@ -47,18 +47,8 @@ class TalkSlot(LogMixin, models.Model):
 
     @property
     def export_duration(self):
-        duration = timedelta(minutes=self.duration)
-        days = duration.days
-        hours = duration.total_seconds() // 3600 - days * 24
-        minutes = duration.seconds // 60 % 60
-        fmt = f'{minutes:02}'
-        if hours or days:
-            fmt = f'{hours:02}:{fmt}'
-            if days:
-                fmt = f'{days}:{fmt}'
-        else:
-            fmt = f'00:{fmt}'
-        return fmt
+        from pretalx.common.serialize import serialize_duration
+        return serialize_duration(minutes=self.duration)
 
     @property
     def pentabarf_export_duration(self):

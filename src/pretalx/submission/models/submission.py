@@ -344,3 +344,8 @@ class Submission(LogMixin, models.Model):
 
     def __str__(self):
         return f'Submission(event={self.event.slug}, code={self.code}, title={self.title}, state={self.state})'
+
+    @property
+    def export_duration(self):
+        from pretalx.common.serialize import serialize_duration
+        return serialize_duration(minutes=self.get_duration())

@@ -22,6 +22,10 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     speakers = SubmitterSerializer(many=True)
     submission_type = SlugRelatedField(slug_field='name', read_only=True)
     slot = SlotSerializer(TalkSlot.objects.filter(is_visible=True), read_only=True)
+    duration = SerializerMethodField()
+
+    def get_duration(self, obj):
+        return obj.export_duration
 
     class Meta:
         model = Submission
