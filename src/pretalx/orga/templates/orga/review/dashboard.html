@@ -31,19 +31,31 @@
         </div>
     </div>
 {% endif %}
-    <{% if can_see_settings %}a href="{{ request.event.cfp.urls.text }}"{% else %}div{% endif %} class="dashboard-block">
-        <h1>{{ active_reviewers }}</h1>
-        <div class="dashboard-description">
-            {% blocktrans trimmed count count=active_reviewers %}
-            lonely active reviewer
-            {% plural %}
-            total active reviewers
-            {% endblocktrans %}
-            {% if reviewers != active_reviewers %}
-                <br>({% blocktrans with count=reviewers %}{{ count }} total{% endblocktrans %})
-            {% endif %}
-        </div>
-    </{% if can_see_settings %}a{% else %}div{% endif %}>
+<{% if can_see_settings %}a href="{{ request.event.orga_urls.team_settings }}"{% else %}div{% endif %} class="dashboard-block">
+    <h1>{{ active_reviewers }}</h1>
+    <div class="dashboard-description">
+        {% blocktrans trimmed count count=active_reviewers %}
+        lonely active reviewer
+        {% plural %}
+        total active reviewers
+        {% endblocktrans %}
+        {% if reviewers != active_reviewers %}
+            <br>({% blocktrans with count=reviewers %}{{ count }} total{% endblocktrans %})
+        {% endif %}
+    </div>
+</{% if can_see_settings %}a{% else %}div{% endif %}>
+{% if can_see_settings %}
+<a href="{{ request.event.cfp.urls.text }}#review" class="dashboard-block">
+    <h1>{% trans "Change settings" %}</h1>
+    <div class="dashboard-description">
+        <ul>
+            <li>{% trans "Set a review deadline" %}</li>
+            <li>{% trans "Determine the score range" %}</li>
+            <li>…</li>
+        </ul>
+    </div>
+</a>
+{% endif %}
 {% if can_review and next_submission %}
     <a class="dashboard-block" href="{{ next_submission.orga_urls.reviews }}">
         <h1>{% trans "Review!" %}</h1>
