@@ -214,7 +214,7 @@ class Event(LogMixin, models.Model):
     def get_plugins(self):
         if not self.plugins:
             return []
-        return self.plugins.split('.')
+        return self.plugins.split(',')
 
     def _get_default_submission_type(self):
         from pretalx.submission.models import Submission, SubmissionType
