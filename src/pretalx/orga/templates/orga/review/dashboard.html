@@ -89,7 +89,6 @@
     </thead>
     <tbody>
     {% for submission in submissions %}
-        {% has_perm 'submission.review_submission' request.user submission as can_review_submission %}
         {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
         {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
         <tr class="{{ submission.state }}">
@@ -108,7 +107,7 @@
                 {% endif %}
             </td>
             <td>
-                <a href="{% if can_review_submission %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
+                <a href="{% if can_review %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
                     {{ submission.title }}
                 </a>
             </td>
