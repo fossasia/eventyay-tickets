@@ -33,7 +33,7 @@ class ReviewDashboard(PermissionRequired, ListView):
                 ),
                 default=models.Avg('reviews__score')
             ))\
-            .order_by('-state', '-avg_score')
+            .order_by('-state', '-avg_score', 'code')
 
     def get_permission_object(self):
         return self.request.event
