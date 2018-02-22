@@ -16,7 +16,7 @@ COPY src /src
 
 RUN mkdir /static && \
     pip3 install -U pip setuptools wheel typing && \
-    pip3 install pretalx && \
+    pip3 install -e src/ && \
     pip3 install django-redis pylibmc mysqlclient psycopg2 && \
     pip3 install gunicorn && \
     chmod +x /usr/local/bin/pretalx
