@@ -20,7 +20,10 @@ except:  # noqa
 class CustomBuild(build):
     def run(self):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
-        import django
+        try:
+            import django
+        except (ImportError, ModuleNotFoundError):
+            return
         django.setup()
         from django.conf import settings
         from django.core import management
