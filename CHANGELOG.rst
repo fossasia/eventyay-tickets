@@ -23,6 +23,7 @@ Features
 - Reviewers can now also be asked custom questions during their review, with all capabilities that speaker questions have.
 - There are now optional review deadlines, preventing reviews to be added, modified, or removed after a certain date. (#352)
 - pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into various plugin hooks to be expanded over the course of this year. Plugins can be enabled or disabled per event.
+- Individual directories for logs, media, and static files can now be configured via environment variables.
 
 Fixed bugs
 ~~~~~~~~~~~

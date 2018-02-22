@@ -35,6 +35,7 @@ The filesystem section
 
 - The ``media`` option sets the media directory that is used for user generated files. It needs to
   be writable by the pretalx process.
+- **Environment variable:** ``PRETALX_FILESYSTEM_MEDIA``
 - **Default:** A directory called ``media`` in the ``data`` directory (see above).
 
 ``logs``
@@ -42,7 +43,18 @@ The filesystem section
 
 - The ``logs`` option sets the log directory that is used for logged data. It needs to
   be writable by the pretalx process.
+- **Environment variable:** ``PRETALX_FILESYSTEM_LOGS``
 - **Default:** A directory called ``logs`` in the ``data`` directory (see above).
+
+``static``
+~~~~~~~~~~
+
+- The ``statics`` option sets the directory that is used for static files. It needs to
+  be writable by the pretalx process, and will be filled by the ``rebuild`` and
+  ``collectstatic`` commands.
+- **Environment variable:** ``PRETALX_FILESYSTEM_STATIC``
+- **Default:** A directory called ``static.dist`` in the directory in which pretalx's ``manage.py``
+  is located.
 
 The site section
 ----------------

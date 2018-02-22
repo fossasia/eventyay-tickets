@@ -9,6 +9,18 @@ CONFIG = {
         'base': {
             'default': os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
         },
+        'logs': {
+            'default': None,
+            'env': os.getenv('PRETALX_FILESYSTEM_LOGS'),
+        },
+        'media': {
+            'default': None,
+            'env': os.getenv('PRETALX_FILESYSTEM_MEDIA'),
+        },
+        'static': {
+            'default': None,
+            'env': os.getenv('PRETALX_FILESYSTEM_STATIC'),
+        },
     },
     'site': {
         'debug': {
