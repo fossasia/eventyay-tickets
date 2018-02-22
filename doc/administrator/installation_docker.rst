@@ -109,6 +109,8 @@ reboot. Create a file named ``/etc/systemd/system/pretalx.service`` with the fol
     [Service]
     Restart=always
     ExecStart=/usr/bin/docker run -p 127.0.0.1:8089:80 \
+        -e PRETALX_FILESYSTEM_STATIC=/data/static \
+        -e PRETALX_DATA_DIR=/data \
         -e PRETALX_DB_TYPE=mysql \
         -e PRETALX_DB_NAME=pretalx \
         -e PRETALX_DB_USER=pretalx \
@@ -171,8 +173,8 @@ caching features for static files::
 
         location /static/ {
             access_log off;
-            proxy_pass http://localhost:8089;
             proxy_cache pretalx_static;
+            alias /var/pretalx-data/static/;
         }
 
         location /static/CACHE/ {
@@ -184,7 +186,7 @@ caching features for static files::
             proxy_cache_valid any 60m;
             add_header X-Proxy-Cache $upstream_cache_status;
             access_log off;
-            proxy_pass http://localhost:8089;
+            alias /var/pretalx-data/static/CACHE/;
         }
 
         location / {
