@@ -115,7 +115,7 @@ The database section
 ~~~~~~~~~~~~
 
 - The database password, if applicable.
-- **Environment variable:** ``PRETALX_DB_PASSWORD``
+- **Environment variable:** ``PRETALX_DB_PASS``
 - **Default:** ``''``
 
 ``host``

@@ -31,5 +31,6 @@ Fixed bugs
 - Users could not see (instead not change) their submissions after CfP end, until they were either rejected or accepted. (#333)
 - In the <title> tag, the event was displayed twice, once properly and once in a technical representation.
 - Various UI fixes and improvements
+- Documentation fix: The environment variable for database passwords is ``PRETALX_DB_PASS``, not ``PRETALX_DB_PASSWORD``.
 
 .. _releases: https://github.com/pretalx/pretalx/releases
