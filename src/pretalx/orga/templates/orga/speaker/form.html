@@ -29,6 +29,7 @@
     <form method="post" action="">
         {% csrf_token %}
         {% bootstrap_field form.name layout='event' %}
+        {% bootstrap_field form.email layout='event' %}
         {% bootstrap_field form.biography layout='event' %}
         {% bootstrap_field form.availabilities layout='event' %}
         <div class="form-group row">

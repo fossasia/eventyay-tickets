@@ -97,7 +97,7 @@ class UserForm(forms.Form):
 
 
 class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
-    USER_FIELDS = ['name', 'avatar', 'get_gravatar']
+    USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
