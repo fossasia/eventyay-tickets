@@ -78,9 +78,9 @@
             <td>
                 {% bootstrap_field formset.empty_form.invitation_email form_group_class="" layout="inline" %}
             </td>
-            <td>{{ formset.empty_form.is_orga }}</td>
+            <td>{% bootstrap_field formset.empty_form.is_orga use_label=False layout='event-inline' %}</td>
             <td class="reviewer">
-                {{ formset.empty_form.is_reviewer }}
+                {% bootstrap_field formset.empty_form.is_reviewer use_label=False layout='event-inline' %}
                 <span>{{ formset.empty_form.review_override_count }} {% trans "Override Votes" %}</span>
             </td>
             <td>
