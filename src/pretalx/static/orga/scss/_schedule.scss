@@ -161,7 +161,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 .talk-box.accepted {
   border-color: lighten($brand-success, 30%);
-  color: $white;
+  color: $gray;
 }
 .talk-box.drag-source {
   opacity: 0.5;

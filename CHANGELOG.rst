@@ -33,5 +33,6 @@ Fixed bugs
 - In the <title> tag, the event was displayed twice, once properly and once in a technical representation.
 - Various UI fixes and improvements
 - Documentation fix: The environment variable for database passwords is ``PRETALX_DB_PASS``, not ``PRETALX_DB_PASSWORD``.
+- Unconfirmed talks showed up as empty boxes in the schedule editor.
 
 .. _releases: https://github.com/pretalx/pretalx/releases
