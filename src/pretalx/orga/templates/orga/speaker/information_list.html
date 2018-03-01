@@ -4,8 +4,8 @@
 {% block content %}
 
     <legend>
-        {{ information.count }}
-        {% blocktrans trimmed count count=information.count %}
+        {{ page_obj.paginator.count }}
+        {% blocktrans trimmed count count=page_obj.paginator.count %}
         Speaker Information Note
         {% plural %}
         Speaker Information Notes

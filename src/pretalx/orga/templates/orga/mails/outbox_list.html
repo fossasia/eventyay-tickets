@@ -7,8 +7,8 @@
 
     <legend>
         <span>
-            {{ mails.count }}
-            {% blocktrans trimmed count count=mails.count %}
+            {{ page_obj.paginator.count }}
+            {% blocktrans trimmed count count=page_obj.paginator.count %}
                 pending mail
             {% plural %}
                 pending mails
