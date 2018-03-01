@@ -104,6 +104,12 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = 'cfp/event/user_submissions.html'
     context_object_name = 'submissions'
 
+    def get_context_data(self, *args, **kwargs):
+        from pretalx.person.permissions import person_can_view_information
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['information'] = [i for i in self.request.event.information.all() if person_can_view_information(self.request.user, i)]
+        return ctx
+
     def get_queryset(self):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
 

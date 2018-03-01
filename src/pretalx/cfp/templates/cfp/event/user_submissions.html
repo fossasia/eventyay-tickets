@@ -1,7 +1,15 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
+{% load rich_text %}
 {% block title %}{% trans "Your submissions" %} :: {% endblock %}
 {% block content %}
+    {% if information %}
+    <h2>{% trans "Important Information" %}</h2>
+    {% for info in information %}
+    <legend>{{ info.title }}</legend>
+    {{ info.text|rich_text }}
+    {% endfor %}
+    {% endif %}
     <h2>{% trans "Your submissions" %}</h2>
     {% if submissions %}
         <table class="table table-condensed table-responsive table-responsive-md">

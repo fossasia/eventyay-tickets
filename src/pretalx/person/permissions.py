@@ -31,12 +31,12 @@ def is_administrator(user, obj):
 @rules.predicate
 def person_can_view_information(user, obj):
     event = obj.event
-    submissions = event.submissions.filter(user__in=[user])
+    submissions = event.submissions.filter(speakers__in=[user])
     if obj.include_submitters:
         return submissions.exists()
     if obj.exclude_unconfirmed:
         return submissions.filter(state=SubmissionStates.CONFIRMED).exists()
-    return submissions.filter(state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]).esists()
+    return submissions.filter(state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]).exists()
 
 
 rules.add_perm('person.view_information', is_orga | person_can_view_information)
