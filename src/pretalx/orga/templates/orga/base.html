@@ -182,10 +182,25 @@
                     <span class="fa fa-eye"></span>
                     <span class="sidebar-text">{% trans "Review" %}</span>
                 </a>
-                <a class="nav-link {% if "speakers." in url_name|slice:":9" %}active{% endif %}" href="{{ request.event.orga_urls.speakers }}">
-                    <span class="fa fa-address-card-o"></span>
-                    <span class="sidebar-text">{% trans "Speakers" %}</span>
-                </a>
+                <li class="nav-fold">
+                    <span class="has-children">
+                        <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.speakers }}">
+                            <span class="fa fa-address-card-o"></span>
+                            <span class="sidebar-text">{% trans "Speakers" %}</span>
+                        </a>
+                        <a class="arrow nav-link" data-toggle="collapse" href="#collapseSpeakers" aria-controls="collapseSpeakers">
+                            <span class="fa fa-angle-down"></span>
+                        </a>
+                    </span>
+                    <div class="collapse in{% if "speakers." in url_name|slice:":9" %} show{% endif %}" aria-expand="true" id="collapseSpeakers">
+                        <a href="{{ request.event.orga_urls.speakers }}" class="nav-link nav-link-second-level{% if "speakers.list" in url_name or "speakers.view" in url_name %} active{% endif %}">
+                            <span>{% trans "Speakers" %}</span>
+                        </a>
+                        <a href="{{ request.event.orga_urls.information }}" class="nav-link nav-link-second-level{% if "speakers.information" in url_name %} active{% endif %}">
+                            <span>{% trans "Speaker Information" %}</span>
+                        </a>
+                    </div>
+                </li>
             {% endif %}
             {% if can_see_orga_exclusive %}
 

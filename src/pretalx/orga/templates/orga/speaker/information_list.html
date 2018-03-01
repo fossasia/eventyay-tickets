@@ -1,0 +1,39 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    <legend>
+        {{ information.count }}
+        {% blocktrans trimmed count count=information.count %}
+        Speaker Information Note
+        {% plural %}
+        Speaker Information Notes
+        {% endblocktrans %}
+        <a href="{{request.event.orga_urls.new_information }}" class="btn btn-secondary">
+            <i class="fa fa-plus"></i>
+            {% trans "Add a new note" %}
+        </a>
+    </legend>
+    <table class="table table-condensed table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Includes submitted" %}</th>
+                <th>{% trans "Only confirmed" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for info in information %}
+                <tr>
+                    <td><a href="{{ info.orga_urls.edit }}">{{ info.title }}</a></td>
+                    <td>{{ info.include_submitters|yesno }}</td>
+                    <td>{{ info.exclude_unconfirmed|yesno }}</td>
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

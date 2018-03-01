@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.urls import EventUrls
 
 
 class SpeakerInformation(LogMixin, models.Model):
@@ -29,3 +30,7 @@ class SpeakerInformation(LogMixin, models.Model):
         verbose_name=_('Text'),
         help_text=_('You can use markdown here.'),
     )
+
+    class orga_urls(EventUrls):
+        base = edit = '{self.event.orga_urls.information}/{self.pk}'
+        delete = '{base}/delete/'

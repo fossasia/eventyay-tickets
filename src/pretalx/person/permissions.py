@@ -1,7 +1,6 @@
 import rules
 
 from pretalx.submission.models.submission import SubmissionStates
-from pretalx.submission.permissions import has_submissions
 
 
 @rules.predicate
@@ -40,4 +39,4 @@ def person_can_view_information(user, obj):
     return submissions.filter(state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]).esists()
 
 
-rules.add_perm('person.view_information', is_orga | (has_submissions & person_can_view_information))
+rules.add_perm('person.view_information', is_orga | person_can_view_information)

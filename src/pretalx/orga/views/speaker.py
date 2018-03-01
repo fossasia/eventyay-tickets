@@ -7,8 +7,8 @@ from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.person.forms import SpeakerProfileForm
-from pretalx.person.models import SpeakerProfile, User
+from pretalx.person.forms import SpeakerInformationForm, SpeakerProfileForm
+from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 
 
 class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
@@ -96,3 +96,46 @@ class SpeakerToggleArrived(PermissionRequired, View):
             'orga:speakers.view',
             kwargs=self.kwargs,
         ))
+
+
+class InformationList(PermissionRequired, ListView):
+    model = SpeakerInformation
+    template_name = 'orga/speaker/information_list.html'
+    context_object_name = 'information'
+    paginate_by = 25
+    permission_required = 'orga.view_information'
+
+    def get_permission_object(self):
+        return self.request.event
+
+
+class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+    template_name = 'orga/speaker/information_form.html'
+    form_class = SpeakerInformationForm
+    model = SpeakerInformation
+    permission_required = 'orga.view_information'
+    write_permission_required = 'orga.change_information'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get_object(self):
+        if 'pk' in self.kwargs:
+            return self.request.event.information.filter(pk=self.kwargs['pk']).first()
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.pop('read_only', None)
+        return kwargs
+
+    def form_valid(self, form):
+        if not hasattr(form.instance, 'event') or not form.instance.event:
+            form.instance.event = self.request.event
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.information
+
+
+class InformationDelete(PermissionRequired, View):
+    write_permission_required = 'orga.change_information'

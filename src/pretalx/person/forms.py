@@ -4,10 +4,11 @@ from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
+from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.person.models import SpeakerProfile, User
+from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
@@ -191,3 +192,9 @@ class LoginInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', )
+
+
+class SpeakerInformationForm(I18nModelForm):
+    class Meta:
+        model = SpeakerInformation
+        fields = ('title', 'text', 'include_submitters', 'exclude_unconfirmed')

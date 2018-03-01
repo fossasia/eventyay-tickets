@@ -180,6 +180,8 @@ class Event(LogMixin, models.Model):
         rooms_api = '{schedule_api}/rooms'
         talks_api = '{schedule_api}/talks'
         plugins = '{base}/plugins'
+        information = '{base}/info'
+        new_information = '{base}/info/new'
 
     class api_urls(EventUrls):
         base = '/api/events/{self.slug}'

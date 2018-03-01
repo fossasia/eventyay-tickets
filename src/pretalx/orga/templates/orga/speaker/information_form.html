@@ -1,0 +1,27 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load rules %}
+
+{% block content %}
+{% has_perm 'orga.change_information' request.user form.instance as can_edit_information %}
+    <legend>
+        {% trans "Speaker Information Note" %}
+    </legend>
+    <form method="post" action="">
+        {% csrf_token %}
+        {% bootstrap_form form layout='event' %}
+        <div class="form-group row">
+            <div class="ml-auto col-md-9">
+                {% if action == "edit" or action == "create" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                {% elif action == "view" %}
+                    {% if form.instance.pk and can_edit_information %}
+                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.edit }}">{% trans "Edit" %}</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
