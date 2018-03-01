@@ -7,7 +7,12 @@
 
     <legend>
         <span>
-            {{ mails.count }} {% trans "Pending Mails" %}
+            {{ mails.count }}
+            {% blocktrans trimmed count count=mails.count %}
+                pending mail
+            {% plural %}
+                pending mails
+            {% endblocktrans %}
         </span>
         <div class="legend-buttons">
             <a href="{{ request.event.orga_urls.send_outbox }}">
