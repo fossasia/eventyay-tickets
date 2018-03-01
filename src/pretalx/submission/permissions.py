@@ -5,6 +5,12 @@ from pretalx.submission.models import SubmissionStates
 
 
 @rules.predicate
+def has_submissions(user, obj):
+    event = obj.event
+    return event.submissions.filter(speakers__in=[user]).exists()
+
+
+@rules.predicate
 def is_speaker(user, obj):
     if obj is None:
         return False
