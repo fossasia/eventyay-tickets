@@ -1,5 +1,8 @@
 import rules
 
+from pretalx.submission.models.submission import SubmissionStates
+from pretalx.submission.permissions import has_submissions
+
 
 @rules.predicate
 def is_orga(user, obj):
@@ -24,3 +27,17 @@ def is_reviewer(user, obj):
 @rules.predicate
 def is_administrator(user, obj):
     return user.is_administrator
+
+
+@rules.predicate
+def person_can_view_information(user, obj):
+    event = obj.event
+    submissions = event.submissions.filter(user__in=[user])
+    if obj.include_submitters:
+        return submissions.exists()
+    if obj.exclude_unconfirmed:
+        return submissions.filter(state=SubmissionStates.CONFIRMED).exists()
+    return submissions.filter(state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]).esists()
+
+
+rules.add_perm('person.view_information', is_orga | (has_submissions & person_can_view_information))
