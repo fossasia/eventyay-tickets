@@ -31,6 +31,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('settings.team.view', 200, 404,),
     ('reviews.dashboard', 200, 200,),
     ('schedule.main', 200, 404,),
+    ('plugins.select', 200, 404,),
 ])
 @pytest.mark.django_db
 def test_user_can_access_event_urls(
