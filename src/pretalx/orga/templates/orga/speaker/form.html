@@ -45,18 +45,29 @@
         </div>
     </form>
 
-    {% if form.instance.answers.all.exists %}
+    {% if questions %}
     <legend>{% trans "Answers" %}</legend>
     <ul>
-    {% for answer in form.instance.answers.all %}
+    {% for q_info in questions %}
         <li>
-            <strong>{{ answer.question.question }}</strong> –
-            {% if answer.option %}
-                {{ answer.option }}
-            {% elif answer.answer %}
-                {{ answer.answer }}
+            <strong>{{ q_info.question.question }}</strong> –
+            {% if q_info.answers.count > 1 %}
+            <ul>
+                {% for answer in q_info.answers %}
+                <li>
+                    {% if answer.options.count > 0 %}
+                        {% for option in answer.options.all %}
+                        {{ option }}, 
+                        {% endfor %}
+                    {% else %}
+                        {{ answer.answer }}
+                    {% endif %}
+                    {% if answer.submission %}({{ answer.submission.title }}){% endif %}
+                </li>
+                {% endfor %}
+            </ul>
             {% else %}
-                <empty>
+                {{ answer.answer }} {% if answer.submission %}({{ answer.submission.title }}){% endif %}
             {% endif %}
         </li>
     {% endfor %}

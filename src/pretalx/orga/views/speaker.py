@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.views.generic import ListView, View
 
 from pretalx.common.mixins.views import (
@@ -44,27 +45,36 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             pk=self.kwargs['pk'],
         )
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def get_permission_object(self):
         return self.get_object().profiles.filter(event=self.request.event).first()
 
-    @property
+    @cached_property
     def permission_object(self):
         return self.get_permission_object()
 
     def get_success_url(self) -> str:
-        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.get_object().pk})
+        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.object.pk})
 
     def get_context_data(self, *args, **kwargs):
+        from pretalx.submission.models import QuestionTarget
         ctx = super().get_context_data(*args, **kwargs)
-        submissions = self.request.event.submissions.filter(speakers__in=[self.get_object()])
+        submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         ctx['submission_count'] = submissions.count()
         ctx['submissions'] = submissions
+        ctx['questions'] = [{
+            'question': question,
+            'answers': question.answers.filter(person=self.object)
+        } for question in self.request.event.questions.filter(target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER])]
         return ctx
 
     def form_valid(self, form):
         messages.success(self.request, 'The speaker profile has been updated.')
         if form.has_changed():
-            profile = self.get_object().profiles.filter(event=self.request.event).first()
+            profile = self.object.profiles.filter(event=self.request.event).first()
             if profile:
                 profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
         return super().form_valid(form)
