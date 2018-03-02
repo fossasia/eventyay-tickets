@@ -18,8 +18,8 @@ def _is_in_review(event):
     return not _is_cfp_open(event) and event.submissions.filter(state=SubmissionStates.SUBMITTED).exists()
 
 
-def _is_schedule_released(event):
-    return event.schedules.count() > 1 and not _is_running(event) and not _is_in_wrapup(event) and not _is_in_review(event)
+def _is_in_scheduling_stage(event):
+    return not _is_running(event) and not _is_in_wrapup(event) and not _is_in_review(event)
 
 
 def _is_running(event):
@@ -45,7 +45,7 @@ STAGES = {
     },
     'SCHEDULE': {
         'name': _('Schedule'),
-        'method': _is_schedule_released,
+        'method': _is_in_scheduling_stage,
     },
     'EVENT': {
         'name': _('Event'),
