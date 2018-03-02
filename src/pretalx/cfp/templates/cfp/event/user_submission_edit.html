@@ -10,6 +10,11 @@
     <p>
         {% trans "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
+        {% if submission.state == 'accepted' %}
+            <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
+                <span class="fa fa-check"></span>{% trans "Confirm your attendance" %}
+            </a>
+        {% endif %}
     </p>
     <h5>
         <form class="add-speaker" action="{{ submission.urls.invite }}">
