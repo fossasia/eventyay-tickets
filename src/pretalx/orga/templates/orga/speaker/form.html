@@ -49,9 +49,20 @@
     <legend>{% trans "Answers" %}</legend>
     <ul>
     {% for q_info in questions %}
+        {% if q_info.answers.count %}
         <li>
-            <strong>{{ q_info.question.question }}</strong> –
-            {% if q_info.answers.count > 1 %}
+            <strong>{{ q_info.question.question }}</strong>
+            {% if q_info.answers.count == 1 %}{% with answer=q_info.answers.first %}
+                -
+                {% if answer.options.count > 0 %}
+                    {% for option in answer.options.all %}
+                    {{ option }},
+                    {% endfor %}
+                {% else %}
+                    {{ answer.answer }}
+                {% endif %}
+                {% if answer.submission %}({{ answer.submission.title }}){% endif %}
+            {% endwith %}{% else %}
             <ul>
                 {% for answer in q_info.answers %}
                 <li>
@@ -66,10 +77,9 @@
                 </li>
                 {% endfor %}
             </ul>
-            {% else %}
-                {{ answer.answer }} {% if answer.submission %}({{ answer.submission.title }}){% endif %}
             {% endif %}
         </li>
+        {% endif %}
     {% endfor %}
     </ul>
     {% endif %}
