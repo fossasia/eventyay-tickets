@@ -25,7 +25,7 @@
             {% bootstrap_field form.speaker layout='event' %}
         {% endif %}
 
-        {% if form.instance.average_score %}
+        {% if form.instance.average_score != None %}
         <div class="form-group row">
             <label class="col-md-3 form-control-label">
                 {% trans "Review score" %}
