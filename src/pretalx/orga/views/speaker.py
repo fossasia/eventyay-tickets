@@ -69,6 +69,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             'question': question,
             'answers': question.answers.filter(person=self.object)
         } for question in self.request.event.questions.filter(target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER])]
+        ctx['questions'] = [q for q in ctx['questions'] if q['answers'].count() and any(a.answer is not None for a in q['answers'])]
         return ctx
 
     def form_valid(self, form):
