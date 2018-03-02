@@ -3,6 +3,8 @@ import copy
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.submission.models import SubmissionStates
+
 
 def _is_in_preparation(event):
     return not event.is_public and now() <= event.datetime_from
@@ -13,11 +15,11 @@ def _is_cfp_open(event):
 
 
 def _is_in_review(event):
-    return not _is_cfp_open(event) and not _is_schedule_released(event)
+    return not _is_cfp_open(event) and not event.submissions.filter(state=SubmissionStates.SUBMITTED).exists()
 
 
 def _is_schedule_released(event):
-    return event.schedules.count() > 1 and not _is_running(event) and not _is_in_wrapup(event)
+    return event.schedules.count() > 1 and not _is_running(event) and not _is_in_wrapup(event) and not _is_in_review(event)
 
 
 def _is_running(event):
