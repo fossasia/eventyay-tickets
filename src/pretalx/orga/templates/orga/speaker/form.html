@@ -45,4 +45,22 @@
         </div>
     </form>
 
+    {% if form.instance.answers.all.exists %}
+    <legend>{% trans "Answers" %}</legend>
+    <ul>
+    {% for answer in form.instance.answers.all %}
+        <li>
+            <strong>{{ answer.question.question }}</strong> –
+            {% if answer.option %}
+                {{ answer.option }}
+            {% elif answer.answer %}
+                {{ answer.answer }}
+            {% else %}
+                <empty>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
 {% endblock %}
