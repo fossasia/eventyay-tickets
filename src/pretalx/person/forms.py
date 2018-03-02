@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -99,10 +100,12 @@ class UserForm(forms.Form):
 
 class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
+    FIRST_TIME_EXCLUDE = ['email', 'avatar', 'get_gravatar']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
+        self.essential_only = kwargs.pop('essential_only', False)
         if self.user:
             kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
         else:
@@ -112,11 +115,18 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         if self.user:
             initials = {
                 field: getattr(self.user, field)
-                for field in self.USER_FIELDS
+                for field in self.user_fields
             }
 
-        for field in self.USER_FIELDS:
+        for field in self.user_fields:
             self.fields[field] = User._meta.get_field(field).formfield(initial=initials.get(field))
+
+    @cached_property
+    def user_fields(self):
+        if self.user and not self.essential_only:
+            return [f for f in self.USER_FIELDS]
+        else:
+            return [f for f in self.USER_FIELDS if f not in self.FIRST_TIME_EXCLUDE]
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
@@ -125,7 +135,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         return avatar
 
     def save(self, **kwargs):
-        for user_attribute in self.USER_FIELDS:
+        for user_attribute in self.user_fields:
             value = self.cleaned_data.get(user_attribute)
             if (value is False and user_attribute == 'avatar'):
                 self.user.avatar = None

@@ -168,7 +168,7 @@ def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submissi
 def test_can_edit_profile(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,
-        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
+        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile', 'email': speaker.email},
         follow=True,
     )
     assert response.status_code == 200

@@ -93,6 +93,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             if not kwargs.get('user') and self.request.user.is_authenticated:
                 kwargs['user'] = self.request.user
             kwargs['read_only'] = False
+            kwargs['essential_only'] = True
         if step == 'questions':
             kwargs['target'] = ''
         return kwargs
