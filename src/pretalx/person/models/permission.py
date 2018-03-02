@@ -44,28 +44,40 @@ class EventPermission(LogMixin, models.Model):
     def send_invite_email(self):
         from pretalx.mail.models import QueuedMail
 
-        self.invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
-        self.save()
-
-        invitation_link = build_absolute_uri('orga:invitation.view', event=self.event, kwargs={'code': self.invitation_token})
-
         role = _('organiser')
         if not self.is_orga and self.is_reviewer:
             role = _('reviewer')
         elif self.is_orga and self.is_reviewer:
             role = _('organiser and reviewer')
+        if self.user:
+            invitation_link = build_absolute_uri('orga:event.dashboard', event=self.event, kwargs={'event': self.event.slug})
+            invitation_text = _('''Hi!
+You have been added to the {event} team as a {role} - you can access the
+organiser area here:
 
-        invitation_text = _('''Hi!
+    {invitation_link}
+
+See you there,
+The {event} crew''').format(role=role, event=self.event.name, invitation_link=invitation_link)
+            invitation_subject = _('You have been granted additional privileges on {event}').format(event=self.event.name)
+            to = self.user.email
+        else:
+            self.invitation_token = get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=20)
+            self.save()
+
+            invitation_link = build_absolute_uri('orga:invitation.view', event=self.event, kwargs={'code': self.invitation_token})
+            invitation_text = _('''Hi!
 You have been invited to the {event} team as a {role} - Please click here to accept:
 
     {invitation_link}
 
 See you there,
 The {event} crew (minus you)''').format(role=role, event=self.event.name, invitation_link=invitation_link)
-        invitation_subject = _('You have been invited to the {event} crew').format(event=self.event.name)
+            invitation_subject = _('You have been invited to the {event} crew').format(event=self.event.name)
+            to = self.invitation_email
 
         return QueuedMail(
-            to=self.invitation_email, reply_to=self.event.email,
+            to=to, reply_to=self.event.email,
             subject=str(invitation_subject), text=str(invitation_text),
             event=self.event,
         )
