@@ -57,7 +57,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.get_permission_object()
 
     def get_success_url(self) -> str:
-        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.object.pk})
+        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.kwargs['pk']})
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.submission.models import QuestionTarget
