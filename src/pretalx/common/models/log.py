@@ -7,6 +7,8 @@ LOG_NAMES = {
     'pretalx.cfp.update': _('The CfP has been modified.'),
     'pretalx.event.create': _('The event has been added.'),
     'pretalx.event.update': _('The event was modified.'),
+    'pretalx.event.plugins.enabled': _('The plugin was enabled.'),
+    'pretalx.event.plugins.disabled': _('The plugin was disabled.'),
     'pretalx.invite.orga.accept': _('The invitation to the event orga was accepted.'),
     'pretalx.invite.orga.retract': _('An invitation to the event orga was retracted.'),
     'pretalx.invite.orga.send': _('An invitation to the event orga was sent.'),
