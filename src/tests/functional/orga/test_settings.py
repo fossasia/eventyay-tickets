@@ -12,6 +12,11 @@ from pretalx.person.models import EventPermission
 def test_edit_mail_settings(orga_client, event, availability):
     assert event.settings.mail_from != 'foo@bar.com'
     assert event.settings.smtp_port != '25'
+    response = orga_client.get(
+        event.orga_urls.mail_settings,
+        follow=True,
+    )
+    assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
         follow=True,
@@ -20,6 +25,33 @@ def test_edit_mail_settings(orga_client, event, availability):
             'smtp_host': 'foo.bar.com',
             'smtp_password': '',
             'smtp_port': '25',
+        }
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(pk=event.pk)
+    assert event.settings.mail_from == 'foo@bar.com'
+    assert event.settings.smtp_port == 25
+
+
+@pytest.mark.django_db
+def test_test_mail_settings(orga_client, event, availability):
+    assert event.settings.mail_from != 'foo@bar.com'
+    assert event.settings.smtp_port != '25'
+    response = orga_client.get(
+        event.orga_urls.mail_settings,
+        follow=True,
+    )
+    assert response.status_code == 200
+    response = orga_client.post(
+        event.orga_urls.mail_settings,
+        follow=True,
+        data={
+            'mail_from': 'foo@bar.com',
+            'smtp_host': 'foo.bar.com',
+            'smtp_password': '',
+            'smtp_port': '25',
+            'smtp_use_custom': '1',
+            'test': '1',
         }
     )
     assert response.status_code == 200
@@ -119,6 +151,8 @@ def test_orga_cannot_create_event(orga_client):
 @pytest.mark.django_db
 def test_create_event(superuser_client):
     count = Event.objects.count()
+    response = superuser_client.get(reverse('orga:event.create'), follow=True)
+    assert response.status_code == 200
     response = superuser_client.post(
         reverse('orga:event.create'),
         {

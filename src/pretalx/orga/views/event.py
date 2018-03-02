@@ -118,9 +118,6 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
     template_name = 'orga/settings/mail.html'
     write_permission_required = 'orga.change_settings'
 
-    def get_object(self):
-        return self.request.event
-
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.mail_settings
 
@@ -206,13 +203,12 @@ class EventTeam(EventSettingsPermission, TemplateView):
                     permission.user = user
                     permission.invitation_email = None
                     permission.invitation_token = None
-                elif not permission.invitation_token:
-                    mails.append(permission.send_invite_email())
-                    request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
-                    messages.success(
-                        request,
-                        _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=permission.invitation_email)
-                    )
+                mails.append(permission.send_invite_email())
+                request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
+                messages.success(
+                    request,
+                    _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=permission.invitation_email)
+                )
 
             permission.save()
 
