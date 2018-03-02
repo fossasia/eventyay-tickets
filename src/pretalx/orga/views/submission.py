@@ -299,7 +299,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
         return self.request.event
 
     def get_queryset(self):
-        qs = self.request.event.submissions.select_related('submission_type').order_by('title').all()
+        qs = self.request.event.submissions.select_related('submission_type').order_by('-id').all()
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
