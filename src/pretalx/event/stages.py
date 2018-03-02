@@ -15,7 +15,7 @@ def _is_cfp_open(event):
 
 
 def _is_in_review(event):
-    return not _is_cfp_open(event) and not event.submissions.filter(state=SubmissionStates.SUBMITTED).exists()
+    return not _is_cfp_open(event) and event.submissions.filter(state=SubmissionStates.SUBMITTED).exists()
 
 
 def _is_schedule_released(event):
