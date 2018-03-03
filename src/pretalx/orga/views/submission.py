@@ -2,8 +2,10 @@ import random
 from datetime import timedelta
 
 from django.contrib import messages
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
@@ -17,7 +19,9 @@ from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import SubmissionFilterForm
-from pretalx.submission.models import Question, Submission, SubmissionError
+from pretalx.submission.models import (
+    Question, Submission, SubmissionError, SubmissionStates,
+)
 
 
 def create_user_as_orga(email, submission=None):
@@ -69,72 +73,67 @@ class SubmissionViewMixin(PermissionRequired):
             code__iexact=self.kwargs.get('code'),
         )
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['submission'] = self.get_object()
         return ctx
 
 
-class SubmissionAccept(SubmissionViewMixin, View):
-    permission_required = 'submission.accept_submission'
+class SubmissionStateChange(SubmissionViewMixin, TemplateView):
+    permission_required = 'orga.change_submission_state'
+    template_name = 'orga/submission/state_change.html'
+    TARGETS = {
+        'submit': SubmissionStates.SUBMITTED,
+        'accept': SubmissionStates.ACCEPTED,
+        'reject': SubmissionStates.REJECTED,
+        'confirm': SubmissionStates.CONFIRMED,
+        'delete': SubmissionStates.DELETED,
+        'withdraw': SubmissionStates.WITHDRAWN,
+        'cancel': SubmissionStates.CANCELED,
+    }
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
+    @cached_property
+    def target(self) -> str:
+        """ Returns one of submit|accept|reject|confirm|delete|withdraw|cancel """
+        return self.TARGETS[self.request.resolver_match.url_name.split('.')[-1]]
 
+    @cached_property
+    def is_allowed(self):
+        return self.target in SubmissionStates.valid_next_states[self.object.state]
+
+    def do(self, force=False):
+        method = getattr(self.object, SubmissionStates.method_names[self.target])
         try:
-            submission.accept(person=request.user)
-            submission.log_action('pretalx.submission.accept', person=request.user, orga=True)
-            messages.success(request, _('The submission has been accepted.'))
-        except SubmissionError:
-            messages.error(request, _('A submission must be submitted or rejected to become accepted.'))
-        return redirect(submission.orga_urls.base)
+            method(person=self.request.user, force=force, orga=True)
+        except SubmissionError as e:
+            messages.error(self.request, e.message)
 
+    def get_success_url(self):
+        return self.object.orga_urls.base
 
-class SubmissionConfirm(SubmissionViewMixin, View):
-    permission_required = 'submission.confirm_submission'
+    @transaction.atomic
+    def get(self, request, *args, **kwargs):
+        if self.is_allowed:
+            self.do()
+            return redirect(self.get_success_url())
+        return super().get(request, *args, **kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        if self.is_allowed:
+            self.do()
+        else:
+            self.do(force=True)
+        return redirect(self.get_success_url())
 
-        try:
-            submission.confirm(person=request.user, orga=True)
-            submission.log_action('pretalx.submission.confirm', person=request.user, orga=True)
-            messages.success(request, _('The submission has been confirmed.'))
-        except SubmissionError:
-            messages.error(request, _('A submission must be accepted to become confirmed.'))
-        return redirect(submission.orga_urls.base)
-
-
-class SubmissionUnconfirm(SubmissionViewMixin, View):
-    permission_required = 'submission.unconfirm_submission'
-
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
-
-        try:
-            submission.unconfirm(person=request.user, orga=True)
-            submission.log_action('pretalx.submission.unconfirm', person=request.user, orga=True)
-            messages.success(request, _('The submission has been unconfirmed. It is now accepted.'))
-        except SubmissionError:
-            messages.error(request, _('A submission must be confirmed to be unconfirmed, naturally.'))
-        return redirect(submission.orga_urls.base)
-
-
-class SubmissionReject(SubmissionViewMixin, View):
-    permission_required = 'submission.reject_submission'
-
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
-        try:
-            submission.reject(person=request.user)
-            messages.success(request, _('The submission has been rejected.'))
-        except SubmissionError:
-            messages.error(request, _('The submission has to be accepted or submitted to be rejected.'))
-        return redirect(submission.orga_urls.base)
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['target'] = self.target
+        return ctx
 
 
 class SubmissionSpeakersAdd(SubmissionViewMixin, View):
@@ -303,18 +302,6 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
-
-
-class SubmissionDelete(SubmissionViewMixin, TemplateView):
-    template_name = 'orga/submission/delete.html'
-    permission_required = 'submission.remove_submission'
-
-    def post(self, request, *args, **kwargs):
-        submission = self.get_object()
-        submission.remove(person=request.user)
-        submission.log_action('pretalx.submission.delete', person=request.user, orga=True)
-        messages.success(request, _('The submission has been deleted.'))
-        return redirect(request.event.orga_urls.submissions)
 
 
 class FeedbackList(SubmissionViewMixin, ListView):

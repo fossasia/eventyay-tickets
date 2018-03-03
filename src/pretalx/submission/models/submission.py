@@ -26,8 +26,8 @@ def submission_image_path(instance, filename):
 
 class SubmissionStates(Choices):
     SUBMITTED = 'submitted'
-    REJECTED = 'rejected'
     ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
     CONFIRMED = 'confirmed'
     CANCELED = 'canceled'
     WITHDRAWN = 'withdrawn'
@@ -44,13 +44,23 @@ class SubmissionStates(Choices):
     ]
 
     valid_next_states = {
-        SUBMITTED: (REJECTED, WITHDRAWN, ACCEPTED, DELETED),
-        REJECTED: (ACCEPTED, SUBMITTED, DELETED),
-        ACCEPTED: (CONFIRMED, CANCELED, REJECTED, SUBMITTED, DELETED),
-        CONFIRMED: (ACCEPTED, CANCELED, DELETED),
-        CANCELED: (ACCEPTED, CONFIRMED, DELETED),
-        WITHDRAWN: (SUBMITTED, DELETED),
+        SUBMITTED: (REJECTED, WITHDRAWN, ACCEPTED),
+        REJECTED: (ACCEPTED, SUBMITTED),
+        ACCEPTED: (CONFIRMED, CANCELED, REJECTED, SUBMITTED),
+        CONFIRMED: (ACCEPTED, CANCELED),
+        CANCELED: (ACCEPTED, CONFIRMED),
+        WITHDRAWN: (SUBMITTED),
         DELETED: tuple(),
+    }
+
+    method_names = {
+        SUBMITTED: 'make_submitted',
+        REJECTED: 'reject',
+        ACCEPTED: 'accept',
+        CONFIRMED: 'confirm',
+        CANCELED: 'cancel',
+        WITHDRAWN: 'withdraw',
+        DELETED: 'remove',
     }
 
 
@@ -165,11 +175,13 @@ class Submission(LogMixin, models.Model):
 
     class orga_urls(EventUrls):
         base = edit = '{self.event.orga_urls.submissions}/{self.code}'
+        make_submitted = '{base}/submit'
         accept = '{base}/accept'
         reject = '{base}/reject'
         confirm = '{base}/confirm'
-        unconfirm = '{base}/unconfirm'
         delete = '{base}/delete'
+        withdraw = '{base}/withdraw'
+        cancel = '{base}/cancel'
         questions = '{base}/questions'
         speakers = '{base}/speakers'
         new_speaker = '{speakers}/add'
@@ -226,60 +238,69 @@ class Submission(LogMixin, models.Model):
                 )
             )
 
+    def make_submitted(self, person=None, force=False, orga=False):
+        self._set_state(SubmissionStates.SUBMITTED, force)
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
+
     def confirm(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.CONFIRMED, force)
         self.log_action('pretalx.submission.confirm', person=person, orga=orga)
         self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=True)
+        if previous == SubmissionStates.SUBMITTED:
+            from pretalx.schedule.models import TalkSlot
+            TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
 
-    def unconfirm(self, person=None, force=False, orga=False):
-        self._set_state(SubmissionStates.ACCEPTED, force)
-        self.log_action('pretalx.submission.unconfirm', person=person, orga=orga)
-        self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=False)
-
-    def accept(self, person=None, force=False):
+    def accept(self, person=None, force=False, orga=True):
+        previous = self.state
         self._set_state(SubmissionStates.ACCEPTED, force)
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
-        from pretalx.schedule.models import TalkSlot
-        TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
+        if previous == SubmissionStates.SUBMITTED:
+            from pretalx.schedule.models import TalkSlot
+            TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
 
-        for speaker in self.speakers.all():
-            self.event.accept_template.to_mail(
-                user=speaker, event=self.event, context=template_context_from_submission(self),
-                locale=self.content_locale
-            )
+            for speaker in self.speakers.all():
+                self.event.accept_template.to_mail(
+                    user=speaker, event=self.event, context=template_context_from_submission(self),
+                    locale=self.content_locale
+                )
 
-    def reject(self, person=None, force=False):
+    def reject(self, person=None, force=False, orga=True):
+        previous = self.state
         self._set_state(SubmissionStates.REJECTED, force)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
-        for speaker in self.speakers.all():
-            self.event.reject_template.to_mail(
-                user=speaker, event=self.event, context=template_context_from_submission(self),
-                locale=self.content_locale
-            )
+        if previous == SubmissionStates.SUBMITTED:
+            for speaker in self.speakers.all():
+                self.event.reject_template.to_mail(
+                    user=speaker, event=self.event, context=template_context_from_submission(self),
+                    locale=self.content_locale
+                )
 
-    def cancel(self, person=None, force=False):
+    def cancel(self, person=None, force=False, orga=True):
         self._set_state(SubmissionStates.CANCELED, force)
         self.log_action('pretalx.submission.cancel', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
-    def withdraw(self, person=None, force=False):
+    def withdraw(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.WITHDRAWN, force)
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
-        self.log_action('pretalx.submission.withdraw', person=person, orga=False)
+        self.log_action('pretalx.submission.withdraw', person=person, orga=orga)
 
-    def remove(self, person=None, force=False):
+    def remove(self, person=None, force=False, orga=True):
         self._set_state(SubmissionStates.DELETED, force)
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
-        self.log_action('pretalx.submission.deleted', person=person, orga=False)
+        from pretalx.schedule.models import TalkSlot
+        TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
+        self.log_action('pretalx.submission.deleted', person=person, orga=True)
 
     @property
     def uuid(self):
