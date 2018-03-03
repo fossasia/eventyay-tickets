@@ -62,13 +62,6 @@ def can_be_removed(user, obj):
 
 
 @rules.predicate
-def can_be_unconfirmed(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.ACCEPTED in SubmissionStates.valid_next_states.get(obj.state, []) and obj.state == SubmissionStates.CONFIRMED
-
-
-@rules.predicate
 def can_be_edited(user, obj):
     if obj is None:
         return False
@@ -100,7 +93,6 @@ rules.add_perm('submission.reject_submission', can_be_rejected & is_orga)
 rules.add_perm('submission.accept_submission', can_be_accepted & is_orga)
 rules.add_perm('submission.confirm_submission', can_be_confirmed & (is_speaker | is_orga))
 rules.add_perm('submission.cancel_submission', can_be_canceled & (is_speaker | is_orga))
-rules.add_perm('submission.unconfirm_submission', can_be_unconfirmed & (is_speaker | is_orga))
 rules.add_perm('submission.remove_submission', can_be_removed & is_orga)
 rules.add_perm('submission.edit_submission', (can_be_edited & is_speaker) | is_orga)
 rules.add_perm('submission.view_submission', is_speaker | is_orga | is_reviewer)
