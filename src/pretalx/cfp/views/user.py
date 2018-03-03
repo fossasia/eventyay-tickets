@@ -128,7 +128,6 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
         if self.object.state == SubmissionStates.SUBMITTED:
             self.object.state = SubmissionStates.WITHDRAWN
             self.object.save(update_fields=['state'])
-            self.object.log_action('pretalx.submission.withdraw', person=request.user)
             messages.success(self.request, phrases.cfp.submission_withdrawn)
         else:
             messages.error(self.request, phrases.cfp.submission_not_withdrawn)
@@ -147,7 +146,6 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user)
-            submission.log_action('pretalx.submission.confirm', person=request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, phrases.cfp.submission_was_confirmed)
