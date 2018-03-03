@@ -1,0 +1,48 @@
+{% load i18n %}
+<div class="dropdown submission-state-dropdown">
+    <button
+        class="btn btn-sm dropdown-toggle submission-state-{{ submission.state }}"
+        type="button" id="dropdownSubmissionState{{ submission.code }}"
+        data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false"
+    >
+    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownSubmissionState{{ submission.code }}">
+    <a
+        class="dropdown-item submission-state-submitted"
+        href="{{ submission.orga_urls.make_submitted }}">
+            {% include "cfp/event/fragment_state.html" with state='submitted' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-accepted"
+        href="{{ submission.orga_urls.accept }}">
+            {% include "cfp/event/fragment_state.html" with state='accepted' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-confirmed"
+        href="{{ submission.orga_urls.confirm }}">
+            {% include "cfp/event/fragment_state.html" with state='confirmed' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-rejected"
+        href="{{ submission.orga_urls.reject }}">
+            {% include "cfp/event/fragment_state.html" with state='rejected' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-canceled"
+        href="{{ submission.orga_urls.cancel }}">
+            {% include "cfp/event/fragment_state.html" with state='canceled' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-withdrawn"
+        href="{{ submission.orga_urls.withdraw }}">
+            {% include "cfp/event/fragment_state.html" with state='withdrawn' %}
+    </a>
+    <a
+        class="dropdown-item submission-state-deleted"
+        href="{{ submission.orga_urls.delete }}">
+            {% include "cfp/event/fragment_state.html" with state='deleted' %}
+    </a>
+  </div>
+</div>

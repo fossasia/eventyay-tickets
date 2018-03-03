@@ -265,3 +265,33 @@ form #id_settings-display_header_pattern {
     }
   }
 }
+legend .submission-state-dropdown {
+  padding: 8px;
+  button, a {font-size: 16px;}
+}
+.submission-state-dropdown {
+  display: inline-block;
+
+  button.dropdown-toggle, a, a:hover {
+    background-color: $white;
+    font-weight: 700;
+    border: 3px solid;
+  }
+  .submission-state-submitted, .submission-state-deleted, .submission-state-withdrawn, .submission-state-canceled,
+  .submission-state-submitted:hover, .submission-state-deleted:hover, .submission-state-withdrawn:hover, .submission-state-canceled:hover {
+    color: $gray-400;
+    border-color: $gray-400;
+  }
+  .submission-state-accepted, .submission-state-accepted:hover {
+    color: lighten($brand-success, 10%);
+    border-color: lighten($brand-success, 10%);
+  }
+  .submission-state-confirmed, .submission-state-confirmed:hover {
+    color: darken($brand-success, 10%);
+    border-color: darken($brand-success, 10%);
+  }
+  .submission-state-rejected, .submission-state-rejected:hover {
+    color: $danger;
+    border-color: $danger;
+  }
+}

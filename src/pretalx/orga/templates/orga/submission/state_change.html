@@ -3,7 +3,10 @@
 {% load url_replace %}
 
 {% block submission_content %}
-    {% trans "Do you really want to delete this submission?" %}
+    {% trans "Do you really want to change the state of this submission?" %}
+    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+    <span class="fa fa-arrow-right"></span>
+    {% include "cfp/event/fragment_state.html" with state=target %}
     <form method="post" action="">
         {% csrf_token %}
         <div class="form-group pull-right">
@@ -11,7 +14,7 @@
                 {% trans "Back" %}
             </a>
             <button type="submit" class="btn btn-danger">
-                {% trans "Yes, delete" %}
+                {% trans "Do it" %}
             </button>
         </div>
     </form>

@@ -76,7 +76,7 @@
                         {{ submission.submission_type.name }}
                     </td>
                     <td>
-                        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+                        {% include "orga/submission/state_dropdown.html" with submission=submission %}
                     </td>
                     <td class="text-right">
                         <a href="{{ submission.orga_urls.edit }}"

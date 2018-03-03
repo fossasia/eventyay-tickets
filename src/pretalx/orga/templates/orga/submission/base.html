@@ -13,7 +13,7 @@
             {% if submission.speakers.exists %}
                 by {{ submission.display_speaker_names }}
             {% endif %}
-            ({% include "cfp/event/fragment_state.html" with state=submission.state %})
+            {% include "orga/submission/state_dropdown.html" with submission=submission %}
         </span>
     </legend>
     <ul class="nav nav-tabs">
