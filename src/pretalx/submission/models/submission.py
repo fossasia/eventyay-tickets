@@ -244,6 +244,7 @@ class Submission(LogMixin, models.Model):
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
     def confirm(self, person=None, force=False, orga=False):
+        previous = self.state
         self._set_state(SubmissionStates.CONFIRMED, force)
         self.log_action('pretalx.submission.confirm', person=person, orga=orga)
         self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=True)
