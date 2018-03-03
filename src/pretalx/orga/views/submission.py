@@ -116,13 +116,6 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         return self.object.orga_urls.base
 
     @transaction.atomic
-    def get(self, request, *args, **kwargs):
-        if self.is_allowed:
-            self.do()
-            return redirect(self.get_success_url())
-        return super().get(request, *args, **kwargs)
-
-    @transaction.atomic
     def post(self, request, *args, **kwargs):
         if self.is_allowed:
             self.do()
