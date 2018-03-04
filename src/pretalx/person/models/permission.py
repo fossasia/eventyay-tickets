@@ -5,7 +5,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
-from pretalx.common.urls import build_absolute_uri
+from pretalx.common.urls import EventUrls, build_absolute_uri
 
 
 class EventPermission(LogMixin, models.Model):
@@ -81,6 +81,9 @@ The {event} crew (minus you)''').format(role=role, event=self.event.name, invita
             subject=str(invitation_subject), text=str(invitation_text),
             event=self.event,
         )
+
+    class urls(EventUrls):
+        invitation = '/orga/invitation/{self.invitation_token}'
 
     def __str__(self):
         user = getattr(self.user, 'nick', self.invitation_email)

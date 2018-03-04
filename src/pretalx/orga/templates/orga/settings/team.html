@@ -46,7 +46,8 @@
                     {% if form.instance.user %}
                         {{ form.instance.user }}
                     {% else %}
-                        {{ form.instance.invitation_email }} (invited)
+                        {{ form.instance.invitation_email }} ({% trans "pending" %},
+                        <a href="{{ form.instance.urls.invitation }}"> <span class="fa fa-external-link"></span> {% trans "Invitation link" %}</a>)
                     {% endif %}
                 </td>
                 <td>
