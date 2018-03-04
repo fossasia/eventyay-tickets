@@ -305,15 +305,20 @@ class Event(LogMixin, models.Model):
     def submission_questions(self):
         return self.questions.filter(target='submission')
 
-    @property
+    @cached_property
     def talks(self):
         from pretalx.submission.models import SubmissionStates
         return self.submissions.filter(models.Q(state=SubmissionStates.ACCEPTED) | models.Q(state=SubmissionStates.CONFIRMED))
 
-    @property
+    @cached_property
     def speakers(self):
         from pretalx.person.models import User
         return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()
+
+    @cached_property
+    def submitters(self):
+        from pretalx.person.models import User
+        return User.objects.filter(submissions__event=self).order_by('id').distinct()
 
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)
