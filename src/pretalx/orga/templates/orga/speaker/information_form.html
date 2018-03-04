@@ -8,7 +8,7 @@
     <legend>
         {% trans "Speaker Information Note" %}
     </legend>
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
         <div class="form-group row">

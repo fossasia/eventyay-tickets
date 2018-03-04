@@ -6,8 +6,11 @@
     {% if information %}
     <h2>{% trans "Important Information" %}</h2>
     {% for info in information %}
-    <legend>{{ info.title }}</legend>
-    {{ info.text|rich_text }}
+        <legend>{{ info.title }}</legend>
+        {{ info.text|rich_text }}
+        {% if info.resource %}
+            <a href="{{ info.resource.url }}"><span class="fa fa-file-o"></span> {{ info.resource.name }}</a>
+        {% endif %}
     {% endfor %}
     {% endif %}
     <h2>{% trans "Your submissions" %}</h2>

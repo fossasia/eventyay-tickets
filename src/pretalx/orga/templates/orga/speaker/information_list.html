@@ -27,7 +27,12 @@
         <tbody>
             {% for info in information %}
                 <tr>
-                    <td><a href="{{ info.orga_urls.edit }}">{{ info.title }}</a></td>
+                    <td>
+                        <a href="{{ info.orga_urls.edit }}">{{ info.title }}</a>
+                        {% if info.resource %}
+                            <a href="{{ info.resource.url }}"><span class="fa fa-paperclip"></span></a>
+                        {% endif %}
+                    </td>
                     <td>{{ info.include_submitters|yesno }}</td>
                     <td>{{ info.exclude_unconfirmed|yesno }}</td>
                     <td>
