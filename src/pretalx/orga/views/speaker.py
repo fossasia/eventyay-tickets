@@ -8,7 +8,9 @@ from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.person.forms import SpeakerInformationForm, SpeakerProfileForm, SpeakerFilterForm
+from pretalx.person.forms import (
+    SpeakerFilterForm, SpeakerInformationForm, SpeakerProfileForm,
+)
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.submission.models.submission import SubmissionStates
 

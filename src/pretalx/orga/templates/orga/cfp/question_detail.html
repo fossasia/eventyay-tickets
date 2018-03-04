@@ -25,11 +25,18 @@
   </div>
 {% endif %}
 
-{% if not question.answers.count %}
+<div class="pb-2">
+  <form class="form-inline">
+    {% bootstrap_form filter_form layout='inline' %}
+    <button class="btn btn-info" type="submit">{% trans "Filter" %}</button>
+  </form>
+</div>
+
+{% if not answer_count %}
     {% trans "Nobody has answered this question at the moment." %}
 {% else %}
-    {% if question.missing_answers %}
-        {% blocktrans with count=question.answers.count missing=question.missing_answers trimmed %}
+    {% if missing_answers %}
+        {% blocktrans with count=question.answers.count missing=missing_answers trimmed %}
             This question has been answered <strong>{{ count }}</strong> times, <strong>{{ missing }}</strong> answers are still missing.
         {% endblocktrans %}
     {% else %}

@@ -136,16 +136,18 @@ class Question(LogMixin, models.Model):
         else:
             return list(self.answers.order_by('answer').values('answer').annotate(count=models.Count('id')).order_by('-count'))
 
-    @cached_property
-    def missing_answers(self):
+    def missing_answers(self, filter_speakers=False, filter_talks=False):
         from pretalx.person.models import User
-        answer_count = self.answers.all().count()
+        answers = self.answers.all()
+        if filter_speakers or filter_talks:
+            answers = answers.filter(models.Q(person__in=filter_speakers) | models.Q(submission__in=filter_talks))
+        answer_count = answers.count()
         if self.target == QuestionTarget.SUBMISSION:
-            # TODO: if we are still in the submission phase, count all submissions
-            # If we are already later in the event, only count accepted submissions here
-            return self.event.submissions.count() - answer_count
+            submissions = filter_talks or self.event.submissions.all()
+            return submissions.count() - answer_count
         elif self.target == QuestionTarget.SPEAKER:
-            return User.objects.filter(submissions__event_id=self.event.pk).count() - answer_count
+            users = filter_speakers or User.objects.filter(submissions__event_id=self.event.pk)
+            return users.count() - answer_count
 
     class Meta:
         ordering = ['position']

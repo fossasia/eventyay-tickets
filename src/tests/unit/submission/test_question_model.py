@@ -7,15 +7,14 @@ from pretalx.submission.models import Answer, AnswerOption
 @pytest.mark.parametrize('target', ('submission', 'speaker'))
 @pytest.mark.django_db
 def test_missing_answers_submission_question(submission, target, question):
-    assert question.missing_answers == 1
+    assert question.missing_answers() == 1
     question.target = target
     question.save()
     if target == 'submission':
         Answer.objects.create(answer='True', submission=submission, question=question)
     else:
         Answer.objects.create(answer='True', person=submission.speakers.first(), question=question)
-    del(question.missing_answers)
-    assert question.missing_answers == 0
+    assert question.missing_answers() == 0
 
 
 @pytest.mark.django_db

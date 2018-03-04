@@ -1,6 +1,6 @@
 from csp.decorators import csp_update
 from django.contrib import messages
-from django.db import transaction
+from django.db import models, transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
@@ -14,6 +14,7 @@ from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
+from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
     AnswerOption, CfP, Question, SubmissionType,
 )
@@ -149,8 +150,23 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
+        question = self.get_object()
         ctx['formset'] = self.formset
-        ctx['question'] = self.get_object()
+        ctx['filter_form'] = SpeakerFilterForm()
+        ctx['question'] = question
+        role = self.request.GET.get('role')
+        if role == 'true':
+            talks = self.request.event.talks.all()
+            speakers = self.request.event.speakers.all()
+            answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+        elif role == 'false':
+            talks = self.request.event.submissions.exclude(code__in=self.request.event.talks.values_list('code', flat=True))
+            speakers = self.request.event.submitters.exclude(code__in=self.request.event.speakers.all().values_list('code', flat=True))
+            answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+        else:
+            answers = ctx['question'].answers.all()
+        ctx['answer_count'] = answers.count()
+        ctx['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
         return ctx
 
     def get_form_kwargs(self, *args, **kwargs):
