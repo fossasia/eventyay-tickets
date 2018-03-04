@@ -207,4 +207,4 @@ class LoginInfoForm(forms.ModelForm):
 class SpeakerInformationForm(I18nModelForm):
     class Meta:
         model = SpeakerInformation
-        fields = ('title', 'text', 'include_submitters', 'exclude_unconfirmed')
+        fields = ('title', 'text', 'include_submitters', 'exclude_unconfirmed', 'resource')

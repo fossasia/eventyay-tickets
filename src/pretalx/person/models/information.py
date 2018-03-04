@@ -30,6 +30,11 @@ class SpeakerInformation(LogMixin, models.Model):
         verbose_name=_('Text'),
         help_text=_('You can use markdown here.'),
     )
+    resource = models.FileField(
+        verbose_name=_('file'),
+        null=True, blank=True,
+        help_text=_('Please try to keep your upload small, preferably below 16 MB.'),
+    )
 
     class orga_urls(EventUrls):
         base = edit = '{self.event.orga_urls.information}/{self.pk}'
