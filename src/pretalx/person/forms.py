@@ -208,3 +208,7 @@ class SpeakerInformationForm(I18nModelForm):
     class Meta:
         model = SpeakerInformation
         fields = ('title', 'text', 'include_submitters', 'exclude_unconfirmed', 'resource')
+
+
+class SpeakerFilterForm(forms.Form):
+    role = forms.ChoiceField(choices=(('', _('all')), ('true', _('Speakers')), ('false', _('Non-accepted submitters'))), required=False)

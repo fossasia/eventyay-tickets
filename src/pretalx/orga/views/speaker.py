@@ -8,8 +8,9 @@ from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.person.forms import SpeakerInformationForm, SpeakerProfileForm
+from pretalx.person.forms import SpeakerInformationForm, SpeakerProfileForm, SpeakerFilterForm
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
+from pretalx.submission.models.submission import SubmissionStates
 
 
 class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
@@ -25,9 +26,19 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     def get_permission_object(self):
         return self.request.event
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['filter_form'] = SpeakerFilterForm()
+        return ctx
+
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(event=self.request.event)
         qs = self.filter_queryset(qs)
+        if 'role' in self.request.GET:
+            if self.request.GET['role'] == 'true':
+                qs = qs.filter(user__submissions__state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
+            elif self.request.GET['role'] == 'false':
+                qs = qs.exclude(user__submissions__state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
         qs = self.sort_queryset(qs)
         return qs
 

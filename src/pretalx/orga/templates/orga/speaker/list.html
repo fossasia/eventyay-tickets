@@ -1,4 +1,5 @@
 {% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
 {% load i18n %}
 
 {% block content %}
@@ -11,7 +12,12 @@
         speakers
         {% endblocktrans %}
     </legend>
-    {% include "common/search_form.html" %}
+
+    <form class="search-form">
+        {% bootstrap_form search_form %}
+        {% bootstrap_form filter_form %}
+        <button class="btn btn-secondary btn-search" type="submit">{% trans "Search" %}</button>
+    </form>
     <table class="table table-condensed table-responsive-md">
         <thead>
             <tr>
