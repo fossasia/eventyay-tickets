@@ -61,6 +61,13 @@ def test_accept_submission(orga_client, submission):
         follow=True,
     )
     submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.state == SubmissionStates.SUBMITTED
+    response = orga_client.post(
+        submission.orga_urls.accept,
+        follow=True,
+    )
+    submission.refresh_from_db()
 
     assert response.status_code == 200
     assert submission.event.queued_mails.count() == 1
@@ -73,6 +80,13 @@ def test_reject_submission(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.get(
+        submission.orga_urls.reject,
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert submission.state == SubmissionStates.SUBMITTED
+    assert response.status_code == 200
+    response = orga_client.post(
         submission.orga_urls.reject,
         follow=True,
     )
@@ -92,23 +106,16 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
         follow=True,
     )
     accepted_submission.refresh_from_db()
+    assert accepted_submission.state == SubmissionStates.ACCEPTED
+    assert response.status_code == 200
+    response = orga_client.post(
+        accepted_submission.orga_urls.confirm,
+        follow=True,
+    )
+    accepted_submission.refresh_from_db()
 
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.CONFIRMED
-
-
-@pytest.mark.django_db
-def test_orga_can_unconfirm_submission(orga_client, confirmed_submission):
-    assert confirmed_submission.state == SubmissionStates.CONFIRMED
-
-    response = orga_client.get(
-        confirmed_submission.orga_urls.unconfirm,
-        follow=True,
-    )
-    confirmed_submission.refresh_from_db()
-
-    assert response.status_code == 200
-    assert confirmed_submission.state == SubmissionStates.ACCEPTED
 
 
 @pytest.mark.django_db

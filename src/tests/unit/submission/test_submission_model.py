@@ -19,7 +19,10 @@ def test_accept_success(submission, state):
 
     assert submission.state == SubmissionStates.ACCEPTED
     assert submission.logged_actions().count() == (count + 1)
-    assert submission.event.queued_mails.count() == 1
+    if state != SubmissionStates.CONFIRMED:
+        assert submission.event.queued_mails.count() == 1
+    else:
+        assert submission.event.queued_mails.count() == 0
     assert submission.event.wip_schedule.talks.count() == 1
 
 
