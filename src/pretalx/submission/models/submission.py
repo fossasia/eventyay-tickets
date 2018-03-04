@@ -1,3 +1,4 @@
+from contextlib import suppress
 from uuid import UUID
 
 from django.conf import settings
@@ -257,10 +258,11 @@ class Submission(LogMixin, models.Model):
         self._set_state(SubmissionStates.ACCEPTED, force)
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
-        if previous == SubmissionStates.SUBMITTED:
+        with suppress(Exception):
             from pretalx.schedule.models import TalkSlot
             TalkSlot.objects.create(submission=self, schedule=self.event.wip_schedule, is_visible=True)
 
+        if previous != SubmissionStates.CONFIRMED:
             for speaker in self.speakers.all():
                 self.event.accept_template.to_mail(
                     user=speaker, event=self.event, context=template_context_from_submission(self),
@@ -268,19 +270,17 @@ class Submission(LogMixin, models.Model):
                 )
 
     def reject(self, person=None, force=False, orga=True):
-        previous = self.state
         self._set_state(SubmissionStates.REJECTED, force)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
-        if previous == SubmissionStates.SUBMITTED:
-            for speaker in self.speakers.all():
-                self.event.reject_template.to_mail(
-                    user=speaker, event=self.event, context=template_context_from_submission(self),
-                    locale=self.content_locale
-                )
+        for speaker in self.speakers.all():
+            self.event.reject_template.to_mail(
+                user=speaker, event=self.event, context=template_context_from_submission(self),
+                locale=self.content_locale
+            )
 
     def cancel(self, person=None, force=False, orga=True):
         self._set_state(SubmissionStates.CANCELED, force)
