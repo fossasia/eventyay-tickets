@@ -76,6 +76,9 @@ def test_orga_can_send_all_mails(orga_client, event, mail, other_mail, sent_mail
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
     response = orga_client.get(event.orga_urls.send_outbox, follow=True)
     assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
+    response = orga_client.post(event.orga_urls.send_outbox, follow=True)
+    assert response.status_code == 200
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
 
 
@@ -92,6 +95,10 @@ def test_orga_can_discard_all_mails(orga_client, event, mail, other_mail, sent_m
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
     assert QueuedMail.objects.count() == 3
     response = orga_client.get(event.orga_urls.purge_outbox, follow=True)
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
+    assert QueuedMail.objects.count() == 3
+    response = orga_client.post(event.orga_urls.purge_outbox, follow=True)
     assert response.status_code == 200
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     assert QueuedMail.objects.count() == 1
@@ -120,7 +127,7 @@ def test_orga_cannot_send_sent_mail(orga_client, event, sent_mail):
 def test_orga_cannot_discard_sent_mail(orga_client, event, sent_mail):
     assert QueuedMail.objects.count() == 1
     response = orga_client.get(sent_mail.urls.delete, follow=True)
-    assert response.status_code == 404
+    assert response.status_code == 200
     assert QueuedMail.objects.count() == 1
 
 

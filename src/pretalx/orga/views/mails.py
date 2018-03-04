@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
@@ -54,14 +55,19 @@ class SentMail(PermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
-class OutboxSend(PermissionRequired, View):
+class OutboxSend(PermissionRequired, TemplateView):
     permission_required = 'orga.send_mails'
+    template_name = 'orga/mails/confirm.html'
 
     def get_permission_object(self):
         return self.request.event
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['question'] = _('Do you really want to send {count} mails?').format(count=self.queryset.count())
+        return ctx
+
     def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
             try:
                 mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
@@ -74,40 +80,69 @@ class OutboxSend(PermissionRequired, View):
                 mail.send()
                 mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
                 messages.success(request, _('The mail has been sent.'))
-        else:
-            qs = self.request.event.queued_mails.filter(sent__isnull=True)
-            count = qs.count()
-            for mail in self.request.event.queued_mails.filter(sent__isnull=True):
-                mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
-                mail.send()
-            messages.success(request, _('{count} mails have been sent.').format(count=count))
+            return redirect(self.request.event.orga_urls.outbox)
+        return super().dispatch(request, *args, **kwargs)
+
+    @cached_property
+    def queryset(self):
+        qs = self.request.event.queued_mails.filter(sent__isnull=True)
+        if 'pk' in self.kwargs:
+            qs = qs.filter(pk=self.kwargs['pk'])
+        return qs
+
+    def post(self, request, *args, **kwargs):
+        qs = self.queryset
+        count = qs.count()
+        for mail in qs:
+            mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
+            mail.send()
+        messages.success(request, _('{count} mails have been sent.').format(count=count))
         return redirect(self.request.event.orga_urls.outbox)
 
 
-class OutboxPurge(PermissionRequired, View):
+class OutboxPurge(PermissionRequired, TemplateView):
     permission_required = 'orga.purge_mails'
+    template_name = 'orga/mails/confirm.html'
 
     def get_permission_object(self):
         if 'pk' in self.kwargs:
             return self.request.event.queued_mails.filter(sent__isnull=True, pk=self.kwargs.get('pk')).first()
         return self.request.event
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['question'] = _('Do you really want to purge {count} mails?').format(count=self.queryset.count())
+        return ctx
+
     def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
         if 'pk' in self.kwargs:
             try:
                 mail = self.request.event.queued_mails.get(sent__isnull=True, pk=self.kwargs.get('pk'))
             except QueuedMail.DoesNotExist:
                 messages.error(request, _('This mail either does not exist or cannot be discarded because it was sent already.'))
                 return redirect(self.request.event.orga_urls.outbox)
-            mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
-            mail.delete()
-            messages.success(request, _('The mail has been deleted.'))
-        else:
-            self.request.event.log_action('pretalx.mail.delete_all')
-            self.request.event.queued_mails.filter(sent__isnull=True).delete()
-            messages.success(request, _('The mails have been deleted.'))
-        return redirect(request.event.orga_urls.outbox)
+            if mail.sent:
+                messages.error(request, _('This mail had been sent already.'))
+            else:
+                mail.log_action('pretalx.mail.delete', person=self.request.user, orga=True)
+                mail.delete()
+                messages.success(request, _('The mail has been deleted.'))
+            return redirect(request.event.orga_urls.outbox)
+        return super().dispatch(request, *args, **kwargs)
+
+    @cached_property
+    def queryset(self):
+        qs = self.request.event.queued_mails.filter(sent__isnull=True)
+        if 'pk' in self.kwargs:
+            qs = qs.filter(pk=self.kwargs['pk'])
+        return qs
+
+    def post(self, request, *args, **kwargs):
+        qs = self.queryset
+        count = qs.count()
+        qs.delete()
+        messages.success(request, _('{count} mails have been sent.').format(count=count))
+        return redirect(self.request.event.orga_urls.outbox)
 
 
 class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
