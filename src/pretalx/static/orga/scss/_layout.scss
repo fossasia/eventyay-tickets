@@ -279,8 +279,8 @@ legend .submission-state-dropdown {
   }
   .submission-state-submitted, .submission-state-deleted, .submission-state-withdrawn, .submission-state-canceled,
   .submission-state-submitted:hover, .submission-state-deleted:hover, .submission-state-withdrawn:hover, .submission-state-canceled:hover {
-    color: $gray-400;
-    border-color: $gray-400;
+    color: $gray;
+    border-color: $gray;
   }
   .submission-state-accepted, .submission-state-accepted:hover {
     color: lighten($brand-success, 10%);
