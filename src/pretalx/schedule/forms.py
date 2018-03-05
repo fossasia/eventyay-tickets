@@ -15,7 +15,7 @@ from pretalx.schedule.models import Availability, Room
 class AvailabilitiesFormMixin(forms.Form):
     availabilities = forms.CharField(
         label=_('Availability'),
-        help_text=_('When can you use this room for your conference?'),
+        help_text=_('Please click and drag to mark the availability during the conference.'),
         widget=forms.TextInput(attrs={'class': 'availabilities-editor-data'}),
         required=False,
     )
