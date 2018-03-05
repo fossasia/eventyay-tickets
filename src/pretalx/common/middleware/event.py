@@ -66,7 +66,6 @@ class EventPermissionMiddleware:
                 else:
                     request.is_orga = False
                     request.is_reviewer = False
-                timezone.activate(pytz.timezone(request.event.timezone))
 
         self._set_orga_events(request)
 
