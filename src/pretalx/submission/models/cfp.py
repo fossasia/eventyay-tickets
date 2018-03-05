@@ -39,6 +39,7 @@ class CfP(LogMixin, models.Model):
         base = '{self.event.orga_urls.cfp}'
         questions = '{base}/questions'
         new_question = '{questions}/new'
+        remind_questions = '{questions}/remind'
         text = edit_text = '{base}/text'
         types = '{base}/types'
         new_type = '{types}/new'

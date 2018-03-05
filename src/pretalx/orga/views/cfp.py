@@ -16,7 +16,7 @@ from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
 from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
-    AnswerOption, CfP, Question, SubmissionType,
+    AnswerOption, CfP, Question, QuestionTarget, SubmissionType,
 )
 
 
@@ -154,19 +154,20 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         ctx['formset'] = self.formset
         ctx['filter_form'] = SpeakerFilterForm()
         ctx['question'] = question
-        role = self.request.GET.get('role')
-        if role == 'true':
-            talks = self.request.event.talks.all()
-            speakers = self.request.event.speakers.all()
-            answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
-        elif role == 'false':
-            talks = self.request.event.submissions.exclude(code__in=self.request.event.talks.values_list('code', flat=True))
-            speakers = self.request.event.submitters.exclude(code__in=self.request.event.speakers.all().values_list('code', flat=True))
-            answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
-        else:
-            answers = ctx['question'].answers.all()
-        ctx['answer_count'] = answers.count()
-        ctx['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
+        if question:
+            role = self.request.GET.get('role')
+            if role == 'true':
+                talks = self.request.event.talks.all()
+                speakers = self.request.event.speakers.all()
+                answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+            elif role == 'false':
+                talks = self.request.event.submissions.exclude(code__in=self.request.event.talks.values_list('code', flat=True))
+                speakers = self.request.event.submitters.exclude(code__in=self.request.event.speakers.all().values_list('code', flat=True))
+                answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+            else:
+                answers = ctx['question'].answers.all()
+            ctx['answer_count'] = answers.count()
+            ctx['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
         return ctx
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -233,6 +234,64 @@ class CfPQuestionToggle(PermissionRequired, View):
         question.active = not question.active
         question.save(update_fields=['active'])
         return redirect(question.urls.base)
+
+
+class CfPQuestionRemind(PermissionRequired, TemplateView):
+    template_name = 'orga/cfp/question_remind.html'
+    permission_required = 'orga.view_question'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['filter_form'] = self.filter_form
+        return ctx
+
+    @cached_property
+    def filter_form(self):
+        data = self.request.GET if self.request.method == 'GET' else self.request.POST
+        return SpeakerFilterForm(data)
+
+    def get_missing_answers(self, *, questions, person, submissions):
+        missing = list()
+        submissions = submissions.filter(speakers__in=[person])
+        for question in questions:
+            if question.target == QuestionTarget.SUBMISSION:
+                for submission in submissions:
+                    if not question.answers.filter(submission=submission):
+                        missing.append(question)
+                        continue
+            elif question.target == QuestionTarget.SPEAKER:
+                if not question.answers.filter(person=person):
+                    missing.append(question)
+        return missing
+
+    def post(self, request, *args, **kwargs):
+        if not self.filter_form.is_valid():
+            messages.error(request, _('Could not send mails, error in configuration.'))
+            return redirect(request.path)
+        if not getattr(request.event, 'question_template', None):
+            request.event._build_initial_data()
+        people = set(request.event.submitters)
+        if self.filter_form.cleaned_data['role'] == 'true':
+            people = set(request.event.speakers)
+            submissions = request.event.talks
+        elif self.filter_form.cleaned_data['role'] == 'false':
+            people = set(request.event.submitters) - set(request.event.speakers)
+            submissions = request.event.submissions.exclude(code__in=request.event.talks.values_list('code', flat=True))
+        else:
+            people = set(request.event.submitters)
+            submissions = request.event.submissions.all()
+
+        mandatory_questions = request.event.questions.filter(required=True)
+        context = {'url': request.event.urls.user_submissions.full(), 'event_name': request.event.name}
+        for person in people:
+            missing = self.get_missing_answers(questions=mandatory_questions, person=person, submissions=submissions)
+            if missing:
+                context['questions'] = '\n'.join([f'- {question.question}' for question in missing])
+                request.event.question_template.to_mail(person, event=request.event, context=context)
+        return redirect(request.event.orga_urls.outbox)
 
 
 class SubmissionTypeList(PermissionRequired, ListView):

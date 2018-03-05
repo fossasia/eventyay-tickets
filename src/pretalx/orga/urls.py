@@ -25,6 +25,7 @@ urlpatterns = [
 
         url('^cfp/questions$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),
+        url('^cfp/questions/remind$', cfp.CfPQuestionRemind.as_view(), name='cfp.questions.remind'),
         url('^cfp/questions/(?P<pk>[0-9]+)$', cfp.CfPQuestionDetail.as_view(), name='cfp.question.view'),
         url('^cfp/questions/(?P<pk>[0-9]+)/delete$', cfp.CfPQuestionDelete.as_view(), name='cfp.question.delete'),
         url('^cfp/questions/(?P<pk>[0-9]+)/edit$', cfp.CfPQuestionDetail.as_view(), name='cfp.question.edit'),

@@ -1,0 +1,23 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block cfp_content %}
+
+<h4>
+    {% trans "Send out reminders" %}
+</h4>
+<div>
+    {% blocktrans trimmed %}
+    Reminders will be sent out for missing <strong>mandatory</strong> answers only.
+    You can make a question mandatory now if you want a reminder to be sent out.
+    You will be able to review emails before they are sent out.
+    {% endblocktrans %}
+</div>
+<div class="pt-2">
+  <form class="form-inline" method="post">
+    {% csrf_token %}
+    <button class="btn btn-info" type="submit">{% trans "Send to these people: " %}</button>
+    {% bootstrap_form filter_form layout='inline' %}
+  </form>
+</div>
+{% endblock %}
