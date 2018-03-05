@@ -12,7 +12,7 @@ submissions, but until then you can see and edit your submission at
 
 Please do not hesitate to contact us if you have any questions!
 
-The {event_name} orga'''))
+The {event_name} organisers'''))
 
 ACCEPT_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
@@ -27,7 +27,7 @@ about your slot in the schedule and technical details concerning the room
 and presentation tech.
 
 See you there!
-The {event_name} orga'''))
+The {event_name} organisers'''))
 
 REJECT_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
@@ -36,7 +36,7 @@ We are sorry to tell you that we cannot accept your submission
 submissions - we hope to see you at {event_name} as an attendee instead
 of a speaker!
 
-The {event_name} orga'''))
+The {event_name} organisers'''))
 
 UPDATE_TEXT = LazyI18nString.from_gettext(_('''Hi!
 
