@@ -75,6 +75,17 @@ def test_accept_submission(orga_client, submission):
 
 
 @pytest.mark.django_db
+def test_accept_submission_redirects_to_review_list(orga_client, submission):
+    assert submission.state == SubmissionStates.SUBMITTED
+
+    response = orga_client.post(submission.orga_urls.accept, {'next': submission.event.orga_urls.reviews})
+    _, redirected_page_url = response._headers['location']
+
+    assert response.status_code == 302
+    assert redirected_page_url == submission.event.orga_urls.reviews
+
+
+@pytest.mark.django_db
 def test_reject_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED

@@ -113,6 +113,11 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
             messages.error(self.request, e.message)
 
     def get_success_url(self):
+        next_url = self.request.POST.get('next', '')
+
+        if next_url == self.object.event.orga_urls.reviews:
+            return next_url
+
         return self.object.orga_urls.base
 
     @transaction.atomic
@@ -126,6 +131,7 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['target'] = self.target
+        ctx['next'] = self.request.GET.get('next')
         return ctx
 
 

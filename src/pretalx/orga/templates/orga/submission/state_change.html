@@ -9,6 +9,8 @@
     {% include "cfp/event/fragment_state.html" with state=target %}
     <form method="post" action="">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
         <div class="form-group pull-right">
             <a class="btn btn-secondary" href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
                 {% trans "Back" %}
