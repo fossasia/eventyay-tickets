@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import pytest
+from pytz import UTC
 
 from pretalx.event.models import Event
 from pretalx.submission.models import Question
@@ -27,6 +30,22 @@ def test_edit_cfp(orga_client, event):
     assert response.status_code == 200
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 2
+
+
+@pytest.mark.django_db
+def test_edit_cfp_timezones(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    event = Event.objects.get(slug=event.slug)
+    event.timezone = 'Europe/Berlin'
+    event.save()
+    event.cfp.deadline = datetime(2018, 3, 5, 17, 39, 15, tzinfo=UTC)
+    event.cfp.save()
+    response = orga_client.get(event.cfp.urls.edit_text)
+    assert response.status_code == 200
+    assert '2018-03-05 18:39:15' in response.rendered_content
+    assert '2018-03-05 17:39:15' not in response.rendered_content
 
 
 @pytest.mark.django_db
