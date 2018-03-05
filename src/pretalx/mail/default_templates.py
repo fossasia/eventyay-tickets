@@ -53,7 +53,7 @@ QUESTION_TEXT = LazyI18nString.from_gettext(_('''Hi!
 We have some open questions about yourself and your submission that we'd
 like to ask you to answer:
 
-{ questions }
+{questions}
 
 You can answer them at {url}.
 

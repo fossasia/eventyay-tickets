@@ -115,6 +115,10 @@ class Event(LogMixin, models.Model):
         to='mail.MailTemplate', on_delete=models.CASCADE,
         related_name='+', null=True, blank=True,
     )
+    question_template = models.ForeignKey(
+        to='mail.MailTemplate', on_delete=models.CASCADE,
+        related_name='+', null=True, blank=True,
+    )
     landing_page_text = I18nTextField(
         verbose_name=_('Landing page text'),
         help_text=_('This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'),
@@ -245,7 +249,7 @@ class Event(LogMixin, models.Model):
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
         self.update_template = self.update_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT)
-        self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBBJECT, text=QUESTION_TEXT)
+        self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT)
         self.save()
 
     @cached_property
