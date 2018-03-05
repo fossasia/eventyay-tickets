@@ -147,11 +147,11 @@ def test_orga_can_view_templates(orga_client, event, mail_template):
 
 @pytest.mark.django_db
 def test_orga_can_create_template(orga_client, event, mail_template):
-    assert MailTemplate.objects.count() == 5
+    assert MailTemplate.objects.count() == 6
     response = orga_client.post(event.orga_urls.new_template, follow=True,
                                 data={'subject_0': '[test] subject', 'text_0': 'text'})
     assert response.status_code == 200
-    assert MailTemplate.objects.count() == 6
+    assert MailTemplate.objects.count() == 7
     assert MailTemplate.objects.get(event=event, subject__contains='[test] subject')
 
 
@@ -160,19 +160,19 @@ def test_orga_can_create_template(orga_client, event, mail_template):
 def test_orga_can_edit_template(orga_client, event, mail_template, variant):
     if variant == 'fixed':
         mail_template = event.ack_template
-    assert MailTemplate.objects.count() == 5
+    assert MailTemplate.objects.count() == 6
     response = orga_client.get(mail_template.urls.edit, follow=True)
     assert response.status_code == 200
     response = orga_client.post(mail_template.urls.edit, follow=True,
                                 data={'subject_0': 'COMPLETELY NEW AND UNHEARD OF', 'text_0': mail_template.text})
     assert response.status_code == 200
-    assert MailTemplate.objects.count() == 5
+    assert MailTemplate.objects.count() == 6
     assert MailTemplate.objects.get(event=event, subject__contains='COMPLETELY NEW AND UNHEARD OF')
 
 
 @pytest.mark.django_db
 def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
-    assert MailTemplate.objects.count() == 4
+    assert MailTemplate.objects.count() == 5
     mail_template = event.ack_template
     response = orga_client.post(mail_template.urls.edit, follow=True,
                                 data={'subject_0': 'COMPLETELY NEW AND UNHEARD OF', 'text_0': str(mail_template.text) + '{wrong_placeholder}'})
@@ -184,10 +184,10 @@ def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
 
 @pytest.mark.django_db
 def test_orga_can_delete_template(orga_client, event, mail_template):
-    assert MailTemplate.objects.count() == 5
+    assert MailTemplate.objects.count() == 6
     response = orga_client.post(mail_template.urls.delete, follow=True)
     assert response.status_code == 200
-    assert MailTemplate.objects.count() == 4
+    assert MailTemplate.objects.count() == 5
 
 
 @pytest.mark.django_db
