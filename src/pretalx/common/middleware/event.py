@@ -90,10 +90,10 @@ class EventPermissionMiddleware:
         request.LANGUAGE_CODE = translation.get_language()
 
         with suppress(pytz.UnknownTimeZoneError):
-            if request.user.is_authenticated:
-                tzname = request.user.timezone
-            elif hasattr(request, 'event') and request.event:
+            if hasattr(request, 'event') and request.event:
                 tzname = request.event.timezone
+            elif request.user.is_authenticated:
+                tzname = request.user.timezone
             else:
                 tzname = settings.TIME_ZONE
             timezone.activate(pytz.timezone(tzname))
