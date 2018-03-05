@@ -2,6 +2,7 @@ import datetime
 from urllib.parse import quote
 
 import pytest
+import pytz
 from django.urls import reverse
 from django.utils import formats
 
@@ -24,8 +25,8 @@ def test_can_see_talk(client, event, slot):
     assert content.count(slot.submission.title) >= 2  # meta+h1
     assert slot.submission.abstract in content
     assert slot.submission.description in content
-    assert formats.date_format(slot.start, 'Y-m-d, H:i') in content
-    assert formats.date_format(slot.end, 'H:i') in content
+    assert formats.date_format(slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i') in content
+    assert formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i') in content
     assert str(slot.room.name) in content
     assert 'fa-pencil' not in content  # edit btn
     assert 'fa-video-camera' not in content  # do not record
@@ -49,8 +50,8 @@ def test_orga_can_see_new_talk(orga_client, event, unreleased_slot):
     assert content.count(slot.submission.title) >= 2  # meta+h1
     assert slot.submission.abstract in content
     assert slot.submission.description in content
-    assert formats.date_format(slot.start, 'Y-m-d, H:i') in content
-    assert formats.date_format(slot.end, 'H:i') in content
+    assert formats.date_format(slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i') in content
+    assert formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i') in content
     assert str(slot.room.name) in content
     assert 'fa-pencil' not in content  # edit btn
     assert 'fa-video-camera' not in content  # do not record
