@@ -230,7 +230,7 @@ class Event(LogMixin, models.Model):
         return [self.accept_template, self.ack_template, self.reject_template, self.update_template]
 
     def _build_initial_data(self):
-        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT, UPDATE_TEXT
+        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT, UPDATE_TEXT, QUESTION_SUBJECT, QUESTION_TEXT
         from pretalx.mail.models import MailTemplate
 
         if not hasattr(self, 'cfp'):
@@ -245,6 +245,7 @@ class Event(LogMixin, models.Model):
         self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
         self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
         self.update_template = self.update_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT)
+        self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBBJECT, text=QUESTION_TEXT)
         self.save()
 
     @cached_property

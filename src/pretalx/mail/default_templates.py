@@ -45,4 +45,18 @@ From {old_datetime} ({old_room}) to {new_datetime} ({new_room}).
 
 If this poses a problem, don't hesitate to contact us!
 
+The {event_name} organisers'''))
+
+QUESTION_SUBJECT = LazyI18nString.from_gettext(_('We have some questions about your submission'))
+QUESTION_TEXT = LazyI18nString.from_gettext(_('''Hi!
+
+We have some open questions about yourself and your submission that we'd
+like to ask you to answer:
+
+{ questions }
+
+You can answer them at {url}.
+
+Please do not hesitate to contact us if you have any questions in turn!
+
 The {event_name} orga'''))
