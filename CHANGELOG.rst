@@ -39,5 +39,6 @@ Fixed bugs
 - Unconfirmed talks showed up as empty boxes in the schedule editor.
 - Upgrading the privileges of an existing user did not result in an email, since no invitation was required.
 - The Docker setup was broken. It is fixed, and a notice of limited support was added to the documentation. (#300)
+- The orga view now always uses the event timezone.
 
 .. _releases: https://github.com/pretalx/pretalx/releases
