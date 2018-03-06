@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.stages import get_stages
+from pretalx.submission.models.submission import SubmissionStates
 
 
 class DashboardView(TemplateView):
@@ -58,12 +59,20 @@ class EventDashboardView(PermissionRequired, TemplateView):
                 'small': _('total submissions'),
                 'url': event.orga_urls.submissions,
             })
-            if event.talks.count():
+            talk_count = event.talks.count()
+            if talk_count:
                 ctx['tiles'].append({
-                    'large': event.talks.count(),
+                    'large': talk_count,
                     'small': _('total talks'),
                     'url': event.orga_urls.submissions,
                 })
+                confirmed_count = event.talks.filter(state=SubmissionStates.CONFIRMED).count()
+                if confirmed_count != talk_count:
+                    ctx['tiles'].append({
+                        'large': talk_count - confirmed_count,
+                        'small': _('unconfirmed talks'),
+                        'url': event.orga_urls.submissions + f'?state={SubmissionStates.ACCEPTED}',
+                    })
         if event.speakers.count():
             ctx['tiles'].append({
                 'large': event.speakers.count(),
