@@ -1,4 +1,4 @@
-django
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-httpdomain
+-e src/
