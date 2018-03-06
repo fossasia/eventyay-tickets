@@ -14,8 +14,12 @@ from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.signals import register_data_exporters
 
 
-class ScheduleDataView(TemplateView):
+class ScheduleDataView(PermissionRequired, TemplateView):
     template_name = 'agenda/schedule.html'
+    permission_required = 'agenda.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     @cached_property
     def version(self):
@@ -61,6 +65,10 @@ class ScheduleDataView(TemplateView):
 
 
 class ExporterView(ScheduleDataView):
+    permission_required = 'agenda.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event
 
     def get_exporter(self, request):
         from pretalx.common.signals import register_data_exporters
@@ -92,7 +100,7 @@ class ExporterView(ScheduleDataView):
 
 
 @method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'"), name='dispatch')
-class ScheduleView(PermissionRequired, ScheduleDataView):
+class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
 
@@ -131,5 +139,9 @@ class ScheduleView(PermissionRequired, ScheduleDataView):
         return ctx
 
 
-class ChangelogView(TemplateView):
+class ChangelogView(PermissionRequired, TemplateView):
     template_name = 'agenda/changelog.html'
+    permission_required = 'agenda.view_schedule'
+
+    def get_permission_object(self):
+        return self.request.event

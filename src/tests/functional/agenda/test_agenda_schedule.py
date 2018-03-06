@@ -8,8 +8,9 @@ from django.utils import formats
 
 
 @pytest.mark.django_db
-def test_can_see_schedule(client, event, slot):
+def test_can_see_schedule(client, user, event, slot):
     del event.current_schedule
+    assert user.has_perm('agenda.view_schedule', event)
     response = client.get(event.urls.schedule, follow=True)
     assert event.schedules.count() == 2
     assert response.status_code == 200
