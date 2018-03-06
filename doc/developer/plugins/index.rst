@@ -9,3 +9,4 @@ Contents:
    plugins
    general
    customview
+   exporter
