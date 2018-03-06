@@ -52,7 +52,7 @@ A working example would be::
     from django.utils.translation import ugettext_lazy as _
 
 
-    class PaypalApp(AppConfig):
+    class FacebookApp(AppConfig):
         name = 'pretalx_facebook'
         verbose_name = _("Facebook")
 
@@ -65,7 +65,7 @@ A working example would be::
             description = _("This plugin allows you to post talks to facebook.")
 
 
-    default_app_config = 'pretalx_paypal.PaypalApp'
+    default_app_config = 'pretalx_facebook.FacebookApp'
 
 Plugin registration
 -------------------

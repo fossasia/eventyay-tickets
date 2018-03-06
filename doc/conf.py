@@ -9,10 +9,9 @@ from datetime import date
 
 sys.path.insert(0, os.path.abspath('../src'))
 
-# TODO: this does not work as long as rtd runs on python <3.5
-# import django
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
-# django.setup()
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
+django.setup()
 
 # -- General configuration ------------------------------------------------
 
