@@ -39,7 +39,6 @@ class EventPermissionMiddleware:
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
             params = '&' + request.GET.urlencode() if request.GET else ''
             return reverse('orga:login') + f'?next={urllib.parse.quote(request.path)}' + params
-        self._select_locale(request)
 
     def __call__(self, request):
         url = resolve(request.path_info)
@@ -68,6 +67,7 @@ class EventPermissionMiddleware:
                     request.is_reviewer = False
 
         self._set_orga_events(request)
+        self._select_locale(request)
 
         if 'orga' in url.namespaces:
             url = self._handle_orga_url(request, url)
