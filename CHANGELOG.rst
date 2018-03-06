@@ -9,6 +9,8 @@ v0.x.x
 
 *Released on 201x-xx-xx*
 
+If you use postgresql, please use the package ``psycopg2-binary`` instead of ``psycopg2``, which is now also noted in the dependencies for postgresql.
+
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~

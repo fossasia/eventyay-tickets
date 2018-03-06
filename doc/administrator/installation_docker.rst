@@ -131,7 +131,7 @@ reboot. Create a file named ``/etc/systemd/system/pretalx.service`` with the fol
     [Install]
     WantedBy=multi-user.target
 
-If you're using PostgreSQL, set the database type to ``psycopg2`` instead and
+If you're using PostgreSQL, set the database type to ``postgresql`` instead and
 leave out the mysql volume mount. Of course, replace the domain names and
 passwords in the above file with your own.
 
