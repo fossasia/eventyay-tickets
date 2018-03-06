@@ -12,3 +12,17 @@ Core
 
 .. automodule:: pretalx.common.signals
    :members: periodic_task
+
+
+Exporters
+---------
+
+.. automodule:: pretalx.common.signals
+   :members: register_data_exporters
+
+
+Organiser area
+--------------
+
+.. automodule:: pretalx.orga.signals
+   :members: nav_event
