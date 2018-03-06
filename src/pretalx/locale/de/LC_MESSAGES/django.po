@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-05 16:56-0600\n"
-"PO-Revision-Date: 2018-03-06 00:01+0100\n"
+"POT-Creation-Date: 2018-03-06 17:50-0600\n"
+"PO-Revision-Date: 2018-03-07 00:50+0100\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -3367,45 +3367,49 @@ msgstr ""
 "Der Einreichungstyp hängt schon an einer Einreichung und kann nicht gelöscht "
 "werden."
 
-#: pretalx/orga/views/dashboard.py:31
+#: pretalx/orga/views/dashboard.py:32
 msgid "days until event start"
 msgstr "Tage bis zum Start der Veranstaltung"
 
-#: pretalx/orga/views/dashboard.py:36
+#: pretalx/orga/views/dashboard.py:37
 msgid "days since event end"
 msgstr "Tage seit Veranstaltungsende"
 
-#: pretalx/orga/views/dashboard.py:41
+#: pretalx/orga/views/dashboard.py:42
 #, python-brace-format
 msgid "Day {number}"
 msgstr "Tag {number}"
 
-#: pretalx/orga/views/dashboard.py:42
+#: pretalx/orga/views/dashboard.py:43
 #, python-brace-format
 msgid "of {total_days} days"
 msgstr "von {total_days} Tagen"
 
-#: pretalx/orga/views/dashboard.py:48
+#: pretalx/orga/views/dashboard.py:49
 msgid "current schedule"
 msgstr "Aktuelles Programm"
 
-#: pretalx/orga/views/dashboard.py:53
+#: pretalx/orga/views/dashboard.py:54
 msgid "Go to CfP"
 msgstr "Zum CfP"
 
-#: pretalx/orga/views/dashboard.py:58
+#: pretalx/orga/views/dashboard.py:59
 msgid "total submissions"
 msgstr "Einreichungen insgesamt"
 
-#: pretalx/orga/views/dashboard.py:64
+#: pretalx/orga/views/dashboard.py:66
 msgid "total talks"
 msgstr "Vorträge insgesamt"
 
-#: pretalx/orga/views/dashboard.py:70
+#: pretalx/orga/views/dashboard.py:73
+msgid "unconfirmed talks"
+msgstr "nicht bestätigte Vorträge"
+
+#: pretalx/orga/views/dashboard.py:79
 msgid "speakers"
 msgstr "Vortragende"
 
-#: pretalx/orga/views/dashboard.py:75
+#: pretalx/orga/views/dashboard.py:84
 msgid "sent emails"
 msgstr "Verschickte E-Mails"
 
