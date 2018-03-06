@@ -1,0 +1,6 @@
+---
+requirements_file: src/requirements/documentation.txt
+build:
+    image: latest
+python:
+    version: 3.6
