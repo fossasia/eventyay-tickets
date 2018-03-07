@@ -13,8 +13,7 @@ System checks
 4. Have you deployed the release-ready commit to an instance? Did the upgrade work?
 5. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, which will be shown with a ``git shortlog -ns vx.y.z..master``.
 6. Have you communicated your intentions and release timeline to the team?
-7. Do the dependencies in ``requirements.txt`` and ``setup.py`` match?
-8. Is the ``CHANGELOG.rst`` well-phrased and complete?
+7. Is the ``CHANGELOG.rst`` well-phrased and complete?
 
 Takeoff and landing
 -------------------
