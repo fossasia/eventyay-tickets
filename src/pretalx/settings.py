@@ -14,6 +14,7 @@ from pretalx.common.settings.utils import log_initial
 
 
 config, config_files = build_config()
+CONFIG = config
 
 ##
 # This settings file is rather lengthy. It follows this structure:
