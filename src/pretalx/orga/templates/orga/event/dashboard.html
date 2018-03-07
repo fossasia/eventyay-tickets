@@ -132,7 +132,15 @@
             <span class="time">
                 <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
             </span>
-            {{ log.display }}
+
+            {% with log.get_content_url as log_content_url %}
+              {% if log_content_url %}
+                <a href="{{ log.get_content_url }}">{{ log.display }}</a>
+              {% else %}
+                {{ log.display }}
+              {% endif %}
+            {% endwith %}
+
             {% if log.person %}
                 {% if log.is_orga_action %}
                     (<span class="fa fa-check-circle fa-fw"

@@ -3,12 +3,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.submission.models import CfP, Submission
+
 LOG_NAMES = {
     'pretalx.cfp.update': _('The CfP has been modified.'),
     'pretalx.event.create': _('The event has been added.'),
     'pretalx.event.update': _('The event was modified.'),
-    'pretalx.event.plugins.enabled': _('The plugin was enabled.'),
-    'pretalx.event.plugins.disabled': _('The plugin was disabled.'),
+    'pretalx.event.plugins.enabled': _('A plugin was enabled.'),
+    'pretalx.event.plugins.disabled': _('A plugin was disabled.'),
     'pretalx.invite.orga.accept': _('The invitation to the event orga was accepted.'),
     'pretalx.invite.orga.retract': _('An invitation to the event orga was retracted.'),
     'pretalx.invite.orga.send': _('An invitation to the event orga was sent.'),
@@ -117,3 +119,10 @@ class ActivityLog(models.Model):
             logger.warning(f'Unknown log action "{self.action_type}".')
             return self.action_type
         return response
+
+    def get_content_url(self):
+        if isinstance(self.content_object, Submission):
+            return self.content_object.orga_urls.base
+
+        if isinstance(self.content_object, CfP):
+            return self.content_object.urls.text

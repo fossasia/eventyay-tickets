@@ -33,9 +33,15 @@
                     {% endif %}
                 </p>
 
-                <p>
+              <p>
+                {% with log.get_content_url as log_content_url %}
+                  {% if log_content_url %}
+                    <a href="{{ log.get_content_url }}">{{ log.display }}</a>
+                  {% else %}
                     {{ log.display }}
-                </p>
+                  {% endif %}
+                {% endwith %}
+              </p>
             </li>
         {% endfor %}
     </ul>
