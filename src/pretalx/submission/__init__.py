@@ -6,6 +6,7 @@ class SubmissionConfig(AppConfig):
 
     def ready(self):
         from . import permissions  # noqa
+        from . import signals  # noqa
 
 
 default_app_config = 'pretalx.submission.SubmissionConfig'

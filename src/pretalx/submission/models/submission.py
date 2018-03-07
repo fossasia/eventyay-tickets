@@ -11,6 +11,7 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_submission
+from pretalx.submission.signals import submission_state_change
 
 
 def generate_invite_code(length=32):
@@ -215,7 +216,7 @@ class Submission(LogMixin, models.Model):
             return self.submission_type.default_duration
         return self.duration
 
-    def _set_state(self, new_state, force=False):
+    def _set_state(self, new_state, force=False, person=None):
         """
         check if the new state is valid for this Submission (based on SubmissionStates.valid_next_states).
         if yes, set it and save the object. if no, raise a SubmissionError with a helpful message.
@@ -224,8 +225,10 @@ class Submission(LogMixin, models.Model):
         valid_next_states = SubmissionStates.valid_next_states.get(self.state, [])
 
         if new_state in valid_next_states or force:
+            old_state = self.state
             self.state = new_state
             self.save(update_fields=['state'])
+            submission_state_change.send_robust(self.event, submission=self, old_state=old_state, user=person)
         else:
             source_states = (src for src, dsts in SubmissionStates.valid_next_states.items() if new_state in dsts)
 
@@ -240,13 +243,13 @@ class Submission(LogMixin, models.Model):
             )
 
     def make_submitted(self, person=None, force=False, orga=False):
-        self._set_state(SubmissionStates.SUBMITTED, force)
+        self._set_state(SubmissionStates.SUBMITTED, force, person=person)
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
     def confirm(self, person=None, force=False, orga=False):
         previous = self.state
-        self._set_state(SubmissionStates.CONFIRMED, force)
+        self._set_state(SubmissionStates.CONFIRMED, force, person=person)
         self.log_action('pretalx.submission.confirm', person=person, orga=orga)
         self.slots.filter(schedule=self.event.wip_schedule).update(is_visible=True)
         if previous == SubmissionStates.SUBMITTED:
@@ -255,7 +258,7 @@ class Submission(LogMixin, models.Model):
 
     def accept(self, person=None, force=False, orga=True):
         previous = self.state
-        self._set_state(SubmissionStates.ACCEPTED, force)
+        self._set_state(SubmissionStates.ACCEPTED, force, person=person)
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
         with suppress(Exception):
@@ -270,7 +273,7 @@ class Submission(LogMixin, models.Model):
                 )
 
     def reject(self, person=None, force=False, orga=True):
-        self._set_state(SubmissionStates.REJECTED, force)
+        self._set_state(SubmissionStates.REJECTED, force, person=person)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
@@ -283,20 +286,20 @@ class Submission(LogMixin, models.Model):
             )
 
     def cancel(self, person=None, force=False, orga=True):
-        self._set_state(SubmissionStates.CANCELED, force)
+        self._set_state(SubmissionStates.CANCELED, force, person=person)
         self.log_action('pretalx.submission.cancel', person=person, orga=True)
 
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
 
     def withdraw(self, person=None, force=False, orga=False):
-        self._set_state(SubmissionStates.WITHDRAWN, force)
+        self._set_state(SubmissionStates.WITHDRAWN, force, person=person)
         from pretalx.schedule.models import TalkSlot
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
         self.log_action('pretalx.submission.withdraw', person=person, orga=orga)
 
     def remove(self, person=None, force=False, orga=True):
-        self._set_state(SubmissionStates.DELETED, force)
+        self._set_state(SubmissionStates.DELETED, force, person=person)
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
         from pretalx.schedule.models import TalkSlot
