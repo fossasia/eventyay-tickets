@@ -1,8 +1,9 @@
 def log_initial(*, DEBUG, config_files, db_name, db_backend, LOG_DIR, plugins):
     from pretalx.common.console import start_box, end_box, print_line
+    from pretalx import __version__
     mode = 'development' if DEBUG else 'production'
     lines = [
-        (f'This is pretalx calling, running in {mode} mode.', True),
+        (f'This is pretalx v{__version__} calling, running in {mode} mode.', True),
         ('', False),
         (f'Settings:', True),
         (f'Read from: {", ".join(config_files)}', False),
