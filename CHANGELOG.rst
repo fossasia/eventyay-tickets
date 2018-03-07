@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.x.x
+v0.5.0
 ------
 
-*Released on 201x-xx-xx*
+*Released on 2018-03-07*
 
 If you use postgresql, please use the package ``psycopg2-binary`` instead of ``psycopg2``, which is now also noted in the dependencies for postgresql.
 
@@ -27,7 +27,6 @@ Features
 - There are now optional review deadlines, preventing reviews to be added, modified, or removed after a certain date. (#352)
 - Individual directories for logs, media, and static files can now be configured via environment variables.
 - Organisers can now show information snippets to submitters, or speakers. (#348)
-- More environment and configuration variables were added to support customisation of filesystem decisions.
 - Allow to filter question statistics by speaker status.
 
 Fixed bugs
@@ -36,7 +35,6 @@ Fixed bugs
 - The "save" button was missing on the mail settings page. (#341)
 - Users could not see (instead not change) their submissions after CfP end, until they were either rejected or accepted. (#333)
 - In the <title> tag, the event was displayed twice, once properly and once in a technical representation.
-- Various UI fixes and improvements
 - Documentation fix: The environment variable for database passwords is ``PRETALX_DB_PASS``, not ``PRETALX_DB_PASSWORD``.
 - Unconfirmed talks showed up as empty boxes in the schedule editor.
 - Upgrading the privileges of an existing user did not result in an email, since no invitation was required.
