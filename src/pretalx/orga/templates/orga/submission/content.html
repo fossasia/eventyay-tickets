@@ -13,6 +13,16 @@
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}
+        {% if form.instance.average_score != None %}
+        <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+                {% trans "Review score" %}
+            </label>
+            <div class="col-md-9">
+                <label>{% review_score form.instance %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
+            </div>
+        </div>
+        {% endif %}
         {% bootstrap_field form.submission_type layout='event' %}
         {% bootstrap_field form.abstract layout='event' %}
         {% bootstrap_field form.description layout='event' %}
@@ -25,57 +35,13 @@
             {% bootstrap_field form.speaker layout='event' %}
         {% endif %}
 
-        {% if form.instance.average_score != None %}
-        <div class="form-group row">
-            <label class="col-md-3 form-control-label">
-                {% trans "Review score" %}
-            </label>
-            <div class="col-md-9">
-                <label>{% review_score form.instance %} ({{ submission.reviews.count }} {% trans "reviews" %})</label>
+        {% if action == "create" or action == "edit" %}
+            <div class="form-group row">
+                <div class="ml-auto col-md-9">
+                    <button type="submit" class="btn btn-primary pull-right">{% trans "Save" %}</button>
+                </div>
             </div>
-        </div>
         {% endif %}
-        <div class="form-group row">
-            {% if action == "create" %}
-                <div class="ml-auto col-md-9">
-                    <button type="submit" class="btn btn-primary pull-right">{% trans "Create submission" %}</button>
-                </div>
-            {% elif action == "edit" %}
-                <div class="ml-auto col-md-9">
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                </div>
-            {% elif action == "view" %}
-                {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
-                {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
-                {% has_perm 'submission.confirm_submission' request.user submission as can_confirm_submission %}
-                {% has_perm 'submission.unconfirm_submission' request.user submission as can_unconfirm_submission %}
-                {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
-                {% has_perm 'submission.remove_submission' request.user submission as can_remove_submission %}
-                <div class="col-md-3">
-                    {% if can_remove_submission %}
-                    <a class="btn btn-danger" href="{{ form.instance.orga_urls.delete }}?from=detail">{% trans "Delete" %}</a>
-                    {% endif %}
-                </div>
-                <div class="col-md-9">
-
-
-                    {% if can_unconfirm_submission %}
-                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.unconfirm }}">{% trans "Unconfirm" %}</a>
-                    {% elif can_accept_submission %}
-                        <a class="btn btn-primary" href="{{ form.instance.orga_urls.accept }}">{% trans "Accept" %}</a>
-                    {% endif %}
-                    {% if can_confirm_submission %}
-                        <a class="btn btn-secondary" href="{{ form.instance.orga_urls.confirm }}">{% trans "Confirm" %}</a>
-                    {% endif %}
-                    {% if can_reject_submission %}
-                        <a class="btn btn-danger" href="{{ form.instance.orga_urls.reject }}">{% trans "Reject" %}</a>
-                    {% endif %}
-                    {% if can_edit_submission %}
-                    <a class="btn btn-secondary" href="{{ form.instance.orga_urls.edit }}">{% trans "Edit" %}</a>
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
     </form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
