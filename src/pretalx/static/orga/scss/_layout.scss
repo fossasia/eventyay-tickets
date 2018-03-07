@@ -253,15 +253,25 @@ form #id_settings-display_header_pattern {
     margin: 0 0 0 -36px;
   }
 }
-.plugin-card {
-  .card-header.success {
-  }
-  .card-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .btn {
-      max-width: 150px;
+.form-plugins {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+  .plugin-card {
+    margin: 16px;
+    width: 40%;
+    flex-grow: 1;
+    flex-shrink: 0;
+    .card-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .btn {
+        max-width: 150px;
+      }
     }
   }
 }
