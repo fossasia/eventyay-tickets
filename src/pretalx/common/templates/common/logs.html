@@ -34,13 +34,23 @@
                 </p>
 
               <p>
-                {% with log.get_content_url as log_content_url %}
-                  {% if log_content_url %}
-                    <a href="{{ log.get_content_url }}">{{ log.display }}</a>
-                  {% else %}
-                    {{ log.display }}
-                  {% endif %}
-                {% endwith %}
+                {% if not hide_orga %}
+                    {% with log.get_orga_url as log_content_url %}
+                      {% if log_content_url %}
+                        <a href="{{ log_content_url }}">{{ log.display }}</a>
+                      {% else %}
+                        {{ log.display }}
+                      {% endif %}
+                    {% endwith %}
+                {% else %}
+                    {% with log.get_public_url as log_content_url %}
+                      {% if log_content_url %}
+                        <a href="{{ log_content_url }}">{{ log.display }}</a>
+                      {% else %}
+                        {{ log.display }}
+                      {% endif %}
+                    {% endwith %}
+                {% endif %}
               </p>
             </li>
         {% endfor %}

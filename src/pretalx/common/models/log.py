@@ -120,7 +120,14 @@ class ActivityLog(models.Model):
             return self.action_type
         return response
 
-    def get_content_url(self):
+    def get_public_url(self):
+        if isinstance(self.content_object, Submission):
+            return self.content_object.urls.public
+
+        if isinstance(self.content_object, CfP):
+            return self.content_object.urls.public
+
+    def get_orga_url(self):
         if isinstance(self.content_object, Submission):
             return self.content_object.orga_urls.base
 
