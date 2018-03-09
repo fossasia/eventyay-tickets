@@ -9,8 +9,6 @@ Features
 --------
 
 pretalx is under active development, so features will be added here on a regular basis.
-Once our documentation is more complete, we will introduce user guides for
-these features, but for now their descriptions will have to suffice.
 
 Talk submission
 ~~~~~~~~~~~~~~~
