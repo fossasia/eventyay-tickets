@@ -140,6 +140,6 @@
     {% endif %}
 
     <div class="user-logs">
-        {% include "common/logs.html" with obj=submission hide_orga="true" %}
+        {% include "common/logs.html" with entries=submission.logged_actions hide_orga="true" %}
     </div>
 {% endblock %}

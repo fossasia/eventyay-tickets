@@ -1,14 +1,14 @@
 {% load staticfiles %}
 {% load i18n %}
 
-{% if obj.logged_actions.exists %}
+{% if entries|length %}
 <div class="panel panel-default history-sidebar">
     <div class="panel-heading"><legend>
         {% trans "History" %}
     </legend></div>
 
     <ul class="list-group">
-        {% for log in obj.logged_actions %}
+        {% for log in entries %}
             <li class="list-group-item logentry">
                 <p class="meta">
                     <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}

@@ -50,7 +50,7 @@
         </form>
     </div>
     <div class="flex-sidebar">
-        {% include "common/logs.html" with obj=form.instance %}
+        {% include "common/logs.html" with entries=form.instance.logged_actions %}
     </div>
 </div>
 

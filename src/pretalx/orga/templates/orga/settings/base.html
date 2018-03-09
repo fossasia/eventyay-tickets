@@ -7,7 +7,7 @@
         {% endblock %}
     </div>
     <div class="flex-sidebar">
-        {% include "common/logs.html" with obj=request.event %}
+        {% include "common/logs.html" with entries=request.event.logged_actions %}
     </div>
 </div>
 {% endblock %}
