@@ -171,9 +171,39 @@ footer {
   padding-left: 4px;
 }
 .history-sidebar {
-  max-height: 80vh;
+  max-height: 90vh;
   overflow-y: scroll;
   border-bottom: 1px solid rgba(0,0,0,0.125);
+}
+.dashboard-history .history-sidebar {
+  overflow-y: none;
+  max-height: none;
+  border: none;
+  .list-group {
+    .logentry {
+      border: none;
+      display: flex;
+      padding: 0;
+      margin: 0;
+      padding-right: 8px;
+      p {
+        br {display: none;}
+      }
+      .meta {
+        display: flex;
+        flex-direction: row;
+        align-content: baseline;
+        padding-right: 8px;
+        width: 350px;
+        .time {
+          width: 200px;
+        }
+        .person {
+          width: 150px;
+        }
+      }
+    }
+  }
 }
 @include media-breakpoint-down(sm) {
   .container-fluid {

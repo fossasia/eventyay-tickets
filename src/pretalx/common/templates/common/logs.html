@@ -11,10 +11,14 @@
         {% for log in entries %}
             <li class="list-group-item logentry">
                 <p class="meta">
-                    <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
+                    <span class="time">
+                        <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
+                    </span>
                     {% if log.person %}
+                        <span class="person">
                         {% if log.is_orga_action %}
-                            <br><span class="fa fa-check-circle fa-fw"
+                            <br>
+                            <span class="fa fa-check-circle fa-fw"
                                     data-toggle="tooltip"
                                     title="{% trans "This change was performed by a member of the event orga." %}">
                             </span>
@@ -30,6 +34,7 @@
                                 {{ log.person.nick }}
                             {% endif %}
                         {% endif %}
+                        </span>
                     {% endif %}
                 </p>
 

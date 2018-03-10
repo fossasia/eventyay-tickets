@@ -125,36 +125,7 @@
 
 {% if history %}
 <div class="dashboard-history">
-    <legend>{% trans "Last actions" %}</legend>
-    <ul>
-    {% for log in history %}
-        <li>
-            <span class="time">
-                <span class="fa fa-clock-o"></span> {{ log.timestamp|date:"Y-m-d H:i" }}
-            </span>
-
-            {% with log.get_content_url as log_content_url %}
-              {% if log_content_url %}
-                <a href="{{ log.get_content_url }}">{{ log.display }}</a>
-              {% else %}
-                {{ log.display }}
-              {% endif %}
-            {% endwith %}
-
-            {% if log.person %}
-                {% if log.is_orga_action %}
-                    (<span class="fa fa-check-circle fa-fw"
-                            data-toggle="tooltip"
-                            title="{% trans "This change was performed by a member of the event orga." %}">
-                    </span>
-                {% else %}
-                    (<span class="fa fa-user fa-fw"></span>
-                {% endif %}
-                {{ log.person.get_display_name }})
-            {% endif %}
-        </li>
-    {% endfor %}
-    </ul>
+    {% include "common/logs.html" with entries=history %}
 </div>
 {% endif %}
 {% endblock %}
