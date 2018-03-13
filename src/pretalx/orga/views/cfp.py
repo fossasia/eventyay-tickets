@@ -46,8 +46,12 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     def get_object(self):
         return self.request.event.cfp
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def get_success_url(self) -> str:
-        return self.get_object().urls.text
+        return self.object.urls.text
 
     def form_valid(self, form):
         if not self.sform.is_valid():
@@ -91,10 +95,14 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return 'orga/cfp/question_detail.html'
 
     def get_permission_object(self):
-        return self.get_object() or self.request.event
+        return self.object or self.request.event
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
+
+    @cached_property
+    def object(self):
+        return self.get_object()
 
     @cached_property
     def formset(self):
@@ -104,7 +112,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
         return formset_class(
             self.request.POST if self.request.method == 'POST' else None,
-            queryset=AnswerOption.objects.filter(question=self.get_object()) if self.get_object() else AnswerOption.objects.none(),
+            queryset=AnswerOption.objects.filter(question=self.object) if self.object else AnswerOption.objects.none(),
             event=self.request.event
         )
 
@@ -150,7 +158,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        question = self.get_object()
+        question = self.object
         ctx['formset'] = self.formset
         ctx['filter_form'] = SpeakerFilterForm()
         ctx['question'] = question
@@ -172,14 +180,14 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        if not self.get_object():
+        if not self.object:
             initial = kwargs['initial'] or dict()
             initial['target'] = self.request.GET.get('type')
             kwargs['initial'] = initial
         return kwargs
 
     def get_success_url(self) -> str:
-        obj = self.get_object() or self.instance
+        obj = self.object or self.instance
         return obj.urls.base
 
     @transaction.atomic

@@ -255,7 +255,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        obj = self.get_object()
+        obj = self.object
         if obj and obj in obj.event.fixed_templates:
             ctx['placeholders'] = get_context_explanation()
         return ctx
@@ -268,8 +268,12 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_object(self) -> MailTemplate:
         return MailTemplate.objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def get_permission_object(self):
-        return self.get_object() or self.request.event
+        return self.object or self.request.event
 
     def get_success_url(self):
         return self.request.event.orga_urls.mail_templates

@@ -79,7 +79,7 @@ class SubmissionViewMixin(PermissionRequired):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission'] = self.get_object()
+        ctx['submission'] = self.object
         return ctx
 
 
@@ -140,7 +140,7 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
+        submission = self.object
         nick = request.POST.get('nick')
         try:
             if '@' in nick:
@@ -169,7 +169,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
-        submission = self.get_object()
+        submission = self.object
         speaker = get_object_or_404(User, nick__iexact=request.GET.get('nick'))
 
         if submission in speaker.submissions.all():
@@ -237,7 +237,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return ['orga.create_submission']
 
     def get_permission_object(self):
-        return self.get_object() or self.request.event
+        return self.object or self.request.event
 
     def get_object(self):
         return self.request.event.submissions.filter(code__iexact=self.kwargs.get('code')).first()
@@ -310,4 +310,4 @@ class FeedbackList(SubmissionViewMixin, ListView):
     permission_required = 'submission.view_feedback'
 
     def get_queryset(self):
-        return self.get_object().feedback.all().order_by('pk')
+        return self.object.feedback.all().order_by('pk')

@@ -64,7 +64,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.get_object()
 
     def get_permission_object(self):
-        return self.get_object().profiles.filter(event=self.request.event).first()
+        return self.object.profiles.filter(event=self.request.event).first()
 
     @cached_property
     def permission_object(self):
@@ -98,7 +98,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         ret = super().get_form_kwargs(*args, **kwargs)
         ret.update({
             'event': self.request.event,
-            'user': self.get_object(),
+            'user': self.object,
         })
         return ret
 
@@ -109,8 +109,12 @@ class SpeakerToggleArrived(PermissionRequired, View):
     def get_object(self):
         return get_object_or_404(SpeakerProfile, event=self.request.event, user_id=self.kwargs['pk'])
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def dispatch(self, request, event, pk):
-        profile = self.get_object()
+        profile = self.object
         profile.has_arrived = not profile.has_arrived
         profile.save()
         action = 'pretalx.speaker.arrived' if profile.has_arrived else 'pretalx.speaker.unarrived'
