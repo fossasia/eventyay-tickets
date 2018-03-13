@@ -5,7 +5,7 @@
 {% block submission_content %}
     {% trans "Do you really want to change the state of this submission?" %}
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
-    <span class="fa fa-arrow-right"></span>
+    <i class="fas fa-arrow-right"></i>
     {% include "cfp/event/fragment_state.html" with state=target %}
     <form method="post" action="">
         {% csrf_token %}

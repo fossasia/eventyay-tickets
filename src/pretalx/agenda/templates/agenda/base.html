@@ -15,7 +15,7 @@
 {% block content %}
     {% if not request.event.settings.show_schedule %}
         <div class="event-nonpublic">
-            <span class="fa fa-user-secret"></span>
+            <i class="fas fa-user-secret"></i>
             {% blocktrans trimmed %}
                 This schedule-related page is non-public. Only orga members can see it.
             {% endblocktrans %}

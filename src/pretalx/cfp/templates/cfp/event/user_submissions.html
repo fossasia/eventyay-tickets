@@ -9,7 +9,7 @@
         <legend>{{ info.title }}</legend>
         {{ info.text|rich_text }}
         {% if info.resource %}
-            <a href="{{ info.resource.url }}"><span class="fa fa-file-o"></span> {{ info.resource.name }}</a>
+            <a href="{{ info.resource.url }}"><i class="far fa-file"></i> {{ info.resource.name }}</a>
         {% endif %}
     {% endfor %}
     {% endif %}
@@ -38,25 +38,25 @@
                         {% if submission.editable %}
                             <a href="{{ submission.urls.user_base }}"
                                     class="btn btn-sm btn-secondary">
-                                <span class="fa fa-pencil"></span>
+                                <i class="fas fa-edit"></i>
                             </a>
                         {% endif %}
                         {% if submission.state == 'accepted' %}
                             <a href="{{ submission.urls.confirm }}"
                                     class="btn btn-sm btn-success">
-                                <span class="fa fa-check"></span>{% trans "Confirm" %}
+                                <i class="fas fa-check"></i> {% trans "Confirm" %}
                             </a>
                         {% endif %}
                         {% if submission.slot %}
                             <a href="{{ submission.urls.public }}"
                                     class="btn btn-sm btn-secondary">
-                                <span class="fa fa-calendar"></span>{% trans "Schedule" %}
+                                <i class="fas fa-calendar"></i> {% trans "Schedule" %}
                             </a>
                         {% endif %}
                         {% if submission.does_accept_feedback %}
                             <a href="{{ submission.urls.feedback }}"
                                     class="btn btn-sm btn-secondary">
-                                <span class="fa fa-comments-o"></span>{% trans "Feedback" %}
+                                <i class="far fa-comments"></i> {% trans "Feedback" %}
                             </a>
                         {% endif %}
                     </td>

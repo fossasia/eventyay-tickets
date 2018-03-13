@@ -23,11 +23,11 @@ def _review_score_number(context, score):
 def _review_score_override(positive_overrides, negative_overrides):
     result = ''
     if positive_overrides:
-        result += f'<i class="fa fa-arrow-circle-up override text-success"></i>'
+        result += f'<i class="fas fa-arrow-circle-up override text-success"></i>'
         if positive_overrides > 1 or negative_overrides:
             result += f' {positive_overrides}'
     if negative_overrides:
-        result += f'<i class="fa fa-arrow-circle-down override text-danger"></i>'
+        result += f'<i class="fas fa-arrow-circle-down override text-danger"></i>'
         if negative_overrides > 1 or positive_overrides:
             result += f' {negative_overrides}'
     return result

@@ -9,7 +9,7 @@
     »{{ question.question }}«
     <small>({{ question.get_variant_display }})</small>
     <a href="{{ question.urls.edit }}" class="btn btn-xs btn-secondary">
-        <i class="fa fa-pencil"></i>
+        <i class="fas fa-edit"></i>
     </a>
 </h4>
 
@@ -50,12 +50,12 @@
             <li>
                 {% if question.variant == "file" %}
                     {% if answer.answer.answer_file %}
-                        <i class="fa fa-file-o"></i>
+                        <i class="far fa-file"></i>
                         <a href="{{ answer.answer.answer_file.url }}">
                             {{ answer.answer.answer }}
                         </a>
                     {% else %}
-                        <i class="fa fa-file-o"></i>
+                        <i class="far fa-file"></i>
                         {{ answer.answer.answer }} ({% trans "lost file" %})
                     {% endif %}
                 {% else %}

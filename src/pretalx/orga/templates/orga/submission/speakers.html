@@ -14,7 +14,7 @@
             </label>
             {% csrf_token %}
             <input type="text" name="nick" id="id_speaker" class="form-control" />
-            <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-plus"></span></button>
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i></button>
         </form>
     </div>{% endif %}
 
@@ -26,7 +26,7 @@
             {% if can_edit_speakers %}
                 <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
                     class="btn btn-sm btn-secondary">
-                    <span class="fa fa-trash"></span> {% trans "Remove" %}
+                    <i class="fas fa-trash"></i> {% trans "Remove" %}
                 </a>
             {% endif %}
         </legend>

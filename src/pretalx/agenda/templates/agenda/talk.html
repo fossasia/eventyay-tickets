@@ -17,18 +17,18 @@
         »{{ talk.submission.title }}«
         <div class="buttons pull-right">
             <a class="btn btn-outline-primary" href="{{ talk.submission.urls.ical }}">
-                <span class="fa fa-calendar"></span> .ical
+                <i class="fas fa-calendar"></i> .ical
             </a>
             {% if talk.submission.does_accept_feedback and not is_html_export %}
                 <a href="{{ talk.submission.urls.feedback }}"
                         class="btn btn-primary">
-                    <span class="fa fa-comments"></span>{{ phrases.agenda.feedback }}
+                    <i class="fas fa-comments"></i> {{ phrases.agenda.feedback }}
                 </a>
             {% endif %}
             {% if request.user in talk.submission.speakers.all %}
                 <a href="{{ talk.submission.urls.user_base }}"
                         class="btn btn-secondary">
-                    <span class="fa fa-pencil"></span>{{ phrases.base.edit }}
+                    <i class="fas fa-edit"></i>{{ phrases.base.edit }}
                 </a>
             {% endif %}
         </div>
@@ -37,8 +37,8 @@
             {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
             {% if talk.submission.do_not_record %}
                 <span class="fa-stack">
-                    <i class="fa fa-video-camera fa-stack-1x"></i>
-                    <i class="fa fa-ban fa-stack-2x do-not-record" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
+                  <i class="fas fa-video fa-stack-1x"></i>
+                  <i class="fas fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
                 </span>
                 <em>{{ phrases.agenda.schedule.do_not_record }}</em>
             {% endif %}
@@ -60,7 +60,7 @@
                     {% trans "See also:" %}
                     {% if talk.submission.active_resources.count == 1 %}
                         <a href="{{ talk.submission.active_resources.first.resource.url }}">
-                            <i class="fa fa-file"></i>
+                            <i class="far fa-file"></i>
                             {{ talk.submission.active_resources.first.description }}
                         </a>
                     {% else %}
@@ -68,7 +68,7 @@
                             {% for resource in talk.submission.active_resources %}
                                 <li>
                                     <a href="{{ resource.resource.url }}">
-                                        <i class="fa fa-file"></i>
+                                        <i class="far fa-file"></i>
                                         {{ resource.description }}
                                         ({{ resource.resource.size|filesizeformat }})
                                     </a>

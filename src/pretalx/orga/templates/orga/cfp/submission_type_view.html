@@ -28,7 +28,7 @@
                     <td>{{ type.default_duration }}</td>
                     <td>
                         {% if request.event.cfp.default_type == type %}
-                            <span class="fa fa-check"></span> {% trans "Default" %}
+                            <i class="fas fa-check"></i> {% trans "Default" %}
                         {% else %}
                             <a href="{{ type.urls.default }}"
                                     class="btn btn-sm btn-secondary">
@@ -39,11 +39,11 @@
                     <td class="text-right">
                         <a href="{{ type.urls.edit }}"
                                 class="btn btn-sm btn-secondary">
-                            <span class="fa fa-pencil"></span>
+                            <i class="fas fa-edit"></i>
                         </a>
                         <a href="{{ type.urls.delete }}"
                                 class="btn btn-sm btn-secondary">
-                            <span class="fa fa-trash"></span>
+                            <i class="fas fa-trash"></i>
                         </a>
                     </td>
                 </tr>

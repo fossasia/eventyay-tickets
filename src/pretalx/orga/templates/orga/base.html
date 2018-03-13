@@ -48,7 +48,7 @@
         <ul class="navbar-nav d-block d-lg-none">
             <li class="nav-item">
                 <a class="nav-link" data-toggle="sidebar" href="#">
-                    <i class="fa fa-navicon fa-lg"></i>
+                    <i class="fas fa-bars fa-lg"></i>
                 </a>
             </li>
         </ul>
@@ -70,7 +70,7 @@
                             {% endfor %}
                             {% if request.user.is_administrator %}
                                 <a class="dropdown-item" href="{% url "orga:event.create" %}">
-                                    <span class="fa fa-plus"></span>
+                                    <i class="fas fa-plus"></i>
                                     {% trans "New event" %}
                                 </a>
                             {% endif %}
@@ -84,7 +84,7 @@
                 {% if request.event %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ request.event.urls.base }}">
-                            <span class="fa fa-eye"></span>
+                            <i class="fas fa-eye"></i>
                         </a>
                     </li>
                 {% endif %}
@@ -93,20 +93,20 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:user.view" %}">
-                    <span class="fa fa-user"></span>
+                    <i class="far fa-user"></i>
                     {{ request.user.nick }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:logout" %}">
-                    <span class="fa fa-sign-out"></span>
+                    <i class="fas fa-sign-out-alt"></i>
                 </a>
             </li>
         </ul>
     </nav>
     {% if request.user.is_superuser %}
         <div class="superuser-warning">
-            <span class="fa fa-danger"></span>
+            <i class="fas fa-exclamation-triangle"></i>
             {% blocktrans with link=link trimmed %}
                 You're using pretalx as a superuser. This is not recommended.
             {% endblocktrans %}
@@ -123,7 +123,7 @@
             {% has_perm 'orga.change_settings' request.user request.event as can_see_orga_exclusive %}
             {% if can_see_orga_area %}
                 <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{{ request.event.orga_urls.base }}">
-                    <span class="fa fa-dashboard"></span>
+                    <i class="fas fa-tachometer-alt"></i>
                     <span class="sidebar-text">{% trans "Dashboard" %}</span>
                 </a>
             {% endif %}
@@ -131,11 +131,11 @@
                 <li class="nav-fold">
                     <span class="has-children">
                         <a href="{{ request.event.orga_urls.settings }}" class="nav-link nav-link-inner">
-                            <span class="fa fa-wrench"></span>
+                            <i class="fas fa-wrench"></i>
                             <span class="sidebar-text">{% trans "Settings" %}</span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseSettings" aria-controls="collapseSettings">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "settings." in url_name %} show{% endif %}" aria-expand="true" id="collapseSettings">
@@ -153,11 +153,11 @@
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.cfp.urls.text }}">
-                            <span class="fa fa-bullhorn"></span>
+                            <i class="fas fa-bullhorn"></i>
                             <span class="sidebar-text">{% trans "CfP" %}</span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseCfP" aria-controls="collapseCfP">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "cfp." in url_name %} show{% endif %}" aria-expand="true" id="collapseCfP">
@@ -175,21 +175,21 @@
             {% endif %}
             {% if can_see_orga_area %}
                 <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.submissions }}">
-                    <span class="fa fa-sticky-note-o"></span>
+                    <i class="far fa-sticky-note"></i>
                     <span class="sidebar-text">{% trans "Submissions" %}</span>
                 </a>
                 <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
-                    <span class="fa fa-eye"></span>
+                    <i class="fas fa-eye"></i>
                     <span class="sidebar-text">{% trans "Review" %}</span>
                 </a>
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.speakers }}">
-                            <span class="fa fa-address-card-o"></span>
+                            <i class="far fa-address-card"></i>
                             <span class="sidebar-text">{% trans "Speakers" %}</span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseSpeakers" aria-controls="collapseSpeakers">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "speakers." in url_name|slice:":9" %} show{% endif %}" aria-expand="true" id="collapseSpeakers">
@@ -207,11 +207,11 @@
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.schedule }}">
-                            <span class="fa fa-calendar-o"></span>
+                            <i class="far fa-calendar-alt"></i>
                             <span class="sidebar-text">{% trans "Schedule" %}</span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseSchedule" aria-controls="collapseSchedule">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "schedule." in url_name %} show{% endif %}" aria-expand="true" id="collapseSchedule">
@@ -233,14 +233,14 @@
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.outbox }}">
-                            <span class="fa fa-envelope"></span>
+                            <i class="far fa-envelope"></i>
                             <span class="sidebar-text">
                                 {% trans "Mails" %}
                                 {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}</span>{% endif %}
                             </span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapseMails" aria-controls="collapseMails">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "mails." in url_name %} show{% endif %}" aria-expand="true" id="collapseMails">
@@ -262,13 +262,13 @@
                 <li class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.plugins }}">
-                            <span class="fa fa-puzzle-piece"></span>
+                            <i class="fas fa-puzzle-piece"></i>
                             <span class="sidebar-text">
                                 {% trans "Plugins" %}
                             </span>
                         </a>
                         <a class="arrow nav-link" data-toggle="collapse" href="#collapsePlugins" aria-controls="collapsePlugins">
-                            <span class="fa fa-angle-down"></span>
+                            <i class="fas fa-angle-down"></i>
                         </a>
                     </span>
                     <div class="collapse in{% if "plugins" in url_namespace or "plugins" in url_name %} show{% endif %}" aria-expand="true" id="collapsePlugins">
@@ -280,7 +280,7 @@
                                 {% if nav_element.icon and "." in nav_element.icon %}
                                     <img src="{% static nav_element.icon %}" class="fa-img">
                                 {% elif nav_element.icon %}
-                                    <span class="fa fa-{{ nav_element.icon }}"></span>
+                                    <i class="fas fa-{{ nav_element.icon }}"></i>
                                 {% endif %}
                                 <span class="sidebar-text">{{ nav_element.label }}</span>
                             </a>

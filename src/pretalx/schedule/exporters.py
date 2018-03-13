@@ -65,7 +65,7 @@ class FrabXCalExporter(ScheduleData):
     identifier = 'core-frab-xcal'
     verbose_name = 'XCal (frab compatible)'
     public = True
-    icon = 'fa-calendar-o'
+    icon = 'fa-calendar'
 
     def render(self, **kwargs):
         url = get_base_url(self.event)
