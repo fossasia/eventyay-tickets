@@ -28,7 +28,7 @@ $btn-primary-bg:                 $brand-primary !default;
 $btn-primary-border:             $btn-primary-bg !default;
 $btn-primary-color:              $white !default;
 /* end compatibility */
-
+$fa-font-path:  "vendored/fontawesome/fonts";
 /* colors */
 $theme-colors: (
   primary: $brand-primary,

@@ -38,7 +38,7 @@
       border: none;
       display: flex;
       justify-content: center;
-      span {padding-top: 4px;}
+      i {padding-top: 4px;}
     }
 
   }
@@ -53,10 +53,10 @@
   }
 
   .nav-link {
-    .fa {
+    .fas, .far {
       margin-right: 5px;
     }
-    &.nav-link-second-level span {
+    &.nav-link-second-level i {
       padding-left: 1.6em;
     }
   }
@@ -167,7 +167,7 @@ footer {
   margin: auto;
 }
 
-.fa.override {
+.override {
   padding-left: 4px;
 }
 .history-sidebar {
@@ -215,7 +215,7 @@ footer {
 
     ul {
       flex-direction: row;
-      .fa {
+      .fas, .far {
         padding-left: 12px;
       }
     }
