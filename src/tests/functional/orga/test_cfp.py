@@ -4,6 +4,7 @@ import pytest
 from pytz import UTC
 
 from pretalx.event.models import Event
+from pretalx.mail.models import QueuedMail
 from pretalx.submission.models import Question
 
 
@@ -193,6 +194,8 @@ def test_can_add_simple_question(orga_client, event):
     q = event.questions.first()
     assert str(q.question) == 'What is your name?'
     assert q.variant == 'string'
+    response = orga_client.get(q.urls.base + '?role=true', follow=True)
+    assert str(q.question) in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -255,3 +258,19 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
     assert choice_question.variant == 'choices'
     assert choice_question.options.count() == count - 1
     assert str(choice_question.options.first().answer) == 'African'
+
+
+@pytest.mark.parametrize('role,count', (
+    ('true', 1),
+    ('false', 1),
+    ('', 2),
+))
+@pytest.mark.django_db
+def test_can_remind_question(orga_client, event, speaker_question, speaker, accepted_submission, other_speaker, other_submission, role, count):
+    question = speaker_question
+    question.required = True
+    question.save()
+    original_count = QueuedMail.objects.count()
+    response = orga_client.post(event.cfp.urls.remind_questions, {'role': role}, follow=True)
+    assert response.status_code == 200
+    assert QueuedMail.objects.count() == original_count + count
