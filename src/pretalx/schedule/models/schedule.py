@@ -208,11 +208,11 @@ class Schedule(LogMixin, models.Model):
                 text=text
             )
 
-    @property
+    @cached_property
     def url_version(self):
         return quote(self.version) if self.version else 'wip'
 
-    @property
+    @cached_property
     def is_archived(self):
         if not self.version:
             return False

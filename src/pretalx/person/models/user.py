@@ -13,6 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -175,7 +176,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         EventPermission.objects.filter(user=self).update(is_orga=False, invitation_email=None, invitation_token=None)
         Answer.objects.filter(person=self, question__contains_personal_data=True).delete()
 
-    @property
+    @cached_property
     def gravatar_parameter(self):
         return md5(self.email.strip().encode()).hexdigest()
 

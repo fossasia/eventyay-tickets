@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 import pytz
 from django.db import models
+from django.utils.functional import cached_property
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import get_base_url
@@ -35,22 +36,22 @@ class TalkSlot(LogMixin, models.Model):
     def __str__(self):
         return f'TalkSlot(event={self.submission.event.slug}, submission={self.submission.title}, schedule={self.schedule.version})'
 
-    @property
+    @cached_property
     def event(self):
         return self.submission.event
 
-    @property
+    @cached_property
     def duration(self):
         if self.start and self.end:
             return int((self.end - self.start).total_seconds() / 60)
         return self.submission.get_duration()
 
-    @property
+    @cached_property
     def export_duration(self):
         from pretalx.common.serialize import serialize_duration
         return serialize_duration(minutes=self.duration)
 
-    @property
+    @cached_property
     def pentabarf_export_duration(self):
         duration = timedelta(minutes=self.duration)
         days = duration.days

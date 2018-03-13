@@ -163,7 +163,7 @@ class AnswerOption(LogMixin, models.Model):
         max_length=200,
     )
 
-    @property
+    @cached_property
     def event(self):
         return self.question.event
 
@@ -205,7 +205,7 @@ class Answer(LogMixin, models.Model):
         related_name='answers',
     )
 
-    @property
+    @cached_property
     def event(self):
         return self.question.event
 

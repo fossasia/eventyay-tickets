@@ -42,11 +42,11 @@ class Review(models.Model):
             .annotate(review_count=models.Count('reviews')) \
             .order_by('review_count', '?')
 
-    @property
+    @cached_property
     def event(self):
         return self.submission.event
 
-    @property
+    @cached_property
     def display_score(self):
         if self.override_vote is True:
             return _('Positive override')

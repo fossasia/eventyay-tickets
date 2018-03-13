@@ -225,7 +225,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     template_name = 'orga/submission/content.html'
     permission_required = 'submission.view_submission'
 
-    @property
+    @cached_property
     def write_permission_required(self):
         if 'code' in self.kwargs:
             return 'submission.edit_submission'

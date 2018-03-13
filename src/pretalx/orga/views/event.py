@@ -230,7 +230,7 @@ class InvitationView(FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
 
-    @property
+    @cached_property
     def object(self):
         return get_object_or_404(
             EventPermission,

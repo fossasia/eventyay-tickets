@@ -9,6 +9,7 @@ from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 from i18nfield.utils import I18nJSONEncoder
@@ -304,7 +305,7 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/schedule/room_form.html'
     permission_required = 'orga.view_room'
 
-    @property
+    @cached_property
     def write_permission_required(self):
         if 'pk' not in self.kwargs:
             return 'orga.change_settings'

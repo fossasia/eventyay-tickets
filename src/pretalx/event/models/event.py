@@ -197,16 +197,16 @@ class Event(LogMixin, models.Model):
     def __str__(self) -> str:
         return f'Event(slug={self.slug}, date_from={self.date_from.isoformat()})'
 
-    @property
+    @cached_property
     def locales(self) -> list:
         return self.locale_array.split(",")
 
-    @property
+    @cached_property
     def named_locales(self) -> list:
         enabled = set(self.locale_array.split(","))
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
 
-    @property
+    @cached_property
     def html_export_url(self) -> str:
         return get_base_url(self) + self.orga_urls.schedule_export_download
 
@@ -265,7 +265,7 @@ class Event(LogMixin, models.Model):
     def current_schedule(self):
         return self.schedules.order_by('-published').filter(published__isnull=False).first()
 
-    @property
+    @cached_property
     def duration(self):
         return (self.date_to - self.date_from).days + 1
 
@@ -283,30 +283,30 @@ class Event(LogMixin, models.Model):
         else:
             return get_connection(fail_silently=False)
 
-    @property
+    @cached_property
     def event(self):
         return self
 
-    @property
+    @cached_property
     def datetime_from(self):
         return make_aware(datetime.combine(
             self.date_from,
             time(hour=0, minute=0, second=0)
         ), pytz.timezone(self.timezone))
 
-    @property
+    @cached_property
     def datetime_to(self):
         return make_aware(datetime.combine(
             self.date_to,
             time(hour=23, minute=59, second=59)
         ), pytz.timezone(self.timezone))
 
-    @property
+    @cached_property
     def reviews(self):
         from pretalx.submission.models import Review
         return Review.objects.filter(submission__event=self)
 
-    @property
+    @cached_property
     def submission_questions(self):
         return self.questions.filter(target='submission')
 

@@ -240,7 +240,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         else:
             return self.form_invalid(form)
 
-    @property
+    @cached_property
     def can_edit(self):
         return self.object.editable
 

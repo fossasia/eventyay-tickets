@@ -4,6 +4,7 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import pgettext, ugettext_lazy as _
 
@@ -306,14 +307,14 @@ class Submission(LogMixin, models.Model):
         TalkSlot.objects.filter(submission=self, schedule=self.event.wip_schedule).delete()
         self.log_action('pretalx.submission.deleted', person=person, orga=True)
 
-    @property
+    @cached_property
     def uuid(self):
         code = self.code
         if len(code) < 16:
             code = code + ' ' * (16 - len(code))
         return UUID(bytes=code.encode())
 
-    @property
+    @cached_property
     def integer_uuid(self):
         # For import into Engelsystem, we need to somehow convert our submission code into an unique integer. Luckily,
         # codes can contain 34 different characters (including compatibility with frab imported data) and normally have
@@ -346,7 +347,7 @@ class Submission(LogMixin, models.Model):
             return end < now()
         return False
 
-    @property
+    @cached_property
     def rendered_recording_iframe(self):
         if not (self.recording_url and self.recording_source):
             return
@@ -370,7 +371,7 @@ class Submission(LogMixin, models.Model):
     def __str__(self):
         return f'Submission(event={self.event.slug}, code={self.code}, title={self.title}, state={self.state})'
 
-    @property
+    @cached_property
     def export_duration(self):
         from pretalx.common.serialize import serialize_duration
         return serialize_duration(minutes=self.get_duration())
