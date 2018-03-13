@@ -26,7 +26,7 @@ def task_periodic_event_services(event_slug):
             event.settings.sent_mail_cfp_closed = True
 
     if not event.settings.sent_mail_event_over:
-        if (_now.date() + timedelta(days=3)) < (_now.date() + timedelta(days=1)) > event.date_to:
+        if (_now.date() - timedelta(days=3)) <= event.date_to <= (_now.date() - timedelta(days=1)):
             if event.current_schedule and event.current_schedule.talks.filter(is_visible=True).count():
                 event.send_orga_mail(event.settings.mail_text_event_over, stats=True)
                 event.settings.sent_mail_event_over = True
