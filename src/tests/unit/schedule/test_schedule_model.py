@@ -45,6 +45,16 @@ def test_freeze_fail(slot, schedule, version):
 
 
 @pytest.mark.django_db
+def test_freeze_fail_repeat(slot, schedule):
+    schedule_count = Schedule.objects.count()
+    old, new = slot.submission.event.wip_schedule.freeze('version')
+    assert Schedule.objects.count() == schedule_count + 1
+    with pytest.raises(Exception):
+        old.freeze('version')
+    assert Schedule.objects.count() == schedule_count + 1
+
+
+@pytest.mark.django_db
 def test_freeze_cache(slot):
     slot.event.wip_schedule.freeze('Version')
     # make sure the cache for wip_schedule is invalidated
