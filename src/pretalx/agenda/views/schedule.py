@@ -65,10 +65,6 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
 
 class ExporterView(ScheduleDataView):
-    permission_required = 'agenda.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_exporter(self, request):
         from pretalx.common.signals import register_data_exporters

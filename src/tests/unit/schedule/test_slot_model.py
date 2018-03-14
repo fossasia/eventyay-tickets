@@ -18,9 +18,9 @@ from pretalx.schedule.models import TalkSlot
 def test_slot_duration(submission, start, end, duration):
     _now = now()
     if start is not None:
-        start = now() + timedelta(minutes=start)
+        start = _now + timedelta(minutes=start)
     if end is not None:
-        end = now() + timedelta(minutes=end)
+        end = _now + timedelta(minutes=end)
     slot = TalkSlot(start=start, end=end, submission=submission)
     if duration == 'sub':
         assert slot.duration == submission.get_duration()
@@ -29,5 +29,6 @@ def test_slot_duration(submission, start, end, duration):
 
 
 @pytest.mark.django_db
-def test_slot_string(slot):
+def test_slot_string(slot, room):
     str(slot)
+    str(room)
