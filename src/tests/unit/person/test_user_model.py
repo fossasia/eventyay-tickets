@@ -41,16 +41,19 @@ def test_gravatar_parameter(email, expected):
 
 
 @pytest.mark.django_db
-def test_user_deactivate(speaker, personal_answer, impersonal_answer):
+def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_speaker):
     assert Answer.objects.count() == 2
+    count = speaker.own_actions().count()
     name = speaker.name
     nick = speaker.nick
     email = speaker.email
     speaker.deactivate()
     speaker.refresh_from_db()
+    assert speaker.own_actions().count() == count
     assert speaker.profiles.first().biography == ''
     assert speaker.name != name
     assert speaker.nick != nick
+    assert speaker.nick.startswith('deleted_user')
     assert speaker.email != email
     assert Answer.objects.count() == 1
     assert Answer.objects.first().question.contains_personal_data is False
