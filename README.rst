@@ -27,14 +27,22 @@ or use our public instance at `pretalx.org`_.
 
 Project status
 --------------
-`pretalx` is under `active development`_. It is production ready and has already
-been used in several conferences. It supports everything required for talk
-submission, speaker communication, and scheduling. You can see our supported
-features in the `feature list`_ in our documentation, and our planned features
-in our open issues_.
-
+`pretalx` is under `active development`_. It supports everything required for
+talk submission, speaker communication, and scheduling. You can see our
+supported features in the `feature list`_ in our documentation, and our planned
+features in our open issues_.
 `pretalx` has regular releases – you can download the latest releases with
 their respective changelogs on GitHub_ or install pretalx via PyPI_.
+
+Previous conferences using pretalx include:
+
+- `GPN 2018`_
+- `EasterHegg 2018`_
+- `TROOPERS 2018`_
+- `MRMCD 2017`_
+
+Note
+  If you use pretalx for your event, please tell us about it!
 
 Contributing
 ------------
@@ -65,3 +73,8 @@ to this project.
 .. _active development: https://github.com/pretalx/pretalx/pulse
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx
+
+.. _MRMCD 2017: https://talks.mrmcd.net/2017/schedule/
+.. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
+.. _EasterHegg 2018: https://pretalx.eh18.easterhegg.eu/eh18/schedule/
+.. _GPN 2018: https://pretalx.entropia.de/gpn18/
