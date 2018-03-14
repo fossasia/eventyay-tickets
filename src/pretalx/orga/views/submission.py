@@ -184,7 +184,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
 class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
-    permission_required = 'submission.view_submission'
+    permission_required = 'orga.view_submissions'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -203,7 +203,7 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
 
 class SubmissionQuestions(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/answer_list.html'
-    permission_required = 'submission.view_submission'
+    permission_required = 'orga.view_submissions'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -223,7 +223,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
     template_name = 'orga/submission/content.html'
-    permission_required = 'submission.view_submission'
+    permission_required = 'orga.view_submissions'
 
     @cached_property
     def write_permission_required(self):
@@ -233,7 +233,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
     def get_permission_required(self):
         if 'code' in self.kwargs:
-            return ['submission.view_submission']
+            return ['orga.view_submissions']
         return ['orga.create_submission']
 
     def get_permission_object(self):
