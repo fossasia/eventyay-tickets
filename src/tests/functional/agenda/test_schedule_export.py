@@ -103,7 +103,8 @@ def test_html_export_event_unknown():
     from django.core.management import call_command
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html', 'foobar222')
-
+    with pytest.raises(Exception):
+        export_schedule_html(event_id=22222)
     assert 'Could not find event with slug "foobar222"' in str(excinfo)
 
 
