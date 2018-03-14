@@ -2,6 +2,7 @@ from contextlib import suppress
 from datetime import timedelta
 
 from dateutil.parser import parse
+from django.db import transaction
 
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
@@ -10,6 +11,7 @@ from pretalx.submission.models import (
 )
 
 
+@transaction.atomic()
 def process_frab(root, event):
     """
     Takes an xml document root and an event, and releases a schedule
@@ -22,9 +24,10 @@ def process_frab(root, event):
                 _create_talk(talk=talk, room=room, event=event)
 
     schedule_version = root.find('version').text
-    event.wip_schedule.freeze(schedule_version, notify_speakers=False)
-    schedule = event.schedules.filter(version=schedule_version).first()
-    if not schedule:
+    try:
+        event.wip_schedule.freeze(schedule_version, notify_speakers=False)
+        schedule = event.schedules.get(version=schedule_version)
+    except Exception:
         raise Exception(f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.')
 
     schedule.talks.update(is_visible=True)

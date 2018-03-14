@@ -24,3 +24,11 @@ def test_frab_import_minimal(superuser):
     assert event.name == 'PrivacyWeek 2016'
 
     assert superuser.permissions.filter(event=event, is_orga=True).count() == 1
+
+    with pytest.raises(Exception):
+        call_command('import_schedule', 'tests/functional/fixtures/frab_schedule_minimal.xml')
+
+    assert superuser.permissions.filter(event=event, is_orga=True).count() == 1
+    assert Event.objects.count() == 1
+    assert TalkSlot.objects.count() == 2
+    assert Room.objects.count() == 1
