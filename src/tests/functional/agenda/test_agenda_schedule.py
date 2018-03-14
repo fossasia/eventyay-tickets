@@ -29,8 +29,8 @@ def test_can_see_talk(client, event, slot):
     assert formats.date_format(slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i') in content
     assert formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i') in content
     assert str(slot.room.name) in content
-    assert 'fa-pencil' not in content  # edit btn
-    assert 'fa-video-camera' not in content  # do not record
+    assert 'fa-edit' not in content  # edit btn
+    assert 'fa-video' not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -54,8 +54,8 @@ def test_orga_can_see_new_talk(orga_client, event, unreleased_slot):
     assert formats.date_format(slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i') in content
     assert formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i') in content
     assert str(slot.room.name) in content
-    assert 'fa-pencil' not in content  # edit btn
-    assert 'fa-video-camera' not in content  # do not record
+    assert 'fa-edit' not in content  # edit btn
+    assert 'fa-video' not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -64,8 +64,8 @@ def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
     response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-pencil' in content  # edit btn
-    assert 'fa-video-camera' not in content
+    assert 'fa-edit' in content  # edit btn
+    assert 'fa-video' not in content
     assert 'fa-comments' not in content
 
 
@@ -76,8 +76,8 @@ def test_can_see_talk_do_not_record(client, event, slot):
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-pencil' not in content  # edit btn
-    assert 'fa-video-camera' in content
+    assert 'fa-edit' not in content  # edit btn
+    assert 'fa-video' in content
     assert 'fa-comments' not in content
 
 
@@ -89,9 +89,9 @@ def test_can_see_talk_does_accept_feedback(client, event, slot):
     response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-pencil' not in content  # edit btn
+    assert 'fa-edit' not in content  # edit btn
     assert 'fa-comments' in content
-    assert 'fa-video-camera' not in content
+    assert 'fa-video' not in content
 
 
 @pytest.mark.django_db
