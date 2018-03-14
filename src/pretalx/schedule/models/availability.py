@@ -30,11 +30,10 @@ class Availability(LogMixin, models.Model):
     def __str__(self) -> str:
         person = getattr(self.person, 'nick', None)
         room = getattr(self.room, 'name', None)
-        return f'Availability(event={self.event.slug}, person={person}, room={room})'
+        event = getattr(getattr(self, 'event', None), 'slug', None)
+        return f'Availability(event={event}, person={person}, room={room})'
 
     def __eq__(self, other: 'Availability') -> bool:
-        if not isinstance(other, Availability):
-            return False
         return all([
             getattr(self, attribute, None) == getattr(other, attribute, None)
             for attribute in ['event', 'person', 'room', 'start', 'end']
@@ -120,9 +119,6 @@ class Availability(LogMixin, models.Model):
     @classmethod
     def _pair_intersection(cls, availabilities_a: List['Availability'], availabilities_b: List['Availability']) -> List['Availability']:
         """ return the list of Availabilities, which are covered by each of the given sets """
-        if not availabilities_a or not availabilities_b:
-            return []
-
         result = []
 
         # yay for O(b*a) time! I am sure there is some fancy trick to make this faster,
