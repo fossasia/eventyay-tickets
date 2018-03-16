@@ -36,10 +36,7 @@ def test_initial_data(event):
     assert event.schedules.count()
     assert event.wip_schedule
 
-    event.wip_schedule.delete()
     event.cfp.delete()
-    event.submission_types.all().delete()
-
     event._build_initial_data()
 
     assert event.cfp

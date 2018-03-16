@@ -12,12 +12,8 @@ from pretalx.submission.models import Submission
 
 
 class PretalxExportContextMixin():
-    def __init__(self, *args, **kwargs):
-        self._exporting_event = kwargs.pop('_exporting_event', None)
-
-        if not self._exporting_event:
-            raise Exception('Use the provided "export_schedule_html" management command to export the HTML schedule.')
-
+    def __init__(self, *args, _exporting_event=None, **kwargs):
+        self._exporting_event = _exporting_event
         super().__init__(*args, **kwargs)
 
     def create_request(self, *args, **kwargs):
