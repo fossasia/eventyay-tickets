@@ -12,9 +12,7 @@ class SubmitterSerializer(ModelSerializer):
 
     def get_biography(self, obj):
         if self.context.get('request') and self.context['request'].event:
-            profile = obj.profiles.filter(event=self.context['request'].event).first()
-            if profile:
-                return profile.biography
+            getattr(obj.profiles.filter(event=self.context['request'].event).first(), 'biography', '')
         return ''
 
     class Meta:

@@ -33,10 +33,9 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'version__iexact'
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return ScheduleSerializer
-        elif self.action == 'list':
+        if self.action == 'list':
             return ScheduleListSerializer
+        return ScheduleSerializer  # Currently only for action == 'retrieve'
 
     def get_object(self):
         try:
