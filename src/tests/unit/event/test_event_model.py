@@ -35,3 +35,17 @@ def test_initial_data(event):
     assert event.reject_template
     assert event.schedules.count()
     assert event.wip_schedule
+
+    event.wip_schedule.delete()
+    event.cfp.delete()
+    event.submission_types.all().delete()
+
+    event._build_initial_data()
+
+    assert event.cfp
+    assert event.cfp.default_type
+    assert event.accept_template
+    assert event.ack_template
+    assert event.reject_template
+    assert event.schedules.count()
+    assert event.wip_schedule
