@@ -121,7 +121,7 @@ class QueuedMail(LogMixin, models.Model):
 
     def __str__(self):
         sent = self.sent.isoformat() if self.sent else None
-        return f'MailTemplate(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
+        return f'OutboxMail(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
 
     @classmethod
     def text_to_html(cls, text, event=None):
