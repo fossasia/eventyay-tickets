@@ -32,3 +32,11 @@ def test_frab_import_minimal(superuser):
     assert Event.objects.count() == 1
     assert TalkSlot.objects.count() == 2
     assert Room.objects.count() == 1
+
+    call_command('import_schedule', 'tests/functional/fixtures/frab_schedule_minimal_2.xml')
+
+    assert Room.objects.count() == 1
+    assert Event.objects.count() == 1
+    assert superuser.permissions.filter(event=event, is_orga=True).count() == 1
+    assert TalkSlot.objects.count() == 5  # 3 for the first talk, 2 for the second talk
+    assert set(event.schedules.all().values_list('version', flat=True)) == set(['1.99b 🍕', '1.99c 🍕', None])
