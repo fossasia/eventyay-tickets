@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<schedule>
+  <version>1.99c 🍕</version>
+  <conference>
+    <acronym>pw16</acronym>
+    <title>PrivacyWeek 2016</title>
+    <start>2016-10-24</start>
+    <end>2016-10-30</end>
+    <days>7</days>
+    <timeslot_duration>00:30</timeslot_duration>
+  </conference>
+  <day date='2016-10-24' end='2016-10-24T23:00:00+02:00' index='1' start='2016-10-24T09:00:00+02:00'>
+    <room name='Volkskundemuseum'>
+      <event guid='1ed6fafa-20a6-466c-8086-89ae4d3b29e5' id='69'>
+        <date>2016-10-24T09:30:00+02:00</date>
+        <start>09:30</start>
+        <duration>00:30</duration>
+        <room>Volkskundemuseum</room>
+        <slug>pw16-69-eroffnungsrede</slug>
+        <recording>
+          <license />
+          <optout>false</optout>
+        </recording>
+        <title>Eröffnungsrede</title>
+        <subtitle>Privatsphäre im digitalen Zeitalter</subtitle>
+        <track>Privatsphäre im digitalen Zeitalter</track>
+        <type>lecture</type>
+        <language>de</language>
+        <abstract />
+        <description />
+        <logo>/system/events/logos/000/000/069/large/_mini_totoro.png?1477315404</logo>
+        <persons>
+          <person id='76'>Peter Purgathofer</person>
+        </persons>
+        <links />
+        <attachments />
+      </event>
+      <event guid='1ed6fafa-20a6-466c-8086-89ae4d3b29e6' id='70'>
+        <date>2016-10-24T10:30:00+02:00</date>
+        <start>19:30</start>
+        <duration>00:30</duration>
+        <room>Volkskundemuseum</room>
+        <slug>pw16-70-best-talk</slug>
+        <recording>
+          <license />
+          <optout>false</optout>
+        </recording>
+        <title>Best Talk</title>
+        <subtitle></subtitle>
+        <track>Privatsphäre im digitalen Zeitalter</track>
+        <type>lecture</type>
+        <language>de</language>
+        <abstract />
+        <description />
+        <logo>/system/events/logos/000/000/069/large/_mini_totoro.png?1477315404</logo>
+        <persons>
+          <person id='76'>Peter Purgathofer</person>
+        </persons>
+        <links />
+        <attachments />
+      </event>
+    </room>
+  </day>
+</schedule>
