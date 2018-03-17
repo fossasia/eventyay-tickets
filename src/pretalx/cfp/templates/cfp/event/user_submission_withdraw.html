@@ -11,22 +11,22 @@
 <form action="" method="post">
     {% csrf_token %}
     <h3>{% trans "Withdraw submission" %}</h3>
-    <p>
+    <div class="alert alert-danger">
         {% blocktrans trimmed %}
             Do you really want to withdraw your submission?
         {% endblocktrans %}
-    </p>
-    <div class="alert alert-danger">
+    </div>
+    <p>
         <button type="submit"
-           class="btn pull-right btn-danger">
+           class="btn float-right btn-danger">
             {% trans "Withdraw" %}
         </button>
         <a href="{{ submission.urls.user_base }}"
-           class="btn pull-right btn-link">
+           class="btn float-right btn-info">
             {% trans "Go back" %}
         </a>
         {% trans "You will not be able to revert this action." %}
         <div class="clearfix"></div>
-    </div>
+    </p>
 </form>
 {% endblock %}

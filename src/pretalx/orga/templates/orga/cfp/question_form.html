@@ -23,12 +23,12 @@
           {% if question.active %}
             <div class="alert alert-info col-md-9 offset-3">
               {% trans "This question is currently active, it will be asked during submission." %}
-              <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+              <a class="btn btn-xs btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
             </div>
           {% else %}
             <div class="alert alert-info col-md-9 offset-3">
               {% trans "This question is currently inactive, and will not be asked during submission." %}
-              <a class="btn btn-xs btn-secondary" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+              <a class="btn btn-xs btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
             </div>
           {% endif %}
         {% endif %}
@@ -108,11 +108,9 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create question" %}</button>
+                    <button type="submit" class="btn btn-success">{% trans "Create question" %}</button>
                 {% elif action == "edit" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ question.urls.edit }}>{% trans "Edit" %}</a>
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
                 {% endif %}
             </div>
         </div>

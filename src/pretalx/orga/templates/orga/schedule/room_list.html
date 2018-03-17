@@ -32,11 +32,11 @@
                     <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ room.urls.edit }}"
-                            class="btn btn-sm btn-secondary">
+                            class="btn btn-sm btn-info">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="{{ room.urls.delete }}"
-                            class="btn btn-sm btn-secondary">
+                            class="btn btn-sm btn-danger">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -47,7 +47,7 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{{ request.event.orga_urls.new_room }}">
+    <a class="btn btn-success" href="{{ request.event.orga_urls.new_room }}">
         <i class="fas fa-plus"></i>
         {% trans "New room" %}
     </a>

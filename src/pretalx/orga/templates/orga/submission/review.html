@@ -57,8 +57,8 @@
         {% bootstrap_field form.text layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
-                <button type="submit" class="btn btn-primary" name="show_next" value="1">{% trans "Save and next" %}</button>
-                <button type="submit" class="btn btn-secondary">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
+                <button type="submit" class="btn btn-info">{% trans "Save" %}</button>
             </div>
         </div>
     </form>
@@ -85,7 +85,7 @@
                 <td>{% bootstrap_field form.text layout="inline" %}</td>
                 <td>
                     {% if not read_only %}
-                        <button type="submit" class="btn btn-primary">{% trans "Save" %}
+                        <button type="submit" class="btn btn-success">{% trans "Save" %}
                     {% else %}
                         {{ request.user.get_display_name }}
                     {% endif %}

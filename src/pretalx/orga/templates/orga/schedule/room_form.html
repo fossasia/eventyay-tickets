@@ -14,11 +14,9 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Create room" %}</button>
+                    <button type="submit" class="btn btn-success">{% trans "Create room" %}</button>
                 {% elif action == "edit" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
                 {% endif %}
             </div>
         </div>

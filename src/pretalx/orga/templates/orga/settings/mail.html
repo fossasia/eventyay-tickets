@@ -10,12 +10,10 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
                     <button type="submit" class="btn btn-default" name="test" value="1">
                         {% trans "Save and test custom SMTP connection" %}
                     </button>
-                {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ request.event.orga_urls.edit_mail_settings }}>{% trans "Edit" %}</a>
                 {% endif %}
             </div>
         </div>

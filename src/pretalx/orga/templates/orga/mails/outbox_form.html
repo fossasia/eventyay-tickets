@@ -17,14 +17,12 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+                    <a class="btn btn-info" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
+                    <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
                 {% elif action == "view" %}
                     {% if form.instance.sent %}
-                        <a class="btn btn-primary" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
-                    {% else %}
-                        <a class="btn btn-primary" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
-                        <a class="btn btn-secondary" href={{ form.instance.urls.edit }}>{% trans "Edit" %}</a>
-                        <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
+                        <a class="btn btn-success" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
                     {% endif %}
                 {% endif %}
             </div>

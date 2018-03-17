@@ -35,11 +35,7 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                {% elif action == "view" %}
-                    {% if form.instance.pk and can_edit_speaker %}
-                        <a class="btn btn-secondary" href={% url "orga:speakers.view" event=request.event.slug pk=object.pk %}>{% trans "Edit" %}</a>
-                    {% endif %}
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
                 {% endif %}
             </div>
         </div>

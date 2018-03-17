@@ -16,18 +16,18 @@
         <div>
         »{{ talk.submission.title }}«
         <div class="buttons pull-right">
-            <a class="btn btn-outline-primary" href="{{ talk.submission.urls.ical }}">
+            <a class="btn btn-outline-success" href="{{ talk.submission.urls.ical }}">
                 <i class="fas fa-calendar"></i> .ical
             </a>
             {% if talk.submission.does_accept_feedback and not is_html_export %}
                 <a href="{{ talk.submission.urls.feedback }}"
-                        class="btn btn-primary">
+                        class="btn btn-success">
                     <i class="fas fa-comments"></i> {{ phrases.agenda.feedback }}
                 </a>
             {% endif %}
             {% if request.user in talk.submission.speakers.all %}
                 <a href="{{ talk.submission.urls.user_base }}"
-                        class="btn btn-secondary">
+                        class="btn btn-info">
                     <i class="fas fa-edit"></i>{{ phrases.base.edit }}
                 </a>
             {% endif %}

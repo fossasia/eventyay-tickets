@@ -40,7 +40,7 @@
         {% empty %}
             <tr><td>
                 {% trans "You have configured no questions yet." %}
-                <a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-secondary">
+                <a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-info">
                     <i class="fas fa-plus"></i>
                     {% trans "Add a question now!" %}
                 </a>

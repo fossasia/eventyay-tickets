@@ -12,7 +12,7 @@
     </div>
 
     <div><a href="{{ request.event.orga_urls.new_template }}">
-        <button class="btn btn-primary pull-right">{% trans "New custom template" %}</button>
+        <button class="btn btn-success pull-right">{% trans "New custom template" %}</button>
     </a></div>
 
     <div>
@@ -21,7 +21,7 @@
         <legend>{% trans "Acknowledge Mail" %}</legend>
         {% bootstrap_form ack layout='event' %}
         <div class="clearfix"><a href="{{ ack.instance.urls.edit }}">
-            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
     <div>
@@ -29,7 +29,7 @@
         <legend>{% trans "Accept Mail" %}</legend>
         {% bootstrap_form accept layout='event' %}
         <div class="clearfix"><a href="{{ accept.instance.urls.edit }}">
-            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
     <div>
@@ -37,7 +37,7 @@
         <legend>{% trans "Rejection Mail" %}</legend>
         {% bootstrap_form reject layout='event' %}
         <div class="clearfix"><a href="{{ reject.instance.urls.edit }}">
-            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
     <div>
@@ -45,7 +45,7 @@
         <legend>{% trans "Update Mail" %}</legend>
         {% bootstrap_form update layout='event' %}
         <div class="clearfix"><a href="{{ update.instance.urls.edit }}">
-            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
 
@@ -58,7 +58,7 @@
             <button class="btn btn-danger">{% trans "Delete template" %}</button>
         </a></div>
         <div class="clearfix"><a href="{{ template.instance.urls.edit }}">
-            <button class="btn btn-primary pull-right">{% trans "Edit template" %}</button>
+            <button class="btn btn-info pull-right">{% trans "Edit template" %}</button>
         </a></div>
     </div>
     {% endfor %}

@@ -18,12 +18,12 @@
         </div>
     {% endif %}
     <div class="schedule-header">
-        <div class="header-right pull-right">
+        <div class="header-right float-right">
             <span class="icon">{% trans "Version" %} {{ schedule.version }}</span>
-            · <span class="icon"><a href="{{ request.event.urls.changelog }}"><i class="far fa-clock"></i></a></span>
-            · <span class="icon"><a href="{{ request.event.urls.feed }}"><i class="fas fa-feed"></i></a></span>
+            · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="far fa-clock"></i></a></span>
+            · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fas fa-feed"></i></a></span>
             · <span class="dropdown">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-code"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="exportDropdown">

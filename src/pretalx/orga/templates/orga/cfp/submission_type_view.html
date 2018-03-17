@@ -11,6 +11,12 @@
         (talk vs workshop vs metal concert).
         {% endblocktrans %}
     </div>
+    <a href="{{ request.event.cfp.urls.new_type }}">
+        <button class="btn btn-info">
+            <i class="fas fa-plus"></i>
+            {% trans "New type" %}
+        </button>
+    </a>
     <table class="table table-condensed table-responsive-md">
         <thead>
             <tr>
@@ -31,18 +37,18 @@
                             <i class="fas fa-check"></i> {% trans "Default" %}
                         {% else %}
                             <a href="{{ type.urls.default }}"
-                                    class="btn btn-sm btn-secondary">
+                                    class="btn btn-sm btn-info">
                                 Make default
                             </a>
                         {% endif %}
                     </td>
                     <td class="text-right">
                         <a href="{{ type.urls.edit }}"
-                                class="btn btn-sm btn-secondary">
+                                class="btn btn-sm btn-info">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="{{ type.urls.delete }}"
-                                class="btn btn-sm btn-secondary">
+                                class="btn btn-sm btn-danger">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -51,9 +57,4 @@
         </tbody>
     </table>
 
-    <a href="{{ request.event.cfp.urls.new_type }}">
-        <button class="btn btn-secondary">
-            {% trans "New type" %}
-        </button>
-    </a>
 {% endblock %}

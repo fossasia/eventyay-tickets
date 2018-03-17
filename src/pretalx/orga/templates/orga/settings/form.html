@@ -48,9 +48,7 @@
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                {% elif action == "view" %}
-                    <a class="btn btn-primary" href={{ request.event.orga_urls.edit_settings }}>{% trans "Edit" %}</a>
+                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
                 {% endif %}
             </div>
         </div>
