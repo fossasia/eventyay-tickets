@@ -123,7 +123,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
     def get_permission_object(self):
         return self.get_object()
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.state == SubmissionStates.SUBMITTED:
             self.object.state = SubmissionStates.WITHDRAWN
