@@ -11,9 +11,9 @@
     <form action="" method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
         <div class="avatar-form">
-            <div class="col-md-3 control-label">
+            <div class="col-md-3 col-form-label">
             <img
-              class="avatar"
+              class="avatar float-right"
               data-gravatar="{{ request.user.gravatar_parameter }}"
               data-avatar="{% if request.user.avatar %}{{ request.user.avatar.url }}{% endif %}"
               {% if request.user.get_gravatar %}
