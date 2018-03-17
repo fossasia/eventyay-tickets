@@ -8,7 +8,7 @@
 <h4>
     »{{ question.question }}«
     <small>({{ question.get_variant_display }})</small>
-    <a href="{{ question.urls.edit }}" class="btn btn-xs btn-secondary">
+    <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info">
         <i class="fas fa-edit"></i>
     </a>
 </h4>
@@ -16,12 +16,12 @@
 {% if question.active %}
   <div class="alert alert-info">
     {% trans "This question is currently active, it will be asked during submission." %}
-    <a class="btn btn-xs btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+    <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
   </div>
 {% else %}
   <div class="alert alert-info">
     {% trans "This question is currently inactive, and will not be asked during submission." %}
-    <a class="btn btn-xs btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+    <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
   </div>
 {% endif %}
 

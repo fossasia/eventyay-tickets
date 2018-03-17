@@ -118,10 +118,10 @@
             <td class="review-buttons">
                 {% if submission.state == 'submitted' %}
                     {% if can_accept_submission %}
-                        <a class="btn btn-success btn-xs" href="{{ submission.orga_urls.accept }}?next={{ request.path }}">{% trans "Accept" %}</a>
+                        <a class="btn btn-success btn-sm" href="{{ submission.orga_urls.accept }}?next={{ request.path }}">{% trans "Accept" %}</a>
                     {% endif %}
                     {% if can_reject_submission %}
-                        <a class="btn btn-danger btn-xs" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
+                        <a class="btn btn-danger btn-sm" href="{{ submission.orga_urls.reject }}">{% trans "Reject" %}</a>
                     {% endif %}
                 {% endif %}
             </td>
