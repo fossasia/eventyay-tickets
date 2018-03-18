@@ -12,18 +12,18 @@
             <li class="list-group-item logentry">
                 <p class="meta">
                     <span class="time">
-                        <i class="far fa-clock"></i> {{ log.timestamp|date:"Y-m-d H:i" }}
+                        <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"Y-m-d H:i" }}
                     </span>
                     {% if log.person %}
                         <span class="person">
                         {% if log.is_orga_action %}
                             <br>
-                            <i class="fas fa-check-circle fa-fw"
+                            <i class="fa fa-check-circle fa-fw"
                                     data-toggle="tooltip"
                                     title="{% trans "This change was performed by a member of the event orga." %}">
                             </i>
                         {% else %}
-                            <br><i class="fas fa-user fa-fw"></i>
+                            <br><i class="fa fa-user fa-fw"></i>
                         {% endif %}
                         {% if log.is_orga_action and hide_orga %}
                             {% trans "An orga member" %}

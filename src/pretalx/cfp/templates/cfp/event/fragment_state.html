@@ -1,16 +1,16 @@
 {% load i18n %}
 {% if state == 'submitted' %}
-    <i class="fas fa-inbox"></i> {% trans "submitted" %}
+    <i class="fa fa-inbox"></i> {% trans "submitted" %}
 {% elif state == 'rejected' %}
-    <i class="fas fa-ban"></i> {% trans "not accepted" %}
+    <i class="fa fa-ban"></i> {% trans "not accepted" %}
 {% elif state == 'accepted' %}
-    <i class="far fa-check-circle"></i> {% trans "accepted" %}
+    <i class="fa fa-check-circle"></i> {% trans "accepted" %}
 {% elif state == 'confirmed' %}
-    <i class="fas fa-check-circle"></i> {% trans "confirmed" %}
+    <i class="fa fa-check-circle"></i> {% trans "confirmed" %}
 {% elif state == 'canceled' %}
-    <i class="fas fa-times-circle"></i> {% trans "canceled" %}
+    <i class="fa fa-times-circle"></i> {% trans "canceled" %}
 {% elif state == 'withdrawn' %}
-    <i class="fas fa-times-circle"></i> {% trans "withdrawn" %}
+    <i class="fa fa-times-circle"></i> {% trans "withdrawn" %}
 {% elif state == 'deleted' %}
-    <i class="fas fa-times-circle"></i> {% trans "deleted" %}
+    <i class="fa fa-times-circle"></i> {% trans "deleted" %}
 {% endif %}

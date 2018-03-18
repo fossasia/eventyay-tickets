@@ -1,6 +1,4 @@
-@import "../../vendored/fontawesome/scss/fontawesome";
-@import "../../vendored/fontawesome/scss/fa-solid";
-@import "../../vendored/fontawesome/scss/fa-brands";
+@import "../../vendored/forkawesome/scss/fork-awesome";
 
 input.availabilities-editor-data {
   display: none;
@@ -16,7 +14,7 @@ input.availabilities-editor-data {
 }
 
 .fc-event.delete::before {
-  font-family: FontAwesome;
+  font-family: ForkAwesome;
   content: fa-content($fa-var-trash);
   position: absolute;
   top: calc(50% - 1ex);

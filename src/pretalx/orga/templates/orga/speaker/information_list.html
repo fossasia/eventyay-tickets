@@ -11,7 +11,7 @@
         Speaker Information Notes
         {% endblocktrans %}
         <a href="{{request.event.orga_urls.new_information }}" class="btn btn-info">
-            <i class="fas fa-plus"></i>
+            <i class="fa fa-plus"></i>
             {% trans "Add a new note" %}
         </a>
     </legend>
@@ -30,7 +30,7 @@
                     <td>
                         <a href="{{ info.orga_urls.edit }}">{{ info.title }}</a>
                         {% if info.resource %}
-                            <a href="{{ info.resource.url }}"><i class="fas fa-paperclip"></i></a>
+                            <a href="{{ info.resource.url }}"><i class="fa fa-paperclip"></i></a>
                         {% endif %}
                     </td>
                     <td>{{ info.include_submitters|yesno }}</td>

@@ -61,7 +61,7 @@
     <div id="top-bg" class="header {{ request.event.settings.display_header_pattern|default:"bg-primary" }}">
         {% if request.event and not request.event.is_public and not is_html_export %}
             <div class="event-nonpublic">
-                <i class="fas fa-user-secret"></i>
+                <i class="fa fa-user-secret"></i>
                 {% blocktrans trimmed %}
                     This event is currently non-public. Only the orga team can see it.
                 {% endblocktrans %}

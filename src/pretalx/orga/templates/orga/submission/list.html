@@ -20,11 +20,11 @@
         <p class="legend-buttons">
             {% if can_create_submission %}
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> {% trans "Add new submission" %}
+                <i class="fa fa-plus"></i> {% trans "Add new submission" %}
             </a>
             {% endif %}
             <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
-                <i class="fas fa-print"></i> {% trans "Print cards" %}
+                <i class="fa fa-print"></i> {% trans "Print cards" %}
             </a>
         </p>
 
@@ -40,19 +40,19 @@
             <tr>
                 <th>
                     {% trans "Title" %}
-                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fas fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fas fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>{% trans "Speakers" %}</th>
                 <th>
                     {% trans "Type" %}
-                    <a href="?{% url_replace request 'sort' '-submission_type' %}"><i class="fas fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'submission_type' %}"><i class="fas fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-submission_type' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'submission_type' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
                     {% trans "State" %}
-                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fas fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fas fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th></th>
             </tr>
@@ -82,12 +82,12 @@
                         <a href="{{ submission.orga_urls.edit }}"
                             title="{% trans "edit" %}"
                             class="btn btn-sm btn-info">
-                            <i class="fas fa-edit"></i>
+                            <i class="fa fa-edit"></i>
                         </a>
                         <a href="{{ submission.orga_urls.delete }}?from=list"
                             title="{% trans "delete" %}"
                             class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
+                            <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>

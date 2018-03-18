@@ -47,7 +47,7 @@
                         {{ form.instance.user }}
                     {% else %}
                         {{ form.instance.invitation_email }} ({% trans "pending" %},
-                        <a href="{{ form.instance.urls.invitation }}"> <i class="fas fa-external-link-alt"></i> {% trans "Invitation link" %}</a>)
+                        <a href="{{ form.instance.urls.invitation }}"> <i class="fa fa-external-link"></i> {% trans "Invitation link" %}</a>)
                     {% endif %}
                 </td>
                 <td>
@@ -62,7 +62,7 @@
                     {% bootstrap_field form.DELETE field_class="sr-only" form_group_class="" %}
                     <div class="question-option-delete">
                         <button type="button" class="btn btn-danger" data-formset-delete-button>
-                            <i class="fas fa-trash"></i></button>
+                            <i class="fa fa-trash"></i></button>
                     </div>
                 </td>
             </tr>
@@ -70,7 +70,7 @@
         </tbody>
     </table>
     <button type="button" class="btn btn-info" data-formset-add>
-        <i class="fas fa-plus"></i> {% trans "Add a new member" %}
+        <i class="fa fa-plus"></i> {% trans "Add a new member" %}
     </button>
     <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
     <script type="form-template" data-formset-empty-form>
@@ -89,7 +89,7 @@
                 {% bootstrap_field formset.empty_form.DELETE field_class="sr-only" form_group_class="" %}
                 <div class="question-option-delete">
                     <button type="button" class="btn btn-danger" data-formset-delete-button>
-                        <i class="fas fa-trash"></i></button>
+                        <i class="fa fa-trash"></i></button>
                 </div>
             </td>
         </tr>

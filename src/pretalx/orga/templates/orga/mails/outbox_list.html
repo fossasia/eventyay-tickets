@@ -28,13 +28,13 @@
             <tr>
                 <th>
                     {% trans "Subject" %}
-                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fas fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fas fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
                     {% trans "To" %}
-                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fas fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fas fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th></th>
             </tr>
@@ -54,17 +54,17 @@
                     <a href="{{ mail.urls.edit }}"
                         title="{% trans "edit" %}"
                         class="btn btn-sm btn-secondary">
-                        <i class="fas fa-edit"></i>
+                        <i class="fa fa-edit"></i>
                     </a>
                     <a href="{{ mail.urls.send }}"
                         title="{% trans "send" %}"
                         class="btn btn-sm btn-secondary">
-                        <i class="fas fa-reply" data-fa-transform="flip-h"></i>
+                        <i class="fa fa-mail-forward"></i>
                     </a>
                     <a href="{{ mail.urls.delete }}"
                         title="{% trans "delete" %}"
                         class="btn btn-sm btn-secondary">
-                        <i class="fas fa-trash"></i>
+                        <i class="fa fa-trash"></i>
                     </a>
                 </td>
             </tr>

@@ -13,7 +13,7 @@
     </div>
     <a href="{{ request.event.cfp.urls.new_type }}">
         <button class="btn btn-info">
-            <i class="fas fa-plus"></i>
+            <i class="fa fa-plus"></i>
             {% trans "New type" %}
         </button>
     </a>
@@ -34,7 +34,7 @@
                     <td>{{ type.default_duration }}</td>
                     <td>
                         {% if request.event.cfp.default_type == type %}
-                            <i class="fas fa-check"></i> {% trans "Default" %}
+                            <i class="fa fa-check"></i> {% trans "Default" %}
                         {% else %}
                             <a href="{{ type.urls.default }}"
                                     class="btn btn-sm btn-info">
@@ -45,11 +45,11 @@
                     <td class="text-right">
                         <a href="{{ type.urls.edit }}"
                                 class="btn btn-sm btn-info">
-                            <i class="fas fa-edit"></i>
+                            <i class="fa fa-edit"></i>
                         </a>
                         <a href="{{ type.urls.delete }}"
                                 class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
+                            <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>

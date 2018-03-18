@@ -10,7 +10,7 @@
         </h5>
         {% if answer.question.variant == 'file' %}
             {% if answer.answer_file %}
-                <i class="far fa-file"></i> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
+                <i class="fa fa-file-o"></i> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
             {% endif %}
         {% else %}
             »{{ answer.answer }}«

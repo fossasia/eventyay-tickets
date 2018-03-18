@@ -12,7 +12,7 @@
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
         {% if submission.state == 'accepted' %}
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
-                <i class="fas fa-check"></i>{% trans "Confirm your attendance" %}
+                <i class="fa fa-check"></i>{% trans "Confirm your attendance" %}
             </a>
         {% endif %}
     </p>
@@ -30,7 +30,7 @@
                     <input name="email" class="form-control form-control-sm" placeholder="another.speaker@mail.org">
                     <span class="input-group-btn">
                         <button class="btn btn-success btn-sm">
-                            <i class="fas fa-plus"></i>
+                            <i class="fa fa-plus"></i>
                         </button>
                     </span>
                 </div>
@@ -64,7 +64,7 @@
                                 {% if action != 'view' %}
                                 <div class="resource-option-delete">
                                     <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fas fa-trash"></i></button>
+                                        <i class="fa fa-trash"></i></button>
                                 </div>
                                 {% endif %}
                             </div>
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="resource-option-delete">
                                     <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                        <i class="fas fa-trash"></i></button>
+                                        <i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                 {% if action != 'view' %}
                 <div class="col-md-9 ml-auto">
                     <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fas fa-plus"></i> {% trans "Add a new option" %}</button>
+                        <i class="fa fa-plus"></i> {% trans "Add a new option" %}</button>
                 </div>
                 {% endif %}
             </div>

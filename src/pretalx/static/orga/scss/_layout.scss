@@ -53,10 +53,10 @@
   }
 
   .nav-link {
-    .fas, .far {
+    .fa {
       margin-right: 5px;
     }
-    &.nav-link-second-level i {
+    &.nav-link-second-level span {
       padding-left: 1.6em;
     }
   }
@@ -215,7 +215,7 @@ footer {
 
     ul {
       flex-direction: row;
-      .fas, .far {
+      .fa {
         padding-left: 12px;
       }
     }

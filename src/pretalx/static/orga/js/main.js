@@ -8,15 +8,15 @@ $(function () {
             useCurrent: false,
             showClear: !$(this).prop("required"),
             icons: {
-                time: 'far fa-clock',
-                date: 'fas fa-calendar',
-                up: 'fas fa-chevron-up',
-                down: 'fas fa-chevron-down',
-                previous: 'fas fa-chevron-left',
-                next: 'fas fa-chevron-right',
-                today: 'far fa-image',
-                clear: 'fas fa-trash',
-                close: 'fas fa-times'
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-image',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
             }
         });
     });
@@ -28,15 +28,15 @@ $(function () {
             useCurrent: false,
             showClear: !$(this).prop("required"),
             icons: {
-                time: 'far fa-clock',
-                date: 'fas fa-calendar',
-                up: 'fas fa-chevron-up',
-                down: 'fas fa-chevron-down',
-                previous: 'fas fa-chevron-left',
-                next: 'fas fa-chevron-right',
-                today: 'far fa-image',
-                clear: 'fas fa-trash',
-                close: 'fas fa-times'
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-image',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
             }
         };
         $(this).datetimepicker(opts);

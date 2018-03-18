@@ -20,11 +20,11 @@
     <div class="schedule-header">
         <div class="header-right float-right">
             <span class="icon">{% trans "Version" %} {{ schedule.version }}</span>
-            · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="far fa-clock"></i></a></span>
-            · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fas fa-feed"></i></a></span>
+            · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a></span>
+            · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a></span>
             · <span class="dropdown">
                 <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-code"></i>
+                    <i class="fa fa-code"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="exportDropdown">
                     {% for exporter in exporters %}{% if exporter.public %}
@@ -76,8 +76,8 @@
                                     <div class="talk-content">
                                         {% if talk.submission.do_not_record %}
                                             <span class="fa-stack">
-                                              <i class="fas fa-video fa-stack-1x"></i>
-                                              <i class="fas fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
+                                              <i class="fa fa-video-camera fa-stack-1x"></i>
+                                              <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
                                             </span>
                                         {% endif %}
 
