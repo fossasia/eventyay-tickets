@@ -36,11 +36,11 @@ def test_templatetag_review_score(score, expected, event_with_score_context):
 
 
 @pytest.mark.parametrize('positive,negative,expected', (
-    (1, 0, '<i class="fas fa-arrow-circle-up override text-success"></i>'),
-    (0, 1, '<i class="fas fa-arrow-circle-down override text-danger"></i>'),
-    (2, 0, '<i class="fas fa-arrow-circle-up override text-success"></i> 2'),
-    (0, 2, '<i class="fas fa-arrow-circle-down override text-danger"></i> 2'),
-    (1, 1, '<i class="fas fa-arrow-circle-up override text-success"></i> 1<i class="fas fa-arrow-circle-down override text-danger"></i> 1'),
+    (1, 0, '<i class="fa fa-arrow-circle-up override text-success"></i>'),
+    (0, 1, '<i class="fa fa-arrow-circle-down override text-danger"></i>'),
+    (2, 0, '<i class="fa fa-arrow-circle-up override text-success"></i> 2'),
+    (0, 2, '<i class="fa fa-arrow-circle-down override text-danger"></i> 2'),
+    (1, 1, '<i class="fa fa-arrow-circle-up override text-success"></i> 1<i class="fa fa-arrow-circle-down override text-danger"></i> 1'),
 ))
 @pytest.mark.django_db()
 def test_templatetag_review_score_overrid(positive, negative, expected):

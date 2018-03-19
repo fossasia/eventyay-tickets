@@ -83,6 +83,13 @@ def test_can_withdraw_submission(speaker_client, submission):
     )
     submission.refresh_from_db()
     assert response.status_code == 200
+    assert submission.state == SubmissionStates.SUBMITTED
+    response = speaker_client.post(
+        submission.urls.withdraw,
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 200
     assert submission.state == SubmissionStates.WITHDRAWN
 
 
