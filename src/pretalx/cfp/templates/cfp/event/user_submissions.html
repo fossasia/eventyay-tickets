@@ -37,7 +37,7 @@
                     <td class="text-right">
                         {% if submission.editable %}
                             <a href="{{ submission.urls.user_base }}"
-                                    class="btn btn-sm btn-secondary">
+                                    class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i>
                             </a>
                         {% endif %}
@@ -49,13 +49,13 @@
                         {% endif %}
                         {% if submission.slot %}
                             <a href="{{ submission.urls.public }}"
-                                    class="btn btn-sm btn-secondary">
+                                    class="btn btn-sm btn-info">
                                 <i class="fa fa-calendar"></i> {% trans "Schedule" %}
                             </a>
                         {% endif %}
                         {% if submission.does_accept_feedback %}
                             <a href="{{ submission.urls.feedback }}"
-                                    class="btn btn-sm btn-secondary">
+                                    class="btn btn-sm btn-info">
                                 <i class="fa fa-comments"></i> {% trans "Feedback" %}
                             </a>
                         {% endif %}

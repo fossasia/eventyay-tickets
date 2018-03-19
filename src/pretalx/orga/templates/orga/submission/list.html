@@ -19,11 +19,11 @@
         </span>
         <p class="legend-buttons">
             {% if can_create_submission %}
-            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-primary">
+            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
                 <i class="fa fa-plus"></i> {% trans "Add new submission" %}
             </a>
             {% endif %}
-            <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-default">
+            <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-info">
                 <i class="fa fa-print"></i> {% trans "Print cards" %}
             </a>
         </p>

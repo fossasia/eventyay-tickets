@@ -15,7 +15,7 @@
         </span>
         <div class="legend-buttons">
             <a href="{{ request.event.orga_urls.send_outbox }}">
-                <button class="btn btn-primary">{% trans "Send all" %}</button>
+                <button class="btn btn-success">{% trans "Send all" %}</button>
             </a>
             <a href="{{ request.event.orga_urls.purge_outbox }}">
                 <button class="btn btn-danger">{% trans "Discard all" %}</button>
@@ -53,17 +53,17 @@
                 <td class="text-right">
                     <a href="{{ mail.urls.edit }}"
                         title="{% trans "edit" %}"
-                        class="btn btn-sm btn-secondary">
+                        class="btn btn-sm btn-info">
                         <i class="fa fa-edit"></i>
                     </a>
                     <a href="{{ mail.urls.send }}"
                         title="{% trans "send" %}"
-                        class="btn btn-sm btn-secondary">
+                        class="btn btn-sm btn-success">
                         <i class="fa fa-mail-forward"></i>
                     </a>
                     <a href="{{ mail.urls.delete }}"
                         title="{% trans "delete" %}"
-                        class="btn btn-sm btn-secondary">
+                        class="btn btn-sm btn-danger">
                         <i class="fa fa-trash"></i>
                     </a>
                 </td>
