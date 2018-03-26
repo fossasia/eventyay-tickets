@@ -300,7 +300,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
         qs = self.request.event.submissions.select_related('submission_type').order_by('-id').all()
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
-        return qs
+        return qs.distinct()
 
 
 class FeedbackList(SubmissionViewMixin, ListView):
