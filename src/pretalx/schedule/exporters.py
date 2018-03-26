@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from django.utils.functional import cached_property
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx import __version__
 from pretalx.common.exporter import BaseExporter
 from pretalx.common.urls import get_base_url
 from pretalx.schedule.models import Room
@@ -56,7 +57,7 @@ class FrabXmlExporter(ScheduleData):
     icon = 'fa-code'
 
     def render(self, **kwargs):
-        context = {'data': self.data, 'schedule': self.schedule, 'event': self.event}
+        context = {'data': self.data, 'schedule': self.schedule, 'event': self.event, 'version': __version__}
         content = get_template('agenda/schedule.xml').render(context=context)
         return f'{self.event.slug}-schedule.xml', 'text/xml', content
 

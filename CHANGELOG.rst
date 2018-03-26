@@ -18,6 +18,7 @@ Breaking Changes
 Features
 ~~~~~~~~
 - New plugin hook: ``pretalx.submission.signals.submission_state_change`` is triggered on any state change by a submission.
+- The frab compatible xml export now has the pretalx version in an xml comment, to remain compatible with frab exports.
 
 Fixed bugs
 ~~~~~~~~~~~
