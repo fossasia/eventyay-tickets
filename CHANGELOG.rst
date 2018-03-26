@@ -22,4 +22,6 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 
+- Speakers could see their submission in the orga backend, but could access no information they did not put there themselves. (#375)
+
 .. _releases: https://github.com/pretalx/pretalx/releases

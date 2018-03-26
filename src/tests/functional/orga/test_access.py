@@ -49,6 +49,14 @@ def test_user_can_access_event_urls(
     assert both_response.status_code == 200
 
 
+@pytest.mark.django_db
+def test_speaker_cannot_see_submission_in_orga_area(speaker, submission, client):
+    assert speaker in submission.speakers.all()
+    client.force_login(speaker)
+    response = client.get(submission.orga_urls.base, follow=True)
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize('test_user', ('orga', 'speaker', 'superuser', 'None'))
 @pytest.mark.django_db
 def test_user_can_see_correct_events(orga_user, orga_client, speaker, event, other_event, test_user):
