@@ -244,7 +244,7 @@ def superuser_client(superuser, client):
 
 @pytest.fixture
 def submission_type(event):
-    return SubmissionType.objects.create(name='Workshop', event=event)
+    return SubmissionType.objects.create(name='Workshop', event=event, default_duration=60)
 
 
 @pytest.fixture
@@ -430,7 +430,7 @@ def schedule(event):
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
     slot = schedule.talks.filter(submission=confirmed_submission)
-    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot.update(start=now(), end=now() + datetime.timedelta(minutes=60), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
     slot = slot.first()
     return slot
 
