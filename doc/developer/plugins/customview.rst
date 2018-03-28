@@ -13,7 +13,7 @@ pretalx.
 Orga panel views
 ----------------
 
-If you want to add a custom view to the organiser area of an event, just register an URL in your
+If you want to add a custom view to the organiser area of an event, register an URL in your
 ``urls.py`` that lives in the ``/orga/`` subpath::
 
     from django.conf.urls import url
@@ -25,13 +25,13 @@ If you want to add a custom view to the organiser area of an event, just registe
             views.admin_view, name='backend'),
     ]
 
-It is required that your URL parameters is called ``event``.
+You have to name one parameter in your URL ``event``.
 
-You can then implement the view as you would normally do. Our middleware will automatically
-detect the ``/orga/`` subpath and will ensure the following things if this is an URL with
+You can then write a regular view. Our middleware will automatically detect the
+``/orga/`` subpath and will ensure the following points if this is an URL with
 the ``event`` parameter:
 
-* The user is logged in
+* The user has logged in
 * The ``request.event`` attribute contains the current event
 * The user has permission to view the current event
 
@@ -73,16 +73,16 @@ There is also a signal that allows you to add the view to the event sidebar navi
 Frontend views
 --------------
 
-Frontend views work pretty much exactly like organiser area views. Take care that your url starts
+Frontend views work pretty much like organiser area views. Take care that your url starts
 with ``/(P?P<event>[\]+)/``.
-You can then implement a view as you would normally do. It will be automatically ensured that:
+You can then write a regular view. It will be automatically ensured that:
 
 * The requested event exists
-* The requested event is visible (either by being public, or by being viewed by an organiser)
-* The event is accessed via the domain it should be accessed
+* The requested event is visible (either by being public, or if an organiser looks at it)
+* The request involves the correct domain for the event
 * The ``request.event`` attribute contains the correct ``Event`` object
-* Your plugin is enabled
-* The locale is set correctly
+* The organiser has enabled the plugin
+* The locale middleware has processed the request
 
 
 .. _Django REST Framework: http://www.django-rest-framework.org/

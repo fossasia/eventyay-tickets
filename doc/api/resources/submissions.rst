@@ -21,7 +21,7 @@ description                           string                     The description
 duration                              number                     The talk's duration in minutes, or ``null``
 do_not_record                         boolean                    Indicates if the speaker consent to recordings of their talk
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
-slot                                  object                     If the submission has been scheduled, an object with the details, e.g. ``{"start": …, "end": …, "room": "R101"}``
+slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -31,7 +31,7 @@ Endpoints
 
    Returns a list of all submissions the authenticated user/token has access to, or
    all confirmed, publicly scheduled submissions for unauthenticated users.
-   For a list of only accepted or confirmed submissions, authenticated users may choose
+   For a list of accepted or confirmed submissions, authenticated users may choose
    to use the ``/api/events/{event}/talks`` endpoint instead.
 
    **Example request**:
@@ -60,7 +60,7 @@ Endpoints
             "title": "A talk",
             "submission_type": "talk",
             "state": "confirmed",
-            "abstract": "It is a good talk.",
+            "abstract": "A good talk.",
             "description": "I will expand upon the properties of the talk, primarily its high quality.",
             "duration": 30,
             "do_not_record": true,
@@ -105,7 +105,7 @@ Endpoints
         "title": "A talk",
         "submission_type": "talk",
         "state": "confirmed",
-        "abstract": "It is a good talk.",
+        "abstract": "A good talk.",
         "description": "I will expand upon the properties of the talk, primarily its high quality.",
         "duration": 30,
         "do_not_record": true,

@@ -6,17 +6,17 @@
 Creating a plugin
 =================
 
-It is possible to extend pretalx with custom Python code using the official plugin
-API. Every plugin has to be implemented as an independent Django 'app' living
-in its own python package installed like any other python module.
+You can extend pretalx with custom Python code using the official plugin API.
+Think of every plugin as an independent Django 'app' living in its own python
+package installed like any other python module.
 
-The communication between pretalx and the plugins happens mostly using Django's
-`signal dispatcher`_ feature. The core modules of pretalx expose a number of signals
-which are documented on the next pages.
+The communication between pretalx and the plugins happens using Django's
+`signal dispatcher`_ feature. The core modules of pretalx expose signals which
+you can read about on the next pages.
 
-To create a new plugin, create a new python package which must be a valid `Django app`_
-and must contain plugin metadata, as described below.
-There is some boilerplate that you will need for every plugin to get started. To save your
+To create a new plugin, create a new python package which must be a valid
+`Django app`_ and must contain plugin metadata, as described below.
+You will need some boilerplate for every plugin to get started. To save your
 time, we created a `cookiecutter`_ template that you can use like this::
 
    (env)$ pip install cookiecutter
@@ -24,10 +24,10 @@ time, we created a `cookiecutter`_ template that you can use like this::
 
 This will ask you some questions and then create a project folder for your plugin.
 
-The following pages go into detail about the several types of plugins currently
-supported. While these instructions don't assume that you know a lot about pretalx,
-they do assume that you have prior knowledge about Django (e.g. its view layer,
-how its ORM works, etc.).
+The following pages go into detail about the types of plugins
+supported. While these instructions don't assume that you know a lot about
+pretalx, they do assume that you have prior knowledge about Django (e.g. its
+view layer, how its ORM works, etc.).
 
 Plugin metadata
 ---------------
@@ -83,18 +83,18 @@ in a separate python package, your ``setup.py`` should contain something like th
     )
 
 
-This will automatically make pretalx discover this plugin as soon as it is installed e.g.
-through ``pip``. During development, you can just run ``python setup.py develop`` inside
-your plugin source directory to make it discoverable.
+This will automatically make pretalx discover this plugin as soon as you have
+installed it e.g.  through ``pip``. During development, you can run ``python
+setup.py develop`` inside your plugin source directory to make it discoverable.
 
 Signals
 -------
 
-The various components of pretalx define a number of signals which your plugin can
-listen for. We will go into the details of the different signals in the following
-pages. We suggest that you put your signal receivers into a ``signals`` submodule
-of your plugin. You should extend your ``AppConfig`` (see above) by the following
-method to make your receivers available::
+pretalx defines signals which your plugin can listen for. We will go into the
+details of the different signals in the following pages. We suggest that you
+put your signal receivers into a ``signals`` submodule of your plugin. You
+should extend your ``AppConfig`` (see above) by the following method to make
+your receivers available::
 
     class PaypalApp(AppConfig):
         …
@@ -102,8 +102,8 @@ method to make your receivers available::
         def ready(self):
             from . import signals  # noqa
 
-You can optionally specify code that is executed when your plugin is activated for an event
-in the ``installed`` method::
+You can optionally specify code that you want to execute when the organiser
+activates your plugin for an event in the ``installed`` method::
 
     class PaypalApp(AppConfig):
         …
@@ -119,8 +119,8 @@ plugin module, pretalx will automatically import it and include it into the root
 URL configuration with the namespace ``plugins:<label>:``, where ``<label>`` is
 your Django app label.
 
-.. WARNING:: If you define custom URLs and views, you are currently on your own
-   with checking that the calling user is logged in, has appropriate permissions,
+.. WARNING:: If you define custom URLs and views, you are on your own
+   with checking that the calling user has logged in, has appropriate permissions,
    etc. We plan on providing native support for this in a later version.
 
 .. _Django app: https://docs.djangoproject.com/en/1.7/ref/applications/

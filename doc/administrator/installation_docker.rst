@@ -15,8 +15,7 @@ Please set up the following systems beforehand, we'll not explain them here (but
 external installation guides):
 
 * `Docker`_
-* An SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you
-  have credentials for
+* An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ or `PostgreSQL`_ database server
 * A `redis`_ server
@@ -143,7 +142,7 @@ You can now run the following commands to enable and start the service::
 
 Now, create an admin user by running::
 
-    docker exec -it pretalx pretalx init
+    docker exec -it pretalx init
 
 
 Step 6: SSL
@@ -205,7 +204,7 @@ Next Steps: Updates
 
 .. warning:: While we try hard not to break anything, **please perform a backup before every upgrade**.
 
-Updates currently require a short downtime:
+Updates require a short downtime:
 
 * Rebuild the docker image (git pull, then repeat the command from above)
 * ``systemctl restart pretalx.service``
@@ -214,7 +213,6 @@ Restarting the service can take up to a minute (or more if the update requires c
 database and your database is large).
 
 .. _Docker: https://docs.docker.com/engine/installation/linux/debian/
-.. _Postfix: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html

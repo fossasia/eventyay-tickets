@@ -14,8 +14,7 @@ Please set up the following systems beforehand, we'll not explain them here (but
 external installation guides):
 
 * Python 3.6 and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
-* An SMTP server to send out mails, e.g. `Postfix`_ on your machine or some third-party server you
-  have credentials for
+* An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ or `PostgreSQL`_ database server
 * A `redis`_ server
@@ -35,7 +34,7 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
     # adduser pretalx --disabled-password --home /var/pretalx
 
 In this guide, all code lines prepended with a ``#`` symbol are commands that you need to execute on your server as
-``root`` user (e.g. using ``sudo``); all lines prepended with a ``$`` symbol should be run by the unprivileged user.
+``root`` user (e.g. using ``sudo``); you should run all lines prepended with a ``$`` symbol as the unprivileged user.
 
 
 Step 2: Database setup
@@ -101,7 +100,7 @@ Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following cont
 Step 5: Installation
 --------------------
 
-Now we will install pretalx itself. The following steps are to be executed as the ``pretalx`` user. We will
+Now we will install pretalx itself. Please execute the following steps as the ``pretalx`` user. We will
 install all Python packages, including pretalx, in the user's Python environment, so that your global Python
 installation will not know of them::
 
@@ -111,7 +110,7 @@ We also need to create a data directory::
 
     $ mkdir -p /var/pretalx/data/media
 
-Finally, we compile static files and translation data and create the database structure::
+We compile static files and translation data and create the database structure::
 
     $ python -m pretalx migrate
     $ python -m pretalx rebuild
@@ -123,7 +122,7 @@ Now, create an admin user by running::
 Step 6: Starting pretalx as a service
 -------------------------------------
 
-We recommend starting pretalx using systemd to make sure it runs correctly after a reboot. Create a file
+We recommend starting pretalx using systemd to make sure it starts up after a reboot. Create a file
 named ``/etc/systemd/system/pretalx-web.service`` with the following content::
 
     [Unit]
@@ -217,14 +216,14 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-Yay, you are done! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
+Yay, you've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
 the administrator you configured above. You can now create an event, and off you go!
 
 
 Next Steps: Updates
 -------------------
 
-.. warning:: While we try hard not to break things, **please perform a backup before every upgrade**.
+.. warning:: While we try hard not to issue breaking updates, **please perform a backup before every upgrade**.
 
 To upgrade to a new pretalx release, pull the latest code changes and run the following commands as the ``pretalx``
 user::
@@ -236,7 +235,6 @@ user::
 
 
 .. _ansible role: https://github.com/pretalx/ansible-pretalx
-.. _Postfix: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html

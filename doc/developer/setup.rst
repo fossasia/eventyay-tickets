@@ -107,9 +107,10 @@ for example::
 
 Working with mails
 ^^^^^^^^^^^^^^^^^^
-If you want to test anything regarding emails in your development setup, we recommend
-starting Python's debugging SMTP server in a separate shell and configuring pretalx to use it.
-Every email will then be printed to the debugging SMTP server's stdout.
+
+If you want to test emails in your development setup, we recommend starting
+Python's debugging SMTP server in a separate shell and configuring pretalx to
+use it. The debugging SMTP server will print every email to its stdout.
 
 Add this to your ``src/pretalx.cfg``::
 

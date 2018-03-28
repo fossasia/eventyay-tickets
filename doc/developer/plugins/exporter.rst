@@ -13,9 +13,10 @@ Please read :ref:`Creating a plugin <pluginsetup>` first, if you haven't already
 Exporter registration
 ---------------------
 
-The exporter API does not make a lot of usage from signals, however, it does use a signal to get a list of
-all available exporters. Your plugin should listen for this signal and return the subclass of
-``pretalx.common.exporter.BaseExporter`` that we'll provide in this plugin::
+The exporter API does not make a lot of usage from signals, but it does use a
+signal to get a list of all available exporters. Your plugin should listen for
+this signal and return the subclass of ``pretalx.common.exporter.BaseExporter``
+that we'll provide in this plugin::
 
     from django.dispatch import receiver
 
@@ -36,9 +37,6 @@ The exporter class
    The central object of each exporter is the subclass of ``BaseExporter``.
 
    .. py:attribute:: BaseExporter.event
-
-      The default constructor sets this property to the event we are currently
-      working for.
 
    .. autoattribute:: identifier
 

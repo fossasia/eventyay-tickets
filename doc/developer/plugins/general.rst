@@ -5,7 +5,7 @@ General APIs
 ============
 
 This page lists some general signals and hooks which do not belong to a
-specific type of plugin but might come in handy for various plugins.
+specific plugin but might come in handy for all sorts of plugin.
 
 Core
 ----

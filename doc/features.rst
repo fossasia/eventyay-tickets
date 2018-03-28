@@ -8,7 +8,7 @@ of these lists are complete, and we're looking forward to what you come up with!
 Features
 --------
 
-pretalx is under active development, so features will be added here on a regular basis.
+pretalx is under active development, so we will add features here on a regular basis.
 
 Talk submission
 ~~~~~~~~~~~~~~~
@@ -27,7 +27,7 @@ Talk submission
   talk. Subsequently, speakers will receive all emails in that language.
 - **Ask custom questions:** If you need custom information from your submitters, you can add
   questions to your CfP. We support a wide variety of answer types, such as free-text, number input,
-  and choices. (Answers can be optional, too.) You'll see the results as easily manageable
+  and choices. (Answers can be optional, too.) You'll see the results as manageable
   statistics.
 - **Set a deadline:** You can configure a deadline for your CfP and choose to show the countdown
   publicly.
@@ -36,8 +36,9 @@ Talk submission
   their talk.
 - **Reviewing:** A reviewing system with both texts and scoring, configurable scales, average
   scores, and reviewer teams that can work separately from the general orga team.
-- **Strong opinions:** Permit reviewers to issue vetos or to force a submission to be accepted, for
-  a fixed amount of times per event.
+- **Strong opinions:** Permit reviewers to issue override votes to put a
+  submission to the top or bottom of the ranking, for a fixed amount of times
+  per event.
 
 Scheduling
 ~~~~~~~~~~

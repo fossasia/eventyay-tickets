@@ -1,17 +1,17 @@
 Release a pretalx version
 =========================
 
-So, you are a pretalx maintainer and want to release a new version? Woo-hoo, here we go!
+You are a pretalx maintainer and want to release a new version? Woo-hoo, here we go!
 
 
 System checks
 -------------
 
-1. Are you definitely in the branch and commit you think you are in?
+1. Are you in the branch and commit you think you are in?
 2. Are all tests passing?
 3. Check the translations: Are relevant strings still waiting for a translation?
 4. Have you deployed the release-ready commit to an instance? Did the upgrade work?
-5. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, which will be shown with a ``git shortlog -ns vx.y.z..master``.
+5. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, i.e. ``git shortlog -ns vx.y.z..master``.
 6. Have you communicated your intentions and release timeline to the team?
 7. Is the ``CHANGELOG.rst`` well-phrased and complete?
 

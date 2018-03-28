@@ -1,8 +1,9 @@
 Configure pretalx
 =================
 
-There are two basic ways to configure pretalx: using config files or environment variables. You can
-combine those two options, and their precedence is in this order:
+You can configure pretalx in two different ways: using config files or
+environment variables. You can combine those two options, and their precedence
+is in this order:
 
 1. Environment variables
 2. The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg``
@@ -23,17 +24,17 @@ The filesystem section
 ``data``
 ~~~~~~~~
 
-- The ``data`` option describes the path that is used as base for the media files directory, and log
-  files should be saved. Unless you have a compelling reason to keep those files apart, just setting
-  the ``data`` option is the easiest way to configure pretalx.
+- The ``data`` option describes the path that is the base for the media files
+  directory, and where pretalx will save log files. Unless you have a
+  compelling reason to keep those files apart, setting the ``data`` option is
+  the easiest way to configure pretalx.
 - **Environment variable:** ``PRETALX_DATA_DIR``
-- **Default:** A directory called ``data`` in the directory in which pretalx's ``manage.py`` is
-  located.
+- **Default:** A directory called ``data`` next to pretalx's ``manage.py``.
 
 ``media``
 ~~~~~~~~~
 
-- The ``media`` option sets the media directory that is used for user generated files. It needs to
+- The ``media`` option sets the media directory that contains user generated files. It needs to
   be writable by the pretalx process.
 - **Environment variable:** ``PRETALX_FILESYSTEM_MEDIA``
 - **Default:** A directory called ``media`` in the ``data`` directory (see above).
@@ -41,7 +42,7 @@ The filesystem section
 ``logs``
 ~~~~~~~~
 
-- The ``logs`` option sets the log directory that is used for logged data. It needs to
+- The ``logs`` option sets the log directory that contains logged data. It needs to
   be writable by the pretalx process.
 - **Environment variable:** ``PRETALX_FILESYSTEM_LOGS``
 - **Default:** A directory called ``logs`` in the ``data`` directory (see above).
@@ -49,12 +50,11 @@ The filesystem section
 ``static``
 ~~~~~~~~~~
 
-- The ``statics`` option sets the directory that is used for static files. It needs to
-  be writable by the pretalx process, and will be filled by the ``rebuild`` and
+- The ``statics`` option sets the directory that contains static files. It needs to
+  be writable by the pretalx process. pretalx will put files there during the ``rebuild`` and
   ``collectstatic`` commands.
 - **Environment variable:** ``PRETALX_FILESYSTEM_STATIC``
-- **Default:** A directory called ``static.dist`` in the directory in which pretalx's ``manage.py``
-  is located.
+- **Default:** A directory called ``static.dist`` next to pretalx's ``manage.py``.
 
 The site section
 ----------------
@@ -62,7 +62,7 @@ The site section
 ``debug``
 ~~~~~~~~~
 
-- Decides if pretalx runs in debug mode. This mode is only meant for development and debugging, not
+- Decides if pretalx runs in debug mode. Please use this mode for development and debugging, not
   for live usage.
 - **Environment variable:** ``PRETALX_DEBUG``
 - **Default:** ``True`` if you're executing ``runserver``, ``False`` otherwise. **Never run a
@@ -71,7 +71,7 @@ The site section
 ``url``
 ~~~~~~~
 
-- This setting is used to render links whereever pretalx needs full URLs (for example in emails and
+- This value will appear whereever pretalx needs to render full URLs (for example in emails and
   feeds), and set the appropriate allowed hosts variables.
 - **Environment variable:** ``PRETALX_SITE_URL``
 - **Default:** ``http://localhost``
@@ -79,8 +79,8 @@ The site section
 ``secret``
 ~~~~~~~~~~
 
-- Every Django application has a secret that is used for cryptographic signing in many places.
-  You do not need to set this variable – a secret key will be generated and saved in a local file if
+- Every Django application has a secret that Django uses for cryptographic signing.
+  You do not need to set this variable – pretalx will generate a secret key and save it in a local file if
   you do not set it manually.
 - **Default:** None
 
@@ -150,49 +150,49 @@ The mail section
 ``from``
 ~~~~~~~~
 
-- The sender address used when no other is configured, or when event independent emails are sent.
+- The fallback sender address, e.g. for when pretalx sends event independent emails.
 - **Environment variable:** ``PRETALX_MAIL_FROM``
 - **Default:** ``admin@localhost``
 
 ``host``
 ~~~~~~~~
 
-- The host on which the mail server can be reached.
+- The email server host address.
 - **Environment variable:** ``PRETALX_MAIL_HOST``
 - **Default:** ``localhost``
 
 ``port``
 ~~~~~~~~
 
-- The port on which the mail server can be reached.
+- The email server port.
 - **Environment variable:** ``PRETALX_MAIL_PORT``
 - **Default:** ``25``
 
 ``user``
 ~~~~~~~~
 
-- The user that should be used for mail server authentication, if needed.
+- The user account for mail server authentication, if needed.
 - **Environment variable:** ``PRETALX_MAIL_USER``
 - **Default:** ``''``
 
 ``password``
 ~~~~~~~~~~~~
 
-- The password that should be used for mail server authentication, if needed.
+- The password for mail server authentication, if needed.
 - **Environment variable:** ``PRETALX_MAIL_PASSWORD``
 - **Default:** ``''``
 
 ``tls``
 ~~~~~~~
 
-- Should TLS be used when sending mail? Only one of TLS and SSL may be used.
+- Should pretalx use TLS when sending mail? Please choose either TLS or SSL.
 - **Environment variable:** ``PRETALX_MAIL_TLS``
 - **Default:** ``False``
 
 ``ssl``
 ~~~~~~~
 
-- Should SSL be used when sending mail? Only one of TLS and SSL may be used.
+- Should pretalx use SSL when sending mail? Please choose either TLS or SSL.
 - **Environment variable:** ``PRETALX_MAIL_SSL``
 - **Default:** ``False``
 
@@ -202,7 +202,7 @@ The celery section
 ``backend``
 ~~~~~~~~~~~
 
-- The celery backend to be used. If you use a standard redis-based setup,
+- The celery backend. If you use a standard redis-based setup,
   ``'redis://127.0.0.1/1'`` woould be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BACKEND``
 - **Default:** ``''``
@@ -210,7 +210,7 @@ The celery section
 ``broker``
 ~~~~~~~~~~~
 
-- The celery broker to be used. If you use a standard redis-based setup,
+- The celery broker. If you use a standard redis-based setup,
   ``'redis://127.0.0.1/2'`` woould be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BROKER``
 - **Default:** ``''``
