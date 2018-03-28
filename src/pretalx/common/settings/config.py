@@ -128,7 +128,7 @@ def read_config_files(config):
             os.path.expanduser('~/.pretalx.cfg'),
             'pretalx.cfg',
         ], encoding='utf-8')
-    return config, config_files
+    return config, config_files or []  # .read() returns None, if there are no config files
 
 
 def read_layer(layer_name, config):
