@@ -260,7 +260,7 @@ var app = new Vue({
       <div id='unassigned-talks'>
         <div class="room-header" ref="roomHeader">Unassigned Talks</div>
         <div class="input-group">
-          <div class="input-group-addon"><i class="fa fa-search"></i></div>
+          <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
           <input type="text" class="form-control" placeholder="Search..." v-model="search">
         </div>
         <div class="room-container" id="unassigned-container" ref="unassigned">

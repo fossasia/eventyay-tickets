@@ -29,7 +29,7 @@
         {% bootstrap_field form.notes layout='event' %}
         {% bootstrap_field form.content_locale layout='event' %}
         {% bootstrap_field form.do_not_record layout='event' %}
-        {% bootstrap_field form.duration addon_after='minutes' layout='event' %}
+        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
         {% bootstrap_field form.image layout='event' %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}

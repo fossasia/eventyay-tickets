@@ -70,7 +70,7 @@ setup(
         'cssutils==1.0.*',
         'Django==2.0.*',
         'django-bakery==0.12.*',
-        'django-bootstrap4==0.0.4',
+        'django-bootstrap4==0.0.6',
         'django-compressor==2.2.*',
         'django-csp==3.3.*',
         'django-filter==1.1.*',
