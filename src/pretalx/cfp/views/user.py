@@ -26,35 +26,30 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @cached_property
     def login_form(self):
-        return LoginInfoForm(user=self.request.user,
-                             data=(self.request.POST
-                                   if self.request.method == 'POST'
-                                   and self.request.POST.get('form') == 'login'
-                                   else None))
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
+        return LoginInfoForm(
+            user=self.request.user,
+            data=self.request.POST if bind else None
+        )
 
     @cached_property
     def profile_form(self):
-        if self.request.method == 'POST' and self.request.POST.get('form') == 'profile':
-            return SpeakerProfileForm(
-                user=self.request.user,
-                event=self.request.event,
-                read_only=False,
-                data=self.request.POST,
-                files=self.request.FILES,
-            )
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
         return SpeakerProfileForm(
             user=self.request.user,
             event=self.request.event,
             read_only=False,
-            data=None,
             with_email=False,
+            data=self.request.POST if bind else None,
+            files=self.request.FILES if bind else None,
         )
 
     @cached_property
     def questions_form(self):
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'questions'
         return QuestionsForm(
-            data=self.request.POST if self.request.method == 'POST' else None,
-            files=self.request.FILES if self.request.method == 'POST' else None,
+            data=self.request.POST if bind else None,
+            files=self.request.FILES if bind else None,
             speaker=self.request.user,
             event=self.request.event,
             target='speaker',
