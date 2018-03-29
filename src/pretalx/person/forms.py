@@ -105,6 +105,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
+        self.with_email = kwargs.pop('with_email', True)
         self.essential_only = kwargs.pop('essential_only', False)
         if self.user:
             kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
@@ -124,9 +125,12 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
     @cached_property
     def user_fields(self):
         if self.user and not self.essential_only:
-            return [f for f in self.USER_FIELDS]
+            return [f for f in self.USER_FIELDS if f != "email" or self.with_email]
         else:
-            return [f for f in self.USER_FIELDS if f not in self.FIRST_TIME_EXCLUDE]
+            return [
+                f for f in self.USER_FIELDS
+                if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
+            ]
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')

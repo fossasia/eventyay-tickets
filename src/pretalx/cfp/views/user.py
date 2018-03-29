@@ -47,6 +47,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             event=self.request.event,
             read_only=False,
             data=None,
+            with_email=False,
         )
 
     @cached_property
