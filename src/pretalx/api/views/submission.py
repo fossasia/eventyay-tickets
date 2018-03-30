@@ -28,6 +28,8 @@ class TalkViewSet(SubmissionViewSet):
 
     def get_queryset(self):
         qs = self.get_base_queryset() or self.queryset
+        if not self.request.event.current_schedule:
+            return qs.none()
         qs = qs.filter(slots__schedule=self.request.event.current_schedule)
         return qs
 
