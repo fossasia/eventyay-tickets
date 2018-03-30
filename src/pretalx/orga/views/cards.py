@@ -1,6 +1,7 @@
 import tempfile
 
 from django.http import HttpResponse
+from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import View
 from reportlab.lib.pagesizes import A4
@@ -96,6 +97,9 @@ class SubmissionCards(PermissionRequired, View):
         )
 
     def get(self, request, *args, **kwargs):
+        if not self.get_queryset().exists():
+            messages.warning(request, _('You don\'t have any submissions yet.'))
+            return redirect(request.path)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
             doc = BaseDocTemplate(
                 f.name, pagesize=A4,
@@ -122,6 +126,8 @@ class SubmissionCards(PermissionRequired, View):
             doc.build(self.get_story(doc))
             f.seek(0)
             r = HttpResponse(content_type='application/pdf')
+            timestamp = now().strftime('%Y-%m-%d-%H%M')
+            r['Content-Disposition'] = f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
             r.write(f.read())
             return r
 
@@ -138,5 +144,4 @@ class SubmissionCards(PermissionRequired, View):
         story = []
         for s in self.get_queryset():
             story.append(SubmissionCard(s, styles, doc.width / 2))
-
         return story
