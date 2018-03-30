@@ -360,5 +360,4 @@ This mail was sent to you by the content system of your event {name}.''').format
             'subject': _('[{slug}] News from your content system').format(slug=self.slug),
             'body': text,
             'html': QueuedMail.text_to_html(text, event=self),
-            'sender': f'noreply@{settings.SITE_NETLOC}',
         })

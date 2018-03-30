@@ -2,6 +2,7 @@ import logging
 from smtplib import SMTPRecipientsRefused, SMTPSenderRefused
 from typing import Any, Dict, Union
 
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.mail.backends.smtp import EmailBackend
 from django.utils.translation import override
@@ -63,16 +64,20 @@ def mail(user: User, subject: str, template: Union[str, LazyI18nString],
 
 
 @app.task
-def mail_send_task(to: str, subject: str, body: str, html: str, sender: str,
+def mail_send_task(to: str, subject: str, body: str, html: str, reply_to: str=None,
                    event: int=None, cc: list=None, bcc: list=None, headers: dict=None):
     headers = headers or dict()
     if event:
         event = Event.objects.filter(id=event).first()
     if event:
-        sender = sender or event.settings.get('mail_from')
-        headers['reply-to'] = headers.get('reply-to', event.settings.get('mail_from'))
+        sender = event.settings.get('mail_from')
+        if sender == 'noreply@example.org' or not sender:
+            sender = event.email
+        if reply_to:
+            headers['reply-to'] = reply_to
         backend = event.get_mail_backend()
     else:
+        sender = settings.MAIL_FROM
         backend = get_connection(fail_silently=False)
 
     email = EmailMultiAlternatives(subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers)

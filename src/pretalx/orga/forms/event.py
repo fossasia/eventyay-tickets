@@ -125,29 +125,31 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     mail_from = forms.EmailField(
         label=_("Sender address"),
-        help_text=_("Sender address for outgoing emails"))
+        help_text=_("Sender address for outgoing emails. "),
+        required=False,
+    )
     smtp_use_custom = forms.BooleanField(
         label=_("Use custom SMTP server"),
         help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
-        required=False
+        required=False,
     )
     smtp_host = forms.CharField(
         label=_("Hostname"),
-        required=False
+        required=False,
     )
     smtp_port = forms.IntegerField(
         label=_("Port"),
-        required=False
+        required=False,
     )
     smtp_username = forms.CharField(
         label=_("Username"),
-        required=False
+        required=False,
     )
     smtp_password = forms.CharField(
         label=_("Password"),
         required=False,
         widget=forms.PasswordInput(attrs={
-            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+            'autocomplete': 'new-password',  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
         }),
     )
     smtp_use_tls = forms.BooleanField(
@@ -160,6 +162,13 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_("Commonly enabled on port 465."),
         required=False
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        event = kwargs.get('obj')
+        if event:
+            self.fields['mail_from'].widget.attrs['placeholder'] = event.email
+            self.fields['mail_from'].help_text += _('Leave empty to use the default address: {}').format(event.email)
 
     def clean(self):
         data = self.cleaned_data

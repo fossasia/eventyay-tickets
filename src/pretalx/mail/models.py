@@ -147,7 +147,7 @@ class QueuedMail(LogMixin, models.Model):
                 'subject': self.subject,
                 'body': self.text,
                 'html': body_html,
-                'sender': self.reply_to,
+                'reply_to': self.reply_to or self.event.email,
                 'event': self.event.pk,
                 'cc': (self.cc or '').split(','),
                 'bcc': (self.bcc or '').split(','),
