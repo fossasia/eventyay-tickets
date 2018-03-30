@@ -9,7 +9,7 @@ default_router.register(r'events', event.EventViewSet)
 
 event_router = routers.DefaultRouter()
 event_router.register(r'submissions', submission.SubmissionViewSet)
-event_router.register(r'talks', submission.SubmissionViewSet)
+event_router.register(r'talks', submission.TalkViewSet)
 event_router.register(r'schedules', submission.ScheduleViewSet)
 event_router.register(r'speakers', speaker.SpeakerViewSet)
 

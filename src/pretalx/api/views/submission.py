@@ -21,9 +21,14 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             return self.request.event.submissions.filter(slots__in=self.request.event.current_schedule.talks.all())
 
     def get_queryset(self):
+        return self.get_base_queryset() or self.queryset
+
+
+class TalkViewSet(SubmissionViewSet):
+
+    def get_queryset(self):
         qs = self.get_base_queryset() or self.queryset
-        if 'talks' in self.request._request.path:
-            qs = qs.filter(slots__schedule=self.request.event.current_schedule)
+        qs = qs.filter(slots__schedule=self.request.event.current_schedule)
         return qs
 
 
