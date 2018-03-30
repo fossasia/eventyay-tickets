@@ -4,7 +4,8 @@ The development setup
 To contribute to pretalx, it's useful to run pretalx locally on your device so you can test your
 changes. First of all, you need install some packages on your operating system:
 
-If you want to install pretalx on a server for actual usage, go to the :ref:`administrator-index` instead.
+If you want to install pretalx on a server for actual usage, go to the :ref:`administrator-index`
+instead.
 
 * git
 * Python 3.6(!) or newer
@@ -131,6 +132,11 @@ To actually see pretalx in your language, you have to compile the ``*.po`` files
 binary ``*.mo`` counterparts::
 
     (env)$ python manage.py compilemessages
+
+pretalx currently only supports events in English, or German, or both. To translate pretalx to a new
+language, add the language code and natural name to the ``LANGUAGES`` variable in the
+``settings.py``. Depending on the completeness of your changes, and your commitment to maintain them
+in the future, we'll gladly talk about merging them into core.
 
 
 Working with the documentation
