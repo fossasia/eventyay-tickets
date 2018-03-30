@@ -77,14 +77,14 @@ class Event(LogMixin, models.Model):
         max_length=7,
         null=True, blank=True,
         validators=[],
-        verbose_name=_('Main event color'),
-        help_text=_('Please provide a hex value like #00ff00 if you do not like pretalx colors.'),
+        verbose_name=_('Main event colour'),
+        help_text=_('Please provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'),
     )
     custom_css = models.FileField(
         upload_to=event_css_path,
         null=True, blank=True,
         verbose_name=_('Custom Event CSS'),
-        help_text=_('Upload a custom CSS file if changing the primary color is not sufficient for you.'),
+        help_text=_('Upload a custom CSS file if changing the primary colour is not sufficient for you.'),
     )
     logo = models.FileField(
         upload_to=event_logo_path,
