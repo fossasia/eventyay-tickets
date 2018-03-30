@@ -4,8 +4,8 @@ Talks
 Resource description
 --------------------
 
-The talk resource is the same as the submission resource, guaranteed to be
-either accepted or confirmed.  It contains the following public fields:
+The talk resource is the same as the submission resource, but will only return talks
+that already have a slot on the current schedule. It contains the following public fields:
 
 .. rst-class:: rest-resource-table
 
@@ -30,7 +30,7 @@ Endpoints
 
 .. http:get:: /api/events/{event}/talks
 
-   Returns a list of all accepted and confirmed submissions the authenticated user/token has access to, or
+   Returns a list of all scheduled submissions the authenticated user/token has access to, or
    all confirmed, publicly scheduled submissions for unauthenticated users.
    For a list of all submissions regardless of their state, authenticated users may choose
    to use the ``/api/events/{event}/submissions`` endpoint instead.
