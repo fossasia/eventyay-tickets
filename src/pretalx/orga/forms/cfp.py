@@ -27,7 +27,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     mail_on_new_submission = forms.BooleanField(
         label=_('Send mail on new submission'),
-        help_text=_('If this setting is checked, you will receive an email to the orga address for every received submission.'),
+        help_text=_('If this setting is checked, you will receive an email to the organiser address for every received submission.'),
         required=False
     )
     allow_override_votes = forms.BooleanField(
@@ -53,6 +53,8 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     def __init__(self, obj, *args, **kwargs):
         kwargs.pop('read_only')  # added in ActionFromUrl view mixin, but not needed here.
         super().__init__(*args, obj=obj, **kwargs)
+        if getattr(obj, 'email'):
+            self.fields['mail_on_new_submission'].help_text += f' (<a href="mailto:{obj.email}">{obj.email}</a>)'
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)
         self.fields['review_deadline'].widget = forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
