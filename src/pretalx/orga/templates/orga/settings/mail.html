@@ -6,12 +6,19 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "E-mail settings" %}</legend>
+        <div class="alert alert-info">
+            {% blocktrans trimmed %}
+                If you don't configure custom email settings, the global configuration
+                for this server will be used (ask your administrator for details).<br>
+                We recommend that you add email settings here explicitly.
+            {% endblocktrans %}
+        </div>
         {% bootstrap_form form layout='event' %}
         <div class="form-group row">
             <div class="ml-auto col-md-9">
                 {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                    <button type="submit" class="btn btn-info" name="test" value="1">
+                    <button type="submit" class="btn btn-info">{% trans "Save" %}</button>
+                    <button type="submit" class="btn btn-success" name="test" value="1">
                         {% trans "Save and test custom SMTP connection" %}
                     </button>
                 {% endif %}
