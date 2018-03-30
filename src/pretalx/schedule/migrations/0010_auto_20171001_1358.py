@@ -36,6 +36,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='schedule',
             name='version',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='version'),
+            field=models.CharField(blank=True, max_length=190, null=True, verbose_name='version'),
         ),
     ]

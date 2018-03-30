@@ -24,7 +24,7 @@ class Schedule(LogMixin, models.Model):
         related_name='schedules',
     )
     version = models.CharField(
-        max_length=200,
+        max_length=190,
         null=True, blank=True,
         verbose_name=_('version'),
     )

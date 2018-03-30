@@ -43,7 +43,7 @@ Next, we need a database and a database user. We can create these with any kind 
 tool or directly on our database's shell, e.g. for MySQL::
 
     mysql -u root -p
-    mysql> CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    mysql> CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
     mysql> GRANT ALL PRIVILEGES ON pretalx.* TO pretalx@'localhost' IDENTIFIED BY '*********';
     mysql> FLUSH PRIVILEGES;
 

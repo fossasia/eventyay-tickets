@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             name='Schedule',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, max_length=200, null=True)),
+                ('version', models.CharField(blank=True, max_length=190, null=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='schedules', to='event.Event')),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
