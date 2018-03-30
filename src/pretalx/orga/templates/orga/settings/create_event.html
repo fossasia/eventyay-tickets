@@ -15,13 +15,13 @@
         </div>
 
         {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.slug layout='event' addon_before=url_placeholder %}
+        {% bootstrap_field form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
+        {% bootstrap_field form.locale layout='event' %}
+        {% bootstrap_field form.locales layout='event' %}
         {% bootstrap_field form.date_from layout='event' %}
         {% bootstrap_field form.date_to layout='event' %}
         {% bootstrap_field form.timezone layout='event' %}
         {% bootstrap_field form.email layout='event' %}
-        {% bootstrap_field form.locale layout='event' %}
-        {% bootstrap_field form.locales layout='event' %}
         {% bootstrap_field form.logo layout='event' %}
         {% bootstrap_field form.landing_page_text layout='event' %}
 

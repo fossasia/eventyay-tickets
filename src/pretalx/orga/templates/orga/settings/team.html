@@ -12,7 +12,7 @@
         {% if team|length < 4 %}{% if pending and pending|length < 3 %}
             {% trans "Teams of three people or less are somewhat small and provide more work for everyone. Why don't you invite some more team members?" %}<br>
             {% endif %}{% endif %}
-        {% trans "To invite more members to your team, enter an email address below." %}
+        {% trans "To invite a new member to your team, enter their email address below." %}
     </div>
     <legend>
         {{ formset|length }}
@@ -33,7 +33,10 @@
             <tr>
                 <th>{% trans "Member" %}</th>
                 <th>{% trans "Orga" %}</th>
-                <th>{% trans "Reviewer" %}</th>
+                <th>
+                    {% trans "Reviewer" %}
+                    <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="right" title="{% trans "Reviewers will be able to rate submissions. Override votes are basically positive or negative vetos." %}"></i>
+                </th>
                 <th></th>
                 <th></th>
             </tr>
@@ -67,12 +70,28 @@
                 </td>
             </tr>
             {% endfor %}
+            <tr data-formset-form>
+                <td>
+                    {% bootstrap_field formset.empty_form.invitation_email form_group_class="" layout="inline" %}
+                </td>
+                <td>{% bootstrap_field formset.empty_form.is_orga use_label=False layout='event-inline' %}</td>
+                <td class="reviewer">
+                    {% bootstrap_field formset.empty_form.is_reviewer use_label=False layout='event-inline' %}
+                    <span>{{ formset.empty_form.review_override_count }} {% trans "Override Votes" %}</span>
+                </td>
+                <td>
+                    {% bootstrap_field formset.empty_form.id field_class="hidden" %}
+                    {% bootstrap_field formset.empty_form.DELETE field_class="sr-only" form_group_class="" %}
+                </td>
+            </tr>
         </tbody>
     </table>
-    <button type="button" class="btn btn-info" data-formset-add>
-        <i class="fa fa-plus"></i> {% trans "Add a new member" %}
-    </button>
-    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+    <div class="float-right">
+        <button type="button" class="btn btn-info" data-formset-add>
+            <i class="fa fa-plus"></i> {% trans "Add a new member" %}
+        </button>
+        <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+    </div>
     <script type="form-template" data-formset-empty-form>
         {% escapescript %}
         <tr data-formset-form>
@@ -101,6 +120,7 @@
         $(".formset").formset({
             animateForms: true
         });
+      $('[data-toggle="tooltip"]').tooltip()
     });
 
     function updateOverrideCountInput() {
