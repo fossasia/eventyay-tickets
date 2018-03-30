@@ -65,6 +65,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             index = minimum + number
             self.fields[f'review_score_name_{index}'] = forms.CharField(
                 label=_('Score label ({})').format(index),
+                help_text=_('Human readable explanation of what a score of "{}" actually means, e.g. "great!".').format(index),
                 required=False
             )
 
