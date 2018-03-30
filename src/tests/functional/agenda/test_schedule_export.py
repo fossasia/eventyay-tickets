@@ -85,10 +85,10 @@ def test_schedule_speaker_ical_export(slot, other_slot, client):
 
 
 @pytest.mark.django_db
-def test_feed_view(slot, client, schedule_schema):
+def test_feed_view(slot, client, schedule_schema, schedule):
     response = client.get(slot.submission.event.urls.feed)
     assert response.status_code == 200
-    assert slot.submission.event.schedules.first().version in response.content.decode()
+    assert schedule.version in response.content.decode()
 
 
 @pytest.mark.django_db

@@ -16,8 +16,8 @@ def test_frab_import_minimal(superuser):
     assert Room.objects.all()[0].name == 'Volkskundemuseum'
 
     assert TalkSlot.objects.count() == 2
-    assert TalkSlot.objects.all()[0].schedule.version == '1.99b 🍕'
-    assert TalkSlot.objects.all()[1].schedule.version is None
+    assert TalkSlot.objects.order_by('pk')[0].schedule.version == '1.99b 🍕'
+    assert TalkSlot.objects.order_by('pk')[1].schedule.version is None
 
     assert Event.objects.count() == 1
     event = Event.objects.first()

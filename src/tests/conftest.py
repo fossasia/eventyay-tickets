@@ -36,8 +36,9 @@ def event():
 @pytest.fixture
 def other_event():
     event = Event.objects.create(
-        name='Boring testevent', is_public=True, slug='test2', email='orga2@orga.org',
-        date_from=datetime.date.today(), date_to=datetime.date.today()
+        name='Boring testevent', is_public=True, slug='other', email='orga2@orga.org',
+        date_from=datetime.date.today() + datetime.timedelta(days=1),
+        date_to=datetime.date.today() + datetime.timedelta(days=1)
     )
     event.settings.export_html_on_schedule_release = False
     return event

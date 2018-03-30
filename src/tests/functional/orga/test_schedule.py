@@ -10,8 +10,8 @@ from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('room', 'room_availability')
-def test_room_list(orga_client, event):
+@pytest.mark.usefixtures('room')
+def test_room_list(orga_client, event, room_availability):
     response = orga_client.get(reverse(f'orga:schedule.api.rooms', kwargs={'event': event.slug}), follow=True)
     content = json.loads(response.content.decode())
     assert response.status_code == 200
@@ -21,7 +21,7 @@ def test_room_list(orga_client, event):
     assert content['end']
     availabilities = content['rooms'][0]['availabilities']
     assert len(availabilities) == 1
-    assert availabilities[0]['id'] == 1
+    assert availabilities[0]['id'] == room_availability.pk
     assert availabilities[0]['start']
     assert availabilities[0]['end']
 
@@ -56,7 +56,7 @@ def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
     start = now()
     assert slot.start != start
     response = orga_client.patch(
-        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.submission.pk}),
+        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}),
         data=json.dumps({'room': room.pk, 'start': start.isoformat()}),
         follow=True,
     )
@@ -75,7 +75,7 @@ def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room
     slot.save()
     assert slot.start
     response = orga_client.patch(
-        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.submission.pk}),
+        reverse(f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}),
         data=json.dumps(dict()),
         follow=True,
     )

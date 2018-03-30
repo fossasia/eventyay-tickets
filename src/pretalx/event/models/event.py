@@ -194,6 +194,9 @@ class Event(LogMixin, models.Model):
         schedules = '{base}/schedules'
         speakers = '{base}/speakers'
 
+    class Meta:
+        ordering = ('date_from',)
+
     def __str__(self) -> str:
         return f'Event(slug={self.slug}, date_from={self.date_from.isoformat()})'
 

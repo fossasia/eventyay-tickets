@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import pytest
 import pytz
@@ -314,9 +315,15 @@ def test_serialize(availabilitiesform, avails, expected, tzname):
         for avail in avails:
             avail.event_id = availabilitiesform.event.id
             avail.room_id = instance.id
-        Availability.objects.bulk_create(avails)
+            avail.save()
     else:
         instance = None
+
+    if avails:
+        expected = json.loads(expected)
+        for a, j in zip(avails, expected['availabilities']):
+            j['id'] = a.pk
+        expected = json.dumps(expected)
 
     actual = availabilitiesform._serialize(availabilitiesform.event, instance)
     assert actual == expected
@@ -351,11 +358,9 @@ def test_chained(availabilitiesform, room):
     form.cleaned_data['availabilities'] = form.clean_availabilities()
     form.save()
 
-    avails = Room.objects.first().availabilities.all()
+    avails = Room.objects.first().availabilities.order_by('-start')
     assert len(avails) == 2
-    assert avails[0].id == 3
     assert avails[0].start == datetime.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
     assert avails[0].end == datetime.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
-    assert avails[1].id == 4
     assert avails[1].start == datetime.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
     assert avails[1].end == datetime.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)
