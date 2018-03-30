@@ -32,7 +32,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     allow_override_votes = forms.BooleanField(
         label=_('Allow override votes'),
-        help_text=_('With this setting, individual reviewers can be assigned a fixed amount of "override votes" functioning like vetos.'),
+        help_text=_('Individual reviewers can be assigned a fixed amount of "override votes" (positive or negative vetos).'),
         required=False,
     )
     review_min_score = forms.IntegerField(
@@ -55,6 +55,9 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         super().__init__(*args, obj=obj, **kwargs)
         if getattr(obj, 'email'):
             self.fields['mail_on_new_submission'].help_text += f' (<a href="mailto:{obj.email}">{obj.email}</a>)'
+        if getattr(obj, 'slug'):
+            additional = _('You can configure override votes <a href="{link}">here</a>.').format(link=obj.orga_urls.team_settings)
+            self.fields['allow_override_votes'].help_text += f' {additional}'
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)
         self.fields['review_deadline'].widget = forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
