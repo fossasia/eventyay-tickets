@@ -15,6 +15,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.authtoken.models import Token
 
 
 def nick_validator(value: str) -> None:
@@ -180,3 +181,8 @@ class User(PermissionsMixin, AbstractBaseUser):
             overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
             return max(permission.review_override_count - overridden, 0)
         return 0
+
+    def regenerate_token(self):
+        self.log_action(action='pretalx.user.token.reset')
+        Token.objects.filter(user=self).delete()
+        return Token.objects.create(user=self)

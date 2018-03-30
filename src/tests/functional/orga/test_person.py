@@ -51,3 +51,18 @@ def test_remove_superuser_if_no_superuser(orga_client, orga_user):
     orga_user.refresh_from_db()
     assert response.status_code == 200
     assert not orga_user.is_superuser
+
+
+@pytest.mark.django_db
+def test_orga_reset_auth_token(orga_client, orga_user):
+    assert not hasattr(orga_user, 'auth_token')
+    response = orga_client.get(reverse('orga:user.view'), follow=True)
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.auth_token
+    old_token = orga_user.auth_token.key
+    response = orga_client.post(reverse('orga:user.view'), {'form': 'token'}, follow=True)
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.auth_token
+    assert orga_user.auth_token.key != old_token

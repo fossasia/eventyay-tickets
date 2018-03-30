@@ -282,17 +282,19 @@ class UserSettings(TemplateView):
 
     @cached_property
     def login_form(self):
-        return LoginInfoForm(user=self.request.user,
-                             data=(self.request.POST
-                                   if self.request.method == 'POST' and self.request.POST.get('form') == 'login'
-                                   else None))
+        bind = self.request.method == 'POST' and self.request.POST.get('action') == 'login'
+        return LoginInfoForm(
+            user=self.request.user,
+            data=self.request.POST if bind else None
+        )
 
     @cached_property
     def profile_form(self):
-        return OrgaProfileForm(instance=self.request.user,
-                               data=(self.request.POST
-                                     if self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
-                                     else None))
+        bind = self.request.method == 'POST' and self.request.POST.get('action') == 'profile'
+        return OrgaProfileForm(
+            instance=self.request.user,
+            data=self.request.POST if bind else None
+        )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -302,18 +304,17 @@ class UserSettings(TemplateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-        if self.login_form.is_bound:
-            if self.login_form.is_valid():
-                self.login_form.save()
-                messages.success(request, _('Your changes have been saved.'))
-                request.user.log_action('pretalx.user.password.update')
-                return redirect(self.get_success_url())
-        elif self.profile_form.is_bound:
-            if self.profile_form.is_valid():
-                self.profile_form.save()
-                messages.success(request, _('Your changes have been saved.'))
-                request.user.log_action('pretalx.user.profile.update')
-                return redirect(self.get_success_url())
-
-        messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
-        return super().get(request, *args, **kwargs)
+        if self.login_form.is_bound and self.login_form.is_valid():
+            self.login_form.save()
+            messages.success(request, _('Your changes have been saved.'))
+            request.user.log_action('pretalx.user.password.update')
+        elif self.profile_form.is_bound and self.profile_form.is_valid():
+            self.profile_form.save()
+            messages.success(request, _('Your changes have been saved.'))
+            request.user.log_action('pretalx.user.profile.update')
+        elif request.POST.get('form') == 'token':
+            request.user.regenerate_token()
+            messages.success(request, _('Your API token has been regenerated. The previous token will not be usable any longer.'))
+        else:
+            messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
+        return redirect(self.get_success_url())
