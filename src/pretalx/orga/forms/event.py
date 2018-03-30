@@ -103,7 +103,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     export_html_on_schedule_release = forms.BooleanField(
         label=_('Generate HTML export on schedule release'),
-        help_text=_('Set to make pretalx generate a static HTML version of your schedule, each time a new version is released.'),
+        help_text=_('The static HTML export will be provided as a .zip archive on the schedule export page.'),
         required=False,
     )
     display_header_pattern = forms.ChoiceField(
