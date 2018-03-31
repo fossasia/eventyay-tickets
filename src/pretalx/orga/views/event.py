@@ -98,7 +98,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         ret = super().form_valid(form)
 
         if new_event:
-            url = form.instance.cfp.orga_urls.base
+            url = form.instance.cfp.urls.base
             messages.success(self.request, _('Yay, a new event! Check these settings and <a href="{url}">configure a CfP</a> and you\'re good to go!')).format(url=url)
             form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
             EventPermission.objects.create(
