@@ -161,7 +161,7 @@ class EventTeam(EventSettingsPermission, TemplateView):
     @cached_property
     def formset(self):
         formset_class = forms.inlineformset_factory(
-            Event, EventPermission, can_delete=True, extra=0,
+            Event, EventPermission, can_delete=True, extra=1,
             fields=[
                 'is_orga',
                 'is_reviewer',
@@ -235,7 +235,7 @@ class EventTeam(EventSettingsPermission, TemplateView):
                     .delete()
 
         for mail in mails:
-            mail.send()
+            mail.save()
 
         return redirect(self.request.event.orga_urls.team_settings)
 

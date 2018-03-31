@@ -48,9 +48,11 @@
                     {% bootstrap_field form.invitation_email form_group_class="d-none" %}
                     {% if form.instance.user %}
                         {{ form.instance.user }}
-                    {% else %}
+                    {% elif form.instance.id %}
                         {{ form.instance.invitation_email }} ({% trans "pending" %},
                         <a href="{{ form.instance.urls.invitation }}"> <i class="fa fa-external-link"></i> {% trans "Invitation link" %}</a>)
+                    {% else %}
+                        {% bootstrap_field form.invitation_email form_group_class="" layout="inline" %}
                     {% endif %}
                 </td>
                 <td>
@@ -70,20 +72,6 @@
                 </td>
             </tr>
             {% endfor %}
-            <tr data-formset-form>
-                <td>
-                    {% bootstrap_field formset.empty_form.invitation_email form_group_class="" layout="inline" %}
-                </td>
-                <td>{% bootstrap_field formset.empty_form.is_orga use_label=False layout='event-inline' %}</td>
-                <td class="reviewer">
-                    {% bootstrap_field formset.empty_form.is_reviewer use_label=False layout='event-inline' %}
-                    <span>{{ formset.empty_form.review_override_count }} {% trans "Override Votes" %}</span>
-                </td>
-                <td>
-                    {% bootstrap_field formset.empty_form.id field_class="hidden" %}
-                    {% bootstrap_field formset.empty_form.DELETE field_class="sr-only" form_group_class="" %}
-                </td>
-            </tr>
         </tbody>
     </table>
     <div class="float-right">
