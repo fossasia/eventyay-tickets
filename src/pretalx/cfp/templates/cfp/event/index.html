@@ -11,12 +11,7 @@
     {% endif %}
 
     <div class="row mb-4 url-links">
-        {% if cfp.is_open %}
-            <a class="btn btn-success btn-lg btn-block" href="{{ request.event.cfp.urls.public }}">
-                {% trans "Submit a proposal" %}
-            </a>
-        {% endif %}
-        {% if not request.user.is_anonymous and request.user.submissions.all.exists %}
+        {% if has_submissions or request.user.is_anonymous %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
                 {% trans "Edit or view your submission" %}
             </a>
@@ -24,6 +19,11 @@
         {% if can_view_schedule %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                 {% trans "View conference schedule" %}
+            </a>
+        {% endif %}
+        {% if cfp.is_open %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.cfp.urls.public }}">
+                {% trans "Go to CfP" %}
             </a>
         {% endif %}
     </div>

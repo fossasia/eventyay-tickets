@@ -18,22 +18,24 @@
         </p>
     {% endif %}
     <div class="row mb-4 url-links">
-        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
-                href="{{ request.event.urls.submit }}">
-            {% if cfp.is_open %}
-                {% trans "Submit a proposal" %}
-            {% else %}
-                {% trans "Submissions are closed" %}
-            {% endif %}
-        </a>
-        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-            {% trans "Edit or view your submission" %}
-        </a>
         {% if can_view_schedule %}
-        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
-            {% trans "View conference schedule" %}
-        </a>
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
+                {% trans "View conference schedule" %}
+            </a>
         {% endif %}
+        {% if has_submissions or request.user.is_anonymous %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
+                {% trans "Edit or view your submission" %}
+            </a>
+        {% endif %}
+        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
+            href="{{ request.event.urls.submit }}">
+        {% if cfp.is_open %}
+            {% trans "Submit a proposal" %}
+        {% else %}
+            {% trans "Submissions are closed" %}
+        {% endif %}
+        </a>
     </div>
 {% endwith %}
 {% endblock %}

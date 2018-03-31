@@ -24,9 +24,19 @@ class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):
 class EventStartpage(EventPageMixin, TemplateView):
     template_name = 'cfp/event/index.html'
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['has_submissions'] = self.request.event.submissions.filter(speakers__in=[self.request.user]).exists()
+        return ctx
+
 
 class EventCfP(EventPageMixin, TemplateView):
     template_name = 'cfp/event/cfp.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['has_submissions'] = self.request.event.submissions.filter(speakers__in=[self.request.user]).exists()
+        return ctx
 
 
 class GeneralView(TemplateView):
