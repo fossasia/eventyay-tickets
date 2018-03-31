@@ -217,6 +217,7 @@ footer {
       flex-direction: row;
       .fa {
         padding-left: 12px;
+        padding-right: 12px;
       }
     }
   }
@@ -226,6 +227,7 @@ footer {
   }
   nav.sidebar-uncollapsed {
     display: inherit;
+    z-index: 6;  /* display above timeline in dashboard */
   }
   .history-sidebar {
     display: none;
