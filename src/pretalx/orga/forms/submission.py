@@ -15,6 +15,7 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
             self.fields['speaker'] = forms.CharField(
                 help_text=_('Add the email or nickname of the speaker holding the talk. They will be invited to create an account.')
             )
+        self.fields['abstract'].widget.attrs['rows'] = 2
 
     class Meta:
         model = Submission
