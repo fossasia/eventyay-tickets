@@ -15,14 +15,7 @@
         {% trans "To invite a new member to your team, enter their email address below." %}
     </div>
     <legend>
-        {{ formset|length }}
-        {% with count_members=formset|length %}
-        {% blocktrans trimmed count count=count_members %}
-        Team Member
-        {% plural %}
         Team Members
-        {% endblocktrans %}
-        {% endwith %}
     </legend>
     <form method="post" action="" class="formset teameditor" data-formset data-formset-prefix="{{ formset.prefix }}">
     {{ formset.management_form }}
