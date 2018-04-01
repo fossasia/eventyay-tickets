@@ -112,15 +112,17 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         else:
             kwargs['instance'] = SpeakerProfile()
         super().__init__(*args, **kwargs, event=self.event)
+        read_only = kwargs.get('read_only', False)
         initials = dict()
         if self.user:
             initials = {
                 field: getattr(self.user, field)
                 for field in self.user_fields
             }
-
         for field in self.user_fields:
-            self.fields[field] = User._meta.get_field(field).formfield(initial=initials.get(field))
+            self.fields[field] = User._meta.get_field(field).formfield(
+                initial=initials.get(field), disabled=read_only
+            )
 
     @cached_property
     def user_fields(self):
