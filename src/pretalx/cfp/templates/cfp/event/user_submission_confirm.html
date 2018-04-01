@@ -1,0 +1,25 @@
+{% extends "cfp/event/base.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block title %}{% trans "Your submission" %} :: {% endblock %}
+{% block content %}
+<h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+<p>
+    {% trans "Current state of your submission:" %}
+    {% include "cfp/event/fragment_state.html" with state=submission.state %}
+</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>
+        <button type="submit"
+           class="btn float-right btn-success">
+            {% trans "Confirm" %}
+        </button>
+        <a href="{{ submission.urls.user_base }}"
+           class="btn float-right btn-info">
+            {% trans "Go back" %}
+        </a>
+        <div class="clearfix"></div>
+    </p>
+</form>
+{% endblock %}

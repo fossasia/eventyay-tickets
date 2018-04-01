@@ -130,13 +130,16 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
-class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, View):
+class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, DetailView):
     permission_required = 'submission.confirm_submission'
+    template_name = 'cfp/event/user_submission_confirm.html'
+    model = Submission
+    context_object_name = 'submission'
 
     def get_permission_object(self):
         return self.get_object()
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         if request.user.is_anonymous:
             return redirect(request.event.urls.login)
         submission = self.get_object()

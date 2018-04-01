@@ -46,6 +46,13 @@ def test_can_confirm_submission(speaker_client, accepted_submission):
     )
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
+    assert accepted_submission.state == SubmissionStates.ACCEPTED
+    response = speaker_client.post(
+        accepted_submission.urls.confirm,
+        follow=True,
+    )
+    accepted_submission.refresh_from_db()
+    assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.CONFIRMED
 
 
