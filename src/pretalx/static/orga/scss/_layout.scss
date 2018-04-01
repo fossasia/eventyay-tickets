@@ -84,6 +84,14 @@
   width: auto;
   margin: auto;
 }
+.speaker-info {
+  display: flex;
+  flex-direction: row;
+  .speaker-image img {
+      max-height: 160px;
+      float: right;
+  }
+}
 .orga-headline {
   font-weight: bold;
 }

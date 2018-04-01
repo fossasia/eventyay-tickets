@@ -13,7 +13,15 @@
         submissions
         {% endblocktrans %})
     </legend>
-    <div class="alert alert-info">
+    <div class="speaker-info">
+    <div class="speaker-image col-md-3">
+        {% if form.instance.user.get_gravatar %}
+            <img src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}" />
+        {% elif form.instance.user.avatar %}
+            <img src="{{ form.instance.user.avatar.url }}">
+        {% endif %}
+    </div>
+    <div class="alert alert-info col-md-9">
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
         <ul>
             {% for submission in submissions %}
@@ -26,6 +34,7 @@
             {% endfor %}
         </ul>
     </div>
+</div>
     <form method="post" action="">
         {% csrf_token %}
         {% bootstrap_field form.name layout='event' %}
@@ -64,7 +73,7 @@
                 <li>
                     {% if answer.options.count > 0 %}
                         {% for option in answer.options.all %}
-                        {{ option }}, 
+                        {{ option }},
                         {% endfor %}
                     {% else %}
                         {{ answer.answer }}

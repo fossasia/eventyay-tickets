@@ -1,6 +1,8 @@
+from csp.decorators import csp_update
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views.generic import ListView, View
 
@@ -46,6 +48,7 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
     form_class = SpeakerProfileForm
