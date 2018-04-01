@@ -185,6 +185,16 @@ class EventTeam(EventSettingsPermission, TemplateView):
         from pretalx.person.models import User
         return User.objects.filter(nick=email).first() or User.objects.filter(email=email).first()
 
+    def _count_orga_permissions(self, permissions):
+        return len([p for p in permissions if p.is_orga])
+
+    def has_remaining_team(self):
+        return (
+            self._count_orga_permissions(self.formset.new_objects)
+            + self._count_orga_permissions(self.formset.changed_objects)
+            - self._count_orga_permissions(self.formset.deleted_objects)
+        ) > 0
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         if not self.formset.is_valid():
@@ -192,6 +202,10 @@ class EventTeam(EventSettingsPermission, TemplateView):
             return redirect(self.request.event.orga_urls.team_settings)
         permissions = self.formset.save(commit=False)
         mails = []
+
+        if not self.has_remaining_team():
+            messages.error(request, _("That would be a pretty lonely event. You can't remove the last remaining team member."))
+            return redirect(self.request.event.orga_urls.team_settings)
 
         for permission in self.formset.deleted_objects:
             permission.delete()

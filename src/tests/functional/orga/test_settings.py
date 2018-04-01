@@ -201,6 +201,26 @@ def test_invite_orga_member(orga_client, event):
 
 
 @pytest.mark.django_db
+def test_remove_last_orga_member(orga_client, event):
+    assert EventPermission.objects.filter(event=event).count() == 1
+    perm = EventPermission.objects.filter(event=event).first()
+    response = orga_client.post(
+        event.orga_urls.team_settings,
+        {
+            'permissions-TOTAL_FORMS': 1,
+            'permissions-INITIAL_FORMS': 1,
+            'permissions-0-invitation_email': '',
+            'permissions-0-is_orga': 'on',
+            'permissions-0-review_override_count': '0',
+            'permissions-0-id': str(perm.id),
+            'permissions-0-DELETE': 'on',
+        }, follow=True,
+    )
+    assert response.status_code == 200
+    assert EventPermission.objects.filter(event=event).count() == 1
+
+
+@pytest.mark.django_db
 def test_retract_invitation(orga_client, event):
     perm = EventPermission.objects.filter(event=event).first()
     response = orga_client.post(
