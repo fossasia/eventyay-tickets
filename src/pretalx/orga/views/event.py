@@ -185,15 +185,11 @@ class EventTeam(EventSettingsPermission, TemplateView):
         from pretalx.person.models import User
         return User.objects.filter(nick=email).first() or User.objects.filter(email=email).first()
 
-    def _count_orga_permissions(self, permissions):
-        return len([p for p in permissions if p.is_orga])
-
     def has_remaining_team(self):
-        return (
-            self._count_orga_permissions(self.formset.new_objects)
-            + self._count_orga_permissions(self.formset.changed_objects)
-            - self._count_orga_permissions(self.formset.deleted_objects)
-        ) > 0
+        return len([
+            data for data in self.formset.cleaned_data
+            if data.get('is_orga', False) and not data.get('DELETE', True)
+        ]) > 0
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
