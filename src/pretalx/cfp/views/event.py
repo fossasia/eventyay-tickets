@@ -30,13 +30,8 @@ class EventStartpage(EventPageMixin, TemplateView):
         return ctx
 
 
-class EventCfP(EventPageMixin, TemplateView):
+class EventCfP(EventStartpage):
     template_name = 'cfp/event/cfp.html'
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['has_submissions'] = self.request.event.submissions.filter(speakers__in=[self.request.user]).exists()
-        return ctx
 
 
 class GeneralView(TemplateView):
