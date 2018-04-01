@@ -3,7 +3,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx.submission.models import CfP, Submission
+from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.submission.models import (
+    Answer, AnswerOption, CfP, Question, Submission,
+)
 
 LOG_NAMES = {
     'pretalx.cfp.update': _('The CfP has been modified.'),
@@ -124,13 +127,21 @@ class ActivityLog(models.Model):
     def get_public_url(self):
         if isinstance(self.content_object, Submission):
             return self.content_object.urls.public
-
         if isinstance(self.content_object, CfP):
             return self.content_object.urls.public
 
     def get_orga_url(self):
         if isinstance(self.content_object, Submission):
             return self.content_object.orga_urls.base
-
+        if isinstance(self.content_object, Question):
+            return self.content_object.urls.base
+        if isinstance(self.content_object, AnswerOption):
+            return self.content_object.question.urls.base
+        if isinstance(self.content_object, Answer):
+            if self.content_object.submission:
+                return self.content_object.submission.orga_urls.questions
+            return self.content_object.question.urls.base
         if isinstance(self.content_object, CfP):
             return self.content_object.urls.text
+        if isinstance(self.content_object, (MailTemplate, QueuedMail)):
+            return self.content_object.urls.base
