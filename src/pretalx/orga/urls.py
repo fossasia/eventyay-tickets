@@ -56,7 +56,7 @@ urlpatterns = [
         url('^submissions$', submission.SubmissionList.as_view(), name='submissions.list'),
         url('^submissions/new$', submission.SubmissionContent.as_view(), name='submissions.create'),
         url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
-        url('^submissions/(?P<code>\w+)/', include([
+        url('^submissions/(?P<code>[\w-]+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^submit$', submission.SubmissionStateChange.as_view(), name='submissions.submit'),
             url('^accept$', submission.SubmissionStateChange.as_view(), name='submissions.accept'),
