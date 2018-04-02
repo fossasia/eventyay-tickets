@@ -78,6 +78,7 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
     'core-frab-json',
     'core-frab-xcal',
     'core-iCal',
+    'feed',
 ))
 def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
     slot.submission.event.is_public = False

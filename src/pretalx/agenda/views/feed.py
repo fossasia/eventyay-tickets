@@ -1,6 +1,7 @@
 from urllib.parse import urlencode
 
 from django.contrib.syndication.views import Feed
+from django.http import Http404
 from django.utils import feedgenerator
 
 
@@ -10,6 +11,8 @@ class ScheduleFeed(Feed):
     description_template = 'agenda/feed/description.html'
 
     def get_object(self, request, event, *args, **kwargs):
+        if not request.user.has_perm('agenda.view_schedule'):
+            raise Http404()
         return request.event
 
     def title(self, obj):
