@@ -73,6 +73,21 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize('exporter', (
+    'core-frab-xml',
+    'core-frab-json',
+    'core-frab-xcal',
+    'core-iCal',
+))
+def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
+    slot.submission.event.is_public = False
+    slot.submission.event.save()
+
+    response = client.get(reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}), follow=True)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_schedule_speaker_ical_export(slot, other_slot, client):
     speaker = slot.submission.speakers.all()[0]
     profile = speaker.profiles.get(event=slot.event)
