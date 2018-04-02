@@ -198,7 +198,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header"><a href="room.url">{{ room.name }}</a></div>
+      <div class="room-header"><a :href="room.url">{{ room.name }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
