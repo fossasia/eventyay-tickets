@@ -293,7 +293,7 @@ class UserSettings(TemplateView):
 
     @cached_property
     def login_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('action') == 'login'
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'login'
         return LoginInfoForm(
             user=self.request.user,
             data=self.request.POST if bind else None
@@ -301,7 +301,7 @@ class UserSettings(TemplateView):
 
     @cached_property
     def profile_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('action') == 'profile'
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
         return OrgaProfileForm(
             instance=self.request.user,
             data=self.request.POST if bind else None
