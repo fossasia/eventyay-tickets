@@ -160,6 +160,7 @@ class Event(LogMixin, models.Model):
         user_delete = '{base}/me/delete'
         user_submissions = '{user}/submissions'
         schedule = '{base}/schedule'
+        sneakpeek = '{base}/sneak'
         changelog = '{schedule}/changelog'
         frab_xml = '{schedule}.xml'
         frab_json = '{schedule}.json'

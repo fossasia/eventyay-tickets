@@ -5,6 +5,7 @@
 
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
+{% has_perm 'agenda.view_sneak_peek' request.user request.event as can_view_sneak_peek %}
     {% if request.event.landing_page_text %}
         {{ request.event.landing_page_text|rich_text }}
     {% endif %}
@@ -17,6 +18,10 @@
         {% if can_view_schedule %}
             <a class="btn btn-success btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                 {% trans "View conference schedule" %}
+            </a>
+        {% elif can_view_sneak_peek %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.sneakpeek }}">
+                {% trans "View schedule preview" %}
             </a>
         {% endif %}
         {% if cfp.is_open %}

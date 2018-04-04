@@ -5,6 +5,7 @@
 
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
+{% has_perm 'agenda.view_sneak_peek' request.user request.event as can_view_sneak_peek %}
     <h1>{{ cfp.headline|default:"" }}</h1>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}
@@ -20,6 +21,10 @@
         {% if can_view_schedule %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                 {% trans "View conference schedule" %}
+            </a>
+        {% elif can_view_sneak_peek %}
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.sneakpeek }}">
+                {% trans "View schedule preview" %}
             </a>
         {% endif %}
         {% if has_submissions or request.user.is_anonymous %}
