@@ -132,6 +132,10 @@ class Submission(LogMixin, models.Model):
     content_locale = models.CharField(max_length=32, default=settings.LANGUAGE_CODE,
                                       choices=settings.LANGUAGES,
                                       verbose_name=_('Language of the submission'))
+    is_featured = models.BooleanField(
+        default=False,
+        verbose_name=_('Show this talk on the public sneak peek page.'),
+    )
     do_not_record = models.BooleanField(
         default=False,
         verbose_name=_('Don\'t record this talk.'),
