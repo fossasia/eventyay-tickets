@@ -134,7 +134,7 @@ class Submission(LogMixin, models.Model):
                                       verbose_name=_('Language of the submission'))
     is_featured = models.BooleanField(
         default=False,
-        verbose_name=_('Show this talk on the public sneak peek page.'),
+        verbose_name=_('Show this talk on the public sneak peek page, if it is enabled.'),
     )
     do_not_record = models.BooleanField(
         default=False,

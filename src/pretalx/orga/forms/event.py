@@ -106,6 +106,11 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_('Unset to hide your schedule, e.g. if you want to use the HTML export exclusively.'),
         required=False,
     )
+    show_sneak_peek = forms.BooleanField(
+        label=_('Show a sneak peek before schedule release'),
+        help_text=_('Set to publicly display a list of talks, which have the "is featured" flag enabled.'),
+        required=False,
+    )
     export_html_on_schedule_release = forms.BooleanField(
         label=_('Generate HTML export on schedule release'),
         help_text=_('The static HTML export will be provided as a .zip archive on the schedule export page.'),

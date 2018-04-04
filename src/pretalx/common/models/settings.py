@@ -38,6 +38,7 @@ hierarkey.add_type(
 
 hierarkey.add_default('show_on_dashboard', 'True', bool)
 hierarkey.add_default('show_schedule', 'True', bool)
+hierarkey.add_default('show_sneak_peek', 'True', bool)
 hierarkey.add_default('export_html_on_schedule_release', 'True', bool)
 hierarkey.add_default('custom_domain', '', str)
 

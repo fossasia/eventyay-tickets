@@ -6,15 +6,18 @@ from pretalx.agenda.permissions import (
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('is_public,show_schedule,result', (
-    (True, True, True),
-    (True, False, False),
-    (False, True, False),
-    (False, False, False),
+@pytest.mark.parametrize('is_public,show_schedule,has_schedule,result', (
+    (True, True, True, True),
+    (True, True, False, True),
+    (True, False, True, False),
+    (False, True, True, False),
+    (False, False, True, False),
 ))
-def test_agenda_permission_is_agenda_visible(is_public, show_schedule, result, event):
+def test_agenda_permission_is_agenda_visible(is_public, show_schedule, has_schedule, result, event):
     event.is_public = is_public
     event.settings.show_schedule = show_schedule
+    if has_schedule:
+        event.release_schedule('42')
     assert is_agenda_visible(None, event) is result
 
 

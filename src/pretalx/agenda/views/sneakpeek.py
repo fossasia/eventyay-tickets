@@ -5,7 +5,7 @@ from pretalx.common.mixins.views import PermissionRequired
 
 class SneakpeekView(PermissionRequired, TemplateView):
     template_name = 'agenda/sneakpeek.html'
-    permission_required = 'agenda.view_schedule'  # TODO: this is suppoed to be a _preview_, d'uh!
+    permission_required = 'agenda.view_sneak_peek'
 
     def get_permission_object(self):
         return self.request.event
