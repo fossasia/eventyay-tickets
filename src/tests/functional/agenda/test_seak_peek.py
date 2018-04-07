@@ -13,7 +13,13 @@ def test_sneak_peak_invisible_schedule(client, event):
     event.settings.show_sneak_peek = True
     event.release_schedule("42")
     response = client.get(event.urls.sneakpeek, follow=True)
-    assert response.status_code == 404
+
+    # there might be multiple redirects to correct trailing slashes, so the
+    # one we're looking for is not always the last one.
+    assert any(
+        True for r in response.redirect_chain
+        if r[0].rstrip('/') == event.urls.schedule.rstrip('/') and r[1] == 302
+    )
 
 
 @pytest.mark.django_db
