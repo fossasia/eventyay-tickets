@@ -1,6 +1,7 @@
 import datetime
 
 import pytest
+from django.core.exceptions import ValidationError
 
 from pretalx.event.models import Event
 
@@ -46,3 +47,34 @@ def test_initial_data(event):
     assert event.reject_template
     assert event.schedules.count()
     assert event.wip_schedule
+
+
+@pytest.mark.parametrize('slug', (
+    '_global', '__debug__', 'api', 'csp_report', 'events', 'download',
+    'healthcheck', 'jsi18n', 'locale', 'metrics', 'orga', 'redirect',
+    'widget',
+))
+@pytest.mark.django_db
+def test_event_model_slug_blacklist_validation(slug):
+    with pytest.raises(ValidationError):
+        Event(
+            name='Event', slug=slug, subtitle='Event event', is_public=True,
+            email='orga@orga.org', locale_array='en,de', locale='en',
+            date_from=datetime.date.today(), date_to=datetime.date.today()
+        ).clean_fields()
+
+
+@pytest.mark.django_db
+def test_event_model_slug_uniqueness():
+    Event.objects.create(
+        name='Event', slug='slog', subtitle='Event event', is_public=True,
+        email='orga@orga.org', locale_array='en,de', locale='en',
+        date_from=datetime.date.today(), date_to=datetime.date.today()
+    )
+    assert Event.objects.count() == 1
+    with pytest.raises(ValidationError):
+        Event.objects.create(
+            name='Event', slug='slog', subtitle='Event event', is_public=True,
+            email='orga@orga.org', locale_array='en,de', locale='en',
+            date_from=datetime.date.today(), date_to=datetime.date.today()
+        ).clean_fields()

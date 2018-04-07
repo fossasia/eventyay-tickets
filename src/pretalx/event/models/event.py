@@ -2,6 +2,7 @@ from datetime import datetime, time
 
 import pytz
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
@@ -16,6 +17,20 @@ from pretalx.common.models.settings import settings_hierarkey
 from pretalx.common.urls import EventUrls, get_base_url
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
+
+
+def validate_event_slug_blacklist(value):
+    blacklist = [
+        '_global', '__debug__', 'api', 'csp_report', 'events', 'download',
+        'healthcheck', 'jsi18n', 'locale', 'metrics', 'orga', 'redirect',
+        'widget',
+    ]
+    if value in blacklist:
+        raise ValidationError(
+            _('Invalid event slug – this slug is reserved: {value}.').format(value=value),
+            code='invalid',
+            params={'value': value},
+        )
 
 
 def event_css_path(instance, filename):
