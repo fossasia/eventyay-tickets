@@ -33,12 +33,13 @@ class Event(LogMixin, models.Model):
         verbose_name=_('Name'),
     )
     slug = models.SlugField(
-        max_length=50, db_index=True,
+        max_length=50, db_index=True, unique=True,
         validators=[
             RegexValidator(
                 regex=f"^[{SLUG_CHARS}]+$",
                 message=_('The slug may only contain letters, numbers, dots and dashes.'),
             ),
+            validate_event_slug_blacklist,
         ],
         verbose_name=_("Short form"),
         help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
