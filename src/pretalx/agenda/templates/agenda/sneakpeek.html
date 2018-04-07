@@ -7,13 +7,13 @@
 <p>
     <b>{% trans "Welcome to our schedule sneak peek!" %}</b><br><br>
     {% if talks %}
-    {% blocktrans %}
-    We prepared a list of exciting talks, so you canget a feel for our
+    {% blocktrans trimmed %}
+    We prepared a list of exciting talks, so you can get a feel for our
     conference. Please keep in mind that this is not our full schedule.
-    That will follow in due time.
+    We will follow up with the full schedule in time, stay tuned!
     {% endblocktrans %}
     {% else %}
-    {% blocktrans %}
+    {% blocktrans trimmed %}
     In the near future you will see a curated list of talks we'd like
     to show off here. Right now we are busy reviewing submissions.<br>
     Check back later!
