@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from pretalx.event.models import Event
 
@@ -72,7 +73,7 @@ def test_event_model_slug_uniqueness():
         date_from=datetime.date.today(), date_to=datetime.date.today()
     )
     assert Event.objects.count() == 1
-    with pytest.raises(ValidationError):
+    with pytest.raises(IntegrityError):
         Event.objects.create(
             name='Event', slug='slog', subtitle='Event event', is_public=True,
             email='orga@orga.org', locale_array='en,de', locale='en',
