@@ -59,6 +59,11 @@ class Event(LogMixin, models.Model):
         verbose_name=_("Short form"),
         help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
     )
+    organiser = models.ForeignKey(
+        to='Organiser', null=True,  # backwards compatibility, won't ever be empty
+        related_name='events',
+        on_delete=models.PROTECT,
+    )
     subtitle = I18nCharField(
         max_length=200,
         null=True, blank=True,
@@ -305,6 +310,11 @@ class Event(LogMixin, models.Model):
     @cached_property
     def event(self):
         return self
+
+    @cached_property
+    def teams(self):
+        from .organiser import Team
+        return Team.objects.filter(models.Q(limit_events__in=[self]) | models.Q(all_events=True), organiser=self.organiser)
 
     @cached_property
     def datetime_from(self):
