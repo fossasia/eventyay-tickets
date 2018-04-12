@@ -15,7 +15,7 @@ class LogMixin:
             data = json.dumps(data, cls=I18nJSONEncoder)
 
         ActivityLog.objects.create(
-            event=self.event, person=person, content_object=self,
+            event=getattr(self, 'event', None), person=person, content_object=self,
             action_type=action, data=data, is_orga_action=orga,
         )
 

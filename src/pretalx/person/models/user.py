@@ -150,7 +150,6 @@ class User(PermissionsMixin, AbstractBaseUser):
         return ActivityLog.objects.filter(person=self)
 
     def deactivate(self):
-        from pretalx.person.models import EventPermission
         from pretalx.submission.models import Answer
         self.nick = f'deleted_user_{random.randint(0, 999)}'
         while self.__class__.objects.filter(nick__iexact=self.nick).exists():
@@ -166,21 +165,29 @@ class User(PermissionsMixin, AbstractBaseUser):
         self.pw_reset_time = None
         self.save()
         self.profiles.all().update(biography='')
-        EventPermission.objects.filter(user=self).update(is_orga=False, invitation_email=None, invitation_token=None)
         Answer.objects.filter(person=self, question__contains_personal_data=True).delete()
+        for team in self.teams.all():
+            team.users.remove(self)
 
     @cached_property
     def gravatar_parameter(self):
         return md5(self.email.strip().encode()).hexdigest()
 
+    def get_events_for_permission(self, **kwargs):
+        from pretalx.event.models import Event
+        orga_teams = self.teams.filter(**kwargs)
+        absolute = orga_teams.filter(all_events=True).values_list('organiser', flat=True)
+        relative = orga_teams.filter(all_events=False)
+        return Event.objects.filter(models.Q(organiser__in=absolute) | models.Q(organiser__teams__in=relative)).distinct()
+
+    @cached_property
+    def orga_events(self):
+        return self.get_events_for_permission(can_change_submissions=True)
+
     def remaining_override_votes(self, event):
-        permission = self.permissions.filter(event=event).first()
-        if not permission:
-            return 0
-        if permission.review_override_count:
-            overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
-            return max(permission.review_override_count - overridden, 0)
-        return 0
+        allowed = max(event.teams.filter(members__in=[self], is_reviewer=True).values_list('review_override_votes', flat=True)) or 0
+        overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
+        return max(allowed - overridden, 0)
 
     def regenerate_token(self):
         self.log_action(action='pretalx.user.token.reset')

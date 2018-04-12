@@ -3,7 +3,6 @@ from contextlib import suppress
 
 import pytz
 from django.conf import settings
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
@@ -12,7 +11,6 @@ from django.utils.translation.trans_real import (
 )
 
 from pretalx.event.models import Event
-from pretalx.person.models import EventPermission
 
 
 class EventPermissionMiddleware:
@@ -29,10 +27,7 @@ class EventPermissionMiddleware:
             if request.user.is_administrator:
                 request.orga_events = Event.objects.all()
             else:
-                request.orga_events = Event.objects.filter(
-                    Q(permissions__is_orga=True) | Q(permissions__is_reviewer=True),
-                    permissions__user=request.user,
-                )
+                request.orga_events = request.user.get_events_for_permission()
             request.orga_events = request.orga_events.order_by('-date_from')
 
     def _handle_orga_url(self, request, url):
@@ -51,20 +46,11 @@ class EventPermissionMiddleware:
             )
 
             if hasattr(request, 'event') and request.event:
+                request.is_orga = False
+                request.is_reviewer = False
                 if not request.user.is_anonymous:
-                    request.is_orga = request.user.is_administrator or EventPermission.objects.filter(
-                        user=request.user,
-                        event=request.event,
-                        is_orga=True
-                    ).exists()
-                    request.is_reviewer = request.user.is_administrator or EventPermission.objects.filter(
-                        user=request.user,
-                        event=request.event,
-                        is_reviewer=True
-                    ).exists()
-                else:
-                    request.is_orga = False
-                    request.is_reviewer = False
+                    request.is_orga = request.user.is_administrator or request.event in request.user.orga_events
+                    request.is_reviewer = request.user.is_administrator or request.event in request.user.get_events_for_permission(is_reviewer=True)
 
         self._set_orga_events(request)
         self._select_locale(request)

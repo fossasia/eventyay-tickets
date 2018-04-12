@@ -190,6 +190,7 @@ class Event(LogMixin, models.Model):
         settings = edit_settings = '{base}/settings'
         mail_settings = edit_mail_settings = '{settings}/mail'
         team_settings = '{settings}/team'
+        new_team = '{settings}/team/new'
         room_settings = '{schedule}/rooms'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
@@ -219,7 +220,7 @@ class Event(LogMixin, models.Model):
         ordering = ('date_from',)
 
     def __str__(self) -> str:
-        return f'Event(slug={self.slug}, date_from={self.date_from.isoformat()})'
+        return str(self.name)
 
     @cached_property
     def locales(self) -> list:
