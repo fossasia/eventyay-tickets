@@ -4,7 +4,7 @@ from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
-    auth, cfp, dashboard, event, mails, person,
+    auth, cfp, dashboard, event, mails, organiser, person,
     plugins, review, schedule, speaker, submission,
 )
 
@@ -87,7 +87,14 @@ urlpatterns = [
 
         url('^settings$', event.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
-        url('^settings/team$', event.EventTeam.as_view(), name='settings.team.view'),
+
+        url('^settings/organiser$', organiser.OrganiserDetail.as_view(), name='settings.organiser.view'),
+        url('^settings/team$', organiser.Teams.as_view(), name='settings.team.view'),
+        url('^settings/team/new$', organiser.TeamDetail.as_view(), name='settings.team.add'),
+        url('^settings/team/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='settings.team.detail'),
+        url('^settings/team/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='settings.team.delete'),
+        url('^settings/team/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='settings.team.delete_member'),
+        url('^settings/team/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='settings.team.uninvite'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/import$', schedule.ScheduleImportView.as_view(), name='schedule.import'),

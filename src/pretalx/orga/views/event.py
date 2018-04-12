@@ -1,5 +1,4 @@
 from csp.decorators import csp_update
-from django import forms
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
@@ -13,14 +12,13 @@ from django.views.generic import FormView, TemplateView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
-from pretalx.common.phrases import phrases
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.event.models import Event
+from pretalx.event.models import Event, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
-from pretalx.person.models import EventPermission, User
+from pretalx.person.models import User
 
 
 class EventSettingsPermission(PermissionRequired):
@@ -101,11 +99,7 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
             url = form.instance.cfp.urls.base
             messages.success(self.request, _('Yay, a new event! Check these settings and <a href="{url}">configure a CfP</a> and you\'re good to go!').format(url=url))
             form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
-            EventPermission.objects.create(
-                event=form.instance,
-                user=self.request.user,
-                is_orga=True,
-            )
+            # TODO: check / create team(s)
         else:
             self.sform.save()
             form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
@@ -154,88 +148,6 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return ret
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='get')
-class EventTeam(EventSettingsPermission, TemplateView):
-    template_name = 'orga/settings/team.html'
-
-    @cached_property
-    def formset(self):
-        formset_class = forms.inlineformset_factory(
-            Event, EventPermission, can_delete=True, extra=1,
-            fields=[
-                'is_orga',
-                'is_reviewer',
-                'review_override_count',
-                'invitation_email',
-            ],
-        )
-        return formset_class(
-            self.request.POST if self.request.method == 'POST' else None,
-            queryset=EventPermission.objects.filter(event=self.request.event),
-            instance=self.request.event,
-        )
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['formset'] = self.formset
-        return ctx
-
-    @classmethod
-    def _find_user(cls, email):
-        from pretalx.person.models import User
-        return User.objects.filter(nick=email).first() or User.objects.filter(email=email).first()
-
-    def has_remaining_team(self):
-        return len([
-            data for data in self.formset.cleaned_data
-            if data.get('is_orga', False) and not data.get('DELETE', True)
-        ]) > 0
-
-    @transaction.atomic
-    def post(self, request, *args, **kwargs):
-        if not self.formset.is_valid():
-            messages.error(request, phrases.base.error_saving_changes)
-            return redirect(self.request.event.orga_urls.team_settings)
-        permissions = self.formset.save(commit=False)
-        mails = []
-
-        if not self.has_remaining_team():
-            messages.error(request, _("That would be a pretty lonely event. You can't remove the last remaining team member."))
-            return redirect(self.request.event.orga_urls.team_settings)
-
-        for permission in self.formset.deleted_objects:
-            permission.delete()
-
-        for permission in permissions:
-            if permission.invitation_email:
-                user = self._find_user(permission.invitation_email)
-
-                if user:
-                    permission.user = user
-                    permission.invitation_email = None
-                    permission.invitation_token = None
-                mails.append(permission.send_invite_email())
-                request.event.log_action('pretalx.invite.orga.send', person=request.user, orga=True)
-                messages.success(
-                    request,
-                    _('<{email}> has been invited to your team - more team members help distribute the workload, so … yay!').format(email=permission.invitation_email)
-                )
-
-            permission.save()
-
-        for permission in permissions:
-            if permission.user:
-                EventPermission.objects \
-                    .filter(event=permission.event, user=permission.user) \
-                    .exclude(id=permission.id) \
-                    .delete()
-
-        for mail in mails:
-            mail.save()
-
-        return redirect(self.request.event.orga_urls.team_settings)
-
-
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class InvitationView(FormView):
     template_name = 'orga/invitation.html'
@@ -243,44 +155,31 @@ class InvitationView(FormView):
 
     @cached_property
     def object(self):
-        return get_object_or_404(
-            EventPermission,
-            invitation_token__iexact=self.kwargs.get('code'),
-            user__isnull=True,
-        )
+        return get_object_or_404(TeamInvite, token__iexact=self.kwargs.get('code'))
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx['invitation'] = self.object
         return ctx
 
+    @transaction.atomic()
     def form_valid(self, form):
         form.save()
-        permission = self.object
+        invite = self.object
         user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
         if not user:
             messages.error(self.request, _('There was a problem with your authentication. Please contact the organiser for further help.'))
             return redirect(self.request.event.urls.base)
 
-        perm = EventPermission.objects.filter(user=user, event=permission.event).exclude(pk=permission.pk).first()
-        event = permission.event
+        invite.team.members.add(user)
+        invite.team.save()
 
-        if perm:
-            if permission.is_orga:
-                perm.is_orga = True
-            if permission.is_reviewer:
-                perm.is_reviewer = True
-            perm.save()
-            permission.delete()
-            permission = perm
-
-        permission.user = user
-        permission.save()
-        permission.event.log_action('pretalx.invite.orga.accept', person=user, orga=True)
-        messages.info(self.request, _('You are now part of the event team!'))
+        invite.team.organiser.log_action('pretalx.invite.orga.accept', person=user, orga=True)
+        messages.info(self.request, _('You are now part of the team!'))
+        invite.delete()
 
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect(event.orga_urls.base)
+        return redirect('/orga')
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
