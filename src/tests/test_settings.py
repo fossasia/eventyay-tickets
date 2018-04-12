@@ -14,6 +14,7 @@ MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 atexit.register(tmpdir.cleanup)
 
 EMAIL_BACKEND = 'django.core.mail.outbox'
+MAIL_FROM = 'orga@orga.org'
 
 COMPRESS_ENABLED = COMPRESS_OFFLINE = False
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'

@@ -5,9 +5,9 @@ import pytz
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
 
-from pretalx.event.models import Event
+from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.mail.models import MailTemplate
-from pretalx.person.models import EventPermission, SpeakerProfile, User
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
     Answer, AnswerOption, Feedback, Question, QuestionVariant,
@@ -22,36 +22,63 @@ def template_patch(monkeypatch):
 
 
 @pytest.fixture
-def event():
+def organiser():
+    o = Organiser.objects.create(name='Super Organiser')
+    Team.objects.create(name='Organisers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True)
+    Team.objects.create(name='Organisers and reviewers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True, is_reviewer=True)
+    Team.objects.create(name='Reviewers', organiser=o, is_reviewer=True)
+    return o
+
+
+@pytest.fixture
+def other_organiser():
+    o = Organiser.objects.create(name='Different Organiser', slug='diffo')
+    Team.objects.create(name='Organisers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True)
+    Team.objects.create(name='Organisers and reviewers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True, is_reviewer=True)
+    Team.objects.create(name='Reviewers', organiser=o, is_reviewer=True)
+    return o
+
+
+@pytest.fixture
+def event(organiser):
     today = datetime.date.today()
     event = Event.objects.create(
         name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
-        date_from=today, date_to=today + datetime.timedelta(days=3)
+        date_from=today, date_to=today + datetime.timedelta(days=3),
+        organiser=organiser,
     )
     # exporting takes quite some time, so this speeds up our tests
     event.settings.export_html_on_schedule_release = False
+    for team in organiser.teams.all():
+        team.limit_events.add(event)
     return event
 
 
 @pytest.fixture
-def other_event():
+def other_event(other_organiser):
     event = Event.objects.create(
         name='Boring testevent', is_public=True, slug='other', email='orga2@orga.org',
         date_from=datetime.date.today() + datetime.timedelta(days=1),
-        date_to=datetime.date.today() + datetime.timedelta(days=1)
+        date_to=datetime.date.today() + datetime.timedelta(days=1),
+        organiser=other_organiser,
     )
     event.settings.export_html_on_schedule_release = False
+    for team in other_organiser.teams.all():
+        team.limit_events.add(event)
     return event
 
 
 @pytest.fixture
-def multilingual_event():
+def multilingual_event(organiser):
     today = datetime.date.today()
     event = Event.objects.create(
         name='Fancy testevent', is_public=True, slug='test2', email='orga@orga.org',
         date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
+        organiser=organiser,
     )
     event.settings.export_html_on_schedule_release = False
+    for team in organiser.teams.all():
+        team.limit_events.add(event)
     return event
 
 
@@ -181,35 +208,45 @@ def superuser():
 @pytest.fixture
 def orga_user(event):
     user = User.objects.create_user('orgauser', 'orgapassw0rd', email='orgauser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=False)
+    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
+    team.members.add(user)
+    team.save()
     return user
 
 
 @pytest.fixture
 def other_orga_user(event):
     user = User.objects.create_user('evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=False)
+    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
+    team.members.add(user)
+    team.save()
     return user
 
 
 @pytest.fixture
 def review_user(event):
     user = User.objects.create_user('reviewuser', 'reviewpassw0rd', email='reviewuser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=False, is_reviewer=True)
+    team = event.organiser.teams.filter(can_change_organiser_settings=False, is_reviewer=True).first()
+    team.members.add(user)
+    team.save()
     return user
 
 
 @pytest.fixture
 def other_review_user(event):
     user = User.objects.create_user('evilreviewuser', 'reviewpassw0rd', email='evilreviewuser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=False, is_reviewer=True)
+    team = event.organiser.teams.filter(can_change_organiser_settings=False, is_reviewer=True).first()
+    team.members.add(user)
+    team.save()
     return user
 
 
 @pytest.fixture
 def orga_reviewer_user(event):
     user = User.objects.create_user('multitalentuser', 'orgapassw0rd', email='multiuser@orga.org')
-    EventPermission.objects.create(user=user, event=event, is_orga=True, is_reviewer=True)
+    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=True).first()
+    team.members.add(user)
+    team.save()
     return user
 
 
@@ -376,7 +413,8 @@ def withdrawn_submission(submission_data, speaker):  # TODO: implement Submissio
 
 @pytest.fixture
 def invitation(event):
-    return EventPermission.objects.create(event=event, is_orga=True, invitation_token='testtoken', invitation_email='some@test.mail')
+    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
+    return TeamInvite.objects.create(team=team, token='testtoken', email='some@test.mail')
 
 
 @pytest.fixture
