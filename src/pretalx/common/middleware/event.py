@@ -10,7 +10,7 @@ from django.utils.translation.trans_real import (
     get_supported_language_variant, language_code_re, parse_accept_lang_header,
 )
 
-from pretalx.event.models import Event
+from pretalx.event.models import Event, Organiser, Team
 
 
 class EventPermissionMiddleware:
@@ -37,6 +37,22 @@ class EventPermissionMiddleware:
 
     def __call__(self, request):
         url = resolve(request.path_info)
+
+        organiser_slug = url.kwargs.get('organiser')
+        if organiser_slug:
+            request.organiser = get_object_or_404(
+                Organiser,
+                slug__iexact=organiser_slug,
+            )
+            if hasattr(request, 'organiser') and request.organiser:
+                request.is_orga = False
+                if not request.user.is_anonymous:
+                    has_perms = Team.objects.filter(
+                        organiser=request.organiser,
+                        members__in=[request.user],
+                        can_change_organiser_settings=True,
+                    ).exists()
+                    request.is_orga = request.user.is_administrator or has_perms
 
         event_slug = url.kwargs.get('event')
         if event_slug:

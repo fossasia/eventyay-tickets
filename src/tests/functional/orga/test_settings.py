@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from django.utils.timezone import now
 
-from pretalx.event.models import Event
+from pretalx.event.models import Event, Organiser
 
 
 @pytest.mark.django_db
@@ -172,6 +172,21 @@ def test_create_event(superuser_client):
     assert response.status_code == 200, response.content.decode()
     assert Event.objects.get(slug='testevent')
     assert Event.objects.count() == count + 1
+
+
+@pytest.mark.django_db
+def test_edit_organiser(orga_client, organiser):
+    response = orga_client.get(reverse('orga:organiser.view', kwargs={'organiser': organiser.slug}))
+    assert response.status_code == 200
+    response = orga_client.post(
+        reverse('orga:organiser.view', kwargs={'organiser': organiser.slug}),
+        {
+            'name_0': 'The bestest organiser',
+        },
+        follow=True
+    )
+    assert response.status_code == 200, response.content.decode()
+    assert str(Organiser.objects.get().name) == 'The bestest organiser'
 
 
 @pytest.mark.django_db

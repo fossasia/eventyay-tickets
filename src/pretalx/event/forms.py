@@ -28,3 +28,14 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = TeamInvite
         fields = ('email', )
+
+
+class OrganiserForm(ReadOnlyFlag, I18nModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['slug'].disabled = True
+
+    class Meta:
+        model = Organiser
+        fields = ('name', 'slug')

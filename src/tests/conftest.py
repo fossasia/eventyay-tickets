@@ -23,7 +23,7 @@ def template_patch(monkeypatch):
 
 @pytest.fixture
 def organiser():
-    o = Organiser.objects.create(name='Super Organiser')
+    o = Organiser.objects.create(name='Super Organiser', slug='superorganiser')
     Team.objects.create(name='Organisers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True)
     Team.objects.create(name='Organisers and reviewers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True, is_reviewer=True)
     Team.objects.create(name='Reviewers', organiser=o, is_reviewer=True)

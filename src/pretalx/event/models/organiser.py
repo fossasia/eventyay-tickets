@@ -33,7 +33,13 @@ class Organiser(LogMixin, models.Model):
     )
 
     def __str__(self) -> str:
+        """ Used in generated forms """
         return str(self.name)
+
+    class orga_urls(EventUrls):
+        base = '/orga/organiser/{self.slug}'
+        teams = '{base}/teams'
+        new_team = '{teams}/new'
 
 
 class Team(LogMixin, models.Model):

@@ -4,9 +4,11 @@
 
 {% block settings_content %}
 <div>
+    {% if request.event and team %}
     <div class="alert alert-info">
         {% trans "To invite a new member to your team, select the team below, or create a new one." %}
     </div>
+    {% endif %}
     <legend>
         {% if team %}
             {% trans "Team" %} »{{ team.name }}«: {% trans "Members" %}
@@ -15,7 +17,7 @@
         {% endif %}
     </legend>
 
-    {% if team %}
+    {% if request.event and team %}
         <form method="post">{% csrf_token %}
         <table class="table table-sm table-responsive-md">
             <thead>

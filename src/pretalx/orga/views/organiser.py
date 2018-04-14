@@ -3,40 +3,44 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.event.forms import TeamForm, TeamInviteForm
+from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
 from pretalx.event.models import Organiser, Team, TeamInvite
 
 
 class TeamMixin:
 
     def get_queryset(self):
-        return Team.objects.filter(
-            Q(all_events=True) | Q(limit_events__in=[self.request.event]),
-            organiser=self.request.event.organiser,
-        )
+        if hasattr(self.request, 'event'):
+            return Team.objects.filter(
+                Q(all_events=True) | Q(limit_events__in=[self.request.event]),
+                organiser=self.request.event.organiser,
+            )
+        elif hasattr(self.request, 'organiser'):
+            return Team.objects.filter(organiser=self.request.organiser)
+        return Team.objects.none()
 
 
 class Teams(PermissionRequired, TeamMixin, ListView):
+    permission_required = 'orga.change_teams'
     template_name = 'orga/settings/team_list.html'
     context_object_name = 'teams'
-    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
-        return self.request.event
+        return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
 
 class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
+    permission_required = 'orga.change_teams'
     template_name = 'orga/settings/team_detail.html'
     form_class = TeamForm
     model = Team
-    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
-        return self.request.event
+        return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -81,11 +85,11 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
-    template_name = 'orga/settings/team_delete.html'
     permission_required = 'orga.change_teams'
+    template_name = 'orga/settings/team_delete.html'
 
     def get_permission_object(self):
-        return self.request.event
+        return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
     @cached_property
     def team(self):
@@ -120,7 +124,7 @@ class TeamUninvite(PermissionRequired, DetailView):
     permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
-        return self.request.event
+        return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -134,9 +138,15 @@ class TeamUninvite(PermissionRequired, DetailView):
         return redirect(self.request.event.orga_urls.team_settings)
 
 
-class OrganiserDetail(PermissionRequired, UpdateView):
+class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
+    template_name = 'orga/organiser_detail.html'
     model = Organiser
     permission_required = 'orga.change_organiser_settings'
+    form_class = OrganiserForm
 
-    def get_permission_object(self):
-        return self.request.event
+    def get_object(self):
+        return self.request.organiser
+
+    def get_success_url(self):
+        messages.success(self.request, _('Saved!'))
+        return self.request.path

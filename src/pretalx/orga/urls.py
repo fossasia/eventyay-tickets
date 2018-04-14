@@ -17,6 +17,16 @@ urlpatterns = [
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
+
+    url('^organiser/new$', organiser.OrganiserDetail.as_view(), name='organiser.create'),
+    url(f'^organiser/(?P<organiser>[{SLUG_CHARS}]+)/', include([
+        url('^$', organiser.OrganiserDetail.as_view(), name='organiser.view'),
+        url('^teams/$', organiser.TeamDetail.as_view(), name='organiser.teams'),
+        url('^teams/new$', organiser.TeamDetail.as_view(), name='organiser.teams.create'),
+        url('^teams/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='organiser.teams.view'),
+        url('^teams/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='organiser.teams.delete'),
+    ])),
+
     url('^event/new/$', event.EventDetail.as_view(), name='event.create'),
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
@@ -88,7 +98,6 @@ urlpatterns = [
         url('^settings$', event.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
 
-        url('^settings/organiser$', organiser.OrganiserDetail.as_view(), name='settings.organiser.view'),
         url('^settings/team$', organiser.Teams.as_view(), name='settings.team.view'),
         url('^settings/team/new$', organiser.TeamDetail.as_view(), name='settings.team.add'),
         url('^settings/team/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='settings.team.detail'),
