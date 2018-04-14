@@ -167,7 +167,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         self.profiles.all().update(biography='')
         Answer.objects.filter(person=self, question__contains_personal_data=True).delete()
         for team in self.teams.all():
-            team.users.remove(self)
+            team.members.remove(self)
 
     @cached_property
     def gravatar_parameter(self):

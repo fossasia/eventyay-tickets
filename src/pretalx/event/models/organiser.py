@@ -100,12 +100,6 @@ class Team(LogMixin, models.Model):
     def __str__(self) -> str:
         return _('{name} on {orga}').format(name=str(self.name), orga=str(self.organiser))
 
-    def permission_set(self) -> set:
-        attribs = dir(self)
-        return {
-            a for a in attribs if a.startswith('can_') and self.has_permission(a)
-        }
-
 
 def generate_invite_token():
     return get_random_string(allowed_chars=string.ascii_lowercase + string.digits, length=32)

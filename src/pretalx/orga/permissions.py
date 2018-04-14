@@ -16,13 +16,10 @@ def can_change_event_settings(user, obj):
 
 @rules.predicate
 def can_change_organiser_settings(user, obj):
-    from pretalx.event.models import Organiser
-    if isinstance(obj, Organiser):
-        return user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
     event = getattr(obj, 'event', None)
-    if not user or user.is_anonymous or not obj or not event:
-        return False
-    return event in user.get_events_for_permission(can_change_organiser_settings=True)
+    if event:
+        obj = event.organiser
+    return user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
 
 
 @rules.predicate

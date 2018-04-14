@@ -14,7 +14,7 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 class TeamMixin:
 
     def get_queryset(self):
-        if hasattr(self.request, 'event'):
+        if hasattr(self.request, 'event') and self.request.event:
             return Team.objects.filter(
                 Q(all_events=True) | Q(limit_events__in=[self.request.event]),
                 organiser=self.request.event.organiser,
@@ -67,7 +67,6 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
                 invite = TeamInvite.objects.create(team=self.get_object(), email=self.invite_form.cleaned_data['email'])
                 invite.send(event=self.request.event)
                 messages.success(self.request, _('The invitation has been generated, it\'s in the outbox.'))
-                return redirect(self.request.path)
             else:
                 return self.form_invalid(*args, **kwargs)
             return redirect(self.request.path)
@@ -78,7 +77,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         form.save()
         messages.success(self.request, _('The settings have been saved.'))
         if created:
-            if hasattr(self.request, 'event'):
+            if hasattr(self.request, 'event') and self.request.event:
                 return redirect(self.request.event.orga_urls.team_settings)
             return redirect(self.request.organiser.orga_urls.teams)
         return redirect(self.request.path)
@@ -115,7 +114,7 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
         else:
             self.get_object().delete()
             messages.success(request, _('The team was removed.'))
-        if hasattr(self.request, 'event'):
+        if hasattr(self.request, 'event') and self.request.event:
             return redirect(self.request.event.orga_urls.team_settings)
         return redirect(self.request.organiser.orga_urls.teams)
 

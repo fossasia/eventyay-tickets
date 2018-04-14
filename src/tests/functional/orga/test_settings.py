@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from django.utils.timezone import now
 
-from pretalx.event.models import Event, Organiser
+from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
@@ -148,48 +148,6 @@ def test_orga_cannot_create_event(orga_client):
 
 
 @pytest.mark.django_db
-@pytest.mark.xfail
-def test_create_event(superuser_client):
-    count = Event.objects.count()
-    response = superuser_client.get(reverse('orga:event.create'), follow=True)
-    assert response.status_code == 200
-    response = superuser_client.post(
-        reverse('orga:event.create'),
-        {
-            'name_0': 'The bestest event',
-            'slug': 'testevent',
-            'is_public': False,
-            'date_from': now().strftime('%Y-%m-%d'),
-            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
-            'timezone': 'UTC',
-            'locale': 'en',
-            'locales': ['en'],
-            'email': 'orga@orga.org',
-            'primary_color': None,
-        },
-        follow=True
-    )
-    assert response.status_code == 200, response.content.decode()
-    assert Event.objects.get(slug='testevent')
-    assert Event.objects.count() == count + 1
-
-
-@pytest.mark.django_db
-def test_edit_organiser(orga_client, organiser):
-    response = orga_client.get(reverse('orga:organiser.view', kwargs={'organiser': organiser.slug}))
-    assert response.status_code == 200
-    response = orga_client.post(
-        reverse('orga:organiser.view', kwargs={'organiser': organiser.slug}),
-        {
-            'name_0': 'The bestest organiser',
-        },
-        follow=True
-    )
-    assert response.status_code == 200, response.content.decode()
-    assert str(Organiser.objects.get().name) == 'The bestest organiser'
-
-
-@pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     assert team.members.count() == 1
@@ -204,6 +162,7 @@ def test_invite_orga_member(orga_client, event):
     assert response.status_code == 200
     assert team.members.count() == 1
     assert team.invites.count() == 1
+    assert str(team) in str(team.invites.first())
 
 
 @pytest.mark.django_db
@@ -234,6 +193,36 @@ def test_retract_invitation(orga_client, event):
     assert response.status_code == 200
     assert team.members.count() == 1
     assert team.invites.count() == 0
+
+
+@pytest.mark.django_db
+def test_delete_team_member(orga_client, event, other_orga_user):
+    team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    team.members.add(other_orga_user)
+    team.save()
+    member = team.members.first()
+    count = team.members.count()
+    url = event.orga_urls.team_settings + f'/{team.pk}/delete/{member.pk}'
+    assert count
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.count() == count
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.count() == count - 1
+
+
+@pytest.mark.django_db
+def test_delete_event_team(orga_client, event):
+    count = event.teams.count()
+    team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    url = event.orga_urls.team_settings + f'/{team.pk}/delete'
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    assert event.teams.count() == count
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert event.teams.count() == count - 1
 
 
 @pytest.mark.django_db

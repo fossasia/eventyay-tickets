@@ -47,6 +47,11 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     name = speaker.name
     nick = speaker.nick
     email = speaker.email
+    organiser = speaker.submissions.first().event.organiser
+    team = organiser.teams.first()
+    team.members.add(speaker)
+    team.save()
+    team_members = team.members.count()
     speaker.deactivate()
     speaker.refresh_from_db()
     assert speaker.own_actions().count() == count
@@ -57,3 +62,4 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     assert speaker.email != email
     assert Answer.objects.count() == 1
     assert Answer.objects.first().question.contains_personal_data is False
+    assert team.members.count() == team_members - 1
