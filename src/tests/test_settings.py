@@ -38,5 +38,5 @@ CACHES = {
     }
 }
 with suppress(ValueError):
-    INSTALLED_APPS.remove('debug_toolbar.apps.DebugToolbarConfig')
-    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
+    INSTALLED_APPS.remove('debug_toolbar.apps.DebugToolbarConfig')  # noqa
+    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')  # noqa
