@@ -7,8 +7,18 @@ from pretalx.submission.permissions import can_be_reviewed, is_review_author
 
 
 @rules.predicate
-def can_change_orga_settings(user, obj):
+def can_change_event_settings(user, obj):
     return obj.event in user.get_events_for_permission(can_change_event_settings=True)
+
+
+@rules.predicate
+def can_change_organiser_settings(user, obj):
+    return obj.event in user.get_events_for_permission(can_change_organiser_settings=True)
+
+
+@rules.predicate
+def can_change_team_settings(user, obj):
+    return obj.event in user.get_events_for_permission(can_change_team_settings=True)
 
 
 @rules.predicate
@@ -21,7 +31,9 @@ def review_deadline_unmet(user, obj):
 
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.search_all_users', can_change_submissions)
-rules.add_perm('orga.change_settings', can_change_orga_settings)
+rules.add_perm('orga.change_settings', can_change_event_settings)
+rules.add_perm('orga.change_organiser_settings', can_change_organiser_settings)
+rules.add_perm('orga.change_team_settings', can_change_team_settings)
 rules.add_perm('orga.view_submission_cards', can_change_submissions)
 rules.add_perm('orga.edit_cfp', can_change_submissions)
 rules.add_perm('orga.view_question', can_change_submissions)

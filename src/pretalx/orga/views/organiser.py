@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -13,24 +14,26 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 class TeamMixin:
 
     def get_queryset(self):
-        teams = Team.objects.filter(organiser=self.request.event.organiser)  # TODO: only for event
-        return [team for team in teams if team.all_events or self.request.event in team.limit_events.all()]
+        return Team.objects.filter(
+            Q(all_events=True) | Q(limit_events__in=[self.request.event]),
+            organiser=self.request.event.organiser,
+        )
 
 
 class Teams(PermissionRequired, TeamMixin, ListView):
     template_name = 'orga/settings/team_list.html'
     context_object_name = 'teams'
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_team_settings'
 
     def get_permission_object(self):
         return self.request.event
 
 
-class TeamDetail(PermissionRequired, CreateOrUpdateView):
+class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     template_name = 'orga/settings/team_detail.html'
     form_class = TeamForm
     model = Team
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_team_settings'
 
     def get_permission_object(self):
         return self.request.event
@@ -77,9 +80,9 @@ class TeamDetail(PermissionRequired, CreateOrUpdateView):
         return redirect(self.request.path)
 
 
-class TeamDelete(PermissionRequired, DetailView):
+class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     template_name = 'orga/settings/team_delete.html'
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_team_settings'
 
     def get_permission_object(self):
         return self.request.event
@@ -114,7 +117,7 @@ class TeamDelete(PermissionRequired, DetailView):
 class TeamUninvite(PermissionRequired, DetailView):
     model = TeamInvite
     template_name = 'orga/settings/team_delete.html'
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_team_settings'
 
     def get_permission_object(self):
         return self.request.event
@@ -133,7 +136,7 @@ class TeamUninvite(PermissionRequired, DetailView):
 
 class OrganiserDetail(PermissionRequired, UpdateView):
     model = Organiser
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_organiser_settings'
 
     def get_permission_object(self):
         return self.request.event
