@@ -19,9 +19,7 @@ class TeamMixin:
                 Q(all_events=True) | Q(limit_events__in=[self.request.event]),
                 organiser=self.request.event.organiser,
             )
-        elif hasattr(self.request, 'organiser'):
-            return Team.objects.filter(organiser=self.request.organiser)
-        return Team.objects.none()
+        return Team.objects.filter(organiser=getattr(self.request, 'organiser', None))
 
 
 class Teams(PermissionRequired, TeamMixin, ListView):

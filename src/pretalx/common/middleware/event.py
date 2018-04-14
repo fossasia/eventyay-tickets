@@ -23,12 +23,19 @@ class EventPermissionMiddleware:
         self.get_response = get_response
 
     def _set_orga_events(self, request):
+        request.is_orga = False
+        request.is_reviewer = False
+        request.orga_events = []
         if not request.user.is_anonymous:
             if request.user.is_administrator:
-                request.orga_events = Event.objects.all()
+                request.orga_events = Event.objects.order_by('-date_from')
+                request.is_orga = True
+                request.is_reviewer = True
             else:
-                request.orga_events = request.user.get_events_for_permission()
-            request.orga_events = request.orga_events.order_by('-date_from')
+                request.orga_events = request.user.get_events_for_permission().order_by('-date_from')
+                if hasattr(request, 'event'):
+                    request.is_orga = request.event in request.orga_events
+                    request.is_reviewer = request.event in request.user.get_events_for_permission(is_reviewer=True)
 
     def _handle_orga_url(self, request, url):
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
@@ -60,13 +67,6 @@ class EventPermissionMiddleware:
                 Event,
                 slug__iexact=event_slug,
             )
-
-            if hasattr(request, 'event') and request.event:
-                request.is_orga = False
-                request.is_reviewer = False
-                if not request.user.is_anonymous:
-                    request.is_orga = request.user.is_administrator or request.event in request.user.orga_events
-                    request.is_reviewer = request.user.is_administrator or request.event in request.user.get_events_for_permission(is_reviewer=True)
 
         self._set_orga_events(request)
         self._select_locale(request)

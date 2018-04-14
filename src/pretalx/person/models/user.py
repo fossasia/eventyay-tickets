@@ -180,10 +180,6 @@ class User(PermissionsMixin, AbstractBaseUser):
         relative = orga_teams.filter(all_events=False)
         return Event.objects.filter(models.Q(organiser__in=absolute) | models.Q(organiser__teams__in=relative)).distinct()
 
-    @cached_property
-    def orga_events(self):
-        return self.get_events_for_permission(can_change_submissions=True)
-
     def remaining_override_votes(self, event):
         allowed = max(event.teams.filter(members__in=[self], is_reviewer=True).values_list('review_override_votes', flat=True)) or 0
         overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
