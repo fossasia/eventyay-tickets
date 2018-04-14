@@ -23,7 +23,7 @@ class TeamMixin:
 class Teams(PermissionRequired, TeamMixin, ListView):
     template_name = 'orga/settings/team_list.html'
     context_object_name = 'teams'
-    permission_required = 'orga.change_team_settings'
+    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
         return self.request.event
@@ -33,7 +33,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     template_name = 'orga/settings/team_detail.html'
     form_class = TeamForm
     model = Team
-    permission_required = 'orga.change_team_settings'
+    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
         return self.request.event
@@ -82,7 +82,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     template_name = 'orga/settings/team_delete.html'
-    permission_required = 'orga.change_team_settings'
+    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
         return self.request.event
@@ -117,7 +117,7 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
 class TeamUninvite(PermissionRequired, DetailView):
     model = TeamInvite
     template_name = 'orga/settings/team_delete.html'
-    permission_required = 'orga.change_team_settings'
+    permission_required = 'orga.change_teams'
 
     def get_permission_object(self):
         return self.request.event

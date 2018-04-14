@@ -8,17 +8,26 @@ from pretalx.submission.permissions import can_be_reviewed, is_review_author
 
 @rules.predicate
 def can_change_event_settings(user, obj):
-    return obj.event in user.get_events_for_permission(can_change_event_settings=True)
+    event = getattr(obj, 'event', None)
+    if not user or user.is_anonymous or not obj or not event:
+        return False
+    return event in user.get_events_for_permission(can_change_event_settings=True)
 
 
 @rules.predicate
 def can_change_organiser_settings(user, obj):
-    return obj.event in user.get_events_for_permission(can_change_organiser_settings=True)
+    event = getattr(obj, 'event', None)
+    if not user or user.is_anonymous or not obj or not event:
+        return False
+    return event in user.get_events_for_permission(can_change_organiser_settings=True)
 
 
 @rules.predicate
-def can_change_team_settings(user, obj):
-    return obj.event in user.get_events_for_permission(can_change_team_settings=True)
+def can_change_teams(user, obj):
+    event = getattr(obj, 'event', None)
+    if not user or user.is_anonymous or not obj or not event:
+        return False
+    return event in user.get_events_for_permission(can_change_teams=True)
 
 
 @rules.predicate
@@ -33,7 +42,7 @@ rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.search_all_users', can_change_submissions)
 rules.add_perm('orga.change_settings', can_change_event_settings)
 rules.add_perm('orga.change_organiser_settings', can_change_organiser_settings)
-rules.add_perm('orga.change_team_settings', can_change_team_settings)
+rules.add_perm('orga.change_teams', can_change_teams)
 rules.add_perm('orga.view_submission_cards', can_change_submissions)
 rules.add_perm('orga.edit_cfp', can_change_submissions)
 rules.add_perm('orga.view_question', can_change_submissions)
@@ -64,5 +73,5 @@ rules.add_perm('orga.change_speaker', can_change_submissions)
 rules.add_perm('orga.view_submissions', can_change_submissions | is_reviewer)
 rules.add_perm('orga.create_submission', can_change_submissions)
 rules.add_perm('orga.change_submission_state', can_change_submissions)
-rules.add_perm('orga.view_information', can_change_submissions | is_reviewer)
+rules.add_perm('orga.view_information', can_change_submissions)
 rules.add_perm('orga.change_information', can_change_submissions)
