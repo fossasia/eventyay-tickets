@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
                 ('state', models.CharField(choices=[('submitted', 'submitted'), ('rejected', 'rejected'), ('accepted', 'accepted'), ('confirmed', 'confirmed'), ('canceled', 'canceled'), ('withdrawn', 'withdrawn')], default='submitted', max_length=9, verbose_name='Submission state')),
                 ('description', models.TextField(blank=True, null=True, verbose_name='Description')),
                 ('abstract', models.TextField(blank=True, null=True, verbose_name='Abstract')),
-                ('notes', models.TextField(blank=True, null=True, verbose_name='Notes for the organizer')),
+                ('notes', models.TextField(blank=True, null=True, verbose_name='Notes for the organiser')),
                 ('duration', models.PositiveIntegerField(blank=True, null=True)),
                 ('content_locale', models.CharField(choices=[('en', 'English'), ('de', 'German')], default='en', max_length=32, verbose_name='Language of the submission')),
                 ('do_not_record', models.BooleanField(default=False, verbose_name="Don't record my talk.")),

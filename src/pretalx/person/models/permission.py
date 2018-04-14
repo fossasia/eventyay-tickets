@@ -22,7 +22,7 @@ class EventPermission(LogMixin, models.Model):
     )
     is_orga = models.BooleanField(
         default=True,
-        verbose_name=_('Organizes the event'),
+        verbose_name=_('Organises the event'),
     )
     is_reviewer = models.BooleanField(
         default=False,

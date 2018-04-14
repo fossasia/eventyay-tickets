@@ -9,10 +9,10 @@ class OrgaPhrases(Phrases, app='orga'):
         _('Hi, nice to see you!'),
         _('Welcome!'),
         _('I hope you are having a good day :)'),
-        _('Remember: organizing events is lots of work, but it pays off.'),
+        _('Remember: organising events is lots of work, but it pays off.'),
         _('If you are waiting for feedback from your speakers, try sending a mail to a subset of them.'),
         _('Remember to provide your speakers with all information they need ahead of time.'),
-        _('Even the busiest event organizers should make time to see at least one talk ;)'),
+        _('Even the busiest event organisers should make time to see at least one talk ;)'),
     ]
     schedule_example_version = [
         'v1', 'v2', 'v4.0', 'v0.1', '♥',

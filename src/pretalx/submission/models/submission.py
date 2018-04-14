@@ -125,7 +125,7 @@ class Submission(LogMixin, models.Model):
     )
     notes = models.TextField(
         null=True, blank=True,
-        verbose_name=_('Notes for the organizer'),
+        verbose_name=_('Notes for the organiser'),
     )
     duration = models.PositiveIntegerField(
         null=True, blank=True,
