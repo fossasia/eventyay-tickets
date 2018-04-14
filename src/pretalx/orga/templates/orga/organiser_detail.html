@@ -26,6 +26,9 @@
                 </span>
             </a>
         {% endfor %}
+        <a href="{{ request.organiser.orga_urls.new_team }}" class="dashboard-block">
+            <h1><i class="fa fa-plus"></i>{% trans "New team" %}</h1>
+        </a>
     </div>
 
 {% endblock %}

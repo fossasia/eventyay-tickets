@@ -78,7 +78,9 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         form.save()
         messages.success(self.request, _('The settings have been saved.'))
         if created:
-            return redirect(self.request.event.orga_urls.team_settings)
+            if hasattr(self.request, 'event'):
+                return redirect(self.request.event.orga_urls.team_settings)
+            return redirect(self.request.organiser.orga_urls.teams)
         return redirect(self.request.path)
 
 
@@ -113,7 +115,9 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
         else:
             self.get_object().delete()
             messages.success(request, _('The team was removed.'))
-        return redirect(self.request.event.orga_urls.team_settings)
+        if hasattr(self.request, 'event'):
+            return redirect(self.request.event.orga_urls.team_settings)
+        return redirect(self.request.organiser.orga_urls.teams)
 
 
 class TeamUninvite(PermissionRequired, DetailView):
