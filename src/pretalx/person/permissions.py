@@ -7,14 +7,15 @@ from pretalx.submission.models.submission import SubmissionStates
 def can_change_submissions(user, obj):
     if not user or user.is_anonymous or not obj:
         return False
-    return user.is_administrator or obj.event in user.orga_events
+    return user.is_administrator or obj.event in user.get_events_for_permission(can_change_submissions=True)
 
 
 @rules.predicate
 def is_reviewer(user, obj):
-    if not user or user.is_anonymous or not obj:
+    event = getattr(obj, 'event', None)
+    if not user or user.is_anonymous or not obj or not event:
         return False
-    return obj.event in user.get_events_for_permission(is_reviewer=True)
+    return event in user.get_events_for_permission(is_reviewer=True)
 
 
 @rules.predicate
@@ -34,3 +35,4 @@ def person_can_view_information(user, obj):
 
 
 rules.add_perm('person.view_information', can_change_submissions | person_can_view_information)
+rules.add_perm('person.change_information', can_change_submissions)
