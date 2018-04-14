@@ -1,6 +1,7 @@
 import atexit
 import os
 import tempfile
+from contextlib import suppress
 
 tmpdir = tempfile.TemporaryDirectory()
 os.environ.setdefault('DATA_DIR', tmpdir.name)
@@ -36,3 +37,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+with suppress(ValueError):
+    INSTALLED_APPS.remove('debug_toolbar.apps.DebugToolbarConfig')
+    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
