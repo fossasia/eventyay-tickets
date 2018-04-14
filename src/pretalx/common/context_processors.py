@@ -17,7 +17,6 @@ def add_events(request):
             url_name = ''
             url_namespace = ''
         return {
-            'events': list(request.user.orga_events),
             'url_name': url_name,
             'url_namespace': url_namespace,
         }
