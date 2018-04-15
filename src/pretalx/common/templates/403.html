@@ -1,6 +1,5 @@
 {% load compress %}
 {% load staticfiles %}
-{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +16,7 @@
 <body>
     <div id="wrapper">
         <img src="{% static "common/img/error_403.svg" %}" class="img">
-        <h2>{% trans "Permission denied" %}</h2>
+        <h2>{{ phrases.base.permission_denied }}</h2>
     </div>
 </body>
 </html>

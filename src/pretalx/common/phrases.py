@@ -51,3 +51,29 @@ class BasePhrases(Phrases, app='base'):
     error_sending_mail = [_('There was an error sending the mail. Please try again later.')]
     error_saving_changes = [_('Huh. We had trouble saving your input – Please see below for details. 🠯')]
     error_permissions_action = [_('You do not have permission to perform this action.')]
+
+    permission_denied = [
+        _('Permission denied.'),
+        _('Sorry, you do not have the required permissions to access this page.'),
+        _('Access denied.'),
+    ]
+    not_found = [
+        _('Page not found.'),
+        _('This page does not exist.'),
+        _('Huh, I could have sworn there was something here.'),
+        _(''),
+        _('This page is no more.'),
+        _('This page has ceased to be.'),
+        _('Huh.'),
+    ]
+    internal_error = [
+        _('Internal server error.'),
+        _('Internal error, sorry.'),
+        _('Internal server error, we\'ve informed the maintenance robot.'),
+        _(''),
+        _('Ouch, this page is broken.'),
+        _('This shouldn\'t happen, sorry. We\'re looking into it.'),
+        _('Huh. This seems broken. Please try again later.'),
+        _('This seems broken. We\'re looking into it, please give us a bit.'),
+        _('It\'s a bug, not a feature. We\'re looking into it.'),
+    ]
