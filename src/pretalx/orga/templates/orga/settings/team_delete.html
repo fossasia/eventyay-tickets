@@ -1,0 +1,17 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block settings_content %}
+<div>
+    <legend>
+        {% trans "Team" %} »{{ team.name }}«: {% trans "Members" %}
+    </legend>
+
+    {% trans "Do you really want to go through with this deletion?" %} <em>{{ object.email }}</em>
+    <form class="float-right" method="post">{% csrf_token %}
+        <a class="btn btn-info" href={{ request.event.orga_urls.team_settings }}>{% trans "Back" %}</a>
+        <button class="btn btn-danger" type="submit">{% trans "Yes" %}</button>
+    </form>
+</div>
+{% endblock %}

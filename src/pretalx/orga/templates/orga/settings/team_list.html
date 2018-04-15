@@ -1,0 +1,42 @@
+{% extends "orga/settings/base.html" %}
+{% load i18n %}
+{% block settings_content %}
+
+<div>
+    <div class="alert alert-info">
+        {% trans "To invite a new member to your team, select the team below, or create a new one." %}
+    </div>
+    <legend>
+        {% trans "Teams" %}
+    </legend>
+    <table class="table table-sm table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Members" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr>
+                <td>
+                    <a href="{{ request.event.orga_urls.team_settings }}/{{ team.id }}">
+                        {{ team.name }}
+                    </a>
+                </td>
+                <td>{{ team.members.count }}</td>
+                <td class="text-right">
+                    <a href="{{ request.event.orga_urls.team_settings }}/{{ team.id }}" class="btn btn-sm btn-info">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="{{ request.event.orga_urls.team_settings }}/{{ team.id }}/delete" class="btn btn-sm btn-danger">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -18,19 +18,31 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('event.dashboard', 200, 200,),
     ('event.user_list', 200, 404),
     ('cfp.questions.view', 200, 404,),
+    ('cfp.questions.create', 200, 404,),
+    ('cfp.questions.remind', 200, 404,),
     ('cfp.text.view', 200, 404,),
     ('cfp.types.view', 200, 404,),
     ('mails.templates.list', 200, 404,),
-    ('mails.outbox.list', 200, 404,),
+    ('mails.templates.create', 200, 404,),
     ('mails.send', 200, 404,),
     ('mails.sent', 200, 404,),
+    ('mails.outbox.list', 200, 404,),
     ('submissions.list', 200, 200,),
+    ('submissions.create', 200, 404,),
+    ('submissions.cards', 200, 404,),
     ('speakers.list', 200, 200,),
-    ('settings.event.view', 200, 403,),
-    ('settings.mail.view', 200, 404,),
-    ('settings.team.view', 200, 404,),
+    ('speakers.information.list', 200, 404,),
+    ('speakers.information.create', 200, 404,),
     ('reviews.dashboard', 200, 200,),
+    ('settings.event.view', 200, 404,),
+    ('settings.mail.view', 200, 404,),
     ('schedule.main', 200, 404,),
+    ('schedule.import', 200, 404,),
+    ('schedule.export', 200, 404,),
+    ('schedule.rooms.list', 200, 404,),
+    ('schedule.rooms.create', 200, 404,),
+    ('schedule.api.rooms', 200, 404,),
+    ('schedule.api.talks', 200, 404,),
     ('plugins.select', 200, 404,),
 ])
 @pytest.mark.django_db
@@ -38,12 +50,13 @@ def test_user_can_access_event_urls(
         orga_user, review_user, orga_reviewer_user, client, url,
         orga_access, reviewer_access, event, template_patch
 ):
+    url = reverse(f'orga:{url}', kwargs={'event': event.slug})
     client.force_login(orga_user)
-    orga_response = client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
+    orga_response = client.get(url, follow=True)
     client.force_login(review_user)
-    review_response = client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
+    review_response = client.get(url, follow=True)
     client.force_login(orga_reviewer_user)
-    both_response = client.get(reverse(f'orga:{url}', kwargs={'event': event.slug}), follow=True)
+    both_response = client.get(url, follow=True)
     assert orga_response.status_code == orga_access, orga_response.status_code
     assert review_response.status_code == reviewer_access, review_response.status_code
     assert both_response.status_code == 200

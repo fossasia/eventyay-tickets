@@ -1,11 +1,6 @@
-from datetime import timedelta
-
 import pytest
-from django.urls import reverse
-from django.utils.timezone import now
 
 from pretalx.event.models import Event
-from pretalx.person.models import EventPermission
 
 
 @pytest.mark.django_db
@@ -125,192 +120,81 @@ def test_add_logo(event, orga_client):
 
 
 @pytest.mark.django_db
-def test_orga_cannot_create_event(orga_client):
-    count = Event.objects.count()
-    response = orga_client.post(
-        reverse('orga:event.create'),
-        {
-            'name_0': 'The bestest event',
-            'slug': 'testevent',
-            'is_public': False,
-            'date_from': now().strftime('%Y-%m-%d'),
-            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
-            'timezone': 'UTC',
-            'locale': 'en',
-            'locales': ['en'],
-            'email': 'orga@orga.org',
-            'primary_color': None,
-        },
-        follow=True
-    )
-    assert response.status_code == 403
-    assert not Event.objects.filter(slug='testevent').exists()
-    assert Event.objects.count() == count
-
-
-@pytest.mark.django_db
-def test_create_event(superuser_client):
-    count = Event.objects.count()
-    response = superuser_client.get(reverse('orga:event.create'), follow=True)
-    assert response.status_code == 200
-    response = superuser_client.post(
-        reverse('orga:event.create'),
-        {
-            'name_0': 'The bestest event',
-            'slug': 'testevent',
-            'is_public': False,
-            'date_from': now().strftime('%Y-%m-%d'),
-            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
-            'timezone': 'UTC',
-            'locale': 'en',
-            'locales': ['en'],
-            'email': 'orga@orga.org',
-            'primary_color': None,
-        },
-        follow=True
-    )
-    assert response.status_code == 200, response.content.decode()
-    assert Event.objects.get(slug='testevent')
-    assert Event.objects.count() == count + 1
-
-
-@pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
-    assert EventPermission.objects.filter(event=event).count() == 1
-    perm = EventPermission.objects.filter(event=event).first()
+    team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
+    assert team.members.count() == 1
+    assert team.invites.count() == 0
     response = orga_client.post(
-        event.orga_urls.team_settings,
+        event.orga_urls.team_settings + f'/{team.id}',
         {
-            'permissions-TOTAL_FORMS': 2,
-            'permissions-INITIAL_FORMS': 1,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(perm.id),
-            'permissions-1-invitation_email': 'other@user.org',
-            'permissions-1-is_orga': 'on',
-            'permissions-1-review_override_count': '0',
-            'permissions-1-id': '',
+            'email': 'other@user.org',
+            'form': 'invite',
         }, follow=True,
     )
     assert response.status_code == 200
-    assert EventPermission.objects.filter(event=event).count() == 2
-    perm = EventPermission.objects.get(event=event, invitation_token__isnull=False)
-    assert perm.is_orga
-    assert not perm.is_reviewer
-
-
-@pytest.mark.django_db
-def test_remove_last_orga_member(orga_client, event):
-    assert EventPermission.objects.filter(event=event).count() == 1
-    perm = EventPermission.objects.filter(event=event).first()
-    response = orga_client.post(
-        event.orga_urls.team_settings,
-        {
-            'permissions-TOTAL_FORMS': 1,
-            'permissions-INITIAL_FORMS': 1,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(perm.id),
-            'permissions-0-DELETE': 'on',
-        }, follow=True,
-    )
-    assert response.status_code == 200
-    assert EventPermission.objects.filter(event=event).count() == 1
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    assert str(team) in str(team.invites.first())
 
 
 @pytest.mark.django_db
 def test_retract_invitation(orga_client, event):
-    perm = EventPermission.objects.filter(event=event).first()
+    team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
-        event.orga_urls.team_settings,
+        event.orga_urls.team_settings + f'/{team.id}',
         {
-            'permissions-TOTAL_FORMS': 2,
-            'permissions-INITIAL_FORMS': 1,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(perm.id),
-            'permissions-1-invitation_email': 'other@user.org',
-            'permissions-1-is_orga': 'on',
-            'permissions-1-review_override_count': '0',
-            'permissions-1-id': '',
+            'email': 'other@user.org',
+            'form': 'invite',
         }, follow=True,
     )
     assert response.status_code == 200
-    assert EventPermission.objects.filter(event=event).count() == 2
-    perm_new = EventPermission.objects.get(event=event, invitation_token__isnull=False)
-    response = orga_client.post(
-        event.orga_urls.team_settings,
-        {
-            'permissions-TOTAL_FORMS': 2,
-            'permissions-INITIAL_FORMS': 2,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(perm.id),
-            'permissions-1-invitation_email': 'other@user.org',
-            'permissions-1-is_orga': 'on',
-            'permissions-1-review_override_count': '0',
-            'permissions-1-id': str(perm_new.id),
-            'permissions-1-DELETE': 'on',
-        }, follow=True,
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    invite = team.invites.first()
+    response = orga_client.get(
+        event.orga_urls.team_settings + f'/{invite.id}/uninvite',
+        follow=True,
     )
     assert response.status_code == 200
-    assert EventPermission.objects.filter(event=event).count() == 1
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    response = orga_client.post(
+        event.orga_urls.team_settings + f'/{invite.id}/uninvite',
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == 1
+    assert team.invites.count() == 0
 
 
 @pytest.mark.django_db
-def test_add_orga_to_review(orga_client, event):
-    perm = EventPermission.objects.get(event=event)
-    assert perm.is_reviewer is False
-    assert perm.is_orga is True
-    response = orga_client.post(
-        event.orga_urls.team_settings,
-        {
-            'permissions-TOTAL_FORMS': 1,
-            'permissions-INITIAL_FORMS': 1,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-is_reviewer': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(perm.id),
-        }, follow=True,
-    )
+def test_delete_team_member(orga_client, event, other_orga_user):
+    team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    team.members.add(other_orga_user)
+    team.save()
+    member = team.members.first()
+    count = team.members.count()
+    url = event.orga_urls.team_settings + f'/{team.pk}/delete/{member.pk}'
+    assert count
+    response = orga_client.get(url, follow=True)
     assert response.status_code == 200
-    perm.refresh_from_db()
-    assert perm.is_reviewer is True
-    assert perm.is_orga is True
+    assert team.members.count() == count
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.count() == count - 1
 
 
-@pytest.mark.parametrize('target', ('email', 'nick'))
 @pytest.mark.django_db
-def test_add_reviewer_to_orga(orga_client, review_user, event, target):
-    review_perm = EventPermission.objects.get(event=event, is_orga=False)
-    orga_perm = EventPermission.objects.get(event=event, is_orga=True)
-    assert review_perm.is_reviewer is True
-    assert review_perm.is_orga is False
-    response = orga_client.post(
-        event.orga_urls.team_settings,
-        {
-            'permissions-TOTAL_FORMS': 2,
-            'permissions-INITIAL_FORMS': 2,
-            'permissions-0-invitation_email': '',
-            'permissions-0-is_orga': 'on',
-            'permissions-0-review_override_count': '0',
-            'permissions-0-id': str(orga_perm.id),
-            'permissions-1-invitation_email': '',
-            'permissions-1-is_orga': 'on',
-            'permissions-1-is_reviewer': 'on',
-            'permissions-1-review_override_count': '0',
-            'permissions-1-id': str(review_perm.id),
-        }, follow=True,
-    )
+def test_delete_event_team(orga_client, event):
+    count = event.teams.count()
+    team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    url = event.orga_urls.team_settings + f'/{team.pk}/delete'
+    response = orga_client.get(url, follow=True)
     assert response.status_code == 200
-    review_perm.refresh_from_db()
-    assert review_perm.is_reviewer is True
-    assert review_perm.is_orga is True
+    assert event.teams.count() == count
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert event.teams.count() == count - 1
 
 
 @pytest.mark.django_db

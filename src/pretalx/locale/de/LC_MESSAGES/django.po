@@ -763,7 +763,7 @@ msgstr "Einreichung zurückziehen"
 msgid ""
 "You can click here to withdraw your submission from the selection process. "
 "You cannot undo this - if you are just uncertain if you can or should hold "
-"your talk, please contact the organizer instead."
+"your talk, please contact the organiser instead."
 msgstr ""
 "Du kannst hier klicken, um deine Einreichung zurückzuziehen. Das kann nicht "
 "rückgängig gemacht werden - wenn du dir unsicher bist, ob du deine "
@@ -781,7 +781,7 @@ msgstr "Einreichung absagen"
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:135
 msgid ""
 "As your submission has been accepted already, please contact the event's "
-"organizing team to cancel it. The best way to reach out would be an answer "
+"organising team to cancel it. The best way to reach out would be an answer "
 "to your acceptance mail."
 msgstr ""
 "Da deine Einreichung bereits angenommen wurde, nimm bitte Kontakt mit der "
@@ -2118,7 +2118,7 @@ msgid "I hope you are having a good day :)"
 msgstr "Ich hoffe, du hast einen schönen Tag :)"
 
 #: pretalx/orga/phrases.py:12
-msgid "Remember: organizing events is lots of work, but it pays off."
+msgid "Remember: organising events is lots of work, but it pays off."
 msgstr ""
 "Fakt: Veranstaltungen zu organisieren ist eine Menge Arbeit, aber am Ende "
 "lohnt sie sich."
@@ -2141,7 +2141,7 @@ msgstr ""
 
 #: pretalx/orga/phrases.py:15
 msgid ""
-"Even the busiest event organizers should make time to see at least one "
+"Even the busiest event organisers should make time to see at least one "
 "talk ;)"
 msgstr ""
 "Sogar die Orga, die nur am rotieren ist, sollte mindestens einen Talk "
@@ -2663,7 +2663,7 @@ msgstr "Letzte Aktivitäten"
 
 #: pretalx/orga/templates/orga/invitation.html:8
 #, python-format
-msgid "Invitation to the team organizing %(event)s"
+msgid "Invitation to the team organising %(event)s"
 msgstr "Einladung zum Team, das %(event)s organisiert"
 
 #: pretalx/orga/templates/orga/mails/confirm.html:7
@@ -3251,7 +3251,7 @@ msgstr "Beschreibung"
 
 #: pretalx/orga/templates/orga/submission/review.html:50
 #: pretalx/submission/models/submission.py:126
-msgid "Notes for the organizer"
+msgid "Notes for the organiser"
 msgstr "Notiz für den Veranstalter"
 
 #: pretalx/orga/templates/orga/submission/review.html:60
@@ -3771,7 +3771,7 @@ msgid "Please try to keep your upload small, preferably below 16 MB."
 msgstr "Bitte versuch den Upload klein zu halten, am besten unter 16 MB."
 
 #: pretalx/person/models/permission.py:25
-msgid "Organizes the event"
+msgid "Organises the event"
 msgstr "Organisiert die Veranstaltung"
 
 #: pretalx/person/models/permission.py:29

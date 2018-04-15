@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 
+from pretalx.event.models import TeamInvite
+
 
 @pytest.mark.django_db
 def test_orga_successful_login(client, user, template_patch):
@@ -26,45 +28,35 @@ def test_orga_redirect_login(client, orga_user, event):
 
 @pytest.mark.django_db
 def test_orga_accept_invitation_once(client, event, invitation):
-    assert invitation.user is None
+    team = invitation.team
+    count = invitation.team.members.count()
+    token = invitation.token
     response = client.post(
-        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token}),
+        reverse('orga:invitation.view', kwargs={'code': invitation.token}),
         {
             'register_username': 'newuser',
-            'register_email': invitation.invitation_email,
+            'register_email': invitation.email,
             'register_password': 'f00baar!',
             'register_password_repeat': 'f00baar!',
         },
         follow=True,
     )
     assert response.status_code == 200
-    invitation.refresh_from_db()
-    assert invitation.user.nick == 'newuser'
+    assert team.members.count() == count + 1
+    assert team.invites.count() == 0
+    with pytest.raises(TeamInvite.DoesNotExist):
+        invitation.refresh_from_db()
     response = client.get(
-        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token}),
+        reverse('orga:invitation.view', kwargs={'code': token}),
         follow=True
     )
     assert response.status_code == 404
-    response = client.post(
-        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token}),
-        {
-            'register_username': 'evilnewuser',
-            'register_email': invitation.invitation_email + '.evil',
-            'register_password': 'f00baar!',
-            'register_password_repeat': 'f00baar!',
-        },
-        follow=True,
-    )
-    assert response.status_code == 404
-    invitation.refresh_from_db()
-    assert invitation.user.nick == 'newuser'
 
 
 @pytest.mark.django_db
 def test_orga_incorrect_invite_token(client, event, invitation):
-    assert invitation.user is None
     response = client.get(
-        reverse('orga:invitation.view', kwargs={'code': invitation.invitation_token + 'WRONG'}),
+        reverse('orga:invitation.view', kwargs={'code': invitation.token + 'WRONG'}),
         follow=True
     )
     assert response.status_code == 404

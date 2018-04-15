@@ -1,6 +1,7 @@
 import atexit
 import os
 import tempfile
+from contextlib import suppress
 
 tmpdir = tempfile.TemporaryDirectory()
 os.environ.setdefault('DATA_DIR', tmpdir.name)
@@ -14,6 +15,7 @@ MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 atexit.register(tmpdir.cleanup)
 
 EMAIL_BACKEND = 'django.core.mail.outbox'
+MAIL_FROM = 'orga@orga.org'
 
 COMPRESS_ENABLED = COMPRESS_OFFLINE = False
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
@@ -35,3 +37,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+with suppress(ValueError):
+    INSTALLED_APPS.remove('debug_toolbar.apps.DebugToolbarConfig')  # noqa
+    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')  # noqa

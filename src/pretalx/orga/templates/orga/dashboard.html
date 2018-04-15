@@ -1,8 +1,9 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
-{% load staticfiles %}
+{% load rules %}
 
 {% block content %}
+    {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
 
     <div class="dashboard-list">
         {% for event in request.orga_events %}
@@ -14,7 +15,15 @@
                 </span>
             </a>
         {% endfor %}
-        {% if request.user.is_administrator %}
+        {% for organiser in organisers %}
+            <a href="{{ organiser.orga_urls.base }}" class="dashboard-block">
+                <h1>{{ organiser.name }}</h1>
+                <span class="dashboard-description">
+                    ({% trans "Organiser" %})
+                </span>
+            </a>
+        {% endfor %}
+        {% if can_create_event %}
             <a href="{% url "orga:event.create" %}" class="dashboard-block">
                 <h1><i class="fa fa-plus"></i>{% trans "New event" %}</h1>
                 <span class="dashboard-description">{% trans "Uh, a new event?<br>Head over here, please!" %}</span>

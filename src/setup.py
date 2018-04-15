@@ -45,7 +45,7 @@ cmdclass = {
 setup(
     name='pretalx',
     version=pretalx_version,
-    description='Conference organization: CfPs, scheduling, much more',
+    description='Conference organisation: CfPs, scheduling, much more',
     long_description=long_description,
     url='https://pretalx.org',
     author='Tobias Kunze',

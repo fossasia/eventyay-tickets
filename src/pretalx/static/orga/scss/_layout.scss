@@ -272,7 +272,7 @@ td.review-buttons {
   flex-direction: row;
 }
 
-form #id_settings-display_header_pattern {
+form #id_settings-display_header_pattern, form #id_display-display_header_pattern {
   display: flex;
   flex-direction: row;
   label {

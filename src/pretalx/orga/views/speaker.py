@@ -131,7 +131,7 @@ class SpeakerToggleArrived(PermissionRequired, View):
 
 
 class InformationList(PermissionRequired, ListView):
-    model = SpeakerInformation
+    queryset = SpeakerInformation.objects.order_by('pk')
     template_name = 'orga/speaker/information_list.html'
     context_object_name = 'information'
     paginate_by = 25

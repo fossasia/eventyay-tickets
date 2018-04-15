@@ -3,7 +3,6 @@ from contextlib import suppress
 
 import pytz
 from django.conf import settings
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
@@ -11,8 +10,7 @@ from django.utils.translation.trans_real import (
     get_supported_language_variant, language_code_re, parse_accept_lang_header,
 )
 
-from pretalx.event.models import Event
-from pretalx.person.models import EventPermission
+from pretalx.event.models import Event, Organiser, Team
 
 
 class EventPermissionMiddleware:
@@ -25,15 +23,19 @@ class EventPermissionMiddleware:
         self.get_response = get_response
 
     def _set_orga_events(self, request):
+        request.is_orga = False
+        request.is_reviewer = False
+        request.orga_events = []
         if not request.user.is_anonymous:
             if request.user.is_administrator:
-                request.orga_events = Event.objects.all()
+                request.orga_events = Event.objects.order_by('-date_from')
+                request.is_orga = True
+                request.is_reviewer = True
             else:
-                request.orga_events = Event.objects.filter(
-                    Q(permissions__is_orga=True) | Q(permissions__is_reviewer=True),
-                    permissions__user=request.user,
-                )
-            request.orga_events = request.orga_events.order_by('-date_from')
+                request.orga_events = request.user.get_events_for_permission().order_by('-date_from')
+                if hasattr(request, 'event'):
+                    request.is_orga = request.event in request.orga_events
+                    request.is_reviewer = request.event in request.user.get_events_for_permission(is_reviewer=True)
 
     def _handle_orga_url(self, request, url):
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
@@ -43,28 +45,28 @@ class EventPermissionMiddleware:
     def __call__(self, request):
         url = resolve(request.path_info)
 
+        organiser_slug = url.kwargs.get('organiser')
+        if organiser_slug:
+            request.organiser = get_object_or_404(
+                Organiser,
+                slug__iexact=organiser_slug,
+            )
+            if hasattr(request, 'organiser') and request.organiser:
+                request.is_orga = False
+                if not request.user.is_anonymous:
+                    has_perms = Team.objects.filter(
+                        organiser=request.organiser,
+                        members__in=[request.user],
+                        can_change_organiser_settings=True,
+                    ).exists()
+                    request.is_orga = request.user.is_administrator or has_perms
+
         event_slug = url.kwargs.get('event')
         if event_slug:
             request.event = get_object_or_404(
                 Event,
                 slug__iexact=event_slug,
             )
-
-            if hasattr(request, 'event') and request.event:
-                if not request.user.is_anonymous:
-                    request.is_orga = request.user.is_administrator or EventPermission.objects.filter(
-                        user=request.user,
-                        event=request.event,
-                        is_orga=True
-                    ).exists()
-                    request.is_reviewer = request.user.is_administrator or EventPermission.objects.filter(
-                        user=request.user,
-                        event=request.event,
-                        is_reviewer=True
-                    ).exists()
-                else:
-                    request.is_orga = False
-                    request.is_reviewer = False
 
         self._set_orga_events(request)
         self._select_locale(request)

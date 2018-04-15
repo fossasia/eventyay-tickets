@@ -1,6 +1,6 @@
 import rules
 
-from pretalx.person.permissions import is_orga, is_reviewer
+from pretalx.person.permissions import can_change_submissions, is_reviewer
 from pretalx.submission.models import SubmissionStates
 
 
@@ -89,15 +89,15 @@ def can_be_reviewed(user, obj):
 
 
 rules.add_perm('submission.withdraw_submission', can_be_withdrawn & is_speaker)
-rules.add_perm('submission.reject_submission', can_be_rejected & is_orga)
-rules.add_perm('submission.accept_submission', can_be_accepted & is_orga)
-rules.add_perm('submission.confirm_submission', can_be_confirmed & (is_speaker | is_orga))
-rules.add_perm('submission.cancel_submission', can_be_canceled & (is_speaker | is_orga))
-rules.add_perm('submission.remove_submission', can_be_removed & is_orga)
-rules.add_perm('submission.edit_submission', (can_be_edited & is_speaker) | is_orga)
-rules.add_perm('submission.view_submission', is_speaker | is_orga | is_reviewer)
+rules.add_perm('submission.reject_submission', can_be_rejected & can_change_submissions)
+rules.add_perm('submission.accept_submission', can_be_accepted & can_change_submissions)
+rules.add_perm('submission.confirm_submission', can_be_confirmed & (is_speaker | can_change_submissions))
+rules.add_perm('submission.cancel_submission', can_be_canceled & (is_speaker | can_change_submissions))
+rules.add_perm('submission.remove_submission', can_be_removed & can_change_submissions)
+rules.add_perm('submission.edit_submission', (can_be_edited & is_speaker) | can_change_submissions)
+rules.add_perm('submission.view_submission', is_speaker | can_change_submissions | is_reviewer)
 rules.add_perm('submission.review_submission', is_reviewer & ~is_speaker & can_be_reviewed)
 rules.add_perm('submission.edit_review', can_be_reviewed & is_review_author)
 rules.add_perm('submission.view_reviews', is_reviewer & ~is_speaker)
-rules.add_perm('submission.edit_speaker_list', is_speaker | is_orga)
-rules.add_perm('submission.view_feedback', is_speaker | is_orga | is_reviewer)
+rules.add_perm('submission.edit_speaker_list', is_speaker | can_change_submissions)
+rules.add_perm('submission.view_feedback', is_speaker | can_change_submissions | is_reviewer)

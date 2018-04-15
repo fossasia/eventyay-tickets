@@ -11,6 +11,14 @@ from pretalx.submission.models.submission import SubmissionStates
 class DashboardView(TemplateView):
     template_name = 'orga/dashboard.html'
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx['organisers'] = set(
+            team.organiser for team in
+            self.request.user.teams.filter(can_change_organiser_settings=True)
+        )
+        return ctx
+
 
 class EventDashboardView(PermissionRequired, TemplateView):
     template_name = 'orga/event/dashboard.html'

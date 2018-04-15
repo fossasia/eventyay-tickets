@@ -1,0 +1,34 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+    <legend>{% trans "Settings" %}</legend>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='event' %}
+        <button type="submit" class="btn btn-success float-right">{% trans "Save" %}</button>
+    </form>
+
+    <legend>{% trans "Teams" %}</legend>
+    <div class="dashboard-list">
+        {% for team in request.organiser.teams.all %}
+            <a href="{% url "orga:organiser.teams.view" organiser=request.organiser.slug pk=team.pk %}" class="dashboard-block">
+                <h1>{{ team.name }}</h1>
+                <span class="dashboard-description">
+                    {% blocktrans trimmed count count=team.members.count %}
+                        {{ count}} member
+                        {% plural %}
+                        {{ count}} members
+                    {% endblocktrans %}
+                </span>
+            </a>
+        {% endfor %}
+        <a href="{{ request.organiser.orga_urls.new_team }}" class="dashboard-block">
+            <h1><i class="fa fa-plus"></i>{% trans "New team" %}</h1>
+        </a>
+    </div>
+
+{% endblock %}

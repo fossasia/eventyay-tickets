@@ -4,7 +4,6 @@ from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
 
-from pretalx.event.models import Event
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
@@ -18,7 +17,6 @@ def add_events(request):
             url_name = ''
             url_namespace = ''
         return {
-            'events': list(Event.objects.filter(permissions__is_orga=True, permissions__user=request.user).distinct()),
             'url_name': url_name,
             'url_namespace': url_namespace,
         }

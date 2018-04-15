@@ -101,7 +101,7 @@ class SubmissionCards(PermissionRequired, View):
     def get(self, request, *args, **kwargs):
         if not self.get_queryset().exists():
             messages.warning(request, _('You don\'t have any submissions yet.'))
-            return redirect(request.path)
+            return redirect(request.event.orga_urls.submissions)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
             doc = BaseDocTemplate(
                 f.name, pagesize=A4,

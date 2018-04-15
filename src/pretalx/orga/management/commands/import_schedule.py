@@ -4,8 +4,8 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from pretalx.event.models import Event
-from pretalx.person.models import EventPermission, User
+from pretalx.event.models import Event, Organiser, Team
+from pretalx.person.models import User
 
 
 class Command(BaseCommand):
@@ -24,15 +24,33 @@ class Command(BaseCommand):
         event_data = root.find('conference')
         event = Event.objects.filter(slug__iexact=event_data.find('acronym').text).first()
         if not event:
+            name = event_data.find('title').text
+            organiser = Organiser.objects.create(name=name)
             event = Event(
-                name=event_data.find('title').text,
+                name=name, organiser=organiser,
                 slug=event_data.find('acronym').text,
                 date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
                 date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
             )
             event.save()
+            Team.objects.create(
+                name=name + ' Organisers', organiser=organiser, all_events=True,
+                can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
+                can_change_event_settings=True, can_change_submissions=True,
+            )
 
+        team = event.organiser.teams.filter(
+            can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
+            can_change_event_settings=True, can_change_submissions=True,
+        ).first()
+        if not team:
+            team = Team.objects.create(
+                name=str(event.name) + ' Organisers', organiser=organiser, all_events=True,
+                can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
+                can_change_event_settings=True, can_change_submissions=True,
+            )
         for user in User.objects.filter(is_administrator=True):
-            EventPermission.objects.get_or_create(event=event, user=user, is_orga=True)
+            team.members.add(user)
+        team.save()
 
         self.stdout.write(self.style.SUCCESS(process_frab(root, event)))

@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             name='EventPermission',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_orga', models.BooleanField(default=True, verbose_name='Organizes the event')),
+                ('is_orga', models.BooleanField(default=True, verbose_name='Organises the event')),
                 ('invitation_token', models.CharField(blank=True, max_length=255, null=True)),
                 ('invitation_email', models.EmailField(blank=True, max_length=254, null=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='permissions', to='event.Event')),

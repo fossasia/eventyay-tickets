@@ -64,7 +64,7 @@ def test_reviewer_cannot_use_wrong_score(review_client, submission):
 @pytest.mark.parametrize('score,expected', ((-1, False), (2, True)))
 def test_reviewer_can_use_override_score(review_user, review_client, submission, score, expected):
     submission.event.settings.set('allow_override_votes', True)
-    review_user.permissions.update(review_override_count=1)
+    review_user.teams.update(review_override_votes=1)
     response = review_client.post(
         submission.orga_urls.reviews, follow=True,
         data={
@@ -83,7 +83,7 @@ def test_reviewer_can_use_override_score(review_user, review_client, submission,
 def test_reviewer_cannot_use_override_score_twice(review_user, review_client, submission, other_submission):
     from pretalx.submission.models import Review
     submission.event.settings.set('allow_override_votes', True)
-    review_user.permissions.update(review_override_count=1)
+    review_user.teams.update(review_override_votes=1)
     Review.objects.create(override_vote=True, user=review_user, submission=other_submission)
     response = review_client.post(
         submission.orga_urls.reviews, follow=True,

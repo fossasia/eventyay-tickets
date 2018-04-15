@@ -194,7 +194,7 @@ def get_cookie_domain(request):
         # We are on our main domain, set the cookie domain the user has chosen
         return settings.SESSION_COOKIE_DOMAIN
     else:
-        # We are on an organizer's custom domain, set no cookie domain, as we do not want
+        # We are on an organiser's custom domain, set no cookie domain, as we do not want
         # the cookies to be present on any other domain. Setting an explicit value can be
         # dangerous, see http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
         return None

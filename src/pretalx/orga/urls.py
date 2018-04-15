@@ -4,7 +4,7 @@ from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
-    auth, cfp, dashboard, event, mails, person,
+    auth, cfp, dashboard, event, mails, organiser, person,
     plugins, review, schedule, speaker, submission,
 )
 
@@ -17,7 +17,17 @@ urlpatterns = [
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
-    url('^event/new/$', event.EventDetail.as_view(), name='event.create'),
+
+    url('^organiser/new$', organiser.OrganiserDetail.as_view(), name='organiser.create'),
+    url(f'^organiser/(?P<organiser>[{SLUG_CHARS}]+)/', include([
+        url('^$', organiser.OrganiserDetail.as_view(), name='organiser.view'),
+        url('^teams/$', organiser.TeamDetail.as_view(), name='organiser.teams'),
+        url('^teams/new$', organiser.TeamDetail.as_view(), name='organiser.teams.create'),
+        url('^teams/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='organiser.teams.view'),
+        url('^teams/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='organiser.teams.delete'),
+    ])),
+
+    url('^event/new/$', event.EventWizard.as_view(), name='event.create'),
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
@@ -87,7 +97,13 @@ urlpatterns = [
 
         url('^settings$', event.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
-        url('^settings/team$', event.EventTeam.as_view(), name='settings.team.view'),
+
+        url('^settings/team$', organiser.Teams.as_view(), name='settings.team.view'),
+        url('^settings/team/new$', organiser.TeamDetail.as_view(), name='settings.team.add'),
+        url('^settings/team/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='settings.team.detail'),
+        url('^settings/team/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='settings.team.delete'),
+        url('^settings/team/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='settings.team.delete_member'),
+        url('^settings/team/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='settings.team.uninvite'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/import$', schedule.ScheduleImportView.as_view(), name='schedule.import'),

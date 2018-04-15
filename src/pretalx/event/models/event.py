@@ -59,6 +59,11 @@ class Event(LogMixin, models.Model):
         verbose_name=_("Short form"),
         help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
     )
+    organiser = models.ForeignKey(
+        to='Organiser', null=True,  # backwards compatibility, won't ever be empty
+        related_name='events',
+        on_delete=models.PROTECT,
+    )
     subtitle = I18nCharField(
         max_length=200,
         null=True, blank=True,
@@ -106,7 +111,7 @@ class Event(LogMixin, models.Model):
         upload_to=event_logo_path,
         null=True, blank=True,
         verbose_name=_('Logo'),
-        help_text=_('Upload your event\'s logo, if it is suitable to be displayed in the frontend\'s header.'),
+        help_text=_('If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(
@@ -185,6 +190,7 @@ class Event(LogMixin, models.Model):
         settings = edit_settings = '{base}/settings'
         mail_settings = edit_mail_settings = '{settings}/mail'
         team_settings = '{settings}/team'
+        new_team = '{settings}/team/new'
         room_settings = '{schedule}/rooms'
         new_room = '{room_settings}/new'
         schedule = '{base}/schedule'
@@ -214,7 +220,7 @@ class Event(LogMixin, models.Model):
         ordering = ('date_from',)
 
     def __str__(self) -> str:
-        return f'Event(slug={self.slug}, date_from={self.date_from.isoformat()})'
+        return str(self.name)
 
     @cached_property
     def locales(self) -> list:
@@ -271,6 +277,38 @@ class Event(LogMixin, models.Model):
         self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT)
         self.save()
 
+    def copy_data_from(self, other_event):
+        templates = [f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')]
+        protected_settings = ['custom_domain', 'display_header_data']
+        for template in templates:
+            setattr(self, template, None)
+            self.save()
+        self.mail_templates.all().delete()
+        self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
+        for template in templates:
+            new_template = getattr(other_event, template)
+            new_template.pk = None
+            new_template.event = self
+            new_template.save()
+            setattr(self, template, new_template)
+        for submission_type in other_event.submission_types.all():
+            is_default = submission_type == other_event.cfp.default_type
+            submission_type.pk = None
+            submission_type.event = self
+            submission_type.save()
+            if is_default:
+                old_default = self.cfp.default_type
+                self.cfp.default_type = submission_type
+                self.cfp.save()
+                old_default.delete()
+
+        for s in other_event.settings._objects.all():
+            if s.value.startswith('file://') or s.key in protected_settings:
+                continue
+            s.object = self
+            s.pk = None
+            s.save()
+
     @cached_property
     def pending_mails(self):
         return self.queued_mails.filter(sent__isnull=True).count()
@@ -305,6 +343,11 @@ class Event(LogMixin, models.Model):
     @cached_property
     def event(self):
         return self
+
+    @cached_property
+    def teams(self):
+        from .organiser import Team
+        return Team.objects.filter(models.Q(limit_events__in=[self]) | models.Q(all_events=True), organiser=self.organiser)
 
     @cached_property
     def datetime_from(self):
