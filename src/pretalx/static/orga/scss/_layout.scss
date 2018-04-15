@@ -210,10 +210,13 @@ footer {
     }
   }
 }
-@include media-breakpoint-down(sm) {
+@include media-breakpoint-down(md) {
   .container-fluid {
     padding: 0;
     width: 100%;
+  }
+  .flex-content {
+    max-width: 100%;
   }
   .navbar {
     padding: 0.1rem 1rem;
