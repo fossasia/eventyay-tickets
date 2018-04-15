@@ -7,7 +7,7 @@ from django.db import transaction
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
-from pretalx.event.models import Organiser, Team
+from pretalx.event.utils import create_organiser_with_user
 from pretalx.person.models import User
 
 
@@ -29,13 +29,7 @@ class Command(BaseCommand):
         organiser_name = input(_('\nName (e.g. "The Conference Organiser"): '))
         organiser_slug = input(_('Slug (e.g. "conforg"): '))
 
-        organiser = Organiser.objects.create(name=organiser_name, slug=organiser_slug)
-        team = Team.objects.create(
-            organiser=organiser, name=f'Team {organiser_name}',
-            can_create_events=True, can_change_teams=True,
-            can_change_organiser_settings=True,
-        )
-        team.members.add(user)
+        organiser, team = create_organiser_with_user(name=organiser_name, slug=organiser_slug, user=user)
 
         event_url = urljoin(settings.SITE_URL, reverse('orga:event.create'))
         team_url = urljoin(settings.SITE_URL, reverse('orga:organiser.teams.view', kwargs={'organiser': organiser_slug, 'pk': team.pk}))
