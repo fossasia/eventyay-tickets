@@ -1,7 +1,10 @@
+import os
+
 from csp.decorators import csp_update
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
-from django.core.exceptions import PermissionDenied
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -9,12 +12,18 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView
+from formtools.wizard.views import SessionWizardView
+from pytz import timezone
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.event.models import Event, TeamInvite
+from pretalx.event.forms import (
+    EventWizardBasicsForm, EventWizardCopyForm, EventWizardDisplayForm,
+    EventWizardInitialForm, EventWizardTimelineForm,
+)
+from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
@@ -28,47 +37,21 @@ class EventSettingsPermission(PermissionRequired):
         return self.request.event
 
 
-class EventDetail(ActionFromUrl, CreateOrUpdateView):
+class EventDetail(ActionFromUrl, EventSettingsPermission, CreateOrUpdateView):
     model = Event
     form_class = EventForm
-    write_permission_required = 'orga.change_settings'
-
-    @cached_property
-    def _action(self):
-        if 'event' not in self.kwargs:
-            return 'create'
-        if self.request.user.has_perm(self.write_permission_required, self.object):
-            return 'edit'
-        return 'view'
-
-    def get_template_names(self):
-        if self._action == 'create':
-            return 'orga/settings/create_event.html'
-        return 'orga/settings/form.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if self._action == 'create':
-            if not request.user.is_anonymous and not request.user.is_administrator:
-                raise PermissionDenied()
-        else:
-            if not request.user.has_perm('orga.change_settings', self.object):
-                raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
+    permission_required = 'orga.change_settings'
+    template_name = 'orga/settings/form.html'
 
     def get_object(self):
         return self.object
 
     @cached_property
     def object(self):
-        try:
-            return self.request.event
-        except AttributeError:
-            return
+        return self.request.event
 
     @cached_property
     def sform(self):
-        if not hasattr(self.request, 'event') or not self.request.event:
-            return
         return EventSettingsForm(
             read_only=(self._action == 'view'),
             locales=self.request.event.locales,
@@ -88,22 +71,13 @@ class EventDetail(ActionFromUrl, CreateOrUpdateView):
         return self.object.orga_urls.settings
 
     def form_valid(self, form):
-        new_event = not bool(form.instance.pk)
-        if not new_event:
-            if not self.sform.is_valid():
-                return self.form_invalid(form)
-
+        if not self.sform.is_valid():
+            return self.form_invalid(form)
         ret = super().form_valid(form)
 
-        if new_event:
-            url = form.instance.cfp.urls.base
-            messages.success(self.request, _('Yay, a new event! Check these settings and <a href="{url}">configure a CfP</a> and you\'re good to go!').format(url=url))
-            form.instance.log_action('pretalx.event.create', person=self.request.user, orga=True)
-            # TODO: check / create team(s)
-        else:
-            self.sform.save()
-            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
-            messages.success(self.request, _('The event settings have been saved.'))
+        self.sform.save()
+        form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
+        messages.success(self.request, _('The event settings have been saved.'))
         regenerate_css.apply_async(args=(form.instance.pk,))
         return ret
 
@@ -228,3 +202,99 @@ class UserSettings(TemplateView):
         else:
             messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
         return redirect(self.get_success_url())
+
+
+def condition_copy(wizard):
+    return EventWizardCopyForm.copy_from_queryset(wizard.request.user).exists()
+
+
+class EventWizard(PermissionRequired, SessionWizardView):
+    permission_required = 'orga.create_events'
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'new_event'))
+    form_list = [
+        ('initial', EventWizardInitialForm),
+        ('basics', EventWizardBasicsForm),
+        ('timeline', EventWizardTimelineForm),
+        ('display', EventWizardDisplayForm),
+        ('copy', EventWizardCopyForm),
+    ]
+    condition_dict = {
+        'copy': condition_copy
+    }
+
+    def get_template_names(self):
+        return f'orga/event/wizard/{self.steps.current}.html'
+
+    def get_context_data(self, form, **kwargs):
+        ctx = super().get_context_data(form, **kwargs)
+        ctx['has_organiser'] = self.request.user.teams.filter(can_create_events=True).exists()
+        ctx['url_placeholder'] = f'https://{self.request.host}/'
+        if self.steps.current != 'initial':
+            ctx['organiser'] = self.get_cleaned_data_for_step('initial').get('organiser')
+        return ctx
+
+    def render(self, form=None, **kwargs):
+        if self.steps.current != 'initial':
+            fdata = self.get_cleaned_data_for_step('initial')
+            if fdata is None:
+                return self.render_goto_step('initial')
+        return super().render(form, **kwargs)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = {
+            'user': self.request.user
+        }
+        if step != 'initial':
+            fdata = self.get_cleaned_data_for_step('initial')
+            kwargs.update(fdata)
+        return kwargs
+
+    def done(self, form_list, form_dict, **kwargs):
+        initial = self.get_cleaned_data_for_step('initial')
+        basics = self.get_cleaned_data_for_step('basics')
+        timeline = self.get_cleaned_data_for_step('timeline')
+        display = self.get_cleaned_data_for_step('display')
+        copy = self.get_cleaned_data_for_step('copy')
+
+        with transaction.atomic():
+            event = Event.objects.create(
+                organiser=initial['organiser'], locale_array=initial['locales'],
+                name=basics['name'], slug=basics['slug'], timezone=basics['timezone'],
+                email=basics['email'], locale=basics['locale'],
+                primary_color=display['primary_color'], logo=display['logo'],
+                date_from=timeline['date_from'], date_to=timeline['date_to'],
+            )
+            deadline = timeline.get('deadline')
+            if deadline:
+                zone = timezone(event.timezone)
+                deadline = zone.localize(deadline.replace(tzinfo=None))
+                event.cfp.deadline = deadline
+                event.cfp.save()
+            for setting in ['custom_domain', 'display_header_data']:
+                value = display.get(setting)
+                if value:
+                    event.settings.set(setting, display.get(setting))
+
+            has_control_rights = self.request.user.teams.filter(
+                organiser=event.organiser, all_events=True, can_change_event_settings=True, can_change_submissions=True,
+            ).exists()
+            if not has_control_rights:
+                t = Team.objects.create(
+                    organiser=event.organiser, name=_(f'Team {event.name}'),
+                    can_change_event_settings=True, can_change_submissions=True,
+                )
+                t.members.add(self.request.user)
+                t.limit_events.add(event)
+
+            logdata = {}
+            for f in form_list:
+                logdata.update({
+                    k: v for k, v in f.cleaned_data.items()
+                })
+            event.log_action('pretalx.event.create', person=self.request.user, data=logdata, orga=True)
+
+            if copy and copy['copy_from_event']:
+                from_event = copy['copy_from_event']
+                event.copy_data_from(from_event)
+
+        return redirect(event.orga_urls.base + '?congratulations')
