@@ -115,7 +115,7 @@ We compile static files and translation data and create the database structure::
     $ python -m pretalx migrate
     $ python -m pretalx rebuild
 
-Now, create an admin user by running::
+Now, create an admin user, organiser and team by running::
 
     $ python -m pretalx init
 

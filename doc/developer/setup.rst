@@ -60,7 +60,7 @@ Then, create the local database::
 
     (env)$ python manage.py migrate
 
-To be able to log in, you should also create an admin user::
+To be able to log in, you should also create an admin user, organiser and team by running::
 
     (env)$ python manage.py init
 

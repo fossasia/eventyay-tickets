@@ -140,7 +140,7 @@ You can now run the following commands to enable and start the service::
     systemctl enable pretalx
     systemctl start pretalx
 
-Now, create an admin user by running::
+Now, create an admin user, organiser and team by running::
 
     docker exec -it pretalx init
 
