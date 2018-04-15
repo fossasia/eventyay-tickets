@@ -10,7 +10,7 @@
                     </a>
                 </li>
             {% endif %}
-            <li class="page-current page-item"><a class="page-link">
+            <li class="page-current page-item disabled"><a class="page-link">
                 {% blocktrans trimmed with page=page_obj.number of=page_obj.paginator.num_pages count=page_obj.paginator.count %}
                     Page {{ page }} of {{ of }} ({{ count }} elements)
                 {% endblocktrans %}
