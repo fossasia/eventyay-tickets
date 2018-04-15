@@ -111,7 +111,7 @@ class Event(LogMixin, models.Model):
         upload_to=event_logo_path,
         null=True, blank=True,
         verbose_name=_('Logo'),
-        help_text=_('Upload your event\'s logo, if it is suitable to be displayed in the frontend\'s header.'),
+        help_text=_('If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(
@@ -276,6 +276,38 @@ class Event(LogMixin, models.Model):
         self.update_template = self.update_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT)
         self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT)
         self.save()
+
+    def copy_data_from(self, other_event):
+        templates = [f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')]
+        protected_settings = ['custom_domain', 'display_header_data']
+        for template in templates:
+            setattr(self, template, None)
+            self.save()
+        self.mail_templates.all().delete()
+        self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
+        for template in templates:
+            new_template = getattr(other_event, template)
+            new_template.pk = None
+            new_template.event = self
+            new_template.save()
+            setattr(self, template, new_template)
+        for submission_type in other_event.submission_types.all():
+            is_default = submission_type == other_event.cfp.default_type
+            submission_type.pk = None
+            submission_type.event = self
+            submission_type.save()
+            if is_default:
+                old_default = self.cfp.default_type
+                self.cfp.default_type = submission_type
+                self.cfp.save()
+                old_default.delete()
+
+        for s in other_event.settings._objects.all():
+            if s.value.startswith('file://') or s.key in protected_settings:
+                continue
+            s.object = self
+            s.pk = None
+            s.save()
 
     @cached_property
     def pending_mails(self):
