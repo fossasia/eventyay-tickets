@@ -27,7 +27,7 @@ urlpatterns = [
         url('^teams/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='organiser.teams.delete'),
     ])),
 
-    url('^event/new/$', event.EventDetail.as_view(), name='event.create'),
+    url('^event/new/$', event.EventWizard.as_view(), name='event.create'),
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),

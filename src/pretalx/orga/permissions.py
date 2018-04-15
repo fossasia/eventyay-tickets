@@ -11,7 +11,7 @@ def can_change_event_settings(user, obj):
     event = getattr(obj, 'event', None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return event in user.get_events_for_permission(can_change_event_settings=True)
+    return user.is_administrator or event in user.get_events_for_permission(can_change_event_settings=True)
 
 
 @rules.predicate
@@ -19,7 +19,12 @@ def can_change_organiser_settings(user, obj):
     event = getattr(obj, 'event', None)
     if event:
         obj = event.organiser
-    return user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
+    return user.is_administrator or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
+
+
+@rules.predicate
+def can_create_events(user, obj):
+    return user.is_administrator or user.teams.filter(can_create_events=True).exists()
 
 
 @rules.predicate
@@ -30,7 +35,7 @@ def can_change_teams(user, obj):
     event = getattr(obj, 'event', None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return event in user.get_events_for_permission(can_change_teams=True)
+    return user.is_administrator or event in user.get_events_for_permission(can_change_teams=True)
 
 
 @rules.predicate
@@ -78,3 +83,4 @@ rules.add_perm('orga.create_submission', can_change_submissions)
 rules.add_perm('orga.change_submission_state', can_change_submissions)
 rules.add_perm('orga.view_information', can_change_submissions)
 rules.add_perm('orga.change_information', can_change_submissions)
+rules.add_perm('orga.create_events', can_create_events)
