@@ -121,6 +121,7 @@ class TestEventCreation:
         self.submit_copy()
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
+        assert organiser.teams.filter(name__icontains='new').exists(), organiser.teams.all()
 
     def test_orga_create_event_with_copy(self, orga_client, organiser, event, deadline):
         self.client = orga_client
@@ -134,6 +135,7 @@ class TestEventCreation:
         self.submit_copy(copy=event.pk)
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
+        assert organiser.teams.filter(name__icontains='new').exists(), organiser.teams.all()
 
     def test_orga_create_event_no_new_team(self, orga_client, organiser, event, deadline):
         self.client = orga_client

@@ -15,6 +15,7 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         super().__init__(*args, instance=instance, **kwargs)
         if instance and getattr(instance, 'pk', None):
             self.fields.pop('organiser')
+            self.fields['limit_events'].queryset = instance.organiser.events.all()
         else:
             self.fields['organiser'].queryset = Organiser.objects.filter(pk__in=Team.objects.filter(members__in=[user], can_change_teams=True).values_list('organiser_id', flat=True))
 

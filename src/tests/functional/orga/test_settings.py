@@ -1,8 +1,4 @@
-from datetime import timedelta
-
 import pytest
-from django.urls import reverse
-from django.utils.timezone import now
 
 from pretalx.event.models import Event
 
@@ -121,30 +117,6 @@ def test_add_logo(event, orga_client):
     assert event.logo
     response = orga_client.get(event.urls.base, follow=True)
     assert '<img src="/media' in response.content.decode(), response.content.decode()
-
-
-@pytest.mark.django_db
-def test_orga_cannot_create_event(orga_client):
-    count = Event.objects.count()
-    response = orga_client.post(
-        reverse('orga:event.create'),
-        {
-            'name_0': 'The bestest event',
-            'slug': 'testevent',
-            'is_public': False,
-            'date_from': now().strftime('%Y-%m-%d'),
-            'date_to': (now() + timedelta(days=1)).strftime('%Y-%m-%d'),
-            'timezone': 'UTC',
-            'locale': 'en',
-            'locales': ['en'],
-            'email': 'orga@orga.org',
-            'primary_color': None,
-        },
-        follow=True
-    )
-    assert response.status_code == 403
-    assert not Event.objects.filter(slug='testevent').exists()
-    assert Event.objects.count() == count
 
 
 @pytest.mark.django_db
