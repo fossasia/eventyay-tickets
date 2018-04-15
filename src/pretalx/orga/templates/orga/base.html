@@ -52,10 +52,10 @@
                 </a>
             </li>
         </ul>
-        <a class="navbar-brand" href="/orga/">
+        <a class="navbar-brand d-none d-md-block" href="/orga/">
             <img src="{% static "common/img/icon.svg" %}"> pretalx
         </a>
-        <div class="collapse navbar-collapse" id="navbartoggle">
+        <div class="navbar-collapse event-dropdown" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown active">
                     {% if request.orga_events.count > 1 %}
