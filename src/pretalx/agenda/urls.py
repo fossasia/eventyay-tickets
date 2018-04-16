@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import feed, location, schedule, speaker, talk
+from .views import feed, schedule, speaker, talk
 
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
@@ -32,7 +32,6 @@ urlpatterns = [
         url('^schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
         *get_schedule_urls('^schedule'),
         *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),
-        url('^location/$', location.LocationView.as_view(), name='location'),
         url('^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
         url('^talk/(?P<slug>\w+)/feedback/$', talk.FeedbackView.as_view(), name='feedback'),
         url('^talk/(?P<slug>\w+).ics$', talk.SingleICalView.as_view(), name='ical'),
