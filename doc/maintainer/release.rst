@@ -3,17 +3,22 @@ Release a pretalx version
 
 You are a pretalx maintainer and want to release a new version? Woo-hoo, here we go!
 
+Boarding checks
+---------------
+
+1. Are the translations up to date?
+2. Are there warnings about missing migrations?
+3. Any blockers to see here? https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Aissue%3Abug
+4. Is the ``CHANGELOG.rst`` well-phrased and complete?
 
 System checks
 -------------
 
 1. Are you in the branch and commit you think you are in?
-2. Are all tests passing?
-3. Check the translations: Are relevant strings still waiting for a translation?
-4. Have you deployed the release-ready commit to an instance? Did the upgrade work?
-5. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, i.e. ``git shortlog -ns vx.y.z..master``.
-6. Have you communicated your intentions and release timeline to the team?
-7. Is the ``CHANGELOG.rst`` well-phrased and complete?
+2. Are all tests passing? (On Travis, locally only if you're willing to check all databases or are under time pressure.)
+3. Have you deployed the release-ready commit to an instance? Did the upgrade work?
+4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, i.e. ``git shortlog -ns vx.y.z..master``.
+5. Have you communicated your intentions and release timeline to the team?
 
 Takeoff and landing
 -------------------
