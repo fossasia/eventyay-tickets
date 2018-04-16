@@ -1,0 +1,42 @@
+.alert {
+  border-width: 2px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  &::before {
+    align-self: stretch;
+    min-width: 64px;
+    color: $white;
+    font-family: "ForkAwesome";
+    font-size: 20px;
+    padding: 0.75rem 1.25rem;
+    margin: -16px;
+    margin-right: 16px;
+  }
+}
+.alert.alert-success::before { content: "\f00c" }
+.alert.alert-info::before { content: "\f05a" }
+.alert.alert-warning::before { content: "\f071" }
+.alert.alert-danger::before { content: "\f071" }
+
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    background: $white;
+    border-color: $value;
+    &::before {
+      background-color: $value;
+    }
+  }
+  .btn-#{$color}:hover {
+    background: mix(#000, $value, 15%);
+  }
+  .btn-#{$color}:active {
+    background: mix(#000, $value, 25%);
+  }
+  .btn-outline-#{$color} {
+    font-weight: 500;
+  }
+}
+.alert, .btn {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+}

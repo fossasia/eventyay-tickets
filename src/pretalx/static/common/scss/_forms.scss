@@ -137,3 +137,15 @@ table .radio, table .checkbox {
     }
   }
 }
+.submit-group {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+  background-color: $gray-100;
+  padding: 16px;
+  margin-bottom: 16px;
+  button {
+    align-self: flex-end;
+    i.fa {padding-right: 8px;}
+  }
+}

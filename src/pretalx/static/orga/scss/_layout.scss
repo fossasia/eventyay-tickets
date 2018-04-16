@@ -327,18 +327,22 @@ legend .submission-state-dropdown {
     font-weight: 700;
     border: 3px solid;
   }
-  .submission-state-submitted, .submission-state-deleted, .submission-state-withdrawn, .submission-state-canceled,
-  .submission-state-submitted:hover, .submission-state-deleted:hover, .submission-state-withdrawn:hover, .submission-state-canceled:hover {
+  .submission-state-deleted, .submission-state-withdrawn, .submission-state-canceled,
+  .submission-state-deleted:hover, .submission-state-withdrawn:hover, .submission-state-canceled:hover {
     color: $gray;
     border-color: $gray;
+  }
+  .submission-state-submitted, .submission-state-submitted:hover {
+    color: $brand-info;
+    border-color: $brand-info;
   }
   .submission-state-accepted, .submission-state-accepted:hover {
     color: lighten($brand-success, 10%);
     border-color: lighten($brand-success, 10%);
   }
   .submission-state-confirmed, .submission-state-confirmed:hover {
-    color: darken($brand-success, 10%);
-    border-color: darken($brand-success, 10%);
+    color: lighten($brand-primary, 10%);
+    border-color: lighten($brand-primary, 10%);
   }
   .submission-state-rejected, .submission-state-rejected:hover {
     color: $danger;

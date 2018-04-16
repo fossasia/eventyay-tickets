@@ -88,6 +88,10 @@
   hr {
     max-width: 95%;
   }
+
+  a:hover {
+      text-decoration: none !important;
+  }
   .talk {
     display: flex;
     flex-direction: column;
@@ -97,9 +101,8 @@
     margin-bottom: 16px;
     color: black;
 
-    &:hover {
-      background-color: #eee;
-      text-decoration: none !important;
+    &:hover, &:hover .talk-title {
+      background-color: $gray-lightest;
     }
   }
 }

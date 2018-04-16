@@ -1,10 +1,9 @@
-/* compatibility */
 /* colors */
-$brand-primary: #1C4A3B !default;
-$brand-success: #5caa8d !default;
-$brand-info: #6790b1 !default;
-$brand-warning: #fa993e !default;
-$brand-danger: #b34066 !default;
+$brand-primary: #1a4c3B !default;
+$brand-success: #3aa57c !default;
+$brand-info: #4697c9 !default;
+$brand-warning: #f9a557 !default;
+$brand-danger: #b23e65 !default;
 
 $brand-light: fade-out($brand-primary, 0.2) !default;
 
@@ -32,11 +31,10 @@ $fa-font-path:  "vendored/forkawesome/fonts";
 /* colors */
 $theme-colors: (
   primary: $brand-primary,
-  // secondary: $gray-800,
-  success: #5CAA8D,
-  info: #6790B1,
-  warning: #FA993E,
-  danger: #B34066,
+  success: $brand-success,
+  info: $brand-info,
+  warning: $brand-warning,
+  danger: $brand-danger,
   light: $gray-100,
   dark: $gray-800
 );
@@ -50,7 +48,3 @@ h2, h3 {
 }
 
 $enable-rounded: false;
-
-.alert {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
-}
