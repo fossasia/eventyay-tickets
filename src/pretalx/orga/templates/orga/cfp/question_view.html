@@ -10,16 +10,19 @@
         you see fit.
         {% endblocktrans %}
     </div>
+    <div class="submit-group">
+        <span></span>
+        <span>
+            <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% trans "Send out reminders for unanswered questions" %}</a>
+            <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-success">
+                <i class="fa fa-plus"></i>
+                {% trans "Add a new question" %}
+            </a>
+        </span>
+    </div>
 
     <legend>
         {% trans "Speaker questions" %}
-        <div>
-        <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-info">
-            <i class="fa fa-plus"></i>
-            {% trans "Add a new question" %}
-        </a>
-        <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% trans "Send out reminders for unanswered questions" %}</a>
-        </div>
     </legend>
     {% with questions=speaker_questions type='speaker' %}
         {% include 'orga/cfp/question_table.html' %}

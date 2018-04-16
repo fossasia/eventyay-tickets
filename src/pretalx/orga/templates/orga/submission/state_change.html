@@ -10,13 +10,13 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
 
-        <div class="form-group float-right">
-            <a class="btn btn-info" href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
+        <div class="submit-group"><span></span><span>
+            <a class="btn btn-lg btn-danger" href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
                 {% trans "Back" %}
             </a>
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-lg btn-success">
                 {% trans "Do it" %}
             </button>
-        </div>
+        </span></div>
     </form>
 {% endblock %}

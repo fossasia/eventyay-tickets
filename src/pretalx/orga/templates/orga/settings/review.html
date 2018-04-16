@@ -3,19 +3,19 @@
 {% load compress %}
 {% load i18n %}
 {% load staticfiles %}
+
 {% block settings_content %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <legend>{% trans "Review settings" %}</legend>
+        {% bootstrap_form form layout='event' %}
 
-<form method="post" action="">
-    {% csrf_token %}
-    <legend>{% trans "Review settings" %}</legend>
-    {% bootstrap_form form layout='event' %}
-
-    <div class="form-group row">
-        <div class="ml-auto col-md-9">
-            <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+        <div class="form-group row">
+            <div class="ml-auto col-md-9">
+                <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY&orga=true"></span>
     {% compress js %}

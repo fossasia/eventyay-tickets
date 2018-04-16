@@ -38,13 +38,7 @@
             {% bootstrap_field form.speaker layout='event' %}
         {% endif %}
 
-        {% if action == "create" or action == "edit" %}
-            <div class="form-group row">
-                <div class="ml-auto col-md-9">
-                    <button type="submit" class="btn btn-success float-right">{% trans "Save" %}</button>
-                </div>
-            </div>
-        {% endif %}
+        {% include "orga/submit_row.html" %}
     </form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>

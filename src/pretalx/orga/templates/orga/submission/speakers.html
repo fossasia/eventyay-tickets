@@ -8,13 +8,15 @@
 {% block submission_content %}
     {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
     {% if can_edit_speakers %}<div class="alert">
-        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="adder-textbox form">
+        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
                 {% trans "Add a speaker – by nickname if registered, by email to send an invitation" %}:<br>
             </label>
             {% csrf_token %}
-            <input type="text" name="nick" id="id_speaker" class="form-control" />
-            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+            <div class="input-group d-flex flex-row">
+                <input type="text" name="nick" id="id_speaker" class="form-control" />
+                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i></button>
+            </div>
         </form>
     </div>{% endif %}
 
@@ -23,12 +25,6 @@
             <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
                 {{ speaker.name }}
             </a>
-            {% if can_edit_speakers %}
-                <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
-                    class="btn btn-sm btn-danger">
-                    <i class="fa fa-trash"></i> {% trans "Remove" %}
-                </a>
-            {% endif %}
         </legend>
         <p>
             <h5>{% trans "Biography" %}:</h5>
@@ -46,6 +42,14 @@
             </ul>
         {% endif %}
         </p>
+        {% if can_edit_speakers %}
+        <div class="submit-group"><span></span>
+            <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
+                class="btn btn-lg btn-danger">
+                <i class="fa fa-trash"></i> {% trans "Remove" %}
+            </a>
+        </div>
+        {% endif %}
     {% endfor %}
 
 

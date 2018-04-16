@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="submit-group panel">
+    <span></span>
+    <span>
+        <button
+          type="submit" class="btn btn-success btn-lg"
+          {% if submit_value %}value="{{ submit_value }}"{% endif %}
+          {% if submit_name %}name="{{ submit_name }}"{% endif %}
+        >
+            <i class="fa fa-check"></i>
+            {% trans "Save" %}
+        </button>
+    </span>
+</div>

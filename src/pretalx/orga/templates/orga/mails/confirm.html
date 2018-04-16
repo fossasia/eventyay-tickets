@@ -7,11 +7,13 @@
     {{ question }}
     <form method="post">
         {% csrf_token %}
-        <a href="{{ request.event.orga_urls.outbox }}" class="btn btn-info">
-            {% trans "Back" %}
-        </a>
-        <button type="submit" class="btn btn-danger">
-            {% trans "Yes" %}
-        </button>
+        <div class="submit-group">
+            <a href="{{ request.event.orga_urls.outbox }}" class="btn btn-lg btn-danger">
+                {% trans "Back" %}
+            </a>
+            <button type="submit" class="btn btn-lg btn-success">
+                {% trans "Yes" %}
+            </button>
+        </div>
     </form>
 {% endblock %}

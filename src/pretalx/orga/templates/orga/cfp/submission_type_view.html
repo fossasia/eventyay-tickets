@@ -10,12 +10,6 @@
         (talk vs workshop vs metal concert).
         {% endblocktrans %}
     </div>
-    <a href="{{ request.event.cfp.urls.new_type }}">
-        <button class="btn btn-info">
-            <i class="fa fa-plus"></i>
-            {% trans "New type" %}
-        </button>
-    </a>
     <table class="table table-sm table-responsive-md">
         <thead>
             <tr>
@@ -55,5 +49,10 @@
             {% endfor %}
         </tbody>
     </table>
-
+    <div class="submit-group"><span></span>
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
+            <i class="fa fa-plus"></i>
+            {% trans "New type" %}
+        </a>
+    </div>
 {% endblock %}

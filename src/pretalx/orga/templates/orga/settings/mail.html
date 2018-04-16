@@ -14,16 +14,16 @@
             {% endblocktrans %}
         </div>
         {% bootstrap_form form layout='event' %}
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
+        <div class="submit-group panel">
+            <span></span>
+            <span>
                 {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-info">{% trans "Save" %}</button>
-                    <button type="submit" class="btn btn-success" name="test" value="1">
+                    <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
+                    <button type="submit" class="btn btn-lg btn-success" name="test" value="1">
                         {% trans "Save and test custom SMTP connection" %}
                     </button>
                 {% endif %}
-            </div>
+            </span>
         </div>
     </form>
-
 {% endblock %}

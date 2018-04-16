@@ -76,16 +76,17 @@
         <div id="schedule-choice">
             <div class="input-group">
                 <form class="form-inline">
-                    <label for="version">{% trans "Version:" %}&nbsp;</label>
-                    <select name="version" id="version" class="form-control">
-                        <option value="">{% trans "Current draft" %}</option>
-                        {% for schedule in request.event.schedules.all %}
-                            {% if schedule.version %}
-                                <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="btn btn-success">{% trans "View" %}</button>
+                    <div class="input-group">
+                        <select name="version" id="version" class="form-control">
+                            <option value="">{% trans "Current draft" %}</option>
+                            {% for schedule in request.event.schedules.all %}
+                                {% if schedule.version %}
+                                    <option value="{{ schedule.version }}" {% if schedule.version == schedule_version %}selected{% endif %}>{{ schedule.version }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-success">{% trans "View" %}</button>
+                    </div>
                 </form>
             </div>
         </div>

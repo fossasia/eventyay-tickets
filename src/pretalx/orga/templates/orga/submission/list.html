@@ -15,6 +15,13 @@
             submissions
             {% endblocktrans %}
         </span>
+    </legend>
+    <div class="submit-group">
+        <form class="search-form">
+            {% bootstrap_form search_form %}
+            {% bootstrap_form filter_form %}
+            <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
+        </form>
         <p class="legend-buttons">
             {% if can_create_submission %}
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
@@ -25,13 +32,7 @@
                 <i class="fa fa-print"></i> {% trans "Print cards" %}
             </a>
         </p>
-
-    </legend>
-    <form class="search-form">
-        {% bootstrap_form search_form %}
-        {% bootstrap_form filter_form %}
-        <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
-    </form>
+    </div>
 
     <table class="table table-sm table-responsive-md">
         <thead>

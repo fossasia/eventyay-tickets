@@ -108,15 +108,6 @@
                     });
                     });</script>
         </fieldset>
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-success">{% trans "Create question" %}</button>
-                {% elif action == "edit" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                {% endif %}
-            </div>
-        </div>
+        {% include "orga/submit_row.html" %}
     </form>
-
 {% endblock %}

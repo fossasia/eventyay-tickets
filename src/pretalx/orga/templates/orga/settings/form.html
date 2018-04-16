@@ -44,15 +44,7 @@
             </div>
         </div>
         {% bootstrap_field sform.display_header_pattern layout='event' %}
-
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
-                {% if action == "edit" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                {% endif %}
-            </div>
-        </div>
+        {% include "orga/submit_row.html" %}
     </form>
 </div></div>
-
 {% endblock %}

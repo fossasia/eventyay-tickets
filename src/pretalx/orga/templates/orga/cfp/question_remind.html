@@ -13,10 +13,10 @@
     You will be able to review emails before they are sent out.
     {% endblocktrans %}
 </div>
-<div class="pt-2">
+<div class="pt-2 submit-group">
   <form class="form-inline" method="post">
     {% csrf_token %}
-    <button class="btn btn-info" type="submit">{% trans "Send to these people: " %}</button>
+    <button class="btn btn-success" type="submit">{% trans "Send to " %}</button>
     {% bootstrap_form filter_form layout='inline' %}
   </form>
 </div>

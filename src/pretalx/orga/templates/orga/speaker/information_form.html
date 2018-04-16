@@ -11,13 +11,6 @@
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
-                {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                {% endif %}
-            </div>
-        </div>
+        {% include "orga/submit_row.html" %}
     </form>
-
 {% endblock %}

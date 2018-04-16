@@ -46,9 +46,11 @@
         </tbody>
     </table>
 
-    <a class="btn btn-success" href="{{ request.event.orga_urls.new_room }}">
-        <i class="fa fa-plus"></i>
-        {% trans "New room" %}
-    </a>
+    <div class="submit-group"><span></span>
+        <a class="btn btn-lg btn-success" href="{{ request.event.orga_urls.new_room }}">
+            <i class="fa fa-plus"></i>
+            {% trans "New room" %}
+        </a>
+    </div>
 </div>
 {% endblock %}

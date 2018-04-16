@@ -14,11 +14,10 @@
         {% endblocktrans %}
         </p></div>
         {% bootstrap_field form.upload layout='event' %}
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
-                <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+        <div class="submit-group"><span></span>
+            <div>
+                <button type="submit" class="btn btn-lg btn-success">{% trans "Upload" %}</button>
             </div>
         </div>
     </form>
-
 {% endblock %}

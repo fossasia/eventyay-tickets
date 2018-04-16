@@ -41,20 +41,8 @@
                     {% bootstrap_field field layout='event' %}
                 {% endif %}
             {% endfor %}
-            <div class="form-group row">
-                <div class="ml-auto col-md-9">
-                    {% if action == "edit" or action == "create" %}
-                        <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                    {% elif action == "view" %}
-                        <a class="btn btn-success" href={{ request.event.cfp.urls.edit_text }}>{% trans "Edit" %}</a>
-                    {% endif %}
-                </div>
-            </div>
+            {% include "orga/submit_row.html" %}
         </form>
     </div>
-    <div class="flex-sidebar">
-        {% include "common/logs.html" with entries=form.instance.logged_actions %}
-    </div>
 </div>
-
 {% endblock %}

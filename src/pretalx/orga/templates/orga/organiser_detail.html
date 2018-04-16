@@ -7,7 +7,7 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
-        <button type="submit" class="btn btn-success float-right">{% trans "Save" %}</button>
+        {% include "orga/submit_row.html" %}
     </form>
 
     <legend>{% trans "Teams" %}</legend>

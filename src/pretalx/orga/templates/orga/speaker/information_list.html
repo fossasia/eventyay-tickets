@@ -9,10 +9,6 @@
         {% plural %}
         Speaker Information Notes
         {% endblocktrans %}
-        <a href="{{request.event.orga_urls.new_information }}" class="btn btn-info">
-            <i class="fa fa-plus"></i>
-            {% trans "Add a new note" %}
-        </a>
     </legend>
     <table class="table table-sm table-responsive-md">
         <thead>
@@ -40,4 +36,10 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="submit-group"><span></span>
+        <a href="{{request.event.orga_urls.new_information }}" class="btn btn-lg btn-success">
+            <i class="fa fa-plus"></i>
+            {% trans "Add a new note" %}
+        </a>
+    </div>
 {% endblock %}

@@ -14,18 +14,19 @@
         {% csrf_token %}
         <legend>{% trans "Mail Editor" %}</legend>
         {% bootstrap_form form layout='event' %}
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
+        <div class="submit-group">
+            <span></span>
+            <span>
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                    <a class="btn btn-info" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
-                    <a class="btn btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
+                    <button type="submit" class="btn btn-lg btn-success">{% trans "Save" %}</button>
+                    <a class="btn btn-lg btn-info" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
+                    <a class="btn btn-lg btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
                 {% elif action == "view" %}
                     {% if form.instance.sent %}
-                        <a class="btn btn-success" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
+                        <a class="btn btn-lg btn-success" href={{ form.instance.urls.copy }}>{% trans "Copy to draft" %}</a>
                     {% endif %}
                 {% endif %}
-            </div>
+            </span>
         </div>
     </form>
 

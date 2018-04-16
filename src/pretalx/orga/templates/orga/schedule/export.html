@@ -12,17 +12,20 @@ schedule release, but you can also trigger that action here.
 {% endblocktrans %}
 </p>
 
-<a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-success">
-    <i class="fa fa-download"></i>
-    {% trans "Download ZIP" %}
-</a>
-<form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-info">
-        <i class="fa fa-sync"></i>
-        {% trans "Regenerate Export" %}
-    </button>
-</form>
+<div class="submit-group"><span></span><span>
+    <a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-lg btn-info">
+        <i class="fa fa-download"></i>
+        {% trans "Download ZIP" %}
+    </a>
+    <form action="{{ request.event.orga_urls.schedule_export_trigger }}" method="POST" class="d-inline-block">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-lg btn-success">
+            <i class="fa fa-refresh"></i>
+            {% trans "Regenerate Export" %}
+        </button>
+    </form>
+</span>
+</div>
 
 <p></p>
 <legend>{% trans "Data Export" %}</legend>
@@ -46,12 +49,15 @@ schedule release, but you can also trigger that action here.
 
 {% trans "You can also use the API to export or use data." %}
 
-<a class="btn btn-sm btn-success" href="{{ request.event.api_urls.base }}">
-    {% trans "Go to API" %}
-</a>
-<a class="btn btn-sm btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
-    <i class="fa fa-book"></i>
-    {% trans "Documentation" %}
-</a>
+<div class="submit-group"><span></span><span>
+    <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
+        <i class="fa fa-book"></i>
+        {% trans "Documentation" %}
+    </a>
+    <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
+        {% trans "Go to API" %}
+    </a>
+</span>
+</div>
 
 {% endblock %}

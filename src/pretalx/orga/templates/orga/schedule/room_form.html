@@ -11,15 +11,6 @@
         {% bootstrap_field form.speaker_info layout='event' %}
         {% bootstrap_field form.capacity addon_after='people' addon_after_class='input-group-append input-group-text' layout='event' %}
         {% bootstrap_field form.position layout='event' %}
-        <div class="form-group row">
-            <div class="ml-auto col-md-9">
-                {% if action == "create" %}
-                    <button type="submit" class="btn btn-success">{% trans "Create room" %}</button>
-                {% elif action == "edit" %}
-                    <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
-                {% endif %}
-            </div>
-        </div>
+        {% include "orga/submit_row.html" %}
     </form>
-
 {% endblock %}
