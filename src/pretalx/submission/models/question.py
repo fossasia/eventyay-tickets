@@ -118,6 +118,7 @@ class Question(LogMixin, models.Model):
         toggle = '{base}/toggle'
 
     def __str__(self):
+        """Help when debugging."""
         return f'Question(event={self.event.slug}, variant={self.variant}, target={self.target}, question={self.question})'
 
     @cached_property
@@ -168,6 +169,7 @@ class AnswerOption(LogMixin, models.Model):
         return self.question.event
 
     def __str__(self):
+        """Used in choice forms."""
         return str(self.answer)
 
 
@@ -210,6 +212,7 @@ class Answer(LogMixin, models.Model):
         return self.question.event
 
     def __str__(self):
+        """Help when debugging."""
         return f'Answer(question={self.question.question}, answer={self.answer})'
 
     def remove(self, person=None, force=False):

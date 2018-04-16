@@ -44,6 +44,7 @@ class MailTemplate(LogMixin, models.Model):
         delete = '{base}/delete'
 
     def __str__(self):
+        """Help with debugging."""
         return f'MailTemplate(event={self.event.slug}, subject={self.subject})'
 
     def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
@@ -114,6 +115,7 @@ class QueuedMail(LogMixin, models.Model):
         copy = '{base}/copy'
 
     def __str__(self):
+        """Help with debugging."""
         sent = self.sent.isoformat() if self.sent else None
         return f'OutboxMail(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
 

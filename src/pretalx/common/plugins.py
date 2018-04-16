@@ -2,9 +2,7 @@ from django.apps import apps
 
 
 def get_all_plugins():
-    """
-    Returns the PretalxPluginMeta classes of all plugins found in the installed Django apps.
-    """
+    """Return the PretalxPluginMeta classes of all plugins found in the installed Django apps."""
     plugins = []
     for app in apps.get_app_configs():
         if hasattr(app, 'PretalxPluginMeta'):

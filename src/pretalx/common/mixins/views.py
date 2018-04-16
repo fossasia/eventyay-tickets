@@ -121,5 +121,5 @@ class Filterable:
 class PermissionRequired(PermissionRequiredMixin):
 
     def get_login_url(self):
-        """ We do this to avoid leaking data about existing pages. """
+        """We do this to avoid leaking data about existing pages."""
         raise Http404()

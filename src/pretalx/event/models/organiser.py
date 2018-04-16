@@ -28,12 +28,12 @@ class Organiser(LogMixin, models.Model):
                 message=_('The slug may only contain letters, numbers, dots and dashes.'),
             ),
         ],
-        verbose_name=_("Short form"),
+        verbose_name=_('Short form'),
         help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
     )
 
     def __str__(self) -> str:
-        """ Used in generated forms """
+        """Used in generated forms."""
         return str(self.name)
 
     class orga_urls(EventUrls):
@@ -98,6 +98,7 @@ class Team(LogMixin, models.Model):
     )
 
     def __str__(self) -> str:
+        """Help with debugging."""
         return _('{name} on {orga}').format(name=str(self.name), orga=str(self.organiser))
 
 

@@ -8,7 +8,7 @@ class SearchForm(forms.Form):
 
 
 class I18nFormSet(i18nfield.forms.I18nModelFormSet):
-    # compatibility shim for django-i18nfield library
+    """Compatibility shim for django-i18nfield."""
 
     def __init__(self, *args, **kwargs):
         event = kwargs.pop('event', None)

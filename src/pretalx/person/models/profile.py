@@ -33,6 +33,7 @@ class SpeakerProfile(LogMixin, models.Model):
         talks_ical = '{self.urls.public}/talks.ics'
 
     def __str__(self):
+        """Help when debugging."""
         user = getattr(self.user, 'nick', None)
         return f'SpeakerProfile(event={self.event.slug}, user={user})'
 

@@ -19,10 +19,7 @@ from rest_framework.authtoken.models import Token
 
 
 def nick_validator(value: str) -> None:
-    """
-    Validate nicknames for length, collisions when lower-cased, and allowed
-    characters (ascii letters, digits, -, _). To be used in URL.
-    """
+    """Validate nicknames for length, collisions when lower-cased, and allowed characters (ascii letters, digits, -, _)."""
     if not 2 <= len(value) <= 60:
         raise ValidationError('The nick must be between 2 and 60 characters long.')
 
@@ -32,9 +29,8 @@ def nick_validator(value: str) -> None:
 
 
 class UserManager(BaseUserManager):
-    """
-    The user manager class
-    """
+    """The user manager class."""
+
     def create_user(self, nick: str, password: str=None, **kwargs):
         user = self.model(nick=nick, **kwargs)
         user.set_password(password)
@@ -64,9 +60,11 @@ def assign_code(obj, length=6):
 
 class User(PermissionsMixin, AbstractBaseUser):
     """
-    The pretalx user model: We don't really need last names and fancy stuff, so
-    we stick with a nick, and optionally a name and an email address.
+    The pretalx user model.
+
+    We don't really need last names and fancy stuff, so we stick with a nick, and optionally a name and an email address.
     """
+
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'nick'
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
@@ -116,6 +114,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     pw_reset_time = models.DateTimeField(null=True)
 
     def __str__(self) -> str:
+        """Use a useful string representation."""
         return self.get_display_name()
 
     def get_display_name(self) -> str:

@@ -18,4 +18,5 @@ class Track(LogMixin, models.Model):
     )
 
     def __str__(self) -> str:
+        """Help when debugging."""
         return f'Track(event={self.event.slug}, name={self.name})'

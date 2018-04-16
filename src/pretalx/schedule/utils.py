@@ -13,10 +13,7 @@ from pretalx.submission.models import (
 
 @transaction.atomic()
 def process_frab(root, event):
-    """
-    Takes an xml document root and an event, and releases a schedule
-    with the data from the xml document.
-    """
+    """Take an xml document root and an event, and releases a schedule with the data from the xml document."""
     for day in root.findall('day'):
         for rm in day.findall('room'):
             room, _ = Room.objects.get_or_create(event=event, name=rm.attrib['name'])

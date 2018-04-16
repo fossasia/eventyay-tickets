@@ -111,6 +111,7 @@ class ActivityLog(models.Model):
         ordering = ('-timestamp', )
 
     def __str__(self):
+        """Custom __str__ to help with debugging."""
         event = getattr(self.event, 'slug', 'None')
         person = getattr(self.person, 'nick', 'None')
         return f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})'

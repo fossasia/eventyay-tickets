@@ -46,6 +46,7 @@ class CfP(LogMixin, models.Model):
         public = '{self.event.urls.base}/cfp'
 
     def __str__(self) -> str:
+        """Help with debugging."""
         return f'CfP(event={self.event.slug})'
 
     @cached_property

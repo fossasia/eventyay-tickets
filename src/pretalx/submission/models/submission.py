@@ -219,10 +219,10 @@ class Submission(LogMixin, models.Model):
 
     def _set_state(self, new_state, force=False, person=None):
         """
-        check if the new state is valid for this Submission (based on SubmissionStates.valid_next_states).
-        if yes, set it and save the object. if no, raise a SubmissionError with a helpful message.
-        """
+        Check if the new state is valid for this Submission (based on SubmissionStates.valid_next_states).
 
+        If yes, set it and save the object. if no, raise a SubmissionError with a helpful message.
+        """
         valid_next_states = SubmissionStates.valid_next_states.get(self.state, [])
 
         if new_state in valid_next_states or force:
@@ -369,6 +369,7 @@ class Submission(LogMixin, models.Model):
         return self.state == SubmissionStates.DELETED
 
     def __str__(self):
+        """Help when debugging."""
         return f'Submission(event={self.event.slug}, code={self.code}, title={self.title}, state={self.state})'
 
     @cached_property

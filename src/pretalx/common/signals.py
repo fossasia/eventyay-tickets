@@ -19,9 +19,10 @@ def _populate_app_cache():
 
 class EventPluginSignal(django.dispatch.Signal):
     """
-    This is an extension to Django's built-in signals which differs in a way that it sends
-    out it's events only to receivers which belong to plugins that are enabled for the given
-    Event.
+    An extension to Django's built-in signals.
+
+    It sends out it's events only to receivers which belong to plugins that
+    are enabled for the given Event.
     """
 
     def _is_active(self, sender, receiver):
@@ -47,8 +48,7 @@ class EventPluginSignal(django.dispatch.Signal):
 
     def send(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
         """
-        Send signal from sender to all connected receivers that belong to
-        plugins enabled for the given Event.
+        Send signal from sender to all connected receivers that belong to plugins enabled for the given Event.
 
         sender is required to be an instance of ``pretalx.event.models.Event``.
         """
@@ -70,9 +70,11 @@ class EventPluginSignal(django.dispatch.Signal):
 
     def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
         """
-        Send signal from sender to all connected receivers. The return value of the first receiver
-        will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the
-        second receiver and so on. The return value of the last receiver is returned by this method.
+        Send signal from sender to all connected receivers.
+
+        The return value of the first receiver will be used as the keyword argument
+        specified by ``chain_kwarg_name`` in the input to the second receiver and so on.
+        The return value of the last receiver is returned by this method.
 
         sender is required to be an instance of ``pretalx.event.models.Event``.
         """

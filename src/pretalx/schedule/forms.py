@@ -112,8 +112,9 @@ class AvailabilitiesFormMixin(forms.Form):
 
     def _set_foreignkeys(self, instance, availabilities):
         """
-        Set the reference to `instance` in each given availability. For example,
-        set the availabilitiy.room_id to instance.id, in case instance of type Room.
+        Set the reference to `instance` in each given availability.
+
+        For example, set the availabilitiy.room_id to instance.id, in case instance of type Room.
         """
         reference_name = instance.availabilities.field.name + '_id'
 

@@ -4,10 +4,7 @@ from pretalx.orga.signals import nav_event
 
 
 def orga_events(request):
-    """
-    Adds data to all template contexts
-    """
-
+    """Add data to all template contexts."""
     _nav_event = []
     if getattr(request, 'event', None) and hasattr(request, 'user') and request.user.is_authenticated:
         for receiver, response in nav_event.send(request.event, request=request):

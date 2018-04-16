@@ -9,9 +9,7 @@ from i18nfield.forms import I18nFormField
 
 
 def render_label(content, label_for=None, label_class=None, label_title='', optional=False):
-    """
-    Render a label with content
-    """
+    """Render a label with content."""
     attrs = {}
     if label_for:
         attrs['for'] = label_for
@@ -32,7 +30,7 @@ def render_label(content, label_for=None, label_class=None, label_title='', opti
 class EventInlineFieldRenderer(FieldRenderer):
 
     def put_inside_label(self, html):
-        """ Inputs don't belong inside labels. """
+        """Do not put inputs inside labels."""
         label = render_label(
             content=mark_safe(self.field.label if self.use_label else ''),
             label_for=self.field.id_for_label,

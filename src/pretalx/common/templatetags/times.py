@@ -6,9 +6,7 @@ register = template.Library()
 
 @register.filter
 def times(text: str, **kwargs):
-    """
-    This really really really could be a standard tag.
-    """
+    """Add a tag that really really really could be a standard tag."""
     if text is None:
         return ""
     str_text = str(text)

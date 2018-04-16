@@ -220,4 +220,5 @@ class Schedule(LogMixin, models.Model):
         return self != self.event.current_schedule
 
     def __str__(self) -> str:
+        """Help when debugging."""
         return f'Schedule(event={self.event.slug}, version={self.version})'

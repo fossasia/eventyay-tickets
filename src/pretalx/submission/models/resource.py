@@ -21,4 +21,5 @@ class Resource(LogMixin, models.Model):
     )
 
     def __str__(self):
+        """Help when debugging."""
         return f'Resource(event={self.submission.event.slug}, submission={self.submission.title})'

@@ -39,6 +39,7 @@ class CustomSMTPBackend(EmailBackend):
 class TolerantDict(dict):
 
     def __missing__(self, key):
+        """Don't fail when formatting strings with a dict with missing keys."""
         return key
 
 
