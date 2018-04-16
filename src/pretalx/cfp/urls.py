@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import auth, event, locale, user, wizard
+from .views import auth, event, locale, robots, user, wizard
 
 app_name = 'cfp'
 urlpatterns = [
@@ -36,5 +36,6 @@ urlpatterns = [
         ])),
         url('^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
     ])),
+    url(r'^robots.txt$', robots.robots_txt, name='robots.txt'),
     url('^$', event.GeneralView.as_view()),
 ]
