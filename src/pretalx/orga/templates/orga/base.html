@@ -7,13 +7,9 @@
 <head>
     <title>{% block title %}{% endblock %} :: pretalx</title>
     <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
-    {% if request.event.settings.orga_css_file %}
-        <link rel="stylesheet" type="text/css" href="{{ request.event.settings.orga_css_file }}"/>
-    {% else %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
-        {% endcompress %}
-    {% endif %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
+    {% endcompress %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}"/>
     {% block stylesheets %}
