@@ -1,10 +1,7 @@
 {% extends "agenda/base.html" %}
-{% load compress %}
 {% load i18n %}
-{% load staticfiles %}
 
 {% block agenda_content %}
-
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning">
@@ -108,5 +105,4 @@
         </div>
     {% endfor %}
 </div>
-
 {% endblock %}

@@ -5,9 +5,7 @@
 {% block title %}{% trans "Accept invitation?" %}{% endblock %}
 
 {% block content %}
-
 <h2>{% trans "Accept invitation?" %}</h2>
-
 <p>{% blocktrans with name=request.user.get_display_name talk=submission.title trimmed %}
     You, {{ name }}, have been invited to be a speaker for the submission
     »{{ talk }}«. Do you accept the invitation?
@@ -28,14 +26,10 @@
 <form method="post" class="form">
     {% csrf_token %}
     <div class="row url-links">
-        <a href="/" class="btn btn-info btn-lg btn-block">
-            {% trans "Nope" %}
+        <a href="/" class="btn btn-danger btn-lg btn-block">
+            {% trans "No" %}
         </a>
         <button type="submit" class="btn btn-success btn-lg btn-block">
             {% trans "Accept" %}
         </button>
     </div>
-</form>
-
-
-{% endblock %}

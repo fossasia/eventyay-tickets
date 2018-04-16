@@ -3,7 +3,9 @@
 {% load formset_tags %}
 {% load i18n %}
 {% load staticfiles %}
+
 {% block title %}{% trans "Your submission" %} :: {% endblock %}
+
 {% block content %}
     <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
@@ -117,7 +119,7 @@
         <h3>{% trans "Withdraw submission" %}</h3>
         <p>
             {% blocktrans trimmed %}
-                You can click here to withdraw your submission from the selection process. You cannot undo this - if you are
+                You can withdraw your submission from the selection process here. You cannot undo this - if you are
                 just uncertain if you can or should hold your talk, please contact the organiser instead.
             {% endblocktrans %}
         </p>

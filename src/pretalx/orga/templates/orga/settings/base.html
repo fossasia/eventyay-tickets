@@ -1,13 +1,9 @@
 {% extends "orga/base.html" %}
-{% load i18n %}
 {% block content %}
 <div class="flex-container">
     <div class="flex-content">
         {% block settings_content %}
         {% endblock %}
-    </div>
-    <div class="flex-sidebar">
-        {% include "common/logs.html" with entries=request.event.logged_actions %}
     </div>
 </div>
 {% endblock %}

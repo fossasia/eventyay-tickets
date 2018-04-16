@@ -1,8 +1,8 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block cfp_content %}
 
+{% block cfp_content %}
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Submission Type" %}</legend>

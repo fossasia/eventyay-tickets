@@ -1,9 +1,8 @@
 {% extends "common/base.html" %}
-{% load compress %}
-{% load staticfiles %}
 {% load i18n %}
 
 {% block title %}{% trans "events" %}{% endblock %}
+
 {% block content %}
     {% if events or orga_events %}
         <h1>{% trans "Events" %}</h1>

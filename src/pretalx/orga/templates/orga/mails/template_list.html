@@ -1,8 +1,8 @@
 {% extends "orga/mails/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block mail_content %}
 
+{% block mail_content %}
     <div class="alert alert-info">
         {% blocktrans trimmed %}
             You can edit the default templates and your custom templates for emails here.
@@ -66,5 +66,4 @@
     </div>
     {% endfor %}
     </div>
-
 {% endblock %}

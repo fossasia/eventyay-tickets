@@ -1,10 +1,10 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
-{% load staticfiles %}
-{% load review_score %}
 {% load i18n %}
-{% load rules %}
+{% load review_score %}
+{% load staticfiles %}
+
 {% block submission_content %}
     {% if not submission %}
     <legend>{% trans "Create submission as orga" %}</legend>

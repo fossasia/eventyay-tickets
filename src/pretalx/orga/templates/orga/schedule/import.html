@@ -1,8 +1,8 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block content %}
 
+{% block content %}
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Import XML" %}</legend>

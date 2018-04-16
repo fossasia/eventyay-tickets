@@ -2,9 +2,10 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rich_text %}
-{% block submission_content %}
 
-    <div class="alert alert-info{% if not form.instance.pk and not read_only %} offset-3 col-md-9{% endif %}">
+{% block submission_content %}
+    <div class="alert alert-info">
+        <span>
         {% if not read_only %}
             {{ request.event.settings.review_help_text|rich_text }}
             {% if not form.instance.pk %}
@@ -23,6 +24,7 @@
                 You have <strong>{{ count }}</strong> override votes left.
             {% endblocktrans %}
         {% endif %}
+        </span>
     </div>
 
     {% if not form.instance.pk and not read_only %}
@@ -109,7 +111,4 @@
         </tbody>
     </table>
     {% endif %}
-
-
 {% endblock %}
-

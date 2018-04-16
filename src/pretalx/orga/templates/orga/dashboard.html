@@ -4,7 +4,6 @@
 
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
-
     <div class="dashboard-list">
         {% for event in request.orga_events %}
             <a href="{{ event.orga_urls.base }}" class="dashboard-block">
@@ -30,5 +29,4 @@
             </a>
         {% endif %}
     </div>
-
 {% endblock %}

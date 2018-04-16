@@ -2,8 +2,8 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load url_replace %}
-{% block mail_content %}
 
+{% block mail_content %}
     <legend>
         {{ page_obj.paginator.count }}
         {% trans "Sent Mails" %}
@@ -47,7 +47,5 @@
             {% endfor %}
         </tbody>
     </table>
-
     {% include "orga/pagination.html" %}
-
 {% endblock %}

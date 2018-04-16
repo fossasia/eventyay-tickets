@@ -1,7 +1,9 @@
 {% extends "cfp/event/base.html" %}
-{% load i18n %}
 {% load bootstrap4 %}
+{% load i18n %}
+
 {% block title %}{% trans "Password reset" %} :: {% endblock %}
+
 {% block content %}
     <form action="" method="post">
         {% csrf_token %}
@@ -11,7 +13,7 @@
             <h2>{% trans "OK, this looks good!" %}</h2>
             <p>
                 {% blocktrans trimmed %}
-                    Now you just need to decide for your new password and then we are ready to go.
+                    Now you just need to choose your new password and you are ready to go.
                 {% endblocktrans %}
             </p>
             {% bootstrap_field form.password layout='inline' %}

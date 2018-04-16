@@ -3,10 +3,9 @@
 {% load formset_tags %}
 {% load i18n %}
 {% load staticfiles %}
+
 {% block cfp_content %}
-
     <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
-
     <form method="post" action="">
         {% csrf_token %}
         {% if action == "edit" and question.answers.count %}
@@ -22,13 +21,17 @@
         {% if action != 'create' %}
           {% if question.active %}
             <div class="alert alert-info col-md-9 offset-3">
+              <span>
               {% trans "This question is currently active, it will be asked during submission." %}
               <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+              </span>
             </div>
           {% else %}
             <div class="alert alert-info col-md-9 offset-3">
+              <span>
               {% trans "This question is currently inactive, and will not be asked during submission." %}
               <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+              </span>
             </div>
           {% endif %}
         {% endif %}

@@ -1,11 +1,9 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
-{% load formset_tags %}
 {% load i18n %}
-{% load staticfiles %}
 {% load times %}
-{% block cfp_content %}
 
+{% block cfp_content %}
 <h4>
     »{{ question.question }}«
     <small>({{ question.get_variant_display }})</small>
@@ -16,13 +14,17 @@
 
 {% if question.active %}
   <div class="alert alert-info">
+    <span>
     {% trans "This question is currently active, it will be asked during submission." %}
     <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+    </span>
   </div>
 {% else %}
   <div class="alert alert-info">
+    <span>
     {% trans "This question is currently inactive, and will not be asked during submission." %}
     <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+    </span>
   </div>
 {% endif %}
 
@@ -45,7 +47,6 @@
             This question has been answered <strong>{{ count }}</strong>, and no answers are missing.
         {% endblocktrans %}
     {% endif %}
-
     <ul>
         {% for answer in question.grouped_answers %}
             <li>
@@ -80,7 +81,5 @@
             </li>
         {% endfor %}
     </ul>
-
 {% endif %}
-
 {% endblock %}

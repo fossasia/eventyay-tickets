@@ -1,10 +1,8 @@
 {% extends "orga/base.html" %}
-{% load i18n %}
-{% load staticfiles %}
 {% load bootstrap4 %}
+{% load i18n %}
 
 {% block content %}
-
     <legend>{% trans "Settings" %}</legend>
     <form method="post">
         {% csrf_token %}
@@ -27,8 +25,7 @@
             </a>
         {% endfor %}
         <a href="{{ request.organiser.orga_urls.new_team }}" class="dashboard-block">
-            <h1><i class="fa fa-plus"></i>{% trans "New team" %}</h1>
+            <h1><i class="fa fa-plus"></i> {% trans "New team" %}</h1>
         </a>
     </div>
-
 {% endblock %}

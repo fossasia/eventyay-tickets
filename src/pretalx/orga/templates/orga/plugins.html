@@ -8,10 +8,10 @@
 	{% csrf_token %}
     {% for plugin in plugins %}
         <div class="card plugin-card">
-            <div class="card-header{% if plugin.module in plugins_active %} alert-success{% endif %}">
+            <div class="card-header">
                 {{ plugin.name }}
                 {% if plugin.module in plugins_active %}
-                    <button class="btn btn-warning btn-block" name="plugin:{{ plugin.module }}" value="disable">{% trans "Disable" %}</button>
+                    <button class="btn btn-outline-danger btn-block" name="plugin:{{ plugin.module }}" value="disable">{% trans "Disable" %}</button>
                 {% else %}
                     <button class="btn btn-success btn-block" name="plugin:{{ plugin.module }}" value="enable">{% trans "Enable" %}</button>
                 {% endif %}
@@ -33,5 +33,4 @@
         </div>
     {% endfor %}
 </form>
-
 {% endblock %}

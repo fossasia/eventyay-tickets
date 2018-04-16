@@ -1,9 +1,5 @@
 {% extends "agenda/base.html" %}
-{% load compress %}
 {% load bootstrap4 %}
-{% load i18n %}
-{% load rich_text %}
-{% load staticfiles %}
 
 {% block content %}
     <h3 class="talk-title">
@@ -21,7 +17,6 @@
         {% if not talk.does_accept_feedback %}
             {{ phrases.agenda.feedback_not_now }}
         {% else %}
-
             <form method="post" action="">
                 {% csrf_token %}
                 {% if talk.speakers.count > 1 %}
@@ -37,4 +32,3 @@
         </div></div>
     </div>
 {% endblock %}
-

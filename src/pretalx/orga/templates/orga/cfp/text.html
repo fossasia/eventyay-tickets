@@ -1,8 +1,10 @@
 {% extends "orga/cfp/base.html" %}
-{% load i18n %}
 {% load bootstrap4 %}
+{% load i18n %}
+
 {% block cfp_content %}
 <div class="alert alert-info">
+    <span>
     {% trans "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
     <ul>
         <li>{% trans "The formats (talks, workshops, panels) and their durations" %}</li>
@@ -13,6 +15,7 @@
         <li>{% trans "Do you offer financial or other support, e.g. support for first time speakers?" %}
         <li>{% trans "Dates and location" %}</li>
     </ul>
+    </span>
 </div>
 <div class="flex-container">
     <div class="flex-content">

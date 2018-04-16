@@ -25,7 +25,9 @@
         {% else %}
         {% if page_obj.paginator.count > 1 %}
                 <li class="page-current page-item"><a class="page-link">
-                    {% blocktrans trimmed with count=page_obj.paginator.count %}
+                    {% blocktrans trimmed count count=page_obj.paginator.count %}
+                        {{ count }} element
+                        {% plural %}
                         {{ count }} elements
                     {% endblocktrans %}
                 </a></li>

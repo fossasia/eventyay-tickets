@@ -1,9 +1,10 @@
 {% extends "orga/mails/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+
 {% block mail_content %}
     {% if placeholders %}
-    <div class="alert alert-info">
+    <div class="alert alert-info"><span>
         {% blocktrans trimmed %}
             You have some variables available that will be rendered into the mails
             (in the appropriate language) before sending:
@@ -13,9 +14,8 @@
             <li>{{ placeholder.name }}{% if placeholder.explanation %}: {{ placeholder.explanation }}{% endif %}</li>
         {% endfor %}
         </ul>
-    </div>
+    </span></div>
     {% endif %}
-
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Mail Template Editor" %}</legend>
@@ -30,5 +30,4 @@
             </div>
         </div>
     </form>
-
 {% endblock %}

@@ -1,9 +1,8 @@
 {% extends "orga/mails/base.html" %}
-{% load bootstrap4 %}
 {% load i18n %}
 {% load url_replace %}
-{% block mail_content %}
 
+{% block mail_content %}
     <legend>
         <span>
             {{ page_obj.paginator.count }}
@@ -13,16 +12,20 @@
                 pending mails
             {% endblocktrans %}
         </span>
-        <div class="legend-buttons">
+    </legend>
+    <div class="submit-group">
+        <span>
+            {% include "common/search_form.html" %}
+        </span>
+        <span>
             <a href="{{ request.event.orga_urls.send_outbox }}">
-                <button class="btn btn-success">{% trans "Send all" %}</button>
+                <button class="btn btn-lg btn-success">{% trans "Send all" %}</button>
             </a>
             <a href="{{ request.event.orga_urls.purge_outbox }}">
-                <button class="btn btn-danger">{% trans "Discard all" %}</button>
+                <button class="btn btn-lg btn-danger">{% trans "Discard all" %}</button>
             </a>
-        </div>
-    </legend>
-    {% include "common/search_form.html" %}
+        </span>
+    </div>
     <table class="table table-sm table-responsive-md">
         <thead>
             <tr>
@@ -71,7 +74,5 @@
             {% endfor %}
         </tbody>
     </table>
-
     {% include "orga/pagination.html" %}
-
 {% endblock %}

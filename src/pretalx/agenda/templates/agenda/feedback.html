@@ -1,11 +1,8 @@
 {% extends "agenda/base.html" %}
-{% load compress %}
 {% load i18n %}
 {% load rich_text %}
-{% load staticfiles %}
 
 {% block content %}
-
     <h3 class="talk-title">
         <a href="{{ talk.urls.public }}">
             {% trans "Feedback for" %} »{{ talk.title }}«
@@ -31,6 +28,5 @@
     {% empty %}
         {{ phrases.agenda.feedback_empty }}
     {% endfor %}
-
     </div>
 {% endblock %}

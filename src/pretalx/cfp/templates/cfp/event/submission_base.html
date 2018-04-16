@@ -1,7 +1,8 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
-{% load rich_text %}
+
 {% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
+
 {% block content %}
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}

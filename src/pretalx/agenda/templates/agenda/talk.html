@@ -2,7 +2,6 @@
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
-{% load staticfiles %}
 
 {% block title %}{{ talk.submission.title }}{% endblock %}
 {% block meta_title %}{{ talk.submission.title }}{% endblock %}
@@ -11,7 +10,6 @@
 {% block social_description %}{{ submission_description }}{% endblock %}
 
 {% block agenda_content %}
-
     <h3 class="talk-title">
         <div>
         »{{ talk.submission.title }}«

@@ -1,12 +1,12 @@
 {% extends "orga/mails/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block mail_content %}
 
+{% block mail_content %}
     {% if form.instance.sent %}
     <div class="alert alert-info">
         {% blocktrans trimmed with timestamp=form.instance.sent %}
-            This email was sent on {{ timestamp }}
+            This email was sent on {{ timestamp }}.
         {% endblocktrans %}
     </div>
     {% endif %}

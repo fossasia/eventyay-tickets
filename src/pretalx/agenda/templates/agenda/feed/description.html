@@ -80,5 +80,7 @@
     {% endif %}
 
 {% else %}
-    The first {{ obj.event.name }} schedule has been released!
+    {% blocktrans trimmed with event_name=obj.event.name %}
+    The first {{ event_name }} schedule has been released!
+    {% endblocktrans %}
 {% endif %}

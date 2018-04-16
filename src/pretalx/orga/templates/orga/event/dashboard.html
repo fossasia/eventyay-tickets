@@ -1,7 +1,7 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
-{% block content %}
 
+{% block content %}
 {% if "congratulations" in request.GET %}
 <div class="alert alert-success congratulations">
     {% blocktrans trimmed %}
@@ -12,7 +12,6 @@
     </span>
 </div>
 {% endif %}
-
 <div class="timeline">
     <div class="timeline-element {{ timeline.PREPARATION.state }}">
         <div class="timeline-box">

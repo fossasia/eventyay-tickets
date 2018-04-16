@@ -1,8 +1,10 @@
 {% extends "agenda/base.html" %}
-{% load compress %}
 {% load i18n %}
 {% load rich_text %}
-{% load staticfiles %}
+
+{% block title %}{{ speaker.get_display_name }}{% endblock %}
+{% block meta_title %}{{ speaker.get_display_name }}{% endblock %}
+{% block social_title %}{{ speaker.get_display_name }}{% endblock %}
 
 {% block agenda_content %}
 <h3>

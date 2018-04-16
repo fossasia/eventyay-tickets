@@ -22,6 +22,7 @@
         {% endif %}
     </div>
     <div class="alert alert-info col-md-9">
+        <span>
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
         <ul>
             {% for submission in submissions %}
@@ -33,6 +34,7 @@
             </li>
             {% endfor %}
         </ul>
+        </span>
     </div>
 </div>
     <form method="post" action="">

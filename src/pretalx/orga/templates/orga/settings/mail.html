@@ -1,12 +1,12 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% block settings_content %}
 
+{% block settings_content %}
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "E-mail settings" %}</legend>
-        <div class="alert alert-info">
+        <div class="alert alert-info offset-3">
             {% blocktrans trimmed %}
                 If you don't configure custom email settings, the global configuration
                 for this server will be used (ask your administrator for details).<br>

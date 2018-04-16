@@ -1,14 +1,10 @@
 {% extends "agenda/base.html" %}
-{% load compress %}
 {% load i18n %}
-{% load staticfiles %}
 
 {% block agenda_content %}
-
 {% for schedule in request.event.schedules.all %}{% if schedule.version %}
 
     <legend>{% trans "Version" %} {{ schedule.version }}</legend>
-
     {% if not schedule.changes.count %}
         {% if schedule.changes.action == 'update' %}
             <p>{{ phrases.agenda.changelog_unchanged }}</p>
@@ -91,9 +87,6 @@
                 {% endfor %}</p>
             {% endif %}
         {% endif %}
-
     {% endif %}
-
 {% endif %}{% endfor %}
-
 {% endblock %}
