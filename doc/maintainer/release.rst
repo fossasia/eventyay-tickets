@@ -9,7 +9,9 @@ Boarding checks
 1. Are the translations up to date?
 2. Are there warnings about missing migrations?
 3. Any blockers to see here? https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Aissue%3Abug
-4. Is the ``CHANGELOG.rst`` well-phrased and complete?
+4. Are there any TODOs that need to be resolved?
+5. Are there any ``@pytest.mark.xfail`` that need to be resolved?
+6. Is the ``CHANGELOG.rst`` well-phrased and complete?
 
 System checks
 -------------

@@ -54,7 +54,7 @@ def test_regenerate_css(event):
     event.save()
     regenerate_css(event.pk)
     event = Event.objects.get(pk=event.pk)
-    for local_app in ['agenda', 'cfp', 'orga']:
+    for local_app in ['agenda', 'cfp']:
         assert event.settings.get(f'{local_app}_css_file')
         assert event.settings.get(f'{local_app}_css_checksum')
 
@@ -66,6 +66,6 @@ def test_regenerate_css_no_color(event):
     event.save()
     regenerate_css(event.pk)
     event = Event.objects.get(pk=event.pk)
-    for local_app in ['agenda', 'cfp', 'orga']:
+    for local_app in ['agenda', 'cfp']:
         assert not event.settings.get(f'{local_app}_css_file')
         assert not event.settings.get(f'{local_app}_css_checksum')

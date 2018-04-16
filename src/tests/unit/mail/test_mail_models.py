@@ -1,6 +1,6 @@
 import pytest
 
-from pretalx.mail.models import TolerantDict
+from pretalx.common.mail import TolerantDict
 
 
 @pytest.mark.parametrize('key,value', (

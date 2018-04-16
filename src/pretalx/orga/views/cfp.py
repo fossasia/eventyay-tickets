@@ -196,8 +196,8 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         self.instance = form.instance
         result = super().form_valid(form)
         if form.cleaned_data.get('variant') in ('choices', 'multiple_choice'):
-            result = self.save_formset(self.instance)
-            if not result:
+            formset = self.save_formset(self.instance)
+            if not formset:
                 return self.get(self.request, *self.args, **self.kwargs)
         if form.has_changed():
             action = 'pretalx.question.' + ('update' if self.object else 'create')
