@@ -40,25 +40,25 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
     def get_object(self):
         if self.version:
-            return self.request.event.schedules.filter(version=self.version).first()
+            return self.request.event.schedules.filter(version__iexact=self.version).first()
         if self.request.event.current_schedule:
             return self.request.event.current_schedule
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         schedule = self.get_object()
         event = self.request.event
 
         if not schedule and self.version:
-            ctx['version'] = self.version
-            ctx['error'] = f'Schedule "{self.version}" not found.'
-            return ctx
+            context['version'] = self.version
+            context['error'] = f'Schedule "{self.version}" not found.'
+            return context
         elif not schedule:
-            ctx['error'] = 'Schedule not found.'
-            return ctx
-        ctx['schedule'] = schedule
-        ctx['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
-        return ctx
+            context['error'] = 'Schedule not found.'
+            return context
+        context['schedule'] = schedule
+        context['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
+        return context
 
 
 class ExporterView(ScheduleDataView):
@@ -107,14 +107,14 @@ class ScheduleView(ScheduleDataView):
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
+        context = super().get_context_data(*args, **kwargs)
+        context['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
         tz = pytz.timezone(self.request.event.timezone)
-        if 'schedule' not in ctx:
-            return ctx
+        if 'schedule' not in context:
+            return context
 
-        ctx['data'] = ScheduleData(event=self.request.event, schedule=ctx['schedule']).data
-        for date in ctx['data']:
+        context['data'] = ScheduleData(event=self.request.event, schedule=context['schedule']).data
+        for date in context['data']:
             if date.get('first_start') and date.get('last_end'):
                 start = date.get('first_start').astimezone(tz).replace(second=0, minute=0)
                 end = date.get('last_end').astimezone(tz)
@@ -129,7 +129,7 @@ class ScheduleView(ScheduleDataView):
                         talk.top = int((talk.start.astimezone(tz) - start).total_seconds() / 60 * 2)
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.end
-        return ctx
+        return context
 
 
 class ChangelogView(PermissionRequired, TemplateView):

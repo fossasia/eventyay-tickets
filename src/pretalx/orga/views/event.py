@@ -73,13 +73,13 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, CreateOrUpdateView):
     def form_valid(self, form):
         if not self.sform.is_valid():
             return self.form_invalid(form)
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
 
         self.sform.save()
         form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
         messages.success(self.request, _('The event settings have been saved.'))
         regenerate_css.apply_async(args=(form.instance.pk,))
-        return ret
+        return result
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
@@ -118,8 +118,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         else:
             messages.success(self.request, _('Yay! We saved your changes.'))
 
-        ret = super().form_valid(form)
-        return ret
+        return super().form_valid(form)
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
@@ -132,9 +131,9 @@ class InvitationView(FormView):
         return get_object_or_404(TeamInvite, token__iexact=self.kwargs.get('code'))
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['invitation'] = self.object
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['invitation'] = self.object
+        return context
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -181,11 +180,11 @@ class UserSettings(TemplateView):
         )
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['token'] = Token.objects.filter(user=self.request.user).first() or Token.objects.create(user=self.request.user)
-        ctx['login_form'] = self.login_form
-        ctx['profile_form'] = self.profile_form
-        return ctx
+        context = super().get_context_data(**kwargs)
+        context['token'] = Token.objects.filter(user=self.request.user).first() or Token.objects.create(user=self.request.user)
+        context['login_form'] = self.login_form
+        context['profile_form'] = self.profile_form
+        return context
 
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
@@ -226,12 +225,12 @@ class EventWizard(PermissionRequired, SessionWizardView):
         return f'orga/event/wizard/{self.steps.current}.html'
 
     def get_context_data(self, form, **kwargs):
-        ctx = super().get_context_data(form, **kwargs)
-        ctx['has_organiser'] = self.request.user.teams.filter(can_create_events=True).exists()
-        ctx['url_placeholder'] = f'https://{self.request.host}/'
+        context = super().get_context_data(form, **kwargs)
+        context['has_organiser'] = self.request.user.teams.filter(can_create_events=True).exists()
+        context['url_placeholder'] = f'https://{self.request.host}/'
         if self.steps.current != 'initial':
-            ctx['organiser'] = self.get_cleaned_data_for_step('initial').get('organiser')
-        return ctx
+            context['organiser'] = self.get_cleaned_data_for_step('initial').get('organiser')
+        return context
 
     def render(self, form=None, **kwargs):
         if self.steps.current != 'initial':

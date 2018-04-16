@@ -56,10 +56,10 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         return TeamInviteForm(self.request.POST if is_bound else None)
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['team'] = self.object
-        ctx['invite_form'] = self.invite_form
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['team'] = self.object
+        context['invite_form'] = self.invite_form
+        return context
 
     def post(self, *args, **kwargs):
         if self.invite_form.is_bound:
@@ -100,12 +100,12 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
         return self.team
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['team'] = self.team
-        ctx['member'] = self.get_object()
-        if ctx['member'] == ctx['team']:
-            ctx['member'] = None
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['team'] = self.team
+        context['member'] = self.get_object()
+        if context['member'] == context['team']:
+            context['member'] = None
+        return context
 
     def post(self, request, *args, **kwargs):
         if 'user_pk' in self.kwargs:
@@ -128,10 +128,10 @@ class TeamUninvite(PermissionRequired, DetailView):
         return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['team'] = self.object.team
-        ctx['member'] = self.object
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['team'] = self.object.team
+        context['member'] = self.object
+        return context
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()

@@ -24,11 +24,11 @@ def add_events(request):
 
 
 def locale_context(request):
-    ctx = {}
-    ctx['js_datetime_format'] = get_javascript_format('DATETIME_INPUT_FORMATS')
-    ctx['js_date_format'] = get_javascript_format('DATE_INPUT_FORMATS')
-    ctx['js_locale'] = get_moment_locale()
-    return ctx
+    context = {}
+    context['js_datetime_format'] = get_javascript_format('DATETIME_INPUT_FORMATS')
+    context['js_date_format'] = get_javascript_format('DATE_INPUT_FORMATS')
+    context['js_locale'] = get_moment_locale()
+    return context
 
 
 def messages(request):
@@ -37,15 +37,15 @@ def messages(request):
 
 
 def system_information(request):
-    ctx = {}
+    context = {}
     if settings.DEBUG:
-        ctx['development_warning'] = True
+        context['development_warning'] = True
         with suppress(Exception):
             import subprocess
-            ctx['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
+            context['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
     else:
         with suppress(Exception):
             import pretalx
-            ctx['pretalx_version'] = pretalx.__version__
+            context['pretalx_version'] = pretalx.__version__
 
-    return ctx
+    return context

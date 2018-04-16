@@ -63,9 +63,9 @@ class OutboxSend(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['question'] = _('Do you really want to send {count} mails?').format(count=self.queryset.count())
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['question'] = _('Do you really want to send {count} mails?').format(count=self.queryset.count())
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'pk' in self.kwargs:
@@ -110,9 +110,9 @@ class OutboxPurge(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['question'] = _('Do you really want to purge {count} mails?').format(count=self.queryset.count())
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['question'] = _('Do you really want to purge {count} mails?').format(count=self.queryset.count())
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'pk' in self.kwargs:
@@ -164,12 +164,12 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             messages.error(self.request, _('The email has already been sent, you cannot edit it anymore.'))
             return redirect(self.get_success_url())
 
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         messages.success(self.request, _('The email has been saved. When you send it, the updated text will be used.'))
         if form.has_changed():
             action = 'pretalx.mail.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        return ret
+        return result
 
 
 class MailCopy(PermissionRequired, View):
@@ -229,21 +229,21 @@ class TemplateList(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         accept = self.request.event.accept_template
         ack = self.request.event.ack_template
         reject = self.request.event.reject_template
         update = self.request.event.update_template
-        ctx['accept'] = MailTemplateForm(instance=accept, read_only=True, event=self.request.event)
-        ctx['ack'] = MailTemplateForm(instance=ack, read_only=True, event=self.request.event)
-        ctx['reject'] = MailTemplateForm(instance=reject, read_only=True, event=self.request.event)
-        ctx['update'] = MailTemplateForm(instance=update, read_only=True, event=self.request.event)
-        ctx['other'] = [
+        context['accept'] = MailTemplateForm(instance=accept, read_only=True, event=self.request.event)
+        context['ack'] = MailTemplateForm(instance=ack, read_only=True, event=self.request.event)
+        context['reject'] = MailTemplateForm(instance=reject, read_only=True, event=self.request.event)
+        context['update'] = MailTemplateForm(instance=update, read_only=True, event=self.request.event)
+        context['other'] = [
             MailTemplateForm(instance=template, read_only=True, event=self.request.event)
             for template
             in self.request.event.mail_templates.exclude(pk__in=[accept.pk, ack.pk, reject.pk, update.pk])
         ]
-        return ctx
+        return context
 
 
 class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -254,11 +254,11 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     write_permission_required = 'orga.edit_mail_templates'
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        obj = self.object
-        if obj and obj in obj.event.fixed_templates:
-            ctx['placeholders'] = get_context_explanation()
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        template = self.object
+        if template and template in template.event.fixed_templates:
+            context['placeholders'] = get_context_explanation()
+        return context
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)

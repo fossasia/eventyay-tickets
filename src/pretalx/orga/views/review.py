@@ -39,17 +39,17 @@ class ReviewDashboard(PermissionRequired, ListView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         missing_reviews = Review.find_missing_reviews(self.request.event, self.request.user)
         reviewers = User.objects.filter(teams__in=self.request.event.teams.filter(is_reviewer=True)).distinct()
-        ctx['missing_reviews'] = missing_reviews
-        ctx['next_submission'] = missing_reviews.first()
-        ctx['reviewers'] = reviewers.count()
-        ctx['active_reviewers'] = reviewers.filter(reviews__isnull=False).order_by('user__id').distinct().count()
-        ctx['review_count'] = self.request.event.reviews.count()
-        if ctx['active_reviewers'] > 1:
-            ctx['avg_reviews'] = round(ctx['review_count'] / ctx['active_reviewers'], 1)
-        return ctx
+        context['missing_reviews'] = missing_reviews
+        context['next_submission'] = missing_reviews.first()
+        context['reviewers'] = reviewers.count()
+        context['active_reviewers'] = reviewers.filter(reviews__isnull=False).order_by('user__id').distinct().count()
+        context['review_count'] = self.request.event.reviews.count()
+        if context['active_reviewers'] > 1:
+            context['avg_reviews'] = round(context['review_count'] / context['active_reviewers'], 1)
+        return context
 
 
 class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
@@ -92,13 +92,13 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         )
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission'] = self.submission
-        ctx['review'] = self.object
-        ctx['read_only'] = self.read_only
-        ctx['override_left'] = self.request.user.remaining_override_votes(self.request.event)
-        ctx['qform'] = self.qform
-        ctx['reviews'] = [{
+        context = super().get_context_data(*args, **kwargs)
+        context['submission'] = self.submission
+        context['review'] = self.object
+        context['read_only'] = self.read_only
+        context['override_left'] = self.request.user.remaining_override_votes(self.request.event)
+        context['qform'] = self.qform
+        context['reviews'] = [{
                 'score': review.display_score,
                 'text': review.text,
                 'user': review.user.get_display_name(),
@@ -108,7 +108,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
                 ]
             } for review in self.submission.reviews.exclude(pk=(self.object.pk if self.object else None))
         ]
-        return ctx
+        return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

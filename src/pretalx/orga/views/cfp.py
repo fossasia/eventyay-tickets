@@ -28,9 +28,9 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     write_permission_required = 'orga.edit_cfp'
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['sform'] = self.sform
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['sform'] = self.sform
+        return context
 
     @cached_property
     def sform(self):
@@ -59,11 +59,11 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
             return self.form_invalid(form)
         messages.success(self.request, 'The CfP update has been saved.')
         form.instance.event = self.request.event
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         if form.has_changed():
             form.instance.log_action('pretalx.cfp.update', person=self.request.user, orga=True)
         self.sform.save()
-        return ret
+        return result
 
 
 class CfPQuestionList(PermissionRequired, TemplateView):
@@ -74,11 +74,11 @@ class CfPQuestionList(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['speaker_questions'] = Question.all_objects.filter(event=self.request.event, target='speaker')
-        ctx['submission_questions'] = Question.all_objects.filter(event=self.request.event, target='submission')
-        ctx['reviewer_questions'] = Question.all_objects.filter(event=self.request.event, target='reviewer')
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['speaker_questions'] = Question.all_objects.filter(event=self.request.event, target='speaker')
+        context['submission_questions'] = Question.all_objects.filter(event=self.request.event, target='submission')
+        context['reviewer_questions'] = Question.all_objects.filter(event=self.request.event, target='reviewer')
+        return context
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
@@ -157,26 +157,26 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return False
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         question = self.object
-        ctx['formset'] = self.formset
-        ctx['filter_form'] = SpeakerFilterForm()
-        ctx['question'] = question
+        context['formset'] = self.formset
+        context['filter_form'] = SpeakerFilterForm()
+        context['question'] = question
         if question:
             role = self.request.GET.get('role')
             if role == 'true':
                 talks = self.request.event.talks.all()
                 speakers = self.request.event.speakers.all()
-                answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+                answers = context['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
             elif role == 'false':
                 talks = self.request.event.submissions.exclude(code__in=self.request.event.talks.values_list('code', flat=True))
                 speakers = self.request.event.submitters.exclude(code__in=self.request.event.speakers.all().values_list('code', flat=True))
-                answers = ctx['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+                answers = context['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
             else:
-                answers = ctx['question'].answers.all()
-            ctx['answer_count'] = answers.count()
-            ctx['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
-        return ctx
+                answers = context['question'].answers.all()
+            context['answer_count'] = answers.count()
+            context['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
+        return context
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -187,14 +187,14 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        obj = self.object or self.instance
-        return obj.urls.base
+        question = self.object or self.instance
+        return question.urls.base
 
     @transaction.atomic
     def form_valid(self, form):
         form.instance.event = self.request.event
         self.instance = form.instance
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         if form.cleaned_data.get('variant') in ('choices', 'multiple_choice'):
             result = self.save_formset(self.instance)
             if not result:
@@ -203,7 +203,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             action = 'pretalx.question.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
         messages.success(self.request, 'The question has been saved.')
-        return ret
+        return result
 
 
 class CfPQuestionDelete(PermissionRequired, View):
@@ -252,9 +252,9 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['filter_form'] = self.filter_form
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['filter_form'] = self.filter_form
+        return context
 
     @cached_property
     def filter_form(self):
@@ -333,11 +333,11 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     def form_valid(self, form):
         messages.success(self.request, 'The Submission Type has been saved.')
         form.instance.event = self.request.event
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         if form.has_changed():
             action = 'pretalx.submission_type.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        return ret
+        return result
 
 
 class SubmissionTypeDefault(PermissionRequired, View):

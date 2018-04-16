@@ -2,6 +2,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from zxcvbn import zxcvbn
 
+from pretalx.common.phrases import phrases
+
 
 class ZXCVBNValidator:
     code = 'password_too_weak'

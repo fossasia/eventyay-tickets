@@ -393,7 +393,7 @@ class Event(LogMixin, models.Model):
         from django.utils.translation import override
         from pretalx.common.mail import mail_send_task
         from pretalx.mail.models import QueuedMail
-        ctx = {
+        context = {
             'event_dashboard': self.orga_urls.base.full(),
             'event_review': self.orga_urls.reviews.full(),
             'event_schedule': self.orga_urls.schedule.full(),
@@ -402,7 +402,7 @@ class Event(LogMixin, models.Model):
             'submission_count': self.submissions.all().count(),
         }
         if stats:
-            ctx.update({
+            context.update({
                 'talk_count': self.current_schedule.talks.filter(is_visible=True).count(),
                 'reviewer_count': self.permissions.filter(is_reviewer=True).count(),
                 'review_count': self.reviews.count(),
@@ -410,7 +410,7 @@ class Event(LogMixin, models.Model):
                 'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
             })
         with override(self.locale):
-            text = str(text).format(**ctx) + '-- '
+            text = str(text).format(**context) + '-- '
             text += _('''
 This mail was sent to you by the content system of your event {name}.''').format(name=self.name)
         mail_send_task.apply_async(kwargs={

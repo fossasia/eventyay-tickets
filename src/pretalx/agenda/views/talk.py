@@ -39,7 +39,7 @@ class TalkView(PermissionRequired, DetailView):
         return super().get(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         if self.request.event.current_schedule:
             qs = self.request.event.current_schedule.talks
         elif self.request.is_orga:
@@ -47,14 +47,14 @@ class TalkView(PermissionRequired, DetailView):
         else:
             qs = TalkSlot.objects.none()
         event_talks = qs.exclude(submission=self.object.submission)
-        obj = self.get_object()
-        ctx['submission_description'] = obj.submission.description or obj.submission.abstract or _('The talk »{title}« at {event}').format(title=obj.submission.title, event=obj.submission.event)
-        ctx['speakers'] = []
-        for speaker in self.object.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
+        slot = self.get_object()
+        context['submission_description'] = slot.submission.description or slot.submission.abstract or _('The talk »{title}« at {event}').format(title=slot.submission.title, event=slot.submission.event.name)
+        context['speakers'] = []
+        for speaker in slot.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
             speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()
             speaker.other_talks = event_talks.filter(submission__speakers__in=[speaker])
-            ctx['speakers'].append(speaker)
-        return ctx
+            context['speakers'].append(speaker)
+        return context
 
 
 class SingleICalView(EventPageMixin, DetailView):
@@ -92,14 +92,14 @@ class FeedbackView(PermissionRequired, FormView):
         ).first()
 
     def get(self, *args, **kwargs):
-        obj = self.get_object()
-        if obj and self.request.user in obj.speakers.all():
+        talk = self.get_object()
+        if talk and self.request.user in talk.speakers.all():
             return render(
                 self.request,
                 'agenda/feedback.html',
                 context={
-                    'talk': obj,
-                    'feedback': obj.feedback.filter(Q(speaker__isnull=True) | Q(speaker=self.request.user)),
+                    'talk': talk,
+                    'feedback': talk.feedback.filter(Q(speaker__isnull=True) | Q(speaker=self.request.user)),
                 }
             )
         return super().get(*args, **kwargs)
@@ -110,17 +110,17 @@ class FeedbackView(PermissionRequired, FormView):
         return kwargs
 
     def get_context_data(self):
-        ctx = super().get_context_data()
-        ctx['talk'] = self.get_object()
-        return ctx
+        context = super().get_context_data()
+        context['talk'] = self.get_object()
+        return context
 
     def form_valid(self, form):
         if not form.instance.talk.does_accept_feedback:
             return super().form_invalid(form)
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         form.save()
         messages.success(self.request, phrases.agenda.feedback_success)
-        return ret
+        return result
 
     def get_success_url(self):
         return self.get_object().urls.public

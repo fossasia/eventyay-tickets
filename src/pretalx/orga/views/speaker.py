@@ -31,9 +31,9 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
         return self.request.event
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['filter_form'] = SpeakerFilterForm()
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['filter_form'] = SpeakerFilterForm()
+        return context
 
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(event=self.request.event)
@@ -78,16 +78,16 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.submission.models import QuestionTarget
-        ctx = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
-        ctx['submission_count'] = submissions.count()
-        ctx['submissions'] = submissions
-        ctx['questions'] = [{
+        context['submission_count'] = submissions.count()
+        context['submissions'] = submissions
+        context['questions'] = [{
             'question': question,
             'answers': question.answers.filter(person=self.object)
         } for question in self.request.event.questions.filter(target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER])]
-        ctx['questions'] = [q for q in ctx['questions'] if q['answers'].count() and any(a.answer is not None for a in q['answers'])]
-        return ctx
+        context['questions'] = [q for q in context['questions'] if q['answers'].count() and any(a.answer is not None for a in q['answers'])]
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, 'The speaker profile has been updated.')
@@ -98,12 +98,12 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return super().form_valid(form)
 
     def get_form_kwargs(self, *args, **kwargs):
-        ret = super().get_form_kwargs(*args, **kwargs)
-        ret.update({
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs.update({
             'event': self.request.event,
             'user': self.object,
         })
-        return ret
+        return kwargs
 
 
 class SpeakerToggleArrived(PermissionRequired, View):

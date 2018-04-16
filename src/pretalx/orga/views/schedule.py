@@ -35,12 +35,12 @@ class ScheduleView(PermissionRequired, TemplateView):
         return self.request.event
 
     def get_context_data(self, event):
-        ctx = super().get_context_data()
+        context = super().get_context_data()
         version = self.request.GET.get('version')
-        ctx['schedule_version'] = version
-        ctx['active_schedule'] = self.request.event.schedules.filter(version=version).first() if version else self.request.event.wip_schedule
-        ctx['release_form'] = ScheduleReleaseForm()
-        return ctx
+        context['schedule_version'] = version
+        context['active_schedule'] = self.request.event.schedules.filter(version=version).first() if version else self.request.event.wip_schedule
+        context['release_form'] = ScheduleReleaseForm()
+        return context
 
 
 class ScheduleExportView(PermissionRequired, TemplateView):
@@ -48,9 +48,9 @@ class ScheduleExportView(PermissionRequired, TemplateView):
     permission_required = 'orga.view_schedule'
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
+        return context
 
     def get_permission_object(self):
         return self.request.event
@@ -328,10 +328,10 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         created = not bool(form.instance.pk)
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         messages.success(self.request, _('Saved!'))
         if created:
             form.instance.log_action('pretalx.room.create', person=self.request.user, orga=True)
         else:
             form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
-        return ret
+        return result

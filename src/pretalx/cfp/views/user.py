@@ -57,12 +57,12 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
         )
 
     def get_context_data(self, event):
-        ctx = super().get_context_data()
-        ctx['login_form'] = self.login_form
-        ctx['profile_form'] = self.profile_form
-        ctx['questions_form'] = self.questions_form
-        ctx['questions_exist'] = self.request.event.questions.filter(target='speaker').exists()
-        return ctx
+        context = super().get_context_data()
+        context['login_form'] = self.login_form
+        context['profile_form'] = self.profile_form
+        context['questions_form'] = self.questions_form
+        context['questions_exist'] = self.request.event.questions.filter(target='speaker').exists()
+        return context
 
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
@@ -102,9 +102,9 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.person.permissions import person_can_view_information
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['information'] = [i for i in self.request.event.information.all() if person_can_view_information(self.request.user, i)]
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['information'] = [i for i in self.request.event.information.all() if person_can_view_information(self.request.user, i)]
+        return context
 
     def get_queryset(self):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
@@ -166,11 +166,11 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         return self.get_object()
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['qform'] = self.qform
-        ctx['formset'] = self.formset
-        ctx['can_edit'] = self.can_edit
-        return ctx
+        context = super().get_context_data(**kwargs)
+        context['qform'] = self.qform
+        context['formset'] = self.formset
+        context['can_edit'] = self.can_edit
+        return context
 
     @cached_property
     def formset(self):
@@ -178,11 +178,11 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             Submission, Resource, form=ResourceForm, formset=BaseModelFormSet,
             can_delete=True, extra=0,
         )
-        obj = self.get_object()
+        submission = self.get_object()
         return formset_class(
             self.request.POST if self.request.method == 'POST' else None,
             files=self.request.FILES if self.request.method == 'POST' else None,
-            queryset=obj.resources.all() if obj else Resource.objects.none(),
+            queryset=submission.resources.all() if submission else Resource.objects.none(),
             prefix='resource',
         )
 
@@ -303,10 +303,10 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
         return kwargs
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission'] = self.get_object()
-        ctx['invite_url'] = ctx['submission'].urls.accept_invitation.full()
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['submission'] = self.get_object()
+        context['invite_url'] = context['submission'].urls.accept_invitation.full()
+        return context
 
     def form_valid(self, form):
         form.save()

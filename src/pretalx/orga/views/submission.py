@@ -78,9 +78,9 @@ class SubmissionViewMixin(PermissionRequired):
         return self.get_object()
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['submission'] = self.object
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['submission'] = self.object
+        return context
 
 
 class SubmissionStateChange(SubmissionViewMixin, TemplateView):
@@ -129,10 +129,10 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         return redirect(self.get_success_url())
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['target'] = self.target
-        ctx['next'] = self.request.GET.get('next')
-        return ctx
+        context = super().get_context_data(*args, **kwargs)
+        context['target'] = self.target
+        context['next'] = self.request.GET.get('next')
+        return context
 
 
 class SubmissionSpeakersAdd(SubmissionViewMixin, View):
@@ -249,7 +249,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     def form_valid(self, form):
         created = invited = not self.object
         form.instance.event = self.request.event
-        ret = super().form_valid(form)
+        result = super().form_valid(form)
         self.object = form.instance
 
         if created:
@@ -274,7 +274,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             messages.success(self.request, _('The submission has been created; the speaker already had an account on this system.'))
         else:
             messages.success(self.request, _('The submission has been updated!'))
-        return ret
+        return result
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

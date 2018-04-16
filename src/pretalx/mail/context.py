@@ -31,8 +31,8 @@ def template_context_from_event(event):
 
 
 def template_context_from_submission(submission):
-    ctx = template_context_from_event(submission.event)
-    ctx.update({
+    context = template_context_from_event(submission.event)
+    context.update({
         'confirmation_link': submission.urls.confirm.full(),
         'event_name': submission.event.name,
         'submission_title': submission.title,
@@ -40,4 +40,4 @@ def template_context_from_submission(submission):
         'speakers': submission.display_speaker_names,
         'orga_url': submission.orga_urls.base.full(),
     })
-    return ctx
+    return context

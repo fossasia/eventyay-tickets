@@ -26,9 +26,10 @@ class PretalxExportContextMixin():
     def object(self):
         return self.get_object()
 
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['is_html_export'] = True
-        return ctx
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['is_html_export'] = True
+        return context
 
     def get_url(self, obj):
         return obj.urls.public

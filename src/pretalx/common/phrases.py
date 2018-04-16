@@ -20,10 +20,10 @@ class PhrasesMetaClass(ABCMeta):
 class Phrases(metaclass=PhrasesMetaClass, app=''):
 
     def __getattribute__(self, attribute):
-        ret = super().__getattribute__(attribute)
-        if isinstance(ret, (list, tuple)):
-            return random.choice(ret)
-        return ret
+        result = super().__getattribute__(attribute)
+        if isinstance(result, (list, tuple)):
+            return random.choice(result)
+        return result
 
 
 class PhraseBook:
