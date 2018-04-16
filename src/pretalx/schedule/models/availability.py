@@ -139,18 +139,14 @@ class Availability(LogMixin, models.Model):
             cls.union(avialset)
             for avialset in availabilitysets
         ]
-
         # bail out for obvious cases (there are no sets given, one of the sets is empty)
         if not availabilitysets:
             return []
         if not all(availabilitysets):
             return []
-
         # start with the very first set ...
         result = availabilitysets[0]
-
         for availset in availabilitysets[1:]:
             # ... subtract each of the other sets
             result = cls._pair_intersection(result, availset)
-
         return result

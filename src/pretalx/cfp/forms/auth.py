@@ -15,7 +15,6 @@ class ResetForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-
         try:
             if '@' in data.get('login_username'):
                 user = User.objects.get(email__iexact=data.get('login_username'))
@@ -41,7 +40,6 @@ class RecoverForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-
         if data.get('password') != data.get('password_repeat'):
             raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
 

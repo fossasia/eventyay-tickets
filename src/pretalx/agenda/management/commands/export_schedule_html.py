@@ -28,17 +28,18 @@ class Command(BakeryBuildCommand):
         return cls.get_output_dir(event) + '.zip'
 
     def handle(self, *args, **options):
+        event_slug = options.get('event')
         try:
-            event = Event.objects.get(slug__iexact=options['event'])
+            event = Event.objects.get(slug__iexact=event_slug)
         except Event.DoesNotExist:
-            raise CommandError('Could not find event with slug "{}"'.format(options['event']))
+            raise CommandError(f'Could not find event with slug "{event_slug}".')
 
         self._exporting_event = event
         translation.activate(event.locale)
 
         with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True, BUILD_DIR=self.get_output_dir(event)):
             super().handle(*args, **options)
-            if options.get('zip'):
+            if options.get('zip', False):
                 make_archive(settings.BUILD_DIR, 'zip', settings.BUILD_DIR, settings.BUILD_DIR)
 
     def build_views(self):

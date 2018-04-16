@@ -44,11 +44,11 @@ ALLOWED_ATTRIBUTES = {
 
 @register.filter
 def rich_text(text: str, **kwargs):
-    """
-    Processes markdown and cleans HTML in a text input.
-    """
+    """Process markdown and cleans HTML in a text input."""
     if not text:
-        return ""
-    body_md = bleach.linkify(bleach.clean(markdown.markdown(str(text)),
-                                          tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES))
+        return ''
+    body_md = bleach.linkify(bleach.clean(
+        markdown.markdown(str(text)),
+        tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES)
+    )
     return mark_safe(body_md)

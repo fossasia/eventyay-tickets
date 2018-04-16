@@ -22,7 +22,7 @@ class CustomSMTPBackend(EmailBackend):
         try:
             self.open()
             self.connection.ehlo_or_helo_if_needed()
-            self.connection.rcpt("test@example.org")
+            self.connection.rcpt('test@example.org')
             (code, resp) = self.connection.mail(from_addr, [])
             if code != 250:
                 logger.warning('Error testing mail settings, code %d, resp: %s' % (code, resp))

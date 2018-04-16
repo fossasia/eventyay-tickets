@@ -107,9 +107,10 @@ def generate_invite_token():
 
 class TeamInvite(models.Model):
     """A TeamInvite is someone who has been invited to a team but hasn't accept the invitation yet."""
+
     team = models.ForeignKey(
         to=Team,
-        related_name="invites",
+        related_name='invites',
         on_delete=models.CASCADE,
     )
     email = models.EmailField(
@@ -122,9 +123,8 @@ class TeamInvite(models.Model):
     )
 
     def __str__(self) -> str:
-        return _('Invite to team {team} for {email}').format(
-            team=str(self.team), email=self.email
-        )
+        """Help with debugging."""
+        return _('Invite to team {team} for {email}').format(team=str(self.team), email=self.email)
 
     class urls(EventUrls):
         invitation = '/orga/invitation/{self.token}'

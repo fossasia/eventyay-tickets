@@ -11,7 +11,7 @@ class LogMixin:
             return
 
         from pretalx.common.models import ActivityLog
-        if data:
+        if data and not isinstance(data, str):
             data = json.dumps(data, cls=I18nJSONEncoder)
 
         ActivityLog.objects.create(

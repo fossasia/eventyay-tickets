@@ -12,6 +12,6 @@ class AgendaConfig(AppConfig):
 
 
 with suppress(ImportError):
-    import pretalx.celery_app as celery  # NOQA
+    import pretalx.celery_app as celery  # noqa
 
 default_app_config = 'pretalx.agenda.AgendaConfig'

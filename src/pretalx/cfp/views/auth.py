@@ -47,7 +47,6 @@ class LoginView(FormView):
         url = self.request.GET.get('next')
         if url and is_safe_url(url, self.request.get_host()):
             return redirect(url)
-
         return redirect(self.request.event.urls.user_submissions)
 
 

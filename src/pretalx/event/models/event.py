@@ -57,7 +57,6 @@ class Event(LogMixin, models.Model):
             validate_event_slug_blacklist,
         ],
         verbose_name=_("Short form"),
-        help_text=_('Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.'),
     )
     organiser = models.ForeignKey(
         to='Organiser', null=True,  # backwards compatibility, won't ever be empty

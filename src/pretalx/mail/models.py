@@ -13,12 +13,6 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 
 
-class TolerantDict(dict):
-
-    def __missing__(self, key):
-        return key
-
-
 class MailTemplate(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',

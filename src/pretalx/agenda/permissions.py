@@ -20,9 +20,8 @@ def is_feedback_ready(user, submission):
 
 @rules.predicate
 def is_speaker_viewable(user, profile):
-    if profile.user.submissions.filter(slots__schedule=profile.event.current_schedule).exists():
-        return is_agenda_visible(user, profile.event)
-    return False
+    is_speaker = profile.user.submissions.filter(slots__schedule=profile.event.current_schedule).exists()
+    return is_speaker and is_agenda_visible(user, profile.event)
 
 
 rules.add_perm('agenda.view_schedule', is_agenda_visible | can_change_submissions)

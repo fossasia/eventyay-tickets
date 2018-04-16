@@ -30,9 +30,6 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if 'version' in request.GET:
-            if request.resolver_match.url_name.startswith('versioned-'):
-                raise Exception('The schedule version can be supplied in the path or querystring, but not both.')
-
             kwargs['version'] = request.GET['version']
             return HttpResponsePermanentRedirect(reverse(
                 f'agenda:versioned-{request.resolver_match.url_name}',

@@ -2,6 +2,7 @@ import os
 
 from bakery.views import BuildableDetailView
 from django.conf import settings
+from django.utils.functional import cached_property
 
 from pretalx.agenda.views.schedule import ExporterView, ScheduleView
 from pretalx.agenda.views.speaker import SpeakerView
@@ -21,8 +22,9 @@ class PretalxExportContextMixin():
         request.event = self._exporting_event
         return request
 
-    def get_context_data(self, *args, **kwargs):
-        self.object = self.get_object()  # ScheduleView crashes without this
+    @cached_property
+    def object(self):
+        return self.get_object()
 
         ctx = super().get_context_data(*args, **kwargs)
         ctx['is_html_export'] = True
@@ -32,15 +34,13 @@ class PretalxExportContextMixin():
         return obj.urls.public
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(event=self._exporting_event)
+        return super().get_queryset().filter(event=self._exporting_event)
 
     def get_file_build_path(self, obj):
         dir_path, file_name = os.path.split(self.get_url(obj))
-
         path = os.path.join(settings.BUILD_DIR, dir_path[1:])
-        os.path.exists(path) or os.makedirs(path)
-
+        if not os.path.exists(path):
+            os.makedirs(path)
         return os.path.join(path, file_name)
 
 

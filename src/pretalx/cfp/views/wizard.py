@@ -26,27 +26,19 @@ from pretalx.submission.forms import InfoForm, QuestionsForm
 from pretalx.submission.models import Answer, QuestionTarget, QuestionVariant
 
 FORMS = [
-    ("info", InfoForm),
-    ("questions", QuestionsForm),
-    ("user", UserForm),
-    ("profile", SpeakerProfileForm),
+    ('info', InfoForm),
+    ('questions', QuestionsForm),
+    ('user', UserForm),
+    ('profile', SpeakerProfileForm),
 ]
-
-TEMPLATES = {
-    "info": "cfp/event/submission_info.html",
-    "questions": "cfp/event/submission_questions.html",
-    "user": "cfp/event/submission_user.html",
-    "profile": "cfp/event/submission_profile.html",
-}
 
 
 class SubmitStartView(EventPageMixin, View):
     def get(self, request, *args, **kwargs):
-        newid = get_random_string(length=6)
         return redirect(reverse('cfp:event.submit', kwargs={
             'event': request.event.slug,
             'step': 'info',
-            'tmpid': newid
+            'tmpid': get_random_string(length=6),
         }))
 
 
@@ -67,17 +59,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     }
     file_storage = FileSystemStorage(os.path.join(settings.MEDIA_ROOT, 'avatars'))
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:
             messages.error(request, phrases.cfp.submissions_closed)
             return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        if not request.event.cfp.is_open:
-            messages.error(request, phrases.cfp.submissions_closed)
-            return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
-        return super().post(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_instance(self, step):
         return super().get_form_instance(step)
@@ -99,7 +85,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         return kwargs
 
     def get_template_names(self):
-        return [TEMPLATES[self.steps.current]]
+        return f'cfp/event/submission_{self.steps.current}.html'
 
     def get_prefix(self, request, *args, **kwargs):
         return super().get_prefix(request, *args, **kwargs) + ':' + kwargs.get('tmpid')
@@ -121,7 +107,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             answer = Answer(question=question, person=user)
 
         if question.variant == QuestionVariant.MULTIPLE:
-            answstr = ", ".join([str(o) for o in value])
+            answstr = ', '.join([str(o) for o in value])
             answer.save()
             if value:
                 answer.answer = answstr

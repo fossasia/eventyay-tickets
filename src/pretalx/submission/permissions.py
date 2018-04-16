@@ -12,67 +12,49 @@ def has_submissions(user, obj):
 
 @rules.predicate
 def is_speaker(user, obj):
-    if obj is None:
-        return False
     if hasattr(obj, 'submission'):
         obj = obj.submission
-    return user in obj.speakers.all()
+    return obj and user in obj.speakers.all()
 
 
 @rules.predicate
 def can_be_withdrawn(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.WITHDRAWN in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.WITHDRAWN in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_rejected(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.REJECTED in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.REJECTED in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_accepted(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.ACCEPTED in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.ACCEPTED in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_confirmed(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.CONFIRMED in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.CONFIRMED in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_canceled(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.CANCELED in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.CANCELED in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_removed(user, obj):
-    if obj is None:
-        return False
-    return SubmissionStates.DELETED in SubmissionStates.valid_next_states.get(obj.state, [])
+    return obj and SubmissionStates.DELETED in SubmissionStates.valid_next_states.get(obj.state, [])
 
 
 @rules.predicate
 def can_be_edited(user, obj):
-    if obj is None:
-        return False
-    return obj.editable
+    return obj and obj.editable
 
 
 @rules.predicate
 def is_review_author(user, obj):
-    if obj is None:
-        return False
-    return obj.user == user
+    return obj and obj.user == user
 
 
 @rules.predicate

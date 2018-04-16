@@ -12,9 +12,8 @@ class SubmissionInvitationForm(forms.Form):
     def __init__(self, submission, speaker, *args, **kwargs):
         self.submission = submission
         initial = kwargs.get('initial', {})
-        initial['subject'] = _('[{event}] {speaker} invites you to join their talk!').format(
-            event=submission.event.slug, speaker=speaker.name or speaker.nick,
-        )
+        subject = _('{speaker} invites you to join their talk!').format(speaker=speaker.name or speaker.nick)
+        initial['subject'] = f'[{submission.event.slug}] {subject}'
         initial['text'] = _('''Hi!
 
 I'd like to invite you to be a speaker in my talk »{title}«

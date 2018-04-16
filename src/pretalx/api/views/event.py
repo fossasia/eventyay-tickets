@@ -12,4 +12,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
-        return [e for e in Event.objects.all() if self.request.user.has_perm('cfp.view_event', e)]
+        return [
+            e for e in Event.objects.all()
+            if self.request.user.has_perm('cfp.view_event', e)
+        ]

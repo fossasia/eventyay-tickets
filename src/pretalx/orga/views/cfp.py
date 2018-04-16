@@ -39,7 +39,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
             locales=self.request.event.locales,
             obj=self.request.event,
             attribute_name='settings',
-            data=self.request.POST if self.request.method == "POST" else None,
+            data=self.request.POST if self.request.method == 'POST' else None,
             prefix='settings'
         )
 
