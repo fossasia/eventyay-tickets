@@ -211,13 +211,24 @@ The following snippet is an example on how to configure a nginx proxy for pretal
         }
     }
 
-.. note:: Remember to replace the ``python3.6`` in the ``/static/`` path in the config 
+.. note:: Remember to replace the ``python3.6`` in the ``/static/`` path in the config
           above with your python version.
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
 Yay, you've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
 the administrator you configured above. You can now create an event, and off you go!
+
+Step 8: Validate the installation
+---------------------------------
+
+You can make sure the web interface is running fine::
+
+    # journalctl -u pretalx-web
+
+And same for the celery workers (i.e. in case the emails are not sent)::
+
+    # journalctl -u pretalx-worker
 
 
 Next Steps: Updates
