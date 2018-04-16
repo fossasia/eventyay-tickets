@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 
 class ReadOnlyFlag:
@@ -12,5 +13,5 @@ class ReadOnlyFlag:
 
     def clean(self):
         if self.read_only:
-            raise forms.ValidationError('You are not allowed to submit this data.')
+            raise forms.ValidationError(_('You are trying to change read only data.'))
         return super().clean()

@@ -27,4 +27,4 @@ class ZXCVBNValidator:
             raise ValidationError(_(feedback), code=self.code, params={})
 
     def get_help_text(self):
-        return _('Your password is too weak.')
+        return phrases.base.password_too_weak

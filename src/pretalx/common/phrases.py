@@ -77,3 +77,12 @@ class BasePhrases(Phrases, app='base'):
         _('This seems broken. We\'re looking into it, please give us a bit.'),
         _('It\'s a bug, not a feature. We\'re looking into it.'),
     ]
+
+    username_or_email = _('Username or email address')
+    password_repeat = _('New password (again)')
+    passwords_differ = _('You entered two different passwords. Please input the same one twice!')
+    password_too_weak = [
+        _('Your password is too weak or too common, please choose another one.'),
+        _('Sorry, this password is too weak or too common, please choose another one.'),
+        _('Your password is the only thing protecting your account, so please choose a strong one.'),
+    ]

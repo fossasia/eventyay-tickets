@@ -5,9 +5,9 @@
 {% block content %}
     <form class="form-signin" action="" method="post" autocomplete="off">
         {% csrf_token %}
-        <input type="text" class="form-control" placeholder="{% trans "Username or email address" %}" required autofocus id="username"
+        <input type="text" class="form-control" placeholder="{{ phrases.base.username_or_email }}" required autofocus id="username"
                autocomplete="off" name="username">
-        <input type="password" class="form-control" placeholder="Password" required id="password" autocomplete="off"
+        <input type="password" class="form-control" placeholder="{% trans "Password" %}" required id="password" autocomplete="off"
                name="password">
         <button class="btn btn-lg btn-success btn-block" type="submit">
             {% trans "Sign in" %}

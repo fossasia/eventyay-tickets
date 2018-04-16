@@ -1,4 +1,3 @@
-{% load staticfiles %}
 {% load i18n %}
 
 {% if entries|length %}
@@ -37,7 +36,6 @@
                         </span>
                     {% endif %}
                 </p>
-
               <p>
                 {% if not hide_orga %}
                     {% with log.get_orga_url as log_content_url %}

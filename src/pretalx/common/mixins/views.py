@@ -105,17 +105,17 @@ class Filterable:
 
     def get_context_data(self, *args, **kwargs):
         from django import forms
-        ctx = super().get_context_data(*args, **kwargs)
-        ctx['search_form'] = SearchForm(self.request.GET if 'q' in self.request.GET else {})
+        context = super().get_context_data(*args, **kwargs)
+        context['search_form'] = SearchForm(self.request.GET if 'q' in self.request.GET else {})
         if hasattr(self, 'filter_form_class'):
-            ctx['filter_form'] = self.filter_form_class(self.request.event, self.request.GET)
+            context['filter_form'] = self.filter_form_class(self.request.event, self.request.GET)
         elif self.filter_fields:
-            ctx['filter_form'] = forms.modelform_factory(self.model, fields=self.filter_fields)(self.request.GET)
-            for field in ctx['filter_form'].fields.values():
+            context['filter_form'] = forms.modelform_factory(self.model, fields=self.filter_fields)(self.request.GET)
+            for field in context['filter_form'].fields.values():
                 field.required = False
                 if hasattr(field, 'queryset'):
                     field.queryset = field.queryset.filter(event=self.request.event)
-        return ctx
+        return context
 
 
 class PermissionRequired(PermissionRequiredMixin):

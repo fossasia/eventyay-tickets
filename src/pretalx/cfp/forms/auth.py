@@ -3,13 +3,14 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
+from pretalx.common.phrases import phrases
 from pretalx.person.models import User
 
 
 class ResetForm(forms.Form):
     login_username = forms.CharField(
         max_length=60,
-        label=_('Username or email address'),
+        label=phrases.base.username_or_email,
         required=True,
     )
 
@@ -33,7 +34,7 @@ class RecoverForm(forms.Form):
         required=False,
     )
     password_repeat = PasswordConfirmationField(
-        label=_('New password (again)'),
+        label=phrases.base.password_repeat,
         required=False,
         confirm_with='password',
     )
@@ -41,6 +42,5 @@ class RecoverForm(forms.Form):
     def clean(self):
         data = super().clean()
         if data.get('password') != data.get('password_repeat'):
-            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
-
+            raise ValidationError(phrases.base.passwords_differ)
         return data

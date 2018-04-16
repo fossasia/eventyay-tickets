@@ -1,8 +1,18 @@
 {% load i18n %}
 {% if obj.changes.action == 'update' %}
-    A new {{ obj.event.name }} schedule has been released!
+    {% blocktrans trimmed with event_name=obj.event.name %}
+    A new {{ event_name }} schedule has been released!
+    {% endblocktrans %}
 
-    The new version is called "{{ obj.version }}", {% if obj.changes.count %} and brings a few changes:{% else %}but nothing has changed.{% endif %}
+    {% if obj.changes.count %}
+        {% blocktrans trimmed with version=obj.version %}
+        The new version is called "{{ version }}", and brings a few changes:
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans trimmed with version=obj.version %}
+        The new version is called "{{ version }}", but nothing has changed.
+        {% endblocktrans %}
+    {% endif %}
     {% if obj.changes.new_talks|length > 0 %}
         {% if obj.changes.new_talks|length > 1 %}
             <p>{% trans "We have new talks:" %}</p>

@@ -16,8 +16,8 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS(_('\nWelcome to pretalx! I am the initialization command, and I should be used only once.')))
-        self.stdout.write(_('You can abort this command at any time using C-c, and no data will be retained.'))
+        self.stdout.write(self.style.SUCCESS(_('\nWelcome to pretalx! This is my initialization command, please use it only once.')))
+        self.stdout.write(_('You can abort this command at any time using C-c, and it will save no data.'))
 
         self.stdout.write(_('''\nLet\'s get you a user with the right to create new events and access every event on this pretalx instance.'''))
 
@@ -33,7 +33,7 @@ class Command(BaseCommand):
 
         event_url = urljoin(settings.SITE_URL, reverse('orga:event.create'))
         team_url = urljoin(settings.SITE_URL, reverse('orga:organiser.teams.view', kwargs={'organiser': organiser_slug, 'pk': team.pk}))
-        self.stdout.write(_('\nNow that this is done, you can:'))
+        self.stdout.write(self.style.SUCCESS(_('\nNow that this is done, you can:')))
         self.stdout.write(_(' - Create your first event at {event_url}').format(event_url=event_url))
         self.stdout.write(_(' - Invite somebody to the organiser team at {team_url} and let them create the event').format(team_url=team_url))
         self.stdout.write(_(' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event."'))

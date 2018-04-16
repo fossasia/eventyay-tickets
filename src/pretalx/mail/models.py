@@ -131,7 +131,7 @@ class QueuedMail(LogMixin, models.Model):
 
     def send(self):
         if self.sent:
-            raise Exception('This mail has been sent already. It cannot be sent again.')
+            raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
         body_html = self.text_to_html(self.text)
         from pretalx.common.mail import mail_send_task

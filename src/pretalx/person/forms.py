@@ -9,13 +9,14 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
 from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
 class UserForm(forms.Form):
     login_username = forms.CharField(max_length=60,
-                                     label=_('Username or email address'),
+                                     label=phrases.base.username_or_email,
                                      required=False)
     login_password = forms.CharField(widget=forms.PasswordInput,
                                      label=_('Password'),
@@ -61,7 +62,7 @@ class UserForm(forms.Form):
 
     def _clean_register(self, data):
         if data.get('register_password') != data.get('register_password_repeat'):
-            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
+            raise ValidationError(phrases.base.passwords_differ)
 
         if User.objects.filter(nick=data.get('register_username')).exists():
             raise ValidationError(_('We already have a user with that username. Did you already register before '
@@ -177,7 +178,7 @@ class LoginInfoForm(forms.ModelForm):
         required=False,
     )
     password_repeat = PasswordConfirmationField(
-        label=_('New password (again)'),
+        label=phrases.base.password_repeat,
         required=False,
         confirm_with='password',
     )
@@ -199,7 +200,7 @@ class LoginInfoForm(forms.ModelForm):
     def save(self):
         password = self.cleaned_data.get('password')
         if not password == self.cleaned_data.get('password_repeat'):
-            raise ValidationError(_('You entered two different passwords. Please input the same one twice!'))
+            raise ValidationError(phrases.base.passwords_differ)
         super().save()
         if password:
             self.user.set_password(password)
