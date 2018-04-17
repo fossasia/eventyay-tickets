@@ -4,20 +4,14 @@
 
 {% block title %}{% trans "Password reset" %} :: {% endblock %}
 {% block content %}
-    <h2>{% trans "Forgot your password?" %}</h2>
-    <p>
-        {% blocktrans trimmed %}
-            No worries, we can help you there!
-        {% endblocktrans %}
-    </p>
-    <form action="" method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        <div class="row">
-            <div class="col-md-6 ml-auto">
-                {% bootstrap_field form.login_username layout='inline' %}
-                <button type="submit" class="btn btn-block btn-success">{% trans "Send me a new one!" %}</button>
-            </div>
-        </div>
-    </form>
+    <div class="col-md-6 mx-auto">
+        <h2 class="text-center">{% trans "Forgot your password?" %}</h2>
+        <p></p>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+            {% bootstrap_field form.login_username layout='inline' %}
+            <button type="submit" class="btn btn-block btn-success">{% trans "Let me set a new one!" %}</button>
+        </form>
+    </div>
 {% endblock %}

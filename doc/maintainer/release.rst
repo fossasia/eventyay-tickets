@@ -12,6 +12,7 @@ Boarding checks
 4. Are there any TODOs that need to be resolved?
 5. Are there any ``@pytest.mark.xfail`` that need to be resolved?
 6. Is the ``CHANGELOG.rst`` well-phrased and complete?
+7. Are there open pull requests that should be merged?
 
 System checks
 -------------
