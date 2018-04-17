@@ -2,6 +2,7 @@
   border-width: 2px;
   padding: 16px;
   display: flex;
+  background: $white;
   align-items: center;
   &::before {
     align-self: stretch;
@@ -21,7 +22,6 @@
 
 @each $color, $value in $theme-colors {
   .alert-#{$color} {
-    background: $white;
     border-color: $value;
     &::before {
       background-color: $value;

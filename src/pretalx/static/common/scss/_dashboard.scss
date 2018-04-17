@@ -90,7 +90,6 @@
   .timeline-element.next {
     .timeline-heading {
       font-weight: normal;
-      font-style: italic;
     }
   }
   .timeline-element:nth-of-type(1) {
@@ -125,15 +124,17 @@
   }
   .timeline-element.next:nth-of-type(6) {
     background-color: #858585;
+    color: $white;
     &::after {
       border-left: 50px solid #858585;
     }
   }
   .timeline-element.active {
-      background-color: #11f11c;
+      background-color: mix(#fff, $brand-success, 25%);
+      color: $white;
       &::after {
         background: transparent;
-        border-left: 50px solid #11f11c;
+        border-left-color: mix(#fff, $brand-success, 25%);
       }
   }
 }
