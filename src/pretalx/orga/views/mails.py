@@ -141,7 +141,7 @@ class OutboxPurge(PermissionRequired, TemplateView):
         qs = self.queryset
         count = qs.count()
         qs.delete()
-        messages.success(request, _('{count} mails have been sent.').format(count=count))
+        messages.success(request, _('{count} mails have been purged.').format(count=count))
         return redirect(self.request.event.orga_urls.outbox)
 
 
