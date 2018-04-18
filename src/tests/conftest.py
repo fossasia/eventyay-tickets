@@ -469,7 +469,7 @@ def schedule(event):
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
     slot = schedule.talks.filter(submission=confirmed_submission)
-    slot.update(start=now(), end=now() + datetime.timedelta(minutes=60), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot.update(start=now(), end=now() + datetime.timedelta(minutes=60), room=room, schedule=schedule, is_visible=True)
     slot = slot.first()
     return slot
 
@@ -478,19 +478,17 @@ def slot(confirmed_submission, room, schedule):
 def unreleased_slot(confirmed_submission, room):
     schedule = confirmed_submission.event.wip_schedule
     slot = schedule.talks.filter(submission=confirmed_submission)
-    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), submission=confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), room=room, schedule=schedule, is_visible=True)
     slot = slot.first()
     return slot
 
 
 @pytest.fixture
-def past_slot(submission_data, room, schedule, speaker):
-    sub = Submission.objects.create(**submission_data)
-    sub.speakers.add(speaker)
-    sub.save()
-    sub.accept()
-    sub.confirm()
-    return TalkSlot.objects.create(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), submission=sub, room=room, schedule=schedule, is_visible=True)
+def past_slot(other_confirmed_submission, room, schedule, speaker):
+    slot = schedule.talks.filter(submission=other_confirmed_submission)
+    slot.update(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), room=room, schedule=schedule, is_visible=True)
+    slot = slot.first()
+    return slot
 
 
 @pytest.fixture
