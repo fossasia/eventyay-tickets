@@ -114,11 +114,12 @@
 }
 
 legend {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid $gray-lighter;
   margin-bottom: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  font-size: 2rem;
 }
 
 footer {
