@@ -342,7 +342,7 @@ def submission(submission_data, speaker):
 def other_submission(event, other_speaker):
     sub = Submission.objects.create(
         title='Albrecht Dürer. Sein Leben, seine Zeit', event=event,
-        code='BLAKOKS', submission_type=event.cfp.default_type,
+        submission_type=event.cfp.default_type,
         description='1 guter Talk', abstract='Verstehste?',
         notes='I like cookies A LOT', content_locale='en'
     )
@@ -485,10 +485,8 @@ def unreleased_slot(confirmed_submission, room):
 
 @pytest.fixture
 def past_slot(other_confirmed_submission, room, schedule, speaker):
-    slot = schedule.talks.filter(submission=other_confirmed_submission)
-    slot.update(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), room=room, schedule=schedule, is_visible=True)
-    slot = slot.first()
-    return slot
+    other_confirmed_submission.slots.update(start=now() - datetime.timedelta(minutes=60), end=now() - datetime.timedelta(minutes=30), room=room, schedule=schedule, is_visible=True)
+    return other_confirmed_submission.slots.first()
 
 
 @pytest.fixture

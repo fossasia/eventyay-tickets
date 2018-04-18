@@ -1,4 +1,3 @@
-from contextlib import suppress
 from uuid import UUID
 
 from django.conf import settings

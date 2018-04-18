@@ -205,7 +205,7 @@ def test_schedule_orga_download_export(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
-def test_html_export(event, other_event, slot, past_slot):
+def test_html_export_full(event, other_event, slot, past_slot):
     from django.core.management import call_command
     from django.conf import settings
     import os.path
