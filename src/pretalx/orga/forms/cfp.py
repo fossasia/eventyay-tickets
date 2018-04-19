@@ -56,7 +56,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         if getattr(obj, 'email'):
             self.fields['mail_on_new_submission'].help_text += f' (<a href="mailto:{obj.email}">{obj.email}</a>)'
         if getattr(obj, 'slug'):
-            additional = _('You can configure override votes <a href="{link}">here</a>.').format(link=obj.orga_urls.team_settings)
+            additional = _('You can configure override votes <a href="{link}">in the team settings</a>.').format(link=obj.orga_urls.team_settings)
             self.fields['allow_override_votes'].help_text += f' {additional}'
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)

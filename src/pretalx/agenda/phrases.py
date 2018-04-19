@@ -10,7 +10,7 @@ class AgendaPhrases(Phrases, app='agenda'):
     ]
     changelog_unchanged = [
         _('Nothing has changed, we just wanted to change the version name. It was going out of style.'),
-        _('No changes are visible in this version, but be assured we\re working on cool new versions behind the scenes.'),
+        _('No changes are visible in this version, but be assured we\'re working on cool new versions behind the scenes.'),
     ]
     changelog_first = [
         _('We released our first schedule!'),
