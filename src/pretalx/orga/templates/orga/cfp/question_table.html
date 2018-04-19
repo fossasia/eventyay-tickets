@@ -1,5 +1,5 @@
 {% load i18n %}
-<table class="table table-sm table-responsive-md">
+<table class="table table-hover table-sm table-responsive-md">
     <thead>
         <tr>
             <th>Question</th>
@@ -10,7 +10,7 @@
     </thead>
     <tbody>
         {% for question in questions %}
-            <tr {% if not question.active %}class="table-secondary"{% endif %}>
+            <tr>
                 <td>
                     <a href="{{ question.urls.base }}">
                         {{ question.question }}
