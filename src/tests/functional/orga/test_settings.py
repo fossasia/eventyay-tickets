@@ -198,7 +198,7 @@ def test_delete_event_team(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_activate_plugin(event, orga_client, monkeypatch):
+def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
     class Plugin:
         module = name = 'test_plugin'
         visible = True
@@ -206,6 +206,8 @@ def test_activate_plugin(event, orga_client, monkeypatch):
 
     monkeypatch.setattr('pretalx.common.plugins.get_all_plugins', lambda: [Plugin()])
     plugin_name = 'plugin:test_plugin'
+    orga_user.is_administrator = True
+    orga_user.save()
 
     assert not event.plugins
     response = orga_client.post(

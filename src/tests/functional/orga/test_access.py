@@ -36,6 +36,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('reviews.dashboard', 200, 200,),
     ('settings.event.view', 200, 404,),
     ('settings.mail.view', 200, 404,),
+    ('settings.plugins.select', 404, 404,),
     ('schedule.main', 200, 404,),
     ('schedule.import', 200, 404,),
     ('schedule.export', 200, 404,),
@@ -43,7 +44,6 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     ('schedule.rooms.create', 200, 404,),
     ('schedule.api.rooms', 200, 404,),
     ('schedule.api.talks', 200, 404,),
-    ('plugins.select', 200, 404,),
 ])
 @pytest.mark.django_db
 def test_user_can_access_event_urls(

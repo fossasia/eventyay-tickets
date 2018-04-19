@@ -204,7 +204,7 @@ class Event(LogMixin, models.Model):
         schedule_api = '{base}/schedule/api'
         rooms_api = '{schedule_api}/rooms'
         talks_api = '{schedule_api}/talks'
-        plugins = '{base}/plugins'
+        plugins = '{settings}/plugins'
         information = '{base}/info'
         new_information = '{base}/info/new'
 

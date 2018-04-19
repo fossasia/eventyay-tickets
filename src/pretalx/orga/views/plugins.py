@@ -9,7 +9,7 @@ from pretalx.common.mixins.views import PermissionRequired
 
 class EventPluginsView(PermissionRequired, TemplateView):
     template_name = 'orga/plugins.html'
-    permission_required = 'orga.change_settings'
+    permission_required = 'orga.change_plugins'
 
     def get_object(self):
         return self.request.event

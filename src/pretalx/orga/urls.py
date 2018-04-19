@@ -104,6 +104,7 @@ urlpatterns = [
         url('^settings/team/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='settings.team.delete'),
         url('^settings/team/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='settings.team.delete_member'),
         url('^settings/team/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='settings.team.uninvite'),
+        url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/import$', schedule.ScheduleImportView.as_view(), name='schedule.import'),
@@ -124,6 +125,5 @@ urlpatterns = [
             '^schedule/api/availabilities/(?P<talkid>[0-9]+)/(?P<roomid>[0-9]+)/$',
             schedule.RoomTalkAvailabilities.as_view(), name='schedule.api.availabilities'
         ),
-        url('^plugins$', plugins.EventPluginsView.as_view(), name='plugins.select'),
     ])),
 ]
