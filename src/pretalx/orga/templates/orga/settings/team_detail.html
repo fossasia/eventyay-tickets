@@ -4,11 +4,6 @@
 
 {% block settings_content %}
 <div>
-    {% if request.event and team %}
-    <div class="alert alert-info">
-        {% trans "To invite a new member to your team, select the team below, or create a new one." %}
-    </div>
-    {% endif %}
     <legend>
         {% if team %}
             {% trans "Team" %} »{{ team.name }}«: {% trans "Members" %}
