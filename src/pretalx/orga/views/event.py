@@ -257,7 +257,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
 
         with transaction.atomic():
             event = Event.objects.create(
-                organiser=initial['organiser'], locale_array=initial['locales'],
+                organiser=initial['organiser'], locale_array=','.join(initial['locales']),
                 name=basics['name'], slug=basics['slug'], timezone=basics['timezone'],
                 email=basics['email'], locale=basics['locale'],
                 primary_color=display['primary_color'], logo=display['logo'],

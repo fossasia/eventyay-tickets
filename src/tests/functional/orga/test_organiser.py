@@ -85,7 +85,7 @@ class TestEventCreation:
         return response
 
     def submit_initial(self, organiser):
-        return self.post(step='initial', data={'locales': 'en', 'organiser': organiser.pk})
+        return self.post(step='initial', data={'locales': ['en', 'de'], 'organiser': organiser.pk})
 
     def submit_basics(self):
         return self.post(step='basics', data={
@@ -119,9 +119,12 @@ class TestEventCreation:
         self.submit_timeline(deadline=deadline)
         self.submit_display()
         self.submit_copy()
+        event = Event.objects.get(slug='newevent')
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
         assert organiser.teams.filter(name__icontains='new').exists(), organiser.teams.all()
+        assert str(event.name) == 'New event!'
+        assert event.locales == ['en', 'de']
 
     def test_orga_create_event_with_copy(self, orga_client, organiser, event, deadline):
         self.client = orga_client
