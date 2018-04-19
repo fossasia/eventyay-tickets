@@ -29,6 +29,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='slug',
-            field=models.SlugField(help_text='Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.', unique=True, validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$'), pretalx.event.models.event.validate_event_slug_blacklist], verbose_name='Short form'),
+            field=models.SlugField(unique=True, validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$'), pretalx.event.models.event.validate_event_slug_blacklist], verbose_name='Short form'),
         ),
     ]
