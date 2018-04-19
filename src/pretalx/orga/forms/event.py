@@ -96,6 +96,11 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_('Enter a custom domain, such as https://my.event.org'),
         required=False,
     )
+    show_on_dashboard = forms.BooleanField(
+        label=_('Show on dashboard'),
+        help_text=_('Set to show this event on this website\'s public dashboard. Will only show if the event is public.'),
+        required=False,
+    )
     show_schedule = forms.BooleanField(
         label=_('Show schedule publicly'),
         help_text=_('Unset to hide your schedule, e.g. if you want to use the HTML export exclusively.'),

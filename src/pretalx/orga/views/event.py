@@ -269,7 +269,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
                 deadline = zone.localize(deadline.replace(tzinfo=None))
                 event.cfp.deadline = deadline
                 event.cfp.save()
-            for setting in ['custom_domain', 'display_header_data']:
+            for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
                 value = display.get(setting)
                 if value:
                     event.settings.set(setting, display.get(setting))

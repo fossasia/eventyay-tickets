@@ -97,6 +97,7 @@ class EventWizardTimelineForm(forms.ModelForm):
 
 
 class EventWizardDisplayForm(forms.Form):
+    show_on_dashboard = forms.BooleanField(initial=True, required=False, label=_('Show on dashboard'), help_text=_('Show this event on this website\'s dashboard, once it is public?'))
     primary_color = forms.CharField(required=False)
     logo = forms.ImageField(required=False, help_text=_('If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'))
     display_header_pattern = forms.ChoiceField(

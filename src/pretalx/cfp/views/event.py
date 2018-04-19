@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.utils.timezone import now
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
@@ -37,8 +38,19 @@ class EventCfP(EventStartpage):
 class GeneralView(TemplateView):
     template_name = 'cfp/index.html'
 
+    def filter_events(self, events):
+        if self.request.user.is_anonymous:
+            return [e for e in events.filter(is_public=True) if e.settings.show_on_dashboard]
+        return [
+            e for e in events
+            if (e.is_public and e.settings.show_on_dashboard) or self.request.user.has_perm('cfp.view_event', e)
+        ]
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['events'] = Event.objects.filter(is_public=True)
-        context['orga_events'] = [e for e in Event.objects.filter(is_public=False) if self.request.user.has_perm('cfp.view_event', e)]
+        _now = now().date()
+        qs = Event.objects.order_by('-date_to')
+        context['current_events'] = self.filter_events(qs.filter(date_from__lte=_now, date_to__gte=_now))
+        context['past_events'] = self.filter_events(qs.filter(date_to__lt=_now))
+        context['future_events'] = self.filter_events(qs.filter(date_from__gt=_now))
         return context

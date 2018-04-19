@@ -20,13 +20,14 @@
         {% bootstrap_field form.timezone layout='event' %}
         {% bootstrap_field form.locale layout='event' %}
         {% bootstrap_field form.locales layout='event' %}
+        {% bootstrap_field form.is_public layout='event' %}
+        {% bootstrap_field sform.show_on_dashboard layout='event' %}
         {% bootstrap_field sform.show_schedule layout='event' %}
         {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
 
         <legend>
             {% trans "Display settings" %}
         </legend>
-        {% bootstrap_field form.is_public layout='event' %}
         {% bootstrap_field form.landing_page_text layout='event' %}
         {% bootstrap_field form.primary_color layout='event' %}
         {% bootstrap_field form.custom_css layout='event' %}

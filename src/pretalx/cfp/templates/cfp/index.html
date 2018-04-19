@@ -4,27 +4,45 @@
 {% block title %}{% trans "events" %}{% endblock %}
 
 {% block content %}
-    {% if events or orga_events %}
+    {% if current_events or future_events or past_events %}
         <h1>{% trans "Events" %}</h1>
     {% endif %}
-    <div class="dashboard-list">
-        {% for event in events %}
-            <a href="{{ event.urls.base }}" class="dashboard-block">
-                <h1>{{ event.name }}</h1>
-                <span class="dashboard-description">
-                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
-                    /{{ event.slug }}
-                </span>
-            </a>
+    {% if current_events %}
+    <ul>
+        {% for event in current_events %}
+            <li><a href="{{ event.urls.base }}">
+                {{ event.name }}
+                ({{ event.date_from }} – {{ event.date_to }})
+            </a></li>
         {% endfor %}
-        {% for event in orga_events %}
-            <a href="{{ event.orga_urls.base }}" class="dashboard-block dashboard-special-block">
-                <h1>{{ event.name }}</h1>
-                <span class="dashboard-description">
-                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
-                    /{{ event.slug }}
-                </span>
-            </a>
+    </ul>
+    {% endif %}
+
+    {% if future_events %}
+    {% if current_events or past_events %}
+        <legend>{% trans "Upcoming events" %}</legend>
+    {% endif %}
+    <ul>
+        {% for event in future_events %}
+            <li><a href="{{ event.urls.base }}">
+                {{ event.name }}
+                ({{ event.date_from }} – {{ event.date_to }})
+            </a></li>
         {% endfor %}
-    </div>
+    </ul>
+    {% endif %}
+
+    {% if past_events %}
+    {% if current_events or future_events %}
+        <legend>{% trans "Past events" %}</legend>
+    {% endif %}
+    <ul>
+        {% for event in past_events %}
+            <li><a href="{{ event.urls.base }}">
+                {{ event.name }}
+                ({{ event.date_from }} – {{ event.date_to }})
+            </a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
