@@ -4,19 +4,24 @@
 {% block agenda_content %}
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
-        <div class="alert alert-warning">
+        <div class="alert alert-warning"><span>
             {% if not schedule.version %}
                 {{ phrases.agenda.schedule_editable }}
             {% else %}
                 {% blocktrans trimmed with current_url=schedule.event.urls.schedule %}
-                    You are currently viewing an older schedule version. You may find the current version <a href="{{ current_url }}">here</a>.
+                    You are currently viewing an older schedule version.
                 {% endblocktrans %}
             {% endif %}
-        </div>
+            {% if request.event.current_schedule %}
+                {% blocktrans trimmed with current_url=schedule.event.urls.schedule %}
+                    You can find the current version <a href="{{ current_url }}">here</a>.
+                {% endblocktrans %}
+            {% endif %}
+        </span></div>
     {% endif %}
     <div class="schedule-header">
         <div class="header-right float-right">
-            <span class="icon">{% trans "Version" %} {{ schedule.version }}</span>
+            <span class="icon">{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
             · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a></span>
             · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a></span>
             · <span class="dropdown">
