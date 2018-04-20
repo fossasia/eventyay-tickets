@@ -206,10 +206,10 @@ if ADMINS:
 
 
 ## EMAIL SETTINGS
+MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from')
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from')
     EMAIL_HOST = config.get('mail', 'host')
     EMAIL_PORT = config.get('mail', 'port')
     EMAIL_HOST_USER = config.get('mail', 'user')

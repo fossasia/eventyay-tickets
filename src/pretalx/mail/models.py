@@ -136,6 +136,7 @@ class QueuedMail(LogMixin, models.Model):
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
         body_html = self.text_to_html(self.text)
+        has_event = getattr(self, 'event', None)
         from pretalx.common.mail import mail_send_task
         mail_send_task.apply_async(
             kwargs={
@@ -143,8 +144,8 @@ class QueuedMail(LogMixin, models.Model):
                 'subject': self.subject,
                 'body': self.text,
                 'html': body_html,
-                'reply_to': self.reply_to or self.event.email,
-                'event': self.event.pk,
+                'reply_to': self.reply_to or (self.event.email if has_event else None),
+                'event': self.event.pk if has_event else None,
                 'cc': (self.cc or '').split(','),
                 'bcc': (self.bcc or '').split(','),
             }
