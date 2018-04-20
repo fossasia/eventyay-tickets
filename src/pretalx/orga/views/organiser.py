@@ -43,6 +43,14 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
         kwargs['user'] = self.request.user
+        organiser = None
+        if 'pk' not in self.kwargs:
+            if self.request.user.is_administrator:
+                organiser = Organiser.objecs.all()
+            else:
+                teams = Team.objects.filter(members__in=[self.request.user], can_change_teams=True)
+                organiser = Organiser.objects.filter(pk__in=teams.values_list('organiser_id', flat=True))
+        kwargs['organiser'] = organiser
         return kwargs
 
     def get_object(self):
