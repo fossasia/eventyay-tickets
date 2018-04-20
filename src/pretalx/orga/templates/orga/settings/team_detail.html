@@ -4,6 +4,7 @@
 
 {% block settings_content %}
 <div>
+    {% if team.pk %}
     <legend>
         {% if team %}
             {% trans "Team" %} »{{ team.name }}«: {% trans "Members" %}
@@ -12,54 +13,59 @@
         {% endif %}
     </legend>
 
-    {% if request.event and team %}
-        <form method="post">{% csrf_token %}
-        <table class="table table-sm table-hover table-responsive-md">
-            <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for member in team.members.all %}
-                <tr>
-                    <td>{{ member.get_display_name }}</td>
-                    <td class="text-right">
-                        <a href="{{ request.event.orga_urls.team_settings }}/{{ team.id }}/delete/{{ member.id }}" class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                {% for member in team.invites.all %}
-                <tr>
-                    <td>
-                        {{ member.email }}
-                        <em>({% trans "pending" %})</em>
-                        <a href="{{ member.urls.invitation }}">
-                            <i class="fa fa-link"></i>
-                        </a>
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ request.event.orga_urls.team_settings }}/{{ member.id }}/uninvite" class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td>{% csrf_token %}{% bootstrap_field invite_form.email layout='inline' %}</td>
-                    <td class="text-right">
-                        <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </form>
-        <legend>
-            {% trans "Team" %} »{{ team.name }}«: {% trans "Permissions" %}
-        </legend>
+    <form method="post">{% csrf_token %}
+    <table class="table table-sm table-hover table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in team.members.all %}
+            <tr>
+                <td>{{ member.get_display_name }}</td>
+                <td class="text-right">
+                    <a
+                    href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ team.id }}/delete/{{ member.id }}"
+                      class="btn btn-sm btn-danger"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% for member in team.invites.all %}
+            <tr>
+                <td>
+                    {{ member.email }}
+                    <em>({% trans "pending" %})</em>
+                    <a href="{{ member.urls.invitation }}">
+                        <i class="fa fa-link"></i>
+                    </a>
+                </td>
+                <td class="text-right">
+                    <a
+                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ member.id }}/uninvite"
+                      class="btn btn-sm btn-danger"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>{% csrf_token %}{% bootstrap_field invite_form.email layout='inline' %}</td>
+                <td class="text-right">
+                    <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+    <legend>
+        {% trans "Team" %} »{{ team.name }}«: {% trans "Permissions" %}
+    </legend>
     {% endif %}
 
     <form method="post">

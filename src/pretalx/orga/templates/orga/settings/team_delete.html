@@ -9,7 +9,7 @@
 
     {% trans "Do you really want to go through with this deletion?" %} <em>{{ object.email }}</em>
     <form class="float-right" method="post">{% csrf_token %}
-        <a class="btn btn-info" href={{ request.event.orga_urls.team_settings }}>{% trans "Back" %}</a>
+        <a class="btn btn-info" href={% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}>{% trans "Back" %}</a>
         <button class="btn btn-danger" type="submit">{% trans "Yes" %}</button>
     </form>
 </div>

@@ -25,6 +25,8 @@ urlpatterns = [
         url('^teams/new$', organiser.TeamDetail.as_view(), name='organiser.teams.create'),
         url('^teams/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='organiser.teams.view'),
         url('^teams/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='organiser.teams.delete'),
+        url('^teams/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='organiser.teams.delete_member'),
+        url('^teams/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='organiser.teams.uninvite'),
     ])),
 
     url('^event/new/$', event.EventWizard.as_view(), name='event.create'),

@@ -140,12 +140,17 @@ You have been invited to the {name} event organiser team - Please click here to 
 {invitation_link}
 
 See you there,
-The {event} team''').format(name=str(self.team.name), invitation_link=invitation_link, event=str(event.name))
+The {event} team''').format(name=str(self.team.name), invitation_link=invitation_link, event=str(event.name) if event else str(self.team.organiser.name))
         invitation_subject = _('You have been invited to an organiser team')
 
-        return QueuedMail.objects.create(
+        mail = QueuedMail(
             to=self.email,
             event=event,
             subject=str(invitation_subject),
             text=str(invitation_text),
         )
+        if event:
+            mail.save()
+        else:
+            mail.send()
+        return mail

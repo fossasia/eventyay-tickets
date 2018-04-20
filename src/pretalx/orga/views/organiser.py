@@ -65,8 +65,12 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if self.invite_form.is_bound:
             if self.invite_form.is_valid():
                 invite = TeamInvite.objects.create(team=self.get_object(), email=self.invite_form.cleaned_data['email'])
-                invite.send(event=self.request.event)
-                messages.success(self.request, _('The invitation has been generated, it\'s in the outbox.'))
+                event = getattr(self.request, 'event', None)
+                invite.send(event=event)
+                if event:
+                    messages.success(self.request, _('The invitation has been generated, it\'s in the outbox.'))
+                else:
+                    messages.success(self.request, _('The invitation has been sent.'))
             else:
                 return self.form_invalid(*args, **kwargs)
             return redirect(self.request.path)
@@ -79,7 +83,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if created:
             if hasattr(self.request, 'event') and self.request.event:
                 return redirect(self.request.event.orga_urls.team_settings)
-            return redirect(self.request.organiser.orga_urls.teams)
+            return redirect(self.request.organiser.orga_urls.base)
         return redirect(self.request.path)
 
 
@@ -116,7 +120,7 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
             messages.success(request, _('The team was removed.'))
         if hasattr(self.request, 'event') and self.request.event:
             return redirect(self.request.event.orga_urls.team_settings)
-        return redirect(self.request.organiser.orga_urls.teams)
+        return redirect(self.request.organiser.orga_urls.base)
 
 
 class TeamUninvite(PermissionRequired, DetailView):
@@ -136,7 +140,9 @@ class TeamUninvite(PermissionRequired, DetailView):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         messages.success(request, _('The team invitation was retracted.'))
-        return redirect(self.request.event.orga_urls.team_settings)
+        if hasattr(self.request, 'event') and self.request.event:
+            return redirect(self.request.event.orga_urls.team_settings)
+        return redirect(self.request.organiser.orga_urls.base)
 
 
 class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
