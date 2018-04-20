@@ -59,7 +59,7 @@ def test_user_can_access_event_urls(
     both_response = client.get(url, follow=True)
     assert orga_response.status_code == orga_access, orga_response.status_code
     assert review_response.status_code == reviewer_access, review_response.status_code
-    assert both_response.status_code == 200
+    assert both_response.status_code == min(orga_access, reviewer_access)
 
 
 @pytest.mark.django_db
