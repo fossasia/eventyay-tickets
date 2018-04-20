@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.models.log import ActivityLog
+from pretalx.event.models import Organiser
 from pretalx.event.stages import get_stages
 from pretalx.submission.models.submission import SubmissionStates
 
@@ -13,10 +14,13 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['organisers'] = set(
-            team.organiser for team in
-            self.request.user.teams.filter(can_change_organiser_settings=True)
-        )
+        if self.request.user.is_administrator:
+            context['organisers'] = Organiser.objects.all()
+        else:
+            context['organisers'] = set(
+                team.organiser for team in
+                self.request.user.teams.filter(can_change_organiser_settings=True)
+            )
         return context
 
 
