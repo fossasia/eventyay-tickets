@@ -73,7 +73,7 @@ def mail_send_task(to: str, subject: str, body: str, html: str, reply_to: str=No
     if event:
         sender = event.settings.get('mail_from')
         if sender == 'noreply@example.org' or not sender:
-            sender = event.email
+            sender = settings.MAIL_FROM
         if reply_to:
             headers['reply-to'] = reply_to
         backend = event.get_mail_backend()
