@@ -1,7 +1,6 @@
 import logging
 import os
 
-from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -10,7 +9,6 @@ from django.forms import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
-from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
@@ -50,7 +48,6 @@ def show_user_page(wizard):
     return not wizard.request.user.is_authenticated
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     form_list = FORMS
     condition_dict = {

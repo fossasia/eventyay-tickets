@@ -47,5 +47,4 @@ def system_information(request):
         with suppress(Exception):
             import pretalx
             context['pretalx_version'] = pretalx.__version__
-
     return context

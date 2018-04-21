@@ -1,10 +1,8 @@
-from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import models, transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView, UpdateView, View
@@ -81,7 +79,6 @@ class CfPQuestionList(PermissionRequired, TemplateView):
         return context
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm

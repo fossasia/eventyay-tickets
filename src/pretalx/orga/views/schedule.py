@@ -4,11 +4,13 @@ import xml.etree.ElementTree as ET
 from datetime import timedelta
 
 import dateutil.parser
+from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
@@ -26,7 +28,8 @@ from pretalx.orga.views.event import EventSettingsPermission
 from pretalx.schedule.forms import RoomForm
 from pretalx.schedule.models import Availability, Room
 
-
+ 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
 class ScheduleView(PermissionRequired, TemplateView):
     template_name = 'orga/schedule/index.html'
     permission_required = 'orga.view_schedule'

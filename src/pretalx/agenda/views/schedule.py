@@ -2,10 +2,8 @@ from datetime import timedelta
 from urllib.parse import unquote
 
 import pytz
-from csp.decorators import csp_update
 from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.urls import resolve, reverse
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
@@ -92,7 +90,6 @@ class ExporterView(ScheduleDataView):
         return resp
 
 
-@method_decorator(csp_update(STYLE_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'

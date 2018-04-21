@@ -20,7 +20,7 @@ from pretalx.submission.forms import InfoForm, QuestionsForm, ResourceForm
 from pretalx.submission.models import Resource, Submission, SubmissionStates
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com", SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class ProfileView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_profile.html'
 
@@ -153,7 +153,6 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, DetailV
         return redirect('cfp:event.user.submissions', event=self.request.event.slug)
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateView):
     template_name = 'cfp/event/user_submission_edit.html'
     model = Submission

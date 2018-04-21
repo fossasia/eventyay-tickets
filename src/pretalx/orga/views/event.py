@@ -1,6 +1,5 @@
 import os
 
-from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -8,7 +7,6 @@ from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView
@@ -121,7 +119,6 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return super().form_valid(form)
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class InvitationView(FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
@@ -155,7 +152,6 @@ class InvitationView(FormView):
         return redirect('/orga')
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-inline'"), name='dispatch')
 class UserSettings(TemplateView):
     form_class = LoginInfoForm
     template_name = 'orga/user.html'
