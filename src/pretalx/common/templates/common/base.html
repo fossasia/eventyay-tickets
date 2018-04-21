@@ -141,6 +141,10 @@
                 &middot;
                 <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
             {% endif %}
+            {% for footer in footer_links %}
+                &middot;
+                <a href="{{ footer.link }}">{{ footer.label }}</a>
+            {% endfor %}
         </footer>
     </div>
 </div>

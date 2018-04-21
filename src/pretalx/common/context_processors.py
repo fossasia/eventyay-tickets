@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
 
+from pretalx.cfp.signals import footer_link
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
@@ -38,6 +39,14 @@ def messages(request):
 
 def system_information(request):
     context = {}
+    _footer = []
+    for receiver, response in footer_link.send(getattr(request, 'event', None), request=request):
+        if isinstance(response, list):
+            _footer += response
+        else:
+            _footer.append(response)
+    context['footer_links'] = _footer
+
     if settings.DEBUG:
         context['development_warning'] = True
         with suppress(Exception):

@@ -28,7 +28,7 @@ from pretalx.orga.views.event import EventSettingsPermission
 from pretalx.schedule.forms import RoomForm
 from pretalx.schedule.models import Availability, Room
 
- 
+
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
 class ScheduleView(PermissionRequired, TemplateView):
     template_name = 'orga/schedule/index.html'

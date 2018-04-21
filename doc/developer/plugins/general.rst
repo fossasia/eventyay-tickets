@@ -26,3 +26,9 @@ Organiser area
 
 .. automodule:: pretalx.orga.signals
    :members: nav_event
+
+Display
+-------
+
+.. automodule:: pretalx.cfp.signals
+   :members: footer_link
