@@ -9,6 +9,12 @@
     {% trans "Current state of your submission:" %}
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
 </p>
+{% blocktrans trimmed %}
+By confirming your submission, you agree that you are able and willing to participate in this event and
+present the content of this submission.<br>
+The submission data, such as title, abstract, description, and any uploads you provided, will be
+publicly available once the submission is confirmed.
+{% endblocktrans %}
 <form action="" method="post">
     {% csrf_token %}
     <p>
