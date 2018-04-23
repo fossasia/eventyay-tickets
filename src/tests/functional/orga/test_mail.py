@@ -1,4 +1,5 @@
 import pytest
+from django.core import mail as djmail
 
 from pretalx.mail.models import MailTemplate, QueuedMail
 
@@ -26,6 +27,7 @@ def test_orga_can_view_pending_mail(orga_client, event, mail):
 
 @pytest.mark.django_db
 def test_orga_can_edit_pending_mail(orga_client, event, mail):
+    djmail.outbox = []
     response = orga_client.post(
         mail.urls.base,
         follow=True,
@@ -42,6 +44,31 @@ def test_orga_can_edit_pending_mail(orga_client, event, mail):
     assert mail.subject in response.content.decode()
     mail.refresh_from_db()
     assert mail.to == 'testWIN@gmail.com'
+    assert len(djmail.outbox) == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
+    djmail.outbox = []
+    response = orga_client.post(
+        mail.urls.base,
+        follow=True,
+        data={
+            'to': 'testWIN@gmail.com',
+            'bcc': mail.bcc,
+            'cc': mail.cc,
+            'reply_to': mail.reply_to,
+            'subject': mail.subject,
+            'text': 'This is the best test.',
+            'form': 'send',
+        }
+    )
+    assert response.status_code == 200
+    assert mail.subject not in response.content.decode()  # Is now in the sent mail view, not in the outbox
+    mail.refresh_from_db()
+    assert mail.to == 'testWIN@gmail.com'
+    assert len(djmail.outbox) == 1
+    assert 'This is the best test.' == djmail.outbox[0].body
 
 
 @pytest.mark.django_db

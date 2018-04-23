@@ -18,8 +18,8 @@
             <span></span>
             <span>
                 {% if action == "edit" %}
-                    <button type="submit" class="btn btn-lg btn-success">{% trans "Save" %}</button>
-                    <a class="btn btn-lg btn-info" href={{ form.instance.urls.send }}>{% trans "Send" %}</a>
+                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% trans "Save" %}</button>
+                    <button class="btn btn-lg btn-info" name="form" value="send">{% trans "Save and send" %}</button>
                     <a class="btn btn-lg btn-danger" href={{ form.instance.urls.delete }}>{% trans "Discard" %}</a>
                 {% elif action == "view" %}
                     {% if form.instance.sent %}

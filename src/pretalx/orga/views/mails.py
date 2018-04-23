@@ -165,10 +165,15 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             return redirect(self.get_success_url())
 
         result = super().form_valid(form)
-        messages.success(self.request, _('The email has been saved. When you send it, the updated text will be used.'))
         if form.has_changed():
             action = 'pretalx.mail.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
+        action = form.data.get('form', 'save')
+        if action == 'save':
+            messages.success(self.request, _('The email has been saved. When you send it, the updated text will be used.'))
+        elif action == 'send':
+            form.instance.send()
+            messages.success(self.request, _('The email has been sent.'))
         return result
 
 
