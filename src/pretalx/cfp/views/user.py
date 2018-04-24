@@ -26,7 +26,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @cached_property
     def login_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
+        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'login'
         return LoginInfoForm(
             user=self.request.user,
             data=self.request.POST if bind else None
