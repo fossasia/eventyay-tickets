@@ -11,7 +11,9 @@ ALLOWED_TAGS = [
     'acronym',
     'b',
     'blockquote',
+    'br',
     'code',
+    'div',
     'em',
     'i',
     'li',
@@ -19,6 +21,8 @@ ALLOWED_TAGS = [
     'strong',
     'ul',
     'p',
+    'pre',
+    'span',
     'table',
     'tbody',
     'thead',
@@ -39,7 +43,12 @@ ALLOWED_ATTRIBUTES = {
     'acronym': ['title'],
     'table': ['width'],
     'td': ['width', 'align'],
+    'div': ['class'],
+    'p': ['class'],
+    'span': ['class'],
 }
+
+ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
 
 
 @register.filter
@@ -49,6 +58,7 @@ def rich_text(text: str, **kwargs):
         return ''
     body_md = bleach.linkify(bleach.clean(
         markdown.markdown(str(text)),
-        tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES)
-    )
+        tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
+        protocols=ALLOWED_PROTOCOLS,
+    ))
     return mark_safe(body_md)
