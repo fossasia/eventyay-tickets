@@ -1,5 +1,6 @@
 import urllib
 from contextlib import suppress
+from urllib.parse import urljoin
 
 import pytz
 from django.conf import settings
@@ -38,6 +39,8 @@ class EventPermissionMiddleware:
                     request.is_reviewer = request.event in request.user.get_events_for_permission(is_reviewer=True)
 
     def _handle_orga_url(self, request, url):
+        if request.uses_custom_domain:
+            return urljoin(settings.SITE_URL, request.get_full_path())
         if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
             params = '&' + request.GET.urlencode() if request.GET else ''
             return reverse('orga:login') + f'?next={urllib.parse.quote(request.path)}' + params
@@ -75,6 +78,8 @@ class EventPermissionMiddleware:
             url = self._handle_orga_url(request, url)
             if url:
                 return redirect(url)
+        elif request.event and request.event.settings.custom_domain and not request.uses_custom_domain:
+            return redirect(urljoin(request.event.settings.custom_domain, request.get_full_path()))
         return self.get_response(request)
 
     def _select_locale(self, request):

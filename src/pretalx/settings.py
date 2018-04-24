@@ -329,15 +329,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ## MIDDLEWARE SETTINGS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',  # Security first
-    'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
-    'pretalx.common.middleware.MultiDomainMiddleware',  # Verifying the proper domain next
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Next up: static files
+    'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
     'pretalx.common.middleware.SessionMiddleware',  # Add session handling
-    'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Uses sessions
+    'pretalx.common.middleware.MultiDomainMiddleware',  # Check which host is used and if it is valid
+    'pretalx.common.middleware.EventPermissionMiddleware',  # Sets locales, request.event, available events, etc.
+    'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
     'django.contrib.messages.middleware.MessageMiddleware',  # Uses sessions
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Protects against clickjacking
-    'pretalx.common.middleware.EventPermissionMiddleware',  # Sets locales, mostly
     'csp.middleware.CSPMiddleware',  # Modifies/sets CSP headers
 ]
 
