@@ -78,7 +78,7 @@ class EventPermissionMiddleware:
             url = self._handle_orga_url(request, url)
             if url:
                 return redirect(url)
-        elif request.event and request.event.settings.custom_domain and not request.uses_custom_domain:
+        elif getattr(request, 'event', None) and request.event.settings.custom_domain and not request.uses_custom_domain:
             return redirect(urljoin(request.event.settings.custom_domain, request.get_full_path()))
         return self.get_response(request)
 
