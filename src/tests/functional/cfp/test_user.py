@@ -6,7 +6,7 @@ from django.core import mail as djmail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from pretalx.submission.models import Question, SubmissionStates
+from pretalx.submission.models import SubmissionStates
 
 
 @pytest.mark.django_db
@@ -192,6 +192,30 @@ def test_can_edit_profile(speaker, event, speaker_client):
 
 
 @pytest.mark.django_db
+def test_can_edit_login_info(speaker, event, speaker_client):
+    response = speaker_client.post(
+        event.urls.user,
+        data={'old_password': 'speakerpwd1!', 'email': 'new_email@speaker.org', 'password': '', 'password_repeat': '', 'form': 'login'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.email == 'new_email@speaker.org'
+
+
+@pytest.mark.django_db
+def test_can_edit_login_info_wrong_password(speaker, event, speaker_client):
+    response = speaker_client.post(
+        event.urls.user,
+        data={'old_password': 'speakerpwd23!', 'email': 'new_email@speaker.org', 'password': '', 'password_repeat': '', 'form': 'login'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.email != 'new_email@speaker.org'
+
+
+@pytest.mark.django_db
 def test_can_edit_and_update_speaker_answers(
         speaker, event, speaker_question, speaker_boolean_question, speaker_client,
         speaker_text_question, speaker_file_question,
@@ -313,28 +337,6 @@ def test_can_accept_invitation(orga_client, submission):
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.speakers.count() == 2
-
-
-@pytest.mark.django_db
-def test_can_hide_question(orga_client, question):
-    assert question.active
-
-    response = orga_client.get(question.urls.toggle, follow=True)
-    question = Question.all_objects.get(pk=question.pk)
-
-    assert response.status_code == 200
-    assert not question.active
-
-
-@pytest.mark.django_db
-def test_can_activate_inactive_question(orga_client, inactive_question):
-    assert not inactive_question.active
-
-    response = orga_client.get(inactive_question.urls.toggle, follow=True)
-    inactive_question.refresh_from_db()
-
-    assert response.status_code == 200
-    assert inactive_question.active
 
 
 @pytest.mark.django_db

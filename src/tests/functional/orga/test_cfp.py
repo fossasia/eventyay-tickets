@@ -274,3 +274,25 @@ def test_can_remind_question(orga_client, event, speaker_question, speaker, acce
     response = orga_client.post(event.cfp.urls.remind_questions, {'role': role}, follow=True)
     assert response.status_code == 200
     assert QueuedMail.objects.count() == original_count + count
+
+
+@pytest.mark.django_db
+def test_can_hide_question(orga_client, question):
+    assert question.active
+
+    response = orga_client.get(question.urls.toggle, follow=True)
+    question = Question.all_objects.get(pk=question.pk)
+
+    assert response.status_code == 200
+    assert not question.active
+
+
+@pytest.mark.django_db
+def test_can_activate_inactive_question(orga_client, inactive_question):
+    assert not inactive_question.active
+
+    response = orga_client.get(inactive_question.urls.toggle, follow=True)
+    inactive_question.refresh_from_db()
+
+    assert response.status_code == 200
+    assert inactive_question.active

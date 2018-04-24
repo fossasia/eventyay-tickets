@@ -58,7 +58,6 @@ def test_orga_accept_invitation_once(client, event, invitation):
 def test_orga_registration_errors(client, event, invitation, user, duplicate):
     team = invitation.team
     count = invitation.team.members.count()
-    token = invitation.token
     response = client.post(
         reverse('orga:invitation.view', kwargs={'code': invitation.token}),
         {

@@ -12,6 +12,7 @@
     </p>
     <form action="" method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
+        {% bootstrap_form_errors profile_form %}
         <div class="avatar-form">
             <div class="col-md-3 col-form-label">
             <img
@@ -66,6 +67,7 @@
     <form action="" method="post" class="form password-input-form">
         {% csrf_token %}
         {{ login_form.media }}
+        {% bootstrap_form_errors login_form %}
         {% bootstrap_field login_form.old_password layout='event' %}
         {% bootstrap_field login_form.email layout='event' %}
         {% bootstrap_field login_form.password layout='event' %}

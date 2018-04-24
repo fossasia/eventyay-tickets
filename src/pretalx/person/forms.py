@@ -192,16 +192,26 @@ class LoginInfoForm(forms.ModelForm):
             )
         return old_pw
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.exclude(pk=self.user.pk).filter(email__iexact=email):
+            raise ValidationError(_('Please choose a different email address.'))
+        return email
+
+    def clean(self):
+        super().clean()
+        password = self.cleaned_data.get('password')
+        if password and not password == self.cleaned_data.get('password_repeat'):
+            raise ValidationError(phrases.base.passwords_differ)
+
     def __init__(self, user, *args, **kwargs):
         self.user = user
         kwargs['instance'] = user
         super().__init__(*args, **kwargs)
 
     def save(self):
-        password = self.cleaned_data.get('password')
-        if not password == self.cleaned_data.get('password_repeat'):
-            raise ValidationError(phrases.base.passwords_differ)
         super().save()
+        password = self.cleaned_data.get('password')
         if password:
             self.user.set_password(password)
             self.user.save()
