@@ -161,4 +161,4 @@ class QuestionsForm(forms.Form):
             value = answer.answer
         else:
             answer.answer = value
-        answer.log_action(action, person=self.request_user, data={'answer': value})
+        answer.log_action(action, person=self.request_user or self.speaker, data={'answer': value})
