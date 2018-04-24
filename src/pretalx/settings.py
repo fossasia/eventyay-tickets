@@ -236,18 +236,19 @@ if HAS_MEMCACHED:
         'LOCATION': os.getenv('PRETALX_MEMCACHE')
     }
 
-HAS_REDIS = bool(os.getenv('PRETALX_REDIS', ''))
+HAS_REDIS = config.get('redis', 'location') != 'False'
+print(HAS_REDIS)
 if HAS_REDIS:
     CACHES['redis'] = {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv('PRETALX_REDIS'),
+        "LOCATION": config.get('redis', 'location'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
     CACHES['redis_sessions'] = {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv('PRETALX_REDIS'),
+        "LOCATION": config.get('redis', 'location'),
         "TIMEOUT": 3600 * 24 * 30,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -257,7 +258,7 @@ if HAS_REDIS:
         CACHES['default'] = CACHES['redis']
         REAL_CACHE_USED = True
 
-    if os.getenv('PRETALX_REDIS_SESSIONS', 'False') == 'True':
+    if config.getboolean('redis', 'session'):
         SESSION_ENGINE = "django.contrib.sessions.backends.cache"
         SESSION_CACHE_ALIAS = "redis_sessions"
 

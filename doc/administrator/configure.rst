@@ -203,7 +203,7 @@ The celery section
 ~~~~~~~~~~~
 
 - The celery backend. If you use a standard redis-based setup,
-  ``'redis://127.0.0.1/1'`` woould be a sensible value.
+  ``'redis://127.0.0.1/1'`` would be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BACKEND``
 - **Default:** ``''``
 
@@ -211,9 +211,33 @@ The celery section
 ~~~~~~~~~~~
 
 - The celery broker. If you use a standard redis-based setup,
-  ``'redis://127.0.0.1/2'`` woould be a sensible value.
+  ``'redis://127.0.0.1/2'`` would be a sensible value.
 - **Environment variable:** ``PRETALX_CELERY_BROKER``
 - **Default:** ``''``
+
+The redis section
+-----------------
+
+If a redis server is configured, pretalx can use it for locking, caching and
+session storage to speed up various operations. You will need to install
+``django_redis``.
+
+``location``
+~~~~~~~~~~~~
+
+- The location of redis, if you want to use it as a cache.
+  ``'redis://[:password]@127.0.0.1:6397/1'`` would be a sensible value, or
+  ``unix://[:password]@/path/to/socket.sock?db=0`` if you prefer to use sockets.
+- **Environment variable:** ``PRETALX_REDIS``
+- **Default:** ``''``
+
+``session``
+~~~~~~~~~~~
+
+- If you want to use redis as your session storage, set this to ``True``.
+  ``'redis://127.0.0.1/2'`` would be a sensible value.
+- **Environment variable:** ``PRETALX_REDIS_SESSIONS``
+- **Default:** ``False``
 
 The logging section
 -------------------

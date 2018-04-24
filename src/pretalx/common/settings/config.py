@@ -94,7 +94,15 @@ CONFIG = {
             'env': os.getenv('PRETALX_MAIL_SSL'),
         },
     },
-    'cache': {
+    'redis': {
+        'location': {
+            'default': 'False',
+            'env': os.getenv('PRETALX_REDIS'),
+        },
+        'session': {
+            'default': 'False',
+            'env': os.getenv('PRETALX_REDIS_SESSIONS'),
+        },
     },
     'celery': {
         'broker': {
