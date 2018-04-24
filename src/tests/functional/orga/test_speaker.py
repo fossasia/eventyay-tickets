@@ -37,6 +37,19 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_cant_assign_duplicate_address(orga_client, speaker, event, submission, other_speaker):
+    response = orga_client.post(
+        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        data={'name': 'BESTSPEAKAR', 'biography': 'I rule!', 'email': other_speaker.email},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.name != 'BESTSPEAKAR', response.content.decode()
+    assert speaker.email != other_speaker.email
+
+
+@pytest.mark.django_db
 def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
     logs = speaker.logged_actions().count()
     assert speaker.profiles.first().has_arrived is False

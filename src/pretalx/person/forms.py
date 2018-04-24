@@ -141,6 +141,15 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
             raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
         return avatar
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        qs = User.objects.all()
+        if self.user:
+            qs = qs.exclude(pk=self.user.pk)
+        if qs.filter(email__iexact=email):
+            raise ValidationError(_('Please choose a different email address, this one is taken.'))
+        return email
+
     def save(self, **kwargs):
         for user_attribute in self.user_fields:
             value = self.cleaned_data.get(user_attribute)
