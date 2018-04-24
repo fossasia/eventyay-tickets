@@ -54,6 +54,27 @@ def test_orga_accept_invitation_once(client, event, invitation):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize('duplicate', ['username', 'email'])
+def test_orga_registration_errors(client, event, invitation, user, duplicate):
+    team = invitation.team
+    count = invitation.team.members.count()
+    token = invitation.token
+    response = client.post(
+        reverse('orga:invitation.view', kwargs={'code': invitation.token}),
+        {
+            'register_username': user.nick if duplicate == 'username' else 'newuser',
+            'register_email': user.email if duplicate == 'email' else invitation.email,
+            'register_password': 'f00baar!',
+            'register_password_repeat': 'f00baar!',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == count
+    assert team.invites.count() == 1
+
+
+@pytest.mark.django_db
 def test_orga_incorrect_invite_token(client, event, invitation):
     response = client.get(
         reverse('orga:invitation.view', kwargs={'code': invitation.token + 'WRONG'}),
