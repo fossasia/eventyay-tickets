@@ -1,6 +1,7 @@
 import re
 
 from cssutils import CSSParser
+from cssutils.css import CSSComment
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -49,6 +50,8 @@ def validate_css(css):
         raise ValidationError(_('This stylesheet is not valid CSS.'))
 
     for rule in stylesheet.cssRules:
+        if isinstance(rule, CSSComment):
+            continue
         style = rule.style
         for key in style.keys():
             validate_key(key=key, style=style)
