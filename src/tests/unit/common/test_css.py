@@ -13,6 +13,7 @@ body {
   display: none;
 }
 .some-descriptor {
+  /* Dotted borders are IN! */
   border-style: dotted dashed solid double;
   BORDER-color: red green blue yellow;
 }
