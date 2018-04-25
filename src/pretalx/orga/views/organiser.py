@@ -45,7 +45,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         organiser = None
         if 'pk' not in self.kwargs:
             if self.request.user.is_administrator:
-                organiser = Organiser.objecs.all()
+                organiser = Organiser.objects.all()
             else:
                 teams = Team.objects.filter(members__in=[self.request.user], can_change_teams=True)
                 organiser = Organiser.objects.filter(pk__in=teams.values_list('organiser_id', flat=True))

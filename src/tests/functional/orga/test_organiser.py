@@ -49,7 +49,10 @@ def test_orga_edit_team(orga_client, organiser, event):
 
 
 @pytest.mark.django_db
-def test_orga_create_team(orga_client, organiser, event):
+@pytest.mark.parametrize('is_administrator', [True, False])
+def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_user):
+    orga_user.is_administrator = is_administrator
+    orga_user.save()
     count = organiser.teams.count()
     response = orga_client.get(organiser.orga_urls.new_team, follow=True)
     assert response.status_code == 200
