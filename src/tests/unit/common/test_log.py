@@ -20,3 +20,19 @@ def test_activity_log_display(activity_log):
 def test_activity_log_display_incorrect(activity_log):
     activity_log.action_type = 'foo'
     assert activity_log.display() == 'foo'
+
+
+@pytest.mark.django_db
+def test_log_urls(activity_log, submission, choice_question):
+    assert activity_log.get_public_url() == submission.urls.public
+    assert activity_log.get_orga_url() == submission.orga_urls.base
+
+    activity_log.content_object = submission.event.cfp
+    assert activity_log.get_public_url() == submission.event.cfp.urls.public
+    assert activity_log.get_orga_url() == submission.event.cfp.urls.text
+
+    activity_log.content_object = choice_question
+    assert activity_log.get_orga_url() == choice_question.urls.base
+
+    activity_log.content_object = choice_question.options.first()
+    assert activity_log.get_orga_url() == choice_question.urls.base
