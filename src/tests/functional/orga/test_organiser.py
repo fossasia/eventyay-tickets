@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 import pytest
+from django.core import mail as djmail
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -73,6 +74,27 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
     )
     assert response.status_code == 200
     assert organiser.teams.count() == count + 1, response.content.decode()
+
+
+@pytest.mark.django_db
+def test_invite_orga_member_as_orga(orga_client, organiser):
+    djmail.outbox = []
+    team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)
+    url = reverse('orga:organiser.teams.view', kwargs={'organiser': organiser.slug, 'pk': team.pk})
+    assert team.members.count() == 1
+    assert team.invites.count() == 0
+    response = orga_client.post(
+        url,
+        {
+            'email': 'other@user.org',
+            'form': 'invite',
+        }, follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    assert len(djmail.outbox) == 1
+    assert djmail.outbox[0].to == ['other@user.org']
 
 
 @pytest.mark.django_db
