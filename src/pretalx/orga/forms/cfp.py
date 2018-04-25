@@ -11,8 +11,22 @@ from pretalx.submission.models import (
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
-    cfp_show_deadline = forms.BooleanField(label=_('Display deadline publicly'),
-                                           required=False)
+    cfp_show_deadline = forms.BooleanField(
+        label=_('Display deadline publicly'),
+        required=False,
+    )
+    cfp_request_abstract = forms.BooleanField(
+        label=_('Ask speakers to submit an abstract'),
+        required=False,
+    )
+    cfp_request_description = forms.BooleanField(
+        label=_('Ask speakers to submit a longer description'),
+        required=False,
+    )
+    cfp_request_biography = forms.BooleanField(
+        label=_('Ask speakers to provide a biography/personal information'),
+        required=False,
+    )
     review_deadline = forms.DateTimeField(
         label=_('Review deadline'),
         required=False,

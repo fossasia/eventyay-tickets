@@ -13,5 +13,5 @@
 
     {% bootstrap_form_errors wizard.form %}
     {% bootstrap_field wizard.form.name layout='event' %}
-    {% bootstrap_field wizard.form.biography layout='event' %}
+    {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
 {% endblock %}

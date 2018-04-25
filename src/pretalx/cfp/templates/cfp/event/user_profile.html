@@ -34,7 +34,7 @@
             </div>
         </div>
         {% bootstrap_field profile_form.name layout='event' %}
-        {% bootstrap_field profile_form.biography layout='event' %}
+        {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}
         {% bootstrap_field profile_form.availabilities layout='event' %}
         <div class="row">
             <div class="col-md-3 ml-auto">
@@ -67,7 +67,6 @@
     <form action="" method="post" class="form password-input-form">
         {% csrf_token %}
         {{ login_form.media }}
-        {% bootstrap_form_errors login_form %}
         {% bootstrap_field login_form.old_password layout='event' %}
         {% bootstrap_field login_form.email layout='event' %}
         {% bootstrap_field login_form.password layout='event' %}

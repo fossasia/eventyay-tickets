@@ -41,7 +41,7 @@
         {% csrf_token %}
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
-        {% bootstrap_field form.biography layout='event' %}
+        {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% bootstrap_field form.availabilities layout='event' %}
         {% include "orga/submit_row.html" %}
     </form>

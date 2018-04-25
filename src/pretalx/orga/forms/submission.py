@@ -15,7 +15,15 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
             self.fields['speaker'] = forms.CharField(
                 help_text=_('Add the email or nickname of the speaker holding the talk. They will be invited to create an account.')
             )
-        self.fields['abstract'].widget.attrs['rows'] = 2
+        if not event.settings.cfp_request_abstract:
+            self.fields.pop('abstract')
+        else:
+            self.fields['abstract'].required = True
+            self.fields['abstract'].widget.attrs['rows'] = 2
+        if not event.settings.cfp_request_description:
+            self.fields.pop('description')
+        else:
+            self.fields['description'].required = True
 
     class Meta:
         model = Submission

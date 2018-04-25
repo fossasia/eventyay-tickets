@@ -26,10 +26,12 @@
                 {{ speaker.name }}
             </a>
         </legend>
-        <p>
-            <h5>{% trans "Biography" %}:</h5>
-            {{ speaker.biography|rich_text|default:"-" }}
-        </p>
+        {% if request.event.settings.cfp_request_biography %}
+            <p>
+                <h5>{% trans "Biography" %}:</h5>
+                {{ speaker.biography|rich_text|default:"-" }}
+            </p>
+        {% endif %}
         <p>
         {% if speaker.other_submissions %}
             <h5>{% trans "Other submissions by this speaker:" %}</h5>

@@ -27,8 +27,8 @@
         </div>
         {% endif %}
         {% bootstrap_field form.submission_type layout='event' %}
-        {% bootstrap_field form.abstract layout='event' %}
-        {% bootstrap_field form.description layout='event' %}
+        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
+        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
         {% bootstrap_field form.notes layout='event' %}
         {% bootstrap_field form.content_locale layout='event' %}
         {% bootstrap_field form.do_not_record layout='event' %}

@@ -32,6 +32,9 @@ settings_hierarkey.add_default('custom_domain', '', str)
 
 settings_hierarkey.add_default('display_header_pattern', '', str)
 
+settings_hierarkey.add_default('cfp_request_abstract', 'True', bool)
+settings_hierarkey.add_default('cfp_request_description', 'True', bool)
+settings_hierarkey.add_default('cfp_request_biography', 'True', bool)
 settings_hierarkey.add_default('allow_override_votes', 'False', bool)
 settings_hierarkey.add_default('review_min_score', 0, int)
 settings_hierarkey.add_default('review_max_score', 1, int)

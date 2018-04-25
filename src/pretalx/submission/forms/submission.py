@@ -18,6 +18,15 @@ class InfoForm(forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
+        if not self.event.settings.cfp_request_abstract:
+            self.fields.pop('abstract')
+        else:
+            self.fields['abstract'].required = True
+            self.fields['abstract'].widget.attrs['rows'] = 2
+        if not self.event.settings.cfp_request_description:
+            self.fields.pop('description')
+        else:
+            self.fields['description'].required = True
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
         _now = now()
         if not self.event.cfp.deadline or self.event.cfp.deadline >= _now:  # No global deadline or still open
@@ -31,8 +40,6 @@ class InfoForm(forms.ModelForm):
 
         locale_names = dict(settings.LANGUAGES)
         self.fields['content_locale'].choices = [(a, locale_names[a]) for a in self.event.locales]
-
-        self.fields['abstract'].widget.attrs['rows'] = 2
 
         if readonly:
             for f in self.fields.values():
