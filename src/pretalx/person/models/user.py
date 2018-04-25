@@ -81,8 +81,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         help_text=_('Please use only characters in the latin alphabet, plus numbers and _-.'),
     )
     name = models.CharField(
-        max_length=120, null=True, blank=True, verbose_name=_('Name'),
-        help_text=_('Please enter the name you wish to be displayed.'),
+        max_length=120, verbose_name=_('Name'),
+        help_text=_('Please enter the name you wish to be displayed publically.'),
     )
     email = models.EmailField(
         verbose_name=_('E-Mail'),
