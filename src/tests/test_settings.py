@@ -12,6 +12,8 @@ DATA_DIR = tmpdir.name
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 
+INSTALLED_APPS.append('tests.dummy_app.PluginApp')  # noqa
+
 atexit.register(tmpdir.cleanup)
 
 EMAIL_BACKEND = 'django.core.mail.outbox'
