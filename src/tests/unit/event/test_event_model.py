@@ -79,3 +79,17 @@ def test_event_model_slug_uniqueness():
             email='orga@orga.org', locale_array='en,de', locale='en',
             date_from=datetime.date.today(), date_to=datetime.date.today()
         ).clean_fields()
+
+
+@pytest.mark.django_db
+def test_event_copy_settings(event, other_event, submission_type):
+    assert other_event.submission_types.count() != event.submission_types.count()
+    other_event.copy_data_from(event)
+    assert other_event.submission_types.count() == event.submission_types.count()
+
+
+@pytest.mark.django_db
+def test_event_get_default_type(event):
+    assert event.submission_types.count() == 1
+    event._get_default_submission_type()
+    assert event.submission_types.count() == 1
