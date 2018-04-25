@@ -7,7 +7,7 @@
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
     <h1>{{ cfp.headline|default:"" }}</h1>
     {{ cfp.text|rich_text }}
-    {% if request.event.settings.cfp_show_deadline %}
+    {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}
         <p>
             <strong>
                 {% blocktrans with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}

@@ -53,11 +53,12 @@ class CfP(LogMixin, models.Model):
     def is_open(self):
         if self.deadline is None:
             return True
-        return self.max_deadline >= now()
+        return self.max_deadline >= now() if self.max_deadline else True
 
     @cached_property
     def max_deadline(self):
         deadlines = list(self.event.submission_types.filter(deadline__isnull=False).values_list('deadline', flat=True))
         if self.deadline:
-            deadlines += [self.deadline]
-        return max(deadlines)
+            deadlines.append(self.deadline)
+        if deadlines:
+            return max(deadlines)
