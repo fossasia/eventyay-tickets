@@ -1,4 +1,6 @@
-from uuid import UUID
+import re
+import string
+import uuid
 
 from django.conf import settings
 from django.db import models
@@ -9,6 +11,7 @@ from django.utils.translation import pgettext, ugettext_lazy as _
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
+from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_submission
 from pretalx.submission.signals import submission_state_change
@@ -299,10 +302,17 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def uuid(self):
-        code = self.code
-        if len(code) < 16:
-            code = code + ' ' * (16 - len(code))
-        return UUID(bytes=code.encode())
+        return uuid.uuid5(GlobalSettings().get_instance_identifier(), self.code)
+
+    @cached_property
+    def frab_slug(self):
+        title = re.sub(r'\W+', '-', self.title)
+        legal_chars = string.ascii_letters + string.digits + '-'
+        pattern = f'[^{legal_chars}]+'
+        title = re.sub(pattern, '', title)
+        title = title.lower()
+        title = title.strip('_')
+        return f'{self.event.slug}-{self.pk}-{title}'
 
     @cached_property
     def integer_uuid(self):

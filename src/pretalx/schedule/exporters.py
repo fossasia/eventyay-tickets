@@ -22,6 +22,9 @@ class ScheduleData(BaseExporter):
 
     @cached_property
     def data(self):
+        if not self.schedule:
+            return []
+
         event = self.event
         schedule = self.schedule
         tz = pytz.timezone(event.timezone)

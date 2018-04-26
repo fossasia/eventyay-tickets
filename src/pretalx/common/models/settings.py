@@ -1,4 +1,5 @@
 import json
+import uuid
 from datetime import datetime
 
 from django.utils.translation import ugettext_noop
@@ -10,7 +11,15 @@ hierarkey = Hierarkey(attribute_name='settings')
 
 @hierarkey.set_global()
 class GlobalSettings(GlobalSettingsBase):
-    pass
+
+    def get_instance_identifier(self):
+        instance_identifier = self.settings.get('instance_identifier')
+        if not instance_identifier:
+            instance_identifier = uuid.uuid4()
+            self.settings.set('instance_identifier', str(instance_identifier))
+        else:
+            instance_identifier = uuid.UUID(instance_identifier)
+        return instance_identifier
 
 
 def i18n_unserialise(v):

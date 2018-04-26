@@ -17,7 +17,7 @@
                 <start>{{ talk.start|date:"H:i" }}</start>
                 <duration>{{ talk.export_duration }}</duration>
                 <room>{{ room.name }}</room>
-                <slug>{{ talk.submission.code }}</slug>
+                <slug>{{ talk.submission.frab_slug }}</slug>
                 <recording>
                     <license>{{ talk.submission.license }}</license>
                     <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>
