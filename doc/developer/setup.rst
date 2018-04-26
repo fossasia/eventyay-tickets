@@ -70,7 +70,7 @@ files::
     (env)$ python manage.py compilemessages
 
 If you need to test more complicated features, you should probably look into the
-:doc:`manual setup</administrator/installation_pip>` documentation to find the bits and pieces you
+:doc:`setup</administrator/installation>` documentation to find the bits and pieces you
 want to add to your development setup.
 
 Run the development server
@@ -153,5 +153,13 @@ To build the documentation, run the following command from the ``doc/`` director
     (env)$ make html
 
 You will now find the generated documentation in the ``doc/_build/html/`` subdirectory.
+If you find yourself working with the documentation more than a little, give ``sphinx-autobuild``
+a try::
+
+    (env)$ pip3 install sphinx-autobuild
+    (env)$ sphinx-autobuild . _build/html -p 8081
+
+Then, go to http://localhost:8081 for a version of the documentation that
+automatically re-builds when you save a changed source file.
 
 .. _compile it yourself: https://unix.stackexchange.com/a/332658/2013
