@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
-from pretalx.common.models.settings import settings_hierarkey
+from pretalx.common.models.settings import hierarkey
 from pretalx.common.urls import EventUrls, get_base_url
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
@@ -41,7 +41,7 @@ def event_logo_path(instance, filename):
     return f'{instance.slug}/img/{filename}'
 
 
-@settings_hierarkey.add()
+@hierarkey.add()
 class Event(LogMixin, models.Model):
     name = I18nCharField(
         max_length=200,
