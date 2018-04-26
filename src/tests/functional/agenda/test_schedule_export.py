@@ -263,7 +263,8 @@ def test_html_export_full(event, other_event, slot, past_slot):
 
     schedule_xml = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')).read()
     assert slot.submission.title in schedule_xml
-    assert past_slot.submission.code in schedule_xml
+    assert past_slot.submission.frab_slug in schedule_xml
+    assert str(past_slot.submission.uuid) in schedule_xml
 
     talk_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics')).read()
     assert slot.submission.title in talk_ics
