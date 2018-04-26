@@ -1,5 +1,5 @@
-Configure pretalx
-=================
+Configuration
+=============
 
 You can configure pretalx in two different ways: using config files or
 environment variables. You can combine those two options, and their precedence

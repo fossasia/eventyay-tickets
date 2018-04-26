@@ -1,5 +1,5 @@
-Installation using pip
-=======================
+Installation
+============
 
 This guide will help you to install pretalx on a Linux distribution. It should be
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.

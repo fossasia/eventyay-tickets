@@ -3167,46 +3167,51 @@ a .fa, a .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li a span.t
     font-weight: bold;
     display: block;
     color: #fff;
-    background: #6ab0de;
+    background: #4697c9;
     margin: -12px;
     padding: 6px 12px;
     margin-bottom: 12px
 }
 
 .wy-alert.wy-alert-danger, .rst-content .wy-alert-danger.note, .rst-content .wy-alert-danger.attention, .rst-content .wy-alert-danger.caution, .rst-content .danger, .rst-content .error, .rst-content .wy-alert-danger.hint, .rst-content .wy-alert-danger.important, .rst-content .wy-alert-danger.tip, .rst-content .wy-alert-danger.warning, .rst-content .wy-alert-danger.seealso, .rst-content .wy-alert-danger.admonition-todo {
-    background: #fdf3f2
+    background: white;
+    border: 1px solid #b23e65;
 }
 
 .wy-alert.wy-alert-danger .wy-alert-title, .rst-content .wy-alert-danger.note .wy-alert-title, .rst-content .wy-alert-danger.attention .wy-alert-title, .rst-content .wy-alert-danger.caution .wy-alert-title, .rst-content .danger .wy-alert-title, .rst-content .error .wy-alert-title, .rst-content .wy-alert-danger.hint .wy-alert-title, .rst-content .wy-alert-danger.important .wy-alert-title, .rst-content .wy-alert-danger.tip .wy-alert-title, .rst-content .wy-alert-danger.warning .wy-alert-title, .rst-content .wy-alert-danger.seealso .wy-alert-title, .rst-content .wy-alert-danger.admonition-todo .wy-alert-title, .wy-alert.wy-alert-danger .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-danger .admonition-title, .rst-content .wy-alert-danger.note .admonition-title, .rst-content .wy-alert-danger.attention .admonition-title, .rst-content .wy-alert-danger.caution .admonition-title, .rst-content .danger .admonition-title, .rst-content .error .admonition-title, .rst-content .wy-alert-danger.hint .admonition-title, .rst-content .wy-alert-danger.important .admonition-title, .rst-content .wy-alert-danger.tip .admonition-title, .rst-content .wy-alert-danger.warning .admonition-title, .rst-content .wy-alert-danger.seealso .admonition-title, .rst-content .wy-alert-danger.admonition-todo .admonition-title {
-    background: #f29f97
+    background: #b23e65
 }
 
 .wy-alert.wy-alert-warning, .rst-content .wy-alert-warning.note, .rst-content .attention, .rst-content .caution, .rst-content .wy-alert-warning.danger, .rst-content .wy-alert-warning.error, .rst-content .wy-alert-warning.hint, .rst-content .wy-alert-warning.important, .rst-content .wy-alert-warning.tip, .rst-content .warning, .rst-content .wy-alert-warning.seealso, .rst-content .admonition-todo {
-    background: #ffedcc
+    border: 1px solid #f9a557;
+    background: white;
 }
 
 .wy-alert.wy-alert-warning .wy-alert-title, .rst-content .wy-alert-warning.note .wy-alert-title, .rst-content .attention .wy-alert-title, .rst-content .caution .wy-alert-title, .rst-content .wy-alert-warning.danger .wy-alert-title, .rst-content .wy-alert-warning.error .wy-alert-title, .rst-content .wy-alert-warning.hint .wy-alert-title, .rst-content .wy-alert-warning.important .wy-alert-title, .rst-content .wy-alert-warning.tip .wy-alert-title, .rst-content .warning .wy-alert-title, .rst-content .wy-alert-warning.seealso .wy-alert-title, .rst-content .admonition-todo .wy-alert-title, .wy-alert.wy-alert-warning .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-warning .admonition-title, .rst-content .wy-alert-warning.note .admonition-title, .rst-content .attention .admonition-title, .rst-content .caution .admonition-title, .rst-content .wy-alert-warning.danger .admonition-title, .rst-content .wy-alert-warning.error .admonition-title, .rst-content .wy-alert-warning.hint .admonition-title, .rst-content .wy-alert-warning.important .admonition-title, .rst-content .wy-alert-warning.tip .admonition-title, .rst-content .warning .admonition-title, .rst-content .wy-alert-warning.seealso .admonition-title, .rst-content .admonition-todo .admonition-title {
-    background: #f0b37e
+    background: #f9a557
 }
 
 .wy-alert.wy-alert-info, .rst-content .note, .rst-content .wy-alert-info.attention, .rst-content .wy-alert-info.caution, .rst-content .wy-alert-info.danger, .rst-content .wy-alert-info.error, .rst-content .wy-alert-info.hint, .rst-content .wy-alert-info.important, .rst-content .wy-alert-info.tip, .rst-content .wy-alert-info.warning, .rst-content .seealso, .rst-content .wy-alert-info.admonition-todo {
-    background: #e7f2fa
+    border: 1px solid #4697c9;
+    background: white;
 }
 
 .wy-alert.wy-alert-info .wy-alert-title, .rst-content .note .wy-alert-title, .rst-content .wy-alert-info.attention .wy-alert-title, .rst-content .wy-alert-info.caution .wy-alert-title, .rst-content .wy-alert-info.danger .wy-alert-title, .rst-content .wy-alert-info.error .wy-alert-title, .rst-content .wy-alert-info.hint .wy-alert-title, .rst-content .wy-alert-info.important .wy-alert-title, .rst-content .wy-alert-info.tip .wy-alert-title, .rst-content .wy-alert-info.warning .wy-alert-title, .rst-content .seealso .wy-alert-title, .rst-content .wy-alert-info.admonition-todo .wy-alert-title, .wy-alert.wy-alert-info .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-info .admonition-title, .rst-content .note .admonition-title, .rst-content .wy-alert-info.attention .admonition-title, .rst-content .wy-alert-info.caution .admonition-title, .rst-content .wy-alert-info.danger .admonition-title, .rst-content .wy-alert-info.error .admonition-title, .rst-content .wy-alert-info.hint .admonition-title, .rst-content .wy-alert-info.important .admonition-title, .rst-content .wy-alert-info.tip .admonition-title, .rst-content .wy-alert-info.warning .admonition-title, .rst-content .seealso .admonition-title, .rst-content .wy-alert-info.admonition-todo .admonition-title {
-    background: #6ab0de
+    background: #4697c9
 }
 
 .wy-alert.wy-alert-success, .rst-content .wy-alert-success.note, .rst-content .wy-alert-success.attention, .rst-content .wy-alert-success.caution, .rst-content .wy-alert-success.danger, .rst-content .wy-alert-success.error, .rst-content .hint, .rst-content .important, .rst-content .tip, .rst-content .wy-alert-success.warning, .rst-content .wy-alert-success.seealso, .rst-content .wy-alert-success.admonition-todo {
-    background: #dbfaf4
+    border: 1px solid #3aa57c;
+    background: white;
 }
 
 .wy-alert.wy-alert-success .wy-alert-title, .rst-content .wy-alert-success.note .wy-alert-title, .rst-content .wy-alert-success.attention .wy-alert-title, .rst-content .wy-alert-success.caution .wy-alert-title, .rst-content .wy-alert-success.danger .wy-alert-title, .rst-content .wy-alert-success.error .wy-alert-title, .rst-content .hint .wy-alert-title, .rst-content .important .wy-alert-title, .rst-content .tip .wy-alert-title, .rst-content .wy-alert-success.warning .wy-alert-title, .rst-content .wy-alert-success.seealso .wy-alert-title, .rst-content .wy-alert-success.admonition-todo .wy-alert-title, .wy-alert.wy-alert-success .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-success .admonition-title, .rst-content .wy-alert-success.note .admonition-title, .rst-content .wy-alert-success.attention .admonition-title, .rst-content .wy-alert-success.caution .admonition-title, .rst-content .wy-alert-success.danger .admonition-title, .rst-content .wy-alert-success.error .admonition-title, .rst-content .hint .admonition-title, .rst-content .important .admonition-title, .rst-content .tip .admonition-title, .rst-content .wy-alert-success.warning .admonition-title, .rst-content .wy-alert-success.seealso .admonition-title, .rst-content .wy-alert-success.admonition-todo .admonition-title {
-    background: #1abc9c
+    background: #3aa57c
 }
 
 .wy-alert.wy-alert-neutral, .rst-content .wy-alert-neutral.note, .rst-content .wy-alert-neutral.attention, .rst-content .wy-alert-neutral.caution, .rst-content .wy-alert-neutral.danger, .rst-content .wy-alert-neutral.error, .rst-content .wy-alert-neutral.hint, .rst-content .wy-alert-neutral.important, .rst-content .wy-alert-neutral.tip, .rst-content .wy-alert-neutral.warning, .rst-content .wy-alert-neutral.seealso, .rst-content .wy-alert-neutral.admonition-todo {
-    background: #f3f6f6
+    background: white;
+    border: 1px solid #404040;
 }
 
 .wy-alert.wy-alert-neutral .wy-alert-title, .rst-content .wy-alert-neutral.note .wy-alert-title, .rst-content .wy-alert-neutral.attention .wy-alert-title, .rst-content .wy-alert-neutral.caution .wy-alert-title, .rst-content .wy-alert-neutral.danger .wy-alert-title, .rst-content .wy-alert-neutral.error .wy-alert-title, .rst-content .wy-alert-neutral.hint .wy-alert-title, .rst-content .wy-alert-neutral.important .wy-alert-title, .rst-content .wy-alert-neutral.tip .wy-alert-title, .rst-content .wy-alert-neutral.warning .wy-alert-title, .rst-content .wy-alert-neutral.seealso .wy-alert-title, .rst-content .wy-alert-neutral.admonition-todo .wy-alert-title, .wy-alert.wy-alert-neutral .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-neutral .admonition-title, .rst-content .wy-alert-neutral.note .admonition-title, .rst-content .wy-alert-neutral.attention .admonition-title, .rst-content .wy-alert-neutral.caution .admonition-title, .rst-content .wy-alert-neutral.danger .admonition-title, .rst-content .wy-alert-neutral.error .admonition-title, .rst-content .wy-alert-neutral.hint .admonition-title, .rst-content .wy-alert-neutral.important .admonition-title, .rst-content .wy-alert-neutral.tip .admonition-title, .rst-content .wy-alert-neutral.warning .admonition-title, .rst-content .wy-alert-neutral.seealso .admonition-title, .rst-content .wy-alert-neutral.admonition-todo .admonition-title {
@@ -3215,7 +3220,7 @@ a .fa, a .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li a span.t
 }
 
 .wy-alert.wy-alert-neutral a, .rst-content .wy-alert-neutral.note a, .rst-content .wy-alert-neutral.attention a, .rst-content .wy-alert-neutral.caution a, .rst-content .wy-alert-neutral.danger a, .rst-content .wy-alert-neutral.error a, .rst-content .wy-alert-neutral.hint a, .rst-content .wy-alert-neutral.important a, .rst-content .wy-alert-neutral.tip a, .rst-content .wy-alert-neutral.warning a, .rst-content .wy-alert-neutral.seealso a, .rst-content .wy-alert-neutral.admonition-todo a {
-    color: #5caa8d
+    color: #3aa57c
 }
 
 .wy-alert p:last-child, .rst-content .note p:last-child, .rst-content .attention p:last-child, .rst-content .caution p:last-child, .rst-content .danger p:last-child, .rst-content .error p:last-child, .rst-content .hint p:last-child, .rst-content .important p:last-child, .rst-content .tip p:last-child, .rst-content .warning p:last-child, .rst-content .seealso p:last-child, .rst-content .admonition-todo p:last-child {
@@ -3252,7 +3257,7 @@ a .fa, a .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li a span.t
 }
 
 .wy-tray-container li.wy-tray-item-info {
-    background: #1c4a3b
+    background: #1a4c3b
 }
 
 .wy-tray-container li.wy-tray-item-warning {
@@ -3390,7 +3395,7 @@ button[disabled] {
 }
 
 .btn-info {
-    background-color: #1c4a3b !important
+    background-color: #1a4c3b !important
 }
 
 .btn-info:hover {
@@ -3445,7 +3450,7 @@ button[disabled] {
 
 .btn-link {
     background-color: transparent !important;
-    color: #1c4a3b;
+    color: #1a4c3b;
     box-shadow: none;
     border-color: transparent !important
 }
@@ -3518,7 +3523,7 @@ button[disabled] {
 }
 
 .wy-dropdown-menu > dd > a:hover {
-    background: #5caa8d;
+    background: #3aa57c;
     color: #fff
 }
 
@@ -3567,7 +3572,7 @@ button[disabled] {
 }
 
 .wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a:hover {
-    background: #5caa8d;
+    background: #3aa57c;
     color: #fff
 }
 
@@ -4048,7 +4053,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled] {
 }
 
 .wy-inline-validate.wy-inline-validate-info .wy-input-context {
-    color: #5caa8d;
+    color: #3aa57c;
 }
 
 .rotate-90 {
@@ -4302,13 +4307,13 @@ input[type="radio"][disabled], input[type="checkbox"][disabled] {
 }
 
 a {
-    color: #5caa8d;
+    color: #3aa57c;
     text-decoration: none;
     cursor: pointer
 }
 
 a:hover {
-    color: #1c4a3b;
+    color: #1a4c3b;
 }
 
 a:visited {
@@ -4365,7 +4370,7 @@ a.wy-text-warning:hover {
 }
 
 .wy-text-info {
-    color: #1c4a3b !important
+    color: #1a4c3b !important
 }
 
 a.wy-text-info:hover {
@@ -5117,7 +5122,7 @@ div[class^='highlight'] pre {
     display: block;
     position: relative;
     font-size: 90%;
-    color: #5caa8d
+    color: #3aa57c
 }
 
 .wy-menu-vertical a:hover {
@@ -5144,7 +5149,7 @@ div[class^='highlight'] pre {
     padding: .809em;
     margin-bottom: .809em;
     z-index: 200;
-    background-color: #1c4a3b;
+    background-color: #1a4c3b;
     text-align: center;
     padding: .809em;
     display: block;
@@ -5163,7 +5168,7 @@ div[class^='highlight'] pre {
     margin: auto auto .809em auto;
     height: 45px;
     width: 45px;
-    background-color: #1c4a3b;
+    background-color: #1a4c3b;
     border-radius: 100%
 }
 
@@ -5172,8 +5177,8 @@ div[class^='highlight'] pre {
     font-size: 100%;
     font-weight: bold;
     display: inline-block;
-    margin-top: .405em;
-    margin-bottom: .809em;
+    margin-top: -.405em;
+    margin-bottom: -.809em;
 }
 
 .wy-side-nav-search > a:hover, .wy-side-nav-search .wy-dropdown > a:hover {
@@ -5279,7 +5284,7 @@ div.version {
 
 .wy-nav-top {
     display: none;
-    background: #1c4a3b;
+    background: #1a4c3b;
     color: #fff;
     padding: .4045em .809em;
     position: relative;
@@ -5307,7 +5312,7 @@ div.version {
     margin-right: 12px;
     height: 45px;
     width: 45px;
-    background-color: #1c4a3b;
+    background-color: #1a4c3b;
     padding: 5px;
     border-radius: 100%
 }
@@ -5493,7 +5498,7 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 }
 
 .rst-versions a {
-    color: #1c4a3b;
+    color: #1a4c3b;
     text-decoration: none
 }
 
@@ -5836,7 +5841,7 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 }
 
 .rst-content a tt, .rst-content a tt, .rst-content a code {
-    color: #1c4a3b
+    color: #1a4c3b
 }
 
 .rst-content dl {
@@ -5865,14 +5870,14 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     font-size: 90%;
     line-height: normal;
     background: #e7f2fa;
-    color: #1c4a3b;
-    border-top: solid 3px #6ab0de;
+    color: #1a4c3b;
+    border-top: solid 3px #4697c9;
     padding: 6px;
     position: relative
 }
 
 .rst-content dl:not(.docutils) dt:before {
-    color: #6ab0de
+    color: #4697c9
 }
 
 .rst-content dl:not(.docutils) dt .headerlink {
@@ -5998,24 +6003,25 @@ span[id*='MathJax-Span'] {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    color: #1c4a3b;
+    color: black;
     background-color: rgba(255, 255, 255, 0.76);
-    border: 1px solid #1c4a3b;
-    border-top: 4px solid #1c4a3b;
+    border: 1px solid #3aa57c;
+    border-left: 4px solid #3aa57c;
     padding: 20px;
     padding-bottom: 0;
     margin: 10px;
     font-weight: normal;
 }
 a.sectionbox:hover {
-    color: #5caa8d;
+    color: #3aa57c;
 }
 a {
-    color: #5caa8d;
+    color: #3aa57c;
     font-weight: bold;
 }
 .sectionbox .heading {
     font-weight: bold;
+    color: #3aa57c;
 }
 .sectionbox .text {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -6048,7 +6054,7 @@ img.screenshot, a.screenshot img {
     -webkit-font-smoothing: antialiased;
 }
 .versionmodified {
-    background: #6ab0de;
+    background: #4697c9;
     font-weight: bold;
     display: block;
     color: #fff;
