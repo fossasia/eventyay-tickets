@@ -21,6 +21,8 @@ def test_missing_answers_submission_question(submission, target, question):
 def test_question_base_properties(submission, question):
     a = Answer.objects.create(answer='True', submission=submission, question=question)
     assert a.event == question.event
+    assert str(a.question.question) in str(a.question)
+    assert str(a.question.question) in str(a)
 
 
 @pytest.mark.django_db

@@ -31,4 +31,5 @@ def test_average_review_score(submission, scores, expected):
 ))
 def test_review_score_display(submission, score, override, expected, speaker):
     r = Review.objects.create(submission=submission, user=speaker, score=score, override_vote=override)
+    assert submission.title in str(r)
     assert r.display_score == expected

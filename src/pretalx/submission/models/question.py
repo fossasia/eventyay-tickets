@@ -21,11 +21,6 @@ class AllQuestionManager(models.Manager):
     pass
 
 
-class ReviewQuestionManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().exclude(active=False).filter(target=QuestionTarget.REVIEWER)
-
-
 class QuestionVariant(Choices):
     NUMBER = 'number'
     STRING = 'string'

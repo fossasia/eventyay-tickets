@@ -8,6 +8,7 @@ def test_can_create_feedback(past_slot, client):
     assert response.status_code == 200
     assert past_slot.submission.feedback.first().review == 'cool!'
     assert past_slot.submission.feedback.first().speaker == past_slot.submission.speakers.first()
+    assert past_slot.submission.title in str(past_slot.submission.feedback.first())
 
 
 @pytest.mark.django_db()

@@ -71,11 +71,6 @@ class SubmissionManager(models.Manager):
         return super().get_queryset().exclude(state=SubmissionStates.DELETED)
 
 
-class TalkManager(SubmissionManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
-
-
 class DeletedSubmissionManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(state=SubmissionStates.DELETED)
@@ -162,7 +157,6 @@ class Submission(LogMixin, models.Model):
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = SubmissionManager()
-    talks = TalkManager()
     deleted_objects = DeletedSubmissionManager()
 
     class urls(EventUrls):

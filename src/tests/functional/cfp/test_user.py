@@ -116,6 +116,7 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
     assert submission.resources.count() == 2
     resource_one = submission.resources.first()
     resource_two = submission.resources.last()
+    assert submission.title in str(resource_one)
     f = SimpleUploadedFile('testfile.txt', b'file_content')
     data = {
         'title': 'Ein ganz neuer Titel',

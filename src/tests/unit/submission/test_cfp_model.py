@@ -22,6 +22,7 @@ def test_cfp_model_is_open(event, deadline, deadlines, is_open):
     tz = pytz.timezone(event.timezone)
     event.cfp.deadline = tz.localize(deadline) if deadline else deadline
     event.cfp.save()
+    assert event.slug in str(event.cfp)
 
     assert event.submission_types.count() == 1
 

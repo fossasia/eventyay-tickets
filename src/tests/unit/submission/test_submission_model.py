@@ -174,6 +174,25 @@ def test_withdraw_fail(submission, state):
     assert submission.logged_actions().count() == 0
 
 
+@pytest.mark.parametrize('state', (
+    SubmissionStates.ACCEPTED,
+    SubmissionStates.CONFIRMED,
+    SubmissionStates.REJECTED,
+    SubmissionStates.CANCELED,
+    SubmissionStates.WITHDRAWN,
+))
+@pytest.mark.django_db
+def test_make_submitted(submission, state):
+    submission.state = state
+    submission.save()
+
+    submission.make_submitted(force=True)
+    assert submission.state == SubmissionStates.SUBMITTED
+    assert submission.event.queued_mails.count() == 0
+    assert submission.event.wip_schedule.talks.count() == 0
+    assert submission.logged_actions().count() == 0
+
+
 @pytest.mark.django_db
 def test_set_state_error_msg(submission):
     submission.state = SubmissionStates.SUBMITTED
