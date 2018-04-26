@@ -247,7 +247,7 @@ class Event(LogMixin, models.Model):
         return self.plugins.split(',')
 
     def _get_default_submission_type(self):
-        from pretalx.submission.models import Submission, SubmissionType
+        from pretalx.submission.models import SubmissionType
         sub_type = SubmissionType.objects.filter(event=self).first()
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')

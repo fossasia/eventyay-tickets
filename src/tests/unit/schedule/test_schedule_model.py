@@ -1,6 +1,8 @@
 import pytest
+from django.core import mail as djmail
 from django.utils.timezone import now
 
+from pretalx.mail.models import QueuedMail
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models import Submission
 
@@ -133,3 +135,31 @@ def test_is_archived(event):
     assert v1_schedule.is_archived
     assert not v2_schedule.is_archived
     assert not unreleased_schedule.is_archived
+
+
+@pytest.mark.django_db
+def test_schedule_changes(event, slot, room):
+    djmail.outbox = []
+    QueuedMail.objects.filter(sent__isnull=True).update(sent=now())
+    assert slot.schedule != event.wip_schedule
+    current_slot = slot.submission.slots.get(schedule=event.wip_schedule)
+    current_slot.room = room
+    current_slot.start = slot.start
+    current_slot.end = slot.end
+    current_slot.save()
+    slot.room = None
+    slot.start = None
+    slot.end = None
+    slot.is_visible = False
+    slot.save()
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+    schedule, _ = event.wip_schedule.freeze('test')
+    assert schedule.changes == {
+        'count': 1,
+        'action': 'update',
+        'new_talks': [current_slot],
+        'canceled_talks': [],
+        'moved_talks': [],
+    }
+    assert len(djmail.outbox) == 0
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == slot.submission.speakers.count()

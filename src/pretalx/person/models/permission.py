@@ -8,6 +8,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls, build_absolute_uri
 
 
+# TODO: Delete this unused class in June 2018 when we're sure migrations went well
 class EventPermission(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event',
