@@ -219,16 +219,19 @@ We recommend reading about setting `strong encryption settings`_ for your web se
 Yay, you've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
 the administrator you configured above. You can now create an event, and off you go!
 
-Step 8: Validate the installation
----------------------------------
+Step 8: Check the installation
+-------------------------------
 
-You can make sure the web interface is running fine::
+You can make sure the web interface is up and look for any issues with::
 
     # journalctl -u pretalx-web
 
 And same for the celery workers (i.e. in case the emails are not sent)::
 
     # journalctl -u pretalx-worker
+
+In the startup output, pretalx also lists its logging directory, which is also
+a good place to look for the reason for issues.
 
 
 Next Steps: Updates

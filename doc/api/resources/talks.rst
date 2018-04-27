@@ -4,8 +4,9 @@ Talks
 Resource description
 --------------------
 
-The talk resource is the same as the submission resource, but will only return talks
-that already have a slot on the current schedule. It contains the following public fields:
+The talk resource is the same as the submission resource, but will limit the returned
+submissions to talks that already have a slot on the current schedule. It contains the
+following public fields:
 
 .. rst-class:: rest-resource-table
 

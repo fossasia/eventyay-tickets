@@ -133,10 +133,10 @@ binary ``*.mo`` counterparts::
 
     (env)$ python manage.py compilemessages
 
-pretalx currently only supports events in English, or German, or both. To translate pretalx to a new
+pretalx by default supports events in English, or German, or both. To translate pretalx to a new
 language, add the language code and natural name to the ``LANGUAGES`` variable in the
 ``settings.py``. Depending on the completeness of your changes, and your commitment to maintain them
-in the future, we'll gladly talk about merging them into core.
+in the future, we can talk about merging them into core.
 
 
 Working with the documentation

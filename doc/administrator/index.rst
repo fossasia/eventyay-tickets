@@ -5,8 +5,9 @@ Administrator documentation
 
 You want to install pretalx on your own server? That's great! We have 
 documentation for a standard installation using pip in an unprivileged local
-user account. If you want a more out-of-the-box way of running things, head
-over to our `docker-compose setup`.
+user account. If you want a more out-of-the-box way of running pretalx, head
+over to our `docker-compose setup` (but note that the pip installation is by
+far better tested and supported than the docker setup).
 
 The following documents an uncomplicated setup without going into details on
 performance tuning, alternate caching backends, etc. – if you have questions,

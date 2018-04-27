@@ -218,9 +218,8 @@ The celery section
 The redis section
 -----------------
 
-If a redis server is configured, pretalx can use it for locking, caching and
-session storage to speed up various operations. You will need to install
-``django_redis``.
+If you configure a redis server, pretalx can use it for locking, caching and
+session storage to speed up operations. You will need to install ``django_redis``.
 
 ``location``
 ~~~~~~~~~~~~

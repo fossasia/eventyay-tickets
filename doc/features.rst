@@ -17,20 +17,22 @@ Talk submission
   publish a beautiful (we support full *markdown*) CfP in *different languages* and make it public
   after inspecting it.
 - **Build a great team:** pretalx allows you to invite further members to your crew seamlessly, and
-  has already parts of a role-based permission system, where you differentiate between superusers,
-  crew, reviewers, etc.
+  has features a role-based permission system, where you differentiate between superusers, crew,
+  reviewers, etc.
 - **Organize the talks:** You can offer different submission types, with default lengths, so that
   speakers can tell you how much time (or which format, e.g. workshops) they require right at the
   start.
 - **Work with multi-language events:** pretalx allows you to choose the locales offered at your
   conference, and speakers can then choose the language they feel most comfortable in for their
-  talk. Subsequently, speakers will receive all emails in that language.
+  talk. Subsequently, speakers will receive all emails in that language. pretalx supports
+  English and German, but is open to new languages.
 - **Ask custom questions:** If you need custom information from your submitters, you can add
   questions to your CfP. We support a wide variety of answer types, such as free-text, number input,
   and choices. (Answers can be optional, too.) You'll see the results as manageable
-  statistics.
+  statistics. You can ask questions either per speaker or per submission.
 - **Set a deadline:** You can configure a deadline for your CfP and choose to show the countdown
-  publicly.
+  publicly. You can also add deadlines to submission types, to close them before the general deadline,
+  or keep them available for longer than that.
 - **Accept or reject submissions:** After careful consideration, you can accept or reject
   submissions. Speakers will then receive a notification (if you choose to), and asked to confirm
   their talk.
@@ -38,7 +40,7 @@ Talk submission
   scores, and reviewer teams that can work separately from the general orga team.
 - **Strong opinions:** Permit reviewers to issue override votes to put a
   submission to the top or bottom of the ranking, for a fixed amount of times
-  per event.
+  per event and reviewer.
 
 Scheduling
 ~~~~~~~~~~
@@ -49,16 +51,14 @@ Scheduling
   happy with. Play around with it freely.
 - **Build your schedule offline:** The initial version of a schedule is often hard to figure out.
   You can print out proportionally sized cards of the talks to cut out and play around with.
-- **Publish your schedule:** Whenever something has changed noticeably, publish a new schedule by
-  naming it and clicking a button. Speakers will receive notifications if the new release changes
-  their talk.
-- **Interface:** You can export your schedule in machine readable format (a JSON, XML, or XCAL),
-  and use it elsewhere or even import it in other pretalx instances.
+- **Publish your schedule:** Whenever something has changed noticeably, publish a new schedule.
+  Speakers will receive notifications if the new release changes their talk time or location.
 - **Transparent updates:** pretalx provides a public changelog and an Atom feed, so that your
   participants can receive notifications as soon as you release a new schedule version.
 - **Integrate recordings:** Unless the speakers have set the do-not-record flag, you may sync and
   integrate the recording in the talk's page for the participants' convenience.
-- **Provide feedback:** If the speakers wish, they can receive anonymous feedback.
+- **Provide feedback:** Attendees can provide anonymous feedback to speakers. The feedback will
+  be visible to the speakers themselves and the organisers, but not publicly.
 
 Speaker management
 ~~~~~~~~~~~~~~~~~~
@@ -79,30 +79,18 @@ Customization
   precisely what you want it to say.
 - **Colorize:** Change your event's primary color to fit your event, your design, or your organizer.
 - **Customize:** If changing the site's primary color is not adequate for you, you can also upload
-  custom CSS files and change anything you want to look differently.
+  custom CSS files and change anything you want to fit with the look of your event.
 - **Link:** You can configure a separate domain for each of your events, in case you have event-
   specific domains, but want to keep all your events on the same instance.
 
-Features under development
---------------------------
+Integration
+~~~~~~~~~~~
 
-- **Tracks:** Introduce a concept of tracks that brings track colors, and track-bound review teams.
-- **Automate:** Use our REST API to automate anything related to your conference.
-
-Planned features
-----------------
-
-- More detailed permissions system: Crew and superusers were enough for the beginning, but now there
-  needs to be clear separation between crew and reviewers, and even track based reviewer teams.
-  (`#78 <https://github.com/pretalx/pretalx/issues/78>`_)
-- Offer 'anywhere in the world' deadline timing. (`#81
-  <https://github.com/pretalx/pretalx/issues/81>`_)
-- Warn when scheduling a speaker in more than one talk at the same time. (`#46
-  <https://github.com/pretalx/pretalx/issues/46>`_)
-- Offline schedule display, that saves a version of the schedule page in the browser cache and
-  displays it (with a warning) when the user is offline (`#15
-  <https://github.com/pretalx/pretalx/issues/15>`_)
-- Allow speakers to submit their availability (`#79
-  <https://github.com/pretalx/pretalx/issues/79>`_)
+- **Automate:** pretalx comes with a read-only, well-documented RESTful API to make integration
+  with pretalx as easy and fun as possible.
+- **Interface:** You can export your schedule in machine readable formats ( JSON, XML, XCAL, iCal),
+  and use it elsewhere or even import it in other pretalx instances.
+- **Adapt:** You can develop your own pretalx plugins, which can be custom exporters, pages, or
+  anything that makes pretalx fit in with every need of your event.
 
 .. _issue: https://github.com/pretalx/pretalx/issues/
