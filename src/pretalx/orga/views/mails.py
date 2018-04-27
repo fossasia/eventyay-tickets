@@ -243,10 +243,11 @@ class TemplateList(PermissionRequired, TemplateView):
         context['ack'] = MailTemplateForm(instance=ack, read_only=True, event=self.request.event)
         context['reject'] = MailTemplateForm(instance=reject, read_only=True, event=self.request.event)
         context['update'] = MailTemplateForm(instance=update, read_only=True, event=self.request.event)
+        pks = [template.pk if template else None for template in [accept, ack, reject, update]]
         context['other'] = [
             MailTemplateForm(instance=template, read_only=True, event=self.request.event)
             for template
-            in self.request.event.mail_templates.exclude(pk__in=[accept.pk, ack.pk, reject.pk, update.pk])
+            in self.request.event.mail_templates.exclude(pk__in=[pk for pk in pks if pk])
         ]
         return context
 
