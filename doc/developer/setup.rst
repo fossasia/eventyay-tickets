@@ -54,7 +54,7 @@ Working with the code
 The first thing you need are all the main application's dependencies::
 
     (env)$ cd src/
-    (env)$ pip3 install -r requirements/production.txt -r requirements/dev.txt -r requirements/fancy.txt
+    (env)$ pip3 install -r requirements.txt -r requirements/dev.txt -r requirements/fancy.txt
 
 Then, create the local database::
 
