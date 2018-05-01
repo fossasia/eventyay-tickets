@@ -93,7 +93,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
     custom_domain = forms.URLField(
         label=_('Custom domain'),
-        help_text=_('Enter a custom domain, such as https://my.event.org'),
+        help_text=_('Enter a custom domain, such as https://my.event.example.org'),
         required=False,
     )
     show_on_dashboard = forms.BooleanField(
