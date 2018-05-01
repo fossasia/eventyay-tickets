@@ -1,11 +1,13 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
+{% load formset_tags %}
 {% load i18n %}
 {% load review_score %}
 {% load staticfiles %}
 
 {% block submission_content %}
+    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
     {% if not submission %}
     <legend>{% trans "Create submission as orga" %}</legend>
     {% endif %}
@@ -36,6 +38,66 @@
         {% bootstrap_field form.image layout='event' %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
+        {% else %}
+            <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
+                {{ formset.management_form }}
+                {% bootstrap_formset_errors formset %}
+                <label class="col-md-3 col-form-label" for="resources">{% trans "Resources" %}</label>
+                <div data-formset-body class="col-md-9">
+                    {% for form in formset %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="resource-option-row">
+                                <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
+                                    {% bootstrap_form_errors form %}
+                                    {% bootstrap_field form.description layout='inline' %}
+                                    {% bootstrap_field form.resource layout='inline'  %}
+                                </div>
+                                {% if action != 'view' %}
+                                <div class="resource-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form>
+                            <div class="sr-only">
+                                {{ formset.empty_form.id }}
+                                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                            </div>
+                            <div class="resource-option-row">
+                                <div class="resource-option-input">
+                                    {% bootstrap_field formset.empty_form.description layout='inline' %}
+                                    {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                                </div>
+                                <div class="resource-option-delete">
+                                    <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
+                {% if action != 'view' %}
+                <div class="col-md-3 offset-md-9">
+                    <button type="button" class="btn btn-info btn-block" data-formset-add>
+                        <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
+                </div>
+                {% endif %}
+            </div>
+                <script>jQuery(function($) {
+                    $(".formset").formset({
+                        animateForms: true
+                    });
+                    });</script>
         {% endif %}
 
         {% include "orga/submit_row.html" %}

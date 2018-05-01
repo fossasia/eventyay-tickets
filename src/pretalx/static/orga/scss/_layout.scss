@@ -160,6 +160,31 @@ footer {
   }
 
 }
+.resource-option-row, .resource-option-input {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-left: 8px;
+
+  .resource-option-delete {
+    float: right;
+    padding-right: 8px;
+    flex-grow: 0;
+  }
+  .form-group {
+    display: flex;
+    padding-right: 16px;
+
+    .bootstrap-multi-input {
+      flex-grow: 1;
+    }
+
+    input {
+      width: 280px;
+      height: 2rem;
+    }
+  }
+}
 .avatar-form {
   display: flex;
   align-items: flex-start;

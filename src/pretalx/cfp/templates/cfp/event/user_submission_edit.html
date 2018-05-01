@@ -46,11 +46,11 @@
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
-                <div class="col-md-3">{% trans "Resources" %}</div>
-                <div class="alert alert-info col-md-9 ml-auto">
-                    {% trans "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
-                </div>
+                <label class="col-md-3 col-form-label">{% trans "Resources" %}</label>
                 <div data-formset-body>
+                    <div class="alert alert-info col-md-9 ml-auto">
+                        {% trans "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
+                    </div>
                     {% for form in formset %}
                         <div data-formset-form>
                             <div class="sr-only">
@@ -94,9 +94,9 @@
                     {% endescapescript %}
                 </script>
                 {% if action != 'view' %}
-                <div class="col-md-9 ml-auto">
-                    <button type="button" class="btn btn-info" data-formset-add>
-                        <i class="fa fa-plus"></i> {% trans "Add a new option" %}</button>
+                <div class="col-md-3 offset-md-9">
+                    <button type="button" class="btn btn-info btn-block" data-formset-add>
+                        <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
                 </div>
                 {% endif %}
             </div>
@@ -106,7 +106,7 @@
                     });
                     });</script>
         {% if can_edit %}
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-md-3 ml-auto">
                     <button type="submit" class="btn btn-block btn-success btn-lg">
                         {% trans "Save" %}

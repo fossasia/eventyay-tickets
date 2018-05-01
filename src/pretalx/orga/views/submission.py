@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.db import transaction
+from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -18,9 +19,9 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import SpeakerProfile, User
-from pretalx.submission.forms import SubmissionFilterForm
+from pretalx.submission.forms import ResourceForm, SubmissionFilterForm
 from pretalx.submission.models import (
-    Question, Submission, SubmissionError, SubmissionStates,
+    Question, Resource, Submission, SubmissionError, SubmissionStates,
 )
 
 
@@ -225,11 +226,65 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     template_name = 'orga/submission/content.html'
     permission_required = 'orga.view_submissions'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = self.formset
+        return context
+
     @cached_property
     def write_permission_required(self):
         if 'code' in self.kwargs:
             return 'submission.edit_submission'
         return 'orga.create_submission'
+
+    @cached_property
+    def formset(self):
+        formset_class = inlineformset_factory(
+            Submission, Resource, form=ResourceForm, formset=BaseModelFormSet,
+            can_delete=True, extra=0,
+        )
+        submission = self.get_object()
+        return formset_class(
+            self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
+            queryset=submission.resources.all() if submission else Resource.objects.none(),
+            prefix='resource',
+        )
+
+    def save_formset(self, obj):
+        if self.formset.is_valid():
+            for form in self.formset.initial_forms:
+                if form in self.formset.deleted_forms:
+                    if not form.instance.pk:
+                        continue
+                    obj.log_action(
+                        'pretalx.submission.resource.delete', person=self.request.user, data={
+                            'id': form.instance.pk,
+                        }
+                    )
+                    form.instance.delete()
+                    form.instance.pk = None
+                elif form.has_changed():
+                    form.instance.submission = obj
+                    form.save()
+                    change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                    change_data['id'] = form.instance.pk
+                    obj.log_action('pretalx.submission.resource.update', person=self.request.user)
+
+            for form in self.formset.extra_forms:
+                if not form.has_changed():
+                    continue
+                if self.formset._should_delete_form(form):
+                    continue
+                form.instance.submission = obj
+                form.save()
+                obj.log_action(
+                    'pretalx.submission.resource.create',
+                    person=self.request.user, orga=True, data={'id': form.instance.pk}
+                )
+
+            return True
+        return False
 
     def get_permission_required(self):
         if 'code' in self.kwargs:
@@ -264,6 +319,10 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 speaker = create_user_as_orga(email=email, submission=form.instance)
 
             form.instance.speakers.add(speaker)
+        else:
+            formset_result = self.save_formset(form.instance)
+            if not formset_result:
+                return self.get(self.request, *self.args, **self.kwargs)
 
         if form.has_changed():
             action = 'pretalx.submission.' + ('create' if created else 'update')
