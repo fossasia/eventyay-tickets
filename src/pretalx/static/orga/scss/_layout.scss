@@ -160,6 +160,28 @@ footer {
   }
 
 }
+.avatar-form {
+  display: flex;
+  align-items: flex-start;
+  margin-left: 20px;
+  padding-bottom: 8px;
+
+  img.avatar {
+    max-width: 100%;
+    height: auto;
+  }
+  .avatar-form-fields {
+    display: flex;
+    flex-direction: column;
+    .user-avatar-display .bootstrap4-multi-input {
+      margin: 0;
+    }
+    .form-group {
+      display: flex;
+    flex-direction: column;
+    }
+  }
+}
 .event-logo-field {
   img.event-logo-display {
     margin-left: 12px;

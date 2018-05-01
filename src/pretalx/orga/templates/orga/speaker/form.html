@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
+{% load staticfiles %}
 
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
@@ -13,15 +14,7 @@
         submissions
         {% endblocktrans %})
     </legend>
-    <div class="speaker-info">
-    <div class="speaker-image col-md-3">
-        {% if form.instance.user.get_gravatar %}
-            <img src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}" />
-        {% elif form.instance.user.avatar %}
-            <img src="{{ form.instance.user.avatar.url }}">
-        {% endif %}
-    </div>
-    <div class="alert alert-info col-md-9">
+    <div class="alert alert-info col-md-9 ml-auto">
         <span>
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
         <ul>
@@ -36,9 +29,28 @@
         </ul>
         </span>
     </div>
-</div>
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        <div class="speaker-info avatar-form">
+            <div class="col-md-3 col-form-label">
+                <img
+                  class="avatar float-right"
+                  data-gravatar="{{ form.instance.user.gravatar_parameter }}"
+                  data-avatar="{% if form.instance.user.avatar %}{{ form.instance.user.avatar.url }}{% endif %}"
+                  {% if form.instance.user.get_gravatar %}
+                  src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}"
+                  {% elif form.instance.user.avatar and form.instance.user.avatar != 'False' %}
+                  src="{{ form.instance.user.avatar.url }}"
+                  {% endif %}
+                />
+            </div>
+            <div class="avatar-form-fields col-md-9">
+                {% bootstrap_field form.get_gravatar layout='event-inline' %}
+                <div class="user-avatar-display">
+                    {% bootstrap_field form.avatar layout='inline' %}
+                </div>
+            </div>
+        </div>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
@@ -85,4 +97,5 @@
     </ul>
     {% endif %}
 
+    <script type="text/javascript" src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}
