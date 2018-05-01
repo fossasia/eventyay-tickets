@@ -115,7 +115,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                 answer.options.add(value)
                 answer.answer = value.answer
         else:
-            answer.answer = value
+            answer.answer = value or ''
         answer.save()
 
     def done(self, form_list, form_dict, **kwargs):
