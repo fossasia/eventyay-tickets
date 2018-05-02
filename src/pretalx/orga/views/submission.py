@@ -43,6 +43,7 @@ def create_user_as_orga(email, submission=None):
         pw_reset_token=get_random_string(32),
         pw_reset_time=now() + timedelta(days=7),
     )
+    SpeakerProfile.objects.get_or_create(user=user, event=submission.event)
     with override(submission.content_locale):
         invitation_link = build_absolute_uri('cfp:event.recover', kwargs={'event': submission.event.slug, 'token': user.pw_reset_token})
         invitation_text = _('''Hi!
