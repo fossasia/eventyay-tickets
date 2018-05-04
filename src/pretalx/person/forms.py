@@ -175,7 +175,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
 class OrgaProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('locale',)
+        fields = ('name', 'locale')
 
 
 class LoginInfoForm(forms.ModelForm):
