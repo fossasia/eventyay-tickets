@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 {% load rich_text %}
+{% load rules %}
 
 {% block title %}{% trans "Your submissions" %} :: {% endblock %}
 
@@ -27,6 +28,7 @@
             </thead>
             <tbody>
             {% for submission in submissions %}
+            {% has_perm 'agenda.view_slot' request.user submission.slot as can_see_slot %}
                 <tr>
                     <td>
                         <a href="{{ submission.urls.user_base }}">
@@ -49,7 +51,7 @@
                                 <i class="fa fa-check"></i> {% trans "Confirm" %}
                             </a>
                         {% endif %}
-                        {% if submission.slot %}
+                        {% if can_see_slot %}
                             <a href="{{ submission.urls.public }}"
                                     class="btn btn-sm btn-info">
                                 <i class="fa fa-calendar"></i> {% trans "Schedule" %}
