@@ -116,7 +116,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                 answer.answer = value.answer
         else:
             answer.answer = value or ''
-        answer.save()
+        if answer.answer is not None:
+            answer.save()
 
     def done(self, form_list, form_dict, **kwargs):
         if self.request.user.is_authenticated:
