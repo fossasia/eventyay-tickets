@@ -61,6 +61,7 @@ class WriteMailForm(forms.ModelForm):
     def __init__(self, event, **kwargs):
         super().__init__(**kwargs)
         self.fields['submissions'].choices = [(sub.code, sub.title) for sub in event.submissions.all()]
+        self.fields['text'].help_text = _('Please note: Placeholders will not be substituted, this is an upcoming feature. Leave no placeholders in this field.')
 
     class Meta:
         model = QueuedMail

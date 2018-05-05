@@ -94,6 +94,6 @@ class EventDashboardView(PermissionRequired, TemplateView):
         context['tiles'].append({
             'large': event.queued_mails.filter(sent__isnull=False).count(),
             'small': _('sent emails'),
-            'url': event.orga_urls.send_mails,
+            'url': event.orga_urls.compose_mails,
         })
         return context

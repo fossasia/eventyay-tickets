@@ -175,7 +175,7 @@ class Event(LogMixin, models.Model):
         cfp = '{base}/cfp'
         users = '{base}/users'
         mail = '{base}/mails'
-        send_mails = '{mail}/send'
+        compose_mails = '{mail}/compose'
         mail_templates = '{mail}/templates'
         new_template = '{mail_templates}/new'
         outbox = '{mail}/outbox'

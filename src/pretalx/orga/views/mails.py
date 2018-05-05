@@ -190,7 +190,7 @@ class MailCopy(PermissionRequired, View):
         return redirect(new_mail.urls.edit)
 
 
-class SendMail(PermissionRequired, FormView):
+class ComposeMail(PermissionRequired, FormView):
     form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
     permission_required = 'orga.edit_mails'
@@ -201,10 +201,19 @@ class SendMail(PermissionRequired, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
+        if 'template' in self.request.GET:
+            template = MailTemplate.objects.filter(pk=self.request.GET.get('template')).first()
+            if template:
+                initial = kwargs.get('initial', dict())
+                initial['subject'] = template.subject
+                initial['text'] = template.text
+                initial['reply_to'] = template.reply_to
+                initial['bcc'] = template.bcc
+                kwargs['initial'] = initial
         return kwargs
 
     def get_success_url(self):
-        return self.request.event.orga_urls.send_mails
+        return self.request.event.orga_urls.compose_mails
 
     def form_valid(self, form):
         email_set = set()

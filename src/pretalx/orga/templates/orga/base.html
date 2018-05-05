@@ -259,8 +259,8 @@
                         <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
                             <span>{% trans "Templates" %}</span>
                         </a>
-                        <a href="{{ request.event.orga_urls.send_mails }}" class="nav-link nav-link-second-level{% if "mails.send" in url_name %} active{% endif %}">
-                            <span>{% trans "Send E-mails" %}</span>
+                        <a href="{{ request.event.orga_urls.compose_mails }}" class="nav-link nav-link-second-level{% if "mails.send" in url_name %} active{% endif %}">
+                            <span>{% trans "Compose E-mails" %}</span>
                         </a>
                         <a href="{{ request.event.orga_urls.sent_mails }}" class="nav-link nav-link-second-level{% if "mails.sent" in url_name %} active{% endif %}">
                             <span>{% trans "Sent E-mails" %}</span>
