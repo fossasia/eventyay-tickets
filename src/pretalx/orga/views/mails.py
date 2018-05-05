@@ -210,6 +210,13 @@ class ComposeMail(PermissionRequired, FormView):
                 initial['reply_to'] = template.reply_to
                 initial['bcc'] = template.bcc
                 kwargs['initial'] = initial
+        if 'submission' in self.request.GET:
+            submission = self.request.event.submissions.filter(code=self.request.GET.get('submission')).first()
+            if submission:
+                initial = kwargs.get('initial', dict())
+                initial['recipients'] = 'selected_submissions'
+                initial['submissions'] = submission.code
+                kwargs['initial'] = initial
         return kwargs
 
     def get_success_url(self):

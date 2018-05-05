@@ -219,6 +219,10 @@ def test_orga_can_delete_template(orga_client, event, mail_template):
 
 @pytest.mark.django_db
 def test_orga_can_compose_single_mail(orga_client, event, submission):
+    response = orga_client.get(
+        event.orga_urls.compose_mails, follow=True,
+    )
+    assert response.status_code == 200
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
         event.orga_urls.compose_mails, follow=True,
@@ -231,7 +235,7 @@ def test_orga_can_compose_single_mail(orga_client, event, submission):
 @pytest.mark.django_db
 def test_orga_can_compose_single_mail_from_template(orga_client, event, submission):
     response = orga_client.get(
-        event.orga_urls.compose_mails + f'?template={event.ack_template.pk}', follow=True,
+        event.orga_urls.compose_mails + f'?template={event.ack_template.pk}&submission={submission.code}', follow=True,
     )
     assert response.status_code == 200
     assert str(event.ack_template.subject) in response.content.decode()
