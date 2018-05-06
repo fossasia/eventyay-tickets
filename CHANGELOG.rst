@@ -4,15 +4,16 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.x.y
+v0.6.0
 ------
 
-*Released on 2018-xx-xx*
-
+*Released on 2018-05-06*
 
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
+
+None.
 
 
 Features
