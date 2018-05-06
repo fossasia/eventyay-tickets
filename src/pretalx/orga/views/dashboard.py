@@ -89,7 +89,7 @@ class EventDashboardView(PermissionRequired, TemplateView):
             context['tiles'].append({
                 'large': event.speakers.count(),
                 'small': _('speakers'),
-                'url': event.orga_urls.speakers,
+                'url': event.orga_urls.speakers + '?role=true',
             })
         context['tiles'].append({
             'large': event.queued_mails.filter(sent__isnull=False).count(),
