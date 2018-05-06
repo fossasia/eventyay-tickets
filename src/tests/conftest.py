@@ -392,22 +392,20 @@ def other_confirmed_submission(other_accepted_submission):
 
 
 @pytest.fixture
-def canceled_submission(submission_data, speaker):  # TODO: implement Submission.canceled
+def canceled_submission(submission_data, speaker):
     sub = Submission.objects.create(**submission_data)
     sub.save()
     sub.speakers.add(speaker)
-    sub.state = 'canceled'
-    sub.save()
+    sub.cancel(force=True)
     return sub
 
 
 @pytest.fixture
-def withdrawn_submission(submission_data, speaker):  # TODO: implement Submission.withdraw()
+def withdrawn_submission(submission_data, speaker):
     sub = Submission.objects.create(**submission_data)
     sub.save()
     sub.speakers.add(speaker)
-    sub.state = 'withdrawn'
-    sub.save()
+    sub.withdraw(force=True)
     return sub
 
 
