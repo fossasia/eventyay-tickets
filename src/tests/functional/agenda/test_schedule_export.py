@@ -238,7 +238,7 @@ def test_html_export_full(event, other_event, slot, past_slot):
 
     assert not os.path.exists(os.path.join(settings.HTMLEXPORT_ROOT, 'test2')), "wrong event exported"
 
-    # views and templates are the same for export and online viewing, so we just need a very basic test here
+    # views and templates are the same for export and online viewing, so a naive test is enough here
     talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/talk/{past_slot.submission.code}/index.html')).read()
     assert talk_html.count(past_slot.submission.title) >= 2
 

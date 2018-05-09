@@ -4,7 +4,7 @@ Installation
 This guide will help you to install pretalx on a Linux distribution. It should be
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.
 
-We also provide an `ansible role`_ that basically follows this guide, in case you
+We also provide an `ansible role`_ that roughly follows this guide, in case you
 already have an ansible-based setup.
 
 Step 0: Prerequisites

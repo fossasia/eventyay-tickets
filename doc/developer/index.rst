@@ -3,8 +3,8 @@ Developer documentation
 
 You want to contribute? That's great, we love contributions! Being an open
 source project, pretalx will thrive if it receives regular contributions from
-the community. Everyone is able to contribute, and contributions can be
-basically anything: Code, Documentation, Translations, Graphics, Feedback etc.
+the community. Everyone is able to contribute, and contributions come in many
+forms: Code, Documentation, Translations, Graphics, Feedback ….
 We appreciate them highly!
 
 This part of the documentation tries to give you some information that you
