@@ -46,6 +46,11 @@ def review_deadline_unmet(user, obj):
     return True if not deadline else now() <= deadline
 
 
+@rules.predicate
+def can_edit_mail(user, obj):
+    return hasattr(obj, 'sent') and obj.sent is None
+
+
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.search_all_users', can_change_submissions)
 rules.add_perm('orga.change_settings', can_change_event_settings)
@@ -61,7 +66,7 @@ rules.add_perm('orga.edit_submission_type', can_change_submissions)
 rules.add_perm('orga.remove_submission_type', can_change_submissions)
 rules.add_perm('orga.view_mails', can_change_submissions)
 rules.add_perm('orga.send_mails', can_change_submissions)
-rules.add_perm('orga.edit_mails', can_change_submissions)
+rules.add_perm('orga.edit_mails', can_change_submissions & can_edit_mail)
 rules.add_perm('orga.purge_mails', can_change_submissions)
 rules.add_perm('orga.view_mail_templates', can_change_submissions)
 rules.add_perm('orga.edit_mail_templates', can_change_submissions)

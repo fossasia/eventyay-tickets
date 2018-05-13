@@ -21,5 +21,6 @@ Features
 Fixed bugs
 ~~~~~~~~~~~
 
+- The "Copy to draft" button was missing when viewing a sent email.
 
 .. _releases: https://github.com/pretalx/pretalx/releases

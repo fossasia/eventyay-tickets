@@ -160,7 +160,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def form_valid(self, form):
         form.instance.event = self.request.event
-        if form.instance.sent:
+        if form.instance.sent is not None:
             messages.error(self.request, _('The email has already been sent, you cannot edit it anymore.'))
             return redirect(self.get_success_url())
 
