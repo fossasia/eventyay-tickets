@@ -41,7 +41,7 @@ class TalkView(PermissionRequired, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         if self.request.event.current_schedule:
-            qs = self.request.event.current_schedule.talks
+            qs = self.request.event.current_schedule.talks.filter(is_visible=True)
         elif self.request.is_orga:
             qs = self.request.event.wip_schedule.talks
         else:

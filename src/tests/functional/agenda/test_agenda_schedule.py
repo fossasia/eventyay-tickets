@@ -153,6 +153,23 @@ def test_talk_speaker_other_talks(client, event, speaker, slot, other_slot, othe
 
 
 @pytest.mark.django_db
+def test_talk_speaker_other_talks_only_if_visible(client, event, speaker, slot, other_slot, other_submission):
+    other_submission.speakers.add(speaker)
+    response = client.get(other_submission.urls.public, follow=True)
+    slot.submission.accept(force=True)
+    slot.is_visible = False
+    slot.save()
+    slot.submission.save()
+
+    assert response.context['speakers']
+    assert len(response.context['speakers']) == 2, response.context['speakers']
+    speaker_response = [s for s in response.context['speakers'] if s.name == speaker.name][0]
+    other_response = [s for s in response.context['speakers'] if s.name != speaker.name][0]
+    assert len(speaker_response.other_talks) == 0
+    assert len(other_response.other_talks) == 0
+
+
+@pytest.mark.django_db
 def test_speaker_page(client, event, speaker, slot):
     response = client.get(reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug}), follow=True)
     assert response.status_code == 200

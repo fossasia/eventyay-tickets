@@ -22,5 +22,6 @@ Fixed bugs
 ~~~~~~~~~~~
 
 - The "Copy to draft" button was missing when viewing a sent email.
+- Accepted, but unconfirmed talks were listed as "Other talks" publicly once the speaker had confirmed one talk and the first schedule was released. (#431)
 
 .. _releases: https://github.com/pretalx/pretalx/releases
