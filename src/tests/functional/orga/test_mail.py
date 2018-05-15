@@ -88,12 +88,12 @@ def test_orga_cannot_edit_sent_mail(orga_client, event, sent_mail):
             'bcc': sent_mail.bcc,
             'cc': sent_mail.cc,
             'reply_to': sent_mail.reply_to,
-            'subject': sent_mail.subject,
+            'subject': 'WILD NEW SUBJECT APPEARS',
             'text': sent_mail.text,
         }
     )
     assert response.status_code == 200
-    assert sent_mail.subject not in response.content.decode()
+    assert sent_mail.subject in response.content.decode()
     sent_mail.refresh_from_db()
     assert sent_mail.to != 'testfailure@gmail.com'
 

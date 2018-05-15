@@ -149,8 +149,8 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = QueuedMail
     form_class = MailDetailForm
     template_name = 'orga/mails/outbox_form.html'
-    permission_required = 'orga.view_mails'
     write_permission_required = 'orga.edit_mails'
+    permission_required = 'orga.view_mails'
 
     def get_object(self) -> QueuedMail:
         return self.request.event.queued_mails.filter(pk=self.kwargs.get('pk')).first()
@@ -178,7 +178,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
 
 class MailCopy(PermissionRequired, View):
-    permission_required = 'orga.edit_mails'
+    permission_required = 'orga.send_mails'
 
     def get_object(self) -> QueuedMail:
         return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
@@ -193,7 +193,7 @@ class MailCopy(PermissionRequired, View):
 class ComposeMail(PermissionRequired, FormView):
     form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
-    permission_required = 'orga.edit_mails'
+    permission_required = 'orga.send_mails'
 
     def get_permission_object(self):
         return self.request.event
