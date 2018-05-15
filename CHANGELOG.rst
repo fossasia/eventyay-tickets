@@ -4,19 +4,21 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-vx.x.x
+v0.6.1
 ------
 
-*Released on 2018-xx-xx*
+*Released on 2018-05-15*
 
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
-
+None.
 
 Features
 ~~~~~~~~
+
+None.
 
 Fixed bugs
 ~~~~~~~~~~~
