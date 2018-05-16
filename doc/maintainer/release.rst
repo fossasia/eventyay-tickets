@@ -38,3 +38,4 @@ Takeoff and landing
 10. Install/update the package somewhere.
 11. Add the release on GitHub (upload the tar.gz you uploaded to PyPI, and add the CHANGELOG section): https://github.com/pretalx/pretalx/releases
 12. Push the blog post.
+13. Upgrade https://github.com/pretalx/pretalx-docker
