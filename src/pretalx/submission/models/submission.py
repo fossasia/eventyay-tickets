@@ -353,7 +353,7 @@ class Submission(LogMixin, models.Model):
             return
         from django.template import engines
         django_engine = engines['django']
-        template = django_engine.from_string('<iframe width="100%" height="380px" src="{{ url }}" frameborder="0" allowfullscreen></iframe>')
+        template = django_engine.from_string('<div class="embed-responsive embed-responsive-16by9"><iframe src="{{ url }}" frameborder="0" allowfullscreen></iframe></div>')
         return template.render(context={'url': self.recording_url})
 
     @property
