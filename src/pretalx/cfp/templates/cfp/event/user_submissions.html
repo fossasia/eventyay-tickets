@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
+{% load static %}
 
 {% block title %}{% trans "Your submissions" %} :: {% endblock %}
 
@@ -39,6 +40,16 @@
                         {% include "cfp/event/fragment_state.html" with state=submission.state %}
                     </td>
                     <td class="text-right">
+                        {% if submission.review_code %}
+                            <button data-destination="{{ submission.urls.review }}"
+                                    class="btn btn-sm btn-info"
+                                    data-toggle="tooltip" 
+                                    data-placement="top" 
+                                    title="{% trans 'Copy code for review' %}"
+                                    target="_blank">
+                                <i class="fa fa-link"></i>
+                            </button>
+                        {% endif %}
                         {% if submission.editable %}
                             <a href="{{ submission.urls.user_base }}"
                                     class="btn btn-sm btn-info">
@@ -95,4 +106,5 @@
             </p>
         {% endif %}
     {% endif %}
+    <script type="text/javascript" src="{% static "submission/js/review_code.js" %}"></script>
 {% endblock %}

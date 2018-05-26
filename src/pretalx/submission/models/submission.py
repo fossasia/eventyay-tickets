@@ -157,6 +157,11 @@ class Submission(LogMixin, models.Model):
         max_length=32,
         default=generate_invite_code,
     )
+    review_code = models.CharField(
+        max_length=32,
+        null=True, blank=True,
+        default=generate_invite_code,
+    )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = SubmissionManager()
@@ -171,6 +176,7 @@ class Submission(LogMixin, models.Model):
         ical = '{public}.ics'
         invite = '{user_base}/invite'
         accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
+        review = '{self.event.urls.base}/talk/review/{self.review_code}'
 
     class orga_urls(EventUrls):
         base = edit = '{self.event.orga_urls.submissions}/{self.code}'

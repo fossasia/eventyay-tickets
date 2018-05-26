@@ -3,28 +3,28 @@
 {% load i18n %}
 {% load rich_text %}
 
-{% block title %}{{ talk.submission.title }}{% endblock %}
-{% block meta_title %}{{ talk.submission.title }}{% endblock %}
-{% block social_title %}{{ talk.submission.title }}{% endblock %}
+{% block title %}{{ submission.title }}{% endblock %}
+{% block meta_title %}{{ submission.title }}{% endblock %}
+{% block social_title %}{{ submission.title }}{% endblock %}
 {% block meta_description %}{{ submission_description }}{% endblock %}
 {% block social_description %}{{ submission_description }}{% endblock %}
 
 {% block agenda_content %}
     <h3 class="talk-title">
         <div>
-        »{{ talk.submission.title }}«
+        »{{ submission.title }}«
         <div class="buttons float-right">
-            <a class="btn btn-outline-success" href="{{ talk.submission.urls.ical }}">
+            <a class="btn btn-outline-success" href="{{ submission.urls.ical }}">
                 <i class="fa fa-calendar"></i> .ical
             </a>
-            {% if talk.submission.does_accept_feedback and not is_html_export %}
-                <a href="{{ talk.submission.urls.feedback }}"
+            {% if submission.does_accept_feedback and not is_html_export %}
+                <a href="{{ submission.urls.feedback }}"
                         class="btn btn-success">
                     <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
                 </a>
             {% endif %}
-            {% if request.user in talk.submission.speakers.all %}
-                <a href="{{ talk.submission.urls.user_base }}"
+            {% if request.user in submission.speakers.all %}
+                <a href="{{ submission.urls.user_base }}"
                         class="btn btn-info">
                     <i class="fa fa-edit"></i>{{ phrases.base.edit }}
                 </a>
@@ -32,8 +32,10 @@
         </div>
         </div>
         <small>
-            {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
-            {% if talk.submission.do_not_record %}
+            {% if talk %}
+                {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+            {% endif %}
+            {% if submission.do_not_record %}
                 <span class="fa-stack">
                   <i class="fa fa-video-camera fa-stack-1x"></i>
                   <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true" title="{{ phrases.agenda.schedule_do_not_record }}"></i>
@@ -45,25 +47,25 @@
     <div class="talk row">
         <div class="talk-content col-lg-8 col-md-6 col-xs-12">
             {% if talk.submission.recording_url %}
-                {{ talk.submission.rendered_recording_iframe|safe }}
+                {{ submission.rendered_recording_iframe|safe }}
             {% endif %}
             <div class="abstract">
-                {{ talk.submission.abstract|rich_text }}
+                {{ submission.abstract|rich_text }}
             </div>
             <div class="description">
-                {{ talk.submission.description|rich_text }}
+                {{ submission.description|rich_text }}
             </div>
-            {% if talk.submission.active_resources.count %}
+            {% if submission.active_resources.count %}
                 <div class="resources">
                     {% trans "See also:" %}
-                    {% if talk.submission.active_resources.count == 1 %}
-                        <a href="{{ talk.submission.active_resources.first.resource.url }}">
+                    {% if submission.active_resources.count == 1 %}
+                        <a href="{{ submission.active_resources.first.resource.url }}">
                             <i class="fa fa-file-o"></i>
-                            {{ talk.submission.active_resources.first.description }}
+                            {{ submission.active_resources.first.description }}
                         </a>
                     {% else %}
                         <ul>
-                            {% for resource in talk.submission.active_resources %}
+                            {% for resource in submission.active_resources %}
                                 <li>
                                     <a href="{{ resource.resource.url }}">
                                         <i class="fa fa-file-o"></i>
@@ -78,10 +80,10 @@
             {% endif %}
         </div>
         <div class="col-lg-4 col-md-6 col-xs-12">
-            {% if talk.submission.image %}
+            {% if submission.image %}
             <div class="image speakers">
-                <a href="{{ talk.submission.image.url }}">
-                    <img src="{{ talk.submission.image.url }}"></img>
+                <a href="{{ submission.image.url }}">
+                    <img src="{{ submission.image.url }}"></img>
                 </a>
             </div>
             {% endif %}
@@ -108,7 +110,7 @@
                                 <ul class="speaker-talks">
                                     {% for talk in speaker.other_talks %}
                                     <li class="speaker-talk">
-                                        <a href='{{ talk.submission.urls.public }}'>{{ talk.submission.title }}</a>
+                                        <a href='{{ submission.urls.public }}'>{{ submission.title }}</a>
                                     </li>
                                     {% endfor %}
                                 </ul>

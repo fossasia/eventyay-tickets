@@ -47,7 +47,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_object(self):
         try:
             return super().get_object()
-        except Exception as e:
+        except Exception:
             is_public = self.request.event.is_public and self.request.event.settings.show_schedule
             has_perm = self.request.user.has_perm('orga.edit_schedule', self.request.event)
             query = self.kwargs.get(self.lookup_field)

@@ -48,6 +48,7 @@ class TalkView(PermissionRequired, DetailView):
             qs = TalkSlot.objects.none()
         event_talks = qs.exclude(submission=self.object.submission)
         slot = self.get_object()
+        context['submission'] = slot.submission
         context['submission_description'] = slot.submission.description or slot.submission.abstract or _('The talk »{title}« at {event}').format(title=slot.submission.title, event=slot.submission.event.name)
         context['speakers'] = []
         for speaker in slot.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
@@ -55,6 +56,12 @@ class TalkView(PermissionRequired, DetailView):
             speaker.other_talks = event_talks.filter(submission__speakers__in=[speaker])
             context['speakers'].append(speaker)
         return context
+
+
+class TalkReviewView(DetailView):
+    model = Submission
+    slug_field = 'review_code'
+    template_name = 'agenda/talk.html'
 
 
 class SingleICalView(EventPageMixin, DetailView):
