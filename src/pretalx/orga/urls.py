@@ -85,6 +85,7 @@ urlpatterns = [
             url('^reviews$', review.ReviewSubmission.as_view(), name='submissions.reviews'),
             url('^reviews/delete$', review.ReviewSubmissionDelete.as_view(), name='submissions.reviews.submission.delete'),
             url('^feedback/$', submission.FeedbackList.as_view(), name='submissions.feedback.list'),
+            url('^toggle_featured$', submission.ToggleFeatured.as_view(), name='submissions.toggle_featured')
         ])),
 
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),

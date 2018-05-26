@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.db import transaction
 from django.forms.models import BaseModelFormSet, inlineformset_factory
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -349,7 +350,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('submission_type', 'state')
     filter_form_class = SubmissionFilterForm
-    sortable_fields = ('code', 'title', 'submission_type', 'state')
+    sortable_fields = ('code', 'title', 'submission_type', 'state', 'is_featured')
     permission_required = 'orga.view_submissions'
     paginate_by = 25
 
@@ -371,3 +372,15 @@ class FeedbackList(SubmissionViewMixin, ListView):
 
     def get_queryset(self):
         return self.object.feedback.all().order_by('pk')
+
+
+class ToggleFeatured(SubmissionViewMixin, View):
+    permission_required = 'orga.change_submissions'
+
+    def get_permission_object(self):
+        return self.object or self.request.event
+
+    def post(self, *args, **kwargs):
+        self.object.is_featured = not self.object.is_featured
+        self.object.save(update_fields=['is_featured'])
+        return HttpResponse()

@@ -53,6 +53,11 @@
                     <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
+                <th>
+                    {% trans "Sneakpeek" %}
+                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -76,6 +81,21 @@
                     </td>
                     <td>
                         {% include "orga/submission/state_dropdown.html" with submission=submission %}
+                    </td>
+                    <td class="submission_featured">
+                        <div class="checkbox" title="{% trans 'Show this submission in the public sneakpeek.' %}" style="display: inline-block">
+                            <input
+                                type="checkbox"
+                                id="featured_{{ submission.code }}"
+                                data-id="{{ submission.code }}"
+                                class="submission_featured"
+                                {% if submission.is_featured %}checked{% endif %}
+                            >
+                            <label for="featured_{{ submission.code }}"></label>
+                        </div>
+                        <i class="working fa fa-spinner fa-spin d-none"></i>
+                        <i class="done fa fa-check d-none"></i>
+                        <i class="fail fa fa-times d-none"></i>
                     </td>
                     <td class="text-right">
                         <a href="{{ submission.orga_urls.edit }}"

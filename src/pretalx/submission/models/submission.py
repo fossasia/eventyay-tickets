@@ -197,6 +197,7 @@ class Submission(LogMixin, models.Model):
         delete_speaker = '{speakers}/delete'
         reviews = '{base}/reviews'
         feedback = '{base}/feedback'
+        toggle_featured = '{base}/toggle_featured'
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)

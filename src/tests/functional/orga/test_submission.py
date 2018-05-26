@@ -211,3 +211,17 @@ def test_orga_can_create_submission(orga_client, event):
     sub = event.submissions.first()
     assert sub.title == 'title'
     assert sub.speakers.count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_toggle_submission_featured(orga_client, event, submission):
+    assert event.submissions.count() == 1
+
+    response = orga_client.post(
+        submission.orga_urls.toggle_featured,
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    sub = event.submissions.first()
+    assert sub.is_featured
