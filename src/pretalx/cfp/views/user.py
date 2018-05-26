@@ -260,7 +260,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             messages.success(self.request, phrases.base.saved)
         else:
             messages.error(self.request, phrases.cfp.submission_uneditable)
-        return redirect('cfp:event.user.submissions', event=self.request.event.slug)
+        return redirect(self.object.urls.user_base)
 
 
 class DeleteAccountView(LoggedInEventPageMixin, View):
