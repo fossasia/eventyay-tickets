@@ -15,6 +15,7 @@ code                                  string                     A unique, alpha
 name                                  string                     The speaker's public name
 biography                             string                     The speaker's self-submitted biography, markdown-formatted text.
 submissions                           list                       A list of submission codes, e.g. ``["ABCDEF", "GHIJKL"]``
+avatar                                string                     The speaker avatar URL
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -49,7 +50,8 @@ Endpoints
             "code": "ABCDE",
             "name": "Jane",
             "biography": "A good speaker",
-            "submissions": ["DEFAB"]
+            "submissions": ["DEFAB"],
+            "avatar": "https://example.org/media/avatar.png"
             }
           }
         ]
@@ -82,7 +84,8 @@ Endpoints
         "code": "ABCDE",
         "name": "Jane",
         "biography": "A good speaker",
-        "submissions": ["DEFAB"]
+        "submissions": ["DEFAB"],
+        "avatar": "https://example.org/media/avatar.png"
       }
 
    :param event: The ``slug`` field of the event to fetch

@@ -12,7 +12,7 @@ The submission resource contains the following public fields:
 Field                                 Type                       Description
 ===================================== ========================== =======================================================
 code                                  string                     A unique, alphanumeric identifier, also used in URLs
-speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": ""}]``
+speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": "", "avatar": ""}]``
 title                                 string                     The submission's title
 submission_type                       string                     The submission type (e.g. "talk", "workshop")
 state                                 string                     The submission's state, one of "submitted", "accepted", "rejected", "confirmed"
@@ -22,6 +22,7 @@ duration                              number                     The talk's dura
 do_not_record                         boolean                    Indicates if the speaker consent to recordings of their talk
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
+image                                 string                     The submission image URL
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -56,7 +57,7 @@ Endpoints
         "results": [
           {
             "code": "ABCDE",
-            "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker"}],
+            "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker", "avatar": "avatar.png"}],
             "title": "A talk",
             "submission_type": "talk",
             "state": "confirmed",
@@ -69,7 +70,8 @@ Endpoints
               "start": "2017-12-27T10:00:00Z",
               "end": "2017-12-27T10:30:00Z",
               "room": "R101"
-            }
+            },
+            "image": "submission.png"
           }
         ]
       }
@@ -101,7 +103,7 @@ Endpoints
 
       {
         "code": "ABCDE",
-        "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker"}],
+        "speakers": [{"name": "Jane", "code": "DEFAB", "biography": "A speaker", "avatar": "avatar.png"}],
         "title": "A talk",
         "submission_type": "talk",
         "state": "confirmed",
@@ -114,7 +116,8 @@ Endpoints
           "start": "2017-12-27T10:00:00Z",
           "end": "2017-12-27T10:30:00Z",
           "room": "R101"
-        }
+        },
+        "image": "submission.png"
       }
 
    :param event: The ``slug`` field of the event to fetch

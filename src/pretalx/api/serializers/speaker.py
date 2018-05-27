@@ -1,5 +1,5 @@
 from rest_framework.serializers import (
-    CharField, ModelSerializer, SerializerMethodField,
+    CharField, ImageField, ModelSerializer, SerializerMethodField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
@@ -12,19 +12,20 @@ class SubmitterSerializer(ModelSerializer):
 
     def get_biography(self, obj):
         if self.context.get('request') and self.context['request'].event:
-            getattr(obj.profiles.filter(event=self.context['request'].event).first(), 'biography', '')
+            return getattr(obj.profiles.filter(event=self.context['request'].event).first(), 'biography', '')
         return ''
 
     class Meta:
         model = User
         fields = (
-            'code', 'name', 'biography'
+            'code', 'name', 'biography', 'avatar',
         )
 
 
 class SpeakerSerializer(ModelSerializer):
     code = CharField(source='user.code')
     name = CharField(source='user.name')
+    avatar = ImageField(source='user.avatar')
     submissions = SerializerMethodField()
 
     def get_submissions(self, obj):
@@ -36,7 +37,7 @@ class SpeakerSerializer(ModelSerializer):
     class Meta:
         model = SpeakerProfile
         fields = (
-            'code', 'name', 'biography', 'submissions',
+            'code', 'name', 'biography', 'submissions', 'avatar',
         )
 
 

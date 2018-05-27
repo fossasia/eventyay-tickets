@@ -31,7 +31,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         model = Submission
         fields = (
             'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-            'description', 'duration', 'do_not_record', 'content_locale', 'slot',
+            'description', 'duration', 'do_not_record', 'content_locale', 'slot', 'image',
         )
 
 

@@ -35,7 +35,7 @@ def test_question_serializer(answer):
 def test_submitter_serializer(submission):
     user = submission.speakers.first()
     data = SubmitterSerializer(user, context={'event': submission.event}).data
-    assert data.keys() == {'name', 'code', 'biography'}
+    assert data.keys() == {'name', 'code', 'biography', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
 
@@ -45,7 +45,7 @@ def test_submitter_serializer_without_profile(submission):
     user = submission.speakers.first()
     user.profiles.all().delete()
     data = SubmitterSerializer(user, context={'event': submission.event}).data
-    assert data.keys() == {'name', 'code', 'biography'}
+    assert data.keys() == {'name', 'code', 'biography', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
     assert data['biography'] == ''
@@ -56,7 +56,7 @@ def test_speaker_serializer(slot):
     user_profile = slot.submission.speakers.first().profiles.first()
     user = user_profile.user
     data = SpeakerSerializer(user_profile).data
-    assert data.keys() == {'name', 'code', 'biography', 'submissions'}
+    assert data.keys() == {'name', 'code', 'biography', 'submissions', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
     assert slot.submission.code in data['submissions']
@@ -67,13 +67,14 @@ def test_submission_serializer(submission):
     data = SubmissionSerializer(submission, context={'event': submission.event}).data
     assert set(data.keys()) == {
         'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-        'description', 'duration', 'do_not_record', 'content_locale', 'slot',
+        'description', 'duration', 'do_not_record', 'content_locale', 'slot', 'image',
     }
     assert isinstance(data['speakers'], list)
     assert data['speakers'][0] == {
         'name': submission.speakers.first().name,
         'code': submission.speakers.first().code,
         'biography': '',  # Biography can only be derived from request associated event
+        'avatar': None,
     }
     assert data['submission_type'] == str(submission.submission_type.name)
     assert data['slot'] is None
@@ -84,7 +85,7 @@ def test_submission_slot_serializer(slot):
     data = SubmissionSerializer(slot.submission, context={'event': slot.submission.event}).data
     assert set(data.keys()) == {
         'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-        'description', 'duration', 'do_not_record', 'content_locale', 'slot',
+        'description', 'duration', 'do_not_record', 'content_locale', 'slot', 'image',
     }
     assert set(data['slot'].keys()) == {'start', 'end', 'room'}
     assert data['slot']['room'] == slot.room.name
