@@ -143,13 +143,13 @@ Working with the documentation
 ------------------------------
 First, you should install the requirements necessary for building the documentation.  Make sure you
 have your virtual python environment activated (see above). Then, install the packages by
-executing::
+executing this from the project root::
 
-    (env)$ cd doc/
-    (env)$ pip3 install -r requirements.txt
+    (env)$ pip3 install -r src/requirements/documentation.txt
 
 To build the documentation, run the following command from the ``doc/`` directory::
 
+    (env)$ cd doc/
     (env)$ make html
 
 You will now find the generated documentation in the ``doc/_build/html/`` subdirectory.
