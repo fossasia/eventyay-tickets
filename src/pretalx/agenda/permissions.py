@@ -5,6 +5,7 @@ from pretalx.person.permissions import can_change_submissions
 
 @rules.predicate
 def is_agenda_visible(user, event):
+    # TODO: this returns true even if there is no schedule to be visible
     return bool(event and event.is_public and event.settings.show_schedule)
 
 
@@ -35,7 +36,7 @@ def is_speaker_viewable(user, profile):
 
 
 rules.add_perm('agenda.view_schedule', (has_agenda & is_agenda_visible) | can_change_submissions)
-rules.add_perm('agenda.view_sneak_peek', (~has_agenda & is_sneak_peek_visible) | can_change_submissions)
+rules.add_perm('agenda.view_sneak_peek', ((~is_agenda_visible | ~has_agenda) & is_sneak_peek_visible) | can_change_submissions)
 rules.add_perm('agenda.view_slot', is_slot_visible | can_change_submissions)
 rules.add_perm('agenda.view_speaker', is_speaker_viewable | can_change_submissions)
 rules.add_perm('agenda.give_feedback', is_feedback_ready)
