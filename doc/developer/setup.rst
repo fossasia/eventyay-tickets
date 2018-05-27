@@ -128,7 +128,7 @@ the following command to scan the source code for strings we want to translate a
 
     (env)$ python manage.py makemessages
 
-To actually see pretalx in your language, you have to compile the ``*.po`` files to their optimized
+To actually see pretalx in your language, you have to compile the ``*.po`` files to their optimised
 binary ``*.mo`` counterparts::
 
     (env)$ python manage.py compilemessages

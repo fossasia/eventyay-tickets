@@ -1,3 +1,5 @@
+.. spelling:: nginx systemd 
+
 Installation
 ============
 
@@ -57,7 +59,7 @@ Or for PostgreSQL::
   postgres $ psql
   postgres=# GRANT ALL PRIVILEGES ON DATABASE pretalx to pretalx;
 
-Replace the asterisks with a password of your own. For MySQL, we will use a unix domain socket to
+Replace the asterisks with a password of your own. For MySQL, we will use a Unix domain socket to
 connect to the database. For PostgreSQL, be sure to configure the interface binding and your
 firewall so that the docker container can reach PostgreSQL.
 
@@ -65,7 +67,7 @@ firewall so that the docker container can reach PostgreSQL.
 Step 3: Package dependencies
 ----------------------------
 
-To build and run pretalx, you will need the following debian packages beyond the dependencies
+To build and run pretalx, you will need the following Debian packages beyond the dependencies
 mentioned above::
 
     # apt-get install git build-essential python3-virtualenv libssl-dev gettext libmysqlclient-dev

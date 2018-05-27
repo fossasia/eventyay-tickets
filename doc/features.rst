@@ -37,7 +37,7 @@ Talk submission
   submissions. Speakers will then receive a notification (if you choose to), and asked to confirm
   their talk.
 - **Reviewing:** A reviewing system with both texts and scoring, configurable scales, average
-  scores, and reviewer teams that can work separately from the general orga team.
+  scores, and reviewer teams that can work separately from the general organiser team.
 - **Strong opinions:** Permit reviewers to issue override votes to put a
   submission to the top or bottom of the ranking, for a fixed amount of times
   per event and reviewer.
@@ -46,7 +46,7 @@ Scheduling
 ~~~~~~~~~~
 
 - **Configure your location:** Configure the rooms your talks will be taking place in, including
-  their names, descriptions, capacities and availabilites.
+  their names, descriptions, capacities and availability.
 - **Build a schedule:** In the interactive drag'n'drop interface, build a schedule that you are
   happy with. Play around with it freely.
 - **Build your schedule offline:** The initial version of a schedule is often hard to figure out.
@@ -72,13 +72,13 @@ Speaker management
   pretalx allows you to copy any sent email to a draft, edit it, and send it again.
 - **Educate:** Speakers can upload files (such as presentations, or papers) along with their talks.
 
-Customization
+Customisation
 ~~~~~~~~~~~~~
 
 - **Comunicate:** Change the default mail templates to something that fits your event and says
   precisely what you want it to say.
-- **Colorize:** Change your event's primary color to fit your event, your design, or your organizer.
-- **Customize:** If changing the site's primary color is not adequate for you, you can also upload
+- **Colorize:** Change your event's primary colour to fit your event, your design, or your organiser.
+- **Customize:** If changing the site's primary colour is not adequate for you, you can also upload
   custom CSS files and change anything you want to fit with the look of your event.
 - **Link:** You can configure a separate domain for each of your events, in case you have event-
   specific domains, but want to keep all your events on the same instance.

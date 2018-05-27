@@ -11,7 +11,7 @@ Obtaining an API token
 ----------------------
 
 To authenticate your API requests, you need an API token. You can view your API
-token in the organizer frontend at ``/orga/me``, or you can direct a POST
+token in the organiser frontend at ``/orga/me``, or you can direct a POST
 request containing your ``username`` and ``password`` to ``/api/auth`` – this
 endpoint will respond with ``{"token": "abcd…"}``.
 
@@ -25,7 +25,7 @@ You need to include the API token with every request to the API in the
 .. sourcecode:: http
    :emphasize-lines: 3
 
-   GET /api/v1/organizers/ HTTP/1.1
+   GET /api/v1/organisers/ HTTP/1.1
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
 
 .. note:: The API also supports authentication via browser sessions,
@@ -106,7 +106,7 @@ data types such as integers, floating point numbers, strings, lists, objects
 and booleans. Most fields can be ``null`` as well.
 
 The following table shows some data types that have no native JSON
-representation and how we serialize them to JSON.
+representation and how we serialise them to JSON.
 
 ===================== ============================ ===================================
 Internal type         JSON representation          Examples

@@ -1,3 +1,5 @@
+.. spelling:: Orga
+
 .. highlight:: python
    :linenothreshold: 5
 
@@ -73,7 +75,7 @@ There is also a signal that allows you to add the view to the event sidebar navi
 Frontend views
 --------------
 
-Frontend views work pretty much like organiser area views. Take care that your url starts
+Frontend views work pretty much like organiser area views. Take care that your URL starts
 with ``/(P?P<event>[\]+)/``.
 You can then write a regular view. It will be automatically ensured that:
 

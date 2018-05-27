@@ -71,7 +71,7 @@ The site section
 ``url``
 ~~~~~~~
 
-- This value will appear whereever pretalx needs to render full URLs (for example in emails and
+- This value will appear wherever pretalx needs to render full URLs (for example in emails and
   feeds), and set the appropriate allowed hosts variables.
 - **Environment variable:** ``PRETALX_SITE_URL``
 - **Default:** ``http://localhost``
@@ -93,7 +93,7 @@ The database section
 
 - pretalx supports most SQL databases, although you'll need to install the appropriate Python
   library for each of them, as described in the table below. The default is SQLite, which is *not* a
-  production database. Please use a database like postgres or MySQL.
+  production database. Please use a database like Postgres or MySQL.
 - **Environment variable:** ``PRETALX_DB_TYPE``
 - **Default:** ``sqlite3``
 
@@ -251,6 +251,6 @@ The logging section
 ``email_level``
 ~~~~~~~~~~~~~~~
 
-- The loglevel to start sending emails at. Any of ``[DEBUG, INFO, WARNING, ERROR, CRITICAL]``.
+- The log level to start sending emails at. Any of ``[DEBUG, INFO, WARNING, ERROR, CRITICAL]``.
 - **Environment variable:** ``PRETALX_LOGGING_EMAIL_LEVEL``
 - **Default:** ``'ERROR'``

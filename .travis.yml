@@ -3,6 +3,7 @@ sudo: false
 python: 3.6
 dist: trusty
 install:
+  - pip install -Ur requirements/documentation.txt
   - cd src/
   - pip install -U pip setuptools wheel typing codecov coverage
   - pip install -Ur requirements/dev.txt -r requirements/fancy.txt
@@ -15,3 +16,4 @@ script:
   - isort -rc -c .
   - py.test -p no:sugar --cov=pretalx tests/ && codecov  # Until https://github.com/Frozenball/pytest-sugar/pull/133 or similar is merged
   - pip list -o --format=columns
+  - cd doc && make spelling
