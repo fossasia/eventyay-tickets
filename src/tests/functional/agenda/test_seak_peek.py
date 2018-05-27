@@ -2,14 +2,14 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_sneak_peak_invisible_setting(client, event):
+def test_sneak_peek_invisible_because_setting(client, event):
     event.settings.show_sneak_peek = False
     response = client.get(event.urls.sneakpeek, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_sneak_peak_invisible_schedule(client, event):
+def test_sneak_peek_invisible_because_schedule(client, event):
     event.settings.show_sneak_peek = True
     event.release_schedule("42")
     response = client.get(event.urls.sneakpeek, follow=True)
@@ -23,7 +23,7 @@ def test_sneak_peak_invisible_schedule(client, event):
 
 
 @pytest.mark.django_db
-def test_sneak_peak_visible(client, event):
+def test_sneak_peek_visible(client, event):
     event.settings.show_sneak_peek = True
     response = client.get(event.urls.sneakpeek, follow=True)
     assert response.status_code == 200
@@ -31,7 +31,7 @@ def test_sneak_peak_visible(client, event):
 
 
 @pytest.mark.django_db
-def test_sneak_peak_talk_list(client, event, confirmed_submission, other_confirmed_submission):
+def test_sneak_peek_talk_list(client, event, confirmed_submission, other_confirmed_submission):
     confirmed_submission.is_featured = True
     confirmed_submission.save()
 
