@@ -54,7 +54,7 @@
                     <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
-                    {% trans "Sneakpeek" %}
+                    {% trans "Sneak peek" %}
                     <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
@@ -83,7 +83,7 @@
                         {% include "orga/submission/state_dropdown.html" with submission=submission %}
                     </td>
                     <td class="submission_featured">
-                        <div class="checkbox" title="{% trans 'Show this submission in the public sneakpeek.' %}" style="display: inline-block">
+                        <div class="checkbox" title="{% trans 'Show this submission in the public sneak peek.' %}" style="display: inline-block">
                             <input
                                 type="checkbox"
                                 id="featured_{{ submission.code }}"
