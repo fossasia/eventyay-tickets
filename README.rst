@@ -36,6 +36,9 @@ their respective changelogs on GitHub_ or install pretalx via PyPI_.
 
 Previous conferences using pretalx include:
 
+- `hack.lu 2018`_
+- `DjangoCon 2018`_
+- `OsmoDevCon 2018`_
 - `GPN 2018`_
 - `EasterHegg 2018`_
 - `TROOPERS 2018`_
@@ -78,3 +81,6 @@ to this project.
 .. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
 .. _EasterHegg 2018: https://pretalx.eh18.easterhegg.eu/eh18/schedule/
 .. _GPN 2018: https://pretalx.entropia.de/gpn18/
+.. _OsmoDevCon 2018: https://pretalx.sysmocom.de/osmodevcon2018/schedule/
+.. _DjangoCon Europe 2018: https://2018.djangocontent.eu/hd/schedule/
+.. _hack.lu 2018: https://cfp.hack.lu/hacklu18/
