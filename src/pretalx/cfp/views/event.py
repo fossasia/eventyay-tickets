@@ -14,7 +14,8 @@ class EventPageMixin(PermissionRequired):
         return getattr(self.request, 'event', None)
 
 
-class LoggedInEventPageMixin(EventPageMixin, LoginRequiredMixin):
+# check login first, then permission so users get redirected to /login, if they are missing one
+class LoggedInEventPageMixin(LoginRequiredMixin, EventPageMixin):
 
     def get_login_url(self) -> str:
         return reverse('cfp:event.login', kwargs={

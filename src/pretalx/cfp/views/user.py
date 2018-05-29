@@ -140,8 +140,6 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, DetailV
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
-        if request.user.is_anonymous:
-            return redirect(request.event.urls.login)
         submission = self.get_object()
         if submission.state == SubmissionStates.ACCEPTED:
             submission.confirm(person=request.user)
