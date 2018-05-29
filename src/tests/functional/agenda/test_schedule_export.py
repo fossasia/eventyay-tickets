@@ -164,7 +164,7 @@ def test_html_export_language(event, slot):
 
 
 @pytest.mark.django_db
-def test_schedule_export_schedule_html_task(mocker, orga_client, event):
+def test_schedule_export_schedule_html_task(mocker, orga_client, event, slot):
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
@@ -175,7 +175,7 @@ def test_schedule_export_schedule_html_task(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
-def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event):
+def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event, slot):
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
@@ -197,7 +197,7 @@ def test_schedule_orga_trigger_export(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
-def test_schedule_orga_download_export(mocker, orga_client, event):
+def test_schedule_orga_download_export(mocker, orga_client, event, slot):
     from pretalx.agenda.tasks import export_schedule_html
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
     response = orga_client.get(event.orga_urls.schedule_export_download, follow=True)
