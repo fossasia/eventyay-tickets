@@ -205,7 +205,7 @@ def test_schedule_orga_download_export(mocker, orga_client, event, slot):
 
 
 @pytest.mark.django_db
-def test_html_export_full(event, other_event, slot, past_slot):
+def test_html_export_full(event, other_event, slot, canceled_talk):
     from django.core.management import call_command
     from django.conf import settings
     import os.path
@@ -224,9 +224,6 @@ def test_html_export_full(event, other_event, slot, past_slot):
         *[f'test/speaker/{speaker.code}/index.html' for speaker in slot.submission.speakers.all()],
         f'test/talk/{slot.submission.code}/index.html',
         f'test/talk/{slot.submission.code}.ics',
-        *[f'test/speaker/{speaker.code}/index.html' for speaker in past_slot.submission.speakers.all()],
-        f'test/talk/{past_slot.submission.code}/index.html',
-        f'test/talk/{past_slot.submission.code}.ics',
     ]
 
     for path in paths:
@@ -239,8 +236,8 @@ def test_html_export_full(event, other_event, slot, past_slot):
     assert not os.path.exists(os.path.join(settings.HTMLEXPORT_ROOT, 'test2')), "wrong event exported"
 
     # views and templates are the same for export and online viewing, so a naive test is enough here
-    talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/talk/{past_slot.submission.code}/index.html')).read()
-    assert talk_html.count(past_slot.submission.title) >= 2
+    talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/talk/{slot.submission.code}/index.html')).read()
+    assert talk_html.count(slot.submission.title) >= 2
 
     speaker = slot.submission.speakers.all()[0]
     speaker_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/speaker/{speaker.code}/index.html')).read()
@@ -248,14 +245,14 @@ def test_html_export_full(event, other_event, slot, past_slot):
 
     schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')).read()
     assert 'Contact us' in schedule_html  # locale
-    assert past_slot.submission.title in schedule_html
+    assert canceled_talk.submission.title not in schedule_html
 
     schedule_json = json.load(open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.json')))
     assert schedule_json['schedule']['conference']['title'] == event.name
 
     schedule_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.ics')).read()
     assert slot.submission.code in schedule_ics
-    assert past_slot.submission.code in schedule_ics
+    assert canceled_talk.submission.code not in schedule_ics
 
     schedule_xcal = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xcal')).read()
     assert event.slug in schedule_xcal
@@ -263,8 +260,8 @@ def test_html_export_full(event, other_event, slot, past_slot):
 
     schedule_xml = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')).read()
     assert slot.submission.title in schedule_xml
-    assert past_slot.submission.frab_slug in schedule_xml
-    assert str(past_slot.submission.uuid) in schedule_xml
+    assert canceled_talk.submission.frab_slug not in schedule_xml
+    assert str(canceled_talk.submission.uuid) not in schedule_xml
 
     talk_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics')).read()
     assert slot.submission.title in talk_ics

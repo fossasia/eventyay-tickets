@@ -466,10 +466,11 @@ def schedule(event):
 
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
-    slot = schedule.talks.filter(submission=confirmed_submission)
-    slot.update(start=now(), end=now() + datetime.timedelta(minutes=60), room=room, schedule=schedule, is_visible=True)
-    slot = slot.first()
-    return slot
+    TalkSlot.objects.update_or_create(submission=confirmed_submission, schedule=room.event.wip_schedule, defaults={'is_visible': True})
+    TalkSlot.objects.update_or_create(submission=confirmed_submission, schedule=schedule, defaults={'is_visible': True})
+    slots = TalkSlot.objects.filter(submission=confirmed_submission)
+    slots.update(start=now(), end=now() + datetime.timedelta(minutes=60), room=room)
+    return slots.get(schedule=schedule)
 
 
 @pytest.fixture
@@ -491,6 +492,13 @@ def past_slot(other_confirmed_submission, room, schedule, speaker):
     slot.is_visible = True
     slot.save()
     return slot
+
+
+@pytest.fixture
+def canceled_talk(past_slot):
+    past_slot.submission.cancel(force=True)
+    past_slot.submission.event.wip_schedule.freeze('vcanceled')
+    return past_slot
 
 
 @pytest.fixture

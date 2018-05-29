@@ -9,7 +9,6 @@ from pretalx.agenda.views.speaker import SpeakerView
 from pretalx.agenda.views.talk import SingleICalView, TalkView
 from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.models import Schedule
-from pretalx.submission.models import Submission
 
 
 class PretalxExportContextMixin():
@@ -111,11 +110,15 @@ class ExportScheduleVersionsView(PretalxExportContextMixin, BuildableDetailView,
 
 
 class ExportTalkView(PretalxExportContextMixin, BuildableDetailView, TalkView):
-    queryset = Submission.objects.filter(slots__schedule__published__isnull=False).distinct()
+
+    def get_queryset(self, *args, **kwargs):
+        return self._exporting_event.submissions.filter(pk__in=self._exporting_event.current_schedule.slots.all().values_list('pk', flat=True))
 
 
 class ExportTalkICalView(PretalxExportContextMixin, BuildableDetailView, SingleICalView):
-    queryset = Submission.objects.filter(slots__schedule__published__isnull=False).distinct()
+
+    def get_queryset(self, *args, **kwargs):
+        return self._exporting_event.submissions.filter(pk__in=self._exporting_event.current_schedule.slots.all().values_list('pk', flat=True))
 
     def get_url(self, obj):
         return obj.urls.ical

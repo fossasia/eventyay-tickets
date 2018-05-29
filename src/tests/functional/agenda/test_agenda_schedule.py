@@ -185,8 +185,8 @@ def test_schedule_page(client, event, speaker, slot, schedule):
 
 @pytest.mark.django_db
 def test_versioned_schedule_page(client, event, speaker, slot, schedule):
-    event.wip_schedule.slots.all().delete()
     event.release_schedule('new schedule')
+    event.current_schedule.talks.update(is_visible=False)
 
     response = client.get(event.urls.schedule, follow=True)
     assert slot.submission.title not in response.content.decode()
