@@ -21,7 +21,7 @@ class Command(BakeryBuildCommand):
 
     @classmethod
     def get_output_dir(cls, event):
-        return os.path.join(settings.HTMLEXPORT_ROOT, event.slug)
+        return os.path.join(settings.HTMLEXPORT_ROOT, event.slug)  # Do not change, this is used to build the correct zip path
 
     @classmethod
     def get_output_zip_path(cls, event):
@@ -43,7 +43,8 @@ class Command(BakeryBuildCommand):
                 make_archive(
                     base_name=settings.BUILD_DIR,
                     format='zip',
-                    root_dir=settings.BUILD_DIR,
+                    root_dir=settings.HTMLEXPORT_ROOT,
+                    base_dir=event.slug,
                 )
 
     def build_views(self):
