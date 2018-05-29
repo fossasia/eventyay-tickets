@@ -13,6 +13,9 @@ def export_schedule_html(*, event_id: int, make_zip=True):
     if not event:
         logger.error(f'In export_schedule_html: Could not find Event ID {event_id}')
         return
+    if not event.current_schedule:
+        logger.error(f'In export_schedule_html: Event {event.slug} has no schedule.')
+        return
 
     cmd = ['export_schedule_html', event.slug]
     if make_zip:
