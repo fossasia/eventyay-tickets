@@ -83,7 +83,7 @@ class ScheduleExportDownloadView(PermissionRequired, View):
             zip_name = os.path.basename(zip_path)
             response = FileResponse(open(zip_path, 'rb'), content_type='application/force-download')
         except Exception as e:
-            messages.error(request, _('Could not find the current export, please try to regenerate it.'))
+            messages.error(request, _('Could not find the current export, please try to regenerate it. ({error})').format(error=str(e)))
             return redirect(self.request.event.orga_urls.schedule_export)
         response['Content-Disposition'] = 'attachment; filename=' + zip_name
         return response

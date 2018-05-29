@@ -29,7 +29,7 @@ class TalkView(PermissionRequired, DetailView):
     def get_object(self):
         with suppress(AttributeError, TalkSlot.DoesNotExist):
             return self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
-        if self.request.is_orga:
+        if getattr(self.request, 'is_orga', False):
             with suppress(AttributeError, TalkSlot.DoesNotExist):
                 return self.request.event.wip_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
         raise Http404()
