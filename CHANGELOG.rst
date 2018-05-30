@@ -4,10 +4,10 @@ Changelog
 This changelog contains the changes to be released in the **next** release.
 For older changelogs, please visit our releases_ page.
 
-v0.6.1
+vx.x.x
 ------
 
-*Released on 2018-05-15*
+*Released on 2018-xx-xx*
 
 
 Breaking Changes
@@ -18,12 +18,16 @@ None.
 Features
 ~~~~~~~~
 
-None.
+- The API now exports links to submission images and speaker avatars.
+- Organisers can configure a list of talks to be shown as "sneak peek" before the first schedule is released.
+- Submitters can share a submission via a read-only link.
 
 Fixed bugs
 ~~~~~~~~~~~
 
-- The "Copy to draft" button was missing when viewing a sent email.
-- Accepted, but unconfirmed talks were listed as "Other talks" publicly once the speaker had confirmed one talk and the first schedule was released. (#431)
+- An issue resulting in an empty HTML export was fixed.
+- HTML exports failed if a talk was canceled.
+- When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
+- The API always showed the speaker biography as empty.
 
 .. _releases: https://github.com/pretalx/pretalx/releases
