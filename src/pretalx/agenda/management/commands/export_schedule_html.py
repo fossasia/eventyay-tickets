@@ -39,13 +39,16 @@ class Command(BakeryBuildCommand):
 
         with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True, BUILD_DIR=self.get_output_dir(event)):
             super().handle(*args, **options)
+            path = settings.BUILD_DIR
             if options.get('zip', False):
                 make_archive(
-                    base_name=settings.BUILD_DIR,
+                    base_name=path,
                     format='zip',
                     root_dir=settings.HTMLEXPORT_ROOT,
                     base_dir=event.slug,
                 )
+                path = path + '.zip'
+        self.stdout.write(self.style.SUCCESS(f'The HTML export for {event_slug} was successfully generated and can be found at {path}'))
 
     def build_views(self):
         for view_str in self.view_list:
