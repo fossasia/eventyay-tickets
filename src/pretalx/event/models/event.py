@@ -67,11 +67,6 @@ class Event(LogMixin, models.Model):
         default=False,
         verbose_name=_('Event is public')
     )
-    permitted = models.ManyToManyField(
-        to='person.User',
-        through='person.EventPermission',
-        related_name="events",
-    )
     date_from = models.DateField(
         verbose_name=_('Event start date'),
     )
