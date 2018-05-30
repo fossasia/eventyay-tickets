@@ -14,7 +14,7 @@ from pretalx.api.serializers.submission import SubmissionSerializer
 def test_event_serializer(event):
     data = EventSerializer(event).data
     assert data.keys() == {
-        'name', 'slug', 'subtitle', 'is_public', 'date_from', 'date_to',
+        'name', 'slug', 'is_public', 'date_from', 'date_to',
         'timezone', 'html_export_url',
     }
 

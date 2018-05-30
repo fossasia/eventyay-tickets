@@ -63,12 +63,6 @@ class Event(LogMixin, models.Model):
         related_name='events',
         on_delete=models.PROTECT,
     )
-    subtitle = I18nCharField(
-        max_length=200,
-        null=True, blank=True,
-        verbose_name=_('Subtitle'),
-        help_text=_('A tagline, or motto, or description. Not mandatory.')
-    )
     is_public = models.BooleanField(
         default=False,
         verbose_name=_('Event is public')
