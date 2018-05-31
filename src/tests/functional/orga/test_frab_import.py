@@ -9,7 +9,7 @@ from pretalx.schedule.models import Room, TalkSlot
 @pytest.mark.django_db
 def test_frab_import_minimal(superuser):
     assert Event.objects.count() == 0
-    assert superuser.permissions.count() == 0
+    assert superuser.teams.count() == 0
 
     call_command('import_schedule', 'tests/functional/fixtures/frab_schedule_minimal.xml')
 

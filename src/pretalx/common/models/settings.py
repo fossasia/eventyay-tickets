@@ -123,7 +123,7 @@ statistics you might find interesting:
 
 - You had {submission_count} talk submissions,
 - Of which you selected {talk_count} talks.
-- {reviewer_count} reviewers wrote {review_count} reviews.
+- The reviewers wrote {review_count} reviews.
 - You released {schedule_count} schedules in total.
 - Over the course of the event, you sent {mail_count} mails.
 

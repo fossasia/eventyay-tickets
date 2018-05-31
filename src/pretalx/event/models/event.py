@@ -394,7 +394,6 @@ class Event(LogMixin, models.Model):
         if stats:
             context.update({
                 'talk_count': self.current_schedule.talks.filter(is_visible=True).count(),
-                'reviewer_count': self.permissions.filter(is_reviewer=True).count(),
                 'review_count': self.reviews.count(),
                 'schedule_count': self.schedules.count() - 1,
                 'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
