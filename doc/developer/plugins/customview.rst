@@ -12,6 +12,8 @@ This page describes how to provide a custom view from within your plugin. Before
 reading this page, please read and understand how :ref:`URL handling <urlconf>` works in
 pretalx.
 
+.. _urlconf:
+
 Orga panel views
 ----------------
 

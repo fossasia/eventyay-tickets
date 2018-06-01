@@ -23,7 +23,7 @@ You need to include the API token with every request to the API in the
 ``Authorization`` header like the following:
 
 .. sourcecode:: http
-   :emphasize-lines: 3
+   :emphasize-lines: 2
 
    GET /api/v1/organisers/ HTTP/1.1
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
@@ -54,13 +54,13 @@ Pagination
 ----------
 
 The API will paginate most lists of objects. The response will take the form
-of::
+of:
 
 .. sourcecode:: javascript
 
     {
         "count": 117,
-        "next": "https://pretalx.org/api/v1/organizers/?limit=20&offset=40",
+        "next": "https://pretalx.yourdomain.com/api/v1/organisers/?limit=20&offset=40",
         "previous": null,
         "results": […],
     }
