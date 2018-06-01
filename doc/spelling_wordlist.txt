@@ -9,6 +9,7 @@ config
 cronjob
 cryptographic
 Datetime
+Debian
 discoverable
 Django
 drag'n'drop
@@ -18,6 +19,8 @@ iCal
 middleware
 mixin
 namespace
+plugin
+plugins
 prepend
 prepended
 pretalx

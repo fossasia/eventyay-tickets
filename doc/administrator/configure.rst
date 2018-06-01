@@ -35,7 +35,7 @@ The filesystem section
 ~~~~~~~~~
 
 - The ``media`` option sets the media directory that contains user generated files. It needs to
-  be writable by the pretalx process.
+  be writeable by the pretalx process.
 - **Environment variable:** ``PRETALX_FILESYSTEM_MEDIA``
 - **Default:** A directory called ``media`` in the ``data`` directory (see above).
 
@@ -43,7 +43,7 @@ The filesystem section
 ~~~~~~~~
 
 - The ``logs`` option sets the log directory that contains logged data. It needs to
-  be writable by the pretalx process.
+  be writeable by the pretalx process.
 - **Environment variable:** ``PRETALX_FILESYSTEM_LOGS``
 - **Default:** A directory called ``logs`` in the ``data`` directory (see above).
 
@@ -51,7 +51,7 @@ The filesystem section
 ~~~~~~~~~~
 
 - The ``statics`` option sets the directory that contains static files. It needs to
-  be writable by the pretalx process. pretalx will put files there during the ``rebuild`` and
+  be writeable by the pretalx process. pretalx will put files there during the ``rebuild`` and
   ``collectstatic`` commands.
 - **Environment variable:** ``PRETALX_FILESYSTEM_STATIC``
 - **Default:** A directory called ``static.dist`` next to pretalx's ``manage.py``.
@@ -150,7 +150,7 @@ The mail section
 ``from``
 ~~~~~~~~
 
-- The fallback sender address, e.g. for when pretalx sends event independent emails.
+- The fall-back sender address, e.g. for when pretalx sends event independent emails.
 - **Environment variable:** ``PRETALX_MAIL_FROM``
 - **Default:** ``admin@localhost``
 

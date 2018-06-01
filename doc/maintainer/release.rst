@@ -20,11 +20,11 @@ System checks
 1. Are you in the branch and commit you think you are in?
 2. Are all tests passing? (On Travis, or locally if you're willing to check all databases or are under time pressure.)
 3. Have you deployed the release-ready commit to an instance? Did the upgrade work?
-4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release, i.e. ``git shortlog -ns vx.y.z..master``.
-5. Have you communicated your intentions and release timeline to the team?
+4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release. ``git shortlog -ns vx.y.z..master``.
+5. Have you communicated your intentions and release time line to the team?
 
-Takeoff and landing
--------------------
+Take-off and landing
+--------------------
 
 1. Bump version in ``src/pretalx/__init__.py``.
 2. Fill in the version and the release date in ``CHANGELOG.rst``.

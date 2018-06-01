@@ -228,11 +228,11 @@ You can make sure the web interface is up and look for any issues with::
 
     # journalctl -u pretalx-web
 
-And same for the celery workers (i.e. in case the emails are not sent)::
+And same for the celery workers (for example in case the emails are not sent)::
 
     # journalctl -u pretalx-worker
 
-In the startup output, pretalx also lists its logging directory, which is also
+In the start-up output, pretalx also lists its logging directory, which is also
 a good place to look for the reason for issues.
 
 

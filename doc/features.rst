@@ -18,7 +18,7 @@ Talk submission
   after inspecting it.
 - **Build a great team:** pretalx allows you to invite further members to your crew seamlessly, and
   has features a role-based permission system, where you differentiate between superusers, crew,
-  reviewers, etc.
+  and reviewers.
 - **Organize the talks:** You can offer different submission types, with default lengths, so that
   speakers can tell you how much time (or which format, e.g. workshops) they require right at the
   start.
@@ -64,10 +64,10 @@ Speaker management
 ~~~~~~~~~~~~~~~~~~
 
 - **Communicate:** Write emails to your speakers! pretalx comes with an email templating system that
-  allows you to write multi-lingual email templates with placeholders and send them to all or a
+  allows you to write multi-lingual email templates with place holders and send them to all or a
   subset of your speakers.
 - **Check, then check again:** pretalx lets you check and edit any email before it's actually sent.
-  Until then, pretalx collects the emails in an Outbox, ready for editing, sending, or discarding.
+  Until then, pretalx collects the emails in an out-box, ready for editing, sending, or discarding.
 - **Resend:** Sent the email to the wrong address? Want to send the same email to a new speaker?
   pretalx allows you to copy any sent email to a draft, edit it, and send it again.
 - **Educate:** Speakers can upload files (such as presentations, or papers) along with their talks.

@@ -10,9 +10,9 @@ over to our `docker-compose setup` (but note that the pip installation is by
 far better tested and supported than the docker setup).
 
 The following documents an uncomplicated setup without going into details on
-performance tuning, alternate caching backends, etc. – if you have questions,
-don't hesitate to ask.  (Or you can play around and send us documentation pull
-requests!)
+performance tuning, alternate caching backends, and so on. – if you have
+questions, don't hesitate to ask.  (Or you can play around and send us
+documentation pull requests!)
 
 We also provide an `ansible role`_ compatible with our pip setup.
 

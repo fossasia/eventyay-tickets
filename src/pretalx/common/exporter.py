@@ -25,7 +25,7 @@ class BaseExporter:
         """
         A short and unique identifier for this exporter.
 
-        This should only contain lowercase letters and in most
+        This should only contain lower-case letters and in most
         cases will be the same as your package name.
         """
         raise NotImplementedError()  # NOQA
@@ -41,5 +41,5 @@ class BaseExporter:
         raise NotImplementedError()  # NOQA
 
     def render(self, **kwargs) -> Tuple[str, str, str]:
-        """Render the exported file and return a tuple consisting of a filename, a file type and file content."""
+        """Render the exported file and return a tuple consisting of a file name, a file type and file content."""
         raise NotImplementedError()  # NOQA

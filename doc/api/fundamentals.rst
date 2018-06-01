@@ -29,7 +29,7 @@ You need to include the API token with every request to the API in the
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
 
 .. note:: The API also supports authentication via browser sessions,
-          i.e. the same way that you authenticate with pretalx when using the
+          the same way that you authenticate with pretalx when using the
           browser interface.  Using this authentication is *not*
           officially supported for use by third-party clients and we may change
           or remove it at any time. If you want to use session authentication,
@@ -112,7 +112,7 @@ representation and how we serialise them to JSON.
 Internal type         JSON representation          Examples
 ===================== ============================ ===================================
 Datetime              String in ISO 8601 format    ``"2017-12-27T10:00:00Z"``
-                      with timezone (often UTC)    ``"2017-12-27T10:00:00.596934Z"``,
+                      with time zone (often UTC)   ``"2017-12-27T10:00:00.596934Z"``,
                                                    ``"2017-12-27T10:00:00+02:00"``
 Date                  String in ISO 8601 format    ``2017-12-27``
 Multi-lingual string  Object of strings            ``{"en": "red", "de": "rot"}``
