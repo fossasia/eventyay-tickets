@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='image',
-            field=models.ImageField(blank=True, help_text='Optional. Will be displayed publically.', null=True, upload_to=pretalx.submission.models.submission.submission_image_path, verbose_name='Talk image'),
+            field=models.ImageField(blank=True, help_text='Optional. Will be displayed publicly.', null=True, upload_to=pretalx.submission.models.submission.submission_image_path, verbose_name='Talk image'),
         ),
     ]

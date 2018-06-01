@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='room',
             name='speaker_info',
-            field=i18nfield.fields.I18nCharField(blank=True, help_text='Information relevant for speakers scheduled in this room, for example room size, special directions, available adapters for video input …', max_length=1000, null=True, verbose_name='Speaker Informtion'),
+            field=i18nfield.fields.I18nCharField(blank=True, help_text='Information relevant for speakers scheduled in this room, for example room size, special directions, available adapters for video input …', max_length=1000, null=True, verbose_name='Speaker Information'),
         ),
         migrations.AlterField(
             model_name='room',

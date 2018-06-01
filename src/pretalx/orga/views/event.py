@@ -103,7 +103,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
             try:
                 backend.test(self.request.event.settings.mail_from)
             except Exception as e:
-                messages.warning(self.request, _('An error occured while contacting the SMTP server: %s') % str(e))
+                messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
                 return redirect(self.request.event.orga_urls.mail_settings)
             else:
                 if form.cleaned_data.get('smtp_use_custom'):

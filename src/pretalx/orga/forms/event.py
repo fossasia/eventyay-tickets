@@ -140,7 +140,7 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     smtp_use_custom = forms.BooleanField(
         label=_("Use custom SMTP server"),
-        help_text=_("All mail related to your event will be sent over the smtp server specified by you."),
+        help_text=_("All mail related to your event will be sent over the SMTP server specified by you."),
         required=False,
     )
     smtp_host = forms.CharField(

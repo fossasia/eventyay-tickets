@@ -118,7 +118,7 @@ class ScheduleResetView(PermissionRequired, View):
         schedule = self.request.event.schedules.filter(version=schedule_version).first()
         if schedule:
             schedule.unfreeze(user=request.user)
-            messages.success(self.request, _('Reset successful – start editing the schedule from your selcted version!'))
+            messages.success(self.request, _('Reset successful – start editing the schedule from your selected version!'))
         else:
             messages.error(self.request, _('Error retrieving the schedule version to reset to.'))
         return redirect(self.request.event.orga_urls.schedule)

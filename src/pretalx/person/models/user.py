@@ -82,7 +82,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     )
     name = models.CharField(
         max_length=120, verbose_name=_('Name'),
-        help_text=_('Please enter the name you wish to be displayed publically.'),
+        help_text=_('Please enter the name you wish to be displayed publicly.'),
     )
     email = models.EmailField(
         verbose_name=_('E-Mail'),
@@ -103,7 +103,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     avatar = models.ImageField(
         null=True, blank=True,
         verbose_name=_('Profile picture'),
-        help_text=_('Optional. Will be displayed publically.'),
+        help_text=_('Optional. Will be displayed publicly.'),
     )
     get_gravatar = models.BooleanField(
         default=False,

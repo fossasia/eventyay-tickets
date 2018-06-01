@@ -25,7 +25,7 @@ class Room(LogMixin, models.Model):
     speaker_info = I18nCharField(
         max_length=1000,
         null=True, blank=True,
-        verbose_name=_('Speaker Informtion'),
+        verbose_name=_('Speaker Information'),
         help_text=_('Information relevant for speakers scheduled in this room, for example room size, special directions, available adapters for video input …'),
     )
     capacity = models.PositiveIntegerField(

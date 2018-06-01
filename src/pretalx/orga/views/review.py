@@ -119,7 +119,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
     def form_valid(self, form):
         if not self.qform.is_valid():
-            messages.error(self.request, _('There have been erros with your input.'))
+            messages.error(self.request, _('There have been errors with your input.'))
             return redirect(self.get_success_url())
         form.instance.submission = self.submission
         form.instance.user = self.request.user
