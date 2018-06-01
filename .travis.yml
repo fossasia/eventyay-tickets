@@ -1,7 +1,6 @@
 language: python
 sudo: true
 python: 3.6
-dist: trusty
 install:
   - sudo apt-get install enchant myspell-en-gb
   - pip install -Ur src/requirements/documentation.txt

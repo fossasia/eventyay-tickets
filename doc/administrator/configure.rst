@@ -93,21 +93,21 @@ The database section
 
 - pretalx supports most SQL databases, although you'll need to install the appropriate Python
   library for each of them, as described in the table below. The default is SQLite, which is *not* a
-  production database. Please use a database like Postgres or MySQL.
+  production database. Please use a database like PostgresQL or MySQL.
 - **Environment variable:** ``PRETALX_DB_TYPE``
 - **Default:** ``sqlite3``
 
-+----------+----------------------+---------------------+
-| Database | Configuration string | pip package         |
-+==========+======================+=====================+
-| Postgres | ``postgresql``       | ``psycopg2-binary`` |
-+----------+----------------------+---------------------+
-| MySQL    | ``mysql``            | ``mysqlclient``     |
-+----------+----------------------+---------------------+
-| SQLite   | ``sqlite3``          | –                   |
-+----------+----------------------+---------------------+
-| Oracle   | ``oracle``           | ``cx_Oracle``       |
-+----------+----------------------+---------------------+
++------------+----------------------+---------------------+
+| Database   | Configuration string | pip package         |
++============+======================+=====================+
+| PostgresQL | ``postgresql``       | ``psycopg2-binary`` |
++------------+----------------------+---------------------+
+| MySQL      | ``mysql``            | ``mysqlclient``     |
++------------+----------------------+---------------------+
+| SQLite     | ``sqlite3``          | –                   |
++------------+----------------------+---------------------+
+| Oracle     | ``oracle``           | ``cx_Oracle``       |
++------------+----------------------+---------------------+
 
 ``name``
 ~~~~~~~~

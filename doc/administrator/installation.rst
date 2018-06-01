@@ -6,8 +6,8 @@ Installation
 This guide will help you to install pretalx on a Linux distribution. It should be
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.
 
-We also provide an `ansible role`_ that roughly follows this guide, in case you
-already have an ansible-based setup.
+We also provide an `Ansible role`_ that roughly follows this guide, in case you
+already have an Ansible-based setup.
 
 Step 0: Prerequisites
 ---------------------
@@ -218,7 +218,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-Yay, you've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
+You've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
 the administrator you configured above. You can now create an event, and off you go!
 
 Step 8: Check the installation
@@ -250,7 +250,7 @@ user::
     # systemctl restart pretalx-web pretalx-worker
 
 
-.. _ansible role: https://github.com/pretalx/ansible-pretalx
+.. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
