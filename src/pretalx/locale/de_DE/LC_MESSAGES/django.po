@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2018-05-06 17:36+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
-"Language: de\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -131,7 +131,7 @@ msgid ""
 "communicate your feedback."
 msgstr ""
 "Feedback ist wertvoll für Vortragende, um Vortrag und Präsentationsstil zu "
-"verbessern. Auch eine kurze Rückmeldung kan einer Vortragenden sehr helfen – "
+"verbessern. Auch eine kurze Rückmeldung kann einer Vortragenden sehr helfen – "
 "wir möchten dich bitten, dass du dir dabei die Zeit nimmst, eine "
 "konstruktive Formulierung für deine Meinung zu finden."
 
@@ -144,7 +144,7 @@ msgid ""
 "You are currently viewing the editable schedule version, which is unreleased "
 "and may change at any time."
 msgstr ""
-"Das ist eine unveröffentlichte Fahrplanversion. Sie kann sich noch jederzeit "
+"Das ist eine unveröffentlichte Programmversion. Sie kann sich noch jederzeit "
 "ändern."
 
 #: pretalx/agenda/phrases.py:42
@@ -221,7 +221,7 @@ msgstr "Feedback für"
 
 #: pretalx/agenda/templates/agenda/schedule.html:11
 msgid "You are currently viewing an older schedule version."
-msgstr "Das ist eine veröffentlichte Fahrplanversion."
+msgstr "Das ist eine veröffentlichte Programmversion."
 
 #: pretalx/agenda/templates/agenda/schedule.html:16
 #, python-format
@@ -681,7 +681,7 @@ msgstr "Dein Profil"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:11
 msgid ""
-"This data will be displayed publically if your talk is accepted. It is also "
+"This data will be displayed publicly if your talk is accepted. It is also "
 "visible to reviewers."
 msgstr ""
 "Diese Daten werden öffentlich neben deinem Beitrag im Programm angezeigt, "
@@ -2378,7 +2378,7 @@ msgstr "Eigenen SMTP-Server verwenden"
 
 #: pretalx/orga/forms/event.py:138
 msgid ""
-"All mail related to your event will be sent over the smtp server specified "
+"All mail related to your event will be sent over the SMTP server specified "
 "by you."
 msgstr ""
 "Alle E-Mails bezüglich deiner Veranstaltung werden über den von dir "
@@ -2549,7 +2549,7 @@ msgstr ""
 
 #: pretalx/orga/phrases.py:25
 msgid "I think this talk might fit the conference better, if ..."
-msgstr "Ich denke dieser Vorträg könnte besser sein, wenn …"
+msgstr "Ich denke dieser Vortrag könnte besser sein, wenn …"
 
 #: pretalx/orga/phrases.py:26
 msgid "I think this talk sounds like a perfect fit for Day 2, since ..."
@@ -2844,7 +2844,7 @@ msgstr "Stell jetzt eine Frage!"
 #: pretalx/orga/templates/orga/cfp/question_view.html:6
 msgid ""
 "Questions can help you sort out additional details with speakers, such as "
-"clothing sizes, special requirements such as dietary needs, or accomodation. "
+"clothing sizes, special requirements such as dietary needs, or accommodation. "
 "Questions can be asked either on a per-submission level, or per speaker, as "
 "you see fit."
 msgstr ""
@@ -3070,14 +3070,14 @@ msgstr ""
 #: pretalx/orga/templates/orga/event/wizard/display.html:6
 msgid ""
 "Choose your inital customisations here – you can always change them later, "
-"or enhance them with custom css."
+"or enhance them with custom CSS."
 msgstr ""
 "Wähle hier die anfänglichen Einstellungen – du kannst sie später noch "
 "verändern oder mit eigenem CSS ergänzen."
 
 #: pretalx/orga/templates/orga/event/wizard/initial.html:6
 msgid ""
-"The event creation assistent will help you to get started with a new event."
+"The event creation assistant will help you to get started with a new event."
 msgstr ""
 "Die folgenden Schritte werden dir helfen, eine neue Veranstaltung zu starten."
 
@@ -3353,7 +3353,7 @@ msgstr "HTML Export"
 #: pretalx/orga/templates/orga/schedule/export.html:8
 msgid ""
 "The event schedule can be exported to a static HTML dump, so you can upload "
-"it to a normal file-serving webserver like nginx. This is done automatically "
+"it to a normal file-serving web server like nginx. This is done automatically "
 "on schedule release, but you can also trigger that action here."
 msgstr ""
 "Das Programm kann in eine statische HTML-Sammlung exportiert werden, die du "
@@ -3401,7 +3401,7 @@ msgid ""
 "talks specified in the XML file. The format is expected to be the same as "
 "the XML export provided."
 msgstr ""
-"Lad hier eine XML-Datei hoch, um eine neue Programm-Version zu releasen, die "
+"Lad hier eine XML-Datei hoch, um eine neue Programm-Version zu veröffentlichen, die "
 "genau die Talks enthält, die in der XML-Datei aufgeführt werden. Das Format "
 "muss dem XML-Export-Format entsprechen."
 
@@ -3416,7 +3416,7 @@ msgstr "Das Programm ist derzeit nicht öffentlich einsehbar."
 #: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "Once you release your schedule, it will be publicly visible."
 msgstr ""
-"Wenn du eine Fahrplanversion erstellst, wird sie öffentlich einsehbar sein."
+"Wenn du eine Programmversion erstellst, wird sie öffentlich einsehbar sein."
 
 #: pretalx/orga/templates/orga/schedule/index.html:28
 msgid "Hide schedule"
@@ -3430,7 +3430,7 @@ msgstr "Das Programm ist derzeit nur für Orga-Mitglieder einsehbar."
 msgid ""
 "Once you release your schedule, it will be only visible to orga members."
 msgstr ""
-"Wenn du eine Fahrplanversion erstellst, wird sie nur für Orga-Mitglieder "
+"Wenn du eine Programmversion erstellst, wird sie nur für Orga-Mitglieder "
 "einsehbar sein."
 
 #: pretalx/orga/templates/orga/schedule/index.html:35
@@ -3446,7 +3446,7 @@ msgid ""
 "You're currently viewing a released schedule version. Released versions "
 "cannot be edited directly."
 msgstr ""
-"Das ist eine veröffentlichte Fahrplanversion. Sie kann nicht mehr direkt "
+"Das ist eine veröffentlichte Programmversion. Sie kann nicht mehr direkt "
 "editiert werden."
 
 #: pretalx/orga/templates/orga/schedule/index.html:54
@@ -3857,7 +3857,7 @@ msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
 
 #: pretalx/orga/views/event.py:106
 #, python-format
-msgid "An error occured while contacting the SMTP server: %s"
+msgid "An error occurred while contacting the SMTP server: %s"
 msgstr "Ein Fehler trat auf beim Versuch, den SMTP-Server zu erreichen: %s"
 
 #: pretalx/orga/views/event.py:110
@@ -4010,7 +4010,7 @@ msgid "You are now an administrator instead of a superuser."
 msgstr "Du bist jetzt ein Administrator statt ein Superuser."
 
 #: pretalx/orga/views/review.py:122
-msgid "There have been erros with your input."
+msgid "There have been errors with your input."
 msgstr "Oh :( Wir konnten deine Änderungen leider nicht speichern."
 
 #: pretalx/orga/views/review.py:128 pretalx/orga/views/review.py:131
@@ -4035,7 +4035,7 @@ msgstr "Ui, das Programm wurde veröffentlicht!"
 
 #: pretalx/orga/views/schedule.py:117
 msgid ""
-"Reset successful – start editing the schedule from your selcted version!"
+"Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Zurücksetzen war erfolgreich – du kannst das Programm jetzt von dieser "
 "Version aus editieren."
@@ -4209,7 +4209,7 @@ msgstr "alle"
 
 #: pretalx/person/forms.py:244
 msgid "Non-accepted submitters"
-msgstr "Nicht angenommene Einreicher"
+msgstr "Nicht angenommene Einreichende"
 
 #: pretalx/person/models/information.py:16
 msgid "Include all submitters"
@@ -4340,7 +4340,7 @@ msgid "Please use only characters in the latin alphabet, plus numbers and _-."
 msgstr "Bitte nur Buchstaben von A-Z/a-z, Zahlen und _- verwenden."
 
 #: pretalx/person/models/user.py:85
-msgid "Please enter the name you wish to be displayed publically."
+msgid "Please enter the name you wish to be displayed publicly."
 msgstr "Bitte gib den Namen ein, der öffentlich erscheinen soll."
 
 #: pretalx/person/models/user.py:88
@@ -4365,7 +4365,7 @@ msgstr "Profilbild"
 
 #: pretalx/person/models/user.py:106
 #: pretalx/submission/models/submission.py:143
-msgid "Optional. Will be displayed publically."
+msgid "Optional. Will be displayed publicly."
 msgstr "Optional. Wird öffentlich gezeigt."
 
 #: pretalx/person/models/user.py:110
@@ -4410,7 +4410,7 @@ msgid "A description for attendees, for example directions."
 msgstr "Eine Beschreibung, z.B. eine Wegbeschreibung."
 
 #: pretalx/schedule/models/room.py:28
-msgid "Speaker Informtion"
+msgid "Speaker Information"
 msgstr "Informationen für Vortragende"
 
 #: pretalx/schedule/models/room.py:29
