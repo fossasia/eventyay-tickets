@@ -84,3 +84,4 @@ to this project.
 .. _OsmoDevCon 2018: https://pretalx.sysmocom.de/osmodevcon2018/schedule/
 .. _DjangoCon Europe 2018: https://2018.djangocontent.eu/hd/schedule/
 .. _hack.lu 2018: https://cfp.hack.lu/hacklu18/
+.. _DjangoCon 2018: https://2018.djangocon.eu
