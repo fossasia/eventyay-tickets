@@ -24,20 +24,7 @@ class Command(BaseCommand):
         event_data = root.find('conference')
         event = Event.objects.filter(slug__iexact=event_data.find('acronym').text).first()
         if not event:
-            name = event_data.find('title').text
-            organiser = Organiser.objects.create(name=name)
-            event = Event(
-                name=name, organiser=organiser,
-                slug=event_data.find('acronym').text,
-                date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
-                date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
-            )
-            event.save()
-            Team.objects.create(
-                name=name + ' Organisers', organiser=organiser, all_events=True,
-                can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
-                can_change_event_settings=True, can_change_submissions=True,
-            )
+            event = self.create_event(event_data)
 
         team = event.organiser.teams.filter(
             can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
@@ -45,7 +32,7 @@ class Command(BaseCommand):
         ).first()
         if not team:
             team = Team.objects.create(
-                name=str(event.name) + ' Organisers', organiser=organiser, all_events=True,
+                name=str(event.name) + ' Organisers', organiser=event.organiser, all_events=True,
                 can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
                 can_change_event_settings=True, can_change_submissions=True,
             )
@@ -54,3 +41,20 @@ class Command(BaseCommand):
         team.save()
 
         self.stdout.write(self.style.SUCCESS(process_frab(root, event)))
+
+    def create_event(self, event_data):
+        name = event_data.find('title').text
+        organiser = Organiser.objects.create(name=name)
+        event = Event(
+            name=name, organiser=organiser,
+            slug=event_data.find('acronym').text,
+            date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
+            date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
+        )
+        event.save()
+        Team.objects.create(
+            name=name + ' Organisers', organiser=organiser, all_events=True,
+            can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
+            can_change_event_settings=True, can_change_submissions=True,
+        )
+        return event
