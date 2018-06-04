@@ -92,15 +92,19 @@ class Filterable:
                     if lookup_key in self.filter_fields:
                         qs = qs.filter(**{key: self.request.GET.get(key)})
         if 'q' in self.request.GET:
-            query = urllib.parse.unquote(self.request.GET['q'])
-            _filters = [Q(**{field: query}) for field in self.default_filters]
-            if len(_filters) > 1:
-                _filter = _filters[0]
-                for f in _filters[1:]:
-                    _filter = _filter | f
-                qs = qs.filter(_filter)
-            elif len(_filters):
-                qs = qs.filter(_filters[0])
+            qs = self._handle_search(qs)
+        return qs
+
+    def handle_search(self, qs):
+        query = urllib.parse.unquote(self.request.GET['q'])
+        _filters = [Q(**{field: query}) for field in self.default_filters]
+        if len(_filters) > 1:
+            _filter = _filters[0]
+            for additional_filter in _filters[1:]:
+                _filter = _filter | additional_filter
+            qs = qs.filter(_filter)
+        elif len(_filters):
+            qs = qs.filter(_filters[0])
         return qs
 
     def get_context_data(self, *args, **kwargs):

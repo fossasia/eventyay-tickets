@@ -2,6 +2,7 @@ import urllib
 
 from csp.decorators import csp_update
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.forms.models import BaseModelFormSet, inlineformset_factory
@@ -266,7 +267,6 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
     def post(self, request, event):
 
         if request.POST.get('really'):
-            from django.contrib.auth import logout
             request.user.deactivate()
             logout(request)
             messages.success(request, phrases.cfp.account_deleted)

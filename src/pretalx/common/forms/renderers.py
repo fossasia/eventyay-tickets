@@ -28,6 +28,12 @@ def render_label(content, label_for=None, label_class=None, label_title='', opti
 
 
 class EventInlineFieldRenderer(FieldRenderer):
+    LAYOUT = 'inline'
+
+    def __init__(self, *args, **kwargs):
+        self.use_label = kwargs.pop('use_label', True)
+        kwargs['layout'] = self.LAYOUT if kwargs['layout'].startswith('event') else kwargs['layout']
+        super().__init__(*args, **kwargs)
 
     def put_inside_label(self, html):
         """Do not put inputs inside labels."""
@@ -38,18 +44,9 @@ class EventInlineFieldRenderer(FieldRenderer):
         )
         return mark_safe(html + label)
 
-    def __init__(self, *args, **kwargs):
-        self.use_label = kwargs.pop('use_label', True)
-        kwargs['layout'] = 'inline' if kwargs['layout'].startswith('event') else kwargs['layout']
-        super().__init__(*args, **kwargs)
-
 
 class EventFieldRenderer(EventInlineFieldRenderer):
-
-    def __init__(self, *args, **kwargs):
-        self.use_label = kwargs.pop('use_label', True)
-        kwargs['layout'] = 'horizontal' if kwargs['layout'].startswith('event') else kwargs['layout']
-        super().__init__(*args, **kwargs)
+    LAYOUT = 'horizontal'
 
     def add_label(self, html):
         label = self.get_label()
