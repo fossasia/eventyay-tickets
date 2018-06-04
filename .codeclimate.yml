@@ -1,0 +1,7 @@
+## other configuration excluded from example...
+exclude_patterns:
+- "doc/"
+- "src/tests/"
+- "src/pretalx/static/vendored/"
+- "**/migrations/"
+- "settings.py"
