@@ -34,8 +34,6 @@ class LoginView(TemplateView):
         if url and is_safe_url(url, request.get_host()):
             return redirect(url + ('?' + params.urlencode() if params else ''))
 
-        # TODO: check where to reasonably redirect:
-        # orga of a running event? go to that event.
         messages.success(request, phrases.orga.logged_in)
         if request.user.teams.count() == 1:
             return redirect(reverse('orga:event.dashboard', kwargs={'event': request.user.teams.first().event.slug}))
