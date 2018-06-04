@@ -15,6 +15,7 @@ from django.views.generic import (
 from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.phrases import phrases
+from pretalx.common.views import is_form_bound
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.submission.forms import InfoForm, QuestionsForm, ResourceForm
 from pretalx.submission.models import Resource, Submission, SubmissionStates
@@ -26,15 +27,14 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @cached_property
     def login_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'login'
         return LoginInfoForm(
             user=self.request.user,
-            data=self.request.POST if bind else None
+            data=self.request.POST if is_form_bound(self.request, 'login') else None,
         )
 
     @cached_property
     def profile_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'profile'
+        bind = is_form_bound(self.request, 'profile')
         return SpeakerProfileForm(
             user=self.request.user,
             event=self.request.event,
@@ -46,7 +46,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @cached_property
     def questions_form(self):
-        bind = self.request.method == 'POST' and self.request.POST.get('form') == 'questions'
+        bind = is_form_bound(self.request, 'questions')
         return QuestionsForm(
             data=self.request.POST if bind else None,
             files=self.request.FILES if bind else None,
