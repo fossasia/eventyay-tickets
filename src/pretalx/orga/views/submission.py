@@ -350,7 +350,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
     default_filters = ('code__icontains', 'speakers__name__icontains', 'speakers__nick__icontains', 'title__icontains')
     filter_fields = ('submission_type', 'state')
     filter_form_class = SubmissionFilterForm
-    sortable_fields = ('code', 'title', 'submission_type', 'state', 'is_featured')
+    sortable_fields = ('code', 'title', 'state', 'is_featured')
     permission_required = 'orga.view_submissions'
     paginate_by = 25
 
