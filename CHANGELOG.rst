@@ -29,5 +29,6 @@ Fixed bugs
 - HTML exports failed if a talk was canceled.
 - When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
 - The API always showed the speaker biography as empty.
+- The "Mark speaker arrived" button is now only shown during and slightly before the event. (#441)
 
 .. _releases: https://github.com/pretalx/pretalx/releases

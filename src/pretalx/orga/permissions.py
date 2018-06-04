@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 import rules
+from django.utils.timezone import now
 
 from pretalx.person.permissions import (
     can_change_submissions, is_administrator, is_reviewer,
@@ -51,6 +54,18 @@ def can_edit_mail(user, obj):
     return hasattr(obj, 'sent') and obj.sent is None
 
 
+@rules.predicate
+def can_mark_speakers_arrived(user, obj):
+    event = obj.event
+    return (event.date_from - timedelta(days=1)) <= now().date() <= event.date_to
+
+
+@rules.predicate
+def is_event_over(user, obj):
+    event = obj.event
+    return event.date_to < now().date()
+
+
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.search_all_users', can_change_submissions)
 rules.add_perm('orga.change_settings', can_change_event_settings)
@@ -91,3 +106,5 @@ rules.add_perm('orga.view_information', can_change_submissions)
 rules.add_perm('orga.change_information', can_change_submissions)
 rules.add_perm('orga.create_events', can_create_events)
 rules.add_perm('orga.change_plugins', is_administrator)
+rules.add_perm('orga.mark_speakers_arrived', can_change_submissions & can_mark_speakers_arrived)
+rules.add_perm('orga.see_speakers_arrival', can_change_submissions & is_event_over)
