@@ -115,8 +115,6 @@ class QuestionsForm(forms.Form):
                 # We already have a cached answer object, so we don't
                 # have to create a new one
                 if v == '':
-                    # TODO: Deleting the answer removes the option to have a log here.
-                    # Maybe setting the answer to '' is the right way to go.
                     field.answer.delete()
                 else:
                     self._save_to_answer(field, field.answer, v)
