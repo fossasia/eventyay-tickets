@@ -95,7 +95,7 @@ class Filterable:
             qs = self._handle_search(qs)
         return qs
 
-    def handle_search(self, qs):
+    def _handle_search(self, qs):
         query = urllib.parse.unquote(self.request.GET['q'])
         _filters = [Q(**{field: query}) for field in self.default_filters]
         if len(_filters) > 1:
