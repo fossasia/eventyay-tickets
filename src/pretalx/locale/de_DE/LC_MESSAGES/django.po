@@ -3174,8 +3174,8 @@ msgstr "In einen Entwurf kopieren"
 #: pretalx/orga/templates/orga/mails/outbox_list.html:9
 msgid "pending mail"
 msgid_plural "pending mails"
-msgstr[0] "Aussgehende E-Mail"
-msgstr[1] "Aussgehende E-Mails"
+msgstr[0] "Ausgehende E-Mail"
+msgstr[1] "Ausgehende E-Mails"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:22
 msgid "Send all"
