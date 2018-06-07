@@ -17,10 +17,16 @@ pretalx |logo|
    :target: https://pypi.python.org/pypi/pretalx
    :alt: PyPI
 
-`pretalx` provides a conference planning tool – read our extensive `feature
-list`_ in our docs to get a better idea of what `pretalx` can do for you,
-but it probably involves everything you'll need to curate submissions and
-contents for a conference with up to 100 talks.
+`pretalx` is a conference planning tool focused on providing the best
+experience for organisers, speakers, reviewers, and attendees alike.  It
+handles the submission process with a configurable Call for Participation, the
+reviewing and selection of submissions, and the scheduling and release
+handling. After the event, `pretalx` allows speakers to receive feedback,
+upload their slides, and organisers to embed recordings.
+
+Read our extensive `feature list`_ in our docs to get a better idea of what
+`pretalx` can do for you, but it probably involves everything you'll need to
+curate submissions and contents for a conference with up to 200 talks.
 
 You can host pretalx yourself, as detailed in our `administrator documentation`_,
 or use our public instance at `pretalx.org`_.
