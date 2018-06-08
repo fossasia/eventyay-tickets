@@ -611,7 +611,7 @@ msgstr "Das sieht doch gut aus."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:15
 msgid "Now you just need to choose your new password and you are ready to go."
-msgstr "Jetzt brauchst du nur noch für ein Passwort und wir sind hier fertig."
+msgstr "Jetzt brauchst du nur noch ein neues Passwort und wir sind hier fertig."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:21
 msgid "Save this!"
