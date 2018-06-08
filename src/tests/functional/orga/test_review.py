@@ -141,7 +141,9 @@ def test_reviewer_cannot_review_accepted_submission(review_user, review_client, 
 
 
 @pytest.mark.django_db
-def test_reviewer_can_edit_review(review_client, review):
+def test_reviewer_can_edit_review(review_client, review, review_user):
+    count = review.submission.reviews.count()
+    assert review.user == review_user
     response = review_client.post(
         review.urls.base, follow=True,
         data={
@@ -151,7 +153,7 @@ def test_reviewer_can_edit_review(review_client, review):
     )
     review.refresh_from_db()
     assert response.status_code == 200
-    assert review.submission.reviews.count() == 1
+    assert review.submission.reviews.count() == count
     assert review.score == 0
     assert review.text == 'My mistake.'
 

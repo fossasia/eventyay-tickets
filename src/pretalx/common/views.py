@@ -7,7 +7,8 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 class CreateOrUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView):
 
     def set_object(self):
-        self.object = None
+        if getattr(self, 'object', None) is None:
+            self.object = None
         with suppress(self.model.DoesNotExist):
             self.object = self.get_object()
 
