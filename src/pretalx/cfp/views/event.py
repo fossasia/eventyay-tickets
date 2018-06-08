@@ -29,6 +29,7 @@ class EventStartpage(EventPageMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['has_submissions'] = not self.request.user.is_anonymous and self.request.event.submissions.filter(speakers__in=[self.request.user]).exists()
+        context['has_sneak_peek'] = self.request.event.submissions.filter(is_featured=True).exists()
         return context
 
 
