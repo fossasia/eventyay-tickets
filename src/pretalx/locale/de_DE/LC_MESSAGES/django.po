@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-04 16:14-0500\n"
+"POT-Creation-Date: 2018-06-08 02:16-0500\n"
 "PO-Revision-Date: 2018-06-04 23:22+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
@@ -611,7 +611,8 @@ msgstr "Das sieht doch gut aus."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:15
 msgid "Now you just need to choose your new password and you are ready to go."
-msgstr "Jetzt brauchst du nur noch ein neues Passwort und wir sind hier fertig."
+msgstr ""
+"Jetzt brauchst du nur noch ein neues Passwort und wir sind hier fertig."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:21
 msgid "Save this!"
@@ -935,7 +936,7 @@ msgstr "Titel"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:26
 #: pretalx/orga/templates/orga/review/dashboard.html:85
-#: pretalx/orga/templates/orga/submission/list.html:52
+#: pretalx/orga/templates/orga/submission/list.html:50
 msgid "State"
 msgstr "Status"
 
@@ -1492,8 +1493,8 @@ msgstr ""
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:188
-#: pretalx/orga/views/event.py:192 pretalx/orga/views/plugins.py:50
+#: pretalx/common/phrases.py:49 pretalx/orga/views/event.py:186
+#: pretalx/orga/views/event.py:190 pretalx/orga/views/plugins.py:50
 msgid "Your changes have been saved."
 msgstr "Deine Änderungen wurden gespeichert."
 
@@ -3190,12 +3191,12 @@ msgid "send"
 msgstr "Abschicken"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:63
-#: pretalx/orga/templates/orga/submission/list.html:102
+#: pretalx/orga/templates/orga/submission/list.html:100
 msgid "edit"
 msgstr "bearbeiten"
 
 #: pretalx/orga/templates/orga/mails/outbox_list.html:68
-#: pretalx/orga/templates/orga/submission/list.html:107
+#: pretalx/orga/templates/orga/submission/list.html:105
 msgid "delete"
 msgstr "Löschen"
 
@@ -3696,11 +3697,11 @@ msgstr "Karten drucken"
 msgid "Type"
 msgstr "Typ"
 
-#: pretalx/orga/templates/orga/submission/list.html:57
+#: pretalx/orga/templates/orga/submission/list.html:55
 msgid "Sneak peek"
 msgstr "Vorschau"
 
-#: pretalx/orga/templates/orga/submission/list.html:86
+#: pretalx/orga/templates/orga/submission/list.html:84
 msgid "Show this submission in the public sneak peek."
 msgstr "Zeige diese Einreichung in der Vorschau"
 
@@ -3957,7 +3958,7 @@ msgstr "Es gab ein Problem beim Log-In. Bitte wende dich an den Veranstalter."
 msgid "You are now part of the team!"
 msgstr "Du bist jetzt Teil des Team – Willkommen!"
 
-#: pretalx/orga/views/event.py:196
+#: pretalx/orga/views/event.py:194
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
@@ -3965,12 +3966,12 @@ msgstr ""
 "Das API-Token wurde zurückgesetzt, das bisherige Token kann nicht mehr "
 "verwendet werden."
 
-#: pretalx/orga/views/event.py:198
+#: pretalx/orga/views/event.py:196
 msgid "Oh :( We had trouble saving your input. See below for details."
 msgstr ""
 "Oh :( Wir konnten deine Änderungen leider nicht speichern - unten mehr."
 
-#: pretalx/orga/views/event.py:278
+#: pretalx/orga/views/event.py:276
 #, python-brace-format
 msgid "Team {event.name}"
 msgstr "Team {event.name}"
