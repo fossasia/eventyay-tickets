@@ -25,6 +25,8 @@ def test_reviewer_can_access_speaker_page(review_client, speaker, event, submiss
 
 @pytest.mark.django_db
 def test_reviewer_can_access_speaker_page_with_deleted_submission(review_client, other_speaker, event, deleted_submission):
+    assert other_speaker.submissions.count() == 0
+    assert other_speaker.submissions(manager='deleted_objects').count() == 1
     response = review_client.get(reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': other_speaker.pk}), follow=True)
     assert response.status_code == 200
     assert other_speaker.name in response.content.decode()
