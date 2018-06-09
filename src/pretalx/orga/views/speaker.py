@@ -1,5 +1,6 @@
 from csp.decorators import csp_update
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -58,7 +59,11 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_object(self):
         return get_object_or_404(
-            User.objects.filter(submissions__in=self.request.event.submissions.all()).order_by('id').distinct(),
+            User.objects.filter(
+                Q(submissions__in=self.request.event.submissions.all())
+                |
+                Q(submissions__in=self.request.event.submissions(manager='deleted_objects').all())
+            ).order_by('id').distinct(),
             pk=self.kwargs['pk'],
         )
 
