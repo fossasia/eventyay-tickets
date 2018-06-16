@@ -21,6 +21,8 @@ Features
 - The API now exports links to submission images and speaker avatars.
 - Organisers can configure a list of talks to be shown as "sneak peek" before the first schedule is released.
 - Submitters can share a submission via a read-only link.
+- There is now a navigation search, allowing you to go directly to a range of useful pages.
+- Some more context sensitive dashboard tiles were added, for example a countdown to the CfP end.
 
 Fixed bugs
 ~~~~~~~~~~~

@@ -32,13 +32,38 @@ class EventDashboardView(PermissionRequired, TemplateView):
     def get_object(self):
         return self.request.event
 
+    def get_cfp_tiles(self, event, _now):
+        result = []
+        max_deadline = event.cfp.max_deadline
+        if max_deadline and _now < max_deadline:
+            diff = max_deadline - _now
+            if diff.days >= 3:
+                result.append({
+                    'large': diff.days,
+                    'small': _('days until CfP end'),
+                })
+            else:
+                hours = diff.seconds // 3600
+                minutes = (diff.seconds // 60) % 60
+                result.append({
+                    'large': f'{hours}:{minutes}h',
+                    'small': _('until CfP end'),
+                })
+        if event.cfp.is_open:
+            result.append({
+                'url': event.urls.base,
+                'small': _('Go to CfP'),
+            })
+        return result
+
     def get_context_data(self, event):
         context = super().get_context_data()
         event = self.request.event
         context['timeline'] = get_stages(event)
         context['history'] = ActivityLog.objects.filter(event=self.get_object())[:20]
-        context['tiles'] = []
-        today = now().date()
+        _now = now()
+        today = _now.date()
+        context['tiles'] = self.get_cfp_tiles(event, _now)
         if today < event.date_from:
             context['tiles'].append({
                 'large': (event.date_from - today).days,
@@ -62,10 +87,6 @@ class EventDashboardView(PermissionRequired, TemplateView):
                 'small': _('current schedule'),
                 'url': event.urls.schedule,
             })
-        context['tiles'].append({
-            'url': event.urls.base,
-            'small': _('Go to CfP'),
-        })
         if event.submissions.count():
             context['tiles'].append({
                 'large': event.submissions.count(),
