@@ -161,15 +161,19 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
     if user == 'NICK':  # TODO: add NICK and EMAIL
         user = other_orga_user.nick
         nick = other_orga_user.nick
+        pk = other_orga_user.pk
     elif user == 'EMAIL':
         user = other_orga_user.email
         nick = other_orga_user.nick
+        pk = other_orga_user.pk
     elif user == 'NEW_EMAIL':
         user = 'some_unused@mail.org'
         nick = 'some_unused'
+        pk = None
     elif user == 'OVERLAPPING_EMAIL':
         user = f'{other_orga_user.nick}@mail.org'
         nick = None
+        pk = other_orga_user.pk
 
     response = orga_client.post(submission.orga_urls.new_speaker, data={'nick': user}, follow=True)
     submission.refresh_from_db()
@@ -177,8 +181,11 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
     assert submission.speakers.count() == 2
     assert response.status_code == 200
 
+    if pk is None:
+        return
+
     if nick:
-        response = orga_client.get(submission.orga_urls.delete_speaker, data={'nick': nick}, follow=True)
+        response = orga_client.get(submission.orga_urls.delete_speaker, data={'id': pk}, follow=True)
         submission.refresh_from_db()
 
         assert submission.speakers.count() == 1
