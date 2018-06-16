@@ -33,7 +33,8 @@ urlpatterns = [
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
-        url('^users$', person.UserList.as_view(), name='event.user_list'),
+        url('^api/users$', person.UserList.as_view(), name='event.user_list'),
+        url('^api/urls/$', dashboard.url_list, name='url_list'),
 
         url('^cfp/questions$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),

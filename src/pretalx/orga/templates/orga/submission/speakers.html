@@ -57,7 +57,6 @@
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
-    <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     <script type="text/javascript" src="{% static "orga/js/speakers.js" %}"></script>
     {% endcompress %}
 {% endblock %}
