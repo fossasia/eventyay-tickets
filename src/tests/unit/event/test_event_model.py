@@ -101,3 +101,4 @@ def test_event_urls_custom(event):
     assert custom not in event.urls.submit.full()
     event.settings.custom_domain = custom
     assert custom in event.urls.submit.full()
+    assert custom not in event.orga_urls.cfp.full()

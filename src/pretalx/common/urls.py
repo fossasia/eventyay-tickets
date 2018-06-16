@@ -5,7 +5,9 @@ from django.urls import reverse
 from urlman import Urls
 
 
-def get_base_url(event=None):
+def get_base_url(event=None, url=None):
+    if url and url.startswith('/orga'):
+        return settings.SITE_URL
     if event and event.settings.custom_domain:
         return event.settings.custom_domain
     return settings.SITE_URL
@@ -23,5 +25,5 @@ class EventUrls(Urls):
         return urlparse(url).netloc
 
     def get_scheme(self, url):
-        url = get_base_url(self.instance.event)
+        url = get_base_url(self.instance.event, url)
         return urlparse(url).scheme
