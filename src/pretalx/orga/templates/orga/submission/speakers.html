@@ -46,7 +46,7 @@
         </p>
         {% if can_edit_speakers %}
         <div class="submit-group"><span></span>
-            <a href="{{ submission.orga_urls.delete_speaker }}?nick={{ speaker.nick }}"
+            <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
                 class="btn btn-lg btn-danger">
                 <i class="fa fa-trash"></i> {% trans "Remove" %}
             </a>

@@ -173,7 +173,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.object
-        speaker = get_object_or_404(User, nick__iexact=request.GET.get('nick'))
+        speaker = get_object_or_404(User, pk=request.GET.get('id'))
 
         if submission in speaker.submissions.all():
             speaker.submissions.remove(submission)
