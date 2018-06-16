@@ -232,6 +232,8 @@ class Submission(LogMixin, models.Model):
         """
         valid_next_states = SubmissionStates.valid_next_states.get(self.state, [])
 
+        if self.state == self.new_state:
+            return
         if new_state in valid_next_states or force:
             old_state = self.state
             self.state = new_state

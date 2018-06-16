@@ -34,5 +34,6 @@ Fixed bugs
 - The "Mark speaker arrived" button is now only shown during and slightly before the event. (#441)
 - If an event had a custom domain configured, absolute urls would still use the instance's default domain. (#446)
 - Removing a speaker from a submission could be impossible if their nick contained special characters.
+- If two organisers set a submission to 'accepted' at roughly the same time, two acceptance emails were put into the outbox. (#444)
 
 .. _releases: https://github.com/pretalx/pretalx/releases
