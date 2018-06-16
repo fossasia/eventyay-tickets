@@ -30,5 +30,6 @@ Fixed bugs
 - When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
 - The API always showed the speaker biography as empty.
 - The "Mark speaker arrived" button is now only shown during and slightly before the event. (#441)
+- If an event had a custom domain configured, absolute urls would still use the instance's default domain. (#446)
 
 .. _releases: https://github.com/pretalx/pretalx/releases

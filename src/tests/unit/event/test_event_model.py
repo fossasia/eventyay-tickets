@@ -93,3 +93,11 @@ def test_event_get_default_type(event):
     assert event.submission_types.count() == 1
     event._get_default_submission_type()
     assert event.submission_types.count() == 1
+
+
+@pytest.mark.django_db
+def test_event_urls_custom(event):
+    custom = 'https://foo.bar.com'
+    assert custom not in event.urls.submit.full()
+    event.settings.custom_domain = custom
+    assert custom in event.urls.submit.full()

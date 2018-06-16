@@ -6,8 +6,8 @@ from urlman import Urls
 
 
 def get_base_url(event=None):
-    if event and event.settings.custom_url:
-        return event.settings.custom_url
+    if event and event.settings.custom_domain:
+        return event.settings.custom_domain
     return settings.SITE_URL
 
 
