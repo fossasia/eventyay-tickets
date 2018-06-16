@@ -3,6 +3,7 @@ import string
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
@@ -100,6 +101,13 @@ class Team(LogMixin, models.Model):
     def __str__(self) -> str:
         """Help with debugging."""
         return _('{name} on {orga}').format(name=str(self.name), orga=str(self.organiser))
+
+    @cached_property
+    def permission_set(self) -> set:
+        attribs = dir(self)
+        return {
+            a for a in attribs if (a.startswith('can_') or a.startswith('is_')) and getattr(self, a, False) is True
+        }
 
 
 def generate_invite_token():

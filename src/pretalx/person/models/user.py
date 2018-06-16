@@ -179,6 +179,15 @@ class User(PermissionsMixin, AbstractBaseUser):
         relative = orga_teams.filter(all_events=False)
         return Event.objects.filter(models.Q(organiser__in=absolute) | models.Q(organiser__teams__in=relative)).distinct()
 
+    def get_permissions_for_event(self, event):
+        if self.is_administrator:
+            return {
+                'can_create_events', 'can_change_teams', 'can_change_organiser_settings',
+                'can_change_event_settings', 'can_change_submissions', 'is_reviewer',
+            }
+        teams = event.teams.filter(members__in=[self])
+        return set().union([team.permission_set for team in teams])
+
     def remaining_override_votes(self, event):
         allowed = max(event.teams.filter(members__in=[self], is_reviewer=True).values_list('review_override_votes', flat=True)) or 0
         overridden = self.reviews.filter(submission__event=event, override_vote__isnull=False).count()
