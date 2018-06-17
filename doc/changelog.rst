@@ -11,13 +11,13 @@ Release Notes
 - :bug:`-` HTML exports failed if a talk was canceled.
 - :bug:`-` When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
 - :bug:`-` The API always showed the speaker biography as empty.
-- :bug:`441` The "Mark speaker arrived" button is now only shown during and slightly before the event. (#441)
-- :bug:`446` If an event had a custom domain configured, absolute urls would still use the instance's default domain. (#446)
+- :bug:`441` The "Mark speaker arrived" button is now only shown during and slightly before the event.
+- :bug:`446` If an event had a custom domain configured, absolute urls would still use the instance's default domain.
 - :bug:`-` Removing a speaker from a submission could be impossible if their nick contained special characters.
-- :bug:`444` If two organisers set a submission to 'accepted' at roughly the same time, two acceptance emails were put into the outbox. (#444)
+- :bug:`444` If two organisers set a submission to 'accepted' at roughly the same time, two acceptance emails were put into the outbox.
 - :release:`0.6.1 <2018-05-15>`
 - :bug:`-` The "Copy to draft" button was missing when viewing a sent email.
-- :bug:`431` Accepted, but unconfirmed talks were listed as "Other talks" publicly once the speaker had confirmed one talk and the first schedule was released. (#431)
+- :bug:`431` Accepted, but unconfirmed talks were listed as "Other talks" publicly once the speaker had confirmed one talk and the first schedule was released.
 - :release:`0.6.0 <2018-05-06>`
 - :feature:`-` New plugin hook: ``pretalx.submission.signals.submission_state_change`` is triggered on any state change by a submission.
 - :feature:`-` The frab compatible xml was improved by using correct UUIDs, and includes an XML comment with a pretalx version string.
@@ -27,29 +27,29 @@ Release Notes
 - :feature:`-` To avoid running into issues when uploading custom CSS, and ensuring smooth operations, custom colors and CSS is not used in the organiser area anymore.
 - :feature:`-` You can now send mails from templates and use shortcuts from submissions to send mails to specific speakers.
 - :feature:`-` Since different events have different needs, organisers can now choose if submission abstracts, descriptions, and speaker biographies are required for their event.
-- :bug:`375` Speakers could see their submission in the orga backend, but could access no information they did not put there themselves. (#375)
+- :bug:`375` Speakers could see their submission in the orga backend, but could access no information they did not put there themselves.
 - :bug:`-` The API showed talks to organisers if no schedule had been released yet. It did not show the information to unauthorised users.
 - :bug:`-` There was no possibility to reset a user's API token.
 - :bug:`-` If an organiser changed a speaker's email address, they could assign an address already in use in the pretalx instance, resulting in buggy behaviour all around.
 - :release:`0.5.0 <2018-03-07>`
 - :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into various plugin hooks to be expanded over the course of this year. Plugins can be enabled or disabled per event. Documentation can be found here: https://docs.pretalx.org/en/latest/developer/plugins/index.html
-- :feature:`340` Organisers can now decide if reviewers should be required to submit a score or a text with their review. (#340)
-- :feature:`93` Organisers can provide room-based information for speakers, which will be provided in emails about talk scheduling. (#93)
-- :feature:`318` The list of submissions is now better searchable. (#318)
-- :feature:`294` Speakers can now upload an image that will be displayed next to their talk information. (#294)
+- :feature:`340` Organisers can now decide if reviewers should be required to submit a score or a text with their review.
+- :feature:`93` Organisers can provide room-based information for speakers, which will be provided in emails about talk scheduling.
+- :feature:`318` The list of submissions is now better searchable.
+- :feature:`294` Speakers can now upload an image that will be displayed next to their talk information.
 - :feature:`-` Reviewers can now also be asked custom questions during their review, with all capabilities that speaker questions have.
-- :feature:`352` There are now optional review deadlines, preventing reviews to be added, modified, or removed after a certain date. (#352)
+- :feature:`352` There are now optional review deadlines, preventing reviews to be added, modified, or removed after a certain date.
 - :feature:`-` Individual directories for logs, media, and static files can now be configured via environment variables.
-- :feature:`348` Organisers can now show information snippets to submitters, or speakers. (#348)
+- :feature:`348` Organisers can now show information snippets to submitters, or speakers.
 - :feature:`-` Allow to filter question statistics by speaker status.
-- :bug:`344` In the dashboard, an incorrect link was given to add new reviewers. (#344)
-- :bug:`341` The "save" button was missing on the mail settings page. (#341)
-- :bug:`333` Users could not see (instead not change) their submissions after CfP end, until they were either rejected or accepted. (#333)
+- :bug:`344` In the dashboard, an incorrect link was given to add new reviewers.
+- :bug:`341` The "save" button was missing on the mail settings page.
+- :bug:`333` Users could not see (instead not change) their submissions after CfP end, until they were either rejected or accepted.
 - :bug:`-` In the <title> tag, the event was displayed twice, once properly and once in a technical representation.
 - :bug:`-` Documentation fix: The environment variable for database passwords is ``PRETALX_DB_PASS``, not ``PRETALX_DB_PASSWORD``.
 - :bug:`-` Unconfirmed talks showed up as empty boxes in the schedule editor.
 - :bug:`-` Upgrading the privileges of an existing user did not result in an email, since no invitation was required.
-- :bug:`300` The Docker setup was broken. It is fixed, and a notice of limited support was added to the documentation. (#300)
+- :bug:`300` The Docker setup was broken. It is fixed, and a notice of limited support was added to the documentation.
 - :bug:`-` The orga view now always uses the event timezone.
 - :release:`0.4.1 <2018-02-05>`
 - :bug:`335` CfP was uneditable due to missing "Save" button.
