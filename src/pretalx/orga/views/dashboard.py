@@ -156,5 +156,6 @@ def url_list(request, event=None):
         ]
     print(urls)
     query = request.GET.get('search').lower()
-    urls = [u for u in urls if query in u['name'].lower()]
+    #urls = [u for u in urls if query in u['name'].lower()]
+    #print(urls)
     return JsonResponse({'results': urls})
