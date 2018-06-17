@@ -27,7 +27,6 @@ def test_accept_success(submission, state):
 
 
 @pytest.mark.parametrize('state', (
-    SubmissionStates.ACCEPTED,
     SubmissionStates.WITHDRAWN,
 ))
 @pytest.mark.parametrize('force', (True, False))
@@ -72,7 +71,6 @@ def test_reject_success(submission, state):
 
 
 @pytest.mark.parametrize('state', (
-    SubmissionStates.REJECTED,
     SubmissionStates.CONFIRMED,
     SubmissionStates.CANCELED,
     SubmissionStates.WITHDRAWN,
@@ -121,7 +119,6 @@ def test_cancel_success(submission, state):
 @pytest.mark.parametrize('state', (
     SubmissionStates.SUBMITTED,
     SubmissionStates.REJECTED,
-    SubmissionStates.CANCELED,
     SubmissionStates.WITHDRAWN,
 ))
 @pytest.mark.django_db
@@ -159,7 +156,6 @@ def test_withdraw_success(submission, state):
     SubmissionStates.CONFIRMED,
     SubmissionStates.REJECTED,
     SubmissionStates.CANCELED,
-    SubmissionStates.WITHDRAWN,
 ))
 @pytest.mark.django_db
 def test_withdraw_fail(submission, state):
@@ -195,12 +191,12 @@ def test_make_submitted(submission, state):
 
 @pytest.mark.django_db
 def test_set_state_error_msg(submission):
-    submission.state = SubmissionStates.SUBMITTED
+    submission.state = SubmissionStates.CANCELED
 
     with pytest.raises(SubmissionError) as excinfo:
         submission._set_state(SubmissionStates.SUBMITTED)
 
-    assert 'must be rejected or accepted or withdrawn not submitted to be submitted' in str(excinfo.value)
+    assert 'must be rejected or accepted or withdrawn not canceled to be submitted' in str(excinfo.value)
 
 
 @pytest.mark.parametrize('state,expected', (
