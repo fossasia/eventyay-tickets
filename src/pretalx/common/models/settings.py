@@ -56,6 +56,8 @@ hierarkey.add_default('review_deadline', None, datetime)
 hierarkey.add_default('review_help_text', LazyI18nString.from_gettext(ugettext_noop("Please give a fair review on why you'd like to see this submission at the conference, or why you think it would not be a good fit.")), LazyI18nString)
 
 hierarkey.add_default('mail_from', '', str)
+hierarkey.add_default('mail_subject_prefix', '', str)
+hierarkey.add_default('mail_signature', '', str)
 hierarkey.add_default('smtp_use_custom', 'False', bool)
 hierarkey.add_default('smtp_host', '', str)
 hierarkey.add_default('smtp_port', '587', int)

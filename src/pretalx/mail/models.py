@@ -120,7 +120,7 @@ class QueuedMail(LogMixin, models.Model):
         return f'OutboxMail(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
 
     @classmethod
-    def text_to_html(cls, text, event=None):
+    def make_html(cls, text, event=None):
         body_md = bleach.linkify(bleach.clean(markdown.markdown(text), tags=bleach.ALLOWED_TAGS + [
             'p', 'pre'
         ]))
@@ -131,18 +131,28 @@ class QueuedMail(LogMixin, models.Model):
         }
         return get_template('mail/mailwrapper.html').render(html_context)
 
+    @classmethod
+    def make_text(text, event=None):
+        if not event or not event.settings.mail_signature:
+            return text
+        sig = event.settings.mail_signature
+        if not sig.strip().startswith('-- '):
+            sig = f'-- \n{sig}'
+        return f'{text}\n{sig}'
+
     def send(self):
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
-        body_html = self.text_to_html(self.text)
+        text = self.make_text(self.text, event=self.event)
+        body_html = self.make_html(text)
         has_event = getattr(self, 'event', None)
         from pretalx.common.mail import mail_send_task
         mail_send_task.apply_async(
             kwargs={
                 'to': self.to.split(','),
                 'subject': self.subject,
-                'body': self.text,
+                'body': text,
                 'html': body_html,
                 'reply_to': self.reply_to or (self.event.email if has_event else None),
                 'event': self.event.pk if has_event else None,

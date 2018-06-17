@@ -134,13 +134,24 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     mail_from = forms.EmailField(
-        label=_("Sender address"),
-        help_text=_("Sender address for outgoing emails. "),
+        label=_('Sender address'),
+        help_text=_('Sender address for outgoing emails.'),
         required=False,
     )
+    mail_subject_prefix = forms.CharField(
+        label=_('Mail subject prefix'),
+        help_text=_('The prefix will be prepended to outgoing mail subjects in [brackets].'),
+        required=False,
+    )
+    mail_signature = forms.CharField(
+        label=_('Mail signature'),
+        help_text=_('The signature will be added to outgoing mails, preceded by "-- ".'),
+        required=False,
+        widget=forms.Textarea,
+    )
     smtp_use_custom = forms.BooleanField(
-        label=_("Use custom SMTP server"),
-        help_text=_("All mail related to your event will be sent over the SMTP server specified by you."),
+        label=_('Use custom SMTP server'),
+        help_text=_('All mail related to your event will be sent over the SMTP server specified by you.'),
         required=False,
     )
     smtp_host = forms.CharField(

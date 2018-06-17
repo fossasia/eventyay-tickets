@@ -400,12 +400,10 @@ class Event(LogMixin, models.Model):
                 'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
             })
         with override(self.locale):
-            text = str(text).format(**context) + '-- '
-            text += _('''
-This mail was sent to you by the content system of your event {name}.''').format(name=self.name)
+            text = QueuedMail.make_text(str(text).format(**context), event=self)
         mail_send_task.apply_async(kwargs={
             'to': [self.email],
             'subject': _('[{slug}] News from your content system').format(slug=self.slug),
             'body': text,
-            'html': QueuedMail.text_to_html(text, event=self),
+            'html': QueuedMail.make_html(text, event=self),
         })
