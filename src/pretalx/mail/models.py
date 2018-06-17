@@ -132,7 +132,7 @@ class QueuedMail(LogMixin, models.Model):
         return get_template('mail/mailwrapper.html').render(html_context)
 
     @classmethod
-    def make_text(text, event=None):
+    def make_text(cls, text, event=None):
         if not event or not event.settings.mail_signature:
             return text
         sig = event.settings.mail_signature
@@ -141,7 +141,7 @@ class QueuedMail(LogMixin, models.Model):
         return f'{text}\n{sig}'
 
     @classmethod
-    def make_subject(text, event=None):
+    def make_subject(cls, text, event=None):
         if not event or not event.settings.mail_subject_prefix:
             return text
         prefix = event.settings.mail_subject_prefix

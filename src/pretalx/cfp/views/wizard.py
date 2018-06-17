@@ -147,7 +147,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             if self.request.event.settings.mail_on_new_submission:
                 MailTemplate(
                     event=self.request.event,
-                    subject=_('[{event}] New submission!').format(event=self.request.event.slug),
+                    subject=_('New submission!').format(event=self.request.event.slug),
                     text=self.request.event.settings.mail_text_new_submission,
                 ).to_mail(
                     user=self.request.event.email, event=self.request.event,

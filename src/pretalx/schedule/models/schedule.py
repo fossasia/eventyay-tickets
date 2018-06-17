@@ -204,7 +204,7 @@ class Schedule(LogMixin, models.Model):
                 event=self.event,
                 to=speaker.email,
                 reply_to=self.event.email,
-                subject=_('[{event}] New schedule!').format(event=self.event.slug),
+                subject=_('New schedule!').format(event=self.event.slug),
                 text=text
             )
 
