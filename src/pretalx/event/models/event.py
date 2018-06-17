@@ -403,7 +403,7 @@ class Event(LogMixin, models.Model):
             text = QueuedMail.make_text(str(text).format(**context), event=self)
         mail_send_task.apply_async(kwargs={
             'to': [self.email],
-            'subject': _('[{slug}] News from your content system').format(slug=self.slug),
+            'subject': QueuedMail.make_subject(_('News from your content system'), event=self),
             'body': text,
             'html': QueuedMail.make_html(text, event=self),
         })

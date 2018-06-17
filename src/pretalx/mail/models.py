@@ -140,6 +140,15 @@ class QueuedMail(LogMixin, models.Model):
             sig = f'-- \n{sig}'
         return f'{text}\n{sig}'
 
+    @classmethod
+    def make_subject(text, event=None):
+        if not event or not event.settings.mail_subject_prefix:
+            return text
+        prefix = event.settings.mail_subject_prefix
+        if not (prefix.startswith('[') and prefix.endswith(']')):
+            prefix = f'[{prefix}]'
+        return f'{prefix} {text}'
+
     def send(self):
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
@@ -151,7 +160,7 @@ class QueuedMail(LogMixin, models.Model):
         mail_send_task.apply_async(
             kwargs={
                 'to': self.to.split(','),
-                'subject': self.subject,
+                'subject': self.make_subject(self.subject, event=self.event),
                 'body': text,
                 'html': body_html,
                 'reply_to': self.reply_to or (self.event.email if has_event else None),
