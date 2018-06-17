@@ -154,8 +154,4 @@ def url_list(request, event=None):
         urls += [
             {'name': _('Review dashboard'), 'url': event.orga_urls.reviews},
         ]
-    print(urls)
-    query = request.GET.get('search').lower()
-    #urls = [u for u in urls if query in u['name'].lower()]
-    #print(urls)
     return JsonResponse({'results': urls})

@@ -8,7 +8,7 @@ fetch(document.getElementById('navigateUrl').getAttribute('remoteUrl')).then((re
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       local: remoteUrls,
     });
-    $('#navigate').typeahead(null, {
+    $('#navigate').typeahead({autoselect: true}, {
       name: 'name',
       display: 'name',
       source: urls,
@@ -21,6 +21,18 @@ fetch(document.getElementById('navigateUrl').getAttribute('remoteUrl')).then((re
     $("#navigate").bind("typeahead:select", function(ev, suggestion) {
       $("#navigate").text(suggestion.name);
       window.location = suggestion.value;
+    });
+    $("#navigate").bind("keypress", function(ev) {
+      if (ev.which == 13 /* ENTER */) {
+        const typeahead = $(this).data().ttTypeahead;
+        const hintText = typeahead.input.$hint.val();
+        const menu = typeahead.menu;
+        const sel = menu.getActiveSelectable() || menu.getTopSelectable();
+        if (menu.isOpen()) {
+          menu.trigger('selectableClicked', sel);
+          ev.preventDefault();
+        }
+      }
     });
   })
 })
