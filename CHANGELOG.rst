@@ -23,6 +23,7 @@ Features
 - Submitters can share a submission via a read-only link.
 - There is now a navigation search, allowing you to go directly to a range of useful pages.
 - Some more context sensitive dashboard tiles were added, for example a countdown to the CfP end.
+- You can now configure the configuration file to be read with the ``PRETALX_CONFIG_FILE`` environment variable.
 
 Fixed bugs
 ~~~~~~~~~~~

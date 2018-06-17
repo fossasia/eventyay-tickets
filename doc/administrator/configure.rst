@@ -6,10 +6,12 @@ environment variables. You can combine those two options, and their precedence
 is in this order:
 
 1. Environment variables
-2. The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg``
-   file.
-3. The config file ``~/.pretalx.cfg`` in the home of the executing user.
-4. The config file ``/etc/pretalx/pretalx.cfg``
+2. Configuration files
+    - The config file in ``PRETALX_CONFIG_FILE`` if that environment variable is set, **or**:
+    - The following three configuration files in this order:
+       - The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg`` file.
+       - The config file ``~/.pretalx.cfg`` in the home of the executing user.
+       - The config file ``/etc/pretalx/pretalx.cfg``
 5. Sensible defaults
 
 This page explains the options by configuration file section and notes the corresponding environment
