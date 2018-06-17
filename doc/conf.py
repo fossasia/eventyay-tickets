@@ -31,6 +31,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
+    'releases',
 ]
 
 if HAS_PYENCHANT:
@@ -169,3 +170,8 @@ linkcheck_ignore = [
     'https://pretalx.yourdomain.com',
     'http://localhost',
 ]
+
+# Configure releases
+releases_release_uri = 'https://pypi.org/project/pretalx/%s/'
+releases_issue_uri = 'https://github.com/pretalx/pretalx/issues/%s'
+releases_unstable_prehistory = True
