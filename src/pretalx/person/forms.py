@@ -64,11 +64,11 @@ class UserForm(forms.Form):
         if data.get('register_password') != data.get('register_password_repeat'):
             raise ValidationError(phrases.base.passwords_differ)
 
-        if User.objects.filter(nick=data.get('register_username')).exists():
+        if User.objects.filter(nick__iexact=data.get('register_username')).exists():
             raise ValidationError(_('We already have a user with that username. Did you already register before '
                                     'and just need to log in?'))
 
-        if User.objects.filter(email=data.get('register_email')).exists():
+        if User.objects.filter(email__iexact=data.get('register_email')).exists():
             raise ValidationError(_('We already have a user with that email address. Did you already register '
                                     'before and just need to log in?'))
 

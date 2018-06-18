@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` When trying to register a user with a nick that already existed in a different capitalization, pretalx failed to show a clear error message.
 - :feature:`128` An event's schedule is now available even if the browser has no internet connection, provided it has opened the schedule previously.
 - :support:`-` Provide better upgrade documentation for administrators.
 - :support:`-` Add clever release notes.
