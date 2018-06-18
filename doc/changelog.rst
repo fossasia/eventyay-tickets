@@ -1,20 +1,20 @@
 Release Notes
 =============
 
-- :feature:`-` The API now exports links to submission images and speaker avatars.
-- :feature:`-` Organisers can configure a list of talks to be shown as "sneak peek" before the first schedule is released.
-- :feature:`-` Submitters can share a submission via a read-only link.
-- :feature:`-` There is now a navigation search, allowing you to go directly to a range of useful pages.
-- :feature:`-` Some more context sensitive dashboard tiles were added, for example a countdown to the CfP end.
 - :feature:`-` You can now configure the configuration file to be read with the ``PRETALX_CONFIG_FILE`` environment variable.
-- :bug:`-` An issue resulting in an empty HTML export was fixed.
-- :bug:`-` HTML exports failed if a talk was canceled.
-- :bug:`-` When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
-- :bug:`-` The API always showed the speaker biography as empty.
-- :bug:`441` The "Mark speaker arrived" button is now only shown during and slightly before the event.
-- :bug:`446` If an event had a custom domain configured, absolute urls would still use the instance's default domain.
-- :bug:`-` Removing a speaker from a submission could be impossible if their nick contained special characters.
+- :feature:`-` Some more context sensitive dashboard tiles were added, for example a countdown to the CfP end.
+- :feature:`-` There is now a navigation search, allowing you to go directly to a range of useful pages.
 - :bug:`444` If two organisers set a submission to 'accepted' at roughly the same time, two acceptance emails were put into the outbox.
+- :bug:`-` Removing a speaker from a submission could be impossible if their nick contained special characters.
+- :feature:`-` Submitters can share a submission via a read-only link.
+- :feature:`-` Organisers can configure a list of talks to be shown as "sneak peek" before the first schedule is released.
+- :bug:`446` If an event had a custom domain configured, absolute urls would still use the instance's default domain.
+- :bug:`441` The "Mark speaker arrived" button is now only shown during and slightly before the event.
+- :bug:`-` The API always showed the speaker biography as empty.
+- :bug:`-` When accessing a confirmation link unauthenticated, a 404 page was shown instead of a login page.
+- :feature:`-` The API now exports links to submission images and speaker avatars.
+- :bug:`-` HTML exports failed if a talk was canceled.
+- :bug:`-` An issue resulting in an empty HTML export was fixed.
 - :release:`0.6.1 <2018-05-15>`
 - :bug:`-` The "Copy to draft" button was missing when viewing a sent email.
 - :bug:`431` Accepted, but unconfirmed talks were listed as "Other talks" publicly once the speaker had confirmed one talk and the first schedule was released.
