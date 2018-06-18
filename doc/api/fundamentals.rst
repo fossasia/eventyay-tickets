@@ -38,17 +38,16 @@ You need to include the API token with every request to the API in the
 Compatibility
 -------------
 
-The API is under heavy development – please don't rely on its format
-to remain the same. We will document changes in our changelog, and release
-notes, as always.
+The API is under heavy development – please don't rely on its format to remain
+the same. We will document changes in our :ref:`changelog` as always.
 
 We may always add fields or endpoints, or support new methods or query
 parameters on existing endpoints without further notice, so please make sure
 your client can deal with this.
 
-We will give prior notice in our changelog and release notes before removing
-endpoints, API methods, fields, or before changing response fields, or
-requiring new input fields or types.
+We will give prior notice in our :ref:`changelog` before removing endpoints,
+API methods, fields, or before changing response fields, or requiring new input
+fields or types.
 
 Pagination
 ----------

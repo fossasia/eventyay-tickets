@@ -11,7 +11,7 @@ Boarding checks
 3. Any blockers to see here? https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Aissue%3Abug
 4. Are there any TODOs that you have to be resolve?
 5. Are there any ``@pytest.mark.xfail`` that you have to resolve?
-6. Is the ``CHANGELOG.rst`` well-phrased and complete?
+6. Are the :ref:`changelog` well-phrased and complete?
 7. Are there open pull requests that you should merge?
 
 System checks
@@ -27,7 +27,7 @@ Take-off and landing
 --------------------
 
 1. Bump version in ``src/pretalx/__init__.py``.
-2. Fill in the version and the release date in ``CHANGELOG.rst``.
+2. Add the release to the :ref:`changelog`.
 3. Make a commit with the message ``Release vx.y.z``
 4. Tag the commit: ``git tag -u F0DAD3990F9C816CFD30F8F329C085265D94C052 vx.y.z -m 'Release vx.y.z'``
 5. Remove old build artefacts: ``rm -rf dist/ build/ pretalx.egg-info``
@@ -36,6 +36,6 @@ Take-off and landing
 8. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
 9. Push the release: ``git push && git push --tags``
 10. Install/update the package somewhere.
-11. Add the release on GitHub (upload the tar.gz you uploaded to PyPI, and add the CHANGELOG section): https://github.com/pretalx/pretalx/releases
+11. Add the release on GitHub (upload the tar.gz you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`): https://github.com/pretalx/pretalx/releases
 12. Push the blog post.
 13. Upgrade https://github.com/pretalx/pretalx-docker

@@ -1,3 +1,5 @@
+.. _changelog:
+
 Release Notes
 =============
 
@@ -96,45 +98,27 @@ Release Notes
 - :bug:`-` URLs were always generated with 'localhost' as their host.
 - :bug:`-` When adding a submission in the orga backend with an orga user as speaker, the orga user did not receive a speaker profile.
 - :release:`0.2.0 <2017-12-01>`
-- :bug:`-` The default value for email SSL usage is now ``False``, permitting the default
-  configuration of ``localhost:25`` to work on more machines out of the box.
-- :feature:`159` E-mails are now sent with a multipart/HTML version, featuring the mail's text
-  in a box, styled with the event's primary color.
-- :feature:`126` You can now choose to hide the public schedule (including talk pages and
-  speaker pages, but excluding feedback pages and the schedule.xml export)
-- :feature:`215` Mail template placeholders are now validated so that templates including
-  invalid placeholders cannot be saved at all.
+- :bug:`-` The default value for email SSL usage is now ``False``, permitting the default configuration of ``localhost:25`` to work on more machines out of the box.
+- :feature:`159` E-mails are now sent with a multipart/HTML version, featuring the mail's text in a box, styled with the event's primary color.
+- :feature:`126` You can now choose to hide the public schedule (including talk pages and speaker pages, but excluding feedback pages and the schedule.xml export)
+- :feature:`215` Mail template placeholders are now validated so that templates including invalid placeholders cannot be saved at all.
 - :feature:`208` You can now ask questions that take an uploaded file as an answer.
 - :feature:`209` Speakers can now upload files which will be shown on their talk page.
-- :feature:`210`, :feature:`195` The review interface has been rewritten to include fewer pages with more
-  information relevant to the user, dependent on event stages and their role
-  in the event.
-- :feature:`38` pretalx can now be configured to run with celery (an asynchronous task
-  scheduler) for long running tasks and tasks like email sending. A new config
-  section was added, and usage has been documented.
+- :feature:`210`, :feature:`195` The review interface has been rewritten to include fewer pages with more information relevant to the user, dependent on event stages and their role in the event.
+- :feature:`38` pretalx can now be configured to run with celery (an asynchronous task scheduler) for long running tasks and tasks like email sending. A new config section was added, and usage has been documented.
 - :feature:`-` A ``rebuild`` command was introduced that recompiles all static assets.
 - :feature:`207` Question answers now receive a nice evaluation, aggregating all given answers.
-- :feature:`233` Questions may now be marked as 'answers contain personal data'. Answers of
-  these questions are deleted when users delete their accounts.
-- :feature:`78` We moved to a new permission system that allows for more flexible roles.
-  Please report any bugs that may relate to incorrect permissions.
-- :feature:`171` You can now configure a custom domain to use with your event, in case
-  you have an event specific domain for each of your events.
-- :feature:`156` You can assign "override votes" to reviewers, which function like vetos
-  (both positive and negative), on an individual basis.
-- :feature:`-` A read only REST API was introduced. At the moment, it only supports
-  resources for events and submissions.
-- :bug:`304` pretalx crashed when an incorrect invite key was used, now it shows a 404
-  page.
-- :bug:`-` When building absolute URLs for exports, emails, and RSS feeds, 'localhost'
-  was used instead of the actual configured URL.
-- :bug:`-` If an account was configured to be both an orga member and a reviewer, it
-  encountered access rights issues.
-- :bug:`-` When removing the custom event color, and then adding it again, caching issues
-  could be encountered.
+- :feature:`233` Questions may now be marked as 'answers contain personal data'. Answers of these questions are deleted when users delete their accounts.
+- :feature:`78` We moved to a new permission system that allows for more flexible roles. Please report any bugs that may relate to incorrect permissions.
+- :feature:`171` You can now configure a custom domain to use with your event, in case you have an event specific domain for each of your events.
+- :feature:`156` You can assign "override votes" to reviewers, which function like vetos (both positive and negative), on an individual basis.
+- :feature:`-` A read only REST API was introduced. At the moment, it only supports resources for events and submissions.
+- :bug:`304` pretalx crashed when an incorrect invite key was used, now it shows a 404 page.
+- :bug:`-` When building absolute URLs for exports, emails, and RSS feeds, 'localhost' was used instead of the actual configured URL.
+- :bug:`-` If an account was configured to be both an orga member and a reviewer, it encountered access rights issues.
+- :bug:`-` When removing the custom event color, and then adding it again, caching issues could be encountered.
 - :bug:`-` Inactive questions (questions not shown to speakers) could not be edited.
-- :bug:`-` In some places, gravatar images of the visiting user were shown instead of
-  the speaker.
+- :bug:`-` In some places, gravatar images of the visiting user were shown instead of the speaker.
 - :bug:`-` The event stage display could show several conflicting phases as active.
 - :bug:`287` The default submission type was not, in fact, suggested by default.
 - :release:`0.1.0 <2017-11-01>`
