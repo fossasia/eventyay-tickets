@@ -1,6 +1,7 @@
 Release Notes
 =============
 
+. :bug:`443` (UI) The button colors when changing submission states were very unintuitive.
 - :feature:`-` You can now configure the configuration file to be read with the ``PRETALX_CONFIG_FILE`` environment variable.
 - :feature:`-` Some more context sensitive dashboard tiles were added, for example a countdown to the CfP end.
 - :feature:`-` There is now a navigation search, allowing you to go directly to a range of useful pages.

@@ -10,11 +10,14 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
 
-        <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-danger" href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
+        <div class="submit-group" id="submission-state-change"><span></span><span>
+            <a
+              class="btn btn-lg btn-outline-info"
+              href="{% if request.GET.from == 'list' %}{{ request.event.orga_urls.submissions }}{% else %}{{ submission.orga_urls.base }}{% endif %}"
+            >
                 {% trans "Back" %}
             </a>
-            <button type="submit" class="btn btn-lg btn-success">
+            <button type="submit" class="btn btn-lg submission-state-{{ target }}">
                 {% trans "Do it" %}
             </button>
         </span></div>
