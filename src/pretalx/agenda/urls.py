@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import feed, schedule, sneakpeek, speaker, talk
+from .views import feed, schedule, sneakpeek, speaker, talk, serviceworker
 
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
@@ -40,4 +40,5 @@ urlpatterns = [
         url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
         url('^speaker/(?P<code>\w+)/talks.ics$', speaker.SpeakerTalksIcalView.as_view(), name='speaker.talks.ical'),
     ])),
+    url('^sw.js$', serviceworker.ServiceWorker.as_view(), name='service-worker')
 ]

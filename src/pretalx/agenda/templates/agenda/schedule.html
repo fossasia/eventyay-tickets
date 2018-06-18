@@ -110,4 +110,12 @@
         </div>
     {% endfor %}
 </div>
+
+
+<script>
+  if('serviceWorker' in navigator) {
+    var scope = '/{{ request.event.name }}/schedule/';
+    navigator.serviceWorker.register('/sw.js', {scope: scope})
+  }
+</script>
 {% endblock %}
