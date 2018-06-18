@@ -241,12 +241,22 @@ Next Steps: Updates
 
 .. warning:: While we try hard not to issue breaking updates, **please perform a backup before every upgrade**.
 
-To upgrade to a new pretalx release, pull the latest code changes and run the following commands as the ``pretalx``
-user::
+To upgrade pretalx, please first read through our :ref:`changelog` and if
+available our release blog post to check for relevant update notes. Also, make
+sure you have a current backup.
+
+Next, please execute the following commands in the same environment (probably
+your virtualenv) to first update the pretalx source, then update the database
+if necessary, then rebuild changed static files, and then restart the pretalx
+services. Please note that you will run into an entertaining amount of errors
+if you forget to restart the services.
+
+If you want to upgrade pretalx to a specific release, you can substitute
+``pretalx`` with ``pretalx==1.2.3`` in the first line::
 
     $ pip3 install -U pretalx gunicorn
     $ python -m pretalx migrate
-    $ python -m pretalx rebuild --clear
+    $ python -m pretalx rebuild
     # systemctl restart pretalx-web pretalx-worker
 
 
