@@ -1,5 +1,11 @@
 {% extends "agenda/base.html" %}
 {% load i18n %}
+{% load staticfiles %}
+
+{% block agenda_custom_header %}
+    <span id="offline-vars" event="{{ request.event.urls.schedule }}"></span>
+    <script type="text/javascript" src="{% static "agenda/js/offline.js" %}"></script>
+{% endblock %}
 
 {% block agenda_content %}
 <div id="fahrplan">
@@ -19,6 +25,14 @@
             {% endif %}
         </span></div>
     {% endif %}
+    <div id="offline-warning" class="alert alert-danger d-none"><span>
+      {% blocktrans trimmed %}
+      You're currently viewing an offline version of the schedule, so it may be
+      outdated. <strong>Refresh</strong> this page once you have an internet
+      connection to see the current schedule.
+      {% endblocktrans %}
+    </span></div>
+
     <div class="schedule-header">
         <div class="header-right float-right">
             <span class="icon">{% trans "Version" %} {{ schedule.version|default:"–" }}</span>

@@ -1,5 +1,8 @@
+import os.path
 from contextlib import suppress
 
+from django.conf import settings
+from django.http import FileResponse, Http404
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
@@ -23,3 +26,12 @@ class CreateOrUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin, Proc
 
 def is_form_bound(request, form_name, form_param='form'):
     return request.method == 'POST' and request.POST.get(form_param) == form_name
+
+
+def get_static(request, path, content_type):
+    """TODO: move to staticfiles usage as per https://gist.github.com/SmileyChris/8d472f2a67526e36f39f3c33520182bc
+    This would avoid potential directory traversal by … a malicious urlconfig, so not a huge attack vector."""
+    path = os.path.join(settings.BASE_DIR, 'pretalx/static', path)
+    if not os.path.exists(path):
+        raise Http404()
+    return FileResponse(open(path, 'rb'), content_type=content_type)

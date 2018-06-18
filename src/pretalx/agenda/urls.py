@@ -1,8 +1,9 @@
 from django.conf.urls import include, url
 
+from pretalx.common.views import get_static
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import feed, schedule, sneakpeek, speaker, talk, serviceworker
+from .views import feed, schedule, sneakpeek, speaker, talk
 
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
@@ -40,5 +41,5 @@ urlpatterns = [
         url('^speaker/(?P<code>\w+)/$', speaker.SpeakerView.as_view(), name='speaker'),
         url('^speaker/(?P<code>\w+)/talks.ics$', speaker.SpeakerTalksIcalView.as_view(), name='speaker.talks.ical'),
     ])),
-    url('^sw.js$', serviceworker.ServiceWorker.as_view(), name='service-worker')
+    url('^sw.js', get_static, {'path': 'agenda/js/serviceworker.js', 'content_type': 'application/javascript'})
 ]
