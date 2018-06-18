@@ -316,6 +316,8 @@
     {% compress js %}
         <script type="text/javascript" src="{% static "orga/js/load_late.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+    {% endcompress %}
+    {% compress js %}
         {% if request.event %}
         <script type="text/javascript" src="{% static "orga/js/navigate.js" %}"></script>
         {% endif %}
