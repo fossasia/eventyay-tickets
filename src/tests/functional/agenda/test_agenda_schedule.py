@@ -198,3 +198,9 @@ def test_versioned_schedule_page(client, event, speaker, slot, schedule):
     version = quote(schedule.version)
     redirected_response = client.get(f'/{event.slug}/schedule?version={version}', follow=True)
     assert redirected_response._request.path == response._request.path
+
+
+@pytest.mark.django_db
+def test_talk_review_page(client, event, submission, other_submission):
+    response = client.get(submission.urls.review, follow=True)
+    assert response.status_code == 200

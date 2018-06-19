@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The new read-only links for submissions received the same secret token when migrating the database. No data was leaked as this made using the read-only links impossible. When upgrading to the next release, all read-only link addresses will be reset.
 - :bug:`-` A one-character-oversight led to issues with the new navigation search with certain user permissions.
 - :release:`0.7.0 <2018-06-19>`
 - :feature:`430` To maintain compatability with frab xml exports, a ``<url>`` tag was added to the schedule xml export.

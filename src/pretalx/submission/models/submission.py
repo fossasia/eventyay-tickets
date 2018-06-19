@@ -162,7 +162,7 @@ class Submission(LogMixin, models.Model):
         default=generate_invite_code,
     )
     review_code = models.CharField(
-        max_length=32,
+        max_length=32, unique=True,
         null=True, blank=True,
         default=generate_invite_code,
     )
