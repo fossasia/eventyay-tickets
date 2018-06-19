@@ -18,6 +18,7 @@
                 <duration>{{ talk.export_duration }}</duration>
                 <room>{{ room.name }}</room>
                 <slug>{{ talk.submission.frab_slug }}</slug>
+                <url>{{ talk.submission.urls.public.full }}</url>
                 <recording>
                     <license>{{ talk.submission.license }}</license>
                     <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>

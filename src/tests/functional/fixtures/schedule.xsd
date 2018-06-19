@@ -65,6 +65,7 @@
       <xs:element type="duration" name="duration"/>
       <xs:element type="xs:string" name="abstract"/>
       <xs:element type="xs:string" name="slug"/>
+      <xs:element type="url" name="url" minOccurs="0"/>
       <xs:element type="xs:string" name="track"/>
 
       <xs:element type="xs:string" name="logo" minOccurs="0"/>
@@ -95,6 +96,10 @@
   <xs:simpleType name="uuid">
     <xs:restriction base="xs:string">
       <xs:pattern value="[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>  <xs:simpleType name="url">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="http[:/.0-9a-zA-Z]+"/>
     </xs:restriction>
   </xs:simpleType>
 

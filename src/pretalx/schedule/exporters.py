@@ -113,6 +113,7 @@ class FrabJsonExporter(ScheduleData):
                                     'duration': talk.export_duration,
                                     'room': str(room['name']),
                                     'slug': talk.submission.code,
+                                    'url': talks.submission.urls.public.full(),
                                     'title': talk.submission.title,
                                     'subtitle': '',
                                     'track': None,
