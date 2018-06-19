@@ -35,8 +35,6 @@ class LoginView(TemplateView):
             return redirect(url + ('?' + params.urlencode() if params else ''))
 
         messages.success(request, phrases.orga.logged_in)
-        if request.user.teams.count() == 1:
-            return redirect(reverse('orga:event.dashboard', kwargs={'event': request.user.teams.first().event.slug}))
         return redirect(reverse('orga:dashboard'))
 
 
