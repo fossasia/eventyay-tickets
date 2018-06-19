@@ -89,7 +89,7 @@ class ExporterView(ScheduleDataView):
             if file_type not in ['application/json', 'text/xml']:
                 resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return resp
-        except Exception as e:
+        except Exception:
             raise Http404()
 
 
