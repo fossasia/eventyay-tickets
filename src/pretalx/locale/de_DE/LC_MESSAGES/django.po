@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-17 12:52-0500\n"
-"PO-Revision-Date: 2018-06-17 20:08+0200\n"
+"POT-Creation-Date: 2018-06-18 18:59-0500\n"
+"PO-Revision-Date: 2018-06-19 02:00+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -166,7 +166,7 @@ msgstr ""
 "sie sehen."
 
 #: pretalx/agenda/templates/agenda/changelog.html:7
-#: pretalx/agenda/templates/agenda/schedule.html:24
+#: pretalx/agenda/templates/agenda/schedule.html:38
 msgid "Version"
 msgstr "Version"
 
@@ -219,24 +219,34 @@ msgstr "Das erste %(event_name)s Programm wurde veröffentlicht!"
 msgid "Feedback for"
 msgstr "Feedback für"
 
-#: pretalx/agenda/templates/agenda/schedule.html:11
+#: pretalx/agenda/templates/agenda/schedule.html:17
 msgid "You are currently viewing an older schedule version."
 msgstr "Das ist eine veröffentlichte Programmversion."
 
-#: pretalx/agenda/templates/agenda/schedule.html:16
+#: pretalx/agenda/templates/agenda/schedule.html:22
 #, python-format
 msgid "You can find the current version <a href=\"%(current_url)s\">here</a>."
 msgstr "<a href=\"%(current_url)s\">Hier</a> findest du die aktuelle Version."
 
-#: pretalx/agenda/templates/agenda/schedule.html:25
+#: pretalx/agenda/templates/agenda/schedule.html:29
+msgid ""
+"You're currently viewing an offline version of the schedule, so it may be "
+"outdated. <strong>Refresh</strong> this page once you have an internet "
+"connection to see the current schedule."
+msgstr ""
+"Du siehst gerade eine gespeicherte Version des Programms, weil du nicht "
+"online bist. <strong>Lad die Seite neu</strong>, wenn du wieder Netz hast, "
+"um sicherzustellen, dass du die aktuelle Version siehst."
+
+#: pretalx/agenda/templates/agenda/schedule.html:39
 msgid "Changelog"
 msgstr "Historie"
 
-#: pretalx/agenda/templates/agenda/schedule.html:26
+#: pretalx/agenda/templates/agenda/schedule.html:40
 msgid "Feed"
 msgstr "Feed"
 
-#: pretalx/agenda/templates/agenda/schedule.html:105
+#: pretalx/agenda/templates/agenda/schedule.html:119
 #, python-format
 msgid "No talks on %(current_day)s."
 msgstr "Keine Vorträge an %(current_day)s."
@@ -634,7 +644,7 @@ msgstr "Einreichung erstellen"
 #: pretalx/cfp/templates/cfp/event/submission_base.html:17
 #: pretalx/orga/templates/orga/mails/confirm.html:12
 #: pretalx/orga/templates/orga/settings/team_delete.html:12
-#: pretalx/orga/templates/orga/submission/state_change.html:15
+#: pretalx/orga/templates/orga/submission/state_change.html:18
 msgid "Back"
 msgstr "Zurück"
 
@@ -1002,7 +1012,6 @@ msgstr ""
 "Es gab ein Problem mit deinem Account. Bitte wende dich an die Veranstalter."
 
 #: pretalx/cfp/views/wizard.py:150
-#, python-brace-format
 msgid "New submission!"
 msgstr "Neue Einreichung!"
 
@@ -3789,7 +3798,7 @@ msgstr "Entfernen"
 msgid "Do you really want to change the state of this submission?"
 msgstr "Möchtest du den Status dieser Einreichung wirklich ändern?"
 
-#: pretalx/orga/templates/orga/submission/state_change.html:18
+#: pretalx/orga/templates/orga/submission/state_change.html:21
 msgid "Do it"
 msgstr "Los!"
 
