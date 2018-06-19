@@ -29,6 +29,13 @@ schedule release, but you can also trigger that action here.
 
 <p></p>
 <legend>{% trans "Data Export" %}</legend>
+{% if not request.event.current_schedule %}
+<div class="alert alert-warning">
+    {% blocktrans trimmed %}
+    You haven't released a schedule yet – many of these data exporters only work on a released schedule.
+    {% endblocktrans %}
+</div>
+{% endif %}
 <ul>
     {% for exporter in exporters %}
     <li>

@@ -81,13 +81,16 @@ class ExporterView(ScheduleDataView):
         exporter = self.get_exporter(request)
         if not exporter:
             raise Http404()
-        exporter.schedule = self.get_object()
-        exporter.is_orga = getattr(self.request, 'is_orga', False)
-        file_name, file_type, data = exporter.render()
-        resp = HttpResponse(data, content_type=file_type)
-        if file_type not in ['application/json', 'text/xml']:
-            resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
-        return resp
+        try:
+            exporter.schedule = self.get_object()
+            exporter.is_orga = getattr(self.request, 'is_orga', False)
+            file_name, file_type, data = exporter.render()
+            resp = HttpResponse(data, content_type=file_type)
+            if file_type not in ['application/json', 'text/xml']:
+                resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return resp
+        except Exception as e:
+            raise Http404()
 
 
 class ScheduleView(ScheduleDataView):
