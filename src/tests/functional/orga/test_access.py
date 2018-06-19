@@ -101,3 +101,16 @@ def test_dev_settings_warning(orga_client, event, settings):
     settings.DEBUG = True
     response = orga_client.get(reverse('orga:event.dashboard', kwargs={'event': event.slug}), follow=True)
     assert 'running in development mode' in response.content.decode()
+
+
+@pytest.mark.parametrize('test_user', ('orga', 'reviewer'))
+@pytest.mark.django_db
+def test_user_can_see_correct_urls(orga_user, client, review_user, test_user, event):
+    if test_user == 'orga':
+        client.force_login(orga_user)
+    elif test_user == 'reviewer':
+        client.force_login(review_user)
+
+    response = client.get(reverse('orga:url_list', kwargs={'event': event.slug}), follow=True)
+    assert response.status_code == 200
+    assert 'Dashboard' in response.content.decode()

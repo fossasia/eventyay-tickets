@@ -122,8 +122,6 @@ class EventDashboardView(PermissionRequired, TemplateView):
 
 
 def url_list(request, event=None):
-    if not request.GET.get('search'):
-        return JsonResponse({'results': []})
     event = request.event
     permissions = request.user.get_permissions_for_event(event)
     urls = [

@@ -186,7 +186,9 @@ class User(PermissionsMixin, AbstractBaseUser):
                 'can_change_event_settings', 'can_change_submissions', 'is_reviewer',
             }
         teams = event.teams.filter(members__in=[self])
-        return set().union([team.permission_set for team in teams])
+        if not teams:
+            return set()
+        return set().union(*[team.permission_set for team in teams])
 
     def remaining_override_votes(self, event):
         allowed = max(event.teams.filter(members__in=[self], is_reviewer=True).values_list('review_override_votes', flat=True)) or 0
