@@ -65,7 +65,7 @@
         <div class="day">
             {% if day.first_start %}
                 <div class="header-row">
-                    <span class="date">{{ day.start.date|date:"c" }}</span>
+                    <span class="time-column header"></span>
                     {% for room in day.rooms %}
                         <div class="room-header">{{ room.name }}</div>
                     {% endfor %}

@@ -13,13 +13,9 @@
             display: flex;
             flex-direction: row;
             font-weight: 500;
-
-            .date {
-                flex: 0 0 100px;
-                display: inline-block;
-                padding: 8px 0;
+            .header {
                 border-bottom: 4px solid $brand-primary;
-                text-align: center;
+                background: inherit;
             }
             .room-header {
                 border-left: 2px solid lighten($gray-800, 55%);
@@ -32,21 +28,20 @@
                 overflow: hidden;
             }
         }
+        .time-column {
+            flex: 0 0 4em;
+            .hour {
+                height: 120px;
+                line-height: 30px;
+                padding-right: 16px;
+                text-align: right;
+            }
+            background: repeating-linear-gradient(to bottom, $gray-200, $gray-200 2px, $white 2px, $white 30px, $gray-200 30px, $gray-200 31px, $white 31px, $white 60px);
+        }
 
         .rooms {
             display: flex;
             flex-direction: row;
-
-            .time-column {
-                flex: 0 0 100px;
-                .hour {
-                    height: 120px;
-                    line-height: 30px;
-                    padding-right: 16px;
-                    text-align: right;
-                }
-                background: repeating-linear-gradient(to bottom, $gray-200, $gray-200 2px, $white 2px, $white 30px, $gray-200 30px, $gray-200 31px, $white 31px, $white 60px);
-            }
 
             .room {
                 border-left: 2px solid #ccc;
