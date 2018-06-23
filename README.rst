@@ -42,6 +42,9 @@ their respective changelogs on GitHub_ or install pretalx via PyPI_.
 
 Previous conferences using pretalx include:
 
+
+- `EasterHegg 2019`_
+- `PrivacyWeek 2018`_
 - `hack.lu 2018`_
 - `DjangoCon 2018`_
 - `OsmoDevCon 2018`_
@@ -91,3 +94,5 @@ to this project.
 .. _DjangoCon Europe 2018: https://2018.djangocontent.eu/hd/schedule/
 .. _hack.lu 2018: https://cfp.hack.lu/hacklu18/
 .. _DjangoCon 2018: https://2018.djangocon.eu
+.. _PrivacyWeek 2018: https://privacyweek.at/
+.. _EasterHegg 2019: https://eh19.easterhegg.eu/
