@@ -5,17 +5,15 @@ from django.contrib.auth import login, logout
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.crypto import get_random_string
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, View
 
 from pretalx.cfp.forms.auth import RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mail import SendMailException, mail
+from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.common.urls import build_absolute_uri
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
 
@@ -67,26 +65,7 @@ class ResetView(EventPageMixin, FormView):
             }))
 
         try:
-            user.pw_reset_token = get_random_string(32)
-            user.pw_reset_time = now()
-            user.save()
-            mail(
-                user,
-                _('Password recovery'),
-                self.request.event.settings.mail_text_reset,
-                {
-                    'name': user.name or user.nick,
-                    'event': self.request.event.name,
-                    'url': build_absolute_uri(
-                        'cfp:event.recover', event=self.request.event, kwargs={
-                            'event': self.request.event.slug,
-                            'token': user.pw_reset_token,
-                        }
-                    )
-                },
-                self.request.event,
-                locale=get_language()
-            )
+            user.reset_password(event=self.request.event)
         except SendMailException:
             messages.error(self.request, phrases.base.error_sending_mail)
             return self.get(self.request, *self.args, **self.kwargs)

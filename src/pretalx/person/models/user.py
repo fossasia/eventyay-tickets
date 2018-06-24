@@ -11,11 +11,14 @@ from django.contrib.auth.models import (
 )
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
+from django.utils.translation import get_language, ugettext_lazy as _
 from rest_framework.authtoken.models import Token
+
+from pretalx.common.urls import build_absolute_uri
 
 
 def nick_validator(value: str) -> None:
@@ -199,3 +202,27 @@ class User(PermissionsMixin, AbstractBaseUser):
         self.log_action(action='pretalx.user.token.reset')
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
+
+    def reset_password(self, event):
+        from pretalx.common.mail import mail
+        with transaction.atomic():
+            self.pw_reset_token = get_random_string(32)
+            self.pw_reset_time = now()
+            self.save()
+            mail(
+                self,
+                _('Password recovery'),
+                event.settings.mail_text_reset,
+                {
+                    'name': self.name or self.nick,
+                    'event': event.name,
+                    'url': build_absolute_uri(
+                        'cfp:event.recover', event=event, kwargs={
+                            'event': event.slug,
+                            'token': self.pw_reset_token,
+                        }
+                    )
+                },
+                event,
+                locale=get_language()
+            )
