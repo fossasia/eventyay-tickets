@@ -107,6 +107,7 @@ urlpatterns = [
         url('^settings/team/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='settings.team.detail'),
         url('^settings/team/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='settings.team.delete'),
         url('^settings/team/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='settings.team.delete_member'),
+        url('^settings/team/(?P<pk>[0-9]+)/reset/(?P<user_pk>[0-9]+)$', organiser.TeamResetPassword.as_view(), name='settings.team.password_reset'),
         url('^settings/team/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='settings.team.uninvite'),
         url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
 

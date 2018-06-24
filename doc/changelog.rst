@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`415` Allow organisers to trigger a password reset for team members.
 - :bug:`451` Don't crash during ``pretalx init`` if no conference organiser slug is given.
 - :release:`0.7.1 <2018-06-19>`
 - :bug:`-` The new read-only links for submissions received the same secret token when migrating the database. No data was leaked as this made using the read-only links impossible. When upgrading to the next release, all read-only link addresses will be reset.

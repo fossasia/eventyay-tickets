@@ -3,8 +3,9 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 
+from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
@@ -147,6 +148,39 @@ class TeamUninvite(PermissionRequired, DetailView):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         messages.success(request, _('The team invitation was retracted.'))
+        if hasattr(self.request, 'event') and self.request.event:
+            return redirect(self.request.event.orga_urls.team_settings)
+        return redirect(self.request.organiser.orga_urls.base)
+
+
+class TeamResetPassword(PermissionRequired, TemplateView):
+    model = Team
+    template_name = 'orga/settings/team_reset_password.html'
+    permission_required = 'orga.change_teams'
+
+    def get_permission_object(self):
+        return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
+
+    @cached_property
+    def team(self):
+        return get_object_or_404(Team, pk=self.kwargs['pk'])
+
+    @cached_property
+    def user(self):
+        return get_object_or_404(self.team.members, pk=self.kwargs['user_pk'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['team'] = self.team
+        context['member'] = self.user
+        return context
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.user.reset_password(event=getattr(self.request, 'event', None))
+            messages.success(self.request, _('The password was reset and the user was notified.'))
+        except SendMailException:
+            messages.error(self.request, _('The password reset email could not be sent, so the password was not reset.'))
         if hasattr(self.request, 'event') and self.request.event:
             return redirect(self.request.event.orga_urls.team_settings)
         return redirect(self.request.organiser.orga_urls.base)

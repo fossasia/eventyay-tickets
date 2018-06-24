@@ -27,8 +27,14 @@
                 <td>{{ member.get_display_name }}</td>
                 <td class="text-right">
                     <a
+                    href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ team.id }}/reset/{{ member.id }}"
+                      class="btn btn-sm btn-warning"
+                    >
+                        {% trans "Reset password" %}
+                    </a>
+                    <a
                     href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ team.id }}/delete/{{ member.id }}"
-                      class="btn btn-sm btn-danger"
+                      class="btn btn-sm btn-danger" title="{% trans "Remove team member" %}"
                     >
                         <i class="fa fa-trash"></i>
                     </a>

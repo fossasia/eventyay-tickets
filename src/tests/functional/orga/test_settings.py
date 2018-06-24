@@ -185,6 +185,20 @@ def test_delete_team_member(orga_client, event, other_orga_user):
 
 
 @pytest.mark.django_db
+def test_reset_team_member_password(orga_client, event, other_orga_user):
+    team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    team.members.add(other_orga_user)
+    team.save()
+    member = team.members.first()
+    assert not member.pw_reset_token
+    url = event.orga_urls.team_settings + f'/{team.pk}/reset/{member.pk}'
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    member.refresh_from_db()
+    assert member.pw_reset_token
+
+
+@pytest.mark.django_db
 def test_delete_event_team(orga_client, event):
     count = event.teams.count()
     team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
