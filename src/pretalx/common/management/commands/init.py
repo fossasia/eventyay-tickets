@@ -11,6 +11,13 @@ from pretalx.event.utils import create_organiser_with_user
 from pretalx.person.models import User
 
 
+def get_nonempty(prompt):
+    result = input(prompt).strip()
+    while not result:
+        result = input(_('This value is required, please enter some value to proceed: '))
+    return result
+
+
 class Command(BaseCommand):
     help = 'Initializes your pretalx instance. Only to be used once.'
 
@@ -26,8 +33,8 @@ class Command(BaseCommand):
 
         self.stdout.write(_('''\nLet\'s also create a first organiser: This will allow you to invite further people and create events.'''))
 
-        organiser_name = input(_('\nName (e.g. "The Conference Organiser"): '))
-        organiser_slug = input(_('Slug (e.g. "conforg"): '))
+        organiser_name = get_nonempty(_('\nName (e.g. "The Conference Organiser"): '))
+        organiser_slug = get_nonempty(_('Slug (e.g. "conforg", used in urls): '))
 
         organiser, team = create_organiser_with_user(name=organiser_name, slug=organiser_slug, user=user)
 
