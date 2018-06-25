@@ -192,7 +192,7 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
     member = team.members.first()
     assert not member.pw_reset_token
     url = event.orga_urls.team_settings + f'/{team.pk}/reset/{member.pk}'
-    response = orga_client.get(url, follow=True)
+    response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     member.refresh_from_db()
     assert member.pw_reset_token
