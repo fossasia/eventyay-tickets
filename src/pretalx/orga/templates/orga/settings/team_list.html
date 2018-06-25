@@ -38,5 +38,12 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="submit-group"><span></span>
+        <a class="btn btn-lg btn-success" href="{{ request.event.orga_urls.new_team }}">
+            <i class="fa fa-plus"></i>
+            {% trans "New Team" %}
+        </a>
+    </div>
 </div>
 {% endblock %}
