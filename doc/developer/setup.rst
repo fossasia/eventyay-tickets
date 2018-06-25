@@ -91,10 +91,10 @@ Before you check in your code into git, always run the static checkers and unit 
     (env)$ pylama
     (env)$ isort -c -rc .
     (env)$ python manage.py check
-    (env)$ py.test tests
+    (env)$ python -m pytest tests
 
 .. note:: If you have more than one CPU core and want to speed up the test suite, you can run
-          ``py.test -n NUM`` with ``NUM`` being the number of threads you want to use.
+          ``python -m pytest -n NUM`` with ``NUM`` being the number of threads you want to use.
 
 It's a good idea to put the style checks into your git hook ``.git/hooks/pre-commit``,
 for example::
