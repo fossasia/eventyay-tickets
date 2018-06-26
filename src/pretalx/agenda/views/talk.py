@@ -40,14 +40,13 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        slot = self.object
+        qs = TalkSlot.objects.none()
         if self.request.event.current_schedule:
             qs = self.request.event.current_schedule.talks.filter(is_visible=True)
         elif self.request.is_orga:
             qs = self.request.event.wip_schedule.talks
-        else:
-            qs = TalkSlot.objects.none()
-        event_talks = qs.exclude(submission=self.object.submission)
-        slot = self.get_object()
+        event_talks = qs.exclude(submission=slot.submission)
         context['submission'] = slot.submission
         context['submission_description'] = slot.submission.description or slot.submission.abstract or _('The talk »{title}« at {event}').format(title=slot.submission.title, event=slot.submission.event.name)
         context['speakers'] = []
@@ -69,17 +68,15 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = 'code'
 
     def get(self, request, event, **kwargs):
-        talk = self.get_object().slots.filter(schedule=self.request.event.current_schedule).first()
+        talk = self.get_object().slots.filter(schedule=self.request.event.current_schedule, is_visible=True).first()
+        if not talk:
+            raise Http404()
+
         netloc = urlparse(settings.SITE_URL).netloc
-
         cal = vobject.iCalendar()
-        if talk:
-            cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
-            talk.build_ical(cal)
-            code = talk.submission.code
-        else:
-            code = 'NONE'
-
+        cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
+        talk.build_ical(cal)
+        code = talk.submission.code
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
         resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}-{code}.ics"'
         return resp
@@ -122,8 +119,6 @@ class FeedbackView(PermissionRequired, FormView):
         return context
 
     def form_valid(self, form):
-        if not form.instance.talk.does_accept_feedback:
-            return super().form_invalid(form)
         result = super().form_valid(form)
         form.save()
         messages.success(self.request, phrases.agenda.feedback_success)
