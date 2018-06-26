@@ -107,6 +107,12 @@ def test_unfreeze_bug72(slot):
 
 
 @pytest.mark.django_db
+def test_unfreeze_unreleased_schedule(event):
+    with pytest.raises(Exception):
+        event.wip_schedule.unfreeze()
+
+
+@pytest.mark.django_db
 def test_scheduled_talks(slot, room):
     slot_count = slot.schedule.scheduled_talks.count()
     current_slot = slot.submission.slots.filter(schedule__version__isnull=True).first()
