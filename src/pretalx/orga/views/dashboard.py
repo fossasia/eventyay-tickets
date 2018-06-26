@@ -22,6 +22,9 @@ class DashboardView(TemplateView):
                 team.organiser for team in
                 self.request.user.teams.filter(can_change_organiser_settings=True)
             )
+        now_date = now().date()
+        context['current_orga_events'] = [e for e in self.request.orga_events if e.date_to >= now_date]
+        context['past_orga_events'] = [e for e in self.request.orga_events if e.date_to < now_date]
         return context
 
 

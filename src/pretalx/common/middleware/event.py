@@ -29,11 +29,11 @@ class EventPermissionMiddleware:
         request.orga_events = []
         if not request.user.is_anonymous:
             if request.user.is_administrator:
-                request.orga_events = Event.objects.order_by('-date_from')
+                request.orga_events = Event.objects.order_by('date_from')
                 request.is_orga = True
                 request.is_reviewer = True
             else:
-                request.orga_events = request.user.get_events_for_permission().order_by('-date_from')
+                request.orga_events = request.user.get_events_for_permission().order_by('date_from')
                 if hasattr(request, 'event'):
                     request.is_orga = request.event in request.orga_events
                     request.is_reviewer = request.event in request.user.get_events_for_permission(is_reviewer=True)
