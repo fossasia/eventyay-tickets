@@ -272,7 +272,7 @@ class Event(LogMixin, models.Model):
         protected_settings = ['custom_domain', 'display_header_data']
         for template in templates:
             setattr(self, template, None)
-            self.save()
+        self.save()
         self.mail_templates.all().delete()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         for template in templates:
