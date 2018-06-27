@@ -180,3 +180,7 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
         if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
             raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
+        uses_encryption = data.get('smtp_use_tls') or data.get('smtp_use_ssl')
+        localhost_names = ['127.0.0.1', '::1', '[::1]', 'localhost', 'localhost.localdomain']
+        if not uses_encryption and not data.get('smtp_host') in localhost_names:
+            raise ValidationError(_('You have to activate either SSL or STARTTLS security if you use a non-local mailserver due to data protection reasons. Your administrator can add an instance-wide bypass. If you use this bypass, please also adjust your Privacy Policy.'))

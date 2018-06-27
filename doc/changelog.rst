@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Prevent organisers from adding a non-localhost mail server without transport level security to make sure our Privacy Policy holds true.
 - :feature:`415` Allow organisers to trigger a password reset for team members.
 - :bug:`451` Don't crash during ``pretalx init`` if no conference organiser slug is given.
 - :release:`0.7.1 <2018-06-19>`
