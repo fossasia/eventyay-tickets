@@ -13,7 +13,7 @@
     {% endif %}
 
     <form method="post" action="" enctype="multipart/form-data">
-        {% bootstrap_form_errors formset %}
+        {% bootstrap_form_errors form %}
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}
         {% if form.instance.average_score != None %}

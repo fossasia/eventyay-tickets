@@ -51,7 +51,6 @@ DJANGO_APPS = [
 EXTERNAL_APPS = [
     'bakery',
     'compressor',
-    'bootstrap4',
     'djangoformsetjs',
     'jquery',
     'rest_framework',
@@ -71,6 +70,7 @@ LOCAL_APPS = [
     'pretalx.orga',
 ]
 FALLBACK_APPS = [
+    'bootstrap4',
     'django.forms',
 ]
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS + FALLBACK_APPS

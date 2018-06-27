@@ -1,0 +1,5 @@
+<div class="alert alert-danger offset-3">{% comment %}We remove alert-link and alert-dismissable, and we add offset-3{% endcomment %}
+    {% for error in errors %}
+        {{ error }}{% if not forloop.last %}<br>{% endif %}
+    {% endfor %}
+</div>
