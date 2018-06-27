@@ -9,14 +9,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.tasks import regenerate_css
-from pretalx.common.views import CreateOrUpdateView, is_form_bound
+from pretalx.common.views import is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm, EventWizardCopyForm, EventWizardDisplayForm,
     EventWizardInitialForm, EventWizardTimelineForm,
@@ -35,7 +35,7 @@ class EventSettingsPermission(PermissionRequired):
         return self.request.event
 
 
-class EventDetail(ActionFromUrl, EventSettingsPermission, CreateOrUpdateView):
+class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
     model = Event
     form_class = EventForm
     permission_required = 'orga.change_settings'

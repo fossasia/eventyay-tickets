@@ -76,6 +76,14 @@ class EventWizardBasicsForm(I18nModelForm):
         self.fields['locale'].choices = [(a, b) for a, b in settings.LANGUAGES if a in locales]
         self.fields['slug'].help_text = _('This is the address your event will be available at. Should be short, only contain lowercase letters and numbers, and must be unique. We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.')
 
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        qs = Event.objects.all()
+        if qs.filter(slug__iexact=slug).exists():
+            raise forms.ValidationError(_('This short name is already taken, please choose another one (or ask the owner of that event to add you to their team).'))
+
+        return slug.lower()
+
     class Meta:
         model = Event
         fields = ('name', 'slug', 'timezone', 'email', 'locale')

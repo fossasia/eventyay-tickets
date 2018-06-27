@@ -22,28 +22,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['locales'] = self.instance.locale_array.split(',')
-        if not self.instance or not self.instance.pk:
-            self.fields['is_public'].widget = forms.HiddenInput()
-            self.fields['primary_color'].widget = forms.HiddenInput()
-            self.fields['custom_css'].widget = forms.HiddenInput()
-
         year = str(now().year)
         self.fields['name'].widget.attrs['placeholder'] = _('The name of your conference, e.g. My Conference') + ' ' + year
         self.fields['slug'].widget.attrs['placeholder'] = _('A short version of your conference name, e.g. mycon') + year[2:]
         self.fields['primary_color'].widget.attrs['placeholder'] = _('A color hex value, e.g. #ab01de')
-        if self.instance and self.instance.slug:
-            self.fields['slug'].disabled = True
-
-    def clean_slug(self):
-        slug = self.cleaned_data['slug']
-        qs = Event.objects.all()
-        if self.instance.pk:
-            qs = qs.exclude(pk=self.instance.pk)
-
-        if qs.filter(slug__iexact=slug).exists():
-            raise forms.ValidationError(_('This short name is already taken, please choose another one (or ask the owner of that event to add you to their team).'))
-
-        return slug.lower()
+        self.fields['slug'].disabled = True
 
     def clean_custom_css(self, *args, **kwargs):
 
@@ -54,25 +37,21 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
                 return css
             except IsADirectoryError:
                 self.instance.custom_css = None
-                if self.instance.pk:
-                    self.instance.save(update_fields=['custom_css'])
+                self.instance.save(update_fields=['custom_css'])
         else:
             self.instance.custom_css = None
-            if self.instance.pk:
-                self.instance.save(update_fields=['custom_css'])
+            self.instance.save(update_fields=['custom_css'])
 
     def clean(self):
         data = super().clean()
-
         if data.get('locale') not in data.get('locales'):
             raise forms.ValidationError(_('Your default language needs to be one of your active languages.'))
         if not data.get('email'):
             raise forms.ValidationError(_('Please provide a contact address – your speakers and participants should be able to reach you easily.'))
-
         return data
 
     def save(self, *args, **kwargs):
-        self.instance.locale_array = ",".join(self.cleaned_data['locales'])
+        self.instance.locale_array = ','.join(self.cleaned_data['locales'])
         return super().save(*args, **kwargs)
 
     class Meta:
