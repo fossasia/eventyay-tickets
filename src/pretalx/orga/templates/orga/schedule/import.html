@@ -5,6 +5,7 @@
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
+        {% bootstrap_form_errors form %}
         <legend>{% trans "Import XML" %}</legend>
         <div class="col-md-9 ml-auto"><p>
         {% blocktrans trimmed %}

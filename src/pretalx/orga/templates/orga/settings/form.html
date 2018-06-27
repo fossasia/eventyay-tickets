@@ -10,6 +10,8 @@
         <legend>
             {% trans "General information" %}
         </legend>
+        {% bootstrap_form_errors form %}
+        {% bootstrap_form_errors sform %}
 
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}

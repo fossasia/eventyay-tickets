@@ -16,6 +16,7 @@
     <form action="" method="post">
         {% csrf_token %}
         {{ wizard.management_form }}
+        {% bootstrap_form_errors wizard.form %}
         {% bootstrap_field wizard.form.name layout='event' %}
         {% bootstrap_field wizard.form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
         {% bootstrap_field wizard.form.timezone layout='event' %}

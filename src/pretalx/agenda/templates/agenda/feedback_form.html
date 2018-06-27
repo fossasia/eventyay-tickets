@@ -18,6 +18,7 @@
             {{ phrases.agenda.feedback_not_now }}
         {% else %}
             <form method="post" action="">
+                {% bootstrap_form_errors form %}
                 {% csrf_token %}
                 {% if talk.speakers.count > 1 %}
                     {% bootstrap_field form.speaker layout='inline' %}

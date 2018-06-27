@@ -21,6 +21,8 @@
     <div class="flex-content">
         <form method="post" action="">
             {% csrf_token %}
+            {% bootstrap_form_errors form %}
+            {% bootstrap_form_errors sform %}
             <legend>{% trans "Text and deadline" %}</legend>
             {% bootstrap_field form.headline layout='event' %}
             {% bootstrap_field form.text layout='event' %}

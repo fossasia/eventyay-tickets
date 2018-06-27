@@ -6,6 +6,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <legend>{% trans "Mail Editor" %}</legend>
+        {% bootstrap_form_errors form %}
         {% bootstrap_field form.recipients layout='event' %}
         {% bootstrap_field form.submissions layout='event' %}
         {% bootstrap_field form.reply_to layout='event' %}

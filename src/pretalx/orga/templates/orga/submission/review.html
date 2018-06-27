@@ -30,6 +30,8 @@
     {% if not form.instance.pk and not read_only %}
     <form method="post" action="">
         {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        {% bootstrap_form_errors qform %}
         <div class="form-group row">
             <label class="col-md-3 col-form-label" for="id_text">{% trans "Submission Type" %}</label>
             <div class="col-md-9">

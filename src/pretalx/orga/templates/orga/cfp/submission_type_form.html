@@ -5,6 +5,7 @@
 {% block cfp_content %}
     <form method="post" action="">
         {% csrf_token %}
+        {% bootstrap_form_errors form %}
         <legend>{% trans "Submission Type" %}</legend>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.default_duration addon_after="minutes" layout='event' addon_after_class="input-group-append input-group-text" %}

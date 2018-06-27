@@ -5,6 +5,7 @@
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
+        {% bootstrap_form_errors form %}
         <legend>{% trans "Room" %}</legend>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.description layout='event' %}
