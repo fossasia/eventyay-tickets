@@ -63,3 +63,13 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     assert Answer.objects.count() == 1
     assert Answer.objects.first().question.contains_personal_data is False
     assert team.members.count() == team_members - 1
+    assert 'deleted' in str(speaker).lower()
+    assert speaker.get_permissions_for_event(Answer.objects.first().event) == set()
+
+
+def test_administrator_permissions():
+    user = User(email='one@two.com', is_administrator=True)
+    assert user.get_permissions_for_event('randomthing') == {
+        'can_create_events', 'can_change_teams', 'can_change_organiser_settings',
+        'can_change_event_settings', 'can_change_submissions', 'is_reviewer',
+    }

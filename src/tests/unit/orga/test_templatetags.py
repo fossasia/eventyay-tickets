@@ -1,7 +1,7 @@
 import pytest
 
 from pretalx.orga.templatetags.review_score import (
-    _review_score_number, _review_score_override,
+    _review_score_number, _review_score_override, review_score,
 )
 
 
@@ -43,5 +43,12 @@ def test_templatetag_review_score(score, expected, event_with_score_context):
     (1, 1, '<i class="fa fa-arrow-circle-up override text-success"></i> 1<i class="fa fa-arrow-circle-down override text-danger"></i> 1'),
 ))
 @pytest.mark.django_db()
-def test_templatetag_review_score_overrid(positive, negative, expected):
+def test_templatetag_review_score_override(positive, negative, expected):
     assert _review_score_override(positive, negative) == expected
+
+
+@pytest.mark.django_db
+def test_template_tag_review_score(review):
+    review.override_vote = True
+    review.save()
+    assert '<i class="fa fa-arrow-circle-up override text-success"></i>' == review_score(None, review.submission)
