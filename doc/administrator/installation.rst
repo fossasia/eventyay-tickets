@@ -108,6 +108,21 @@ installation will not know of them::
 
     $ pip install --user -U pip setuptools wheel pretalx redis gunicorn
 
+pretalx works your choice of database backends – usage of PostgreSQL is
+recommended, but MySQL, SQLite, and Oracle work as well. use the following
+command to install the database driver (unless you use SQLite, which has its
+driver built in):
+
++------------+-------------------------------------------+
+| Database   | pip package                               |
++============+===========================================+
+| PostgresQL | ``pip install --user -U psycopg2-binary`` |
++------------+-------------------------------------------+
+| MySQL      | ``pip install --user -U mysqlclient``     |
++------------+-------------------------------------------+
+| Oracle     | ``pip install --user -U cx_Oracle``       |
++------------+-------------------------------------------+
+
 We also need to create a data directory::
 
     $ mkdir -p /var/pretalx/data/media
