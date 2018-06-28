@@ -1,7 +1,6 @@
 releases
 sphinx
 sphinx-autobuild
-sphinx_rtd_theme
 sphinxcontrib-httpdomain
 sphinxcontrib-spelling
 -e src/
