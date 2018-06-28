@@ -237,7 +237,6 @@ if HAS_MEMCACHED:
     }
 
 HAS_REDIS = config.get('redis', 'location') != 'False'
-print(HAS_REDIS)
 if HAS_REDIS:
     CACHES['redis'] = {
         "BACKEND": "django_redis.cache.RedisCache",
