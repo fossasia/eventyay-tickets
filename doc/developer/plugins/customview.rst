@@ -22,14 +22,22 @@ If you want to add a custom view to the organiser area of an event, register an 
 
     from django.conf.urls import url
 
+    from pretalx.event.models.event import SLUG_CHARS
+
     from . import views
 
     urlpatterns = [
-        url(r'^orga/event/(?P<event>[^/]+)/mypluginname/',
+        url(f'^orga/event/(?P<event>[{SLUG_CHARS}]+)/',
             views.admin_view, name='backend'),
+        url(r'^(?P<event>[{SLUG_CHARS}]+)/p/mypluginname/',
+            views.frontend_view, name='frontend'),
+        url(r'^p/mypluginname/',
+            views.global_view, name='global-frontend'),
     ]
 
-You have to name one parameter in your URL ``event``.
+If your view is event-specific, you have to name one parameter in your URL
+``event``. By convention, all plugin URLs except for backend URLs start with
+a ``/p/`` to avoid namespace collisions with event names and reserved URLs.
 
 You can then write a regular view. Our middleware will automatically detect the
 ``/orga/`` subpath and will ensure the following points if this is an URL with
@@ -78,7 +86,7 @@ Frontend views
 --------------
 
 Frontend views work pretty much like organiser area views. Take care that your URL starts
-with ``/(P?P<event>[\]+)/``.
+with ``/(P?P<event>[\]+)/``, or even better, ``/(P?P<event>[\]+)/p/``.
 You can then write a regular view. It will be automatically ensured that:
 
 * The requested event exists

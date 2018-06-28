@@ -119,6 +119,9 @@ plugin module, pretalx will automatically import it and include it into the root
 URL configuration with the namespace ``plugins:<label>:``, where ``<label>`` is
 your Django application label.
 
+.. note:: We recommend that non-backend-URLs start with a /p/ to avoid collisions
+   with event names.
+
 .. WARNING:: If you define custom URLs and views, you are on your own
    with checking that the calling user has logged in, has appropriate permissions,
    and more. We plan on providing native support for this in a later version.
