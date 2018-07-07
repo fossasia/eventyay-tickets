@@ -29,7 +29,7 @@ Read our extensive `feature list`_ in our docs to get a better idea of what
 curate submissions and contents for a conference with up to 200 talks.
 
 You can host pretalx yourself, as detailed in our `administrator documentation`_,
-or use our public instance at `pretalx.org`_.
+or use our public instance at `pretalx.com`_.
 
 Project status
 --------------
@@ -81,7 +81,7 @@ to this project.
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
 .. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
-.. _pretalx.org: https://pretalx.org/
+.. _pretalx.com: https://pretalx.com/
 .. _active development: https://github.com/pretalx/pretalx/pulse
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx
