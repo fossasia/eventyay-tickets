@@ -88,15 +88,16 @@ class UserForm(forms.Form):
 
     def save(self):
         data = self.cleaned_data
-        if data.get('register_username') and data.get('register_email') and data.get('register_password'):
-            user = User.objects.create_user(nick=data.get('register_username'),
-                                            email=data.get('register_email'),
-                                            password=data.get('register_password'),
-                                            locale=translation.get_language(),
-                                            timezone=timezone.get_current_timezone_name())
-            data['user_id'] = user.pk
+        if data.get('login_username') and data.get('login_password'):
+            return data['user_id']
 
-        return data['user_id']
+        user = User.objects.create_user(nick=data.get('register_username'),
+                                        email=data.get('register_email'),
+                                        password=data.get('register_password'),
+                                        locale=translation.get_language(),
+                                        timezone=timezone.get_current_timezone_name())
+        data['user_id'] = user.pk
+        return user.pk
 
 
 class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
