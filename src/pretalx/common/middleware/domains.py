@@ -1,5 +1,5 @@
 import time
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
 from django.contrib.sessions.middleware import (
