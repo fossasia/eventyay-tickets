@@ -119,7 +119,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         if self.event and not self.event.settings.cfp_request_biography:
             self.fields.pop('biography')
         else:
-            self.fields['biography'].required = True
+            self.fields['biography'].required = self.event.settings.cfp_require_biography
         if self.user:
             initials = {
                 field: getattr(self.user, field)

@@ -23,8 +23,39 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         label=_('Ask speakers to submit a longer description'),
         required=False,
     )
+    cfp_request_notes = forms.BooleanField(
+        label=_('Ask speakers to submit notes for the organiser'),
+        required=False,
+    )
     cfp_request_biography = forms.BooleanField(
         label=_('Ask speakers to provide a biography/personal information'),
+        required=False,
+    )
+    cfp_request_do_not_record = forms.BooleanField(
+        label=_('Allow speakers to opt out of having their talk recorded'),
+        required=False,
+    )
+    cfp_request_image = forms.BooleanField(
+        label=_('Ask speakers to submit a talk image'),
+        required=False,
+    )
+    cfp_require_abstract = forms.BooleanField(
+        label=_('Force speakers to submit an abstract'),
+        required=False,
+    )
+    cfp_require_description = forms.BooleanField(
+        label=_('Force speakers to submit a longer description'),
+        required=False,
+    )
+    cfp_require_notes = forms.BooleanField(
+        label=_('Force speakers to submit notes for the organiser'),
+        required=False,
+    )
+    cfp_require_biography = forms.BooleanField(
+        required=False,
+    )
+    cfp_require_image = forms.BooleanField(
+        label=_('Force speakers to submit a talk image'),
         required=False,
     )
     review_deadline = forms.DateTimeField(

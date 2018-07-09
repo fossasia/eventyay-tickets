@@ -18,15 +18,14 @@ class InfoForm(forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
-        if not self.event.settings.cfp_request_abstract:
-            self.fields.pop('abstract')
-        else:
-            self.fields['abstract'].required = True
-            self.fields['abstract'].widget.attrs['rows'] = 2
-        if not self.event.settings.cfp_request_description:
-            self.fields.pop('description')
-        else:
-            self.fields['description'].required = True
+        self.fields['abstract'].widget.attrs['rows'] = 2
+        for key in {'abstract', 'description', 'notes', 'image', 'do_not_record'}:
+            request = event.settings.get(f'cfp_request_{key}')
+            require = event.settings.get(f'cfp_require_{key}')
+            if not request:
+                self.fields.pop(key)
+            else:
+                self.fields[key].required = require
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
         _now = now()
         if not self.event.cfp.deadline or self.event.cfp.deadline >= _now:  # No global deadline or still open

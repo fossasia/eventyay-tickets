@@ -32,12 +32,12 @@
         {% bootstrap_field form.submission_type layout='event' %}
         {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
         {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
-        {% bootstrap_field form.notes layout='event' %}
+        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
         {% bootstrap_field form.content_locale layout='event' %}
-        {% bootstrap_field form.do_not_record layout='event' %}
+        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
         {% bootstrap_field form.is_featured layout='event' %}
         {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% bootstrap_field form.image layout='event' %}
+        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
         {% else %}

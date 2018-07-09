@@ -44,6 +44,7 @@ class CfP(LogMixin, models.Model):
         types = '{base}/types'
         new_type = '{types}/new'
         public = '{self.event.urls.base}/cfp'
+        submit = '{self.event.urls.base}/submit'
 
     def __str__(self) -> str:
         """Help with debugging."""

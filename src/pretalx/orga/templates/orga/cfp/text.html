@@ -27,11 +27,55 @@
             {% bootstrap_field form.headline layout='event' %}
             {% bootstrap_field form.text layout='event' %}
             {% bootstrap_field form.deadline layout='event' %}
-            {% bootstrap_field sform.cfp_request_abstract layout='event' %}
-            {% bootstrap_field sform.cfp_request_description layout='event' %}
-            {% bootstrap_field sform.cfp_request_biography layout='event' %}
             {% bootstrap_field sform.cfp_show_deadline layout='event' %}
             {% bootstrap_field sform.mail_on_new_submission layout='event' %}
+
+            <legend>{% trans "Submission information" %}</legend>
+            <div class="offset-3 alert alert-info"><span>
+                {% trans "Select which information should be requested and/or required during CfP submission." %}
+                <a href="{{ request.event.cfp.urls.submit }}">{% trans "Click here to view the submission form." %}</a>
+            </span></div>
+            <table class="table offset-3 table-sm table-hover" id="cfp-option-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{% trans "Request" %}</th>
+                        <th>{% trans "Require" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>{% trans "Abstract" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_abstract use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_abstract use_label=False layout='event-inline' %}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Description" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_description use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_description use_label=False layout='event-inline' %}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Notes for the organiser" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_notes use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_notes use_label=False layout='event-inline' %}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Biography" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_biography use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_biography use_label=False layout='event-inline' %}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Recording opt-out" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_do_not_record use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Talk image" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_image use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_image use_label=False layout='event-inline' %}</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <legend>{% trans "Review settings" %}</legend>
             {% bootstrap_field sform.review_deadline layout='event' %}
