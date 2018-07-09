@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import (
 from django.core.exceptions import DisallowedHost
 from django.http.request import split_domain_port
 from django.middleware.csrf import CsrfViewMiddleware as BaseCsrfMiddleware
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import cookie_date
@@ -65,6 +65,8 @@ class MultiDomainMiddleware:
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return
 
+        if request.path.startswith('/orga'):
+            return redirect(urljoin(default_domain, request.get_full_path()))
         raise DisallowedHost(f'Unknown host: {host}')
 
     def __call__(self, request):
