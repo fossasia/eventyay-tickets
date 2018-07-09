@@ -29,6 +29,6 @@ class LocaleSet(View):
                                 '%a, %d-%b-%Y %H:%M:%S GMT'),
                             domain=settings.SESSION_COOKIE_DOMAIN)
             with override(locale):
-                messages.success(request, phrases.cfp.locale_change_success)
+                messages.success(request, str(phrases.cfp.locale_change_success))
 
         return resp
