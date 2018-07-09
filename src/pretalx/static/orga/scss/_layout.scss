@@ -14,16 +14,21 @@
   background: $white;
   flex-grow: 1;
   padding: 20px 40px;
+  margin-left: 250px;
+  margin-top: 50px;
 }
 .sidebar {
   background-color: $gray-lightest;
   width: 250px;
+  height: 100vh;
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
   border-right: 1px solid $gray-lighter;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  z-index: 1;
+  z-index: 100;
+  position: fixed;
+  margin-top: 50px;
 
   li span.has-children {
     display: flex;
@@ -69,6 +74,7 @@
   }
 }
 .navbar {
+  height: 50px;
   color: $brand-primary;
   background-color: $offwhite;
   border-bottom: 4px $brand-primary solid;
