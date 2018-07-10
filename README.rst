@@ -75,7 +75,7 @@ to this project.
 
 .. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon-32x32.png
    :alt: pretalx logo
-   :target: https://pretalx.org
+   :target: https://pretalx.com
 .. _issues: https://github.com/pretalx/pretalx/issues/
 .. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html

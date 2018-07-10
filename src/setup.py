@@ -47,7 +47,7 @@ setup(
     version=pretalx_version,
     description='Conference organisation: CfPs, scheduling, much more',
     long_description=long_description,
-    url='https://pretalx.org',
+    url='https://pretalx.com',
     author='Tobias Kunze',
     author_email='rixx@cutebit.de',
     license='Apache License 2.0',
