@@ -18,9 +18,15 @@ def event_on_foobar(event):
 
 
 @pytest.mark.django_db
-def test_unknown_domain(event, client):
+def test_event_on_unknown_domain(event, client):
+    r = client.get('/{event.slug}/', HTTP_HOST='foobar')
+    assert r.status_code == 404
+
+
+@pytest.mark.django_db
+def test_orga_on_unknown_domain(event, client):
     r = client.get('/orga/login/', HTTP_HOST='foobar')
-    assert r.status_code == 400
+    assert r.status_code == 302
 
 
 @pytest.mark.django_db
