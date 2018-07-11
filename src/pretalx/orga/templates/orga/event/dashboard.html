@@ -1,7 +1,30 @@
 {% extends "orga/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+{% if timeline_data %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/nvd3/nv.d3.min.css" %}" />
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if timeline_data %}
+    {% compress js %}
+        <script type="text/javascript" src="{% static "vendored/nvd3/d3.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
+    {% endcompress %}
+{% endif %}
+{% endblock %}
 
 {% block content %}
+<div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
+{% if timeline_data %}
+<div id="submission-stats"><svg></svg></div>
+<script type="text/javascript" src="{% static "orga/js/stats.js" %}"></script>
+{% endif %}
+
 {% if "congratulations" in request.GET %}
 <div class="alert alert-success congratulations">
     {% blocktrans trimmed %}
