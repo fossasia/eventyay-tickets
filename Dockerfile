@@ -1,3 +1,5 @@
+# THIS DOCKERFILE IS DEPRECATED
+# PLEASE USE https://github.com/pretalx/pretalx-docker INSTEAD
 FROM python:3.6
 
 RUN apt-get update && apt-get install -y git gettext \

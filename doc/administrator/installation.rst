@@ -7,7 +7,8 @@ This guide will help you to install pretalx on a Linux distribution. It should b
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.
 
 We also provide an `Ansible role`_ that roughly follows this guide, in case you
-already have an Ansible-based setup.
+already have an Ansible-based setup. If you prefer a docker setup, please use
+our `docker-compose setup`_.
 
 Step 0: Prerequisites
 ---------------------
@@ -283,3 +284,4 @@ If you want to upgrade pretalx to a specific release, you can substitute
 .. _redis: http://blog.programster.org/debian-8-install-redis-server/
 .. _ufw: https://en.wikipedia.org/wiki/Uncomplicated_Firewall
 .. _strong encryption settings: https://mozilla.github.io/server-side-tls/ssl-config-generator/
+.. _docker-compose setup: https://github.com/pretalx/pretalx-docker
