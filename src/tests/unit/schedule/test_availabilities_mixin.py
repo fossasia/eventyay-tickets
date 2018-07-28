@@ -132,6 +132,20 @@ def test_validate_availability_tz_success(availabilitiesform, avail):
 
 
 @pytest.mark.django_db
+def test_validate_availability_daylightsaving(availabilitiesform):
+    # https://github.com/pretalx/pretalx/issues/460
+    availabilitiesform.event.timezone = 'Europe/Berlin'
+    availabilitiesform.event.date_from = datetime.date(2018, 10, 22)
+    availabilitiesform.event.date_to = datetime.date(2018, 10, 28)
+    availabilitiesform.event.save()
+
+    try:
+        availabilitiesform._validate_availability(({'start': '2018-10-22 00:00:00', 'end': '2018-10-29 00:00:00'}))
+    except ValidationError:
+        pytest.fail("Unexpected ValidationError")
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize('avail', (
     ({'start': '2016-12-31 23:00:00', 'end': '2017-01-01 08:00:00'}),  # local time, start
     ({'start': '2017-01-02 05:00:00', 'end': '2017-01-03 00:01:00'}),  # local time, end

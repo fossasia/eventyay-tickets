@@ -91,8 +91,11 @@ class AvailabilitiesFormMixin(forms.Form):
         try:
             timeframe_start = tz.localize(datetime.datetime.combine(self.event.date_from, datetime.time()))
             assert rawavail['start'] >= timeframe_start
-            timeframe_end = tz.localize(datetime.datetime.combine(self.event.date_to, datetime.time()))
-            timeframe_end += datetime.timedelta(days=1)
+
+            # add 1 day, not 24 hours, https://stackoverflow.com/a/25427822/2486196
+            timeframe_end = datetime.datetime.combine(self.event.date_to, datetime.time())
+            timeframe_end = timeframe_end + datetime.timedelta(days=1)
+            timeframe_end = tz.localize(timeframe_end, is_dst=None)
             assert rawavail['end'] <= timeframe_end
         except AssertionError:
             raise forms.ValidationError("Submitted availability is not within the event timeframe.")
