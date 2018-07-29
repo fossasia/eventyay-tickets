@@ -242,7 +242,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
             kwargs.update(fdata)
         return kwargs
 
-    def done(self, form_list, form_dict, **kwargs):
+    def done(self, form_list, form_dict, *args, **kwargs):
         initial = self.get_cleaned_data_for_step('initial')
         basics = self.get_cleaned_data_for_step('basics')
         timeline = self.get_cleaned_data_for_step('timeline')

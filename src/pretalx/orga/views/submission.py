@@ -127,7 +127,6 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         if self.target == self.object.state:
             messages.info(request, _('Somebody else was faster than you: this submission was already in the state you wanted to change it to.'))
-            pass
         elif self.is_allowed:
             self.do()
         else:
