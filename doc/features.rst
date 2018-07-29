@@ -19,7 +19,7 @@ Talk submission
 - **Build a great team:** pretalx allows you to invite further members to your crew seamlessly, and
   has features a role-based permission system, where you differentiate between superusers, crew,
   and reviewers.
-- **Organize the talks:** You can offer different submission types, with default lengths, so that
+- **Organise the talks:** You can offer different submission types, with default lengths, so that
   speakers can tell you how much time (or which format, e.g. workshops) they require right at the
   start.
 - **Work with multi-language events:** pretalx allows you to choose the locales offered at your
@@ -53,7 +53,7 @@ Scheduling
   You can print out proportionally sized cards of the talks to cut out and play around with.
 - **Publish your schedule:** Whenever something has changed noticeably, publish a new schedule.
   Speakers will receive notifications if the new release changes their talk time or location.
-- **Transparent updates:** pretalx provides a public changelog and an Atom feed, so that your
+- **Transparent updates:** pretalx provides a public changelog and an Atom/RSS feed, so that your
   participants can receive notifications as soon as you release a new schedule version.
 - **Integrate recordings:** Unless the speakers have set the do-not-record flag, you may sync and
   integrate the recording in the talk's page for the participants' convenience.
