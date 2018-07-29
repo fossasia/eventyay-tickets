@@ -29,16 +29,21 @@ class ScheduleDataView(PermissionRequired, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if 'version' in request.GET:
             kwargs['version'] = request.GET['version']
-            return HttpResponsePermanentRedirect(reverse(
-                f'agenda:versioned-{request.resolver_match.url_name}',
-                args=args, kwargs=kwargs
-            ))
+            return HttpResponsePermanentRedirect(
+                reverse(
+                    f'agenda:versioned-{request.resolver_match.url_name}',
+                    args=args,
+                    kwargs=kwargs,
+                )
+            )
         else:
             return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         if self.version:
-            return self.request.event.schedules.filter(version__iexact=self.version).first()
+            return self.request.event.schedules.filter(
+                version__iexact=self.version
+            ).first()
         if self.request.event.current_schedule:
             return self.request.event.current_schedule
 
@@ -55,12 +60,13 @@ class ScheduleDataView(PermissionRequired, TemplateView):
             context['error'] = 'Schedule not found.'
             return context
         context['schedule'] = schedule
-        context['schedules'] = event.schedules.filter(published__isnull=False).values_list('version')
+        context['schedules'] = event.schedules.filter(
+            published__isnull=False
+        ).values_list('version')
         return context
 
 
 class ExporterView(ScheduleDataView):
-
     def get_exporter(self, request):
         from pretalx.common.signals import register_data_exporters
 
@@ -101,22 +107,33 @@ class ScheduleView(ScheduleDataView):
         return self.request.event
 
     def get_object(self):
-        if self.version == 'wip' and self.request.user.has_perm('orga.view_schedule', self.request.event):
+        if self.version == 'wip' and self.request.user.has_perm(
+            'orga.view_schedule', self.request.event
+        ):
             return self.request.event.wip_schedule
         return super().get_object()
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
+
         context = super().get_context_data(*args, **kwargs)
-        context['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
+        context['exporters'] = list(
+            exporter(self.request.event)
+            for _, exporter in register_data_exporters.send(self.request.event)
+        )
         tz = pytz.timezone(self.request.event.timezone)
         if 'schedule' not in context:
             return context
 
-        context['data'] = ScheduleData(event=self.request.event, schedule=context['schedule']).data
+        context['data'] = ScheduleData(
+            event=self.request.event, schedule=context['schedule']
+        ).data
+        context['search'] = self.request.GET.get('q')
         for date in context['data']:
             if date.get('first_start') and date.get('last_end'):
-                start = date.get('first_start').astimezone(tz).replace(second=0, minute=0)
+                start = (
+                    date.get('first_start').astimezone(tz).replace(second=0, minute=0)
+                )
                 end = date.get('last_end').astimezone(tz)
                 date['height'] = int((end - start).total_seconds() / 60 * 2)
                 date['hours'] = []
@@ -126,7 +143,9 @@ class ScheduleView(ScheduleDataView):
                     d += timedelta(hours=1)
                 for room in date['rooms']:
                     for talk in room.get('talks', []):
-                        talk.top = int((talk.start.astimezone(tz) - start).total_seconds() / 60 * 2)
+                        talk.top = int(
+                            (talk.start.astimezone(tz) - start).total_seconds() / 60 * 2
+                        )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.end
         return context

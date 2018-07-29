@@ -21,6 +21,18 @@
     flex-direction: column;
     flex-grow: 1;
 
+    .schedule-header {
+        display: flex;
+        flex-direction: row;
+        align-content: space-between;
+        form {
+            max-width: 250px;
+        }
+        .header-right {
+            margin-left: auto;
+        }
+    }
+
     .day {
         background: $gray-lightest;
         margin-bottom: 16px;
@@ -140,6 +152,10 @@
                 }
                 .talk.talk-personal, .talk.active {
                     background-color: rgba(155, 255, 155, 0.76);
+                }
+                .talk.search-fail {
+                    color: $gray-light;
+                    border-color: $gray-light;
                 }
             }
         }
