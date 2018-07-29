@@ -16,11 +16,13 @@
       font-size: 1.5rem;
       color: rgba(0, 0, 0, 0.56);
     }
+
     .feedback-text {
       padding-left: 40px;
     }
   }
 }
+
 .talk {
   display: flex;
   flex-direction: row;
@@ -43,12 +45,15 @@
     color: rgba(0, 0, 0, 0.87);
     display: block;
     padding: 5px 10px;
+
     &.image {
       padding: 10px;
     }
+
     img {
       max-width: 100%;
     }
+
     .speaker-header {
       font-weight: bold;
     }
@@ -59,15 +64,18 @@
       margin-bottom: 1rem;
       border: 0;
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+
       .name {
         font-weight: bold;
       }
+
       .info {
         margin-left: 8px;
       }
     }
   }
 }
+
 .speaker-container {
   display: flex;
   flex-direction: column;
@@ -75,23 +83,27 @@
   .speaker-info {
     display: flex;
     flex-direction: row;
+
     .speaker-bio {
       min-width: 60%;
       flex-grow: 1;
     }
+
     .speaker-info {
       max-width: 320px;
       display: flex;
       flex-direction: column;
     }
   }
+
   hr {
     max-width: 95%;
   }
 
   a:hover {
-      text-decoration: none !important;
+    text-decoration: none !important;
   }
+
   .talk {
     display: flex;
     flex-direction: column;

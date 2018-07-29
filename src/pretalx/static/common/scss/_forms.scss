@@ -4,10 +4,12 @@
 
 .form-group {
   display: flex;
+
   input {
     line-height: normal;
   }
 }
+
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -15,8 +17,9 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  -moz-appearance:textfield;
+  -moz-appearance: textfield;
 }
+
 .help-block {
   font-size: 80%;
   color: $gray;
@@ -32,9 +35,11 @@ form label.col-form-label {
     color: $gray;
   }
 }
+
 form .form-control:disabled, .form-control[readonly] {
   background-color: $gray-lightest !important;
 }
+
 .labelless-password-input-form {
   flex-direction: column;
   margin-left: auto;
@@ -51,6 +56,7 @@ form .form-control:disabled, .form-control[readonly] {
     flex-grow: 1;
   }
 }
+
 .password-input-form, .labelless-password-input-form {
   p.text-muted {
     font-size: 80%;
@@ -68,37 +74,46 @@ form .form-control:disabled, .form-control[readonly] {
     }
   }
 }
+
 .password_strength_info {
   margin-bottom: 0;
 }
+
 .password_strength_info.hidden {
   display: none;
   display: block;
   visibility: hidden;
 }
+
 .progress-bar-warning {
   background-color: $brand-warning;
 }
+
 .progress-bar-danger {
   background-color: $brand-danger;
 }
+
 .header {
   background-color: $brand-primary;
 }
+
 table .radio, table .checkbox {
   margin-top: -8px;
 }
+
 .radio, .checkbox {
   position: relative;
   padding: 4px 0 4px 36px;
 
   label {
     cursor: pointer;
+
     &:before,
     &:after {
       content: '';
       position: absolute;
     }
+
     &:before {
       left: 0;
       width: 24px;
@@ -106,6 +121,7 @@ table .radio, table .checkbox {
       background: $offwhite;
       box-shadow: 0 0 1px $gray-500;
     }
+
     &:after {
       left: 4px;
       width: 16px;
@@ -115,6 +131,7 @@ table .radio, table .checkbox {
       background: $brand-success;
     }
   }
+
   input {
     position: absolute;
     top: 0;
@@ -122,21 +139,23 @@ table .radio, table .checkbox {
     visibility: hidden;
 
     &:checked + label {
-      &:before {
-      }
+      &:before {}
+
       &:after {
         opacity: 1;
       }
     }
   }
 }
+
 .radio {
   input {
     + label:before, + label:after {
-        border-radius: 50% !important;
+      border-radius: 50% !important;
     }
   }
 }
+
 .submit-group {
   display: flex;
   justify-content: space-between;
@@ -144,8 +163,12 @@ table .radio, table .checkbox {
   background-color: $gray-100;
   padding: 16px;
   margin-bottom: 16px;
+
   button {
     align-self: flex-end;
-    i.fa {padding-right: 8px;}
+
+    i.fa {
+      padding-right: 8px;
+    }
   }
 }

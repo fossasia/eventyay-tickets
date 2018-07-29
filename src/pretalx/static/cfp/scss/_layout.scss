@@ -17,6 +17,7 @@ body {
 
 h1 a {
   color: white;
+
   &:hover {
     color: white;
     text-decoration: none;
@@ -37,18 +38,22 @@ header {
   a {
     color: white;
   }
+
   a:hover {
     border-bottom: 1px dashed $white;
     text-decoration: none;
   }
+
   a.active {
     border-bottom: 1px solid $white;
   }
 }
+
 #event-logo {
   height: 95px;
   margin-top: -25px;
 }
+
 #main {
   min-height: 300px;
   box-shadow: 0 5px 10px rgba($black, 0.2);
@@ -66,7 +71,7 @@ header {
     border-bottom: $brand-light solid 4px;
     background-color: $gray-lightest;
     padding: 5px 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
     a {
       color: $brand-primary;
@@ -100,6 +105,7 @@ footer {
 .bootstrap4-multi-input {
   margin: auto;
 }
+
 .avatar-form {
   display: flex;
   align-items: flex-start;
@@ -112,15 +118,18 @@ footer {
     max-width: 100%;
     height: auto;
   }
+
   .avatar-form-fields {
     display: flex;
     flex-direction: column;
+
     .user-avatar-display .bootstrap4-multi-input {
       margin: 0;
     }
+
     .form-group {
       display: flex;
-    flex-direction: column;
+      flex-direction: column;
     }
   }
 }
@@ -143,35 +152,44 @@ footer {
       width: 100%;
       padding: 16px;
     }
+
     header {
       padding: 10px 20px;
     }
+
     .user-row {
       flex-direction: column;
     }
+
     .btn-success {
       width: 100%;
     }
+
     .col-form-label {
       text-align: left;
       display: flex;
+
       span {
         padding-left: 4px;
       }
     }
+
     .formset {
       padding-bottom: 16px;
       display: flex;
       flex-direction: column;
+
       .resource-option-input {
         display: flex;
         flex-direction: column;
         border-bottom: 2px $gray-lighter solid;
         margin-bottom: 8px;
       }
+
       .btn-info {
         width: 100%;
       }
+
       .resource-option-delete {
         float: none;
         padding-left: -8px;
@@ -179,6 +197,7 @@ footer {
     }
   }
 }
+
 
 .url-links {
   display: flex;
@@ -194,10 +213,12 @@ footer {
     flex-grow: 1;
   }
 }
+
 .submission-abstract {
   width: 70%;
   margin-left: auto;
   margin-right: auto;
+
   .card-body {
     margin: 0 16px;
   }
@@ -216,6 +237,7 @@ footer {
     padding: 8px;
   }
 }
+
 .resource-option-row, .resource-option-input {
   display: flex;
   flex-direction: row;
@@ -226,6 +248,7 @@ footer {
     padding-right: 8px;
     flex-grow: 0;
   }
+
   .form-group {
     display: flex;
     padding-right: 16px;

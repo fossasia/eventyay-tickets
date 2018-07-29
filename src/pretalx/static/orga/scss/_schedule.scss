@@ -2,24 +2,30 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   margin-left: 50px;
   margin-right: 280px;
 }
+
 .schedule-header {
   margin-bottom: 24px;
   margin-top: 24px;
-  display: flex
+  display: flex;
 }
+
 #schedule-release {
   padding-left: 12px;
   width: 260px;
 }
+
 #schedule-choice {
   width: 300px;
+
   select {
     height: 38px;
   }
+
   option {
     background-color: $white;
   }
 }
+
 #fahrplan {
   display: flex;
   flex-wrap: no-wrap;
@@ -57,9 +63,11 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   flex-grow: 1;
   flex-basis: 0;
 }
+
 .room-column:last-child {
   margin-right: 0;
 }
+
 .room-header {
   border-bottom: 1px solid $gray-light;
   font-size: 16pt;
@@ -71,6 +79,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   display: flex;
   justify-content: center;
 }
+
 #unassigned-talks {
   flex-direction: column;
   background: $gray-lightest;
@@ -103,6 +112,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
     margin-bottom: 5px;
   }
 }
+
 .room-container {
   position: relative;
   width: 100%;
@@ -134,6 +144,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   font-size: 12px;
   width: 100%;
 }
+
 .timestep-box.midnight {
   font-weight: bold;
   background: $gray;
@@ -152,23 +163,29 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   left: 0;
   text-overflow: ellipsis;
   overflow: hidden;
-  display: flex; flex-direction: row;
+  display: flex;
+  flex-direction: row;
   width: calc(100% - 16px);
   margin: 0 8px;
+
   span {
     padding-right: 8px;
   }
 }
+
 .talk-box.accepted {
   border-color: lighten($brand-success, 30%);
   color: $gray;
 }
+
 .talk-box.drag-source {
   opacity: 0.5;
 }
+
 .talk-box.confirmed {
   border-color: lighten($brand-success, 15%);
 }
+
 .talk-box.dragged {
   position: absolute;
   background: $brand-success;

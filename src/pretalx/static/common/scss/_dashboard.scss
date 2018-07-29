@@ -3,8 +3,8 @@
   flex-wrap: wrap;
   align-items: stretch;
   padding-bottom: 20px;
-
 }
+
 .dashboard-block {
   flex: 1 0 auto;
   margin: 8px;
@@ -20,24 +20,30 @@
     color: $brand-primary;
     text-decoration: none;
   }
+
   h1 {
     font-size: 36px;
     font-weight: normal;
+
     .fa {
       padding-right: 0.3em;
     }
   }
+
   .dashboard-description {
     padding: 0 8px;
     font-size: 20px;
+
     ul {
       text-align: left;
     }
   }
 }
+
 .dashboard-special-block {
   background: lighten($brand_warning, 29%);
 }
+
 .timeline {
   display: flex;
   flex-direction: row;
@@ -52,7 +58,6 @@
     position: relative;
     min-width: 200px;
     height: 80px;
-
     max-width: 320px;
     padding: 0.5em;
 
@@ -66,9 +71,11 @@
       border-left: 50px solid white;
       z-index: 5;
     }
+
     .timeline-text {
       display: none;
     }
+
     &:hover .timeline-text, .timeline-text:hover {
       display: block;
       color: black;
@@ -76,9 +83,10 @@
       padding-right: 20px;
       margin-top: 8px;
       background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
       opacity: 1;
     }
+
     .timeline-heading {
       text-align: center;
       padding-top: 20px;
@@ -86,84 +94,113 @@
       font-weight: 600;
     }
   }
+
   .timeline-element.done {
     .timeline-heading {
       font-weight: normal;
     }
   }
+
   .timeline-element.next {
     .timeline-heading {
       font-weight: normal;
     }
   }
+
   .timeline-element:nth-of-type(1) {
     background-color: #e5e5e5;
+
     &::after {
       border-left: 50px solid #e5e5e5;
     }
   }
+
   .timeline-element:nth-of-type(2) {
     background-color: #d3d3d3;
+
     &::after {
       border-left: 50px solid #d3d3d3;
     }
   }
+
   .timeline-element:nth-of-type(3) {
     background-color: #c2c2c2;
+
     &::after {
       border-left: 50px solid #c2c2c2;
     }
   }
+
   .timeline-element:nth-of-type(4) {
     background-color: #b0b0b0;
+
     &::after {
       border-left: 50px solid #b0b0b0;
     }
   }
+
   .timeline-element:nth-of-type(5) {
     background-color: #a1a1a1;
+
     &::after {
       border-left: 50px solid #a1a1a1;
     }
   }
+
   .timeline-element.next:nth-of-type(6) {
     background-color: #858585;
     color: $white;
+
     &::after {
       border-left: 50px solid #858585;
     }
   }
+
   .timeline-element.active {
-      background-color: mix(#fff, $brand-success, 25%);
-      color: $white;
-      &::after {
-        background: transparent;
-        border-left-color: mix(#fff, $brand-success, 25%);
-      }
+    background-color: mix(#fff, $brand-success, 25%);
+    color: $white;
+
+    &::after {
+      background: transparent;
+      border-left-color: mix(#fff, $brand-success, 25%);
+    }
   }
 }
+
 .dashboard-history {
   .time {
-    color: #858585
+    color: #858585;
   }
 }
+
 @media (max-width: 640px) {
-    .timeline {
-        margin-right: 8px;
-        .timeline-element.done, .timeline-element.next {display: none;}
-        .timeline-element.active {
-            display: block;
-            width: 100%;
-            &::after {display: none; width: 0}
-        }
+  .timeline {
+    margin-right: 8px;
+
+    .timeline-element.done, .timeline-element.next {
+      display: none;
     }
-    .dashboard-block {
-        width: inherit;
+
+    .timeline-element.active {
+      display: block;
+      width: 100%;
+
+      &::after {
+        display: none;
+        width: 0;
+      }
     }
-    .event-dropdown {
-        flex-basis: inherit !important;
-    }
-    .dropdown-menu.show {
-        position: absolute !important;
-    }
+  }
+
+  .dashboard-block {
+    width: inherit;
+  }
+
+  .event-dropdown {
+    flex-basis: inherit !important;
+  }
+
+  .dropdown-menu.show {
+    position: absolute !important;
+  }
 }

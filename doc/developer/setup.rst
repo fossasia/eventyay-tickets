@@ -106,6 +106,9 @@ for example::
     pylama
     isort -c -rc .
 
+If you edit a stylesheet ``.scss`` file, please run ``sass-convert -i path/to/file.scss``
+afterwards to autoformat that file.
+
 Working with mails
 ^^^^^^^^^^^^^^^^^^
 

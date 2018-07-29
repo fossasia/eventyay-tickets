@@ -7,7 +7,7 @@ $brand-danger: #b23e65 !default;
 
 $brand-light: fade-out($brand-primary, 0.2) !default;
 
-$white:  #fff !default;
+$white: #fff !default;
 $black: #000 !default;
 $offwhite: #f8f9fa !default;
 $gray: mix(#8590a4, $brand-primary, 90) !default;
@@ -18,31 +18,25 @@ $gray-300: mix(#dae0e4, $brand-primary, 90) !default;
 $gray-500: mix(#636c72, $brand-primary, 90) !default;
 $gray-800: #343a40 !default;
 
-
 $gray-light: $gray-300 !default;
 $gray-lighter: $gray-200 !default;
 $gray-lightest: $gray-100 !default;
 
-$btn-primary-bg:                 $brand-success !default;
-$btn-primary-border:             $btn-primary-bg !default;
-$btn-primary-color:              $white !default;
+$btn-primary-bg: $brand-success !default;
+$btn-primary-border: $btn-primary-bg !default;
+$btn-primary-color: $white !default;
+
 /* end compatibility */
-$fa-font-path:  "vendored/forkawesome/fonts";
+$fa-font-path: "vendored/forkawesome/fonts";
+
 /* colors */
-$theme-colors: (
-  primary: $brand-primary,
-  success: $brand-success,
-  info: $brand-info,
-  warning: $brand-warning,
-  danger: $brand-danger,
-  light: $gray-100,
-  dark: $gray-800
-);
+$theme-colors: (primary: $brand-primary, success: $brand-success, info: $brand-info, warning: $brand-warning, danger: $brand-danger, light: $gray-100, dark: $gray-800);
 
 /* fix bootstrap 4 */
 h2, h3 {
   padding-top: 24px;
 }
+
 .btn:focus {
   box-shadow: none !important;
 }
