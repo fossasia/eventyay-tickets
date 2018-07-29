@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` For organisers, the submission/talk API endpoints now contain the question answers given by the speakers.
 - :feature:`-` Schedules now contain a search bar to filter talks by title or speaker.
 - :feature:`-` Schedules now feature a sidebar navigation to jump directly to a selected day.
 - :feature:`-` Allow organisers to configure which of the default CfP fields to request and require. Please check your settings after updating, as the migration is not guaranteed to work as expected.

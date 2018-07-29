@@ -25,6 +25,7 @@ do_not_record                         boolean                    Indicates if th
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
 image                                 string                     The submission image URL
+answers                               list                       The question answers given by the speakers, if the request was issued by an organiser with permissions
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -73,7 +74,18 @@ Endpoints
               "end": "2017-12-27T10:30:00Z",
               "room": "R101"
             },
-            "image": "submission.png"
+            "image": "submission.png",
+            "answers": [
+              {
+                "id": 1,
+                "question": {"id": 1, "question": {"en": "How much do you like green, on a scale from 1-10?"}, "required": false, "target": "submission", "options": []},
+                "answer": "11",
+                "answer_file": null,
+                "submission": "ABCDE",
+                "person": null,
+                "options": []
+              }
+             ]
           }
         ]
       }
@@ -119,7 +131,18 @@ Endpoints
           "end": "2017-12-27T10:30:00Z",
           "room": "R101"
         },
-        "image": "submission.png"
+        "image": "submission.png",
+        "answers": [
+          {
+            "id": 1,
+            "question": {"id": 1, "question": {"en": "How much do you like green, on a scale from 1-10?"}, "required": false, "target": "submission", "options": []},
+            "answer": "11",
+            "answer_file": null,
+            "submission": "ABCDE",
+            "person": null,
+            "options": []
+          }
+         ]
       }
 
    :param event: The ``slug`` field of the event to fetch
