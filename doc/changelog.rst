@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Schedules now feature a sidebar navigation to jump directly to a selected day.
 - :feature:`-` Allow organisers to configure which of the default CfP fields to request and require. Please check your settings after updating, as the migration is not guaranteed to work as expected.
 - :feature:`-` Prevent organisers from adding a non-localhost mail server without transport level security to make sure our Privacy Policy holds true.
 - :feature:`415` Allow organisers to trigger a password reset for team members.

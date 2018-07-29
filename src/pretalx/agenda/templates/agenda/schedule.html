@@ -8,6 +8,16 @@
 {% endblock %}
 
 {% block agenda_content %}
+{% if data|length > 1 %}
+<div id="navigator">
+  <i class="fa fa-dot-circle-o"></i> nav
+  <div class="days">
+    {% for day in data %}
+    <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date }}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning"><span>

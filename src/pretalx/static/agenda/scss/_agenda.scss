@@ -1,3 +1,21 @@
+#navigator {
+    position: fixed;
+    left: 0;
+    margin-top: 50px;
+    background-color: $offwhite;
+    padding: 8px 16px;
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.16) ,0 5px 8px 0 rgba(0,0,0,0.12);
+    &:hover {
+        .days {
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    .days {
+        display: none;
+    }
+}
 #fahrplan {
     display: flex;
     flex-direction: column;
