@@ -1,12 +1,8 @@
 import pytest
 
 from pretalx.api.serializers.event import EventSerializer
-from pretalx.api.serializers.question import (
-    AnswerSerializer, QuestionSerializer,
-)
-from pretalx.api.serializers.speaker import (
-    SpeakerSerializer, SubmitterSerializer,
-)
+from pretalx.api.serializers.question import AnswerSerializer, QuestionSerializer
+from pretalx.api.serializers.speaker import SpeakerSerializer, SubmitterSerializer
 from pretalx.api.serializers.submission import SubmissionSerializer
 
 
@@ -14,8 +10,13 @@ from pretalx.api.serializers.submission import SubmissionSerializer
 def test_event_serializer(event):
     data = EventSerializer(event).data
     assert data.keys() == {
-        'name', 'slug', 'is_public', 'date_from', 'date_to',
-        'timezone', 'html_export_url',
+        'name',
+        'slug',
+        'is_public',
+        'date_from',
+        'date_to',
+        'timezone',
+        'html_export_url',
     }
 
 
@@ -23,12 +24,16 @@ def test_event_serializer(event):
 def test_question_serializer(answer):
     data = AnswerSerializer(answer).data
     assert set(data.keys()) == {
-        'id', 'question', 'answer', 'answer_file', 'submission', 'person', 'options',
+        'id',
+        'question',
+        'answer',
+        'answer_file',
+        'submission',
+        'person',
+        'options',
     }
     data = QuestionSerializer(answer.question).data
-    assert set(data.keys()) == {
-        'id', 'question', 'required', 'target', 'options',
-    }
+    assert set(data.keys()) == {'id', 'question', 'required', 'target', 'options'}
 
 
 @pytest.mark.django_db
@@ -66,8 +71,19 @@ def test_speaker_serializer(slot):
 def test_submission_serializer(submission):
     data = SubmissionSerializer(submission, context={'event': submission.event}).data
     assert set(data.keys()) == {
-        'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-        'description', 'duration', 'do_not_record', 'content_locale', 'slot', 'image',
+        'code',
+        'speakers',
+        'title',
+        'submission_type',
+        'state',
+        'abstract',
+        'description',
+        'duration',
+        'do_not_record',
+        'content_locale',
+        'slot',
+        'image',
+        'answers',
     }
     assert isinstance(data['speakers'], list)
     assert data['speakers'][0] == {
@@ -82,10 +98,23 @@ def test_submission_serializer(submission):
 
 @pytest.mark.django_db
 def test_submission_slot_serializer(slot):
-    data = SubmissionSerializer(slot.submission, context={'event': slot.submission.event}).data
+    data = SubmissionSerializer(
+        slot.submission, context={'event': slot.submission.event}
+    ).data
     assert set(data.keys()) == {
-        'code', 'speakers', 'title', 'submission_type', 'state', 'abstract',
-        'description', 'duration', 'do_not_record', 'content_locale', 'slot', 'image',
+        'code',
+        'speakers',
+        'title',
+        'submission_type',
+        'state',
+        'abstract',
+        'description',
+        'duration',
+        'do_not_record',
+        'content_locale',
+        'slot',
+        'image',
+        'answers',
     }
     assert set(data['slot'].keys()) == {'start', 'end', 'room'}
     assert data['slot']['room'] == slot.room.name
