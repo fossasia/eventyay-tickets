@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load rules %}
 
+{% block title %}{% trans "Dashboard" %}{% endblock %}
+
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
     <div class="dashboard-list">

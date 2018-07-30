@@ -2,6 +2,8 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block title %}{% if request.event %}{{ request.event.name }}{% else %}{{ request.organiser.name }}{% endif %}{% endblock %}
+
 {% block content %}
     <legend>{% trans "Settings" %}</legend>
     <form method="post">

@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block title %}{% trans "Invitation" %} :: {% trans "Sign in" %}{% endblock %}
 {% block content %}
 <h3>
     {% blocktrans with event=invitation.event.name trimmed %}
