@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`463` Don't show a 404 error if a reviewer tries to review their own submission, but show an error message instead.
 - :feature:`-` For organisers, the submission/talk API endpoints now contain the question answers given by the speakers.
 - :feature:`-` Schedules now contain a search bar to filter talks by title or speaker.
 - :feature:`-` Schedules now feature a sidebar navigation to jump directly to a selected day.

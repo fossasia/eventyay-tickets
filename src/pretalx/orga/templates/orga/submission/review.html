@@ -4,6 +4,14 @@
 {% load rich_text %}
 
 {% block submission_content %}
+
+{% if request.user in submission.speakers.all %}
+    <div class="alert alert-error"><span>
+        {% blocktrans trimmed %}
+        You're not allowed to review your own submissions.
+        {% endblocktrans %}
+    </div>
+{% else %}
     <div class="alert alert-info">
         <span>
         {% if not read_only %}
@@ -113,4 +121,5 @@
         </tbody>
     </table>
     {% endif %}
+{% endif %}
 {% endblock %}
