@@ -4,7 +4,7 @@ nv.addGraph(() => {
   let chart = nv.models.lineChart()
                 .margin({left: 100, right: 100})
                 .useInteractiveGuideline(true)
-                .showLegend(true)
+                .showLegend(false)
                 .showYAxis(true)
                 .showXAxis(true)
                 .forceY([0, yMax])
@@ -21,7 +21,7 @@ nv.addGraph(() => {
       .tickFormat(d3.format('d'))
   ;
   d3.select('#submission-stats svg')
-      .datum([{values: data, color: '#f00', key: 'Submissions', area: false}])
+      .datum([{values: data, color: '#3aa57c', key: 'Submissions', area: true, strokeWidth: 2}])
       .call(chart)
   ;
   nv.utils.windowResize(() => { chart.update() }); //Update the chart when window resizes.
