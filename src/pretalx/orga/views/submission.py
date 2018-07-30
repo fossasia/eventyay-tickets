@@ -461,16 +461,19 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
             ).values_list('timestamp', flat=True)
         )
         dates = data.keys()
-        date_range = rrule.rrule(
-            rrule.DAILY, count=(max(dates) - min(dates)).days + 1, dtstart=min(dates)
-        )
-        if len(data) > 1:
-            context['timeline_data'] = json.dumps(
-                [
-                    {"x": date.isoformat(), "y": data.get(date.date(), 0)}
-                    for date in date_range
-                ]
+        if len(dates) > 1:
+            date_range = rrule.rrule(
+                rrule.DAILY,
+                count=(max(dates) - min(dates)).days + 1,
+                dtstart=min(dates),
             )
+            if len(data) > 1:
+                context['timeline_data'] = json.dumps(
+                    [
+                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                        for date in date_range
+                    ]
+                )
         return context
 
 
