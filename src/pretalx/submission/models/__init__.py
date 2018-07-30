@@ -1,8 +1,6 @@
 from .cfp import CfP
 from .feedback import Feedback
-from .question import (
-    Answer, AnswerOption, Question, QuestionTarget, QuestionVariant,
-)
+from .question import Answer, AnswerOption, Question, QuestionTarget, QuestionVariant
 from .resource import Resource
 from .review import Review
 from .submission import Submission, SubmissionError, SubmissionStates

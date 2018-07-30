@@ -5,9 +5,7 @@ from django.core import mail as djmail
 from django.utils.timezone import now
 
 from pretalx.common.models.log import ActivityLog
-from pretalx.event.services import (
-    periodic_event_services, task_periodic_event_services,
-)
+from pretalx.event.services import periodic_event_services, task_periodic_event_services
 
 
 @pytest.mark.django_db

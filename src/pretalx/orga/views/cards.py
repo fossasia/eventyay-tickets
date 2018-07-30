@@ -9,9 +9,7 @@ from django.views.generic import View
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph,
-)
+from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.submission.models import SubmissionStates

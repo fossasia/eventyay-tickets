@@ -10,9 +10,7 @@ from pretalx.common.mixins.views import (
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.orga.forms.mails import (
-    MailDetailForm, MailTemplateForm, WriteMailForm,
-)
+from pretalx.orga.forms.mails import MailDetailForm, MailTemplateForm, WriteMailForm
 
 
 class OutboxList(PermissionRequired, Sortable, Filterable, ListView):

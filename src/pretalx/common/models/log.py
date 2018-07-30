@@ -4,9 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.submission.models import (
-    Answer, AnswerOption, CfP, Question, Submission,
-)
+from pretalx.submission.models import Answer, AnswerOption, CfP, Question, Submission
 
 LOG_NAMES = {
     'pretalx.cfp.update': _('The CfP has been modified.'),

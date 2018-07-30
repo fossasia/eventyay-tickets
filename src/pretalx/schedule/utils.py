@@ -6,9 +6,7 @@ from django.db import transaction
 
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
-from pretalx.submission.models import (
-    Submission, SubmissionStates, SubmissionType,
-)
+from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
 @transaction.atomic()

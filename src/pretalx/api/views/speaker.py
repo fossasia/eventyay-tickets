@@ -1,8 +1,6 @@
 from rest_framework import viewsets
 
-from pretalx.api.serializers.speaker import (
-    SpeakerOrgaSerializer, SpeakerSerializer,
-)
+from pretalx.api.serializers.speaker import SpeakerOrgaSerializer, SpeakerSerializer
 from pretalx.person.models import SpeakerProfile
 
 

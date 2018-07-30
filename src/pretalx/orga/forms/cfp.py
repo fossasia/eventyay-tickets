@@ -5,9 +5,7 @@ from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.submission.models import (
-    AnswerOption, CfP, Question, SubmissionType,
-)
+from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
