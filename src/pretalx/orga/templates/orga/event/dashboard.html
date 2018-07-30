@@ -12,6 +12,9 @@
     </span>
 </div>
 {% endif %}
+<legend id="main-title">
+    <span>{{ request.event.name }} <small class="text-muted small">{{ request.event.date_from }}–{{ request.event.date_to }}</small>
+</legend>
 <div class="timeline">
     <div class="timeline-element {{ timeline.PREPARATION.state }}">
         <div class="timeline-box">
@@ -122,7 +125,6 @@
     </div>
 </div>
 
-<legend id="main-title">{{ request.event.name }}<small>{{ request.event.date_from }}–{{ request.event.date_to }}</small></legend>
 <div class="dashboard-list">
     <a href="{{ request.event.orga_urls.live }}" class="dashboard-block">
         <div class="dashboard-live-text">

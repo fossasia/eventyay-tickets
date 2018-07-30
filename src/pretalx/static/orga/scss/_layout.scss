@@ -17,6 +17,7 @@
   margin-left: 250px;
   margin-top: 50px;
 }
+
 .sidebar {
   background-color: $gray-lightest;
   width: 250px;
@@ -159,8 +160,8 @@ footer {
   font-size: 11px;
 }
 
-#main-title {
-  margin-top: -40px;
+#main-title .text-muted {
+  margin-left: 4px;
 }
 
 .dashboard-live {
