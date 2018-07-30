@@ -12,49 +12,49 @@
     {% if submission.state != 'submitted' %}
     <a
         class="dropdown-item submission-state-submitted"
-        href="{{ submission.orga_urls.make_submitted }}">
+        href="{{ submission.orga_urls.make_submitted }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='submitted' %}
     </a>
     {% endif %}
     {% if submission.state != 'accepted' %}
     <a
         class="dropdown-item submission-state-accepted"
-        href="{{ submission.orga_urls.accept }}">
+        href="{{ submission.orga_urls.accept }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='accepted' %}
     </a>
     {% endif %}
     {% if submission.state != 'confirmed' %}
     <a
         class="dropdown-item submission-state-confirmed"
-        href="{{ submission.orga_urls.confirm }}">
+        href="{{ submission.orga_urls.confirm }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='confirmed' %}
     </a>
     {% endif %}
     {% if submission.state != 'rejected' %}
     <a
         class="dropdown-item submission-state-rejected"
-        href="{{ submission.orga_urls.reject }}">
+        href="{{ submission.orga_urls.reject }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='rejected' %}
     </a>
     {% endif %}
     {% if submission.state != 'canceled' %}
     <a
         class="dropdown-item submission-state-canceled"
-        href="{{ submission.orga_urls.cancel }}">
+        href="{{ submission.orga_urls.cancel }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='canceled' %}
     </a>
     {% endif %}
     {% if submission.state != 'withdrawn' %}
     <a
         class="dropdown-item submission-state-withdrawn"
-        href="{{ submission.orga_urls.withdraw }}">
+        href="{{ submission.orga_urls.withdraw }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='withdrawn' %}
     </a>
     {% endif %}
     {% if submission.state != 'deleted' %}
     <a
         class="dropdown-item submission-state-deleted"
-        href="{{ submission.orga_urls.delete }}">
+        href="{{ submission.orga_urls.delete }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
             {% include "cfp/event/fragment_state.html" with state='deleted' %}
     </a>
     {% endif %}
