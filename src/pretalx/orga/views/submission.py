@@ -1,6 +1,9 @@
+import json
 import random
+from collections import Counter
 from datetime import timedelta
 
+from dateutil import rrule
 from django.contrib import messages
 from django.db import transaction
 from django.forms.models import BaseModelFormSet, inlineformset_factory
@@ -16,6 +19,7 @@ from django.views.generic import ListView, TemplateView, View
 from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
 )
+from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
@@ -447,6 +451,27 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs.distinct()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        data = Counter(
+            timestamp.date()
+            for timestamp in ActivityLog.objects.filter(
+                event=self.request.event, action_type='pretalx.submission.create'
+            ).values_list('timestamp', flat=True)
+        )
+        dates = data.keys()
+        date_range = rrule.rrule(
+            rrule.DAILY, count=(max(dates) - min(dates)).days + 1, dtstart=min(dates)
+        )
+        if len(data) > 1:
+            context['timeline_data'] = json.dumps(
+                [
+                    {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                    for date in date_range
+                ]
+            )
+        return context
 
 
 class FeedbackList(SubmissionViewMixin, ListView):

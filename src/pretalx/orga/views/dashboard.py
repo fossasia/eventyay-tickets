@@ -1,7 +1,3 @@
-import json
-from collections import Counter
-
-from dateutil import rrule
 from django.http import JsonResponse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -23,12 +19,18 @@ class DashboardView(TemplateView):
             context['organisers'] = Organiser.objects.all()
         else:
             context['organisers'] = set(
-                team.organiser for team in
-                self.request.user.teams.filter(can_change_organiser_settings=True)
+                team.organiser
+                for team in self.request.user.teams.filter(
+                    can_change_organiser_settings=True
+                )
             )
         now_date = now().date()
-        context['current_orga_events'] = [e for e in self.request.orga_events if e.date_to >= now_date]
-        context['past_orga_events'] = [e for e in self.request.orga_events if e.date_to < now_date]
+        context['current_orga_events'] = [
+            e for e in self.request.orga_events if e.date_to >= now_date
+        ]
+        context['past_orga_events'] = [
+            e for e in self.request.orga_events if e.date_to < now_date
+        ]
         return context
 
 
@@ -45,22 +47,15 @@ class EventDashboardView(PermissionRequired, TemplateView):
         if max_deadline and _now < max_deadline:
             diff = max_deadline - _now
             if diff.days >= 3:
-                result.append({
-                    'large': diff.days,
-                    'small': _('days until CfP end'),
-                })
+                result.append({'large': diff.days, 'small': _('days until CfP end')})
             else:
                 hours = diff.seconds // 3600
                 minutes = (diff.seconds // 60) % 60
-                result.append({
-                    'large': f'{hours}:{minutes}h',
-                    'small': _('until CfP end'),
-                })
+                result.append(
+                    {'large': f'{hours}:{minutes}h', 'small': _('until CfP end')}
+                )
         if event.cfp.is_open:
-            result.append({
-                'url': event.urls.base,
-                'small': _('Go to CfP'),
-            })
+            result.append({'url': event.urls.base, 'small': _('Go to CfP')})
         return result
 
     def get_context_data(self, event):
@@ -72,64 +67,82 @@ class EventDashboardView(PermissionRequired, TemplateView):
         today = _now.date()
         context['tiles'] = self.get_cfp_tiles(event, _now)
         if today < event.date_from:
-            context['tiles'].append({
-                'large': (event.date_from - today).days,
-                'small': _('days until event start'),
-            })
+            context['tiles'].append(
+                {
+                    'large': (event.date_from - today).days,
+                    'small': _('days until event start'),
+                }
+            )
         elif today > event.date_to:
-            context['tiles'].append({
-                'large': (today - event.date_from).days,
-                'small': _('days since event end'),
-            })
+            context['tiles'].append(
+                {
+                    'large': (today - event.date_from).days,
+                    'small': _('days since event end'),
+                }
+            )
         else:
             day = (today - event.date_from).days + 1
-            context['tiles'].append({
-                'large': _('Day {number}').format(number=day),
-                'small': _('of {total_days} days').format(total_days=(event.date_to - event.date_from).days + 1),
-                'url': event.urls.schedule + f'#{today.isoformat()}',
-            })
+            context['tiles'].append(
+                {
+                    'large': _('Day {number}').format(number=day),
+                    'small': _('of {total_days} days').format(
+                        total_days=(event.date_to - event.date_from).days + 1
+                    ),
+                    'url': event.urls.schedule + f'#{today.isoformat()}',
+                }
+            )
         if event.current_schedule:
-            context['tiles'].append({
-                'large': event.current_schedule.version,
-                'small': _('current schedule'),
-                'url': event.urls.schedule,
-            })
+            context['tiles'].append(
+                {
+                    'large': event.current_schedule.version,
+                    'small': _('current schedule'),
+                    'url': event.urls.schedule,
+                }
+            )
         if event.submissions.count():
-            context['tiles'].append({
-                'large': event.submissions.count(),
-                'small': _('total submissions'),
-                'url': event.orga_urls.submissions,
-            })
+            context['tiles'].append(
+                {
+                    'large': event.submissions.count(),
+                    'small': _('total submissions'),
+                    'url': event.orga_urls.submissions,
+                }
+            )
             talk_count = event.talks.count()
             if talk_count:
-                context['tiles'].append({
-                    'large': talk_count,
-                    'small': _('total talks'),
-                    'url': event.orga_urls.submissions,
-                })
-                confirmed_count = event.talks.filter(state=SubmissionStates.CONFIRMED).count()
+                context['tiles'].append(
+                    {
+                        'large': talk_count,
+                        'small': _('total talks'),
+                        'url': event.orga_urls.submissions,
+                    }
+                )
+                confirmed_count = event.talks.filter(
+                    state=SubmissionStates.CONFIRMED
+                ).count()
                 if confirmed_count != talk_count:
-                    context['tiles'].append({
-                        'large': talk_count - confirmed_count,
-                        'small': _('unconfirmed talks'),
-                        'url': event.orga_urls.submissions + f'?state={SubmissionStates.ACCEPTED}',
-                    })
-            data = Counter(timestamp.date() for timestamp in ActivityLog.objects.filter(event=event, action_type='pretalx.submission.create').values_list('timestamp', flat=True))
-            dates = data.keys()
-            date_range = rrule.rrule(rrule.DAILY, count=(max(dates) - min(dates)).days + 1, dtstart=min(dates))
-            if len(data) > 1:
-                context['timeline_data'] = json.dumps([{"x": date.isoformat(), "y": data.get(date.date(), 0)} for date in date_range])
+                    context['tiles'].append(
+                        {
+                            'large': talk_count - confirmed_count,
+                            'small': _('unconfirmed talks'),
+                            'url': event.orga_urls.submissions
+                            + f'?state={SubmissionStates.ACCEPTED}',
+                        }
+                    )
         if event.speakers.count():
-            context['tiles'].append({
-                'large': event.speakers.count(),
-                'small': _('speakers'),
-                'url': event.orga_urls.speakers + '?role=true',
-            })
-        context['tiles'].append({
-            'large': event.queued_mails.filter(sent__isnull=False).count(),
-            'small': _('sent emails'),
-            'url': event.orga_urls.compose_mails,
-        })
+            context['tiles'].append(
+                {
+                    'large': event.speakers.count(),
+                    'small': _('speakers'),
+                    'url': event.orga_urls.speakers + '?role=true',
+                }
+            )
+        context['tiles'].append(
+            {
+                'large': event.queued_mails.filter(sent__isnull=False).count(),
+                'small': _('sent emails'),
+                'url': event.orga_urls.compose_mails,
+            }
+        )
         return context
 
 
@@ -161,7 +174,5 @@ def url_list(request, event=None):
             {'name': _('Speaker information'), 'url': event.orga_urls.information},
         ]
     if 'is_reviewer' in permissions:
-        urls += [
-            {'name': _('Review dashboard'), 'url': event.orga_urls.reviews},
-        ]
+        urls += [{'name': _('Review dashboard'), 'url': event.orga_urls.reviews}]
     return JsonResponse({'results': urls})
