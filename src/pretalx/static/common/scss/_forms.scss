@@ -160,6 +160,7 @@ table .radio, table .checkbox {
   display: flex;
   justify-content: space-between;
   flex-grow: 1;
+  flex-wrap: wrap;
   background-color: $gray-100;
   padding: 16px;
   margin-bottom: 16px;

@@ -23,12 +23,6 @@
 
 {% block content %}
 {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
-    <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
-    {% if timeline_data %}
-        <div id="submission-stats"><svg></svg></div>
-        <script type="text/javascript" src="{% static "orga/js/stats.js" %}"></script>
-    {% endif %}
-
     <legend>
         <span>
             {{ page_obj.paginator.count }}
@@ -39,13 +33,20 @@
             {% endblocktrans %}
         </span>
     </legend>
+
+    <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
+    {% if timeline_data %}
+        <div id="submission-stats"><svg></svg></div>
+        <script type="text/javascript" src="{% static "orga/js/stats.js" %}"></script>
+    {% endif %}
+
     <div class="submit-group">
         <form class="search-form">
             {% bootstrap_form search_form %}
             {% bootstrap_form filter_form %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
-        <p class="legend-buttons">
+        <p class="ml-auto">
             {% if can_create_submission %}
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
                 <i class="fa fa-plus"></i> {% trans "Add new submission" %}
