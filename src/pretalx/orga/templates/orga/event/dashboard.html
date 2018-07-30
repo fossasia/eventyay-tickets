@@ -122,7 +122,27 @@
     </div>
 </div>
 
+<legend id="main-title">{{ request.event.name }}<small>{{ request.event.date_from }}–{{ request.event.date_to }}</small></legend>
 <div class="dashboard-list">
+    <a href="{{ request.event.orga_urls.live }}" class="dashboard-block">
+        <div class="dashboard-live-text">
+            {% trans "Your event is currently" %}
+        </div>
+        {% if request.event.is_public %}
+        <div class="dashboard-live text-success">
+            <i class="fa fa-check-circle"></i>
+            {% trans "live" %}
+        </div>
+        {% else %}
+        <div class="dashboard-live text-danger">
+            <i class="fa fa-times-circle"></i>
+            {% trans "not live" %}
+        </div>
+        {% endif %}
+        <div class="dashboard-live-text">
+            {% trans "Click here to change" %}
+        </div>
+    </a>
     {% for tile in tiles %}
     <{% if tile.url %}a href="{{ tile.url }}"{% else %}div{% endif %} class="dashboard-block">
             <h1>{{ tile.large }}</h1>

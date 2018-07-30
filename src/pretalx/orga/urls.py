@@ -33,6 +33,7 @@ urlpatterns = [
 
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
+        url('^live$', event.EventLive.as_view(), name='event.live'),
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
         url('^api/urls/$', dashboard.url_list, name='url_list'),
 

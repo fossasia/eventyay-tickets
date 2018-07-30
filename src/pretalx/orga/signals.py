@@ -18,3 +18,15 @@ in pretalx.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
+activate_event = EventPluginSignal(
+    providing_args=['request']
+)
+"""
+This signal is sent out before an event goes live. It allows any installed
+plugin to raise an Exception to prevent the event from going live. The
+exception message will be exposed to the user.
+You will get the request as a keyword argument ``request``.
+Receivers are not expected to return a response.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event.
+"""

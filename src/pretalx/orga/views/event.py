@@ -24,6 +24,7 @@ from pretalx.event.forms import (
 from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
 from pretalx.orga.forms.event import MailSettingsForm
+from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
 
@@ -56,7 +57,7 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
             obj=self.request.event,
             attribute_name='settings',
             data=self.request.POST if self.request.method == "POST" else None,
-            prefix='settings'
+            prefix='settings',
         )
 
     def get_context_data(self, *args, **kwargs):
@@ -74,10 +75,57 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
         result = super().form_valid(form)
 
         self.sform.save()
-        form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
+        form.instance.log_action(
+            'pretalx.event.update', person=self.request.user, orga=True
+        )
         messages.success(self.request, _('The event settings have been saved.'))
         regenerate_css.apply_async(args=(form.instance.pk,))
         return result
+
+
+class EventLive(EventSettingsPermission, TemplateView):
+    template_name = 'orga/event/live.html'
+    permission_required = 'orga.change_settings'
+
+    def post(self, request, *args, **kwargs):
+        event = request.event
+        action = request.POST.get('action')
+        if action == 'activate':
+            if event.is_public:
+                messages.success(request, _('This event was already live.'))
+            else:
+                responses = activate_event.send_robust(event, request=request)
+                exceptions = [
+                    response
+                    for response in responses
+                    if isinstance(response[1], Exception)
+                ]
+                if exceptions:
+                    messages.error(request, '\n'.join([str(e) for e in exceptions]))
+                else:
+                    event.is_public = True
+                    event.save()
+                    event.log_action(
+                        'pretalx.event.activate',
+                        person=self.request.user,
+                        orga=True,
+                        data={},
+                    )
+                    messages.success(request, _('This event is now hidden.'))
+        elif action == 'deactivate':
+            if not event.is_public:
+                messages.success(request, _('This event was already hidden.'))
+            else:
+                event.is_public = False
+                event.save()
+                event.log_action(
+                    'pretalx.event.deactivate',
+                    person=self.request.user,
+                    orga=True,
+                    data={},
+                )
+                messages.success(request, _('This event is now hidden.'))
+        return redirect(event.orga_urls.base)
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
@@ -103,16 +151,30 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
             try:
                 backend.test(self.request.event.settings.mail_from)
             except Exception as e:
-                messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
+                messages.warning(
+                    self.request,
+                    _('An error occurred while contacting the SMTP server: %s')
+                    % str(e),
+                )
                 return redirect(self.request.event.orga_urls.mail_settings)
             else:
                 if form.cleaned_data.get('smtp_use_custom'):
-                    messages.success(self.request, _('Yay, your changes have been saved and the connection attempt to '
-                                                     'your SMTP server was successful.'))
+                    messages.success(
+                        self.request,
+                        _(
+                            'Yay, your changes have been saved and the connection attempt to '
+                            'your SMTP server was successful.'
+                        ),
+                    )
                 else:
-                    messages.success(self.request, _('We\'ve been able to contact the SMTP server you configured. '
-                                                     'Remember to check the "use custom SMTP server" checkbox, '
-                                                     'otherwise your SMTP server will not be used.'))
+                    messages.success(
+                        self.request,
+                        _(
+                            'We\'ve been able to contact the SMTP server you configured. '
+                            'Remember to check the "use custom SMTP server" checkbox, '
+                            'otherwise your SMTP server will not be used.'
+                        ),
+                    )
         else:
             messages.success(self.request, _('Yay! We saved your changes.'))
 
@@ -138,13 +200,20 @@ class InvitationView(FormView):
         invite = self.object
         user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
         if not user:
-            messages.error(self.request, _('There was a problem with your authentication. Please contact the organiser for further help.'))
+            messages.error(
+                self.request,
+                _(
+                    'There was a problem with your authentication. Please contact the organiser for further help.'
+                ),
+            )
             return redirect(self.request.event.urls.base)
 
         invite.team.members.add(user)
         invite.team.save()
 
-        invite.team.organiser.log_action('pretalx.invite.orga.accept', person=user, orga=True)
+        invite.team.organiser.log_action(
+            'pretalx.invite.orga.accept', person=user, orga=True
+        )
         messages.info(self.request, _('You are now part of the team!'))
         invite.delete()
 
@@ -175,7 +244,9 @@ class UserSettings(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['token'] = Token.objects.filter(user=self.request.user).first() or Token.objects.create(user=self.request.user)
+        context['token'] = Token.objects.filter(
+            user=self.request.user
+        ).first() or Token.objects.create(user=self.request.user)
         context['login_form'] = self.login_form
         context['profile_form'] = self.profile_form
         return context
@@ -191,9 +262,17 @@ class UserSettings(TemplateView):
             request.user.log_action('pretalx.user.profile.update')
         elif request.POST.get('form') == 'token':
             request.user.regenerate_token()
-            messages.success(request, _('Your API token has been regenerated. The previous token will not be usable any longer.'))
+            messages.success(
+                request,
+                _(
+                    'Your API token has been regenerated. The previous token will not be usable any longer.'
+                ),
+            )
         else:
-            messages.error(self.request, _('Oh :( We had trouble saving your input. See below for details.'))
+            messages.error(
+                self.request,
+                _('Oh :( We had trouble saving your input. See below for details.'),
+            )
         return redirect(self.get_success_url())
 
 
@@ -203,7 +282,9 @@ def condition_copy(wizard):
 
 class EventWizard(PermissionRequired, SessionWizardView):
     permission_required = 'orga.create_events'
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'new_event'))
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'new_event')
+    )
     form_list = [
         ('initial', EventWizardInitialForm),
         ('basics', EventWizardBasicsForm),
@@ -211,19 +292,21 @@ class EventWizard(PermissionRequired, SessionWizardView):
         ('display', EventWizardDisplayForm),
         ('copy', EventWizardCopyForm),
     ]
-    condition_dict = {
-        'copy': condition_copy
-    }
+    condition_dict = {'copy': condition_copy}
 
     def get_template_names(self):
         return f'orga/event/wizard/{self.steps.current}.html'
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context['has_organiser'] = self.request.user.teams.filter(can_create_events=True).exists()
+        context['has_organiser'] = self.request.user.teams.filter(
+            can_create_events=True
+        ).exists()
         context['url_placeholder'] = f'https://{self.request.host}/'
         if self.steps.current != 'initial':
-            context['organiser'] = self.get_cleaned_data_for_step('initial').get('organiser')
+            context['organiser'] = self.get_cleaned_data_for_step('initial').get(
+                'organiser'
+            )
         return context
 
     def render(self, form=None, **kwargs):
@@ -234,9 +317,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
         return super().render(form, **kwargs)
 
     def get_form_kwargs(self, step=None):
-        kwargs = {
-            'user': self.request.user
-        }
+        kwargs = {'user': self.request.user}
         if step != 'initial':
             fdata = self.get_cleaned_data_for_step('initial')
             kwargs.update(fdata)
@@ -251,11 +332,17 @@ class EventWizard(PermissionRequired, SessionWizardView):
 
         with transaction.atomic():
             event = Event.objects.create(
-                organiser=initial['organiser'], locale_array=','.join(initial['locales']),
-                name=basics['name'], slug=basics['slug'], timezone=basics['timezone'],
-                email=basics['email'], locale=basics['locale'],
-                primary_color=display['primary_color'], logo=display['logo'],
-                date_from=timeline['date_from'], date_to=timeline['date_to'],
+                organiser=initial['organiser'],
+                locale_array=','.join(initial['locales']),
+                name=basics['name'],
+                slug=basics['slug'],
+                timezone=basics['timezone'],
+                email=basics['email'],
+                locale=basics['locale'],
+                primary_color=display['primary_color'],
+                logo=display['logo'],
+                date_from=timeline['date_from'],
+                date_to=timeline['date_to'],
             )
             deadline = timeline.get('deadline')
             if deadline:
@@ -263,28 +350,40 @@ class EventWizard(PermissionRequired, SessionWizardView):
                 deadline = zone.localize(deadline.replace(tzinfo=None))
                 event.cfp.deadline = deadline
                 event.cfp.save()
-            for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
+            for setting in [
+                'custom_domain',
+                'display_header_data',
+                'show_on_dashboard',
+            ]:
                 value = display.get(setting)
                 if value:
                     event.settings.set(setting, display.get(setting))
 
             has_control_rights = self.request.user.teams.filter(
-                organiser=event.organiser, all_events=True, can_change_event_settings=True, can_change_submissions=True,
+                organiser=event.organiser,
+                all_events=True,
+                can_change_event_settings=True,
+                can_change_submissions=True,
             ).exists()
             if not has_control_rights:
                 t = Team.objects.create(
-                    organiser=event.organiser, name=_(f'Team {event.name}'),
-                    can_change_event_settings=True, can_change_submissions=True,
+                    organiser=event.organiser,
+                    name=_(f'Team {event.name}'),
+                    can_change_event_settings=True,
+                    can_change_submissions=True,
                 )
                 t.members.add(self.request.user)
                 t.limit_events.add(event)
 
             logdata = {}
             for f in form_list:
-                logdata.update({
-                    k: v for k, v in f.cleaned_data.items()
-                })
-            event.log_action('pretalx.event.create', person=self.request.user, data=logdata, orga=True)
+                logdata.update({k: v for k, v in f.cleaned_data.items()})
+            event.log_action(
+                'pretalx.event.create',
+                person=self.request.user,
+                data=logdata,
+                orga=True,
+            )
 
             if copy and copy['copy_from_event']:
                 from_event = copy['copy_from_event']

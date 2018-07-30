@@ -7,10 +7,7 @@ from pretalx.event.models import Event
 def test_edit_mail_settings(orga_client, event, availability):
     assert event.settings.mail_from != 'foo@bar.com'
     assert event.settings.smtp_port != '25'
-    response = orga_client.get(
-        event.orga_urls.mail_settings,
-        follow=True,
-    )
+    response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
@@ -20,7 +17,7 @@ def test_edit_mail_settings(orga_client, event, availability):
             'smtp_host': 'localhost',
             'smtp_password': '',
             'smtp_port': '25',
-        }
+        },
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
@@ -32,10 +29,7 @@ def test_edit_mail_settings(orga_client, event, availability):
 def test_fail_unencrypted_mail_settings(orga_client, event, availability):
     assert event.settings.mail_from != 'foo@bar.com'
     assert event.settings.smtp_port != '25'
-    response = orga_client.get(
-        event.orga_urls.mail_settings,
-        follow=True,
-    )
+    response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
@@ -45,7 +39,7 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
             'smtp_host': 'foo.bar.com',
             'smtp_password': '',
             'smtp_port': '25',
-        }
+        },
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
@@ -57,10 +51,7 @@ def test_fail_unencrypted_mail_settings(orga_client, event, availability):
 def test_test_mail_settings(orga_client, event, availability):
     assert event.settings.mail_from != 'foo@bar.com'
     assert event.settings.smtp_port != '25'
-    response = orga_client.get(
-        event.orga_urls.mail_settings,
-        follow=True,
-    )
+    response = orga_client.get(event.orga_urls.mail_settings, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
         event.orga_urls.mail_settings,
@@ -72,7 +63,7 @@ def test_test_mail_settings(orga_client, event, availability):
             'smtp_port': '25',
             'smtp_use_custom': '1',
             'test': '1',
-        }
+        },
     )
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
@@ -81,11 +72,14 @@ def test_test_mail_settings(orga_client, event, availability):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('path,allowed', (
-    ('tests/functional/orga/fixtures/custom.css', True),
-    ('tests/functional/orga/fixtures/malicious.css', False),
-    ('tests/conftest.py', False),
-))
+@pytest.mark.parametrize(
+    'path,allowed',
+    (
+        ('tests/functional/orga/fixtures/custom.css', True),
+        ('tests/functional/orga/fixtures/malicious.css', False),
+        ('tests/conftest.py', False),
+    ),
+)
 def test_add_custom_css(event, orga_client, path, allowed):
     assert not event.custom_css
     with open(path, 'r') as custom_css:
@@ -96,15 +90,14 @@ def test_add_custom_css(event, orga_client, path, allowed):
                 'slug': 'csstest',
                 'locales': ','.join(event.locales),
                 'locale': event.locale,
-                'is_public': event.is_public,
                 'date_from': event.date_from,
                 'date_to': event.date_to,
                 'timezone': event.timezone,
                 'email': event.email,
                 'primary_color': event.primary_color,
-                'custom_css': custom_css
+                'custom_css': custom_css,
             },
-            follow=True
+            follow=True,
         )
     event.refresh_from_db()
     assert response.status_code == 200
@@ -124,7 +117,6 @@ def test_add_logo(event, orga_client):
                 'slug': 'logotest',
                 'locales': event.locales,
                 'locale': event.locale,
-                'is_public': event.is_public,
                 'date_from': event.date_from,
                 'date_to': event.date_to,
                 'timezone': event.timezone,
@@ -133,7 +125,7 @@ def test_add_logo(event, orga_client):
                 'custom_css': None,
                 'logo': logo,
             },
-            follow=True
+            follow=True,
         )
     event.refresh_from_db()
     assert event.slug != 'logotest'
@@ -145,16 +137,37 @@ def test_add_logo(event, orga_client):
 
 
 @pytest.mark.django_db
+def test_toggle_event_is_public(event, orga_client):
+    assert event.is_public
+    response = orga_client.post(
+        event.orga_urls.live, {'action': 'activate'}, follow=True
+    )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert event.is_public
+    response = orga_client.post(
+        event.orga_urls.live, {'action': 'deactivate'}, follow=True
+    )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert not event.is_public
+    response = orga_client.post(
+        event.orga_urls.live, {'action': 'deactivate'}, follow=True
+    )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert not event.is_public
+
+
+@pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
         event.orga_urls.team_settings + f'/{team.id}',
-        {
-            'email': 'other@user.org',
-            'form': 'invite',
-        }, follow=True,
+        {'email': 'other@user.org', 'form': 'invite'},
+        follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -167,25 +180,21 @@ def test_retract_invitation(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
         event.orga_urls.team_settings + f'/{team.id}',
-        {
-            'email': 'other@user.org',
-            'form': 'invite',
-        }, follow=True,
+        {'email': 'other@user.org', 'form': 'invite'},
+        follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
     assert team.invites.count() == 1
     invite = team.invites.first()
     response = orga_client.get(
-        event.orga_urls.team_settings + f'/{invite.id}/uninvite',
-        follow=True,
+        event.orga_urls.team_settings + f'/{invite.id}/uninvite', follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
     assert team.invites.count() == 1
     response = orga_client.post(
-        event.orga_urls.team_settings + f'/{invite.id}/uninvite',
-        follow=True,
+        event.orga_urls.team_settings + f'/{invite.id}/uninvite', follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -250,15 +259,13 @@ def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
 
     assert not event.plugins
     response = orga_client.post(
-        event.orga_urls.plugins, follow=True,
-        data={plugin_name: 'enable'},
+        event.orga_urls.plugins, follow=True, data={plugin_name: 'enable'}
     )
     assert response.status_code == 200
     event.refresh_from_db()
     assert event.plugins == 'test_plugin'
     response = orga_client.post(
-        event.orga_urls.plugins, follow=True,
-        data={plugin_name: 'disable'},
+        event.orga_urls.plugins, follow=True, data={plugin_name: 'disable'}
     )
     assert response.status_code == 200
     event.refresh_from_db()

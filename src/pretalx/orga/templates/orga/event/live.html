@@ -1,0 +1,29 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<legend>{% if request.event.is_public %}{% trans "Deactivate event" %}{% else %}{% trans "Go live" %}{% endif %}</legend>
+
+{% if request.event.is_public %}
+    {% blocktrans trimmed %}
+    Your event is currently live and publicly visible.
+    If you take it down, it will only be visible to you and your team. 
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans trimmed %}
+    Your event is currently only visible to your and your team.
+    By going live, it will be publicly visible.
+    {% endblocktrans %}
+{% endif %}
+<div class="submit-group">
+    <span></span>
+    <form method="post">
+        {% csrf_token %}
+        {% if request.event.is_public %}
+        <button class="btn btn-lg btn-danger" type="submit" name="action" value="deactivate">{% trans "Go offline" %}</button>
+        {% else %}
+        <button class="btn btn-lg btn-success" type="submit" name="action" value="activate">{% trans "Go live" %}</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

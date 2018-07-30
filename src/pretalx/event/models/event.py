@@ -162,6 +162,7 @@ class Event(LogMixin, models.Model):
     class orga_urls(EventUrls):
         create = '/orga/event/new'
         base = '/orga/event/{self.slug}'
+        live = '{base}/live'
         cfp = '{base}/cfp'
         users = '{base}/api/users'
         url_list = '{base}/api/urls'

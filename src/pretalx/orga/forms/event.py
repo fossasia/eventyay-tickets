@@ -57,7 +57,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = Event
         fields = [
-            'name', 'slug', 'is_public', 'date_from', 'date_to', 'timezone',
+            'name', 'slug', 'date_from', 'date_to', 'timezone',
             'email', 'locale', 'primary_color', 'custom_css', 'logo',
             'landing_page_text',
         ]
