@@ -157,6 +157,12 @@ def test_toggle_event_is_public(event, orga_client):
     assert response.status_code == 200
     event.refresh_from_db()
     assert not event.is_public
+    response = orga_client.post(
+        event.orga_urls.live, {'action': 'activate'}, follow=True
+    )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert event.is_public
 
 
 @pytest.mark.django_db
