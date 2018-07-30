@@ -278,7 +278,6 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
             return redirect(request.path)
         if not getattr(request.event, 'question_template', None):
             request.event._build_initial_data()
-        people = set(request.event.submitters)
         if self.filter_form.cleaned_data['role'] == 'true':
             people = set(request.event.speakers)
             submissions = request.event.talks

@@ -34,7 +34,7 @@
             {% endif %}
             <a class="btn btn-sm btn-info" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Make schedule public" %}</a>
         {% endif %}
-        <a class="btn btn-info btn-sm" href="{{ active_schedule.urls.public }}" target="_blank">
+        <a class="btn btn-info btn-sm" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
             <i class="fa fa-eye"></i> {% trans "View in frontend" %}
         </a>
         </span>

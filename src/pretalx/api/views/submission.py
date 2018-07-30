@@ -1,9 +1,7 @@
 from rest_framework import viewsets
 
 from pretalx.api.serializers.submission import (
-    ScheduleListSerializer,
-    ScheduleSerializer,
-    SubmissionSerializer,
+    ScheduleListSerializer, ScheduleSerializer, SubmissionSerializer,
 )
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission

@@ -8,6 +8,7 @@ var speakers = new Bloodhound({
     transform: function (object) {
       var results = object.results
       var suggestions = []
+      var i = 0;
       for (i = 0; i < results.length; i++) {
         suggestions.push({value: results[i].nick, name: results[i].name})
       }

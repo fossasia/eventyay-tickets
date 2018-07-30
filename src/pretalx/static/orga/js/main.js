@@ -67,7 +67,6 @@ $(function () {
     }
 
     $("input.submission_featured").change(function() {
-        var checked = this.checked;
         var id = this.dataset.id;
 
         var $status = $(this).parent().siblings('i')

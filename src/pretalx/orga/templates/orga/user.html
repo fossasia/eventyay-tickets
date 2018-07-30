@@ -20,7 +20,7 @@
         {% csrf_token %}
         <legend>{% trans "API Access" %}</legend>
         <div class="alert alert-info col-md-9 offset-3"><span>
-            {% blocktrans trimmed with apiurl='href="//api/events/" target="_blank" class="btn btn-outline-info btn-sm"' docurl='href="https://docs.pretalx.org/en/latest/api/index.html" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"'%}
+            {% blocktrans trimmed with apiurl='href="//api/events/" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"' docurl='href="https://docs.pretalx.org/en/latest/api/index.html" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"'%}
                 This token can be used to access the <a {{ apiurl }}>pretalx API</a>.
                 You can generate a new token, which will invalidate the old one.
                 To find out more, please have a look at the <a {{ docurl }}>
