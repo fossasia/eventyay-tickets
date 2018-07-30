@@ -1,6 +1,7 @@
 import json
 from collections import Counter
 
+from dateutil import rrule
 from django.http import JsonResponse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -114,9 +115,10 @@ class EventDashboardView(PermissionRequired, TemplateView):
                         'url': event.orga_urls.submissions + f'?state={SubmissionStates.ACCEPTED}',
                     })
             data = Counter(timestamp.date() for timestamp in ActivityLog.objects.filter(event=event, action_type='pretalx.submission.create').values_list('timestamp', flat=True))
-            data = sorted(list(data.items()), key=lambda x: x[0])
+            dates = data.keys()
+            date_range = rrule.rrule(rrule.DAILY, count=(max(dates) - min(dates)).days + 1, dtstart=min(dates))
             if len(data) > 1:
-                context['timeline_data'] = json.dumps([{"x": d[0].isoformat(), "y": d[1]} for d in data])
+                context['timeline_data'] = json.dumps([{"x": date.isoformat(), "y": data.get(date.date(), 0)} for date in date_range])
         if event.speakers.count():
             context['tiles'].append({
                 'large': event.speakers.count(),
