@@ -12,14 +12,18 @@ def test_orga_can_see_submissions(orga_client, event, submission):
 
 @pytest.mark.django_db
 def test_orga_can_search_submissions(orga_client, event, submission):
-    response = orga_client.get(event.orga_urls.submissions + f'?q={submission.title[:5]}', follow=True)
+    response = orga_client.get(
+        event.orga_urls.submissions + f'?q={submission.title[:5]}', follow=True
+    )
     assert response.status_code == 200
     assert submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_orga_can_miss_search_submissions(orga_client, event, submission):
-    response = orga_client.get(event.orga_urls.submissions + f'?q={submission.title[:5]}xxy', follow=True)
+    response = orga_client.get(
+        event.orga_urls.submissions + f'?q={submission.title[:5]}xxy', follow=True
+    )
     assert response.status_code == 200
     assert submission.title not in response.content.decode()
 
@@ -56,17 +60,11 @@ def test_accept_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
 
-    response = orga_client.get(
-        submission.orga_urls.accept,
-        follow=True,
-    )
+    response = orga_client.get(submission.orga_urls.accept, follow=True)
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.state == SubmissionStates.SUBMITTED
-    response = orga_client.post(
-        submission.orga_urls.accept,
-        follow=True,
-    )
+    response = orga_client.post(submission.orga_urls.accept, follow=True)
     submission.refresh_from_db()
 
     assert response.status_code == 200
@@ -78,7 +76,9 @@ def test_accept_submission(orga_client, submission):
 def test_accept_submission_redirects_to_review_list(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
 
-    response = orga_client.post(submission.orga_urls.accept, {'next': submission.event.orga_urls.reviews})
+    response = orga_client.post(
+        submission.orga_urls.accept + f'?next={submission.event.orga_urls.reviews}'
+    )
     _, redirected_page_url = response._headers['location']
 
     assert response.status_code == 302
@@ -90,17 +90,11 @@ def test_reject_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
 
-    response = orga_client.get(
-        submission.orga_urls.reject,
-        follow=True,
-    )
+    response = orga_client.get(submission.orga_urls.reject, follow=True)
     submission.refresh_from_db()
     assert submission.state == SubmissionStates.SUBMITTED
     assert response.status_code == 200
-    response = orga_client.post(
-        submission.orga_urls.reject,
-        follow=True,
-    )
+    response = orga_client.post(submission.orga_urls.reject, follow=True)
     submission.refresh_from_db()
 
     assert response.status_code == 200
@@ -112,17 +106,11 @@ def test_reject_submission(orga_client, submission):
 def test_orga_can_confirm_submission(orga_client, accepted_submission):
     assert accepted_submission.state == SubmissionStates.ACCEPTED
 
-    response = orga_client.get(
-        accepted_submission.orga_urls.confirm,
-        follow=True,
-    )
+    response = orga_client.get(accepted_submission.orga_urls.confirm, follow=True)
     accepted_submission.refresh_from_db()
     assert accepted_submission.state == SubmissionStates.ACCEPTED
     assert response.status_code == 200
-    response = orga_client.post(
-        accepted_submission.orga_urls.confirm,
-        follow=True,
-    )
+    response = orga_client.post(accepted_submission.orga_urls.confirm, follow=True)
     accepted_submission.refresh_from_db()
 
     assert response.status_code == 200
@@ -134,19 +122,13 @@ def test_orga_can_delete_submission(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
     assert Submission.objects.count() == 1
 
-    response = orga_client.get(
-        submission.orga_urls.delete,
-        follow=True,
-    )
+    response = orga_client.get(submission.orga_urls.delete, follow=True)
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.state == SubmissionStates.SUBMITTED
     assert Submission.objects.count() == 1
 
-    response = orga_client.post(
-        submission.orga_urls.delete,
-        follow=True,
-    )
+    response = orga_client.post(submission.orga_urls.delete, follow=True)
     assert response.status_code == 200
     assert Submission.objects.count() == 0
     assert Submission.deleted_objects.count() == 1
@@ -155,7 +137,9 @@ def test_orga_can_delete_submission(orga_client, submission):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('user', ('NICK', 'EMAIL', 'NEW_EMAIL', 'OVERLAPPING_EMAIL'))
-def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_user, user):
+def test_orga_can_add_and_remove_speakers(
+    orga_client, submission, other_orga_user, user
+):
     assert submission.speakers.count() == 1
 
     if user == 'NICK':  # TODO: add NICK and EMAIL
@@ -175,7 +159,9 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
         nick = None
         pk = other_orga_user.pk
 
-    response = orga_client.post(submission.orga_urls.new_speaker, data={'nick': user}, follow=True)
+    response = orga_client.post(
+        submission.orga_urls.new_speaker, data={'nick': user}, follow=True
+    )
     submission.refresh_from_db()
 
     assert submission.speakers.count() == 2
@@ -185,7 +171,9 @@ def test_orga_can_add_and_remove_speakers(orga_client, submission, other_orga_us
         return
 
     if nick:
-        response = orga_client.get(submission.orga_urls.delete_speaker, data={'id': pk}, follow=True)
+        response = orga_client.get(
+            submission.orga_urls.delete_speaker, data={'id': pk}, follow=True
+        )
         submission.refresh_from_db()
 
         assert submission.speakers.count() == 1
@@ -224,10 +212,7 @@ def test_orga_can_create_submission(orga_client, event):
 def test_orga_can_toggle_submission_featured(orga_client, event, submission):
     assert event.submissions.count() == 1
 
-    response = orga_client.post(
-        submission.orga_urls.toggle_featured,
-        follow=True,
-    )
+    response = orga_client.post(submission.orga_urls.toggle_featured, follow=True)
 
     assert response.status_code == 200
     sub = event.submissions.first()
