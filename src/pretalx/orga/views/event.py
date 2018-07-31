@@ -96,7 +96,7 @@ class EventLive(EventSettingsPermission, TemplateView):
             else:
                 responses = activate_event.send_robust(event, request=request)
                 exceptions = [
-                    response
+                    response[1]
                     for response in responses
                     if isinstance(response[1], Exception)
                 ]
