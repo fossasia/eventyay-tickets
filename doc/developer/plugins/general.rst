@@ -13,6 +13,8 @@ Core
 .. automodule:: pretalx.common.signals
    :members: periodic_task
 
+.. automodule:: pretalx.submission.signals
+   :members: submission_state_change
 
 Exporters
 ---------
