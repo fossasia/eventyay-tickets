@@ -88,7 +88,7 @@
         </div>
         <ul class="navbar-nav">
             {% if request.event %}
-            <input type="text" class="form-control mr-sm-2" id="navigate" title="{% trans 'Navigate' %}" placeholder="{% trans 'Navigate' %}" />
+            <input type="text" class="form-control mr-sm-2 mt-auto mb-auto" id="navigate" title="{% trans 'Navigate' %}" placeholder="{% trans 'Navigate' %}" />
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:user.view" %}">
