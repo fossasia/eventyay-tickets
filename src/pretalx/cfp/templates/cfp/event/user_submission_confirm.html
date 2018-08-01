@@ -1,32 +1,40 @@
 {% extends "cfp/event/base.html" %}
+{% load bootstrap4 %}
 {% load i18n %}
 
 {% block title %}{% trans "Your submission" %} :: {% endblock %}
 
 {% block content %}
-<h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
-<p>
-    {% trans "Current state of your submission:" %}
-    {% include "cfp/event/fragment_state.html" with state=submission.state %}
-</p>
-{% blocktrans trimmed %}
-By confirming your submission, you agree that you are able and willing to participate in this event and
-present the content of this submission.<br>
-The submission data, such as title, abstract, description, and any uploads you provided, will be
-publicly available once the submission is confirmed.
-{% endblocktrans %}
-<form action="" method="post">
-    {% csrf_token %}
+<div class="col-md-10 ml-auto mr-auto">
+    <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>
-        <button type="submit"
-           class="btn float-right btn-success">
-            {% trans "Confirm" %}
-        </button>
-        <a href="{{ submission.urls.user_base }}"
-           class="btn float-right btn-info">
-            {% trans "Go back" %}
-        </a>
-        <div class="clearfix"></div>
+        {% trans "Current state of your submission:" %}
+        {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
-</form>
+    <div class="text">
+    {% blocktrans trimmed %}
+    Congratulations on your acceptance! Please provide us with your available hours during the event, so that we can schedule your event accordingly:<p>
+    {% endblocktrans %}
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.availabilities layout='inline' %}
+        {% blocktrans trimmed %}
+        By confirming your submission, you agree that you are able and willing to participate in this event and
+        present the content of this submission.<br>
+        The submission data, such as title, abstract, description, and any uploads you provided, will be
+        publicly available once the submission is confirmed.
+        {% endblocktrans %}
+        <div class="submit-group"><span></span><span>
+            <a href="{{ submission.urls.user_base }}"
+               class="btn btn-lg btn-info">
+                {% trans "Go back" %}
+            </a>
+            <button type="submit"
+               class="btn btn-lg btn-success">
+                {% trans "Confirm" %}
+            </button>
+        </span></div>
+    </form>
+</div>
 {% endblock %}
