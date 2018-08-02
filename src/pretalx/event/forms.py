@@ -10,7 +10,6 @@ from pretalx.orga.forms.widgets import HeaderSelect
 
 
 class TeamForm(ReadOnlyFlag, I18nModelForm):
-
     def __init__(self, *args, organiser=None, instance=None, **kwargs):
         super().__init__(*args, instance=instance, **kwargs)
         if instance and getattr(instance, 'pk', None):
@@ -22,21 +21,26 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = Team
         fields = [
-            'name', 'organiser', 'all_events', 'limit_events', 'can_create_events',
-            'can_change_teams', 'can_change_organiser_settings',
-            'can_change_event_settings', 'can_change_submissions', 'is_reviewer',
+            'name',
+            'organiser',
+            'all_events',
+            'limit_events',
+            'can_create_events',
+            'can_change_teams',
+            'can_change_organiser_settings',
+            'can_change_event_settings',
+            'can_change_submissions',
+            'is_reviewer',
         ]
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
-
     class Meta:
         model = TeamInvite
-        fields = ('email', )
+        fields = ('email',)
 
 
 class OrganiserForm(ReadOnlyFlag, I18nModelForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['slug'].disabled = True
@@ -58,29 +62,44 @@ class EventWizardInitialForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['organiser'] = forms.ModelChoiceField(
             label=_('Organiser'),
-            queryset=Organiser.objects.filter(id__in=user.teams.filter(can_create_events=True).values_list('organiser', flat=True)),
+            queryset=Organiser.objects.filter(
+                id__in=user.teams.filter(can_create_events=True).values_list(
+                    'organiser', flat=True
+                )
+            )
+            if not user.is_administrator
+            else Organiser.objects.all(),
             widget=forms.RadioSelect,
             empty_label=None,
             required=True,
-            help_text=_('The organiser running the event can copy settings from previous events and share team permissions across all or multiple events.')
+            help_text=_(
+                'The organiser running the event can copy settings from previous events and share team permissions across all or multiple events.'
+            ),
         )
         if len(self.fields['organiser'].choices) == 1:
             self.fields['organiser'].initial = self.fields['organiser'].queryset.first()
 
 
 class EventWizardBasicsForm(I18nModelForm):
-
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         self.locales = locales
         super().__init__(*args, **kwargs, locales=locales)
-        self.fields['locale'].choices = [(a, b) for a, b in settings.LANGUAGES if a in locales]
-        self.fields['slug'].help_text = _('This is the address your event will be available at. Should be short, only contain lowercase letters and numbers, and must be unique. We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.')
+        self.fields['locale'].choices = [
+            (a, b) for a, b in settings.LANGUAGES if a in locales
+        ]
+        self.fields['slug'].help_text = _(
+            'This is the address your event will be available at. Should be short, only contain lowercase letters and numbers, and must be unique. We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.'
+        )
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
         qs = Event.objects.all()
         if qs.filter(slug__iexact=slug).exists():
-            raise forms.ValidationError(_('This short name is already taken, please choose another one (or ask the owner of that event to add you to their team).'))
+            raise forms.ValidationError(
+                _(
+                    'This short name is already taken, please choose another one (or ask the owner of that event to add you to their team).'
+                )
+            )
 
         return slug.lower()
 
@@ -90,7 +109,9 @@ class EventWizardBasicsForm(I18nModelForm):
 
 
 class EventWizardTimelineForm(forms.ModelForm):
-    deadline = forms.DateTimeField(required=False, help_text=_('The default deadline for your Call for Papers.'))
+    deadline = forms.DateTimeField(
+        required=False, help_text=_('The default deadline for your Call for Papers.')
+    )
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -105,12 +126,24 @@ class EventWizardTimelineForm(forms.ModelForm):
 
 
 class EventWizardDisplayForm(forms.Form):
-    show_on_dashboard = forms.BooleanField(initial=True, required=False, label=_('Show on dashboard'), help_text=_('Show this event on this website\'s dashboard, once it is public?'))
+    show_on_dashboard = forms.BooleanField(
+        initial=True,
+        required=False,
+        label=_('Show on dashboard'),
+        help_text=_('Show this event on this website\'s dashboard, once it is public?'),
+    )
     primary_color = forms.CharField(required=False)
-    logo = forms.ImageField(required=False, help_text=_('If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'))
+    logo = forms.ImageField(
+        required=False,
+        help_text=_(
+            'If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'
+        ),
+    )
     display_header_pattern = forms.ChoiceField(
         label=_('Frontpage header pattern'),
-        help_text=_('Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'),
+        help_text=_(
+            'Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
+        ),
         choices=(
             ('', _('Plain')),
             ('pcb', _('Circuits')),
@@ -128,12 +161,19 @@ class EventWizardDisplayForm(forms.Form):
 
 
 class EventWizardCopyForm(forms.Form):
-
     @staticmethod
     def copy_from_queryset(user):
         return Event.objects.filter(
-            Q(organiser_id__in=user.teams.filter(all_events=True, can_change_event_settings=True).values_list('organiser', flat=True))
-            | Q(id__in=user.teams.filter(can_change_event_settings=True,).values_list('limit_events__id', flat=True))
+            Q(
+                organiser_id__in=user.teams.filter(
+                    all_events=True, can_change_event_settings=True
+                ).values_list('organiser', flat=True)
+            )
+            | Q(
+                id__in=user.teams.filter(can_change_event_settings=True).values_list(
+                    'limit_events__id', flat=True
+                )
+            )
         )
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):

@@ -299,9 +299,10 @@ class EventWizard(PermissionRequired, SessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context['has_organiser'] = self.request.user.teams.filter(
-            can_create_events=True
-        ).exists()
+        context['has_organiser'] = (
+            self.request.user.teams.filter(can_create_events=True).exists()
+            or self.request.user.is_administrator
+        )
         context['url_placeholder'] = f'https://{self.request.host}/'
         if self.steps.current != 'initial':
             context['organiser'] = self.get_cleaned_data_for_step('initial').get(
