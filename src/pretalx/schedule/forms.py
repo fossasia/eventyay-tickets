@@ -1,8 +1,8 @@
 import datetime
 import json
 
-import django.forms as forms
 import pytz
+from django import forms
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
@@ -45,7 +45,7 @@ class AvailabilitiesFormMixin(forms.Form):
         self.event = event
         initial = kwargs.pop('initial', dict())
         initial['availabilities'] = self._serialize(self.event, kwargs['instance'])
-        if not isinstance(self, forms.ModelForm):
+        if not isinstance(self, forms.BaseModelForm):
             kwargs.pop('instance')
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)

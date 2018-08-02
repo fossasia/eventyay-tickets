@@ -41,7 +41,11 @@ class ScheduleView(PermissionRequired, TemplateView):
         context = super().get_context_data()
         version = self.request.GET.get('version')
         context['schedule_version'] = version
-        context['active_schedule'] = self.request.event.schedules.filter(version=version).first() if version else self.request.event.wip_schedule
+        context['active_schedule'] = (
+            self.request.event.schedules.filter(version=version).first()
+            if version
+            else self.request.event.wip_schedule
+        )
         context['release_form'] = ScheduleReleaseForm()
         return context
 
@@ -52,7 +56,10 @@ class ScheduleExportView(PermissionRequired, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['exporters'] = list(exporter(self.request.event) for _, exporter in register_data_exporters.send(self.request.event))
+        context['exporters'] = list(
+            exporter(self.request.event)
+            for _, exporter in register_data_exporters.send(self.request.event)
+        )
         return context
 
     def get_permission_object(self):
@@ -67,7 +74,10 @@ class ScheduleExportTriggerView(PermissionRequired, View):
 
     def post(self, request, event):
         export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
-        messages.success(self.request, _('A new export is being generated and will be available soon.'))
+        messages.success(
+            self.request,
+            _('A new export is being generated and will be available soon.'),
+        )
         return redirect(self.request.event.orga_urls.schedule_export)
 
 
@@ -81,9 +91,16 @@ class ScheduleExportDownloadView(PermissionRequired, View):
         try:
             zip_path = ExportScheduleHtml.get_output_zip_path(self.request.event)
             zip_name = os.path.basename(zip_path)
-            response = FileResponse(open(zip_path, 'rb'), content_type='application/force-download')
+            response = FileResponse(
+                open(zip_path, 'rb'), content_type='application/force-download'
+            )
         except Exception as e:
-            messages.error(request, _('Could not find the current export, please try to regenerate it. ({error})').format(error=str(e)))
+            messages.error(
+                request,
+                _(
+                    'Could not find the current export, please try to regenerate it. ({error})'
+                ).format(error=str(e)),
+            )
             return redirect(self.request.event.orga_urls.schedule_export)
         response['Content-Disposition'] = 'attachment; filename=' + zip_name
         return response
@@ -99,10 +116,16 @@ class ScheduleReleaseView(PermissionRequired, View):
     def post(self, request, event):
         form = ScheduleReleaseForm(self.request.POST)
         form.is_valid()
-        if self.request.event.schedules.filter(version=form.cleaned_data['version']).exists():
-            messages.error(self.request, _('Please use a version number you did not use yet!'))
+        if self.request.event.schedules.filter(
+            version=form.cleaned_data['version']
+        ).exists():
+            messages.error(
+                self.request, _('Please use a version number you did not use yet!')
+            )
         else:
-            self.request.event.release_schedule(form.cleaned_data['version'], user=request.user)
+            self.request.event.release_schedule(
+                form.cleaned_data['version'], user=request.user
+            )
             messages.success(self.request, _('Nice, your schedule has been released!'))
         return redirect(self.request.event.orga_urls.schedule)
 
@@ -118,9 +141,16 @@ class ScheduleResetView(PermissionRequired, View):
         schedule = self.request.event.schedules.filter(version=schedule_version).first()
         if schedule:
             schedule.unfreeze(user=request.user)
-            messages.success(self.request, _('Reset successful – start editing the schedule from your selected version!'))
+            messages.success(
+                self.request,
+                _(
+                    'Reset successful – start editing the schedule from your selected version!'
+                ),
+            )
         else:
-            messages.error(self.request, _('Error retrieving the schedule version to reset to.'))
+            messages.error(
+                self.request, _('Error retrieving the schedule version to reset to.')
+            )
         return redirect(self.request.event.orga_urls.schedule)
 
 
@@ -131,7 +161,9 @@ class ScheduleToggleView(PermissionRequired, View):
         return self.request.event
 
     def dispatch(self, request, event):
-        self.request.event.settings.set('show_schedule', not self.request.event.settings.show_schedule)
+        self.request.event.settings.set(
+            'show_schedule', not self.request.event.settings.show_schedule
+        )
         return redirect(self.request.event.orga_urls.schedule)
 
 
@@ -142,22 +174,27 @@ class RoomListApi(PermissionRequired, View):
         return self.request.event
 
     def get(self, request, event):
-        return JsonResponse({
-            'start': request.event.datetime_from.isoformat(),
-            'end': request.event.datetime_to.isoformat(),
-            'timezone': request.event.timezone,
-            'rooms': [
-                {
-                    'id': room.pk,
-                    'name': str(room.name),
-                    'description': room.description,
-                    'capacity': room.capacity,
-                    'url': room.urls.edit,
-                    'availabilities': [avail.serialize() for avail in room.availabilities.all()]
-                }
-                for room in request.event.rooms.order_by('position')
-            ]
-        }, encoder=I18nJSONEncoder)
+        return JsonResponse(
+            {
+                'start': request.event.datetime_from.isoformat(),
+                'end': request.event.datetime_to.isoformat(),
+                'timezone': request.event.timezone,
+                'rooms': [
+                    {
+                        'id': room.pk,
+                        'name': str(room.name),
+                        'description': room.description,
+                        'capacity': room.capacity,
+                        'url': room.urls.edit,
+                        'availabilities': [
+                            avail.serialize() for avail in room.availabilities.all()
+                        ],
+                    }
+                    for room in request.event.rooms.order_by('position')
+                ],
+            },
+            encoder=I18nJSONEncoder,
+        )
 
 
 def serialize_slot(slot):
@@ -173,7 +210,8 @@ def serialize_slot(slot):
         'description': str(slot.submission.description),
         'abstract': str(slot.submission.abstract),
         'notes': slot.submission.notes,
-        'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
+        'duration': slot.submission.duration
+        or slot.submission.submission_type.default_duration,
         'content_locale': slot.submission.content_locale,
         'do_not_record': slot.submission.do_not_record,
         'room': slot.room.pk if slot.room else None,
@@ -200,7 +238,7 @@ class TalkList(PermissionRequired, View):
             return JsonResponse({'results': []})
         return JsonResponse(
             {'results': [serialize_slot(slot) for slot in schedule.talks.all()]},
-            encoder=I18nJSONEncoder
+            encoder=I18nJSONEncoder,
         )
 
 
@@ -208,7 +246,9 @@ class TalkUpdate(PermissionRequired, View):
     permission_required = 'orga.schedule_talk'
 
     def get_object(self):
-        return self.request.event.wip_schedule.talks.filter(pk=self.kwargs.get('pk')).first()
+        return self.request.event.wip_schedule.talks.filter(
+            pk=self.kwargs.get('pk')
+        ).first()
 
     def patch(self, request, event, pk):
         talk = self.get_object()
@@ -248,18 +288,18 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         availabilitysets = [
             room.availabilities.all(),
             *[
-                speaker.profiles.filter(event=request.event).first().availabilities.all()
+                speaker.profiles.filter(event=request.event)
+                .first()
+                .availabilities.all()
                 for speaker in talk.submission.speakers.all()
                 if speaker.profiles.filter(event=request.event).exists()
             ],
         ]
         availabilities = Availability.intersection(*availabilitysets)
 
-        return JsonResponse({
-            'results': [
-                avail.serialize() for avail in availabilities
-            ],
-        })
+        return JsonResponse(
+            {'results': [avail.serialize() for avail in availabilities]}
+        )
 
 
 class ScheduleImportView(PermissionRequired, FormView):
@@ -275,6 +315,7 @@ class ScheduleImportView(PermissionRequired, FormView):
 
     def form_valid(self, form):
         from pretalx.schedule.utils import process_frab
+
         try:
             tree = ET.parse('path')
             root = tree.getroot()
@@ -299,9 +340,16 @@ class RoomDelete(EventSettingsPermission, View):
     def dispatch(self, request, event, pk):
         try:
             request.event.rooms.filter(pk=pk).delete()
-            messages.success(self.request, _('Room deleted. Hopefully nobody was still in there …'))
+            messages.success(
+                self.request, _('Room deleted. Hopefully nobody was still in there …')
+            )
         except ProtectedError:  # TODO: show which/how many talks are concerned
-            messages.error(request, _('There is or was a talk scheduled in this room. It cannot be deleted.'))
+            messages.error(
+                request,
+                _(
+                    'There is or was a talk scheduled in this room. It cannot be deleted.'
+                ),
+            )
 
         return redirect(request.event.orga_urls.room_settings)
 
@@ -338,7 +386,11 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
         result = super().form_valid(form)
         messages.success(self.request, _('Saved!'))
         if created:
-            form.instance.log_action('pretalx.room.create', person=self.request.user, orga=True)
+            form.instance.log_action(
+                'pretalx.room.create', person=self.request.user, orga=True
+            )
         else:
-            form.instance.log_action('pretalx.event.update', person=self.request.user, orga=True)
+            form.instance.log_action(
+                'pretalx.event.update', person=self.request.user, orga=True
+            )
         return result
