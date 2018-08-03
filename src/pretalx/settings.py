@@ -42,8 +42,7 @@ HTMLEXPORT_ROOT = config.get(
 )
 
 for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT, HTMLEXPORT_ROOT):
-    if not os.path.exists(directory):
-        os.mkdir(directory)
+    os.makedirs(directory, exist_ok=True)
 
 
 ## APP SETTINGS
