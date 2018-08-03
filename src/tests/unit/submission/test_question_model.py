@@ -41,8 +41,8 @@ def test_question_grouped_answers_choice(submission, question):
     [a.save() for a in answers]
 
     assert list(question.grouped_answers) == [
-        {'options': 2, 'options__answer': two.answer, 'count': 2},
-        {'options': 1, 'options__answer': one.answer, 'count': 1},
+        {'options': two.pk, 'options__answer': two.answer, 'count': 2},
+        {'options': one.pk, 'options__answer': one.answer, 'count': 1},
     ]
 
 
