@@ -137,6 +137,7 @@ db_name = config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sql
 if db_backend == 'mysql':
     db_opts = {
         'charset': 'utf8mb4',
+        'use_unicode': True,
         'init_command': 'SET character_set_connection=utf8mb4,collation_connection=utf8mb4_unicode_ci;',
     }
 else:

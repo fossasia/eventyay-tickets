@@ -10,7 +10,7 @@ if [ $TOXENV = "docs" ]; then
 fi
 
 if [[ "$TOXENV" = *"mysql"* ]]; then
-    mysql -u root -e 'CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;'
+    mysql -u root -e 'CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;'
     echo "Created database"
 fi
 
