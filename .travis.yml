@@ -1,19 +1,26 @@
 language: python
 sudo: true
 python: 3.6
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+services:
+  - mysql
+  - postgresql
+
+# We spell out the text matrix tox generates explicitly here to get the most use out of both.
+matrix:
+  include:
+    - env: TOXENV=tests-sqlite
+    - env: TOXENV=tests-mysql
+    - env: TOXENV=tests-postgres
+    - env: TOXENV=installation
+    - env: TOXENV=lint
+    - env: TOXENV=docs
+
 install:
-  - sudo apt-get install enchant myspell-en-gb
-  - pip install -Ur src/requirements/documentation.txt
-  - cd src/
-  - pip install -U pip setuptools wheel typing codecov coverage
-  - pip install -Ur requirements/dev.txt -r requirements/fancy.txt
-  - pip install -Ur requirements.txt
+  - ./.travis/install.sh
+
 script:
-  - python manage.py collectstatic --noinput
-  - python manage.py compress
-  - python manage.py compilemessages
-  - pylama
-  - isort -rc -c .
-  - py.test --cov=pretalx tests/ && codecov
-  - pip list -o --format=columns
-  - cd ../doc && make spelling
+  - cd src && tox
