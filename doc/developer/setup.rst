@@ -11,16 +11,26 @@ instead.
 * Python 3.6(!) or newer
 * A recent version of pip
 * gettext (Debian package: ``gettext``)
+* tox as your development environment
 
 On Arch Linux, Python 3.6 is already in the default repositories::
 
-    sudo pacman -S python python-pip gettext git
+    sudo pacman -S python python-pip gettext git tox
 
 On Debian and Ubuntu, Python 3.6 is not yet in the repositories. You might need to `compile it
 yourself`_ or install it from the `unstable` or `experimental` repositories.
 
 Some Python dependencies might also need a compiler during installation, the Debian package
 ``build-essential`` or something similar should suffice.
+
+If you are working on Ubuntu or Debian, we strongly recommend upgrading your pip and setuptools
+installation inside the virtual environment, otherwise some of the dependencies might fail::
+
+    sudo pip3 install -U pip setuptools wheel
+
+If ``tox`` is not available in your distribution's repositories, you can install it via pip::
+
+    sudo pip3 install tox
 
 Get a copy of the source code
 -----------------------------
@@ -30,44 +40,33 @@ You can clone our git repository::
     cd pretalx/
 
 
-Your local python environment
------------------------------
-
-Please execute ``python -V`` or ``python3.6 -V`` to make sure you have Python 3.6 (or newer)
-installed. Also make sure you have pip for Python 3 installed, you can execute ``pip3 -V`` to check.
-Then use Python's internal tools to create a virtual environment and activate it for your current
-session::
-
-    python3.6 -m venv env
-    source env/bin/activate
-
-You should now see a ``(env)`` prepended to your shell prompt. You have to do this in every shell
-you use to work with pretalx (or configure your shell to do so automatically). If you are working on
-Ubuntu or Debian, we strongly recommend upgrading your pip and setuptools installation inside the
-virtual environment, otherwise some of the dependencies might fail::
-
-    (env)$ pip3 install -U pip setuptools wheel
-
-
 Working with the code
 ---------------------
-The first thing you need are all the main application's dependencies::
 
-    (env)$ cd src/
-    (env)$ pip3 install -r requirements.txt -r requirements/dev.txt -r requirements/fancy.txt
+First up, check that ``tox`` is installed and working as expected::
+
+    $ tox -h
+    tests-mysql-codecov
+    tests-postgres-codecov
+    tests-sqlite-codecov
+    installation
+    lint
+    docs
+    docs-linkcheck
+    dev
 
 Then, create the local database::
 
-    (env)$ python manage.py migrate
+    tox -e dev manage.py migrate
 
 To be able to log in, you should also create an admin user, organiser and team by running::
 
-    (env)$ python manage.py init
+    tox -e dev manage.py init
 
 If you want to see pretalx in a different language than English, you have to compile our language
 files::
 
-    (env)$ python manage.py compilemessages
+    tox -e dev manage.py compilemessages
 
 If you need to test more complicated features, you should probably look into the
 :doc:`setup</administrator/installation>` documentation to find the bits and pieces you
@@ -77,7 +76,7 @@ Run the development server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 To run the local development server, execute::
 
-    (env)$ python manage.py runserver
+    tox -e dev
 
 Now point your browser to http://localhost:8000/orga/ – You should be able to log in and play
 around!
@@ -88,23 +87,11 @@ Code checks and unit tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Before you check in your code into git, always run the static checkers and unit tests::
 
-    (env)$ pylama
-    (env)$ isort -c -rc .
-    (env)$ python manage.py check
-    (env)$ python -m pytest tests
+    tox -e lint
+    tox -e tests-sqlite
 
 .. note:: If you have more than one CPU core and want to speed up the test suite, you can run
-          ``python -m pytest -n NUM`` with ``NUM`` being the number of threads you want to use.
-
-It's a good idea to put the style checks into your git hook ``.git/hooks/pre-commit``,
-for example::
-
-    #!/bin/sh
-    set -e
-    cd $GIT_DIR/../src
-    source ../env/bin/activate
-    pylama
-    isort -c -rc .
+          ``tox -e dev -- -m pytest -n NUM`` with ``NUM`` being the number of threads you want to use.
 
 If you edit a stylesheet ``.scss`` file, please run ``sass-convert -i path/to/file.scss``
 afterwards to autoformat that file.
@@ -129,12 +116,12 @@ If you want to translate new strings that are not yet known to the translation s
 the following command to scan the source code for strings we want to translate and update the
 ``*.po`` files accordingly::
 
-    (env)$ python manage.py makemessages
+    tox -e dev manage.py makemessages
 
 To actually see pretalx in your language, you have to compile the ``*.po`` files to their optimised
 binary ``*.mo`` counterparts::
 
-    (env)$ python manage.py compilemessages
+    tox -e dev manage.py compilemessages
 
 pretalx by default supports events in English, or German, or both. To translate pretalx to a new
 language, add the language code and natural name to the ``LANGUAGES`` variable in the
@@ -144,25 +131,20 @@ in the future, we can talk about merging them into core.
 
 Working with the documentation
 ------------------------------
-First, you should install the requirements necessary for building the documentation.  Make sure you
-have your virtual python environment activated (see above). Then, install the packages by
-executing this from the project root::
 
-    (env)$ pip3 install -r src/requirements/documentation.txt
+To build the documentation, run the following command::
 
-To build the documentation, run the following command from the ``doc/`` directory::
-
-    (env)$ cd doc/
-    (env)$ make html
+    tox -e docs
 
 You will now find the generated documentation in the ``doc/_build/html/`` subdirectory.
-If you find yourself working with the documentation more than a little, give ``sphinx-autobuild``
-a try::
+If you find yourself working with the documentation more than a little, give the ``autobuild``
+functionality a try::
 
-    (env)$ pip3 install sphinx-autobuild
-    (env)$ sphinx-autobuild . _build/html -p 8081
+    tox -e docs-autobuild
 
 Then, go to http://localhost:8081 for a version of the documentation that
 automatically re-builds when you save a changed source file.
+Please note that changes in the static files (stylesheets and javascript) will only be reflected
+after a restart.
 
 .. _compile it yourself: https://unix.stackexchange.com/a/332658/2013
