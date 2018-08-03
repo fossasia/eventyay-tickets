@@ -7,11 +7,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-c', '--clear', action='store_true', dest='clear',
+            '-c',
+            '--clear',
+            action='store_true',
+            dest='clear',
             help='Clear the existing files using the storage before trying to copy or link the original file.',
         )
 
     def handle(self, *args, **options):
-        call_command('compilemessages', verbosity=1)
-        call_command('collectstatic', verbosity=1, interactive=False, clear=options['clear'])
-        call_command('compress', verbosity=1)
+        call_command('compilemessages', verbosity=0)
+        call_command(
+            'collectstatic', verbosity=0, interactive=False, clear=options['clear']
+        )
+        call_command('compress', verbosity=0)
