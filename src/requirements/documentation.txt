@@ -1,6 +1,0 @@
-releases
-sphinx
-sphinx-autobuild
-sphinxcontrib-httpdomain
-sphinxcontrib-spelling
--e src/

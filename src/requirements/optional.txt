@@ -1,7 +1,0 @@
-# Cache backends
-django-redis
-pylibmc
-
-# Database backends
-mysqlclient
-psycopg2-binary
