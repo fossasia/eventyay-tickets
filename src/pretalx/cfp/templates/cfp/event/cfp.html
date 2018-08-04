@@ -1,11 +1,14 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
+{% load orga_edit_link %}
 {% load rich_text %}
 {% load rules %}
 
 {% block content %}{% with cfp=request.event.cfp %}
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
 {% has_perm 'agenda.view_sneak_peek' request.user request.event as can_view_sneak_peek %}
+{% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text %}{% endif %}
     <h1>{{ cfp.headline|default:"" }}</h1>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}

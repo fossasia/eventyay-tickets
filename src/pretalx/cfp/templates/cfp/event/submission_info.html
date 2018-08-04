@@ -1,9 +1,13 @@
 {% extends "cfp/event/submission_base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load orga_edit_link %}
+{% load rules %}
 
 {% block inner %}
     <h2>{% trans "Hey, nice to meet you!" %}</h2>
+    {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
     <p>
         {% blocktrans trimmed %}
             We're glad that you want to submit something to our event.
