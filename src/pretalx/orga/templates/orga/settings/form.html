@@ -7,7 +7,7 @@
 <div class="flex-container"><div class="flex-content">
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
-        <legend>
+        <legend id="general">
             {% trans "General information" %}
         </legend>
         {% bootstrap_form_errors form %}
@@ -27,7 +27,7 @@
         {% bootstrap_field sform.show_sneak_peek layout='event' %}
         {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
 
-        <legend>
+        <legend id="display">
             {% trans "Display settings" %}
         </legend>
         {% bootstrap_field form.landing_page_text layout='event' %}

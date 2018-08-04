@@ -23,14 +23,14 @@
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_form_errors sform %}
-            <legend>{% trans "Text and deadline" %}</legend>
+            <legend id="text">{% trans "Text and deadline" %}</legend>
             {% bootstrap_field form.headline layout='event' %}
             {% bootstrap_field form.text layout='event' %}
             {% bootstrap_field form.deadline layout='event' %}
             {% bootstrap_field sform.cfp_show_deadline layout='event' %}
             {% bootstrap_field sform.mail_on_new_submission layout='event' %}
 
-            <legend>{% trans "Submission information" %}</legend>
+            <legend id="information">{% trans "Submission information" %}</legend>
             <div class="offset-3 alert alert-info"><span>
                 {% trans "Select which information should be requested and/or required during CfP submission." %}
                 <a href="{{ request.event.cfp.urls.submit }}">{% trans "Click here to view the submission form." %}</a>
@@ -77,7 +77,7 @@
                 </tbody>
             </table>
 
-            <legend>{% trans "Review settings" %}</legend>
+            <legend id="review">{% trans "Review settings" %}</legend>
             {% bootstrap_field sform.review_deadline layout='event' %}
             {% bootstrap_field sform.allow_override_votes layout='event' %}
             {% bootstrap_field sform.review_score_mandatory layout='event' %}
