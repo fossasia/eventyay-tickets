@@ -38,7 +38,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
             obj=self.request.event,
             attribute_name='settings',
             data=self.request.POST if self.request.method == 'POST' else None,
-            prefix='settings'
+            prefix='settings',
         )
 
     def get_object(self):
@@ -59,7 +59,9 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            form.instance.log_action('pretalx.cfp.update', person=self.request.user, orga=True)
+            form.instance.log_action(
+                'pretalx.cfp.update', person=self.request.user, orga=True
+            )
         self.sform.save()
         return result
 
@@ -73,9 +75,9 @@ class CfPQuestionList(PermissionRequired, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['speaker_questions'] = Question.all_objects.filter(event=self.request.event, target='speaker')
-        context['submission_questions'] = Question.all_objects.filter(event=self.request.event, target='submission')
-        context['reviewer_questions'] = Question.all_objects.filter(event=self.request.event, target='reviewer')
+        context['questions'] = Question.all_objects.filter(
+            event=self.request.event
+        ).order_by('target')
         return context
 
 
@@ -95,7 +97,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.object or self.request.event
 
     def get_object(self) -> Question:
-        return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
+        return Question.all_objects.filter(
+            event=self.request.event, pk=self.kwargs.get('pk')
+        ).first()
 
     @cached_property
     def object(self):
@@ -104,13 +108,19 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
-            Question, AnswerOption, form=AnswerOptionForm, formset=I18nFormSet,
-            can_delete=True, extra=0,
+            Question,
+            AnswerOption,
+            form=AnswerOptionForm,
+            formset=I18nFormSet,
+            can_delete=True,
+            extra=0,
         )
         return formset_class(
             self.request.POST if self.request.method == 'POST' else None,
-            queryset=AnswerOption.objects.filter(question=self.object) if self.object else AnswerOption.objects.none(),
-            event=self.request.event
+            queryset=AnswerOption.objects.filter(question=self.object)
+            if self.object
+            else AnswerOption.objects.none(),
+            event=self.request.event,
         )
 
     def save_formset(self, obj):
@@ -120,20 +130,25 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                     if not form.instance.pk:
                         continue
                     obj.log_action(
-                        'pretalx.question.option.delete', person=self.request.user, orga=True, data={
-                            'id': form.instance.pk
-                        }
+                        'pretalx.question.option.delete',
+                        person=self.request.user,
+                        orga=True,
+                        data={'id': form.instance.pk},
                     )
                     form.instance.delete()
                     form.instance.pk = None
                 elif form.has_changed():
                     form.instance.question = obj
                     form.save()
-                    change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                    change_data = {
+                        k: form.cleaned_data.get(k) for k in form.changed_data
+                    }
                     change_data['id'] = form.instance.pk
                     obj.log_action(
                         'pretalx.question.option.update',
-                        person=self.request.user, orga=True, data=change_data
+                        person=self.request.user,
+                        orga=True,
+                        data=change_data,
                     )
 
             for form in self.formset.extra_forms:
@@ -147,7 +162,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 change_data['id'] = form.instance.pk
                 obj.log_action(
                     'pretalx.question.option.create',
-                    person=self.request.user, orga=True, data=change_data
+                    person=self.request.user,
+                    orga=True,
+                    data=change_data,
                 )
 
             return True
@@ -164,15 +181,31 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             if role == 'true':
                 talks = self.request.event.talks.all()
                 speakers = self.request.event.speakers.all()
-                answers = context['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+                answers = context['question'].answers.filter(
+                    models.Q(person__in=speakers) | models.Q(submission__in=talks)
+                )
             elif role == 'false':
-                talks = self.request.event.submissions.exclude(code__in=self.request.event.talks.values_list('code', flat=True))
-                speakers = self.request.event.submitters.exclude(code__in=self.request.event.speakers.all().values_list('code', flat=True))
-                answers = context['question'].answers.filter(models.Q(person__in=speakers) | models.Q(submission__in=talks))
+                talks = self.request.event.submissions.exclude(
+                    code__in=self.request.event.talks.values_list('code', flat=True)
+                )
+                speakers = self.request.event.submitters.exclude(
+                    code__in=self.request.event.speakers.all().values_list(
+                        'code', flat=True
+                    )
+                )
+                answers = context['question'].answers.filter(
+                    models.Q(person__in=speakers) | models.Q(submission__in=talks)
+                )
             else:
                 answers = context['question'].answers.all()
             context['answer_count'] = answers.count()
-            context['missing_answers'] = question.missing_answers() if not role else question.missing_answers(filter_speakers=speakers, filter_talks=talks)
+            context['missing_answers'] = (
+                question.missing_answers()
+                if not role
+                else question.missing_answers(
+                    filter_speakers=speakers, filter_talks=talks
+                )
+            )
         return context
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -207,7 +240,9 @@ class CfPQuestionDelete(PermissionRequired, View):
     permission_required = 'orga.remove_question'
 
     def get_object(self) -> Question:
-        return get_object_or_404(Question.all_objects, event=self.request.event, pk=self.kwargs.get('pk'))
+        return get_object_or_404(
+            Question.all_objects, event=self.request.event, pk=self.kwargs.get('pk')
+        )
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -217,12 +252,19 @@ class CfPQuestionDelete(PermissionRequired, View):
             with transaction.atomic():
                 question.options.all().delete()
                 question.delete()
-                question.log_action('pretalx.question.delete', person=self.request.user, orga=True)
+                question.log_action(
+                    'pretalx.question.delete', person=self.request.user, orga=True
+                )
                 messages.success(request, _('The question has been deleted.'))
         except ProtectedError:
             question.active = False
             question.save()
-            messages.error(request, _('You cannot delete a question that has already been answered. We have deactivated the question instead.'))
+            messages.error(
+                request,
+                _(
+                    'You cannot delete a question that has already been answered. We have deactivated the question instead.'
+                ),
+            )
         return redirect(self.request.event.cfp.urls.questions)
 
 
@@ -230,7 +272,9 @@ class CfPQuestionToggle(PermissionRequired, View):
     permission_required = 'orga.edit_question'
 
     def get_object(self) -> Question:
-        return Question.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
+        return Question.all_objects.filter(
+            event=self.request.event, pk=self.kwargs.get('pk')
+        ).first()
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -283,18 +327,29 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
             submissions = request.event.talks
         elif self.filter_form.cleaned_data['role'] == 'false':
             people = set(request.event.submitters) - set(request.event.speakers)
-            submissions = request.event.submissions.exclude(code__in=request.event.talks.values_list('code', flat=True))
+            submissions = request.event.submissions.exclude(
+                code__in=request.event.talks.values_list('code', flat=True)
+            )
         else:
             people = set(request.event.submitters)
             submissions = request.event.submissions.all()
 
         mandatory_questions = request.event.questions.filter(required=True)
-        context = {'url': request.event.urls.user_submissions.full(), 'event_name': request.event.name}
+        context = {
+            'url': request.event.urls.user_submissions.full(),
+            'event_name': request.event.name,
+        }
         for person in people:
-            missing = self.get_missing_answers(questions=mandatory_questions, person=person, submissions=submissions)
+            missing = self.get_missing_answers(
+                questions=mandatory_questions, person=person, submissions=submissions
+            )
             if missing:
-                context['questions'] = '\n'.join([f'- {question.question}' for question in missing])
-                request.event.question_template.to_mail(person, event=request.event, context=context)
+                context['questions'] = '\n'.join(
+                    [f'- {question.question}' for question in missing]
+                )
+                request.event.question_template.to_mail(
+                    person, event=request.event, context=context
+                )
         return redirect(request.event.orga_urls.outbox)
 
 
@@ -321,7 +376,9 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
         return self.request.event.cfp.urls.types
 
     def get_object(self):
-        return self.request.event.submission_types.filter(pk=self.kwargs.get('pk')).first()
+        return self.request.event.submission_types.filter(
+            pk=self.kwargs.get('pk')
+        ).first()
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
@@ -331,7 +388,9 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = 'pretalx.submission_type.' + ('update' if self.object else 'create')
+            action = 'pretalx.submission_type.' + (
+                'update' if self.object else 'create'
+            )
             form.instance.log_action(action, person=self.request.user, orga=True)
         return result
 
@@ -340,14 +399,18 @@ class SubmissionTypeDefault(PermissionRequired, View):
     permission_required = 'orga.edit_submission_type'
 
     def get_object(self):
-        return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
+        return get_object_or_404(
+            self.request.event.submission_types, pk=self.kwargs.get('pk')
+        )
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission_type = self.get_object()
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=['default_type'])
-        submission_type.log_action('pretalx.submission_type.make_default', person=self.request.user, orga=True)
+        submission_type.log_action(
+            'pretalx.submission_type.make_default', person=self.request.user, orga=True
+        )
         messages.success(request, _('The Submission Type has been made default.'))
         return redirect(self.request.event.cfp.urls.types)
 
@@ -356,21 +419,42 @@ class SubmissionTypeDelete(PermissionRequired, View):
     permission_required = 'orga.remove_submission_type'
 
     def get_object(self):
-        return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
+        return get_object_or_404(
+            self.request.event.submission_types, pk=self.kwargs.get('pk')
+        )
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission_type = self.get_object()
 
         if request.event.submission_types.count() == 1:
-            messages.error(request, _('You cannot delete the only submission type. Try creating another one first!'))
+            messages.error(
+                request,
+                _(
+                    'You cannot delete the only submission type. Try creating another one first!'
+                ),
+            )
         elif request.event.cfp.default_type == submission_type:
-            messages.error(request, _('You cannot delete the default submission type. Make another type default first!'))
+            messages.error(
+                request,
+                _(
+                    'You cannot delete the default submission type. Make another type default first!'
+                ),
+            )
         else:
             try:
                 submission_type.delete()
-                request.event.log_action('pretalx.submission_type.delete', person=self.request.user, orga=True)
+                request.event.log_action(
+                    'pretalx.submission_type.delete',
+                    person=self.request.user,
+                    orga=True,
+                )
                 messages.success(request, _('The Submission Type has been deleted.'))
             except ProtectedError:  # TODO: show which/how many submissions are concerned
-                messages.error(request, _('This Submission Type is in use in a submission and cannot be deleted.'))
+                messages.error(
+                    request,
+                    _(
+                        'This Submission Type is in use in a submission and cannot be deleted.'
+                    ),
+                )
         return redirect(self.request.event.cfp.urls.types)

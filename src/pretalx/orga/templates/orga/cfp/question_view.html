@@ -21,19 +21,57 @@
         </span>
     </div>
 
-    <legend>
-        {% trans "Speaker questions" %}
-    </legend>
-    {% with questions=speaker_questions type='speaker' %}
-        {% include 'orga/cfp/question_table.html' %}
-    {% endwith %}
+    <table class="table table-hover table-sm table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Question" %}</th>
+                <th>{% trans "Target" %}</th>
+                <th>{% trans "required" %}</th>
+                <th>{% trans "active" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+                <tr>
+                    <td>
+                        <a href="{{ question.urls.base }}">
+                            {{ question.question }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ question.get_target_display }}
+                    </td>
+                    <td>
+                        <i class="fa fa-{% if question.required %}check-circle{% else %}times-circle{% endif %}">
+
+                        </i>
+                    </td>
+                    <td>
+                        <i class="fa fa-{% if question.active %}check-circle{% else %}times-circle{% endif %}">
+
+                        </i>
+                    </td>
+                    <td class="text-right">
+                        <a href="{{ question.urls.edit }}"
+                            class="btn btn-sm btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="{{ question.urls.delete }}"
+                            class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td>
+                    {% trans "You have configured no questions yet." %}
+                    <a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-info">
+                        <i class="fa fa-plus"></i>
+                        {% trans "Add a question now!" %}
+                    </a>
+                </td></tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <legend>{% trans "Submission questions" %}</legend>
-    {% with questions=submission_questions type='submission' %}
-        {% include 'orga/cfp/question_table.html' %}
-    {% endwith %}
-    <legend>{% trans "Reviewer questions" %}</legend>
-    {% with questions=reviewer_questions type='reviewer' %}
-        {% include 'orga/cfp/question_table.html' %}
-    {% endwith %}
 {% endblock %}
