@@ -3368,7 +3368,7 @@ msgstr "Reviews insgesamt"
 msgid "lonely active reviewer"
 msgid_plural "total active reviewers"
 msgstr[0] "einsamer Reviewer"
-msgstr[1] "Reviewer insgesamt"
+msgstr[1] "aktive Reviewer"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:42
 #, python-format
