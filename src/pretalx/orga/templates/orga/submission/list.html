@@ -43,11 +43,17 @@
     <div class="submit-group">
         <form class="search-form">
             {% bootstrap_form search_form %}
-            {% bootstrap_form filter_form %}
-            <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
+            {% bootstrap_field filter_form.submission_type %}
+            <div class="fancy-multi-select form-group">
+                <span class="multi-select-title form-control">{% trans "Submission states" %}</span>
+                <span class="multi-select-options">
+                    {% bootstrap_field filter_form.state layout='inline' %}
+                </span>
+            </div>
+            <button class="btn btn-success mt-2" type="submit">{% trans "Search" %}</button>
         </form>
         {% if can_create_submission %}
-        <p class="ml-auto mt-2">
+        <p class="ml-auto">
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
                 <i class="fa fa-plus"></i> {% trans "Add new submission" %}
             </a>

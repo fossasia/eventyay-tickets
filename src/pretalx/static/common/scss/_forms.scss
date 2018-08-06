@@ -101,12 +101,34 @@ table .radio, table .checkbox {
   margin-top: -8px;
 }
 
+.fancy-multi-select {
+  height: calc(2.25rem + 2px);
+  width: 300px;
+
+  .multi-select-options {
+    display: none;
+    position: absolute;
+    margin-top: calc(2.25rem + 2px);
+    background-color: $white;
+    border: 1px solid #ced4da;
+    color: #495057;
+    width: 300px;
+    z-index: 10;
+  }
+  &:hover {
+    .multi-select-options {
+      display: inherit;
+    }
+  }
+}
+
 .radio, .checkbox {
   position: relative;
   padding: 4px 0 4px 36px;
 
   label {
     cursor: pointer;
+    display: inherit !important;
 
     &:before,
     &:after {

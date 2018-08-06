@@ -203,13 +203,18 @@ footer {
     display: flex;
     margin: 8px;
 
+    [type="text"] {
+      height: 2.25rem;
+    }
+
     label {
       display: none;
     }
   }
 
   .btn {
-    align-self: center;
+    align-self: flex-start;
+    margin-top: 2px;
   }
 }
 
