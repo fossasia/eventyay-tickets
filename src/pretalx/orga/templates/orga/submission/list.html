@@ -50,11 +50,11 @@
                     {% bootstrap_field filter_form.state layout='inline' %}
                 </span>
             </div>
-            <button class="btn btn-success mt-2" type="submit">{% trans "Search" %}</button>
+            <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
         {% if can_create_submission %}
         <p class="ml-auto">
-            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
+            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success mt-2">
                 <i class="fa fa-plus"></i> {% trans "Add new submission" %}
             </a>
         </p>
