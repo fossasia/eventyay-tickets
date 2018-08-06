@@ -46,16 +46,13 @@
             {% bootstrap_form filter_form %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
-        <p class="ml-auto">
-            {% if can_create_submission %}
+        {% if can_create_submission %}
+        <p class="ml-auto mt-2">
             <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-success">
                 <i class="fa fa-plus"></i> {% trans "Add new submission" %}
             </a>
-            {% endif %}
-            <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-info">
-                <i class="fa fa-print"></i> {% trans "Print cards" %}
-            </a>
         </p>
+        {% endif %}
     </div>
 
     <table class="table table-sm table-hover table-responsive-md">

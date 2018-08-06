@@ -79,6 +79,9 @@
                 <button type="submit" class="btn btn-info">{% trans "Reset to selected version" %}</button>
             </form>
         {% endif %}
+        <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-info ml-auto">
+            <i class="fa fa-print"></i> {% trans "Print cards" %}
+        </a>
     </div>
     {% if not request.event.rooms.count %}
         <div class="alert alert-warning schedule-alert">
