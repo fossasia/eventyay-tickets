@@ -60,7 +60,7 @@ author = 'Tobias Kunze'
 # The short X.Y version.
 # from pretalx import __version__  # TODO
 # The full version, including alpha/beta/rc tags.
-__version__ = '0.0.0'
+from pretalx import __version__
 version = '.'.join(__version__.split('.')[:2])
 release = __version__
 
