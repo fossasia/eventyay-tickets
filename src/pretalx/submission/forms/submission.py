@@ -83,7 +83,7 @@ class SubmissionFilterForm(forms.ModelForm):
         ].queryset.filter(event=event)
         self.fields['submission_type'].required = False
         self.fields['state'].required = False
-        sub_count = lambda x: event.submissions.filter(state=x).count()
+        sub_count = lambda x: event.submissions.filter(state=x).count()  # noqa
         self.fields['state'].choices = [
             (choice[0], f'{choice[1].capitalize()} ({sub_count(choice[0])})')
             for choice in self.fields['state'].choices
