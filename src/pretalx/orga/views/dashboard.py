@@ -114,6 +114,7 @@ class EventDashboardView(PermissionRequired, TemplateView):
                         'large': talk_count,
                         'small': _('total talks'),
                         'url': event.orga_urls.submissions,
+                        + f'?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}',
                     }
                 )
                 confirmed_count = event.talks.filter(
