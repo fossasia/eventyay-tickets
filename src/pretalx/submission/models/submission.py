@@ -40,9 +40,9 @@ class SubmissionStates(Choices):
 
     valid_choices = [
         (SUBMITTED, _('submitted')),
-        (REJECTED, _('rejected')),
         (ACCEPTED, _('accepted')),
         (CONFIRMED, _('confirmed')),
+        (REJECTED, _('rejected')),
         (CANCELED, _('canceled')),
         (WITHDRAWN, _('withdrawn')),
         (DELETED, _('deleted')),

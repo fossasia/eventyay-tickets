@@ -1,7 +1,6 @@
 from django import forms
 from django.conf import settings
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
 
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
