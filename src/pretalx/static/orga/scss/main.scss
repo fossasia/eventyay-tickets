@@ -1,9 +1,10 @@
 @import "../../common/scss/_variables";
+@import "../../vendored/bootstrap/scss/bootstrap";
+@import "../../common/scss/_font";
 @import "../../common/scss/_flags";
 @import "../../common/scss/_forms";
 @import "../../common/scss/_availabilities";
 @import "../../common/scss/_dashboard";
-@import "../../vendored/bootstrap/scss/bootstrap";
 @import "../../vendored/forkawesome/scss/fork-awesome";
 @import "../../vendored/datetimepicker/_bootstrap-datetimepicker";
 @import "../../common/scss/pretalx";
