@@ -47,7 +47,7 @@
       background: $gray-lightest;
       display: flex;
       flex-direction: row;
-      font-weight: 500;
+      font-weight: bold;
 
       .header {
         border-bottom: 4px solid $brand-primary;
@@ -119,7 +119,7 @@
 
             .talk-title {
               line-height: 26px;
-              font-weight: 500;
+              font-weight: bold;
             }
 
             .talk-speakers {
@@ -140,7 +140,7 @@
               border-radius: 2px;
               color: rgba(255, 255, 255, 0.87);
               content: attr(data-time);
-              font-weight: 500;
+              font-weight: bold;
               line-height: 1;
               padding: 8px 16px;
               top: -46px;

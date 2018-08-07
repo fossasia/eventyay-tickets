@@ -21,26 +21,27 @@ input[type=number] {
 }
 
 .help-block {
-  font-size: 80%;
   color: $gray;
 }
 
 form label.col-form-label {
   padding-top: 4px;
   text-align: right;
-  font-weight: 500;
+  font-weight: bold;
 
   .optional {
-    font-weight: 300;
+    font-weight: normal;
     color: $gray;
   }
 }
 
 form small.form-text.text-muted {
   color: $gray !important;
+  font-size: inherit;
 }
 form .checkbox + small.form-text {
   margin-top: -8px;
+  margin-left: 36px;
 }
 
 form .form-control:disabled, .form-control[readonly] {

@@ -1,7 +1,7 @@
 .talk-title small {
   color: lighten($gray-800, 25%);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: bold;
   padding-top: 5px;
   display: block;
 }
@@ -33,7 +33,7 @@
       margin-bottom: 1rem;
       border: 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      font-weight: 500;
+      font-weight: bold;
     }
   }
 

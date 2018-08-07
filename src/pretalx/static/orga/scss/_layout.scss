@@ -151,7 +151,7 @@ legend {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  font-size: 2rem;
+  font-size: 28px;
 }
 
 footer {
@@ -475,7 +475,7 @@ legend .submission-state-dropdown {
 
   button.dropdown-toggle, a, a:hover {
     background-color: $white;
-    font-weight: 700;
+    font-weight: bold;
     border: 3px solid;
   }
 }
