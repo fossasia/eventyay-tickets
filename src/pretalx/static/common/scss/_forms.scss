@@ -36,6 +36,13 @@ form label.col-form-label {
   }
 }
 
+form small.form-text.text-muted {
+  color: $gray !important;
+}
+form .checkbox + small.form-text {
+  margin-top: -8px;
+}
+
 form .form-control:disabled, .form-control[readonly] {
   background-color: $gray-lightest !important;
 }
