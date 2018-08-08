@@ -172,4 +172,4 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = Room
-        fields = ['name', 'description', 'speaker_info', 'capacity', 'position']
+        fields = ['name', 'description', 'speaker_info', 'capacity']

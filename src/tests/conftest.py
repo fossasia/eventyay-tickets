@@ -18,14 +18,34 @@ from pretalx.submission.models import (
 @pytest.fixture
 def template_patch(monkeypatch):
     # Patch out template rendering for performance improvements
-    monkeypatch.setattr("django.template.backends.django.Template.render", lambda *args, **kwargs: "mocked template")
+    monkeypatch.setattr(
+        "django.template.backends.django.Template.render",
+        lambda *args, **kwargs: "mocked template",
+    )
 
 
 @pytest.fixture
 def organiser():
     o = Organiser.objects.create(name='Super Organiser', slug='superorganiser')
-    Team.objects.create(name='Organisers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True)
-    Team.objects.create(name='Organisers and reviewers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True, is_reviewer=True)
+    Team.objects.create(
+        name='Organisers',
+        organiser=o,
+        can_create_events=True,
+        can_change_teams=True,
+        can_change_organiser_settings=True,
+        can_change_event_settings=True,
+        can_change_submissions=True,
+    )
+    Team.objects.create(
+        name='Organisers and reviewers',
+        organiser=o,
+        can_create_events=True,
+        can_change_teams=True,
+        can_change_organiser_settings=True,
+        can_change_event_settings=True,
+        can_change_submissions=True,
+        is_reviewer=True,
+    )
     Team.objects.create(name='Reviewers', organiser=o, is_reviewer=True)
     return o
 
@@ -33,8 +53,25 @@ def organiser():
 @pytest.fixture
 def other_organiser():
     o = Organiser.objects.create(name='Different Organiser', slug='diffo')
-    Team.objects.create(name='Organisers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True)
-    Team.objects.create(name='Organisers and reviewers', organiser=o, can_create_events=True, can_change_teams=True, can_change_organiser_settings=True, can_change_event_settings=True, can_change_submissions=True, is_reviewer=True)
+    Team.objects.create(
+        name='Organisers',
+        organiser=o,
+        can_create_events=True,
+        can_change_teams=True,
+        can_change_organiser_settings=True,
+        can_change_event_settings=True,
+        can_change_submissions=True,
+    )
+    Team.objects.create(
+        name='Organisers and reviewers',
+        organiser=o,
+        can_create_events=True,
+        can_change_teams=True,
+        can_change_organiser_settings=True,
+        can_change_event_settings=True,
+        can_change_submissions=True,
+        is_reviewer=True,
+    )
     Team.objects.create(name='Reviewers', organiser=o, is_reviewer=True)
     return o
 
@@ -43,8 +80,12 @@ def other_organiser():
 def event(organiser):
     today = datetime.date.today()
     event = Event.objects.create(
-        name='Fancy testevent', is_public=True, slug='test', email='orga@orga.org',
-        date_from=today, date_to=today + datetime.timedelta(days=3),
+        name='Fancy testevent',
+        is_public=True,
+        slug='test',
+        email='orga@orga.org',
+        date_from=today,
+        date_to=today + datetime.timedelta(days=3),
         organiser=organiser,
     )
     # exporting takes quite some time, so this speeds up our tests
@@ -57,7 +98,10 @@ def event(organiser):
 @pytest.fixture
 def other_event(other_organiser):
     event = Event.objects.create(
-        name='Boring testevent', is_public=True, slug='other', email='orga2@orga.org',
+        name='Boring testevent',
+        is_public=True,
+        slug='other',
+        email='orga2@orga.org',
         date_from=datetime.date.today() + datetime.timedelta(days=1),
         date_to=datetime.date.today() + datetime.timedelta(days=1),
         organiser=other_organiser,
@@ -72,8 +116,13 @@ def other_event(other_organiser):
 def multilingual_event(organiser):
     today = datetime.date.today()
     event = Event.objects.create(
-        name='Fancy testevent', is_public=True, slug='test2', email='orga@orga.org',
-        date_from=today, date_to=today + datetime.timedelta(days=3), locale_array='en,de',
+        name='Fancy testevent',
+        is_public=True,
+        slug='test2',
+        email='orga@orga.org',
+        date_from=today,
+        date_to=today + datetime.timedelta(days=3),
+        locale_array='en,de',
         organiser=organiser,
     )
     event.settings.export_html_on_schedule_release = False
@@ -85,28 +134,40 @@ def multilingual_event(organiser):
 @pytest.fixture
 def resource(submission):
     f = SimpleUploadedFile('testresource.txt', b'a resource')
-    return Resource.objects.create(submission=submission, resource=f, description='Test resource')
+    return Resource.objects.create(
+        submission=submission, resource=f, description='Test resource'
+    )
 
 
 @pytest.fixture
 def other_resource(submission):
     f = SimpleUploadedFile('testresource2.txt', b'another resource')
-    return Resource.objects.create(submission=submission, resource=f, description='Test resource 2')
+    return Resource.objects.create(
+        submission=submission, resource=f, description='Test resource 2'
+    )
 
 
 @pytest.fixture
 def question(event):
     return Question.objects.create(
-        event=event, question='How much do you like green, on a scale from 1-10?', variant=QuestionVariant.NUMBER,
-        target='submission', required=False, contains_personal_data=False,
+        event=event,
+        question='How much do you like green, on a scale from 1-10?',
+        variant=QuestionVariant.NUMBER,
+        target='submission',
+        required=False,
+        contains_personal_data=False,
     )
 
 
 @pytest.fixture
 def inactive_question(event):
     return Question.objects.create(
-        event=event, question='So, on a scale from 1–100, how much do you like red?', variant=QuestionVariant.NUMBER,
-        target='submission', required=False, active=False,
+        event=event,
+        question='So, on a scale from 1–100, how much do you like red?',
+        variant=QuestionVariant.NUMBER,
+        target='submission',
+        required=False,
+        active=False,
     )
 
 
@@ -118,32 +179,44 @@ def answer(event, submission, question):
 @pytest.fixture
 def speaker_question(event):
     return Question.objects.create(
-        event=event, question='What is your favourite color?', variant=QuestionVariant.STRING,
-        target='speaker', required=False,
+        event=event,
+        question='What is your favourite color?',
+        variant=QuestionVariant.STRING,
+        target='speaker',
+        required=False,
     )
 
 
 @pytest.fixture
 def speaker_boolean_question(event):
     return Question.objects.create(
-        event=event, question='Do you like green?', variant=QuestionVariant.BOOLEAN,
-        target='speaker', required=False,
+        event=event,
+        question='Do you like green?',
+        variant=QuestionVariant.BOOLEAN,
+        target='speaker',
+        required=False,
     )
 
 
 @pytest.fixture
 def speaker_file_question(event):
     return Question.objects.create(
-        event=event, question='Please submit your CV.', variant=QuestionVariant.FILE,
-        target='speaker', required=False,
+        event=event,
+        question='Please submit your CV.',
+        variant=QuestionVariant.FILE,
+        target='speaker',
+        required=False,
     )
 
 
 @pytest.fixture
 def choice_question(event):
     question = Question.objects.create(
-        event=event, question='How much do you like green?', variant=QuestionVariant.CHOICES,
-        target='speaker', required=False,
+        event=event,
+        question='How much do you like green?',
+        variant=QuestionVariant.CHOICES,
+        target='speaker',
+        required=False,
     )
     for answer in ['very', 'incredibly', 'omggreen']:
         AnswerOption.objects.create(question=question, answer=answer)
@@ -161,8 +234,11 @@ def answered_choice_question(speaker, choice_question):
 @pytest.fixture
 def multiple_choice_question(event):
     question = Question.objects.create(
-        event=event, question='Which colors other than green do you like?', variant=QuestionVariant.MULTIPLE,
-        target='speaker', required=False,
+        event=event,
+        question='Which colors other than green do you like?',
+        variant=QuestionVariant.MULTIPLE,
+        target='speaker',
+        required=False,
     )
     for answer in ['yellow', 'blue', 'black']:
         AnswerOption.objects.create(question=question, answer=answer)
@@ -172,16 +248,22 @@ def multiple_choice_question(event):
 @pytest.fixture
 def speaker_text_question(event):
     return Question.objects.create(
-        event=event, question='Please elaborat on your like/dislike of green.',
-        variant=QuestionVariant.TEXT, target='speaker', required=False,
+        event=event,
+        question='Please elaborat on your like/dislike of green.',
+        variant=QuestionVariant.TEXT,
+        target='speaker',
+        required=False,
     )
 
 
 @pytest.fixture
 def personal_question(submission):
     return Question.objects.create(
-        event=submission.event, target='submission', variant='boolean',
-        question='Do you identify as a hacker?', contains_personal_data=True,
+        event=submission.event,
+        target='submission',
+        variant='boolean',
+        question='Do you identify as a hacker?',
+        contains_personal_data=True,
     )
 
 
@@ -192,7 +274,9 @@ def impersonal_answer(question, speaker):
 
 @pytest.fixture
 def personal_answer(personal_question, speaker):
-    return Answer.objects.create(answer='True', person=speaker, question=personal_question)
+    return Answer.objects.create(
+        answer='True', person=speaker, question=personal_question
+    )
 
 
 @pytest.fixture
@@ -207,8 +291,12 @@ def superuser():
 
 @pytest.fixture
 def orga_user(event):
-    user = User.objects.create_user('orgauser', 'orgapassw0rd', email='orgauser@orga.org')
-    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
+    user = User.objects.create_user(
+        'orgauser', 'orgapassw0rd', email='orgauser@orga.org'
+    )
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=True, is_reviewer=False
+    ).first()
     team.members.add(user)
     team.save()
     return user
@@ -216,8 +304,12 @@ def orga_user(event):
 
 @pytest.fixture
 def other_orga_user(event):
-    user = User.objects.create_user('evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org')
-    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
+    user = User.objects.create_user(
+        'evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org'
+    )
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=True, is_reviewer=False
+    ).first()
     team.members.add(user)
     team.save()
     return user
@@ -225,8 +317,12 @@ def other_orga_user(event):
 
 @pytest.fixture
 def review_user(event):
-    user = User.objects.create_user('reviewuser', 'reviewpassw0rd', email='reviewuser@orga.org')
-    team = event.organiser.teams.filter(can_change_organiser_settings=False, is_reviewer=True).first()
+    user = User.objects.create_user(
+        'reviewuser', 'reviewpassw0rd', email='reviewuser@orga.org'
+    )
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=False, is_reviewer=True
+    ).first()
     team.members.add(user)
     team.save()
     return user
@@ -234,8 +330,12 @@ def review_user(event):
 
 @pytest.fixture
 def other_review_user(event):
-    user = User.objects.create_user('evilreviewuser', 'reviewpassw0rd', email='evilreviewuser@orga.org')
-    team = event.organiser.teams.filter(can_change_organiser_settings=False, is_reviewer=True).first()
+    user = User.objects.create_user(
+        'evilreviewuser', 'reviewpassw0rd', email='evilreviewuser@orga.org'
+    )
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=False, is_reviewer=True
+    ).first()
     team.members.add(user)
     team.save()
     return user
@@ -243,8 +343,12 @@ def other_review_user(event):
 
 @pytest.fixture
 def orga_reviewer_user(event):
-    user = User.objects.create_user('multitalentuser', 'orgapassw0rd', email='multiuser@orga.org')
-    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=True).first()
+    user = User.objects.create_user(
+        'multitalentuser', 'orgapassw0rd', email='multiuser@orga.org'
+    )
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=True, is_reviewer=True
+    ).first()
     team.members.add(user)
     team.save()
     return user
@@ -282,7 +386,9 @@ def superuser_client(superuser, client):
 
 @pytest.fixture
 def submission_type(event):
-    return SubmissionType.objects.create(name='Workshop', event=event, default_duration=60)
+    return SubmissionType.objects.create(
+        name='Workshop', event=event, default_duration=60
+    )
 
 
 @pytest.fixture
@@ -292,8 +398,12 @@ def default_submission_type(event):
 
 @pytest.fixture
 def speaker(event):
-    user = User.objects.create_user('speaker', 'speakerpwd1!', name='Jane Speaker', email='jane@speaker.org')
-    SpeakerProfile.objects.create(user=user, event=event, biography='Best speaker in the world.')
+    user = User.objects.create_user(
+        'speaker', 'speakerpwd1!', name='Jane Speaker', email='jane@speaker.org'
+    )
+    SpeakerProfile.objects.create(
+        user=user, event=event, biography='Best speaker in the world.'
+    )
     return user
 
 
@@ -341,10 +451,13 @@ def submission(submission_data, speaker):
 @pytest.fixture
 def other_submission(event, other_speaker):
     sub = Submission.objects.create(
-        title='Albrecht Dürer. Sein Leben, seine Zeit', event=event,
+        title='Albrecht Dürer. Sein Leben, seine Zeit',
+        event=event,
         submission_type=event.cfp.default_type,
-        description='1 guter Talk', abstract='Verstehste?',
-        notes='I like cookies A LOT', content_locale='en'
+        description='1 guter Talk',
+        abstract='Verstehste?',
+        notes='I like cookies A LOT',
+        content_locale='en',
     )
     sub.save()
     sub.speakers.add(other_speaker)
@@ -420,13 +533,22 @@ def deleted_submission(submission_data, other_speaker):
 
 @pytest.fixture
 def invitation(event):
-    team = event.organiser.teams.filter(can_change_organiser_settings=True, is_reviewer=False).first()
-    return TeamInvite.objects.create(team=team, token='testtoken', email='some@test.mail')
+    team = event.organiser.teams.filter(
+        can_change_organiser_settings=True, is_reviewer=False
+    ).first()
+    return TeamInvite.objects.create(
+        team=team, token='testtoken', email='some@test.mail'
+    )
 
 
 @pytest.fixture
 def mail_template(event):
-    return MailTemplate.objects.create(event=event, subject='Some Mail', text='Whee mail content!', reply_to='orga@orga.org')
+    return MailTemplate.objects.create(
+        event=event,
+        subject='Some Mail',
+        text='Whee mail content!',
+        reply_to='orga@orga.org',
+    )
 
 
 @pytest.fixture(scope='function')
@@ -448,7 +570,13 @@ def sent_mail(mail_template, speaker, event):
 
 @pytest.fixture
 def room(event):
-    return Room.objects.create(event=event, name='Testroom', description='A fancy room', position=2, capacity=50)
+    return Room.objects.create(
+        event=event,
+        name='Testroom',
+        description='A fancy room',
+        position=2,
+        capacity=50,
+    )
 
 
 @pytest.fixture
@@ -459,11 +587,26 @@ def room_availability(event, room, availability):
 
 
 @pytest.fixture
+def other_room(event):
+    return Room.objects.create(
+        event=event,
+        name='Second Testroom',
+        description='A less fancy room',
+        position=1,
+        capacity=10,
+    )
+
+
+@pytest.fixture
 def availability(event):
     return Availability(
         event=event,
-        start=datetime.datetime.combine(event.date_from, datetime.time.min, tzinfo=pytz.utc),
-        end=datetime.datetime.combine(event.date_to, datetime.time.max, tzinfo=pytz.utc),
+        start=datetime.datetime.combine(
+            event.date_from, datetime.time.min, tzinfo=pytz.utc
+        ),
+        end=datetime.datetime.combine(
+            event.date_to, datetime.time.max, tzinfo=pytz.utc
+        ),
     )
 
 
@@ -475,8 +618,16 @@ def schedule(event):
 
 @pytest.fixture
 def slot(confirmed_submission, room, schedule):
-    TalkSlot.objects.update_or_create(submission=confirmed_submission, schedule=room.event.wip_schedule, defaults={'is_visible': True})
-    TalkSlot.objects.update_or_create(submission=confirmed_submission, schedule=schedule, defaults={'is_visible': True})
+    TalkSlot.objects.update_or_create(
+        submission=confirmed_submission,
+        schedule=room.event.wip_schedule,
+        defaults={'is_visible': True},
+    )
+    TalkSlot.objects.update_or_create(
+        submission=confirmed_submission,
+        schedule=schedule,
+        defaults={'is_visible': True},
+    )
     slots = TalkSlot.objects.filter(submission=confirmed_submission)
     slots.update(start=now(), end=now() + datetime.timedelta(minutes=60), room=room)
     return slots.get(schedule=schedule)
@@ -486,14 +637,23 @@ def slot(confirmed_submission, room, schedule):
 def unreleased_slot(confirmed_submission, room):
     schedule = confirmed_submission.event.wip_schedule
     slot = schedule.talks.filter(submission=confirmed_submission)
-    slot.update(start=now(), end=now() + datetime.timedelta(minutes=30), room=room, schedule=schedule, is_visible=True)
+    slot.update(
+        start=now(),
+        end=now() + datetime.timedelta(minutes=30),
+        room=room,
+        schedule=schedule,
+        is_visible=True,
+    )
     slot = slot.first()
     return slot
 
 
 @pytest.fixture
 def past_slot(other_confirmed_submission, room, schedule, speaker):
-    slot = other_confirmed_submission.slots.filter(schedule=schedule).first() or other_confirmed_submission.slots.first()
+    slot = (
+        other_confirmed_submission.slots.filter(schedule=schedule).first()
+        or other_confirmed_submission.slots.first()
+    )
     slot.start = now() - datetime.timedelta(minutes=60)
     slot.end = now() - datetime.timedelta(minutes=30)
     slot.room = room
@@ -517,12 +677,20 @@ def feedback(past_slot):
 
 @pytest.fixture
 def other_slot(other_confirmed_submission, room, schedule):
-    return TalkSlot.objects.create(start=now(), end=now() + datetime.timedelta(minutes=30), submission=other_confirmed_submission, room=room, schedule=schedule, is_visible=True)
+    return TalkSlot.objects.create(
+        start=now(),
+        end=now() + datetime.timedelta(minutes=30),
+        submission=other_confirmed_submission,
+        room=room,
+        schedule=schedule,
+        is_visible=True,
+    )
 
 
 @pytest.fixture
 def schedule_schema():
     from lxml import etree
+
     with open('tests/functional/fixtures/schedule.xsd', 'r') as xsd:
         source = xsd.read()
     schema = etree.XML(source)
@@ -531,4 +699,6 @@ def schedule_schema():
 
 @pytest.fixture
 def review(submission, review_user):
-    return Review.objects.create(score=1, submission=submission, user=review_user, text='Looks great!')
+    return Review.objects.create(
+        score=1, submission=submission, user=review_user, text='Looks great!'
+    )

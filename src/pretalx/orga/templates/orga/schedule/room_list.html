@@ -30,6 +30,20 @@
                     </td>
                     <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
                     <td class="text-right">
+                        {% if not forloop.last %}
+                        <a href="{{ room.urls.down }}"
+                           class="btn btn-sm btn-outline-info"
+                           title="{% trans "Move room down" %}">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                        {% endif %}
+                        {% if not forloop.first %}
+                        <a href="{{ room.urls.up }}"
+                           class="btn btn-sm btn-outline-info"
+                           title="{% trans "Move room up" %}">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        {% endif %}
                         <a href="{{ room.urls.edit }}"
                             class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>

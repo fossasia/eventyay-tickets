@@ -84,9 +84,9 @@ class SubmissionFilterForm(forms.Form):
         self.event = event
         super().__init__(*args, **kwargs)
         sub_count = lambda x: event.submissions.filter(state=x).count()  # noqa
-        type_count = lambda x: event.submissions.filter(
+        type_count = lambda x: event.submissions.filter(  # noqa
             submission_type=x
-        ).count()  # noqa
+        ).count()
         self.fields['submission_type'].choices = [
             (sub_type.pk, f'{sub_type.name} ({type_count(sub_type.pk)})')
             for sub_type in event.submission_types.all()

@@ -8,7 +8,7 @@ from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -394,3 +394,36 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
                 'pretalx.event.update', person=self.request.user, orga=True
             )
         return result
+
+
+def room_move(request, pk, up=True):
+    try:
+        room = request.event.rooms.get(pk=pk)
+    except Room.DoesNotExist:
+        raise Http404(_('The selected room does not exist.'))
+    if not request.user.has_perm('orga.edit_room', room):
+        messages.error(_('Sorry, you are not allowed to reorder rooms.'))
+        return
+    rooms = list(request.event.rooms.order_by('position'))
+
+    index = rooms.index(room)
+    if index != 0 and up:
+        rooms[index - 1], rooms[index] = rooms[index], rooms[index - 1]
+    elif index != len(rooms) - 1 and not up:
+        rooms[index + 1], rooms[index] = rooms[index], rooms[index + 1]
+
+    for i, qt in enumerate(rooms):
+        if qt.position != i:
+            qt.position = i
+            qt.save()
+    messages.success(request, _('The order of rooms has been updated.'))
+
+
+def room_move_up(request, event, pk):
+    room_move(request, pk, up=True)
+    return redirect(request.event.orga_urls.room_settings)
+
+
+def room_move_down(request, event, pk):
+    room_move(request, pk, up=False)
+    return redirect(request.event.orga_urls.room_settings)

@@ -53,16 +53,20 @@
                         </i>
                     </td>
                     <td class="text-right">
-                        <a href="{{ question.urls.up }}"
-                           class="btn btn-sm btn-outline-info{% if forloop.first %} d-none{% endif %}"
-                           title="{% trans "Move question up" %}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
+                        {% if not forloop.last %}
                         <a href="{{ question.urls.down }}"
-                           class="btn btn-sm btn-outline-info{% if forloop.last %} d-none{% endif %}"
+                           class="btn btn-sm btn-outline-info"
                            title="{% trans "Move question down" %}">
                             <i class="fa fa-arrow-down"></i>
                         </a>
+                        {% endif %}
+                        {% if not forloop.first %}
+                        <a href="{{ question.urls.up }}"
+                           class="btn btn-sm btn-outline-info"
+                           title="{% trans "Move question up" %}">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        {% endif %}
                         <a href="{{ question.urls.edit }}"
                             class="btn btn-sm btn-info"
                             title="{% trans "Edit" %}">
