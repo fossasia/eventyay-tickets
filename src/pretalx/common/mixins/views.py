@@ -1,6 +1,8 @@
 import urllib
 from contextlib import suppress
+from importlib import import_module
 
+from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
@@ -10,6 +12,8 @@ from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
 
 from pretalx.common.forms import SearchForm
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 class ActionFromUrl:
@@ -152,6 +156,21 @@ class Filterable:
 
 
 class PermissionRequired(PermissionRequiredMixin):
+    def has_permission(self):
+        result = super().has_permission()
+        if not result:
+            request = getattr(self, 'request', None)
+            key = f'pretalx_event_access_{request.event.pk}'
+            if request and hasattr(request, 'event') and key in request.session:
+                sparent = SessionStore(request.session.get(key))
+                try:
+                    parentdata = sparent.load()
+                except Exception:
+                    pass
+                else:
+                    return 'event_access' in parentdata
+        return result
+
     def get_login_url(self):
         """We do this to avoid leaking data about existing pages."""
         raise Http404()

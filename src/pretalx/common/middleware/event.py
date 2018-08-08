@@ -15,10 +15,7 @@ from pretalx.event.models import Event, Organiser, Team
 
 
 class EventPermissionMiddleware:
-    UNAUTHENTICATED_ORGA_URLS = (
-        'invitation.view',
-        'login',
-    )
+    UNAUTHENTICATED_ORGA_URLS = ('invitation.view', 'auth', 'login')
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -33,17 +30,29 @@ class EventPermissionMiddleware:
                 request.is_orga = True
                 request.is_reviewer = True
             else:
-                request.orga_events = request.user.get_events_for_permission().order_by('date_from')
+                request.orga_events = request.user.get_events_for_permission().order_by(
+                    'date_from'
+                )
                 if hasattr(request, 'event'):
                     request.is_orga = request.event in request.orga_events
-                    request.is_reviewer = request.event in request.user.get_events_for_permission(is_reviewer=True)
+                    request.is_reviewer = (
+                        request.event
+                        in request.user.get_events_for_permission(is_reviewer=True)
+                    )
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
             return urljoin(settings.SITE_URL, request.get_full_path())
-        if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
+        if (
+            request.user.is_anonymous
+            and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
+        ):
             params = '&' + request.GET.urlencode() if request.GET else ''
-            return reverse('orga:login') + f'?next={urllib.parse.quote(request.path)}' + params
+            return (
+                reverse('orga:login')
+                + f'?next={urllib.parse.quote(request.path)}'
+                + params
+            )
 
     def __call__(self, request):
         url = resolve(request.path_info)
@@ -51,8 +60,7 @@ class EventPermissionMiddleware:
         organiser_slug = url.kwargs.get('organiser')
         if organiser_slug:
             request.organiser = get_object_or_404(
-                Organiser,
-                slug__iexact=organiser_slug,
+                Organiser, slug__iexact=organiser_slug
             )
             if hasattr(request, 'organiser') and request.organiser:
                 request.is_orga = False
@@ -66,10 +74,7 @@ class EventPermissionMiddleware:
 
         event_slug = url.kwargs.get('event')
         if event_slug:
-            request.event = get_object_or_404(
-                Event,
-                slug__iexact=event_slug,
-            )
+            request.event = get_object_or_404(Event, slug__iexact=event_slug)
 
         self._set_orga_events(request)
         self._select_locale(request)
@@ -78,12 +83,22 @@ class EventPermissionMiddleware:
             url = self._handle_orga_url(request, url)
             if url:
                 return redirect(url)
-        elif getattr(request, 'event', None) and request.event.settings.custom_domain and not request.uses_custom_domain:
-            return redirect(urljoin(request.event.settings.custom_domain, request.get_full_path()))
+        elif (
+            getattr(request, 'event', None)
+            and request.event.settings.custom_domain
+            and not request.uses_custom_domain
+        ):
+            return redirect(
+                urljoin(request.event.settings.custom_domain, request.get_full_path())
+            )
         return self.get_response(request)
 
     def _select_locale(self, request):
-        supported = request.event.locales if (hasattr(request, 'event') and request.event) else settings.LANGUAGES
+        supported = (
+            request.event.locales
+            if (hasattr(request, 'event') and request.event)
+            else settings.LANGUAGES
+        )
         language = (
             self._language_from_user(request, supported)
             or self._language_from_cookie(request, supported)

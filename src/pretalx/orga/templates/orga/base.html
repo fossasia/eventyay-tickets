@@ -79,9 +79,19 @@
                 </li>
                 {% if request.event %}
                     <li class="nav-item">
+                    {% if request.event.settings.custom_domain and not request.event.is_public %}
+                        <form action="{{ request.event.urls.auth.full }}" method="post"
+                                target="_blank" class="mobile-navbar-view-form visible-xs-block">
+                            <input type="hidden" value="{{ new_session }}" name="session">
+                            <button type="submit" class="btn btn-link navbar-toggle">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </form>
+                    {% else %}
                         <a class="nav-link" href="{{ request.event.urls.base }}" target="_blank" rel="noopener">
                             <i class="fa fa-eye"></i>
                         </a>
+                    {% endif %}
                     </li>
                 {% endif %}
             </ul>

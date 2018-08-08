@@ -21,13 +21,25 @@ SLUG_CHARS = 'a-zA-Z0-9.-'
 
 def validate_event_slug_blacklist(value):
     blacklist = [
-        '_global', '__debug__', 'api', 'csp_report', 'events', 'download',
-        'healthcheck', 'jsi18n', 'locale', 'metrics', 'orga', 'redirect',
+        '_global',
+        '__debug__',
+        'api',
+        'csp_report',
+        'events',
+        'download',
+        'healthcheck',
+        'jsi18n',
+        'locale',
+        'metrics',
+        'orga',
+        'redirect',
         'widget',
     ]
     if value in blacklist:
         raise ValidationError(
-            _('Invalid event slug – this slug is reserved: {value}.').format(value=value),
+            _('Invalid event slug – this slug is reserved: {value}.').format(
+                value=value
+            ),
             code='invalid',
             params={'value': value},
         )
@@ -43,40 +55,33 @@ def event_logo_path(instance, filename):
 
 @hierarkey.add()
 class Event(LogMixin, models.Model):
-    name = I18nCharField(
-        max_length=200,
-        verbose_name=_('Name'),
-    )
+    name = I18nCharField(max_length=200, verbose_name=_('Name'))
     slug = models.SlugField(
-        max_length=50, db_index=True, unique=True,
+        max_length=50,
+        db_index=True,
+        unique=True,
         validators=[
             RegexValidator(
                 regex=f"^[{SLUG_CHARS}]+$",
-                message=_('The slug may only contain letters, numbers, dots and dashes.'),
+                message=_(
+                    'The slug may only contain letters, numbers, dots and dashes.'
+                ),
             ),
             validate_event_slug_blacklist,
         ],
         verbose_name=_("Short form"),
     )
     organiser = models.ForeignKey(
-        to='Organiser', null=True,  # backwards compatibility, won't ever be empty
+        to='Organiser',
+        null=True,  # backwards compatibility, won't ever be empty
         related_name='events',
         on_delete=models.PROTECT,
     )
-    is_public = models.BooleanField(
-        default=False,
-        verbose_name=_('Event is public')
-    )
-    date_from = models.DateField(
-        verbose_name=_('Event start date'),
-    )
-    date_to = models.DateField(
-        verbose_name=_('Event end date'),
-    )
+    is_public = models.BooleanField(default=False, verbose_name=_('Event is public'))
+    date_from = models.DateField(verbose_name=_('Event start date'))
+    date_to = models.DateField(verbose_name=_('Event end date'))
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones],
-        max_length=30,
-        default='UTC',
+        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default='UTC'
     )
     email = models.EmailField(
         verbose_name=_('Orga email address'),
@@ -84,22 +89,31 @@ class Event(LogMixin, models.Model):
     )
     primary_color = models.CharField(
         max_length=7,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[],
         verbose_name=_('Main event colour'),
-        help_text=_('Please provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'),
+        help_text=_(
+            'Please provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
+        ),
     )
     custom_css = models.FileField(
         upload_to=event_css_path,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('Custom Event CSS'),
-        help_text=_('Upload a custom CSS file if changing the primary colour is not sufficient for you.'),
+        help_text=_(
+            'Upload a custom CSS file if changing the primary colour is not sufficient for you.'
+        ),
     )
     logo = models.FileField(
         upload_to=event_logo_path,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('Logo'),
-        help_text=_('If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'),
+        help_text=_(
+            'If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'
+        ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(
@@ -109,39 +123,55 @@ class Event(LogMixin, models.Model):
         verbose_name=_('Default language'),
     )
     accept_template = models.ForeignKey(
-        to='mail.MailTemplate', on_delete=models.CASCADE,
-        related_name='+', null=True, blank=True,
+        to='mail.MailTemplate',
+        on_delete=models.CASCADE,
+        related_name='+',
+        null=True,
+        blank=True,
     )
     ack_template = models.ForeignKey(
-        to='mail.MailTemplate', on_delete=models.CASCADE,
-        related_name='+', null=True, blank=True,
+        to='mail.MailTemplate',
+        on_delete=models.CASCADE,
+        related_name='+',
+        null=True,
+        blank=True,
     )
     reject_template = models.ForeignKey(
-        to='mail.MailTemplate', on_delete=models.CASCADE,
-        related_name='+', null=True, blank=True,
+        to='mail.MailTemplate',
+        on_delete=models.CASCADE,
+        related_name='+',
+        null=True,
+        blank=True,
     )
     update_template = models.ForeignKey(
-        to='mail.MailTemplate', on_delete=models.CASCADE,
-        related_name='+', null=True, blank=True,
+        to='mail.MailTemplate',
+        on_delete=models.CASCADE,
+        related_name='+',
+        null=True,
+        blank=True,
     )
     question_template = models.ForeignKey(
-        to='mail.MailTemplate', on_delete=models.CASCADE,
-        related_name='+', null=True, blank=True,
+        to='mail.MailTemplate',
+        on_delete=models.CASCADE,
+        related_name='+',
+        null=True,
+        blank=True,
     )
     landing_page_text = I18nTextField(
         verbose_name=_('Landing page text'),
-        help_text=_('This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'),
-        null=True, blank=True,
+        help_text=_(
+            'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'
+        ),
+        null=True,
+        blank=True,
     )
-    plugins = models.TextField(
-        null=True, blank=True,
-        verbose_name=_('Plugins'),
-    )
+    plugins = models.TextField(null=True, blank=True, verbose_name=_('Plugins'))
 
     class urls(EventUrls):
         base = '/{self.slug}'
         login = '{base}/login'
         logout = '{base}/logout'
+        auth = '{base}/auth/'
         logo = '{self.logo.url}'
         reset = '{base}/reset'
         submit = '{base}/submit'
@@ -240,6 +270,7 @@ class Event(LogMixin, models.Model):
 
     def _get_default_submission_type(self):
         from pretalx.submission.models import SubmissionType
+
         sub_type = SubmissionType.objects.filter(event=self).first()
         if not sub_type:
             sub_type = SubmissionType.objects.create(event=self, name='Talk')
@@ -247,29 +278,58 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def fixed_templates(self):
-        return [self.accept_template, self.ack_template, self.reject_template, self.update_template]
+        return [
+            self.accept_template,
+            self.ack_template,
+            self.reject_template,
+            self.update_template,
+        ]
 
     def _build_initial_data(self):
-        from pretalx.mail.default_templates import ACCEPT_TEXT, ACK_TEXT, GENERIC_SUBJECT, REJECT_TEXT, UPDATE_TEXT, QUESTION_SUBJECT, QUESTION_TEXT
+        from pretalx.mail.default_templates import (
+            ACCEPT_TEXT,
+            ACK_TEXT,
+            GENERIC_SUBJECT,
+            REJECT_TEXT,
+            UPDATE_TEXT,
+            QUESTION_SUBJECT,
+            QUESTION_TEXT,
+        )
         from pretalx.mail.models import MailTemplate
 
         if not hasattr(self, 'cfp'):
             from pretalx.submission.models import CfP
-            CfP.objects.create(event=self, default_type=self._get_default_submission_type())
+
+            CfP.objects.create(
+                event=self, default_type=self._get_default_submission_type()
+            )
 
         if not self.schedules.filter(version__isnull=True).exists():
             from pretalx.schedule.models import Schedule
+
             Schedule.objects.create(event=self)
 
-        self.accept_template = self.accept_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT)
-        self.ack_template = self.ack_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT)
-        self.reject_template = self.reject_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT)
-        self.update_template = self.update_template or MailTemplate.objects.create(event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT)
-        self.question_template = self.question_template or MailTemplate.objects.create(event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT)
+        self.accept_template = self.accept_template or MailTemplate.objects.create(
+            event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT
+        )
+        self.ack_template = self.ack_template or MailTemplate.objects.create(
+            event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT
+        )
+        self.reject_template = self.reject_template or MailTemplate.objects.create(
+            event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT
+        )
+        self.update_template = self.update_template or MailTemplate.objects.create(
+            event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT
+        )
+        self.question_template = self.question_template or MailTemplate.objects.create(
+            event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
+        )
         self.save()
 
     def copy_data_from(self, other_event):
-        templates = [f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')]
+        templates = [
+            f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')
+        ]
         protected_settings = ['custom_domain', 'display_header_data']
         for template in templates:
             setattr(self, template, None)
@@ -311,23 +371,29 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def current_schedule(self):
-        return self.schedules.order_by('-published').filter(published__isnull=False).first()
+        return (
+            self.schedules.order_by('-published')
+            .filter(published__isnull=False)
+            .first()
+        )
 
     @cached_property
     def duration(self):
         return (self.date_to - self.date_from).days + 1
 
-    def get_mail_backend(self, force_custom: bool=False) -> BaseEmailBackend:
+    def get_mail_backend(self, force_custom: bool = False) -> BaseEmailBackend:
         from pretalx.common.mail import CustomSMTPBackend
 
         if self.settings.smtp_use_custom or force_custom:
-            return CustomSMTPBackend(host=self.settings.smtp_host,
-                                     port=self.settings.smtp_port,
-                                     username=self.settings.smtp_username,
-                                     password=self.settings.smtp_password,
-                                     use_tls=self.settings.smtp_use_tls,
-                                     use_ssl=self.settings.smtp_use_ssl,
-                                     fail_silently=False)
+            return CustomSMTPBackend(
+                host=self.settings.smtp_host,
+                port=self.settings.smtp_port,
+                username=self.settings.smtp_username,
+                password=self.settings.smtp_password,
+                use_tls=self.settings.smtp_use_tls,
+                use_ssl=self.settings.smtp_use_ssl,
+                fail_silently=False,
+            )
         else:
             return get_connection(fail_silently=False)
 
@@ -338,25 +404,30 @@ class Event(LogMixin, models.Model):
     @cached_property
     def teams(self):
         from .organiser import Team
-        return Team.objects.filter(models.Q(limit_events__in=[self]) | models.Q(all_events=True), organiser=self.organiser)
+
+        return Team.objects.filter(
+            models.Q(limit_events__in=[self]) | models.Q(all_events=True),
+            organiser=self.organiser,
+        )
 
     @cached_property
     def datetime_from(self):
-        return make_aware(datetime.combine(
-            self.date_from,
-            time(hour=0, minute=0, second=0)
-        ), pytz.timezone(self.timezone))
+        return make_aware(
+            datetime.combine(self.date_from, time(hour=0, minute=0, second=0)),
+            pytz.timezone(self.timezone),
+        )
 
     @cached_property
     def datetime_to(self):
-        return make_aware(datetime.combine(
-            self.date_to,
-            time(hour=23, minute=59, second=59)
-        ), pytz.timezone(self.timezone))
+        return make_aware(
+            datetime.combine(self.date_to, time(hour=23, minute=59, second=59)),
+            pytz.timezone(self.timezone),
+        )
 
     @cached_property
     def reviews(self):
         from pretalx.submission.models import Review
+
         return Review.objects.filter(submission__event=self)
 
     @cached_property
@@ -366,16 +437,22 @@ class Event(LogMixin, models.Model):
     @cached_property
     def talks(self):
         from pretalx.submission.models import SubmissionStates
-        return self.submissions.filter(models.Q(state=SubmissionStates.ACCEPTED) | models.Q(state=SubmissionStates.CONFIRMED))
+
+        return self.submissions.filter(
+            models.Q(state=SubmissionStates.ACCEPTED)
+            | models.Q(state=SubmissionStates.CONFIRMED)
+        )
 
     @cached_property
     def speakers(self):
         from pretalx.person.models import User
+
         return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()
 
     @cached_property
     def submitters(self):
         from pretalx.person.models import User
+
         return User.objects.filter(submissions__event=self).order_by('id').distinct()
 
     def release_schedule(self, name, user=None):
@@ -385,6 +462,7 @@ class Event(LogMixin, models.Model):
         from django.utils.translation import override
         from pretalx.common.mail import mail_send_task
         from pretalx.mail.models import QueuedMail
+
         context = {
             'event_dashboard': self.orga_urls.base.full(),
             'event_review': self.orga_urls.reviews.full(),
@@ -394,17 +472,25 @@ class Event(LogMixin, models.Model):
             'submission_count': self.submissions.all().count(),
         }
         if stats:
-            context.update({
-                'talk_count': self.current_schedule.talks.filter(is_visible=True).count(),
-                'review_count': self.reviews.count(),
-                'schedule_count': self.schedules.count() - 1,
-                'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
-            })
+            context.update(
+                {
+                    'talk_count': self.current_schedule.talks.filter(
+                        is_visible=True
+                    ).count(),
+                    'review_count': self.reviews.count(),
+                    'schedule_count': self.schedules.count() - 1,
+                    'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
+                }
+            )
         with override(self.locale):
             text = QueuedMail.make_text(str(text).format(**context), event=self)
-        mail_send_task.apply_async(kwargs={
-            'to': [self.email],
-            'subject': QueuedMail.make_subject(_('News from your content system'), event=self),
-            'body': text,
-            'html': QueuedMail.make_html(text, event=self),
-        })
+        mail_send_task.apply_async(
+            kwargs={
+                'to': [self.email],
+                'subject': QueuedMail.make_subject(
+                    _('News from your content system'), event=self
+                ),
+                'body': text,
+                'html': QueuedMail.make_html(text, event=self),
+            }
+        )
