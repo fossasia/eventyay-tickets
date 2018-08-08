@@ -1,6 +1,6 @@
 var remoteUrls = [];
 var urls = null;
-fetch(document.getElementById('navigateUrl').getAttribute('remoteUrl')).then((response) => {
+fetch(document.getElementById('navigateUrl').getAttribute('remoteUrl'), {credentials: "same-origin"}).then((response) => {
   response.json().then(response => {
     remoteUrls = response.results.map(element => {return {value: element.url, name: element.name}})
     urls = new Bloodhound({

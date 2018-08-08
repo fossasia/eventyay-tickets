@@ -83,7 +83,7 @@ $(function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('pretalx_csrftoken'),
             },
-              credentials: 'include',
+            credentials: 'include',
         }
 
         function reset() {
