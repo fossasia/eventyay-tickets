@@ -18,6 +18,7 @@
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
+                <th>{% trans "Email" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
             {% for member in team.members.all %}
             <tr>
                 <td>{{ member.get_display_name }}</td>
+                <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
                 <td class="text-right">
                     <a
                     href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ team.id }}/reset/{{ member.id }}"
@@ -44,8 +46,10 @@
             {% for member in team.invites.all %}
             <tr>
                 <td>
+                    <em>({% trans "pending Invitation" %})</em>
+                </td>
+                <td>
                     {{ member.email }}
-                    <em>({% trans "pending" %})</em>
                     <a href="{{ member.urls.invitation }}">
                         <i class="fa fa-link"></i>
                     </a>
@@ -61,6 +65,7 @@
             </tr>
             {% endfor %}
             <tr>
+                <td><strong>{% trans "Add member" %}</strong></td>
                 <td>{% csrf_token %}{% bootstrap_field invite_form.email layout='inline' %}</td>
                 <td class="text-right">
                     <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
