@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`149` Allow to order questions manually.
 - :support:`-` We now have tests to make sure all config options and plugin hooks are documented.
 - :feature:`-` Instead of setting a flag somewhere, pretalx now has an explicit "go live" button. There is also a corresponding signal plugins can listen to (please refer to the plugin documentation for further information).
 - :bug:`463` Don't show a 404 error if a reviewer tries to review their own submission, but show an error message instead.
