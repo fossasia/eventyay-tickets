@@ -278,7 +278,7 @@ def test_move_rooms_in_list_up_out_of_bounds(orga_client, room, other_room, even
 
 @pytest.mark.django_db
 def test_move_rooms_in_list_down_out_of_bounds(orga_client, room, other_room, event):
-    assert event.questions.count() == 2
+    assert event.rooms.count() == 2
     room.position = 0
     room.save()
     other_room.position = 1
