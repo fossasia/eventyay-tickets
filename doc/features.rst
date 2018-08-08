@@ -25,7 +25,7 @@ Talk submission
 - **Work with multi-language events:** pretalx allows you to choose the locales offered at your
   conference, and speakers can then choose the language they feel most comfortable in for their
   talk. Subsequently, speakers will receive all emails in that language. pretalx supports
-  English and German, but is open to new languages.
+  English, German and French, but is open to new languages.
 - **Ask custom questions:** If you need custom information from your submitters, you can add
   questions to your CfP. We support a wide variety of answer types, such as free-text, number input,
   and choices. (Answers can be optional, too.) You'll see the results as manageable
