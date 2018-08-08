@@ -44,12 +44,7 @@
         <form class="search-form">
             {% bootstrap_form search_form %}
             {% bootstrap_field filter_form.submission_type %}
-            <div class="fancy-multi-select form-group">
-                <span class="multi-select-title form-control">{% trans "Submission states" %}</span>
-                <span class="multi-select-options">
-                    {% bootstrap_field filter_form.state layout='inline' %}
-                </span>
-            </div>
+            {% bootstrap_field filter_form.state layout='inline' %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
         {% if can_create_submission %}

@@ -1,10 +1,27 @@
-from django.forms import PasswordInput
+from django.forms import PasswordInput, CheckboxSelectMultiple
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 
-class PasswordStrengthInput(PasswordInput):
+class CheckboxMultiDropdown(CheckboxSelectMultiple):
+    def render(self, name, value, attrs=None, renderer=None):
+        attrs['layout'] = 'event-inline'
+        checkboxes = super().render(name, value, attrs=attrs, renderer=renderer)
+        title = None
+        if attrs:
+            title = attrs.get('title')
+        title = title or _('Choose one or more')
+        markup = f"""
+        <div class="checkbox-multi-select form-group">
+            <span class="multi-select-title form-control">{title}</span>
+            <span class="multi-select-options"><div class="form-group">
+                {checkboxes}
+            </div></span>
+        </div>"""
+        return mark_safe(markup)
 
+
+class PasswordStrengthInput(PasswordInput):
     def render(self, name, value, attrs=None):
         markup = """
         <div class="password-progress">
@@ -22,9 +39,15 @@ class PasswordStrengthInput(PasswordInput):
                 </span>
             </p>
         </div>
-        """.format(message=_('This password would take <em class="password_strength_time"></em> to crack.'))
+        """.format(
+            message=_(
+                'This password would take <em class="password_strength_time"></em> to crack.'
+            )
+        )
 
-        self.attrs['class'] = ' '.join(self.attrs.get('class', '').split(' ') + ['password_strength'])
+        self.attrs['class'] = ' '.join(
+            self.attrs.get('class', '').split(' ') + ['password_strength']
+        )
         return mark_safe(super().render(name, value, self.attrs) + markup)
 
     class Media(object):
@@ -32,7 +55,6 @@ class PasswordStrengthInput(PasswordInput):
 
 
 class PasswordConfirmationInput(PasswordInput):
-
     def __init__(self, confirm_with=None, attrs=None, render_value=False):
         super().__init__(attrs, render_value)
         self.confirm_with = confirm_with
@@ -48,8 +70,14 @@ class PasswordConfirmationInput(PasswordInput):
                 <span>{content}</span>
             </p>
         </div>
-        """.format(warning=_('Warning'), content=_("Your passwords don't match."))
+        """.format(
+            warning=_('Warning'), content=_("Your passwords don't match.")
+        )
 
-        self.attrs['class'] = ' '.join(self.attrs.get('class', '').split(' ') + ['password_confirmation'])
+        self.attrs['class'] = ' '.join(
+            self.attrs.get('class', '').split(' ') + ['password_confirmation']
+        )
 
-        return mark_safe(super(PasswordInput, self).render(name, value, self.attrs) + markup)
+        return mark_safe(
+            super(PasswordInput, self).render(name, value, self.attrs) + markup
+        )

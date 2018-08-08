@@ -1,7 +1,9 @@
 from django import forms
 from django.conf import settings
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.forms.widgets import CheckboxMultiDropdown
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
@@ -72,7 +74,7 @@ class SubmissionFilterForm(forms.ModelForm):
     state = forms.MultipleChoiceField(
         choices=SubmissionStates.get_choices(),
         required=False,
-        widget=forms.CheckboxSelectMultiple,
+        widget=CheckboxMultiDropdown,
     )
 
     def __init__(self, event, *args, **kwargs):
@@ -88,6 +90,7 @@ class SubmissionFilterForm(forms.ModelForm):
             (choice[0], f'{choice[1].capitalize()} ({sub_count(choice[0])})')
             for choice in self.fields['state'].choices
         ]
+        self.fields['state'].widget.attrs['title'] = _('Submission states')
 
     class Meta:
         model = Submission
