@@ -14,7 +14,12 @@ def answer_file_path(instance, filename):
 
 class QuestionManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().exclude(active=False).exclude(target=QuestionTarget.REVIEWER)
+        return (
+            super()
+            .get_queryset()
+            .exclude(active=False)
+            .exclude(target=QuestionTarget.REVIEWER)
+        )
 
 
 class AllQuestionManager(models.Manager):
@@ -37,7 +42,7 @@ class QuestionVariant(Choices):
         (BOOLEAN, _('Yes/No')),
         (FILE, _('File upload')),
         (CHOICES, _('Choose one from a list')),
-        (MULTIPLE, _('Choose multiple from a list'))
+        (MULTIPLE, _('Choose multiple from a list')),
     ]
 
 
@@ -55,9 +60,7 @@ class QuestionTarget(Choices):
 
 class Question(LogMixin, models.Model):
     event = models.ForeignKey(
-        to='event.Event',
-        on_delete=models.PROTECT,
-        related_name='questions',
+        to='event.Event', on_delete=models.PROTECT, related_name='questions'
     )
     variant = models.CharField(
         max_length=QuestionVariant.get_max_length(),
@@ -71,28 +74,19 @@ class Question(LogMixin, models.Model):
         verbose_name=_('question type'),
         help_text=_('Do you require an answer from every speaker or for every talk?'),
     )
-    question = I18nCharField(
-        max_length=200,
-        verbose_name=_('question'),
-    )
+    question = I18nCharField(max_length=200, verbose_name=_('question'))
     help_text = I18nCharField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         max_length=200,
         verbose_name=_('help text'),
-        help_text=_('Will appear just like this text below the question input field.')
+        help_text=_('Will appear just like this text below the question input field.'),
     )
     default_answer = models.TextField(
-        null=True, blank=True,
-        verbose_name=_('default answer'),
+        null=True, blank=True, verbose_name=_('default answer')
     )
-    required = models.BooleanField(
-        default=False,
-        verbose_name=_('required'),
-    )
-    position = models.IntegerField(
-        default=0,
-        verbose_name=_('position'),
-    )
+    required = models.BooleanField(default=False, verbose_name=_('required'))
+    position = models.IntegerField(default=0, verbose_name=_('position'))
     active = models.BooleanField(
         default=True,
         verbose_name=_('active'),
@@ -101,7 +95,9 @@ class Question(LogMixin, models.Model):
     contains_personal_data = models.BooleanField(
         default=True,
         verbose_name=_('Answers contain personal data'),
-        help_text=_('If a user deletes their account, answers of questions for personal data will be removed, too.'),
+        help_text=_(
+            'If a user deletes their account, answers of questions for personal data will be removed, too.'
+        ),
     )
     objects = QuestionManager()
     all_objects = AllQuestionManager()
@@ -109,6 +105,8 @@ class Question(LogMixin, models.Model):
     class urls(EventUrls):
         base = '{self.event.cfp.urls.questions}/{self.pk}'
         edit = '{base}/edit'
+        up = '{base}/up'
+        down = '{base}/down'
         delete = '{base}/delete'
         toggle = '{base}/toggle'
 
@@ -119,30 +117,39 @@ class Question(LogMixin, models.Model):
     @cached_property
     def grouped_answers(self):
         if self.variant == QuestionVariant.FILE:
-            return [
-                {'answer': answer, 'count': 1}
-                for answer in self.answers.all()
-            ]
+            return [{'answer': answer, 'count': 1} for answer in self.answers.all()]
         elif self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
-            return self.answers\
-                .order_by('options')\
-                .values('options', 'options__answer')\
-                .annotate(count=models.Count('id'))\
+            return (
+                self.answers.order_by('options')
+                .values('options', 'options__answer')
+                .annotate(count=models.Count('id'))
                 .order_by('-count')
+            )
         else:
-            return list(self.answers.order_by('answer').values('answer').annotate(count=models.Count('id')).order_by('-count'))
+            return list(
+                self.answers.order_by('answer')
+                .values('answer')
+                .annotate(count=models.Count('id'))
+                .order_by('-count')
+            )
 
     def missing_answers(self, filter_speakers=False, filter_talks=False):
         from pretalx.person.models import User
+
         answers = self.answers.all()
         if filter_speakers or filter_talks:
-            answers = answers.filter(models.Q(person__in=filter_speakers) | models.Q(submission__in=filter_talks))
+            answers = answers.filter(
+                models.Q(person__in=filter_speakers)
+                | models.Q(submission__in=filter_talks)
+            )
         answer_count = answers.count()
         if self.target == QuestionTarget.SUBMISSION:
             submissions = filter_talks or self.event.submissions.all()
             return submissions.count() - answer_count
         elif self.target == QuestionTarget.SPEAKER:
-            users = filter_speakers or User.objects.filter(submissions__event_id=self.event.pk)
+            users = filter_speakers or User.objects.filter(
+                submissions__event_id=self.event.pk
+            )
             return users.count() - answer_count
 
     class Meta:
@@ -151,13 +158,9 @@ class Question(LogMixin, models.Model):
 
 class AnswerOption(LogMixin, models.Model):
     question = models.ForeignKey(
-        to='submission.Question',
-        on_delete=models.PROTECT,
-        related_name='options',
+        to='submission.Question', on_delete=models.PROTECT, related_name='options'
     )
-    answer = I18nCharField(
-        max_length=200,
-    )
+    answer = I18nCharField(max_length=200)
 
     @cached_property
     def event(self):
@@ -170,36 +173,33 @@ class AnswerOption(LogMixin, models.Model):
 
 class Answer(LogMixin, models.Model):
     question = models.ForeignKey(
-        to='submission.Question',
-        on_delete=models.PROTECT,
-        related_name='answers',
+        to='submission.Question', on_delete=models.PROTECT, related_name='answers'
     )
     submission = models.ForeignKey(
         to='submission.Submission',
         on_delete=models.PROTECT,
         related_name='answers',
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     person = models.ForeignKey(
         to='person.User',
         on_delete=models.PROTECT,
         related_name='answers',
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     review = models.ForeignKey(
         to='submission.Review',
         on_delete=models.PROTECT,
         related_name='answers',
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     answer = models.TextField()
-    answer_file = models.FileField(
-        upload_to=answer_file_path,
-        null=True, blank=True,
-    )
+    answer_file = models.FileField(upload_to=answer_file_path, null=True, blank=True)
     options = models.ManyToManyField(
-        to='submission.AnswerOption',
-        related_name='answers',
+        to='submission.AnswerOption', related_name='answers'
     )
 
     @cached_property

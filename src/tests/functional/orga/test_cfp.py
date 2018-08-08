@@ -16,7 +16,9 @@ def test_edit_cfp(orga_client, event):
     response = orga_client.post(
         event.cfp.urls.edit_text,
         {
-            'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20',
+            'headline_0': 'new headline',
+            'text_0': '',
+            'deadline': '2000-10-10 20:20',
             'settings-review_min_score': '0',
             'settings-review_max_score': '2',
             'settings-review_score_name_0': 'OK',
@@ -58,7 +60,9 @@ def test_edit_cfp_invalid(orga_client, event):
     response = orga_client.post(
         event.cfp.urls.edit_text,
         {
-            'headline_0': 'new headline', 'text_0': '', 'deadline': '2000-10-10 20:20',
+            'headline_0': 'new headline',
+            'text_0': '',
+            'deadline': '2000-10-10 20:20',
             'settings-review_min_score': '2',
             'settings-review_max_score': '2',
             'settings-review_score_name_0': 'OK',
@@ -76,7 +80,9 @@ def test_edit_cfp_invalid(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_make_submission_type_default(orga_client, submission_type, default_submission_type):
+def test_make_submission_type_default(
+    orga_client, submission_type, default_submission_type
+):
     assert default_submission_type.event.submission_types.count() == 2
     assert submission_type.event.cfp.default_type == default_submission_type
     response = orga_client.get(submission_type.urls.default, follow=True)
@@ -117,7 +123,9 @@ def test_delete_last_submission_type(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_delete_default_submission_type(orga_client, submission_type, default_submission_type):
+def test_delete_default_submission_type(
+    orga_client, submission_type, default_submission_type
+):
     assert default_submission_type.event.submission_types.count() == 2
     response = orga_client.get(default_submission_type.urls.delete, follow=True)
     assert response.status_code == 200
@@ -131,6 +139,66 @@ def test_all_questions_in_list(orga_client, question, inactive_question, event):
     response = orga_client.get(event.cfp.urls.questions, follow=True)
     assert question.question in response.content.decode()
     assert inactive_question.question in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_move_questions_in_list_down(orga_client, question, speaker_question, event):
+    assert event.questions.count() == 2
+    question.position = 0
+    question.save()
+    speaker_question.position = 1
+    speaker_question.save()
+    orga_client.post(question.urls.down, follow=True)
+    question.refresh_from_db()
+    speaker_question.refresh_from_db()
+    assert question.position == 1
+    assert speaker_question.position == 0
+
+
+@pytest.mark.django_db
+def test_move_questions_in_list_up(orga_client, question, speaker_question, event):
+    assert event.questions.count() == 2
+    question.position = 1
+    question.save()
+    speaker_question.position = 0
+    speaker_question.save()
+    orga_client.post(question.urls.up, follow=True)
+    question.refresh_from_db()
+    speaker_question.refresh_from_db()
+    assert question.position == 0
+    assert speaker_question.position == 1
+
+
+@pytest.mark.django_db
+def test_move_questions_in_list_up_out_of_bounds(
+    orga_client, question, speaker_question, event
+):
+    assert event.questions.count() == 2
+    question.position = 0
+    question.save()
+    speaker_question.position = 1
+    speaker_question.save()
+    orga_client.post(question.urls.up, follow=True)
+    question.refresh_from_db()
+    speaker_question.refresh_from_db()
+    assert question.position == 0
+    assert speaker_question.position == 1
+
+
+@pytest.mark.django_db
+def test_move_questions_in_list_down_out_of_bounds(
+    orga_client, question, speaker_question, event
+):
+    assert event.questions.count() == 2
+    question.position = 0
+    question.save()
+    speaker_question.position = 1
+    speaker_question.save()
+    orga_client.post(speaker_question.urls.down, follow=True)
+    question.refresh_from_db()
+    speaker_question.refresh_from_db()
+    assert question.position == 0
+    assert speaker_question.position == 1
 
 
 @pytest.mark.django_db
@@ -186,7 +254,8 @@ def test_can_add_simple_question(orga_client, event):
             'variant': 'string',
             'active': True,
             'help_text_0': 'Answer if you want to reach the other side!',
-        }, follow=True,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     event.refresh_from_db()
@@ -217,7 +286,8 @@ def test_can_add_choice_question(orga_client, event):
             'form-1-answer_0': 'European',
             'form-2-id': '',
             'form-2-answer_0': '',
-        }, follow=True,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     event.refresh_from_db()
@@ -250,7 +320,8 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
             'form-2-DELETE': 'on',
             'form-3-id': '',
             'form-3-answer_0': '',
-        }, follow=True,
+        },
+        follow=True,
     )
     assert response.status_code == 200
     event.refresh_from_db()
@@ -260,18 +331,26 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
     assert str(choice_question.options.first().answer) == 'African'
 
 
-@pytest.mark.parametrize('role,count', (
-    ('true', 1),
-    ('false', 1),
-    ('', 2),
-))
+@pytest.mark.parametrize('role,count', (('true', 1), ('false', 1), ('', 2)))
 @pytest.mark.django_db
-def test_can_remind_question(orga_client, event, speaker_question, speaker, accepted_submission, other_speaker, other_submission, role, count):
+def test_can_remind_question(
+    orga_client,
+    event,
+    speaker_question,
+    speaker,
+    accepted_submission,
+    other_speaker,
+    other_submission,
+    role,
+    count,
+):
     question = speaker_question
     question.required = True
     question.save()
     original_count = QueuedMail.objects.count()
-    response = orga_client.post(event.cfp.urls.remind_questions, {'role': role}, follow=True)
+    response = orga_client.post(
+        event.cfp.urls.remind_questions, {'role': role}, follow=True
+    )
     assert response.status_code == 200
     assert QueuedMail.objects.count() == original_count + count
 

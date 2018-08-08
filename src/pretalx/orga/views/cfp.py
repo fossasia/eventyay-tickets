@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.db import models, transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -75,9 +76,7 @@ class CfPQuestionList(PermissionRequired, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['questions'] = Question.all_objects.filter(
-            event=self.request.event
-        ).order_by('target')
+        context['questions'] = Question.all_objects.filter(event=self.request.event)
         return context
 
 
@@ -266,6 +265,44 @@ class CfPQuestionDelete(PermissionRequired, View):
                 ),
             )
         return redirect(self.request.event.cfp.urls.questions)
+
+
+def question_move(request, pk, up=True):
+    """
+    This is a helper function to avoid duplicating code in question_move_up and
+    question_move_down. It takes a question and a direction and then tries to bring
+    all items for this question in a new order.
+    """
+    try:
+        question = request.event.questions.get(pk=pk)
+    except Question.DoesNotExist:
+        raise Http404(_('The selected question does not exist.'))
+    if not request.user.has_perm('orga.edit_question', question):
+        messages.error(_('Sorry, you are not allowed to reorder questions.'))
+        return
+    questions = list(request.event.questions.order_by('position'))
+
+    index = questions.index(question)
+    if index != 0 and up:
+        questions[index - 1], questions[index] = questions[index], questions[index - 1]
+    elif index != len(questions) - 1 and not up:
+        questions[index + 1], questions[index] = questions[index], questions[index + 1]
+
+    for i, qt in enumerate(questions):
+        if qt.position != i:
+            qt.position = i
+            qt.save()
+    messages.success(request, _('The order of questions has been updated.'))
+
+
+def question_move_up(request, event, pk):
+    question_move(request, pk, up=True)
+    return redirect(request.event.cfp.urls.questions)
+
+
+def question_move_down(request, event, pk):
+    question_move(request, pk, up=False)
+    return redirect(request.event.cfp.urls.questions)
 
 
 class CfPQuestionToggle(PermissionRequired, View):
