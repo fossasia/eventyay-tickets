@@ -61,7 +61,11 @@ class EventDashboardView(PermissionRequired, TemplateView):
     def get_context_data(self, event):
         context = super().get_context_data()
         event = self.request.event
-        context['timeline'] = get_stages(event)
+        stages = get_stages(event)
+        context['timeline'] = stages
+        context['go_to_target'] = (
+            'schedule' if stages['REVIEW']['state'] == 'done' else 'cfp'
+        )
         context['history'] = ActivityLog.objects.filter(event=self.get_object())[:20]
         _now = now()
         today = _now.date()
