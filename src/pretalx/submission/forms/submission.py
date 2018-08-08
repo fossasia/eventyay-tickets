@@ -70,28 +70,30 @@ class InfoForm(forms.ModelForm):
         ]
 
 
-class SubmissionFilterForm(forms.ModelForm):
+class SubmissionFilterForm(forms.Form):
     state = forms.MultipleChoiceField(
         choices=SubmissionStates.get_choices(),
         required=False,
         widget=CheckboxMultiDropdown,
     )
+    submission_type = forms.MultipleChoiceField(
+        required=False, widget=CheckboxMultiDropdown
+    )
 
     def __init__(self, event, *args, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        self.fields['submission_type'].queryset = self.fields[
-            'submission_type'
-        ].queryset.filter(event=event)
-        self.fields['submission_type'].required = False
-        self.fields['state'].required = False
         sub_count = lambda x: event.submissions.filter(state=x).count()  # noqa
+        type_count = lambda x: event.submissions.filter(
+            submission_type=x
+        ).count()  # noqa
+        self.fields['submission_type'].choices = [
+            (sub_type.pk, f'{sub_type.name} ({type_count(sub_type.pk)})')
+            for sub_type in event.submission_types.all()
+        ]
+        self.fields['submission_type'].widget.attrs['title'] = _('Submission types')
         self.fields['state'].choices = [
             (choice[0], f'{choice[1].capitalize()} ({sub_count(choice[0])})')
             for choice in self.fields['state'].choices
         ]
         self.fields['state'].widget.attrs['title'] = _('Submission states')
-
-    class Meta:
-        model = Submission
-        fields = ['submission_type', 'state']

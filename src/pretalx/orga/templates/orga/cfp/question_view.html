@@ -53,18 +53,14 @@
                         </i>
                     </td>
                     <td class="text-right">
-                        {% if not forloop.first %}
                         <a href="{{ question.urls.up }}"
-                            class="btn btn-sm btn-outline-info">
+                           class="btn btn-sm btn-outline-info{% if forloop.first %} d-none{% endif %}">
                             <i class="fa fa-arrow-up"></i>
                         </a>
-                        {% endif %}
-                        {% if not forloop.last %}
                         <a href="{{ question.urls.down }}"
-                            class="btn btn-sm btn-outline-info">
+                           class="btn btn-sm btn-outline-info{% if forloop.last %} d-none{% endif %}">
                             <i class="fa fa-arrow-down"></i>
                         </a>
-                        {% endif %}
                         <a href="{{ question.urls.edit }}"
                             class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>

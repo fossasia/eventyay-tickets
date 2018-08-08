@@ -1,4 +1,4 @@
-from django.forms import PasswordInput, CheckboxSelectMultiple
+from django.forms import CheckboxSelectMultiple, PasswordInput
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
