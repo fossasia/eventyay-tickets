@@ -1,0 +1,7 @@
+{% load i18n %}
+{% include "django/forms/widgets/input_option.html" %}
+{% if not widget.official %}
+    <span class="badge badge-pill badge-warning" data-toggle="tooltip" title="{% trans "This translation is not maintained by the pretalx team. We cannot vouch for its correctness and new or recently changed features might not be translated and will show in English instead. You can help translating at github.com/pretalx/pretalx." %}">
+        {% trans "Unofficial translation" %}
+    </span>
+{% endif %}

@@ -6,7 +6,7 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
-from pretalx.orga.forms.widgets import HeaderSelect
+from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 
 
 class TeamForm(ReadOnlyFlag, I18nModelForm):
@@ -55,7 +55,7 @@ class EventWizardInitialForm(forms.Form):
         choices=settings.LANGUAGES,
         label=_('Use languages'),
         help_text=_('Choose all languages that your event should be available in.'),
-        widget=forms.CheckboxSelectMultiple(),
+        widget=MultipleLanguagesWidget,
     )
 
     def __init__(self, *args, user=None, **kwargs):

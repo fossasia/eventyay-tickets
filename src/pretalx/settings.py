@@ -284,6 +284,7 @@ USE_TZ = True
 LANGUAGES = [('en', _('English')), ('de', _('German')), ('fr', _('French'))]
 LANGUAGES_NATURAL_NAMES = [('en', 'English'), ('de', 'Deutsch'), ('fr', 'Français')]
 LANGUAGE_CODE = 'en'
+LANGUAGES_OFFICIAL = {'en', 'de'}
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
 FORMAT_MODULE_PATH = ['pretalx.common.formats']
 
