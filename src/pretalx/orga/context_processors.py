@@ -7,6 +7,14 @@ from pretalx.orga.signals import nav_event, nav_global
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
+def collect_signal(signal, kwargs):
+    result = []
+    for receiver, response in signal.send(**kwargs):
+        if isinstance(response, dict):
+            result.append(response)
+    return result
+
+
 def orga_events(request):
     """Add data to all template contexts."""
     context = {'settings': settings}
@@ -18,23 +26,19 @@ def orga_events(request):
         return context
 
     if not getattr(request, 'event', None):
-        _nav_global = []
-        for receiver, response in nav_global.send(sender=None, request=request):
-            if isinstance(response, dict):
-                _nav_global.append(response)
-        context['nav_global'] = _nav_global
+        context['nav_global'] = collect_signal(
+            nav_global, {'sender': None, 'request': request}
+        )
         return context
 
-    _nav_event = []
     if (
         getattr(request, 'event', None)
         and hasattr(request, 'user')
         and request.user.is_authenticated
     ):
-        for receiver, response in nav_event.send(request.event, request=request):
-            if isinstance(response, dict):
-                _nav_event.append(response)
-        context['nav_event'] = _nav_event
+        context['nav_event'] = collect_signal(
+            nav_event, {'sender': request.event, 'request': request}
+        )
 
         if (
             not request.event.is_public
