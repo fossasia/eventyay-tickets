@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The event logo is displayed larger and up to the full width of the document below. Please check that your event still looks as intended after upgrading.
 - :feature:`149` Allow to order rooms manually.
 - :feature:`149` Allow to order questions manually.
 - :support:`-` We now have tests to make sure all config options and plugin hooks are documented.
