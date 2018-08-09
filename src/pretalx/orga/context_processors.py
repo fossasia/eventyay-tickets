@@ -2,7 +2,7 @@ from importlib import import_module
 
 from django.conf import settings
 
-from pretalx.orga.signals import nav_event
+from pretalx.orga.signals import nav_event, nav_global
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -10,6 +10,21 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 def orga_events(request):
     """Add data to all template contexts."""
     context = {'settings': settings}
+
+    if not request.path.startswith('/orga/'):
+        return {}
+
+    if not hasattr(request, 'user') or not request.user.is_authenticated:
+        return context
+
+    if not getattr(request, 'event', None):
+        _nav_global = []
+        for receiver, response in nav_global.send(sender=None, request=request):
+            if isinstance(response, dict):
+                _nav_global.append(response)
+        context['nav_global'] = _nav_global
+        return context
+
     _nav_event = []
     if (
         getattr(request, 'event', None)
@@ -17,7 +32,8 @@ def orga_events(request):
         and request.user.is_authenticated
     ):
         for receiver, response in nav_event.send(request.event, request=request):
-            _nav_event += response
+            if isinstance(response, dict):
+                _nav_event.append(response)
         context['nav_event'] = _nav_event
 
         if (

@@ -130,7 +130,6 @@
     {% endif %}
     <div id="page-wrapper">
         <nav class="nav flex-column sidebar">
-
         {% if request.event %}
             {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
             {% has_perm 'orga.change_submissions' request.user request.event as can_see_orga_exclusive %}
@@ -295,7 +294,18 @@
                     </a>
                 {% endfor %}
             {% endif %}
-        {% endif %}
+            {% else %}  {# if request.event #}
+                {% for nav_element in nav_global %}
+                    <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
+                        {% if nav_element.icon and "." in nav_element.icon %}
+                            <img src="{% static nav_element.icon %}" class="fa-img">
+                        {% elif nav_element.icon %}
+                            <i class="fa fa-{{ nav_element.icon }}"></i>
+                        {% endif %}
+                        <span class="sidebar-text">{{ nav_element.label }}</span>
+                    </a>
+                {% endfor %}
+            {% endif %}  {# if request.event #}
         </nav>
         <div id="page-content">
             {% if messages %}
