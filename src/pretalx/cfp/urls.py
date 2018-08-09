@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.views.generic import RedirectView
 
 from pretalx.event.models.event import SLUG_CHARS
 
@@ -76,6 +77,7 @@ urlpatterns = [
             ]
         ),
     ),
+    url(r'control/(?P<path>.*)$', RedirectView.as_view(url='/orga/%(path)s'), name='notpretix'),
     url(r'^robots.txt$', robots.robots_txt, name='robots.txt'),
     url('^$', event.GeneralView.as_view()),
 ]
