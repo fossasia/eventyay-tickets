@@ -1,5 +1,6 @@
 $(function () {
     "use strict";
+    $('[data-toggle="tooltip"]').tooltip()
 
     $(".datetimepickerfield").each(function () {
         $(this).datetimepicker({
