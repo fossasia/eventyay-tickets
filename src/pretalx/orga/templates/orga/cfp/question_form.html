@@ -6,6 +6,9 @@
 
 {% block cfp_content %}
     <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+    <h2>
+        {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
+    </h2>
     <form method="post" action="">
         {% csrf_token %}
         {% if action == "edit" and question.answers.count %}
@@ -23,7 +26,7 @@
             <div class="alert alert-info col-md-9 offset-3">
               <span>
               {% trans "This question is currently active, it will be asked during submission." %}
-              <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+              <a class="btn btn-sm btn-outline-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
               </span>
             </div>
           {% else %}

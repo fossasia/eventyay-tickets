@@ -7,37 +7,15 @@
 {% load staticfiles %}
 
 {% block submission_content %}
-    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+<script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+<form method="post" action="" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
-    <legend>{% trans "Create submission as orga" %}</legend>
+    <legend>{% trans "Create submission" %}</legend>
     {% endif %}
 
-    <form method="post" action="" enctype="multipart/form-data">
         {% bootstrap_form_errors form %}
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}
-        {% if form.instance.average_score != None %}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label">
-                {% trans "Review score" %}
-            </label>
-            <div class="col-md-9">
-                <label>
-                    {% review_score form.instance %}
-                    ({{ submission.reviews.count }} {% trans "reviews" %})
-                </label>
-            </div>
-        </div>
-        {% endif %}
-        {% bootstrap_field form.submission_type layout='event' %}
-        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
-        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
-        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
-        {% bootstrap_field form.content_locale layout='event' %}
-        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
-        {% bootstrap_field form.is_featured layout='event' %}
-        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
         {% else %}
@@ -101,6 +79,28 @@
                     });
                     });</script>
         {% endif %}
+        {% if form.instance.average_score != None %}
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label">
+                {% trans "Review score" %}
+            </label>
+            <div class="col-md-9">
+                <label>
+                    {% review_score form.instance %}
+                    ({{ submission.reviews.count }} {% trans "reviews" %})
+                </label>
+            </div>
+        </div>
+        {% endif %}
+        {% bootstrap_field form.submission_type layout='event' %}
+        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
+        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
+        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
+        {% bootstrap_field form.content_locale layout='event' %}
+        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
+        {% bootstrap_field form.is_featured layout='event' %}
+        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
+        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
 
         <div class="submit-group panel">
             <span></span>
@@ -117,7 +117,7 @@
                 </button>
             </span>
         </div>
-    </form>
+    </fieldset></form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}

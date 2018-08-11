@@ -3,7 +3,7 @@
 {% load url_replace %}
 
 {% block mail_content %}
-    <legend>
+    <h2>
         <span>
             {{ page_obj.paginator.count }}
             {% blocktrans trimmed count count=page_obj.paginator.count %}
@@ -12,7 +12,7 @@
                 pending mails
             {% endblocktrans %}
         </span>
-    </legend>
+    </h2>
     <div class="submit-group">
         <span>
             {% include "common/search_form.html" %}

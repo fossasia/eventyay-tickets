@@ -5,13 +5,14 @@
 {% block title %}{% if request.event %}{{ request.event.name }}{% else %}{{ request.organiser.name }}{% endif %}{% endblock %}
 
 {% block content %}
+<form method="post"><fieldset>
     <legend>{% trans "Settings" %}</legend>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form form layout='event' %}
-        {% include "orga/submit_row.html" %}
-    </form>
+    {% csrf_token %}
+    {% bootstrap_form form layout='event' %}
+    {% include "orga/submit_row.html" %}
+</fieldset>
 
+<fieldset>
     <legend>{% trans "Teams" %}</legend>
     <div class="dashboard-list">
         {% for team in request.organiser.teams.all %}
@@ -30,4 +31,6 @@
             <h1><i class="fa fa-plus"></i> {% trans "New team" %}</h1>
         </a>
     </div>
+</fieldset>
+</form>
 {% endblock %}

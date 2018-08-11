@@ -6,7 +6,7 @@
 {% if submission %}
 {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
 {% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
-    <legend>
+    <h2>
         <span>
             »{{ submission.title }}«
             {% if submission.speakers.exists %}
@@ -14,7 +14,7 @@
             {% endif %}
             {% include "orga/submission/state_dropdown.html" with submission=submission %}
         </span>
-    </legend>
+    </h2>
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a

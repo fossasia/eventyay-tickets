@@ -2,14 +2,14 @@
 {% load i18n %}
 
 {% block content %}
-    <legend>
+    <h2>
         {{ page_obj.paginator.count }}
         {% blocktrans trimmed count count=page_obj.paginator.count %}
         Speaker Information Note
         {% plural %}
         Speaker Information Notes
         {% endblocktrans %}
-    </legend>
+    </h2>
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>

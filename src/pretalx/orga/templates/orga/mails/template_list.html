@@ -21,7 +21,7 @@
     <div>
     <div>
         {% csrf_token %}
-        <legend>{% trans "Acknowledge Mail" %}</legend>
+        <h3>{% trans "Acknowledge Mail" %}</h3>
         {% bootstrap_form ack layout='event' %}
         <div class="clearfix"><a href="{{ ack.instance.urls.edit }}">
             <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
@@ -30,7 +30,7 @@
     </div>
     <div>
         {% csrf_token %}
-        <legend>{% trans "Accept Mail" %}</legend>
+        <h3>{% trans "Accept Mail" %}</h3>
         {% bootstrap_form accept layout='event' %}
         <div class="clearfix"><a href="{{ accept.instance.urls.edit }}">
             <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
@@ -39,7 +39,7 @@
     </div>
     <div>
         {% csrf_token %}
-        <legend>{% trans "Rejection Mail" %}</legend>
+        <h3>{% trans "Rejection Mail" %}</h3>
         {% bootstrap_form reject layout='event' %}
         <div class="clearfix"><a href="{{ reject.instance.urls.edit }}">
             <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
@@ -48,7 +48,7 @@
     </div>
     <div>
         {% csrf_token %}
-        <legend>{% trans "Update Mail" %}</legend>
+        <h3>{% trans "Update Mail" %}</h3>
         {% bootstrap_form update layout='event' %}
         <div class="clearfix"><a href="{{ update.instance.urls.edit }}">
             <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
@@ -59,7 +59,7 @@
     {% for template in other %}
     <div>
         {% csrf_token %}
-        <legend>{% trans "Custom Mail" %}</legend>
+        <h3>{% trans "Custom Mail" %}</h3>
         {% bootstrap_form template layout='event' %}
         <div><a href="{{ template.instance.urls.delete }}">
             <button class="btn btn-danger">{% trans "Delete template" %}</button>

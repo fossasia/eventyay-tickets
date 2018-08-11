@@ -3,10 +3,16 @@
 {% load i18n %}
 
 {% block cfp_content %}
+    <h2>
+        {% if form.instance.name %}
+        {% trans "Submission Type" %}: {{ form.instance.name }}
+        {% else %}
+        {% trans "New Submission Type" %}
+        {% endif %}
+    </h2>
     <form method="post" action="">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <legend>{% trans "Submission Type" %}</legend>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.default_duration addon_after="minutes" layout='event' addon_after_class="input-group-append input-group-text" %}
         {% bootstrap_field form.deadline layout='event' %}

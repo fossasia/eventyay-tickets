@@ -23,13 +23,16 @@
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_form_errors sform %}
+            <fieldset>
             <legend id="text">{% trans "Text and deadline" %}</legend>
             {% bootstrap_field form.headline layout='event' %}
             {% bootstrap_field form.text layout='event' %}
             {% bootstrap_field form.deadline layout='event' %}
             {% bootstrap_field sform.cfp_show_deadline layout='event' %}
             {% bootstrap_field sform.mail_on_new_submission layout='event' %}
+            </fieldset>
 
+            <fieldset>
             <legend id="information">{% trans "Submission information" %}</legend>
             <div class="offset-3 alert alert-info"><span>
                 {% trans "Select which information should be requested and/or required during CfP submission." %}
@@ -76,7 +79,9 @@
                     </tr>
                 </tbody>
             </table>
+            </fieldset>
 
+            <fieldset>
             <legend id="review">{% trans "Review settings" %}</legend>
             {% bootstrap_field sform.review_deadline layout='event' %}
             {% bootstrap_field sform.allow_override_votes layout='event' %}
@@ -91,6 +96,7 @@
                 {% endif %}
             {% endfor %}
             {% include "orga/submit_row.html" %}
+            </fieldset>
         </form>
     </div>
 </div>

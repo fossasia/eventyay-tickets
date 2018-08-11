@@ -2,7 +2,17 @@
 {% load i18n %}
 
 {% block schedule_content %}
-<legend>{% trans "HTML Export" %}</legend>
+<h2>Exports</h2>
+<p>
+{% blocktrans trimmed %}
+pretalx provides a range of exports. If none of these match what you are looking
+for, you can also provide a custom plugin to export the data – please ask
+your administrator to install the plugin.
+{% endblocktrans %}
+</p>
+
+<hr>
+<h3>{% trans "HTML Export" %}</h3>
 
 <p>
 {% blocktrans trimmed %}
@@ -27,8 +37,7 @@ schedule release, but you can also trigger that action here.
 </span>
 </div>
 
-<p></p>
-<legend>{% trans "Data Export" %}</legend>
+<h3>{% trans "Data Export" %}</h3>
 {% if not request.event.current_schedule %}
 <div class="alert alert-warning">
     {% blocktrans trimmed %}
@@ -51,8 +60,8 @@ schedule release, but you can also trigger that action here.
     {% endfor %}
 </ul>
 
-<p></p>
-<legend>{% trans "API" %}</legend>
+<hr>
+<h3>{% trans "API" %}</h3>
 
 {% trans "You can also use the API to export or use data." %}
 

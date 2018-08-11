@@ -18,7 +18,7 @@
     {% endif %}
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "Mail Template Editor" %}</legend>
+        <h2>{% trans "Mail Template Editor" %}</h2>
         {% bootstrap_form form layout='event' %}
         {% include "orga/submit_row.html" %}
     </form>

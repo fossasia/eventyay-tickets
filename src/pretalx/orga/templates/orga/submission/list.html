@@ -23,7 +23,7 @@
 
 {% block content %}
 {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
-    <legend>
+    <h2>
         <span>
             {{ page_obj.paginator.count }}
             {% blocktrans trimmed count count=page_obj.paginator.count %}
@@ -32,7 +32,7 @@
             submissions
             {% endblocktrans %}
         </span>
-    </legend>
+    </h2>
 
     <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
     {% if timeline_data %}

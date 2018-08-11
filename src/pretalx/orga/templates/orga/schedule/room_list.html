@@ -3,14 +3,14 @@
 
 {% block content %}
 <div>
-    <legend>
+    <h2>
         {{ request.event.rooms.count }}
         {% blocktrans trimmed count count=request.event.rooms.count %}
         Room
         {% plural %}
         Rooms
         {% endblocktrans %}
-    </legend>
+    </h2>
 
     <table class="table table-sm table-hover table-responsive-md">
         <thead>

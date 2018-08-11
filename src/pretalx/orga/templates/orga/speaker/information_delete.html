@@ -1,11 +1,10 @@
 {% extends "orga/cfp/base.html" %}
 {% load i18n %}
 {% block content %}
-    <legend>
+    <h2>
         {% trans "Do you really want to delete this information?" %}
-    </legend>
-    <h4>{{ object.title }}</h4>
-    {{ object.text }}
+    </h2>
+    <strong>»{{ object.title }}«</strong> – {{ object.text }}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

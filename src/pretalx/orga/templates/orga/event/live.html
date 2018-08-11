@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-<legend>{% if request.event.is_public %}{% trans "Deactivate event" %}{% else %}{% trans "Go live" %}{% endif %}</legend>
+<h2>{% if request.event.is_public %}{% trans "Deactivate event" %}{% else %}{% trans "Go live" %}{% endif %}</h2>
 
 {% if request.event.is_public %}
     {% blocktrans trimmed %}
@@ -15,6 +15,7 @@
     By going live, it will be publicly visible.
     {% endblocktrans %}
 {% endif %}
+<p>
 <div class="submit-group">
     <span></span>
     <form method="post">

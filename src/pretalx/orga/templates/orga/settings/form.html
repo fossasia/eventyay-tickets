@@ -4,9 +4,11 @@
 {% load staticfiles %}
 
 {% block settings_content %}
+<h2>{% trans "Settings" %}</h2>
 <div class="flex-container"><div class="flex-content">
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        <fieldset>
         <legend id="general">
             {% trans "General information" %}
         </legend>
@@ -27,6 +29,8 @@
         {% bootstrap_field sform.show_sneak_peek layout='event' %}
         {% bootstrap_field sform.export_html_on_schedule_release layout='event' %}
 
+        </fieldset>
+        <fieldset>
         <legend id="display">
             {% trans "Display settings" %}
         </legend>
@@ -47,6 +51,7 @@
             </div>
         </div>
         {% bootstrap_field sform.display_header_pattern layout='event' %}
+        <fieldset>
         {% include "orga/submit_row.html" %}
     </form>
 </div></div>

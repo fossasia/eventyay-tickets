@@ -6,19 +6,24 @@
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
+        <fieldset>
         <legend>{% trans "User settings" %}</legend>
         {% bootstrap_form profile_form layout='event' %}
         {% include "orga/submit_row.html" with submit_name="form" submit_value="profile" %}
+        </fieldset>
     </form>
     <form method="post" action="" class="password-input-form">
         {% csrf_token %}
+        <fieldset>
         <legend>{% trans "Login settings" %}</legend>
         {{ login_form.media }}
         {% bootstrap_form login_form layout='event' %}
         {% include "orga/submit_row.html" with submit_name="form" submit_value="login" %}
+        </fieldset>
     </form>
     <form method="post" action="">
         {% csrf_token %}
+        <fieldset>
         <legend>{% trans "API Access" %}</legend>
         <div class="alert alert-info col-md-9 offset-3"><span>
             {% blocktrans trimmed with apiurl='href="//api/events/" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"' docurl='href="https://docs.pretalx.org/en/latest/api/index.html" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"'%}
@@ -44,5 +49,6 @@
                 </button>
             </div>
         </div>
+        </fieldset>
     </form>
 {% endblock %}

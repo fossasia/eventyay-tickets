@@ -4,10 +4,10 @@
 {% load url_replace %}
 
 {% block mail_content %}
-    <legend>
+    <h2>
         {{ page_obj.paginator.count }}
         {% trans "Sent Mails" %}
-    </legend>
+    </h2>
     {% include "common/search_form.html" %}
     <table class="table table-sm table-hover table-responsive-md">
         <thead>

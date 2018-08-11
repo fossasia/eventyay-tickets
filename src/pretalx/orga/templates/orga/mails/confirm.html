@@ -1,9 +1,9 @@
 {% extends "orga/mails/base.html" %}
 {% load i18n %}
 {% block mail_content %}
-    <legend>
+    <h2>
         {% trans "Please confirm:" %}
-    </legend>
+    </h2>
     {{ question }}
     <form method="post">
         {% csrf_token %}

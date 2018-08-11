@@ -5,7 +5,7 @@
 {% block settings_content %}
     <form method="post" action="">
         {% csrf_token %}
-        <legend>{% trans "E-mail settings" %}</legend>
+        <h2>{% trans "E-mail settings" %}</h2>
         <div class="alert alert-info offset-3">
             {% blocktrans trimmed %}
                 If you don't configure custom email settings, the global configuration

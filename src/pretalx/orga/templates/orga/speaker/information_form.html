@@ -3,9 +3,9 @@
 {% load i18n %}
 
 {% block content %}
-    <legend>
+    <h2>
         {% trans "Speaker Information Note" %}
-    </legend>
+    </h2>
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}

@@ -32,11 +32,6 @@ $fa-font-path: "vendored/forkawesome/fonts";
 /* colors */
 $theme-colors: (primary: $brand-primary, success: $brand-success, info: $brand-info, warning: $brand-warning, danger: $brand-danger, light: $gray-100, dark: $gray-800);
 
-/* fix bootstrap 4 */
-h2, h3 {
-  padding-top: 24px;
-}
-
 .btn:focus {
   box-shadow: none !important;
 }

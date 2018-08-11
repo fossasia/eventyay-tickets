@@ -3,6 +3,7 @@
 {% load i18n %}
 
 {% block content %}
+<form action="" method="post"><fieldset>
     <legend>
         <span>
             {% trans "New event" %}
@@ -13,7 +14,6 @@
     </legend>
     {{ wizard.form.media }}
     {% block wizard_content %}{% endblock %}
-    <form action="" method="post">
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form_errors wizard.form %}
@@ -30,5 +30,5 @@
         {% endif %}
         <button type="submit" class="btn btn-success btn-lg float-right">{% trans "Next step" %}</button>
     </div>
-    </form>
+</fieldset></form>
 {% endblock %}

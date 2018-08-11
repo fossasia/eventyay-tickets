@@ -5,7 +5,7 @@
 <article>
 {% for schedule in request.event.schedules.all %}{% if schedule.version %}
 <section>
-    <legend>{% trans "Version" %} {{ schedule.version }}</legend>
+    <h4>{% trans "Version" %} {{ schedule.version }}</h4>
     {% if not schedule.changes.count %}
         {% if schedule.changes.action == 'update' %}
             <p>{{ phrases.agenda.changelog_unchanged }}</p>
