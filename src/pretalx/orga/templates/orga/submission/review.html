@@ -35,35 +35,44 @@
         </span>
     </div>
 
+<form method="post" action="">
+    {% csrf_token %}
+    {% bootstrap_form_errors form %}
+    {% bootstrap_form_errors qform %}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Submission Type" %}</label>
+        <div class="col-md-9 mt-1">
+            {{ submission.submission_type }}
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
+        <div class="col-md-9 mt-1">
+            {{ submission.abstract|rich_text|default:'-' }}
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Description" %}</label>
+        <div class="col-md-9 mt-1">
+            {{ submission.description|rich_text|default:'-' }}
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes for the organiser" %}</label>
+        <div class="col-md-9 mt-1">
+            {{ submission.notes|rich_text|default:'-' }}
+        </div>
+    </div>
+    {% for speaker in profiles %}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
+        <div class="col-md-9 mt-1">
+            {{ speaker.biography|rich_text|default:'-' }}
+        </div>
+    </div>
+    {% endfor %}
+
     {% if not form.instance.pk and not read_only %}
-    <form method="post" action="">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form_errors qform %}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="id_text">{% trans "Submission Type" %}</label>
-            <div class="col-md-9">
-                {{ submission.submission_type }}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
-            <div class="col-md-9">
-                {{ submission.abstract|rich_text }}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="id_text">{% trans "Description" %}</label>
-            <div class="col-md-9">
-                {{ submission.description|rich_text }}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes for the organiser" %}</label>
-            <div class="col-md-9">
-                {{ submission.notes|rich_text }}
-            </div>
-        </div>
         {% bootstrap_field form.score layout='event' %}
         {% bootstrap_form qform layout='event' %}
         {% bootstrap_field form.text layout='event' %}
@@ -76,10 +85,7 @@
                 <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
             </div>
         </div>
-    </form>
-    {% endif %}
-
-    {% if form.instance.pk or read_only %}
+    {% else %}
     <table class="table review-table table-hover table-responsive-md">
             <tr>
                 <th>{% trans "Points" %}</th>
@@ -91,7 +97,7 @@
             </tr>
         <tbody>
             {% if form.instance.pk or not read_only %}
-            <tr><form method="post">
+            <tr>
                 {% csrf_token %}
                 <td>{% bootstrap_field form.score layout="inline" %}</td>
                 {% for field in qform %}
@@ -105,7 +111,7 @@
                         {{ request.user.get_display_name }}
                     {% endif %}
                 </td>
-            </form></tr>
+            </tr>
             {% endif %}
             {% for review in reviews %}
                 {% if review != form.instance %}
@@ -124,5 +130,6 @@
         </tbody>
     </table>
     {% endif %}
+</form>
 {% endif %}
 {% endblock %}

@@ -132,6 +132,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         context['skip_for_now'] = Review.find_missing_reviews(
             self.request.event, self.request.user, ignore=[self.submission]
         ).first()
+        context['profiles'] = [speaker.event_profile(self.request.event) for speaker in self.submission.speakers.all()]
         context['reviews'] = [
             {
                 'score': review.display_score,
