@@ -161,6 +161,8 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             'variant',
             'required',
             'contains_personal_data',
+            'min_length',
+            'max_length',
         ]
 
 

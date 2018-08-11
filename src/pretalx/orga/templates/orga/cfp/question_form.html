@@ -50,6 +50,8 @@
             {% endblocktrans %}
         </div>
         {% bootstrap_field form.required layout='event' %}
+        <span class="limit-length">{% bootstrap_field form.min_length layout='event' %}
+        {% bootstrap_field form.max_length layout='event' %}</span>
         {% bootstrap_field form.contains_personal_data layout='event' %}
 
         <fieldset id="answer-options">

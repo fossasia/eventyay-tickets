@@ -99,6 +99,18 @@ class Question(LogMixin, models.Model):
             'If a user deletes their account, answers of questions for personal data will be removed, too.'
         ),
     )
+    min_length = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_('Minimum text length'),
+        help_text=_('Minimum allowed text length in characters'),
+    )
+    max_length = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_('Maximum text length'),
+        help_text=_('Maximum allowed text length in characters'),
+    )
     objects = QuestionManager()
     all_objects = AllQuestionManager()
 

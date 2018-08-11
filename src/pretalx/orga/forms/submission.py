@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 
+from pretalx.common.forms.utils import get_help_text
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.submission.models import Submission, SubmissionType
 
@@ -26,15 +27,15 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
                 self.fields.pop(key)
             else:
                 self.fields[key].required = require
-                for attr in ['min', 'max']:
-                    value = event.settings.get(f'cfp_{key}_{attr}_length')
-                    if value:
-                        self.fields[key].widget.attrs[f'{attr}length'] = value
-                        self.fields[key].help_text += ' ' + (
-                            _('Please write at least {} characters.')
-                            if attr == 'min'
-                            else _('Please write no more than {} characters.')
-                        ).format(value)
+                min_value = event.settings.get(f'cfp_{key}_min_length')
+                max_value = event.settings.get(f'cfp_{key}_max_length')
+                if min_value:
+                    self.fields[key].widget.attrs[f'minlength'] = min_value
+                if max_value:
+                    self.fields[key].widget.attrs[f'maxlength'] = max_value
+                self.fields['help_text'] = get_help_text(
+                    self.fields['help_text'], min_value, max_value
+                )
 
     class Meta:
         model = Submission

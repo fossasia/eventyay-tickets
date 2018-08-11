@@ -115,11 +115,15 @@ $(function () {
 });
 
 function question_page_toggle_view() {
-    var show = $("#id_variant").val() == "choices" || $("#id_variant").val() == "multiple_choice";
+    const variant = $('#id_variant').val()
+    var show = variant === "choices" || variant === "multiple_choice";
     $("#answer-options").toggle(show);
 
-    show = $("#id_variant").val() == "boolean" && $("#id_required").prop("checked");
+    show = variant === "boolean" && $("#id_required").prop("checked");
     $(".alert-required-boolean").toggle(show);
+
+    show = variant === "text" || variant === "string";
+    $(".limit-length").toggle(show);
 }
 
 function getCookie(name) {

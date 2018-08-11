@@ -4,11 +4,11 @@ from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 
+from pretalx.common.forms.utils import get_help_text
 from pretalx.submission.models import Answer, Question, QuestionVariant
 
 
 class QuestionsForm(forms.Form):
-
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         self.submission = kwargs.pop('submission', None)
@@ -32,10 +32,18 @@ class QuestionsForm(forms.Form):
             self.queryset = self.queryset.filter(target=self.target_type)
         for question in self.queryset.prefetch_related('options'):
             if target_object:
-                answers = [a for a in target_object.answers.all() if a.question_id == question.id]
+                answers = [
+                    a
+                    for a in target_object.answers.all()
+                    if a.question_id == question.id
+                ]
                 if answers:
                     initial_object = answers[0]
-                    initial = answers[0].answer_file if question.variant == QuestionVariant.FILE else answers[0].answer
+                    initial = (
+                        answers[0].answer_file
+                        if question.variant == QuestionVariant.FILE
+                        else answers[0].answer
+                    )
                 else:
                     initial_object = None
                     initial = question.default_answer
@@ -43,69 +51,117 @@ class QuestionsForm(forms.Form):
                 initial_object = None
                 initial = question.default_answer
 
-            field = self.get_field(question=question, initial=initial, initial_object=initial_object, readonly=readonly)
+            field = self.get_field(
+                question=question,
+                initial=initial,
+                initial_object=initial_object,
+                readonly=readonly,
+            )
             field.question = question
             field.answer = initial_object
             self.fields[f'question_{question.pk}'] = field
 
     @cached_property
     def speaker_fields(self):
-        return [forms.BoundField(self, field, name) for name, field in self.fields.items() if field.question.target == 'speaker']
+        return [
+            forms.BoundField(self, field, name)
+            for name, field in self.fields.items()
+            if field.question.target == 'speaker'
+        ]
 
     @cached_property
     def submission_fields(self):
-        return [forms.BoundField(self, field, name) for name, field in self.fields.items() if field.question.target == 'submission']
+        return [
+            forms.BoundField(self, field, name)
+            for name, field in self.fields.items()
+            if field.question.target == 'submission'
+        ]
 
     def get_field(self, *, question, initial, initial_object, readonly):
         if question.variant == QuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
-            widget = forms.CheckboxInput(attrs={'required': 'required'}) if question.required else forms.CheckboxInput()
-            initialbool = (initial == 'True') if initial else bool(question.default_answer)
+            widget = (
+                forms.CheckboxInput(attrs={'required': 'required'})
+                if question.required
+                else forms.CheckboxInput()
+            )
+            initialbool = (
+                (initial == 'True') if initial else bool(question.default_answer)
+            )
 
             return forms.BooleanField(
-                disabled=readonly, help_text=question.help_text,
-                label=question.question, required=question.required,
-                widget=widget, initial=initialbool
+                disabled=readonly,
+                help_text=question.help_text,
+                label=question.question,
+                required=question.required,
+                widget=widget,
+                initial=initialbool,
             )
         elif question.variant == QuestionVariant.NUMBER:
             return forms.DecimalField(
-                disabled=readonly, help_text=question.help_text,
-                label=question.question, required=question.required,
-                min_value=Decimal('0.00'), initial=initial
+                disabled=readonly,
+                help_text=question.help_text,
+                label=question.question,
+                required=question.required,
+                min_value=Decimal('0.00'),
+                initial=initial,
             )
         elif question.variant == QuestionVariant.STRING:
             return forms.CharField(
-                disabled=readonly, help_text=question.help_text,
-                label=question.question, required=question.required, initial=initial
+                disabled=readonly,
+                help_text=get_help_text(
+                    question.help_text, question.min_length, question.max_length
+                ),
+                label=question.question,
+                required=question.required,
+                initial=initial,
+                min_length=question.min_length,
+                max_length=question.max_length,
             )
         elif question.variant == QuestionVariant.TEXT:
             return forms.CharField(
-                label=question.question, required=question.required,
+                label=question.question,
+                required=question.required,
                 widget=forms.Textarea,
-                disabled=readonly, help_text=question.help_text,
-                initial=initial
+                disabled=readonly,
+                help_text=get_help_text(
+                    question.help_text, question.min_length, question.max_length
+                ),
+                initial=initial,
+                min_length=question.min_length,
+                max_length=question.max_length,
             )
         elif question.variant == QuestionVariant.FILE:
             return forms.FileField(
-                label=question.question, required=question.required,
-                disabled=readonly, help_text=question.help_text,
-                initial=initial
+                label=question.question,
+                required=question.required,
+                disabled=readonly,
+                help_text=question.help_text,
+                initial=initial,
             )
         elif question.variant == QuestionVariant.CHOICES:
             return forms.ModelChoiceField(
                 queryset=question.options.all(),
-                label=question.question, required=question.required,
-                initial=initial_object.options.first() if initial_object else question.default_answer,
-                disabled=readonly, help_text=question.help_text,
+                label=question.question,
+                required=question.required,
+                initial=initial_object.options.first()
+                if initial_object
+                else question.default_answer,
+                disabled=readonly,
+                help_text=question.help_text,
             )
         elif question.variant == QuestionVariant.MULTIPLE:
             return forms.ModelMultipleChoiceField(
                 queryset=question.options.all(),
-                label=question.question, required=question.required,
+                label=question.question,
+                required=question.required,
                 widget=forms.CheckboxSelectMultiple,
-                initial=initial_object.options.all() if initial_object else question.default_answer,
-                disabled=readonly, help_text=question.help_text,
+                initial=initial_object.options.all()
+                if initial_object
+                else question.default_answer,
+                disabled=readonly,
+                help_text=question.help_text,
             )
 
     def save(self):
@@ -159,4 +215,6 @@ class QuestionsForm(forms.Form):
             value = answer.answer
         else:
             answer.answer = value
-        answer.log_action(action, person=self.request_user or self.speaker, data={'answer': value})
+        answer.log_action(
+            action, person=self.request_user or self.speaker, data={'answer': value}
+        )
