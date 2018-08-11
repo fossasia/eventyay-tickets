@@ -30,7 +30,9 @@
                     </td>
                     <td>{{ info.include_submitters|yesno }}</td>
                     <td>{{ info.exclude_unconfirmed|yesno }}</td>
-                    <td>
+                    <td class="text-right">
+                        <a href="{{ info.orga_urls.edit }}" class="btn btn-sm btn-info"><i class="fa fa-edit"></i></a>
+                        <a href="{{ info.orga_urls.delete }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
             {% endfor %}

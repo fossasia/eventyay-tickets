@@ -10,11 +10,12 @@
     {% if information %}
     <h2>{% trans "Important Information" %}</h2>
     {% for info in information %}
-        <legend>{{ info.title }}</legend>
+        <h4>{{ info.title }}</h4>
         {{ info.text|rich_text }}
         {% if info.resource %}
             <a href="{{ info.resource.url }}"><i class="fa fa-file-o"></i> {{ info.resource.name }}</a>
         {% endif %}
+        {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     {% endif %}
     <h2>{% trans "Your submissions" %}</h2>

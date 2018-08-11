@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.views.generic import ListView, View
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import DetailView, ListView, View
 
 from pretalx.common.mixins.views import (
     ActionFromUrl, Filterable, PermissionRequired, Sortable,
@@ -22,7 +23,11 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     model = SpeakerProfile
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
-    default_filters = ('user__nick__icontains', 'user__email__icontains', 'user__name__icontains')
+    default_filters = (
+        'user__nick__icontains',
+        'user__email__icontains',
+        'user__name__icontains',
+    )
     sortable_fields = ('user__nick', 'user__email', 'user__name')
     default_sort_field = 'user__name'
     paginate_by = 25
@@ -42,9 +47,19 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
         if 'role' in self.request.GET:
             # TODO: this returns speakers accepted for *other* events. SubQuery time
             if self.request.GET['role'] == 'true':
-                qs = qs.filter(user__submissions__state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
+                qs = qs.filter(
+                    user__submissions__state__in=[
+                        SubmissionStates.ACCEPTED,
+                        SubmissionStates.CONFIRMED,
+                    ]
+                )
             elif self.request.GET['role'] == 'false':
-                qs = qs.exclude(user__submissions__state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED])
+                qs = qs.exclude(
+                    user__submissions__state__in=[
+                        SubmissionStates.ACCEPTED,
+                        SubmissionStates.CONFIRMED,
+                    ]
+                )
         qs = self.sort_queryset(qs)
         return qs
 
@@ -61,9 +76,14 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return get_object_or_404(
             User.objects.filter(
                 Q(submissions__in=self.request.event.submissions.all())
-                |
-                Q(submissions__in=self.request.event.submissions(manager='deleted_objects').all())
-            ).order_by('id').distinct(),
+                | Q(
+                    submissions__in=self.request.event.submissions(
+                        manager='deleted_objects'
+                    ).all()
+                )
+            )
+            .order_by('id')
+            .distinct(),
             pk=self.kwargs['pk'],
         )
 
@@ -79,19 +99,32 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.get_permission_object()
 
     def get_success_url(self) -> str:
-        return reverse('orga:speakers.view', kwargs={'event': self.request.event.slug, 'pk': self.kwargs['pk']})
+        return reverse(
+            'orga:speakers.view',
+            kwargs={'event': self.request.event.slug, 'pk': self.kwargs['pk']},
+        )
 
     def get_context_data(self, *args, **kwargs):
         from pretalx.submission.models import QuestionTarget
+
         context = super().get_context_data(*args, **kwargs)
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         context['submission_count'] = submissions.count()
         context['submissions'] = submissions
-        context['questions'] = [{
-            'question': question,
-            'answers': question.answers.filter(person=self.object)
-        } for question in self.request.event.questions.filter(target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER])]
-        context['questions'] = [q for q in context['questions'] if q['answers'].count() and any(a.answer is not None for a in q['answers'])]
+        context['questions'] = [
+            {
+                'question': question,
+                'answers': question.answers.filter(person=self.object),
+            }
+            for question in self.request.event.questions.filter(
+                target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER]
+            )
+        ]
+        context['questions'] = [
+            q
+            for q in context['questions']
+            if q['answers'].count() and any(a.answer is not None for a in q['answers'])
+        ]
         return context
 
     def form_valid(self, form):
@@ -99,15 +132,14 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         if form.has_changed():
             profile = self.object.profiles.filter(event=self.request.event).first()
             if profile:
-                profile.log_action('pretalx.user.profile.update', person=self.request.user, orga=True)
+                profile.log_action(
+                    'pretalx.user.profile.update', person=self.request.user, orga=True
+                )
         return super().form_valid(form)
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        kwargs.update({
-            'event': self.request.event,
-            'user': self.object,
-        })
+        kwargs.update({'event': self.request.event, 'user': self.object})
         return kwargs
 
 
@@ -115,7 +147,9 @@ class SpeakerToggleArrived(PermissionRequired, View):
     permission_required = 'orga.change_speaker'
 
     def get_object(self):
-        return get_object_or_404(SpeakerProfile, event=self.request.event, user_id=self.kwargs['pk'])
+        return get_object_or_404(
+            SpeakerProfile, event=self.request.event, user_id=self.kwargs['pk']
+        )
 
     @cached_property
     def object(self):
@@ -125,14 +159,22 @@ class SpeakerToggleArrived(PermissionRequired, View):
         profile = self.object
         profile.has_arrived = not profile.has_arrived
         profile.save()
-        action = 'pretalx.speaker.arrived' if profile.has_arrived else 'pretalx.speaker.unarrived'
-        profile.user.log_action(action, data={'event': self.request.event.slug}, person=self.request.user, orga=True)
+        action = (
+            'pretalx.speaker.arrived'
+            if profile.has_arrived
+            else 'pretalx.speaker.unarrived'
+        )
+        profile.user.log_action(
+            action,
+            data={'event': self.request.event.slug},
+            person=self.request.user,
+            orga=True,
+        )
         if request.GET.get('from') == 'list':
-            return redirect(reverse('orga:speakers.list', kwargs={'event': self.kwargs['event']}))
-        return redirect(reverse(
-            'orga:speakers.view',
-            kwargs=self.kwargs,
-        ))
+            return redirect(
+                reverse('orga:speakers.list', kwargs={'event': self.kwargs['event']})
+            )
+        return redirect(reverse('orga:speakers.view', kwargs=self.kwargs))
 
 
 class InformationList(PermissionRequired, ListView):
@@ -154,7 +196,7 @@ class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     write_permission_required = 'orga.change_information'
 
     def get_permission_object(self):
-        return self.request.event
+        return self.get_object() or self.request.event
 
     def get_object(self):
         if 'pk' in self.kwargs:
@@ -174,5 +216,13 @@ class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.request.event.orga_urls.information
 
 
-class InformationDelete(PermissionRequired, View):
-    write_permission_required = 'orga.change_information'
+class InformationDelete(PermissionRequired, DetailView):
+    model = SpeakerInformation
+    permission_required = 'orga.change_information'
+    template_name = 'orga/speaker/information_delete.html'
+
+    def post(self, request, *args, **kwargs):
+        information = self.get_object()
+        information.delete()
+        messages.success(request, _('The information has been deleted.'))
+        return redirect(request.event.orga_urls.information)

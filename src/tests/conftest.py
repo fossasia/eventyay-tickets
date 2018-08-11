@@ -7,7 +7,7 @@ from django.utils.timezone import now
 
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.mail.models import MailTemplate
-from pretalx.person.models import SpeakerProfile, User
+from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
     Answer, AnswerOption, Feedback, Question, QuestionVariant,
@@ -702,3 +702,8 @@ def review(submission, review_user):
     return Review.objects.create(
         score=1, submission=submission, user=review_user, text='Looks great!'
     )
+
+
+@pytest.fixture
+def information(event):
+    return SpeakerInformation.objects.create(event=event, title='Information title', text='Important information')

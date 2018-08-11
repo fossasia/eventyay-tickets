@@ -1,10 +1,8 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% load rules %}
 
 {% block content %}
-{% has_perm 'orga.change_information' request.user form.instance as can_edit_information %}
     <legend>
         {% trans "Speaker Information Note" %}
     </legend>
