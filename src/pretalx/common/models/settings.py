@@ -58,6 +58,13 @@ hierarkey.add_default('cfp_require_notes', 'False', bool)
 hierarkey.add_default('cfp_require_do_not_record', 'False', bool)
 hierarkey.add_default('cfp_require_image', 'False', bool)
 
+hierarkey.add_default('cfp_abstract_min_length', None, int)
+hierarkey.add_default('cfp_description_min_length', None, int)
+hierarkey.add_default('cfp_biography_min_length', None, int)
+hierarkey.add_default('cfp_abstract_max_length', None, int)
+hierarkey.add_default('cfp_description_max_length', None, int)
+hierarkey.add_default('cfp_biography_max_length', None, int)
+
 hierarkey.add_default('allow_override_votes', 'False', bool)
 hierarkey.add_default('review_min_score', 0, int)
 hierarkey.add_default('review_max_score', 1, int)

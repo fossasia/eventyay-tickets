@@ -30,6 +30,15 @@ class InfoForm(forms.ModelForm):
                 self.fields.pop(key)
             else:
                 self.fields[key].required = require
+                for attr in ['min', 'max']:
+                    value = event.settings.get(f'cfp_{key}_{attr}_length')
+                    if value:
+                        self.fields[key].widget.attrs[f'{attr}length'] = value
+                        self.fields[key].help_text += ' ' + (
+                            _('Please write at least {} characters.')
+                            if attr == 'min'
+                            else _('Please write no more than {} characters.')
+                        ).format(value)
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=self.event
         )

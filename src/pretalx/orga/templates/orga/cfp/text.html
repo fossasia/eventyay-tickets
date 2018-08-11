@@ -44,6 +44,8 @@
                         <th></th>
                         <th>{% trans "Request" %}</th>
                         <th>{% trans "Require" %}</th>
+                        <th>{% trans "Minimum length" %}<div class="text-muted">({% trans "characters" %})</small></div></th>
+                        <th>{% trans "Maximum length" %}<div class="text-muted">({% trans "characters" %})</small></div></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,31 +53,43 @@
                         <th>{% trans "Abstract" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_abstract use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_abstract use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_abstract_min_length use_label=False layout='inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_abstract_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% trans "Description" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_description use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_description use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_description_min_length use_label=False layout='inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_description_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% trans "Notes for the organiser" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_notes use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_notes use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>{% trans "Biography" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_biography use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_biography use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
                         <th>{% trans "Recording opt-out" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_do_not_record use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <th>{% trans "Talk image" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_image use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_image use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

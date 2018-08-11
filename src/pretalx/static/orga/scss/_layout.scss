@@ -507,8 +507,30 @@ legend .submission-state-dropdown {
 }
 
 #cfp-option-table {
-  flex: 0 0 0;
   width: 75%;
+  display: table;
+  .form-group {
+    display: inherit;
+  }
+  small {
+    margin-top: 0;
+    padding-top: 0;
+  }
+  thead th {
+    line-height: 1;
+    vertical-align: top;
+    .text-muted {
+      font-weight: normal;
+    }
+  }
+  input[type=number] {
+    width: 64px;
+    margin-top: -8px;
+  }
+  tr, tr td {
+    padding-top: 16px;
+    line-height: 2.5;
+  }
 }
 #id_locales .checkbox {
   display: flex;
