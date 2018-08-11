@@ -8,6 +8,9 @@
 {% block social_title %}{{ submission.title }}{% endblock %}
 {% block meta_description %}{{ submission_description }}{% endblock %}
 {% block social_description %}{{ submission_description }}{% endblock %}
+{% block meta_image %}{% if submission.image %}<meta property="thumbnail" content="{{ submission.urls.image.full }}">
+    <meta property="og:image" content="{{ submission.urls.image.full }}">{% elif request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">
+    <meta property="og:image" content="{{ request.event.urls.logo.full }}">{% endif %}{% endblock %}
 
 {% block agenda_content %}
     <h3 class="talk-title">

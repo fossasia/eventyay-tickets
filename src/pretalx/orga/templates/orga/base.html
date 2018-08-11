@@ -5,7 +5,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: pretalx</title>
+    <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
+    <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
+    <meta name="application-name" content="pretalx">
+    <meta name="generator" content="pretalx">
+    <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
+    <meta name="referrer" content="origin-when-crossorigin">
+    <meta name="robots" content="nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1c4a3b">
+    <meta name="HandheldFriendly" content="True"/>
+    {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
+
     <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
@@ -17,8 +30,6 @@
     {% if request.event and request.event.custom_css %}
         <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
     {% endif %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#1C4A3B">
 
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">

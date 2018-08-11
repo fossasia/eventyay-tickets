@@ -178,6 +178,7 @@ class Submission(LogMixin, models.Model):
         public = '{self.event.urls.base}/talk/{self.code}'
         feedback = '{public}/feedback/'
         ical = '{public}.ics'
+        image = '{self.image.url}'
         invite = '{user_base}/invite'
         accept_invitation = '{self.event.urls.base}/invitation/{self.code}/{self.invitation_token}'
         review = '{self.event.urls.base}/talk/review/{self.review_code}'
