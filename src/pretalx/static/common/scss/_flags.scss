@@ -3,12 +3,18 @@ input[lang] {
   padding-left: 34px;
 }
 
+.checkbox > input[lang] + label {
+  background: no-repeat 10px center;
+  padding-left: 32px;
+  margin-left: -8px;
+}
+
 textarea[lang] {
   background: no-repeat 10px 10px;
   padding-left: 34px;
 }
 
-input[lang=ad], textarea[lang=ad] {
+input[lang=ad], textarea[lang=ad], .checkbox > input[lang=ad] + label {
   background-image: url(static("vendored/flags/ad.png"));
 }
 
@@ -224,15 +230,11 @@ input[lang=cz], textarea[lang=cz] {
   background-image: url(static("vendored/flags/cz.png"));
 }
 
-input[lang=de], textarea[lang=de] {
+input[lang=de], textarea[lang=de], .checkbox > input[lang=de] + label {
   background-image: url(static("vendored/flags/de.png"));
 }
 
-input[lang=de-informal], textarea[lang=de-informal] {
-  background-image: url(static("vendored/flags/de-informal.png"));
-}
-
-input[lang=dj], textarea[lang=dj] {
+input[lang=dj], textarea[lang=dj], .checkbox > input[lang=dj] + label {
   background-image: url(static("vendored/flags/dj.png"));
 }
 
@@ -300,7 +302,7 @@ input[lang=fo], textarea[lang=fo] {
   background-image: url(static("vendored/flags/fo.png"));
 }
 
-input[lang=fr], textarea[lang=fr] {
+input[lang=fr], textarea[lang=fr], .checkbox > input[lang=fr] + label {
   background-image: url(static("vendored/flags/fr.png"));
 }
 
@@ -976,6 +978,6 @@ input[lang=zw], textarea[lang=zw] {
   background-image: url(static("vendored/flags/zw.png"));
 }
 
-input[lang=en], textarea[lang=en] {
+input[lang=en], textarea[lang=en], .checkbox > input[lang=en] + label {
   background-image: url(static("vendored/flags/gb.png"));
 }

@@ -29,6 +29,7 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
     def create_option(
         self, name, value, label, selected, index, subindex=None, attrs=None
     ):
+        attrs['lang'] = value
         opt = super().create_option(
             name, value, label, selected, index, subindex, attrs
         )
