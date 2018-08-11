@@ -15,25 +15,19 @@ from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
 class UserForm(forms.Form):
-    login_username = forms.CharField(max_length=60,
-                                     label=phrases.base.username_or_email,
-                                     required=False)
-    login_password = forms.CharField(widget=forms.PasswordInput,
-                                     label=_('Password'),
-                                     required=False)
-    register_username = forms.CharField(max_length=60,
-                                        label=_('Username'),
-                                        required=False)
-    register_email = forms.EmailField(label=_('Email address'),
-                                      required=False)
-    register_password = PasswordField(
-        label=_('Password'),
-        required=False,
+    login_username = forms.CharField(
+        max_length=60, label=phrases.base.username_or_email, required=False
     )
+    login_password = forms.CharField(
+        widget=forms.PasswordInput, label=_('Password'), required=False
+    )
+    register_username = forms.CharField(
+        max_length=60, label=_('Username'), required=False
+    )
+    register_email = forms.EmailField(label=_('Email address'), required=False)
+    register_password = PasswordField(label=_('Password'), required=False)
     register_password_repeat = PasswordConfirmationField(
-        label=_('Password (again)'),
-        required=False,
-        confirm_with='register_password',
+        label=_('Password (again)'), required=False, confirm_with='register_password'
     )
 
     def __init__(self, *args, **kwargs):
@@ -52,8 +46,12 @@ class UserForm(forms.Form):
         user = authenticate(username=uname, password=data.get('login_password'))
 
         if user is None:
-            raise ValidationError(_('No user account matches the entered credentials. '
-                                    'Are you sure that you typed your password correctly?'))
+            raise ValidationError(
+                _(
+                    'No user account matches the entered credentials. '
+                    'Are you sure that you typed your password correctly?'
+                )
+            )
 
         if not user.is_active:
             raise ValidationError(_('Sorry, your account is currently disabled.'))
@@ -65,23 +63,37 @@ class UserForm(forms.Form):
             raise ValidationError(phrases.base.passwords_differ)
 
         if User.objects.filter(nick__iexact=data.get('register_username')).exists():
-            raise ValidationError(_('We already have a user with that username. Did you already register before '
-                                    'and just need to log in?'))
+            raise ValidationError(
+                _(
+                    'We already have a user with that username. Did you already register before '
+                    'and just need to log in?'
+                )
+            )
 
         if User.objects.filter(email__iexact=data.get('register_email')).exists():
-            raise ValidationError(_('We already have a user with that email address. Did you already register '
-                                    'before and just need to log in?'))
+            raise ValidationError(
+                _(
+                    'We already have a user with that email address. Did you already register '
+                    'before and just need to log in?'
+                )
+            )
 
     def clean(self):
         data = super().clean()
 
         if data.get('login_username') and data.get('login_password'):
             self._clean_login(data)
-        elif data.get('register_username') and data.get('register_email') and data.get('register_password'):
+        elif (
+            data.get('register_username')
+            and data.get('register_email')
+            and data.get('register_password')
+        ):
             self._clean_register(data)
         else:
             raise ValidationError(
-                _('You need to fill all fields of either the login or the registration form.')
+                _(
+                    'You need to fill all fields of either the login or the registration form.'
+                )
             )
 
         return data
@@ -91,11 +103,13 @@ class UserForm(forms.Form):
         if data.get('login_username') and data.get('login_password'):
             return data['user_id']
 
-        user = User.objects.create_user(nick=data.get('register_username'),
-                                        email=data.get('register_email'),
-                                        password=data.get('register_password'),
-                                        locale=translation.get_language(),
-                                        timezone=timezone.get_current_timezone_name())
+        user = User.objects.create_user(
+            nick=data.get('register_username'),
+            email=data.get('register_email'),
+            password=data.get('register_password'),
+            locale=translation.get_language(),
+            timezone=timezone.get_current_timezone_name(),
+        )
         data['user_id'] = user.pk
         return user.pk
 
@@ -119,12 +133,11 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         if self.event and not self.event.settings.cfp_request_biography:
             self.fields.pop('biography')
         else:
-            self.fields['biography'].required = self.event.settings.cfp_require_biography
+            self.fields[
+                'biography'
+            ].required = self.event.settings.cfp_require_biography
         if self.user:
-            initials = {
-                field: getattr(self.user, field)
-                for field in self.user_fields
-            }
+            initials = {field: getattr(self.user, field) for field in self.user_fields}
         for field in self.user_fields:
             self.fields[field] = User._meta.get_field(field).formfield(
                 initial=initials.get(field), disabled=read_only
@@ -136,13 +149,20 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
             return [f for f in self.USER_FIELDS if f != "email" or self.with_email]
         else:
             return [
-                f for f in self.USER_FIELDS
-                if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
+                f
+                for f in self.USER_FIELDS
+                if f not in self.FIRST_TIME_EXCLUDE
+                and (f != "email" or self.with_email)
             ]
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
-        if avatar and avatar.file and hasattr(avatar, '_size') and avatar._size > 10 * 1024 * 1024:
+        if (
+            avatar
+            and avatar.file
+            and hasattr(avatar, '_size')
+            and avatar._size > 10 * 1024 * 1024
+        ):
             raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
         return avatar
 
@@ -152,13 +172,15 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         if self.user:
             qs = qs.exclude(pk=self.user.pk)
         if qs.filter(email__iexact=email):
-            raise ValidationError(_('Please choose a different email address, this one is taken.'))
+            raise ValidationError(
+                _('Please choose a different email address, this one is taken.')
+            )
         return email
 
     def save(self, **kwargs):
         for user_attribute in self.user_fields:
             value = self.cleaned_data.get(user_attribute)
-            if (value is False and user_attribute == 'avatar'):
+            if value is False and user_attribute == 'avatar':
                 self.user.avatar = None
             else:
                 setattr(self.user, user_attribute, value)
@@ -170,7 +192,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
 
     class Meta:
         model = SpeakerProfile
-        fields = ('biography', )
+        fields = ('biography',)
 
 
 class OrgaProfileForm(forms.ModelForm):
@@ -181,28 +203,22 @@ class OrgaProfileForm(forms.ModelForm):
 
 class LoginInfoForm(forms.ModelForm):
     error_messages = {
-        'pw_current_wrong': _("The current password you entered was not correct."),
+        'pw_current_wrong': _("The current password you entered was not correct.")
     }
 
-    old_password = forms.CharField(widget=forms.PasswordInput,
-                                   label=_('Password (current)'),
-                                   required=True)
-    password = PasswordField(
-        label=_('New password'),
-        required=False,
+    old_password = forms.CharField(
+        widget=forms.PasswordInput, label=_('Password (current)'), required=True
     )
+    password = PasswordField(label=_('New password'), required=False)
     password_repeat = PasswordConfirmationField(
-        label=phrases.base.password_repeat,
-        required=False,
-        confirm_with='password',
+        label=phrases.base.password_repeat, required=False, confirm_with='password'
     )
 
     def clean_old_password(self):
         old_pw = self.cleaned_data.get('old_password')
         if not check_password(old_pw, self.user.password):
             raise forms.ValidationError(
-                self.error_messages['pw_current_wrong'],
-                code='pw_current_wrong',
+                self.error_messages['pw_current_wrong'], code='pw_current_wrong'
             )
         return old_pw
 
@@ -232,14 +248,40 @@ class LoginInfoForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', )
+        fields = ('email',)
 
 
 class SpeakerInformationForm(I18nModelForm):
+    def clean(self):
+        result = super().clean()
+        if (
+            self.cleaned_data['include_submitters']
+            and self.cleaned_data['exclude_unconfirmed']
+        ):
+            raise ValidationError(
+                _(
+                    'Either target all submitters or only confirmed speakers, these options are exclusive!'
+                )
+            )
+        return result
+
     class Meta:
         model = SpeakerInformation
-        fields = ('title', 'text', 'include_submitters', 'exclude_unconfirmed', 'resource')
+        fields = (
+            'title',
+            'text',
+            'include_submitters',
+            'exclude_unconfirmed',
+            'resource',
+        )
 
 
 class SpeakerFilterForm(forms.Form):
-    role = forms.ChoiceField(choices=(('', _('all')), ('true', _('Speakers')), ('false', _('Non-accepted submitters'))), required=False)
+    role = forms.ChoiceField(
+        choices=(
+            ('', _('all')),
+            ('true', _('Speakers')),
+            ('false', _('Non-accepted submitters')),
+        ),
+        required=False,
+    )

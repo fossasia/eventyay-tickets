@@ -129,7 +129,6 @@ def test_orga_can_create_speaker_information(orga_client, event):
             'title_0': 'Test Information',
             'text_0': 'Very Important!!!',
             'include_submitters': 'on',
-            'exclude_unconfirmed': 'on',
         },
         follow=True,
     )
@@ -160,7 +159,6 @@ def test_orga_can_edit_speaker_information(orga_client, event, information):
             'title_0': 'Banana banana',
             'text_0': 'Very Important!!!',
             'include_submitters': 'on',
-            'exclude_unconfirmed': 'on',
         },
         follow=True,
     )
