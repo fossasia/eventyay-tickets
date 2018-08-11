@@ -21,18 +21,19 @@
     </div>{% endif %}
 
     {% for speaker in speakers %}
-        <legend>
+    <div class="card"><div class="card-body">
+        <h3 class="card-title">
             <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}">
                 {{ speaker.name }}
             </a>
-        </legend>
+        </h3>
         {% if request.event.settings.cfp_request_biography %}
-            <p>
+            <p class="card-text">
                 <h5>{% trans "Biography" %}:</h5>
                 {{ speaker.biography|rich_text|default:"-" }}
             </p>
         {% endif %}
-        <p>
+        <p class="card-text">
         {% if speaker.other_submissions %}
             <h5>{% trans "Other submissions by this speaker:" %}</h5>
             <ul>
@@ -45,13 +46,16 @@
         {% endif %}
         </p>
         {% if can_edit_speakers %}
-        <div class="submit-group"><span></span>
-            <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
-                class="btn btn-lg btn-danger">
-                <i class="fa fa-trash"></i> {% trans "Remove" %}
-            </a>
-        </div>
+        <a href="{% url "orga:speakers.view" event=request.event.slug pk=speaker.id %}"
+            class="btn btn-info">
+            <i class="fa fa-edit"></i> {% trans "Edit" %}
+        </a>
+        <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
+            class="btn btn-danger">
+            <i class="fa fa-trash"></i> {% trans "Remove" %}
+        </a>
         {% endif %}
+    </div></div>
     {% endfor %}
 
 
