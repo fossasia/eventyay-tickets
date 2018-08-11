@@ -6,14 +6,14 @@
 
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
-    <legend>
+    <h2>
         {{ form.instance.user.get_display_name }} ({{ submission_count }}
         {% blocktrans trimmed count count=submission_count %}
         submission
         {% plural %}
         submissions
         {% endblocktrans %})
-    </legend>
+    </h2>
     <div class="alert alert-info col-md-9 ml-auto">
         <span>
         <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
@@ -56,14 +56,10 @@
         {% bootstrap_field form.email layout='event' %}
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% bootstrap_field form.availabilities layout='event' %}
-        {% include "orga/submit_row.html" %}
-    </form>
-
     {% if questions %}
-    <legend>{% trans "Answers" %}</legend>
+    <h3>{% trans "Answers" %}</h3>
     <ul>
-    {% for q_info in questions %}
-        {% if q_info.answers.count %}
+    {% for _, q_info in questions.items %}
         <li>
             <strong>{{ q_info.question.question }}</strong>
             {% if q_info.answers.count == 1 %}{% with answer=q_info.answers.first %}
@@ -76,7 +72,7 @@
                     {{ answer.answer }}
                 {% endif %}
                 {% if answer.submission %}({{ answer.submission.title }}){% endif %}
-            {% endwith %}{% else %}
+            {% endwith %}{% elif q_info.answers.count > 1 %}
             <ul>
                 {% for answer in q_info.answers %}
                 <li>
@@ -91,12 +87,14 @@
                 </li>
                 {% endfor %}
             </ul>
-            {% endif %}
+            {% else %}-{% endif %}
         </li>
-        {% endif %}
     {% endfor %}
     </ul>
     {% endif %}
+    {% include "orga/submit_row.html" %}
+    </form>
+
 
     <script type="text/javascript" src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}

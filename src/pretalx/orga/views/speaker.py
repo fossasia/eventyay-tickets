@@ -92,7 +92,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return self.get_object()
 
     def get_permission_object(self):
-        return self.object.profiles.filter(event=self.request.event).first()
+        return self.object.event_profile(self.request.event)
 
     @cached_property
     def permission_object(self):
@@ -111,20 +111,15 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         context['submission_count'] = submissions.count()
         context['submissions'] = submissions
-        context['questions'] = [
-            {
+        context['questions'] = {
+            question.pk: {
                 'question': question,
                 'answers': question.answers.filter(person=self.object),
             }
             for question in self.request.event.questions.filter(
                 target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER]
             )
-        ]
-        context['questions'] = [
-            q
-            for q in context['questions']
-            if q['answers'].count() and any(a.answer is not None for a in q['answers'])
-        ]
+        }
         return context
 
     def form_valid(self, form):
