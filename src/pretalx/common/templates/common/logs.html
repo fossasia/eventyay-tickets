@@ -1,10 +1,10 @@
 {% load i18n %}
 
 {% if entries|length %}
-<div class="panel panel-default history-sidebar">
-    <div class="panel-heading"><legend>
+<div class="panel panel-default">
+    <div class="panel-heading"><h3>
         {% trans "History" %}
-    </legend></div>
+    </h3></div>
 
     <ul class="list-group">
         {% for log in entries %}
