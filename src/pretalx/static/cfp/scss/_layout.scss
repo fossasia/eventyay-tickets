@@ -56,13 +56,13 @@ header {
   margin-bottom: 8px;
 }
 
-#main {
+#main-card {
   min-height: 300px;
   box-shadow: 0 5px 10px rgba($black, 0.2);
   padding: 0;
   border: none;
 
-  .content {
+  main {
     padding: 20px;
   }
 
@@ -82,7 +82,7 @@ header {
   }
 }
 
-.event-nonpublic {
+#event-nonpublic {
   background: $brand-danger;
   padding: 5px 20px;
   color: white;
@@ -150,7 +150,7 @@ footer {
     padding-top: 20px;
     width: 100%;
 
-    .content {
+    main {
       width: 100%;
       padding: 16px;
     }

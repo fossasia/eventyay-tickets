@@ -13,6 +13,7 @@
     <meta property="og:image" content="{{ request.event.urls.logo.full }}">{% endif %}{% endblock %}
 
 {% block agenda_content %}
+<article>
     <h3 class="talk-title">
         <div>
         »{{ submission.title }}«
@@ -52,14 +53,14 @@
             {% if talk.submission.recording_url %}
                 {{ submission.rendered_recording_iframe|safe }}
             {% endif %}
-            <div class="abstract">
+            <section class="abstract">
                 {{ submission.abstract|rich_text }}
-            </div>
-            <div class="description">
+            </section>
+            <section class="description">
                 {{ submission.description|rich_text }}
-            </div>
+            </section>
             {% if submission.active_resources.count %}
-                <div class="resources">
+                <section class="resources">
                     {% trans "See also:" %}
                     {% if submission.active_resources.count == 1 %}
                         <a href="{{ submission.active_resources.first.resource.url }}">
@@ -79,10 +80,10 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                </div>
+                </section>
             {% endif %}
         </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
+        <aside class="col-lg-4 col-md-6 col-xs-12">
             {% if submission.image %}
             <div class="image speakers">
                 <a href="{{ submission.image.url }}">
@@ -128,6 +129,7 @@
                 {% endfor %}
             </div>
             {% endif %}
-        </div>
+        </aside>
     </div>
+</article>
 {% endblock %}

@@ -54,17 +54,16 @@
     {% block custom_header %}{% endblock %}
 </head>
 <body>
-<div id="wrapper">
     <div id="top-bg" class="header {{ request.event.settings.display_header_pattern|default:"bg-primary" }}">
-        {% if request.event and not request.event.is_public and not is_html_export %}
-            <div class="event-nonpublic">
-                <i class="fa fa-user-secret"></i>
-                {% blocktrans trimmed %}
-                    This event is currently non-public. Only the orga team can see it.
-                {% endblocktrans %}
-            </div>
-        {% endif %}
     </div>
+    {% if request.event and not request.event.is_public and not is_html_export %}
+    <div id="event-nonpublic">
+        <i class="fa fa-user-secret"></i>
+        {% blocktrans trimmed %}
+            This event is currently non-public. Only organisers can see it.
+        {% endblocktrans %}
+    </div>
+    {% endif %}
     <div class="container" id="main-container">
         <header>
             <h1>
@@ -88,9 +87,9 @@
                 </div>
             {% endif %}
         </header>
-        <section class="card" id="main">
+        <div class="card" id="main-card">
             {% if request.event and request.user.is_authenticated and not is_html_export %}
-                <div class="user-row">
+                <nav class="user-row">
                     {% url "cfp:event.user.view" event=request.event.slug as userurl %}
                     <div>
                     {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
@@ -107,9 +106,9 @@
                         </a> &middot;
                         <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
                     </div>
-                </div>
+                </nav>
             {% endif %}
-            <div class="content">
+            <main>
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }}">
@@ -120,8 +119,8 @@
 
                 {% block content %}
                 {% endblock %}
-            </div>
-        </section>
+            </main>
+        </div>
         <footer>
             {% if is_html_export %}
             <div id="exporttimestamp" class="text-muted">
@@ -144,6 +143,5 @@
             {% endfor %}
         </footer>
     </div>
-</div>
 </body>
 </html>

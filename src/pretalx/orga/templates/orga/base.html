@@ -44,7 +44,6 @@
     {% block scripts %}{% endblock %}
 </head>
 <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
-<div id="wrapper">
     <nav class="navbar navbar-expand-lg fixed-top">
         <ul class="navbar-nav d-block d-lg-none">
             <li class="nav-item">
@@ -134,7 +133,7 @@
         </div>
     {% endif %}
     <div id="page-wrapper">
-        <nav class="nav flex-column sidebar">
+        <aside class="nav flex-column sidebar">
         {% if request.event %}
             {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
             {% has_perm 'orga.change_submissions' request.user request.event as can_see_orga_exclusive %}
@@ -311,18 +310,20 @@
                     </a>
                 {% endfor %}
             {% endif %}  {# if request.event #}
-        </nav>
+        </aside>
         <div id="page-content">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <main>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-            {% block content %}
-            {% endblock %}
+                {% block content %}
+                {% endblock %}
+            </main>
             <footer>
                 {% with "href='http://pretalx.com'" as a_attr %}
                     {% blocktrans trimmed %}
@@ -351,6 +352,5 @@
             <script type="text/javascript" src="{% static "orga/js/navigate.js" %}"></script>
         {% endcompress %}
     {% endif %}
-</div>
 </body>
 </html>

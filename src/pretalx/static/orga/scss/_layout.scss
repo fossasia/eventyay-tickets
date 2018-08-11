@@ -18,7 +18,7 @@
   margin-top: 50px;
 }
 
-.sidebar {
+aside.sidebar {
   background-color: $gray-lightest;
   width: 250px;
   height: 100vh;
@@ -356,12 +356,12 @@ footer {
     }
   }
 
-  nav.sidebar {
+  aside.sidebar {
     position: absolute;
     display: none;
   }
 
-  nav.sidebar-uncollapsed {
+  aside.sidebar-uncollapsed {
     display: inherit;
     z-index: 6;
 

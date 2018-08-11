@@ -7,6 +7,7 @@
 {% block social_title %}{{ speaker.get_display_name }}{% endblock %}
 
 {% block agenda_content %}
+<article>
 <h3>
     {% blocktrans with event=request.event.name trimmed %}
     {{ event }} speaker:
@@ -19,7 +20,7 @@
     </div>
 </h3>
 <div class="speaker-container">
-    <div class="speaker-info">
+    <section class="speaker-info">
         <div class="speaker-bio">
             {{ profile.biography|rich_text }}
         </div>
@@ -30,9 +31,9 @@
                 <img width="100%" src="{{ speaker.avatar.url }}">
             {% endif %}
         </div>
-    </div>
+    </section>
     <hr/>
-    <div class="speaker-talks">
+    <section class="speaker-talks">
         <h4>{% trans "Talks" %}</h4>
         {% for talk in talks %}
         <a href="{{ talk.urls.public }}"><div class="talk">
@@ -44,5 +45,6 @@
             </div>
         </div></a>
         {% endfor %}
-    </div>
+    </section>
+</article>
 {% endblock %}

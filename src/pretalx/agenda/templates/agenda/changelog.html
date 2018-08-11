@@ -2,8 +2,9 @@
 {% load i18n %}
 
 {% block agenda_content %}
+<article>
 {% for schedule in request.event.schedules.all %}{% if schedule.version %}
-
+<section>
     <legend>{% trans "Version" %} {{ schedule.version }}</legend>
     {% if not schedule.changes.count %}
         {% if schedule.changes.action == 'update' %}
@@ -88,5 +89,8 @@
             {% endif %}
         {% endif %}
     {% endif %}
-{% endif %}{% endfor %}
+{% endif %}
+</section>
+{% endfor %}
+</article>
 {% endblock %}
