@@ -1,0 +1,20 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+{% block content %}
+    <legend>
+        {% trans "Do you really want to delete this information?" %}
+    </legend>
+    <h4>{{ object.title }}</h4>
+    {{ object.text }}
+    <form method="post">
+        {% csrf_token %}
+        <div class="submit-group">
+            <a href="{{ request.event.orga_urls.information }}" class="btn btn-lg btn-danger">
+                {% trans "Back" %}
+            </a>
+            <button type="submit" class="btn btn-lg btn-success">
+                {% trans "Yes" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}
