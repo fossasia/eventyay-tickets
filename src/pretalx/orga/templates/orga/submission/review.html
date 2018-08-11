@@ -69,6 +69,9 @@
         {% bootstrap_field form.text layout='event' %}
         <div class="submit-group"><span></span>
             <div>
+                {% if skip_for_now %}
+                <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
+                {% endif %}
                 <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
                 <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
             </div>
