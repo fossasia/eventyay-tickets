@@ -27,17 +27,19 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
 
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
     {% if request.event and request.event.settings.cfp_css_file %}
+        <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
         <link rel="stylesheet" type="text/css" href="{{ request.event.settings.agenda_css_file }}"/>
     {% else %}
         {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
             <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
-            <link type="text/x-scss" rel="stylesheet" href="{% static "agenda/scss/main.scss" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "agenda/scss/main.scss" %}" />
         {% endcompress %}
     {% endif %}
+    {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
     {% compress js %}
         <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script type="text/javascript" src="{% static "vendored/popper.js" %}"></script>
@@ -49,11 +51,7 @@
         <script type="text/javascript" src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
         <script type="text/javascript" src="{% static "common/js/availabilities.js" %}"></script>
     {% endcompress %}
-    {% block custom_header %}
-    {% endblock %}
-    {% if request.event and request.event.custom_css %}
-        <link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>
-    {% endif %}
+    {% block custom_header %}{% endblock %}
 </head>
 <body>
 <div id="wrapper">
