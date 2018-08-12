@@ -13,7 +13,7 @@ class CheckboxMultiDropdown(CheckboxSelectMultiple):
         title = title or _('Choose one or more')
         markup = f"""
         <div class="checkbox-multi-select form-group">
-            <span class="multi-select-title form-control">{title}</span>
+            <span class="multi-select-title form-control" data-title="{title}">{title}</span>
             <span class="multi-select-options"><div class="form-group">
                 {checkboxes}
             </div></span>

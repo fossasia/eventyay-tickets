@@ -112,7 +112,31 @@ $(function () {
             fail();
         })
     });
+
+    $('.checkbox-multi-select input[type=checkbox]').change((ev) => {
+        const checkbox = ev.target;
+        var multiSelect = checkbox.parentNode;
+        while (multiSelect && !multiSelect.classList.contains('checkbox-multi-select')) {
+            multiSelect = multiSelect.parentNode;
+        }
+        if (multiSelect) {
+            update_multi_select_caption(multiSelect);
+        }
+    })
+    document.querySelectorAll('.checkbox-multi-select').forEach((element) => {update_multi_select_caption(element)});
 });
+
+function update_multi_select_caption(element) {
+    var checkboxes = element.querySelectorAll('.checkbox')
+    checkboxes = Array.from(checkboxes).filter((element) => {return element.querySelector('input[type=checkbox]').checked});
+    const text = checkboxes.map((box) => box.querySelector('label').innerHTML).join(', ')
+    const title = element.querySelector('.multi-select-title')
+    if (text) {
+        title.innerHTML = text;
+    } else {
+        title.innerHTML = title.dataset.title;
+    }
+}
 
 function question_page_toggle_view() {
     const variant = $('#id_variant').val()

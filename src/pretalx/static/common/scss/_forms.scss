@@ -118,6 +118,12 @@ table .radio, table .checkbox {
   margin-top: 0px !important;
   width: 300px;
 
+  .multi-select-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
   .multi-select-options {
     display: none;
     position: absolute;
