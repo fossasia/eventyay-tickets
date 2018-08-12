@@ -74,7 +74,7 @@ class Question(LogMixin, models.Model):
         verbose_name=_('question type'),
         help_text=_('Do you require an answer from every speaker or for every talk?'),
     )
-    question = I18nCharField(max_length=200, verbose_name=_('question'))
+    question = I18nCharField(max_length=800, verbose_name=_('question'))
     help_text = I18nCharField(
         null=True,
         blank=True,
