@@ -282,7 +282,6 @@ def test_can_delete_profile(speaker, event, speaker_client):
     speaker.refresh_from_db()
     assert speaker.profiles.get(event=event).biography == ''
     assert speaker.name == 'Deleted User'
-    assert speaker.nick.startswith('deleted_user')
     assert speaker.email.startswith('deleted_user')
     assert speaker.email.endswith('@localhost')
 

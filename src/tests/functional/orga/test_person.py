@@ -29,7 +29,6 @@ def test_user_typeahead(orga_client, event, speaker, other_orga_user, search, re
     assert orga_content['count'] == orga_results
 
     if results:
-        assert 'nick' in content['results'][0]
         assert 'name' in content['results'][0]
 
 

@@ -53,17 +53,16 @@ class TestWizard:
         assert current_url.endswith(f'/{next}/')
         return response, current_url
 
-    def perform_user_wizard(self, client, response, url, username, password, next='profile', email=None, register=False):
+    def perform_user_wizard(self, client, response, url, password, next='profile', email=None, register=False):
         if register:
             data = {
-                'user-register_username': username,
                 'user-register_email': email,
                 'user-register_password': password,
                 'user-register_password_repeat': password,
             }
         else:
             data = {
-                'user-login_username': username,
+                'user-login_email': email,
                 'user-login_password': password,
             }
         key, value = self.get_form_name(response)
@@ -92,7 +91,7 @@ class TestWizard:
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
         response, current_url = self.perform_question_wizard(client, response, current_url, answer_data, next='user')
-        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd!', email='testuser@example.org', register=True)
+        response, current_url = self.perform_user_wizard(client, response, current_url, password='testpassw0rd!', email='testuser@example.org', register=True)
         response, current_url = self.perform_profile_form(client, response, current_url)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
@@ -110,7 +109,6 @@ class TestWizard:
         assert answ.question == question
         assert answ.answer == '42'
         user = sub.speakers.first()
-        assert user.nick == 'testuser'
         assert user.email == 'testuser@example.org'
         assert user.name == 'Jane Doe'
         assert user.profiles.get(event=event).biography == 'l337 hax0r'
@@ -129,7 +127,7 @@ class TestWizard:
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
         response, current_url = self.perform_question_wizard(client, response, current_url, answer_data, next='user')
-        response, current_url = self.perform_user_wizard(client, response, current_url, username='testuser', password='testpassw0rd!')
+        response, current_url = self.perform_user_wizard(client, response, current_url, password='testpassw0rd!')
         response, current_url = self.perform_profile_form(client, response, current_url)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
@@ -150,7 +148,6 @@ class TestWizard:
         assert answ.answer == 'green'
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
-        assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
@@ -176,7 +173,6 @@ class TestWizard:
         assert answ.answer == '42'
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
-        assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
@@ -198,7 +194,6 @@ class TestWizard:
         assert not sub.answers.exists()
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
-        assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
@@ -223,7 +218,6 @@ class TestWizard:
         assert not sub.answers.exists()
         s_user = sub.speakers.first()
         assert s_user.pk == user.pk
-        assert s_user.nick == 'testuser'
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 0

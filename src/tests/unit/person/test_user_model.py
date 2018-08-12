@@ -1,34 +1,7 @@
 import pytest
-from django.core.exceptions import ValidationError
 
-from pretalx.person.models.user import User, nick_validator
+from pretalx.person.models.user import User
 from pretalx.submission.models.question import Answer
-
-
-@pytest.mark.parametrize('nick', (
-    'fo',
-    'fooo',
-    'f'*60,
-    '--',
-    '__',
-    '11',
-    'fo-1_0',
-))
-def test_nick_validator_valid_nicks(nick):
-    assert nick_validator(nick) is None
-
-
-@pytest.mark.parametrize('nick', (
-    'f',
-    'f*ooo',
-    'f'*61,
-    '-#-',
-    '_ _',
-    '@rixx',
-))
-def test_nick_validator_invalid_nicks(nick):
-    with pytest.raises(ValidationError):
-        nick_validator(nick)
 
 
 @pytest.mark.parametrize('email,expected', (
@@ -45,7 +18,6 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     assert Answer.objects.count() == 2
     count = speaker.own_actions().count()
     name = speaker.name
-    nick = speaker.nick
     email = speaker.email
     organiser = speaker.submissions.first().event.organiser
     team = organiser.teams.first()
@@ -57,8 +29,6 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     assert speaker.own_actions().count() == count
     assert speaker.profiles.first().biography == ''
     assert speaker.name != name
-    assert speaker.nick != nick
-    assert speaker.nick.startswith('deleted_user')
     assert speaker.email != email
     assert Answer.objects.count() == 1
     assert Answer.objects.first().question.contains_personal_data is False

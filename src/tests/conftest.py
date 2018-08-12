@@ -281,18 +281,18 @@ def personal_answer(personal_question, speaker):
 
 @pytest.fixture
 def user():
-    return User.objects.create_user('testuser', 'testpassw0rd!')
+    return User.objects.create_user(email='testuser@example.com', password='testpassw0rd!')
 
 
 @pytest.fixture
 def superuser():
-    return User.objects.create_superuser('testuser', 'testpassw0rd!')
+    return User.objects.create_superuser(email='testuser@examplecom', password='testpassw0rd!')
 
 
 @pytest.fixture
 def orga_user(event):
     user = User.objects.create_user(
-        'orgauser', 'orgapassw0rd', email='orgauser@orga.org'
+        password='orgapassw0rd', email='orgauser@orga.org'
     )
     team = event.organiser.teams.filter(
         can_change_organiser_settings=True, is_reviewer=False
@@ -305,7 +305,7 @@ def orga_user(event):
 @pytest.fixture
 def other_orga_user(event):
     user = User.objects.create_user(
-        'evilorgauser', 'orgapassw0rd', email='evilorgauser@orga.org'
+        password='orgapassw0rd', email='evilorgauser@orga.org'
     )
     team = event.organiser.teams.filter(
         can_change_organiser_settings=True, is_reviewer=False
@@ -318,7 +318,7 @@ def other_orga_user(event):
 @pytest.fixture
 def review_user(event):
     user = User.objects.create_user(
-        'reviewuser', 'reviewpassw0rd', email='reviewuser@orga.org'
+        password='reviewpassw0rd', email='reviewuser@orga.org'
     )
     team = event.organiser.teams.filter(
         can_change_organiser_settings=False, is_reviewer=True
@@ -331,7 +331,7 @@ def review_user(event):
 @pytest.fixture
 def other_review_user(event):
     user = User.objects.create_user(
-        'evilreviewuser', 'reviewpassw0rd', email='evilreviewuser@orga.org'
+        password='reviewpassw0rd', email='evilreviewuser@orga.org'
     )
     team = event.organiser.teams.filter(
         can_change_organiser_settings=False, is_reviewer=True
@@ -344,7 +344,7 @@ def other_review_user(event):
 @pytest.fixture
 def orga_reviewer_user(event):
     user = User.objects.create_user(
-        'multitalentuser', 'orgapassw0rd', email='multiuser@orga.org'
+        password='orgapassw0rd', email='multiuser@orga.org'
     )
     team = event.organiser.teams.filter(
         can_change_organiser_settings=True, is_reviewer=True
@@ -399,7 +399,7 @@ def default_submission_type(event):
 @pytest.fixture
 def speaker(event):
     user = User.objects.create_user(
-        'speaker', 'speakerpwd1!', name='Jane Speaker', email='jane@speaker.org'
+        password='speakerpwd1!', name='Jane Speaker', email='jane@speaker.org'
     )
     SpeakerProfile.objects.create(
         user=user, event=event, biography='Best speaker in the world.'
@@ -415,7 +415,7 @@ def speaker_client(client, speaker):
 
 @pytest.fixture
 def other_speaker(event):
-    user = User.objects.create_user('speaker2', 'speakerpwd1!', name='Krümelmonster')
+    user = User.objects.create_user(email='speaker2@example.org', password='speakerpwd1!', name='Krümelmonster')
     SpeakerProfile.objects.create(user=user, event=event, biography='COOKIIIIES!!')
     return user
 
