@@ -7,7 +7,7 @@ from pretalx.common.phrases import phrases
 
 class ZXCVBNValidator:
     code = 'password_too_weak'
-    DEFAULT_USER_ATTRIBUTES = ('username', 'first_name', 'last_name', 'email')
+    DEFAULT_USER_ATTRIBUTES = ('first_name', 'last_name', 'email')
 
     def __init__(self, min_score=3, user_attributes=DEFAULT_USER_ATTRIBUTES):
         if not (0 <= min_score <= 4):

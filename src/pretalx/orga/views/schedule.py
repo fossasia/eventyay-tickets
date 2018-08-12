@@ -202,7 +202,7 @@ def serialize_slot(slot):
         'id': slot.pk,
         'title': str(slot.submission.title),
         'speakers': [
-            {'name': speaker.name, 'nick': speaker.nick}
+            {'name': speaker.name}
             for speaker in slot.submission.speakers.all()
         ],
         'submission_type': str(slot.submission.submission_type.name),

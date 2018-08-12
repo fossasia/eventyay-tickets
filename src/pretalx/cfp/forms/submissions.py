@@ -12,7 +12,7 @@ class SubmissionInvitationForm(forms.Form):
     def __init__(self, submission, speaker, *args, **kwargs):
         self.submission = submission
         initial = kwargs.get('initial', {})
-        subject = _('{speaker} invites you to join their talk!').format(speaker=speaker.name or speaker.nick)
+        subject = _('{speaker} invites you to join their talk!').format(speaker=speaker.get_display_name())
         initial['subject'] = f'[{submission.event.slug}] {subject}'
         initial['text'] = _('''Hi!
 
@@ -25,7 +25,7 @@ I'm looking forward to it!
 {speaker}''').format(
             event=submission.event.name, title=submission.title,
             url=submission.urls.accept_invitation.full(),
-            speaker=speaker.name or speaker.nick,
+            speaker=speaker.get_display_name(),
         )
         super().__init__(*args, **kwargs)
 

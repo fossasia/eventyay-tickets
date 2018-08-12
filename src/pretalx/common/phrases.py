@@ -78,7 +78,7 @@ class BasePhrases(Phrases, app='base'):
         _('It\'s a bug, not a feature. We\'re looking into it.'),
     ]
 
-    username_or_email = _('Username or email address')
+    enter_email = _('Email address')
     password_repeat = _('New password (again)')
     passwords_differ = _('You entered two different passwords. Please input the same one twice!')
     password_too_weak = [

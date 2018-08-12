@@ -24,11 +24,10 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
     default_filters = (
-        'user__nick__icontains',
         'user__email__icontains',
         'user__name__icontains',
     )
-    sortable_fields = ('user__nick', 'user__email', 'user__name')
+    sortable_fields = ('user__email', 'user__name')
     default_sort_field = 'user__name'
     paginate_by = 25
     permission_required = 'orga.view_speakers'

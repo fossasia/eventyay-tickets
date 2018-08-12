@@ -16,9 +16,9 @@ class LoginView(TemplateView):
     template_name = 'orga/auth/login.html'
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
 
         if user is None:
             messages.error(request, _('No user account matches the entered credentials.'))

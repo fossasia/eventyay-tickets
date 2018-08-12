@@ -10,11 +10,11 @@
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
-                {% trans "Add a speaker – by nickname if registered, by email to send an invitation" %}:<br>
+                {% trans "Add a speaker – by name if registered, by email to send an invitation" %}:<br>
             </label>
             {% csrf_token %}
             <div class="input-group d-flex flex-row">
-                <input type="text" name="nick" id="id_speaker" class="form-control" />
+                <input type="text" name="speaker" id="id_speaker" class="form-control" />
                 <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i></button>
             </div>
         </form>

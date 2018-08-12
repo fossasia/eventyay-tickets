@@ -111,7 +111,7 @@
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:user.view" %}">
                     <i class="fa fa-user"></i>
-                    {{ request.user.nick }}
+                    {{ request.user.get_display_name }}
                 </a>
             </li>
             <li class="nav-item">

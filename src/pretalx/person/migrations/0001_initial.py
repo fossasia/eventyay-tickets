@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('nick', models.CharField(help_text='Please use only characters in the latin alphabet, plus numbers and _-.', max_length=60, unique=True, validators=[pretalx.person.models.user.nick_validator], verbose_name='Nickname')),
+                ('nick', models.CharField(help_text='Please use only characters in the latin alphabet, plus numbers and _-.', max_length=60, unique=True, verbose_name='Nickname')),
                 ('name', models.CharField(blank=True, help_text='Please enter your real name.', max_length=120, null=True, verbose_name='Name')),
                 ('email', models.EmailField(help_text='Your email address will be used for password resets and notification about your event/submissions.', max_length=254, verbose_name='E-Mail')),
                 ('is_active', models.BooleanField(default=True)),

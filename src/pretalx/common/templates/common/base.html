@@ -92,8 +92,8 @@
                 <nav class="user-row">
                     {% url "cfp:event.user.view" event=request.event.slug as userurl %}
                     <div>
-                    {% blocktrans trimmed with nick=request.user.nick attr="href='"|add:userurl|add:"'"|safe %}
-                        You are logged in as <a {{ attr }}>{{ nick }}</a>.
+                    {% blocktrans trimmed with name=request.user.get_display_name attr="href='"|add:userurl|add:"'"|safe %}
+                        You are logged in as <a {{ attr }}>{{ name }}</a>.
                     {% endblocktrans %}
                     </div>
                     <div>

@@ -1,7 +1,6 @@
 import urllib
 
 from django.contrib import messages
-from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -22,9 +21,7 @@ class UserList(View):
         if not search or len(search) < 2:
             return JsonResponse({'count': 0, 'results': []})
 
-        queryset = User.objects.filter(
-            Q(nick__icontains=search) | Q(name__icontains=search)
-        )
+        queryset = User.objects.filter(name__icontains=search)
         if request.GET.get('orga', 'false').lower() == 'true':
             queryset = queryset.filter(teams__in=request.event.teams)
 
@@ -32,7 +29,6 @@ class UserList(View):
             'count': len(queryset),
             'results': [
                 {
-                    'nick': user.nick,
                     'name': user.name,
                 }
                 for user in queryset

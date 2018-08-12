@@ -8,19 +8,16 @@ from pretalx.person.models import User
 
 
 class ResetForm(forms.Form):
-    login_username = forms.CharField(
+    login_email = forms.CharField(
         max_length=60,
-        label=phrases.base.username_or_email,
+        label=phrases.base.enter_email,
         required=True,
     )
 
     def clean(self):
         data = super().clean()
         try:
-            if '@' in data.get('login_username'):
-                user = User.objects.get(email__iexact=data.get('login_username'))
-            else:
-                user = User.objects.get(nick__iexact=data.get('login_username'))
+            user = User.objects.get(email__iexact=data.get('login_email'))
         except User.DoesNotExist:
             user = None
 

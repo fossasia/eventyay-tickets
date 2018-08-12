@@ -19,7 +19,7 @@ class Review(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.nick}, score={self.score})'
+        return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})'
 
     @classmethod
     def find_missing_reviews(cls, event, user, ignore=None):

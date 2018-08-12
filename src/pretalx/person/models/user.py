@@ -1,7 +1,5 @@
 import json
 import random
-import re
-import string
 from hashlib import md5
 
 import pytz
@@ -10,7 +8,6 @@ from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin,
 )
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -21,27 +18,17 @@ from rest_framework.authtoken.models import Token
 from pretalx.common.urls import build_absolute_uri
 
 
-def nick_validator(value: str) -> None:
-    """Validate nicknames for length, collisions when lower-cased, and allowed characters (ascii letters, digits, -, _)."""
-    if not 2 <= len(value) <= 60:
-        raise ValidationError('The nick must be between 2 and 60 characters long.')
-
-    allowed = string.ascii_uppercase + string.ascii_lowercase + string.digits + '\-_'
-    if not re.compile(rf'^[{allowed}]+$').search(value):
-        raise ValidationError('The nick may only contain ascii letters, digits and -_.')
-
-
 class UserManager(BaseUserManager):
     """The user manager class."""
 
-    def create_user(self, nick: str, password: str=None, **kwargs):
-        user = self.model(nick=nick, **kwargs)
+    def create_user(self, password: str=None, **kwargs):
+        user = self.model(**kwargs)
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, nick: str, password: str, **kwargs):
-        user = self.create_user(nick=nick, password=password, **kwargs)
+    def create_superuser(self, password: str, **kwargs):
+        user = self.create_user(password=password, **kwargs)
         user.is_staff = True
         user.is_administrator = True
         user.is_superuser = False
@@ -65,11 +52,11 @@ class User(PermissionsMixin, AbstractBaseUser):
     """
     The pretalx user model.
 
-    We don't really need last names and fancy stuff, so we stick with a nick, and optionally a name and an email address.
+    We don't really need last names and fancy stuff, so we stick with a name and an email address.
     """
 
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'nick'
+    USERNAME_FIELD = 'email'
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = UserManager()
@@ -79,15 +66,15 @@ class User(PermissionsMixin, AbstractBaseUser):
         unique=True, null=True,
     )
     nick = models.CharField(
-        max_length=60, unique=True, validators=[nick_validator],
-        verbose_name=_('Nickname'),
-        help_text=_('Please use only characters in the latin alphabet, plus numbers and _-.'),
+        max_length=60,
+        null=True, blank=True,
     )
     name = models.CharField(
         max_length=120, verbose_name=_('Name'),
         help_text=_('Please enter the name you wish to be displayed publicly.'),
     )
     email = models.EmailField(
+        unique=True,
         verbose_name=_('E-Mail'),
         help_text=_('Your email address will be used for password resets and notification about your event/submissions.'),
     )
@@ -121,7 +108,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.get_display_name()
 
     def get_display_name(self) -> str:
-        return self.name if self.name else self.nick
+        return self.name if self.name else _('Unnamed user')
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
@@ -156,11 +143,10 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def deactivate(self):
         from pretalx.submission.models import Answer
-        self.nick = f'deleted_user_{random.randint(0, 999)}'
-        while self.__class__.objects.filter(nick__iexact=self.nick).exists():
-            self.nick = f'deleted_user_{random.randint(0, 999)}'
+        self.email = f'deleted_user_{random.randint(0, 999)}@localhost'
+        while self.__class__.objects.filter(email__iexact=self.email).exists():
+            self.email = f'deleted_user_{random.randint(0, 999)}'
         self.name = 'Deleted User'
-        self.email = f'{self.nick}@localhost'
         self.is_active = False
         self.is_superuser = False
         self.is_administrator = False
@@ -217,7 +203,7 @@ class User(PermissionsMixin, AbstractBaseUser):
                 _('Password recovery'),
                 event.settings.mail_text_reset,
                 {
-                    'name': self.name or self.nick,
+                    'name': self.name or '',
                     'event': event.name,
                     'url': build_absolute_uri(
                         'cfp:event.recover', event=event, kwargs={

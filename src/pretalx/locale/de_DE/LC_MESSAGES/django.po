@@ -1621,10 +1621,6 @@ msgid "It's a bug, not a feature. We're looking into it."
 msgstr ""
 "Das ist ein Fehler, kein Feature – wir gucken es uns schnellstmöglich an."
 
-#: pretalx/common/phrases.py:81
-msgid "Username or email address"
-msgstr "Username oder E-Mail-Adresse"
-
 #: pretalx/common/phrases.py:82
 msgid "New password (again)"
 msgstr "Neues Passwort (noch mal)"
@@ -2514,10 +2510,6 @@ msgstr "Hostname"
 #: pretalx/orga/forms/event.py:141
 msgid "Port"
 msgstr "Port"
-
-#: pretalx/orga/forms/event.py:145 pretalx/person/forms.py:25
-msgid "Username"
-msgstr "Username"
 
 #: pretalx/orga/forms/event.py:149
 #: pretalx/orga/templates/orga/auth/login.html:10 pretalx/person/forms.py:22

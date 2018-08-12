@@ -27,11 +27,7 @@
                         {% if log.is_orga_action and hide_orga %}
                             {% trans "An orga member" %}
                         {% else %}
-                            {% if log.person.name %}
-                                {{ log.person.name }}
-                            {% else %}
-                                {{ log.person.nick }}
-                            {% endif %}
+                            {{ log.person.get_display_name }}
                         {% endif %}
                         </span>
                     {% endif %}

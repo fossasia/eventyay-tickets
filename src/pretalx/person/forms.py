@@ -15,14 +15,11 @@ from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
 class UserForm(forms.Form):
-    login_username = forms.CharField(
-        max_length=60, label=phrases.base.username_or_email, required=False
+    login_email = forms.CharField(
+        max_length=60, label=phrases.base.enter_email, required=False
     )
     login_password = forms.CharField(
         widget=forms.PasswordInput, label=_('Password'), required=False
-    )
-    register_username = forms.CharField(
-        max_length=60, label=_('Username'), required=False
     )
     register_email = forms.EmailField(label=_('Email address'), required=False)
     register_password = PasswordField(label=_('Password'), required=False)
@@ -35,13 +32,10 @@ class UserForm(forms.Form):
         self.fields['register_email'].widget.attrs = {'placeholder': _('Email address')}
 
     def _clean_login(self, data):
-        if '@' in data.get('login_username'):
-            try:
-                uname = User.objects.get(email=data.get('login_username')).nick
-            except User.DoesNotExist:
-                uname = 'user@invalid'
-        else:
-            uname = data.get('login_username')
+        try:
+            uname = User.objects.get(email=data.get('login_email')).email
+        except User.DoesNotExist:  # We do this to avoid timing attacks
+            uname = 'user@invalid'
 
         user = authenticate(username=uname, password=data.get('login_password'))
 
@@ -62,14 +56,6 @@ class UserForm(forms.Form):
         if data.get('register_password') != data.get('register_password_repeat'):
             raise ValidationError(phrases.base.passwords_differ)
 
-        if User.objects.filter(nick__iexact=data.get('register_username')).exists():
-            raise ValidationError(
-                _(
-                    'We already have a user with that username. Did you already register before '
-                    'and just need to log in?'
-                )
-            )
-
         if User.objects.filter(email__iexact=data.get('register_email')).exists():
             raise ValidationError(
                 _(
@@ -81,11 +67,10 @@ class UserForm(forms.Form):
     def clean(self):
         data = super().clean()
 
-        if data.get('login_username') and data.get('login_password'):
+        if data.get('login_email') and data.get('login_password'):
             self._clean_login(data)
         elif (
-            data.get('register_username')
-            and data.get('register_email')
+            data.get('register_email')
             and data.get('register_password')
         ):
             self._clean_register(data)
@@ -100,11 +85,10 @@ class UserForm(forms.Form):
 
     def save(self):
         data = self.cleaned_data
-        if data.get('login_username') and data.get('login_password'):
+        if data.get('login_email') and data.get('login_password'):
             return data['user_id']
 
         user = User.objects.create_user(
-            nick=data.get('register_username'),
             email=data.get('register_email'),
             password=data.get('register_password'),
             locale=translation.get_language(),

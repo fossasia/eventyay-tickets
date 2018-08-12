@@ -1,5 +1,4 @@
 import json
-import random
 from collections import Counter
 from datetime import timedelta
 
@@ -35,26 +34,7 @@ def create_user_as_orga(email, submission=None):
     if not email:
         return
 
-    nick = email.split('@')[0].lower()
-    while User.objects.filter(nick__iexact=nick).exists():
-        nick += random.choice(
-            [
-                '_1',
-                '_2',
-                '_11',
-                '_42',
-                '_the_first',
-                '_the_third',
-                '_speaker',
-                '_third_of_their_name',
-                '_',
-                '123',
-                nick,
-            ]
-        )
-
     user = User.objects.create_user(
-        nick=nick,
         password=get_random_string(32),
         email=email.lower(),
         pw_reset_token=get_random_string(32),
@@ -181,18 +161,15 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission = self.object
-        nick = request.POST.get('nick')
+        email = request.POST.get('speaker')
         try:
-            if '@' in nick:
-                speaker = User.objects.get(email__iexact=nick)
-            else:
-                speaker = User.objects.get(nick__iexact=nick)
+            speaker = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
             speaker = create_user_as_orga(
-                request.POST.get('nick'), submission=submission
+                email, submission=submission
             )
         if not speaker:
-            messages.error(request, _('Please provide a valid nick or email address!'))
+            messages.error(request, _('Please provide a valid email address!'))
         else:
             if submission not in speaker.submissions.all():
                 speaker.submissions.add(submission)
@@ -245,7 +222,6 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
             {
                 'id': speaker.id,
                 'name': speaker.get_display_name(),
-                'nick': speaker.nick,
                 'biography': speaker.profiles.get_or_create(event=submission.event)[
                     0
                 ].biography,
@@ -382,10 +358,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         if created:
             email = form.cleaned_data['speaker']
             try:
-                if '@' in email:
-                    speaker = User.objects.get(email__iexact=email)
-                else:
-                    speaker = User.objects.get(nick__iexact=email)
+                speaker = User.objects.get(email__iexact=email)
                 invited = False
             except User.DoesNotExist:
                 speaker = create_user_as_orga(email=email, submission=form.instance)
@@ -430,7 +403,6 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
     default_filters = (
         'code__icontains',
         'speakers__name__icontains',
-        'speakers__nick__icontains',
         'title__icontains',
     )
     filter_fields = ('submission_type', 'state')

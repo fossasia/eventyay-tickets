@@ -75,9 +75,9 @@ def _create_talk(*, talk, room, event):
     sub.save()
 
     for person in talk.find('persons').findall('person'):
-        user = User.objects.filter(nick=person.text[:60]).first()
+        user = User.objects.filter(name=person.text[:60]).first()
         if not user:
-            user = User(nick=person.text[:60], name=person.text, email=f'{person.text}@localhost')
+            user = User(name=person.text, email=f'{person.text}@localhost')
             user.save()
             SpeakerProfile.objects.create(user=user, event=event)
         sub.speakers.add(user)
