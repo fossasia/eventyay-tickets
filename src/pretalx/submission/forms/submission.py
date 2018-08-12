@@ -37,8 +37,8 @@ class InfoForm(forms.ModelForm):
                     self.fields[key].widget.attrs[f'minlength'] = min_value
                 if max_value:
                     self.fields[key].widget.attrs[f'maxlength'] = max_value
-                self.fields['help_text'] = get_help_text(
-                    self.fields['help_text'], min_value, max_value
+                self.fields[key].help_text = get_help_text(
+                    self.fields[key].help_text, min_value, max_value
                 )
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=self.event

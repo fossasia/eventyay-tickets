@@ -3,7 +3,7 @@
 Release Notes
 =============
 
-- :feature:`-` You can now add minimum or maximum length restrictions to abstracts, descriptions, and speaker biographies.
+- :feature:`408` You can now add minimum or maximum length restrictions to abstracts, descriptions, speaker biographies, and all text-based questions.
 - :feature:`-` When linking to a talk on social media, the talk image is now shown.
 - :feature:`-` French translation
 - :feature:`-` The event logo is displayed larger and up to the full width of the document below. Please check that your event still looks as intended after upgrading.
