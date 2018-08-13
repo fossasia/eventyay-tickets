@@ -250,8 +250,9 @@ class CfPQuestionDelete(PermissionRequired, View):
         try:
             with transaction.atomic():
                 question.options.all().delete()
+                question.log_entries.all().delete()
                 question.delete()
-                question.log_action(
+                request.event.log_action(
                     'pretalx.question.delete', person=self.request.user, orga=True
                 )
                 messages.success(request, _('The question has been deleted.'))

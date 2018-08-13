@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Questions couldn't be deleted, only made inactive.
 - :feature:`408` You can now add minimum or maximum length restrictions to abstracts, descriptions, speaker biographies, and all text-based questions.
 - :feature:`-` When linking to a talk on social media, the talk image is now shown.
 - :feature:`-` French translation
