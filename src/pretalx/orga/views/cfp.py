@@ -250,7 +250,7 @@ class CfPQuestionDelete(PermissionRequired, View):
         try:
             with transaction.atomic():
                 question.options.all().delete()
-                question.log_entries.all().delete()
+                question.logged_actions().delete()
                 question.delete()
                 request.event.log_action(
                     'pretalx.question.delete', person=self.request.user, orga=True
