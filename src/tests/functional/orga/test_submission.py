@@ -142,10 +142,8 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
 
     if user == 'EMAIL':
         user = other_orga_user.email
-        pk = other_orga_user.pk
     elif user == 'NEW_EMAIL':
         user = 'some_unused@mail.org'
-        pk = None
 
     response = orga_client.post(
         submission.orga_urls.new_speaker, data={'speaker': user}, follow=True

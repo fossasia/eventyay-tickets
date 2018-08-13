@@ -127,7 +127,7 @@ class TestWizard:
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(client, response, current_url, submission_type=submission_type)
         response, current_url = self.perform_question_wizard(client, response, current_url, answer_data, next='user')
-        response, current_url = self.perform_user_wizard(client, response, current_url, password='testpassw0rd!')
+        response, current_url = self.perform_user_wizard(client, response, current_url, email=user.email, password='testpassw0rd!')
         response, current_url = self.perform_profile_form(client, response, current_url)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
