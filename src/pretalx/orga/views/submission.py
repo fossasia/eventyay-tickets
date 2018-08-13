@@ -165,9 +165,7 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
         try:
             speaker = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            speaker = create_user_as_orga(
-                email, submission=submission
-            )
+            speaker = create_user_as_orga(email, submission=submission)
         if not speaker:
             messages.error(request, _('Please provide a valid email address!'))
         else:
@@ -184,8 +182,8 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
                 messages.warning(
                     request, _('The speaker was already part of the submission.')
                 )
-        if not speaker.profiles.filter(event=request.event).exists():
-            SpeakerProfile.objects.create(user=speaker, event=request.event)
+            if not speaker.profiles.filter(event=request.event).exists():
+                SpeakerProfile.objects.create(user=speaker, event=request.event)
         return redirect(submission.orga_urls.speakers)
 
 
