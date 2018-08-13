@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.phrases import phrases
 
 
 class Feedback(LogMixin, models.Model):
@@ -14,17 +15,14 @@ class Feedback(LogMixin, models.Model):
     speaker = models.ForeignKey(
         to='person.User',
         related_name='feedback',
-        null=True, blank=True,
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         verbose_name=_('Speaker'),
     )
-    rating = models.IntegerField(
-        null=True, blank=True,
-        verbose_name=_('Rating'),
-    )
+    rating = models.IntegerField(null=True, blank=True, verbose_name=_('Rating'))
     review = models.TextField(
-        verbose_name=_('Review'),
-        help_text=_('You can use markdown here.'),
+        verbose_name=_('Review'), help_text=phrases.base.use_markdown
     )
 
     def __str__(self):

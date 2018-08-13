@@ -14,6 +14,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import hierarkey
+from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls, get_base_url
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
@@ -160,8 +161,9 @@ class Event(LogMixin, models.Model):
     landing_page_text = I18nTextField(
         verbose_name=_('Landing page text'),
         help_text=_(
-            'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.'
-        ),
+            'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate.'
+        )
+        + ' ' + phrases.base.use_markdown,
         null=True,
         blank=True,
     )

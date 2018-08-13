@@ -5,23 +5,20 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
+from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 
 
 class CfP(LogMixin, models.Model):
-    event = models.OneToOneField(
-        to='event.Event',
-        on_delete=models.PROTECT,
-    )
+    event = models.OneToOneField(to='event.Event', on_delete=models.PROTECT)
     headline = I18nCharField(
-        max_length=300,
-        null=True, blank=True,
-        verbose_name=_('headline'),
+        max_length=300, null=True, blank=True, verbose_name=_('headline')
     )
     text = I18nTextField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('text'),
-        help_text=_('You can use markdown here.'),
+        help_text=phrases.base.use_markdown,
     )
     default_type = models.ForeignKey(
         to='submission.SubmissionType',
@@ -30,9 +27,12 @@ class CfP(LogMixin, models.Model):
         verbose_name=_('Default submission type'),
     )
     deadline = models.DateTimeField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('deadline'),
-        help_text=_('Please put in the last date you want to accept submissions from users.'),
+        help_text=_(
+            'Please put in the last date you want to accept submissions from users.'
+        ),
     )
 
     class urls(EventUrls):
@@ -58,7 +58,11 @@ class CfP(LogMixin, models.Model):
 
     @cached_property
     def max_deadline(self):
-        deadlines = list(self.event.submission_types.filter(deadline__isnull=False).values_list('deadline', flat=True))
+        deadlines = list(
+            self.event.submission_types.filter(deadline__isnull=False).values_list(
+                'deadline', flat=True
+            )
+        )
         if self.deadline:
             deadlines.append(self.deadline)
         if deadlines:

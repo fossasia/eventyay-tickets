@@ -5,6 +5,7 @@ from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.phrases import phrases
 from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType
 
 
@@ -93,8 +94,9 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     review_help_text = I18nFormField(
         label=_('Help text for reviewers'),
         help_text=_(
-            'This text will be shown at the top of every review, as long as reviews can be created or edited. You can use markdown here.'
-        ),
+            'This text will be shown at the top of every review, as long as reviews can be created or edited.'
+        )
+        + ' ' + phrases.base.use_markdown,
         widget=I18nTextarea,
         required=False,
     )
