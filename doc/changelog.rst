@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` pretalx now doesn't support usernames any longer – as email addresses were already required for accounts, they are now the only means of logging in. This may confuse a few users – as an administrator, you can look up users' email addresses if they don't remember them, or change them, if necessary.
 - :bug:`-` Questions couldn't be deleted, only made inactive.
 - :feature:`408` You can now add minimum or maximum length restrictions to abstracts, descriptions, speaker biographies, and all text-based questions.
 - :feature:`-` When linking to a talk on social media, the talk image is now shown.
