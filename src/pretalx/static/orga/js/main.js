@@ -124,8 +124,24 @@ $(function () {
         }
     })
     document.querySelectorAll('.checkbox-multi-select').forEach((element) => {update_multi_select_caption(element)});
+    $('#id_is_reviewer').change((ev) => {
+        update_review_override_votes()
+    })
+    update_review_override_votes()
 });
 
+function update_review_override_votes() {
+    const show = document.querySelector('#id_is_reviewer').checked
+    if (show) {
+        document.querySelector('label[for=id_review_override_votes]').style.display = ''
+        document.querySelector('#id_review_override_votes').style.display = ''
+        document.querySelector('#id_review_override_votes + small').style.display = ''
+    } else {
+        document.querySelector('label[for=id_review_override_votes]').style.display = 'none'
+        document.querySelector('#id_review_override_votes').style.display = 'none'
+        document.querySelector('#id_review_override_votes + small').style.display = 'none'
+    }
+}
 function update_multi_select_caption(element) {
     var checkboxes = element.querySelectorAll('.checkbox')
     checkboxes = Array.from(checkboxes).filter((element) => {return element.querySelector('input[type=checkbox]').checked});
