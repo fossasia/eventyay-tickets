@@ -12,7 +12,7 @@ class CreateOrUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin, Proc
     def set_object(self):
         if getattr(self, 'object', None) is None:
             self.object = None
-        with suppress(self.model.DoesNotExist):
+        with suppress(self.model.DoesNotExist, AttributeError):
             self.object = self.get_object()
 
     def get(self, request, *args, **kwargs):
