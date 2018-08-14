@@ -114,6 +114,10 @@ footer {
   margin-left: 20px;
   padding-bottom: 8px;
 
+  .left-side {
+    margin-left: -20px;
+    margin-right: 20px;
+  }
   img.avatar {
     padding-right: 16px;
     margin-left: -16px;

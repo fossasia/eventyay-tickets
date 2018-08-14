@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load orga_edit_link %}
 {% load rules %}
+{% load static %}
 
 {% block inner %}
     <h2>{% trans "Tell us something about yourself!" %}</h2>
@@ -16,6 +17,26 @@
     </p>
 
     {% bootstrap_form_errors wizard.form %}
+    <div class="avatar-form">
+        <label class="col-md-3 left-side col-form-label">
+            {% trans "Profile picture" %}
+            <br><span class="optional">{% trans "Optional" %}</span>
+            <br>
+        <img
+          class="avatar float-right"
+          data-gravatar="{{ gravatar_parameter }}"
+          data-avatar=""
+        />
+        </label>
+        <div class="avatar-form-fields">
+            {% bootstrap_field wizard.form.get_gravatar layout='event-inline' %}
+            <div class="user-avatar-display">
+                {% bootstrap_field wizard.form.avatar layout='inline' %}
+            </div>
+        </div>
+    </div>
     {% bootstrap_field wizard.form.name layout='event' %}
     {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
+
+<script type="text/javascript" src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}

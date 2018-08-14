@@ -69,10 +69,7 @@ class UserForm(forms.Form):
 
         if data.get('login_email') and data.get('login_password'):
             self._clean_login(data)
-        elif (
-            data.get('register_email')
-            and data.get('register_password')
-        ):
+        elif data.get('register_email') and data.get('register_password'):
             self._clean_register(data)
         else:
             raise ValidationError(
@@ -100,7 +97,7 @@ class UserForm(forms.Form):
 
 class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
-    FIRST_TIME_EXCLUDE = ['email', 'avatar', 'get_gravatar']
+    FIRST_TIME_EXCLUDE = ['email']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

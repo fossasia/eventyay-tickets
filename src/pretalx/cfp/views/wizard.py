@@ -1,6 +1,7 @@
 import logging
 import os
 
+from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -9,6 +10,7 @@ from django.forms import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from formtools.wizard.views import NamedUrlSessionWizardView
@@ -33,11 +35,16 @@ FORMS = [
 
 class SubmitStartView(EventPageMixin, View):
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('cfp:event.submit', kwargs={
-            'event': request.event.slug,
-            'step': 'info',
-            'tmpid': get_random_string(length=6),
-        }))
+        return redirect(
+            reverse(
+                'cfp:event.submit',
+                kwargs={
+                    'event': request.event.slug,
+                    'step': 'info',
+                    'tmpid': get_random_string(length=6),
+                },
+            )
+        )
 
 
 def show_questions_page(wizard):
@@ -48,18 +55,18 @@ def show_user_page(wizard):
     return not wizard.request.user.is_authenticated
 
 
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     form_list = FORMS
-    condition_dict = {
-        'questions': show_questions_page,
-        'user': show_user_page
-    }
+    condition_dict = {'questions': show_questions_page, 'user': show_user_page}
     file_storage = FileSystemStorage(os.path.join(settings.MEDIA_ROOT, 'avatars'))
 
     def dispatch(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:
             messages.error(request, phrases.cfp.submissions_closed)
-            return redirect(reverse('cfp:event.start', kwargs={'event': request.event.slug}))
+            return redirect(
+                reverse('cfp:event.start', kwargs={'event': request.event.slug})
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_instance(self, step):
@@ -81,6 +88,19 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['target'] = ''
         return kwargs
 
+    def get_context_data(self, form=None, event=None, tmpid=None, step=None):
+        context = super().get_context_data(
+            form=form, event=event, tmpid=tmpid, step=step
+        )
+        if step == 'profile':
+            if hasattr(self.request.user, 'email'):
+                email = self.request.user.email
+            else:
+                data = self.get_cleaned_data_for_step('user') or dict()
+                email = data.get('register_email', '')
+            context['gravatar_parameter'] = User(email=email).gravatar_parameter
+        return context
+
     def get_template_names(self):
         return f'cfp/event/submission_{self.steps.current}.html'
 
@@ -88,11 +108,14 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         return super().get_prefix(request, *args, **kwargs) + ':' + kwargs.get('tmpid')
 
     def get_step_url(self, step):
-        return reverse(self.url_name, kwargs={
-            'step': step,
-            'tmpid': self.kwargs.get('tmpid'),
-            'event': self.kwargs.get('event')
-        })
+        return reverse(
+            self.url_name,
+            kwargs={
+                'step': step,
+                'tmpid': self.kwargs.get('tmpid'),
+                'event': self.kwargs.get('event'),
+            },
+        )
 
     def _handle_question_answer(self, sub, qid, value, user=None):
         question = self.request.event.questions.filter(pk=qid).first()
@@ -126,7 +149,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             uid = form_dict['user'].save()
             user = User.objects.filter(pk=uid).first()
         if not user:
-            raise ValidationError(_('There was an error with your user account. Please contact the organiser for further help.'))
+            raise ValidationError(
+                _(
+                    'There was an error with your user account. Please contact the organiser for further help.'
+                )
+            )
 
         form_dict['info'].instance.event = self.request.event
         form_dict['info'].save()
@@ -141,8 +168,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
 
         try:
             sub.event.ack_template.to_mail(
-                user=user, event=self.request.event, context=template_context_from_submission(sub),
-                skip_queue=True, locale=user.locale
+                user=user,
+                event=self.request.event,
+                context=template_context_from_submission(sub),
+                skip_queue=True,
+                locale=user.locale,
             )
             if self.request.event.settings.mail_on_new_submission:
                 MailTemplate(
@@ -150,9 +180,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     subject=_('New submission!').format(event=self.request.event.slug),
                     text=self.request.event.settings.mail_text_new_submission,
                 ).to_mail(
-                    user=self.request.event.email, event=self.request.event,
+                    user=self.request.event.email,
+                    event=self.request.event,
                     context=template_context_from_submission(sub),
-                    skip_queue=True, locale=self.request.event.locale
+                    skip_queue=True,
+                    locale=self.request.event.locale,
                 )
         except SendMailException as e:
             logging.getLogger('').warning(str(e))
@@ -161,6 +193,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         sub.log_action('pretalx.submission.create', person=user)
         messages.success(self.request, phrases.cfp.submission_success)
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect(reverse('cfp:event.user.submissions', kwargs={
-            'event': self.request.event.slug
-        }))
+        return redirect(
+            reverse(
+                'cfp:event.user.submissions', kwargs={'event': self.request.event.slug}
+            )
+        )

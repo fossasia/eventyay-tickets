@@ -14,7 +14,10 @@
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
         <div class="avatar-form">
-            <div class="col-md-3 col-form-label">
+            <label class="col-md-3 col-form-label left-side">
+            {% trans "Profile picture" %}
+            <br><span class="optional">{% trans "Optional" %}</span>
+            <br>
             <img
               class="avatar float-right"
               data-gravatar="{{ request.user.gravatar_parameter }}"
@@ -25,7 +28,7 @@
               src="{{ request.user.avatar.url }}"
               {% endif %}
             />
-            </div>
+            </label>
             <div class="avatar-form-fields">
                 {% bootstrap_field profile_form.get_gravatar layout='event-inline' %}
                 <div class="user-avatar-display">
