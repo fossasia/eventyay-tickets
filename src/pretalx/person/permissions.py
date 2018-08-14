@@ -20,7 +20,7 @@ def is_reviewer(user, obj):
 
 @rules.predicate
 def is_administrator(user, obj):
-    return user.is_administrator
+    return getattr(user, 'is_administrator', False)
 
 
 @rules.predicate
