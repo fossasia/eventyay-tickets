@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`474` The review dashboard now features the same search and filter options as the submission list.
 - :bug:`473` Following the revamp of team permissions, override votes could no longer be configured. This has been corrected, and the general handling of override votes was improved.
 - :support:`-` pretalx now doesn't support usernames any longer – as email addresses were already required for accounts, they are now the only means of logging in. This may confuse a few users – as an administrator, you can look up users' email addresses if they don't remember them, or change them, if necessary.
 - :bug:`-` Questions couldn't be deleted, only made inactive.

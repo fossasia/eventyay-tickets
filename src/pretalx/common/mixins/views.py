@@ -144,6 +144,8 @@ class Filterable:
             context['filter_form'] = self.filter_form_class(
                 self.request.event, self.request.GET
             )
+        elif hasattr(self, 'get_filter_form'):
+            context['filter_form'] = self.get_filter_form()
         elif self.filter_fields:
             context['filter_form'] = forms.modelform_factory(
                 self.model, fields=self.filter_fields

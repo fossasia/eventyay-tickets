@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+{% load bootstrap4 %}
 {% load i18n %}
 {% load review_score %}
 {% load rules %}
@@ -72,6 +73,15 @@
         </div>
     </a>
 {% endif %}
+</div>
+
+<div class="submit-group">
+    <form class="search-form">
+        {% bootstrap_form search_form %}
+        {% bootstrap_field filter_form.submission_type %}
+        {% bootstrap_field filter_form.state layout='inline' %}
+        <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
+    </form>
 </div>
 
 

@@ -92,6 +92,7 @@ class SubmissionFilterForm(forms.Form):
 
     def __init__(self, event, *args, **kwargs):
         self.event = event
+        usable_states = kwargs.pop('usable_states', None)
         super().__init__(*args, **kwargs)
         sub_count = lambda x: event.submissions.filter(state=x).count()  # noqa
         type_count = lambda x: event.submissions.filter(  # noqa
@@ -102,8 +103,16 @@ class SubmissionFilterForm(forms.Form):
             for sub_type in event.submission_types.all()
         ]
         self.fields['submission_type'].widget.attrs['title'] = _('Submission types')
+        if usable_states:
+            usable_states = [
+                choice
+                for choice in self.fields['state'].choices
+                if choice[0] in usable_states
+            ]
+        else:
+            usable_states = self.fields['state'].choices
         self.fields['state'].choices = [
             (choice[0], f'{choice[1].capitalize()} ({sub_count(choice[0])})')
-            for choice in self.fields['state'].choices
+            for choice in usable_states
         ]
         self.fields['state'].widget.attrs['title'] = _('Submission states')

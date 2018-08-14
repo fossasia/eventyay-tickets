@@ -5,35 +5,54 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import Filterable, PermissionRequired
 from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.person.models import User
-from pretalx.submission.forms import QuestionsForm
+from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, SubmissionStates
 
 
-class ReviewDashboard(PermissionRequired, ListView):
+class ReviewDashboard(PermissionRequired, Filterable, ListView):
     template_name = 'orga/review/dashboard.html'
     paginate_by = 25
     context_object_name = 'submissions'
     permission_required = 'orga.view_review_dashboard'
+    default_filters = (
+        'code__icontains',
+        'speakers__name__icontains',
+        'title__icontains',
+    )
+    filter_fields = ('submission_type', 'state')
+
+    def get_filter_form(self):
+        return SubmissionFilterForm(
+            data=self.request.GET,
+            event=self.request.event,
+            usable_states=[
+                SubmissionStates.SUBMITTED,
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.REJECTED,
+                SubmissionStates.CONFIRMED,
+            ],
+        )
 
     def get_queryset(self, *args, **kwargs):
         overridden_reviews = Review.objects.filter(
             override_vote__isnull=False, submission_id=models.OuterRef('pk')
         )
+        queryset = self.request.event.submissions.filter(
+            state__in=[
+                SubmissionStates.SUBMITTED,
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.REJECTED,
+                SubmissionStates.CONFIRMED,
+            ]
+        )
+        queryset = self.filter_queryset(queryset)
         return (
-            self.request.event.submissions.filter(
-                state__in=[
-                    SubmissionStates.SUBMITTED,
-                    SubmissionStates.ACCEPTED,
-                    SubmissionStates.REJECTED,
-                    SubmissionStates.CONFIRMED,
-                ]
-            )
-            .order_by('review_id')
+            queryset.order_by('review_id')
             .annotate(has_override=models.Exists(overridden_reviews))
             .annotate(
                 avg_score=models.Case(
