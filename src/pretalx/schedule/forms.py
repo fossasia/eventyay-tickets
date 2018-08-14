@@ -155,7 +155,7 @@ class AvailabilitiesFormMixin(forms.Form):
             self._set_foreignkeys(instance, availabilities)
             self._replace_availabilities(instance, availabilities)
 
-        return instance
+        return availabilities
 
 
 class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
