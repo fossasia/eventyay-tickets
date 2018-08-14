@@ -31,6 +31,7 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
             'can_change_event_settings',
             'can_change_submissions',
             'is_reviewer',
+            'review_override_votes',
         ]
 
 

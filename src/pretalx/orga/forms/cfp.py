@@ -81,7 +81,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     allow_override_votes = forms.BooleanField(
         label=_('Allow override votes'),
         help_text=_(
-            'Individual reviewers can be assigned a fixed amount of "override votes" (positive or negative vetos).'
+            'Review teams can be assigned a fixed amount of "override votes": Positive or negative vetos each reviewer can assign.'
         ),
         required=False,
     )
@@ -96,7 +96,8 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_(
             'This text will be shown at the top of every review, as long as reviews can be created or edited.'
         )
-        + ' ' + phrases.base.use_markdown,
+        + ' '
+        + phrases.base.use_markdown,
         widget=I18nTextarea,
         required=False,
     )
