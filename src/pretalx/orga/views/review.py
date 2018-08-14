@@ -125,14 +125,14 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         context['submission'] = self.submission
         context['review'] = self.object
         context['read_only'] = self.read_only
-        context['override_left'] = self.request.user.remaining_override_votes(
-            self.request.event
-        )
         context['qform'] = self.qform
         context['skip_for_now'] = Review.find_missing_reviews(
             self.request.event, self.request.user, ignore=[self.submission]
         ).first()
-        context['profiles'] = [speaker.event_profile(self.request.event) for speaker in self.submission.speakers.all()]
+        context['profiles'] = [
+            speaker.event_profile(self.request.event)
+            for speaker in self.submission.speakers.all()
+        ]
         context['reviews'] = [
             {
                 'score': review.display_score,
