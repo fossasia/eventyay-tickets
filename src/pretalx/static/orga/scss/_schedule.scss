@@ -186,6 +186,18 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   border-color: lighten($brand-success, 15%);
 }
 
+.talk-box.warning {
+  border-color: $brand-danger;
+  &::after {
+    color: $brand-danger;
+    font-family: "ForkAwesome";
+    content: "";
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
 .talk-box.dragged {
   position: absolute;
   background: $brand-success;

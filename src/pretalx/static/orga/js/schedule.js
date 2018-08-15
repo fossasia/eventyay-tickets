@@ -4,7 +4,6 @@ var api = {
     var fullHeaders = {}
     fullHeaders['Content-Type'] = 'application/json'
     fullHeaders['X-CSRFToken'] = getCookie('pretalx_csrftoken')
-    console.log(fullHeaders)
 
     let options = {
       method: verb || 'GET',
@@ -105,7 +104,7 @@ Vue.component('availability', {
 
 Vue.component('talk', {
   template: `
-    <div class="talk-box" :class="[talk.state, {dragged: isDragged}]" v-bind:style="style" @mousedown="onMouseDown"
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings}]" v-bind:style="style" @mousedown="onMouseDown"
          :title="title">
       <span class="time" v-if="this.talk.start">
         {{ humanStart }}
@@ -145,6 +144,9 @@ Vue.component('talk', {
     },
     humanStart () {
       return moment.tz(this.talk.start, app.timezone).format('HH:mm')
+    },
+    displayWarnings () {
+      return this.talk.warnings.length
     }
 
   },
