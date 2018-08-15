@@ -80,7 +80,7 @@ class EventPermissionMiddleware:
         self._select_locale(request)
 
         if 'orga' in url.namespaces or (
-            'plugins' in url.namespaces and url.path.startswith('/orga')
+            'plugins' in url.namespaces and request.path.startswith('/orga')
         ):
             url = self._handle_orga_url(request, url)
             if url:
