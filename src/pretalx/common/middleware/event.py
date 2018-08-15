@@ -79,7 +79,9 @@ class EventPermissionMiddleware:
         self._set_orga_events(request)
         self._select_locale(request)
 
-        if 'orga' in url.namespaces:
+        if 'orga' in url.namespaces or (
+            'plugins' in url.namespaces and url.path.startswith('/orga')
+        ):
             url = self._handle_orga_url(request, url)
             if url:
                 return redirect(url)
