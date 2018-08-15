@@ -106,14 +106,16 @@ class Submission(LogMixin, models.Model):
         blank=True,
         verbose_name=_('Abstract'),
         help_text=_('A concise summary of your talk in one or two sentences.')
-        + ' ' + phrases.base.use_markdown,
+        + ' '
+        + phrases.base.use_markdown,
     )
     description = models.TextField(
         null=True,
         blank=True,
         verbose_name=_('Description'),
         help_text=_('A full-text description of your talk and its contents.')
-        + ' ' + phrases.base.use_markdown,
+        + ' '
+        + phrases.base.use_markdown,
     )
     notes = models.TextField(
         null=True, blank=True, verbose_name=_('Notes for the organiser')
@@ -442,3 +444,20 @@ class Submission(LogMixin, models.Model):
         from pretalx.common.serialize import serialize_duration
 
         return serialize_duration(minutes=self.get_duration())
+
+    @cached_property
+    def speaker_profiles(self):
+        from pretalx.person.models.profile import SpeakerProfile
+
+        return SpeakerProfile.objects.filter(
+            event=self.event, user__in=self.speakers.all()
+        )
+
+    @property
+    def availabilities(self):
+        from pretalx.schedule.models.availability import Availability
+
+        all_availabilities = self.event.availabilities.filter(
+            person__in=self.speaker_profiles
+        )
+        return Availability.intersection(all_availabilities)

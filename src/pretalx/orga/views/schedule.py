@@ -202,8 +202,7 @@ def serialize_slot(slot):
         'id': slot.pk,
         'title': str(slot.submission.title),
         'speakers': [
-            {'name': speaker.name}
-            for speaker in slot.submission.speakers.all()
+            {'name': speaker.name} for speaker in slot.submission.speakers.all()
         ],
         'submission_type': str(slot.submission.submission_type.name),
         'state': slot.submission.state,
@@ -285,18 +284,8 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         if not (talk and room):
             return JsonResponse({'results': []})
 
-        availabilitysets = [
-            room.availabilities.all(),
-            *[
-                speaker.profiles.filter(event=request.event)
-                .first()
-                .availabilities.all()
-                for speaker in talk.submission.speakers.all()
-                if speaker.profiles.filter(event=request.event).exists()
-            ],
-        ]
+        availabilitysets = [room.availabilities.all(), talk.submission.availabilities]
         availabilities = Availability.intersection(*availabilitysets)
-
         return JsonResponse(
             {'results': [avail.serialize() for avail in availabilities]}
         )

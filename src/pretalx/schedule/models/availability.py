@@ -8,36 +8,38 @@ from pretalx.common.mixins import LogMixin
 
 class Availability(LogMixin, models.Model):
     event = models.ForeignKey(
-        to='event.Event',
-        related_name='availabilities',
-        on_delete=models.CASCADE,
+        to='event.Event', related_name='availabilities', on_delete=models.CASCADE
     )
     person = models.ForeignKey(
         to='person.SpeakerProfile',
         related_name='availabilities',
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     room = models.ForeignKey(
         to='schedule.Room',
         related_name='availabilities',
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
 
     def __str__(self) -> str:
-        person = self.person.get_display_name() if self.person else None
+        person = self.person.user.get_display_name() if self.person else None
         room = getattr(self.room, 'name', None)
         event = getattr(getattr(self, 'event', None), 'slug', None)
         return f'Availability(event={event}, person={person}, room={room})'
 
     def __eq__(self, other: 'Availability') -> bool:
-        return all([
-            getattr(self, attribute, None) == getattr(other, attribute, None)
-            for attribute in ['event', 'person', 'room', 'start', 'end']
-        ])
+        return all(
+            [
+                getattr(self, attribute, None) == getattr(other, attribute, None)
+                for attribute in ['event', 'person', 'room', 'start', 'end']
+            ]
+        )
 
     def serialize(self) -> dict:
         zerotime = datetime.time(0, 0)
@@ -46,7 +48,7 @@ class Availability(LogMixin, models.Model):
             'start': str(self.start),
             'end': str(self.end),
             # make sure all-day availabilities are displayed properly in fullcalendar
-            'allDay': (self.start.time() == zerotime and self.end.time() == zerotime)
+            'allDay': (self.start.time() == zerotime and self.end.time() == zerotime),
         }
 
     def overlaps(self, other: 'Availability', strict: bool) -> bool:
@@ -56,15 +58,19 @@ class Availability(LogMixin, models.Model):
             raise Exception('Please provide an Availability object')
 
         if strict:
-            return (self.start <= other.start < self.end) or \
-                   (self.start < other.end <= self.end) or \
-                   (other.start <= self.start < other.end) or \
-                   (other.start < self.end <= other.end)
+            return (
+                (self.start <= other.start < self.end)
+                or (self.start < other.end <= self.end)
+                or (other.start <= self.start < other.end)
+                or (other.start < self.end <= other.end)
+            )
         else:
-            return (self.start <= other.start <= self.end) or \
-                   (self.start <= other.end <= self.end) or \
-                   (other.start <= self.start <= other.end) or \
-                   (other.start <= self.end <= other.end)
+            return (
+                (self.start <= other.start <= self.end)
+                or (self.start <= other.end <= self.end)
+                or (other.start <= self.start <= other.end)
+                or (other.start <= self.end <= other.end)
+            )
 
     def merge_with(self, other: 'Availability') -> 'Availability':
         """ Return a new Availability which spans the range of this one and the given one """
@@ -75,8 +81,7 @@ class Availability(LogMixin, models.Model):
             raise Exception('Only overlapping Availabilities can be merged.')
 
         return Availability(
-            start=min(self.start, other.start),
-            end=max(self.end, other.end),
+            start=min(self.start, other.start), end=max(self.end, other.end)
         )
 
     def __or__(self, other: 'Availability') -> 'Availability':
@@ -91,8 +96,7 @@ class Availability(LogMixin, models.Model):
             raise Exception('Only overlapping Availabilities can be intersected.')
 
         return Availability(
-            start=max(self.start, other.start),
-            end=min(self.end, other.end),
+            start=max(self.start, other.start), end=min(self.end, other.end)
         )
 
     def __and__(self, other: 'Availability') -> 'Availability':
@@ -117,7 +121,11 @@ class Availability(LogMixin, models.Model):
         return result
 
     @classmethod
-    def _pair_intersection(cls, availabilities_a: List['Availability'], availabilities_b: List['Availability']) -> List['Availability']:
+    def _pair_intersection(
+        cls,
+        availabilities_a: List['Availability'],
+        availabilities_b: List['Availability'],
+    ) -> List['Availability']:
         """ return the list of Availabilities, which are covered by each of the given sets """
         result = []
 
@@ -131,14 +139,13 @@ class Availability(LogMixin, models.Model):
         return result
 
     @classmethod
-    def intersection(cls, *availabilitysets: List['Availability']) -> List['Availability']:
+    def intersection(
+        cls, *availabilitysets: List['Availability']
+    ) -> List['Availability']:
         """ Return the list of Availabilities which are covered by all of the given sets """
 
         # get rid of any overlaps and unmerged ranges in each set
-        availabilitysets = [
-            cls.union(avialset)
-            for avialset in availabilitysets
-        ]
+        availabilitysets = [cls.union(avialset) for avialset in availabilitysets]
         # bail out for obvious cases (there are no sets given, one of the sets is empty)
         if not availabilitysets:
             return []
