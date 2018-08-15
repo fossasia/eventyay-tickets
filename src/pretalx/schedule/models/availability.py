@@ -72,6 +72,9 @@ class Availability(LogMixin, models.Model):
                 or (other.start <= self.end <= other.end)
             )
 
+    def contains(self, other: 'Availability') -> bool:
+        return self.start <= other.start and self.end >= other.end
+
     def merge_with(self, other: 'Availability') -> 'Availability':
         """ Return a new Availability which spans the range of this one and the given one """
 

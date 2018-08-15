@@ -217,6 +217,7 @@ def serialize_slot(slot):
         'start': slot.start.isoformat() if slot.start else None,
         'end': slot.end.isoformat() if slot.end else None,
         'url': slot.submission.orga_urls.base,
+        'warnings': slot.warnings,
     }
 
 
