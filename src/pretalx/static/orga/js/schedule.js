@@ -105,11 +105,12 @@ Vue.component('availability', {
 Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings}]" v-bind:style="style" @mousedown="onMouseDown"
-         :title="title">
+         :title="title" data-toggle="tooltip">
       <span class="time" v-if="this.talk.start">
         {{ humanStart }}
       </span>
-      {{ talk.title }} ({{ talk.duration }} minutes)
+      {{ talk.title }}
+      <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
     </div>
   `,
   props: {
@@ -119,7 +120,11 @@ Vue.component('talk', {
   },
   computed: {
     title () {
-      return this.talk.title + ' (' + this.talk.duration + ' minutes)';
+      let title = this.talk.title + ' (' + this.talk.duration + ' minutes)';
+      if (this.displayWarnings) {
+        title = title + '\n' + this.displayWarnings;
+      }
+      return title;
     },
     style () {
       var style = {height: this.talk.duration + 'px'}
@@ -146,7 +151,7 @@ Vue.component('talk', {
       return moment.tz(this.talk.start, app.timezone).format('HH:mm')
     },
     displayWarnings () {
-      return this.talk.warnings.length
+      return this.talk.warnings ? this.talk.warnings.map(warning => warning.message).join('\n') : null
     }
 
   },
