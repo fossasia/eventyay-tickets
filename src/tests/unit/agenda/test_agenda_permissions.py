@@ -8,7 +8,7 @@ from pretalx.agenda.permissions import (
 @pytest.mark.django_db
 @pytest.mark.parametrize('is_public,show_schedule,has_schedule,result', (
     (True, True, True, True),
-    (True, True, False, True),
+    (True, True, False, False),
     (True, False, True, False),
     (False, True, True, False),
     (False, False, True, False),
