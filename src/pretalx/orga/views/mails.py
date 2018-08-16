@@ -280,8 +280,8 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             context['placeholders'] = get_context_explanation()
         return context
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
         return kwargs
 

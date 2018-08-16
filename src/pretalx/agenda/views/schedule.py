@@ -23,8 +23,7 @@ class ScheduleDataView(PermissionRequired, TemplateView):
     def version(self):
         if 'version' in self.kwargs:
             return unquote(self.kwargs['version'])
-        else:
-            return None
+        return None
 
     def dispatch(self, request, *args, **kwargs):
         if 'version' in request.GET:
@@ -36,8 +35,7 @@ class ScheduleDataView(PermissionRequired, TemplateView):
                     kwargs=kwargs,
                 )
             )
-        else:
-            return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         if self.version:
@@ -46,9 +44,10 @@ class ScheduleDataView(PermissionRequired, TemplateView):
             ).first()
         if self.request.event.current_schedule:
             return self.request.event.current_schedule
+        return None
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         schedule = self.get_object()
         event = self.request.event
 
@@ -56,7 +55,7 @@ class ScheduleDataView(PermissionRequired, TemplateView):
             context['version'] = self.version
             context['error'] = f'Schedule "{self.version}" not found.'
             return context
-        elif not schedule:
+        if not schedule:
             context['error'] = 'Schedule not found.'
             return context
         context['schedule'] = schedule
@@ -68,8 +67,6 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
 class ExporterView(ScheduleDataView):
     def get_exporter(self, request):
-        from pretalx.common.signals import register_data_exporters
-
         url = resolve(request.path_info)
         if url.url_name == 'export':
             exporter = unquote(self.request.GET.get('exporter'))
@@ -77,11 +74,12 @@ class ExporterView(ScheduleDataView):
             exporter = url.url_name
 
         responses = register_data_exporters.send(request.event)
-        for receiver, response in responses:
+        for _, response in responses:
             ex = response(request.event)
             if ex.identifier == exporter:
                 if ex.public or request.is_orga:
                     return ex
+        return None
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
@@ -121,7 +119,7 @@ class ScheduleView(ScheduleDataView):
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
         )
-        tz = pytz.timezone(self.request.event.timezone)
+        timezone = pytz.timezone(self.request.event.timezone)
         if 'schedule' not in context:
             return context
 
@@ -132,19 +130,23 @@ class ScheduleView(ScheduleDataView):
         for date in context['data']:
             if date.get('first_start') and date.get('last_end'):
                 start = (
-                    date.get('first_start').astimezone(tz).replace(second=0, minute=0)
+                    date.get('first_start')
+                    .astimezone(timezone)
+                    .replace(second=0, minute=0)
                 )
-                end = date.get('last_end').astimezone(tz)
+                end = date.get('last_end').astimezone(timezone)
                 date['height'] = int((end - start).total_seconds() / 60 * 2)
                 date['hours'] = []
-                d = start
-                while d < end:
-                    date['hours'].append(d.strftime('%H:%M'))
-                    d += timedelta(hours=1)
+                step = start
+                while step < end:
+                    date['hours'].append(step.strftime('%H:%M'))
+                    step += timedelta(hours=1)
                 for room in date['rooms']:
                     for talk in room.get('talks', []):
                         talk.top = int(
-                            (talk.start.astimezone(tz) - start).total_seconds() / 60 * 2
+                            (talk.start.astimezone(timezone) - start).total_seconds()
+                            / 60
+                            * 2
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.end

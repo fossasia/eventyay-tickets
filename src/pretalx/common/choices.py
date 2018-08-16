@@ -17,6 +17,8 @@ class Choices:
             )
     """
 
+    valid_choices = []
+
     @classmethod
     def get_choices(cls):
         return cls.valid_choices

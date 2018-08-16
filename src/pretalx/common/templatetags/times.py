@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.filter
-def times(text: str, **kwargs):
+def times(text: str):
     """Add a tag that really really really could be a standard tag."""
     if text is None:
         return ""

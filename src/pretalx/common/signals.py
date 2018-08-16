@@ -11,10 +11,9 @@ app_cache = {}
 
 
 def _populate_app_cache():
-    global app_cache
     apps.check_apps_ready()
-    for ac in apps.app_configs.values():
-        app_cache[ac.name] = ac
+    for app_config in apps.app_configs.values():
+        app_cache[app_config.name] = app_config
 
 
 class EventPluginSignal(django.dispatch.Signal):
@@ -25,7 +24,8 @@ class EventPluginSignal(django.dispatch.Signal):
     are enabled for the given Event.
     """
 
-    def _is_active(self, sender, receiver):
+    @staticmethod
+    def _is_active(sender, receiver):
         if sender is None:
             # Send to all events!
             return True
@@ -56,7 +56,10 @@ class EventPluginSignal(django.dispatch.Signal):
             raise ValueError("Sender needs to be an event.")
 
         responses = []
-        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
+        if (
+            not self.receivers
+            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
+        ):
             return responses
 
         if not app_cache:
@@ -66,7 +69,10 @@ class EventPluginSignal(django.dispatch.Signal):
             if self._is_active(sender, receiver):
                 response = receiver(signal=self, sender=sender, **named)
                 responses.append((receiver, response))
-        return sorted(responses, key=lambda r: (receiver.__module__, receiver.__name__))
+        return sorted(
+            responses,
+            key=lambda response: (response[0].__module__, response[0].__name__),
+        )
 
 
 periodic_task = django.dispatch.Signal()
@@ -78,9 +84,7 @@ idempotent, meaning it should not make a difference if this is sent out more oft
 than expected.
 """
 
-register_data_exporters = EventPluginSignal(
-    providing_args=[]
-)
+register_data_exporters = EventPluginSignal(providing_args=[])
 """
 This signal is sent out to get all known data exporters. Receivers should return a
 subclass of pretalx.common.exporter.BaseExporter

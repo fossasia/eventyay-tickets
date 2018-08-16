@@ -41,8 +41,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def get_permission_object(self):
         return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         organiser = None
         if 'pk' not in self.kwargs:
             if self.request.user.is_administrator:

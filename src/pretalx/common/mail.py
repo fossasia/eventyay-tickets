@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class CustomSMTPBackend(EmailBackend):
-
     def test(self, from_addr):
         try:
             self.open()
@@ -25,19 +24,22 @@ class CustomSMTPBackend(EmailBackend):
             self.connection.rcpt('test@example.org')
             (code, resp) = self.connection.mail(from_addr, [])
             if code != 250:
-                logger.warning('Error testing mail settings, code %d, resp: %s' % (code, resp))
+                logger.warning(
+                    f'Error testing mail settings, code {code}, resp: {resp}'
+                )
                 raise SMTPSenderRefused(code, resp, from_addr)
             senderrs = {}
             (code, resp) = self.connection.rcpt('test@example.com')
-            if (code != 250) and (code != 251):
-                logger.warning('Error testing mail settings, code %d, resp: %s' % (code, resp))
+            if code not in (250, 251):
+                logger.warning(
+                    f'Error testing mail settings, code {code}, resp: {resp}'
+                )
                 raise SMTPRecipientsRefused(senderrs)
         finally:
             self.close()
 
 
 class TolerantDict(dict):
-
     def __missing__(self, key):
         """Don't fail when formatting strings with a dict with missing keys."""
         return key
@@ -47,10 +49,17 @@ class SendMailException(Exception):
     pass
 
 
-def mail(user: User, subject: str, template: Union[str, LazyI18nString],
-         context: Dict[str, Any]=None, event: Event=None, locale: str=None,
-         headers: dict=None):
+def mail(
+    user: User,
+    subject: str,
+    template: Union[str, LazyI18nString],
+    context: Dict[str, Any] = None,
+    event: Event = None,
+    locale: str = None,
+    headers: dict = None,
+):
     from pretalx.mail.models import QueuedMail
+
     headers = headers or {}
 
     with override(locale):
@@ -59,14 +68,27 @@ def mail(user: User, subject: str, template: Union[str, LazyI18nString],
             body = body.format_map(TolerantDict(context))
 
         QueuedMail(
-            event=event, to=user.email, subject=str(subject), text=body,
-            reply_to=headers.get('reply-to'), bcc=headers.get('bcc'),
+            event=event,
+            to=user.email,
+            subject=str(subject),
+            text=body,
+            reply_to=headers.get('reply-to'),
+            bcc=headers.get('bcc'),
         ).send()
 
 
 @app.task
-def mail_send_task(to: str, subject: str, body: str, html: str, reply_to: str=None,
-                   event: int=None, cc: list=None, bcc: list=None, headers: dict=None):
+def mail_send_task(
+    to: str,
+    subject: str,
+    body: str,
+    html: str,
+    reply_to: str = None,
+    event: int = None,
+    cc: list = None,
+    bcc: list = None,
+    headers: dict = None,
+):
     headers = headers or dict()
     if event:
         event = Event.objects.filter(id=event).first()
@@ -81,7 +103,9 @@ def mail_send_task(to: str, subject: str, body: str, html: str, reply_to: str=No
         sender = settings.MAIL_FROM
         backend = get_connection(fail_silently=False)
 
-    email = EmailMultiAlternatives(subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers)
+    email = EmailMultiAlternatives(
+        subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers
+    )
 
     if html is not None:
         email.attach_alternative(inline_css(html), 'text/html')

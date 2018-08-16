@@ -97,6 +97,10 @@ class RecoverView(FormView):
     template_name = 'cfp/event/recover.html'
     form_class = RecoverForm
 
+    def __init__(self, **kwargs):
+        self.user = None
+        super().__init__(**kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         try:
             self.user = User.objects.get(
@@ -131,11 +135,12 @@ class EventAuth(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        s = SessionStore(request.POST.get('session'))
+    @staticmethod
+    def post(request, *args, **kwargs):
+        store = SessionStore(request.POST.get('session'))
 
         try:
-            data = s.load()
+            data = store.load()
         except Exception:
             raise PermissionDenied(_('Please go back and try again.'))
 

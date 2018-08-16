@@ -58,8 +58,8 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             request_user=self.request.user,
         )
 
-    def get_context_data(self, event):
-        context = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['login_form'] = self.login_form
         context['profile_form'] = self.profile_form
         context['questions_form'] = self.questions_form
@@ -109,10 +109,10 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = 'cfp/event/user_submissions.html'
     context_object_name = 'submissions'
 
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         from pretalx.person.permissions import person_can_view_information
 
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['information'] = [
             i
             for i in self.request.event.information.all()
@@ -134,10 +134,10 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.state == SubmissionStates.SUBMITTED:
-            self.object.state = SubmissionStates.WITHDRAWN
-            self.object.save(update_fields=['state'])
+        obj = self.get_object()
+        if obj.state == SubmissionStates.SUBMITTED:
+            obj.state = SubmissionStates.WITHDRAWN
+            obj.save(update_fields=['state'])
             messages.success(self.request, phrases.cfp.submission_withdrawn)
         else:
             messages.error(self.request, phrases.cfp.submission_not_withdrawn)
@@ -157,16 +157,16 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
     def get_permission_object(self):
         return self.get_object()
 
-    def get_form_kwargs(self, *args, **kwargs):
-        result = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
         result['instance'] = self.request.user.profiles.filter(
             event=self.request.event
         ).first()
         result['event'] = self.request.event
         return result
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['submission'] = self.get_object()
         return context
 
@@ -271,13 +271,15 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             readonly=not self.can_edit,
         )
 
+    @cached_property
+    def object(self):
+        return self.get_object()
+
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
         form = self.get_form()
         if form.is_valid() and self.qform.is_valid():
             return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return self.form_invalid(form)
 
     @cached_property
     def can_edit(self):
@@ -307,16 +309,16 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
 
 
 class DeleteAccountView(LoggedInEventPageMixin, View):
-    def post(self, request, event):
+    @staticmethod
+    def post(request, event):
 
         if request.POST.get('really'):
             request.user.deactivate()
             logout(request)
             messages.success(request, phrases.cfp.account_deleted)
             return redirect(request.event.urls.base)
-        else:
-            messages.error(request, phrases.cfp.account_delete_confirm)
-            return redirect(request.event.urls.user + '?really')
+        messages.error(request, phrases.cfp.account_delete_confirm)
+        return redirect(request.event.urls.user + '?really')
 
 
 class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
@@ -327,8 +329,8 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     def get_permission_object(self):
         return self.get_object()
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         kwargs['submission'] = self.get_object()
         kwargs['speaker'] = self.request.user
         if 'email' in self.request.GET and not self.request.method == 'POST':
@@ -342,8 +344,8 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
                 messages.warning(self.request, phrases.cfp.invite_invalid_email)
         return kwargs
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['submission'] = self.get_object()
         context['invite_url'] = context['submission'].urls.accept_invitation.full()
         return context
@@ -364,14 +366,14 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
     template_name = 'cfp/event/invitation.html'
     context_object_name = 'submission'
 
-    def get_object(self, *args, **kwargs):
+    def get_object(self, queryset=None):
         return get_object_or_404(
             Submission,
             code__iexact=self.kwargs['code'],
             invitation_token__iexact=self.kwargs['invitation'],
         )
 
-    def post(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         submission = self.get_object()
         submission.speakers.add(self.request.user)
         submission.log_action(

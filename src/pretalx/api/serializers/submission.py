@@ -29,8 +29,10 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         request = self.context.get('request')
         if request:
             return request.user.has_perm('orga.view_submissions', request.event)
+        return False
 
-    def get_duration(self, obj):
+    @staticmethod
+    def get_duration(obj):
         return obj.export_duration
 
     def get_answers(self, obj):
@@ -62,7 +64,8 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 class ScheduleListSerializer(ModelSerializer):
     version = SerializerMethodField()
 
-    def get_version(self, obj):
+    @staticmethod
+    def get_version(obj):
         return obj.version or 'wip'
 
     class Meta:

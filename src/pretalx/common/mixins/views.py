@@ -100,7 +100,6 @@ class Filterable:
     default_filters = []
 
     def filter_queryset(self, qs):
-        self._filter_model = qs.model
         if self.filter_fields:
             qs = self._handle_filter(qs)
         if 'q' in self.request.GET:
@@ -129,7 +128,7 @@ class Filterable:
             for additional_filter in _filters[1:]:
                 _filter = _filter | additional_filter
             qs = qs.filter(_filter)
-        elif len(_filters):
+        elif _filters:
             qs = qs.filter(_filters[0])
         return qs
 
@@ -165,12 +164,10 @@ class PermissionRequired(PermissionRequiredMixin):
             key = f'pretalx_event_access_{request.event.pk}'
             if request and hasattr(request, 'event') and key in request.session:
                 sparent = SessionStore(request.session.get(key))
-                try:
+                parentdata = []
+                with suppress(Exception):
                     parentdata = sparent.load()
-                except Exception:
-                    pass
-                else:
-                    return 'event_access' in parentdata
+                return 'event_access' in parentdata
         return result
 
     def get_login_url(self):

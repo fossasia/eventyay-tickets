@@ -7,13 +7,14 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 
-class CreateOrUpdateView(SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView):
-
+class CreateOrUpdateView(
+    SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView
+):
     def set_object(self):
         if getattr(self, 'object', None) is None:
-            self.object = None
+            setattr(self, 'object', None)
         with suppress(self.model.DoesNotExist, AttributeError):
-            self.object = self.get_object()
+            setattr(self, 'object', self.get_object())
 
     def get(self, request, *args, **kwargs):
         self.set_object()

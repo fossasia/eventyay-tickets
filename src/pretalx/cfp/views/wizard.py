@@ -34,7 +34,8 @@ FORMS = [
 
 
 class SubmitStartView(EventPageMixin, View):
-    def get(self, request, *args, **kwargs):
+    @staticmethod
+    def get(request, *args, **kwargs):
         return redirect(
             reverse(
                 'cfp:event.submit',
@@ -69,9 +70,6 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             )
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form_instance(self, step):
-        return super().get_form_instance(step)
-
     def get_form_kwargs(self, step=None):
         kwargs = super().get_form_kwargs(step)
         if step in ['info', 'profile', 'questions']:
@@ -88,10 +86,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['target'] = ''
         return kwargs
 
-    def get_context_data(self, form=None, event=None, tmpid=None, step=None):
-        context = super().get_context_data(
-            form=form, event=event, tmpid=tmpid, step=step
-        )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        step = kwargs.get('step')
         if step == 'profile':
             if hasattr(self.request.user, 'email'):
                 email = self.request.user.email
@@ -142,7 +139,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if answer.answer is not None:
             answer.save()
 
-    def done(self, form_list, form_dict, **kwargs):
+    def done(self, form_list, **kwargs):
+        form_dict = kwargs.get('form_dict')
         if self.request.user.is_authenticated:
             user = self.request.user
         else:
@@ -186,8 +184,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     skip_queue=True,
                     locale=self.request.event.locale,
                 )
-        except SendMailException as e:
-            logging.getLogger('').warning(str(e))
+        except SendMailException as exception:
+            logging.getLogger('').warning(str(exception))
             messages.warning(self.request, phrases.cfp.submission_email_fail)
 
         sub.log_action('pretalx.submission.create', person=user)

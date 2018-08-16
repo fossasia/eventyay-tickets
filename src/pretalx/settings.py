@@ -441,7 +441,7 @@ if DEBUG:
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(
-    DEBUG=DEBUG,
+    debug=DEBUG,
     config_files=config_files,
     db_name=db_name,
     db_backend=db_backend,

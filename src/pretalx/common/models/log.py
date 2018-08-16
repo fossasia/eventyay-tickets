@@ -17,13 +17,25 @@ LOG_NAMES = {
     'pretalx.invite.orga.accept': _('The invitation to the event orga was accepted.'),
     'pretalx.invite.orga.retract': _('An invitation to the event orga was retracted.'),
     'pretalx.invite.orga.send': _('An invitation to the event orga was sent.'),
-    'pretalx.invite.reviewer.retract': _('The invitation to the review team was retracted.'),
+    'pretalx.invite.reviewer.retract': _(
+        'The invitation to the review team was retracted.'
+    ),
     'pretalx.invite.reviewer.send': _('The invitation to the review team was sent.'),
-    'pretalx.event.invite.orga.accept': _('The invitation to the event orga was accepted.'),  # compat
-    'pretalx.event.invite.orga.retract': _('An invitation to the event orga was retracted.'),  # compat
-    'pretalx.event.invite.orga.send': _('An invitation to the event orga was sent.'),  # compat
-    'pretalx.event.invite.reviewer.retract': _('The invitation to the review team was retracted.'),  # compat
-    'pretalx.event.invite.reviewer.send': _('The invitation to the review team was sent.'),  # compat
+    'pretalx.event.invite.orga.accept': _(
+        'The invitation to the event orga was accepted.'
+    ),  # compat
+    'pretalx.event.invite.orga.retract': _(
+        'An invitation to the event orga was retracted.'
+    ),  # compat
+    'pretalx.event.invite.orga.send': _(
+        'An invitation to the event orga was sent.'
+    ),  # compat
+    'pretalx.event.invite.reviewer.retract': _(
+        'The invitation to the review team was retracted.'
+    ),  # compat
+    'pretalx.event.invite.reviewer.send': _(
+        'The invitation to the review team was sent.'
+    ),  # compat
     'pretalx.mail.create': _('An email was modified.'),
     'pretalx.mail.delete': _('A pending email was deleted.'),
     'pretalx.mail.delete_all': _('All pending emails were deleted.'),
@@ -52,7 +64,9 @@ LOG_NAMES = {
     'pretalx.submission.resource.update': _('A submission resource was modified.'),
     'pretalx.submission.speakers.add': _('A speaker was added to the submission.'),
     'pretalx.submission.speakers.invite': _('A speaker was invited to the submission.'),
-    'pretalx.submission.speakers.remove': _('A speaker was removed from the submission.'),
+    'pretalx.submission.speakers.remove': _(
+        'A speaker was removed from the submission.'
+    ),
     'pretalx.submission.unconfirm': _('The submission was unconfirmed.'),
     'pretalx.submission.update': _('The submission was modified.'),
     'pretalx.submission.withdraw': _('The submission was withdrawn.'),
@@ -78,37 +92,26 @@ class ActivityLog(models.Model):
         to='event.Event',
         on_delete=models.PROTECT,
         related_name='log_entries',
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     person = models.ForeignKey(
         to='person.User',
         on_delete=models.PROTECT,
         related_name='log_entries',
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
-    content_type = models.ForeignKey(
-        to=ContentType,
-        on_delete=models.CASCADE,
-    )
-    object_id = models.PositiveIntegerField(
-        db_index=True
-    )
-    content_object = GenericForeignKey(
-        'content_type', 'object_id',
-    )
-    timestamp = models.DateTimeField(
-        auto_now_add=True, db_index=True,
-    )
-    action_type = models.CharField(
-        max_length=200,
-    )
-    data = models.TextField(
-        null=True, blank=True
-    )
+    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField(db_index=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    action_type = models.CharField(max_length=200)
+    data = models.TextField(null=True, blank=True)
     is_orga_action = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('-timestamp', )
+        ordering = ('-timestamp',)
 
     def __str__(self):
         """Custom __str__ to help with debugging."""
@@ -120,6 +123,7 @@ class ActivityLog(models.Model):
         response = LOG_NAMES.get(self.action_type)
         if response is None:
             import logging
+
             logger = logging.getLogger(__name__)
             logger.warning(f'Unknown log action "{self.action_type}".')
             return self.action_type
@@ -130,6 +134,7 @@ class ActivityLog(models.Model):
             return self.content_object.urls.public
         if isinstance(self.content_object, CfP):
             return self.content_object.urls.public
+        return ''
 
     def get_orga_url(self):
         if isinstance(self.content_object, Submission):
@@ -146,3 +151,4 @@ class ActivityLog(models.Model):
             return self.content_object.urls.text
         if isinstance(self.content_object, (MailTemplate, QueuedMail)):
             return self.content_object.urls.base
+        return ''

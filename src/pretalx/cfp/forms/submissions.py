@@ -12,9 +12,12 @@ class SubmissionInvitationForm(forms.Form):
     def __init__(self, submission, speaker, *args, **kwargs):
         self.submission = submission
         initial = kwargs.get('initial', {})
-        subject = _('{speaker} invites you to join their talk!').format(speaker=speaker.get_display_name())
+        subject = _('{speaker} invites you to join their talk!').format(
+            speaker=speaker.get_display_name()
+        )
         initial['subject'] = f'[{submission.event.slug}] {subject}'
-        initial['text'] = _('''Hi!
+        initial['text'] = _(
+            '''Hi!
 
 I'd like to invite you to be a speaker in my talk »{title}«
 at {event}. Please follow this link to join:
@@ -22,8 +25,10 @@ at {event}. Please follow this link to join:
   {url}
 
 I'm looking forward to it!
-{speaker}''').format(
-            event=submission.event.name, title=submission.title,
+{speaker}'''
+        ).format(
+            event=submission.event.name,
+            title=submission.title,
             url=submission.urls.accept_invitation.full(),
             speaker=speaker.get_display_name(),
         )

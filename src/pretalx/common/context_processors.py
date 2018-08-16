@@ -9,7 +9,11 @@ from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
 def add_events(request):
-    if request.resolver_match and set(request.resolver_match.namespaces) & {'orga', 'plugins'} and not request.user.is_anonymous:
+    if (
+        request.resolver_match
+        and set(request.resolver_match.namespaces) & {'orga', 'plugins'}
+        and not request.user.is_anonymous
+    ):
         try:
             url = resolve(request.path_info)
             url_name = url.url_name
@@ -17,10 +21,7 @@ def add_events(request):
         except Http404:
             url_name = ''
             url_namespace = ''
-        return {
-            'url_name': url_name,
-            'url_namespace': url_namespace,
-        }
+        return {'url_name': url_name, 'url_namespace': url_namespace}
     return dict()
 
 
@@ -34,13 +35,16 @@ def locale_context(request):
 
 def messages(request):
     from pretalx.common.phrases import phrases
+
     return {'phrases': phrases}
 
 
 def system_information(request):
     context = {}
     _footer = []
-    for receiver, response in footer_link.send(getattr(request, 'event', None), request=request):
+    for _, response in footer_link.send(
+        getattr(request, 'event', None), request=request
+    ):
         if isinstance(response, list):
             _footer += response
         else:
@@ -51,9 +55,15 @@ def system_information(request):
         context['development_warning'] = True
         with suppress(Exception):
             import subprocess
-            context['pretalx_version'] = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
+
+            context['pretalx_version'] = (
+                subprocess.check_output(['git', 'describe', '--always'])
+                .decode()
+                .strip()
+            )
     else:
         with suppress(Exception):
             import pretalx
+
             context['pretalx_version'] = pretalx.__version__
     return context

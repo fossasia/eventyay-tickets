@@ -14,6 +14,10 @@ from pretalx.event.models import Event
 class Command(BakeryBuildCommand):
     help = 'Exports event schedule as a static HTML dump'
 
+    def __init__(self, *args, **kwargs):
+        self._exporting_event = None
+        super().__init__(*args, **kwargs)
+
     def add_arguments(self, parser):
         super().add_arguments(parser)
         parser.add_argument('event', type=str)

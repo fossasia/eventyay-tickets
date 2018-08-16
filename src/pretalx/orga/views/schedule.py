@@ -365,8 +365,8 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.room_settings
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
         return kwargs
 

@@ -22,7 +22,7 @@ class CheckboxMultiDropdown(CheckboxSelectMultiple):
 
 
 class PasswordStrengthInput(PasswordInput):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         markup = """
         <div class="password-progress">
             <div class="password-progress-bar progress">
@@ -50,7 +50,7 @@ class PasswordStrengthInput(PasswordInput):
         )
         return mark_safe(super().render(name, value, self.attrs) + markup)
 
-    class Media(object):
+    class Media:
         js = ('common/js/zxcvbn.js', 'common/js/password_strength.js')
 
 
@@ -59,7 +59,7 @@ class PasswordConfirmationInput(PasswordInput):
         super().__init__(attrs, render_value)
         self.confirm_with = confirm_with
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if self.confirm_with:
             self.attrs['data-confirm-with'] = f'{self.confirm_with}'
 
@@ -78,6 +78,4 @@ class PasswordConfirmationInput(PasswordInput):
             self.attrs.get('class', '').split(' ') + ['password_confirmation']
         )
 
-        return mark_safe(
-            super(PasswordInput, self).render(name, value, self.attrs) + markup
-        )
+        return mark_safe(super().render(name, value, self.attrs) + markup)

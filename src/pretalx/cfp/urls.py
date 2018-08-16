@@ -17,7 +17,7 @@ urlpatterns = [
                 url('^reset$', auth.ResetView.as_view(), name='event.reset'),
                 url('^login', auth.LoginView.as_view(), name='event.login'),
                 url(
-                    '^reset/(?P<token>\w+)$',
+                    r'^reset/(?P<token>\w+)$',
                     auth.RecoverView.as_view(),
                     name='event.recover',
                 ),
@@ -31,7 +31,7 @@ urlpatterns = [
                     name='event.submit',
                 ),
                 url(
-                    '^invitation/(?P<code>\w+)/(?P<invitation>\w+)$',
+                    r'^invitation/(?P<code>\w+)/(?P<invitation>\w+)$',
                     user.SubmissionInviteAcceptView.as_view(),
                     name='invitation.view',
                 ),
@@ -47,7 +47,7 @@ urlpatterns = [
                     name='event.user.submissions',
                 ),
                 url(
-                    '^me/submissions/(?P<code>[\w-]+)/',
+                    r'^me/submissions/(?P<code>[\w-]+)/',
                     include(
                         [
                             url(
@@ -77,7 +77,11 @@ urlpatterns = [
             ]
         ),
     ),
-    url(r'^control/(?P<path>.*)$', RedirectView.as_view(url='/orga/%(path)s'), name='notpretix'),
+    url(
+        r'^control/(?P<path>.*)$',
+        RedirectView.as_view(url='/orga/%(path)s'),
+        name='notpretix',
+    ),
     url(r'^robots.txt$', robots.robots_txt, name='robots.txt'),
     url('^$', event.GeneralView.as_view()),
 ]

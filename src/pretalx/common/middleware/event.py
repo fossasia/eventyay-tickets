@@ -1,6 +1,5 @@
-import urllib
 from contextlib import suppress
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 
 import pytz
 from django.conf import settings
@@ -20,7 +19,8 @@ class EventPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def _set_orga_events(self, request):
+    @staticmethod
+    def _set_orga_events(request):
         request.is_orga = False
         request.is_reviewer = False
         request.orga_events = []
@@ -48,11 +48,8 @@ class EventPermissionMiddleware:
             and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
         ):
             params = '&' + request.GET.urlencode() if request.GET else ''
-            return (
-                reverse('orga:login')
-                + f'?next={urllib.parse.quote(request.path)}'
-                + params
-            )
+            return reverse('orga:login') + f'?next={quote(request.path)}' + params
+        return None
 
     def __call__(self, request):
         url = resolve(request.path_info)
@@ -122,9 +119,10 @@ class EventPermissionMiddleware:
             timezone.activate(pytz.timezone(tzname))
             request.timezone = tzname
 
-    def _language_from_browser(self, request, supported):
+    @staticmethod
+    def _language_from_browser(request, supported):
         accept_value = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-        for accept_lang, unused in parse_accept_lang_header(accept_value):
+        for accept_lang, _ in parse_accept_lang_header(accept_value):
             if accept_lang == '*':
                 break
 
@@ -137,15 +135,19 @@ class EventPermissionMiddleware:
                     return val
             except LookupError:
                 continue
+        return None
 
-    def _language_from_cookie(self, request, supported):
+    @staticmethod
+    def _language_from_cookie(request, supported):
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         with suppress(LookupError):
             cookie_value = get_supported_language_variant(cookie_value)
             if cookie_value and cookie_value in supported:
                 return cookie_value
+        return None
 
-    def _language_from_user(self, request, supported):
+    @staticmethod
+    def _language_from_user(request, supported):
         if request.user.is_authenticated:
             with suppress(LookupError):
                 value = get_supported_language_variant(request.user.locale)

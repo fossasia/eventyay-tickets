@@ -24,6 +24,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             return self.request.event.submissions.filter(
                 slots__in=self.request.event.current_schedule.talks.all()
             )
+        return Submission.objects.none()
 
     def get_queryset(self):
         return self.get_base_queryset() or self.queryset
@@ -46,7 +47,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return ScheduleListSerializer
-        elif self.action == 'retrieve':
+        if self.action == 'retrieve':
             return ScheduleSerializer
         raise Exception('Methods other than GET are not supported on this ressource.')
 
@@ -64,7 +65,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
             query = self.kwargs.get(self.lookup_field)
             if has_perm and query == 'wip':
                 return self.request.event.wip_schedule
-            elif (
+            if (
                 (has_perm or is_public)
                 and query == 'latest'
                 and self.request.event.current_schedule

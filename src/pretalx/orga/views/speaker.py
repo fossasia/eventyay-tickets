@@ -131,8 +131,8 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 )
         return super().form_valid(form)
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         kwargs.update({'event': self.request.event, 'user': self.object})
         return kwargs
 

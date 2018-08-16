@@ -11,7 +11,7 @@ from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.models import Schedule
 
 
-class PretalxExportContextMixin():
+class PretalxExportContextMixin:
     def __init__(self, *args, _exporting_event=None, **kwargs):
         self._exporting_event = _exporting_event
         super().__init__(*args, **kwargs)
@@ -30,7 +30,8 @@ class PretalxExportContextMixin():
         context['is_html_export'] = True
         return context
 
-    def get_url(self, obj):
+    @staticmethod
+    def get_url(obj):
         return obj.urls.public
 
     def get_queryset(self):
@@ -44,11 +45,13 @@ class PretalxExportContextMixin():
         return os.path.join(path, file_name)
 
 
-# current schedule
 class ExportScheduleView(PretalxExportContextMixin, BuildableDetailView, ScheduleView):
+    """ Build the current schedule. """
+
     queryset = Schedule.objects.filter(published__isnull=False).order_by('published')
 
-    def get_url(self, obj):
+    @staticmethod
+    def get_url(obj):
         return obj.event.urls.schedule
 
 
@@ -105,22 +108,33 @@ class ExportICalView(PretalxExportContextMixin, BuildableDetailView, ExporterVie
 
 
 # all schedule versions
-class ExportScheduleVersionsView(PretalxExportContextMixin, BuildableDetailView, ScheduleView):
+class ExportScheduleVersionsView(
+    PretalxExportContextMixin, BuildableDetailView, ScheduleView
+):
     queryset = Schedule.objects.filter(version__isnull=False)
 
 
 class ExportTalkView(PretalxExportContextMixin, BuildableDetailView, TalkView):
+    def get_queryset(self):
+        return self._exporting_event.submissions.filter(
+            pk__in=self._exporting_event.current_schedule.slots.all().values_list(
+                'pk', flat=True
+            )
+        )
 
-    def get_queryset(self, *args, **kwargs):
-        return self._exporting_event.submissions.filter(pk__in=self._exporting_event.current_schedule.slots.all().values_list('pk', flat=True))
 
+class ExportTalkICalView(
+    PretalxExportContextMixin, BuildableDetailView, SingleICalView
+):
+    def get_queryset(self):
+        return self._exporting_event.submissions.filter(
+            pk__in=self._exporting_event.current_schedule.slots.all().values_list(
+                'pk', flat=True
+            )
+        )
 
-class ExportTalkICalView(PretalxExportContextMixin, BuildableDetailView, SingleICalView):
-
-    def get_queryset(self, *args, **kwargs):
-        return self._exporting_event.submissions.filter(pk__in=self._exporting_event.current_schedule.slots.all().values_list('pk', flat=True))
-
-    def get_url(self, obj):
+    @staticmethod
+    def get_url(obj):
         return obj.urls.ical
 
     def get_content(self):
@@ -131,4 +145,6 @@ class ExportTalkICalView(PretalxExportContextMixin, BuildableDetailView, SingleI
 
 
 class ExportSpeakerView(PretalxExportContextMixin, BuildableDetailView, SpeakerView):
-    queryset = SpeakerProfile.objects.filter(user__submissions__slots__schedule__published__isnull=False).distinct()
+    queryset = SpeakerProfile.objects.filter(
+        user__submissions__slots__schedule__published__isnull=False
+    ).distinct()

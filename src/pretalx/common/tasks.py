@@ -36,12 +36,12 @@ def regenerate_css(event_id: int):
             sassrules.append('$brand-primary: {};'.format(event.primary_color))
             sassrules.append(f'@import "{path}";')
 
-        cf = dict(django_libsass.CUSTOM_FUNCTIONS)
-        cf['static'] = static
+        custom_functions = dict(django_libsass.CUSTOM_FUNCTIONS)
+        custom_functions['static'] = static
         css = sass.compile(
             string="\n".join(sassrules),
             output_style='compressed',
-            custom_functions=cf
+            custom_functions=custom_functions,
         )
         checksum = hashlib.sha1(css.encode('utf-8')).hexdigest()
         fname = f'{event.slug}/{local_app}.{checksum[:16]}.css'

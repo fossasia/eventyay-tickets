@@ -3,12 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ReadOnlyFlag:
-
     def __init__(self, *args, read_only=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.read_only = read_only
         if read_only:
-            for field_name, field in self.fields.items():
+            for field in self.fields.values():
                 field.disabled = True
 
     def clean(self):

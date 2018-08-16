@@ -26,20 +26,24 @@ class TalkView(PermissionRequired, DetailView):
     template_name = 'agenda/talk.html'
     permission_required = 'agenda.view_slot'
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         with suppress(AttributeError, TalkSlot.DoesNotExist):
-            return self.request.event.current_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
+            return self.request.event.current_schedule.talks.get(
+                submission__code__iexact=self.kwargs['slug'], is_visible=True
+            )
         if getattr(self.request, 'is_orga', False):
             with suppress(AttributeError, TalkSlot.DoesNotExist):
-                return self.request.event.wip_schedule.talks.get(submission__code__iexact=self.kwargs['slug'], is_visible=True)
+                return self.request.event.wip_schedule.talks.get(
+                    submission__code__iexact=self.kwargs['slug'], is_visible=True
+                )
         raise Http404()
 
-    @csp_update(CHILD_SRC="https://media.ccc.de")  # TODO: only do this if obj.recording_url and obj.recording_source are set
-    def get(self, *args, **kwargs):
-        return super().get(*args, **kwargs)
+    @csp_update(CHILD_SRC="https://media.ccc.de")
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         slot = self.object
         qs = TalkSlot.objects.none()
         if self.request.event.current_schedule:
@@ -48,10 +52,16 @@ class TalkView(PermissionRequired, DetailView):
             qs = self.request.event.wip_schedule.talks
         event_talks = qs.exclude(submission=slot.submission)
         context['submission'] = slot.submission
-        context['submission_description'] = slot.submission.description or slot.submission.abstract or _('The talk »{title}« at {event}').format(title=slot.submission.title, event=slot.submission.event.name)
+        context['submission_description'] = (
+            slot.submission.description
+            or slot.submission.abstract
+            or _('The talk »{title}« at {event}').format(
+                title=slot.submission.title, event=slot.submission.event.name
+            )
+        )
         context['speakers'] = []
-        for speaker in slot.submission.speakers.all():  # TODO: there's bound to be an elegant annotation for this
-            speaker.talk_profile = speaker.profiles.filter(event=self.request.event).first()
+        for speaker in slot.submission.speakers.all():
+            speaker.talk_profile = speaker.event_profile(event=self.request.event)
             speaker.other_talks = event_talks.filter(submission__speakers__in=[speaker])
             context['speakers'].append(speaker)
         return context
@@ -68,17 +78,25 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = 'code'
 
     def get(self, request, event, **kwargs):
-        talk = self.get_object().slots.filter(schedule=self.request.event.current_schedule, is_visible=True).first()
+        talk = (
+            self.get_object()
+            .slots.filter(schedule=self.request.event.current_schedule, is_visible=True)
+            .first()
+        )
         if not talk:
             raise Http404()
 
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
-        cal.add('prodid').value = '-//pretalx//{}//{}'.format(netloc, talk.submission.code)
+        cal.add('prodid').value = '-//pretalx//{}//{}'.format(
+            netloc, talk.submission.code
+        )
         talk.build_ical(cal)
         code = talk.submission.code
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
-        resp['Content-Disposition'] = f'attachment; filename="{request.event.slug}-{code}.ics"'
+        resp[
+            'Content-Disposition'
+        ] = f'attachment; filename="{request.event.slug}-{code}.ics"'
         return resp
 
 
@@ -103,8 +121,10 @@ class FeedbackView(PermissionRequired, FormView):
                 'agenda/feedback.html',
                 context={
                     'talk': talk,
-                    'feedback': talk.feedback.filter(Q(speaker__isnull=True) | Q(speaker=self.request.user)),
-                }
+                    'feedback': talk.feedback.filter(
+                        Q(speaker__isnull=True) | Q(speaker=self.request.user)
+                    ),
+                },
             )
         return super().get(*args, **kwargs)
 
@@ -113,8 +133,8 @@ class FeedbackView(PermissionRequired, FormView):
         kwargs['talk'] = self.get_object()
         return kwargs
 
-    def get_context_data(self):
-        context = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['talk'] = self.get_object()
         return context
 

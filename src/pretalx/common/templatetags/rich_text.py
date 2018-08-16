@@ -52,13 +52,16 @@ ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
 
 
 @register.filter
-def rich_text(text: str, **kwargs):
+def rich_text(text: str):
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ''
-    body_md = bleach.linkify(bleach.clean(
-        markdown.markdown(str(text)),
-        tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
-        protocols=ALLOWED_PROTOCOLS,
-    ))
+    body_md = bleach.linkify(
+        bleach.clean(
+            markdown.markdown(str(text)),
+            tags=ALLOWED_TAGS,
+            attributes=ALLOWED_ATTRIBUTES,
+            protocols=ALLOWED_PROTOCOLS,
+        )
+    )
     return mark_safe(body_md)

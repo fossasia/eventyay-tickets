@@ -19,11 +19,11 @@ LOCAL_HOST_NAMES = ('testserver', 'localhost')
 
 
 class MultiDomainMiddleware:
-
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def get_host(self, request):
+    @staticmethod
+    def get_host(request):
         # We try three options, in order of decreasing preference.
         if settings.USE_X_FORWARDED_HOST and ('HTTP_X_FORWARDED_HOST' in request.META):
             host = request.META['HTTP_X_FORWARDED_HOST']
@@ -66,6 +66,8 @@ class MultiDomainMiddleware:
             return
 
         if request.path.startswith('/orga'):
+            if default_port not in (80, 443):
+                default_domain = f'{default_domain}:{default_port}'
             return redirect(urljoin(default_domain, request.get_full_path()))
         raise DisallowedHost(f'Unknown host: {host}')
 
@@ -123,7 +125,8 @@ class SessionMiddleware(BaseSessionMiddleware):
                         request.session.save()
                         response.set_cookie(
                             settings.SESSION_COOKIE_NAME,
-                            request.session.session_key, max_age=max_age,
+                            request.session.session_key,
+                            max_age=max_age,
                             expires=expires,
                             domain=get_cookie_domain(request),
                             path=settings.SESSION_COOKIE_PATH,
@@ -172,7 +175,7 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
             domain=get_cookie_domain(request),
             path=settings.CSRF_COOKIE_PATH,
             secure=request.scheme == 'https',
-            httponly=settings.CSRF_COOKIE_HTTPONLY
+            httponly=settings.CSRF_COOKIE_HTTPONLY,
         )
         # Content varies with the CSRF cookie, so set the Vary header.
         patch_vary_headers(response, ('Cookie',))
@@ -191,12 +194,11 @@ def get_cookie_domain(request):
         # e.g. "localhost", see http://curl.haxx.se/rfc/cookie_spec.html
         return None
 
-    default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+    default_domain, _ = split_domain_port(settings.SITE_NETLOC)
     if request.host == default_domain:
         # We are on our main domain, set the cookie domain the user has chosen
         return settings.SESSION_COOKIE_DOMAIN
-    else:
-        # We are on an organiser's custom domain, set no cookie domain, as we do not want
-        # the cookies to be present on any other domain. Setting an explicit value can be
-        # dangerous, see http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
-        return None
+    # We are on an organiser's custom domain, set no cookie domain, as we do not want
+    # the cookies to be present on any other domain. Setting an explicit value can be
+    # dangerous, see http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
+    return None
