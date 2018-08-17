@@ -1,0 +1,14 @@
+{% extends "orga/schedule/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block schedule_content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="input-group">
+        <input id="id_version" class="form-control" name="version" maxlength="200" placeholder="{{ phrases.orga.schedule_example_version }}" title="" type="text">
+        <button type="submit" class="btn btn-success">{% trans "Release" %}</button>
+    </div>
+</form>
+{% endblock %}

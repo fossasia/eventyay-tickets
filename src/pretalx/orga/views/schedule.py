@@ -106,12 +106,20 @@ class ScheduleExportDownloadView(PermissionRequired, View):
         return response
 
 
-class ScheduleReleaseView(PermissionRequired, View):
+class ScheduleReleaseView(PermissionRequired, TemplateView):
     form_class = ScheduleReleaseForm
     permission_required = 'orga.release_schedule'
+    template_name = 'orga/schedule/release.html'
 
     def get_permission_object(self):
         return self.request.event
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['warnings'] = self.request.event.wip_schedule.warnings
+        context['changes'] = self.request.event.wip_schedule.changes
+        context['notifications'] = self.request.event.wip_schedule.notifications
+        return context
 
     def post(self, request, event):
         form = ScheduleReleaseForm(self.request.POST)
