@@ -208,7 +208,8 @@ class Schedule(LogMixin, models.Model):
                 warnings['unconfirmed'].append(talk)
         return warnings
 
-    def notify_speakers(self):
+    @cached_property
+    def notifications(self):
         tz = pytz.timezone(self.event.timezone)
         speakers = defaultdict(lambda: {'create': [], 'update': []})
         if self.changes['action'] == 'create':
@@ -229,18 +230,26 @@ class Schedule(LogMixin, models.Model):
             for moved_talk in self.changes['moved_talks']:
                 for speaker in moved_talk['submission'].speakers.all():
                     speakers[speaker]['update'].append(moved_talk)
+        mails = []
         for speaker in speakers:
             with override(speaker.locale), tzoverride(tz):
                 text = get_template('schedule/speaker_notification.txt').render(
                     {'speaker': speaker, **speakers[speaker]}
                 )
-            QueuedMail.objects.create(
-                event=self.event,
-                to=speaker.email,
-                reply_to=self.event.email,
-                subject=_('New schedule!').format(event=self.event.slug),
-                text=text,
+            mails.append(
+                QueuedMail(
+                    event=self.event,
+                    to=speaker.email,
+                    reply_to=self.event.email,
+                    subject=_('New schedule!').format(event=self.event.slug),
+                    text=text,
+                )
             )
+        return mails
+
+    def notify_speakers(self):
+        for notification in self.notifications:
+            notification.save()
 
     @cached_property
     def url_version(self):
