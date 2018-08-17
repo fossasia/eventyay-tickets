@@ -52,4 +52,4 @@ class Room(LogMixin, models.Model):
         down = '{settings_base}/down'
 
     def __str__(self) -> str:
-        return f'Room(event={self.event.slug}, name={self.name})'
+        return str(self.name)

@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, TemplateView, UpdateView, View
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import (
@@ -25,7 +25,7 @@ from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
 from pretalx.orga.views.event import EventSettingsPermission
-from pretalx.schedule.forms import RoomForm
+from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room
 
 
@@ -279,6 +279,30 @@ class TalkUpdate(PermissionRequired, View):
         talk.save(update_fields=['start', 'end', 'room'])
 
         return JsonResponse(serialize_slot(talk))
+
+
+class QuickScheduleView(PermissionRequired, UpdateView):
+    permission_required = 'orga.schedule_talk'
+    form_class = QuickScheduleForm
+    template_name = 'orga/schedule/quick.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_object(self):
+        return self.request.event.wip_schedule.talks.filter(
+            submission__code__iexact=self.kwargs.get('code')
+        ).first()
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('The talk has been scheduled.'))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.path
 
 
 class RoomTalkAvailabilities(PermissionRequired, View):

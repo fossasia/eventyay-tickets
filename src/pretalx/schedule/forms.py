@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.schedule.models import Availability, Room
+from pretalx.schedule.models import Availability, Room, TalkSlot
 
 
 class AvailabilitiesFormMixin(forms.Form):
@@ -173,3 +173,37 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
     class Meta:
         model = Room
         fields = ['name', 'description', 'speaker_info', 'capacity']
+
+
+class QuickScheduleForm(forms.ModelForm):
+    start_date = forms.DateField()
+    start_time = forms.TimeField()
+
+    def __init__(self, event, *args, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+        self.fields['room'].queryset = self.event.rooms.all()
+        if self.instance.start:
+            self.fields['start_date'].initial = self.instance.start.date()
+            self.fields['start_time'].initial = self.instance.start.time()
+        else:
+            self.fields['start_date'].initial = event.date_from
+
+    def save(self):
+        if not self.instance:
+            raise Exception
+        talk = self.instance
+        tz = pytz.timezone(self.event.timezone)
+        talk.start = tz.localize(
+            datetime.datetime.combine(
+                self.cleaned_data['start_date'], self.cleaned_data['start_time']
+            )
+        )
+        talk.end = talk.start + datetime.timedelta(
+            minutes=talk.submission.get_duration()
+        )
+        return super().save()
+
+    class Meta:
+        model = TalkSlot
+        fields = ('room',)

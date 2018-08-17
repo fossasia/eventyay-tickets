@@ -120,6 +120,7 @@ urlpatterns = [
         url('^schedule/export/trigger$', schedule.ScheduleExportTriggerView.as_view(), name='schedule.export.trigger'),
         url('^schedule/export/download$', schedule.ScheduleExportDownloadView.as_view(), name='schedule.export.download'),
         url('^schedule/release$', schedule.ScheduleReleaseView.as_view(), name='schedule.release'),
+        url(r'^schedule/quick/(?P<code>\w+)/$', schedule.QuickScheduleView.as_view(), name='schedule.quick'),
         url('^schedule/reset$', schedule.ScheduleResetView.as_view(), name='schedule.reset'),
         url('^schedule/toggle$', schedule.ScheduleToggleView.as_view(), name='schedule.toggle'),
         url('^schedule/rooms$', schedule.RoomList.as_view(), name='schedule.rooms.list'),

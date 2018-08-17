@@ -199,6 +199,7 @@ class Submission(LogMixin, models.Model):
         reviews = '{base}/reviews'
         feedback = '{base}/feedback'
         toggle_featured = '{base}/toggle_featured'
+        quick_schedule = '{self.event.orga_urls.schedule}/quick/{self.code}'
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
