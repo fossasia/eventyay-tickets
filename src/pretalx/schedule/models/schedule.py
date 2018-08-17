@@ -221,7 +221,7 @@ class Schedule(LogMixin, models.Model):
             }
         else:
             if self.changes['count'] == len(self.changes['canceled_talks']):
-                return
+                return []
 
             for new_talk in self.changes['new_talks']:
                 for speaker in new_talk.submission.speakers.all():

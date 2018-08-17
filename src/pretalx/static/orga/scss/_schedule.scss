@@ -28,6 +28,12 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   }
 }
 
+#fake-changelog {
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16), 0 5px 8px 0 rgba(0, 0, 0, 0.12);
+  padding: 8px 16px;
+  margin: 24px 16px;
+}
+
 #fahrplan {
   display: flex;
   flex-wrap: no-wrap;

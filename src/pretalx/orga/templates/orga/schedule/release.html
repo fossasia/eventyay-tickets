@@ -57,6 +57,15 @@
 </ul>
 
 {% endif %}
+
+<h4>{% trans "Public changelog" %}</h4>
+<p>{% trans "This is how the new schedule version will appear in the public changelog and in the RSS feed." %}</p>
+
+<div id="fake-changelog">
+    <h4>{% trans "Version" %} …</h4>
+    {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
+</div>
+
 <div class="submit-group">
     <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% trans "Back" %}</a>
     <form method="post">
