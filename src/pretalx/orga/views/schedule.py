@@ -292,9 +292,14 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         room = request.event.rooms.filter(pk=roomid).first()
         if not (talk and room):
             return JsonResponse({'results': []})
-
-        availabilitysets = [room.availabilities.all(), talk.submission.availabilities]
-        availabilities = Availability.intersection(*availabilitysets)
+        if talk.submission.availabilities:
+            availabilitysets = [
+                room.availabilities.all(),
+                talk.submission.availabilities,
+            ]
+            availabilities = Availability.intersection(*availabilitysets)
+        else:
+            availabilities = room.availabilities.all()
         return JsonResponse(
             {'results': [avail.serialize() for avail in availabilities]}
         )

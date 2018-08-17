@@ -95,7 +95,7 @@ class TalkSlot(LogMixin, models.Model):
                 )
         for speaker in self.submission.speakers.all():
             profile = speaker.event_profile(event=self.submission.event)
-            if not any(
+            if profile.availabilities.exists() and not any(
                 speaker_availability.contains(availability)
                 for speaker_availability in profile.availabilities.all()
             ):
