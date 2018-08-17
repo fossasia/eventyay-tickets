@@ -4,13 +4,18 @@ import tempfile
 from contextlib import suppress
 
 tmpdir = tempfile.TemporaryDirectory()
-os.environ.setdefault('DATA_DIR', tmpdir.name)
 
 from pretalx.settings import *  # NOQA
 
-DATA_DIR = tmpdir.name
+BASE_DIR = tmpdir.name
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+STATIC_ROOT = os.path.join(DATA_DIR, 'static')
+HTMLEXPORT_ROOT = os.path.join(DATA_DIR, 'htmlexport')
+
+for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT, HTMLEXPORT_ROOT):
+    os.makedirs(directory, exist_ok=True)
 
 INSTALLED_APPS.append('tests.dummy_app.PluginApp')  # noqa
 
