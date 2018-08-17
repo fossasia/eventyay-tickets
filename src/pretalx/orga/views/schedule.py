@@ -118,7 +118,7 @@ class ScheduleReleaseView(PermissionRequired, TemplateView):
         context = super().get_context_data(**kwargs)
         context['warnings'] = self.request.event.wip_schedule.warnings
         context['changes'] = self.request.event.wip_schedule.changes
-        context['notifications'] = self.request.event.wip_schedule.notifications
+        context['notifications'] = len(self.request.event.wip_schedule.notifications)
         return context
 
     def post(self, request, event):
