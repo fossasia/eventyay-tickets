@@ -3,7 +3,7 @@
 {% load rules %}
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html{% if request.LANGUAGE_CODE %} lang="{{ request.LANGUAGE_CODE }}"{% endif %}>
 <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %} {% if request.event %} {{ request.event.name }} {% endif %}:: pretalx</title>

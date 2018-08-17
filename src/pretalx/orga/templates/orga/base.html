@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rules %}
 <!DOCTYPE html>
-<html>
+<html{% if request.LANGUAGE_CODE %} lang="{{ request.LANGUAGE_CODE }}"{% endif %}>
 <head>
     <meta charset="utf-8">
     <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: pretalx</title>
