@@ -198,12 +198,14 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def warnings(self):
-        warnings = []
+        warnings = {'talk_warnings': [], 'unscheduled': [], 'unconfirmed': []}
         for talk in self.talks.all():
             if not talk.start:
-                warnings.append({'talk': talk, 'warning_type': 'unscheduled'})
+                warnings['unscheduled'].append(talk)
             elif talk.warnings:
-                warnings.append({'talk': talk, 'warning_type': 'talk'})
+                warnings['talk_warnings'].append(talk)
+            if talk.submission.state != SubmissionStates.CONFIRMED:
+                warnings['unconfirmed'].append(talk)
         return warnings
 
     def notify_speakers(self):
