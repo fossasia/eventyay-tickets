@@ -1,0 +1,14 @@
+@media (max-width: 640px) {
+  #navigate {
+    display: none;
+  }
+  #page-content {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+  #quick-schedule-submit {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+  }
+}

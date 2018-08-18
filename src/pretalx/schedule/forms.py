@@ -176,8 +176,8 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
 
 
 class QuickScheduleForm(forms.ModelForm):
-    start_date = forms.DateField()
-    start_time = forms.TimeField()
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
 
     def __init__(self, event, *args, **kwargs):
         self.event = event

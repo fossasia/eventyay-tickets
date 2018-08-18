@@ -299,6 +299,10 @@
                 {% endfor %}
             {% endif %}
             {% else %}  {# if request.event #}
+                <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="/orga/organiser/">
+                    <i class="fa fa-users"></i>
+                    <span>{% trans "Organisers" %}</span>
+                </a>
                 {% for nav_element in nav_global %}
                     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
                         {% if nav_element.icon and "." in nav_element.icon %}
