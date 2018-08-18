@@ -6,13 +6,13 @@ from django.shortcuts import redirect
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import View
+from reportlab.graphics import renderPDF
 from reportlab.graphics.barcode import qr
+from reportlab.graphics.shapes import Drawing
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
-from reportlab.graphics import renderPDF
-from reportlab.graphics.shapes import Drawing
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.submission.models import SubmissionStates
