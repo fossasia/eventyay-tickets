@@ -15,7 +15,7 @@ from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
 class UserForm(forms.Form):
-    login_email = forms.CharField(
+    login_email = forms.EmailField(
         max_length=60, label=phrases.base.enter_email, required=False
     )
     login_password = forms.CharField(

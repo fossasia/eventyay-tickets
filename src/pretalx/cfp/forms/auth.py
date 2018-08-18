@@ -8,7 +8,7 @@ from pretalx.person.models import User
 
 
 class ResetForm(forms.Form):
-    login_email = forms.CharField(
+    login_email = forms.EmailField(
         max_length=60,
         label=phrases.base.enter_email,
         required=True,
