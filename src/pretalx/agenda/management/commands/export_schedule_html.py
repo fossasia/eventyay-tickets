@@ -52,7 +52,7 @@ class Command(BakeryBuildCommand):
                     base_dir=event.slug,
                 )
                 path = path + '.zip'
-        self.stdout.write(self.style.SUCCESS(f'The HTML export for {event_slug} was successfully generated and can be found at {path}'))
+        self.stdout.write(path)
 
     def build_views(self):
         for view_str in self.view_list:
