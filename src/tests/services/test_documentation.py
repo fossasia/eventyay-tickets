@@ -1,4 +1,5 @@
 import configparser
+import glob
 import importlib
 import os
 from contextlib import suppress
@@ -13,6 +14,10 @@ base_dir = os.path.join(here, "../../pretalx")
 
 with open(os.path.join(doc_dir, "developer/plugins/general.rst"), "r") as doc_file:
     plugin_docs = doc_file.read()
+
+
+with open(os.path.join(doc_dir, "administrator/commands.rst"), "r") as doc_file:
+    command_docs = doc_file.read()
 
 
 def test_documentation_includes_config_options():
@@ -34,3 +39,14 @@ def test_documentation_includes_signals(app):
             attrib = getattr(module, key)
             if isinstance(attrib, Signal):
                 assert key in plugin_docs
+
+
+@pytest.mark.parametrize("app", settings.LOCAL_APPS)
+def test_documentation_includes_management_commands(app):
+    with suppress(ImportError):
+        importlib.import_module(app + ".management.commands")
+        path = os.path.join(base_dir, app, 'management/commands/*.py')
+        for python_file in glob.glob(path):
+            file_name = python_file.split('/')[-1]
+            if file_name != '__init__.py':
+                assert f'python -m pretalx {file_name[:-3]}``' in command_docs
