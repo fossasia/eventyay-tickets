@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` All manage commands available in pretalx are now included in the documentation.
 - :feature:`240` When using paper cards to build a schedule, each card comes with a QR code link to a quick scheduling form for that submission.
 - :feature:`-` Before releasing a new schedule, the user is now shown any warnings and what the public changelog will look like.
 - :feature:`214` The schedule editor shows warnings on scheduling conflicts, including live feedback on where a talk can be placed.

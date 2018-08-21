@@ -26,10 +26,6 @@ class EventPluginSignal(django.dispatch.Signal):
 
     @staticmethod
     def _is_active(sender, receiver):
-        if sender is None:
-            # Send to all events!
-            return True
-
         # Find the Django application this belongs to
         searchpath = receiver.__module__
         core_module = any([searchpath.startswith(cm) for cm in settings.LOCAL_APPS])
