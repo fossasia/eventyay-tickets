@@ -25,17 +25,21 @@ body {
 
 @pytest.fixture
 def invalid_css(valid_css):
-    return valid_css + '''
+    return (
+        valid_css
+        + '''
 a.other-descriptor {
     content: url("https://malicious.site.com");
 }
 '''
+    )
 
 
 @pytest.fixture
 def some_object():
     class Foo:
         pass
+
     return Foo()
 
 
@@ -51,6 +55,7 @@ def test_invalid_css(invalid_css):
 @pytest.mark.django_db
 def test_regenerate_css(event):
     from pretalx.common.tasks import regenerate_css
+
     event.primary_color = '#00ff00'
     event.save()
     regenerate_css(event.pk)
@@ -63,6 +68,7 @@ def test_regenerate_css(event):
 @pytest.mark.django_db
 def test_regenerate_css_no_color(event):
     from pretalx.common.tasks import regenerate_css
+
     event.primary_color = None
     event.save()
     regenerate_css(event.pk)
@@ -70,3 +76,10 @@ def test_regenerate_css_no_color(event):
     for local_app in ['agenda', 'cfp']:
         assert not event.settings.get(f'{local_app}_css_file')
         assert not event.settings.get(f'{local_app}_css_checksum')
+
+
+@pytest.mark.django_db
+def test_regenerate_css_no_event():
+    from pretalx.common.tasks import regenerate_css
+
+    regenerate_css(123)

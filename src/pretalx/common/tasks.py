@@ -20,6 +20,7 @@ def regenerate_css(event_id: int):
     event = Event.objects.filter(pk=event_id).first()
     if not event:
         logger.error(f'In regenerate_css: Event ID {event_id} not found.')
+        return
     local_apps = ['agenda', 'cfp']
 
     if not event.primary_color:
