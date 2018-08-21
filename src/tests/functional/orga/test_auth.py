@@ -71,6 +71,24 @@ def test_orga_registration_errors(client, event, invitation, user):
 
 
 @pytest.mark.django_db
+def test_orga_registration_errors_weak_password(client, event, invitation, user):
+    team = invitation.team
+    count = invitation.team.members.count()
+    response = client.post(
+        reverse('orga:invitation.view', kwargs={'code': invitation.token}),
+        {
+            'register_email': user.email,
+            'register_password': 'password',
+            'register_password_repeat': 'password',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == count
+    assert team.invites.count() == 1
+
+
+@pytest.mark.django_db
 def test_orga_incorrect_invite_token(client, event, invitation):
     response = client.get(
         reverse('orga:invitation.view', kwargs={'code': invitation.token + 'WRONG'}),
