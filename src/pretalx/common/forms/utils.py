@@ -11,4 +11,4 @@ def get_help_text(text, min_length, max_length):
         warning = _('Please write at least {min} characters.').format(min=min_length)
     else:
         warning = _('Please write no more than {max} characters.').format(max=max_length)
-    return text + warning
+    return (text + warning).strip()

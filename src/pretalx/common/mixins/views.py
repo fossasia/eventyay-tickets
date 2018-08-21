@@ -19,9 +19,6 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 class ActionFromUrl:
     write_permission_required = None
 
-    def get_object(self):
-        return None
-
     @cached_property
     def object(self):
         return self.get_object()
