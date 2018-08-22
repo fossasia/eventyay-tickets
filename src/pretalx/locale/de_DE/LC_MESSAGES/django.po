@@ -4751,7 +4751,7 @@ msgid ""
 "- Your talk »%(title)s« will take place at %(start)s in %(location)s"
 msgstr ""
 "\n"
-"- Dein Vortrag »%(title)s« wird um %(start)s in %(location) stattfinden"
+"- Dein Vortrag »%(title)s« wird um %(start)s in %(location)s stattfinden"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:5
 #, python-format
