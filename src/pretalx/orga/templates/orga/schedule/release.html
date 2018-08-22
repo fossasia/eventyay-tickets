@@ -13,7 +13,7 @@
 
 <ul>
     <li>
-        {% if request.event.wip_schedule.previous_schedule %}
+        {% if request.event.wip_schedule.previous_schedule.version %}
         {% blocktrans with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince %}
             The previous schedule ({{ prev }}) was released {{ since }} ago.
         {% endblocktrans %}

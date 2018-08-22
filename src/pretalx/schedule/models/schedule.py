@@ -121,7 +121,7 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def previous_schedule(self):
-        queryset = self.event.schedules.all()
+        queryset = self.event.schedules.exclude(pk=self.pk)
         if self.published:
             queryset = queryset.filter(published__lt=self.published)
         return queryset.order_by('-published').first()
