@@ -361,6 +361,7 @@ class Event(LogMixin, models.Model):
             s.object = self
             s.pk = None
             s.save()
+        self._build_initial_data()  # make sure we get a functioning event
 
     @cached_property
     def pending_mails(self):
