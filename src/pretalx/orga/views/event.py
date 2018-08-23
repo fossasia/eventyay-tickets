@@ -324,6 +324,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
             kwargs.update(fdata)
         return kwargs
 
+    @transaction.atomic()
     def done(self, form_list, form_dict, *args, **kwargs):
         initial = self.get_cleaned_data_for_step('initial')
         basics = self.get_cleaned_data_for_step('basics')
@@ -331,63 +332,55 @@ class EventWizard(PermissionRequired, SessionWizardView):
         display = self.get_cleaned_data_for_step('display')
         copy = self.get_cleaned_data_for_step('copy')
 
-        with transaction.atomic():
-            event = Event.objects.create(
-                organiser=initial['organiser'],
-                locale_array=','.join(initial['locales']),
-                name=basics['name'],
-                slug=basics['slug'],
-                timezone=basics['timezone'],
-                email=basics['email'],
-                locale=basics['locale'],
-                primary_color=display['primary_color'],
-                logo=display['logo'],
-                date_from=timeline['date_from'],
-                date_to=timeline['date_to'],
-            )
-            deadline = timeline.get('deadline')
-            if deadline:
-                zone = timezone(event.timezone)
-                deadline = zone.localize(deadline.replace(tzinfo=None))
-                event.cfp.deadline = deadline
-                event.cfp.save()
-            for setting in [
-                'custom_domain',
-                'display_header_data',
-                'show_on_dashboard',
-            ]:
-                value = display.get(setting)
-                if value:
-                    event.settings.set(setting, display.get(setting))
+        event = Event.objects.create(
+            organiser=initial['organiser'],
+            locale_array=','.join(initial['locales']),
+            name=basics['name'],
+            slug=basics['slug'],
+            timezone=basics['timezone'],
+            email=basics['email'],
+            locale=basics['locale'],
+            primary_color=display['primary_color'],
+            logo=display['logo'],
+            date_from=timeline['date_from'],
+            date_to=timeline['date_to'],
+        )
+        deadline = timeline.get('deadline')
+        if deadline:
+            zone = timezone(event.timezone)
+            deadline = zone.localize(deadline.replace(tzinfo=None))
+            event.cfp.deadline = deadline
+            event.cfp.save()
+        for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
+            value = display.get(setting)
+            if value:
+                event.settings.set(setting, display.get(setting))
 
-            has_control_rights = self.request.user.teams.filter(
+        has_control_rights = self.request.user.teams.filter(
+            organiser=event.organiser,
+            all_events=True,
+            can_change_event_settings=True,
+            can_change_submissions=True,
+        ).exists()
+        if not has_control_rights:
+            t = Team.objects.create(
                 organiser=event.organiser,
-                all_events=True,
+                name=_(f'Team {event.name}'),
                 can_change_event_settings=True,
                 can_change_submissions=True,
-            ).exists()
-            if not has_control_rights:
-                t = Team.objects.create(
-                    organiser=event.organiser,
-                    name=_(f'Team {event.name}'),
-                    can_change_event_settings=True,
-                    can_change_submissions=True,
-                )
-                t.members.add(self.request.user)
-                t.limit_events.add(event)
-
-            logdata = {}
-            for f in form_list:
-                logdata.update({k: v for k, v in f.cleaned_data.items()})
-            event.log_action(
-                'pretalx.event.create',
-                person=self.request.user,
-                data=logdata,
-                orga=True,
             )
+            t.members.add(self.request.user)
+            t.limit_events.add(event)
 
-            if copy and copy['copy_from_event']:
-                from_event = copy['copy_from_event']
-                event.copy_data_from(from_event)
+        logdata = {}
+        for f in form_list:
+            logdata.update({k: v for k, v in f.cleaned_data.items()})
+        event.log_action(
+            'pretalx.event.create', person=self.request.user, data=logdata, orga=True
+        )
+
+        if copy and copy['copy_from_event']:
+            from_event = copy['copy_from_event']
+            event.copy_data_from(from_event)
 
         return redirect(event.orga_urls.base + '?congratulations')
