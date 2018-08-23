@@ -87,6 +87,8 @@ def test_event_copy_settings(event, submission_type, with_url):
     if with_url:
         event.settings.custom_domain = 'https://testeventcopysettings.example.org'
     event.settings.random_value = 'testcopysettings'
+    event.accept_template.text = 'testtemplate'
+    event.accept_template.save()
     new_event = Event.objects.create(
         organiser=event.organiser, locale_array='de,en',
         name='Teh Name', slug='tn', timezone='Europe/Berlin',
@@ -99,6 +101,7 @@ def test_event_copy_settings(event, submission_type, with_url):
     new_event.copy_data_from(event)
     assert new_event.submission_types.count() == event.submission_types.count()
     assert new_event.accept_template
+    assert new_event.accept_template.text == 'testtemplate'
     assert new_event.settings.random_value == 'testcopysettings'
     assert not new_event.settings.custom_domain
 
