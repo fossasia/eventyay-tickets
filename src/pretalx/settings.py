@@ -106,6 +106,7 @@ CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'", "data:")
 
 CSRF_COOKIE_NAME = 'pretalx_csrftoken'
+CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
 SESSION_COOKIE_NAME = 'pretalx_session'
 SESSION_COOKIE_HTTPONLY = True
 if config.get('site', 'cookie_domain'):
