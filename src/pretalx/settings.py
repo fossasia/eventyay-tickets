@@ -295,6 +295,7 @@ LOGIN_URL = '/orga/login'
 AUTHENTICATION_BACKENDS = (
     'rules.permissions.ObjectPermissionBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'pretalx.common.auth.AuthenticationTokenBackend',
 )
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -313,6 +314,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',  # Set some sensible defaults, now, before responses are modified
     'pretalx.common.middleware.SessionMiddleware',  # Add session handling
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Uses sessions
+    'pretalx.common.auth.AuthenticationTokenMiddleware',  # Make auth tokens work
     'pretalx.common.middleware.MultiDomainMiddleware',  # Check which host is used and if it is valid
     'pretalx.common.middleware.EventPermissionMiddleware',  # Sets locales, request.event, available events, etc.
     'pretalx.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
