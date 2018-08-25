@@ -22,13 +22,13 @@
         {% bootstrap_field wizard.form.timezone layout='event' %}
         {% bootstrap_field wizard.form.email layout='event' %}
         {% bootstrap_field wizard.form.locale layout='event' %}
-    <div class="submit-group">
+    <div class="submit-group wizard-row">
+        <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% trans "Next step" %}</button>
         {% if wizard.steps.prev %}
         <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% trans "Previous step" %}</button>
         {% else %}
         <span></span>
         {% endif %}
-        <button type="submit" class="btn btn-success btn-lg float-right">{% trans "Next step" %}</button>
     </div>
 </fieldset></form>
 {% endblock %}

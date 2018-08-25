@@ -214,3 +214,7 @@ table .radio, table .checkbox {
     }
   }
 }
+.wizard-row {
+  display: flex;
+  flex-direction: row-reverse;
+}

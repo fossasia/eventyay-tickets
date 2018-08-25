@@ -9,15 +9,7 @@
         {{ wizard.management_form }}
         {% block inner %}
         {% endblock %}
-        <div class="row">
-            <div class="col-md-3">
-                {% if wizard.steps.prev %}
-                    <button type="submit" class="btn btn-block btn-info btn-lg"
-                            value="{{ wizard.steps.prev }}" name="wizard_goto_step">
-                        &laquo; {% trans "Back" %}
-                    </button>
-                {% endif %}
-            </div>
+        <div class="row wizard-row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg">
                     {% if wizard.steps.next %}
@@ -26,6 +18,14 @@
                         {% trans "Submit" %} &raquo;
                     {% endif %}
                 </button>
+            </div>
+            <div class="col-md-3">
+                {% if wizard.steps.prev %}
+                    <button type="submit" class="btn btn-block btn-info btn-lg"
+                            value="{{ wizard.steps.prev }}" name="wizard_goto_step">
+                        &laquo; {% trans "Back" %}
+                    </button>
+                {% endif %}
             </div>
         </div>
     </form>

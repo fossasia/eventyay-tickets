@@ -17,7 +17,7 @@
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form wizard.form layout='event' %}
-    <div class="submit-group">
+    <div class="submit-group wizard-row">
         <button type="submit" class="btn btn-success btn-lg float-right ml-auto">{% trans "Next step" %}</button>
         {% if wizard.steps.prev %}
         <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-lg btn-info">{% trans "Previous step" %}</button>
