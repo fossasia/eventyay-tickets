@@ -66,7 +66,15 @@
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
-                </a></li>
+                    </a>
+                {% if talk.old_room == talk.new_room %}
+                ({{ talk.old_start }} → {{ talk.new_start }})
+                {% elif talk.old_start == talk.new_start %}
+                ({{ talk.old_room }} → {{ talk.new_room }})
+                {% else %}
+                ({{ talk.old_start }}, {{ talk.old_room }} → {{ talk.new_start }}, {{ talk.new_room }})
+                {% endif %}
+               </li>
                 {% endfor %}
             </ul>
         {% else %}
@@ -77,7 +85,14 @@
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
-                </a>.
+                </a>
+                {% if talk.old_room == talk.new_room %}
+                ({{ talk.old_start }} → {{ talk.new_start }})
+                {% elif talk.old_start == talk.new_start %}
+                ({{ talk.old_room }} → {{ talk.new_room }})
+                {% else %}
+                ({{ talk.old_start }}, {{ talk.old_room }} → {{ talk.new_start }}, {{ talk.new_room }}).
+                {% endif %}
             {% endfor %}</p>
         {% endif %}
     {% endif %}
