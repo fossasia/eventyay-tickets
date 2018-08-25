@@ -1,14 +1,16 @@
 from contextlib import suppress
 
 from django.contrib.auth import authenticate
+from django.core.exceptions import MultipleObjectsReturned
 
 from pretalx.person.models import User
 
 
 class AuthenticationTokenBackend:
     def authenticate(self, *args, token=None, **kwargs):
-        with suppress(User.DoesNotExist):
-            return User.objects.get(auth_token__key__iexact=token)
+        if token:
+            with suppress(User.DoesNotExist, MultipleObjectsReturned):
+                return User.objects.get(auth_token__key__iexact=token)
 
 
 class AuthenticationTokenMiddleware:
