@@ -145,7 +145,7 @@ class ActivityLog(models.Model):
             return self.content_object.question.urls.base
         if isinstance(self.content_object, Answer):
             if self.content_object.submission:
-                return self.content_object.submission.orga_urls.questions
+                return self.content_object.submission.orga_urls.base
             return self.content_object.question.urls.base
         if isinstance(self.content_object, CfP):
             return self.content_object.urls.text

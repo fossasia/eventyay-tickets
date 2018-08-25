@@ -24,9 +24,9 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.models import SpeakerProfile, User
-from pretalx.submission.forms import ResourceForm, SubmissionFilterForm
+from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
 from pretalx.submission.models import (
-    Question, Resource, Submission, SubmissionError, SubmissionStates,
+    Resource, Submission, SubmissionError, SubmissionStates,
 )
 
 
@@ -233,25 +233,6 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
         return context
 
 
-class SubmissionQuestions(SubmissionViewMixin, TemplateView):
-    template_name = 'orga/submission/answer_list.html'
-    permission_required = 'orga.view_submissions'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        submission = context['submission']
-        answers = [
-            question.answers.filter(submission=submission).first()
-            for question in Question.all_objects.filter(
-                event=submission.event, target='submission'
-            )
-        ]
-        context.update(
-            {'answer_list': [a for a in answers if a], 'submission': submission}
-        )
-        return context
-
-
 class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     model = Submission
     form_class = SubmissionForm
@@ -261,6 +242,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['formset'] = self.formset
+        context['questions_form'] = self.questions_form
         return context
 
     @cached_property
@@ -287,6 +269,17 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             if submission
             else Resource.objects.none(),
             prefix='resource',
+        )
+
+    @cached_property
+    def questions_form(self):
+        submission = self.get_object()
+        return QuestionsForm(
+            self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
+            target='submission',
+            submission=submission,
+            event=self.request.event,
         )
 
     def save_formset(self, obj):
@@ -347,11 +340,16 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         self.kwargs.update({'code': self.object.code})
         return self.object.orga_urls.base
 
+    @transaction.atomic()
     def form_valid(self, form):
         created = invited = not self.object
         form.instance.event = self.request.event
-        result = super().form_valid(form)
+        form.save()
         self.object = form.instance
+        self.questions_form.submission = self.object
+        if not self.questions_form.is_valid():
+            return self.get(self.request, *self.args, **self.kwargs)
+        self.questions_form.save()
 
         if created:
             email = form.cleaned_data['speaker']
@@ -386,7 +384,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             )
         else:
             messages.success(self.request, _('The submission has been updated!'))
-        return result
+        return redirect(self.get_success_url())
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

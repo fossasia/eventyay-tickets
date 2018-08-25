@@ -192,7 +192,6 @@ class Submission(LogMixin, models.Model):
         delete = '{base}/delete'
         withdraw = '{base}/withdraw'
         cancel = '{base}/cancel'
-        questions = '{base}/questions'
         speakers = '{base}/speakers'
         new_speaker = '{speakers}/add'
         delete_speaker = '{speakers}/delete'

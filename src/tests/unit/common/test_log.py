@@ -38,7 +38,7 @@ def test_log_urls(activity_log, submission, choice_question, answer, mail_templa
     assert activity_log.get_orga_url() == choice_question.urls.base
 
     activity_log.content_object = answer
-    assert activity_log.get_orga_url() == answer.submission.orga_urls.questions
+    assert activity_log.get_orga_url() == answer.submission.orga_urls.base
     answer.submission = None
     assert activity_log.get_orga_url() == answer.question.urls.base
 

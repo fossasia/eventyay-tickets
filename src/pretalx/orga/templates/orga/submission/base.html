@@ -32,16 +32,6 @@
             {% trans "Speakers" %}
           </a>
       </li>
-      {% if request.event.submission_questions.count %}
-          <li class="nav-item">
-              <a
-                class="nav-link {% if "submissions.questions" in url_name %}active{% endif %}"
-                href="{{ submission.orga_urls.questions }}"
-              >
-                {% trans "Questions" %}
-              </a>
-          </li>
-      {% endif %}
       {% if submission.feedback.count %}
           <li class="nav-item">
               <a
