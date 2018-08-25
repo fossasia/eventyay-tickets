@@ -22,6 +22,7 @@ abstract                              string                     The abstract, a
 description                           string                     The description, a more expansive description of the submission's content
 duration                              number                     The talk's duration in minutes, or ``null``
 do_not_record                         boolean                    Indicates if the speaker consent to recordings of their talk
+is_featured                           boolean                    Indicates if the talk is show in the schedule preview / sneak peek
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
 image                                 string                     The submission image URL
@@ -68,6 +69,7 @@ Endpoints
             "description": "I will expand upon the properties of the talk, primarily its high quality.",
             "duration": 30,
             "do_not_record": true,
+            "is_featured": false,
             "content_locale": "en",
             "slot": {
               "start": "2017-12-27T10:00:00Z",
@@ -125,6 +127,7 @@ Endpoints
         "description": "I will expand upon the properties of the talk, primarily its high quality.",
         "duration": 30,
         "do_not_record": true,
+        "is_featured": false,
         "content_locale": "en",
         "slot": {
           "start": "2017-12-27T10:00:00Z",

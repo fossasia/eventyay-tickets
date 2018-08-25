@@ -54,6 +54,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             'description',
             'duration',
             'do_not_record',
+            'is_featured',
             'content_locale',
             'slot',
             'image',

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The sneak peek / is_featured flag is now shown in the submissions and talk API endpoints.
 - :feature:`-` You can now use your authentication token to access all pages you have access to, not only the API. This makes integration of exports much easier.
 - :support:`-` All manage commands available in pretalx are now included in the documentation.
 - :feature:`240` When using paper cards to build a schedule, each card comes with a QR code link to a quick scheduling form for that submission.
