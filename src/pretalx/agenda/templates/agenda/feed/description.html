@@ -1,96 +1,14 @@
 {% load i18n %}
+<p>
 {% if obj.changes.action == 'update' %}
     {% blocktrans trimmed with event_name=obj.event.name %}
     A new {{ event_name }} schedule has been released!
     {% endblocktrans %}
-
-    {% if obj.changes.count %}
-        {% blocktrans trimmed with version=obj.version %}
-        The new version is called "{{ version }}", and brings a few changes:
-        {% endblocktrans %}
-    {% else %}
-        {% blocktrans trimmed with version=obj.version %}
-        The new version is called "{{ version }}", but nothing has changed.
-        {% endblocktrans %}
-    {% endif %}
-    {% if obj.changes.new_talks|length > 0 %}
-        {% if obj.changes.new_talks|length > 1 %}
-            <p>{% trans "We have new talks:" %}</p>
-            <ul>
-                {% for talk in obj.changes.new_talks %}
-                    <li><a href="{{ talk.submission.urls.public }}">
-                        »{{ talk.submission.title }}«
-                        {% if talk.submission.speakers.exists %}
-                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                        {% endif %}
-                    </a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>{% trans "We have a new talk: " %}
-            {% for talk in obj.changes.new_talks %}
-                <a href="{{ talk.submission.urls.public }}">
-                    »{{ talk.submission.title }}«
-                    {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                    {% endif %}
-                </a>
-            {% endfor %}
-        {% endif %}</p>
-    {% endif %}
-
-    {% if obj.changes.canceled_talks|length > 0 %}
-        {% if obj.changes.canceled_talks|length > 1 %}
-            <p>{% trans "Sadly, we had to cancel talks:" %}</p>
-            <ul>
-                {% for talk in obj.changes.canceled_talks %}
-                    <li>
-                        »{{ talk.submission.title }}«
-                        {% if talk.submission.speakers.exists %}
-                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>{% trans "We have sadly had to cancel a talk: " %}
-                {% for talk in obj.changes.canceled_talks %}
-                    »{{ talk.submission.title }}«
-                    {% if talk.submission.speakers.exists %}
-                        {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                    {% endif %}
-                {% endfor %}</p>
-        {% endif %}
-    {% endif %}
-
-    {% if obj.changes.moved_talks|length > 0 %}
-        {% if obj.changes.moved_talks|length > 1 %}
-            <p>{% trans "We had to move some talks, so if you were planning on seeing them, check their new dates or locations:" %}</p>
-            <ul>
-                {% for talk in obj.changes.moved_talks %}
-                    <li><a href="{{ talk.submission.urls.public }}">
-                        »{{ talk.submission.title }}«
-                        {% if talk.submission.speakers.exists %}
-                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                        {% endif %}
-                    </a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>{% trans "We have moved a talk around: " %}
-                {% for talk in obj.changes.moved_talks %}
-                    <a href="{{ talk.submission.urls.public }}">
-                        »{{ talk.submission.title }}«
-                        {% if talk.submission.speakers.exists %}
-                            {% trans "by" %} {{ talk.submission.display_speaker_names }}
-                        {% endif %}
-                    </a>
-                {% endfor %}</p>
-        {% endif %}
-    {% endif %}
-
 {% else %}
     {% blocktrans trimmed with event_name=obj.event.name %}
     The first {{ event_name }} schedule has been released!
     {% endblocktrans %}
 {% endif %}
+</p>
+
+{% include "agenda/changelog_block.html" with schedule=obj %}
