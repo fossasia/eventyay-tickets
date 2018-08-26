@@ -22,5 +22,9 @@
             <hr>
             {% endif %}
         </section>
+    {% empty %}
+        {% if search %}{% blocktrans trimmed %}
+            No talk matches your search.
+        {% endblocktrans %}{% endif %}
     {% endfor %}
 {% endblock %}

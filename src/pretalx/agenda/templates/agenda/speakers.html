@@ -20,5 +20,9 @@
             <hr>
             {% endif %}
         </section>
+    {% empty %}
+        {% if search %}{% blocktrans trimmed %}
+            No speaker matches your search.
+        {% endblocktrans %}{% endif %}
     {% endfor %}
 {% endblock %}
