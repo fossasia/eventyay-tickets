@@ -29,4 +29,5 @@ $('#id_speaker').typeahead(null, {
 });
 $("#id_speaker").bind("typeahead:select", function(ev, suggestion) {
   $("#id_speaker").text(suggestion.value);
+  document.querySelector("#id_speaker_name").value = suggestion.name;
 });

@@ -18,6 +18,7 @@
         {% bootstrap_field form.title layout='event' %}
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
+            {% bootstrap_field form.speaker_name layout='event' %}
         {% else %}
             <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}

@@ -16,7 +16,12 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
         if not self.instance.pk:
             self.fields['speaker'] = forms.CharField(
                 help_text=_(
-                    'Add the email address of the speaker holding the talk. They will be invited to create an account.'
+                    'The email address of the speaker holding the talk. They will be invited to create an account.'
+                )
+            )
+            self.fields['speaker_name'] = forms.CharField(
+                help_text=_(
+                    'The name of the speaker that should be displayed publicly.'
                 )
             )
         self.fields['abstract'].widget.attrs['rows'] = 2

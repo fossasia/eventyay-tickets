@@ -30,13 +30,14 @@ from pretalx.submission.models import (
 )
 
 
-def create_user_as_orga(email, submission=None):
+def create_user_as_orga(email, submission=None, name=None):
     if not email:
         return
 
     user = User.objects.create_user(
         password=get_random_string(32),
         email=email.lower(),
+        name=name,
         pw_reset_token=get_random_string(32),
         pw_reset_time=now() + timedelta(days=7),
     )
@@ -162,10 +163,11 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
         super().dispatch(request, *args, **kwargs)
         submission = self.object
         email = request.POST.get('speaker')
+        name = request.POST.get('speaker_name')
         try:
             speaker = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            speaker = create_user_as_orga(email, submission=submission)
+            speaker = create_user_as_orga(email, submission=submission, name=name)
         if not speaker:
             messages.error(request, _('Please provide a valid email address!'))
         else:
@@ -357,7 +359,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 speaker = User.objects.get(email__iexact=email)
                 invited = False
             except User.DoesNotExist:
-                speaker = create_user_as_orga(email=email, submission=form.instance)
+                speaker = create_user_as_orga(email=email, name=form.cleaned_data['speaker_name'], submission=form.instance)
 
             form.instance.speakers.add(speaker)
         else:
