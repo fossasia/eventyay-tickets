@@ -163,7 +163,8 @@ class Event(LogMixin, models.Model):
         help_text=_(
             'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate.'
         )
-        + ' ' + phrases.base.use_markdown,
+        + ' '
+        + phrases.base.use_markdown,
         null=True,
         blank=True,
     )
@@ -443,10 +444,11 @@ class Event(LogMixin, models.Model):
     def talks(self):
         from pretalx.submission.models import SubmissionStates
 
-        return self.submissions.filter(
-            models.Q(state=SubmissionStates.ACCEPTED)
-            | models.Q(state=SubmissionStates.CONFIRMED)
-        )
+        if self.current_schedule:
+            return self.submissions.filter(
+                slots__in=self.current_schedule.talks.filter(is_visible=True)
+            )
+        return []
 
     @cached_property
     def speakers(self):

@@ -18,13 +18,13 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
         if self.request.user.has_perm('orga.view_submissions', self.request.event):
             return self.request.event.submissions.all()
         if (
-            self.request.event.current_schedule
-            and self.request.event.settings.show_schedule
+            not self.request.user.has_perm('agenda.view_schedule', self.request.event)
+            or not self.request.event.current_schedule
         ):
-            return self.request.event.submissions.filter(
-                slots__in=self.request.event.current_schedule.talks.all()
-            )
-        return Submission.objects.none()
+            return Submission.objects.none()
+        return self.request.event.submissions.filter(
+            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True)
+        )
 
     def get_queryset(self):
         return self.get_base_queryset() or self.queryset
@@ -32,11 +32,14 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TalkViewSet(SubmissionViewSet):
     def get_queryset(self):
-        qs = self.get_base_queryset() or self.queryset
-        if not self.request.event.current_schedule:
-            return qs.none()
-        qs = qs.filter(slots__schedule=self.request.event.current_schedule)
-        return qs
+        if (
+            not self.request.user.has_perm('agenda.view_schedule', self.request.event)
+            or not self.request.event.current_schedule
+        ):
+            return Submission.objects.none()
+        return self.request.event.submissions.filter(
+            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True)
+        )
 
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
