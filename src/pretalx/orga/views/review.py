@@ -209,12 +209,10 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             if next_submission:
                 messages.success(self.request, phrases.orga.another_review)
                 return next_submission.orga_urls.reviews
-            else:
-                messages.success(
-                    self.request, _('Nice, you have no submissions left to review!')
-                )
-                return self.request.event.orga_urls.reviews
-
+            messages.success(
+                self.request, _('Nice, you have no submissions left to review!')
+            )
+            return self.request.event.orga_urls.reviews
         return self.submission.orga_urls.reviews
 
 

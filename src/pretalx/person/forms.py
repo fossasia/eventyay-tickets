@@ -128,13 +128,11 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
     def user_fields(self):
         if self.user and not self.essential_only:
             return [f for f in self.USER_FIELDS if f != "email" or self.with_email]
-        else:
-            return [
-                f
-                for f in self.USER_FIELDS
-                if f not in self.FIRST_TIME_EXCLUDE
-                and (f != "email" or self.with_email)
-            ]
+        return [
+            f
+            for f in self.USER_FIELDS
+            if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
+        ]
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')

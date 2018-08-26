@@ -64,13 +64,12 @@ class Availability(LogMixin, models.Model):
                 or (other.start <= self.start < other.end)
                 or (other.start < self.end <= other.end)
             )
-        else:
-            return (
-                (self.start <= other.start <= self.end)
-                or (self.start <= other.end <= self.end)
-                or (other.start <= self.start <= other.end)
-                or (other.start <= self.end <= other.end)
-            )
+        return (
+            (self.start <= other.start <= self.end)
+            or (self.start <= other.end <= self.end)
+            or (other.start <= self.start <= other.end)
+            or (other.start <= self.end <= other.end)
+        )
 
     def contains(self, other: 'Availability') -> bool:
         return self.start <= other.start and self.end >= other.end

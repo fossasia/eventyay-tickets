@@ -400,8 +400,7 @@ class Event(LogMixin, models.Model):
                 use_ssl=self.settings.smtp_use_ssl,
                 fail_silently=False,
             )
-        else:
-            return get_connection(fail_silently=False)
+        return get_connection(fail_silently=False)
 
     @cached_property
     def event(self):
