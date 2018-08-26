@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Present a public list of talks and a list of speakers.
 - :bug:`478` The behaviour of pressing enter in multi-step forms was unintuitive in some places.
 - :feature:`-` The submission list now includes a graph of submissions over time.
 - :feature:`-` The sneak peek / is_featured flag is now shown in the submissions and talk API endpoints.

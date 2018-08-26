@@ -1,0 +1,26 @@
+{% extends "agenda/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block agenda_content %}
+    {% include "agenda/header_row.html" %}
+<p></p>
+    {% for talk in talks %}
+        <section>
+            <h3 class="talk-title">
+                <a href="{{ talk.submission.urls.public }}"> »{{ talk.submission.title }}«</a>
+                <small>
+                    {{ talk.submission.display_speaker_names }};
+                    <i>{{ talk.submission.submission_type }}</i>
+                </small>
+            </h3>
+            <p>
+                {{ talk.submission.abstract|default:talk.submission.description|default:"" }}
+            </p>
+            {% if not forloop.last %}
+            <hr>
+            {% endif %}
+        </section>
+    {% endfor %}
+{% endblock %}

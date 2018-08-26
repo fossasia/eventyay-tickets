@@ -8,7 +8,7 @@ from .views import feed, schedule, sneakpeek, speaker, talk
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
     """
-    given a prefix (e.g. /schedule) generate matching schedule-ruls (e.g. /schedule.json, /schedule/feed.xml, ...)
+    given a prefix (e.g. /schedule) generate matching schedule-URLs (e.g. /schedule.json, /schedule/feed.xml, ...)
     """
 
     regex_prefix = regex_prefix.rstrip('/')
@@ -41,6 +41,8 @@ urlpatterns = [
                 *get_schedule_urls('^schedule'),
                 *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),
                 url(r'^sneak/$', sneakpeek.SneakpeekView.as_view(), name='sneak'),
+                url(r'^speaker/$', talk.SpeakerList.as_view(), name='speakers'),
+                url(r'^talk/$', talk.TalkList.as_view(), name='talks'),
                 url(r'^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
                 url(
                     r'^talk/(?P<slug>\w+)/feedback/$',

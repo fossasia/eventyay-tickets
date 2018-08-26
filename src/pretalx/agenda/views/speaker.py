@@ -29,11 +29,7 @@ class SpeakerView(PermissionRequired, DetailView):
         obj = kwargs.get('object')
         context = super().get_context_data(**kwargs)
         context['speaker'] = obj.user
-        context['talks'] = obj.user.submissions.filter(
-            event=self.request.event,
-            state=SubmissionStates.CONFIRMED,
-            slots__schedule=obj.event.current_schedule,
-        )
+        context['talks'] = obj.talks
         return context
 
 

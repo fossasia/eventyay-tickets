@@ -19,24 +19,32 @@
   }
 }
 
+#schedule-nav {
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+
+  a {
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0;
+    &.active {
+    }
+  }
+
+  form {
+    max-width: 250px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+}
+
 #fahrplan {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-
-  .schedule-header {
-    display: flex;
-    flex-direction: row;
-    align-content: space-between;
-
-    form {
-      max-width: 250px;
-    }
-
-    .header-right {
-      margin-left: auto;
-    }
-  }
 
   .day {
     background: $gray-lightest;

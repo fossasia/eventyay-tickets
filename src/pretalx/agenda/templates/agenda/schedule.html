@@ -18,6 +18,7 @@
   </div>
 </div>
 {% endif %}
+
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning"><span>
@@ -43,39 +44,30 @@
       {% endblocktrans %}
     </span></div>
 
-    <div class="schedule-header">
-        <form class="search float-left">
-          <div class="input-group">
-            <input type="text" class="form-control" name="q" placeholder="{% trans "Title or speaker name" %}"{% if search %} value="{{ search }}"{% endif %}>
-            <div class="input-group-append">
-              <button class="btn btn-info" type="submit"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-        </form>
-        <div class="header-right float-right">
-            <span class="icon">{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
-            · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a></span>
-            · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a></span>
-            · <span class="dropdown">
-                <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-code"></i>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                    {% for exporter in exporters %}{% if exporter.public %}
-                    <a class="dropdown-item" href="{{ request.event.urls.export }}?exporter={{ exporter.identifier|iriencode }}">
-                        {% if exporter.icon|slice:":3" == "fa-" %}
-                            <span class="fa {{ exporter.icon }} export-icon"></span>
-                        {% else %}
-                            <span class="export-icon">{{ exporter.icon }}</span>
-                        {% endif %}
-                        {{ exporter.verbose_name }}
-                    </a>
-                    {% endif %}{% endfor %}
-                </div>
-              </span>
-        </div>
-    </div>
+    {% include "agenda/header_row.html" %}
 
+  <div class="schedule-header ml-auto mt-4">
+    <span class="icon">{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
+    · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a></span>
+    · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a></span>
+    · <span class="dropdown">
+        <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-code"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="exportDropdown">
+            {% for exporter in exporters %}{% if exporter.public %}
+            <a class="dropdown-item" href="{{ request.event.urls.export }}?exporter={{ exporter.identifier|iriencode }}">
+                {% if exporter.icon|slice:":3" == "fa-" %}
+                    <span class="fa {{ exporter.icon }} export-icon"></span>
+                {% else %}
+                    <span class="export-icon">{{ exporter.icon }}</span>
+                {% endif %}
+                {{ exporter.verbose_name }}
+            </a>
+            {% endif %}{% endfor %}
+        </div>
+      </span>
+    </div>
     {% for day in data %}
         <h3 id="{{ day.start.date|date:"c" }}">
             <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"DATE_FORMAT" }}</a>

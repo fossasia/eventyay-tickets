@@ -1,0 +1,24 @@
+{% extends "agenda/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block agenda_content %}
+    {% include "agenda/header_row.html" %}
+<p></p>
+    {% for speaker in speakers %}
+        <section>
+            <h3 class="talk-title">
+                <a href="{{ speaker.urls.public }}"> {{ speaker.user.get_display_name }}</a>
+            </h3>
+            <p>
+            {% for talk in speaker.talks %}
+                <a href="{{ talk.urls.public }}">»{{ talk.title }}«</a>
+                {% if not forloop.last %} | {% endif %}
+            {% endfor %}
+            {% if not forloop.last %}
+            <hr>
+            {% endif %}
+        </section>
+    {% endfor %}
+{% endblock %}

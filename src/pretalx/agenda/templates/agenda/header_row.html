@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<nav id="schedule-nav">
+    <div class="navigation">
+        <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}"><i class="fa fa-calendar"></i> {% trans "Schedule" %}
+        </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talks/" in request.path %} active{% endif %}"><i class="fa fa-comments-o"></i> {% trans "Talks" %}
+        </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speakers/" in request.path %} active{% endif %}"><i class="fa fa-group"></i> {% trans "Speakers" %}</a>
+    </div>
+    <div class="header-right">
+        <form class="search">
+          <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="{% trans "Title or speaker name" %}"{% if search %} value="{{ search }}"{% endif %}>
+            <div class="input-group-append">
+              <button class="btn btn-info" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+        </form>
+    </div>
+</nav>

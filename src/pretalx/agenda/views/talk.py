@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, FormView
+from django.views.generic import DetailView, FormView, ListView
 
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mixins.views import PermissionRequired
@@ -17,6 +17,36 @@ from pretalx.common.phrases import phrases
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import Feedback, Submission
+
+
+class TalkList(PermissionRequired, ListView):
+    context_object_name = 'talks'
+    model = Submission
+    template_name = 'agenda/talks.html'
+    permission_required = 'agenda.view_schedule'
+
+    def get_queryset(self):
+        if getattr(self.request, 'is_orga', False):
+            return self.request.event.wip_schedule.talks.all()
+        return self.request.event.talks
+
+    def get_permission_object(self):
+        return self.request.event
+
+
+class SpeakerList(PermissionRequired, ListView):
+    context_object_name = 'speakers'
+    template_name = 'agenda/speakers.html'
+    permission_required = 'agenda.view_schedule'
+
+    def get_queryset(self):
+        return [
+            speaker.event_profile(self.request.event)
+            for speaker in self.request.event.speakers
+        ]
+
+    def get_permission_object(self):
+        return self.request.event
 
 
 class TalkView(PermissionRequired, DetailView):
