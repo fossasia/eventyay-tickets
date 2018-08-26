@@ -139,7 +139,9 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
         user = 'some_unused@mail.org'
 
     response = orga_client.post(
-        submission.orga_urls.new_speaker, data={'speaker': user}, follow=True
+        submission.orga_urls.new_speaker,
+        data={'speaker': user, 'speaker_name': 'Name'},
+        follow=True,
     )
     submission.refresh_from_db()
 
@@ -160,6 +162,7 @@ def test_orga_can_create_submission(orga_client, event):
             'duration': '',
             'notes': 'notes',
             'speaker': 'foo@bar.com',
+            'speaker_name': 'Foo Speaker',
             'title': 'title',
             'submission_type': event.submission_types.first().pk,
         },
