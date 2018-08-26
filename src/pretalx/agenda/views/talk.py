@@ -31,11 +31,7 @@ class TalkList(PermissionRequired, Filterable, ListView):
     )
 
     def get_queryset(self):
-        if getattr(self.request, 'is_orga', False):
-            qs = self.request.event.wip_schedule.talks.all()
-        else:
-            qs = self.request.event.talks
-        return self.filter_queryset(qs)
+        return self.filter_queryset(self.request.event.talks)
 
     def get_permission_object(self):
         return self.request.event

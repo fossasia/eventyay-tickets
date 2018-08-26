@@ -1,6 +1,7 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
 {% load staticfiles %}
 
 {% block agenda_content %}
@@ -9,14 +10,14 @@
     {% for talk in talks %}
         <section>
             <h3 class="talk-title">
-                <a href="{{ talk.submission.urls.public }}"> »{{ talk.submission.title }}«</a>
+                <a href="{{ talk.urls.public }}"> »{{ talk.title }}«</a>
                 <small>
-                    {{ talk.submission.display_speaker_names }};
-                    <i>{{ talk.submission.submission_type }}</i>
+                    {{ talk.display_speaker_names }};
+                    <i>{{ talk.submission_type }}</i>
                 </small>
             </h3>
             <p>
-                {{ talk.submission.abstract|default:talk.submission.description|default:"" }}
+                {{ talk.abstract|rich_text|truncatechars_html:300 }}
             </p>
             {% if not forloop.last %}
             <hr>
