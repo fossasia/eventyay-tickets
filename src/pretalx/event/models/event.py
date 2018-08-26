@@ -442,13 +442,13 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def talks(self):
-        from pretalx.submission.models import SubmissionStates
+        from pretalx.submission.models.submission import Submission
 
         if self.current_schedule:
             return self.submissions.filter(
                 slots__in=self.current_schedule.talks.filter(is_visible=True)
             )
-        return []
+        return Submission.objects.none()
 
     @cached_property
     def speakers(self):

@@ -10,7 +10,6 @@ from django.views.generic import DetailView
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.person.models import SpeakerProfile
-from pretalx.submission.models import SubmissionStates
 
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')

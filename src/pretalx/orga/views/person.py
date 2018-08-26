@@ -1,7 +1,7 @@
 import urllib
 
 from django.contrib import messages
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import is_safe_url
