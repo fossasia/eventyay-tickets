@@ -67,7 +67,6 @@ def is_event_over(user, obj):
 
 
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
-rules.add_perm('orga.search_all_users', can_change_submissions)
 rules.add_perm('orga.change_settings', can_change_event_settings)
 rules.add_perm('orga.change_organiser_settings', can_change_organiser_settings)
 rules.add_perm('orga.change_teams', is_administrator | can_change_teams)
