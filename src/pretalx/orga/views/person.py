@@ -29,6 +29,7 @@ class UserList(View):
             'count': len(queryset),
             'results': [
                 {
+                    'email': user.email,
                     'name': user.name,
                 }
                 for user in queryset

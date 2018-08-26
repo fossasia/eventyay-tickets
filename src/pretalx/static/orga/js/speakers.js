@@ -10,7 +10,7 @@ var speakers = new Bloodhound({
       var suggestions = []
       var i = 0;
       for (i = 0; i < results.length; i++) {
-        suggestions.push({value: results[i].nick, name: results[i].name})
+        suggestions.push({value: results[i].email, name: results[i].name})
       }
       return suggestions
     },
@@ -18,7 +18,7 @@ var speakers = new Bloodhound({
 });
 
 $('#id_speaker').typeahead(null, {
-  name: 'nick',
+  name: 'email',
   display: 'value',
   source: speakers,
   templates: {
