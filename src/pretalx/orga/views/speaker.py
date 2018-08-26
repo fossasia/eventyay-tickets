@@ -195,6 +195,7 @@ class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_object(self):
         if 'pk' in self.kwargs:
             return self.request.event.information.filter(pk=self.kwargs['pk']).first()
+        return None
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

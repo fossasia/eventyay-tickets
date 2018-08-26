@@ -65,5 +65,4 @@ class CfP(LogMixin, models.Model):
         )
         if self.deadline:
             deadlines.append(self.deadline)
-        if deadlines:
-            return max(deadlines)
+        return max(deadlines) if deadlines else None

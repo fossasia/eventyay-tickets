@@ -163,6 +163,7 @@ class Question(LogMixin, models.Model):
                 submissions__event_id=self.event.pk
             )
             return users.count() - answer_count
+        return 0
 
     class Meta:
         ordering = ['position']
