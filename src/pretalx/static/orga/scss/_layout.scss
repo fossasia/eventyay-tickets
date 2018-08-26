@@ -96,10 +96,6 @@ aside.sidebar {
   .twitter-typeahead {
     width: inherit;
     margin-right: 8px;
-
-    input.form-control[readonly] {
-      background-color: $white !important;
-    }
   }
 }
 
@@ -191,6 +187,10 @@ footer {
   background-color: $gray-lighter;
   opacity: 1;
   cursor: not-allowed;
+}
+
+.form-control.tt-hint[readonly] {
+  background-color: $white !important;
 }
 
 .search-form {
