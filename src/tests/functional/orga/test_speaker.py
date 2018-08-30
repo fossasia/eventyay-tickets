@@ -16,10 +16,36 @@ def test_orga_can_access_speaker_page(orga_client, speaker, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_change_speaker_password(orga_client, speaker, event, submission):
+    assert not speaker.pw_reset_token
+    response = orga_client.post(
+        speaker.event_profile(event).orga_urls.password_reset, follow=True
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.pw_reset_token
+
+
+@pytest.mark.django_db
 def test_reviewer_can_access_speaker_page(review_client, speaker, event, submission):
-    response = orga_client.get(speaker.event_profile(event).orga_urls.base, follow=True)
+    response = review_client.get(
+        speaker.event_profile(event).orga_urls.base, follow=True
+    )
     assert response.status_code == 200
     assert speaker.name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_change_speaker_password(
+    review_client, speaker, event, submission
+):
+    assert not speaker.pw_reset_token
+    response = review_client.post(
+        speaker.event_profile(event).orga_urls.password_reset, follow=True
+    )
+    assert response.status_code == 404
+    speaker.refresh_from_db()
+    assert not speaker.pw_reset_token
 
 
 @pytest.mark.django_db
@@ -28,7 +54,7 @@ def test_reviewer_can_access_speaker_page_with_deleted_submission(
 ):
     assert other_speaker.submissions.count() == 0
     assert other_speaker.submissions(manager='deleted_objects').count() == 1
-    response = orga_client.get(
+    response = review_client.get(
         other_speaker.event_profile(event).orga_urls.base, follow=True
     )
     assert response.status_code == 200

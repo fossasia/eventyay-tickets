@@ -1,5 +1,6 @@
 from csp.decorators import csp_update
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -23,10 +24,7 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     model = SpeakerProfile
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
-    default_filters = (
-        'user__email__icontains',
-        'user__name__icontains',
-    )
+    default_filters = ('user__email__icontains', 'user__name__icontains')
     sortable_fields = ('user__email', 'user__name')
     default_sort_field = 'user__name'
     paginate_by = 25
@@ -135,6 +133,40 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({'event': self.request.event, 'user': self.object})
         return kwargs
+
+
+class SpeakerPasswordReset(PermissionRequired, DetailView):
+    permission_required = 'orga.change_speaker'
+    template_name = 'orga/speaker/reset_password.html'
+    model = User
+    context_object_name = 'speaker'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.get_object().event_profile(self.request.event)
+        return context
+
+    def get_permission_object(self):
+        return self.request.event
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()
+        try:
+            user.reset_password(
+                event=getattr(self.request, 'event', None), user=self.request.user
+            )
+            messages.success(
+                self.request, _('The password was reset and the user was notified.')
+            )
+        except SendMailException:
+            messages.error(
+                self.request,
+                _(
+                    'The password reset email could not be sent, so the password was not reset.'
+                ),
+            )
+        return redirect(user.event_profile(self.request.event).orga_urls.base)
 
 
 class SpeakerToggleArrived(PermissionRequired, View):

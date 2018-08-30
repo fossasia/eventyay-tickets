@@ -92,6 +92,7 @@ urlpatterns = [
 
         url('^speakers$', speaker.SpeakerList.as_view(), name='speakers.list'),
         url('^speakers/(?P<pk>[0-9]+)$', speaker.SpeakerDetail.as_view(), name='speakers.view'),
+        url('^speakers/(?P<pk>[0-9]+)/reset$', speaker.SpeakerPasswordReset.as_view(), name='speakers.reset'),
         url('^speakers/(?P<pk>[0-9]+)/toggle-arrived$', speaker.SpeakerToggleArrived.as_view(), name='speakers.arrived'),
         url('^info$', speaker.InformationList.as_view(), name='speakers.information.list'),
         url('^info/new$', speaker.InformationDetail.as_view(), name='speakers.information.create'),
