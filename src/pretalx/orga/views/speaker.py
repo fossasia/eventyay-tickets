@@ -104,8 +104,6 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
 
     def get_context_data(self, *args, **kwargs):
-        from pretalx.submission.models import QuestionTarget
-
         context = super().get_context_data(*args, **kwargs)
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         context['submission_count'] = submissions.count()
