@@ -219,7 +219,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
 
-    def reset_password(self, event):
+    def reset_password(self, event, user=None):
         from pretalx.common.mail import mail
 
         with transaction.atomic():
@@ -241,4 +241,7 @@ class User(PermissionsMixin, AbstractBaseUser):
                 },
                 event,
                 locale=get_language(),
+            )
+            self.log_action(
+                action='pretalx.user.password.reset', person=user, orga=bool(user)
             )

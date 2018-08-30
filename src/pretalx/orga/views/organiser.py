@@ -13,7 +13,6 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 
 
 class TeamMixin:
-
     def get_queryset(self):
         if hasattr(self.request, 'event') and self.request.event:
             return Team.objects.filter(
@@ -48,8 +47,12 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
             if self.request.user.is_administrator:
                 organiser = Organiser.objects.all()
             else:
-                teams = Team.objects.filter(members__in=[self.request.user], can_change_teams=True)
-                organiser = Organiser.objects.filter(pk__in=teams.values_list('organiser_id', flat=True))
+                teams = Team.objects.filter(
+                    members__in=[self.request.user], can_change_teams=True
+                )
+                organiser = Organiser.objects.filter(
+                    pk__in=teams.values_list('organiser_id', flat=True)
+                )
         kwargs['organiser'] = organiser
         return kwargs
 
@@ -60,7 +63,9 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
     @cached_property
     def invite_form(self):
-        is_bound = self.request.method == 'POST' and self.request.POST.get('form') == 'invite'
+        is_bound = (
+            self.request.method == 'POST' and self.request.POST.get('form') == 'invite'
+        )
         return TeamInviteForm(self.request.POST if is_bound else None)
 
     def get_context_data(self, *args, **kwargs):
@@ -72,11 +77,16 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def post(self, *args, **kwargs):
         if self.invite_form.is_bound:
             if self.invite_form.is_valid():
-                invite = TeamInvite.objects.create(team=self.get_object(), email=self.invite_form.cleaned_data['email'])
+                invite = TeamInvite.objects.create(
+                    team=self.get_object(), email=self.invite_form.cleaned_data['email']
+                )
                 event = getattr(self.request, 'event', None)
                 invite.send(event=event)
                 if event:
-                    messages.success(self.request, _('The invitation has been generated, it\'s in the outbox.'))
+                    messages.success(
+                        self.request,
+                        _('The invitation has been generated, it\'s in the outbox.'),
+                    )
                 else:
                     messages.success(self.request, _('The invitation has been sent.'))
             else:
@@ -177,10 +187,19 @@ class TeamResetPassword(PermissionRequired, TemplateView):
 
     def post(self, request, *args, **kwargs):
         try:
-            self.user.reset_password(event=getattr(self.request, 'event', None))
-            messages.success(self.request, _('The password was reset and the user was notified.'))
+            self.user.reset_password(
+                event=getattr(self.request, 'event', None), person=self.request.user
+            )
+            messages.success(
+                self.request, _('The password was reset and the user was notified.')
+            )
         except SendMailException:
-            messages.error(self.request, _('The password reset email could not be sent, so the password was not reset.'))
+            messages.error(
+                self.request,
+                _(
+                    'The password reset email could not be sent, so the password was not reset.'
+                ),
+            )
         if hasattr(self.request, 'event') and self.request.event:
             return redirect(self.request.event.orga_urls.team_settings)
         return redirect(self.request.organiser.orga_urls.base)
