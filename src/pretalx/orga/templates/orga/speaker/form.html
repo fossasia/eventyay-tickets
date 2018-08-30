@@ -59,42 +59,7 @@
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
         {% bootstrap_field form.availabilities layout='event' %}
-    {% if questions %}
-    <h3>{% trans "Answers" %}</h3>
-    <ul>
-    {% for _, q_info in questions.items %}
-        <li>
-            <strong>{{ q_info.question.question }}</strong>
-            {% if q_info.answers.count == 1 %}{% with answer=q_info.answers.first %}
-                -
-                {% if answer.options.count > 0 %}
-                    {% for option in answer.options.all %}
-                    {{ option }},
-                    {% endfor %}
-                {% else %}
-                    {{ answer.answer }}
-                {% endif %}
-                {% if answer.submission %}({{ answer.submission.title }}){% endif %}
-            {% endwith %}{% elif q_info.answers.count > 1 %}
-            <ul>
-                {% for answer in q_info.answers %}
-                <li>
-                    {% if answer.options.count > 0 %}
-                        {% for option in answer.options.all %}
-                        {{ option }},
-                        {% endfor %}
-                    {% else %}
-                        {{ answer.answer }}
-                    {% endif %}
-                    {% if answer.submission %}({{ answer.submission.title }}){% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}-{% endif %}
-        </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
+        {% bootstrap_form questions_form layout='event' %}
     {% include "orga/submit_row.html" %}
     </form>
 

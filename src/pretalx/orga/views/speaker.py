@@ -18,6 +18,7 @@ from pretalx.person.forms import (
     SpeakerFilterForm, SpeakerInformationForm, SpeakerProfileForm,
 )
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
+from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models.submission import SubmissionStates
 
 
@@ -109,26 +110,33 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         context['submission_count'] = submissions.count()
         context['submissions'] = submissions
-        context['questions'] = {
-            question.pk: {
-                'question': question,
-                'answers': question.answers.filter(person=self.object),
-            }
-            for question in self.request.event.questions.filter(
-                target__in=[QuestionTarget.SUBMISSION, QuestionTarget.SPEAKER]
-            )
-        }
+        context['questions_form'] = self.questions_form
         return context
 
+    @cached_property
+    def questions_form(self):
+        speaker = self.get_object()
+        return QuestionsForm(
+            self.request.POST if self.request.method == 'POST' else None,
+            files=self.request.FILES if self.request.method == 'POST' else None,
+            target='speaker',
+            speaker=speaker,
+            event=self.request.event,
+        )
+
+    @transaction.atomic()
     def form_valid(self, form):
-        messages.success(self.request, 'The speaker profile has been updated.')
+        result = super().form_valid(form)
+        self.questions_form.speaker = self.get_object()
+        if not self.questions_form.is_valid():
+            return self.get(self.request, *self.args, **self.kwargs)
+        self.questions_form.save()
         if form.has_changed():
-            profile = self.object.profiles.filter(event=self.request.event).first()
-            if profile:
-                profile.log_action(
-                    'pretalx.user.profile.update', person=self.request.user, orga=True
-                )
-        return super().form_valid(form)
+            self.get_object().event_profile(self.request.event).log_action(
+                'pretalx.user.profile.update', person=self.request.user, orga=True
+            )
+        messages.success(self.request, 'The speaker profile has been updated.')
+        return result
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
