@@ -218,7 +218,7 @@ class Submission(LogMixin, models.Model):
     @property
     def editable(self):
         return (
-            self.cfp.is_open
+            self.event.cfp.is_open
             if self.state == SubmissionStates.SUBMITTED
             else self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
         )
