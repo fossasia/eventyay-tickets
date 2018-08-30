@@ -1,32 +1,23 @@
 import pytest
-from django.urls import reverse
 
 
 @pytest.mark.django_db
 def test_orga_can_access_speakers_list(orga_client, speaker, event, submission):
-    response = orga_client.get(
-        reverse('orga:speakers.list', kwargs={'event': event.slug}), follow=True
-    )
+    response = orga_client.get(event.orga_urls.speakers, follow=True)
     assert response.status_code == 200
     assert speaker.name in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_orga_can_access_speaker_page(orga_client, speaker, event, submission):
-    response = orga_client.get(
-        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
-        follow=True,
-    )
+    response = orga_client.get(speaker.event_profile(event).orga_urls.base, follow=True)
     assert response.status_code == 200
     assert speaker.name in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_reviewer_can_access_speaker_page(review_client, speaker, event, submission):
-    response = review_client.get(
-        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
-        follow=True,
-    )
+    response = orga_client.get(speaker.event_profile(event).orga_urls.base, follow=True)
     assert response.status_code == 200
     assert speaker.name in response.content.decode()
 
@@ -37,11 +28,8 @@ def test_reviewer_can_access_speaker_page_with_deleted_submission(
 ):
     assert other_speaker.submissions.count() == 0
     assert other_speaker.submissions(manager='deleted_objects').count() == 1
-    response = review_client.get(
-        reverse(
-            'orga:speakers.view', kwargs={'event': event.slug, 'pk': other_speaker.pk}
-        ),
-        follow=True,
+    response = orga_client.get(
+        other_speaker.event_profile(event).orga_urls.base, follow=True
     )
     assert response.status_code == 200
     assert other_speaker.name in response.content.decode()
@@ -50,7 +38,7 @@ def test_reviewer_can_access_speaker_page_with_deleted_submission(
 @pytest.mark.django_db
 def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
     response = orga_client.post(
-        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        speaker.event_profile(event).orga_urls.base,
         data={
             'name': 'BESTSPEAKAR',
             'biography': 'I rule!',
@@ -69,7 +57,7 @@ def test_orga_cant_assign_duplicate_address(
     orga_client, speaker, event, submission, other_speaker
 ):
     response = orga_client.post(
-        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        speaker.event_profile(event).orga_urls.base,
         data={
             'name': 'BESTSPEAKAR',
             'biography': 'I rule!',
@@ -88,19 +76,14 @@ def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
     logs = speaker.logged_actions().count()
     assert speaker.profiles.first().has_arrived is False
     response = orga_client.get(
-        reverse(
-            'orga:speakers.arrived', kwargs={'event': event.slug, 'pk': speaker.pk}
-        ),
-        follow=True,
+        speaker.profiles.first().orga_urls.toggle_arrived, follow=True
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
     assert speaker.profiles.first().has_arrived is True
     assert speaker.logged_actions().count() == logs + 1
     response = orga_client.get(
-        reverse('orga:speakers.arrived', kwargs={'event': event.slug, 'pk': speaker.pk})
-        + '?from=list',
-        follow=True,
+        speaker.profiles.first().orga_urls.toggle_arrived + '?from=list', follow=True
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
@@ -111,7 +94,7 @@ def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
 @pytest.mark.django_db
 def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission):
     response = review_client.post(
-        reverse('orga:speakers.view', kwargs={'event': event.slug, 'pk': speaker.pk}),
+        speaker.event_profile(event).orga_urls.base,
         data={'name': 'BESTSPEAKAR', 'biography': 'I rule!'},
         follow=True,
     )

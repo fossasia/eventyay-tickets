@@ -34,13 +34,13 @@
         <tbody>
             {% for profile in speakers %}
                 <tr>
-                    <td><a href="{% url "orga:speakers.view" event=request.event.slug pk=profile.user.pk %}">{{ profile.user.get_display_name }}</a></td>
+                    <td><a href="{{ profile.orga_urls.base }}">{{ profile.user.get_display_name }}</a></td>
                     <td>{{ profile.talks.count }}</td>
                     <td>{{ profile.submissions.count }}</td>
                     {% if can_mark_speaker or can_see_speaker_status %}
                         <td>
                             {% if can_mark_speaker %}
-                            <a class="btn btn-sm {% if profile.has_arrived %}btn-success{% else %}btn-info{% endif %}" href="{% url "orga:speakers.arrived" event=request.event.slug pk=profile.user.pk %}?from=list">
+                            <a class="btn btn-sm {% if profile.has_arrived %}btn-success{% else %}btn-info{% endif %}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
                                 {% if profile.has_arrived %}
                                     {% trans "Mark speaker as not arrived" %}
                                 {% else %}
