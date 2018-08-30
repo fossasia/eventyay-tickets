@@ -188,7 +188,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         try:
             self.user.reset_password(
-                event=getattr(self.request, 'event', None), person=self.request.user
+                event=getattr(self.request, 'event', None), user=self.request.user
             )
             messages.success(
                 self.request, _('The password was reset and the user was notified.')
