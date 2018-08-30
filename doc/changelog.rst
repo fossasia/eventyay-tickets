@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`488` The HTML export contained media files (not other content) from all conferences on an instance, instead of only the exported conference.
 - :feature:`-` Present a public list of talks and a list of speakers.
 - :bug:`478` The behaviour of pressing enter in multi-step forms was unintuitive in some places.
 - :feature:`-` The submission list now includes a graph of submissions over time.

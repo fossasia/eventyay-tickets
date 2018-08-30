@@ -25,7 +25,9 @@ class Command(BakeryBuildCommand):
 
     @classmethod
     def get_output_dir(cls, event):
-        return os.path.join(settings.HTMLEXPORT_ROOT, event.slug)  # Do not change, this is used to build the correct zip path
+        return os.path.join(
+            settings.HTMLEXPORT_ROOT, event.slug
+        )  # Do not change, this is used to build the correct zip path
 
     @classmethod
     def get_output_zip_path(cls, event):
@@ -41,7 +43,13 @@ class Command(BakeryBuildCommand):
         self._exporting_event = event
         translation.activate(event.locale)
 
-        with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True, BUILD_DIR=self.get_output_dir(event)):
+        with override_settings(
+            COMPRESS_ENABLED=True,
+            COMPRESS_OFFLINE=True,
+            BUILD_DIR=self.get_output_dir(event),
+            MEDIA_URL=os.path.join(settings.MEDIA_URL, event_slug),
+            MEDIA_ROOT=os.path.join(settings.MEDIA_ROOT, event_slug),
+        ):
             super().handle(*args, **options)
             path = settings.BUILD_DIR
             if options.get('zip', False):
