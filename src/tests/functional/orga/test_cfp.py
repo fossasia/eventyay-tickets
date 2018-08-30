@@ -338,7 +338,7 @@ def test_can_remind_question(
     event,
     speaker_question,
     speaker,
-    accepted_submission,
+    slot,
     other_speaker,
     other_submission,
     role,
