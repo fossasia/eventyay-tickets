@@ -33,6 +33,13 @@ class Command(BakeryBuildCommand):
     def get_output_zip_path(cls, event):
         return cls.get_output_dir(event) + '.zip'
 
+    def build_media(self):
+        output_dir = self.get_output_dir(self._exporting_event)
+        os.makedirs(
+            os.path.join(output_dir, 'media', self._exporting_event.slug), exist_ok=True
+        )
+        return super().build_media()
+
     def handle(self, *args, **options):
         event_slug = options.get('event')
         try:
@@ -43,24 +50,24 @@ class Command(BakeryBuildCommand):
         self._exporting_event = event
         translation.activate(event.locale)
 
+        output_dir = self.get_output_dir(event)
         with override_settings(
             COMPRESS_ENABLED=True,
             COMPRESS_OFFLINE=True,
-            BUILD_DIR=self.get_output_dir(event),
+            BUILD_DIR=output_dir,
             MEDIA_URL=os.path.join(settings.MEDIA_URL, event_slug),
             MEDIA_ROOT=os.path.join(settings.MEDIA_ROOT, event_slug),
         ):
             super().handle(*args, **options)
-            path = settings.BUILD_DIR
             if options.get('zip', False):
                 make_archive(
-                    base_name=path,
+                    base_name=output_dir,
                     format='zip',
                     root_dir=settings.HTMLEXPORT_ROOT,
                     base_dir=event.slug,
                 )
-                path = path + '.zip'
-        self.stdout.write(path)
+                output_dir += '.zip'
+        self.stdout.write(output_dir)
 
     def build_views(self):
         for view_str in self.view_list:

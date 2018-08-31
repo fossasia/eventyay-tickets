@@ -1,4 +1,5 @@
 import json
+from glob import glob
 
 import pytest
 from django.core.management.base import CommandError
@@ -7,11 +8,16 @@ from django.urls import reverse
 from lxml import etree
 
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.common.tasks import regenerate_css
+from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
 def test_schedule_frab_xml_export(slot, client, schedule_schema):
-    response = client.get(reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}), follow=True)
+    response = client.get(
+        reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -19,14 +25,24 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
     assert slot.submission.urls.public.full() in content
 
     parser = etree.XMLParser(schema=schedule_schema)
-    etree.fromstring(response.content, parser)  # Will raise if the schedule does not match the schema
+    etree.fromstring(
+        response.content, parser
+    )  # Will raise if the schedule does not match the schema
 
 
 @pytest.mark.django_db
-def test_schedule_frab_json_export(slot, answered_choice_question, personal_answer, client, orga_user, schedule_schema):
-    regular_response = client.get(reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}), follow=True)
+def test_schedule_frab_json_export(
+    slot, answered_choice_question, personal_answer, client, orga_user, schedule_schema
+):
+    regular_response = client.get(
+        reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     client.force_login(orga_user)
-    orga_response = client.get(reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}), follow=True)
+    orga_response = client.get(
+        reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     assert regular_response.status_code == 200
     assert orga_response.status_code == 200
 
@@ -48,7 +64,10 @@ def test_schedule_frab_json_export(slot, answered_choice_question, personal_answ
 
 @pytest.mark.django_db
 def test_schedule_frab_xcal_export(slot, client, schedule_schema):
-    response = client.get(reverse(f'agenda:core-frab-xcal', kwargs={'event': slot.submission.event.slug}), follow=True)
+    response = client.get(
+        reverse(f'agenda:core-frab-xcal', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -57,7 +76,10 @@ def test_schedule_frab_xcal_export(slot, client, schedule_schema):
 
 @pytest.mark.django_db
 def test_schedule_ical_export(slot, client, schedule_schema):
-    response = client.get(reverse(f'agenda:core-iCal', kwargs={'event': slot.submission.event.slug}), follow=True)
+    response = client.get(
+        reverse(f'agenda:core-iCal', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -74,18 +96,18 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('exporter', (
-    'core-frab-xml',
-    'core-frab-json',
-    'core-frab-xcal',
-    'core-iCal',
-    'feed',
-))
+@pytest.mark.parametrize(
+    'exporter',
+    ('core-frab-xml', 'core-frab-json', 'core-frab-xcal', 'core-iCal', 'feed'),
+)
 def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
     slot.submission.event.is_public = False
     slot.submission.event.save()
 
-    response = client.get(reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}), follow=True)
+    response = client.get(
+        reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}),
+        follow=True,
+    )
     assert response.status_code == 404
 
 
@@ -111,6 +133,7 @@ def test_feed_view(slot, client, schedule_schema, schedule):
 @pytest.mark.django_db
 def test_html_export_event_required():
     from django.core.management import call_command
+
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html')
 
@@ -120,6 +143,7 @@ def test_html_export_event_required():
 @pytest.mark.django_db
 def test_html_export_event_unknown(event):
     from django.core.management import call_command
+
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html', 'foobar222')
     assert 'Could not find event with slug "foobar222"' in str(excinfo)
@@ -135,6 +159,7 @@ def test_html_export_release(mocker, event):
     event.wip_schedule.freeze(name="ohaio means hello")
 
     from django.core.management import call_command
+
     call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
 
 
@@ -146,6 +171,7 @@ def test_html_export_release_disabled(mocker, event):
     event.wip_schedule.freeze(name="ohaio means hello")
 
     from django.core.management import call_command
+
     call_command.assert_not_called()
 
 
@@ -161,7 +187,9 @@ def test_html_export_language(event, slot):
         call_command('rebuild')
         call_command('export_schedule_html', event.slug)
 
-    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')).read()
+    schedule_html = open(
+        os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')
+    ).read()
     assert 'Kontakt' in schedule_html
 
 
@@ -170,9 +198,11 @@ def test_schedule_export_schedule_html_task(mocker, orga_client, event, slot):
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
+
     export_schedule_html.apply_async(kwargs={'event_id': event.id})
 
     from django.core.management import call_command
+
     call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
 
 
@@ -181,9 +211,11 @@ def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event, sl
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
+
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': False})
 
     from django.core.management import call_command
+
     call_command.assert_called_with('export_schedule_html', event.slug)
 
 
@@ -195,12 +227,15 @@ def test_schedule_orga_trigger_export(mocker, orga_client, event):
 
     response = orga_client.post(event.orga_urls.schedule_export_trigger, follow=True)
     assert response.status_code == 200
-    export_schedule_html.apply_async.assert_called_once_with(kwargs={'event_id': event.id})
+    export_schedule_html.apply_async.assert_called_once_with(
+        kwargs={'event_id': event.id}
+    )
 
 
 @pytest.mark.django_db
 def test_schedule_orga_download_export(mocker, orga_client, event, slot):
     from pretalx.agenda.tasks import export_schedule_html
+
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
     response = orga_client.get(event.orga_urls.schedule_export_download, follow=True)
     assert len(b"".join(response.streaming_content)) > 1000000  # 1MB
@@ -212,18 +247,31 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
     from django.conf import settings
     import os.path
 
+    event.primary_color = '#111111'
+    event.save()
+    other_event.primary_color = '#222222'
+    other_event.save()
+
     with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
         call_command('rebuild')
+        regenerate_css(event.pk)
+        regenerate_css(other_event.pk)
+        event = Event.objects.get(slug=event.slug)
+        assert event.settings.agenda_css_file
         call_command('export_schedule_html', event.slug, '--zip')
 
     paths = [
         'static/common/img/logo.svg',
+        f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
         'test/schedule/index.html',
         'test/schedule.json',
         'test/schedule.xcal',
         'test/schedule.xml',
         'test/schedule.ics',
-        *[f'test/speaker/{speaker.code}/index.html' for speaker in slot.submission.speakers.all()],
+        *[
+            f'test/speaker/{speaker.code}/index.html'
+            for speaker in slot.submission.speakers.all()
+        ],
         f'test/talk/{slot.submission.code}/index.html',
         f'test/talk/{slot.submission.code}.ics',
     ]
@@ -232,38 +280,64 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
         full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test', path)
         assert os.path.exists(full_path)
 
+    for path in glob(os.path.join(settings.HTMLEXPORT_ROOT, 'test/media/*')):
+        assert event.slug in path
+        assert other_event.slug not in path
+
     full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test.zip')
     assert os.path.exists(full_path)
 
-    assert not os.path.exists(os.path.join(settings.HTMLEXPORT_ROOT, 'test2')), "wrong event exported"
-
     # views and templates are the same for export and online viewing, so a naive test is enough here
-    talk_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/talk/{slot.submission.code}/index.html')).read()
+    talk_html = open(
+        os.path.join(
+            settings.HTMLEXPORT_ROOT,
+            'test',
+            f'test/talk/{slot.submission.code}/index.html',
+        )
+    ).read()
     assert talk_html.count(slot.submission.title) >= 2
 
     speaker = slot.submission.speakers.all()[0]
-    speaker_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/speaker/{speaker.code}/index.html')).read()
+    speaker_html = open(
+        os.path.join(
+            settings.HTMLEXPORT_ROOT, 'test', f'test/speaker/{speaker.code}/index.html'
+        )
+    ).read()
     assert speaker.name in speaker_html
 
-    schedule_html = open(os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')).read()
+    schedule_html = open(
+        os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')
+    ).read()
     assert 'Contact us' in schedule_html  # locale
     assert canceled_talk.submission.title not in schedule_html
 
-    schedule_json = json.load(open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.json')))
+    schedule_json = json.load(
+        open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.json'))
+    )
     assert schedule_json['schedule']['conference']['title'] == event.name
 
-    schedule_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.ics')).read()
+    schedule_ics = open(
+        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.ics')
+    ).read()
     assert slot.submission.code in schedule_ics
     assert canceled_talk.submission.code not in schedule_ics
 
-    schedule_xcal = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xcal')).read()
+    schedule_xcal = open(
+        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xcal')
+    ).read()
     assert event.slug in schedule_xcal
     assert speaker.name in schedule_xcal
 
-    schedule_xml = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')).read()
+    schedule_xml = open(
+        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')
+    ).read()
     assert slot.submission.title in schedule_xml
     assert canceled_talk.submission.frab_slug not in schedule_xml
     assert str(canceled_talk.submission.uuid) not in schedule_xml
 
-    talk_ics = open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics')).read()
+    talk_ics = open(
+        os.path.join(
+            settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics'
+        )
+    ).read()
     assert slot.submission.title in talk_ics
