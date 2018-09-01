@@ -99,7 +99,7 @@ class SubmissionFilterForm(forms.Form):
             submission_type=x
         ).count()
         self.fields['submission_type'].choices = [
-            (sub_type.pk, f'{sub_type.name} ({type_count(sub_type.pk)})')
+            (sub_type.pk, f'{str(sub_type)} ({type_count(sub_type.pk)})')
             for sub_type in event.submission_types.all()
         ]
         self.fields['submission_type'].widget.attrs['title'] = _('Submission types')
