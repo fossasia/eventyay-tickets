@@ -42,6 +42,9 @@ form label.col-form-label {
 form small.form-text.text-muted {
   color: $gray !important;
   font-size: inherit;
+  a {
+    text-decoration: underline;
+  }
 }
 form .checkbox + small.form-text {
   margin-top: -8px;
