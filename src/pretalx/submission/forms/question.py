@@ -175,7 +175,7 @@ class QuestionsForm(forms.Form):
                 else:
                     self._save_to_answer(field, field.answer, v)
                     field.answer.save()
-            elif v != '':
+            elif v != '' and v is not None:
                 # Not distinguishing between the external question types helps to make
                 # experiences smoother if orga changes a question type.
                 answer = Answer(
