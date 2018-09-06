@@ -188,6 +188,17 @@ def speaker_question(event):
 
 
 @pytest.fixture
+def review_question(event):
+    return Question.objects.create(
+        event=event,
+        question='What is your favourite color?',
+        variant=QuestionVariant.STRING,
+        target='reviewer',
+        required=True,
+    )
+
+
+@pytest.fixture
 def speaker_boolean_question(event):
     return Question.objects.create(
         event=event,

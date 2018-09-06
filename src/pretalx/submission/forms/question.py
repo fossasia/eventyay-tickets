@@ -5,7 +5,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 
 from pretalx.common.forms.utils import get_help_text
-from pretalx.submission.models import Answer, Question, QuestionVariant
+from pretalx.submission.models import Answer, Question, QuestionTarget, QuestionVariant
 
 
 class QuestionsForm(forms.Form):
@@ -15,13 +15,13 @@ class QuestionsForm(forms.Form):
         self.speaker = kwargs.pop('speaker', None)
         self.review = kwargs.pop('review', None)
         self.request_user = kwargs.pop('request_user', None)
-        self.target_type = kwargs.pop('target', 'submission')
+        self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
         target_object = None
-        if self.target_type == 'submission':
+        if self.target_type == QuestionTarget.SUBMISSION:
             target_object = self.submission
-        elif self.target_type == 'speaker':
+        elif self.target_type == QuestionTarget.SPEAKER:
             target_object = self.speaker
-        elif self.target_type == 'reviewer':
+        elif self.target_type == QuestionTarget.REVIEWER:
             target_object = self.review
         readonly = kwargs.pop('readonly', False)
 
@@ -30,6 +30,8 @@ class QuestionsForm(forms.Form):
         self.queryset = Question.all_objects.filter(event=self.event, active=True)
         if self.target_type:
             self.queryset = self.queryset.filter(target=self.target_type)
+        else:
+            self.queryset = self.queryset.exclude(target=QuestionTarget.REVIEWER)
         for question in self.queryset.prefetch_related('options'):
             if target_object:
                 answers = [
@@ -66,7 +68,7 @@ class QuestionsForm(forms.Form):
         return [
             forms.BoundField(self, field, name)
             for name, field in self.fields.items()
-            if field.question.target == 'speaker'
+            if field.question.target == QuestionTarget.SPEAKER
         ]
 
     @cached_property
@@ -74,7 +76,7 @@ class QuestionsForm(forms.Form):
         return [
             forms.BoundField(self, field, name)
             for name, field in self.fields.items()
-            if field.question.target == 'submission'
+            if field.question.target == QuestionTarget.SUBMISSION
         ]
 
     def get_field(self, *, question, initial, initial_object, readonly):
