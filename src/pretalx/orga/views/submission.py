@@ -163,7 +163,7 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
         super().dispatch(request, *args, **kwargs)
         submission = self.object
         email = request.POST.get('speaker')
-        name = request.POST.get('speaker_name')
+        name = request.POST.get('name')
         try:
             speaker = User.objects.get(email__iexact=email)
         except User.DoesNotExist:

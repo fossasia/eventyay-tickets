@@ -140,7 +140,7 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
 
     response = orga_client.post(
         submission.orga_urls.new_speaker,
-        data={'speaker': user, 'speaker_name': 'Name'},
+        data={'speaker': user, 'name': 'Name'},
         follow=True,
     )
     submission.refresh_from_db()
