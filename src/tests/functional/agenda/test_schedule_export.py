@@ -182,6 +182,7 @@ def test_html_export_language(event, slot):
     import os.path
 
     event.locale = 'de'
+    event.locale_array = 'de,en'
     event.save()
     with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
         call_command('rebuild')
@@ -191,6 +192,7 @@ def test_html_export_language(event, slot):
         os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')
     ).read()
     assert 'Kontakt' in schedule_html
+    assert 'locale/set' not in schedule_html  # bug #494
 
 
 @pytest.mark.django_db
