@@ -1,37 +1,37 @@
-<?xml version='1.0' encoding='utf-8' ?>
+{% load xmlescape %}<?xml version='1.0' encoding='utf-8' ?>
 <!-- Made with love by pretalx v{{ version }}. -->
 <schedule>
-    <version>{{ schedule.version }}</version>
+    <version>{{ schedule.version|xmlescape }}</version>
     <conference>
         <acronym>{{ event.slug }}</acronym>
-        <title>{{ event.name }}</title>
+        <title>{{ event.name|xmlescape }}</title>
         <start>{{ event.date_from|date:"c" }}</start>
         <end>{{ event.date_to|date:"c" }}</end>
         <days>{{ event.duration }}</days>
         <timeslot_duration>00:05</timeslot_duration>
     </conference>
     {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start.isoformat }}' end='{{ day.end.isoformat }}'>
-        {% for room in day.rooms %}<room name='{{ room.name }}'>
+        {% for room in day.rooms %}<room name='{{ room.name|xmlescape }}'>
             {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
                 <date>{{ talk.start|date:"c" }}</date>
                 <start>{{ talk.start|date:"H:i" }}</start>
                 <duration>{{ talk.export_duration }}</duration>
-                <room>{{ room.name }}</room>
+                <room>{{ room.name|xmlescape }}</room>
                 <slug>{{ talk.submission.frab_slug }}</slug>
                 <url>{{ talk.submission.urls.public.full }}</url>
                 <recording>
-                    <license>{{ talk.submission.license }}</license>
+                    <license>{{ talk.submission.license|xmlescape }}</license>
                     <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>
                 </recording>
-                <title>{{ talk.submission.title }}</title>
+                <title>{{ talk.submission.title|xmlescape }}</title>
                 <subtitle></subtitle>
                 <track></track>
-                <type>{{ talk.submission.submission_type.name }}</type>
+                <type>{{ talk.submission.submission_type.name|xmlescape }}</type>
                 <language>{{ talk.submission.content_locale }}</language>
-                <abstract>{{ talk.submission.abstract }}</abstract>
-                <description>{{ talk.submission.description }}</description>
+                <abstract>{{ talk.submission.abstract|xmlescape }}</abstract>
+                <description>{{ talk.submission.description|xmlescape }}</description>
                 <persons>
-                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name }}</person>{% endfor %}
+                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name|xmlescape }}</person>{% endfor %}
                 </persons>
                 <links></links>
             </event>

@@ -31,7 +31,6 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
-@pytest.mark.xfail(reason="https://github.com/pretalx/pretalx/issues/496")
 def test_schedule_frab_xml_export_control_char(slot, client, schedule_schema):
     slot.submission.description = "control char: \a"
     slot.submission.save()
