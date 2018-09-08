@@ -34,4 +34,9 @@
         </div>
     {% endfor %}
 </form>
+{% if not plugins %}
+<div class="alert alert-info">
+    {% trans "This instance does currently not have any plugins installed." %}
+</div>
+{% endif %}
 {% endblock %}
