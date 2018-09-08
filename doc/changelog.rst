@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`492`: In exports, HTTP Etags are now supported to allow for more aggressive caching on clients.
 - :bug:`-` If a review question was mandatory while submission questions were active, they would block the submission process.
 - :feature:`-` Organisers can now also reset the password for the speakers they have access to.
 - :bug:`488` The HTML export contained media files (not other content) from all conferences on an instance, instead of only the exported conference.

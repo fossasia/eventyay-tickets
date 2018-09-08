@@ -1,8 +1,9 @@
+import hashlib
 from datetime import timedelta
 from urllib.parse import unquote
 
 import pytz
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotModified
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -89,11 +90,17 @@ class ExporterView(ScheduleDataView):
             exporter.schedule = self.get_object()
             exporter.is_orga = getattr(self.request, 'is_orga', False)
             file_name, file_type, data = exporter.render()
+            etag = hashlib.sha1(str(data).encode()).hexdigest()
+            if 'HTTP_IF_NONE_MATCH' in request.META:
+                if request.META['HTTP_IF_NONE_MATCH'] == etag:
+                    return HttpResponseNotModified()
             resp = HttpResponse(data, content_type=file_type)
+            resp['ETag'] = etag
             if file_type not in ['application/json', 'text/xml']:
                 resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return resp
-        except Exception:
+        except Exception as export_exception:
+            print(export_exception)
             raise Http404()
 
 

@@ -18,7 +18,8 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
         reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
         follow=True,
     )
-    assert response.status_code == 200
+    assert response.status_code == 200, str(response.content.decode())
+    assert 'ETag' in response
 
     content = response.content.decode()
     assert slot.submission.title in content
@@ -28,6 +29,11 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
     etree.fromstring(
         response.content, parser
     )  # Will raise if the schedule does not match the schema
+    response = client.get(
+        reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
+        HTTP_IF_NONE_MATCH=response['ETag'], follow=True,
+    )
+    assert response.status_code == 304
 
 
 @pytest.mark.django_db
