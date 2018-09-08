@@ -157,6 +157,11 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   font-weight: bold;
   background: $gray;
   color: white;
+  height: 30px;
+
+  &.thin {
+    height: 5px;
+  }
 }
 
 .talk-box {
