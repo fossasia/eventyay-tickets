@@ -14,6 +14,23 @@
     Your event is currently only visible to your and your team.
     By going live, it will be publicly visible.
     {% endblocktrans %}
+
+    {% if warnings %}
+    <p>
+    <h4>{% trans "Your event may not be ready for release yet!" %}</h4>
+    <ul>
+        {% for warning in warnings %}<li>{{ warning.text }} <a class="btn btn-sm btn-outline-info" href="{{ warning.url }}">{% trans "Fix me" %}</a></li>{% endfor %}
+    </ul>
+    </p>
+    {% endif %}
+    {% if suggestions %}
+    <p>
+    <h4>{% trans "There may be easy ways to improve your event before its release!" %}</h4>
+    <ul>
+    {% for suggestion in suggestions %}<li>{{ suggestion.text }} <a class="btn btn-sm btn-outline-info" href="{{ suggestion.url }}">{% trans "Fix me" %}</a></li>{% endfor %}
+    </ul>
+    </p>
+    {% endif %}
 {% endif %}
 <p>
 <div class="submit-group">

@@ -87,6 +87,23 @@ class EventLive(EventSettingsPermission, TemplateView):
     template_name = 'orga/event/live.html'
     permission_required = 'orga.change_settings'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        warnings = []
+        suggestions = []
+        if not self.request.event.cfp.text or len(self.request.event.cfp.text) < 50:
+            warnings.append({'text': _('The CfP doesn\'t have a full text yet.'), 'url': self.request.event.cfp.urls.text})
+        if not self.request.event.landing_page_text or len(self.request.event.landing_page_text) < 50:
+            warnings.append({'text': _('The event doesn\'t have a landing page text yet.'), 'url': self.request.event.orga_urls.settings})
+        # TODO: test that mails can be sent
+        if not self.request.event.submission_types.count() > 1:
+            suggestions.append({'text': _('You have configured only one submission type so far.'), 'url': self.request.event.cfp.urls.types})
+        if not self.request.event.questions.exists():
+            suggestions.append({'text': _('You have configured no questions yet.'), 'url': self.request.event.cfp.urls.new_question})
+        context['warnings'] = warnings
+        context['suggestions'] = suggestions
+        return context
+
     def post(self, request, *args, **kwargs):
         event = request.event
         action = request.POST.get('action')

@@ -3,7 +3,9 @@ from datetime import timedelta
 from urllib.parse import unquote
 
 import pytz
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotModified
+from django.http import (
+    Http404, HttpResponse, HttpResponseNotModified, HttpResponsePermanentRedirect,
+)
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
