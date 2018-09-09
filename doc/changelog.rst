@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`454`: As an organizer, it is now possible to send an email to all reviewers in the Compose Mail section.
 - :feature:`492`: In exports, HTTP Etags are now supported to allow for more aggressive caching on clients.
 - :bug:`-` If a review question was mandatory while submission questions were active, they would block the submission process.
 - :feature:`-` Organisers can now also reset the password for the speakers they have access to.
