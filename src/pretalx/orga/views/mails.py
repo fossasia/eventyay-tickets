@@ -11,6 +11,7 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.orga.forms.mails import MailDetailForm, MailTemplateForm, WriteMailForm
+from pretalx.person.models import User
 
 
 class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
@@ -223,12 +224,22 @@ class ComposeMail(PermissionRequired, FormView):
     def form_valid(self, form):
         email_set = set()
 
-        for state in form.cleaned_data.get('recipients'):
-            if state == 'selected_submissions':
-                submission_filter = {'code__in': form.cleaned_data.get('submissions')}
+        for recipient in form.cleaned_data.get('recipients'):
+            if recipient == 'reviewers':
+                mails = User.objects.filter(
+                    teams__in=self.request.event.teams.filter(is_reviewer=True)
+                ).distinct().values_list('email', flat=True)
             else:
-                submission_filter = {'state': state}
-            email_set.update(self.request.event.submissions.filter(**submission_filter).values_list('speakers__email', flat=True))
+                if recipient == 'selected_submissions':
+                    submission_filter = {'code__in': form.cleaned_data.get('submissions')}
+                else:
+                    submission_filter = {'state': recipient}  # e.g. "submitted"
+
+                mails = self.request.event.submissions \
+                    .filter(**submission_filter) \
+                    .values_list('speakers__email', flat=True)
+
+            email_set.update(mails)
 
         for email in email_set:
             QueuedMail.objects.create(

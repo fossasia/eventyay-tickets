@@ -53,7 +53,8 @@ class WriteMailForm(forms.ModelForm):
         ('accepted', _('All accepted speakers (who have not confirmed their talk yet)')),
         ('confirmed', _('All confirmed speakers')),
         ('rejected', _('All rejected speakers')),
-        ('selected_submissions', _('All speakers of the selected submissions below'))
+        ('selected_submissions', _('All speakers of the selected submissions below')),
+        ('reviewers', _('All reviewers in your team')),
     ), widget=forms.CheckboxSelectMultiple)
     submissions = forms.MultipleChoiceField(required=False)
     reply_to = forms.EmailField(required=False)
