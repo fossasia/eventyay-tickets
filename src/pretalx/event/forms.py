@@ -193,7 +193,7 @@ class EventWizardDisplayForm(forms.Form):
         extension_whitelist=IMAGE_EXTENSIONS,
         label=_('Logo'),
         help_text=_(
-            'If you provide a logo image, we will by default not show your events name and date in the page header. '
+            'If you provide a logo image, we will by default not show your event\'s name and date in the page header. '
             'We will show your logo in its full size if possible, scaled down to the full header width otherwise.'
         ),
     )
