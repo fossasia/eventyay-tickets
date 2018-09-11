@@ -91,9 +91,9 @@ class EventLive(EventSettingsPermission, TemplateView):
         context = super().get_context_data(**kwargs)
         warnings = []
         suggestions = []
-        if not self.request.event.cfp.text or len(self.request.event.cfp.text) < 50:
+        if not self.request.event.cfp.text or len(str(self.request.event.cfp.text)) < 50:
             warnings.append({'text': _('The CfP doesn\'t have a full text yet.'), 'url': self.request.event.cfp.urls.text})
-        if not self.request.event.landing_page_text or len(self.request.event.landing_page_text) < 50:
+        if not self.request.event.landing_page_text or len(str(self.request.event.landing_page_text)) < 50:
             warnings.append({'text': _('The event doesn\'t have a landing page text yet.'), 'url': self.request.event.orga_urls.settings})
         # TODO: test that mails can be sent
         if not self.request.event.submission_types.count() > 1:
