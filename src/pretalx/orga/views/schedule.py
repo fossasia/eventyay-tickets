@@ -344,10 +344,11 @@ class ScheduleImportView(PermissionRequired, FormView):
         from pretalx.schedule.utils import process_frab
 
         try:
-            tree = ET.parse('path')
+            tree = ET.ElementTree(ET.fromstring(self.request.FILES['upload'].read()))
             root = tree.getroot()
         except Exception as e:
             messages.error(self.request, _('Unable to parse XML file: ') + str(e))
+            return super().form_invalid(form)
         try:
             with transaction.atomic():
                 messages.success(self.request, process_frab(root, self.request.event))
