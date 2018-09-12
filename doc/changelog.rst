@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`503` Not all current TLDs were used when processing markdown input to build links.
 - :bug:`-`: The schedule import in the organiser backend never worked (while the manage command for administrators did work).
 - :feature:`454`: As an organizer, it is now possible to send an email to all reviewers in the Compose Mail section.
 - :feature:`492`: In exports, HTTP Etags are now supported to allow for more aggressive caching on clients.
