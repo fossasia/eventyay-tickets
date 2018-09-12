@@ -83,7 +83,7 @@ setup(
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         'libsass==0.14.5',  # https://sass.github.io/libsass-python/changes.html
         'Markdown==2.6.*',  # https://python-markdown.github.io/change_log/
-        'publicsuffix==0.6.*'
+        'publicsuffixlist==0.6.*',
         'pytz',
         'reportlab==3.4.*',  # https://www.reportlab.com/documentation/relnotes/
         'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
