@@ -51,7 +51,10 @@ ALLOWED_ATTRIBUTES = {
 
 ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
 
-ALLOWED_TLDS = set(suffix.rsplit('.')[-1] for suffix in PublicSuffixList()._publicsuffix)
+ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TLDs don't win against longer TLDs, e.g. matching '.com' before '.co'
+    list(set(suffix.rsplit('.')[-1] for suffix in PublicSuffixList()._publicsuffix)),
+    reverse=True,
+)
 TLD_REGEX = bleach.linkifier.build_url_re(tlds=ALLOWED_TLDS)
 LINKIFIER = bleach.linkifier.Linker(url_re=TLD_REGEX, parse_email=True)
 
