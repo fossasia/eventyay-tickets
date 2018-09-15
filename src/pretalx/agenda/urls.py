@@ -22,7 +22,6 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
             ('.json$', schedule.ExporterView.as_view(), 'export.core-frab-json'),
             ('.ics$', schedule.ExporterView.as_view(), 'export.core-iCal'),
             ('/export$', schedule.ExporterView.as_view(), 'export'),
-            ('/feed.xml$', feed.ScheduleFeed(), 'feed'),
         ]
     ]
 
@@ -33,11 +32,9 @@ urlpatterns = [
         fr'^(?P<event>[{SLUG_CHARS}]+)/',
         include(
             [
-                url(
-                    r'^schedule/changelog$',
-                    schedule.ChangelogView.as_view(),
-                    name='schedule.changelog',
-                ),
+                url(r'^schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
+                url(r'^schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
+
                 *get_schedule_urls('^schedule'),
                 *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),
                 url(r'^sneak/$', sneakpeek.SneakpeekView.as_view(), name='sneak'),
