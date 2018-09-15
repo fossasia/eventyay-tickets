@@ -16,8 +16,7 @@ from pretalx.event.models import Event
 def test_schedule_frab_xml_export(slot, client, schedule_schema):
     response = client.get(
         reverse(
-            f'agenda:export.schedule.xml',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
         ),
         follow=True,
     )
@@ -34,8 +33,7 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
     )  # Will raise if the schedule does not match the schema
     response = client.get(
         reverse(
-            f'agenda:export.schedule.xml',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
         ),
         HTTP_IF_NONE_MATCH=response['ETag'],
         follow=True,
@@ -50,8 +48,7 @@ def test_schedule_frab_xml_export_control_char(slot, client, schedule_schema):
 
     response = client.get(
         reverse(
-            f'agenda:export.schedule.xml',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
         ),
         follow=True,
     )
@@ -66,16 +63,14 @@ def test_schedule_frab_json_export(
 ):
     regular_response = client.get(
         reverse(
-            f'agenda:export.schedule.json',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.json', kwargs={'event': slot.submission.event.slug}
         ),
         follow=True,
     )
     client.force_login(orga_user)
     orga_response = client.get(
         reverse(
-            f'agenda:export.schedule.json',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.json', kwargs={'event': slot.submission.event.slug}
         ),
         follow=True,
     )
@@ -102,8 +97,7 @@ def test_schedule_frab_json_export(
 def test_schedule_frab_xcal_export(slot, client, schedule_schema):
     response = client.get(
         reverse(
-            f'agenda:export.schedule.xcal',
-            kwargs={'event': slot.submission.event.slug},
+            f'agenda:export.schedule.xcal', kwargs={'event': slot.submission.event.slug}
         ),
         follow=True,
     )
@@ -147,9 +141,7 @@ def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
     exporter = 'feed' if exporter == 'feed' else f'export.{exporter}'
 
     response = client.get(
-        reverse(
-            f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}
-        ),
+        reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}),
         follow=True,
     )
     assert response.status_code == 404
@@ -310,10 +302,10 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
         'static/common/img/logo.svg',
         f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
         'test/schedule/index.html',
-        'test/schedule.json',
-        'test/schedule.xcal',
-        'test/schedule.xml',
-        'test/schedule.ics',
+        'test/schedule/export/schedule.json',
+        'test/schedule/export/schedule.xcal',
+        'test/schedule/export/schedule.xml',
+        'test/schedule/export/schedule.ics',
         *[
             f'test/speaker/{speaker.code}/index.html'
             for speaker in slot.submission.speakers.all()
@@ -358,24 +350,34 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
     assert canceled_talk.submission.title not in schedule_html
 
     schedule_json = json.load(
-        open(os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.json'))
+        open(
+            os.path.join(
+                settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.json'
+            )
+        )
     )
     assert schedule_json['schedule']['conference']['title'] == event.name
 
     schedule_ics = open(
-        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.ics')
+        os.path.join(
+            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.ics'
+        )
     ).read()
     assert slot.submission.code in schedule_ics
     assert canceled_talk.submission.code not in schedule_ics
 
     schedule_xcal = open(
-        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xcal')
+        os.path.join(
+            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.xcal'
+        )
     ).read()
     assert event.slug in schedule_xcal
     assert speaker.name in schedule_xcal
 
     schedule_xml = open(
-        os.path.join(settings.HTMLEXPORT_ROOT, f'test/test/schedule.xml')
+        os.path.join(
+            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.xml'
+        )
     ).read()
     assert slot.submission.title in schedule_xml
     assert canceled_talk.submission.frab_slug not in schedule_xml
