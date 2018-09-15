@@ -74,7 +74,7 @@
                     <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
-                    {% trans "Sneak peek" %}
+                    {% trans "Sneak peek" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% trans "Show this submission on the public preview page" %}"></i>
                     <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
