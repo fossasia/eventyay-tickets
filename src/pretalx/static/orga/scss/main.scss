@@ -114,8 +114,9 @@ h3 {
 
 .submission_featured {
   i {
-    vertical-align: bottom;
-    margin-left: -0.5em;
+    position: absolute;
+    margin-left: 6px;
+    margin-top: -6px;
   }
 
   .done {
