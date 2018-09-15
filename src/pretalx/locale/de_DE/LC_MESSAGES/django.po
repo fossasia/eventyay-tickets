@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-15 16:19-0500\n"
-"PO-Revision-Date: 2018-09-15 23:18+0200\n"
+"PO-Revision-Date: 2018-09-15 23:23+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -446,12 +446,13 @@ msgstr ""
 "erfolgreich eingereicht."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:18
-#, fuzzy, python-format
-#| msgid "You can enter submissions until %(deadline)s (%(timezone)s)."
+#, python-format
 msgid ""
 "You can enter submissions until %(deadline)s (%(timezone)s, "
 "%(until_string)s)."
-msgstr "Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken."
+msgstr ""
+"Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken "
+"(%(until_string)s)."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:22
 #, python-format
@@ -2664,7 +2665,7 @@ msgstr "Alle Vortragenden der unten ausgewählten Einreichungen"
 
 #: pretalx/orga/forms/mails.py:57
 msgid "All reviewers in your team"
-msgstr ""
+msgstr "Alle Reviewer"
 
 #: pretalx/orga/forms/mails.py:65
 msgid ""
@@ -3418,16 +3419,17 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/event/live.html:20
 msgid "Your event may not be ready for release yet!"
-msgstr ""
+msgstr "Deine Veranstaltung ist möglicherweise noch nicht fertig konfiguriert!"
 
 #: pretalx/orga/templates/orga/event/live.html:22
 #: pretalx/orga/templates/orga/event/live.html:30
 msgid "Fix me"
-msgstr ""
+msgstr "Beheben"
 
 #: pretalx/orga/templates/orga/event/live.html:28
 msgid "There may be easy ways to improve your event before its release!"
 msgstr ""
+"Deine Veranstaltung kann möglicherweise noch besser konfiguriert werden!"
 
 #: pretalx/orga/templates/orga/event/live.html:41
 msgid "Go offline"
@@ -3666,7 +3668,7 @@ msgstr "Version %(v)s"
 
 #: pretalx/orga/templates/orga/plugins.html:39
 msgid "This instance does currently not have any plugins installed."
-msgstr ""
+msgstr "Hier sind derzeit keine Plugins installiert."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:15
 msgid "lonely review"
@@ -3921,11 +3923,7 @@ msgstr ""
 "lies diese sorgfältig durch!"
 
 #: pretalx/orga/templates/orga/schedule/release.html:17
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "            The previous schedule (%(prev)s) was released %(since)s ago.\n"
-#| "        "
+#, python-format
 msgid "The previous schedule (%(prev)s) was released %(since)s ago."
 msgstr ""
 "Die letzte Programmversion (%(prev)s) wurde vor %(since)s veröffentlicht."
@@ -3954,13 +3952,7 @@ msgstr ""
 "Vortragende erstellen."
 
 #: pretalx/orga/templates/orga/schedule/release.html:38
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "        %(unconfirmed)s talks are still <strong>unconfirmed</strong> and "
-#| "will not show up\n"
-#| "        on the public schedule.\n"
-#| "    "
+#, python-format
 msgid ""
 "%(unconfirmed)s talks are still <strong>unconfirmed</strong> and will not "
 "show up on the public schedule."
@@ -3969,12 +3961,7 @@ msgstr ""
 "und werden nicht im öffentlichen Programm angezeigt werden."
 
 #: pretalx/orga/templates/orga/schedule/release.html:44
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "        %(unscheduled)s talks have <strong>not yet been scheduled</"
-#| "strong>.\n"
-#| "    "
+#, python-format
 msgid "%(unscheduled)s talks have <strong>not yet been scheduled</strong>."
 msgstr ""
 "%(unscheduled)s Programmpunkte wurden noch <strong>nicht geplant</strong>"
@@ -4144,6 +4131,10 @@ msgid ""
 "or files (e.g. a conference styleguide).<br> They are shown to the selected "
 "speakers above the list of their submitted talks."
 msgstr ""
+"Trag hier wichtige Nachrichten ein, z.B. \"Bitte bring einen HDMI-Adapter "
+"mit, wenn benötigt\", oder Dateien wie einen Styleguide.<br>Diese "
+"Informationen werden der ausgewählten Gruppe dann oberhalb der Liste ihrer "
+"Einreichungen gezeigt."
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:23
 msgid "Includes submitted"
@@ -4493,17 +4484,15 @@ msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
 
 #: pretalx/orga/views/event.py:95
 msgid "The CfP doesn't have a full text yet."
-msgstr ""
+msgstr "Der CfP hat noch keinen vollständigen Text."
 
 #: pretalx/orga/views/event.py:97
 msgid "The event doesn't have a landing page text yet."
-msgstr ""
+msgstr "Die Veranstaltung hat noch keinen Beschreibungstext."
 
 #: pretalx/orga/views/event.py:100
-#, fuzzy
-#| msgid "You have configured no questions yet."
 msgid "You have configured only one submission type so far."
-msgstr "Du hast noch keine Fragen gestellt."
+msgstr "Es gibt bislang nur eine Einreichungsart."
 
 #: pretalx/orga/views/event.py:112
 msgid "This event was already live."
