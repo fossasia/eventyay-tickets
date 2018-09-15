@@ -54,7 +54,7 @@ class ScheduleData(BaseExporter):
 
 
 class FrabXmlExporter(ScheduleData):
-    identifier = 'core-frab-xml'
+    identifier = 'schedule.xml'
     verbose_name = 'XML (frab compatible)'
     public = True
     icon = 'fa-code'
@@ -66,7 +66,7 @@ class FrabXmlExporter(ScheduleData):
 
 
 class FrabXCalExporter(ScheduleData):
-    identifier = 'core-frab-xcal'
+    identifier = 'schedule.xcal'
     verbose_name = 'XCal (frab compatible)'
     public = True
     icon = 'fa-calendar'
@@ -79,7 +79,7 @@ class FrabXCalExporter(ScheduleData):
 
 
 class FrabJsonExporter(ScheduleData):
-    identifier = 'core-frab-json'
+    identifier = 'schedule.json'
     verbose_name = 'JSON (frab compatible)'
     public = True
     icon = '{ }'
@@ -161,7 +161,7 @@ class FrabJsonExporter(ScheduleData):
 
 
 class ICalExporter(BaseExporter):
-    identifier = 'core-iCal'
+    identifier = 'schedule.ics'
     verbose_name = 'iCal'
     public = True
     icon = 'fa-calendar'

@@ -69,10 +69,12 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
 
 class ExporterView(ScheduleDataView):
+
     def get_exporter(self, request):
         url = resolve(request.path_info)
+
         if url.url_name == 'export':
-            exporter = unquote(self.request.GET.get('exporter'))
+            exporter = self.kwargs.get('name') or unquote(self.request.GET.get('exporter'))
         else:
             exporter = url.url_name
 
