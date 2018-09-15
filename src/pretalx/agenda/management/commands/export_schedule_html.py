@@ -7,6 +7,7 @@ from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import get_callable
 from django.utils import translation
+from django.utils.timezone import override as override_timezone
 
 from pretalx.event.models import Event
 
@@ -58,15 +59,16 @@ class Command(BakeryBuildCommand):
             MEDIA_URL=os.path.join(settings.MEDIA_URL, event_slug),
             MEDIA_ROOT=os.path.join(settings.MEDIA_ROOT, event_slug),
         ):
-            super().handle(*args, **options)
-            if options.get('zip', False):
-                make_archive(
-                    base_name=output_dir,
-                    format='zip',
-                    root_dir=settings.HTMLEXPORT_ROOT,
-                    base_dir=event.slug,
-                )
-                output_dir += '.zip'
+            with override_timezone(event.timezone):
+                super().handle(*args, **options)
+                if options.get('zip', False):
+                    make_archive(
+                        base_name=output_dir,
+                        format='zip',
+                        root_dir=settings.HTMLEXPORT_ROOT,
+                        base_dir=event.slug,
+                    )
+                    output_dir += '.zip'
         self.stdout.write(output_dir)
 
     def build_views(self):

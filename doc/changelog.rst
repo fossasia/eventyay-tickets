@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`500`: Display of times could be off in the static HTML export.
 - :support:`-` The URLs for schedule exports have changed from /myevent/schedule/export?exporter=exportername to /myevent/schedule/export/exportername – if you have hardcoded links to schedule exporters, please update them accordingly.
 - :feature:`213` A human-readable time until the CfP closes is now displayed next to the end time.
 - :bug:`503` Not all current TLDs were used when processing markdown input to build links.
