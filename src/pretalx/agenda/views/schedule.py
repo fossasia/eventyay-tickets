@@ -74,7 +74,7 @@ class ExporterView(ScheduleDataView):
         url = resolve(request.path_info)
 
         if url.url_name == 'export':
-            exporter = self.kwargs.get('name') or unquote(self.request.GET.get('exporter'))
+            exporter = url.kwargs.get('name') or unquote(self.request.GET.get('exporter'))
         else:
             exporter = url.url_name
 

@@ -186,12 +186,12 @@ class Event(LogMixin, models.Model):
         talks = '{base}/talk/'
         speakers = '{base}/speaker/'
         changelog = '{schedule}/changelog'
-        frab_xml = '{schedule}.xml'
-        frab_json = '{schedule}.json'
-        frab_xcal = '{schedule}.xcal'
-        ical = '{schedule}.ics'
         feed = '{schedule}/feed.xml'
         export = '{schedule}/export'
+        frab_xml = '{export}/schedule.xml'
+        frab_json = '{export}/schedule.json'
+        frab_xcal = '{export}/schedule.xcal'
+        ical = '{export}/schedule.ics'
         location = '{schedule}/location'
 
     class orga_urls(EventUrls):
