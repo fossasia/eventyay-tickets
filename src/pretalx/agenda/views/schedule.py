@@ -76,6 +76,7 @@ class ExporterView(ScheduleDataView):
         else:
             exporter = url.url_name
 
+        exporter = exporter.lstrip('export.')
         responses = register_data_exporters.send(request.event)
         for _, response in responses:
             ex = response(request.event)

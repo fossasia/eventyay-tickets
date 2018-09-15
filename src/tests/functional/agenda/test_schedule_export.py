@@ -15,7 +15,10 @@ from pretalx.event.models import Event
 @pytest.mark.django_db
 def test_schedule_frab_xml_export(slot, client, schedule_schema):
     response = client.get(
-        reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-frab-xml',
+            kwargs={'event': slot.submission.event.slug},
+        ),
         follow=True,
     )
     assert response.status_code == 200, str(response.content.decode())
@@ -30,8 +33,12 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
         response.content, parser
     )  # Will raise if the schedule does not match the schema
     response = client.get(
-        reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
-        HTTP_IF_NONE_MATCH=response['ETag'], follow=True,
+        reverse(
+            f'agenda:export.core-frab-xml',
+            kwargs={'event': slot.submission.event.slug},
+        ),
+        HTTP_IF_NONE_MATCH=response['ETag'],
+        follow=True,
     )
     assert response.status_code == 304
 
@@ -42,7 +49,10 @@ def test_schedule_frab_xml_export_control_char(slot, client, schedule_schema):
     slot.submission.save()
 
     response = client.get(
-        reverse(f'agenda:core-frab-xml', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-frab-xml',
+            kwargs={'event': slot.submission.event.slug},
+        ),
         follow=True,
     )
 
@@ -55,12 +65,18 @@ def test_schedule_frab_json_export(
     slot, answered_choice_question, personal_answer, client, orga_user, schedule_schema
 ):
     regular_response = client.get(
-        reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-frab-json',
+            kwargs={'event': slot.submission.event.slug},
+        ),
         follow=True,
     )
     client.force_login(orga_user)
     orga_response = client.get(
-        reverse(f'agenda:core-frab-json', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-frab-json',
+            kwargs={'event': slot.submission.event.slug},
+        ),
         follow=True,
     )
     assert regular_response.status_code == 200
@@ -85,7 +101,10 @@ def test_schedule_frab_json_export(
 @pytest.mark.django_db
 def test_schedule_frab_xcal_export(slot, client, schedule_schema):
     response = client.get(
-        reverse(f'agenda:core-frab-xcal', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-frab-xcal',
+            kwargs={'event': slot.submission.event.slug},
+        ),
         follow=True,
     )
     assert response.status_code == 200
@@ -97,7 +116,9 @@ def test_schedule_frab_xcal_export(slot, client, schedule_schema):
 @pytest.mark.django_db
 def test_schedule_ical_export(slot, client, schedule_schema):
     response = client.get(
-        reverse(f'agenda:core-iCal', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:export.core-iCal', kwargs={'event': slot.submission.event.slug}
+        ),
         follow=True,
     )
     assert response.status_code == 200
@@ -123,9 +144,12 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
 def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
     slot.submission.event.is_public = False
     slot.submission.event.save()
+    exporter = 'feed' if exporter == 'feed' else f'export.{exporter}'
 
     response = client.get(
-        reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}),
+        reverse(
+            f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}
+        ),
         follow=True,
     )
     assert response.status_code == 404
