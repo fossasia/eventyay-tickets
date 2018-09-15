@@ -14,7 +14,7 @@
 <ul>
     <li>
         {% if request.event.wip_schedule.previous_schedule.version %}
-        {% blocktrans with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince %}
+        {% blocktrans with prev=request.event.wip_schedule.previous_schedule.version since=request.event.wip_schedule.previous_schedule.published|timesince trimmed %}
             The previous schedule ({{ prev }}) was released {{ since }} ago.
         {% endblocktrans %}
         {% else %}
@@ -35,13 +35,13 @@
         {% endif %}
     </li>
     {% if warnings.unconfirmed %}
-    <li>{% blocktrans with unconfirmed=warnings.unconfirmed|length %}
+    <li>{% blocktrans with unconfirmed=warnings.unconfirmed|length trimmed %}
         {{ unconfirmed }} talks are still <strong>unconfirmed</strong> and will not show up
         on the public schedule.
     {% endblocktrans %}</li>
     {% endif %}
     {% if warnings.unscheduled %}
-    <li>{% blocktrans with unscheduled=warnings.unscheduled|length %}
+    <li>{% blocktrans with unscheduled=warnings.unscheduled|length trimmed %}
         {{ unscheduled }} talks have <strong>not yet been scheduled</strong>.
     {% endblocktrans %}</li>
     {% endif %}
