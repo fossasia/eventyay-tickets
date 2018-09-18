@@ -120,3 +120,11 @@ def test_event_urls_custom(event):
     event.settings.custom_domain = custom
     assert custom in event.urls.submit.full()
     assert custom not in event.orga_urls.cfp.full()
+
+
+@pytest.mark.django_db
+def test_event_model_talks(slot, other_slot, accepted_submission, submission, rejected_submission):
+    event = slot.submission.event
+    other_slot.submission.speakers.add(slot.submission.speakers.first())
+    assert len(event.talks.all()) == len(set(event.talks.all()))
+    assert len(event.speakers.all()) == len(set(event.speakers.all()))

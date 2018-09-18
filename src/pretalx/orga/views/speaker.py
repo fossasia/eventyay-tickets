@@ -41,10 +41,10 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
         return context
 
     def get_queryset(self):
-        qs = SpeakerProfile.objects.filter(event=self.request.event)
+        qs = SpeakerProfile.objects.filter(event=self.request.event, user__in=self.request.event.submitters)
+
         qs = self.filter_queryset(qs)
         if 'role' in self.request.GET:
-            # TODO: this returns speakers accepted for *other* events. SubQuery time
             if self.request.GET['role'] == 'true':
                 qs = qs.filter(
                     user__submissions__state__in=[
@@ -59,6 +59,8 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
                         SubmissionStates.CONFIRMED,
                     ]
                 )
+
+        qs = qs.order_by('id').distinct()
         qs = self.sort_queryset(qs)
         return qs
 
