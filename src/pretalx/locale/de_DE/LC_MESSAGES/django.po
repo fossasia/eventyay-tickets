@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-18 16:03-0500\n"
-"PO-Revision-Date: 2018-09-18 23:04+0200\n"
+"POT-Creation-Date: 2018-09-18 16:08-0500\n"
+"PO-Revision-Date: 2018-09-18 23:08+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2334,9 +2334,7 @@ msgid "Minimum length"
 msgstr "Maximallänge"
 
 #: pretalx/orga/forms/cfp.py:49 pretalx/orga/forms/cfp.py:52
-#: pretalx/orga/forms/cfp.py:55
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
-#: pretalx/orga/templates/orga/cfp/text.html:48
+#: pretalx/orga/forms/cfp.py:55 pretalx/orga/templates/orga/cfp/text.html:48
 msgid "Maximum length"
 msgstr "Maximallänge"
 
@@ -3121,8 +3119,12 @@ msgid "Submission type"
 msgstr "Einreichungsart"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:17
-msgid "Default length"
-msgstr "Standardlänge"
+msgid "Default duration"
+msgstr "Standarddauer"
+
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
+msgid "Maximum duration"
+msgstr "Maximaldauer"
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
 msgid "Default"
@@ -5305,6 +5307,9 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
+
+#~ msgid "Default length"
+#~ msgstr "Standardlänge"
 
 #~ msgid "Ask speakers to submit an abstract"
 #~ msgstr "Einreichungen können ein Abstract haben"
