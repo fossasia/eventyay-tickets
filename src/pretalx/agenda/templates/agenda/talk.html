@@ -114,7 +114,7 @@
                                 <ul class="speaker-talks">
                                     {% for talk in speaker.other_talks %}
                                     <li class="speaker-talk">
-                                        <a href='{{ submission.urls.public }}'>{{ submission.title }}</a>
+                                        <a href='{{ talk.submission.urls.public }}'>{{ talk.submission.title }}</a>
                                     </li>
                                     {% endfor %}
                                 </ul>

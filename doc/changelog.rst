@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`501`: When a speaker held more than two talks, their related talks were not linked correctly.
 - :bug:`505`: Custom CSS may now also include media queries.
 - :bug:`500`: Display of times could be off in the static HTML export.
 - :support:`-` The URLs for schedule exports have changed from /myevent/schedule/export?exporter=exportername to /myevent/schedule/export/exportername – if you have hardcoded links to schedule exporters, please update them accordingly.
