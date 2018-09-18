@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-18 16:03-0500\n"
-"PO-Revision-Date: 2018-09-15 23:23+0200\n"
+"PO-Revision-Date: 2018-09-18 23:04+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2320,13 +2320,13 @@ msgstr "Einreichungsschluss öffentlich anzeigen"
 #: pretalx/orga/forms/cfp.py:22 pretalx/orga/forms/cfp.py:24
 #: pretalx/orga/forms/cfp.py:27 pretalx/orga/forms/cfp.py:29
 msgid "Offer data entry"
-msgstr ""
+msgstr "Dateneingabe anbieten"
 
 #: pretalx/orga/forms/cfp.py:31 pretalx/orga/forms/cfp.py:34
 #: pretalx/orga/forms/cfp.py:36 pretalx/orga/forms/cfp.py:38
 #: pretalx/orga/forms/cfp.py:59 pretalx/orga/forms/cfp.py:62
 msgid "Force data entry"
-msgstr ""
+msgstr "Dateneingabe erfordern"
 
 #: pretalx/orga/forms/cfp.py:40 pretalx/orga/forms/cfp.py:43
 #: pretalx/orga/forms/cfp.py:46 pretalx/orga/templates/orga/cfp/text.html:47
@@ -4146,10 +4146,8 @@ msgid "Sneak peek"
 msgstr "Vorschau"
 
 #: pretalx/orga/templates/orga/submission/list.html:77
-#, fuzzy
-#| msgid "Show this submission in the public sneak peek."
 msgid "Show this submission on the public preview page"
-msgstr "Zeige diese Einreichung in der Vorschau"
+msgstr "Zeige diese Einreichung in der öffentlichen Vorschau"
 
 #: pretalx/orga/templates/orga/submission/list.html:106
 msgid "Show this submission in the public sneak peek."
