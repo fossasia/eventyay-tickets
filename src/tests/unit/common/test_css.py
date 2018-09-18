@@ -20,6 +20,11 @@ body {
 #best-descriptor {
   border: 5px solid red;
 }
+@media print {
+  #best-descriptor {
+    border: 5px solid blue;
+  }
+}
 '''
 
 

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`505`: Custom CSS may now also include media queries.
 - :bug:`500`: Display of times could be off in the static HTML export.
 - :support:`-` The URLs for schedule exports have changed from /myevent/schedule/export?exporter=exportername to /myevent/schedule/export/exportername – if you have hardcoded links to schedule exporters, please update them accordingly.
 - :feature:`213` A human-readable time until the CfP closes is now displayed next to the end time.
