@@ -14,62 +14,52 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         label=_('Display deadline publicly'), required=False
     )
     cfp_request_abstract = forms.BooleanField(
-        label=_('Ask speakers to submit an abstract'), required=False
+        label=_('Offer data entry'), required=False
     )
     cfp_request_description = forms.BooleanField(
-        label=_('Ask speakers to submit a longer description'), required=False
+        label=_('Offer data entry'), required=False
     )
-    cfp_request_notes = forms.BooleanField(
-        label=_('Ask speakers to submit notes for the organiser'), required=False
-    )
+    cfp_request_notes = forms.BooleanField(label=_('Offer data entry'), required=False)
     cfp_request_biography = forms.BooleanField(
-        label=_('Ask speakers to provide a biography/personal information'),
-        required=False,
+        label=_('Offer data entry'), required=False
     )
     cfp_request_do_not_record = forms.BooleanField(
-        label=_('Allow speakers to opt out of having their talk recorded'),
-        required=False,
+        label=_('Offer data entry'), required=False
     )
-    cfp_request_image = forms.BooleanField(
-        label=_('Ask speakers to submit a talk image'), required=False
-    )
+    cfp_request_image = forms.BooleanField(label=_('Offer data entry'), required=False)
     cfp_require_abstract = forms.BooleanField(
-        label=_('Force speakers to submit an abstract'), required=False
+        label=_('Force data entry'), required=False
     )
     cfp_require_description = forms.BooleanField(
-        label=_('Force speakers to submit a longer description'), required=False
+        label=_('Force data entry'), required=False
     )
-    cfp_require_notes = forms.BooleanField(
-        label=_('Force speakers to submit notes for the organiser'), required=False
-    )
+    cfp_require_notes = forms.BooleanField(label=_('Force data entry'), required=False)
     cfp_require_biography = forms.BooleanField(required=False)
-    cfp_require_image = forms.BooleanField(
-        label=_('Force speakers to submit a talk image'), required=False
-    )
+    cfp_require_image = forms.BooleanField(label=_('Force data entry'), required=False)
     cfp_abstract_min_length = forms.IntegerField(
-        label=_('Minimum abstract length in characters'), required=False, min_value=0
+        label=_('Minimum length'), required=False, min_value=0
     )
     cfp_description_min_length = forms.IntegerField(
-        label=_('Minimum description length in characters'), required=False, min_value=0
+        label=_('Minimum length'), required=False, min_value=0
     )
     cfp_biography_min_length = forms.IntegerField(
-        label=_('Minimum abstract length in characters'), required=False, min_value=0
+        label=_('Minimum length'), required=False, min_value=0
     )
     cfp_abstract_max_length = forms.IntegerField(
-        label=_('Maximum abstract length in characters'), required=False, min_value=0
+        label=_('Maximum length'), required=False, min_value=0
     )
     cfp_description_max_length = forms.IntegerField(
-        label=_('Maximum description length in characters'), required=False, min_value=0
+        label=_('Maximum length'), required=False, min_value=0
     )
     cfp_biography_max_length = forms.IntegerField(
-        label=_('Maximum abstract length in characters'), required=False, min_value=0
+        label=_('Maximum length'), required=False, min_value=0
     )
     review_deadline = forms.DateTimeField(label=_('Review deadline'), required=False)
     review_score_mandatory = forms.BooleanField(
-        label=_('Require reviewers to submit a score'), required=False
+        label=_('Force data entry'), required=False
     )
     review_text_mandatory = forms.BooleanField(
-        label=_('Require reviewers to submit a text'), required=False
+        label=_('Force data entry'), required=False
     )
     mail_on_new_submission = forms.BooleanField(
         label=_('Send mail on new submission'),

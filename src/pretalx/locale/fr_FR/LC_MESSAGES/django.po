@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-15 16:19-0500\n"
+"POT-Creation-Date: 2018-09-18 16:03-0500\n"
 "PO-Revision-Date: 2018-08-08 23:00+0200\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -1081,7 +1081,7 @@ msgstr "\"{value}\" n'est pas accepté comme attribut de \"{key}\""
 msgid "You are not allowed to include \"{key}\" keys in your CSS."
 msgstr "Vous n'avez pas le droit d'inclure la clé \"{key}\" dans votre CSS."
 
-#: pretalx/common/css.py:138
+#: pretalx/common/css.py:150
 msgid "This stylesheet is not valid CSS."
 msgstr "Cette feuille de style n'est pas du CSS valide."
 
@@ -2359,82 +2359,41 @@ msgstr "Ce courriel a déjà été envoyé. Il ne peut pas être envoyé à nouv
 msgid "Display deadline publicly"
 msgstr "Afficher publiquement la date butoir"
 
-#: pretalx/orga/forms/cfp.py:17
-msgid "Ask speakers to submit an abstract"
-msgstr "Demander aux intervenants de fournir un résumé"
-
-#: pretalx/orga/forms/cfp.py:20
-msgid "Ask speakers to submit a longer description"
-msgstr "Demander aux intervenants de fournir une description longue"
-
-#: pretalx/orga/forms/cfp.py:23
-msgid "Ask speakers to submit notes for the organiser"
-msgstr "Demander aux intervenants de fournir des notes pour l'organisateur"
-
-#: pretalx/orga/forms/cfp.py:26
-msgid "Ask speakers to provide a biography/personal information"
-msgstr ""
-"Demander aux intervenants de fournir une biographie/des renseignements "
-"personnels"
-
-#: pretalx/orga/forms/cfp.py:30
-msgid "Allow speakers to opt out of having their talk recorded"
-msgstr ""
-"Permettre aux intervenants de refuser que leur intervention soit enregistrée"
-
-#: pretalx/orga/forms/cfp.py:34
-msgid "Ask speakers to submit a talk image"
-msgstr "Demander aux intervenants de fournir une image pour la proposition"
-
-#: pretalx/orga/forms/cfp.py:37
-msgid "Force speakers to submit an abstract"
-msgstr "Obliger les intervenants à fournir un résumé"
-
-#: pretalx/orga/forms/cfp.py:40
-msgid "Force speakers to submit a longer description"
-msgstr "Obliger les intervenants à fournir une description longue"
-
-#: pretalx/orga/forms/cfp.py:43
-msgid "Force speakers to submit notes for the organiser"
-msgstr "Obliger les intervenants à fournir des notes pour l'organisateur"
-
-#: pretalx/orga/forms/cfp.py:47
-msgid "Force speakers to submit a talk image"
-msgstr "Obliger les intervenants à fournir une image pour la proposition"
-
-#: pretalx/orga/forms/cfp.py:50 pretalx/orga/forms/cfp.py:56
-msgid "Minimum abstract length in characters"
+#: pretalx/orga/forms/cfp.py:17 pretalx/orga/forms/cfp.py:20
+#: pretalx/orga/forms/cfp.py:22 pretalx/orga/forms/cfp.py:24
+#: pretalx/orga/forms/cfp.py:27 pretalx/orga/forms/cfp.py:29
+msgid "Offer data entry"
 msgstr ""
 
-#: pretalx/orga/forms/cfp.py:53
-msgid "Minimum description length in characters"
+#: pretalx/orga/forms/cfp.py:31 pretalx/orga/forms/cfp.py:34
+#: pretalx/orga/forms/cfp.py:36 pretalx/orga/forms/cfp.py:38
+#: pretalx/orga/forms/cfp.py:59 pretalx/orga/forms/cfp.py:62
+msgid "Force data entry"
 msgstr ""
 
-#: pretalx/orga/forms/cfp.py:59 pretalx/orga/forms/cfp.py:65
-msgid "Maximum abstract length in characters"
-msgstr ""
+#: pretalx/orga/forms/cfp.py:40 pretalx/orga/forms/cfp.py:43
+#: pretalx/orga/forms/cfp.py:46 pretalx/orga/templates/orga/cfp/text.html:47
+#, fuzzy
+#| msgid "Maximum length"
+msgid "Minimum length"
+msgstr "Durée maximale"
 
-#: pretalx/orga/forms/cfp.py:62
-msgid "Maximum description length in characters"
-msgstr ""
+#: pretalx/orga/forms/cfp.py:49 pretalx/orga/forms/cfp.py:52
+#: pretalx/orga/forms/cfp.py:55
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
+#: pretalx/orga/templates/orga/cfp/text.html:48
+msgid "Maximum length"
+msgstr "Durée maximale"
 
-#: pretalx/orga/forms/cfp.py:67
+#: pretalx/orga/forms/cfp.py:57
 msgid "Review deadline"
 msgstr "Date butoir des évaluations"
 
-#: pretalx/orga/forms/cfp.py:69
-msgid "Require reviewers to submit a score"
-msgstr "Obliger les évaluateurs à mettre une note"
-
-#: pretalx/orga/forms/cfp.py:72
-msgid "Require reviewers to submit a text"
-msgstr "Obliger les évaluateurs à mettre un commentaire"
-
-#: pretalx/orga/forms/cfp.py:75
+#: pretalx/orga/forms/cfp.py:65
 msgid "Send mail on new submission"
 msgstr "Envoyer un courriel à chaque nouvelle proposition"
 
-#: pretalx/orga/forms/cfp.py:77
+#: pretalx/orga/forms/cfp.py:67
 msgid ""
 "If this setting is checked, you will receive an email to the organiser "
 "address for every received submission."
@@ -2442,11 +2401,11 @@ msgstr ""
 "Si ce paramètre est activé, vous recevrez un courriel à l'adresse de l'orga "
 "pour chaque proposition reçue."
 
-#: pretalx/orga/forms/cfp.py:82
+#: pretalx/orga/forms/cfp.py:72
 msgid "Allow override votes"
 msgstr "Permettre d'écraser les votes"
 
-#: pretalx/orga/forms/cfp.py:84
+#: pretalx/orga/forms/cfp.py:74
 #, fuzzy
 #| msgid ""
 #| "Individual reviewers can be assigned a fixed amount of \"override votes"
@@ -2457,27 +2416,27 @@ msgid ""
 msgstr ""
 "Les évaluateurs individuels peuvent se voir assigner un nombre fixe de veto."
 
-#: pretalx/orga/forms/cfp.py:89
+#: pretalx/orga/forms/cfp.py:79
 msgid "Minimum score"
 msgstr "Score minimum"
 
-#: pretalx/orga/forms/cfp.py:89
+#: pretalx/orga/forms/cfp.py:79
 msgid "The minimum score reviewers can assign"
 msgstr "Le score minimum que les évaluateurs peuvent mettre"
 
-#: pretalx/orga/forms/cfp.py:92
+#: pretalx/orga/forms/cfp.py:82
 msgid "Maximum score"
 msgstr "Score maximum"
 
-#: pretalx/orga/forms/cfp.py:92
+#: pretalx/orga/forms/cfp.py:82
 msgid "The maximum score reviewers can assign"
 msgstr "Le score maximum que les évaluateurs peuvent mettre"
 
-#: pretalx/orga/forms/cfp.py:95
+#: pretalx/orga/forms/cfp.py:85
 msgid "Help text for reviewers"
 msgstr "Texte d'aide pour les évaluateurs"
 
-#: pretalx/orga/forms/cfp.py:97
+#: pretalx/orga/forms/cfp.py:87
 #, fuzzy
 #| msgid ""
 #| "This text will be shown at the top of every review, as long as reviews "
@@ -2489,7 +2448,7 @@ msgstr ""
 "Ce texte sera affiché en haut de chaque évaluation, tant que les évaluations "
 "pourront être crées ou éditées. Vous pouvez utiliser du markdown."
 
-#: pretalx/orga/forms/cfp.py:116
+#: pretalx/orga/forms/cfp.py:106
 #, python-brace-format
 msgid ""
 "You can configure override votes <a href=\"{link}\">in the team settings</a>."
@@ -2497,11 +2456,11 @@ msgstr ""
 "Vous pouvez configurer les veto <a href=\"{link}\">dans les paramètres de "
 "l'équipe</a>."
 
-#: pretalx/orga/forms/cfp.py:127
+#: pretalx/orga/forms/cfp.py:117
 msgid "Score label ({})"
 msgstr "Label du score ({})"
 
-#: pretalx/orga/forms/cfp.py:129
+#: pretalx/orga/forms/cfp.py:119
 msgid ""
 "Human readable explanation of what a score of \"{}\" actually means, e.g. "
 "\"great!\"."
@@ -2509,7 +2468,7 @@ msgstr ""
 "Explication humainement compréhensible du sens d'un score de \"{}\", e.g. "
 "\"bien !\"."
 
-#: pretalx/orga/forms/cfp.py:143
+#: pretalx/orga/forms/cfp.py:133
 msgid "Please assign a minimum score smaller than the maximum score!"
 msgstr "Veuillez configurer un score minimum inférieur au score maximum !"
 
@@ -3244,11 +3203,6 @@ msgstr "Type de proposition"
 msgid "Default length"
 msgstr "Durée par défaut"
 
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
-#: pretalx/orga/templates/orga/cfp/text.html:48
-msgid "Maximum length"
-msgstr "Durée maximale"
-
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
 msgid "Default"
 msgstr "Défaut"
@@ -3330,12 +3284,6 @@ msgstr "Demandé"
 #: pretalx/orga/templates/orga/cfp/text.html:46
 msgid "Require"
 msgstr "Requis"
-
-#: pretalx/orga/templates/orga/cfp/text.html:47
-#, fuzzy
-#| msgid "Maximum length"
-msgid "Minimum length"
-msgstr "Durée maximale"
 
 #: pretalx/orga/templates/orga/cfp/text.html:47
 #: pretalx/orga/templates/orga/cfp/text.html:48
@@ -4286,6 +4234,12 @@ msgstr "Ajouter une nouvelle proposition"
 msgid "Sneak peek"
 msgstr "Aperçu"
 
+#: pretalx/orga/templates/orga/submission/list.html:77
+#, fuzzy
+#| msgid "Show this submission in the public sneak peek."
+msgid "Show this submission on the public preview page"
+msgstr "Afficher cette proposition dans l'aperçu public."
+
 #: pretalx/orga/templates/orga/submission/list.html:106
 msgid "Show this submission in the public sneak peek."
 msgstr "Afficher cette proposition dans l'aperçu public."
@@ -4760,11 +4714,11 @@ msgstr "L'équipe a été supprimée."
 msgid "The team invitation was retracted."
 msgstr "L'invitation dans l'équipe a été retirée."
 
-#: pretalx/orga/views/organiser.py:194 pretalx/orga/views/speaker.py:167
+#: pretalx/orga/views/organiser.py:194 pretalx/orga/views/speaker.py:169
 msgid "The password was reset and the user was notified."
 msgstr "Le mot de passe a été réinitialisé et l'utilisateur en a été informé."
 
-#: pretalx/orga/views/organiser.py:200 pretalx/orga/views/speaker.py:173
+#: pretalx/orga/views/organiser.py:200 pretalx/orga/views/speaker.py:175
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
@@ -4867,7 +4821,7 @@ msgstr "Vous n'êtes pas autorisé à évaluer vos propres propositions."
 msgid "The order of rooms has been updated."
 msgstr "La proposition a été mise à jour !"
 
-#: pretalx/orga/views/speaker.py:261
+#: pretalx/orga/views/speaker.py:263
 #, fuzzy
 #| msgid "The mail has been deleted."
 msgid "The information has been deleted."
@@ -5495,6 +5449,46 @@ msgstr "{name} ({duration} heures)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
+
+#~ msgid "Ask speakers to submit an abstract"
+#~ msgstr "Demander aux intervenants de fournir un résumé"
+
+#~ msgid "Ask speakers to submit a longer description"
+#~ msgstr "Demander aux intervenants de fournir une description longue"
+
+#~ msgid "Ask speakers to submit notes for the organiser"
+#~ msgstr "Demander aux intervenants de fournir des notes pour l'organisateur"
+
+#~ msgid "Ask speakers to provide a biography/personal information"
+#~ msgstr ""
+#~ "Demander aux intervenants de fournir une biographie/des renseignements "
+#~ "personnels"
+
+#~ msgid "Allow speakers to opt out of having their talk recorded"
+#~ msgstr ""
+#~ "Permettre aux intervenants de refuser que leur intervention soit "
+#~ "enregistrée"
+
+#~ msgid "Ask speakers to submit a talk image"
+#~ msgstr "Demander aux intervenants de fournir une image pour la proposition"
+
+#~ msgid "Force speakers to submit an abstract"
+#~ msgstr "Obliger les intervenants à fournir un résumé"
+
+#~ msgid "Force speakers to submit a longer description"
+#~ msgstr "Obliger les intervenants à fournir une description longue"
+
+#~ msgid "Force speakers to submit notes for the organiser"
+#~ msgstr "Obliger les intervenants à fournir des notes pour l'organisateur"
+
+#~ msgid "Force speakers to submit a talk image"
+#~ msgstr "Obliger les intervenants à fournir une image pour la proposition"
+
+#~ msgid "Require reviewers to submit a score"
+#~ msgstr "Obliger les évaluateurs à mettre une note"
+
+#~ msgid "Require reviewers to submit a text"
+#~ msgstr "Obliger les évaluateurs à mettre un commentaire"
 
 #~ msgid "The new version is called \"%(version)s\", and brings a few changes:"
 #~ msgstr ""

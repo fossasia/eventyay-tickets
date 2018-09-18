@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-15 16:19-0500\n"
+"POT-Creation-Date: 2018-09-18 16:03-0500\n"
 "PO-Revision-Date: 2018-09-15 23:23+0200\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
@@ -1055,7 +1055,7 @@ msgstr "\"{value}\" ist kein erlaubtes Attribut von \"{key}\""
 msgid "You are not allowed to include \"{key}\" keys in your CSS."
 msgstr "Du darfst \"{key}\" nicht in deinem CSS verwenden."
 
-#: pretalx/common/css.py:138
+#: pretalx/common/css.py:150
 msgid "This stylesheet is not valid CSS."
 msgstr "Diese Datei ist kein valides CSS."
 
@@ -2316,79 +2316,39 @@ msgstr ""
 msgid "Display deadline publicly"
 msgstr "Einreichungsschluss öffentlich anzeigen"
 
-#: pretalx/orga/forms/cfp.py:17
-msgid "Ask speakers to submit an abstract"
-msgstr "Einreichungen können ein Abstract haben"
+#: pretalx/orga/forms/cfp.py:17 pretalx/orga/forms/cfp.py:20
+#: pretalx/orga/forms/cfp.py:22 pretalx/orga/forms/cfp.py:24
+#: pretalx/orga/forms/cfp.py:27 pretalx/orga/forms/cfp.py:29
+msgid "Offer data entry"
+msgstr ""
 
-#: pretalx/orga/forms/cfp.py:20
-msgid "Ask speakers to submit a longer description"
-msgstr "Einreichungen können eine längere Beschreibung haben"
+#: pretalx/orga/forms/cfp.py:31 pretalx/orga/forms/cfp.py:34
+#: pretalx/orga/forms/cfp.py:36 pretalx/orga/forms/cfp.py:38
+#: pretalx/orga/forms/cfp.py:59 pretalx/orga/forms/cfp.py:62
+msgid "Force data entry"
+msgstr ""
 
-#: pretalx/orga/forms/cfp.py:23
-msgid "Ask speakers to submit notes for the organiser"
-msgstr "Einreichungen können einen nichtöffentlchen Kommentar haben"
+#: pretalx/orga/forms/cfp.py:40 pretalx/orga/forms/cfp.py:43
+#: pretalx/orga/forms/cfp.py:46 pretalx/orga/templates/orga/cfp/text.html:47
+msgid "Minimum length"
+msgstr "Maximallänge"
 
-#: pretalx/orga/forms/cfp.py:26
-msgid "Ask speakers to provide a biography/personal information"
-msgstr "Einreichende können eine Biographie/Beschreibung angeben"
+#: pretalx/orga/forms/cfp.py:49 pretalx/orga/forms/cfp.py:52
+#: pretalx/orga/forms/cfp.py:55
+#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
+#: pretalx/orga/templates/orga/cfp/text.html:48
+msgid "Maximum length"
+msgstr "Maximallänge"
 
-#: pretalx/orga/forms/cfp.py:30
-msgid "Allow speakers to opt out of having their talk recorded"
-msgstr "Einreichende dürfen eine Aufzeichnung der Vorträge ablehnen"
-
-#: pretalx/orga/forms/cfp.py:34
-msgid "Ask speakers to submit a talk image"
-msgstr "Einreichungen können ein Titelbild haben"
-
-#: pretalx/orga/forms/cfp.py:37
-msgid "Force speakers to submit an abstract"
-msgstr "Einreichungen müssen ein Abstract haben"
-
-#: pretalx/orga/forms/cfp.py:40
-msgid "Force speakers to submit a longer description"
-msgstr "Einreichungen müssen eine längere Beschreibung haben"
-
-#: pretalx/orga/forms/cfp.py:43
-msgid "Force speakers to submit notes for the organiser"
-msgstr "Einreichungen müssen einen nichtöffentlichen Kommentar haben"
-
-#: pretalx/orga/forms/cfp.py:47
-msgid "Force speakers to submit a talk image"
-msgstr "Einreichungen müssen ein Titelbild haben"
-
-#: pretalx/orga/forms/cfp.py:50 pretalx/orga/forms/cfp.py:56
-msgid "Minimum abstract length in characters"
-msgstr "Minimale Länge des Abstracts in Zeichen"
-
-#: pretalx/orga/forms/cfp.py:53
-msgid "Minimum description length in characters"
-msgstr "Minimale Länge der Beschreibung in Zeichen"
-
-#: pretalx/orga/forms/cfp.py:59 pretalx/orga/forms/cfp.py:65
-msgid "Maximum abstract length in characters"
-msgstr "Maximale Länge des Abstracts in Zeichen"
-
-#: pretalx/orga/forms/cfp.py:62
-msgid "Maximum description length in characters"
-msgstr "Maximale Länge der Beschreibung in Zeichen"
-
-#: pretalx/orga/forms/cfp.py:67
+#: pretalx/orga/forms/cfp.py:57
 msgid "Review deadline"
 msgstr "Reviewschluss"
 
-#: pretalx/orga/forms/cfp.py:69
-msgid "Require reviewers to submit a score"
-msgstr "Reviewer müssen mit Punkten bewerten"
-
-#: pretalx/orga/forms/cfp.py:72
-msgid "Require reviewers to submit a text"
-msgstr "Reviewer müssen mit Text bewerten"
-
-#: pretalx/orga/forms/cfp.py:75
+#: pretalx/orga/forms/cfp.py:65
 msgid "Send mail on new submission"
 msgstr "E-Mail für neue Einreichungen verschicken"
 
-#: pretalx/orga/forms/cfp.py:77
+#: pretalx/orga/forms/cfp.py:67
 msgid ""
 "If this setting is checked, you will receive an email to the organiser "
 "address for every received submission."
@@ -2396,11 +2356,11 @@ msgstr ""
 "Wenn diese Einstellung aktiviert wird, erhält die Orga-Mailadresse eine "
 "Benachrichtigung über jede neue Einreichung."
 
-#: pretalx/orga/forms/cfp.py:82
+#: pretalx/orga/forms/cfp.py:72
 msgid "Allow override votes"
 msgstr "Vetos zulassen"
 
-#: pretalx/orga/forms/cfp.py:84
+#: pretalx/orga/forms/cfp.py:74
 msgid ""
 "Review teams can be assigned a fixed amount of \"override votes\": Positive "
 "or negative vetos each reviewer can assign."
@@ -2408,27 +2368,27 @@ msgstr ""
 "Mit dieser Einstellung können einzelne Reviewer eine bestimmte Anzahl an "
 "Override-Stimmen (ähnlich wie Vetos) erhalten."
 
-#: pretalx/orga/forms/cfp.py:89
+#: pretalx/orga/forms/cfp.py:79
 msgid "Minimum score"
 msgstr "Mindestpunkte"
 
-#: pretalx/orga/forms/cfp.py:89
+#: pretalx/orga/forms/cfp.py:79
 msgid "The minimum score reviewers can assign"
 msgstr "Die kleinste Zahl an Punkten, die vergeben werden kann"
 
-#: pretalx/orga/forms/cfp.py:92
+#: pretalx/orga/forms/cfp.py:82
 msgid "Maximum score"
 msgstr "Maximalpunkte"
 
-#: pretalx/orga/forms/cfp.py:92
+#: pretalx/orga/forms/cfp.py:82
 msgid "The maximum score reviewers can assign"
 msgstr "Die größte Zahl an Punkten, die vergeben werden kann"
 
-#: pretalx/orga/forms/cfp.py:95
+#: pretalx/orga/forms/cfp.py:85
 msgid "Help text for reviewers"
 msgstr "Hilfe-Text für Reviewer"
 
-#: pretalx/orga/forms/cfp.py:97
+#: pretalx/orga/forms/cfp.py:87
 msgid ""
 "This text will be shown at the top of every review, as long as reviews can "
 "be created or edited."
@@ -2436,7 +2396,7 @@ msgstr ""
 "Dieser Text wird oberhalb jeder Review gezeigt, solange Reviews erstellt "
 "oder editiert werden können."
 
-#: pretalx/orga/forms/cfp.py:116
+#: pretalx/orga/forms/cfp.py:106
 #, python-brace-format
 msgid ""
 "You can configure override votes <a href=\"{link}\">in the team settings</a>."
@@ -2444,11 +2404,11 @@ msgstr ""
 "Du kannst Override-Stimmungen in den <a href=\"{link}\">Team-Einstellungen</"
 "a> konfigurieren."
 
-#: pretalx/orga/forms/cfp.py:127
+#: pretalx/orga/forms/cfp.py:117
 msgid "Score label ({})"
 msgstr "Bezeichnung ({})"
 
-#: pretalx/orga/forms/cfp.py:129
+#: pretalx/orga/forms/cfp.py:119
 msgid ""
 "Human readable explanation of what a score of \"{}\" actually means, e.g. "
 "\"great!\"."
@@ -2456,7 +2416,7 @@ msgstr ""
 "Menschenlesbare Erklärung, was die Punktezahl \"{}\" bedeutet, z.B. \"super"
 "\"."
 
-#: pretalx/orga/forms/cfp.py:143
+#: pretalx/orga/forms/cfp.py:133
 msgid "Please assign a minimum score smaller than the maximum score!"
 msgstr ""
 "Bitte wähle eine Minimalpunktzahl, die kleiner als die Maximalpunktzahl ist."
@@ -3164,11 +3124,6 @@ msgstr "Einreichungsart"
 msgid "Default length"
 msgstr "Standardlänge"
 
-#: pretalx/orga/templates/orga/cfp/submission_type_view.html:18
-#: pretalx/orga/templates/orga/cfp/text.html:48
-msgid "Maximum length"
-msgstr "Maximallänge"
-
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:34
 msgid "Default"
 msgstr "Standard"
@@ -3246,10 +3201,6 @@ msgstr "Optional"
 #: pretalx/orga/templates/orga/cfp/text.html:46
 msgid "Require"
 msgstr "Verpflichtend"
-
-#: pretalx/orga/templates/orga/cfp/text.html:47
-msgid "Minimum length"
-msgstr "Maximallänge"
 
 #: pretalx/orga/templates/orga/cfp/text.html:47
 #: pretalx/orga/templates/orga/cfp/text.html:48
@@ -4194,6 +4145,12 @@ msgstr "Einreichung hinzufügen"
 msgid "Sneak peek"
 msgstr "Vorschau"
 
+#: pretalx/orga/templates/orga/submission/list.html:77
+#, fuzzy
+#| msgid "Show this submission in the public sneak peek."
+msgid "Show this submission on the public preview page"
+msgstr "Zeige diese Einreichung in der Vorschau"
+
 #: pretalx/orga/templates/orga/submission/list.html:106
 msgid "Show this submission in the public sneak peek."
 msgstr "Zeige diese Einreichung in der Vorschau"
@@ -4652,13 +4609,13 @@ msgstr "Das Team wurde entfernt."
 msgid "The team invitation was retracted."
 msgstr "Die Einladung wurde verschickt."
 
-#: pretalx/orga/views/organiser.py:194 pretalx/orga/views/speaker.py:167
+#: pretalx/orga/views/organiser.py:194 pretalx/orga/views/speaker.py:169
 msgid "The password was reset and the user was notified."
 msgstr ""
 "Das Passwort wurde zurückgesetzt und eine Benachrichtigung wurde darüber "
 "verschickt."
 
-#: pretalx/orga/views/organiser.py:200 pretalx/orga/views/speaker.py:173
+#: pretalx/orga/views/organiser.py:200 pretalx/orga/views/speaker.py:175
 msgid ""
 "The password reset email could not be sent, so the password was not reset."
 msgstr ""
@@ -4749,7 +4706,7 @@ msgstr "Du darfst Räume leider nicht verschieben."
 msgid "The order of rooms has been updated."
 msgstr "Die Abfolge der Räume wurde gespeichert."
 
-#: pretalx/orga/views/speaker.py:261
+#: pretalx/orga/views/speaker.py:263
 msgid "The information has been deleted."
 msgstr "Die Information wurde gelöscht."
 
@@ -5350,6 +5307,54 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
+
+#~ msgid "Ask speakers to submit an abstract"
+#~ msgstr "Einreichungen können ein Abstract haben"
+
+#~ msgid "Ask speakers to submit a longer description"
+#~ msgstr "Einreichungen können eine längere Beschreibung haben"
+
+#~ msgid "Ask speakers to submit notes for the organiser"
+#~ msgstr "Einreichungen können einen nichtöffentlchen Kommentar haben"
+
+#~ msgid "Ask speakers to provide a biography/personal information"
+#~ msgstr "Einreichende können eine Biographie/Beschreibung angeben"
+
+#~ msgid "Allow speakers to opt out of having their talk recorded"
+#~ msgstr "Einreichende dürfen eine Aufzeichnung der Vorträge ablehnen"
+
+#~ msgid "Ask speakers to submit a talk image"
+#~ msgstr "Einreichungen können ein Titelbild haben"
+
+#~ msgid "Force speakers to submit an abstract"
+#~ msgstr "Einreichungen müssen ein Abstract haben"
+
+#~ msgid "Force speakers to submit a longer description"
+#~ msgstr "Einreichungen müssen eine längere Beschreibung haben"
+
+#~ msgid "Force speakers to submit notes for the organiser"
+#~ msgstr "Einreichungen müssen einen nichtöffentlichen Kommentar haben"
+
+#~ msgid "Force speakers to submit a talk image"
+#~ msgstr "Einreichungen müssen ein Titelbild haben"
+
+#~ msgid "Minimum abstract length in characters"
+#~ msgstr "Minimale Länge des Abstracts in Zeichen"
+
+#~ msgid "Minimum description length in characters"
+#~ msgstr "Minimale Länge der Beschreibung in Zeichen"
+
+#~ msgid "Maximum abstract length in characters"
+#~ msgstr "Maximale Länge des Abstracts in Zeichen"
+
+#~ msgid "Maximum description length in characters"
+#~ msgstr "Maximale Länge der Beschreibung in Zeichen"
+
+#~ msgid "Require reviewers to submit a score"
+#~ msgstr "Reviewer müssen mit Punkten bewerten"
+
+#~ msgid "Require reviewers to submit a text"
+#~ msgstr "Reviewer müssen mit Text bewerten"
 
 #~ msgid "The new version is called \"%(version)s\", and brings a few changes:"
 #~ msgstr ""
