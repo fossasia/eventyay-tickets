@@ -81,7 +81,7 @@ The {event} orga crew'''
 class SubmissionViewMixin(PermissionRequired):
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submissions, code__iexact=self.kwargs.get('code')
+            self.request.event.submissions(manager='all_objects'), code__iexact=self.kwargs.get('code')
         )
 
     @cached_property
@@ -333,11 +333,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     def get_permission_object(self):
         return self.object or self.request.event
 
-    def get_object(self):
-        return self.request.event.submissions.filter(
-            code__iexact=self.kwargs.get('code')
-        ).first()
-
     def get_success_url(self) -> str:
         self.kwargs.update({'code': self.object.code})
         return self.object.orga_urls.base
@@ -414,7 +409,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
 
     def get_queryset(self):
         qs = (
-            self.request.event.submissions.select_related('submission_type')
+            self.request.event.submissions(manager='all_objects').select_related('submission_type')
             .order_by('-id')
             .all()
         )

@@ -80,6 +80,11 @@ class DeletedSubmissionManager(models.Manager):
         return super().get_queryset().filter(state=SubmissionStates.DELETED)
 
 
+class AllSubmissionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+
 class Submission(LogMixin, models.Model):
     code = models.CharField(max_length=16, unique=True)
     speakers = models.ManyToManyField(
@@ -168,6 +173,7 @@ class Submission(LogMixin, models.Model):
 
     objects = SubmissionManager()
     deleted_objects = DeletedSubmissionManager()
+    all_objects = AllSubmissionManager()
 
     class urls(EventUrls):
         user_base = '{self.event.urls.user_submissions}/{self.code}'
