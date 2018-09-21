@@ -81,7 +81,8 @@ The {event} orga crew'''
 class SubmissionViewMixin(PermissionRequired):
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submissions(manager='all_objects'), code__iexact=self.kwargs.get('code')
+            self.request.event.submissions(manager='all_objects'),
+            code__iexact=self.kwargs.get('code'),
         )
 
     @cached_property
@@ -354,7 +355,11 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 speaker = User.objects.get(email__iexact=email)
                 invited = False
             except User.DoesNotExist:
-                speaker = create_user_as_orga(email=email, name=form.cleaned_data['speaker_name'], submission=form.instance)
+                speaker = create_user_as_orga(
+                    email=email,
+                    name=form.cleaned_data['speaker_name'],
+                    submission=form.instance,
+                )
 
             form.instance.speakers.add(speaker)
         else:
@@ -409,11 +414,14 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
 
     def get_queryset(self):
         qs = (
-            self.request.event.submissions(manager='all_objects').select_related('submission_type')
+            self.request.event.submissions(manager='all_objects')
+            .select_related('submission_type')
             .order_by('-id')
             .all()
         )
         qs = self.filter_queryset(qs)
+        if not 'state' in self.request.GET:
+            qs = qs.exclude(state='deleted')
         qs = self.sort_queryset(qs)
         return qs.distinct()
 
