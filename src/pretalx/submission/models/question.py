@@ -224,5 +224,6 @@ class Answer(LogMixin, models.Model):
         return f'Answer(question={self.question.question}, answer={self.answer})'
 
     def remove(self, person=None, force=False):
-        self.options.all().delete()
+        for option in self.options.all():
+            option.answers.remove(self)
         self.delete()

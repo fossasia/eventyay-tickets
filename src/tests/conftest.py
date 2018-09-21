@@ -235,8 +235,8 @@ def choice_question(event):
 
 
 @pytest.fixture
-def answered_choice_question(speaker, choice_question):
-    a = Answer.objects.create(person=speaker, question=choice_question)
+def answered_choice_question(choice_question, submission):
+    a = Answer.objects.create(submission=submission, question=choice_question)
     a.options.set([choice_question.options.first()])
     a.save()
     return choice_question

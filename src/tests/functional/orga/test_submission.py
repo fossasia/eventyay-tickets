@@ -111,9 +111,11 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
 
 @pytest.mark.django_db
-def test_orga_can_delete_submission(orga_client, submission):
+def test_orga_can_delete_submission(orga_client, submission, answered_choice_question):
     assert submission.state == SubmissionStates.SUBMITTED
+    assert submission.answers.count() == 1
     assert Submission.objects.count() == 1
+    option_count = answered_choice_question.options.count()
 
     response = orga_client.get(submission.orga_urls.delete, follow=True)
     submission.refresh_from_db()
@@ -126,6 +128,7 @@ def test_orga_can_delete_submission(orga_client, submission):
     assert Submission.objects.count() == 0
     assert Submission.deleted_objects.count() == 1
     assert Submission.deleted_objects.get(code=submission.code)
+    assert answered_choice_question.options.count() == option_count
 
 
 @pytest.mark.django_db

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-`: When a submission was removed that contained an answered (multiple-) choice question, the selected answer option was removed, too.
 - :bug:`501`: When a speaker held more than two talks, their related talks were not linked correctly.
 - :bug:`505`: Custom CSS may now also include media queries.
 - :bug:`500`: Display of times could be off in the static HTML export.
