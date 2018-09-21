@@ -86,6 +86,7 @@ class EventPermissionMiddleware:
             getattr(request, 'event', None)
             and request.event.settings.custom_domain
             and not request.uses_custom_domain
+            and not ('agenda' in url.namespaces and url.url_name == 'export')
         ):
             return redirect(
                 urljoin(request.event.settings.custom_domain, request.get_full_path())
