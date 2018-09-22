@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from pretalx.submission.models import Answer, AnswerOption
 
 
-@pytest.mark.parametrize('target', ('submission', 'speaker'))
+@pytest.mark.parametrize('target', ('submission', 'speaker', 'reviewer'))
 @pytest.mark.django_db
 def test_missing_answers_submission_question(submission, target, question):
     assert question.missing_answers() == 1
@@ -12,7 +12,7 @@ def test_missing_answers_submission_question(submission, target, question):
     question.save()
     if target == 'submission':
         Answer.objects.create(answer='True', submission=submission, question=question)
-    else:
+    elif target == 'speaker':
         Answer.objects.create(answer='True', person=submission.speakers.first(), question=question)
     assert question.missing_answers() == 0
 
@@ -31,6 +31,7 @@ def test_question_grouped_answers_choice(submission, question):
     question.save()
     one = AnswerOption.objects.create(question=question, answer='1')
     two = AnswerOption.objects.create(question=question, answer='2')
+    assert one.event == question.event
     one.refresh_from_db()
     two.refresh_from_db()
 
