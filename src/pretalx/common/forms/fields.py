@@ -7,7 +7,6 @@ from pretalx.common.forms.widgets import (
 
 
 class GlobalValidator:
-
     def __call__(self, value):
         return validate_password(value)
 
@@ -16,14 +15,16 @@ class PasswordField(CharField):
     default_validators = [GlobalValidator()]
 
     def __init__(self, *args, **kwargs):
-        if 'widget' not in kwargs:
-            kwargs['widget'] = PasswordStrengthInput(render_value=False)
+        kwargs['widget'] = kwargs.get(
+            'widget', PasswordStrengthInput(render_value=False)
+        )
         super().__init__(*args, **kwargs)
 
 
 class PasswordConfirmationField(CharField):
-
     def __init__(self, *args, **kwargs):
-        if 'widget' not in kwargs:
-            kwargs['widget'] = PasswordConfirmationInput(confirm_with=kwargs.pop('confirm_with', None))
+        kwargs['widget'] = kwargs.get(
+            'widget',
+            PasswordConfirmationInput(confirm_with=kwargs.pop('confirm_with', None)),
+        )
         super().__init__(*args, **kwargs)

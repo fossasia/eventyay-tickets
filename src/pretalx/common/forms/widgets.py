@@ -7,9 +7,7 @@ class CheckboxMultiDropdown(CheckboxSelectMultiple):
     def render(self, name, value, attrs=None, renderer=None):
         attrs['layout'] = 'event-inline'
         checkboxes = super().render(name, value, attrs=attrs, renderer=renderer)
-        title = None
-        if attrs:
-            title = attrs.get('title')
+        title = attrs.get('title') if attrs else None
         title = title or _('Choose one or more')
         markup = f"""
         <div class="checkbox-multi-select form-group">
