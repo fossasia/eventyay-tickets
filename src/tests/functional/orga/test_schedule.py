@@ -127,6 +127,31 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
 
 
 @pytest.mark.django_db
+def test_orga_can_quick_schedule_submission(
+    orga_client, event, room, accepted_submission
+):
+    slot = accepted_submission.slots.get(schedule=event.wip_schedule)
+    assert not slot.room
+    response = orga_client.get(
+        accepted_submission.orga_urls.quick_schedule, follow=True
+    )
+    assert response.status_code == 200
+    response = orga_client.post(
+        accepted_submission.orga_urls.quick_schedule + '/',
+        data={
+            'start_date': event.date_from.strftime('%Y-%m-%d'),
+            'start_time': '10:00:00',
+            'room': room.pk,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    slot.refresh_from_db()
+    assert slot.room == room, response.content.decode()
+    assert slot.start.date() == event.date_from
+
+
+@pytest.mark.django_db
 @pytest.mark.usefixtures('accepted_submission')
 @pytest.mark.usefixtures('room')
 def test_orga_can_see_schedule(orga_client, event):
@@ -146,9 +171,7 @@ def test_orga_can_see_schedule_release_view(orga_client, event):
 def test_orga_cannot_reset_to_wrong_version(orga_client, event):
     assert Schedule.objects.count() == 1
     response = orga_client.get(
-        event.orga_urls.reset_schedule,
-        follow=True,
-        data={'version': 'Test version 2'},
+        event.orga_urls.reset_schedule, follow=True, data={'version': 'Test version 2'}
     )
     assert response.status_code == 200
     assert Schedule.objects.count() == 1
@@ -167,9 +190,7 @@ def test_orga_can_release_and_reset_schedule(orga_client, event):
     assert response.status_code == 200
     assert Schedule.objects.count() == 2
     response = orga_client.get(
-        event.orga_urls.reset_schedule,
-        follow=True,
-        data={'version': 'Test version 2'},
+        event.orga_urls.reset_schedule, follow=True, data={'version': 'Test version 2'}
     )
     assert response.status_code == 200
     assert Schedule.objects.count() == 2
