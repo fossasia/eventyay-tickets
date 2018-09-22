@@ -327,3 +327,61 @@ def test_equality(event):
     assert 'None' in str(avail)
 
     assert avail == avail2
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('one,two,expected', (
+    (
+        #    0000
+        #    0000
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        True,
+    ),
+    (
+        #    0000
+        #     000
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 6), (2017, 1, 1, 9)),
+        True,
+    ),
+    (
+        #     000
+        #    0000
+        ((2017, 1, 1, 6), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        False,
+    ),
+    (
+        #    0000
+        #      000
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 7), (2017, 1, 1, 10)),
+        False,
+    ),
+    (
+        #    0000
+        # 000
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 1), (2017, 1, 1, 5)),
+        False,
+    ),
+    (
+        #    0000
+        # 00
+        ((2017, 1, 1, 5), (2017, 1, 1, 9)),
+        ((2017, 1, 1, 1), (2017, 1, 1, 4)),
+        False,
+    ),
+    (
+        #   0000000000
+        #    00000000
+        ((2017, 10, 5, 9), (2017, 10, 5, 16)),
+        ((2017, 10, 5, 10), (2017, 10, 5, 15)),
+        True,
+    ),
+))
+def test_availability_contains(one, two, expected):
+    one = Availability(start=datetime.datetime(*one[0]), end=datetime.datetime(*one[1]))
+    two = Availability(start=datetime.datetime(*two[0]), end=datetime.datetime(*two[1]))
+    assert one.contains(two) is expected

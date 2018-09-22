@@ -3,11 +3,23 @@ import pytest
 
 @pytest.mark.django_db()
 def test_can_create_feedback(past_slot, client):
-    response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
     assert past_slot.submission.speakers.count() == 1
+    response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
     assert response.status_code == 200
     assert past_slot.submission.feedback.first().review == 'cool!'
     assert past_slot.submission.feedback.first().speaker == past_slot.submission.speakers.first()
+    assert past_slot.submission.title in str(past_slot.submission.feedback.first())
+
+
+@pytest.mark.django_db()
+def test_can_create_feedback_for_multiple_speakers(past_slot, client, other_speaker, speaker):
+    past_slot.submission.speakers.add(other_speaker)
+    past_slot.submission.speakers.add(speaker)
+    assert past_slot.submission.speakers.count() == 2
+    response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
+    assert response.status_code == 200
+    assert past_slot.submission.feedback.first().review == 'cool!'
+    assert not past_slot.submission.feedback.first().speaker
     assert past_slot.submission.title in str(past_slot.submission.feedback.first())
 
 
