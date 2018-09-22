@@ -92,7 +92,7 @@ def test_cannot_reset_password_with_incorrect_input(speaker, client, event):
         data={'login_email': speaker.email, 'login_password': 'mynewpassword1!'},
         follow=True,
     )
-    assert not 'You are logged in as' in response.content.decode()
+    assert 'You are logged in as' not in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -118,7 +118,7 @@ def test_cannot_reset_password_to_insecure_password(speaker, client, event):
         data={'login_email': speaker.email, 'login_password': 'mynewpassword1!'},
         follow=True,
     )
-    assert not 'You are logged in as' in response.content.decode()
+    assert 'You are logged in as' not in response.content.decode()
 
 
 @pytest.mark.django_db

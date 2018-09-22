@@ -51,3 +51,13 @@ def test_submission_withdraw(speaker_client, submission):
     assert response.status_code == 200
     submission.refresh_from_db()
     assert submission.state == SubmissionStates.WITHDRAWN
+
+
+@pytest.mark.django_db
+def test_submission_withdraw_if_not_accepted(speaker_client, submission):
+    submission.accept()
+
+    response = speaker_client.post(submission.urls.withdraw, follow=True)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.state != SubmissionStates.WITHDRAWN
