@@ -40,9 +40,6 @@ class MultiDomainMiddleware:
     def process_request(self, request):
         host = self.get_host(request)
         domain, port = split_domain_port(host)
-        if not domain:
-            raise DisallowedHost(f'Invalid HTTP_HOST header: {host}.')
-
         request.host = domain
         request.port = int(port) if port else None
         request.uses_custom_domain = False
