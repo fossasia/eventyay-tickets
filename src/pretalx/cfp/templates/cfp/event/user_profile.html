@@ -40,7 +40,7 @@
         {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}
         {% bootstrap_field profile_form.availabilities layout='event' %}
         <div class="row">
-            <div class="col-md-3 ml-auto">
+            <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
                     {% trans "Save" %}
                 </button>
@@ -54,7 +54,7 @@
         {% csrf_token %}
         {% bootstrap_form questions_form layout='event' %}
         <div class="row">
-            <div class="col-md-3 ml-auto">
+            <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
                     {% trans "Save" %}
                 </button>
@@ -75,7 +75,7 @@
         {% bootstrap_field login_form.password layout='event' %}
         {% bootstrap_field login_form.password_repeat layout='event' %}
         <div class="row">
-            <div class="col-md-3 ml-auto">
+            <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
                     {% trans "Save" %}
                 </button>
@@ -93,7 +93,7 @@
                 <input type="checkbox" name="really" id="really">
                 <label class="form-control-label" for="really">{% trans "I really do want to delete my account, losing access to my submissions and talks, and overriding my public and private data." %}</label>
             </div>
-            <div class="col-md-3 ml-auto">
+            <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
                     {% trans "Delete my account" %}
                 </button>

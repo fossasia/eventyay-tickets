@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-19 03:27-0500\n"
+"POT-Creation-Date: 2018-09-22 05:04-0500\n"
 "PO-Revision-Date: 2018-09-19 11:43+0200\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -977,7 +977,7 @@ msgstr "Informations importantes"
 #: pretalx/orga/templates/orga/review/dashboard.html:93
 #: pretalx/orga/templates/orga/speaker/information_list.html:22
 #: pretalx/orga/templates/orga/submission/list.html:63
-#: pretalx/submission/models/submission.py:91
+#: pretalx/submission/models/submission.py:96
 msgid "Title"
 msgstr "Titre"
 
@@ -1082,7 +1082,7 @@ msgstr "Cette feuille de style n'est pas du CSS valide."
 msgid "Search"
 msgstr "Rechercher"
 
-#: pretalx/common/forms/renderers.py:25
+#: pretalx/common/forms/renderers.py:28
 msgctxt "form"
 msgid "Optional"
 msgstr "Optionnel"
@@ -1102,22 +1102,22 @@ msgstr "Veuillez écrire au moins {min} caractères."
 msgid "Please write no more than {max} characters."
 msgstr "Veuillez ne pas dépasser {max} caractères."
 
-#: pretalx/common/forms/widgets.py:13
+#: pretalx/common/forms/widgets.py:11
 msgid "Choose one or more"
 msgstr "Sélectionnez un ou plusieurs"
 
-#: pretalx/common/forms/widgets.py:44
+#: pretalx/common/forms/widgets.py:42
 msgid ""
 "This password would take <em class=\"password_strength_time\"></em> to crack."
 msgstr ""
 "Ce mot de passe prendrait <em class=\"password_strength_time\"></em> à "
 "craquer."
 
-#: pretalx/common/forms/widgets.py:74
+#: pretalx/common/forms/widgets.py:72
 msgid "Warning"
 msgstr "Attention"
 
-#: pretalx/common/forms/widgets.py:74
+#: pretalx/common/forms/widgets.py:72
 msgid "Your passwords don't match."
 msgstr "Vos mots de passe ne correspondent pas."
 
@@ -3246,20 +3246,20 @@ msgstr "caractères"
 
 #: pretalx/orga/templates/orga/cfp/text.html:53
 #: pretalx/orga/templates/orga/submission/review.html:44
-#: pretalx/submission/models/submission.py:107
+#: pretalx/submission/models/submission.py:112
 msgid "Abstract"
 msgstr "Résumé"
 
 #: pretalx/orga/templates/orga/cfp/text.html:60
 #: pretalx/orga/templates/orga/submission/review.html:50
 #: pretalx/schedule/models/room.py:18
-#: pretalx/submission/models/submission.py:115
+#: pretalx/submission/models/submission.py:120
 msgid "Description"
 msgstr "Description"
 
 #: pretalx/orga/templates/orga/cfp/text.html:67
 #: pretalx/orga/templates/orga/submission/review.html:56
-#: pretalx/submission/models/submission.py:121
+#: pretalx/submission/models/submission.py:126
 msgid "Notes for the organiser"
 msgstr "Notes pour les organisateurs"
 
@@ -3274,7 +3274,7 @@ msgid "Recording opt-out"
 msgstr "Autorisation d'être enregistré"
 
 #: pretalx/orga/templates/orga/cfp/text.html:88
-#: pretalx/submission/models/submission.py:150
+#: pretalx/submission/models/submission.py:155
 msgid "Talk image"
 msgstr "Image pour la proposition"
 
@@ -4668,7 +4668,7 @@ msgstr ""
 "Le courriel pour la réinitialisation du mot de passe n'a pas pu être envoyé, "
 "donc le mot de passe n'a pas été réinitialisé."
 
-#: pretalx/orga/views/organiser.py:218 pretalx/orga/views/schedule.py:415
+#: pretalx/orga/views/organiser.py:218 pretalx/orga/views/schedule.py:421
 msgid "Saved!"
 msgstr "Sauvegardé !"
 
@@ -4710,49 +4710,49 @@ msgstr ""
 msgid "Nice, your schedule has been released!"
 msgstr "Cool, votre planning a été publié !"
 
-#: pretalx/orga/views/schedule.py:155
+#: pretalx/orga/views/schedule.py:156
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
 msgstr ""
 "Réinitialisation effectuée avec succès - commencez l'édition du planning "
 "depuis la version que vous avez sélectionnée !"
 
-#: pretalx/orga/views/schedule.py:160
+#: pretalx/orga/views/schedule.py:161
 msgid "Error retrieving the schedule version to reset to."
 msgstr ""
 "Erreur en essayant de réinitialiser le planning à la version sélectionnée."
 
-#: pretalx/orga/views/schedule.py:301
+#: pretalx/orga/views/schedule.py:303
 msgid "The talk has been scheduled."
 msgstr "L'intervention a été planifiée."
 
-#: pretalx/orga/views/schedule.py:350
+#: pretalx/orga/views/schedule.py:352
 msgid "Unable to parse XML file: "
 msgstr "Impossible d'analyser le fichier XML : "
 
-#: pretalx/orga/views/schedule.py:357
+#: pretalx/orga/views/schedule.py:359
 msgid "Unable to release new schedule: "
 msgstr "Impossible de publier un nouveau planning : "
 
-#: pretalx/orga/views/schedule.py:372
+#: pretalx/orga/views/schedule.py:378
 msgid "Room deleted. Hopefully nobody was still in there …"
 msgstr "Salle supprimée. J'espère que personne n'était encore là-dedans…"
 
-#: pretalx/orga/views/schedule.py:378
+#: pretalx/orga/views/schedule.py:384
 msgid "There is or was a talk scheduled in this room. It cannot be deleted."
 msgstr ""
 "Il y a ou avait des interventions planifiées dans cette salle. Elle ne peut "
 "pas être supprimée."
 
-#: pretalx/orga/views/schedule.py:431
+#: pretalx/orga/views/schedule.py:437
 msgid "The selected room does not exist."
 msgstr "La salle sélectionnée n'existe pas."
 
-#: pretalx/orga/views/schedule.py:433
+#: pretalx/orga/views/schedule.py:439
 msgid "Sorry, you are not allowed to reorder rooms."
 msgstr "Désolé, vous n'êtes pas autorisé à réorganiser les salles."
 
-#: pretalx/orga/views/schedule.py:447
+#: pretalx/orga/views/schedule.py:453
 msgid "The order of rooms has been updated."
 msgstr "L'ordre des salles a été mis à jour."
 
@@ -4797,7 +4797,7 @@ msgstr ""
 msgid "You have been added to a submission for {event}"
 msgstr "Vous avez été ajouté à une proposition pour {event}"
 
-#: pretalx/orga/views/submission.py:140
+#: pretalx/orga/views/submission.py:141
 msgid ""
 "Somebody else was faster than you: this submission was already in the state "
 "you wanted to change it to."
@@ -4805,34 +4805,34 @@ msgstr ""
 "Quelqu'un d'autre a été plus rapide que vous : cette proposition est déjà "
 "dans l'état dans lequel vous vouliez la mettre."
 
-#: pretalx/orga/views/submission.py:172
+#: pretalx/orga/views/submission.py:173
 msgid "Please provide a valid email address!"
 msgstr "Veuillez fournir une adresse électronique valide !"
 
-#: pretalx/orga/views/submission.py:181
+#: pretalx/orga/views/submission.py:182
 msgid "The speaker has been added to the submission."
 msgstr "L'intervenant a été ajouté à la proposition."
 
-#: pretalx/orga/views/submission.py:185
+#: pretalx/orga/views/submission.py:186
 msgid "The speaker was already part of the submission."
 msgstr "L'intervenant faisait déjà partie de la proposition."
 
-#: pretalx/orga/views/submission.py:207
+#: pretalx/orga/views/submission.py:208
 msgid "The speaker has been removed from the submission."
 msgstr "L'intervenant a été enlevé de la proposition."
 
-#: pretalx/orga/views/submission.py:210
+#: pretalx/orga/views/submission.py:211
 msgid "The speaker was not part of this submission."
 msgstr "L'intervenant ne faisait pas partie de la proposition."
 
-#: pretalx/orga/views/submission.py:377
+#: pretalx/orga/views/submission.py:385
 msgid ""
 "The submission has been created and the speaker has been invited to add an "
 "account!"
 msgstr ""
 "La proposition a été créée et l'intervenant a été invité à créer un compte !"
 
-#: pretalx/orga/views/submission.py:384
+#: pretalx/orga/views/submission.py:392
 msgid ""
 "The submission has been created; the speaker already had an account on this "
 "system."
@@ -4840,7 +4840,7 @@ msgstr ""
 "La proposition a été créée; l'intervenant avait déjà un compte dans le "
 "système."
 
-#: pretalx/orga/views/submission.py:388
+#: pretalx/orga/views/submission.py:396
 msgid "The submission has been updated!"
 msgstr "La proposition a été mise à jour !"
 
@@ -4965,7 +4965,7 @@ msgstr ""
 msgid "Preferred language"
 msgstr "Langue préférée"
 
-#: pretalx/person/models/user.py:95 pretalx/submission/models/submission.py:151
+#: pretalx/person/models/user.py:95 pretalx/submission/models/submission.py:156
 msgid "Optional. Will be displayed publicly."
 msgstr "Optionnel. Sera affichée publiquement."
 
@@ -5112,11 +5112,11 @@ msgstr "Français"
 msgid "All speakers"
 msgstr "Tous les intervenants"
 
-#: pretalx/submission/forms/submission.py:105
+#: pretalx/submission/forms/submission.py:109
 msgid "Submission types"
 msgstr "Types de proposition"
 
-#: pretalx/submission/forms/submission.py:118
+#: pretalx/submission/forms/submission.py:122
 msgid "Submission states"
 msgstr "Statuts de proposition"
 
@@ -5264,27 +5264,27 @@ msgstr "Qu'en pensez-vous ?"
 msgid "rejected"
 msgstr "rejeté"
 
-#: pretalx/submission/models/submission.py:96
+#: pretalx/submission/models/submission.py:101
 msgid "Type of submission"
 msgstr "Type d'intervention"
 
-#: pretalx/submission/models/submission.py:102
+#: pretalx/submission/models/submission.py:107
 msgid "Submission state"
 msgstr "Statut de la proposition"
 
-#: pretalx/submission/models/submission.py:108
+#: pretalx/submission/models/submission.py:113
 msgid "A concise summary of your talk in one or two sentences."
 msgstr "Un résumé concis de votre intervention en une ou deux phrases."
 
-#: pretalx/submission/models/submission.py:116
+#: pretalx/submission/models/submission.py:121
 msgid "A full-text description of your talk and its contents."
 msgstr "Une description complète de votre intervention et de son contenu."
 
-#: pretalx/submission/models/submission.py:126
+#: pretalx/submission/models/submission.py:131
 msgid "Duration"
 msgstr "Durée"
 
-#: pretalx/submission/models/submission.py:128
+#: pretalx/submission/models/submission.py:133
 msgid ""
 "The duration in minutes. Leave empty for default duration for this "
 "submission type."
@@ -5292,36 +5292,36 @@ msgstr ""
 "La durée en minutes. Laisser vide pour utiliser la durée par défaut pour ce "
 "type de proposition."
 
-#: pretalx/submission/models/submission.py:135
+#: pretalx/submission/models/submission.py:140
 msgid "Language of the submission"
 msgstr "Langue de la proposition"
 
-#: pretalx/submission/models/submission.py:140
+#: pretalx/submission/models/submission.py:145
 msgid "Show this talk on the public sneak peek page, if it is enabled."
 msgstr ""
 "Afficher cette intervention dans la page d'aperçu publique, si elle est "
 "activée."
 
-#: pretalx/submission/models/submission.py:144
+#: pretalx/submission/models/submission.py:149
 msgid "Don't record this talk."
 msgstr "N'enregistrez pas cette intervention."
 
-#: pretalx/submission/models/submission.py:154
+#: pretalx/submission/models/submission.py:159
 msgid "Recording URL"
 msgstr "URL de l'enregistrement"
 
-#: pretalx/submission/models/submission.py:161
+#: pretalx/submission/models/submission.py:166
 msgid "Recording Source"
 msgstr "Source de l'enregistrement"
 
-#: pretalx/submission/models/submission.py:258
+#: pretalx/submission/models/submission.py:264
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
 msgstr " ou "
 
-#: pretalx/submission/models/submission.py:266
+#: pretalx/submission/models/submission.py:272
 #, python-brace-format
 msgid "Submission must be {src_states} not {state} to be {new_state}."
 msgstr ""
