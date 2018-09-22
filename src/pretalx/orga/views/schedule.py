@@ -145,6 +145,7 @@ class ScheduleResetView(PermissionRequired, View):
         return self.request.event
 
     def dispatch(self, request, event):
+        super().dispatch(request, event)
         schedule_version = self.request.GET.get('version')
         schedule = self.request.event.schedules.filter(version=schedule_version).first()
         if schedule:
@@ -169,6 +170,7 @@ class ScheduleToggleView(PermissionRequired, View):
         return self.request.event
 
     def dispatch(self, request, event):
+        super().dispatch(request, event)
         self.request.event.settings.set(
             'show_schedule', not self.request.event.settings.show_schedule
         )
@@ -365,9 +367,13 @@ class RoomList(EventSettingsPermission, TemplateView):
 class RoomDelete(EventSettingsPermission, View):
     permission_required = 'orga.edit_room'
 
+    def get_object(self):
+        return self.request.event.rooms.filter(pk=self.kwargs['pk']).first()
+
     def dispatch(self, request, event, pk):
+        super().dispatch(request, event, pk)
         try:
-            request.event.rooms.filter(pk=pk).delete()
+            self.get_object().delete()
             messages.success(
                 self.request, _('Room deleted. Hopefully nobody was still in there …')
             )
