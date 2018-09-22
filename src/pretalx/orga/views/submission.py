@@ -6,7 +6,7 @@ from dateutil import rrule
 from django.contrib import messages
 from django.db import transaction
 from django.forms.models import BaseModelFormSet, inlineformset_factory
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -242,6 +242,14 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     template_name = 'orga/submission/content.html'
     permission_required = 'orga.view_submissions'
 
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Http404 as not_found:
+            if self.request.path.rstrip('/').endswith('/new'):
+                return None
+            return not_found
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['formset'] = self.formset
@@ -420,7 +428,7 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
             .all()
         )
         qs = self.filter_queryset(qs)
-        if not 'state' in self.request.GET:
+        if 'state' not in self.request.GET:
             qs = qs.exclude(state='deleted')
         qs = self.sort_queryset(qs)
         return qs.distinct()
