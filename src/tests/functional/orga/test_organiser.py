@@ -5,7 +5,26 @@ from django.core import mail as djmail
 from django.urls import reverse
 from django.utils.timezone import now
 
-from pretalx.event.models import Event
+from pretalx.event.models import Event, Organiser
+
+
+@pytest.mark.django_db
+def test_orga_create_organiser(superuser_client):
+    assert len(Organiser.objects.all()) == 0
+    response = superuser_client.post(
+        '/orga/organiser/new',
+        data={
+            'name_0': 'The bestest organiser',
+            'name_1': 'The bestest organiser',
+            'slug': 'organiser',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200, response.content.decode()
+    assert len(Organiser.objects.all()) == 1
+    organiser = Organiser.objects.all().first()
+    assert str(organiser.name) == 'The bestest organiser', response.content.decode()
+    assert str(organiser) == str(organiser.name)
 
 
 @pytest.mark.django_db

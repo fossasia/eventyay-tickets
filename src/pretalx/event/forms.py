@@ -44,7 +44,9 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
 class OrganiserForm(ReadOnlyFlag, I18nModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['slug'].disabled = True
+
+        if kwargs.get('instance'):
+            self.fields['slug'].disabled = True
 
     class Meta:
         model = Organiser
