@@ -16,6 +16,16 @@ def test_permissions_change_organiser_takes_event(orga_user, event):
     assert can_change_organiser_settings(orga_user, event) is True
 
 
+@pytest.mark.django_db
+def test_create_organiser_orga_user(orga_user):
+    assert can_change_organiser_settings(orga_user, None) is False
+
+
+@pytest.mark.django_db
+def test_create_organiser_superuser(superuser):
+    assert can_change_organiser_settings(superuser, None) is True
+
+
 def test_permissions_change_teams_doesnt_crash_on_unexpected_values():
     assert can_change_teams(None, None) is False
     assert can_change_teams(AnonymousUser, None) is False
