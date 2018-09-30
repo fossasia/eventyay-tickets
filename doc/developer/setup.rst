@@ -45,15 +45,16 @@ Working with the code
 
 First up, check that ``tox`` is installed and working as expected::
 
-    $ tox -h
+    $ tox --listenvs
+    dev
+    lint
     tests-mysql-codecov
     tests-postgres-codecov
     tests-sqlite-codecov
     installation
-    lint
     docs
     docs-linkcheck
-    dev
+    docs-autobuild
 
 Then, create the local database::
 
