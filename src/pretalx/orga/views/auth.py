@@ -35,7 +35,7 @@ class LoginView(TemplateView):
             return redirect(url + ('?' + params.urlencode() if params else ''))
 
         messages.success(request, phrases.orga.logged_in)
-        return redirect(reverse('orga:dashboard'))
+        return redirect(reverse('orga:event.list'))
 
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:

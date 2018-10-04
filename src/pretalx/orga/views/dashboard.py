@@ -10,8 +10,25 @@ from pretalx.event.stages import get_stages
 from pretalx.submission.models.submission import SubmissionStates
 
 
-class DashboardView(TemplateView):
-    template_name = 'orga/dashboard.html'
+class DashboardEventListView(PermissionRequired, TemplateView):
+    template_name = 'orga/event_list.html'
+    permission_required = 'orga.view_events'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        now_date = now().date()
+        context['current_orga_events'] = [
+            e for e in self.request.orga_events if e.date_to >= now_date
+        ]
+        context['past_orga_events'] = [
+            e for e in self.request.orga_events if e.date_to < now_date
+        ]
+        return context
+
+
+class DashboardOrganiserListView(PermissionRequired, TemplateView):
+    template_name = 'orga/organiser_list.html'
+    permission_required = 'orga.view_organisers'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -24,13 +41,6 @@ class DashboardView(TemplateView):
                     can_change_organiser_settings=True
                 )
             )
-        now_date = now().date()
-        context['current_orga_events'] = [
-            e for e in self.request.orga_events if e.date_to >= now_date
-        ]
-        context['past_orga_events'] = [
-            e for e in self.request.orga_events if e.date_to < now_date
-        ]
         return context
 
 

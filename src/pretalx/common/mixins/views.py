@@ -158,13 +158,14 @@ class PermissionRequired(PermissionRequiredMixin):
         result = super().has_permission()
         if not result:
             request = getattr(self, 'request', None)
-            key = f'pretalx_event_access_{request.event.pk}'
-            if request and hasattr(request, 'event') and key in request.session:
-                sparent = SessionStore(request.session.get(key))
-                parentdata = []
-                with suppress(Exception):
-                    parentdata = sparent.load()
-                return 'event_access' in parentdata
+            if request and hasattr(request, 'event'):
+                key = f'pretalx_event_access_{request.event.pk}'
+                if key in request.session:
+                    sparent = SessionStore(request.session.get(key))
+                    parentdata = []
+                    with suppress(Exception):
+                        parentdata = sparent.load()
+                    return 'event_access' in parentdata
         return result
 
     def get_login_url(self):

@@ -48,4 +48,4 @@ class SubuserView(View):
         url = urllib.parse.unquote(params.pop('next', [''])[0])
         if url and is_safe_url(url, request.get_host()):
             return redirect(url + ('?' + params.urlencode() if params else ''))
-        return redirect(reverse('orga:dashboard'))
+        return redirect(reverse('orga:event.list'))

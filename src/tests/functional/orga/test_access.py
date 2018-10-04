@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 @pytest.mark.parametrize('url', [
-    'login', 'logout', 'dashboard', 'user.view',
+    'login', 'logout', 'event.list', 'organiser.list', 'user.view',
 ])
 @pytest.mark.parametrize('logged_in', (True, False))
 @pytest.mark.django_db

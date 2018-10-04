@@ -1,0 +1,35 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load rules %}
+
+{% block title %}Organisers{% endblock %}
+
+{% block content %}
+{% has_perm 'orga.change_organiser_settings' request.user None as can_create_organiser %}
+<div class="dashboard-list">
+    {% for organiser in organisers %}
+        <a href="{{ organiser.orga_urls.base }}" class="dashboard-block">
+            <h1>{{ organiser.name }}</h1>
+            <span class="dashboard-description">
+                {% blocktrans count count=organiser.teams.all|length trimmed %}
+                {{ count }} Team
+                {% plural %}
+                {{ count }} Teams
+                {% endblocktrans %}
+            </span>
+        </a>
+    {% endfor %}
+    {% if can_create_organiser %}
+        <a href="{% url "orga:organiser.create" %}" class="dashboard-block">
+            <h1><i class="fa fa-plus"></i>{% trans "New organiser" %}</h1>
+            <span class="dashboard-description">{% trans "Uh, a new organiser?<br>Head over here, please!" %}</span>
+        </a>
+    {% endif %}
+</div>
+{% if not organisers and not can_create_organiser %}
+<div class="alert alert-info">
+    {% trans "There are no organisers you can edit." %}
+</div>
+{% endif %}
+{% endblock %}

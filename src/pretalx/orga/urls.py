@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.views.generic.base import RedirectView
 
 from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
@@ -13,11 +14,12 @@ urlpatterns = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
     url('^logout/$', auth.logout_view, name='logout'),
 
-    url('^$', dashboard.DashboardView.as_view(), name='dashboard'),
+    url('^$', RedirectView.as_view(url='event', permanent=False)),
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
 
+    url('^organiser/$', dashboard.DashboardOrganiserListView.as_view(), name='organiser.list'),
     url('^organiser/new$', organiser.OrganiserDetail.as_view(), name='organiser.create'),
     url(f'^organiser/(?P<organiser>[{SLUG_CHARS}]+)/', include([
         url('^$', organiser.OrganiserDetail.as_view(), name='organiser.view'),
@@ -31,6 +33,7 @@ urlpatterns = [
 
     url('^event/new/$', event.EventWizard.as_view(), name='event.create'),
 
+    url('^event/$', dashboard.DashboardEventListView.as_view(), name='event.list'),
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
         url('^live$', event.EventLive.as_view(), name='event.live'),
