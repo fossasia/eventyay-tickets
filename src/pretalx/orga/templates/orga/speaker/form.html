@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
-{% load staticfiles %}
+{% load static %}
 
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}

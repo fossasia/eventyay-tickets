@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
-{% load staticfiles %}
+{% load static %}
 
 {% block submission_content %}
     {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
