@@ -31,7 +31,7 @@ class LoginView(TemplateView):
         login(request, user)
         params = request.GET.copy()
         url = urllib.parse.unquote(params.pop('next', [''])[0])
-        if url and is_safe_url(url, request.get_host()):
+        if url and is_safe_url(url, allowed_hosts=None):
             return redirect(url + ('?' + params.urlencode() if params else ''))
 
         messages.success(request, phrases.orga.logged_in)
