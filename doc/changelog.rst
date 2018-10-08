@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` Due to an updated Django version, pretalx has dropped support for PostgreSQL 9.3 and MySQL 5.5.
 - :release:`0.8.0 <2018-09-23>`
 - :bug:`-`: When a submission was removed that contained an answered (multiple-) choice question, the selected answer option was removed, too.
 - :bug:`501`: When a speaker held more than two talks, their related talks were not linked correctly.

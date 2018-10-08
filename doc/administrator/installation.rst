@@ -19,7 +19,7 @@ external installation guides):
 * Python 3.6 and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A `MySQL`_ or `PostgreSQL`_ database server
+* A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server (you can use SQLite, but we strongly recommend not to run SQLite in production)
 * A `redis`_ server
 
 We also recommend that you use a firewall, although this is not a pretalx-specific recommendation.
