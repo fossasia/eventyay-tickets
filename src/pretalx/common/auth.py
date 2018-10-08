@@ -21,7 +21,7 @@ class AuthenticationTokenMiddleware:
         if not request.user.is_authenticated and 'HTTP_AUTHORIZATION' in request.META:
             token = request.META['HTTP_AUTHORIZATION'].lower().lstrip('token ')
             user = authenticate(
-                token=token, backend='pretalx.common.auth.AuthenticationTokenBackend'
+                request, token=token, backend='pretalx.common.auth.AuthenticationTokenBackend'
             )
             if user:
                 request.user = user

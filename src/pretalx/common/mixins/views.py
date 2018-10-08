@@ -171,3 +171,6 @@ class PermissionRequired(PermissionRequiredMixin):
     def get_login_url(self):
         """We do this to avoid leaking data about existing pages."""
         raise Http404()
+
+    def handle_no_permission(self):
+        raise Http404()

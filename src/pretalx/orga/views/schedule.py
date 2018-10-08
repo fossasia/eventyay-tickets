@@ -91,9 +91,7 @@ class ScheduleExportDownloadView(PermissionRequired, View):
         try:
             zip_path = ExportScheduleHtml.get_output_zip_path(self.request.event)
             zip_name = os.path.basename(zip_path)
-            response = FileResponse(
-                open(zip_path, 'rb'), content_type='application/force-download'
-            )
+            response = FileResponse(open(zip_path, 'rb'), as_attachment=True)
         except Exception as e:
             messages.error(
                 request,

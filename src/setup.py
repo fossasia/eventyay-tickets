@@ -87,7 +87,7 @@ setup(
         'pytz',
         'reportlab==3.4.*',  # https://www.reportlab.com/documentation/relnotes/
         'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
-        'rules==1.3.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
+        'rules==2.0.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         'urlman==1.2.*',  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         'vobject==0.9.*',  # 2017-06, http://eventable.github.io/vobject/ look for "release"
         'whitenoise==3.3.*',  # http://whitenoise.evans.io/en/stable/changelog.html

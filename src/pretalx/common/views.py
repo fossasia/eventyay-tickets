@@ -35,4 +35,4 @@ def get_static(request, path, content_type):
     path = os.path.join(settings.BASE_DIR, 'pretalx/static', path)
     if not os.path.exists(path):
         raise Http404()
-    return FileResponse(open(path, 'rb'), content_type=content_type)
+    return FileResponse(open(path, 'rb'), content_type=content_type, as_attachment=False)

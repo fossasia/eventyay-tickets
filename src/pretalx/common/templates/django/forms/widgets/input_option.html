@@ -1,1 +1,1 @@
-{% include "django/forms/widgets/input.html" %}{% if wrap_label %}<label{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{% if not widget.attrs.hide_label %}{{ widget.label }}{% endif %}</label>{% endif %}
+{% include "django/forms/widgets/input.html" %}{% if widget.wrap_label %}<label{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{% if not widget.attrs.hide_label %}{{ widget.label }}{% endif %}</label>{% endif %}
