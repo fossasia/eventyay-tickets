@@ -73,7 +73,7 @@ setup(
         'django-bootstrap4==0.0.6',  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         'django-compressor==2.2.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
         'django-csp==3.4.*',  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        'django-filter==1.1.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        'django-filter==2.0.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         'django-formset-js-improved==0.5.0.2',  # no changelog, https://github.com/pretix/django-formset-js
         'django-formtools==2.1.*',  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
