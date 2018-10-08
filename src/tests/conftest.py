@@ -441,7 +441,6 @@ def other_speaker_client(client, other_speaker):
 def submission_data(event, submission_type):
     return {
         'title': 'Lametta im Wandel der Zeiten',
-        # 'code': 'LAMETTA',
         'submission_type': submission_type,
         'description': 'Früher war es nämlich mehr. Und wir mussten es bügeln.',
         'abstract': 'Ich habe Quellen!',
