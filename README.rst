@@ -42,7 +42,6 @@ their respective changelogs on GitHub_ or install pretalx via PyPI_.
 
 Previous conferences using pretalx include:
 
-
 - `EasterHegg 2019`_
 - `PrivacyWeek 2018`_
 - `hack.lu 2018`_
@@ -61,14 +60,18 @@ Contributing
 If you want to contribute to pretalx, please choose an issue and comment on it
 if anything is unclear. If you find bugs you want to fix yourself, please also
 open an issue for documentation purposes.
-Check our `developer documentation`_ on how to set up pretalx.
+
+Check our `developer documentation`_ on how to set up pretalx and get started
+on development. Please bear in mind that our Code of Conduct applies to the
+complete contribution process.
 
 License
 -------
-We publish `pretalx` under the terms of the Apache 2 License. See the LICENSE
-file for further information.
+We publish `pretalx` under the terms of the Apache License. See the LICENSE
+file for further information and the complete license text. The licenses of all
+dependencies are documented in the `DEPENDENCIES.rst`_ file.
 
-The primary maintainer of this project is rixx_.
+The primary maintainer of this project is Tobias Kunze <r@rixx.de>.
 See the CONTRIBUTORS file for a list of all the awesome folks who contributed
 to this project.
 
@@ -77,7 +80,6 @@ to this project.
    :alt: pretalx logo
    :target: https://pretalx.com
 .. _issues: https://github.com/pretalx/pretalx/issues/
-.. _rixx: https://github.com/rixx
 .. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
 .. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
@@ -85,6 +87,7 @@ to this project.
 .. _active development: https://github.com/pretalx/pretalx/pulse
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx
+.. _DEPENDENCIES.rst: https://github.com/pretalx/pretalx/blob/master/DEPENDENCIES.rst
 
 .. _MRMCD 2017: https://talks.mrmcd.net/2017/schedule/
 .. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
