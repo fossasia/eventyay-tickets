@@ -176,7 +176,7 @@ class PermissionRequired(PermissionRequiredMixin):
 
     def handle_no_permission(self):
         request = getattr(self, 'request', None)
-        if request and hasattr(request, 'event') and request.user.is_anonymous:
+        if request and hasattr(request, 'event') and request.user.is_anonymous and 'cfp' in request.resolver_match.namespaces:
             params = '&' + request.GET.urlencode() if request.GET else ''
             return redirect(request.event.urls.login + f'?next={quote(request.path)}' + params)
         raise Http404()

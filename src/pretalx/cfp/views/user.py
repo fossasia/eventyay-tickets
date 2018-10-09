@@ -169,7 +169,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
 
     def post(self, request, *args, **kwargs):
         submission = self.get_object()
-        if self.request.user.has_perm('submission.accept_submission', submission):
+        if self.request.user.has_perm('submission.confirm_submission', submission):
             submission.confirm(person=request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
