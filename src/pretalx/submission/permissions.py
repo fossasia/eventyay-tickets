@@ -83,6 +83,7 @@ def can_be_reviewed(user, obj):
     return state and time
 
 
+rules.add_perm('submission.perform_actions', is_speaker)
 rules.add_perm('submission.withdraw_submission', can_be_withdrawn & is_speaker)
 rules.add_perm('submission.reject_submission', can_be_rejected & can_change_submissions)
 rules.add_perm('submission.accept_submission', can_be_accepted & can_change_submissions)
