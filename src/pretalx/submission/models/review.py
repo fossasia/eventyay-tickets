@@ -14,7 +14,7 @@ class Review(models.Model):
     )
     text = models.TextField(verbose_name=_('What do you think?'), null=True, blank=True)
     score = models.IntegerField(verbose_name=_('Score'), null=True, blank=True)
-    override_vote = models.NullBooleanField(default=None, null=True, blank=True)
+    override_vote = models.BooleanField(default=None, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
