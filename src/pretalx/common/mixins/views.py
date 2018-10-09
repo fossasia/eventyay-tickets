@@ -1,12 +1,14 @@
 import urllib
 from contextlib import suppress
 from importlib import import_module
+from urllib.parse import quote
 
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
 from django.http import Http404
+from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
@@ -173,4 +175,8 @@ class PermissionRequired(PermissionRequiredMixin):
         raise Http404()
 
     def handle_no_permission(self):
+        request = getattr(self, 'request', None)
+        if request and hasattr(request, 'event') and request.user.is_anonymous:
+            params = '&' + request.GET.urlencode() if request.GET else ''
+            return redirect(request.event.urls.login + f'?next={quote(request.path)}' + params)
         raise Http404()

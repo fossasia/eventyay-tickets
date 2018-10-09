@@ -125,14 +125,14 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
     template_name = 'cfp/event/user_submission_withdraw.html'
     model = Submission
     context_object_name = 'submission'
-    permission_required = 'submission.withdraw_submission'
+    permission_required = 'submission.perform_actions'
 
     def get_permission_object(self):
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.state == SubmissionStates.SUBMITTED:
+        if self.request.user.has_perm('submission.withdraw_submission', obj):
             obj.state = SubmissionStates.WITHDRAWN
             obj.save(update_fields=['state'])
             messages.success(self.request, phrases.cfp.submission_withdrawn)
@@ -142,7 +142,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
 
 
 class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
-    permission_required = 'submission.confirm_submission'
+    permission_required = 'submission.perform_actions'
     template_name = 'cfp/event/user_submission_confirm.html'
     form_class = AvailabilitiesFormMixin
 
@@ -169,7 +169,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
 
     def post(self, request, *args, **kwargs):
         submission = self.get_object()
-        if submission.state == SubmissionStates.ACCEPTED:
+        if self.request.user.has_perm('submission.accept_submission', obj):
             submission.confirm(person=request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
