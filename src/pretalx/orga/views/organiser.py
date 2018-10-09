@@ -212,7 +212,7 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     form_class = OrganiserForm
 
     def get_object(self):
-        return self.request.organiser
+        return getattr(self.request, 'organiser', None)
 
     def get_success_url(self):
         messages.success(self.request, _('Saved!'))
