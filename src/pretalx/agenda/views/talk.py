@@ -26,8 +26,8 @@ class TalkList(PermissionRequired, Filterable, ListView):
     template_name = 'agenda/talks.html'
     permission_required = 'agenda.view_schedule'
     default_filters = (
-        'submission__speakers__name__icontains',
-        'submission__title__icontains',
+        'speakers__name__icontains',
+        'title__icontains',
     )
 
     def get_queryset(self):
