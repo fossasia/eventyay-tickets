@@ -9,6 +9,22 @@ from pretalx.schedule.models import Room, TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
+def guess_schedule_version(event):
+    if not event.current_schedule:
+        return '0.1'
+
+    version = event.current_schedule.version
+    # TODO: check if a formatted date is in there
+    prefix = ''
+    for separator in [',', '.', '-', '_']:
+        if separator in version:
+            prefix, version = version.rsplit(separator, maxsplit=1)
+            break
+    if version.isdigit():
+        version = str(int(version) + 1)
+        return prefix + separator + version
+
+
 @transaction.atomic()
 def process_frab(root, event):
     """Take an xml document root and an event, and releases a schedule with the data from the xml document."""

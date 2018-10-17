@@ -27,6 +27,7 @@ from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
 from pretalx.orga.views.event import EventSettingsPermission
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room
+from pretalx.schedule.utils import guess_schedule_version
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
@@ -46,7 +47,6 @@ class ScheduleView(PermissionRequired, TemplateView):
             if version
             else self.request.event.wip_schedule
         )
-        context['release_form'] = ScheduleReleaseForm()
         return context
 
 
@@ -104,7 +104,7 @@ class ScheduleExportDownloadView(PermissionRequired, View):
         return response
 
 
-class ScheduleReleaseView(PermissionRequired, TemplateView):
+class ScheduleReleaseView(PermissionRequired, FormView):
     form_class = ScheduleReleaseForm
     permission_required = 'orga.release_schedule'
     template_name = 'orga/schedule/release.html'
@@ -112,28 +112,27 @@ class ScheduleReleaseView(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.event
 
+    def get_form_kwargs(self):
+        return {'event': self.request.event}
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['warnings'] = self.request.event.wip_schedule.warnings
         context['changes'] = self.request.event.wip_schedule.changes
         context['notifications'] = len(self.request.event.wip_schedule.notifications)
+        context['suggested_version'] = guess_schedule_version(self.request.event)
         return context
 
-    def post(self, request, event):
-        form = ScheduleReleaseForm(self.request.POST)
-        form.is_valid()
-        if self.request.event.schedules.filter(
-            version=form.cleaned_data['version']
-        ).exists():
-            messages.error(
-                self.request, _('Please use a version number you did not use yet!')
-            )
-        else:
-            self.request.event.release_schedule(
-                form.cleaned_data['version'], user=request.user
-            )
-            messages.success(self.request, _('Nice, your schedule has been released!'))
-        return redirect(self.request.event.orga_urls.schedule)
+    def form_invalid(self, form):
+        messages.error(self.request, _('You have to provide a new, unique schedule version!'))
+        return redirect(self.request.event.orga_urls.release_schedule)
+
+    def form_valid(self, form):
+        self.request.event.release_schedule(
+            form.cleaned_data['version'], user=self.request.user
+        )
+        messages.success(self.request, _('Nice, your schedule has been released!'))
+        return redirect(self.request.event.orga_urls.release)
 
 
 class ScheduleResetView(PermissionRequired, View):
