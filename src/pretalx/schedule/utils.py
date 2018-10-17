@@ -39,7 +39,9 @@ def process_frab(root, event):
         event.wip_schedule.freeze(schedule_version, notify_speakers=False)
         schedule = event.schedules.get(version=schedule_version)
     except Exception:
-        raise Exception(f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.')
+        raise Exception(
+            f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.'
+        )
 
     schedule.talks.update(is_visible=True)
     start = schedule.talks.order_by('start').first().start
@@ -47,7 +49,9 @@ def process_frab(root, event):
     event.date_from = start.date()
     event.date_to = end.date()
     event.save()
-    return f'Successfully imported "{event.name}" schedule version "{schedule_version}".'
+    return (
+        f'Successfully imported "{event.name}" schedule version "{schedule_version}".'
+    )
 
 
 def _create_talk(*, talk, room, event):
@@ -66,7 +70,9 @@ def _create_talk(*, talk, room, event):
 
     if not sub_type:
         sub_type = SubmissionType.objects.create(
-            name=talk.find('type').text or 'default', event=event, default_duration=duration_in_minutes
+            name=talk.find('type').text or 'default',
+            event=event,
+            default_duration=duration_in_minutes,
         )
 
     optout = False
@@ -74,15 +80,21 @@ def _create_talk(*, talk, room, event):
         optout = talk.find('recording').find('optout').text == 'true'
 
     code = None
-    if Submission.objects.filter(code__iexact=talk.attrib['id'], event=event).exists() or not Submission.objects.filter(code__iexact=talk.attrib['id']).exists():
+    if (
+        Submission.objects.filter(code__iexact=talk.attrib['id'], event=event).exists()
+        or not Submission.objects.filter(code__iexact=talk.attrib['id']).exists()
+    ):
         code = talk.attrib['id']
-    elif Submission.objects.filter(code__iexact=talk.attrib['guid'][:16], event=event).exists() or not Submission.objects.filter(code__iexact=talk.attrib['guid'][:16]).exists():
+    elif (
+        Submission.objects.filter(
+            code__iexact=talk.attrib['guid'][:16], event=event
+        ).exists()
+        or not Submission.objects.filter(code__iexact=talk.attrib['guid'][:16]).exists()
+    ):
         code = talk.attrib['guid'][:16]
 
     sub, _ = Submission.objects.get_or_create(
-        event=event,
-        code=code,
-        defaults={'submission_type': sub_type}
+        event=event, code=code, defaults={'submission_type': sub_type}
     )
     sub.submission_type = sub_type
     sub.title = talk.find('title').text
@@ -104,9 +116,7 @@ def _create_talk(*, talk, room, event):
         sub.speakers.add(user)
 
     slot, _ = TalkSlot.objects.get_or_create(
-        submission=sub,
-        schedule=event.wip_schedule,
-        is_visible=True,
+        submission=sub, schedule=event.wip_schedule, is_visible=True
     )
     slot.room = room
     slot.is_visible = True

@@ -124,7 +124,9 @@ class ScheduleReleaseView(PermissionRequired, FormView):
         return context
 
     def form_invalid(self, form):
-        messages.error(self.request, _('You have to provide a new, unique schedule version!'))
+        messages.error(
+            self.request, _('You have to provide a new, unique schedule version!')
+        )
         return redirect(self.request.event.orga_urls.release_schedule)
 
     def form_valid(self, form):
