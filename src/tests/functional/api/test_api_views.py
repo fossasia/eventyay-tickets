@@ -296,3 +296,15 @@ def test_orga_can_see_all_speakers_even_nonpublic(
 
     assert response.status_code == 200
     assert content['count'] == 2
+
+
+@pytest.mark.django_db
+def test_orga_speakers_with_multiple_talks_are_not_duplicated(
+    client, speaker, slot, other_slot, accepted_submission, other_accepted_submission
+):
+    other_accepted_submission.speakers.add(accepted_submission.speakers.first())
+    response = client.get(accepted_submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 2

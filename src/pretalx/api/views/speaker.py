@@ -25,7 +25,7 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
         ):
             return SpeakerProfile.objects.filter(
                 user__submissions__slots__in=self.request.event.current_schedule.talks.all()
-            )
+            ).distinct()
         return SpeakerProfile.objects.none()
 
     def get_queryset(self):
