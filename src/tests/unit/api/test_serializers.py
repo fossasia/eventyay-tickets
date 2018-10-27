@@ -2,7 +2,9 @@ import pytest
 
 from pretalx.api.serializers.event import EventSerializer
 from pretalx.api.serializers.question import AnswerSerializer, QuestionSerializer
-from pretalx.api.serializers.speaker import SpeakerSerializer, SubmitterSerializer
+from pretalx.api.serializers.speaker import (
+    SpeakerOrgaSerializer, SpeakerSerializer, SubmitterSerializer,
+)
 from pretalx.api.serializers.submission import SubmissionSerializer
 
 
@@ -64,6 +66,18 @@ def test_speaker_serializer(slot):
     assert data.keys() == {'name', 'code', 'biography', 'submissions', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
+    assert slot.submission.code in data['submissions']
+
+
+@pytest.mark.django_db
+def test_speaker_orga_serializer(slot):
+    user_profile = slot.submission.speakers.first().profiles.first()
+    user = user_profile.user
+    data = SpeakerOrgaSerializer(user_profile).data
+    assert data.keys() == {'name', 'code', 'biography', 'submissions', 'avatar', 'answers', 'email'}
+    assert data['name'] == user.name
+    assert data['code'] == user.code
+    assert data['email'] == user.email
     assert slot.submission.code in data['submissions']
 
 

@@ -45,6 +45,7 @@ class SpeakerSerializer(ModelSerializer):
 
 
 class SpeakerOrgaSerializer(SpeakerSerializer):
+    email = CharField(source='user.email')
     answers = AnswerSerializer(Answer.objects.all(), many=True, read_only=True)
 
     def get_submissions(self, obj):
@@ -53,4 +54,4 @@ class SpeakerOrgaSerializer(SpeakerSerializer):
         )
 
     class Meta(SpeakerSerializer.Meta):
-        fields = SpeakerSerializer.Meta.fields + ('answers',)
+        fields = SpeakerSerializer.Meta.fields + ('answers', 'email')

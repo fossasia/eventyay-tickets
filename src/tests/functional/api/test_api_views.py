@@ -270,6 +270,7 @@ def test_orga_can_see_all_speakers(
     assert set(content['results'][0].keys()) == {
         'name',
         'code',
+        'email',
         'biography',
         'submissions',
         'answers',

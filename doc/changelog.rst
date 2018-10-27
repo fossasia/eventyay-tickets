@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`493`: Speaker email addresses are now available via the API for users with sufficient access permissions.
 - :bug:`515`: Under very rare circumstances, the pretalx database could reach a state pretalx couldn't cope with due to duplicate schedule versions being created.
 - :feature:`512`: You can now configure if speakers should be asked for their availability during talk submission.
 - :support:`-` Due to an updated Django version, pretalx has dropped support for PostgreSQL 9.3 and MySQL 5.5.
