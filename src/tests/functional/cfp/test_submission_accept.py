@@ -18,6 +18,20 @@ def test_submission_accept(speaker_client, submission, request_availability):
 
 
 @pytest.mark.django_db
+def test_submission_accept_with_missing_availability(speaker_client, submission):
+    submission.event.settings.cfp_request_availabilities = True
+    submission.event.settings.cfp_require_availabilities = True
+    submission.state = SubmissionStates.ACCEPTED
+    submission.save()
+
+    response = speaker_client.post(submission.urls.confirm, follow=True)
+    submission.refresh_from_db()
+
+    assert response.status_code == 200
+    assert submission.state == SubmissionStates.ACCEPTED
+
+
+@pytest.mark.django_db
 def test_submission_accept_nologin(client, submission):
     submission.state = SubmissionStates.ACCEPTED
     submission.save()

@@ -162,15 +162,25 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
         result['event'] = self.request.event
         return result
 
+    def get_form(self):
+        form = super().get_form()
+        if not self.request.event.settings.cfp_request_availabilities:
+            form.fields.pop('availabilities')
+        else:
+            form.fields[
+                'availabilities'
+            ].required = self.request.event.settings.cfp_require_availabilities
+        return form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['submission'] = self.get_object()
         return context
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form, *args, **kwargs):
         submission = self.get_object()
         if self.request.user.has_perm('submission.confirm_submission', submission):
-            submission.confirm(person=request.user)
+            submission.confirm(person=self.request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
             messages.success(self.request, phrases.cfp.submission_was_confirmed)
