@@ -113,7 +113,9 @@ class ScheduleReleaseView(PermissionRequired, FormView):
         return self.request.event
 
     def get_form_kwargs(self):
-        return {'event': self.request.event}
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -134,7 +136,7 @@ class ScheduleReleaseView(PermissionRequired, FormView):
             form.cleaned_data['version'], user=self.request.user
         )
         messages.success(self.request, _('Nice, your schedule has been released!'))
-        return redirect(self.request.event.orga_urls.release)
+        return redirect(self.request.event.orga_urls.release_schedule)
 
 
 class ScheduleResetView(PermissionRequired, View):

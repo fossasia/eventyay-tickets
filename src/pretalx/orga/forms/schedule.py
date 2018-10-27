@@ -10,12 +10,11 @@ class ScheduleReleaseForm(ModelForm):
         self.event = event
         self.fields['version'].required = True
 
-    def clean(self):
-        super().clean()
-        if self.event.schedules.filter(
-            version__iexact=self.cleaned_data.get('version')
-        ).exists:
+    def clean_version(self):
+        version = self.cleaned_data.get('version')
+        if self.event.schedules.filter(version__iexact=version).exists():
             raise ValidationError(_('This schedule version was used already.'))
+        return version
 
     class Meta:
         model = Schedule
