@@ -55,14 +55,12 @@ class AvailabilitiesFormMixin(forms.Form):
             rawdata = json.loads(jsonavailabilities)
         except ValueError:
             raise forms.ValidationError("Submitted availabilities are not valid json.")
-
-        try:
-            assert isinstance(rawdata, dict)
-            availabilities = rawdata['availabilities']
-            assert isinstance(availabilities, list)
-            return availabilities
-        except (ValueError, AssertionError, LookupError):
-            raise forms.ValidationError("Submitted json does not comply with format.")
+        if not isinstance(rawdata, dict):
+            raise forms.ValidationError("Submitted json does not comply with expected format, should be object.")
+        availabilities = rawdata.get('availabilities')
+        if not isinstance(availabilities, list):
+            raise forms.ValidationError("Submitted json does not comply with expected format, missing or malformed availabilities field")
+        return availabilities
 
     def _parse_datetime(self, strdate):
         tz = pytz.timezone(self.event.timezone)
