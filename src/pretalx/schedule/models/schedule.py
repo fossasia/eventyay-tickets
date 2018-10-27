@@ -43,6 +43,8 @@ class Schedule(LogMixin, models.Model):
             raise Exception(
                 f'Cannot freeze schedule version: already versioned as "{self.version}".'
             )
+        if not name:
+            raise Exception('Cannot create schedule version without a version name.')
 
         self.version = name
         self.published = now()
@@ -79,6 +81,7 @@ class Schedule(LogMixin, models.Model):
 
         return self, wip_schedule
 
+    @transaction.atomic
     def unfreeze(self, user=None):
         from pretalx.schedule.models import TalkSlot
 
