@@ -510,7 +510,17 @@ legend .submission-state-dropdown {
   width: 75%;
   display: table;
   .form-group {
-    display: inherit;
+    display: block;
+    margin-bottom: 4px;
+    input {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .checkbox {
+      width: 16px;
+      margin-right: auto;
+      margin-left: auto;
+    }
   }
   small {
     margin-top: 0;
@@ -519,6 +529,7 @@ legend .submission-state-dropdown {
   thead th {
     line-height: 1;
     vertical-align: top;
+    text-align: center;
     .text-muted {
       font-weight: normal;
     }
