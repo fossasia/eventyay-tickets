@@ -56,10 +56,14 @@ class AvailabilitiesFormMixin(forms.Form):
         except ValueError:
             raise forms.ValidationError("Submitted availabilities are not valid json.")
         if not isinstance(rawdata, dict):
-            raise forms.ValidationError("Submitted json does not comply with expected format, should be object.")
+            raise forms.ValidationError(
+                "Submitted json does not comply with expected format, should be object."
+            )
         availabilities = rawdata.get('availabilities')
         if not isinstance(availabilities, list):
-            raise forms.ValidationError("Submitted json does not comply with expected format, missing or malformed availabilities field")
+            raise forms.ValidationError(
+                "Submitted json does not comply with expected format, missing or malformed availabilities field"
+            )
         return availabilities
 
     def _parse_datetime(self, strdate):
@@ -114,7 +118,7 @@ class AvailabilitiesFormMixin(forms.Form):
             )
 
     def clean_availabilities(self):
-        if self.cleaned_data['availabilities'] == '':
+        if not self.cleaned_data.get('availabilities'):
             return None
 
         rawavailabilities = self._parse_availabilities_json(
@@ -147,7 +151,7 @@ class AvailabilitiesFormMixin(forms.Form):
 
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
-        availabilities = self.cleaned_data['availabilities']
+        availabilities = self.cleaned_data.get('availabilities')
 
         if availabilities is not None:
             self._set_foreignkeys(instance, availabilities)
