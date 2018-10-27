@@ -111,12 +111,15 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
         super().__init__(*args, **kwargs, event=self.event)
         read_only = kwargs.get('read_only', False)
         initials = dict()
-        if self.event and not self.event.settings.cfp_request_biography:
-            self.fields.pop('biography')
-        else:
-            self.fields[
-                'biography'
-            ].required = self.event.settings.cfp_require_biography
+        for field in ('availabilities', 'biography'):
+            if self.event and not getattr(
+                self.event.settings, f'cfp_request_{field}', True
+            ):
+                self.fields.pop(field)
+            else:
+                self.fields[field].required = getattr(
+                    self.event.settings, f'cfp_require_{field}', False
+                )
         if self.user:
             initials = {field: getattr(self.user, field) for field in self.user_fields}
         for field in self.user_fields:

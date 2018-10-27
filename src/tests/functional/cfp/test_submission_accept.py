@@ -4,7 +4,9 @@ from pretalx.submission.models import SubmissionStates
 
 
 @pytest.mark.django_db
-def test_submission_accept(speaker_client, submission):
+@pytest.mark.parametrize('request_availability', (True, False))
+def test_submission_accept(speaker_client, submission, request_availability):
+    submission.event.settings.cfp_request_availabilities = request_availability
     submission.state = SubmissionStates.ACCEPTED
     submission.save()
 
@@ -35,7 +37,9 @@ def test_submission_accept_wrong_code(client, submission):
     submission.save()
 
     assert submission.code in submission.urls.confirm
-    response = client.post(submission.urls.confirm.replace(submission.code, "foo"), follow=True)
+    response = client.post(
+        submission.urls.confirm.replace(submission.code, "foo"), follow=True
+    )
 
     assert response.status_code == 200
     assert response.redirect_chain[-1][1] == 302

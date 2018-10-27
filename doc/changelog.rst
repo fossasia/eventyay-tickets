@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`512`: You can now configure if speakers should be asked for their availability during talk submission.
 - :support:`-` Due to an updated Django version, pretalx has dropped support for PostgreSQL 9.3 and MySQL 5.5.
 - :release:`0.8.0 <2018-09-23>`
 - :bug:`-`: When a submission was removed that contained an answered (multiple-) choice question, the selected answer option was removed, too.

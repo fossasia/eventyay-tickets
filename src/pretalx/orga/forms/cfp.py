@@ -23,6 +23,9 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_request_biography = forms.BooleanField(
         label=_('Offer data entry'), required=False
     )
+    cfp_request_availabilities = forms.BooleanField(
+        label=_('Offer data entry'), required=False
+    )
     cfp_request_do_not_record = forms.BooleanField(
         label=_('Offer data entry'), required=False
     )
@@ -35,6 +38,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     cfp_require_notes = forms.BooleanField(label=_('Force data entry'), required=False)
     cfp_require_biography = forms.BooleanField(required=False)
+    cfp_require_availabilities = forms.BooleanField(required=False)
     cfp_require_image = forms.BooleanField(label=_('Force data entry'), required=False)
     cfp_abstract_min_length = forms.IntegerField(
         label=_('Minimum length'), required=False, min_value=0

@@ -64,18 +64,25 @@
                         <td>{% bootstrap_field sform.cfp_description_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
-                        <th>{% trans "Notes for the organiser" %}</th>
-                        <td>{% bootstrap_field sform.cfp_request_notes use_label=False layout='event-inline' %}</td>
-                        <td>{% bootstrap_field sform.cfp_require_notes use_label=False layout='event-inline' %}</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
                         <th>{% trans "Biography" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_biography use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_require_biography use_label=False layout='event-inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Availability" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_availabilities use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_availabilities use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Notes for the organiser" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_notes use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_notes use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>{% trans "Recording opt-out" %}</th>

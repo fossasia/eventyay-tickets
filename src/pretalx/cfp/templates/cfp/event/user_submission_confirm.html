@@ -13,12 +13,17 @@
     </p>
     <div class="text">
     {% blocktrans trimmed %}
-    Congratulations on your acceptance! Please provide us with your available hours during the event, so that we can schedule your event accordingly:<p>
+    Congratulations on your acceptance!
     {% endblocktrans %}
+    {% if form.availabilities %}
+        {% blocktrans trimmed %}
+        Please provide us with your available hours during the event, so that we can schedule your event accordingly:<p>
+        {% endblocktrans %}
+    {% endif %}
     </div>
     <form action="" method="post">
         {% csrf_token %}
-        {% bootstrap_field form.availabilities layout='inline' %}
+        {% if form.availabilities %}{% bootstrap_field form.availabilities layout='inline' %}{% endif %}
         {% blocktrans trimmed %}
         By confirming your submission, you agree that you are able and willing to participate in this event and
         present the content of this submission.<br>

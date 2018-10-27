@@ -38,7 +38,7 @@
         </div>
         {% bootstrap_field profile_form.name layout='event' %}
         {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}
-        {% bootstrap_field profile_form.availabilities layout='event' %}
+        {% if profile_form.availabilities %}{% bootstrap_field profile_form.availabilities layout='event' %}{% endif %}
         <div class="row">
             <div class="col-md-4 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
