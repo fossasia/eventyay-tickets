@@ -193,6 +193,27 @@ def test_can_edit_profile(speaker, event, speaker_client):
 
 
 @pytest.mark.django_db
+def test_must_provide_availabilities(speaker, event, speaker_client):
+    event.settings.cfp_require_availabilities = True
+    response = speaker_client.post(
+        event.urls.user,
+        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.get(event=event).biography != 'Ruling since forever.'
+    response = speaker_client.post(
+        event.urls.user,
+        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile', 'availabilities': '{"availabilities": []}'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    speaker.refresh_from_db()
+    assert speaker.profiles.get(event=event).biography != 'Ruling since forever.'
+
+
+@pytest.mark.django_db
 def test_can_edit_login_info(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,

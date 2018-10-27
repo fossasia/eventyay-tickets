@@ -37,12 +37,12 @@ def test_freeze(slot):
     assert not new.version
 
 
-@pytest.mark.parametrize('version', ['wip', 'latest', None])
+@pytest.mark.parametrize('version', ['wip', 'latest', None, ''])
 @pytest.mark.django_db
 def test_freeze_fail(slot, schedule, version):
     schedule_count = Schedule.objects.count()
     with pytest.raises(Exception):
-        old, new = slot.submission.event.wip_schedule.freeze(version or schedule.version)
+        old, new = slot.submission.event.wip_schedule.freeze(version if version is not None else schedule.version)
     assert Schedule.objects.count() == schedule_count
 
 

@@ -82,6 +82,7 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
 def test_orga_cant_assign_duplicate_address(
     orga_client, speaker, event, submission, other_speaker
 ):
+    event.settings.cfp_request_availabilities = False
     response = orga_client.post(
         speaker.event_profile(event).orga_urls.base,
         data={
