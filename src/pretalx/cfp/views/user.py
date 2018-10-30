@@ -177,7 +177,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
         context['submission'] = self.get_object()
         return context
 
-    def form_valid(self, form, *args, **kwargs):
+    def form_valid(self, form):
         submission = self.get_object()
         if self.request.user.has_perm('submission.confirm_submission', submission):
             submission.confirm(person=self.request.user)

@@ -130,20 +130,19 @@ class Question(LogMixin, models.Model):
     def grouped_answers(self):
         if self.variant == QuestionVariant.FILE:
             return [{'answer': answer, 'count': 1} for answer in self.answers.all()]
-        elif self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
+        if self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
             return (
                 self.answers.order_by('options')
                 .values('options', 'options__answer')
                 .annotate(count=models.Count('id'))
                 .order_by('-count')
             )
-        else:
-            return list(
-                self.answers.order_by('answer')
-                .values('answer')
-                .annotate(count=models.Count('id'))
-                .order_by('-count')
-            )
+        return list(
+            self.answers.order_by('answer')
+            .values('answer')
+            .annotate(count=models.Count('id'))
+            .order_by('-count')
+        )
 
     def missing_answers(self, filter_speakers=False, filter_talks=False):
         from pretalx.person.models import User
@@ -158,7 +157,7 @@ class Question(LogMixin, models.Model):
         if self.target == QuestionTarget.SUBMISSION:
             submissions = filter_talks or self.event.submissions.all()
             return submissions.count() - answer_count
-        elif self.target == QuestionTarget.SPEAKER:
+        if self.target == QuestionTarget.SPEAKER:
             users = filter_speakers or User.objects.filter(
                 submissions__event_id=self.event.pk
             )

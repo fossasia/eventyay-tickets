@@ -94,7 +94,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
             return redirect(self.request.path)
         return super().post(*args, **kwargs)
 
-    def form_valid(self, form, *args, **kwargs):
+    def form_valid(self, form):
         created = not bool(form.instance.pk)
         form.save()
         messages.success(self.request, _('The settings have been saved.'))

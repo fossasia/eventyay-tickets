@@ -24,5 +24,4 @@ class SneakpeekView(PermissionRequired, TemplateView):
 
         if not can_peek and can_schedule:
             return HttpResponseRedirect(request.event.urls.schedule)
-        else:
-            return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)

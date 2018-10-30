@@ -38,7 +38,7 @@ class ReviewDashboard(PermissionRequired, Filterable, ListView):
             ],
         )
 
-    def get_queryset(self, *args, **kwargs):
+    def get_queryset(self):
         overridden_reviews = Review.objects.filter(
             override_vote__isnull=False, submission_id=models.OuterRef('pk')
         )

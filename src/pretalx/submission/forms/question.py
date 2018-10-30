@@ -100,7 +100,7 @@ class QuestionsForm(forms.Form):
                 widget=widget,
                 initial=initialbool,
             )
-        elif question.variant == QuestionVariant.NUMBER:
+        if question.variant == QuestionVariant.NUMBER:
             return forms.DecimalField(
                 disabled=readonly,
                 help_text=question.help_text,
@@ -109,7 +109,7 @@ class QuestionsForm(forms.Form):
                 min_value=Decimal('0.00'),
                 initial=initial,
             )
-        elif question.variant == QuestionVariant.STRING:
+        if question.variant == QuestionVariant.STRING:
             return forms.CharField(
                 disabled=readonly,
                 help_text=get_help_text(
@@ -121,7 +121,7 @@ class QuestionsForm(forms.Form):
                 min_length=question.min_length,
                 max_length=question.max_length,
             )
-        elif question.variant == QuestionVariant.TEXT:
+        if question.variant == QuestionVariant.TEXT:
             return forms.CharField(
                 label=question.question,
                 required=question.required,
@@ -134,7 +134,7 @@ class QuestionsForm(forms.Form):
                 min_length=question.min_length,
                 max_length=question.max_length,
             )
-        elif question.variant == QuestionVariant.FILE:
+        if question.variant == QuestionVariant.FILE:
             return forms.FileField(
                 label=question.question,
                 required=question.required,
@@ -142,7 +142,7 @@ class QuestionsForm(forms.Form):
                 help_text=question.help_text,
                 initial=initial,
             )
-        elif question.variant == QuestionVariant.CHOICES:
+        if question.variant == QuestionVariant.CHOICES:
             return forms.ModelChoiceField(
                 queryset=question.options.all(),
                 label=question.question,
@@ -153,7 +153,7 @@ class QuestionsForm(forms.Form):
                 disabled=readonly,
                 help_text=question.help_text,
             )
-        elif question.variant == QuestionVariant.MULTIPLE:
+        if question.variant == QuestionVariant.MULTIPLE:
             return forms.ModelMultipleChoiceField(
                 queryset=question.options.all(),
                 label=question.question,
