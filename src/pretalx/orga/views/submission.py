@@ -32,7 +32,7 @@ from pretalx.submission.models import (
 
 def create_user_as_orga(email, submission=None, name=None):
     if not email:
-        return
+        return None
 
     user = User.objects.create_user(
         password=get_random_string(32),
@@ -321,7 +321,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             for form in self.formset.extra_forms
             if form.has_changed and not self.formset._should_delete_form(form)
         ]
-        for form in self.formset.extra_forms:
+        for form in extra_forms:
             form.instance.submission = obj
             form.save()
             obj.log_action(
@@ -347,7 +347,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
     @transaction.atomic()
     def form_valid(self, form):
-        created = invited = not self.object
+        created = not self.object
         form.instance.event = self.request.event
         form.save()
         self.object = form.instance
@@ -359,8 +359,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         if created:
             email = form.cleaned_data['speaker']
             try:
-                speaker = User.objects.get(email__iexact=email)
-                invited = False  # TODO: send email!
+                speaker = User.objects.get(email__iexact=email)  # TODO: send email!
                 messages.success(
                     self.request,
                     _(

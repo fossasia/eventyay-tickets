@@ -240,7 +240,7 @@ class Schedule(LogMixin, models.Model):
         for speaker in self.speakers_concerned:
             with override(speaker.locale), tzoverride(tz):
                 text = get_template('schedule/speaker_notification.txt').render(
-                    {'speaker': speaker, **speakers[speaker]}
+                    {'speaker': speaker, **self.speakers_concerned[speaker]}
                 )
             mails.append(
                 QueuedMail(
