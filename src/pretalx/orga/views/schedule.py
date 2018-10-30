@@ -38,8 +38,8 @@ class ScheduleView(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, event):
-        context = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         version = self.request.GET.get('version')
         context['schedule_version'] = version
         context['active_schedule'] = (
@@ -54,8 +54,8 @@ class ScheduleExportView(PermissionRequired, TemplateView):
     template_name = 'orga/schedule/export.html'
     permission_required = 'orga.view_schedule'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['exporters'] = list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)

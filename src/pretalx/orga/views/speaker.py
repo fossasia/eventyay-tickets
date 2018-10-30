@@ -35,13 +35,15 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['filter_form'] = SpeakerFilterForm()
         return context
 
     def get_queryset(self):
-        qs = SpeakerProfile.objects.filter(event=self.request.event, user__in=self.request.event.submitters)
+        qs = SpeakerProfile.objects.filter(
+            event=self.request.event, user__in=self.request.event.submitters
+        )
 
         qs = self.filter_queryset(qs)
         if 'role' in self.request.GET:
@@ -105,8 +107,8 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             kwargs={'event': self.request.event.slug, 'pk': self.kwargs['pk']},
         )
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         submissions = self.request.event.submissions.filter(speakers__in=[self.object])
         context['submission_count'] = submissions.count()
         context['submissions'] = submissions

@@ -25,10 +25,7 @@ class TalkList(PermissionRequired, Filterable, ListView):
     model = Submission
     template_name = 'agenda/talks.html'
     permission_required = 'agenda.view_schedule'
-    default_filters = (
-        'speakers__name__icontains',
-        'title__icontains',
-    )
+    default_filters = ('speakers__name__icontains', 'title__icontains')
 
     def get_queryset(self):
         return self.filter_queryset(self.request.event.talks)
@@ -36,8 +33,8 @@ class TalkList(PermissionRequired, Filterable, ListView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('q')
         return context
 
@@ -57,8 +54,8 @@ class SpeakerList(PermissionRequired, Filterable, ListView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('q')
         return context
 

@@ -69,12 +69,13 @@ class ScheduleDataView(PermissionRequired, TemplateView):
 
 
 class ExporterView(ScheduleDataView):
-
     def get_exporter(self, request):
         url = resolve(request.path_info)
 
         if url.url_name == 'export':
-            exporter = url.kwargs.get('name') or unquote(self.request.GET.get('exporter'))
+            exporter = url.kwargs.get('name') or unquote(
+                self.request.GET.get('exporter')
+            )
         else:
             exporter = url.url_name
 
@@ -123,10 +124,10 @@ class ScheduleView(ScheduleDataView):
             return self.request.event.wip_schedule
         return super().get_object()
 
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
 
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['exporters'] = list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)

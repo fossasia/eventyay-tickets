@@ -69,8 +69,8 @@ class ReviewDashboard(PermissionRequired, Filterable, ListView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
@@ -139,8 +139,8 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             readonly=self.read_only,
         )
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['submission'] = self.submission
         context['review'] = self.object
         context['read_only'] = self.read_only

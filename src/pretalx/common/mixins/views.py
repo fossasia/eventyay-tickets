@@ -39,8 +39,8 @@ class ActionFromUrl:
             return 'edit'
         return 'view'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['action'] = self._action
         return context
 
@@ -131,10 +131,10 @@ class Filterable:
             qs = qs.filter(_filters[0])
         return qs
 
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         from django import forms
 
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm(
             self.request.GET if 'q' in self.request.GET else {}
         )
@@ -176,7 +176,14 @@ class PermissionRequired(PermissionRequiredMixin):
 
     def handle_no_permission(self):
         request = getattr(self, 'request', None)
-        if request and hasattr(request, 'event') and request.user.is_anonymous and 'cfp' in request.resolver_match.namespaces:
+        if (
+            request
+            and hasattr(request, 'event')
+            and request.user.is_anonymous
+            and 'cfp' in request.resolver_match.namespaces
+        ):
             params = '&' + request.GET.urlencode() if request.GET else ''
-            return redirect(request.event.urls.login + f'?next={quote(request.path)}' + params)
+            return redirect(
+                request.event.urls.login + f'?next={quote(request.path)}' + params
+            )
         raise Http404()

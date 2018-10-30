@@ -433,8 +433,8 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
         qs = self.sort_queryset(qs)
         return qs.distinct()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         data = Counter(
             timestamp.date()
             for timestamp in ActivityLog.objects.filter(

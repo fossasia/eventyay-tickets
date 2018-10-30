@@ -26,8 +26,8 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     permission_required = 'orga.edit_cfp'
     write_permission_required = 'orga.edit_cfp'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['sform'] = self.sform
         return context
 
@@ -74,8 +74,8 @@ class CfPQuestionList(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['questions'] = Question.all_objects.filter(event=self.request.event)
         return context
 
@@ -169,8 +169,8 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             return True
         return False
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         question = self.object
         context['formset'] = self.formset
         context['filter_form'] = SpeakerFilterForm()
@@ -330,8 +330,8 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['filter_form'] = self.filter_form
         return context
 

@@ -60,8 +60,8 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
             prefix='settings',
         )
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['sform'] = self.sform
         context['url_placeholder'] = f'https://{self.request.host}/'
         return context
@@ -91,15 +91,41 @@ class EventLive(EventSettingsPermission, TemplateView):
         context = super().get_context_data(**kwargs)
         warnings = []
         suggestions = []
-        if not self.request.event.cfp.text or len(str(self.request.event.cfp.text)) < 50:
-            warnings.append({'text': _('The CfP doesn\'t have a full text yet.'), 'url': self.request.event.cfp.urls.text})
-        if not self.request.event.landing_page_text or len(str(self.request.event.landing_page_text)) < 50:
-            warnings.append({'text': _('The event doesn\'t have a landing page text yet.'), 'url': self.request.event.orga_urls.settings})
+        if (
+            not self.request.event.cfp.text
+            or len(str(self.request.event.cfp.text)) < 50
+        ):
+            warnings.append(
+                {
+                    'text': _('The CfP doesn\'t have a full text yet.'),
+                    'url': self.request.event.cfp.urls.text,
+                }
+            )
+        if (
+            not self.request.event.landing_page_text
+            or len(str(self.request.event.landing_page_text)) < 50
+        ):
+            warnings.append(
+                {
+                    'text': _('The event doesn\'t have a landing page text yet.'),
+                    'url': self.request.event.orga_urls.settings,
+                }
+            )
         # TODO: test that mails can be sent
         if not self.request.event.submission_types.count() > 1:
-            suggestions.append({'text': _('You have configured only one submission type so far.'), 'url': self.request.event.cfp.urls.types})
+            suggestions.append(
+                {
+                    'text': _('You have configured only one submission type so far.'),
+                    'url': self.request.event.cfp.urls.types,
+                }
+            )
         if not self.request.event.questions.exists():
-            suggestions.append({'text': _('You have configured no questions yet.'), 'url': self.request.event.cfp.urls.new_question})
+            suggestions.append(
+                {
+                    'text': _('You have configured no questions yet.'),
+                    'url': self.request.event.cfp.urls.new_question,
+                }
+            )
         context['warnings'] = warnings
         context['suggestions'] = suggestions
         return context
@@ -206,8 +232,8 @@ class InvitationView(FormView):
     def object(self):
         return get_object_or_404(TeamInvite, token__iexact=self.kwargs.get('code'))
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['invitation'] = self.object
         return context
 

@@ -14,8 +14,8 @@ class DashboardEventListView(PermissionRequired, TemplateView):
     template_name = 'orga/event_list.html'
     permission_required = 'orga.view_events'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         now_date = now().date()
         context['current_orga_events'] = [
             e for e in self.request.orga_events if e.date_to >= now_date
@@ -30,8 +30,8 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
     template_name = 'orga/organiser_list.html'
     permission_required = 'orga.view_organisers'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         if self.request.user.is_administrator:
             context['organisers'] = Organiser.objects.all()
         else:
@@ -68,8 +68,8 @@ class EventDashboardView(PermissionRequired, TemplateView):
             result.append({'url': event.urls.base, 'small': _('Go to CfP')})
         return result
 
-    def get_context_data(self, event):
-        context = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         event = self.request.event
         stages = get_stages(event)
         context['timeline'] = stages

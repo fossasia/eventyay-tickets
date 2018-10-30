@@ -68,8 +68,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         )
         return TeamInviteForm(self.request.POST if is_bound else None)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['team'] = self.object
         context['invite_form'] = self.invite_form
         return context
@@ -121,8 +121,8 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
             return self.team.members.filter(pk=self.kwargs.get('user_pk')).first()
         return self.team
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['team'] = self.team
         context['member'] = self.get_object()
         if context['member'] == context['team']:
@@ -149,8 +149,8 @@ class TeamUninvite(PermissionRequired, DetailView):
     def get_permission_object(self):
         return getattr(self.request, 'event', getattr(self.request, 'organiser', None))
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['team'] = self.object.team
         context['member'] = self.object
         return context
@@ -179,8 +179,8 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     def user(self):
         return get_object_or_404(self.team.members, pk=self.kwargs['user_pk'])
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['team'] = self.team
         context['member'] = self.user
         return context
