@@ -56,8 +56,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         score = int(score) if score else None
         if score and not self.min_value <= score <= self.max_value:
             if not (
-                (score == self.min_value - 1 or score == self.max_value + 1)
-                and self.may_override
+                score in (self.min_value - 1, self.max_value + 1) and self.may_override
             ):
                 raise forms.ValidationError(
                     _(

@@ -113,7 +113,8 @@ class Event(LogMixin, models.Model):
         blank=True,
         verbose_name=_('Logo'),
         help_text=_(
-            'If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'
+            'If you provide a logo image, we will by default not show your events name and date in the page header. '
+            'We will show your logo with a maximal height of 120 pixels.'
         ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)

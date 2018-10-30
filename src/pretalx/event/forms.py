@@ -91,7 +91,9 @@ class EventWizardBasicsForm(I18nModelForm):
             (a, b) for a, b in settings.LANGUAGES if a in locales
         ]
         self.fields['slug'].help_text = _(
-            'This is the address your event will be available at. Should be short, only contain lowercase letters and numbers, and must be unique. We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.'
+            'This is the address your event will be available at. '
+            'Should be short, only contain lowercase letters and numbers, and must be unique. '
+            'We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.'
         )
 
     def clean_slug(self):
@@ -139,7 +141,8 @@ class EventWizardDisplayForm(forms.Form):
     logo = forms.ImageField(
         required=False,
         help_text=_(
-            'If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.'
+            'If you provide a logo image, we will by default not show your events name and date in the page header. '
+            'We will show your logo with a maximal height of 120 pixels.'
         ),
     )
     display_header_pattern = forms.ChoiceField(

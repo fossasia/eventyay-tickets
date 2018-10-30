@@ -226,6 +226,7 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         if not uses_encryption and not data.get('smtp_host') in localhost_names:
             raise ValidationError(
                 _(
-                    'You have to activate either SSL or STARTTLS security if you use a non-local mailserver due to data protection reasons. Your administrator can add an instance-wide bypass. If you use this bypass, please also adjust your Privacy Policy.'
+                    'You have to activate either SSL or STARTTLS security if you use a non-local mailserver due to data protection reasons. '
+                    'Your administrator can add an instance-wide bypass. If you use this bypass, please also adjust your Privacy Policy.'
                 )
             )

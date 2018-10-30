@@ -403,7 +403,11 @@ class Submission(LogMixin, models.Model):
 
     @property
     def slot(self):
-        return self.event.current_schedule.talks.filter(submission=self).first()
+        return (
+            self.event.current_schedule.talks.filter(submission=self).first()
+            if self.event.current_schedule
+            else None
+        )
 
     @property
     def display_speaker_names(self):

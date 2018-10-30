@@ -132,7 +132,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         data = self.cleaned_data
         minimum = int(data.get('review_min_score'))
         maximum = int(data.get('review_max_score'))
-        if not minimum < maximum:
+        if minimum >= maximum:
             raise forms.ValidationError(
                 _('Please assign a minimum score smaller than the maximum score!')
             )
