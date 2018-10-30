@@ -46,7 +46,7 @@ class SubmissionCard(Flowable):
         paragraph.drawOn(self.canv, *self.coord(20 * mm, self.text_location))
 
     def draw(self):
-        self.text_height = 0
+        self.text_location = 0
         self.canv.rect(0, 0, self.width, self.height)
 
         self.canv.rotate(90)

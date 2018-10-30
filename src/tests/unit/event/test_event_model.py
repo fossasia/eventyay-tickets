@@ -39,7 +39,7 @@ def test_initial_data(event):
     assert event.wip_schedule
 
     event.cfp.delete()
-    event._build_initial_data()
+    event.build_initial_data()
 
     assert event.cfp
     assert event.cfp.default_type
