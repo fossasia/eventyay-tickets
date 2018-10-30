@@ -22,6 +22,7 @@
               class="avatar float-right"
               data-gravatar="{{ request.user.gravatar_parameter }}"
               data-avatar="{% if request.user.avatar %}{{ request.user.avatar.url }}{% endif %}"
+              alt="{% trans "Your avatar" %}"
               {% if request.user.get_gravatar %}
               src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}"
               {% elif request.user.avatar and request.user.avatar != 'False' %}

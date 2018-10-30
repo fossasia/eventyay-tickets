@@ -53,7 +53,7 @@
             </li>
         </ul>
         <a class="navbar-brand d-none d-md-block" href="/orga/">
-            <img src="{% static "common/img/icon.svg" %}"> pretalx
+            <img src="{% static "common/img/icon.svg" %}" alt="{% trans "The pretalx logo" %}"> pretalx
         </a>
         <div class="navbar-collapse event-dropdown" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
@@ -290,7 +290,7 @@
                 {% for nav_element in nav_event %}
                     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
                         {% if nav_element.icon and "." in nav_element.icon %}
-                            <img src="{% static nav_element.icon %}" class="fa-img">
+                        <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
                         {% elif nav_element.icon %}
                             <i class="fa fa-{{ nav_element.icon }}"></i>
                         {% endif %}
@@ -314,7 +314,7 @@
                 {% for nav_element in nav_global %}
                     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
                         {% if nav_element.icon and "." in nav_element.icon %}
-                            <img src="{% static nav_element.icon %}" class="fa-img">
+                        <img src="{% static nav_element.icon %}" class="fa-img" alt="{{ nav_element.label }}">
                         {% elif nav_element.icon %}
                             <i class="fa fa-{{ nav_element.icon }}"></i>
                         {% endif %}

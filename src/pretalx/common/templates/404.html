@@ -1,6 +1,6 @@
 {% load compress %}
-{% load static %}
 {% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +16,7 @@
 </head>
 <body>
     <div id="wrapper">
-        <img src="{% static "common/img/error_404.svg" %}" class="img">
+        <img src="{% static "common/img/error_404.svg" %}" class="img" alt="{% trans "Page not found." %}">
         <h2>{{ phrases.base.not_found }}</h2>
         <h4 class="mt-4">HTTP 404</h4>
     </div>

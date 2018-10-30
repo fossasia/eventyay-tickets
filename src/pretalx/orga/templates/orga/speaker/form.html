@@ -38,6 +38,7 @@
                   class="avatar float-right"
                   data-gravatar="{{ form.instance.user.gravatar_parameter }}"
                   data-avatar="{% if form.instance.user.avatar %}{{ form.instance.user.avatar.url }}{% endif %}"
+                  alt="{% trans "The speaker's profile picture" %}"
                   {% if form.instance.user.get_gravatar %}
                   src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}"
                   {% elif form.instance.user.avatar and form.instance.user.avatar != 'False' %}

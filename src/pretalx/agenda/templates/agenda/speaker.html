@@ -26,9 +26,9 @@
         </div>
         <div class="speaker-info">
             {% if speaker.get_gravatar %}
-                <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" />
+            <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" alt="{% trans "The speaker's profile picture" %}"/>
             {% elif speaker.avatar %}
-                <img width="100%" src="{{ speaker.avatar.url }}">
+            <img width="100%" src="{{ speaker.avatar.url }}" alt="{% trans "The speaker's profile picture" %}">
             {% endif %}
         </div>
     </section>

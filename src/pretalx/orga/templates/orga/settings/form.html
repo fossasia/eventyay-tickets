@@ -42,8 +42,10 @@
             <img class="event-logo-display"
               {% if request.event.logo %}
               src="{{ request.event.logo.url }}"
+              alt="{% trans "The event's logo" %}"
               {% else %}
               src="{% static "common/img/logo.svg" %}"
+              alt="{% trans "The pretalx logo" %}"
               {% endif %}
             />
             <div class="event-logo-form-fields">
