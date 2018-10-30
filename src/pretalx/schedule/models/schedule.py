@@ -211,29 +211,33 @@ class Schedule(LogMixin, models.Model):
         return warnings
 
     @cached_property
-    def notifications(self):
-        tz = pytz.timezone(self.event.timezone)
-        speakers = defaultdict(lambda: {'create': [], 'update': []})
+    def speakers_concerned(self):
         if self.changes['action'] == 'create':
-            speakers = {
+            return {
                 speaker: {
                     'create': self.talks.filter(submission__speakers=speaker),
                     'update': [],
                 }
                 for speaker in User.objects.filter(submissions__slots__schedule=self)
             }
-        else:
-            if self.changes['count'] == len(self.changes['canceled_talks']):
-                return []
 
-            for new_talk in self.changes['new_talks']:
-                for speaker in new_talk.submission.speakers.all():
-                    speakers[speaker]['create'].append(new_talk)
-            for moved_talk in self.changes['moved_talks']:
-                for speaker in moved_talk['submission'].speakers.all():
-                    speakers[speaker]['update'].append(moved_talk)
+        if self.changes['count'] == len(self.changes['canceled_talks']):
+            return []
+
+        speakers = defaultdict(lambda: {'create': [], 'update': []})
+        for new_talk in self.changes['new_talks']:
+            for speaker in new_talk.submission.speakers.all():
+                speakers[speaker]['create'].append(new_talk)
+        for moved_talk in self.changes['moved_talks']:
+            for speaker in moved_talk['submission'].speakers.all():
+                speakers[speaker]['update'].append(moved_talk)
+        return speakers
+
+    @cached_property
+    def notifications(self):
+        tz = pytz.timezone(self.event.timezone)
         mails = []
-        for speaker in speakers:
+        for speaker in self.speakers_concerned:
             with override(speaker.locale), tzoverride(tz):
                 text = get_template('schedule/speaker_notification.txt').render(
                     {'speaker': speaker, **speakers[speaker]}

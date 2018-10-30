@@ -228,45 +228,44 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         )
 
     def save_formset(self, obj):
-        if self.formset.is_valid():
-            for form in self.formset.initial_forms:
-                if form in self.formset.deleted_forms:
-                    if not form.instance.pk:
-                        continue
-                    obj.log_action(
-                        'pretalx.submission.resource.delete',
-                        person=self.request.user,
-                        data={'id': form.instance.pk},
-                    )
-                    form.instance.delete()
-                    form.instance.pk = None
-                elif form.has_changed():
-                    form.instance.submission = obj
-                    form.save()
-                    change_data = {
-                        k: form.cleaned_data.get(k) for k in form.changed_data
-                    }
-                    change_data['id'] = form.instance.pk
-                    obj.log_action(
-                        'pretalx.submission.resource.update', person=self.request.user
-                    )
-
-            for form in self.formset.extra_forms:
-                if not form.has_changed():
+        if not self.formset.is_valid():
+            return False
+        for form in self.formset.initial_forms:
+            if form in self.formset.deleted_forms:
+                if not form.instance.pk:
                     continue
-                if self.formset._should_delete_form(form):
-                    continue
-                form.instance.submission = obj
-                form.save()
                 obj.log_action(
-                    'pretalx.submission.resource.create',
+                    'pretalx.submission.resource.delete',
                     person=self.request.user,
-                    orga=True,
                     data={'id': form.instance.pk},
                 )
+                form.instance.delete()
+                form.instance.pk = None
+            elif form.has_changed():
+                form.instance.submission = obj
+                form.save()
+                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data['id'] = form.instance.pk
+                obj.log_action(
+                    'pretalx.submission.resource.update', person=self.request.user
+                )
 
-            return True
-        return False
+        extra_forms = [
+            form
+            for form in self.formset.extra_forms
+            if form.has_changed and not self.formset._should_delete_form(form)
+        ]
+        for form in extra_forms:
+            form.instance.submission = obj
+            form.save()
+            obj.log_action(
+                'pretalx.submission.resource.create',
+                person=self.request.user,
+                orga=True,
+                data={'id': form.instance.pk},
+            )
+
+        return True
 
     @cached_property
     def qform(self):

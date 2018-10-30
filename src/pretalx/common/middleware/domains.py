@@ -105,31 +105,30 @@ class SessionMiddleware(BaseSessionMiddleware):
             # The session should be deleted only if the session is entirely empty
             if settings.SESSION_COOKIE_NAME in request.COOKIES and empty:
                 response.delete_cookie(settings.SESSION_COOKIE_NAME)
-            else:
-                if accessed:
-                    patch_vary_headers(response, ('Cookie',))
-                if modified or settings.SESSION_SAVE_EVERY_REQUEST:
-                    if request.session.get_expire_at_browser_close():
-                        max_age = None
-                        expires = None
-                    else:
-                        max_age = request.session.get_expiry_age()
-                        expires_time = time.time() + max_age
-                        expires = http_date(expires_time)
-                    # Save the session data and refresh the client cookie.
-                    # Skip session save for 500 responses, refs #3881.
-                    if response.status_code != 500:
-                        request.session.save()
-                        response.set_cookie(
-                            settings.SESSION_COOKIE_NAME,
-                            request.session.session_key,
-                            max_age=max_age,
-                            expires=expires,
-                            domain=get_cookie_domain(request),
-                            path=settings.SESSION_COOKIE_PATH,
-                            secure=request.scheme == 'https',
-                            httponly=settings.SESSION_COOKIE_HTTPONLY or None,
-                        )
+                return response
+            if accessed:
+                patch_vary_headers(response, ('Cookie',))
+            if modified or settings.SESSION_SAVE_EVERY_REQUEST:
+                max_age = None
+                expires = None
+                if not request.session.get_expire_at_browser_close():
+                    max_age = request.session.get_expiry_age()
+                    expires_time = time.time() + max_age
+                    expires = http_date(expires_time)
+                # Save the session data and refresh the client cookie.
+                # Skip session save for 500 responses, refs #3881.
+                if response.status_code != 500:
+                    request.session.save()
+                    response.set_cookie(
+                        settings.SESSION_COOKIE_NAME,
+                        request.session.session_key,
+                        max_age=max_age,
+                        expires=expires,
+                        domain=get_cookie_domain(request),
+                        path=settings.SESSION_COOKIE_PATH,
+                        secure=request.scheme == 'https',
+                        httponly=settings.SESSION_COOKIE_HTTPONLY or None,
+                    )
         return response
 
     def __call__(self, request):

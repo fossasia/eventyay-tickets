@@ -294,45 +294,44 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         )
 
     def save_formset(self, obj):
-        if self.formset.is_valid():
-            for form in self.formset.initial_forms:
-                if form in self.formset.deleted_forms:
-                    if not form.instance.pk:
-                        continue
-                    obj.log_action(
-                        'pretalx.submission.resource.delete',
-                        person=self.request.user,
-                        data={'id': form.instance.pk},
-                    )
-                    form.instance.delete()
-                    form.instance.pk = None
-                elif form.has_changed():
-                    form.instance.submission = obj
-                    form.save()
-                    change_data = {
-                        k: form.cleaned_data.get(k) for k in form.changed_data
-                    }
-                    change_data['id'] = form.instance.pk
-                    obj.log_action(
-                        'pretalx.submission.resource.update', person=self.request.user
-                    )
-
-            for form in self.formset.extra_forms:
-                if not form.has_changed():
+        if not self.formset.is_valid():
+            return False
+        for form in self.formset.initial_forms:
+            if form in self.formset.deleted_forms:
+                if not form.instance.pk:
                     continue
-                if self.formset._should_delete_form(form):
-                    continue
-                form.instance.submission = obj
-                form.save()
                 obj.log_action(
-                    'pretalx.submission.resource.create',
+                    'pretalx.submission.resource.delete',
                     person=self.request.user,
-                    orga=True,
                     data={'id': form.instance.pk},
                 )
+                form.instance.delete()
+                form.instance.pk = None
+            elif form.has_changed():
+                form.instance.submission = obj
+                form.save()
+                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data['id'] = form.instance.pk
+                obj.log_action(
+                    'pretalx.submission.resource.update', person=self.request.user
+                )
 
-            return True
-        return False
+        extra_forms = [
+            form
+            for form in self.formset.extra_forms
+            if form.has_changed and not self.formset._should_delete_form(form)
+        ]
+        for form in self.formset.extra_forms:
+            form.instance.submission = obj
+            form.save()
+            obj.log_action(
+                'pretalx.submission.resource.create',
+                person=self.request.user,
+                orga=True,
+                data={'id': form.instance.pk},
+            )
+
+        return True
 
     def get_permission_required(self):
         if 'code' in self.kwargs:
@@ -361,12 +360,24 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             email = form.cleaned_data['speaker']
             try:
                 speaker = User.objects.get(email__iexact=email)
-                invited = False
+                invited = False  # TODO: send email!
+                messages.success(
+                    self.request,
+                    _(
+                        'The submission has been created; the speaker already had an account on this system.'
+                    ),
+                )
             except User.DoesNotExist:
                 speaker = create_user_as_orga(
                     email=email,
                     name=form.cleaned_data['speaker_name'],
                     submission=form.instance,
+                )
+                messages.success(
+                    self.request,
+                    _(
+                        'The submission has been created and the speaker has been invited to add an account!'
+                    ),
                 )
 
             form.instance.speakers.add(speaker)
@@ -374,26 +385,10 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             formset_result = self.save_formset(form.instance)
             if not formset_result:
                 return self.get(self.request, *self.args, **self.kwargs)
-
+            messages.success(self.request, _('The submission has been updated!'))
         if form.has_changed():
             action = 'pretalx.submission.' + ('create' if created else 'update')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        if created and invited:
-            messages.success(
-                self.request,
-                _(
-                    'The submission has been created and the speaker has been invited to add an account!'
-                ),
-            )
-        elif created:  # TODO: send email!
-            messages.success(
-                self.request,
-                _(
-                    'The submission has been created; the speaker already had an account on this system.'
-                ),
-            )
-        else:
-            messages.success(self.request, _('The submission has been updated!'))
         return redirect(self.get_success_url())
 
     def get_form_kwargs(self):

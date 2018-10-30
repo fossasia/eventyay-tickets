@@ -26,17 +26,13 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         choices = (
             [(None, _('No score'))] if not event.settings.review_score_mandatory else []
         )
-        if self.may_override:
-            choices.append((self.min_value - 1, _('Negative override (Veto)')))
         for counter in range(abs(self.max_value - self.min_value) + 1):
             value = self.min_value + counter
             name = event.settings.get(f'review_score_name_{value}')
-            if name:
-                name = f'{value} (»{name}«)'
-            else:
-                name = value
+            name = f'{value} (»{name}«)' if name else value
             choices.append((value, name))
         if self.may_override:
+            choices.insert(1, (self.min_value - 1, _('Negative override (Veto)')))
             choices.append((self.max_value + 1, _('Positive override')))
 
         self.fields['score'] = forms.ChoiceField(

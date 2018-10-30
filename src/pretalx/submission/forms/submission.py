@@ -11,7 +11,7 @@ from pretalx.submission.models import Submission, SubmissionStates, SubmissionTy
 class InfoForm(forms.ModelForm):
     def __init__(self, event, **kwargs):
         self.event = event
-        readonly = kwargs.pop('readonly', False)
+        self.readonly = kwargs.pop('readonly', False)
         instance = kwargs.get('instance')
         initial = kwargs.pop('initial', {})
         initial['submission_type'] = getattr(
@@ -62,7 +62,7 @@ class InfoForm(forms.ModelForm):
             (a, locale_names[a]) for a in self.event.locales
         ]
 
-        if readonly:
+        if self.readonly:
             for f in self.fields.values():
                 f.disabled = True
 

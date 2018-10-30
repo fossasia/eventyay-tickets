@@ -123,51 +123,50 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         )
 
     def save_formset(self, obj):
-        if self.formset.is_valid():
-            for form in self.formset.initial_forms:
-                if form in self.formset.deleted_forms:
-                    if not form.instance.pk:
-                        continue
-                    obj.log_action(
-                        'pretalx.question.option.delete',
-                        person=self.request.user,
-                        orga=True,
-                        data={'id': form.instance.pk},
-                    )
-                    form.instance.delete()
-                    form.instance.pk = None
-                elif form.has_changed():
-                    form.instance.question = obj
-                    form.save()
-                    change_data = {
-                        k: form.cleaned_data.get(k) for k in form.changed_data
-                    }
-                    change_data['id'] = form.instance.pk
-                    obj.log_action(
-                        'pretalx.question.option.update',
-                        person=self.request.user,
-                        orga=True,
-                        data=change_data,
-                    )
-
-            for form in self.formset.extra_forms:
-                if not form.has_changed():
+        if not self.formset.is_valid():
+            return False
+        for form in self.formset.initial_forms:
+            if form in self.formset.deleted_forms:
+                if not form.instance.pk:
                     continue
-                if self.formset._should_delete_form(form):
-                    continue
+                obj.log_action(
+                    'pretalx.question.option.delete',
+                    person=self.request.user,
+                    orga=True,
+                    data={'id': form.instance.pk},
+                )
+                form.instance.delete()
+                form.instance.pk = None
+            elif form.has_changed():
                 form.instance.question = obj
                 form.save()
                 change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
                 change_data['id'] = form.instance.pk
                 obj.log_action(
-                    'pretalx.question.option.create',
+                    'pretalx.question.option.update',
                     person=self.request.user,
                     orga=True,
                     data=change_data,
                 )
 
-            return True
-        return False
+        extra_forms = [
+            form
+            for form in self.formset.extra_forms
+            if form.has_changed and not self.formset._should_delete_form(form)
+        ]
+        for form in extra_forms:
+            form.instance.question = obj
+            form.save()
+            change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+            change_data['id'] = form.instance.pk
+            obj.log_action(
+                'pretalx.question.option.create',
+                person=self.request.user,
+                orga=True,
+                data=change_data,
+            )
+
+        return True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

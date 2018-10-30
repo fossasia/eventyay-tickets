@@ -33,6 +33,8 @@ class QuestionsForm(forms.Form):
         else:
             self.queryset = self.queryset.exclude(target=QuestionTarget.REVIEWER)
         for question in self.queryset.prefetch_related('options'):
+            initial_object = None
+            initial = question.default_answer
             if target_object:
                 answers = [
                     a
@@ -46,12 +48,6 @@ class QuestionsForm(forms.Form):
                         if question.variant == QuestionVariant.FILE
                         else answers[0].answer
                     )
-                else:
-                    initial_object = None
-                    initial = question.default_answer
-            else:
-                initial_object = None
-                initial = question.default_answer
 
             field = self.get_field(
                 question=question,

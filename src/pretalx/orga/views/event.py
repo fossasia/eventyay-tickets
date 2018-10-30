@@ -91,6 +91,7 @@ class EventLive(EventSettingsPermission, TemplateView):
         context = super().get_context_data(**kwargs)
         warnings = []
         suggestions = []
+        # TODO: move to signal
         if (
             not self.request.event.cfp.text
             or len(str(self.request.event.cfp.text)) < 50
@@ -368,36 +369,34 @@ class EventWizard(PermissionRequired, SessionWizardView):
         return kwargs
 
     @transaction.atomic()
-    def done(self, form_list, form_dict, *args, **kwargs):
-        initial = self.get_cleaned_data_for_step('initial')
-        basics = self.get_cleaned_data_for_step('basics')
-        timeline = self.get_cleaned_data_for_step('timeline')
-        display = self.get_cleaned_data_for_step('display')
-        copy = self.get_cleaned_data_for_step('copy')
+    def done(self, form_list, *args, **kwargs):
+        steps = {
+            step: self.get_cleaned_data_for_step(step)
+            for step in ('initial', 'basics', 'timeline', 'display', 'copy')
+        }
 
         event = Event.objects.create(
-            organiser=initial['organiser'],
-            locale_array=','.join(initial['locales']),
-            name=basics['name'],
-            slug=basics['slug'],
-            timezone=basics['timezone'],
-            email=basics['email'],
-            locale=basics['locale'],
-            primary_color=display['primary_color'],
-            logo=display['logo'],
-            date_from=timeline['date_from'],
-            date_to=timeline['date_to'],
+            organiser=steps['initial']['organiser'],
+            locale_array=','.join(steps['initial']['locales']),
+            name=steps['basics']['name'],
+            slug=steps['basics']['slug'],
+            timezone=steps['basics']['timezone'],
+            email=steps['basics']['email'],
+            locale=steps['basics']['locale'],
+            primary_color=steps['display']['primary_color'],
+            logo=steps['display']['logo'],
+            date_from=steps['timeline']['date_from'],
+            date_to=steps['timeline']['date_to'],
         )
-        deadline = timeline.get('deadline')
+        deadline = steps['timeline'].get('deadline')
         if deadline:
             zone = timezone(event.timezone)
-            deadline = zone.localize(deadline.replace(tzinfo=None))
-            event.cfp.deadline = deadline
+            event.cfp.deadline = zone.localize(deadline.replace(tzinfo=None))
             event.cfp.save()
         for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
-            value = display.get(setting)
+            value = steps['display'].get(setting)
             if value:
-                event.settings.set(setting, display.get(setting))
+                event.settings.set(setting, value)
 
         has_control_rights = self.request.user.teams.filter(
             organiser=event.organiser,
@@ -422,8 +421,7 @@ class EventWizard(PermissionRequired, SessionWizardView):
             'pretalx.event.create', person=self.request.user, data=logdata, orga=True
         )
 
-        if copy and copy['copy_from_event']:
-            from_event = copy['copy_from_event']
-            event.copy_data_from(from_event)
+        if steps['copy'] and steps['copy']['copy_from_event']:
+            event.copy_data_from(steps['copy']['copy_from_event'])
 
         return redirect(event.orga_urls.base + '?congratulations')
