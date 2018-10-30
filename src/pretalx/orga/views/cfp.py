@@ -358,7 +358,7 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
             messages.error(request, _('Could not send mails, error in configuration.'))
             return redirect(request.path)
         if not getattr(request.event, 'question_template', None):
-            request.event._build_initial_data()
+            request.event.build_initial_data()
         if self.filter_form.cleaned_data['role'] == 'true':
             people = set(request.event.speakers)
             submissions = request.event.talks

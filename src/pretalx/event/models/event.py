@@ -266,7 +266,7 @@ class Event(LogMixin, models.Model):
         super().save(*args, **kwargs)
 
         if was_created:
-            self._build_initial_data()
+            self.build_initial_data()
 
     def get_plugins(self):
         if not self.plugins:
@@ -290,7 +290,7 @@ class Event(LogMixin, models.Model):
             self.update_template,
         ]
 
-    def _build_initial_data(self):
+    def build_initial_data(self):
         from pretalx.mail.default_templates import (
             ACCEPT_TEXT,
             ACK_TEXT,
@@ -364,7 +364,7 @@ class Event(LogMixin, models.Model):
             s.object = self
             s.pk = None
             s.save()
-        self._build_initial_data()  # make sure we get a functioning event
+        self.build_initial_data()  # make sure we get a functioning event
 
     @cached_property
     def pending_mails(self):
