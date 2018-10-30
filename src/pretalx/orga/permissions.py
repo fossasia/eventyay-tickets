@@ -53,7 +53,6 @@ def can_change_teams(user, obj):
 
 @rules.predicate
 def review_deadline_unmet(user, obj):
-    from django.utils.timezone import now
     event = obj.event
     deadline = event.settings.review_deadline
     return True if not deadline else now() <= deadline

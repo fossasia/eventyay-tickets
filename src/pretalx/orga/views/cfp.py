@@ -278,7 +278,7 @@ def question_move(request, pk, up=True):
     except Question.DoesNotExist:
         raise Http404(_('The selected question does not exist.'))
     if not request.user.has_perm('orga.edit_question', question):
-        messages.error(_('Sorry, you are not allowed to reorder questions.'))
+        messages.error(request, _('Sorry, you are not allowed to reorder questions.'))
         return
     questions = list(request.event.questions.order_by('position'))
 

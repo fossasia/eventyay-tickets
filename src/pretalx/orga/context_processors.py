@@ -9,7 +9,7 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 def collect_signal(signal, kwargs):
     result = []
-    for receiver, response in signal.send_robust(**kwargs):
+    for _, response in signal.send_robust(**kwargs):
         if isinstance(response, dict):
             result.append(response)
     return result

@@ -161,6 +161,7 @@ class QuestionsForm(forms.Form):
                 disabled=readonly,
                 help_text=question.help_text,
             )
+        return None
 
     def save(self):
         for k, v in self.cleaned_data.items():

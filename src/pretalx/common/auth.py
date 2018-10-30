@@ -11,6 +11,7 @@ class AuthenticationTokenBackend:
         if token:
             with suppress(User.DoesNotExist, MultipleObjectsReturned):
                 return User.objects.get(auth_token__key__iexact=token)
+        return None
 
 
 class AuthenticationTokenMiddleware:

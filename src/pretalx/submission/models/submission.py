@@ -81,8 +81,7 @@ class DeletedSubmissionManager(models.Manager):
 
 
 class AllSubmissionManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset()
+    pass
 
 
 class Submission(LogMixin, models.Model):
@@ -404,8 +403,7 @@ class Submission(LogMixin, models.Model):
 
     @property
     def slot(self):
-        if self.event.current_schedule:
-            return self.event.current_schedule.talks.filter(submission=self).first()
+        return self.event.current_schedule.talks.filter(submission=self).first()
 
     @property
     def display_speaker_names(self):
@@ -422,7 +420,7 @@ class Submission(LogMixin, models.Model):
     @cached_property
     def rendered_recording_iframe(self):
         if not (self.recording_url and self.recording_source):
-            return
+            return None
         from django.template import engines
 
         django_engine = engines['django']

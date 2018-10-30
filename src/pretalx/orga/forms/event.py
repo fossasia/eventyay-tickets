@@ -34,7 +34,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         )
         self.fields['slug'].disabled = True
 
-    def clean_custom_css(self, *args, **kwargs):
+    def clean_custom_css(self):
 
         if self.cleaned_data.get('custom_css') or self.files.get('custom_css'):
             css = self.cleaned_data['custom_css'] or self.files['custom_css']
@@ -47,6 +47,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         else:
             self.instance.custom_css = None
             self.instance.save(update_fields=['custom_css'])
+        return None
 
     def clean(self):
         data = super().clean()

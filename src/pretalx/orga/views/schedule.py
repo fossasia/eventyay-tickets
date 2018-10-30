@@ -1,6 +1,7 @@
 import json
 import os.path
 import xml.etree.ElementTree as ET
+from contextlib import suppress
 from datetime import timedelta
 
 import dateutil.parser
@@ -402,10 +403,8 @@ class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
         return 'orga.edit_room'
 
     def get_object(self):
-        try:
+        with suppress(Room.DoesNotExist, KeyError):
             return self.request.event.rooms.get(pk=self.kwargs['pk'])
-        except (Room.DoesNotExist, KeyError):
-            return
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.room_settings
@@ -437,7 +436,7 @@ def room_move(request, pk, up=True):
     except Room.DoesNotExist:
         raise Http404(_('The selected room does not exist.'))
     if not request.user.has_perm('orga.edit_room', room):
-        messages.error(_('Sorry, you are not allowed to reorder rooms.'))
+        messages.error(request, _('Sorry, you are not allowed to reorder rooms.'))
         return
     rooms = list(request.event.rooms.order_by('position'))
 
