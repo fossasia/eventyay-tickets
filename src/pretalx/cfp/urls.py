@@ -83,5 +83,5 @@ urlpatterns = [
         name='notpretix',
     ),
     url(r'^robots.txt$', robots.robots_txt, name='robots.txt'),
-    url('^$', event.GeneralView.as_view()),
+    url('^$', event.GeneralView.as_view(), name='root.main'),
 ]

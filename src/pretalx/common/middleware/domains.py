@@ -16,6 +16,7 @@ from django.utils.http import http_date
 from pretalx.event.models import Event
 
 LOCAL_HOST_NAMES = ('testserver', 'localhost')
+ANY_DOMAIN_ALLOWED = ('robots.txt', 'root.main')
 
 
 class MultiDomainMiddleware:
@@ -44,7 +45,10 @@ class MultiDomainMiddleware:
         request.port = int(port) if port else None
         request.uses_custom_domain = False
 
-        event_slug = resolve(request.path).kwargs.get('event')
+        resolved = resolve(request.path)
+        if resolved.url_name in ANY_DOMAIN_ALLOWED:
+            return
+        event_slug = resolved.kwargs.get('event')
         if event_slug:
             event = get_object_or_404(Event, slug__iexact=event_slug)
             request.event = event
