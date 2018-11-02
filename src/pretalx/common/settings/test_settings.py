@@ -1,6 +1,7 @@
 import atexit
 import os
 import tempfile
+from contextlib import suppress
 
 tmpdir = tempfile.TemporaryDirectory()
 os.environ.setdefault('DATA_DIR', tmpdir.name)
@@ -50,6 +51,7 @@ CACHES = {
 with suppress(ValueError):
     INSTALLED_APPS.remove('debug_toolbar.apps.DebugToolbarConfig')  # noqa
     MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')  # noqa
+
 
 # Don't run migrations
 class DisableMigrations(object):
