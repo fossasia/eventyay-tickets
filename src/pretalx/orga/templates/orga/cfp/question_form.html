@@ -5,7 +5,7 @@
 {% load static %}
 
 {% block cfp_content %}
-    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+    <script src="{% static "js/jquery.formset.js" %}"></script>
     <h2>
         {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
     </h2>

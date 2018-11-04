@@ -7,7 +7,7 @@
 {% block title %}{% trans "Your submission" %} :: {% endblock %}
 
 {% block content %}
-    <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+    <script src="{% static "js/jquery.formset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>
         {% trans "Current state of your submission:" %}

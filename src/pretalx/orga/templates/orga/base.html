@@ -30,16 +30,16 @@
     {% endcompress %}
     {% block stylesheets %}{% endblock %}
     {% compress js %}
-        <script type="text/javascript" src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/tether/tether.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/popper.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "orga/js/main.js" %}"></script>
-        <script type="text/javascript" src="{% static "common/js/availabilities.js" %}"></script>
+        <script src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script src="{% static "vendored/tether/tether.min.js" %}"></script>
+        <script src="{% static "vendored/popper.js" %}"></script>
+        <script src="{% static "vendored/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+        <script src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
+        <script src="{% static "orga/js/main.js" %}"></script>
+        <script src="{% static "common/js/availabilities.js" %}"></script>
     {% endcompress %}
     {% block scripts %}{% endblock %}
 </head>
@@ -356,12 +356,12 @@
     </div>
     <span id="navigateUrl" remoteUrl="{{ request.event.orga_urls.url_list }}/?search=%QUERY"></span>
     {% compress js %}
-        <script type="text/javascript" src="{% static "orga/js/load_late.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+        <script src="{% static "orga/js/load_late.js" %}"></script>
+        <script src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     {% endcompress %}
     {% if request.event %}
         {% compress js %}
-            <script type="text/javascript" src="{% static "orga/js/navigate.js" %}"></script>
+            <script src="{% static "orga/js/navigate.js" %}"></script>
         {% endcompress %}
     {% endif %}
 </body>

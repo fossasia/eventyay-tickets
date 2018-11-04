@@ -15,8 +15,8 @@
 {% block scripts %}
 {% if timeline_data %}
     {% compress js %}
-        <script type="text/javascript" src="{% static "vendored/nvd3/d3.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
+        <script src="{% static "vendored/nvd3/d3.min.js" %}"></script>
+        <script src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
     {% endcompress %}
 {% endif %}
 {% endblock %}
@@ -37,7 +37,7 @@
     <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
     {% if timeline_data %}
         <div id="submission-stats"><svg></svg></div>
-        <script type="text/javascript" src="{% static "orga/js/stats.js" %}"></script>
+        <script src="{% static "orga/js/stats.js" %}"></script>
     {% endif %}
 
     <div class="submit-group">
