@@ -7,7 +7,7 @@
     <div class="col-md-6 mx-auto">
         <h2 class="text-center">{% trans "Forgot your password?" %}</h2>
         <p></p>
-        <form action="" method="post">
+        <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_field form.login_email layout='inline' %}

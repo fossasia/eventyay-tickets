@@ -5,7 +5,7 @@
 {% block content %}
 <h2>{% trans "Plugins" %}</h2>
 
-<form action="" method="post" class="form-horizontal form-plugins">
+<form method="post" class="form-horizontal form-plugins">
 	{% csrf_token %}
     {% for plugin in plugins %}
         <div class="card plugin-card">

@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block settings_content %}
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         <h2>{% trans "E-mail settings" %}</h2>
         <div class="alert alert-info offset-3">

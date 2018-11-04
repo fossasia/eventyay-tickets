@@ -22,7 +22,7 @@
         <br>
         {{ invite_url }}
     </div>
-    <form action="" method="post">
+    <form method="post">
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
         <div class="row">

@@ -21,7 +21,7 @@
         {% endblocktrans %}
     {% endif %}
     </div>
-    <form action="" method="post">
+    <form method="post">
         {% csrf_token %}
         {% if form.availabilities %}{% bootstrap_field form.availabilities layout='inline' %}{% endif %}
         {% blocktrans trimmed %}

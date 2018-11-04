@@ -10,7 +10,7 @@
     <p>
         {% trans "This data will be displayed publicly if your talk is accepted. It is also visible to reviewers." %}
     </p>
-    <form action="" method="post" enctype="multipart/form-data" class="speaker-profile-form">
+    <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
         <div class="avatar-form">
@@ -51,7 +51,7 @@
 
     {% if questions_exist %}
     <h2>{% trans "We have some questions" %}</h2>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form questions_form layout='event' %}
         <div class="row">
@@ -68,7 +68,7 @@
     <p>
         {% trans "You can change your log in data here." %}
     </p>
-    <form action="" method="post" class="form password-input-form">
+    <form method="post" class="form password-input-form">
         {% csrf_token %}
         {{ login_form.media }}
         {% bootstrap_field login_form.old_password layout='event' %}

@@ -9,7 +9,7 @@
     {% trans "Current state of your submission:" %}
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
 </p>
-<form action="" method="post">
+<form method="post">
     {% csrf_token %}
     <h3>{% trans "Withdraw submission" %}</h3>
     <div class="alert alert-danger">

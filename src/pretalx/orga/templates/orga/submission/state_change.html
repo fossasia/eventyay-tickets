@@ -6,7 +6,7 @@
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
     <i class="fa fa-arrow-right"></i>
     {% include "cfp/event/fragment_state.html" with state=target %}
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
 

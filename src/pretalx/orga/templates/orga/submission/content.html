@@ -8,7 +8,7 @@
 
 {% block submission_content %}
 <script src="{% static "js/jquery.formset.js" %}"></script>
-<form method="post" action="" enctype="multipart/form-data"><fieldset>
+<form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
     <legend>{% trans "Create submission" %}</legend>
     {% endif %}

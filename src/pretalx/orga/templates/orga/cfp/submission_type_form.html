@@ -10,7 +10,7 @@
         {% trans "New Submission Type" %}
         {% endif %}
     </h2>
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.name layout='event' %}

@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <h2>{% trans "Room" %}</h2>

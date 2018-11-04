@@ -10,7 +10,7 @@
         {% endblocktrans %}
     </div>
     {% endif %}
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         <h2>{% trans "Mail Editor" %}</h2>
         {% bootstrap_form form layout='event' %}

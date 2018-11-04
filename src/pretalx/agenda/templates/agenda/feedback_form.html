@@ -17,7 +17,7 @@
         {% if not talk.does_accept_feedback %}
             {{ phrases.agenda.feedback_not_now }}
         {% else %}
-            <form method="post" action="">
+            <form method="post">
                 {% bootstrap_form_errors form %}
                 {% csrf_token %}
                 {% if talk.speakers.count > 1 %}

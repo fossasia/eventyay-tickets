@@ -3,7 +3,7 @@
 {% load static %}
 {% block title %}{% trans "Sign in" %}{% endblock %}
 {% block content %}
-    <form class="form-signin" action="" method="post" autocomplete="off">
+    <form class="form-signin" method="post" autocomplete="off">
         {% csrf_token %}
         <input type="text" class="form-control" placeholder="{{ phrases.base.enter_email }}" required autofocus id="email"
                autocomplete="off" name="email">

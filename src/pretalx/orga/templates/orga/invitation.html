@@ -10,7 +10,7 @@
     {% endblocktrans %}
 </h3>
 
-<form action="" class="labelless-password-input-form" method="post">
+<form class="labelless-password-input-form" method="post">
     {% csrf_token %}
     {% bootstrap_form_errors form %}
     {{ form.media }}

@@ -5,7 +5,7 @@
 {% block title %}{% trans "Password reset" %} :: {% endblock %}
 
 {% block content %}
-    <form action="" method="post">
+    <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {{ form.media }}

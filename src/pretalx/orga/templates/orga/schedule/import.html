@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>{% trans "Import XML" %}</h2>
-    <form method="post" action="" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <div class="col-md-9 ml-auto"><p>

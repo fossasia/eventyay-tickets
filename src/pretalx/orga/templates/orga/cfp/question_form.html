@@ -9,7 +9,7 @@
     <h2>
         {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
     </h2>
-    <form method="post" action="">
+    <form method="post">
         {% csrf_token %}
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning col-md-9 offset-3">

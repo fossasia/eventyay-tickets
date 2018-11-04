@@ -6,7 +6,7 @@
 {% block settings_content %}
 <h2>{% trans "Settings" %}</h2>
 <div class="flex-container"><div class="flex-content">
-    <form method="post" action="" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset>
         <legend id="general">
