@@ -80,6 +80,9 @@ class ReviewDashboard(PermissionRequired, Filterable, ListView):
         context['missing_reviews'] = missing_reviews
         context['next_submission'] = missing_reviews.first()
         context['reviewers'] = reviewers.count()
+        context['submissions_reviewed'] = self.request.event.submissions.filter(
+            pk__in=self.request.user.reviews.values_list('submission__pk', flat=True)
+        ).values_list('pk', flat=True)
         context['active_reviewers'] = (
             reviewers.filter(reviews__isnull=False)
             .order_by('user__id')

@@ -115,6 +115,9 @@
                 {% else %}
                     –
                 {% endif %}
+                {% if submission.pk in submissions_reviewed %}
+                <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
+                {% endif %}
             </td>
             <td>
                 <a href="{% if can_review %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
