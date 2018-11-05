@@ -206,7 +206,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
 
 
 class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
-    template_name = 'orga/organiser_detail.html'
+    template_name = 'orga/organiser/detail.html'
     model = Organiser
     permission_required = 'orga.change_organiser_settings'
     form_class = OrganiserForm

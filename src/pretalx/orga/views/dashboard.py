@@ -27,7 +27,7 @@ class DashboardEventListView(PermissionRequired, TemplateView):
 
 
 class DashboardOrganiserListView(PermissionRequired, TemplateView):
-    template_name = 'orga/organiser_list.html'
+    template_name = 'orga/organiser/list.html'
     permission_required = 'orga.view_organisers'
 
     def get_context_data(self, **kwargs):
