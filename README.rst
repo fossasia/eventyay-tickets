@@ -50,7 +50,7 @@ Previous conferences using pretalx include:
 - `GPN 2018`_
 - `EasterHegg 2018`_
 - `TROOPERS 2018`_
-- `MRMCD 2017`_
+- `MRMCD`_ (2017, 2018)
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -89,7 +89,7 @@ to this project.
 .. _PyPI: https://pypi.python.org/pypi/pretalx
 .. _DEPENDENCIES.rst: https://github.com/pretalx/pretalx/blob/master/DEPENDENCIES.rst
 
-.. _MRMCD 2017: https://talks.mrmcd.net/2017/schedule/
+.. _MRMCD: https://talks.mrmcd.net/
 .. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
 .. _EasterHegg 2018: https://pretalx.eh18.easterhegg.eu/eh18/schedule/
 .. _GPN 2018: https://pretalx.entropia.de/gpn18/
