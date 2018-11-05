@@ -9,9 +9,9 @@ from pretalx.event.models import Event, Organiser
 
 
 @pytest.mark.django_db
-def test_orga_create_organiser(superuser_client):
+def test_orga_create_organiser(administrator_client):
     assert len(Organiser.objects.all()) == 0
-    response = superuser_client.post(
+    response = administrator_client.post(
         '/orga/organiser/new',
         data={
             'name_0': 'The bestest organiser',

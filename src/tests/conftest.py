@@ -296,6 +296,14 @@ def user():
 
 
 @pytest.fixture
+def administrator():
+    u = User.objects.create_superuser(email='testuser@examplecom', password='testpassw0rd!')
+    u.is_administrator = True
+    u.save()
+    return u
+
+
+@pytest.fixture
 def superuser():
     return User.objects.create_superuser(email='testuser@examplecom', password='testpassw0rd!')
 
@@ -386,6 +394,12 @@ def review_client(review_user, client):
 @pytest.fixture
 def other_review_client(other_review_user, client):
     client.force_login(other_review_user)
+    return client
+
+
+@pytest.fixture
+def administrator_client(administrator, client):
+    client.force_login(administrator)
     return client
 
 

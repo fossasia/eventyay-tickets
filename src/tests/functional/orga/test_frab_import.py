@@ -15,9 +15,9 @@ from pretalx.schedule.models import Room, TalkSlot
     reason='Emoji in MySQL seem not to work',
 )
 @pytest.mark.django_db
-def test_frab_import_minimal(superuser):
+def test_frab_import_minimal(administrator):
     assert Event.objects.count() == 0
-    assert superuser.teams.count() == 0
+    assert administrator.teams.count() == 0
 
     call_command(
         'import_schedule', 'tests/functional/fixtures/frab_schedule_minimal.xml'
@@ -35,7 +35,7 @@ def test_frab_import_minimal(superuser):
     assert event.name == 'PrivacyWeek 2016'
 
     assert (
-        superuser.teams.filter(
+        administrator.teams.filter(
             Q(limit_events__in=[event]) | Q(all_events=True),
             can_change_event_settings=True,
         ).count()
@@ -48,7 +48,7 @@ def test_frab_import_minimal(superuser):
         )
 
     assert (
-        superuser.teams.filter(
+        administrator.teams.filter(
             Q(limit_events__in=[event]) | Q(all_events=True),
             can_change_event_settings=True,
         ).count()
@@ -65,7 +65,7 @@ def test_frab_import_minimal(superuser):
     assert Room.objects.count() == 1
     assert Event.objects.count() == 1
     assert (
-        superuser.teams.filter(
+        administrator.teams.filter(
             Q(limit_events__in=[event]) | Q(all_events=True),
             can_change_event_settings=True,
         ).count()

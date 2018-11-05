@@ -22,8 +22,8 @@ def test_create_organiser_orga_user(orga_user):
 
 
 @pytest.mark.django_db
-def test_create_organiser_superuser(superuser):
-    assert can_change_organiser_settings(superuser, None) is True
+def test_create_organiser_administrator(administrator):
+    assert can_change_organiser_settings(administrator, None) is True
 
 
 def test_permissions_change_teams_doesnt_crash_on_unexpected_values():
