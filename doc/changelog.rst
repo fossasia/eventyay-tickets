@@ -4,21 +4,21 @@ Release Notes
 =============
 
 - :feature:`476` Both events and organisers can now be deleted (although only by administrators).
-- :feature:`493`: Speaker email addresses are now available via the API for users with sufficient access permissions.
-- :bug:`515`: Under very rare circumstances, the pretalx database could reach a state pretalx couldn't cope with due to duplicate schedule versions being created.
-- :feature:`512`: You can now configure if speakers should be asked for their availability during talk submission.
+- :feature:`493` Speaker email addresses are now available via the API for users with sufficient access permissions.
+- :bug:`515` Under very rare circumstances, the pretalx database could reach a state pretalx couldn't cope with due to duplicate schedule versions being created.
+- :feature:`512` You can now configure if speakers should be asked for their availability during talk submission.
 - :support:`-` Due to an updated Django version, pretalx has dropped support for PostgreSQL 9.3 and MySQL 5.5.
 - :release:`0.8.0 <2018-09-23>`
-- :bug:`-`: When a submission was removed that contained an answered (multiple-) choice question, the selected answer option was removed, too.
-- :bug:`501`: When a speaker held more than two talks, their related talks were not linked correctly.
-- :bug:`505`: Custom CSS may now also include media queries.
-- :bug:`500`: Display of times could be off in the static HTML export.
+- :bug:`-` When a submission was removed that contained an answered (multiple-) choice question, the selected answer option was removed, too.
+- :bug:`501` When a speaker held more than two talks, their related talks were not linked correctly.
+- :bug:`505` Custom CSS may now also include media queries.
+- :bug:`500` Display of times could be off in the static HTML export.
 - :support:`-` The URLs for schedule exports have changed from /myevent/schedule/export?exporter=exportername to /myevent/schedule/export/exportername – if you have hardcoded links to schedule exporters, please update them accordingly.
 - :feature:`213` A human-readable time until the CfP closes is now displayed next to the end time.
 - :bug:`503` Not all current TLDs were used when processing markdown input to build links.
-- :bug:`-`: The schedule import in the organiser backend never worked (while the manage command for administrators did work).
-- :feature:`454`: As an organizer, it is now possible to send an email to all reviewers in the Compose Mail section.
-- :feature:`492`: In exports, HTTP Etags are now supported to allow for more aggressive caching on clients.
+- :bug:`-` The schedule import in the organiser backend never worked (while the manage command for administrators did work).
+- :feature:`454` As an organizer, it is now possible to send an email to all reviewers in the Compose Mail section.
+- :feature:`492` In exports, HTTP Etags are now supported to allow for more aggressive caching on clients.
 - :bug:`-` If a review question was mandatory while submission questions were active, they would block the submission process.
 - :feature:`-` Organisers can now also reset the password for the speakers they have access to.
 - :bug:`488` The HTML export contained media files (not other content) from all conferences on an instance, instead of only the exported conference.
