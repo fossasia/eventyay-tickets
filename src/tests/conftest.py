@@ -11,7 +11,7 @@ from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
     Answer, AnswerOption, Feedback, Question, QuestionVariant,
-    Resource, Review, Submission, SubmissionStates, SubmissionType,
+    Resource, Review, Submission, SubmissionType,
 )
 
 
@@ -550,7 +550,7 @@ def withdrawn_submission(submission_data, speaker):
 def deleted_submission(submission_data, other_speaker):
     sub = Submission.objects.create(**submission_data)
     sub.speakers.add(other_speaker)
-    sub.delete()
+    sub.remove(force=True)
     return sub
 
 
