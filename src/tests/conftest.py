@@ -331,9 +331,9 @@ def review_user(event):
     user = User.objects.create_user(
         password='reviewpassw0rd', email='reviewuser@orga.org'
     )
-    team = event.organiser.teams.filter(
+    team, _ = event.organiser.teams.get_or_create(
         can_change_organiser_settings=False, is_reviewer=True
-    ).first()
+    )
     team.members.add(user)
     team.save()
     return user
@@ -534,10 +534,9 @@ def withdrawn_submission(submission_data, speaker):
 
 @pytest.fixture
 def deleted_submission(submission_data, other_speaker):
-    submission_data['state'] = SubmissionStates.DELETED
-
     sub = Submission.objects.create(**submission_data)
     sub.speakers.add(other_speaker)
+    sub.delete()
     return sub
 
 
