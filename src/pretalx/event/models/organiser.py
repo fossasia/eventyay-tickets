@@ -1,7 +1,7 @@
 import string
 
 from django.core.validators import RegexValidator
-from django.db import models
+from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -44,6 +44,13 @@ class Organiser(LogMixin, models.Model):
         base = '/orga/organiser/{self.slug}'
         teams = '{base}/teams'
         new_team = '{teams}/new'
+
+    @transaction.atomic
+    def shred(self):
+        for event in self.events.all():
+            event.shred()
+        self.logged_actions().delete()
+        self.delete()
 
 
 class Team(LogMixin, models.Model):

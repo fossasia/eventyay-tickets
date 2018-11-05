@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
-from django.db import models
+from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
@@ -171,6 +171,10 @@ class Event(LogMixin, models.Model):
     )
     plugins = models.TextField(null=True, blank=True, verbose_name=_('Plugins'))
 
+    template_names = [
+        f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')
+    ]
+
     class urls(EventUrls):
         base = '/{self.slug}'
         login = '{base}/login'
@@ -332,15 +336,15 @@ class Event(LogMixin, models.Model):
         )
         self.save()
 
-    def copy_data_from(self, other_event):
-        templates = [
-            f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')
-        ]
-        protected_settings = ['custom_domain', 'display_header_data']
-        for template in templates:
+    def _delete_mail_templates(self):
+        for template in self.template_names:
             setattr(self, template, None)
         self.save()
         self.mail_templates.all().delete()
+
+    def copy_data_from(self, other_event):
+        protected_settings = ['custom_domain', 'display_header_data']
+        self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         for template in templates:
             new_template = getattr(other_event, template)
@@ -501,3 +505,35 @@ class Event(LogMixin, models.Model):
                 'html': QueuedMail.make_html(text, event=self),
             }
         )
+
+    @transaction.atomic
+    def shred(self):
+        from pretalx.common.models import ActivityLog
+        from pretalx.person.models import SpeakerProfile
+        from pretalx.schedule.models import TalkSlot
+        from pretalx.submission.models import Feedback, AnswerOption, Resource, Answer
+
+        deletion_order = [
+            self.logged_actions(),
+            self.queued_mails.all(),
+            self.cfp,
+            self.mail_templates.all(),
+            self.information.all(),
+            TalkSlot.objects.filter(schedule__event=self),
+            Feedback.objects.filter(talk__event=self),
+            Resource.objects.filter(submission__event=self),
+            Answer.objects.filter(question__event=self),
+            AnswerOption.objects.filter(question__event=self),
+            self.questions.all(),
+            self.submissions.all(),
+            self.submission_types.all(),
+            self.schedules.all(),
+            SpeakerProfile.objects.filter(event=self),
+            self.rooms.all(),
+            ActivityLog.objects.filter(event=self),
+            self,
+        ]
+
+        self._delete_mail_templates()
+        for entry in deletion_order:
+            entry.delete()
