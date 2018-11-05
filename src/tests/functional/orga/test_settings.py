@@ -276,3 +276,21 @@ def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
     assert response.status_code == 200
     event.refresh_from_db()
     assert event.plugins == ''
+
+
+@pytest.mark.django_db
+def test_organiser_cannot_delete_event(event, orga_client, submission):
+    assert Event.objects.count() == 1
+    response = orga_client.post(event.orga_urls.delete, follow=True)
+    assert response.status_code == 404
+    assert Event.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_administrator_can_delete_event(event, administrator_client, submission):
+    assert Event.objects.count() == 1
+    response = administrator_client.get(event.orga_urls.delete, follow=True)
+    assert response.status_code == 200
+    response = administrator_client.post(event.orga_urls.delete, follow=True)
+    assert response.status_code == 200
+    assert Event.objects.count() == 0

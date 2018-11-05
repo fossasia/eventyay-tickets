@@ -31,10 +31,7 @@ def test_orga_create_organiser(administrator_client):
 def test_orga_edit_organiser(orga_client, organiser):
     response = orga_client.post(
         organiser.orga_urls.base + '/',
-        data={
-            'name_0': 'The bestest organiser',
-            'name_1': 'The bestest organiser',
-        },
+        data={'name_0': 'The bestest organiser', 'name_1': 'The bestest organiser'},
         follow=True,
     )
     organiser.refresh_from_db()
@@ -46,11 +43,14 @@ def test_orga_edit_organiser(orga_client, organiser):
 @pytest.mark.django_db
 def test_orga_edit_team(orga_client, organiser, event):
     team = organiser.teams.first()
-    url = reverse('orga:organiser.teams.view', kwargs={'organiser': organiser.slug, 'pk': team.pk})
+    url = reverse(
+        'orga:organiser.teams.view', kwargs={'organiser': organiser.slug, 'pk': team.pk}
+    )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
-        url, follow=True,
+        url,
+        follow=True,
         data={
             'all_events': True,
             'can_change_submissions': True,
@@ -78,7 +78,8 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
     response = orga_client.get(organiser.orga_urls.new_team, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
-        organiser.orga_urls.new_team, follow=True,
+        organiser.orga_urls.new_team,
+        follow=True,
         data={
             'all_events': True,
             'can_change_submissions': True,
@@ -101,15 +102,13 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
 def test_invite_orga_member_as_orga(orga_client, organiser):
     djmail.outbox = []
     team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)
-    url = reverse('orga:organiser.teams.view', kwargs={'organiser': organiser.slug, 'pk': team.pk})
+    url = reverse(
+        'orga:organiser.teams.view', kwargs={'organiser': organiser.slug, 'pk': team.pk}
+    )
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
-        url,
-        {
-            'email': 'other@user.org',
-            'form': 'invite',
-        }, follow=True,
+        url, {'email': 'other@user.org', 'form': 'invite'}, follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -131,26 +130,40 @@ class TestEventCreation:
         return response
 
     def submit_initial(self, organiser):
-        return self.post(step='initial', data={'locales': ['en', 'de'], 'organiser': organiser.pk})
+        return self.post(
+            step='initial', data={'locales': ['en', 'de'], 'organiser': organiser.pk}
+        )
 
     def submit_basics(self):
-        return self.post(step='basics', data={
-            'email': 'foo@bar.com',
-            'locale': 'en',
-            'name_0': 'New event!',
-            'slug': 'newevent',
-            'timezone': 'Europe/Amsterdam',
-        })
+        return self.post(
+            step='basics',
+            data={
+                'email': 'foo@bar.com',
+                'locale': 'en',
+                'name_0': 'New event!',
+                'slug': 'newevent',
+                'timezone': 'Europe/Amsterdam',
+            },
+        )
 
     def submit_timeline(self, deadline):
         _now = now()
         tomorrow = _now + timedelta(days=1)
         date = '%Y-%m-%d'
         datetime = '%Y-%m-%d %H:%M:%S'
-        return self.post(step='timeline', data={'date_from': _now.strftime(date), 'date_to': tomorrow.strftime(date), 'deadline': _now.strftime(datetime) if deadline else ''})
+        return self.post(
+            step='timeline',
+            data={
+                'date_from': _now.strftime(date),
+                'date_to': tomorrow.strftime(date),
+                'deadline': _now.strftime(datetime) if deadline else '',
+            },
+        )
 
     def submit_display(self):
-        return self.post(step='display', data={'header_pattern': '', 'logo': '', 'primary_color': ''})
+        return self.post(
+            step='display', data={'header_pattern': '', 'logo': '', 'primary_color': ''}
+        )
 
     def submit_copy(self, copy=False):
         return self.post(step='copy', data={'copy_from_event': copy if copy else ''})
@@ -168,7 +181,9 @@ class TestEventCreation:
         event = Event.objects.get(slug='newevent')
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
-        assert organiser.teams.filter(name__icontains='new').exists(), organiser.teams.all()
+        assert organiser.teams.filter(
+            name__icontains='new'
+        ).exists(), organiser.teams.all()
         assert str(event.name) == 'New event!'
         assert event.locales == ['en', 'de']
 
@@ -184,9 +199,13 @@ class TestEventCreation:
         self.submit_copy(copy=event.pk)
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
-        assert organiser.teams.filter(name__icontains='new').exists(), organiser.teams.all()
+        assert organiser.teams.filter(
+            name__icontains='new'
+        ).exists(), organiser.teams.all()
 
-    def test_orga_create_event_no_new_team(self, orga_client, organiser, event, deadline):
+    def test_orga_create_event_no_new_team(
+        self, orga_client, organiser, event, deadline
+    ):
         self.client = orga_client
         organiser.teams.update(all_events=True, can_create_events=True)
         count = Event.objects.count()
@@ -198,3 +217,25 @@ class TestEventCreation:
         self.submit_copy()
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count
+
+
+@pytest.mark.django_db
+def test_organiser_cannot_delete_organiser(event, orga_client, submission):
+    assert Event.objects.count() == 1
+    assert Organiser.objects.count() == 1
+    response = orga_client.post(event.organiser.orga_urls.delete, follow=True)
+    assert response.status_code == 404
+    assert Event.objects.count() == 1
+    assert Organiser.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_administrator_can_delete_organiser(event, administrator_client, submission):
+    assert Event.objects.count() == 1
+    assert Organiser.objects.count() == 1
+    response = administrator_client.get(event.organiser.orga_urls.delete, follow=True)
+    assert response.status_code == 200
+    response = administrator_client.post(event.organiser.orga_urls.delete, follow=True)
+    assert response.status_code == 200
+    assert Event.objects.count() == 0
+    assert Organiser.objects.count() == 0

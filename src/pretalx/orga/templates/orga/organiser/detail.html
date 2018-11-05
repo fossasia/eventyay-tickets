@@ -1,6 +1,7 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load rules %}
 
 {% block title %}{% if request.event %}{{ request.event.name }}{% else %}{{ request.organiser.name }}{% endif %}{% endblock %}
 
@@ -9,7 +10,22 @@
     <legend>{% trans "Settings" %}</legend>
     {% csrf_token %}
     {% bootstrap_form form layout='event' %}
-    {% include "orga/submit_row.html" %}
+    <div class="submit-group panel">
+        <span>
+            {% has_perm "person.is_administrator" request.user request.organiser as can_delete_event %}
+            {% if can_delete_event %}
+            <a class="btn btn-outline-danger btn-lg" href="{{ request.organiser.orga_urls.delete }}">
+                {% trans "Delete organiser" %}
+            </a>
+            {% endif %}
+        </span>
+        <span>
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="fa fa-check"></i>
+                {% trans "Save" %}
+            </button>
+        </span>
+    </div>
 </fieldset>
 
 <fieldset>

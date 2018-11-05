@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
@@ -217,3 +218,18 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     def get_success_url(self):
         messages.success(self.request, _('Saved!'))
         return self.request.path
+
+
+class OrganiserDelete(PermissionRequired, DeleteView):
+    template_name = 'orga/organiser/delete.html'
+    permission_required = 'person.is_administrator'
+    model = Organiser
+
+    def get_object(self):
+        return getattr(self.request, 'organiser', None)
+
+    def delete(self, request, *args, **kwargs):
+        organiser = self.get_object()
+        if organiser:
+            organiser.shred()
+        return HttpResponseRedirect('/orga/')

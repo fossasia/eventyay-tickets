@@ -7,7 +7,9 @@ from pretalx.submission.models.submission import SubmissionStates
 def can_change_submissions(user, obj):
     if not user or user.is_anonymous or not obj or not hasattr(obj, 'event'):
         return False
-    return user.is_administrator or obj.event in user.get_events_for_permission(can_change_submissions=True)
+    return user.is_administrator or obj.event in user.get_events_for_permission(
+        can_change_submissions=True
+    )
 
 
 @rules.predicate
@@ -31,8 +33,13 @@ def person_can_view_information(user, obj):
         return submissions.exists()
     if obj.exclude_unconfirmed:
         return submissions.filter(state=SubmissionStates.CONFIRMED).exists()
-    return submissions.filter(state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]).exists()
+    return submissions.filter(
+        state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]
+    ).exists()
 
 
-rules.add_perm('person.view_information', can_change_submissions | person_can_view_information)
+rules.add_perm('person.is_administrator', is_administrator)
+rules.add_perm(
+    'person.view_information', can_change_submissions | person_can_view_information
+)
 rules.add_perm('person.change_information', can_change_submissions)

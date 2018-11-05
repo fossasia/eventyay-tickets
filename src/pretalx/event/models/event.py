@@ -203,6 +203,7 @@ class Event(LogMixin, models.Model):
         create = '/orga/event/new'
         base = '/orga/event/{self.slug}'
         live = '{base}/live'
+        delete = '{base}/delete'
         cfp = '{base}/cfp'
         users = '{base}/api/users'
         url_list = '{base}/api/urls'

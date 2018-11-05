@@ -23,6 +23,7 @@ urlpatterns = [
     url('^organiser/new$', organiser.OrganiserDetail.as_view(), name='organiser.create'),
     url(f'^organiser/(?P<organiser>[{SLUG_CHARS}]+)/', include([
         url('^$', organiser.OrganiserDetail.as_view(), name='organiser.view'),
+        url('^delete$', organiser.OrganiserDelete.as_view(), name='organiser.delete'),
         url('^teams/$', organiser.TeamDetail.as_view(), name='organiser.teams'),
         url('^teams/new$', organiser.TeamDetail.as_view(), name='organiser.teams.create'),
         url('^teams/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='organiser.teams.view'),
@@ -36,6 +37,7 @@ urlpatterns = [
     url('^event/$', dashboard.DashboardEventListView.as_view(), name='event.list'),
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
+        url('^delete$', event.EventDelete.as_view(), name='event.delete'),
         url('^live$', event.EventLive.as_view(), name='event.live'),
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
         url('^api/urls/$', dashboard.url_list, name='url_list'),

@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, TemplateView, UpdateView
+from django.views.generic import DeleteView, FormView, TemplateView, UpdateView
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
@@ -425,3 +425,18 @@ class EventWizard(PermissionRequired, SessionWizardView):
             event.copy_data_from(steps['copy']['copy_from_event'])
 
         return redirect(event.orga_urls.base + '?congratulations')
+
+
+class EventDelete(PermissionRequired, DeleteView):
+    template_name = 'orga/event/delete.html'
+    permission_required = 'person.is_administrator'
+    model = Event
+
+    def get_object(self):
+        return getattr(self.request, 'event', None)
+
+    def delete(self, request, *args, **kwargs):
+        event = self.get_object()
+        if event:
+            event.shred()
+        return redirect('/orga/')

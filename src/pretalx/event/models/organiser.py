@@ -42,6 +42,7 @@ class Organiser(LogMixin, models.Model):
 
     class orga_urls(EventUrls):
         base = '/orga/organiser/{self.slug}'
+        delete = '{base}/delete'
         teams = '{base}/teams'
         new_team = '{teams}/new'
 
