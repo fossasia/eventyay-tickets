@@ -13,7 +13,10 @@
 </div>
 {% endif %}
 <h2 id="main-title">
-    <span>{{ request.event.name }} <small class="text-muted small">{{ request.event.date_from }}–{{ request.event.date_to }}</small>
+    <span>
+        {{ request.event.name }}
+        <small class="text-muted small">{{ request.event.date_from }}–{{ request.event.date_to }}</small>
+    </span>
 </h2>
 <div class="timeline">
     <div class="timeline-element {{ timeline.PREPARATION.state }}">

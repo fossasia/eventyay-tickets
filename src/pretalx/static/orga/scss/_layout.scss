@@ -33,7 +33,7 @@ aside.sidebar {
   margin-top: 50px;
   overflow-y: auto;
 
-  li span.has-children {
+  .nav-fold span.has-children {
     display: flex;
     flex-direction: row;
 
@@ -54,7 +54,7 @@ aside.sidebar {
     }
   }
 
-  .nav-link, li.nav-fold {
+  .nav-link, .nav-fold {
     border-top: 1px solid $gray-light;
   }
 

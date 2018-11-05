@@ -69,7 +69,7 @@
             <h1>
                 <a href="{% block nav_link %}{% endblock %}">
                     {% if request.event and request.event.logo %}
-                    <img src="{{ request.event.logo.url }}" id="event-logo" alt="{% trans "The event's logo" %}"></img>
+                    <img src="{{ request.event.logo.url }}" id="event-logo" alt="{% trans "The event's logo" %}">
                     {% elif request.event %}
                         {{ request.event.name }}
                     {% endif %}

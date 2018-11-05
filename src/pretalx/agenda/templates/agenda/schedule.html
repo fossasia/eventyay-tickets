@@ -3,11 +3,11 @@
 {% load static %}
 
 {% block agenda_custom_header %}
-    <span id="offline-vars" event="{{ request.event.urls.schedule }}"></span>
     <script src="{% static "agenda/js/offline.js" %}"></script>
 {% endblock %}
 
 {% block agenda_content %}
+<span id="offline-vars" data-event="{{ request.event.urls.schedule }}"></span>
 {% if data|length > 1 %}
 <div id="navigator">
   <i class="fa fa-dot-circle-o"></i> nav
@@ -47,10 +47,10 @@
     {% include "agenda/header_row.html" %}
 
   <div class="schedule-header ml-auto mt-4">
-    <span class="icon">{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
-    · <span class="icon"><a href="{{ request.event.urls.changelog }}" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a></span>
-    · <span class="icon"><a href="{{ request.event.urls.feed }}" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a></span>
-    · <span class="dropdown">
+    <span>{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
+    <a href="{{ request.event.urls.changelog }}" class="btn btn-outline-info btn-sm" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a>
+    <a href="{{ request.event.urls.feed }}" class="btn btn-outline-info btn-sm" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a>
+    <div class="dropdown">
         <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-code"></i>
         </button>
