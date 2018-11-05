@@ -1,5 +1,5 @@
 import logging
-from smtplib import SMTPRecipientsRefused, SMTPSenderRefused
+from smtplib import SMTPSenderRefused
 from typing import Any, Dict, Union
 
 from django.conf import settings
@@ -27,14 +27,13 @@ class CustomSMTPBackend(EmailBackend):
                 logger.warning(
                     f'Error testing mail settings, code {code}, resp: {resp}'
                 )
-                raise SMTPSenderRefused(code, resp, from_addr)
-            senderrs = {}
+                raise SMTPSenderRefused(code, resp)
             (code, resp) = self.connection.rcpt('test@example.com')
             if code not in (250, 251):
                 logger.warning(
                     f'Error testing mail settings, code {code}, resp: {resp}'
                 )
-                raise SMTPRecipientsRefused(senderrs)
+                raise SMTPSenderRefused(code, resp)
         finally:
             self.close()
 
