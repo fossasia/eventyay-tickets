@@ -526,7 +526,7 @@ class Event(LogMixin, models.Model):
             Answer.objects.filter(question__event=self),
             AnswerOption.objects.filter(question__event=self),
             self.questions.all(),
-            self.submissions.all(),
+            self.submissions(manager='all_objects').all(),
             self.submission_types.all(),
             self.schedules.all(),
             SpeakerProfile.objects.filter(event=self),
