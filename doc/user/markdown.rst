@@ -6,23 +6,24 @@ Markdown Guide
 What is Markdown?
 -----------------
 
-In many places in pretalx, like in talk descriptions, the Call for Papers, and email texts, you can use
-`Markdown`_ to create links, bold text, and other formatted content. Markdown is a common option
-since it is way easier to learn than languages like HTML but allows all basic formatting options required
-for text in those places.
+pretalx often allows you to write `Markdown`_ instead of plain text, like in talk
+descriptions, the Call for Papers, and email texts. Markdown is helpful if
+you want to write text including links, bold text, and other formatted content.
+Markdown is a common option since it's way easier to learn than languages like
+HTML but allows all basic formatting options required for text in those places.
 
 Formatting rules
 ----------------
 
-The following table shows the markdown syntax on the left, and the results that will be shown on the
-final websites on the right:
+The following table shows the markdown syntax on the left, and the results are
+on the right:
 
 +------------------------------------------+--------------------------------------+
 | Markdown                                 | Result                               |
 +==========================================+======================================+
 | .. code-block:: markdown                 |                                      |
 |                                          |                                      |
-|     Please *really* keep the _deadline_. | Please *really* keep the *deadline*. |
+|     Please *please* keep the _deadline_. | Please *please* keep the *deadline*. |
 +------------------------------------------+--------------------------------------+
 | .. code-block:: markdown                 |                                      |
 |                                          |                                      |
@@ -30,7 +31,7 @@ final websites on the right:
 +------------------------------------------+--------------------------------------+
 | .. code-block:: markdown                 |                                      |
 |                                          |                                      |
-|     Print `literally this`.              | Print ``literally this``.            |
+|     Print `this`.                        | Print ``this``.                      |
 +------------------------------------------+--------------------------------------+
 | .. code-block:: markdown                 |                                      |
 |                                          | Look at https://pretalx.com.<br>     |
@@ -69,16 +70,16 @@ final websites on the right:
 Using HTML
 ----------
 
-You can also directly embed HTML code, if you want, although we recommend
-using Markdown, as it enables e.g. people using text-based email clients
-to get a better plain text representation of your text. Note however, that for
-security reasons you can only use the following HTML elements::
+You can also directly embed HTML code, if you want, although we recommend using
+Markdown, as it enables e.g. people using text-based email clients to get a
+better plain text representation of your text. Note that for security reasons
+you can use the following HTML elements, and no others::
 
     a, abbr, acronym, b, br, code, div, em, h1, h2,
     h3, h4, h5, h6, hr, i, li, ol, p, pre, span, strong,
     table, tbody, td, thead, tr, ul
 
-Additionally, only the following attributes are allowed on them::
+You can use the following attributes::
 
     <a href="…" title="…">
     <abbr title="…">
@@ -89,7 +90,7 @@ Additionally, only the following attributes are allowed on them::
     <p class="…">
     <span class="…">
 
-All other elements and attributes will be stripped during parsing.
+pretalx will strip all other elements and attributes during parsing.
 
 
 .. _Markdown: https://en.wikipedia.org/wiki/Markdown

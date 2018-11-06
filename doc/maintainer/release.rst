@@ -13,7 +13,7 @@ Boarding checks
 5. Are there any ``@pytest.mark.xfail`` that you have to resolve?
 6. Are the :ref:`changelog` well-phrased and complete?
 7. Are there `open pull requests <https://github.com/pretalx/pretalx/pulls>`_ that you should merge?
-8. Is the `code coverage <https://codecov.io/gh/pretalx/pretalx/commits>`_ currently all right?
+8. Is the `code coverage <https://codecov.io/gh/pretalx/pretalx/commits>`_ all right?
 
 System checks
 -------------

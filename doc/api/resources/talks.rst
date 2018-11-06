@@ -27,7 +27,7 @@ do_not_record                         boolean                    Indicates if th
 is_featured                           boolean                    Indicates if the talk is show in the schedule preview / sneak peek
 content_locale                        string                     The language the submission is in, e.g. "en" or "de"
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
-answers                               list                       The question answers given by the speakers, if the request was issued by an organiser with permissions
+answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions.
 ===================================== ========================== =======================================================
 
 Endpoints

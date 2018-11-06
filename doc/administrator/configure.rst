@@ -7,7 +7,7 @@ is in this order:
 
 1. Environment variables
 2. Configuration files
-    - The config file in ``PRETALX_CONFIG_FILE`` if that environment variable is set, **or**:
+    - The config file in the environment variable ``PRETALX_CONFIG_FILE`` if present, **or**:
     - The following three configuration files in this order:
        - The config file ``pretalx.cfg`` in the ``src`` directory, next to the ``pretalx.example.cfg`` file.
        - The config file ``~/.pretalx.cfg`` in the home of the executing user.

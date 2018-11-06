@@ -6,7 +6,7 @@ Installation
 This guide will help you to install pretalx on a Linux distribution. It should be
 compatible with **Debian 8.0** and above, as well as similarly modern distributions.
 
-We also provide an `Ansible role`_ that roughly follows this guide, in case you
+We also provide an `Ansible role`_ that follows this guide, in case you
 already have an Ansible-based setup. If you prefer a docker setup, please use
 our `docker-compose setup`_.
 
@@ -109,8 +109,8 @@ installation will not know of them::
 
     $ pip install --user -U pip setuptools wheel pretalx redis gunicorn
 
-pretalx works your choice of database backends – usage of PostgreSQL is
-recommended, but MySQL, SQLite, and Oracle work as well. use the following
+pretalx works your choice of database backends – we recommend using
+PostgresQL, but MySQL, SQLite, and Oracle work as well. use the following
 command to install the database driver (unless you use SQLite, which has its
 driver built in):
 

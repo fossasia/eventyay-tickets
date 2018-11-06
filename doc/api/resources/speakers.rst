@@ -16,7 +16,7 @@ name                                  string                     The speaker's p
 biography                             string                     The speaker's self-submitted biography, markdown-formatted text.
 submissions                           list                       A list of submission codes, e.g. ``["ABCDEF", "GHIJKL"]``
 avatar                                string                     The speaker avatar URL
-email                                 string                     The speaker's email address. Only available if the requesting user has organizer privileges.
+email                                 string                     The speaker's email address. Available if the requesting user has organizer privileges.
 ===================================== ========================== =======================================================
 
 Endpoints
