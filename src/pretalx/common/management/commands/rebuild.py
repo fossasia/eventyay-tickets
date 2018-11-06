@@ -13,10 +13,18 @@ class Command(BaseCommand):
             dest='clear',
             help='Clear the existing files using the storage before trying to copy or link the original file.',
         )
+        parser.add_argument(
+            '-s',
+            '--silent',
+            action='store_true',
+            dest='silent',
+            help='Silence most of the build output.',
+        )
 
     def handle(self, *args, **options):
-        call_command('compilemessages', verbosity=0)
+        silent = 0 if options.get('silent') else 1
+        call_command('compilemessages', verbosity=silent)
         call_command(
-            'collectstatic', verbosity=0, interactive=False, clear=options['clear']
+            'collectstatic', verbosity=silent, interactive=False, clear=options['clear']
         )
-        call_command('compress', verbosity=0)
+        call_command('compress', verbosity=silent)

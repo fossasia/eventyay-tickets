@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`` The ``rebuild`` command now comes with a lot more build output for ease of debugging. You can disable the build output with the new ``--silent/-s`` flag.
 - :feature:`476` Both events and organisers can now be deleted (although only by administrators).
 - :feature:`493` Speaker email addresses are now available via the API for users with sufficient access permissions.
 - :bug:`515` Under very rare circumstances, the pretalx database could reach a state pretalx couldn't cope with due to duplicate schedule versions being created.
