@@ -4,10 +4,13 @@ from pretalx.person.models.user import User
 from pretalx.submission.models.question import Answer
 
 
-@pytest.mark.parametrize('email,expected', (
-    ('one@two.com', 'ac5be7f974137dc75bacee19b94fe0f8'),
-    ('a_very_long.email@orga.org', '79bd022bbbd718d8e30f730169067b2a'),
-))
+@pytest.mark.parametrize(
+    'email,expected',
+    (
+        ('one@two.com', 'ac5be7f974137dc75bacee19b94fe0f8'),
+        ('a_very_long.email@orga.org', '79bd022bbbd718d8e30f730169067b2a'),
+    ),
+)
 def test_gravatar_parameter(email, expected):
     user = User(email=email)
     assert user.gravatar_parameter == expected
@@ -37,9 +40,33 @@ def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_spea
     assert speaker.get_permissions_for_event(Answer.objects.first().event) == set()
 
 
-def test_administrator_permissions():
+@pytest.mark.django_db
+def test_administrator_permissions(event):
     user = User(email='one@two.com', is_administrator=True)
-    assert user.get_permissions_for_event('randomthing') == {
-        'can_create_events', 'can_change_teams', 'can_change_organiser_settings',
-        'can_change_event_settings', 'can_change_submissions', 'is_reviewer',
+    permission_set = {
+        'can_create_events',
+        'can_change_teams',
+        'can_change_organiser_settings',
+        'can_change_event_settings',
+        'can_change_submissions',
+        'is_reviewer',
     }
+    assert user.get_permissions_for_event('randomthing') == permission_set
+    assert user.get_permissions_for_event(event) == permission_set
+    assert event in user.get_events_with_any_permission()
+
+
+@pytest.mark.django_db
+def test_organizer_permissions(event, orga_user):
+    assert list(orga_user.get_events_with_any_permission()) == [event]
+    assert list(orga_user.get_events_for_permission(can_change_submissions=True)) == [
+        event
+    ]
+    permission_set = {
+        'can_create_events',
+        'can_change_teams',
+        'can_change_organiser_settings',
+        'can_change_event_settings',
+        'can_change_submissions',
+    }
+    assert orga_user.get_permissions_for_event(event) == permission_set

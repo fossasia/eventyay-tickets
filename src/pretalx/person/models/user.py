@@ -9,6 +9,7 @@ from django.contrib.auth.models import (
 )
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
+from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -172,6 +173,21 @@ class User(PermissionsMixin, AbstractBaseUser):
     @cached_property
     def gravatar_parameter(self):
         return md5(self.email.strip().encode()).hexdigest()
+
+    def get_events_with_any_permission(self):
+        from pretalx.event.models import Event
+
+        if self.is_administrator:
+            return Event.objects.all()
+
+        return Event.objects.filter(
+            Q(
+                organiser_id__in=self.teams.filter(all_events=True).values_list(
+                    'organiser', flat=True
+                )
+            )
+            | Q(id__in=self.teams.values_list('limit_events__id', flat=True))
+        )
 
     def get_events_for_permission(self, **kwargs):
         from pretalx.event.models import Event
