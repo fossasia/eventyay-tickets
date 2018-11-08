@@ -5,7 +5,7 @@
 {% block content %}
     <form class="form-signin" method="post" autocomplete="off">
         {% csrf_token %}
-        <input type="text" class="form-control" placeholder="{{ phrases.base.enter_email }}" required autofocus id="email"
+        <input type="email" class="form-control" placeholder="{{ phrases.base.enter_email }}" required autofocus id="email"
                autocomplete="off" name="email">
         <input type="password" class="form-control" placeholder="{% trans "Password" %}" required id="password" autocomplete="off"
                name="password">
