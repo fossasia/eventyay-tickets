@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-08 03:08-0600\n"
-"PO-Revision-Date: 2018-10-18 23:47+0200\n"
+"PO-Revision-Date: 2018-11-08 10:15+0100\n"
 "Last-Translator: Tobias Kunze <rixx@cutebit.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -271,10 +271,8 @@ msgstr "%(event)s Vortragende:"
 #: pretalx/agenda/templates/agenda/speaker.html:29
 #: pretalx/agenda/templates/agenda/speaker.html:31
 #: pretalx/orga/templates/orga/speaker/form.html:41
-#, fuzzy
-#| msgid "Profile picture"
 msgid "The speaker's profile picture"
-msgstr "Profilbild"
+msgstr "Das Profilbild der Vortragenden"
 
 #: pretalx/agenda/templates/agenda/speakers.html:24
 msgid "No speaker matches your search."
@@ -286,7 +284,7 @@ msgstr "Siehe auch:"
 
 #: pretalx/agenda/templates/agenda/talk.html:90
 msgid "This talk's header image"
-msgstr ""
+msgstr "Das Titelbild des Vortrags"
 
 #: pretalx/agenda/templates/agenda/talk.html:100
 #: pretalx/orga/templates/orga/submission/review.html:63
@@ -708,7 +706,7 @@ msgstr "Optional"
 #: pretalx/cfp/templates/cfp/event/submission_profile.html:29
 #: pretalx/cfp/templates/cfp/event/user_profile.html:25
 msgid "Your avatar"
-msgstr ""
+msgstr "Dein Profilbild"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:10
 msgid "Tell us more!"
@@ -840,20 +838,15 @@ msgstr "Aktueller Stand deiner Einreichung:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:15
 msgid "Congratulations on your acceptance!"
-msgstr ""
+msgstr "Herzlichen Glückwunsch zur Annahme deiner Einreichung!"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:19
-#, fuzzy
-#| msgid ""
-#| "Congratulations on your acceptance! Please provide us with your available "
-#| "hours during the event, so that we can schedule your event accordingly:<p>"
 msgid ""
 "Please provide us with your available hours during the event, so that we can "
 "schedule your event accordingly:<p>"
 msgstr ""
-"Herzlichen Glückwunsch zur Annahme! Bitte trag hier ein, wann du während der "
-"Veranstaltung Zeit hast, damit wir dir einen geeigneten Zeitpunkt im "
-"Programm suchen können:<p>"
+"Bitte trag hier ein, wann du während der Veranstaltung Zeit hast, damit wir "
+"dir einen geeigneten Zeitpunkt im Programm suchen können:<p>"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:27
 msgid ""
@@ -1741,8 +1734,6 @@ msgstr ""
 
 #: pretalx/common/templates/common/base.html:72
 #: pretalx/orga/templates/orga/settings/form.html:46
-#, fuzzy
-#| msgid "Event logo"
 msgid "The event's logo"
 msgstr "Veranstaltungslogo"
 
@@ -1773,7 +1764,7 @@ msgstr "Dieser Export wurde um %(timestamp)s generiert"
 #: pretalx/orga/templates/orga/base.html:56
 #: pretalx/orga/templates/orga/settings/form.html:49
 msgid "The pretalx logo"
-msgstr ""
+msgstr "pretalx-Logo"
 
 #: pretalx/common/templates/common/base.html:138
 msgid "Contact us"
@@ -2390,16 +2381,12 @@ msgid "Review deadline"
 msgstr "Reviewschluss"
 
 #: pretalx/orga/forms/cfp.py:63
-#, fuzzy
-#| msgid "Review score"
 msgid "Require a review score"
-msgstr "Punkte"
+msgstr "Eine Review-Punktzahl erfordern"
 
 #: pretalx/orga/forms/cfp.py:66
-#, fuzzy
-#| msgid "Require reviewers to submit a text"
 msgid "Require a review text"
-msgstr "Reviewer müssen mit Text bewerten"
+msgstr "Einen Review-Text erfordern"
 
 #: pretalx/orga/forms/cfp.py:69
 msgid "Send mail on new submission"
@@ -3411,16 +3398,17 @@ msgid "Click here to change"
 msgstr "Klick hier, um das zu ändern"
 
 #: pretalx/orga/templates/orga/event/delete.html:5
-#, fuzzy
-#| msgid "Do you really want to delete this information?"
 msgid "Do you really want to delete this event?"
-msgstr "Möchtest du diese Information wirklich löschen?"
+msgstr "Möchtest du diese Veranstaltung wirklich löschen?"
 
 #: pretalx/orga/templates/orga/event/delete.html:7
 msgid ""
 "ALL related data, such as submissions, and speaker profiles, and uploads, "
 "will also be deleted and cannot be restored."
 msgstr ""
+"ALLE zugehörigen Daten, wie z.B. Einreichungen, Vortragendenprofile, und "
+"Dateien, werden ebenfalls gelöscht und können nicht wieder hergestellt "
+"werden."
 
 #: pretalx/orga/templates/orga/event/live.html:5
 msgid "Deactivate event"
@@ -3659,22 +3647,21 @@ msgid "Delete template"
 msgstr "Vorlage löschen"
 
 #: pretalx/orga/templates/orga/organiser/delete.html:5
-#, fuzzy
-#| msgid "Do you really want to delete this information?"
 msgid "Do you really want to delete this organiser?"
-msgstr "Möchtest du diese Information wirklich löschen?"
+msgstr "Möchtest du diesen Veranstalter wirklich löschen?"
 
 #: pretalx/orga/templates/orga/organiser/delete.html:7
 msgid ""
 "ALL related data for ALL events, such as submissions, and speaker profiles, "
 "and uploads, will also be deleted and cannot be restored."
 msgstr ""
+"ALLE zugehörigen Daten für ALLE Veranstaltungen, wie z.B. Einreichungen, "
+"Vortragendenprofile, und Dateien, werden ebenfalls gelöscht und können nicht "
+"wieder hergestellt werden."
 
 #: pretalx/orga/templates/orga/organiser/detail.html:18
-#, fuzzy
-#| msgid "New organiser"
 msgid "Delete organiser"
-msgstr "Neuer Veranstalter"
+msgstr "Veranstalter löschen"
 
 #: pretalx/orga/templates/orga/organiser/detail.html:38
 #, python-format
@@ -3817,10 +3804,8 @@ msgid "Type"
 msgstr "Typ"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:119
-#, fuzzy
-#| msgid "You cannot review this submission at this time."
 msgid "You have reviewed this submission"
-msgstr "Derzeit kann für diese Veranstaltung kein Feedback gegeben werden."
+msgstr "Du hast diese Einreichung schon bewertet"
 
 #: pretalx/orga/templates/orga/review/dashboard.html:138
 msgid "Reject"
@@ -4105,10 +4090,8 @@ msgid "Event logo"
 msgstr "Veranstaltungslogo"
 
 #: pretalx/orga/templates/orga/settings/form.html:63
-#, fuzzy
-#| msgid "Deactivate event"
 msgid "Delete event"
-msgstr "Veranstaltung deaktivieren"
+msgstr "Veranstaltung löschen"
 
 #: pretalx/orga/templates/orga/settings/mail.html:8
 msgid "E-mail settings"
@@ -5069,19 +5052,19 @@ msgstr ""
 
 #: pretalx/schedule/forms.py:89
 msgid "The submitted availability does not comply with format."
-msgstr ""
+msgstr "Die Verfügbarkeit wurde im falschen Format eingereicht."
 
 #: pretalx/schedule/forms.py:97
 msgid "The submitted availability contains an invalid date."
-msgstr ""
+msgstr "Die Verfügbarkeit enthält ein falsches Datum."
 
 #: pretalx/schedule/forms.py:117
 msgid "The submitted availability is not within the event timeframe."
-msgstr ""
+msgstr "Die Verfügbarkeit liegt nicht im Veranstaltungszeitraum."
 
 #: pretalx/schedule/forms.py:127 pretalx/schedule/forms.py:137
 msgid "Please fill in your availabilities!"
-msgstr ""
+msgstr "Bitte gib deine Verfügbarkeit an!"
 
 #: pretalx/schedule/forms.py:171
 msgid "Room I"
