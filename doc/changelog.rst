@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`` The organiser login page did not strip whitespace from login credentials.
 - :bug:`524` Review settings contained the setting "Force data entry" twice, referring to the score and text, respectively.
 - :bug:`522` If a speaker did not check a mandatory checkbox, they could not submit the form (as intended), but could see no feedback explaining the issue.
 - :feature:`` The ``rebuild`` command now comes with a lot more build output for ease of debugging. You can disable the build output with the new ``--silent/-s`` flag.
