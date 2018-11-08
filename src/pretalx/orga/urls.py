@@ -33,7 +33,7 @@ urlpatterns = [
     ])),
 
     url('^event/new/$', event.EventWizard.as_view(), name='event.create'),
-    url('^events/typeahead/$', event.event_list, name='event.typeahead'),
+    url('^event/typeahead/$', event.event_list, name='event.typeahead'),
 
     url('^event/$', dashboard.DashboardEventListView.as_view(), name='event.list'),
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([

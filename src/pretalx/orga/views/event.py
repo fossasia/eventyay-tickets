@@ -476,7 +476,7 @@ def event_list(request):
                 'date_range': event.get_date_range_display(),
                 'url': event.orga_urls.base,
             }
-            for event in qs.select_related('organiser')[offset : offset + pagesize]
+            for event in qs.select_related('organiser')[offset:offset + pagesize]
         ],
         'pagination': {"more": total >= (offset + pagesize)},
     }
