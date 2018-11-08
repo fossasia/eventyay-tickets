@@ -179,9 +179,8 @@ table .radio, table .checkbox {
 
   input {
     position: absolute;
-    top: 0;
-    left: -9999px;
-    visibility: hidden;
+    left: 0px;
+    opacity: 0;
 
     &:checked + label {
       &:before {}
