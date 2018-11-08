@@ -92,22 +92,66 @@ aside.sidebar {
   background-color: $offwhite;
   border-bottom: 4px $brand-primary solid;
   padding: 0.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12), 1px 1px 2px rgba(0, 0, 0, 0.24);
+  z-index: 200;
 
   .twitter-typeahead {
     width: inherit;
     margin-right: 8px;
   }
 
+  .fa-eye {
+    margin-top: 15px;
+    margin-left: 5px;
+  }
+
   .dropdown-menu {
     position: absolute;
+    top: 49px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 0;
+    width: 300px;
+    z-index: 0;
+    background: $offwhite;
+    li {
+      border-top: $gray-light 1px solid;
+      &:hover, &.active {
+        background: $gray-lightest;
+      }
+    }
   }
 
   #eventDropdown {
-    max-width: 200px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    .event-text {
+      width: 200px;
+    }
+    &[aria-expanded="true"] {
+      background: $gray-lighter;
+    }
+  }
+  #eventDropdown .event-text, .dropdown-menu .event-text {
+    padding: 8px;
+    font-size: 14px;
+    line-height: 15px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+
+    span {
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+    }
+
+    .event-date, .event-organiser {
+      font-size: 11px;
+      color: $gray;
+    }
   }
 }
 

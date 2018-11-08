@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`` The new event dropdown helps you find your event, even if you have access to many events.
 - :bug:`` The organiser login page did not strip whitespace from login credentials.
 - :bug:`524` Review settings contained the setting "Force data entry" twice, referring to the score and text, respectively.
 - :bug:`522` If a speaker did not check a mandatory checkbox, they could not submit the form (as intended), but could see no feedback explaining the issue.

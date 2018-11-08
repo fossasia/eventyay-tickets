@@ -39,6 +39,7 @@
         <script src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
         <script src="{% static "orga/js/main.js" %}"></script>
+        <script src="{% static "orga/js/typeahead.js" %}"></script>
         <script src="{% static "common/js/availabilities.js" %}"></script>
     {% endcompress %}
     {% block scripts %}{% endblock %}
@@ -57,26 +58,31 @@
         </a>
         <div class="navbar-collapse event-dropdown" id="navbartoggle">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown active">
+                <li class="nav-item dropdown active" id="event-navigation">
                     {% if request.orga_events.count > 1 %}
                         <a class="nav-link dropdown-toggle" id="eventDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% if request.event %}{{ request.event.name }}{% else %}{% trans "Events" %}{% endif %}
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="eventDropdown">
-                            {% for e in request.orga_events %}
-                                {% if not request.event == e %}
-                                    <a class="dropdown-item" href="{{ e.orga_urls.base }}">{{ e.name }}</a>
+                            <i class="fa fa-calendar"></i>
+                            <div class="event-text">
+                                {% if request.event %}
+                                <span class="event-name">{{ request.event.name }}</span>
+                                <span class="event-date">{{ request.event.get_date_range_display }}</span>
+                                {% else %}
+                                    {% trans "Events" %}
                                 {% endif %}
-                            {% endfor %}
-                            {% if request.user.is_administrator %}
-                                <a class="dropdown-item" href="{% url "orga:event.create" %}">
-                                    <i class="fa fa-plus"></i>
-                                    {% trans "New event" %}
-                                </a>
-                            {% endif %}
-                        </div>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu event-dropdown" role="menu" data-event-typeahead aria-labelledby="eventDropdown" data-source="{% url "orga:event.typeahead" %}">
+                            <li class="query-holder">
+                                <div class="form-box">
+                                    <input type="text" class="form-control"
+                                            placeholder="{% trans "Search for events" %}"
+                                            data-typeahead-query>
+                                </div>
+                            </li>
+                        </ul>
                     {% elif request.event %}
                         <a class="nav-link">
+                            <i class="fa fa-calendar"></i>
                             {{ request.event.name }}
                         </a>
                     {% endif %}

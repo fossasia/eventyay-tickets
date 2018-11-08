@@ -16,6 +16,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls, get_base_url
+from pretalx.common.utils import daterange
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
@@ -466,6 +467,9 @@ class Event(LogMixin, models.Model):
         from pretalx.person.models import User
 
         return User.objects.filter(submissions__event=self).order_by('id').distinct()
+
+    def get_date_range_display(self) -> str:
+        return daterange(self.date_from, self.date_to)
 
     def release_schedule(self, name, user=None):
         self.wip_schedule.freeze(name=name, user=user)
