@@ -60,10 +60,10 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     review_deadline = forms.DateTimeField(label=_('Review deadline'), required=False)
     review_score_mandatory = forms.BooleanField(
-        label=_('Force data entry'), required=False
+        label=_('Require a review score'), required=False
     )
     review_text_mandatory = forms.BooleanField(
-        label=_('Force data entry'), required=False
+        label=_('Require a review text'), required=False
     )
     mail_on_new_submission = forms.BooleanField(
         label=_('Send mail on new submission'),
