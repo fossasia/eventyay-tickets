@@ -51,7 +51,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
     def clean(self):
         data = super().clean()
-        if data.get('locale') not in data.get('locales'):
+        if data.get('locale') not in data.get('locales', []):
             raise forms.ValidationError(
                 _('Your default language needs to be one of your active languages.')
             )
