@@ -131,8 +131,9 @@ $(function () {
 });
 
 function update_review_override_votes() {
-    const show = document.querySelector('#id_is_reviewer').checked
-    if (show) {
+    const review = document.querySelector('#id_is_reviewer')
+    if (!review) {return}
+    if (review.checked) {
         document.querySelector('label[for=id_review_override_votes]').style.display = ''
         document.querySelector('#id_review_override_votes').style.display = ''
         document.querySelector('#id_review_override_votes + small').style.display = ''
