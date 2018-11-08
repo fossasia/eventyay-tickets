@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.template.defaultfilters import timeuntil
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
@@ -55,15 +56,9 @@ class EventDashboardView(PermissionRequired, TemplateView):
         result = []
         max_deadline = event.cfp.max_deadline
         if max_deadline and _now < max_deadline:
-            diff = max_deadline - _now
-            if diff.days >= 3:
-                result.append({'large': diff.days, 'small': _('days until CfP end')})
-            else:
-                hours = diff.seconds // 3600
-                minutes = (diff.seconds // 60) % 60
-                result.append(
-                    {'large': f'{hours}:{minutes}h', 'small': _('until CfP end')}
-                )
+            result.append(
+                {'large': timeuntil(max_deadline), 'small': _('until CfP end')}
+            )
         if event.cfp.is_open:
             result.append({'url': event.urls.base, 'small': _('Go to CfP')})
         return result
