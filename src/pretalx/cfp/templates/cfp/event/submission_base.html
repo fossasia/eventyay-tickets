@@ -4,13 +4,13 @@
 {% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
 
 {% block content %}
-    <div id="submission-steps">
+    <div id="submission-steps" class="stages">
         {% for stp in step_list %}
-        <a {% if stp.phase == 'done' %}href="{{ stp.url }}"{% endif %} class="submission-step step-{{ stp.phase }}">
-            <div class="submission-step-icon">
+        <a {% if stp.phase == 'done' %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
+            <div class="step-icon">
                 <span class="fa {% if stp.phase == 'done' %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
             </div>
-            <div class="submission-step-label">
+            <div class="step-label">
                 {{ stp.label }}
             </div>
         </a>
