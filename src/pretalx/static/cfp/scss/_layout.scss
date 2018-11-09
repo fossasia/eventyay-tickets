@@ -280,19 +280,14 @@ footer {
     position: relative;
 
     &:before {
-      position: absolute;
-      top: 22px;
       left: 0;
-      width: 50%;
-      height: 6px;
-      background: $gray-lighter;
-      z-index: 100;
-      content: "";
     }
     &:after {
-      position: absolute;
-      top: 22px;
       left: 50%;
+    }
+    &:after, &:before {
+      position: absolute;
+      top: 28px;
       width: 50%;
       height: 6px;
       background: $gray-lighter;
@@ -304,7 +299,7 @@ footer {
       width: 0;
     }
 
-    &.step-current {
+    &.step-current, &.step-done {
       &:before {
         background: $brand-success;
       }
@@ -315,19 +310,15 @@ footer {
       }
       .submission-step-label {
         color: $brand-success;
+        font-weight: bold;
       }
     }
     &.step-done {
-      &:before, &:after {
-        background: $brand-success;
-      }
-      .submission-step-icon {
-        border: 1px solid $brand-success;
-        background: $brand-success;
-        color: white;
-      }
       .submission-step-label {
-        color: $brand-success;
+        font-weight: normal;
+      }
+      &:after {
+        background: $brand-success;
       }
     }
     &:hover, &:active {
@@ -336,21 +327,24 @@ footer {
     .submission-step-icon {
       border: 1px solid $text-muted;
       display: inline-block;
-      width: 30px;
-      height: 30px;
-      line-height: 28px;
-      border-radius: 15px;
+      width: 40px;
+      height: 40px;
+      line-height: 36px;
+      border-radius: 20px;
       color: $text-muted;
       z-index: 200;
       background: white;
       position: relative;
     }
     .submission-step-label {
-      padding-top: 10px;
+      padding-top: 8px;
       color: $text-muted;
     }
     .fa-paper-plane {
-      margin-left: -3px;
+      margin-left: -4px;
     }
+  }
+  a {
+    outline: none;
   }
 }
