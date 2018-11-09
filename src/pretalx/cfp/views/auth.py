@@ -74,9 +74,9 @@ class ResetView(EventPageMixin, FormView):
             user.pw_reset_time
             and (now() - user.pw_reset_time).total_seconds() < 3600 * 24
         ):
-            messages.error(self.request, phrases.cfp.auth_already_requested)
+            messages.success(self.request, phrases.cfp.auth_password_reset)
             return redirect(
-                reverse('cfp:event.reset', kwargs={'event': self.request.event.slug})
+                reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
             )
 
         try:
