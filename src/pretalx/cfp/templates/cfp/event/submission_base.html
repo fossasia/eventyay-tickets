@@ -4,6 +4,18 @@
 {% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
 
 {% block content %}
+    <div id="submission-steps">
+        {% for stp in step_list %}
+        <a {% if stp.phase == 'done' %}href="{{ stp.url }}"{% endif %} class="submission-step step-{{ stp.phase }}">
+            <div class="submission-step-icon">
+                <span class="fa {% if stp.phase == 'done' %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
+            </div>
+            <div class="submission-step-label">
+                {{ stp.label }}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ wizard.management_form }}

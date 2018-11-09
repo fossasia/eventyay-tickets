@@ -268,3 +268,89 @@ footer {
     }
   }
 }
+#submission-steps {
+  display: flex;
+  flex-direction: row;
+  margin: 15px 0 13px 0;
+
+  .submission-step {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+
+    &:before {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      width: 50%;
+      height: 6px;
+      background: $gray-lighter;
+      z-index: 100;
+      content: "";
+    }
+    &:after {
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      width: 50%;
+      height: 6px;
+      background: $gray-lighter;
+      z-index: 100;
+      content: "";
+    }
+    &:last-child:after,
+    &:first-child:before {
+      width: 0;
+    }
+
+    &.step-current {
+      &:before {
+        background: $brand-success;
+      }
+      .submission-step-icon {
+        border: 1px solid $brand-success;
+        background: $brand-success;
+        color: white;
+      }
+      .submission-step-label {
+        color: $brand-success;
+      }
+    }
+    &.step-done {
+      &:before, &:after {
+        background: $brand-success;
+      }
+      .submission-step-icon {
+        border: 1px solid $brand-success;
+        background: $brand-success;
+        color: white;
+      }
+      .submission-step-label {
+        color: $brand-success;
+      }
+    }
+    &:hover, &:active {
+      text-decoration: none;
+    }
+    .submission-step-icon {
+      border: 1px solid $text-muted;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
+      border-radius: 15px;
+      color: $text-muted;
+      z-index: 200;
+      background: white;
+      position: relative;
+    }
+    .submission-step-label {
+      padding-top: 10px;
+      color: $text-muted;
+    }
+    .fa-paper-plane {
+      margin-left: -3px;
+    }
+  }
+}

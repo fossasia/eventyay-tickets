@@ -31,6 +31,12 @@ FORMS = [
     ('user', UserForm),
     ('profile', SpeakerProfileForm),
 ]
+FORM_DATA = {
+    'info': {'label': _('General'), 'icon': 'paper-plane'},
+    'questions': {'label': _('Questions'), 'icon': 'question-circle-o'},
+    'user': {'label': _('Account'), 'icon': 'user-circle-o'},
+    'profile': {'label': _('Profile'), 'icon': 'address-card-o'},
+}
 
 
 class SubmitStartView(EventPageMixin, View):
@@ -89,6 +95,24 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         step = kwargs.get('step')
+        step_list = []
+        phase = 'done'
+        for stp in self.get_form_list():
+            if stp == step:
+                phase = 'current'
+            step_list.append(
+                {
+                    'url': self.get_step_url(stp),
+                    'phase': phase,
+                    'label': FORM_DATA[stp]['label'],
+                    'icon': FORM_DATA[stp]['icon'],
+                }
+            )
+            if stp == step:
+                phase = 'todo'
+        step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
+        context['step_list'] = step_list
+
         if step == 'profile':
             if hasattr(self.request.user, 'email'):
                 email = self.request.user.email

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` While filling out the submission form wizard, submitters see a top bar telling them where they are in the submission process.
 - :bug:`-` The event dashboard showed a wrong countdown towards the CfP end while the CfP end was between three and one day away.
 - :feature:`-` The new event dropdown helps you find your event, even if you have access to many events.
 - :bug:`-` The organiser login page did not strip whitespace from login credentials.
