@@ -1,0 +1,97 @@
+.stages {
+  display: flex;
+  flex-direction: row;
+  margin: 15px 0 13px 0;
+
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+
+    &:before {
+      left: 0;
+    }
+    &:after {
+      left: 50%;
+    }
+    &:after, &:before {
+      position: absolute;
+      top: 28px;
+      width: 50%;
+      height: 6px;
+      background: $gray-lighter;
+      z-index: 100;
+      content: "";
+    }
+    &:last-child:after,
+    &:first-child:before {
+      width: 0;
+    }
+
+    &.step-current, &.step-done {
+      &:before {
+        background: $brand-success;
+      }
+      .step-icon {
+        border: 1px solid $brand-success;
+        background: $brand-success;
+        color: white;
+      }
+      .step-label {
+        color: $brand-success;
+        font-weight: bold;
+      }
+    }
+    &.step-done {
+      .step-label {
+        font-weight: normal;
+      }
+      &:after {
+        background: $brand-success;
+      }
+    }
+    &:hover, &:active {
+      text-decoration: none;
+    }
+    .step-icon {
+      border: 1px solid $text-muted;
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 36px;
+      border-radius: 20px;
+      color: $text-muted;
+      z-index: 200;
+      background: white;
+      position: relative;
+    }
+    .step-label {
+      padding-top: 8px;
+      color: $text-muted;
+    }
+    .fa-paper-plane {
+      margin-left: -4px;
+    }
+    .step-links {
+      display: none;
+      position: absolute;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      text-align: left;
+      z-index: 10;
+      padding: 8px 0;
+      width: 300px;
+      background: $white;
+    }
+    &:hover .step-links {
+      display: block;
+    }
+    &:last-of-type .step-links {
+      left: -50px;
+
+    }
+  }
+  a {
+    outline: none;
+  }
+}
