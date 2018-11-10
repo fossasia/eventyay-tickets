@@ -130,7 +130,15 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
     assert response.status_code == 200
     member.refresh_from_db()
     assert member.pw_reset_token
+    reset_token = member.pw_reset_token
     assert len(djmail.outbox) == 1
+
+    response = orga_client.post(url, follow=True)  # make sure we can do this twice despite timeouts
+    assert response.status_code == 200
+    member.refresh_from_db()
+    assert member.pw_reset_token != reset_token
+    reset_token = member.pw_reset_token
+    assert len(djmail.outbox) == 2
 
 
 @pytest.mark.django_db
