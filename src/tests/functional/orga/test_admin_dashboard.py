@@ -16,11 +16,14 @@ def test_dashboard_event_list(orga_user, orga_client, speaker, event, other_even
     response = orga_client.get(reverse('orga:event.list'), follow=True)
 
     if test_user == 'speaker':
-        assert response.status_code == 404, response.status_code
+        assert response.status_code == 200
+        assert event.slug not in response.content.decode()
     elif test_user == 'orga':
+        assert response.status_code == 200
         assert event.slug in response.content.decode()
         assert other_event.slug not in response.content.decode()
     elif test_user == 'superuser':
+        assert response.status_code == 200
         assert event.slug in response.content.decode(), response.content.decode()
         assert other_event.slug in response.content.decode(), response.content.decode()
     else:
