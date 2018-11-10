@@ -14,7 +14,7 @@ from pretalx.event.models import Event, Organiser, Team
 
 
 class EventPermissionMiddleware:
-    UNAUTHENTICATED_ORGA_URLS = ('invitation.view', 'auth', 'login')
+    UNAUTHENTICATED_ORGA_URLS = ('invitation.view', 'auth', 'login', 'auth.reset', 'auth.recover')
 
     def __init__(self, get_response):
         self.get_response = get_response

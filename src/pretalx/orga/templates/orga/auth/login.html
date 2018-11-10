@@ -12,5 +12,8 @@
         <button class="btn btn-lg btn-success btn-block" type="submit">
             {% trans "Sign in" %}
         </button>
+        <a class="btn btn-block btn-link" href="{% url "orga:auth.reset" %}">
+            {% trans "Reset password" %}
+        </a>
     </form>
 {% endblock %}

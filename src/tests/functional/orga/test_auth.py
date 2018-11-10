@@ -95,3 +95,101 @@ def test_orga_incorrect_invite_token(client, event, invitation):
         follow=True
     )
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_can_reset_password_by_email(orga_user, client, event):
+    response = client.post(
+        '/orga/reset/',
+        data={'login_email': orga_user.email, },
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.pw_reset_token
+    response = client.post(
+        f'/orga/reset/{orga_user.pw_reset_token}',
+        data={'password': 'mynewpassword1!', 'password_repeat': 'mynewpassword1!'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert not orga_user.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={'login_email': orga_user.email, 'login_password': 'mynewpassword1!'},
+        follow=True,
+    )
+    assert 'You are logged in as' in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_cannot_use_incorrect_token(orga_user, client, event):
+    response = client.post(
+        f'/orga/reset/abcdefg',
+        data={'password': 'mynewpassword1!', 'password_repeat': 'mynewpassword1!'},
+        follow=True,
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_cannot_reset_password_with_incorrect_input(orga_user, client, event):
+    response = client.post(
+        '/orga/reset/',
+        data={'login_email': orga_user.email, },
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.pw_reset_token
+    response = client.post(
+        f'/orga/reset/{orga_user.pw_reset_token}',
+        data={'password': 'mynewpassword1!', 'password_repeat': 'mynewpassword123!'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={'login_email': orga_user.email, 'login_password': 'mynewpassword1!'},
+        follow=True,
+    )
+    assert 'You are logged in as' not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_cannot_reset_password_to_insecure_password(orga_user, client, event):
+    response = client.post(
+        '/orga/reset/',
+        data={'login_email': orga_user.email, },
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.pw_reset_token
+    response = client.post(
+        f'/orga/reset/{orga_user.pw_reset_token}',
+        data={'password': 'password', 'password_repeat': 'password'},
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert orga_user.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={'login_email': orga_user.email, 'login_password': 'password'},
+        follow=True,
+    )
+    assert 'You are logged in as' not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_cannot_reset_password_without_account(orga_user, client, event):
+    response = client.post(
+        '/orga/reset/',
+        data={'login_email': 'incorrect' + orga_user.email, },
+        follow=True,
+    )
+    assert response.status_code == 200

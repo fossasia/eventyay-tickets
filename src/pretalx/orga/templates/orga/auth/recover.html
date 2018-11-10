@@ -1,0 +1,23 @@
+{% extends "orga/auth/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block title %}{% trans "Password reset" %} :: {% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        {{ form.media }}
+       <div class="labelless-password-input-form">
+            <h4>{% trans "OK, this looks good!" %}</h4>
+            <p>
+                {% blocktrans trimmed %}
+                    Now you just need to choose your new password and you are ready to go.
+                {% endblocktrans %}
+            </p>
+            {% bootstrap_field form.password layout='inline' %}
+            {% bootstrap_field form.password_repeat layout='inline' %}
+            <button type="submit" class="btn btn-block btn-success">{% trans "Save this!" %}</button>
+        </div>
+    </form>
+{% endblock %}

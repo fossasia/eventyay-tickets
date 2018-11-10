@@ -13,6 +13,8 @@ app_name = 'orga'
 urlpatterns = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
     url('^logout/$', auth.logout_view, name='logout'),
+    url('^reset/$', auth.ResetView.as_view(), name='auth.reset'),
+    url('^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='auth.recover'),
 
     url('^$', RedirectView.as_view(url='event', permanent=False)),
     url('^me$', event.UserSettings.as_view(), name='user.view'),

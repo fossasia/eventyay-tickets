@@ -235,29 +235,52 @@ class User(PermissionsMixin, AbstractBaseUser):
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
 
+    @transaction.atomic
     def reset_password(self, event, user=None):
         from pretalx.common.mail import mail
+        self.pw_reset_token = get_random_string(32)
+        self.pw_reset_time = now()
+        self.save()
 
-        with transaction.atomic():
-            self.pw_reset_token = get_random_string(32)
-            self.pw_reset_time = now()
-            self.save()
-            mail(
-                self,
-                _('Password recovery'),
-                event.settings.mail_text_reset,
-                {
-                    'name': self.name or '',
-                    'event': event.name,
-                    'url': build_absolute_uri(
-                        'cfp:event.recover',
-                        event=event,
-                        kwargs={'event': event.slug, 'token': self.pw_reset_token},
-                    ),
-                },
-                event,
-                locale=get_language(),
-            )
-            self.log_action(
-                action='pretalx.user.password.reset', person=user, orga=bool(user)
-            )
+        if event:
+            mail_text = event.settings.mail_text_reset
+            context = {
+                'name': self.name or '',
+                'event': event.name,
+                'url': build_absolute_uri(
+                    'cfp:event.recover',
+                    event=event,
+                    kwargs={'event': event.slug, 'token': self.pw_reset_token},
+                ),
+            }
+        else:
+            context = {
+                'name': self.name or '',
+                'url': build_absolute_uri(
+                    'orga:auth.recover',
+                    kwargs={'token': self.pw_reset_token},
+                ),
+            }
+            mail_text = _('''Hi {name},
+
+you have requested a new password for your pretalx account.
+To reset your password, click on the following link:
+
+  {url}
+
+If this wasn\'t you, you can just ignore this email.
+
+All the best,
+the pretalx robot''')
+
+        mail(
+            self,
+            _('Password recovery'),
+            mail_text,
+            context,
+            event,
+            locale=get_language(),
+        )
+        self.log_action(
+            action='pretalx.user.password.reset', person=user, orga=bool(user)
+        )
