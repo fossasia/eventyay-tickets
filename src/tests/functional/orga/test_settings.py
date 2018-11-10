@@ -1,4 +1,5 @@
 import pytest
+from django.core import mail as djmail
 
 from pretalx.event.models import Event
 
@@ -226,6 +227,7 @@ def test_delete_team_member(orga_client, event, other_orga_user):
 
 @pytest.mark.django_db
 def test_reset_team_member_password(orga_client, event, other_orga_user):
+    djmail.outbox = []
     team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
     team.members.add(other_orga_user)
     team.save()
@@ -236,6 +238,7 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
     assert response.status_code == 200
     member.refresh_from_db()
     assert member.pw_reset_token
+    assert len(djmail.outbox) == 1
 
 
 @pytest.mark.django_db

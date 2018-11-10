@@ -31,6 +31,7 @@ urlpatterns = [
         url('^teams/(?P<pk>[0-9]+)$', organiser.TeamDetail.as_view(), name='organiser.teams.view'),
         url('^teams/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='organiser.teams.delete'),
         url('^teams/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='organiser.teams.delete_member'),
+        url('^teams/(?P<pk>[0-9]+)/reset/(?P<user_pk>[0-9]+)$', organiser.TeamResetPassword.as_view(), name='organiser.team.password_reset'),
         url('^teams/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='organiser.teams.uninvite'),
     ])),
 

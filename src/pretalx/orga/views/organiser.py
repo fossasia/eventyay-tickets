@@ -203,7 +203,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
             )
         if hasattr(self.request, 'event') and self.request.event:
             return redirect(self.request.event.orga_urls.team_settings)
-        return redirect(self.request.organiser.orga_urls.base)
+        return redirect(self.request.organiser.orga_urls.teams)
 
 
 class OrganiserDetail(PermissionRequired, CreateOrUpdateView):

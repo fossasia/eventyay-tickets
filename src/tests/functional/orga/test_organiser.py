@@ -118,6 +118,22 @@ def test_invite_orga_member_as_orga(orga_client, organiser):
 
 
 @pytest.mark.django_db
+def test_reset_team_member_password(orga_client, organiser, other_orga_user):
+    djmail.outbox = []
+    team = organiser.teams.get(can_change_submissions=False, is_reviewer=True)
+    team.members.add(other_orga_user)
+    team.save()
+    member = team.members.first()
+    assert not member.pw_reset_token
+    url = organiser.orga_urls.teams + f'/{team.pk}/reset/{member.pk}'
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    member.refresh_from_db()
+    assert member.pw_reset_token
+    assert len(djmail.outbox) == 1
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize('deadline', (True, False))
 class TestEventCreation:
     url = '/orga/event/new/'
