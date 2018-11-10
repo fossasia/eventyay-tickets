@@ -221,3 +221,10 @@ table .radio, table .checkbox {
   display: flex;
   flex-direction: row-reverse;
 }
+table .action-column {
+  display: flex;
+  justify-content: flex-end;
+  .btn {
+    margin-left: 8px;
+  }
+}

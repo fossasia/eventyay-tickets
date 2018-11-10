@@ -29,7 +29,7 @@
                         </a>
                     </td>
                     <td>{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
-                    <td class="text-right">
+                    <td class="action-column">
                         {% if not forloop.last %}
                         <a href="{{ room.urls.down }}"
                            class="btn btn-sm btn-outline-info"

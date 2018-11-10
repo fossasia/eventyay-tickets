@@ -15,8 +15,6 @@
             <tr>
                 <th>{% trans "Submission type" %}</th>
                 <th>{% trans "Default duration" %}</th>
-                <th>{% trans "Maximum duration" %}</th>
-                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -29,17 +27,15 @@
                         </a>
                     </td>
                     <td>{{ type.default_duration }}</td>
-                    <td>
+                    <td class="action-column">
                         {% if request.event.cfp.default_type == type %}
-                            <i class="fa fa-check"></i> {% trans "Default" %}
+                            <a><i class="fa fa-check"></i> {% trans "Default" %}</a>
                         {% else %}
                             <a href="{{ type.urls.default }}"
                                     class="btn btn-sm btn-info">
                                 Make default
                             </a>
                         {% endif %}
-                    </td>
-                    <td class="text-right">
                         <a href="{{ type.urls.edit }}"
                                 class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>

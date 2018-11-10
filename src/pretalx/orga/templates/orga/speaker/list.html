@@ -38,7 +38,7 @@
                     <td>{{ profile.talks.count }}</td>
                     <td>{{ profile.submissions.count }}</td>
                     {% if can_mark_speaker or can_see_speaker_status %}
-                        <td>
+                        <td class="action-column">
                             {% if can_mark_speaker %}
                             <a class="btn btn-sm {% if profile.has_arrived %}btn-success{% else %}btn-info{% endif %}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
                                 {% if profile.has_arrived %}
@@ -49,9 +49,9 @@
                             </a>
                             {% else %}
                                 {% if profile.has_arrived %}
-                                    <i class="fa fa-check"></i> {% trans "Arrived" %}
+                                <a><i class="fa fa-check"></i> {% trans "Arrived" %}</a>
                                 {% else %}
-                                    <i class="fa fa-times"></i> {% trans "Not arrived" %}
+                                <a><i class="fa fa-times"></i> {% trans "Not arrived" %}</a>
                                 {% endif %}
                             {% endif %}
                         </td>
