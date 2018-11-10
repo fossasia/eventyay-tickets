@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`529` When trying to review their own permission, a user would see a 404 not found error instead of an explanation that this was a forbidden action.
 - :bug:`-` The password reset form told users if they had already tried to reset their password in the last 24 hours. While this is helpful, it also allows user discovery via password reset. Instead, the user now sees a more generic message.
 - :feature:`-` While filling out the submission form wizard, submitters see a top bar telling them where they are in the submission process.
 - :bug:`-` The event dashboard showed a wrong countdown towards the CfP end while the CfP end was between three and one day away.

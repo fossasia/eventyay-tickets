@@ -104,7 +104,7 @@ rules.add_perm(
 )
 rules.add_perm('submission.review_submission', is_reviewer & can_be_reviewed)
 rules.add_perm('submission.edit_review', can_be_reviewed & is_review_author)
-rules.add_perm('submission.view_reviews', is_reviewer & ~is_speaker)
+rules.add_perm('submission.view_reviews', is_reviewer)
 rules.add_perm('submission.edit_speaker_list', is_speaker | can_change_submissions)
 rules.add_perm(
     'submission.view_feedback', is_speaker | can_change_submissions | is_reviewer
