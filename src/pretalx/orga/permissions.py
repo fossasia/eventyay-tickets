@@ -36,11 +36,6 @@ def can_create_events(user, obj):
 
 
 @rules.predicate
-def can_change_any_event_settings(user, obj):
-    return user.is_administrator or user.get_events_for_permission(can_change_event_settings=True).exists()
-
-
-@rules.predicate
 def can_change_teams(user, obj):
     from pretalx.event.models import Organiser
     if isinstance(obj, Organiser):
@@ -79,7 +74,6 @@ rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.change_settings', can_change_event_settings)
 rules.add_perm('orga.change_organiser_settings', can_change_organiser_settings)
 rules.add_perm('orga.view_organisers', can_change_any_organiser_settings)
-rules.add_perm('orga.view_events', can_change_any_event_settings | can_create_events)
 rules.add_perm('orga.change_teams', is_administrator | can_change_teams)
 rules.add_perm('orga.view_submission_cards', can_change_submissions)
 rules.add_perm('orga.edit_cfp', can_change_submissions)

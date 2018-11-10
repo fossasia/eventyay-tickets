@@ -11,6 +11,7 @@ def test_orga_successful_login(client, user, template_patch):
     user.save()
     response = client.post(reverse('orga:login'), data={'email': user.email, 'password': 'testtest'}, follow=True)
     assert response.redirect_chain[-1][0] == '/orga/event/'
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db

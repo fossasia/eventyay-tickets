@@ -11,9 +11,8 @@ from pretalx.event.stages import get_stages
 from pretalx.submission.models.submission import SubmissionStates
 
 
-class DashboardEventListView(PermissionRequired, TemplateView):
+class DashboardEventListView(TemplateView):
     template_name = 'orga/event_list.html'
-    permission_required = 'orga.view_events'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
