@@ -1,4 +1,5 @@
 import logging
+from email.utils import formataddr
 from smtplib import SMTPSenderRefused
 from typing import Any, Dict, Union
 
@@ -98,8 +99,9 @@ def mail_send_task(
         if reply_to:
             headers['reply-to'] = reply_to
         backend = event.get_mail_backend()
+        sender = formataddr((str(event.name), sender))
     else:
-        sender = settings.MAIL_FROM
+        sender = formataddr(('pretalx', settings.MAIL_FROM))
         backend = get_connection(fail_silently=False)
 
     email = EmailMultiAlternatives(
