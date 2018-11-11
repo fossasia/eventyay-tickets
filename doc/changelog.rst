@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`532` Add a field for notes of the organisers for their own use which is not visible to the public and the speakers.
 - :feature:`-` Reviewers are now shown a progress bar when going through submissions.
 - :feature:`570` Submissions can now be scheduled multiple times, e.g. if a workshop will be held twice.
 - :bug:`-` Changing the order of rooms made the schedule break.

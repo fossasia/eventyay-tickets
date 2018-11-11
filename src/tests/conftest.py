@@ -463,6 +463,7 @@ def submission_data(event, submission_type):
         'description': 'Früher war es nämlich mehr. Und wir mussten es bügeln.',
         'abstract': 'Ich habe Quellen!',
         'notes': 'Und mein Enkel braucht auch noch ein Geschenk.',
+        'internal_notes': 'Ich habe gestern mit dem Redner telefoniert. -- slubby',
         'content_locale': 'en',
         'event': event,
     }

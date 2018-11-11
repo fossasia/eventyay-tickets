@@ -136,6 +136,14 @@ class Submission(LogMixin, models.Model):
     notes = models.TextField(
         null=True, blank=True, verbose_name=_('Notes for the organiser')
     )
+    internal_notes = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Internal notes'),
+        help_text=_('Notes by the organiser for themselves (not visible for the speaker and the public).')
+        + ' '
+        + phrases.base.use_markdown,
+    )
     duration = models.PositiveIntegerField(
         null=True,
         blank=True,

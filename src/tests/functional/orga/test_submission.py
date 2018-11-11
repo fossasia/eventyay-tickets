@@ -178,6 +178,7 @@ def test_orga_can_create_submission(orga_client, event):
             'duration': '',
             'slot_count': 1,
             'notes': 'notes',
+            'internal_notes': 'internal_notes',
             'speaker': 'foo@bar.com',
             'speaker_name': 'Foo Speaker',
             'title': 'title',

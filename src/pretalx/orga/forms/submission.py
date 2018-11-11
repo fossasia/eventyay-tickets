@@ -51,6 +51,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             'abstract',
             'description',
             'notes',
+            'internal_notes',
             'content_locale',
             'do_not_record',
             'duration',
