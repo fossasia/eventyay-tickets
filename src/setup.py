@@ -79,7 +79,7 @@ setup(
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
         'django-i18nfield==1.4.*',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
-        'djangorestframework==3.8.*',  # http://www.django-rest-framework.org/topics/release-notes/
+        'djangorestframework==3.9.*',  # http://www.django-rest-framework.org/topics/release-notes/
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         'libsass==0.14.5',  # https://sass.github.io/libsass-python/changes.html
         'Markdown==2.6.*',  # https://python-markdown.github.io/change_log/
