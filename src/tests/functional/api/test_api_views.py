@@ -309,3 +309,54 @@ def test_orga_speakers_with_multiple_talks_are_not_duplicated(
 
     assert response.status_code == 200
     assert content['count'] == 2
+
+
+@pytest.mark.django_db
+def test_anon_cannot_see_reviews(client, event, review):
+    response = client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 0, content
+
+
+@pytest.mark.django_db
+def test_orga_cannot_see_reviews(orga_client, event, review):
+    response = orga_client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 0, content
+
+
+@pytest.mark.django_db
+def test_reviewer_can_see_reviews(review_client, event, review, other_review):
+    response = review_client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 2, content
+
+
+@pytest.mark.django_db
+def test_reviewer_can_filter_by_submission(review_client, event, review, other_review):
+    response = review_client.get(
+        event.api_urls.reviews + f'?submission__code={review.submission.code}',
+        follow=True,
+    )
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 1, content
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_see_review_to_own_talk(
+    review_user, review_client, event, review, other_review
+):
+    other_review.submission.speakers.add(review_user)
+    response = review_client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 1, content

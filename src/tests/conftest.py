@@ -292,12 +292,16 @@ def personal_answer(personal_question, speaker):
 
 @pytest.fixture
 def user():
-    return User.objects.create_user(email='testuser@example.com', password='testpassw0rd!')
+    return User.objects.create_user(
+        email='testuser@example.com', password='testpassw0rd!'
+    )
 
 
 @pytest.fixture
 def administrator():
-    u = User.objects.create_superuser(email='testuser@examplecom', password='testpassw0rd!')
+    u = User.objects.create_superuser(
+        email='testuser@examplecom', password='testpassw0rd!'
+    )
     u.is_administrator = True
     u.save()
     return u
@@ -305,14 +309,14 @@ def administrator():
 
 @pytest.fixture
 def superuser():
-    return User.objects.create_superuser(email='testuser@examplecom', password='testpassw0rd!')
+    return User.objects.create_superuser(
+        email='testuser@examplecom', password='testpassw0rd!'
+    )
 
 
 @pytest.fixture
 def orga_user(event):
-    user = User.objects.create_user(
-        password='orgapassw0rd', email='orgauser@orga.org'
-    )
+    user = User.objects.create_user(password='orgapassw0rd', email='orgauser@orga.org')
     team = event.organiser.teams.filter(
         can_change_organiser_settings=True, is_reviewer=False
     ).first()
@@ -362,9 +366,7 @@ def other_review_user(event):
 
 @pytest.fixture
 def orga_reviewer_user(event):
-    user = User.objects.create_user(
-        password='orgapassw0rd', email='multiuser@orga.org'
-    )
+    user = User.objects.create_user(password='orgapassw0rd', email='multiuser@orga.org')
     team = event.organiser.teams.filter(
         can_change_organiser_settings=True, is_reviewer=True
     ).first()
@@ -440,7 +442,9 @@ def speaker_client(client, speaker):
 
 @pytest.fixture
 def other_speaker(event):
-    user = User.objects.create_user(email='speaker2@example.org', password='speakerpwd1!', name='Krümelmonster')
+    user = User.objects.create_user(
+        email='speaker2@example.org', password='speakerpwd1!', name='Krümelmonster'
+    )
     SpeakerProfile.objects.create(user=user, event=event, biography='COOKIIIIES!!')
     return user
 
@@ -728,5 +732,17 @@ def review(submission, review_user):
 
 
 @pytest.fixture
+def other_review(other_submission, other_review_user):
+    return Review.objects.create(
+        score=0,
+        submission=other_submission,
+        user=other_review_user,
+        text='Looks horrible!',
+    )
+
+
+@pytest.fixture
 def information(event):
-    return SpeakerInformation.objects.create(event=event, title='Information title', text='Important information')
+    return SpeakerInformation.objects.create(
+        event=event, title='Information title', text='Important information'
+    )
