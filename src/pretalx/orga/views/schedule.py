@@ -21,6 +21,7 @@ from pretalx.agenda.management.commands.export_schedule_html import (
     Command as ExportScheduleHtml,
 )
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
@@ -303,7 +304,7 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         else:
             availabilities = room.availabilities.all()
         return JsonResponse(
-            {'results': [avail.serialize() for avail in availabilities]}
+            {'results': AvailabilitySerializer(availabilities, many=True)}
         )
 
 

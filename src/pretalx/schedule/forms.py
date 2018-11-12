@@ -8,6 +8,7 @@ from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.schedule.models import Availability, Room, TalkSlot
 
@@ -24,9 +25,9 @@ class AvailabilitiesFormMixin(forms.Form):
 
     def _serialize(self, event, instance):
         if instance:
-            availabilities = [
-                avail.serialize() for avail in instance.availabilities.all()
-            ]
+            availabilities = AvailabilitySerializer(
+                instance.availabilities.all(), many=True
+            ).data
         else:
             availabilities = []
 

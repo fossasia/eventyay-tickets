@@ -2,8 +2,11 @@ import datetime
 from typing import List
 
 from django.db import models
+from django.utils.functional import cached_property
 
 from pretalx.common.mixins import LogMixin
+
+zerotime = datetime.time(0, 0)
 
 
 class Availability(LogMixin, models.Model):
@@ -41,15 +44,14 @@ class Availability(LogMixin, models.Model):
             ]
         )
 
+    @cached_property
+    def all_day(self):
+        return self.start.time() == zerotime and self.end.time() == zerotime
+
     def serialize(self) -> dict:
-        zerotime = datetime.time(0, 0)
-        return {
-            'id': self.id,
-            'start': str(self.start),
-            'end': str(self.end),
-            # make sure all-day availabilities are displayed properly in fullcalendar
-            'allDay': (self.start.time() == zerotime and self.end.time() == zerotime),
-        }
+        from pretalx.api.serializers.room import AvailabilitySerializer
+
+        return AvailabilitySerializer(self).data
 
     def overlaps(self, other: 'Availability', strict: bool) -> bool:
         """ Test if two Availabilities overlap. Includes direct adjacency, if in strict mode """
