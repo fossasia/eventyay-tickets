@@ -29,8 +29,8 @@ var api = {
     var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/talks/', window.location.search].join('')
     return api.http('GET', url, null)
   },
-  fetchRooms () {
-    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/rooms/', window.location.search].join('')
+  fetchRooms (eventSlug) {
+    const url = `${window.location.protocol}//${window.location.host}/api/events/${eventSlug}/rooms`
     return api.http('GET', url, null)
   },
   fetchAvailabilities (talkid, roomid, check_cache=true) {
@@ -205,7 +205,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header"><a v-bind:href="room.url">{{ room.name }}</a></div>
+      <div class="room-header"><a v-bind:href="room.url">{{ displayName }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
@@ -241,6 +241,9 @@ Vue.component('room', {
     },
     midnights () {
       return generateTimesteps(this.start, 24, 'h', this.end).slice(1);
+    },
+    displayName () {
+      return Object.values(this.room.name)[0]
     },
     style () {
       return {
@@ -296,19 +299,19 @@ var app = new Vue({
   created () {
     api.fetchTalks().then((result) => {
       this.talks = result.results
-    })
-    api.fetchRooms().then((result) => {
-      this.rooms = result.rooms
       this.timezone = result.timezone
       this.start = moment.tz(result.start, this.timezone)
       this.end = moment.tz(result.end, this.timezone)
+    })
+    api.fetchRooms(this.eventSlug).then((result) => {
+      this.rooms = result.results
     })
   },
   computed: {
     currentDay () {
     },
     duration () {
-      return this.end.diff(this.start, 'minutes')
+      return this.end ? this.end.diff(this.start, 'minutes') : null;
     },
     timesteps () {
       return generateTimesteps(this.start, 30, 'm', this.end);
@@ -319,6 +322,10 @@ var app = new Vue({
       return this.talks.filter(talk => {
          return talk.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1
       })
+    },
+    eventSlug() {
+      const relevant = window.location.pathname.substring(12);
+      return relevant.substring(0, relevant.indexOf('/'));
     }
   },
   methods: {
