@@ -11,7 +11,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.none()
     lookup_field = 'code__iexact'
-    filter_fields = ('state', 'content_locale', 'submission_type')
+    filterset_fields = ('state', 'content_locale', 'submission_type')
     search_fields = ('title', 'speakers__name')
 
     def get_base_queryset(self):

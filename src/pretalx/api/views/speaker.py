@@ -8,7 +8,7 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SpeakerSerializer
     queryset = SpeakerProfile.objects.none()
     lookup_field = 'user__code__iexact'
-    filter_fields = ('user__name', 'user__email')
+    filterset_fields = ('user__name', 'user__email')
     search_fields = ('user__name', 'user__email')
 
     def get_serializer_class(self):
