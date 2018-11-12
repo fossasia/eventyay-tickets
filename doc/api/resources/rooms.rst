@@ -1,6 +1,9 @@
 Rooms
 =====
 
+.. versionadded:: 0.9.0
+   This resource endpoint.
+
 Resource description
 --------------------
 
