@@ -3,6 +3,7 @@ import pytest
 from pretalx.api.serializers.event import EventSerializer
 from pretalx.api.serializers.question import AnswerSerializer, QuestionSerializer
 from pretalx.api.serializers.review import ReviewSerializer
+from pretalx.api.serializers.room import RoomOrgaSerializer, RoomSerializer
 from pretalx.api.serializers.speaker import (
     SpeakerOrgaSerializer, SpeakerSerializer, SubmitterSerializer,
 )
@@ -162,3 +163,24 @@ def test_review_serializer(review):
     assert data['submission'] == review.submission.code
     assert data['user'] == review.user.name
     assert data['answers'] == []
+
+
+@pytest.mark.django_db
+def test_room_serializer(room):
+    data = RoomSerializer(room).data
+    assert set(data.keys()) == {'id', 'name', 'description', 'capacity', 'position'}
+    assert data['id'] == room.pk
+
+
+@pytest.mark.django_db
+def test_room_orga_serializer(room):
+    data = RoomOrgaSerializer(room).data
+    assert set(data.keys()) == {
+        'id',
+        'name',
+        'description',
+        'capacity',
+        'position',
+        'speaker_info',
+    }
+    assert data['id'] == room.pk

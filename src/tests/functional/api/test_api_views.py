@@ -360,3 +360,21 @@ def test_reviewer_cannot_see_review_to_own_talk(
 
     assert response.status_code == 200
     assert len(content['results']) == 1, content
+
+
+@pytest.mark.django_db
+def test_everybody_can_see_rooms(client, room):
+    response = client.get(room.event.api_urls.rooms, follow=True)
+    content = json.loads(response.content.decode())
+    assert response.status_code == 200
+    assert len(content['results']) == 1, content
+    assert 'speaker_info' not in content['results'][0]
+
+
+@pytest.mark.django_db
+def test_orga_can_see_room_speaker_info(orga_client, room):
+    response = orga_client.get(room.event.api_urls.rooms, follow=True)
+    content = json.loads(response.content.decode())
+    assert response.status_code == 200
+    assert len(content['results']) == 1, content
+    assert 'speaker_info' in content['results'][0]

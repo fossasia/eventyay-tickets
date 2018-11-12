@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`` The API now provides a ``/rooms`` endpoint – this endpoint is public, so upgrading will publish which rooms you have configured in your conferences!
 - :feature:`530` The API now provides a ``/reviews`` endpoint.
 - :bug:`529` When trying to review their own submission, a user would see a 404 not found error instead of an explanation that this was a forbidden action.
 - :bug:`-` The password reset form told users if they had already tried to reset their password in the last 24 hours. While this is helpful, it also allows user discovery via password reset. Instead, the user now sees a more generic message.

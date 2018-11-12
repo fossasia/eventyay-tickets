@@ -249,6 +249,7 @@ class Event(LogMixin, models.Model):
         schedules = '{base}/schedules'
         speakers = '{base}/speakers'
         reviews = '{base}/reviews'
+        rooms = '{base}/rooms'
 
     class Meta:
         ordering = ('date_from',)

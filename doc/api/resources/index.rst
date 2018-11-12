@@ -8,3 +8,5 @@ Resources and endpoints
    submissions
    talks
    speakers
+   reviews
+   rooms
