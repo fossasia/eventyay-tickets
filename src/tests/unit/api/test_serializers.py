@@ -182,5 +182,6 @@ def test_room_orga_serializer(room):
         'capacity',
         'position',
         'speaker_info',
+        'availabilities',
     }
     assert data['id'] == room.pk
