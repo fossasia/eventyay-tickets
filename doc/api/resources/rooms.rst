@@ -17,6 +17,7 @@ description                           string                     The description
 capacity                              number                     How many people fit in the room
 position                              number                     A number indicating the ordering of the room relative to other rooms, e.g. in schedule visualisations
 speaker_info                          string                     Additional information for speakers. Only present when requested by an organiser
+availabilities                        list                       A list of objects with a ``start`` and ``end`` attribute, both datetimes. Only present when requested by an organiser
 ===================================== ========================== =======================================================
 
 Endpoints
