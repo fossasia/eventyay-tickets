@@ -1,4 +1,3 @@
-from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
     ModelSerializer, SerializerMethodField, SlugRelatedField,
 )
@@ -7,7 +6,7 @@ from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.submission.models import Answer, Review
 
 
-class ReviewSerializer(I18nAwareModelSerializer):
+class ReviewSerializer(ModelSerializer):
     submission = SlugRelatedField(slug_field='code', read_only=True)
     user = SlugRelatedField(slug_field='name', read_only=True)
     answers = SerializerMethodField()
