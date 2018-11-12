@@ -10,25 +10,6 @@ from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('room')
-def test_room_list(orga_client, event, room_availability):
-    response = orga_client.get(
-        reverse(f'orga:schedule.api.rooms', kwargs={'event': event.slug}), follow=True
-    )
-    content = json.loads(response.content.decode())
-    assert response.status_code == 200
-    assert len(content['rooms']) == 1
-    assert content['rooms'][0]['name']
-    assert content['start']
-    assert content['end']
-    availabilities = content['rooms'][0]['availabilities']
-    assert len(availabilities) == 1
-    assert availabilities[0]['id'] == room_availability.pk
-    assert availabilities[0]['start']
-    assert availabilities[0]['end']
-
-
-@pytest.mark.django_db
 @pytest.mark.usefixtures('accepted_submission')
 def test_talk_list(orga_client, event):
     response = orga_client.get(
