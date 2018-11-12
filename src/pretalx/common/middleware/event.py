@@ -14,7 +14,13 @@ from pretalx.event.models import Event, Organiser, Team
 
 
 class EventPermissionMiddleware:
-    UNAUTHENTICATED_ORGA_URLS = ('invitation.view', 'auth', 'login', 'auth.reset', 'auth.recover')
+    UNAUTHENTICATED_ORGA_URLS = (
+        'invitation.view',
+        'auth',
+        'login',
+        'auth.reset',
+        'auth.recover',
+    )
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -75,6 +81,9 @@ class EventPermissionMiddleware:
 
         self._set_orga_events(request)
         self._select_locale(request)
+        is_exempt = (
+            'agenda' in url.namespaces and url.url_name == 'export'
+        ) or request.path.startswith('/api/')
 
         if 'orga' in url.namespaces or (
             'plugins' in url.namespaces and request.path.startswith('/orga')
@@ -86,7 +95,7 @@ class EventPermissionMiddleware:
             getattr(request, 'event', None)
             and request.event.settings.custom_domain
             and not request.uses_custom_domain
-            and not ('agenda' in url.namespaces and url.url_name == 'export')
+            and not is_exempt
         ):
             return redirect(
                 urljoin(request.event.settings.custom_domain, request.get_full_path())

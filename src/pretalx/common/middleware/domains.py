@@ -46,7 +46,7 @@ class MultiDomainMiddleware:
         request.uses_custom_domain = False
 
         resolved = resolve(request.path)
-        if resolved.url_name in ANY_DOMAIN_ALLOWED:
+        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path.startswith('/api/'):
             return
         event_slug = resolved.kwargs.get('event')
         if event_slug:
