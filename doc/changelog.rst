@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`` The ``nav_event`` plugin signal has changed to expect a list instead of a dictionary response. The dictionary response will be supported for one more version, and raises a deprecation warning.
 - :feature:`` The API now provides a ``/rooms`` endpoint – this endpoint is public, so upgrading will publish which rooms you have configured in your conferences!
 - :feature:`530` The API now provides a ``/reviews`` endpoint.
 - :bug:`529` When trying to review their own submission, a user would see a 404 not found error instead of an explanation that this was a forbidden action.
