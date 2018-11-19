@@ -103,8 +103,8 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
     content = json.loads(response.content.decode())
     assert response.status_code == 200
     assert len(content['results']) == 1
-    assert content['results'][0]['start'] == '2017-01-01 03:00:00+00:00'
-    assert content['results'][0]['end'] == '2017-01-01 05:00:00+00:00'
+    assert content['results'][0]['start'] == '2017-01-01T03:00:00Z'
+    assert content['results'][0]['end'] == '2017-01-01T05:00:00Z'
 
 
 @pytest.mark.django_db
