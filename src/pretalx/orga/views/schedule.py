@@ -304,7 +304,7 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         else:
             availabilities = room.availabilities.all()
         return JsonResponse(
-            {'results': AvailabilitySerializer(availabilities, many=True)}
+            {'results': AvailabilitySerializer(availabilities, many=True).data}
         )
 
 
