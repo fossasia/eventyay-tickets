@@ -21,7 +21,7 @@ class CustomBuild(build):
         environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
         try:
             import django
-        except (ImportError, ModuleNotFoundError):
+        except ModuleNotFoundError:
             return
         django.setup()
         from django.conf import settings
