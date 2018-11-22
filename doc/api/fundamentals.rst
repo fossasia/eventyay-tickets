@@ -28,6 +28,9 @@ You need to include the API token with every request to the API in the
    GET /api/v1/organisers/ HTTP/1.1
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
 
+You can use the ``/api/me`` endpoint afterwards to see who you are logged in as.
+It returns an object with your ``name``, ``email``, ``locale`` and ``timezone``.
+
 .. note:: The API also supports authentication via browser sessions,
           the same way that you authenticate with pretalx when using the
           browser interface.  Using this authentication is *not*
