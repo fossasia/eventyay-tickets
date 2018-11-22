@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 
 from pretalx.common.forms.utils import get_help_text
+from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.submission.models import Answer, Question, QuestionTarget, QuestionVariant
 
 
@@ -76,6 +77,7 @@ class QuestionsForm(forms.Form):
         ]
 
     def get_field(self, *, question, initial, initial_object, readonly):
+        help_text = rich_text(question.help_text)
         if question.variant == QuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
@@ -90,7 +92,7 @@ class QuestionsForm(forms.Form):
 
             return forms.BooleanField(
                 disabled=readonly,
-                help_text=question.help_text,
+                help_text=help_text,
                 label=question.question,
                 required=question.required,
                 widget=widget,
@@ -99,7 +101,7 @@ class QuestionsForm(forms.Form):
         if question.variant == QuestionVariant.NUMBER:
             return forms.DecimalField(
                 disabled=readonly,
-                help_text=question.help_text,
+                help_text=help_text,
                 label=question.question,
                 required=question.required,
                 min_value=Decimal('0.00'),
@@ -109,7 +111,7 @@ class QuestionsForm(forms.Form):
             return forms.CharField(
                 disabled=readonly,
                 help_text=get_help_text(
-                    question.help_text, question.min_length, question.max_length
+                    help_text, question.min_length, question.max_length
                 ),
                 label=question.question,
                 required=question.required,
@@ -124,7 +126,7 @@ class QuestionsForm(forms.Form):
                 widget=forms.Textarea,
                 disabled=readonly,
                 help_text=get_help_text(
-                    question.help_text, question.min_length, question.max_length
+                    help_text, question.min_length, question.max_length
                 ),
                 initial=initial,
                 min_length=question.min_length,
@@ -135,7 +137,7 @@ class QuestionsForm(forms.Form):
                 label=question.question,
                 required=question.required,
                 disabled=readonly,
-                help_text=question.help_text,
+                help_text=help_text,
                 initial=initial,
             )
         if question.variant == QuestionVariant.CHOICES:
@@ -147,7 +149,7 @@ class QuestionsForm(forms.Form):
                 if initial_object
                 else question.default_answer,
                 disabled=readonly,
-                help_text=question.help_text,
+                help_text=help_text,
             )
         if question.variant == QuestionVariant.MULTIPLE:
             return forms.ModelMultipleChoiceField(
@@ -159,7 +161,7 @@ class QuestionsForm(forms.Form):
                 if initial_object
                 else question.default_answer,
                 disabled=readonly,
-                help_text=question.help_text,
+                help_text=help_text,
             )
         return None
 

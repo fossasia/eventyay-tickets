@@ -5,6 +5,7 @@ from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
+from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 
 
@@ -80,7 +81,9 @@ class Question(LogMixin, models.Model):
         blank=True,
         max_length=200,
         verbose_name=_('help text'),
-        help_text=_('Will appear just like this text below the question input field.'),
+        help_text=_('Will appear just like this text below the question input field.')
+        + ' '
+        + phrases.base.use_markdown,
     )
     default_answer = models.TextField(
         null=True, blank=True, verbose_name=_('default answer')
