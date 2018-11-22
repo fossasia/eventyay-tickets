@@ -4,6 +4,14 @@ import pytest
 
 
 @pytest.mark.django_db
+def test_api_user_endpoint(orga_client, room):
+    response = orga_client.get('/api/me', follow=True)
+    assert response.status_code == 200
+    content = json.loads(response.content.decode())
+    assert set(content.keys()) == {'name', 'email', 'locale', 'timezone'}
+
+
+@pytest.mark.django_db
 def test_can_only_see_public_events(client, event, other_event):
     other_event.is_public = False
     other_event.save()
