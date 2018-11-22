@@ -126,6 +126,7 @@ $(function () {
     $('.colorpickerfield').parent().colorpicker({
         format: 'hex',
         align: 'left',
+        autoInputFallback: false,
         customClass: 'colorpicker-2x',
         sliders: {
              saturation: {
