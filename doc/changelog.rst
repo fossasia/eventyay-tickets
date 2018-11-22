@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`` pretalx now presents a colorpicker for your event primary color, including a hint on color suitability.
 - :feature:`` The new `/api/me` endpoint shows name, email address, locale, and timezone of the logged in user.
 - :feature:`` The ``nav_event`` plugin signal has changed to expect a list instead of a dictionary response. The dictionary response will be supported for one more version, and raises a deprecation warning.
 - :feature:`` The API now provides a ``/rooms`` endpoint – this endpoint is public, so upgrading will publish which rooms you have configured in your conferences!

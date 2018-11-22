@@ -32,6 +32,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields['primary_color'].widget.attrs['placeholder'] = _(
             'A color hex value, e.g. #ab01de'
         )
+        self.fields['primary_color'].widget.attrs['class'] = 'colorpickerfield'
         self.fields['slug'].disabled = True
 
     def clean_custom_css(self):

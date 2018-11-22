@@ -4,6 +4,14 @@
 {% load rules %}
 {% load static %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+{% endblock %}
+
 {% block settings_content %}
 <h2>{% trans "Settings" %}</h2>
 <div class="flex-container"><div class="flex-content">
@@ -36,7 +44,7 @@
             {% trans "Display settings" %}
         </legend>
         {% bootstrap_field form.landing_page_text layout='event' %}
-        {% bootstrap_field form.primary_color layout='event' %}
+        {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon" %}
         {% bootstrap_field form.custom_css layout='event' %}
         <div class="event-logo-field form-group row">
             <label class="col-md-3 col-form-label" for="id_custom_css">{% trans "Event logo" %}<br><span class="optional">Optional</span></label>
