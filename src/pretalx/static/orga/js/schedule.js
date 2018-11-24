@@ -30,11 +30,11 @@ var api = {
     return api.http('GET', url, null)
   },
   fetchRooms (eventSlug) {
-    const url = `${window.location.protocol}//${window.location.host}/api/events/${eventSlug}/rooms`
+    const url = [window.location.protocol, '//', window.location.host, '/api/events/', eventSlug, '/rooms'].join('')
     return api.http('GET', url, null)
   },
   fetchAvailabilities (talkid, roomid, check_cache=true) {
-    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, `api/availabilities/${talkid}/${roomid}/`, window.location.search].join('')
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/availabilities/', talkid, '/', roomid, '/', window.location.search].join('')
 
     if (check_cache && api.cache[url]) {
       return api.cache[url];
@@ -45,7 +45,7 @@ var api = {
     return api.cache[url];
   },
   saveTalk(talk) {
-    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, `api/talks/${talk.id}/`, window.location.search].join('')
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname, 'api/talks/', talk.id, '/', window.location.search].join('')
     return api.http('PATCH', url, {
       room: talk.room,
       start: talk.start,
