@@ -34,3 +34,6 @@ Display
 
 .. automodule:: pretalx.cfp.signals
    :members: footer_link
+
+.. automodule:: pretalx.agenda.signals
+   :members: register_recording_providers
