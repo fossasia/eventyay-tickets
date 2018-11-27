@@ -53,7 +53,7 @@ def test_administrator_permissions(event):
     }
     assert user.get_permissions_for_event('randomthing') == permission_set
     assert user.get_permissions_for_event(event) == permission_set
-    assert list(orga_user.get_events_for_permission(can_change_submissions=True)) == [
+    assert list(user.get_events_for_permission(can_change_submissions=True)) == [
         event
     ]
     assert event in user.get_events_with_any_permission()
