@@ -182,6 +182,11 @@
                             <span>{% trans "Select Plugins" %}</span>
                         </a>
                         {% endif %}
+                        {% for plugin_setting in nav_settings %}
+                        <a href="{{ plugin_setting.url }}" class="nav-link nav-link-second-level{% if plugin_setting.active %} active{% endif %}">
+                            <span>{{ plugin_setting.label }}</span>
+                        </a>
+                        {% endfor %}
                     </div>
                 </div>
                 {% endif %}

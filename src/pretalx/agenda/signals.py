@@ -1,6 +1,5 @@
 from pretalx.common.signals import EventPluginSignal
 
-
 register_recording_provider = EventPluginSignal(providing_args=[])
 """
 This signal is sent out to gather all known recording providers. Receivers

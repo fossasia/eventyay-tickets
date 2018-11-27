@@ -3,7 +3,7 @@
 Release Notes
 =============
 
-- :feature:`-` The new ``nav_event_settings`` pluin signal allows plugins to integrate their own settings pages next to the pretalx core pages.
+- :feature:`-` The new ``nav_event_settings`` plugin signal allows plugins to integrate their own settings pages next to the pretalx core pages.
 - :feature:`-` pretalx now presents a colorpicker for your event primary color, including a hint on color suitability.
 - :feature:`-` The new `/api/me` endpoint shows name, email address, locale, and timezone of the logged in user.
 - :feature:`-` The ``nav_event`` plugin signal has changed to expect a list instead of a dictionary response. The dictionary response will be supported for one more version, and raises a deprecation warning.

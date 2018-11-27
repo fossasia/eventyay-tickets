@@ -3,7 +3,7 @@ from importlib import import_module
 
 from django.conf import settings
 
-from pretalx.orga.signals import nav_event, nav_global
+from pretalx.orga.signals import nav_event, nav_event_settings, nav_global
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -13,6 +13,8 @@ def collect_signal(signal, kwargs):
     for _, response in signal.send_robust(**kwargs):
         if isinstance(response, dict):
             result.append(response)
+        elif isinstance(response, list):
+            result += response
     return result
 
 
@@ -45,10 +47,13 @@ def orga_events(request):
                 _nav_event.append(response)
                 warnings.warn(
                     'Please return a list in your nav_event signal receiver, not a dictionary.',
-                    DeprecationWarning
+                    DeprecationWarning,
                 )
 
         context['nav_event'] = _nav_event
+        context['nav_settings'] = collect_signal(
+            nav_event_settings, {'sender': request.event, 'request': request}
+        )
 
         if (
             not request.event.is_public
