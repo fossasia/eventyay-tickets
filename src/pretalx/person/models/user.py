@@ -191,6 +191,8 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_events_for_permission(self, **kwargs):
         from pretalx.event.models import Event
+        if self.is_administrator:
+            return Event.objects.all()
 
         orga_teams = self.teams.filter(**kwargs)
         absolute = orga_teams.filter(all_events=True).values_list(
