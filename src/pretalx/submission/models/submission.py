@@ -1,6 +1,7 @@
 import re
 import string
 import uuid
+import warnings
 
 from django.conf import settings
 from django.db import models
@@ -424,8 +425,9 @@ class Submission(LogMixin, models.Model):
     @cached_property
     def rendered_recording_iframe(self):
         if self.recording_url and self.recording_source:
-            raise DeprecationWarning(
-                'Please use a recording source plugin instead of pretalx core functionality.'
+            warnings.warn(
+                'Please use a recording source plugin instead of pretalx core functionality.',
+                DeprecationWarning
             )
             from django.template import engines
 
