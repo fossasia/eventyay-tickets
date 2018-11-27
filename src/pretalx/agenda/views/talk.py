@@ -2,15 +2,16 @@ from contextlib import suppress
 from urllib.parse import urlparse
 
 import vobject
-from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView
 
+from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mixins.views import Filterable, PermissionRequired
 from pretalx.common.phrases import phrases
@@ -79,9 +80,33 @@ class TalkView(PermissionRequired, DetailView):
                 )
         raise Http404()
 
-    @csp_update(CHILD_SRC="https://media.ccc.de")
+    @cached_property
+    def recording(self):
+        for receiver, response in register_recording_provider.send_robust(
+            self.request.event
+        ):
+            if (
+                response
+                and not isinstance(response, Exception)
+                and hasattr(response, 'get_recording')
+            ):
+                recording = response.get_recording(self.object.submission)
+                if recording and recording['iframe']:
+                    return recording
+            else:
+                print(response)
+        if self.object.submission.rendered_recording_iframe:
+            return {
+                'iframe': self.object.submission.rendered_recording_iframe,
+                'csp_header': 'https://media.ccc.de',
+            }
+        return {}
+
     def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        response = super().get(request, *args, **kwargs)
+        if self.recording.get('csp_header'):
+            response._csp_update = {'child-src': self.recording.get('csp_header')}
+        return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -100,6 +125,7 @@ class TalkView(PermissionRequired, DetailView):
                 title=slot.submission.title, event=slot.submission.event.name
             )
         )
+        context['recording_iframe'] = self.recording.get('iframe')
         context['speakers'] = []
         for speaker in slot.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
