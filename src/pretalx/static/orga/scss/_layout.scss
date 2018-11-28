@@ -173,6 +173,13 @@ aside.sidebar {
   }
 }
 
+#speaker-typeahead {
+  span.twitter-typeahead, input {
+    width: 350px;
+    margin-right: 8px;
+  }
+}
+
 .orga-headline {
   font-weight: bold;
 }

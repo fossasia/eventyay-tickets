@@ -13,10 +13,10 @@
                 {% trans "Add a speaker – if the email address isn't registered yet, an account will be created for them and an invitation sent." %}:<br>
             </label>
             {% csrf_token %}
-            <div class="input-group d-flex flex-row">
+            <div class="input-group" id="speaker-typeahead">
                 <input type="text" name="speaker" id="id_speaker" class="form-control" placeholder="{% trans "E-mail address" %}"/>
                 <input type="text" name="name" id="id_speaker_name" class="form-control" placeholder="{% trans "Name" %}" />
-                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i></button>
+                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% trans "Add speaker" %}</button>
             </div>
         </form>
     </div>{% endif %}
