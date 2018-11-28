@@ -1,6 +1,8 @@
 .. highlight:: python
    :linenothreshold: 5
 
+.. _`pluginsignals`:
+
 General APIs
 ============
 

@@ -9,4 +9,5 @@ Contents:
    plugins
    general
    customview
+   recording
    exporter

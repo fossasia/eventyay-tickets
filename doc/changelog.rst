@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :support:`-` A new pretalx plugin adds media.ccc.de as a recording provider – this plugin replaces the previously inbuilt capacity of pretalx to provide recording iframes. (This functionality was never directly exposed and only accessible via the pretalx shell. It is now deprecated and will be removed in a later version.)
+- :feature:`-` Plugins can now provide recording iframes (via the new ``register_recording_provider`` signal and other mixins).
 - :feature:`-` The new ``nav_event_settings`` plugin signal allows plugins to integrate their own settings pages next to the pretalx core pages.
 - :feature:`-` pretalx now presents a colorpicker for your event primary color, including a hint on color suitability.
 - :feature:`-` The new `/api/me` endpoint shows name, email address, locale, and timezone of the logged in user.
