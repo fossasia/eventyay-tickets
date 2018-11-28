@@ -123,47 +123,49 @@ $(function () {
             update_multi_select_caption(multiSelect);
         }
     })
-    $('.colorpickerfield').parent().colorpicker({
-        format: 'hex',
-        align: 'left',
-        autoInputFallback: false,
-        customClass: 'colorpicker-2x',
-        sliders: {
-             saturation: {
-                 maxLeft: 200,
-                 maxTop: 200
-             },
-             hue: {
-                 maxTop: 200
-             },
-             alpha: {
-                maxTop: 200
+    if ($('.colorpickerfield').length) {
+        $('.colorpickerfield').parent().colorpicker({
+            format: 'hex',
+            align: 'left',
+            autoInputFallback: false,
+            customClass: 'colorpicker-2x',
+            sliders: {
+                 saturation: {
+                     maxLeft: 200,
+                     maxTop: 200
+                 },
+                 hue: {
+                     maxTop: 200
+                 },
+                 alpha: {
+                    maxTop: 200
+                }
             }
-        }
-    }).on('colorpickerChange', function(e) {
+        }).on('colorpickerChange', function(e) {
 
-        var rgb = $(this).colorpicker('color')._color.rgb();
-        var c = contrast([255,255,255], [rgb.red(), rgb.green(), rgb.blue()]);
-        var mark = 'times';
-        if ($(this).parent().find(".contrast-state").length === 0) {
-            $(this).parent().append("<div class='help-block contrast-state'></div>");
-        }
-        var $note = $(this).parent().find(".contrast-state");
-        if (c > 7) {
-            $note.html("<span class='fa fa-fw fa-check-circle'></span>")
-                .append('Your color has great contrast and is very easy to read!');
-            $note.addClass("text-success").removeClass("text-warning").removeClass("text-danger");
-        } else if (c > 2.5) {
-            $note.html("<span class='fa fa-fw fa-info-circle'></span>")
-                .append('Your color has decent contrast and is probably good-enough to read!');
-            $note.removeClass("text-success").removeClass("text-warning").removeClass("text-danger");
-        } else {
-            $note.html("<span class='fa fa-fw fa-warning'></span>")
-                .append('Your color has bad contrast for text on white background, please choose a darker ' +
-                    'shade.');
-            $note.addClass("text-danger").removeClass("text-success").removeClass("text-warning");
-        }
-    })
+            var rgb = $(this).colorpicker('color')._color.rgb();
+            var c = contrast([255,255,255], [rgb.red(), rgb.green(), rgb.blue()]);
+            var mark = 'times';
+            if ($(this).parent().find(".contrast-state").length === 0) {
+                $(this).parent().append("<div class='help-block contrast-state'></div>");
+            }
+            var $note = $(this).parent().find(".contrast-state");
+            if (c > 7) {
+                $note.html("<span class='fa fa-fw fa-check-circle'></span>")
+                    .append('Your color has great contrast and is very easy to read!');
+                $note.addClass("text-success").removeClass("text-warning").removeClass("text-danger");
+            } else if (c > 2.5) {
+                $note.html("<span class='fa fa-fw fa-info-circle'></span>")
+                    .append('Your color has decent contrast and is probably good-enough to read!');
+                $note.removeClass("text-success").removeClass("text-warning").removeClass("text-danger");
+            } else {
+                $note.html("<span class='fa fa-fw fa-warning'></span>")
+                    .append('Your color has bad contrast for text on white background, please choose a darker ' +
+                        'shade.');
+                $note.addClass("text-danger").removeClass("text-success").removeClass("text-warning");
+            }
+        })
+    }
 
     document.querySelectorAll('.checkbox-multi-select').forEach((element) => {update_multi_select_caption(element)});
     $('#id_is_reviewer').change((ev) => {
