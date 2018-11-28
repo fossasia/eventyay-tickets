@@ -224,8 +224,8 @@ class User(PermissionsMixin, AbstractBaseUser):
                 event.teams.filter(members__in=[self], is_reviewer=True).values_list(
                     'review_override_votes', flat=True
                 )
+                or [0]
             )
-            or 0
         )
         overridden = self.reviews.filter(
             submission__event=event, override_vote__isnull=False
