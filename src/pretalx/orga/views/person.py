@@ -1,6 +1,7 @@
 import urllib
 
 from django.contrib import messages
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -21,7 +22,8 @@ class UserList(View):
             can_change_submissions=True
         )
         queryset = User.objects.filter(
-            name__icontains=search, profiles__event__in=events
+            Q(name__icontains=search) | Q(email__icontains=search),
+            profiles__event__in=events,
         )
         if request.GET.get('orga', 'false').lower() == 'true':
             queryset = queryset.filter(teams__in=request.event.teams)
