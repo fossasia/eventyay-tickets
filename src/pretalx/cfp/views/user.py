@@ -261,7 +261,6 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             obj.log_action(
                 'pretalx.submission.resource.create',
                 person=self.request.user,
-                orga=True,
                 data={'id': form.instance.pk},
             )
 
