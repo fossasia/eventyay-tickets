@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now set the default pretalx system wide time zone and locale (defaulting to ``UTC`` and ``en``).
 - :bug:`544` Organisers could see the titles of speaker information notes of all events, not just the currently active one (they could not see the details or edit them).
 - :feature:`504` The schedule page is now better printable.
 - :bug:`-` A `bug <https://github.com/celery/celery/issues/4878>` in celery could make running pretalx with asynchronous workers impossible. We've pinned an earlier celery version that doesn't show this problem.

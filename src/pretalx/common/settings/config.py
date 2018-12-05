@@ -124,6 +124,16 @@ CONFIG = {
             'env': os.getenv('PRETALX_LOGGING_EMAIL_LEVEL'),
         },
     },
+    'locale': {
+        'language_code': {
+            'default': 'en',
+            'env': os.getenv('PRETALX_LANGUAGE_CODE'),
+        },
+        'time_zone': {
+            'default': 'UTC',
+            'env': os.getenv('PRETALX_TIME_ZONE'),
+        },
+    },
 }
 
 

@@ -256,3 +256,20 @@ The logging section
 - The log level to start sending emails at. Any of ``[DEBUG, INFO, WARNING, ERROR, CRITICAL]``.
 - **Environment variable:** ``PRETALX_LOGGING_EMAIL_LEVEL``
 - **Default:** ``'ERROR'``
+
+The locale section
+------------------
+
+``language_code``
+~~~~~~~~~~~~~~~~~
+
+- The system's default locale.
+- **Environment variable:** ``PRETALX_LANGUAGE_CODE``
+- **Default:** ``'en'``
+
+``time_zone``
+~~~~~~~~~~~~~
+
+- The system's default time zone as a ``pytz`` name.
+- **Environment variable:** ``PRETALX_TIME_ZONE``
+- **Default:** ``'UTC'``
