@@ -248,6 +248,9 @@
   #event-nonpublic {
     display: none;
   }
+  h3:not(:first-of-type) { /* improve look of day captions after page break */
+    margin-top: 5em;
+  }
   .container {
     max-width: 100%;
   }
