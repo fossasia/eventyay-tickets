@@ -234,3 +234,21 @@
     }
   }
 }
+@media print {
+  body {
+    background: none;
+    overflow: visible;
+  }
+  #navigator, #schedule-nav, #main-card .user-row, #event-nonpublic {
+    display: none;
+  }
+  .container {
+    max-width: 100%;
+  }
+  #fahrplan {
+    display: block;
+  }
+  .day {
+    break-after: page;
+  }
+}
