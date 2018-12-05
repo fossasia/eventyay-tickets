@@ -237,9 +237,15 @@
 @media print {
   body {
     background: none;
-    overflow: visible;
+    overflow: visible !important;
+    height: auto;
   }
-  #navigator, #schedule-nav, #main-card .user-row, #event-nonpublic {
+  #navigator,
+  #schedule-nav,
+  #main-card .user-row,
+  header, footer,
+  .schedule-header .btn,
+  #event-nonpublic {
     display: none;
   }
   .container {
@@ -247,8 +253,10 @@
   }
   #fahrplan {
     display: block;
+    overflow: visible !important;
   }
   .day {
-    break-after: page;
+    page-break-after: always;
+    overflow: visible !important;
   }
 }
