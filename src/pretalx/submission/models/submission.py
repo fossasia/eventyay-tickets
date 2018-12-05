@@ -142,7 +142,7 @@ class Submission(LogMixin, models.Model):
     is_featured = models.BooleanField(
         default=False,
         verbose_name=_(
-            'Show this talk on the public sneak peek page, if it is enabled.'
+            'Show this talk on the public sneak peek page, if the sneak peek page is enabled and the talk was accepted.'
         ),
     )
     do_not_record = models.BooleanField(

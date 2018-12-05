@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`538` The sneak peek view will only feature talks that have been accepted.
 - :feature:`440` Organisers can now follow an RSS feed to see new submissions – you'll have to provide your authentication token in the RSS request header to authenticate.
 - :feature:`-` You can now set the default pretalx system wide time zone and locale (defaulting to ``UTC`` and ``en``).
 - :bug:`544` Organisers could see the titles of speaker information notes of all events, not just the currently active one (they could not see the details or edit them).

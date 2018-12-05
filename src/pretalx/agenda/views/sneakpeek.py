@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.submission.models import SubmissionStates
 
 
 class SneakpeekView(PermissionRequired, TemplateView):
@@ -13,9 +14,10 @@ class SneakpeekView(PermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['talks'] = self.request.event.submissions.filter(is_featured=True).order_by(
-            'id'
-        )
+        ctx['talks'] = self.request.event.submissions.filter(
+            state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED],
+            is_featured=True,
+        ).order_by('id')
         return ctx
 
     def dispatch(self, request, *args, **kwargs):
