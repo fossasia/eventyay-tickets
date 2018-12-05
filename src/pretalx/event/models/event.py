@@ -218,6 +218,7 @@ class Event(LogMixin, models.Model):
         purge_outbox = '{outbox}/purge'
         submissions = '{base}/submissions'
         submission_cards = '{base}/submissions/cards/'
+        submission_feed = '{base}/submissions/feed/'
         new_submission = '{submissions}/new'
         speakers = '{base}/speakers'
         settings = edit_settings = '{base}/settings'

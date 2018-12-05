@@ -49,6 +49,19 @@ def test_orga_can_see_single_submission_speakers(orga_client, event, submission)
 
 
 @pytest.mark.django_db
+def test_orga_can_see_single_submission_in_feed(orga_client, event, submission):
+    response = orga_client.get(submission.event.orga_urls.submission_feed, follow=True)
+    assert response.status_code == 200
+    assert submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_anon_cannot_see_single_submission_in_feed(client, event, submission):
+    response = client.get(submission.event.orga_urls.submission_feed, follow=True)
+    assert submission.title not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_accept_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED

@@ -475,3 +475,7 @@ class Submission(LogMixin, models.Model):
             person__in=self.speaker_profiles
         )
         return Availability.intersection(all_availabilities)
+
+    @cached_property
+    def created(self):
+        return getattr(self.logged_actions().order_by('timestamp').first(), 'timestamp', None)

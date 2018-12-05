@@ -4,10 +4,12 @@ from datetime import timedelta
 
 from dateutil import rrule
 from django.contrib import messages
+from django.contrib.syndication.views import Feed
 from django.db import transaction
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.utils import feedgenerator
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.http import is_safe_url
@@ -472,3 +474,41 @@ class ToggleFeatured(SubmissionViewMixin, View):
         self.object.is_featured = not self.object.is_featured
         self.object.save(update_fields=['is_featured'])
         return HttpResponse()
+
+
+class SubmissionFeed(PermissionRequired, Feed):
+
+    permission_required = 'orga.view_submission'
+    feed_type = feedgenerator.Atom1Feed
+
+    def get_object(self, request, *args, **kwargs):
+        if not request.user.has_perm('orga.view_submissions', request.event):
+            raise Http404()
+        return request.event
+
+    def title(self, obj):
+        return _('{name} submission feed').format(name=obj.name)
+
+    def link(self, obj):
+        return obj.orga_urls.submissions.full()
+
+    def feed_url(self, obj):
+        return obj.orga_urls.submission_feed.full()
+
+    def feed_guid(self, obj):
+        return obj.orga_urls.submission_feed.full()
+
+    def description(self, obj):
+        return _('Updates to the {name} schedule.').format(name=obj.name)
+
+    def items(self, obj):
+        return obj.submissions.order_by('-pk')
+
+    def item_title(self, item):
+        return _('New {event} submission: {title}').format(event=item.event.name, title=item.title)
+
+    def item_link(self, item):
+        return item.orga_urls.base.full()
+
+    def item_pubdate(self, item):
+        return item.created
