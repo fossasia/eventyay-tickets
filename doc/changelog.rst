@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`544` Organisers could see the titles of speaker information notes of all events, not just the currently active one (they could not see the details or edit them).
 - :feature:`504` The schedule page is now better printable.
 - :bug:`-` A `bug <https://github.com/celery/celery/issues/4878>` in celery could make running pretalx with asynchronous workers impossible. We've pinned an earlier celery version that doesn't show this problem.
 - :support:`-` A new pretalx plugin adds media.ccc.de as a recording provider – this plugin replaces the previously inbuilt capacity of pretalx to provide recording iframes. (This functionality was never directly exposed and only accessible via the pretalx shell. It is now deprecated and will be removed in a later version.)

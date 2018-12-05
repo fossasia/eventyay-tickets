@@ -292,6 +292,7 @@ LANGUAGE_CODE = 'en'
 LANGUAGES_OFFICIAL = {'en', 'de'}
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
 FORMAT_MODULE_PATH = ['pretalx.common.formats']
+TIME_ZONE = 'UTC'  # TODO
 
 
 ## AUTHENTICATION SETTINGS
