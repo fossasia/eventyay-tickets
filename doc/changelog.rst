@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` A `bug <https://github.com/celery/celery/issues/4878>` in celery could make running pretalx with asynchronous workers impossible. We've pinned an earlier celery version that doesn't show this problem.
 - :support:`-` A new pretalx plugin adds media.ccc.de as a recording provider – this plugin replaces the previously inbuilt capacity of pretalx to provide recording iframes. (This functionality was never directly exposed and only accessible via the pretalx shell. It is now deprecated and will be removed in a later version.)
 - :feature:`-` Plugins can now provide recording iframes (via the new ``register_recording_provider`` signal and other mixins).
 - :feature:`-` The new ``nav_event_settings`` plugin signal allows plugins to integrate their own settings pages next to the pretalx core pages.

@@ -65,7 +65,7 @@ setup(
     keywords='conference cfp event barcamp',
     install_requires=[
         'bleach>=2.1.2,==2.1.*',  # https://bleach.readthedocs.io/en/latest/changes.html
-        'celery==4.2.*',  # search for "what's new" on http://docs.celeryproject.org/en/latest/
+        'celery==4.1.*',  # search for "what's new" on http://docs.celeryproject.org/en/latest/, restricted to 4.1 due to https://github.com/celery/celery/issues/4878
         'csscompressor==0.9.*',  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         'cssutils==1.0.*',  # https://pythonhosted.org/cssutils/CHANGELOG.html
         'Django>=2.1,<2.2',  # https://docs.djangoproject.com/en/2.0/releases/
