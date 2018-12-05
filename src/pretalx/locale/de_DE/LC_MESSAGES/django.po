@@ -3922,7 +3922,7 @@ msgstr "Upload"
 
 #: pretalx/orga/templates/orga/schedule/index.html:24
 msgid "Your schedule is currently publicly visible."
-msgstr "Das Programm ist derzeit nicht öffentlich einsehbar."
+msgstr "Das Programm ist derzeit öffentlich einsehbar."
 
 #: pretalx/orga/templates/orga/schedule/index.html:26
 msgid "Once you release your schedule, it will be publicly visible."
