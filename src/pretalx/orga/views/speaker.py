@@ -222,7 +222,7 @@ class InformationList(PermissionRequired, ListView):
     permission_required = 'orga.view_information'
 
     def get_queryset(self):
-        return self.request.event.information.objects.all()
+        return self.request.event.information.all()
 
     def get_permission_object(self):
         return self.request.event
@@ -263,7 +263,7 @@ class InformationDelete(PermissionRequired, DetailView):
     template_name = 'orga/speaker/information_delete.html'
 
     def get_queryset(self):
-        return self.request.event.information.objects.all()
+        return self.request.event.information.all()
 
     def post(self, request, *args, **kwargs):
         information = self.get_object()
