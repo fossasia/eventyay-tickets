@@ -38,8 +38,7 @@ class EventPluginSignal(django.dispatch.Signal):
                 searchpath, _ = searchpath.rsplit(".", 1)
 
         # Only fire receivers from active plugins and core modules
-        plugins = sender.get_plugins()
-        if core_module or (sender and app and app.name in plugins):
+        if core_module or (sender and app and app.name in sender.get_plugins()):
             return True
         return False
 
