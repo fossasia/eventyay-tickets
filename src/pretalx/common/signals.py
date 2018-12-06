@@ -38,7 +38,8 @@ class EventPluginSignal(django.dispatch.Signal):
                 searchpath, _ = searchpath.rsplit(".", 1)
 
         # Only fire receivers from active plugins and core modules
-        if core_module or (sender and app and app.name in sender.get_plugins()):
+        plugins = sender.get_plugins()
+        if core_module or (sender and app and app.name in plugins):
             return True
         return False
 
@@ -65,6 +66,33 @@ class EventPluginSignal(django.dispatch.Signal):
             if self._is_active(sender, receiver):
                 response = receiver(signal=self, sender=sender, **named)
                 responses.append((receiver, response))
+        return sorted(
+            responses,
+            key=lambda response: (response[0].__module__, response[0].__name__),
+        )
+
+    def send_robust(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+        if sender and not isinstance(sender, Event):
+            raise ValueError("Sender needs to be an event.")
+
+        responses = []
+        if (
+            not self.receivers
+            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
+        ):
+            return []
+
+        if not app_cache:
+            _populate_app_cache()
+
+        for receiver in self._live_receivers(sender):
+            if self._is_active(sender, receiver):
+                try:
+                    response = receiver(signal=self, sender=sender, **named)
+                except Exception as err:
+                    responses.append((receiver, err))
+                else:
+                    responses.append((receiver, response))
         return sorted(
             responses,
             key=lambda response: (response[0].__module__, response[0].__name__),
