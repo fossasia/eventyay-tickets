@@ -72,6 +72,12 @@ class EventPluginSignal(django.dispatch.Signal):
         )
 
     def send_robust(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+        """
+        Send signal from sender to all connected receivers that belong to plugins enabled for the given Event.
+        If a receiver raises an Exception, it is returned as the response instead of propagating.
+
+        sender is required to be an instance of ``pretalx.event.models.Event``.
+        """
         if sender and not isinstance(sender, Event):
             raise ValueError("Sender needs to be an event.")
 
@@ -97,6 +103,30 @@ class EventPluginSignal(django.dispatch.Signal):
             responses,
             key=lambda response: (response[0].__module__, response[0].__name__),
         )
+
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
+        """
+        Send signal from sender to all connected receivers. The return value of the first receiver
+        will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the
+        second receiver and so on. The return value of the last receiver is returned by this method.
+
+        sender is required to be an instance of ``pretalx.event.models.Event``.
+        """
+        if sender and not isinstance(sender, Event):
+            raise ValueError("Sender needs to be an event.")
+
+        response = named.get(chain_kwarg_name)
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
+            return response
+
+        if not app_cache:
+            _populate_app_cache()
+
+        for receiver in self._live_receivers(sender):
+            if self._is_active(sender, receiver):
+                named[chain_kwarg_name] = response
+                response = receiver(signal=self, sender=sender, **named)
+        return response
 
 
 periodic_task = django.dispatch.Signal()
