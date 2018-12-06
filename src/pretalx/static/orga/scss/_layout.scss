@@ -519,6 +519,8 @@ form #id_settings-display_header_pattern, form #id_display-display_header_patter
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      align-items: baseline;
+      font-weight: bold;
 
       .btn {
         max-width: 150px;
