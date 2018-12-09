@@ -122,6 +122,13 @@ class EventLive(EventSettingsPermission, TemplateView):
                 }
             )
         # TODO: test that mails can be sent
+        if self.request.event.settings.use_tracks and self.request.event.settings.cfp_request_track and self.request.event.tracks.count() < 2:
+            suggestions.append(
+                {
+                    'text': _('You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection.'),
+                    'url': self.request.event.cfp.urls.tracks,
+                }
+            )
         if not self.request.event.submission_types.count() > 1:
             suggestions.append(
                 {
