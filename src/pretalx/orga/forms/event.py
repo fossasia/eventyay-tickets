@@ -20,6 +20,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     )
 
     def __init__(self, *args, **kwargs):
+        self.is_administrator = kwargs.pop('is_administrator', False)
         super().__init__(*args, **kwargs)
         self.initial['locales'] = self.instance.locale_array.split(',')
         year = str(now().year)
@@ -39,6 +40,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
         if self.cleaned_data.get('custom_css') or self.files.get('custom_css'):
             css = self.cleaned_data['custom_css'] or self.files['custom_css']
+            if self.is_administrator:
+                return css
             try:
                 validate_css(css.read())
                 return css

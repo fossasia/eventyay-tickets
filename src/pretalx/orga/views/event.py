@@ -64,6 +64,11 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
             prefix='settings',
         )
 
+    def get_form_kwargs(self, *args, **kwargs):
+        response = super().get_form_kwargs(*args, **kwargs)
+        response['is_administrator'] = self.request.user.is_administrator
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sform'] = self.sform
