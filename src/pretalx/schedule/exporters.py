@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from urllib.parse import urlparse
 
 import pytz
@@ -34,23 +34,36 @@ class ScheduleData(BaseExporter):
             .prefetch_related('submission__speakers')\
             .order_by('start')
         rooms = Room.objects.filter(pk__in=talks.values_list('room', flat=True).distinct())
-        data = [
-            {
+        data = {
+            current_date.date(): {
                 'index': index + 1,
-                'start': current_date,
-                'end': current_date + timedelta(days=1),
-                'first_start': min([t.start for t in talks if t.start and t.start.astimezone(tz).date() == current_date.date()] or [0]),
-                'last_end': max([t.end for t in talks if t.start and t.start.astimezone(tz).date() == current_date.date()] or [0]),
-                'rooms': [{
-                    'name': room.name,
-                    'talks': [talk for talk in talks
-                              if talk.start and talk.start.astimezone(tz).date() == current_date.date() and talk.room_id == room.pk],
-                } for room in rooms],
-            } for index, current_date in enumerate([
-                event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)
-            ])
-        ]
-        return data
+                'start': datetime.combine(current_date.date(), time(hour=4, minute=0)),
+                'end': datetime.combine(current_date.date() + timedelta(days=1), time(hour=3, minute=59)),
+                'first_start': None,
+                'last_end': None,
+                'rooms': dict(),
+            }
+            for index, current_date in enumerate([event.datetime_from + timedelta(days=i) for i in range((event.date_to - event.date_from).days + 1)])
+        }
+
+        for talk in talks:
+            talk_date = talk.end.astimezone(tz).date()
+            if talk.end.astimezone(tz).hour < 4:
+                talk_date -= timedelta(days=1)
+            day_data = data[talk_date]
+            if str(talk.room.name) not in day_data['rooms']:
+                day_data['rooms'][str(talk.room.name)] = {'name': talk.room.name, 'position': talk.room.position, 'talks': [talk]}
+            else:
+                day_data['rooms'][str(talk.room.name)]['talks'].append(talk)
+            if not day_data['first_start'] or talk.start < day_data['first_start']:
+                day_data['first_start'] = talk.start
+            if not day_data['last_end'] or talk.end > day_data['last_end']:
+                day_data['last_end'] = talk.end
+
+        for d in data.values():
+            d['rooms'] = sorted(d['rooms'].values(), key=lambda room: room['position'] or room['name'])
+        print(data.values())
+        return data.values()
 
 
 class FrabXmlExporter(ScheduleData):
