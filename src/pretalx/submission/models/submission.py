@@ -100,6 +100,14 @@ class Submission(LogMixin, models.Model):
         on_delete=models.PROTECT,
         verbose_name=_('Type of submission'),
     )
+    track = models.ForeignKey(
+        to='submission.Track',
+        related_name='submissions',
+        on_delete=models.PROTECT,
+        verbose_name=_('Track'),
+        null=True,
+        blank=True,
+    )
     state = models.CharField(
         max_length=SubmissionStates.get_max_length(),
         choices=SubmissionStates.get_choices(),
@@ -427,7 +435,7 @@ class Submission(LogMixin, models.Model):
         if self.recording_url and self.recording_source:
             warnings.warn(
                 'Please use a recording source plugin instead of pretalx core functionality.',
-                DeprecationWarning
+                DeprecationWarning,
             )
             from django.template import engines
 
@@ -478,4 +486,6 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def created(self):
-        return getattr(self.logged_actions().order_by('timestamp').first(), 'timestamp', None)
+        return getattr(
+            self.logged_actions().order_by('timestamp').first(), 'timestamp', None
+        )
