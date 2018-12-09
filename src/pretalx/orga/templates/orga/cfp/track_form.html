@@ -1,0 +1,31 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+{% endblock %}
+
+
+{% block cfp_content %}
+    <h2>
+        {% if form.instance.name %}
+        {% trans "Track" %}: {{ form.instance.name }}
+        {% else %}
+        {% trans "New track" %}
+        {% endif %}
+    </h2>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        {% bootstrap_field form.name layout='event' %}
+        {% bootstrap_field form.color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
+        {% include "orga/submit_row.html" %}
+    </form>
+
+{% endblock %}

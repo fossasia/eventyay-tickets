@@ -58,9 +58,13 @@ urlpatterns = [
         url('^cfp/text$', cfp.CfPTextDetail.as_view(), name='cfp.text.view'),
         url('^cfp/types$', cfp.SubmissionTypeList.as_view(), name='cfp.types.view'),
         url('^cfp/types/new$', cfp.SubmissionTypeDetail.as_view(), name='cfp.types.create'),
-        url('^cfp/types/(?P<pk>[0-9]+)$', cfp.SubmissionTypeDetail.as_view(), name='cfp.types.view'),
+        url('^cfp/types/(?P<pk>[0-9]+)$', cfp.SubmissionTypeDetail.as_view(), name='cfp.type.view'),
         url('^cfp/types/(?P<pk>[0-9]+)/delete$', cfp.SubmissionTypeDelete.as_view(), name='cfp.type.delete'),
         url('^cfp/types/(?P<pk>[0-9]+)/default$', cfp.SubmissionTypeDefault.as_view(), name='cfp.type.default'),
+        url('^cfp/tracks$', cfp.TrackList.as_view(), name='cfp.tracks.view'),
+        url('^cfp/tracks/new$', cfp.TrackDetail.as_view(), name='cfp.track.create'),
+        url('^cfp/tracks/(?P<pk>[0-9]+)$', cfp.TrackDetail.as_view(), name='cfp.track.view'),
+        url('^cfp/tracks/(?P<pk>[0-9]+)/delete$', cfp.TrackDelete.as_view(), name='cfp.track.delete'),
 
         url('^mails/', include([
             url('^(?P<pk>[0-9]+)$', mails.MailDetail.as_view(), name='mails.outbox.mail.view'),

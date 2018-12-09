@@ -43,6 +43,8 @@ class CfP(LogMixin, models.Model):
         text = edit_text = '{base}/text'
         types = '{base}/types'
         new_type = '{types}/new'
+        tracks = '{base}/tracks'
+        new_track = '{tracks}/new'
         public = '{self.event.urls.base}/cfp'
         submit = '{self.event.urls.base}/submit'
 

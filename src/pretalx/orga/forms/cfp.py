@@ -6,10 +6,15 @@ from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
-from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType
+from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType, Track
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+    use_tracks = forms.BooleanField(
+        label=_('Use tracks'),
+        required=False,
+        help_text=_('Do you organise your talks by tracks?'),
+    )
     cfp_show_deadline = forms.BooleanField(
         label=_('Display deadline publicly'), required=False
     )
@@ -30,6 +35,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         label=_('Offer data entry'), required=False
     )
     cfp_request_image = forms.BooleanField(label=_('Offer data entry'), required=False)
+    cfp_request_track = forms.BooleanField(label=_('Offer data entry'), required=False)
     cfp_require_abstract = forms.BooleanField(
         label=_('Force data entry'), required=False
     )
@@ -40,6 +46,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_require_biography = forms.BooleanField(required=False)
     cfp_require_availabilities = forms.BooleanField(required=False)
     cfp_require_image = forms.BooleanField(label=_('Force data entry'), required=False)
+    cfp_require_track = forms.BooleanField(label=_('Force data entry'), required=False)
     cfp_abstract_min_length = forms.IntegerField(
         label=_('Minimum length'), required=False, min_value=0
     )
@@ -176,3 +183,13 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
         }
+
+
+class TrackForm(ReadOnlyFlag, I18nModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['color'].widget.attrs['class'] = 'colorpickerfield'
+
+    class Meta:
+        model = Track
+        fields = ['name', 'color']

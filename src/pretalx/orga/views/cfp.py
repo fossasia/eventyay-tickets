@@ -11,11 +11,11 @@ from django.views.generic import ListView, TemplateView, UpdateView, View
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm
+from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
 from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
-    AnswerOption, CfP, Question, QuestionTarget, SubmissionType,
+    AnswerOption, CfP, Question, QuestionTarget, SubmissionType, Track,
 )
 
 
@@ -495,3 +495,71 @@ class SubmissionTypeDelete(PermissionRequired, View):
                     ),
                 )
         return redirect(self.request.event.cfp.urls.types)
+
+
+class TrackList(PermissionRequired, ListView):
+    template_name = 'orga/cfp/track_view.html'
+    context_object_name = 'tracks'
+    permission_required = 'orga.view_tracks'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get_queryset(self):
+        return self.request.event.tracks.all()
+
+
+class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+    model = Track
+    form_class = TrackForm
+    template_name = 'orga/cfp/track_form.html'
+    permission_required = 'orga.view_track'
+    write_permission_required = 'orga.edit_track'
+
+    def get_success_url(self) -> str:
+        return self.request.event.cfp.urls.tracks
+
+    def get_object(self):
+        return self.request.event.tracks.filter(pk=self.kwargs.get('pk')).first()
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
+
+    def form_valid(self, form):
+        messages.success(self.request, _('The track has been saved.'))
+        form.instance.event = self.request.event
+        result = super().form_valid(form)
+        if form.has_changed():
+            action = 'pretalx.track.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
+        return result
+
+
+class TrackDelete(PermissionRequired, View):
+    permission_required = 'orga.remove_track'
+
+    def get_object(self):
+        return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get('pk'))
+
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        track = self.get_object()
+
+        if request.event.tracks.count() == 1:
+            messages.error(
+                request,
+                _('You cannot delete the only track. Try creating another one first!'),
+            )
+        else:
+            try:
+                track.delete()
+                request.event.log_action(
+                    'pretalx.track.delete', person=self.request.user, orga=True
+                )
+                messages.success(request, _('The track has been deleted.'))
+            except ProtectedError:  # TODO: show which/how many submissions are concerned
+                messages.error(
+                    request,
+                    _('This track is in use in a submission and cannot be deleted.'),
+                )
+        return redirect(self.request.event.cfp.urls.tracks)

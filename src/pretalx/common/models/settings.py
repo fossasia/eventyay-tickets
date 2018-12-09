@@ -38,6 +38,7 @@ hierarkey.add_default('show_schedule', 'True', bool)
 hierarkey.add_default('show_sneak_peek', 'True', bool)
 hierarkey.add_default('export_html_on_schedule_release', 'True', bool)
 hierarkey.add_default('custom_domain', '', str)
+hierarkey.add_default('use_tracks', 'False', bool)
 
 hierarkey.add_default('display_header_pattern', '', str)
 
@@ -48,6 +49,7 @@ hierarkey.add_default('cfp_request_availabilities', 'True', bool)
 hierarkey.add_default('cfp_request_notes', 'True', bool)
 hierarkey.add_default('cfp_request_do_not_record', 'True', bool)
 hierarkey.add_default('cfp_request_image', 'True', bool)
+hierarkey.add_default('cfp_request_track', 'False', bool)
 
 hierarkey.add_default('cfp_require_abstract', 'True', bool)
 hierarkey.add_default('cfp_require_description', 'False', bool)
@@ -56,6 +58,7 @@ hierarkey.add_default('cfp_require_biography', 'True', bool)
 hierarkey.add_default('cfp_require_notes', 'False', bool)
 hierarkey.add_default('cfp_require_do_not_record', 'False', bool)
 hierarkey.add_default('cfp_require_image', 'False', bool)
+hierarkey.add_default('cfp_require_track', 'False', bool)
 
 hierarkey.add_default('cfp_abstract_min_length', None, int)
 hierarkey.add_default('cfp_description_min_length', None, int)

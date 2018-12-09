@@ -149,20 +149,42 @@ $(function () {
             if ($(this).parent().find(".contrast-state").length === 0) {
                 $(this).parent().append("<div class='help-block contrast-state'></div>");
             }
-            var $note = $(this).parent().find(".contrast-state");
-            if (c > 7) {
-                $note.html("<span class='fa fa-fw fa-check-circle'></span>")
-                    .append('Your color has great contrast and is very easy to read!');
-                $note.addClass("text-success").removeClass("text-warning").removeClass("text-danger");
-            } else if (c > 2.5) {
-                $note.html("<span class='fa fa-fw fa-info-circle'></span>")
-                    .append('Your color has decent contrast and is probably good-enough to read!');
-                $note.removeClass("text-success").removeClass("text-warning").removeClass("text-danger");
+            let goal = null;
+            if ($(this).parent().find(".color-visible")) {
+                goal = "visible";
             } else {
-                $note.html("<span class='fa fa-fw fa-warning'></span>")
-                    .append('Your color has bad contrast for text on white background, please choose a darker ' +
-                        'shade.');
-                $note.addClass("text-danger").removeClass("text-success").removeClass("text-warning");
+                goal = "readable";
+            }
+            var $note = $(this).parent().find(".contrast-state");
+            if (goal === "readable") {
+                if (c > 7) {
+                    $note.html("<span class='fa fa-fw fa-check-circle'></span>")
+                        .append('Your color has great contrast and is very easy to read!');
+                    $note.addClass("text-success").removeClass("text-warning").removeClass("text-danger");
+                } else if (c > 2.5) {
+                    $note.html("<span class='fa fa-fw fa-info-circle'></span>")
+                        .append('Your color has decent contrast and is probably good-enough to read!');
+                    $note.removeClass("text-success").removeClass("text-warning").removeClass("text-danger");
+                } else {
+                    $note.html("<span class='fa fa-fw fa-warning'></span>")
+                        .append('Your color has bad contrast for text on white background, please choose a darker ' +
+                            'shade.');
+                    $note.addClass("text-danger").removeClass("text-success").removeClass("text-warning");
+                }
+            } else {
+                if (c > 7) {
+                    $note.html("<span class='fa fa-fw fa-check-circle'></span>")
+                        .append('Your color has great contrast and is very easy to see!');
+                    $note.addClass("text-success").removeClass("text-warning").removeClass("text-danger");
+                } else if (c > 2.5) {
+                    $note.html("<span class='fa fa-fw fa-info-circle'></span>")
+                        .append('Your color has decent contrast and is good to see!');
+                    $note.removeClass("text-success").removeClass("text-warning").removeClass("text-danger");
+                } else {
+                    $note.html("<span class='fa fa-fw fa-warning'></span>")
+                        .append('Your color has bad contrast and will be hard to spot or differentiate.');
+                    $note.addClass("text-danger").removeClass("text-success").removeClass("text-warning");
+                }
             }
         })
     }

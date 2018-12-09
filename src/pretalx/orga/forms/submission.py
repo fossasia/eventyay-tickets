@@ -42,11 +42,17 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
                     self.fields[key].help_text, min_value, max_value
                 )
 
+        if not event.settings.use_tracks:
+            self.fields.pop('tracks')
+        else:
+            self.fields['tracks'].queryset = event.tracks.all()
+
     class Meta:
         model = Submission
         fields = [
             'title',
             'submission_type',
+            'track',
             'abstract',
             'description',
             'notes',

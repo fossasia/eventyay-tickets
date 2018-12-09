@@ -24,7 +24,14 @@ class InfoForm(forms.ModelForm):
         super().__init__(initial=initial, **kwargs)
 
         self.fields['abstract'].widget.attrs['rows'] = 2
-        for key in {'abstract', 'description', 'notes', 'image', 'do_not_record'}:
+        for key in {
+            'abstract',
+            'description',
+            'notes',
+            'image',
+            'do_not_record',
+            'track',
+        }:
             request = event.settings.get(f'cfp_request_{key}')
             require = event.settings.get(f'cfp_require_{key}')
             if not request:
@@ -40,6 +47,12 @@ class InfoForm(forms.ModelForm):
                 self.fields[key].help_text = get_help_text(
                     self.fields[key].help_text, min_value, max_value
                 )
+        if not event.settings.use_tracks:
+            if 'tracks' in self.fields:
+                self.fields.pop('tracks')
+        else:
+            self.fields['tracks'].queryset = event.tracks.all()
+
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=self.event
         )
@@ -71,6 +84,7 @@ class InfoForm(forms.ModelForm):
         fields = [
             'title',
             'submission_type',
+            'track',
             'content_locale',
             'abstract',
             'description',

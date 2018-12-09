@@ -207,6 +207,11 @@
                         <a href="{{ request.event.cfp.urls.questions }}" class="nav-link nav-link-second-level{% if "cfp.question" in url_name %} active{% endif %}">
                             <span>{% trans "Questions" %}</span>
                         </a>
+                        {% if request.event.settings.use_tracks %}
+                        <a href="{{ request.event.cfp.urls.tracks }}" class="nav-link nav-link-second-level{% if "cfp.tracks" in url_name %} active{% endif %}">
+                            <span>{% trans "Tracks" %}</span>
+                        </a>
+                        {% endif %}
                         <a href="{{ request.event.cfp.urls.types }}" class="nav-link nav-link-second-level{% if "cfp.types" in url_name %} active{% endif %}">
                             <span>{% trans "Submission Types" %}</span>
                         </a>

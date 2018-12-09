@@ -1,0 +1,50 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+
+{% block cfp_content %}
+    <h2>{% trans "Tracks" %}</h2>
+    <div class="alert alert-info">
+        {% blocktrans trimmed %}
+        Tracks are used to sort your talks into categories. You can use the
+        CfP settings to determine if speakers can select the track for their talk
+        themselves. Track colors are helpful to help attendees navigate your schedule.
+        {% endblocktrans %}
+    </div>
+    <table class="table table-sm table-hover table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Track" %}</th>
+                <th>{% trans "Color" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for track in tracks %}
+                <tr>
+                    <td>
+                        <a href="{{ track.urls.edit }}">
+                            {{ track.name }}
+                        </a>
+                    </td>
+                    <td><div class="color-square" style="background: {{ track.color }}"></div></td>
+                    <td class="action-column">
+                        <a href="{{ track.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="{{ track.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="submit-group"><span></span>
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_track }}">
+            <i class="fa fa-plus"></i>
+            {% trans "New track" %}
+        </a>
+    </div>
+{% endblock %}

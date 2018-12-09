@@ -29,6 +29,7 @@
             {% bootstrap_field form.text layout='event' %}
             {% bootstrap_field form.deadline layout='event' %}
             {% bootstrap_field sform.cfp_show_deadline layout='event' %}
+            {% bootstrap_field sform.use_tracks layout='event' %}
             {% bootstrap_field sform.mail_on_new_submission layout='event' %}
             </fieldset>
 
@@ -63,6 +64,15 @@
                         <td>{% bootstrap_field sform.cfp_description_min_length use_label=False layout='inline' %}</td>
                         <td>{% bootstrap_field sform.cfp_description_max_length use_label=False layout='inline' %}</td>
                     </tr>
+                    {% if request.event.settings.use_tracks %}
+                    <tr>
+                        <th>{% trans "Track" %}</th>
+                        <td>{% bootstrap_field sform.cfp_request_track use_label=False layout='event-inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_require_track use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <th>{% trans "Biography" %}</th>
                         <td>{% bootstrap_field sform.cfp_request_biography use_label=False layout='event-inline' %}</td>
