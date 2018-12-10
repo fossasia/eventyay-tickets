@@ -23,7 +23,8 @@ class InfoForm(RequestRequire, forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
-        self.fields['abstract'].widget.attrs['rows'] = 2
+        if 'abstract' in self.fields:
+            self.fields['abstract'].widget.attrs['rows'] = 2
         if not event.settings.use_tracks:
             if 'track' in self.fields:
                 self.fields.pop('track')
