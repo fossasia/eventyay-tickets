@@ -25,7 +25,7 @@
                 </recording>
                 <title>{{ talk.submission.title|xmlescape }}</title>
                 <subtitle></subtitle>
-                <track></track>
+                <track>{% if talk.submission.track %}{{ talk.submission.track.name }}{% endif %}</track>
                 <type>{{ talk.submission.submission_type.name|xmlescape }}</type>
                 <language>{{ talk.submission.content_locale }}</language>
                 <abstract>{{ talk.submission.abstract|xmlescape }}</abstract>

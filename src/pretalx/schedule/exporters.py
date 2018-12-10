@@ -152,7 +152,7 @@ class FrabJsonExporter(ScheduleData):
                                     'url': talk.submission.urls.public.full(),
                                     'title': talk.submission.title,
                                     'subtitle': '',
-                                    'track': None,
+                                    'track': str(talk.submission.track.name) if talk.submission.track else None,
                                     'type': str(talk.submission.submission_type.name),
                                     'language': talk.submission.content_locale,
                                     'abstract': talk.submission.abstract,
