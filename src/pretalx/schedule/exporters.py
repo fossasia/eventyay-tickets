@@ -54,7 +54,7 @@ class ScheduleData(BaseExporter):
 
         for talk in talks:
             talk_date = talk.end.astimezone(tz).date()
-            if talk.end.astimezone(tz).hour < 4 and talk.end != event.datetime_from:
+            if talk.end.astimezone(tz).hour < 4 and talk_date != event.date_from:
                 talk_date -= timedelta(days=1)
             day_data = data.get(talk_date)
             if not day_data:
