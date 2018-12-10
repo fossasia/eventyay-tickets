@@ -46,6 +46,11 @@
         {{ unscheduled }} talks have <strong>not yet been scheduled</strong>.
     {% endblocktrans %}</li>
     {% endif %}
+    {% if warnings.no_track %}
+    <li>{% blocktrans with no_track=warnings.no_track|length trimmed %}
+        {{ no_track }} talks have <strong>not yet been assigned a track</strong>.
+    {% endblocktrans %}</li>
+    {% endif %}
 </ul>
 {% if warnings.talk_warnings %}
 <h4>{% trans "Warnings" %}</h4>
