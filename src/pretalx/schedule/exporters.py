@@ -11,7 +11,6 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx import __version__
 from pretalx.common.exporter import BaseExporter
 from pretalx.common.urls import get_base_url
-from pretalx.schedule.models import Room
 
 
 class ScheduleData(BaseExporter):
@@ -33,9 +32,6 @@ class ScheduleData(BaseExporter):
             .select_related('submission', 'submission__event', 'room')
             .prefetch_related('submission__speakers')
             .order_by('start')
-        )
-        rooms = Room.objects.filter(
-            pk__in=talks.values_list('room', flat=True).distinct()
         )
         data = {
             current_date.date(): {
@@ -152,7 +148,9 @@ class FrabJsonExporter(ScheduleData):
                                     'url': talk.submission.urls.public.full(),
                                     'title': talk.submission.title,
                                     'subtitle': '',
-                                    'track': str(talk.submission.track.name) if talk.submission.track else None,
+                                    'track': str(talk.submission.track.name)
+                                    if talk.submission.track
+                                    else None,
                                     'type': str(talk.submission.submission_type.name),
                                     'language': talk.submission.content_locale,
                                     'abstract': talk.submission.abstract,
