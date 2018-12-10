@@ -3,12 +3,12 @@ from django.conf import settings
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx.common.forms.utils import get_help_text
 from pretalx.common.forms.widgets import CheckboxMultiDropdown
+from pretalx.common.mixins.forms import RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
-class InfoForm(forms.ModelForm):
+class InfoForm(RequestRequire, forms.ModelForm):
     def __init__(self, event, **kwargs):
         self.event = event
         self.readonly = kwargs.pop('readonly', False)
@@ -24,29 +24,6 @@ class InfoForm(forms.ModelForm):
         super().__init__(initial=initial, **kwargs)
 
         self.fields['abstract'].widget.attrs['rows'] = 2
-        for key in {
-            'abstract',
-            'description',
-            'notes',
-            'image',
-            'do_not_record',
-            'track',
-        }:
-            request = event.settings.get(f'cfp_request_{key}')
-            require = event.settings.get(f'cfp_require_{key}')
-            if not request:
-                self.fields.pop(key)
-            else:
-                self.fields[key].required = require
-                min_value = event.settings.get(f'cfp_{key}_min_length')
-                max_value = event.settings.get(f'cfp_{key}_max_length')
-                if min_value:
-                    self.fields[key].widget.attrs[f'minlength'] = min_value
-                if max_value:
-                    self.fields[key].widget.attrs[f'maxlength'] = max_value
-                self.fields[key].help_text = get_help_text(
-                    self.fields[key].help_text, min_value, max_value
-                )
         if not event.settings.use_tracks:
             if 'track' in self.fields:
                 self.fields.pop('track')
@@ -91,6 +68,14 @@ class InfoForm(forms.ModelForm):
             'notes',
             'do_not_record',
             'image',
+        ]
+        request_require = [
+            'abstract',
+            'description',
+            'notes',
+            'image',
+            'do_not_record',
+            'track',
         ]
 
 
