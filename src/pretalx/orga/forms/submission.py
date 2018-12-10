@@ -43,9 +43,9 @@ class SubmissionForm(ReadOnlyFlag, forms.ModelForm):
                 )
 
         if not event.settings.use_tracks:
-            self.fields.pop('tracks')
+            self.fields.pop('track')
         else:
-            self.fields['tracks'].queryset = event.tracks.all()
+            self.fields['track'].queryset = event.tracks.all()
 
     class Meta:
         model = Submission

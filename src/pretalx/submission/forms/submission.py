@@ -48,10 +48,10 @@ class InfoForm(forms.ModelForm):
                     self.fields[key].help_text, min_value, max_value
                 )
         if not event.settings.use_tracks:
-            if 'tracks' in self.fields:
-                self.fields.pop('tracks')
+            if 'track' in self.fields:
+                self.fields.pop('track')
         else:
-            self.fields['tracks'].queryset = event.tracks.all()
+            self.fields['track'].queryset = event.tracks.all()
 
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=self.event
