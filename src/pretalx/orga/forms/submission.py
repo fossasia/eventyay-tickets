@@ -24,7 +24,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     'The name of the speaker that should be displayed publicly.'
                 )
             )
-        self.fields['abstract'].widget.attrs['rows'] = 2
+        if 'abstract' in self.fields:
+            self.fields['abstract'].widget.attrs['rows'] = 2
 
         if not event.settings.use_tracks:
             self.fields.pop('track')
