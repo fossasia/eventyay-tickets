@@ -63,6 +63,9 @@
     <table class="table table-sm table-hover table-responsive-md">
         <thead>
             <tr>
+                {% if request.event.settings.use_tracks %}
+                <th></th>
+                {% endif %}
                 <th>
                     {% trans "Title" %}
                     <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
@@ -88,6 +91,14 @@
         <tbody>
             {% for submission in submissions %}
                 <tr>
+                    {% if request.event.settings.use_tracks %}
+                    <td>
+                        {% if submission.track %}
+                        <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
+                        </div>
+                        {% endif %}
+                    </td>
+                    {% endif %}
                     <td>
                         <a href="{{ submission.orga_urls.base }}">
                             {{ submission.title }}

@@ -659,7 +659,10 @@ legend .submission-state-dropdown {
   margin: -5px 0 0 -5px;
 }
 .color-square {
+  display: inline-block;
+  align-self: baseline;
   width: 20px;
   height: 20px;
   border: 2px solid $gray-light;
+  margin-right: 2px;
 }
