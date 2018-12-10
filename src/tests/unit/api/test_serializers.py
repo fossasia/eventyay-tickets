@@ -109,6 +109,7 @@ def test_submission_serializer(submission):
         'slot',
         'image',
         'answers',
+        'track',
     }
     assert isinstance(data['speakers'], list)
     assert data['speakers'][0] == {
@@ -141,6 +142,7 @@ def test_submission_slot_serializer(slot):
         'slot',
         'image',
         'answers',
+        'track',
     }
     assert set(data['slot'].keys()) == {'start', 'end', 'room'}
     assert data['slot']['room'] == slot.room.name
