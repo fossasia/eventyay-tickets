@@ -17,5 +17,4 @@ class Track(LogMixin, models.Model):
         delete = '{base}/delete'
 
     def __str__(self) -> str:
-        """Help when debugging."""
-        return f'Track(event={self.event.slug}, name={self.name})'
+        return str(self.name)
