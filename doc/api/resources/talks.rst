@@ -19,6 +19,7 @@ code                                  string                     A unique, alpha
 speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": ""}]``
 title                                 string                     The submission's title
 submission_type                       string                     The submission type (e.g. "talk", "workshop")
+track                                 string                     The track this talk belongs to (e.g. "security", "design", or ``null``)
 state                                 string                     The submission's state, one of "submitted", "accepted", "rejected", "confirmed"
 abstract                              string                     The abstract, a short note of the submission's content
 description                           string                     The description, a more expansive description of the submission's content
