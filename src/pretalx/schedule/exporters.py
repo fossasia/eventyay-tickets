@@ -54,9 +54,11 @@ class ScheduleData(BaseExporter):
 
         for talk in talks:
             talk_date = talk.end.astimezone(tz).date()
-            if talk.end.astimezone(tz).hour < 4:
+            if talk.end.astimezone(tz).hour < 4 and talk.end != event.datetime_from:
                 talk_date -= timedelta(days=1)
-            day_data = data[talk_date]
+            day_data = data.get(talk_date)
+            if not day_data:
+                continue
             if str(talk.room.name) not in day_data['rooms']:
                 day_data['rooms'][str(talk.room.name)] = {
                     'name': talk.room.name,
