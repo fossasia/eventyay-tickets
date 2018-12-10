@@ -6,7 +6,9 @@ from django.db import transaction
 
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
-from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
+from pretalx.submission.models import (
+    Submission, SubmissionStates, SubmissionType, Track,
+)
 
 
 def guess_schedule_version(event):
@@ -76,6 +78,13 @@ def _create_talk(*, talk, room, event):
             default_duration=duration_in_minutes,
         )
 
+    track = Track.objects.filter(event=event, name=talk.find('track').text).first()
+
+    if not track:
+        track = Track.objects.create(
+            name=talk.find('track').text or 'default', event=event
+        )
+
     optout = False
     with suppress(AttributeError):
         optout = talk.find('recording').find('optout').text == 'true'
@@ -98,6 +107,7 @@ def _create_talk(*, talk, room, event):
         event=event, code=code, defaults={'submission_type': sub_type}
     )
     sub.submission_type = sub_type
+    sub.track = track
     sub.title = talk.find('title').text
     sub.description = talk.find('description').text
     if talk.find('subtitle').text:
