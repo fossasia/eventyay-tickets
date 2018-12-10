@@ -7,6 +7,7 @@ from pretalx.submission.models import Submission, SubmissionType
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
     def __init__(self, event, **kwargs):
+        self.event = event
         super().__init__(**kwargs)
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=event
