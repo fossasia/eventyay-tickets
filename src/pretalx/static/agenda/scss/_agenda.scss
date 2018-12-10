@@ -42,6 +42,9 @@
     display: none;
   }
 }
+header {
+  word-break: normal;
+}
 .schedule-header {
   display: flex;
   align-items: flex-end;
@@ -233,6 +236,18 @@
 }
 
 @media (max-width: 1000px) {
+  header {
+    text-align: right;
+    flex-direction: column;
+  }
+  #navigator {
+    top: 10px;
+    margin-top: 0;
+  }
+  #legend {
+    top: 50px;
+    margin-top: 0;
+  }
   #fahrplan {
     width: 100%;
 
