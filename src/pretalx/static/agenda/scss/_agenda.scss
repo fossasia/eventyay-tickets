@@ -18,6 +18,28 @@
     display: none;
   }
 }
+#legend {
+  position: fixed;
+  left: 0;
+  margin-top: 100px;
+  background-color: $offwhite;
+  padding: 8px 16px;
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16), 0 5px 8px 0 rgba(0, 0, 0, 0.12);
+
+  &:hover {
+    ul.tracks {
+      margin-top: 4px;
+      margin: 0;
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  ul.tracks {
+    display: none;
+  }
+}
 .schedule-header {
   display: flex;
   align-items: flex-end;
@@ -240,7 +262,7 @@
     overflow: visible !important;
     height: auto;
   }
-  #navigator,
+  #navigator, #legend,
   #schedule-nav,
   #main-card .user-row,
   header, footer,

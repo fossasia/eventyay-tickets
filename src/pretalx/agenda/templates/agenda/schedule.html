@@ -19,6 +19,17 @@
 </div>
 {% endif %}
 
+{% if request.event.settings.use_tracks and request.event.tracks.count > 1 %}
+<div id="legend">
+  <i class="fa fa-dot-circle-o"></i> ?
+  <ul class="tracks">
+    {% for track in request.event.tracks.all %}
+    <li style="color: {{ track.color }}">{{ track.name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
         <div class="alert alert-warning"><span>
@@ -97,7 +108,7 @@
                                 <div class="talk{% if request.user in talk.submission.speakers.all %} talk-personal{% endif %}{% if talk.is_active %} active{% endif %}{% if search %} {% if search in talk.submission.title.lower or search in talk.submission.display_speaker_names.lower %} search-hit{% else %} search-fail{% endif %}{% endif %}"
                                      id="{{ talk.submission.code }}"
                                      title="{{ talk.submission.title }} {% if talk.submission.speakers.exists %}({{ talk.submission.display_speaker_names }}){% endif %}"
-                                     style="height: {{ talk.height }}px; min-height: {% if talk.height >= 30 %}{{ talk.height }}{% else %}30{% endif %}px; top: {{ talk.top }}px"
+                                     style="height: {{ talk.height }}px; min-height: {% if talk.height >= 30 %}{{ talk.height }}{% else %}30{% endif %}px; top: {{ talk.top }}px;{% if request.event.settings.use_tracks and talk.submission.track %} border-color: {{ talk.submission.track.color }}{% endif %}"
                                      data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
                                         {% if talk.submission.do_not_record %}
