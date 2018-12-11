@@ -3,8 +3,8 @@
 Installation
 ============
 
-This guide will help you to install pretalx on a Linux distribution. It should be
-compatible with **Debian 8.0** and above, as well as similarly modern distributions.
+This guide will help you to install pretalx on a Linux distribution, as long as
+the prerequesites are present.
 
 We also provide an `Ansible role`_ that follows this guide, in case you
 already have an Ansible-based setup. If you prefer a docker setup, please use
@@ -16,7 +16,7 @@ Step 0: Prerequisites
 Please set up the following systems beforehand, we'll not explain them here (but see these links for
 external installation guides):
 
-* Python 3.6 and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
+* **Python 3.6** and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server (you can use SQLite, but we strongly recommend not to run SQLite in production)
@@ -25,7 +25,7 @@ external installation guides):
 We also recommend that you use a firewall, although this is not a pretalx-specific recommendation.
 If you're new to Linux and firewalls, we recommend that you start with `ufw`_.
 
-.. note:: Please, do not run pretalx without HTTPS encryption. You'll handle user data and thanks
+.. note:: Please do not run pretalx without HTTPS encryption. You'll handle user data and thanks
           to `Let's Encrypt`_, SSL certificates are free these days. We also *do not* provide
           support for HTTP-exclusive installations except for evaluation purposes.
 
@@ -36,15 +36,17 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
 
     # adduser pretalx --disabled-password --home /var/pretalx
 
-In this guide, all code lines prepended with a ``#`` symbol are commands that you need to execute on your server as
-``root`` user (e.g. using ``sudo``); you should run all lines prepended with a ``$`` symbol as the unprivileged user.
+In this guide, all code lines prepended with a ``#`` symbol are commands that
+you need to execute on your server as ``root`` user (e.g. using ``sudo``); you
+should run all lines prepended with a ``$`` symbol as the unprivileged user.
 
 
 Step 2: Database setup
 ----------------------
 
-Having the database server installed, we still need a database and a database user. We can create these with any kind
-of database managing tool or directly on our database's shell, e.g. for MySQL::
+Having the database server installed, we still need a database and a database
+user. We can create these with any kind of database managing tool or directly
+on our database's shell, e.g. for MySQL::
 
     $ mysql -u root -p
     mysql> CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
@@ -69,14 +71,14 @@ Step 3: Package dependencies
 ----------------------------
 
 To build and run pretalx, you will need the following Debian packages beyond the dependencies
-mentioned above::
+mentioned above (plus ``libmysqlclient-dev`` if you use MariaDB)::
 
-    # apt-get install git build-essential python3-virtualenv libssl-dev gettext libmysqlclient-dev
+    # apt-get install git build-essential python3-virtualenv libssl-dev gettext
 
 
 For Ubuntu 16.04/Debian 9 you need the package "python3.6"::
 
-    # add-apt-repository ppa:jonathonf/python3.6
+    # add-apt-repository ppa:jonathonf/python-3.6
     # apt-get update
     # apt-get install python3.6 python3.6-dev python3.6-venv
     # wget https://bootstrap.pypa.io/get-pip.py
@@ -162,7 +164,9 @@ named ``/etc/systemd/system/pretalx-web.service`` with the following content::
     [Install]
     WantedBy=multi-user.target
 
-For background tasks we need a second service ``/etc/systemd/system/pretalx-worker.service`` with the following content::
+If you decide to use Celery (giving you asynchronous execution for long-running
+tasks), you'll also need a second service
+``/etc/systemd/system/pretalx-worker.service`` with the following content::
 
     [Unit]
     Description=pretalx background worker
@@ -244,7 +248,8 @@ You can make sure the web interface is up and look for any issues with::
 
     # journalctl -u pretalx-web
 
-And same for the celery workers (for example in case the emails are not sent)::
+If you use Celery, you can do the same for the worker processes (for example in
+case the emails are not sent)::
 
     # journalctl -u pretalx-worker
 
