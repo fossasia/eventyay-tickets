@@ -1,5 +1,6 @@
 import pytest
 from django.core import mail as djmail
+from django.conf import settings
 
 from pretalx.event.models import Event
 
@@ -135,6 +136,85 @@ def test_add_logo(event, orga_client):
     assert event.logo
     response = orga_client.get(event.urls.base, follow=True)
     assert '<img src="/media' in response.content.decode(), response.content.decode()
+
+
+@pytest.mark.django_db
+def test_change_custom_domain(event, orga_client):
+    assert not event.settings.custom_domain
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            'name_0': event.name,
+            'slug': event.slug,
+            'locales': event.locales,
+            'locale': event.locale,
+            'date_from': event.date_from,
+            'date_to': event.date_to,
+            'timezone': event.timezone,
+            'email': event.email,
+            'primary_color': None,
+            'custom_css': None,
+            'logo': None,
+            'settings-custom_domain': 'https://myevent.com',
+        },
+        follow=True,
+    )
+    event = Event.objects.get(pk=event.pk)
+    assert response.status_code == 200
+    assert event.settings.custom_domain == 'https://myevent.com'
+
+
+@pytest.mark.django_db
+def test_change_custom_domain_to_site_url(event, orga_client):
+    assert not event.settings.custom_domain
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            'name_0': event.name,
+            'slug': event.slug,
+            'locales': event.locales,
+            'locale': event.locale,
+            'date_from': event.date_from,
+            'date_to': event.date_to,
+            'timezone': event.timezone,
+            'email': event.email,
+            'primary_color': None,
+            'custom_css': None,
+            'logo': None,
+            'settings-custom_domain': settings.SITE_URL,
+        },
+        follow=True,
+    )
+    event = Event.objects.get(pk=event.pk)
+    assert response.status_code == 200
+    assert not event.settings.custom_domain
+
+
+@pytest.mark.django_db
+def test_change_custom_domain_to_other_event_domain(event, orga_client, other_event):
+    other_event.settings.set('custom_domain', 'https://myevent.com')
+    assert not event.settings.custom_domain
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            'name_0': event.name,
+            'slug': event.slug,
+            'locales': event.locales,
+            'locale': event.locale,
+            'date_from': event.date_from,
+            'date_to': event.date_to,
+            'timezone': event.timezone,
+            'email': event.email,
+            'primary_color': None,
+            'custom_css': None,
+            'logo': None,
+            'settings-custom_domain': other_event.settings.custom_domain,
+        },
+        follow=True,
+    )
+    event = Event.objects.get(pk=event.pk)
+    assert response.status_code == 200
+    assert not event.settings.custom_domain
 
 
 @pytest.mark.django_db
