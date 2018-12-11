@@ -22,7 +22,7 @@ class SpeakerView(PermissionRequired, DetailView):
     def get_object(self, queryset=None):
         return SpeakerProfile.objects.filter(
             event=self.request.event, user__code__iexact=self.kwargs['code']
-        ).first()
+        ).select_related('user').first()
 
     def get_context_data(self, **kwargs):
         obj = kwargs.get('object')

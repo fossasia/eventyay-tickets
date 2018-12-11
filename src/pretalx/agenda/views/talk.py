@@ -49,7 +49,7 @@ class SpeakerList(PermissionRequired, Filterable, ListView):
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(
             user__in=self.request.event.speakers, event=self.request.event
-        )
+        ).select_related('user', 'event')
         return self.filter_queryset(qs)
 
     def get_permission_object(self):

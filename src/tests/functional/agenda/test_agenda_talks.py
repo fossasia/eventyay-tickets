@@ -7,7 +7,7 @@ from django.utils import formats
 
 @pytest.mark.django_db
 def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other_slot):
-    with django_assert_num_queries(21):
+    with django_assert_num_queries(18):
         response = client.get(event.urls.talks, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()

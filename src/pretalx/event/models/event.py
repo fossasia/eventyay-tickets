@@ -456,7 +456,7 @@ class Event(LogMixin, models.Model):
         if self.current_schedule:
             return self.submissions.filter(
                 slots__in=self.current_schedule.talks.filter(is_visible=True)
-            )
+            ).select_related('submission_type').prefetch_related('speakers')
         return Submission.objects.none()
 
     @cached_property
