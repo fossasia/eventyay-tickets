@@ -6,15 +6,17 @@ from django.utils import formats
 
 
 @pytest.mark.django_db
-def test_can_see_talk_list(client, event, slot):
-    response = client.get(event.urls.talks, follow=True)
+def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other_slot):
+    with django_assert_num_queries(21):
+        response = client.get(event.urls.talks, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_can_see_talk(client, event, slot):
-    response = client.get(slot.submission.urls.public, follow=True)
+def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot):
+    with django_assert_num_queries(36):
+        response = client.get(slot.submission.urls.public, follow=True)
     assert event.schedules.count() == 2
     assert response.status_code == 200
     content = response.content.decode()
@@ -37,17 +39,21 @@ def test_can_see_talk(client, event, slot):
 
 
 @pytest.mark.django_db
-def test_cannot_see_new_talk(client, event, unreleased_slot):
+def test_cannot_see_new_talk(client, django_assert_num_queries, event, unreleased_slot):
     slot = unreleased_slot
-    response = client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(16):
+        response = client.get(slot.submission.urls.public, follow=True)
     assert event.schedules.count() == 1
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_orga_can_see_new_talk(orga_client, event, unreleased_slot):
+def test_orga_can_see_new_talk(
+    orga_client, django_assert_num_queries, event, unreleased_slot
+):
     slot = unreleased_slot
-    response = orga_client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(35):
+        response = orga_client.get(slot.submission.urls.public, follow=True)
     assert event.schedules.count() == 1
     assert response.status_code == 200
     content = response.content.decode()
@@ -70,9 +76,12 @@ def test_orga_can_see_new_talk(orga_client, event, unreleased_slot):
 
 
 @pytest.mark.django_db
-def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
+def test_can_see_talk_edit_btn(
+    orga_client, django_assert_num_queries, orga_user, event, slot
+):
     slot.submission.speakers.add(orga_user)
-    response = orga_client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(39):
+        response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
     assert 'fa-edit' in content  # edit btn
@@ -81,10 +90,11 @@ def test_can_see_talk_edit_btn(orga_client, orga_user, event, slot):
 
 
 @pytest.mark.django_db
-def test_can_see_talk_do_not_record(client, event, slot):
+def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, slot):
     slot.submission.do_not_record = True
     slot.submission.save()
-    response = client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(35):
+        response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
     assert 'fa-edit' not in content  # edit btn
@@ -93,11 +103,14 @@ def test_can_see_talk_do_not_record(client, event, slot):
 
 
 @pytest.mark.django_db
-def test_can_see_talk_does_accept_feedback(client, event, slot):
+def test_can_see_talk_does_accept_feedback(
+    client, django_assert_num_queries, event, slot
+):
     slot.start = datetime.datetime.now() - datetime.timedelta(days=1)
     slot.end = slot.start + datetime.timedelta(hours=1)
     slot.save()
-    response = client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(36):
+        response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
     assert 'fa-edit' not in content  # edit btn
@@ -106,57 +119,84 @@ def test_can_see_talk_does_accept_feedback(client, event, slot):
 
 
 @pytest.mark.django_db
-def test_cannot_see_nonpublic_talk(client, event, slot):
+def test_cannot_see_nonpublic_talk(client, django_assert_num_queries, event, slot):
     event.is_public = False
     event.save()
-    response = client.get(slot.submission.urls.public, follow=True)
+    with django_assert_num_queries(19):
+        response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_cannot_see_other_events_talk(client, event, slot, other_event):
-    response = client.get(
-        slot.submission.urls.public.replace(event.slug, other_event.slug), follow=True
-    )
+def test_cannot_see_other_events_talk(
+    client, django_assert_num_queries, event, slot, other_event
+):
+    with django_assert_num_queries(16):
+        response = client.get(
+            slot.submission.urls.public.replace(event.slug, other_event.slug),
+            follow=True,
+        )
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_event_talk_visiblity_submitted(client, event, submission):
-    response = client.get(submission.urls.public, follow=True)
+def test_event_talk_visiblity_submitted(
+    client, django_assert_num_queries, event, submission
+):
+    with django_assert_num_queries(14):
+        response = client.get(submission.urls.public, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_event_talk_visiblity_accepted(client, event, slot, accepted_submission):
-    response = client.get(accepted_submission.urls.public, follow=True)
+def test_event_talk_visiblity_accepted(
+    client, django_assert_num_queries, event, slot, accepted_submission
+):
+    with django_assert_num_queries(15):
+        response = client.get(accepted_submission.urls.public, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_event_talk_visiblity_confirmed(client, event, slot, confirmed_submission):
-    response = client.get(confirmed_submission.urls.public, follow=True)
+def test_event_talk_visiblity_confirmed(
+    client, django_assert_num_queries, event, slot, confirmed_submission
+):
+    with django_assert_num_queries(34):
+        response = client.get(confirmed_submission.urls.public, follow=True)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_event_talk_visiblity_canceled(client, event, slot, canceled_submission):
-    response = client.get(canceled_submission.urls.public, follow=True)
+def test_event_talk_visiblity_canceled(
+    client, django_assert_num_queries, event, slot, canceled_submission
+):
+    with django_assert_num_queries(15):
+        response = client.get(canceled_submission.urls.public, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_event_talk_visiblity_withdrawn(client, event, slot, withdrawn_submission):
-    response = client.get(withdrawn_submission.urls.public, follow=True)
+def test_event_talk_visiblity_withdrawn(
+    client, django_assert_num_queries, event, slot, withdrawn_submission
+):
+    with django_assert_num_queries(15):
+        response = client.get(withdrawn_submission.urls.public, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
 def test_talk_speaker_other_talks(
-    client, event, speaker, slot, other_slot, other_submission
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    other_slot,
+    other_submission,
 ):
     other_submission.speakers.add(speaker)
-    response = client.get(other_submission.urls.public, follow=True)
+    with django_assert_num_queries(43):
+        response = client.get(other_submission.urls.public, follow=True)
 
     assert response.context['speakers']
     assert len(response.context['speakers']) == 2, response.context['speakers']
@@ -176,10 +216,17 @@ def test_talk_speaker_other_talks(
 
 @pytest.mark.django_db
 def test_talk_speaker_other_talks_only_if_visible(
-    client, event, speaker, slot, other_slot, other_submission
+    client,
+    django_assert_num_queries,
+    event,
+    speaker,
+    slot,
+    other_slot,
+    other_submission,
 ):
     other_submission.speakers.add(speaker)
-    response = client.get(other_submission.urls.public, follow=True)
+    with django_assert_num_queries(43):
+        response = client.get(other_submission.urls.public, follow=True)
     slot.submission.accept(force=True)
     slot.is_visible = False
     slot.save()
@@ -198,6 +245,9 @@ def test_talk_speaker_other_talks_only_if_visible(
 
 
 @pytest.mark.django_db
-def test_talk_review_page(client, event, submission, other_submission):
-    response = client.get(submission.urls.review, follow=True)
+def test_talk_review_page(
+    client, django_assert_num_queries, event, submission, other_submission
+):
+    with django_assert_num_queries(19):
+        response = client.get(submission.urls.review, follow=True)
     assert response.status_code == 200

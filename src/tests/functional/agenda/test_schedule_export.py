@@ -13,13 +13,17 @@ from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xml_export(slot, client, schedule_schema):
-    response = client.get(
-        reverse(
-            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+def test_schedule_frab_xml_export(
+    slot, client, django_assert_num_queries, schedule_schema
+):
+    with django_assert_num_queries(25):
+        response = client.get(
+            reverse(
+                f'agenda:export.schedule.xml',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
     assert response.status_code == 200, str(response.content.decode())
     assert 'ETag' in response
 
@@ -31,27 +35,33 @@ def test_schedule_frab_xml_export(slot, client, schedule_schema):
     etree.fromstring(
         response.content, parser
     )  # Will raise if the schedule does not match the schema
-    response = client.get(
-        reverse(
-            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
-        ),
-        HTTP_IF_NONE_MATCH=response['ETag'],
-        follow=True,
-    )
+    with django_assert_num_queries(15):
+        response = client.get(
+            reverse(
+                f'agenda:export.schedule.xml',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            HTTP_IF_NONE_MATCH=response['ETag'],
+            follow=True,
+        )
     assert response.status_code == 304
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xml_export_control_char(slot, client, schedule_schema):
+def test_schedule_frab_xml_export_control_char(
+    slot, client, django_assert_num_queries, schedule_schema
+):
     slot.submission.description = "control char: \a"
     slot.submission.save()
 
-    response = client.get(
-        reverse(
-            f'agenda:export.schedule.xml', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+    with django_assert_num_queries(24):
+        response = client.get(
+            reverse(
+                f'agenda:export.schedule.xml',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
 
     parser = etree.XMLParser()
     etree.fromstring(response.content, parser)
@@ -59,21 +69,31 @@ def test_schedule_frab_xml_export_control_char(slot, client, schedule_schema):
 
 @pytest.mark.django_db
 def test_schedule_frab_json_export(
-    slot, answered_choice_question, personal_answer, client, orga_user, schedule_schema
+    slot,
+    answered_choice_question,
+    personal_answer,
+    client,
+    django_assert_num_queries,
+    orga_user,
+    schedule_schema,
 ):
-    regular_response = client.get(
-        reverse(
-            f'agenda:export.schedule.json', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+    with django_assert_num_queries(26):
+        regular_response = client.get(
+            reverse(
+                f'agenda:export.schedule.json',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
     client.force_login(orga_user)
-    orga_response = client.get(
-        reverse(
-            f'agenda:export.schedule.json', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+    with django_assert_num_queries(23):
+        orga_response = client.get(
+            reverse(
+                f'agenda:export.schedule.json',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
     assert regular_response.status_code == 200
     assert orga_response.status_code == 200
 
@@ -94,13 +114,17 @@ def test_schedule_frab_json_export(
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xcal_export(slot, client, schedule_schema):
-    response = client.get(
-        reverse(
-            f'agenda:export.schedule.xcal', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+def test_schedule_frab_xcal_export(
+    slot, client, django_assert_num_queries, schedule_schema
+):
+    with django_assert_num_queries(20):
+        response = client.get(
+            reverse(
+                f'agenda:export.schedule.xcal',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -108,13 +132,15 @@ def test_schedule_frab_xcal_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
-def test_schedule_ical_export(slot, client, schedule_schema):
-    response = client.get(
-        reverse(
-            f'agenda:export.schedule.ics', kwargs={'event': slot.submission.event.slug}
-        ),
-        follow=True,
-    )
+def test_schedule_ical_export(slot, client, django_assert_num_queries, schedule_schema):
+    with django_assert_num_queries(22):
+        response = client.get(
+            reverse(
+                f'agenda:export.schedule.ics',
+                kwargs={'event': slot.submission.event.slug},
+            ),
+            follow=True,
+        )
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -122,8 +148,11 @@ def test_schedule_ical_export(slot, client, schedule_schema):
 
 
 @pytest.mark.django_db
-def test_schedule_single_ical_export(slot, client, schedule_schema):
-    response = client.get(slot.submission.urls.ical, follow=True)
+def test_schedule_single_ical_export(
+    slot, client, django_assert_num_queries, schedule_schema
+):
+    with django_assert_num_queries(23):
+        response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -135,23 +164,29 @@ def test_schedule_single_ical_export(slot, client, schedule_schema):
     'exporter',
     ('schedule.xml', 'schedule.json', 'schedule.xcal', 'schedule.ics', 'feed'),
 )
-def test_schedule_export_nonpublic(exporter, slot, client, schedule_schema):
+def test_schedule_export_nonpublic(
+    exporter, slot, client, django_assert_num_queries, schedule_schema
+):
     slot.submission.event.is_public = False
     slot.submission.event.save()
     exporter = 'feed' if exporter == 'feed' else f'export.{exporter}'
 
-    response = client.get(
-        reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}),
-        follow=True,
-    )
+    with django_assert_num_queries(14):
+        response = client.get(
+            reverse(f'agenda:{exporter}', kwargs={'event': slot.submission.event.slug}),
+            follow=True,
+        )
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_schedule_speaker_ical_export(slot, other_slot, client):
+def test_schedule_speaker_ical_export(
+    slot, other_slot, client, django_assert_num_queries
+):
     speaker = slot.submission.speakers.all()[0]
     profile = speaker.profiles.get(event=slot.event)
-    response = client.get(profile.urls.talks_ical, follow=True)
+    with django_assert_num_queries(32):
+        response = client.get(profile.urls.talks_ical, follow=True)
     assert response.status_code == 200
 
     content = response.content.decode()
@@ -160,8 +195,9 @@ def test_schedule_speaker_ical_export(slot, other_slot, client):
 
 
 @pytest.mark.django_db
-def test_feed_view(slot, client, schedule_schema, schedule):
-    response = client.get(slot.submission.event.urls.feed)
+def test_feed_view(slot, client, django_assert_num_queries, schedule_schema, schedule):
+    with django_assert_num_queries(19):
+        response = client.get(slot.submission.event.urls.feed)
     assert response.status_code == 200
     assert schedule.version in response.content.decode()
 
@@ -232,7 +268,7 @@ def test_html_export_language(event, slot):
 
 
 @pytest.mark.django_db
-def test_schedule_export_schedule_html_task(mocker, orga_client, event, slot):
+def test_schedule_export_schedule_html_task(mocker, event, slot):
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
@@ -245,7 +281,7 @@ def test_schedule_export_schedule_html_task(mocker, orga_client, event, slot):
 
 
 @pytest.mark.django_db
-def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event, slot):
+def test_schedule_export_schedule_html_task_nozip(mocker, event, slot):
     mocker.patch('django.core.management.call_command')
 
     from pretalx.agenda.tasks import export_schedule_html
@@ -258,12 +294,17 @@ def test_schedule_export_schedule_html_task_nozip(mocker, orga_client, event, sl
 
 
 @pytest.mark.django_db
-def test_schedule_orga_trigger_export(mocker, orga_client, event):
+def test_schedule_orga_trigger_export(
+    mocker, orga_client, django_assert_num_queries, event
+):
     from pretalx.agenda.tasks import export_schedule_html
 
     mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
 
-    response = orga_client.post(event.orga_urls.schedule_export_trigger, follow=True)
+    with django_assert_num_queries(33):
+        response = orga_client.post(
+            event.orga_urls.schedule_export_trigger, follow=True
+        )
     assert response.status_code == 200
     export_schedule_html.apply_async.assert_called_once_with(
         kwargs={'event_id': event.id}
@@ -271,12 +312,17 @@ def test_schedule_orga_trigger_export(mocker, orga_client, event):
 
 
 @pytest.mark.django_db
-def test_schedule_orga_download_export(mocker, orga_client, event, slot):
+def test_schedule_orga_download_export(
+    mocker, orga_client, django_assert_num_queries, event, slot
+):
     from pretalx.agenda.tasks import export_schedule_html
 
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
-    response = orga_client.get(event.orga_urls.schedule_export_download, follow=True)
-    assert len(b"".join(response.streaming_content)) > 1000000  # 1MB
+    with django_assert_num_queries(9):
+        response = orga_client.get(
+            event.orga_urls.schedule_export_download, follow=True
+        )
+    assert len(b"".join(response.streaming_content)) > 1_000_000  # 1MB
 
 
 @pytest.mark.django_db
