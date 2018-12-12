@@ -71,8 +71,8 @@ class ScheduleData(BaseExporter):
                 day_data['rooms'][str(talk.room.name)]['talks'].append(talk)
             if not day_data['first_start'] or talk.start < day_data['first_start']:
                 day_data['first_start'] = talk.start
-            if not day_data['last_end'] or talk.end > day_data['last_end']:
-                day_data['last_end'] = talk.end
+            if not day_data['last_end'] or talk.real_end > day_data['last_end']:
+                day_data['last_end'] = talk.real_end
 
         for d in data.values():
             d['rooms'] = sorted(

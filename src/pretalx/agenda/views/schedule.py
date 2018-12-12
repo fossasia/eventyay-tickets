@@ -162,7 +162,7 @@ class ScheduleView(ScheduleDataView):
                             * 2
                         )
                         talk.height = int(talk.duration * 2)
-                        talk.is_active = talk.start <= now() <= talk.end
+                        talk.is_active = talk.start <= now() <= talk.real_end
         return context
 
 
