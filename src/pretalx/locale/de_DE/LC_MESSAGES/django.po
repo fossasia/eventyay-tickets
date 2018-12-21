@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-16 22:47+0000\n"
-"PO-Revision-Date: 2018-11-28 22:56+0100\n"
+"POT-Creation-Date: 2018-12-21 13:23+0000\n"
+"PO-Revision-Date: 2018-12-21 14:24+0100\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -458,16 +458,17 @@ msgstr ""
 #: pretalx/cfp/templates/cfp/event/cfp.html:18
 #, python-format
 msgid ""
-"You can enter submissions until %(deadline)s (%(timezone)s, "
-"%(until_string)s)."
+"You can enter submissions until %(deadline)s (%(timezone)s), "
+"%(until_string)s from now."
 msgstr ""
-"Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken "
-"(%(until_string)s)."
+"Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken – noch "
+"%(until_string)s."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:22
 #, python-format
-msgid "You can enter submissions until %(deadline)s (%(timezone)s)."
-msgstr "Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken."
+msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
+msgstr ""
+"Einreichungen konnten bis %(deadline)s (%(timezone)s) abgegeben werden."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:32
 #: pretalx/cfp/templates/cfp/event/index.html:20
@@ -1441,22 +1442,16 @@ msgid "A submission type was modified."
 msgstr "Ein Einreichungstyp wurde verändert."
 
 #: pretalx/common/models/log.py:81
-#, fuzzy
-#| msgid "A question was added."
 msgid "A track was added."
-msgstr "Eine Frage wurde hinzugefügt."
+msgstr "Ein Track wurde hinzugefügt."
 
 #: pretalx/common/models/log.py:82
-#, fuzzy
-#| msgid "A question was deleted."
 msgid "A track was deleted."
-msgstr "Eine Frage wurde gelöscht."
+msgstr "Ein Track wurde gelöscht."
 
 #: pretalx/common/models/log.py:83
-#, fuzzy
-#| msgid "An email was modified."
 msgid "A track was modified."
-msgstr "Eine E-Mail wurde verändert."
+msgstr "Ein Track wurde verändert."
 
 #: pretalx/common/models/log.py:84
 msgid "A speaker has been marked as arrived."
@@ -2470,11 +2465,11 @@ msgstr ""
 
 #: pretalx/orga/forms/cfp.py:14
 msgid "Use tracks"
-msgstr ""
+msgstr "Tracks verwenden"
 
 #: pretalx/orga/forms/cfp.py:16
 msgid "Do you organise your talks by tracks?"
-msgstr ""
+msgstr "Werden die Vorträge dieser Veranstaltung in Tracks sortiert?"
 
 #: pretalx/orga/forms/cfp.py:19
 msgid "Display deadline publicly"
@@ -2676,10 +2671,12 @@ msgstr ""
 #: pretalx/orga/forms/event.py:157
 msgid "You cannot choose the base domain of this installation."
 msgstr ""
+"Die Basisdomain kann nicht als Domain festgelegt werden, sie wird ohnehin "
+"schon angeboten."
 
 #: pretalx/orga/forms/event.py:171
 msgid "This domain is already in use for a different event."
-msgstr ""
+msgstr "Diese Domain wird schon für eine andere Veranstaltung verwendet."
 
 #: pretalx/orga/forms/event.py:178
 msgid "Sender address"
@@ -3031,7 +3028,7 @@ msgstr "Inhalt"
 #: pretalx/orga/templates/orga/base.html:212
 #: pretalx/orga/templates/orga/cfp/track_view.html:5
 msgid "Tracks"
-msgstr ""
+msgstr "Tracks"
 
 #: pretalx/orga/templates/orga/base.html:216
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:5
@@ -3404,7 +3401,7 @@ msgstr "Beschreibung"
 #: pretalx/orga/templates/orga/cfp/track_view.html:16
 #: pretalx/submission/models/submission.py:107
 msgid "Track"
-msgstr ""
+msgstr "Track"
 
 #: pretalx/orga/templates/orga/cfp/text.html:77
 #: pretalx/orga/templates/orga/submission/speakers.html:33
@@ -3437,10 +3434,8 @@ msgstr "Review-Einstellungen"
 
 #: pretalx/orga/templates/orga/cfp/track_form.html:20
 #: pretalx/orga/templates/orga/cfp/track_view.html:47
-#, fuzzy
-#| msgid "New team"
 msgid "New track"
-msgstr "Team anlegen"
+msgstr "Track anlegen"
 
 #: pretalx/orga/templates/orga/cfp/track_view.html:7
 msgid ""
@@ -3449,10 +3444,14 @@ msgid ""
 "themselves. Track colors are helpful to help attendees navigate your "
 "schedule."
 msgstr ""
+"Tracks werden genutzt, um Vorträge in Kategorien zu sortieren. In den CfP-"
+"Einstellungen kann festgelegt werden, ob die Vortragenden den Track beim "
+"Einreichen angeben können. Track-Farben helfen den Teilnehmern, sich im "
+"Programm besser zurechtzufinden."
 
 #: pretalx/orga/templates/orga/cfp/track_view.html:17
 msgid "Color"
-msgstr ""
+msgstr "Farbe"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:7
 msgid ""
@@ -4118,11 +4117,9 @@ msgstr ""
 "%(unscheduled)s Programmpunkte wurden noch <strong>nicht geplant</strong>"
 
 #: pretalx/orga/templates/orga/schedule/release.html:50
-#, fuzzy, python-format
-#| msgid "%(unscheduled)s talks have <strong>not yet been scheduled</strong>."
+#, python-format
 msgid "%(no_track)s talks have <strong>not yet been assigned a track</strong>."
-msgstr ""
-"%(unscheduled)s Programmpunkte wurden noch <strong>nicht geplant</strong>"
+msgstr "%(no_track)s Vorträge haben noch <strong>keinen Track</strong>."
 
 #: pretalx/orga/templates/orga/schedule/release.html:56
 msgid "Warnings"
@@ -4342,10 +4339,8 @@ msgstr "E-Mail an Vortragende"
 
 #: pretalx/orga/templates/orga/submission/list.html:11
 #: pretalx/orga/templates/orga/submission/list.html:27
-#, fuzzy
-#| msgid "Submission Type"
 msgid "Submission feed"
-msgstr "Einreichungsart"
+msgstr "Einreichungsfeed"
 
 #: pretalx/orga/templates/orga/submission/list.html:57
 msgid "Add new submission"
@@ -4356,10 +4351,10 @@ msgid "Sneak peek"
 msgstr "Vorschau"
 
 #: pretalx/orga/templates/orga/submission/list.html:84
-#, fuzzy
-#| msgid "Show this submission on the public preview page"
 msgid "Show this submission on the public preview page, if it was accepted"
-msgstr "Zeige diese Einreichung in der öffentlichen Vorschau"
+msgstr ""
+"Zeige diese Einreichung in der öffentlichen Vorschau, falls sie angenommen "
+"wurde."
 
 #: pretalx/orga/templates/orga/submission/list.html:121
 msgid "Show this submission in the public sneak peek."
@@ -4411,10 +4406,8 @@ msgid "E-mail address"
 msgstr "E-Mail-Adresse"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:19
-#, fuzzy
-#| msgid "All speakers"
 msgid "Add speaker"
-msgstr "Alle Vortragenden"
+msgstr "Vortragende hinzufügen"
 
 #: pretalx/orga/templates/orga/submission/speakers.html:39
 msgid "Other submissions by this speaker:"
@@ -4562,34 +4555,23 @@ msgstr ""
 "werden."
 
 #: pretalx/orga/views/cfp.py:529
-#, fuzzy
-#| msgid "The talk has been scheduled."
 msgid "The track has been saved."
-msgstr "Der Vortrag wurde festgelegt."
+msgstr "Der Track wurde gespeichert."
 
 #: pretalx/orga/views/cfp.py:551
-#, fuzzy
-#| msgid ""
-#| "You cannot delete the only submission type. Try creating another one "
-#| "first!"
 msgid "You cannot delete the only track. Try creating another one first!"
 msgstr ""
-"Du kannst nicht den einzigen Einreichungstypen löschen. Erstell doch vorher "
-"einen anderen!"
+"Du kannst nicht den einzigen Track löschen. Erstell bitte vorher einen "
+"anderen!"
 
 #: pretalx/orga/views/cfp.py:559
-#, fuzzy
-#| msgid "The mail has been deleted."
 msgid "The track has been deleted."
-msgstr "Die Mail wurde gelöscht."
+msgstr "Der Track wurde gelöscht."
 
 #: pretalx/orga/views/cfp.py:563
-#, fuzzy
-#| msgid ""
-#| "This Submission Type is in use in a submission and cannot be deleted."
 msgid "This track is in use in a submission and cannot be deleted."
 msgstr ""
-"Der Einreichungstyp hängt schon an einer Einreichung und kann nicht gelöscht "
+"Der Track hat schon eine oder mehrere Einreichungen und kann nicht gelöscht "
 "werden."
 
 #: pretalx/orga/views/dashboard.py:59
@@ -4693,8 +4675,10 @@ msgstr "Die Veranstaltung hat noch keinen Beschreibungstext."
 #: pretalx/orga/views/event.py:128
 msgid ""
 "You want submitters to choose the tracks for their submissions, but you do "
-"not offer tracks for selection."
+"not offer tracks for selection. Add at least one track!"
 msgstr ""
+"Du lässt bei der Einreichung den Track der Einreichung wählen, aber es "
+"stehen keine Tracks zur Wahl. Leg mindestens einen Track an!"
 
 #: pretalx/orga/views/event.py:135
 msgid "You have configured only one submission type so far."
@@ -5045,22 +5029,19 @@ msgid "The submission has been updated!"
 msgstr "Die Einreichung wurde gespeichert."
 
 #: pretalx/orga/views/submission.py:490
-#, fuzzy, python-brace-format
-#| msgid "Share submission"
+#, python-brace-format
 msgid "{name} submission feed"
-msgstr "Einreichung teilen"
+msgstr "{name} Einreichungs-Feed"
 
 #: pretalx/orga/views/submission.py:502
-#, fuzzy, python-brace-format
-#| msgid "Unable to release new schedule: "
+#, python-brace-format
 msgid "Updates to the {name} schedule."
-msgstr "Fehler beim Veröffentlichen des neuen Programms: "
+msgstr "Neuigkeiten beim {name}-Programm"
 
 #: pretalx/orga/views/submission.py:508
-#, fuzzy, python-brace-format
-#| msgid "New submission!"
+#, python-brace-format
 msgid "New {event} submission: {title}"
-msgstr "Neue Einreichung!"
+msgstr "Neue Einreichung ({event}): {title}"
 
 #: pretalx/person/forms.py:27
 msgid "Password (again)"
@@ -5550,13 +5531,12 @@ msgid "Language of the submission"
 msgstr "Einreichungssprache"
 
 #: pretalx/submission/models/submission.py:153
-#, fuzzy
-#| msgid "Show this talk on the public sneak peek page, if it is enabled."
 msgid ""
 "Show this talk on the public sneak peek page, if the sneak peek page is "
 "enabled and the talk was accepted."
 msgstr ""
-"Zeige diese Einreichung auf der Vorschauseite, wenn diese freigegeben ist."
+"Zeige diese Einreichung auf der Vorschauseite, wenn diese freigegeben ist "
+"und der Vortrag angenommen wurde."
 
 #: pretalx/submission/models/submission.py:157
 msgid "Don't record this talk."
@@ -5618,127 +5598,3 @@ msgstr "{name} ({duration} Stunden)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} Minuten)"
-
-#~ msgid "You already requested a new password within the last 24 hours."
-#~ msgstr ""
-#~ "Du hast in den letzten 24 Stunden schon mal dein Passwort zurückgesetzt."
-
-#~ msgid "Maximum duration"
-#~ msgstr "Maximaldauer"
-
-#~ msgid "days until CfP end"
-#~ msgstr "Tage bis zum CfP-Ende"
-
-#~ msgid ""
-#~ "To invite a new member to your team, select the team below, or create a "
-#~ "new one."
-#~ msgstr ""
-#~ "Um mehr Leute ins Orga-Team einzuladen, wähle unten ein Team oder leg ein "
-#~ "neues an."
-
-#~ msgid "Please use a version number you did not use yet!"
-#~ msgstr "Bitte nimm eine noch nicht genutzte Versionsnummer!"
-
-#~ msgid "Default length"
-#~ msgstr "Standardlänge"
-
-#~ msgid "Ask speakers to submit an abstract"
-#~ msgstr "Einreichungen können ein Abstract haben"
-
-#~ msgid "Ask speakers to submit a longer description"
-#~ msgstr "Einreichungen können eine längere Beschreibung haben"
-
-#~ msgid "Ask speakers to submit notes for the organiser"
-#~ msgstr "Einreichungen können einen nichtöffentlchen Kommentar haben"
-
-#~ msgid "Ask speakers to provide a biography/personal information"
-#~ msgstr "Einreichende können eine Biographie/Beschreibung angeben"
-
-#~ msgid "Allow speakers to opt out of having their talk recorded"
-#~ msgstr "Einreichende dürfen eine Aufzeichnung der Vorträge ablehnen"
-
-#~ msgid "Ask speakers to submit a talk image"
-#~ msgstr "Einreichungen können ein Titelbild haben"
-
-#~ msgid "Force speakers to submit an abstract"
-#~ msgstr "Einreichungen müssen ein Abstract haben"
-
-#~ msgid "Force speakers to submit a longer description"
-#~ msgstr "Einreichungen müssen eine längere Beschreibung haben"
-
-#~ msgid "Force speakers to submit notes for the organiser"
-#~ msgstr "Einreichungen müssen einen nichtöffentlichen Kommentar haben"
-
-#~ msgid "Force speakers to submit a talk image"
-#~ msgstr "Einreichungen müssen ein Titelbild haben"
-
-#~ msgid "Minimum abstract length in characters"
-#~ msgstr "Minimale Länge des Abstracts in Zeichen"
-
-#~ msgid "Minimum description length in characters"
-#~ msgstr "Minimale Länge der Beschreibung in Zeichen"
-
-#~ msgid "Maximum abstract length in characters"
-#~ msgstr "Maximale Länge des Abstracts in Zeichen"
-
-#~ msgid "Maximum description length in characters"
-#~ msgstr "Maximale Länge der Beschreibung in Zeichen"
-
-#~ msgid "Require reviewers to submit a score"
-#~ msgstr "Reviewer müssen mit Punkten bewerten"
-
-#~ msgid "The new version is called \"%(version)s\", and brings a few changes:"
-#~ msgstr ""
-#~ "Die neue Version heißt \"%(version)s\", und enthält ein paar Änderungen:"
-
-#~ msgid "The new version is called \"%(version)s\", but nothing has changed."
-#~ msgstr ""
-#~ "Die neue Version heißt \"%(version)s\", aber nichts hat sich verändert."
-
-#~ msgid "We have new talks:"
-#~ msgstr "Wir haben neue Vorträge:"
-
-#~ msgid "We have sadly had to cancel a talk: "
-#~ msgstr "Wir mussten leider einen Vortrag absagen: "
-
-#~ msgid "events"
-#~ msgstr "Veranstaltungen"
-
-#~ msgid "View"
-#~ msgstr "Ansehen"
-
-#~ msgid "pending"
-#~ msgstr "ausstehend"
-
-#~ msgid "Answers"
-#~ msgstr "Antworten"
-
-#~ msgid "Create submission as orga"
-#~ msgstr "Einreichung erstellen"
-
-#~ msgid "Please provide a valid nick or email address!"
-#~ msgstr ""
-#~ "Bitte gib einen bestehenden Nutzernamen oder eine gültige Mailadresse an!"
-
-#~ msgid ""
-#~ "We already have a user with that username. Did you already register "
-#~ "before and just need to log in?"
-#~ msgstr ""
-#~ "Wir haben schon einen User, der so heißt - hast du dich schon registriert "
-#~ "und musst dich nur einloggen?"
-
-#~ msgid "Nickname"
-#~ msgstr "Nick"
-
-#~ msgid ""
-#~ "Please use only characters in the latin alphabet, plus numbers and _-."
-#~ msgstr "Bitte nur Buchstaben von A-Z/a-z, Zahlen und _- verwenden."
-
-#~ msgid "Speaker questions"
-#~ msgstr "Fragen zu Vortragenden"
-
-#~ msgid "Reviewer questions"
-#~ msgstr "Fragen für Reviewer"
-
-#~ msgid "All states"
-#~ msgstr "Alle Zustände"

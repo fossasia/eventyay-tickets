@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-16 22:47+0000\n"
+"POT-Creation-Date: 2018-12-21 13:23+0000\n"
 "PO-Revision-Date: 2018-09-19 11:43+0200\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -471,17 +471,21 @@ msgstr ""
 "proposition a bien été enregistrée !"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:18
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "You can enter submissions until %(deadline)s (%(timezone)s, "
+#| "%(until_string)s)."
 msgid ""
-"You can enter submissions until %(deadline)s (%(timezone)s, "
-"%(until_string)s)."
+"You can enter submissions until %(deadline)s (%(timezone)s), "
+"%(until_string)s from now."
 msgstr ""
 "Vous pouvez proposez des interventions jusqu'au %(deadline)s (%(timezone)s, "
 "%(until_string)s)."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:22
-#, python-format
-msgid "You can enter submissions until %(deadline)s (%(timezone)s)."
+#, fuzzy, python-format
+#| msgid "You can enter submissions until %(deadline)s (%(timezone)s)."
+msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
 msgstr ""
 "Vous pouvez proposez des interventions jusqu'au %(deadline)s (%(timezone)s)."
 
@@ -4778,7 +4782,7 @@ msgstr "L'évènement n'a pas encore de texte pour la page d'accueil."
 #: pretalx/orga/views/event.py:128
 msgid ""
 "You want submitters to choose the tracks for their submissions, but you do "
-"not offer tracks for selection."
+"not offer tracks for selection. Add at least one track!"
 msgstr ""
 
 #: pretalx/orga/views/event.py:135
@@ -5729,126 +5733,3 @@ msgstr "{name} ({duration} heures)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
-
-#~ msgid "You already requested a new password within the last 24 hours."
-#~ msgstr ""
-#~ "Vous avez déjà demandé un nouveau mot de passe dans les dernières 24 "
-#~ "heures."
-
-#~ msgid "Maximum duration"
-#~ msgstr "Durée maximum"
-
-#~ msgid "days until CfP end"
-#~ msgstr "jours jusqu'à la fin de l'appel à participation"
-
-#~ msgid ""
-#~ "To invite a new member to your team, select the team below, or create a "
-#~ "new one."
-#~ msgstr ""
-#~ "Pour inviter un nouveau membre dans votre équipe, sélectionnez l'équipe "
-#~ "ci-dessous ou créez-en une nouvelle."
-
-#~ msgid "Please use a version number you did not use yet!"
-#~ msgstr ""
-#~ "Veuillez utiliser un numéro de version que vous n'avez pas encore "
-#~ "utilisé !"
-
-#~ msgid "Default length"
-#~ msgstr "Durée par défaut"
-
-#~ msgid "Ask speakers to submit an abstract"
-#~ msgstr "Demander aux intervenants de fournir un résumé"
-
-#~ msgid "Ask speakers to submit a longer description"
-#~ msgstr "Demander aux intervenants de fournir une description longue"
-
-#~ msgid "Ask speakers to submit notes for the organiser"
-#~ msgstr "Demander aux intervenants de fournir des notes pour l'organisateur"
-
-#~ msgid "Ask speakers to provide a biography/personal information"
-#~ msgstr ""
-#~ "Demander aux intervenants de fournir une biographie/des renseignements "
-#~ "personnels"
-
-#~ msgid "Allow speakers to opt out of having their talk recorded"
-#~ msgstr ""
-#~ "Permettre aux intervenants de refuser que leur intervention soit "
-#~ "enregistrée"
-
-#~ msgid "Ask speakers to submit a talk image"
-#~ msgstr "Demander aux intervenants de fournir une image pour la proposition"
-
-#~ msgid "Force speakers to submit an abstract"
-#~ msgstr "Obliger les intervenants à fournir un résumé"
-
-#~ msgid "Force speakers to submit a longer description"
-#~ msgstr "Obliger les intervenants à fournir une description longue"
-
-#~ msgid "Force speakers to submit notes for the organiser"
-#~ msgstr "Obliger les intervenants à fournir des notes pour l'organisateur"
-
-#~ msgid "Force speakers to submit a talk image"
-#~ msgstr "Obliger les intervenants à fournir une image pour la proposition"
-
-#~ msgid "Require reviewers to submit a score"
-#~ msgstr "Obliger les évaluateurs à mettre une note"
-
-#~ msgid "The new version is called \"%(version)s\", and brings a few changes:"
-#~ msgstr ""
-#~ "La nouvelle version est nommée \"%(version)s\", et apporte quelques "
-#~ "changements :"
-
-#~ msgid "The new version is called \"%(version)s\", but nothing has changed."
-#~ msgstr ""
-#~ "La nouvelle version est nommée \"%(version)s\", mais rien n'a changé."
-
-#~ msgid "We have new talks:"
-#~ msgstr "Nous avons des nouvelles interventions :"
-
-#~ msgid "We have sadly had to cancel a talk: "
-#~ msgstr "Nous avons dû malheureusement annuler une intervention : "
-
-#~ msgid "events"
-#~ msgstr "évènements"
-
-#~ msgid "Username or email address"
-#~ msgstr "Nom d'utilisateur ou courriel"
-
-#~ msgid "View"
-#~ msgstr "Voir"
-
-#~ msgid "pending"
-#~ msgstr "en attente"
-
-#~ msgid "Answers"
-#~ msgstr "Réponses"
-
-#~ msgid "Create submission as orga"
-#~ msgstr "Créer une proposition en tant qu'organisateur"
-
-#~ msgid "Please provide a valid nick or email address!"
-#~ msgstr "Veuillez fournir un pseudo ou une adresse électronique valide !"
-
-#~ msgid ""
-#~ "We already have a user with that username. Did you already register "
-#~ "before and just need to log in?"
-#~ msgstr ""
-#~ "Nous avons déjà un utilisateur avec ce nom. Peut-être vous êtes-vous déjà "
-#~ "enregistré précédemment et avez juste besoin de vous connecter ?"
-
-#~ msgid "Nickname"
-#~ msgstr "Pseudo"
-
-#~ msgid ""
-#~ "Please use only characters in the latin alphabet, plus numbers and _-."
-#~ msgstr ""
-#~ "Veuillez utiliser uniquement des caractères latins, des nombres et _-."
-
-#~ msgid "Speaker questions"
-#~ msgstr "Questions pour les intervenants"
-
-#~ msgid "Reviewer questions"
-#~ msgstr "Questions pour les évaluateurs"
-
-#~ msgid "All states"
-#~ msgstr "Tous les statuts"

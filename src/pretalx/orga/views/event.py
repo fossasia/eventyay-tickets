@@ -125,7 +125,7 @@ class EventLive(EventSettingsPermission, TemplateView):
         if self.request.event.settings.use_tracks and self.request.event.settings.cfp_request_track and self.request.event.tracks.count() < 2:
             suggestions.append(
                 {
-                    'text': _('You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection.'),
+                    'text': _('You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection. Add at least one track!'),
                     'url': self.request.event.cfp.urls.tracks,
                 }
             )
