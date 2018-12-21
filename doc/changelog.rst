@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx can now group talks in tracks. Each talk can be assigned a track (either by the submitter, or by the organiser). Tracks will be displayed in configurable colors in the public schedule. The feature is entirely optional, and you can continue using pretalx without tracks without any problem.
+- :feature:`-` We tuned pretalx performance to be faster when showing the schedules of large conferences with several hundreds of talks.
 - :feature:`538` The sneak peek view will only feature talks that have been accepted.
 - :feature:`440` Organisers can now follow an RSS feed to see new submissions – you'll have to provide your authentication token in the RSS request header to authenticate.
 - :feature:`-` You can now set the default pretalx system wide time zone and locale (defaulting to ``UTC`` and ``en``).
