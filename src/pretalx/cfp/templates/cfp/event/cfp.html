@@ -16,11 +16,11 @@
             <strong>
                 {% if cfp.is_open %}
                 {% blocktrans with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone until_string=cfp.max_deadline|timeuntil trimmed %}
-                    You can enter submissions until {{ deadline }} ({{ timezone }}, {{ until_string }}).
+                    You can enter submissions until {{ deadline }} ({{ timezone }}), {{ until_string }} from now.
                 {% endblocktrans %}
                 {% else %}
                 {% blocktrans with deadline=cfp.max_deadline|date:"SHORT_DATETIME_FORMAT" timezone=request.timezone trimmed %}
-                    You can enter submissions until {{ deadline }} ({{ timezone }}).
+                    This Call for Papers closed on {{ deadline }} ({{ timezone }}).
                 {% endblocktrans %}
                 {% endif %}
             </strong>
