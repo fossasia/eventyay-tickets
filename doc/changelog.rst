@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`0.9.0 <2018-12-21>`
 - :feature:`-` pretalx can now group talks in tracks. Each talk can be assigned a track (either by the submitter, or by the organiser). Tracks will be displayed in configurable colors in the public schedule. The feature is entirely optional, and you can continue using pretalx without tracks without any problem.
 - :feature:`-` We tuned pretalx performance to be faster when showing the schedules of large conferences with several hundreds of talks.
 - :feature:`538` The sneak peek view will only feature talks that have been accepted.
