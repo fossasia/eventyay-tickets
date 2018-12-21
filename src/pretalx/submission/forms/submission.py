@@ -25,11 +25,13 @@ class InfoForm(RequestRequire, forms.ModelForm):
 
         if 'abstract' in self.fields:
             self.fields['abstract'].widget.attrs['rows'] = 2
-        if not event.settings.use_tracks:
-            if 'track' in self.fields:
+        if 'track' in self.fields:
+            if not event.settings.use_tracks:
                 self.fields.pop('track')
-        else:
-            self.fields['track'].queryset = event.tracks.all()
+            elif not instance or instance.state == SubmissionStates.SUBMITTED:
+                self.fields['track'].queryset = event.tracks.all()
+            elif instance and instance.state != SubmissionStates.SUBMITTED:
+                self.fields.pop('track')
 
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(
             event=self.event
