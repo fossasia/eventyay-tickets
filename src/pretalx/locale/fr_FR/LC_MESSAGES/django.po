@@ -394,7 +394,7 @@ msgid ""
 "errors, please contact us!"
 msgstr ""
 "Vos préférences linguistiques ont été sauvées. Nous pensons que nous avons "
-"une bonne traduction Française, mais si vous rencontrez des problèmes ou des "
+"une bonne traduction française, mais si vous rencontrez des problèmes ou des "
 "erreurs, veuillez nous contacter !"
 
 #: pretalx/cfp/phrases.py:23
