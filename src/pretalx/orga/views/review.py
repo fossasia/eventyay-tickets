@@ -5,7 +5,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
-from pretalx.common.mixins.views import Filterable, PermissionRequired
+from pretalx.common.mixins.views import (
+    EventPermissionRequired, Filterable, PermissionRequired,
+)
 from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
@@ -14,7 +16,7 @@ from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, SubmissionStates
 
 
-class ReviewDashboard(PermissionRequired, Filterable, ListView):
+class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     template_name = 'orga/review/dashboard.html'
     paginate_by = 25
     context_object_name = 'submissions'
@@ -65,9 +67,6 @@ class ReviewDashboard(PermissionRequired, Filterable, ListView):
             )
             .order_by('-state', '-avg_score', 'code')
         )
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -219,9 +218,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         return self.submission.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(PermissionRequired, TemplateView):
+class ReviewSubmissionDelete(EventPermissionRequired, TemplateView):
     template_name = 'orga/review/submission_delete.html'
     permission_required = 'orga.remove_review'
-
-    def get_permission_object(self):
-        return self.request.event

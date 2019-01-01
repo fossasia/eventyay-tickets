@@ -11,7 +11,7 @@ from django.views.generic import DetailView, ListView, View
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import (
-    ActionFromUrl, Filterable, PermissionRequired, Sortable,
+    ActionFromUrl, EventPermissionRequired, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.person.forms import (
@@ -22,7 +22,7 @@ from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models.submission import SubmissionStates
 
 
-class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
+class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = SpeakerProfile
     template_name = 'orga/speaker/list.html'
     context_object_name = 'speakers'
@@ -31,9 +31,6 @@ class SpeakerList(PermissionRequired, Sortable, Filterable, ListView):
     default_sort_field = 'user__name'
     paginate_by = 25
     permission_required = 'orga.view_speakers'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -146,7 +143,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
 
-class SpeakerPasswordReset(PermissionRequired, DetailView):
+class SpeakerPasswordReset(EventPermissionRequired, DetailView):
     permission_required = 'orga.change_speaker'
     template_name = 'orga/speaker/reset_password.html'
     model = User
@@ -156,9 +153,6 @@ class SpeakerPasswordReset(PermissionRequired, DetailView):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.get_object().event_profile(self.request.event)
         return context
-
-    def get_permission_object(self):
-        return self.request.event
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
@@ -214,7 +208,7 @@ class SpeakerToggleArrived(PermissionRequired, View):
         return redirect(reverse('orga:speakers.view', kwargs=self.kwargs))
 
 
-class InformationList(PermissionRequired, ListView):
+class InformationList(EventPermissionRequired, ListView):
     queryset = SpeakerInformation.objects.order_by('pk')
     template_name = 'orga/speaker/information_list.html'
     context_object_name = 'information'
@@ -223,9 +217,6 @@ class InformationList(PermissionRequired, ListView):
 
     def get_queryset(self):
         return self.request.event.information.all()
-
-    def get_permission_object(self):
-        return self.request.event
 
 
 class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):

@@ -1,16 +1,13 @@
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 
-class SneakpeekView(PermissionRequired, TemplateView):
+class SneakpeekView(EventPermissionRequired, TemplateView):
     template_name = 'agenda/sneakpeek.html'
     permission_required = 'agenda.view_sneak_peek'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

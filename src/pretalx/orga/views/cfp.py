@@ -9,7 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView, UpdateView, View
 
 from pretalx.common.forms import I18nFormSet
-from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.mixins.views import (
+    ActionFromUrl, EventPermissionRequired, PermissionRequired,
+)
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
@@ -67,12 +69,9 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         return result
 
 
-class CfPQuestionList(PermissionRequired, TemplateView):
+class CfPQuestionList(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/question_view.html'
     permission_required = 'orga.view_question'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -322,12 +321,9 @@ class CfPQuestionToggle(PermissionRequired, View):
         return redirect(question.urls.base)
 
 
-class CfPQuestionRemind(PermissionRequired, TemplateView):
+class CfPQuestionRemind(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/question_remind.html'
     permission_required = 'orga.view_question'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -390,13 +386,10 @@ class CfPQuestionRemind(PermissionRequired, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class SubmissionTypeList(PermissionRequired, ListView):
+class SubmissionTypeList(EventPermissionRequired, ListView):
     template_name = 'orga/cfp/submission_type_view.html'
     context_object_name = 'types'
     permission_required = 'orga.view_submission_type'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_queryset(self):
         return self.request.event.submission_types.all()
@@ -497,13 +490,10 @@ class SubmissionTypeDelete(PermissionRequired, View):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class TrackList(PermissionRequired, ListView):
+class TrackList(EventPermissionRequired, ListView):
     template_name = 'orga/cfp/track_view.html'
     context_object_name = 'tracks'
     permission_required = 'orga.view_tracks'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_queryset(self):
         return self.request.event.tracks.all()

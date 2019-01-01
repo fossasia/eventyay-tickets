@@ -22,23 +22,21 @@ from pretalx.agenda.management.commands.export_schedule_html import (
 )
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.api.serializers.room import AvailabilitySerializer
-from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.mixins.views import (
+    ActionFromUrl, EventPermissionRequired, PermissionRequired,
+)
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
-from pretalx.orga.views.event import EventSettingsPermission
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room
 from pretalx.schedule.utils import guess_schedule_version
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
-class ScheduleView(PermissionRequired, TemplateView):
+class ScheduleView(EventPermissionRequired, TemplateView):
     template_name = 'orga/schedule/index.html'
     permission_required = 'orga.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,7 +50,7 @@ class ScheduleView(PermissionRequired, TemplateView):
         return context
 
 
-class ScheduleExportView(PermissionRequired, TemplateView):
+class ScheduleExportView(EventPermissionRequired, TemplateView):
     template_name = 'orga/schedule/export.html'
     permission_required = 'orga.view_schedule'
 
@@ -64,15 +62,9 @@ class ScheduleExportView(PermissionRequired, TemplateView):
         )
         return context
 
-    def get_permission_object(self):
-        return self.request.event
 
-
-class ScheduleExportTriggerView(PermissionRequired, View):
+class ScheduleExportTriggerView(EventPermissionRequired, View):
     permission_required = 'orga.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def post(self, request, event):
         export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
@@ -83,11 +75,8 @@ class ScheduleExportTriggerView(PermissionRequired, View):
         return redirect(self.request.event.orga_urls.schedule_export)
 
 
-class ScheduleExportDownloadView(PermissionRequired, View):
+class ScheduleExportDownloadView(EventPermissionRequired, View):
     permission_required = 'orga.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get(self, request, event):
         try:
@@ -106,13 +95,10 @@ class ScheduleExportDownloadView(PermissionRequired, View):
         return response
 
 
-class ScheduleReleaseView(PermissionRequired, FormView):
+class ScheduleReleaseView(EventPermissionRequired, FormView):
     form_class = ScheduleReleaseForm
     permission_required = 'orga.release_schedule'
     template_name = 'orga/schedule/release.html'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -141,11 +127,8 @@ class ScheduleReleaseView(PermissionRequired, FormView):
         return redirect(self.request.event.orga_urls.release_schedule)
 
 
-class ScheduleResetView(PermissionRequired, View):
+class ScheduleResetView(EventPermissionRequired, View):
     permission_required = 'orga.edit_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
@@ -166,11 +149,8 @@ class ScheduleResetView(PermissionRequired, View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
-class ScheduleToggleView(PermissionRequired, View):
+class ScheduleToggleView(EventPermissionRequired, View):
     permission_required = 'orga.edit_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
@@ -204,11 +184,8 @@ def serialize_slot(slot):
     }
 
 
-class TalkList(PermissionRequired, View):
+class TalkList(EventPermissionRequired, View):
     permission_required = 'orga.edit_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get(self, request, event):
         result = {
@@ -284,11 +261,8 @@ class QuickScheduleView(PermissionRequired, UpdateView):
         return self.request.path
 
 
-class RoomTalkAvailabilities(PermissionRequired, View):
+class RoomTalkAvailabilities(EventPermissionRequired, View):
     permission_required = 'orga.edit_room'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get(self, request, event, talkid, roomid):
         talk = request.event.wip_schedule.talks.filter(pk=talkid).first()
@@ -308,13 +282,10 @@ class RoomTalkAvailabilities(PermissionRequired, View):
         )
 
 
-class ScheduleImportView(PermissionRequired, FormView):
+class ScheduleImportView(EventPermissionRequired, FormView):
     permission_required = 'orga.release_schedule'
     template_name = 'orga/schedule/import.html'
     form_class = ScheduleImportForm
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_success_url(self):
         return self.request.event.orga_urls.schedule_import
@@ -337,12 +308,14 @@ class ScheduleImportView(PermissionRequired, FormView):
         return super().form_invalid(form)
 
 
-class RoomList(EventSettingsPermission, TemplateView):
+class RoomList(EventPermissionRequired, TemplateView):
     template_name = 'orga/schedule/room_list.html'
+    permission_required = 'orga.change_settings'
 
 
-class RoomDelete(EventSettingsPermission, View):
+class RoomDelete(EventPermissionRequired, View):
     permission_required = 'orga.edit_room'
+    permission_required = 'orga.change_settings'
 
     def get_object(self):
         return self.request.event.rooms.filter(pk=self.kwargs['pk']).first()
@@ -365,7 +338,7 @@ class RoomDelete(EventSettingsPermission, View):
         return redirect(request.event.orga_urls.room_settings)
 
 
-class RoomDetail(EventSettingsPermission, ActionFromUrl, CreateOrUpdateView):
+class RoomDetail(EventPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Room
     form_class = RoomForm
     template_name = 'orga/schedule/room_form.html'

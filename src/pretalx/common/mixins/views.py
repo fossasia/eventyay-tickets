@@ -187,3 +187,9 @@ class PermissionRequired(PermissionRequiredMixin):
                 request.event.urls.login + f'?next={quote(request.path)}' + params
             )
         raise Http404()
+
+
+class EventPermissionRequired(PermissionRequired):
+
+    def get_permission_object(self):
+        return self.request.event

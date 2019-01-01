@@ -18,7 +18,9 @@ from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 
-from pretalx.common.mixins.views import ActionFromUrl, PermissionRequired
+from pretalx.common.mixins.views import (
+    ActionFromUrl, EventPermissionRequired, PermissionRequired,
+)
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.views import is_form_bound
 from pretalx.event.forms import (
@@ -33,11 +35,8 @@ from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
 
 
-class EventSettingsPermission(PermissionRequired):
+class EventSettingsPermission(EventPermissionRequired):
     permission_required = 'orga.change_settings'
-
-    def get_permission_object(self):
-        return self.request.event
 
 
 class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):

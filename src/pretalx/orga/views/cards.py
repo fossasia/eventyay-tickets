@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 
@@ -102,11 +102,8 @@ class SubmissionCard(Flowable):
             )
 
 
-class SubmissionCards(PermissionRequired, View):
+class SubmissionCards(EventPermissionRequired, View):
     permission_required = 'orga.view_submission_cards'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_queryset(self):
         return (

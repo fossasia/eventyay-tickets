@@ -11,16 +11,13 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 
 
-class ScheduleDataView(PermissionRequired, TemplateView):
+class ScheduleDataView(EventPermissionRequired, TemplateView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event
 
     @cached_property
     def version(self):
@@ -114,9 +111,6 @@ class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
 
-    def get_permission_object(self):
-        return self.request.event
-
     def get_object(self):
         if self.version == 'wip' and self.request.user.has_perm(
             'orga.view_schedule', self.request.event
@@ -166,9 +160,6 @@ class ScheduleView(ScheduleDataView):
         return context
 
 
-class ChangelogView(PermissionRequired, TemplateView):
+class ChangelogView(EventPermissionRequired, TemplateView):
     template_name = 'agenda/changelog.html'
     permission_required = 'agenda.view_schedule'
-
-    def get_permission_object(self):
-        return self.request.event

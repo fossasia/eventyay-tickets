@@ -13,7 +13,9 @@ from django.views.generic import DetailView, FormView, ListView
 
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mixins.views import Filterable, PermissionRequired
+from pretalx.common.mixins.views import (
+    EventPermissionRequired, Filterable, PermissionRequired,
+)
 from pretalx.common.phrases import phrases
 from pretalx.person.models.profile import SpeakerProfile
 from pretalx.schedule.models import TalkSlot
@@ -21,7 +23,7 @@ from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import Feedback, Submission
 
 
-class TalkList(PermissionRequired, Filterable, ListView):
+class TalkList(EventPermissionRequired, Filterable, ListView):
     context_object_name = 'talks'
     model = Submission
     template_name = 'agenda/talks.html'
@@ -31,16 +33,13 @@ class TalkList(PermissionRequired, Filterable, ListView):
     def get_queryset(self):
         return self.filter_queryset(self.request.event.talks)
 
-    def get_permission_object(self):
-        return self.request.event
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('q')
         return context
 
 
-class SpeakerList(PermissionRequired, Filterable, ListView):
+class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = 'speakers'
     template_name = 'agenda/speakers.html'
     permission_required = 'agenda.view_schedule'
@@ -51,9 +50,6 @@ class SpeakerList(PermissionRequired, Filterable, ListView):
             user__in=self.request.event.speakers, event=self.request.event
         ).select_related('user', 'event')
         return self.filter_queryset(qs)
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

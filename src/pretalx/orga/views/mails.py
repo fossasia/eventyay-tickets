@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
 
 from pretalx.common.mixins.views import (
-    ActionFromUrl, Filterable, PermissionRequired, Sortable,
+    ActionFromUrl, EventPermissionRequired, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.context import get_context_explanation
@@ -14,7 +14,7 @@ from pretalx.orga.forms.mails import MailDetailForm, MailTemplateForm, WriteMail
 from pretalx.person.models import User
 
 
-class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
+class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = QueuedMail
     context_object_name = 'mails'
     template_name = 'orga/mails/outbox_list.html'
@@ -24,9 +24,6 @@ class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
     paginate_by = 25
     permission_required = 'orga.view_mails'
 
-    def get_permission_object(self):
-        return self.request.event
-
     def get_queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=True).order_by('id')
         qs = self.filter_queryset(qs)
@@ -34,7 +31,7 @@ class OutboxList(PermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
-class SentMail(PermissionRequired, Sortable, Filterable, ListView):
+class SentMail(EventPermissionRequired, Sortable, Filterable, ListView):
     model = QueuedMail
     context_object_name = 'mails'
     template_name = 'orga/mails/sent_list.html'
@@ -43,9 +40,6 @@ class SentMail(PermissionRequired, Sortable, Filterable, ListView):
     sortable_fields = ('to', 'subject', 'sent')
     paginate_by = 25
     permission_required = 'orga.view_mails'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=False).order_by(
@@ -56,12 +50,9 @@ class SentMail(PermissionRequired, Sortable, Filterable, ListView):
         return qs
 
 
-class OutboxSend(PermissionRequired, TemplateView):
+class OutboxSend(EventPermissionRequired, TemplateView):
     permission_required = 'orga.send_mails'
     template_name = 'orga/mails/confirm.html'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -227,13 +218,10 @@ class MailCopy(PermissionRequired, View):
         return redirect(new_mail.urls.edit)
 
 
-class ComposeMail(PermissionRequired, FormView):
+class ComposeMail(EventPermissionRequired, FormView):
     form_class = WriteMailForm
     template_name = 'orga/mails/send_form.html'
     permission_required = 'orga.send_mails'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -308,12 +296,9 @@ class ComposeMail(PermissionRequired, FormView):
         return super().form_valid(form)
 
 
-class TemplateList(PermissionRequired, TemplateView):
+class TemplateList(EventPermissionRequired, TemplateView):
     template_name = 'orga/mails/template_list.html'
     permission_required = 'orga.view_mail_templates'
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

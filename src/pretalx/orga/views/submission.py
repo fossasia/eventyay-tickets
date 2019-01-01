@@ -18,7 +18,7 @@ from django.utils.translation import override, ugettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.mixins.views import (
-    ActionFromUrl, Filterable, PermissionRequired, Sortable,
+    ActionFromUrl, EventPermissionRequired, Filterable, PermissionRequired, Sortable,
 )
 from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
@@ -398,7 +398,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return kwargs
 
 
-class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
+class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = Submission
     context_object_name = 'submissions'
     template_name = 'orga/submission/list.html'
@@ -412,9 +412,6 @@ class SubmissionList(PermissionRequired, Sortable, Filterable, ListView):
     sortable_fields = ('code', 'title', 'state', 'is_featured')
     permission_required = 'orga.view_submissions'
     paginate_by = 25
-
-    def get_permission_object(self):
-        return self.request.event
 
     def get_queryset(self):
         qs = (

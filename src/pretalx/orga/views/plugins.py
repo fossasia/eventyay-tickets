@@ -4,15 +4,12 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import EventPermissionRequired
 
 
-class EventPluginsView(PermissionRequired, TemplateView):
+class EventPluginsView(EventPermissionRequired, TemplateView):
     template_name = 'orga/plugins.html'
     permission_required = 'orga.change_plugins'
-
-    def get_object(self):
-        return self.request.event
 
     def get_context_data(self, **kwargs) -> dict:
         from pretalx.common.plugins import get_all_plugins

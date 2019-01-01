@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
-from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.models import Organiser
 from pretalx.event.stages import get_stages
@@ -44,12 +44,9 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
         return context
 
 
-class EventDashboardView(PermissionRequired, TemplateView):
+class EventDashboardView(EventPermissionRequired, TemplateView):
     template_name = 'orga/event/dashboard.html'
     permission_required = 'orga.view_orga_area'
-
-    def get_object(self):
-        return self.request.event
 
     def get_cfp_tiles(self, event, _now):
         result = []
