@@ -152,13 +152,11 @@ named ``/etc/systemd/system/pretalx-web.service`` with the following content::
     [Service]
     User=pretalx
     Group=pretalx
-    Environment="VIRTUAL_ENV=/var/pretalx/venv"
-    Environment="PATH=/var/pretalx/venv/bin:/usr/local/bin:/usr/bin:/bin"
-    ExecStart=/var/pretalx/venv/bin/gunicorn pretalx.wsgi \
-                          --name pretalx --workers 5 \
+    WorkingDirectory=/home/pretalx/.local/lib/python3.6/site-packages/pretalx
+    ExecStart=/home/pretalx/.local/bin/gunicorn pretalx.wsgi \
+                          --name pretalx --workers 4 \
                           --max-requests 1200  --max-requests-jitter 50 \
                           --log-level=info --bind=127.0.0.1:8345
-    WorkingDirectory=/var/pretalx
     Restart=on-failure
 
     [Install]
@@ -175,9 +173,8 @@ tasks), you'll also need a second service
     [Service]
     User=pretalx
     Group=pretalx
-    Environment="VIRTUAL_ENV=/var/pretalx/venv"
-    Environment="PATH=/var/pretalx/venv/bin:/usr/local/bin:/usr/bin:/bin"
-    ExecStart=/var/pretalx/venv/bin/celery -A pretalx.celery_app worker -l info
+    WorkingDirectory=/home/pretalx/.local/lib/python3.6/site-packages/pretalx
+    ExecStart=/home/pretalx/.local/bin/celery -A pretalx.celery_app worker -l info
     WorkingDirectory=/var/pretalx
     Restart=on-failure
 
@@ -226,7 +223,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
         }
 
         location /static/ {
-            alias /var/pretalx/venv/lib/python3.6/site-packages/static.dist/;
+            alias /path/to/static.dist/;
             access_log off;
             expires 365d;
             add_header Cache-Control "public";
