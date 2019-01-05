@@ -67,7 +67,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         context['go_to_target'] = (
             'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         )
-        context['history'] = ActivityLog.objects.filter(event=self.get_object())[:20]
+        context['history'] = ActivityLog.objects.filter(event=self.request.event)[:20]
         _now = now()
         today = _now.date()
         context['tiles'] = self.get_cfp_tiles(event, _now)
