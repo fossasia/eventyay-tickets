@@ -3511,7 +3511,7 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/event/live.html:13
 msgid ""
-"Your event is currently only visible to your and your team. By going live, "
+"Your event is currently only visible to you and your team. By going live, "
 "it will be publicly visible."
 msgstr ""
 "Diese Veranstaltung ist derzeit nur für das Organisationsteam sichtbar. "
