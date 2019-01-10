@@ -86,7 +86,6 @@ class ScheduleData(BaseExporter):
             d['rooms'] = sorted(
                 d['rooms'].values(), key=lambda room: room['position'] or room['name']
             )
-        print(data.values())
         return data.values()
 
 
