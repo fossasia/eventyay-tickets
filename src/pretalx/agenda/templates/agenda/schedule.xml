@@ -31,6 +31,7 @@
                 <language>{{ talk.submission.content_locale }}</language>
                 <abstract>{{ talk.submission.abstract|xmlescape }}</abstract>
                 <description>{{ talk.submission.description|xmlescape }}</description>
+                <logo>{{ talk.submission.urls.image }}</logo>
                 <persons>
                     {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name|xmlescape }}</person>{% endfor %}
                 </persons>

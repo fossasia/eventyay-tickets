@@ -150,7 +150,7 @@ class FrabJsonExporter(ScheduleData):
                                 {
                                     'id': talk.submission.id,
                                     'guid': talk.submission.uuid,
-                                    'logo': None,
+                                    'logo': talk.submission.urls.image,
                                     'date': talk.start.astimezone(tz).isoformat(),
                                     'start': talk.start.astimezone(tz).strftime(
                                         '%H:%M'

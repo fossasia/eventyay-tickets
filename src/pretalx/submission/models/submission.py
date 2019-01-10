@@ -191,7 +191,7 @@ class Submission(LogMixin, models.Model):
         public = '{public_base}/'
         feedback = '{public}feedback/'
         ical = '{public_base}.ics'
-        image = '{self.image.url}'
+        image = '{self.image_url}'
         invite = '{user_base}invite'
         accept_invitation = (
             '{self.event.urls.base}invitation/{self.code}/{self.invitation_token}'
@@ -214,6 +214,10 @@ class Submission(LogMixin, models.Model):
         feedback = '{base}feedback/'
         toggle_featured = '{base}toggle_featured'
         quick_schedule = '{self.event.orga_urls.schedule}quick/{self.code}/'
+
+    @property
+    def image_url(self):
+        return self.image.url if self.image else ''
 
     def assign_code(self, length=6):
         # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
