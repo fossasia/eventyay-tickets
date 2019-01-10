@@ -11,7 +11,7 @@
         <timeslot_duration>00:05</timeslot_duration>
         <base_url>{{ metadata.base_url }}</base_url>
     </conference>
-    {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start.isoformat }}' end='{{ day.end.isoformat }}'>
+    {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start|date:"c" }}' end='{{ day.end|date:"c" }}'>
         {% for room in day.rooms %}<room name='{{ room.name|xmlescape }}'>
             {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
                 <date>{{ talk.start|date:"c" }}</date>
@@ -36,6 +36,7 @@
                     {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name|xmlescape }}</person>{% endfor %}
                 </persons>
                 <links></links>
+                <attachments></attachments>
             </event>
             {% endfor %}
         </room>
