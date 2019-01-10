@@ -19,6 +19,14 @@ class ScheduleData(BaseExporter):
         self.schedule = schedule
 
     @cached_property
+    def metadata(self):
+        if not self.schedule:
+            return []
+        return {
+            'base_url': self.event.urls.schedule.full()
+        }
+
+    @cached_property
     def data(self):
         if not self.schedule:
             return []
@@ -91,6 +99,7 @@ class FrabXmlExporter(ScheduleData):
     def render(self, **kwargs):
         context = {
             'data': self.data,
+            'metadata': self.metadata,
             'schedule': self.schedule,
             'event': self.event,
             'version': __version__,
@@ -123,6 +132,7 @@ class FrabJsonExporter(ScheduleData):
         schedule = self.schedule
         content = {
             'version': schedule.version,
+            'base_url': self.metadata['base_url'],
             'conference': {
                 'acronym': self.event.slug,
                 'title': str(self.event.name),
