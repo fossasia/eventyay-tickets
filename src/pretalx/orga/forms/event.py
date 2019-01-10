@@ -131,6 +131,14 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         ),
         required=False,
     )
+    html_export_url = forms.URLField(
+        label=_('HTML Export URL'),
+        help_text=_(
+            'If you publish your schedule via the HTML export, you will want the correct absolute URL to be set in various places. '
+            'Please only set this value once you have published your schedule. Should end with a slash.'
+        ),
+        required=False,
+    )
     display_header_pattern = forms.ChoiceField(
         label=_('Frontpage header pattern'),
         help_text=_(
