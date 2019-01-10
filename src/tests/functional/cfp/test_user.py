@@ -11,46 +11,31 @@ from pretalx.submission.models import SubmissionStates
 
 @pytest.mark.django_db
 def test_can_see_submission_list(speaker_client, submission):
-    response = speaker_client.get(
-        submission.event.urls.user_submissions,
-        follow=True,
-    )
+    response = speaker_client.get(submission.event.urls.user_submissions, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_can_see_submission(speaker_client, submission):
-    response = speaker_client.get(
-        submission.urls.user_base,
-        follow=True,
-    )
+    response = speaker_client.get(submission.urls.user_base, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_cannot_see_other_submission(speaker_client, other_submission):
-    response = speaker_client.get(
-        other_submission.urls.user_base,
-        follow=True,
-    )
+    response = speaker_client.get(other_submission.urls.user_base, follow=True)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
 def test_can_confirm_submission(speaker_client, accepted_submission):
-    response = speaker_client.get(
-        accepted_submission.urls.confirm,
-        follow=True,
-    )
+    response = speaker_client.get(accepted_submission.urls.confirm, follow=True)
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.ACCEPTED
-    response = speaker_client.post(
-        accepted_submission.urls.confirm,
-        follow=True,
-    )
+    response = speaker_client.post(accepted_submission.urls.confirm, follow=True)
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.CONFIRMED
@@ -60,10 +45,7 @@ def test_can_confirm_submission(speaker_client, accepted_submission):
 def test_can_reconfirm_submission(speaker_client, accepted_submission):
     accepted_submission.state = SubmissionStates.CONFIRMED
     accepted_submission.save()
-    response = speaker_client.get(
-        accepted_submission.urls.confirm,
-        follow=True,
-    )
+    response = speaker_client.get(accepted_submission.urls.confirm, follow=True)
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.CONFIRMED
@@ -73,10 +55,7 @@ def test_can_reconfirm_submission(speaker_client, accepted_submission):
 def test_cannot_confirm_rejected_submission(other_speaker_client, rejected_submission):
     rejected_submission.state = SubmissionStates.REJECTED
     rejected_submission.save()
-    response = other_speaker_client.get(
-        rejected_submission.urls.confirm,
-        follow=True,
-    )
+    response = other_speaker_client.get(rejected_submission.urls.confirm, follow=True)
     rejected_submission.refresh_from_db()
     assert response.status_code == 200
     assert rejected_submission.state == SubmissionStates.REJECTED
@@ -84,17 +63,11 @@ def test_cannot_confirm_rejected_submission(other_speaker_client, rejected_submi
 
 @pytest.mark.django_db
 def test_can_withdraw_submission(speaker_client, submission):
-    response = speaker_client.get(
-        submission.urls.withdraw,
-        follow=True,
-    )
+    response = speaker_client.get(submission.urls.withdraw, follow=True)
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.state == SubmissionStates.SUBMITTED
-    response = speaker_client.post(
-        submission.urls.withdraw,
-        follow=True,
-    )
+    response = speaker_client.post(submission.urls.withdraw, follow=True)
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.state == SubmissionStates.WITHDRAWN
@@ -102,10 +75,7 @@ def test_can_withdraw_submission(speaker_client, submission):
 
 @pytest.mark.django_db
 def test_cannot_withdraw_accepted_submission(speaker_client, accepted_submission):
-    response = speaker_client.get(
-        accepted_submission.urls.withdraw,
-        follow=True,
-    )
+    response = speaker_client.get(accepted_submission.urls.withdraw, follow=True)
     accepted_submission.refresh_from_db()
     assert response.status_code == 200
     assert accepted_submission.state == SubmissionStates.ACCEPTED
@@ -140,10 +110,7 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
         'resource-MIN_NUM_FORMS': 0,
         'resource-MAX_NUM_FORMS': 1000,
     }
-    response = speaker_client.post(
-        submission.urls.user_base + '/',
-        follow=True, data=data,
-    )
+    response = speaker_client.post(submission.urls.user_base, follow=True, data=data)
     assert response.status_code == 200
     submission.refresh_from_db()
     resource_one.refresh_from_db()
@@ -171,8 +138,7 @@ def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submissi
         'resource-MAX_NUM_FORMS': 1000,
     }
     response = other_speaker_client.post(
-        rejected_submission.urls.user_base,
-        follow=True, data=data,
+        rejected_submission.urls.user_base, follow=True, data=data
     )
     assert response.status_code == 200
     rejected_submission.refresh_from_db()
@@ -183,7 +149,11 @@ def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submissi
 def test_can_edit_profile(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,
-        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
+        data={
+            'name': 'Lady Imperator',
+            'biography': 'Ruling since forever.',
+            'form': 'profile',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -197,7 +167,11 @@ def test_must_provide_availabilities(speaker, event, speaker_client):
     event.settings.cfp_require_availabilities = True
     response = speaker_client.post(
         event.urls.user,
-        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile'},
+        data={
+            'name': 'Lady Imperator',
+            'biography': 'Ruling since forever.',
+            'form': 'profile',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -205,7 +179,12 @@ def test_must_provide_availabilities(speaker, event, speaker_client):
     assert speaker.profiles.get(event=event).biography != 'Ruling since forever.'
     response = speaker_client.post(
         event.urls.user,
-        data={'name': 'Lady Imperator', 'biography': 'Ruling since forever.', 'form': 'profile', 'availabilities': '{"availabilities": []}'},
+        data={
+            'name': 'Lady Imperator',
+            'biography': 'Ruling since forever.',
+            'form': 'profile',
+            'availabilities': '{"availabilities": []}',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -217,7 +196,13 @@ def test_must_provide_availabilities(speaker, event, speaker_client):
 def test_can_edit_login_info(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,
-        data={'old_password': 'speakerpwd1!', 'email': 'new_email@speaker.org', 'password': '', 'password_repeat': '', 'form': 'login'},
+        data={
+            'old_password': 'speakerpwd1!',
+            'email': 'new_email@speaker.org',
+            'password': '',
+            'password_repeat': '',
+            'form': 'login',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -229,7 +214,13 @@ def test_can_edit_login_info(speaker, event, speaker_client):
 def test_can_edit_login_info_wrong_password(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,
-        data={'old_password': 'speakerpwd23!', 'email': 'new_email@speaker.org', 'password': '', 'password_repeat': '', 'form': 'login'},
+        data={
+            'old_password': 'speakerpwd23!',
+            'email': 'new_email@speaker.org',
+            'password': '',
+            'password_repeat': '',
+            'form': 'login',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -239,8 +230,13 @@ def test_can_edit_login_info_wrong_password(speaker, event, speaker_client):
 
 @pytest.mark.django_db
 def test_can_edit_and_update_speaker_answers(
-        speaker, event, speaker_question, speaker_boolean_question, speaker_client,
-        speaker_text_question, speaker_file_question,
+    speaker,
+    event,
+    speaker_question,
+    speaker_boolean_question,
+    speaker_client,
+    speaker_text_question,
+    speaker_file_question,
 ):
     answer = speaker.answers.filter(question_id=speaker_question.pk).first()
     assert not answer
@@ -252,7 +248,7 @@ def test_can_edit_and_update_speaker_answers(
             f'question_{speaker_boolean_question.id}': 'True',
             f'question_{speaker_file_question.id}': f,
             f'question_{speaker_text_question.id}': 'Green is totally the best color.',
-            'form': 'questions'
+            'form': 'questions',
         },
         follow=True,
     )
@@ -261,16 +257,24 @@ def test_can_edit_and_update_speaker_answers(
     answer = speaker.answers.get(question_id=speaker_question.pk)
     assert answer.answer == 'black as the night'
     assert speaker.answers.get(question_id=speaker_boolean_question.pk).answer == 'True'
-    assert speaker.answers.get(question_id=speaker_text_question.pk).answer == 'Green is totally the best color.'
+    assert (
+        speaker.answers.get(question_id=speaker_text_question.pk).answer
+        == 'Green is totally the best color.'
+    )
 
     file_answer = speaker.answers.get(question_id=speaker_file_question.pk)
     assert file_answer.answer.startswith('file://')
     assert file_answer.answer_file.read() == b'file_content'
-    assert os.path.exists(os.path.join(settings.MEDIA_ROOT, file_answer.answer_file.name))
+    assert os.path.exists(
+        os.path.join(settings.MEDIA_ROOT, file_answer.answer_file.name)
+    )
 
     response = speaker_client.post(
         event.urls.user,
-        data={f'question_{speaker_question.id}': 'green as the sky', 'form': 'questions'},
+        data={
+            f'question_{speaker_question.id}': 'green as the sky',
+            'form': 'questions',
+        },
         follow=True,
     )
     assert response.status_code == 200
@@ -281,10 +285,7 @@ def test_can_edit_and_update_speaker_answers(
 @pytest.mark.django_db
 def test_cannot_delete_profile_on_first_try(speaker, event, speaker_client):
     assert speaker.profiles.get(event=event).biography != ''
-    response = speaker_client.post(
-        event.urls.user_delete,
-        follow=True,
-    )
+    response = speaker_client.post(event.urls.user_delete, follow=True)
     assert response.status_code == 200
     speaker.refresh_from_db()
     assert speaker.profiles.get(event=event).biography != ''
@@ -295,9 +296,7 @@ def test_cannot_delete_profile_on_first_try(speaker, event, speaker_client):
 def test_can_delete_profile(speaker, event, speaker_client):
     assert speaker.profiles.get(event=event).biography != ''
     response = speaker_client.post(
-        event.urls.user_delete,
-        data={'really': True},
-        follow=True,
+        event.urls.user_delete, data={'really': True}, follow=True
     )
     assert response.status_code == 200
     speaker.refresh_from_db()
@@ -313,7 +312,8 @@ def test_can_change_locale(multilingual_event, client):
     assert 'submission' in first_response.content.decode()
     assert 'Einreichung' not in first_response.content.decode()
     second_response = client.get(
-        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug}) + f'?locale=de&next=/{multilingual_event.slug}/',
+        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug})
+        + f'?locale=de&next=/{multilingual_event.slug}/',
         follow=True,
     )
     assert 'Einreichung' in second_response.content.decode()
@@ -323,7 +323,8 @@ def test_can_change_locale(multilingual_event, client):
 def test_persists_changed_locale(multilingual_event, orga_user, orga_client):
     assert orga_user.locale == 'en'
     response = orga_client.get(
-        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug}) + f'?locale=de&next=/{multilingual_event.slug}/',
+        reverse('cfp:locale.set', kwargs={'event': multilingual_event.slug})
+        + f'?locale=de&next=/{multilingual_event.slug}/',
         follow=True,
     )
     orga_user.refresh_from_db()
@@ -334,17 +335,16 @@ def test_persists_changed_locale(multilingual_event, orga_user, orga_client):
 @pytest.mark.django_db
 def test_can_invite_speaker(speaker_client, submission):
     djmail.outbox = []
-    response = speaker_client.get(submission.urls.invite, follow=True, data={'email': 'invalidemail'})
+    response = speaker_client.get(
+        submission.urls.invite, follow=True, data={'email': 'invalidemail'}
+    )
     assert response.status_code == 200
     data = {
         'speaker': 'other@speaker.org',
         'subject': 'Please join!',
         'text': 'C\'mon, it will be fun!',
     }
-    response = speaker_client.post(
-        submission.urls.invite,
-        follow=True, data=data,
-    )
+    response = speaker_client.post(submission.urls.invite, follow=True, data=data)
     assert response.status_code == 200
     assert len(djmail.outbox) == 1
     assert djmail.outbox[0].to == ['other@speaker.org']
@@ -362,7 +362,9 @@ def test_can_accept_invitation(orga_client, submission):
 @pytest.mark.django_db
 def test_wrong_acceptance_link(orga_client, submission):
     assert submission.speakers.count() == 1
-    response = orga_client.post(submission.urls.accept_invitation + 'olololol', follow=True)
+    response = orga_client.post(
+        submission.urls.accept_invitation + 'olololol', follow=True
+    )
     submission.refresh_from_db()
     assert response.status_code == 404
     assert submission.speakers.count() == 1

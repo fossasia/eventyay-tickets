@@ -34,9 +34,9 @@ class SubmissionType(LogMixin, models.Model):
     )
 
     class urls(EventUrls):
-        base = edit = '{self.event.cfp.urls.types}/{self.pk}'
-        default = '{base}/default'
-        delete = '{base}/delete'
+        base = edit = '{self.event.cfp.urls.types}{self.pk}/'
+        default = '{base}default'
+        delete = '{base}delete'
 
     def __str__(self) -> str:
         """Used in choice drop downs."""

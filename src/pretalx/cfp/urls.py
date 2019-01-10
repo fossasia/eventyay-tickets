@@ -15,7 +15,7 @@ urlpatterns = [
                 url('^logout$', auth.LogoutView.as_view(), name='event.logout'),
                 url('^auth/$', auth.EventAuth.as_view(), name='event.auth'),
                 url('^reset$', auth.ResetView.as_view(), name='event.reset'),
-                url('^login', auth.LoginView.as_view(), name='event.login'),
+                url('^login/$', auth.LoginView.as_view(), name='event.login'),
                 url(
                     r'^reset/(?P<token>\w+)$',
                     auth.RecoverView.as_view(),
@@ -35,14 +35,14 @@ urlpatterns = [
                     user.SubmissionInviteAcceptView.as_view(),
                     name='invitation.view',
                 ),
-                url('^me$', user.ProfileView.as_view(), name='event.user.view'),
+                url('^me/$', user.ProfileView.as_view(), name='event.user.view'),
                 url(
                     '^me/delete$',
                     user.DeleteAccountView.as_view(),
                     name='event.user.delete',
                 ),
                 url(
-                    '^me/submissions$',
+                    '^me/submissions/$',
                     user.SubmissionsListView.as_view(),
                     name='event.user.submissions',
                 ),

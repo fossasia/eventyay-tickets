@@ -31,5 +31,5 @@ class SpeakerInformation(LogMixin, models.Model):
     )
 
     class orga_urls(EventUrls):
-        base = edit = '{self.event.orga_urls.information}/{self.pk}'
-        delete = '{base}/delete/'
+        base = edit = '{self.event.orga_urls.information}{self.pk}/'
+        delete = '{base}delete'

@@ -118,7 +118,7 @@ def test_orga_can_quick_schedule_submission(
     )
     assert response.status_code == 200
     response = orga_client.post(
-        accepted_submission.orga_urls.quick_schedule + '/',
+        accepted_submission.orga_urls.quick_schedule,
         data={
             'start_date': event.date_from.strftime('%Y-%m-%d'),
             'start_time': '10:00:00',

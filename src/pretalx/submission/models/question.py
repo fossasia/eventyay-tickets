@@ -118,12 +118,12 @@ class Question(LogMixin, models.Model):
     all_objects = AllQuestionManager()
 
     class urls(EventUrls):
-        base = '{self.event.cfp.urls.questions}/{self.pk}'
-        edit = '{base}/edit'
-        up = '{base}/up'
-        down = '{base}/down'
-        delete = '{base}/delete'
-        toggle = '{base}/toggle'
+        base = '{self.event.cfp.urls.questions}{self.pk}/'
+        edit = '{base}edit'
+        up = '{base}up'
+        down = '{base}down'
+        delete = '{base}delete'
+        toggle = '{base}toggle'
 
     def __str__(self):
         """Help when debugging."""

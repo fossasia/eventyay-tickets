@@ -46,10 +46,10 @@ class Room(LogMixin, models.Model):
         ordering = ('position',)
 
     class urls(EventUrls):
-        settings_base = edit = '{self.event.orga_urls.room_settings}/{self.pk}'
-        delete = '{settings_base}/delete'
-        up = '{settings_base}/up'
-        down = '{settings_base}/down'
+        settings_base = edit = '{self.event.orga_urls.room_settings}{self.pk}/'
+        delete = '{settings_base}delete'
+        up = '{settings_base}up'
+        down = '{settings_base}down'
 
     def __str__(self) -> str:
         return str(self.name)

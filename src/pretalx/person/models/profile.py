@@ -29,13 +29,13 @@ class SpeakerProfile(LogMixin, models.Model):
     )
 
     class urls(EventUrls):
-        public = '{self.event.urls.base}/speaker/{self.user.code}'
-        talks_ical = '{self.urls.public}/talks.ics'
+        public = '{self.event.urls.base}speaker/{self.user.code}/'
+        talks_ical = '{self.urls.public}talks.ics'
 
     class orga_urls(EventUrls):
-        base = '{self.event.orga_urls.speakers}/{self.user.id}'
-        password_reset = '{self.event.orga_urls.speakers}/{self.user.id}/reset'
-        toggle_arrived = '{self.event.orga_urls.speakers}/{self.user.id}/toggle-arrived'
+        base = '{self.event.orga_urls.speakers}{self.user.id}/'
+        password_reset = '{self.event.orga_urls.speakers}{self.user.id}/reset'
+        toggle_arrived = '{self.event.orga_urls.speakers}{self.user.id}/toggle-arrived'
 
     def __str__(self):
         """Help when debugging."""

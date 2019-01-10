@@ -57,7 +57,9 @@ class TestWizard:
         response, current_url = self.get_response_and_url(
             client, url, data=submission_data
         )
-        assert current_url.endswith(f'/{next}/')
+        assert current_url.endswith(
+            f'/{next}/'
+        ), f'{current_url} does not end with /{next}/!'
         return response, current_url
 
     def perform_question_wizard(self, client, response, url, data, next='profile'):
@@ -98,13 +100,13 @@ class TestWizard:
         url,
         name='Jane Doe',
         bio='l337 hax0r',
-        next='/me/submissions',
+        next='me/submissions/',
     ):
         data = {'profile-name': name, 'profile-biography': bio}
         key, value = self.get_form_name(response)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(next)
+        assert current_url.endswith(next), f'{current_url} does not end with {next}!'
         return response, current_url
 
     @pytest.mark.django_db

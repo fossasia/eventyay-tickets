@@ -30,7 +30,7 @@ def test_orga_create_organiser(administrator_client):
 @pytest.mark.django_db
 def test_orga_edit_organiser(orga_client, organiser):
     response = orga_client.post(
-        organiser.orga_urls.base + '/',
+        organiser.orga_urls.base,
         data={'name_0': 'The bestest organiser', 'name_1': 'The bestest organiser'},
         follow=True,
     )
@@ -125,7 +125,7 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
     team.save()
     member = team.members.first()
     assert not member.pw_reset_token
-    url = organiser.orga_urls.teams + f'/{team.pk}/reset/{member.pk}'
+    url = organiser.orga_urls.teams + f'{team.pk}/reset/{member.pk}'
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     member.refresh_from_db()
@@ -133,7 +133,9 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
     reset_token = member.pw_reset_token
     assert len(djmail.outbox) == 1
 
-    response = orga_client.post(url, follow=True)  # make sure we can do this twice despite timeouts
+    response = orga_client.post(
+        url, follow=True
+    )  # make sure we can do this twice despite timeouts
     assert response.status_code == 200
     member.refresh_from_db()
     assert member.pw_reset_token != reset_token

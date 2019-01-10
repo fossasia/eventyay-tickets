@@ -53,4 +53,4 @@ class Review(models.Model):
 
     class urls(EventUrls):
         base = '{self.submission.orga_urls.reviews}'
-        delete = '{base}/{self.pk}/delete'
+        delete = '{base}{self.pk}/delete'

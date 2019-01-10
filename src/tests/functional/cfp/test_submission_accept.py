@@ -41,7 +41,7 @@ def test_submission_accept_nologin(client, submission):
 
     assert response.status_code == 200
     assert response.redirect_chain[-1][1] == 302
-    assert 'login?next=' in response.redirect_chain[-1][0]
+    assert 'login/?next=' in response.redirect_chain[-1][0]
     assert submission.state == SubmissionStates.ACCEPTED
 
 
@@ -57,7 +57,7 @@ def test_submission_accept_wrong_code(client, submission):
 
     assert response.status_code == 200
     assert response.redirect_chain[-1][1] == 302
-    assert 'login?next=' in response.redirect_chain[-1][0]
+    assert 'login/?next=' in response.redirect_chain[-1][0]
 
 
 @pytest.mark.django_db

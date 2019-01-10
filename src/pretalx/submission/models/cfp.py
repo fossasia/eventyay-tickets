@@ -37,16 +37,16 @@ class CfP(LogMixin, models.Model):
 
     class urls(EventUrls):
         base = '{self.event.orga_urls.cfp}'
-        questions = '{base}/questions'
-        new_question = '{questions}/new'
-        remind_questions = '{questions}/remind'
-        text = edit_text = '{base}/text'
-        types = '{base}/types'
-        new_type = '{types}/new'
-        tracks = '{base}/tracks'
-        new_track = '{tracks}/new'
-        public = '{self.event.urls.base}/cfp'
-        submit = '{self.event.urls.base}/submit'
+        questions = '{base}questions/'
+        new_question = '{questions}new'
+        remind_questions = '{questions}remind'
+        text = edit_text = '{base}text'
+        types = '{base}types/'
+        new_type = '{types}new'
+        tracks = '{base}tracks/'
+        new_track = '{tracks}new'
+        public = '{self.event.urls.base}cfp'
+        submit = '{self.event.urls.base}submit/'
 
     def __str__(self) -> str:
         """Help with debugging."""

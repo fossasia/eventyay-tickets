@@ -41,10 +41,10 @@ class Organiser(LogMixin, models.Model):
         return str(self.name)
 
     class orga_urls(EventUrls):
-        base = '/orga/organiser/{self.slug}'
-        delete = '{base}/delete'
-        teams = '{base}/teams'
-        new_team = '{teams}/new'
+        base = '/orga/organiser/{self.slug}/'
+        delete = '{base}delete'
+        teams = '{base}teams/'
+        new_team = '{teams}new'
 
     @transaction.atomic
     def shred(self):
