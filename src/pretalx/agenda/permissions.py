@@ -41,6 +41,8 @@ def is_feedback_ready(user, submission):
 
 @rules.predicate
 def is_speaker_viewable(user, profile):
+    if not profile:
+        return False
     is_speaker = profile.user.submissions.filter(
         slots__schedule=profile.event.current_schedule
     ).exists()
