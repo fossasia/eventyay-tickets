@@ -1,3 +1,4 @@
+import sys
 from codecs import open
 from distutils.command.build import build
 from os import environ, path
@@ -95,11 +96,11 @@ setup(
     ],
     keywords='conference cfp event barcamp',
     install_requires=[
-        'bleach>=2.1.2,==2.1.*',  # https://bleach.readthedocs.io/en/latest/changes.html
+        'bleach==3.1.*',  # https://bleach.readthedocs.io/en/latest/changes.html
         'celery==4.1.*',  # search for "what's new" on http://docs.celeryproject.org/en/latest/, restricted to 4.1 due to https://github.com/celery/celery/issues/4878
         'csscompressor==0.9.*',  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         'cssutils==1.0.*',  # https://pythonhosted.org/cssutils/CHANGELOG.html
-        'Django>=2.1,<2.2',  # https://docs.djangoproject.com/en/2.0/releases/
+        'Django==2.1.*',  # https://docs.djangoproject.com/en/2.0/releases/
         'django-bakery==0.12.*',  # http://django-bakery.readthedocs.io/en/latest/changelog.html
         'django-bootstrap4==0.0.6',  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         'django-compressor==2.2.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
@@ -112,11 +113,11 @@ setup(
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
         'djangorestframework==3.9.*',  # http://www.django-rest-framework.org/topics/release-notes/
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
-        'libsass==0.14.5',  # https://sass.github.io/libsass-python/changes.html
-        'Markdown==2.6.*',  # https://python-markdown.github.io/change_log/
+        'libsass==0.17.0',  # https://sass.github.io/libsass-python/changes.html
+        'Markdown==3.0.*',  # https://python-markdown.github.io/change_log/
         'publicsuffixlist==0.6.*',
         'pytz',
-        'reportlab==3.4.*',  # https://www.reportlab.com/documentation/relnotes/
+        'reportlab==3.5.*',  # https://www.reportlab.com/documentation/relnotes/
         'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
         'rules==2.0.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         'urlman==1.2.*',  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
