@@ -2,5 +2,9 @@ from django.apps import AppConfig
 
 
 class PersonConfig(AppConfig):
-    label = 'pretalxperson'
     name = 'pretalx.person'
+
+    def ready(self):
+        from . import signals  # noqa
+
+default_app_config = 'pretalx.person.PersonConfig'

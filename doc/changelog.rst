@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`559` Organisers can download a list of speakers as a CSV file.
 - :support:`-` A couple of URLs now end in a trailing slash where they did not before – you will be automatically redirected, so you don't have to worry about it unless you integrate pretalx somewhere without following redirects.
 - :feature:`-` You can set the URL of your static HTML export, if you're using one, and it will be used when generating absolute URLs, e.g. in exports or emails.
 - :release:`0.9.0 <2018-12-21>`

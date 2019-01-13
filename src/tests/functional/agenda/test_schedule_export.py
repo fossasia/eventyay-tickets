@@ -435,3 +435,17 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
         )
     ).read()
     assert slot.submission.title in talk_ics
+
+
+@pytest.mark.django_db
+def test_speaker_csv_export(slot, orga_client, django_assert_num_queries):
+    with django_assert_num_queries(17):
+        response = orga_client.get(
+            reverse(
+                f'agenda:export',
+                kwargs={'event': slot.submission.event.slug, 'name': 'speakers.csv'},
+            ),
+            follow=True,
+        )
+    assert response.status_code == 200, str(response.content.decode())
+    assert slot.submission.speakers.first().name in response.content.decode()
