@@ -43,6 +43,7 @@ their respective changelogs on GitHub_ or install pretalx via PyPI_.
 Previous conferences using pretalx include:
 
 - `NorthSec 2019`_
+- `Journées du Logiciel Libre 2019`_ (a good example of our French localisation)
 - `EasterHegg 2019`_
 - `PrivacyWeek 2018`_
 - `hack.lu 2018`_
@@ -101,3 +102,4 @@ to this project.
 .. _PrivacyWeek 2018: https://privacyweek.at/
 .. _EasterHegg 2019: https://eh19.easterhegg.eu/
 .. _NorthSec 2019: https://cfp.nsec.io/2019/
+.. _Journées du Logiciel Libre 2019 : https://pretalx.jdll.org/jdll2019/cfp
