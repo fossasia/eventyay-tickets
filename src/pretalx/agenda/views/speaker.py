@@ -46,7 +46,7 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         netloc = urlparse(settings.SITE_URL).netloc
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(
-            submission__speakers=speaker.user
+            submission__speakers=speaker.user, is_visible=True,
         )
 
         cal = vobject.iCalendar()
