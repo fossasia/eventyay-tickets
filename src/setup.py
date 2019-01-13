@@ -8,6 +8,36 @@ from pretalx import __version__ as pretalx_version
 
 here = path.abspath(path.dirname(__file__))
 
+CURRENT_PYTHON = sys.version_info[:2]
+REQUIRED_PYTHON = (3, 6)
+if CURRENT_PYTHON < REQUIRED_PYTHON:
+    sys.stderr.write("""
+==========================
+Unsupported Python version
+==========================
+This version of pretix requires Python {}.{}, but you're trying to
+install it on Python {}.{}.
+This may be because you are using a version of pip that doesn't
+understand the python_requires classifier. Make sure you
+have pip >= 9.0 and setuptools >= 24.2, then try again:
+    $ python -m pip install --upgrade pip setuptools
+    $ python -m pip install pretalx
+This will install the latest version of pretalx which works on your
+version of Python.
+""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
+    sys.exit(1)
+elif CURRENT_PYTHON != REQUIRED_PYTHON:
+    sys.stderr.write("""
+==========================
+Unsupported Python version
+==========================
+This version of pretix requires Python {}.{}, but you're trying to
+install it on Python {}.{}.
+pretalx does run correctly with your Python version, but some of
+its dependencies don't – you will not be able to run asynchronous
+workers of pretalx with your Python version.
+""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
+
 # Get the long description from the relevant file
 try:
     with open(path.join(here, '../README.rst'), encoding='utf-8') as f:
@@ -42,11 +72,12 @@ cmdclass = {'build': CustomBuild}
 setup(
     name='pretalx',
     version=pretalx_version,
+    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     description='Conference organisation: CfPs, scheduling, much more',
     long_description=long_description,
     url='https://pretalx.com',
     author='Tobias Kunze',
-    author_email='rixx@cutebit.de',
+    author_email='r@rixx.de',
     license='Apache License 2.0',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
