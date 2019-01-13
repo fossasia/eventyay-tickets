@@ -252,13 +252,13 @@ def test_invite_orga_member(orga_client, event):
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
-        event.orga_urls.team_settings + str(team.id),
+        event.orga_urls.team_settings + str(team.id) + '/',
         {'email': 'other@user.org', 'form': 'invite'},
         follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1
+    assert team.invites.count() == 1, response.content.decode()
     assert str(team) in str(team.invites.first())
 
 
@@ -266,20 +266,20 @@ def test_invite_orga_member(orga_client, event):
 def test_retract_invitation(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
-        event.orga_urls.team_settings + str(team.id),
+        event.orga_urls.team_settings + str(team.id) + '/',
         {'email': 'other@user.org', 'form': 'invite'},
         follow=True,
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1
+    assert team.invites.count() == 1, response.content.decode()
     invite = team.invites.first()
     response = orga_client.get(
         event.orga_urls.team_settings + f'{invite.id}/uninvite', follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1
+    assert team.invites.count() == 1, response.content.decode()
     response = orga_client.post(
         event.orga_urls.team_settings + f'{invite.id}/uninvite', follow=True
     )
