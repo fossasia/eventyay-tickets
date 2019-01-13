@@ -124,6 +124,8 @@ class TalkSlot(LogMixin, models.Model):
         return new_slot
 
     def build_ical(self, calendar, creation_time=None, netloc=None):
+        if not self.start or not self.end or not self.room:
+            return
         creation_time = creation_time or datetime.now(pytz.utc)
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
         tz = pytz.timezone(self.submission.event.timezone)
