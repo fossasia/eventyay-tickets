@@ -120,14 +120,17 @@ class EventWizardTimelineForm(forms.ModelForm):
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['date_from'].widget.attrs['class'] = 'datepickerfield'
-        self.fields['date_to'].widget.attrs['class'] = 'datepickerfield'
-        self.fields['date_to'].widget.attrs['data-date-after'] = '#id_date_from'
         self.fields['deadline'].widget.attrs['class'] = 'datetimepickerfield'
 
     class Meta:
         model = Event
         fields = ('date_from', 'date_to')
+        widgets = {
+            'date_from': forms.DateInput(attrs={'class': 'datepickerfield'}),
+            'date_to': forms.DateInput(
+                attrs={'class': 'datepickerfield', 'data-date-after': '#id_date_from'}
+            ),
+        }
 
 
 class EventWizardDisplayForm(forms.Form):
