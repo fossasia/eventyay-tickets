@@ -11,7 +11,7 @@
             <a href="{{ event.orga_urls.base }}" class="dashboard-block">
                 <h1>{{ event.name }}</h1>
                 <span class="dashboard-description">
-                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
+                    {{ event.get_date_range_display }}<br>
                     /{{ event.slug }}
                 </span>
             </a>
@@ -20,7 +20,7 @@
             <a href="{{ event.orga_urls.base }}" class="dashboard-block">
                 <h1>{{ event.name }}</h1>
                 <span class="dashboard-description">
-                    {% if event.date_from %}{{ event.date_from }} – {{ event.date_to }}<br>{% endif %}
+                    {{ event.get_date_range_display }}<br>
                     /{{ event.slug }}
                 </span>
             </a>
