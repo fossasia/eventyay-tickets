@@ -4731,7 +4731,7 @@ msgstr "Es gab ein Problem beim Log-In. Bitte wende dich an den Veranstalter."
 
 #: pretalx/orga/views/event.py:277
 msgid "You are now part of the team!"
-msgstr "Du bist jetzt Teil des Team – Willkommen!"
+msgstr "Du bist jetzt Teil des Teams – Willkommen!"
 
 #: pretalx/orga/views/event.py:328
 msgid ""
