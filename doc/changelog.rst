@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now decide if you want to notify speakers about their changed talks when releasing a new schedule.
 - :support:`-` To help make other pretalx installations more secure, we've updated our proposed nginx configuration to include an attachment header for all files under /media, to prevent user uploaded data to be delivered directly to other users. If you host a pretalx instance, please make use of this option.
 - :feature:`-` Since SVG files are nearly impossible to sanitize, pretalx has given up trying, and will no longer accept SVG files as image uploads.
 - :bug:`-` The iCal export for speakers who had both scheduled and not-yet-scheduled talks was broken.

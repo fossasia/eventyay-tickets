@@ -1,10 +1,14 @@
-from django.forms import FileField, Form, ModelForm, ValidationError
+from django.forms import BooleanField, FileField, Form, ModelForm, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.schedule.models import Schedule
 
 
 class ScheduleReleaseForm(ModelForm):
+    notify_speakers = BooleanField(
+        label=_('Notify speakers of changes'), required=False, initial=True
+    )
+
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.event = event

@@ -452,9 +452,13 @@ class Event(LogMixin, models.Model):
         from pretalx.submission.models.submission import Submission
 
         if self.current_schedule:
-            return self.submissions.filter(
-                slots__in=self.current_schedule.talks.filter(is_visible=True)
-            ).select_related('submission_type').prefetch_related('speakers')
+            return (
+                self.submissions.filter(
+                    slots__in=self.current_schedule.talks.filter(is_visible=True)
+                )
+                .select_related('submission_type')
+                .prefetch_related('speakers')
+            )
         return Submission.objects.none()
 
     @cached_property
@@ -472,8 +476,8 @@ class Event(LogMixin, models.Model):
     def get_date_range_display(self) -> str:
         return daterange(self.date_from, self.date_to)
 
-    def release_schedule(self, name, user=None):
-        self.wip_schedule.freeze(name=name, user=user)
+    def release_schedule(self, name, user=None, notify_speakers=False):
+        self.wip_schedule.freeze(name=name, user=user, notify_speakers=notify_speakers)
 
     def send_orga_mail(self, text, stats=False):
         from django.utils.translation import override
