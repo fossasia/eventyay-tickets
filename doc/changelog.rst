@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Since SVG files are nearly impossible to sanitize, pretalx has given up trying, and will no longer accept SVG files as image uploads.
 - :bug:`-` The iCal export for speakers who had both scheduled and not-yet-scheduled talks was broken.
 - :feature:`559` Organisers can download a list of speakers as a CSV file.
 - :support:`-` A couple of URLs now end in a trailing slash where they did not before – you will be automatically redirected, so you don't have to worry about it unless you integrate pretalx somewhere without following redirects.

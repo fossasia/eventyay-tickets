@@ -9,6 +9,7 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.css import validate_css
+from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models.event import Event, Event_SettingsStore
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -19,6 +20,15 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         label=_('Active languages'),
         choices=settings.LANGUAGES,
         widget=MultipleLanguagesWidget,
+    )
+    logo = ExtensionFileField(
+        required=False,
+        extension_whitelist=IMAGE_EXTENSIONS,
+        label=_('Logo'),
+        help_text=_(
+            'If you provide a logo image, we will by default not show your event\'s name and date in the page header. '
+            'We will show your logo in its full size if possible, scaled down to the full header width otherwise.'
+        ),
     )
 
     def __init__(self, *args, **kwargs):

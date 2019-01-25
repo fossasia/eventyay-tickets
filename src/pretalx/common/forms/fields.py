@@ -8,6 +8,8 @@ from pretalx.common.forms.widgets import (
     ClearableBasenameFileInput, PasswordConfirmationInput, PasswordStrengthInput,
 )
 
+IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg")
+
 
 class GlobalValidator:
     def __call__(self, value):

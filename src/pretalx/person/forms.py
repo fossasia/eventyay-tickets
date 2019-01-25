@@ -1,3 +1,5 @@
+import os
+
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
@@ -7,7 +9,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
+from pretalx.common.forms.fields import (
+    IMAGE_EXTENSIONS, PasswordConfirmationField, PasswordField,
+)
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
@@ -139,13 +143,21 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
-        if (
-            avatar
-            and avatar.file
-            and hasattr(avatar, '_size')
-            and avatar._size > 10 * 1024 * 1024
-        ):
-            raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
+        if avatar:
+            if (
+                avatar.file
+                and hasattr(avatar, '_size')
+                and avatar._size > 10 * 1024 * 1024
+            ):
+                raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
+            extension = os.path.splitext(avatar.name).lower()
+            if extension not in IMAGE_EXTENSIONS:
+                raise ValidationError(
+                    _(
+                        "This filetype is not allowed, it has to be one of the following: "
+                    )
+                    + ', '.join(IMAGE_EXTENSIONS)
+                )
         return avatar
 
     def clean_email(self):

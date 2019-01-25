@@ -1,8 +1,11 @@
+import os
+
 from django import forms
 from django.conf import settings
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
+from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown
 from pretalx.common.mixins.forms import RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
@@ -58,6 +61,19 @@ class InfoForm(RequestRequire, forms.ModelForm):
         if self.readonly:
             for f in self.fields.values():
                 f.disabled = True
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            extension = os.path.splitext(image.name).lower()
+            if extension not in IMAGE_EXTENSIONS:
+                raise forms.ValidationError(
+                    _(
+                        "This filetype is not allowed, it has to be one of the following: "
+                    )
+                    + ', '.join(IMAGE_EXTENSIONS)
+                )
+        return image
 
     class Meta:
         model = Submission

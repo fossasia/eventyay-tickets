@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -141,11 +142,13 @@ class EventWizardDisplayForm(forms.Form):
         help_text=_('Show this event on this website\'s dashboard, once it is public?'),
     )
     primary_color = forms.CharField(required=False)
-    logo = forms.ImageField(
+    logo = ExtensionFileField(
         required=False,
+        extension_whitelist=IMAGE_EXTENSIONS,
+        label=_('Logo'),
         help_text=_(
             'If you provide a logo image, we will by default not show your events name and date in the page header. '
-            'We will show your logo with a maximal height of 120 pixels.'
+            'We will show your logo in its full size if possible, scaled down to the full header width otherwise.'
         ),
     )
     display_header_pattern = forms.ChoiceField(
