@@ -218,6 +218,7 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
         location /media/ {
             alias /var/pretalx/data/media/;
+            add_header Content-Disposition 'attachment; filename="$1"';
             expires 7d;
             access_log off;
         }
