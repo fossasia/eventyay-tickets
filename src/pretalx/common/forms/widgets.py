@@ -1,4 +1,7 @@
-from django.forms import CheckboxSelectMultiple, PasswordInput
+import os
+
+from django.forms import CheckboxSelectMultiple, ClearableFileInput, PasswordInput
+from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
@@ -77,3 +80,15 @@ class PasswordConfirmationInput(PasswordInput):
         )
 
         return mark_safe(super().render(name, value, self.attrs) + markup)
+
+
+class ClearableBasenameFileInput(ClearableFileInput):
+    def get_template_substitution_values(self, value):
+        """
+        Return value-related substitutions.
+        """
+        bname = os.path.basename(value.name)
+        return {
+            'initial': conditional_escape(bname),
+            'initial_url': conditional_escape(value.url),
+        }
