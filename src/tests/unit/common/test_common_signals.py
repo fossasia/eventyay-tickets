@@ -16,5 +16,5 @@ def test_is_plugin_active(event):
 def test_cant_call_signal_without_event(event):
     _populate_app_cache()
     with pytest.raises(Exception):
-        footer_link.send('something')
-    footer_link.send(event)
+        footer_link.send('something', request='test')
+    footer_link.send(event, request='test')
