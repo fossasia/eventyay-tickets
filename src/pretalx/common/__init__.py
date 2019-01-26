@@ -17,12 +17,7 @@ class CommonConfig(AppConfig):
             # require a database to be present. Bail out early, if the Event
             # table has not been created yet.
             return
-
-        try:
-            for event in Event.objects.all():
-                regenerate_css.apply_async(args=(event.pk,))
-        except (utils.OperationalError, utils.ProgrammingError):
-            pass
+        # TODO: Add more startup checks here – but do not run regenerate_css anymore
 
 
 with suppress(ImportError):
