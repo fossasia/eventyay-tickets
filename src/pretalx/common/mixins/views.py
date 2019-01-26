@@ -55,6 +55,17 @@ class ActionFromUrl:
 
 
 class Sortable:
+    """
+    In the main class, you'll have to call sort_queryset() in get_queryset.
+    In the template, do this:
+
+        {% load url_replace %}
+        <th>
+            {% trans "Title" %}
+            <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
+            <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
+        </th>
+    """
 
     sortable_fields = []
 
