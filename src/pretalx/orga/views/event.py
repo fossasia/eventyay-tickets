@@ -170,7 +170,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                         orga=True,
                         data={},
                     )
-                    messages.success(request, _('This event is now hidden.'))
+                    messages.success(request, _('This event is now public.'))
         elif action == 'deactivate':
             if not event.is_public:
                 messages.success(request, _('This event was already hidden.'))
