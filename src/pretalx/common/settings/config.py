@@ -38,6 +38,10 @@ CONFIG = {
             'default': '',
             'env': os.getenv('PRETALX_COOKIE_DOMAIN'),
         },
+        'core_modules': {
+            'default': '',
+            'env': os.getenv('PRETALX_CORE_MODULES'),
+        },
     },
     'database': {
         'backend': {

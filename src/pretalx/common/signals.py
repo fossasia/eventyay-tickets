@@ -28,7 +28,7 @@ class EventPluginSignal(django.dispatch.Signal):
     def _is_active(sender, receiver):
         # Find the Django application this belongs to
         searchpath = receiver.__module__
-        core_module = any([searchpath.startswith(cm) for cm in settings.LOCAL_APPS])
+        core_module = any([searchpath.startswith(cm) for cm in settings.CORE_MODULES])
         app = None
         if not core_module:
             while True:

@@ -82,6 +82,8 @@ for entry_point in iter_entry_points(group='pretalx.plugin', name=None):
     PLUGINS.append(entry_point.module_name)
     INSTALLED_APPS.append(entry_point.module_name)
 
+CORE_MODULES = LOCAL_APPS + config.get('site', 'core_modules').split(',')
+
 ## URL SETTINGS
 SITE_URL = config.get('site', 'url', fallback='http://localhost')
 SITE_NETLOC = urlparse(SITE_URL).netloc
