@@ -534,7 +534,7 @@ class Event(LogMixin, models.Model):
             Resource.objects.filter(submission__event=self),
             Answer.objects.filter(question__event=self),
             AnswerOption.objects.filter(question__event=self),
-            self.questions.all(),
+            Question.all_objects.filter(event=self),
             self.submissions(manager='all_objects').all(),
             self.submission_types.all(),
             self.schedules.all(),
