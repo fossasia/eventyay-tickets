@@ -521,7 +521,7 @@ class Event(LogMixin, models.Model):
         from pretalx.common.models import ActivityLog
         from pretalx.person.models import SpeakerProfile
         from pretalx.schedule.models import TalkSlot
-        from pretalx.submission.models import Feedback, AnswerOption, Resource, Answer
+        from pretalx.submission.models import Answer, AnswerOption, Feedback, Question, Resource
 
         deletion_order = [
             self.logged_actions(),

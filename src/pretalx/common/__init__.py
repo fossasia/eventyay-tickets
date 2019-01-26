@@ -8,8 +8,7 @@ class CommonConfig(AppConfig):
 
     def ready(self):
         from pretalx.event.models import Event
-        from pretalx.common.tasks import regenerate_css
-        from django.db import connection, utils
+        from django.db import connection
         from . import signals  # noqa
 
         if Event._meta.db_table not in connection.introspection.table_names():
