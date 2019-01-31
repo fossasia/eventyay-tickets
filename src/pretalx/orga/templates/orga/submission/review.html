@@ -40,29 +40,37 @@
             {{ submission.submission_type }}
         </div>
     </div>
+    {% if request.event.settings.cfp_request_abstract %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.abstract|rich_text|default:'-' }}
         </div>
     </div>
+    {% endif %}
+    {% if request.event.settings.cfp_request_description %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label" for="id_text">{% trans "Description" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.description|rich_text|default:'-' }}
         </div>
     </div>
+    {% endif %}
+    {% if request.event.settings.cfp_request_notes %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes for the organiser" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.notes|rich_text|default:'-' }}
         </div>
     </div>
+    {% endif %}
     {% for speaker in profiles %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label" for="id_text">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
         <div class="col-md-9 mt-1">
+            {% if request.event.settings.cfp_request_biography %}
             {{ speaker.biography|rich_text|default:'-' }}
+            {% endif %}
             {% if speaker.submissions.count > 1 %}<br><strong>{% trans "Other submissions" %}:</strong>
             {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
             <a href="{{ other_submission.orga_urls.base }}">{{ other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
