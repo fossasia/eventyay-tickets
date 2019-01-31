@@ -36,9 +36,6 @@ class InfoForm(RequestRequire, forms.ModelForm):
             elif instance and instance.state != SubmissionStates.SUBMITTED:
                 self.fields.pop('track')
 
-        self.fields['submission_type'].queryset = SubmissionType.objects.filter(
-            event=self.event
-        )
         _now = now()
         if (
             not self.event.cfp.deadline or self.event.cfp.deadline >= _now
@@ -49,10 +46,13 @@ class InfoForm(RequestRequire, forms.ModelForm):
         pks = set(types.values_list('pk', flat=True))
         if instance and instance.pk:
             pks |= {instance.submission_type.pk}
-        self.fields['submission_type'].queryset = self.event.submission_types.filter(
-            pk__in=pks
-        )
-
+        if len(pks) == 1:
+            self.fields['submission_type'].initial = self.event.submission_types.get(pk=next(pks))
+            self.fields['submission_type'].widget=forms.HiddenInput()
+        else:
+            self.fields['submission_type'].queryset = self.event.submission_types.filter(
+                pk__in=pks
+            )
         if len(self.event.locales) == 1:
             self.fields['content_locale'].initial = self.event.locales[0]
             self.fields['content_locale'].widget=forms.HiddenInput()
