@@ -53,10 +53,14 @@ class InfoForm(RequestRequire, forms.ModelForm):
             pk__in=pks
         )
 
-        locale_names = dict(settings.LANGUAGES)
-        self.fields['content_locale'].choices = [
-            (a, locale_names[a]) for a in self.event.locales
-        ]
+        if len(self.event.locales) == 1:
+            self.fields['content_locale'].initial = self.event.locales[0]
+            self.fields['content_locale'].widget=forms.HiddenInput()
+        else:
+            locale_names = dict(settings.LANGUAGES)
+            self.fields['content_locale'].choices = [
+                (a, locale_names[a]) for a in self.event.locales
+            ]
 
         if self.readonly:
             for f in self.fields.values():
