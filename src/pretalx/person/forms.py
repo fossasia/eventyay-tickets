@@ -150,7 +150,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
                 and avatar._size > 10 * 1024 * 1024
             ):
                 raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
-            extension = os.path.splitext(avatar.name).lower()
+            extension = os.path.splitext(avatar.name)[1].lower()
             if extension not in IMAGE_EXTENSIONS:
                 raise ValidationError(
                     _(

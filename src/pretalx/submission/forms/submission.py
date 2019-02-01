@@ -69,7 +69,7 @@ class InfoForm(RequestRequire, forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            extension = os.path.splitext(image.name).lower()
+            extension = os.path.splitext(image.name)[1].lower()
             if extension not in IMAGE_EXTENSIONS:
                 raise forms.ValidationError(
                     _(
