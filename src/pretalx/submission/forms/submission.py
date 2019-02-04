@@ -47,7 +47,7 @@ class InfoForm(RequestRequire, forms.ModelForm):
         if instance and instance.pk:
             pks |= {instance.submission_type.pk}
         if len(pks) == 1:
-            self.fields['submission_type'].initial = self.event.submission_types.get(pk=next(pks))
+            self.fields['submission_type'].initial = self.event.submission_types.get(pk=pks.pop())
             self.fields['submission_type'].widget=forms.HiddenInput()
         else:
             self.fields['submission_type'].queryset = self.event.submission_types.filter(
