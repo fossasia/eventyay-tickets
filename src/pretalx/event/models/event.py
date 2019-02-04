@@ -471,7 +471,7 @@ class Event(LogMixin, models.Model):
     def submitters(self):
         from pretalx.person.models import User
 
-        return User.objects.filter(submissions__event=self).order_by('id').distinct()
+        return User.objects.filter(submissions__in=self.submissions.all()).order_by('id').distinct()
 
     def get_date_range_display(self) -> str:
         return daterange(self.date_from, self.date_to)
