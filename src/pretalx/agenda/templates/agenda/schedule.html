@@ -67,7 +67,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="exportDropdown">
             {% for exporter in exporters %}{% if exporter.public %}
-            <a class="dropdown-item" href="{{ request.event.urls.export }}/{{ exporter.identifier|iriencode }}">
+            <a class="dropdown-item" href="{{ request.event.urls.export }}{{ exporter.identifier|iriencode }}">
                 {% if exporter.icon|slice:":3" == "fa-" %}
                     <span class="fa {{ exporter.icon }} export-icon"></span>
                 {% else %}
