@@ -77,8 +77,9 @@ def mail(
         ).send()
 
 
-@app.task
+@app.task(bind=True)
 def mail_send_task(
+    self,
     to: str,
     subject: str,
     body: str,
@@ -113,6 +114,13 @@ def mail_send_task(
 
     try:
         backend.send_messages([email])
+    except smtplib.SMTPResponseException as exception:
+        # Retry on external problems: Connection issues (101, 111), timeouts (421), filled-up mailboxes (422),
+        # out of memory (431), network issues (442), another timeout (447), or too many mails sent (452)
+        if exception.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
+            self.retry(max_retries=5, countdown=2 ** (self.request.retries * 2))
+        logger.exception('Error sending email')
+        raise SendMailException('Failed to send an email to {}.'.format(to))
     except Exception:
         logger.exception('Error sending email')
         raise SendMailException('Failed to send an email to {}.'.format(to))
