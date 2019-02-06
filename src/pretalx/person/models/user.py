@@ -93,7 +93,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         null=True,
         blank=True,
         verbose_name=_('Profile picture'),
-        help_text=_('Optional. Will be displayed publicly.'),
+        help_text=_('Optional. Will be displayed publicly. '
+                    'If possible, upload an image that is least 120 Pixels wide.'),
     )
     get_gravatar = models.BooleanField(
         default=False,

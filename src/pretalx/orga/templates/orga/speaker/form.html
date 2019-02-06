@@ -52,6 +52,7 @@
                 {% bootstrap_field form.get_gravatar layout='event-inline' %}
                 <div class="user-avatar-display">
                     {% bootstrap_field form.avatar layout='inline' %}
+                    <small class="form-text text-muted d-block">{{ form.avatar.help_text }}</small>
                 </div>
             </div>
         </div>
