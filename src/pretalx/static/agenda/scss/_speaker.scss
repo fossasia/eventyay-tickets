@@ -84,14 +84,12 @@
     flex-direction: row;
 
     .speaker-bio {
-      min-width: 60%;
-      flex-grow: 1;
+      flex: 1;
     }
 
-    .speaker-info {
-      max-width: 320px;
-      display: flex;
-      flex-direction: column;
+    .speaker-avatar {
+      width: 120px;
+      margin-left: 8px;
     }
   }
 

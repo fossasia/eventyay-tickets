@@ -8,23 +8,25 @@
 
 {% block agenda_content %}
 <article>
-<h3>
-    {% blocktrans with event=request.event.name trimmed %}
-    {{ event }} speaker:
-    {% endblocktrans %}
-    {{ speaker.get_display_name }}
-    <div class="buttons float-right">
+<div class="d-flex mb-2">
+    <h3>
+        {% blocktrans with event=request.event.name trimmed %}
+        {{ event }} speaker:
+        {% endblocktrans %}
+        {{ speaker.get_display_name }}
+    </h3>
+    <div class="buttons ml-auto">
         <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
             <i class="fa fa-calendar"></i> .ical
         </a>
     </div>
-</h3>
+</div>
 <div class="speaker-container">
     <section class="speaker-info">
         <div class="speaker-bio">
             {{ profile.biography|rich_text }}
         </div>
-        <div class="speaker-info">
+        <div class="speaker-avatar">
             {% if speaker.get_gravatar %}
             <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" alt="{% trans "The speaker's profile picture" %}"/>
             {% elif speaker.avatar %}
