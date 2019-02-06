@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown
 from pretalx.common.mixins.forms import RequestRequire
-from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
+from pretalx.submission.models import Submission, SubmissionStates
 
 
 class InfoForm(RequestRequire, forms.ModelForm):
@@ -36,6 +36,22 @@ class InfoForm(RequestRequire, forms.ModelForm):
             elif instance and instance.state != SubmissionStates.SUBMITTED:
                 self.fields.pop('track')
 
+        self._set_submission_types(instance=instance)
+
+        if len(self.event.locales) == 1:
+            self.fields['content_locale'].initial = self.event.locales[0]
+            self.fields['content_locale'].widget = forms.HiddenInput()
+        else:
+            locale_names = dict(settings.LANGUAGES)
+            self.fields['content_locale'].choices = [
+                (a, locale_names[a]) for a in self.event.locales
+            ]
+
+        if self.readonly:
+            for f in self.fields.values():
+                f.disabled = True
+
+    def _set_submission_types(self, instance=None):
         _now = now()
         if (
             not self.event.cfp.deadline or self.event.cfp.deadline >= _now
@@ -48,23 +64,11 @@ class InfoForm(RequestRequire, forms.ModelForm):
             pks |= {instance.submission_type.pk}
         if len(pks) == 1:
             self.fields['submission_type'].initial = self.event.submission_types.get(pk=pks.pop())
-            self.fields['submission_type'].widget=forms.HiddenInput()
+            self.fields['content_locale'].widget = forms.HiddenInput()
         else:
             self.fields['submission_type'].queryset = self.event.submission_types.filter(
                 pk__in=pks
             )
-        if len(self.event.locales) == 1:
-            self.fields['content_locale'].initial = self.event.locales[0]
-            self.fields['content_locale'].widget=forms.HiddenInput()
-        else:
-            locale_names = dict(settings.LANGUAGES)
-            self.fields['content_locale'].choices = [
-                (a, locale_names[a]) for a in self.event.locales
-            ]
-
-        if self.readonly:
-            for f in self.fields.values():
-                f.disabled = True
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
