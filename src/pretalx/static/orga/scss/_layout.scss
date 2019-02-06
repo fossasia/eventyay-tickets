@@ -313,7 +313,6 @@ footer {
 .avatar-form {
   display: flex;
   align-items: flex-start;
-  margin-left: 20px;
   padding-bottom: 8px;
 
   img.avatar {
@@ -325,13 +324,19 @@ footer {
     display: flex;
     flex-direction: column;
 
-    .user-avatar-display .bootstrap4-multi-input {
+    .bootstrap4-multi-input,
+    .bootstrap4-multi-input > .col-12 {
       margin: 0;
+      padding: 0;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
+    }
+
+    .user-avatar-display .form-group {
+      margin-bottom: 0;
     }
   }
 }

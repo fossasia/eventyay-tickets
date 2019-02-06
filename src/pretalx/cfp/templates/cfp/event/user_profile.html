@@ -13,10 +13,9 @@
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
-        <div class="avatar-form">
-            <label class="col-md-3 col-form-label left-side">
+        <div class="avatar-form form-group row">
+            <label class="col-md-3 col-form-label">
             {% trans "Profile picture" %}
-            <br><span class="optional">{% trans "Optional" %}</span>
             <br>
             <img
               class="avatar float-right"
@@ -30,7 +29,7 @@
               {% endif %}
             />
             </label>
-            <div class="avatar-form-fields">
+            <div class="avatar-form-fields col-md-9">
                 {% bootstrap_field profile_form.get_gravatar layout='event-inline' %}
                 <div class="user-avatar-display">
                     {% bootstrap_field profile_form.avatar layout='inline' %}

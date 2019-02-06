@@ -32,7 +32,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <div class="speaker-info avatar-form">
+        <div class="speaker-info avatar-form form-group row">
             <div class="col-md-3 col-form-label">
                 {% if form.instance.user.has_avatar %}
                     <img

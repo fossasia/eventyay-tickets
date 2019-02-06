@@ -17,27 +17,27 @@
     </p>
 
     {% bootstrap_form_errors wizard.form %}
-    <div class="avatar-form">
-        <label class="col-md-3 left-side col-form-label">
+    <div class="avatar-form form-group row">
+        <label class="col-md-3 col-form-label">
             {% trans "Profile picture" %}
-            <br><span class="optional">{% trans "Optional" %}</span>
             <br>
-        <img
-          class="avatar float-right"
-          data-gravatar="{{ gravatar_parameter }}"
-          data-avatar=""
-          alt="{% trans "Your avatar" %}"
-        />
+            <img
+            class="avatar float-right"
+            data-gravatar="{{ gravatar_parameter }}"
+            data-avatar=""
+            alt="{% trans "Your avatar" %}"
+            />
         </label>
-        <div class="avatar-form-fields">
+        <div class="avatar-form-fields col-md-9">
             {% bootstrap_field wizard.form.get_gravatar layout='event-inline' %}
             <div class="user-avatar-display">
                 {% bootstrap_field wizard.form.avatar layout='inline' %}
+                <small class="form-text text-muted d-block">{{ profile_form.avatar.help_text }}</small>
             </div>
         </div>
     </div>
     {% bootstrap_field wizard.form.name layout='event' %}
     {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
 
-<script src="{% static "cfp/js/profile.js" %}"></script>
+    <script src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}
