@@ -37,7 +37,7 @@ class UserForm(forms.Form):
 
     def _clean_login(self, data):
         try:
-            uname = User.objects.get(email=data.get('login_email')).email
+            uname = User.objects.get(email__iexact=data.get('login_email')).email
         except User.DoesNotExist:  # We do this to avoid timing attacks
             uname = 'user@invalid'
 

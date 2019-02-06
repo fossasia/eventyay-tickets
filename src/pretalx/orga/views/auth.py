@@ -21,7 +21,7 @@ class LoginView(TemplateView):
     template_name = 'orga/auth/login.html'
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
-        email = request.POST.get('email').strip()
+        email = request.POST.get('email').strip().lower()
         password = request.POST.get('password')
         user = authenticate(username=email, password=password)
 
