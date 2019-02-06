@@ -8,8 +8,10 @@
 {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
 {% has_perm 'agenda.view_sneak_peek' request.user request.event as can_view_sneak_peek %}
 {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text %}{% endif %}
-    <h1>{{ cfp.headline|default:"" }}</h1>
+    <div class="d-flex">
+        <h1>{{ cfp.headline|default:"" }}</h1>
+        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text %}{% endif %}
+    </div>
     {{ cfp.text|rich_text }}
     {% if request.event.settings.cfp_show_deadline and request.event.cfp.max_deadline %}
         <p>

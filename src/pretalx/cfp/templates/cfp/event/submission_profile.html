@@ -6,9 +6,11 @@
 {% load static %}
 
 {% block inner %}
-    <h2>{% trans "Tell us something about yourself!" %}</h2>
-    {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
+    <div class="d-flex">
+        <h2>{% trans "Tell us something about yourself!" %}</h2>
+        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
+    </div>
     <p>
         {% blocktrans trimmed %}
             This information will be publicly displayed next to your talk - you can always edit

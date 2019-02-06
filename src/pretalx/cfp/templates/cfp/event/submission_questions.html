@@ -5,9 +5,11 @@
 {% load rules %}
 
 {% block inner %}
-{% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.questions %}{% endif %}
-    <h2>{% trans "Tell us more!" %}</h2>
+    <div class="d-flex">
+        <h2>{% trans "Tell us more!" %}</h2>
+        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.questions %}{% endif %}
+    </div>
     <p>
         {% blocktrans trimmed with step=wizard.steps.step1 steps=wizard.steps.count %}
             Before we can save your submission, we have some more questions for you.

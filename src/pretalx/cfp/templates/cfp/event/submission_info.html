@@ -5,9 +5,11 @@
 {% load rules %}
 
 {% block inner %}
-    <h2>{% trans "Hey, nice to meet you!" %}</h2>
-    {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-    {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
+    <div class="d-flex">
+        <h2>{% trans "Hey, nice to meet you!" %}</h2>
+        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
+    </div>
     <p>
         {% blocktrans trimmed %}
             We're glad that you want to contribute to our event with your submission.
