@@ -111,6 +111,10 @@ activates your plugin for an event in the ``installed`` method::
         def installed(self, event):
             pass  # Your code here
 
+The ``AppConfig`` class may also implement the method ``is_available(event)``
+which checks if a plugin is available for a specific event. If not, it will not
+be shown on the plugin list for that event, and cannot be enabled.
+
 Views
 -----
 

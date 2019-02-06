@@ -9,6 +9,11 @@ def get_all_plugins():
             meta = app.PretalxPluginMeta
             meta.module = app.name
             meta.app = app
+
+            if event and hasattr(app, 'is_available'):
+                if not app.is_available(event):
+                    continue
+
             plugins.append(meta)
     return sorted(
         plugins,

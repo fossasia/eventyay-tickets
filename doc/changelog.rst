@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugin developers can now use the ``is_available`` hook to decide if their plugin should be shown on a per-event basis.
 - :bug:`-` Speaker without an avatar and with gravatar disabled had a broken avatar-image in the speaker's view in the orga-backend.
 - :bug:`-` The visual representation of a speaker's avatar is now consistent across all image-sizes and bio-texts.
 - :bug:`583` When signing up with an email address with upper case letters included, pretalx only allowed to log in with a lower-cased email address.
