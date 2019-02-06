@@ -10,4 +10,7 @@ def get_all_plugins():
             meta.module = app.name
             meta.app = app
             plugins.append(meta)
-    return plugins
+    return sorted(
+        plugins,
+        key=lambda m: (0 if m.module.startswith('pretalx.') else 1, str(m.name).lower().replace('pretalx ', ''))
+    )
