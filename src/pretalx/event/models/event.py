@@ -281,6 +281,37 @@ class Event(LogMixin, models.Model):
             return []
         return self.plugins.split(',')
 
+    def set_active_plugins(self, modules):
+        from pretalx.common.plugins import get_all_plugins
+
+        plugins_active = self.get_plugins()
+        plugins_available = {
+            p.module: p for p in get_all_plugins(self)
+            if not p.name.startswith('.') and getattr(p, 'visible', True)
+        }
+
+        enable = set(modules) & (plugins_available - set(plugins_active))
+
+        for module in enable:
+            if hasattr(plugins_available[module].app, 'installed'):
+                getattr(plugins_available[module].app, 'installed')(self)
+
+        self.plugins = ",".join(modules)
+
+    def enable_plugin(self, module):
+        plugins_active = self.get_plugins()
+
+        if module not in plugins_active:
+            plugins_active.append(module)
+            self.set_active_plugins(plugins_active)
+
+    def disable_plugin(self, module):
+        plugins_active = self.get_plugins()
+
+        if module in plugins_active:
+            plugins_active.remove(module)
+            self.set_active_plugins(plugins_active)
+
     def _get_default_submission_type(self):
         from pretalx.submission.models import SubmissionType
 

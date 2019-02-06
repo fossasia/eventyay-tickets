@@ -16,18 +16,16 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['plugins'] = [
-            p for p in get_all_plugins() if not p.name.startswith('.')
+            p for p in get_all_plugins(self.request.event)
+            if not p.name.startswith('.') and getattr(p, 'visible', True)
         ]
         context['plugins_active'] = self.request.event.get_plugins()
         return context
 
     def post(self, request, *args, **kwargs):
         from pretalx.common.plugins import get_all_plugins
-
-        plugins_active = self.request.event.get_plugins()
         plugins_available = {
-            p.module: p
-            for p in get_all_plugins()
+            p for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
@@ -36,28 +34,21 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                 if key.startswith("plugin:"):
                     module = key.split(":", maxsplit=1)[1]
                     if value == "enable" and module in plugins_available:
-                        if hasattr(plugins_available[module].app, 'installed'):
-                            getattr(plugins_available[module].app, 'installed')(
-                                self.request.event
-                            )
-
+                        self.request.event.enable_plugin(module)
                         self.request.event.log_action(
                             'pretalx.event.plugins.enabled',
                             person=self.request.user,
                             data={'plugin': module},
                             orga=True,
                         )
-                        if module not in plugins_active:
-                            plugins_active.append(module)
                     else:
+                        self.request.event.disable_plugin(module)
                         self.request.event.log_action(
                             'pretalx.event.plugins.disabled',
                             person=self.request.user,
                             data={'plugin': module},
                             orga=True,
                         )
-                        if module in plugins_active:
-                            plugins_active.remove(module)
             self.request.event.plugins = ','.join(plugins_active)
             self.request.event.save()
             messages.success(self.request, _('Your changes have been saved.'))
