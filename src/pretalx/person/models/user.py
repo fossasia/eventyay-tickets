@@ -174,6 +174,12 @@ class User(PermissionsMixin, AbstractBaseUser):
     def gravatar_parameter(self):
         return md5(self.email.strip().encode()).hexdigest()
 
+    def has_avatar(self):
+        return self.get_gravatar or self.has_local_avatar()
+
+    def has_local_avatar(self):
+        return self.avatar and self.avatar != 'False'
+
     def get_events_with_any_permission(self):
         from pretalx.event.models import Event
 

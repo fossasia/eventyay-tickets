@@ -34,17 +34,19 @@
         {% bootstrap_form_errors form %}
         <div class="speaker-info avatar-form">
             <div class="col-md-3 col-form-label">
-                <img
-                  class="avatar float-right"
-                  data-gravatar="{{ form.instance.user.gravatar_parameter }}"
-                  data-avatar="{% if form.instance.user.avatar %}{{ form.instance.user.avatar.url }}{% endif %}"
-                  alt="{% trans "The speaker's profile picture" %}"
-                  {% if form.instance.user.get_gravatar %}
-                  src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}"
-                  {% elif form.instance.user.avatar and form.instance.user.avatar != 'False' %}
-                  src="{{ form.instance.user.avatar.url }}"
-                  {% endif %}
-                />
+                {% if form.instance.user.has_avatar %}
+                    <img
+                      class="avatar float-right"
+                      data-gravatar="{{ form.instance.user.gravatar_parameter }}"
+                      data-avatar="{% if form.instance.user.avatar %}{{ form.instance.user.avatar.url }}{% endif %}"
+                      alt="{% trans "The speaker's profile picture" %}"
+                      {% if form.instance.user.get_gravatar %}
+                      src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}"
+                      {% elif form.instance.user.has_local_avatar %}
+                      src="{{ form.instance.user.avatar.url }}"
+                      {% endif %}
+                    />
+                {% endif %}
             </div>
             <div class="avatar-form-fields col-md-9">
                 {% bootstrap_field form.get_gravatar layout='event-inline' %}
