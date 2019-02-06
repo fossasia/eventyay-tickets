@@ -90,7 +90,7 @@ class UserForm(forms.Form):
             return data['user_id']
 
         user = User.objects.create_user(
-            email=data.get('register_email'),
+            email=data.get('register_email').lower(),
             password=data.get('register_password'),
             locale=translation.get_language(),
             timezone=timezone.get_current_timezone_name(),
