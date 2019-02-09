@@ -74,17 +74,17 @@ def test_template_tag_review_score(review):
         (
             'https://foo.bar',
             None,
-            '<a href="https://foo.bar" class="btn btn-xs btn-outline-primary orga-edit-link float-right" title="Edit"><i class="fa fa-pencil"></i></a>',
+            '<a href="https://foo.bar" class="btn btn-xs btn-outline-primary orga-edit-link ml-auto" title="Edit"><i class="fa fa-pencil"></i></a>',
         ),
         (
             'https://foo.bar',
             '',
-            '<a href="https://foo.bar" class="btn btn-xs btn-outline-primary orga-edit-link float-right" title="Edit"><i class="fa fa-pencil"></i></a>',
+            '<a href="https://foo.bar" class="btn btn-xs btn-outline-primary orga-edit-link ml-auto" title="Edit"><i class="fa fa-pencil"></i></a>',
         ),
         (
             'https://foo.bar',
             'target',
-            '<a href="https://foo.bar#target" class="btn btn-xs btn-outline-primary orga-edit-link float-right" title="Edit"><i class="fa fa-pencil"></i></a>',
+            '<a href="https://foo.bar#target" class="btn btn-xs btn-outline-primary orga-edit-link ml-auto" title="Edit"><i class="fa fa-pencil"></i></a>',
         ),
     ),
 )
