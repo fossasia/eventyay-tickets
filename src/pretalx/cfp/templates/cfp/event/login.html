@@ -19,31 +19,5 @@
             to log in for this event.
         {% endblocktrans %}
     </p>
-    <form class="labelless-password-input-form" method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {{ form.media }}
-        <div class="row">
-            <div class="col-md-6">
-                <h4 class="text-center">{% trans "I already have an account" %}</h4>
-                {% bootstrap_field form.login_email layout="inline" %}
-                {% bootstrap_field form.login_password layout="inline" %}
-                <button type="submit" class="btn btn-lg btn-success btn-block">
-                    {% trans "Log in" %}
-                </button>
-                <a class="btn btn-block btn-link" href="{{ request.event.urls.reset }}">
-                    {% trans "Reset password" %}
-                </a>
-            </div>
-            <div class="col-md-6">
-                <h4 class="text-center">{% trans "I need a new account" %}</h4>
-                {% bootstrap_field form.register_email layout="inline" %}
-                {% bootstrap_field form.register_password layout="inline" %}
-                {% bootstrap_field form.register_password_repeat layout="inline" %}
-                <button type="submit" class="btn btn-lg btn-info btn-block">
-                    {% trans "Register" %}
-                </button>
-            </div>
-        </div>
-    </form>
+    {% include "common/auth.html" %}
 {% endblock %}

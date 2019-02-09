@@ -170,11 +170,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         else:
             uid = form_dict['user'].save()
             user = User.objects.filter(pk=uid).first()
-        if not user:
+        if not user or not user.is_active:
             raise ValidationError(
                 _(
-                    'There was an error with your user account. Please contact the organiser for further help.'
-                )
+                    'There was an error when logging in. Please contact the organiser for further help.'
+                ),
             )
 
         form_dict['info'].instance.event = self.request.event

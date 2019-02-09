@@ -3,17 +3,5 @@
 {% load static %}
 {% block title %}{% trans "Sign in" %}{% endblock %}
 {% block content %}
-    <form class="form-signin" method="post" autocomplete="off">
-        {% csrf_token %}
-        <input type="email" class="form-control" placeholder="{{ phrases.base.enter_email }}" required autofocus id="email"
-               autocomplete="off" name="email">
-        <input type="password" class="form-control" placeholder="{% trans "Password" %}" required id="password" autocomplete="off"
-               name="password">
-        <button class="btn btn-lg btn-success btn-block" type="submit">
-            {% trans "Sign in" %}
-        </button>
-        <a class="btn btn-block btn-link" href="{% url "orga:auth.reset" %}">
-            {% trans "Reset password" %}
-        </a>
-    </form>
+    {% include "common/auth.html" with hide_register=True %}
 {% endblock %}

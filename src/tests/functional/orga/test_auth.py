@@ -11,7 +11,7 @@ def test_orga_successful_login(client, user, template_patch):
     user.save()
     response = client.post(
         reverse('orga:login'),
-        data={'email': user.email, 'password': 'testtest'},
+        data={'login_email': user.email, 'login_password': 'testtest'},
         follow=True,
     )
     assert response.redirect_chain[-1][0] == '/orga/event/'
@@ -31,7 +31,7 @@ def test_orga_redirect_login(client, orga_user, event):
 
     response = client.post(
         response.redirect_chain[-1][0],
-        data={'email': orga_user.email, 'password': 'orgapassw0rd'},
+        data={'login_email': orga_user.email, 'login_password': 'orgapassw0rd'},
         follow=True,
     )
     assert response.status_code == 200

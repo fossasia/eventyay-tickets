@@ -1,0 +1,47 @@
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% if no_form %}
+<div id="auth-form" class="password-input-form">
+{% else %}
+<form id="auth-form" class="password-input-form" method="post" autocomplete="off">
+{% endif %}
+    {% csrf_token %}
+    {% bootstrap_form_errors form %}
+    {{ form.media }}
+{% if not hide_login %}
+    <div class="auth-form-block">
+        {% if not hide_login and not hide_register %}
+        <h4 class="text-center">{% trans "I already have an account" %}</h4>
+        {% endif %}
+        {% bootstrap_field form.login_email layout="inline" %}
+        {% bootstrap_field form.login_password layout="inline" %}
+        {% if not no_buttons %}
+        <button type="submit" class="btn btn-lg btn-success btn-block">
+            {% trans "Log in" %}
+        </button>
+        {% endif %}
+        {% if password_reset_link %}
+        <a class="btn btn-block btn-link" href="{{ password_reset_link }}">
+            {% trans "Reset password" %}
+        </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% if not hide_register %}
+
+    <div class="auth-form-block">
+        {% if not hide_login and not hide_register %}
+        <h4 class="text-center">{% trans "I need a new account" %}</h4>
+        {% endif %}
+        {% bootstrap_field form.register_email layout="inline" %}
+        {% bootstrap_field form.register_password layout="inline" %}
+        {% bootstrap_field form.register_password_repeat layout="inline" %}
+        {% if not no_buttons %}
+        <button type="submit" class="btn btn-lg btn-info btn-block">
+            {% trans "Register" %}
+        </button>
+        {% endif %}
+    </div>
+{% endif %}
+{% if no_form %}</div>{% else %}</form>{% endif %}

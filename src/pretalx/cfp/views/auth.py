@@ -3,13 +3,12 @@ from importlib import import_module
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.utils.http import is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -19,7 +18,7 @@ from pretalx.cfp.forms.auth import RecoverForm, ResetForm
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.person.forms import UserForm
+from pretalx.common.views import GenericLoginView
 from pretalx.person.models import User
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -33,28 +32,17 @@ class LogoutView(View):
         )
 
 
-class LoginView(FormView):
+class LoginView(GenericLoginView):
     template_name = 'cfp/event/login.html'
-    form_class = UserForm
 
-    def form_valid(self, form):
-        pk = form.save()
-        user = User.objects.filter(pk=pk).first()
-        if not user:
-            messages.error(
-                self.request,
-                _(
-                    'There was an error when logging in. Please contact the organiser for further help.'
-                ),
-            )
-            return redirect(self.request.event.urls.base)
+    def get_error_url(self):
+        return self.request.event.urls.base
 
-        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+    def get_success_url(self):
+        return self.request.event.urls.user_submissions
 
-        url = self.request.GET.get('next')
-        if url and is_safe_url(url, allowed_hosts=None):
-            return redirect(url)
-        return redirect(self.request.event.urls.user_submissions)
+    def get_password_reset_link(self):
+        return self.request.event.urls.reset
 
 
 class ResetView(EventPageMixin, FormView):

@@ -1,46 +1,32 @@
-import urllib
 from datetime import timedelta
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import is_safe_url
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView
 
 from pretalx.cfp.forms.auth import RecoverForm, ResetForm
 from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
+from pretalx.common.views import GenericLoginView
 from pretalx.person.models import User
 
 
-class LoginView(TemplateView):
+class LoginView(GenericLoginView):
     template_name = 'orga/auth/login.html'
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
-        email = request.POST.get('email').strip().lower()
-        password = request.POST.get('password')
-        user = authenticate(username=email, password=password)
+    def get_error_url(self):
+        return reverse('orga:login')
 
-        if user is None:
-            messages.error(request, _('No user account matches the entered credentials.'))
-            return redirect('orga:login')
+    def get_success_url(self):
+        messages.success(self.request, phrases.orga.logged_in)
+        return reverse('orga:event.list')
 
-        if not user.is_active:
-            messages.error(request, _('User account is deactivated.'))
-            return redirect('orga:login')
-
-        login(request, user)
-        params = request.GET.copy()
-        url = urllib.parse.unquote(params.pop('next', [''])[0])
-        if url and is_safe_url(url, allowed_hosts=None):
-            return redirect(url + ('?' + params.urlencode() if params else ''))
-
-        messages.success(request, phrases.orga.logged_in)
-        return redirect(reverse('orga:event.list'))
+    def get_password_reset_link(self):
+        return reverse('orga:auth.reset')
 
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:

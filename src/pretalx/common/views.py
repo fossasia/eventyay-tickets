@@ -1,10 +1,20 @@
 import os.path
+import urllib
 from contextlib import suppress
 
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login
 from django.http import FileResponse, Http404
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
+
+from pretalx.person.forms import UserForm
+from pretalx.person.models import User
 
 
 class CreateOrUpdateView(
@@ -36,3 +46,36 @@ def get_static(request, path, content_type):
     if not os.path.exists(path):
         raise Http404()
     return FileResponse(open(path, 'rb'), content_type=content_type, as_attachment=False)
+
+
+class GenericLoginView(FormView):
+    form_class = UserForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['password_reset_link'] = self.get_password_reset_link()
+        return context
+
+    def form_valid(self, form):
+        pk = form.save()
+        user = User.objects.filter(pk=pk).first()
+        if not user:
+            messages.error(
+                self.request,
+                _(
+                    'There was an error when logging in. Please contact the organiser for further help.'
+                ),
+            )
+            return redirect(self.get_error_url())
+        if not user.is_active:
+            messages.error(self.request, _('User account is deactivated.'))
+            return redirect(self.get_error_redirect())
+
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        params = self.request.GET.copy()
+        url = urllib.parse.unquote(params.pop('next', [''])[0])
+        if url and is_safe_url(url, allowed_hosts=None):
+            return redirect(url + ('?' + params.urlencode() if params else ''))
+
+        return redirect(self.get_success_url())

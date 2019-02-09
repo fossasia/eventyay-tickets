@@ -11,22 +11,5 @@
             current state.
         {% endblocktrans %}
     </p>
-    {% bootstrap_form_errors wizard.form %}
-    {{ wizard.form.media }}
-    <div class="row">
-        <div class="col-md-6">
-            <h4 class="text-center">{% trans "I already have an account" %}</h4>
-            {% bootstrap_field wizard.form.login_email layout='inline' %}
-            {% bootstrap_field wizard.form.login_password layout='inline' %}
-            <a class="btn btn-block btn-link" href="{{ request.event.urls.reset }}">
-                {% trans "Reset password" %}
-            </a>
-        </div>
-        <div class="col-md-6 labelless-password-input-form">
-            <h4 class="text-center">{% trans "I need a new account" %}</h4>
-            {% bootstrap_field wizard.form.register_email layout='inline' %}
-            {% bootstrap_field wizard.form.register_password layout='inline' %}
-            {% bootstrap_field wizard.form.register_password_repeat layout='inline' %}
-        </div>
-    </div>
+    {% include "common/auth.html" with form=wizard.form no_form=True no_buttons=True %}
 {% endblock %}
