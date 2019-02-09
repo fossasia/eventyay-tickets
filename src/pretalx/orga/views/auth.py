@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import FormView
 
@@ -17,14 +18,24 @@ from pretalx.person.models import User
 class LoginView(GenericLoginView):
     template_name = 'orga/auth/login.html'
 
+    @cached_property
+    def event(self):
+        return getattr(self.request, 'event', None)
+
     def get_error_url(self):
+        if self.event:
+            return reverse('orga:event.login', kwargs={'event': self.event.slug})
         return reverse('orga:login')
 
     def get_success_url(self):
         messages.success(self.request, phrases.orga.logged_in)
+        if self.event:
+            return self.event.orga_urls.base
         return reverse('orga:event.list')
 
     def get_password_reset_link(self):
+        if self.event:
+            return reverse('orga:event.auth.reset', kwargs={'event': self.event.slug})
         return reverse('orga:auth.reset')
 
 

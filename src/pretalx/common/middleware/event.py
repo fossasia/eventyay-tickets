@@ -20,6 +20,9 @@ class EventPermissionMiddleware:
         'login',
         'auth.reset',
         'auth.recover',
+        'event.login',
+        'event.auth.reset',
+        'event.auth.recover',
     )
 
     def __init__(self, get_response):
@@ -54,6 +57,9 @@ class EventPermissionMiddleware:
             and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
         ):
             params = '&' + request.GET.urlencode() if request.GET else ''
+            event = getattr(request, 'event', None)
+            if event:
+                return reverse('orga:event.login', kwargs={'event': event.slug}) + f'?next={quote(request.path)}' + params
             return reverse('orga:login') + f'?next={quote(request.path)}' + params
         return None
 

@@ -41,6 +41,9 @@ urlpatterns = [
     url('^event/$', dashboard.DashboardEventListView.as_view(), name='event.list'),
     url(f'^event/(?P<event>[{SLUG_CHARS}]+)/', include([
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
+        url('^login/$', auth.LoginView.as_view(), name='event.login'),
+        url('^reset/$', auth.ResetView.as_view(), name='event.auth.reset'),
+        url('^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='event.auth.recover'),
         url('^delete$', event.EventDelete.as_view(), name='event.delete'),
         url('^live$', event.EventLive.as_view(), name='event.live'),
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
