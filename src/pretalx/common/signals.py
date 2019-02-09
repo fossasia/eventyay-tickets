@@ -30,17 +30,19 @@ class EventPluginSignal(django.dispatch.Signal):
         searchpath = receiver.__module__
         core_module = any([searchpath.startswith(cm) for cm in settings.CORE_MODULES])
         app = None
-        if not core_module:
+        # Only fire receivers from active plugins and core modules
+        if core_module:
+            return True
+        # Short out on events without plugins
+        elif not sender.get_plugins():
+            return False
+        else:
             while True:
                 app = app_cache.get(searchpath)
                 if "." not in searchpath or app:
                     break
                 searchpath, _ = searchpath.rsplit(".", 1)
-
-        # Only fire receivers from active plugins and core modules
-        if core_module or (sender and app and app.name in sender.get_plugins()):
-            return True
-        return False
+            return sender and app and app.name in sender.get_plugins()
 
     def send(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
         """
