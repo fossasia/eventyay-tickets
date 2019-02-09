@@ -25,7 +25,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         from pretalx.common.plugins import get_all_plugins
         plugins_available = {
-            p for p in get_all_plugins(self.request.event)
+            p.name for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
@@ -49,7 +49,6 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                             data={'plugin': module},
                             orga=True,
                         )
-            self.request.event.plugins = ','.join(plugins_active)
             self.request.event.save()
             messages.success(self.request, _('Your changes have been saved.'))
         return redirect(self.request.event.orga_urls.plugins)

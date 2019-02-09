@@ -290,7 +290,7 @@ class Event(LogMixin, models.Model):
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
-        enable = set(modules) & (plugins_available - set(plugins_active))
+        enable = set(modules) & (set(plugins_available) - set(plugins_active))
 
         for module in enable:
             if hasattr(plugins_available[module].app, 'installed'):

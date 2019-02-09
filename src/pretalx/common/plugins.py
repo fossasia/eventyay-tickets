@@ -1,7 +1,7 @@
 from django.apps import apps
 
 
-def get_all_plugins():
+def get_all_plugins(event=None):
     """Return the PretalxPluginMeta classes of all plugins found in the installed Django apps."""
     plugins = []
     for app in apps.get_app_configs():

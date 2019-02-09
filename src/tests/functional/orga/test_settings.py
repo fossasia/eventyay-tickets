@@ -371,7 +371,7 @@ def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
         visible = True
         app = None
 
-    monkeypatch.setattr('pretalx.common.plugins.get_all_plugins', lambda: [Plugin()])
+    monkeypatch.setattr('pretalx.common.plugins.get_all_plugins', lambda x: [Plugin()])
     plugin_name = 'plugin:test_plugin'
     orga_user.is_administrator = True
     orga_user.save()
