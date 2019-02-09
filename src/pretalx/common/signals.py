@@ -34,15 +34,16 @@ class EventPluginSignal(django.dispatch.Signal):
         if core_module:
             return True
         # Short out on events without plugins
-        elif not sender.get_plugins():
+        elif sender and not sender.get_plugins():
             return False
-        else:
+        elif sender:
             while True:
                 app = app_cache.get(searchpath)
                 if "." not in searchpath or app:
                     break
                 searchpath, _ = searchpath.rsplit(".", 1)
-            return sender and app and app.name in sender.get_plugins()
+            return app and app.name in sender.get_plugins()
+        return False
 
     def send(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
         """
