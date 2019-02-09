@@ -18,20 +18,20 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.phrases import phrases
 from pretalx.person.models.profile import SpeakerProfile
-from pretalx.schedule.models import TalkSlot
+from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import Feedback, QuestionTarget, Submission
 
 
 class TalkList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = 'talks'
+    context_object_name = 'talks_distinct'
     model = Submission
     template_name = 'agenda/talks.html'
     permission_required = 'agenda.view_schedule'
     default_filters = ('speakers__name__icontains', 'title__icontains')
 
     def get_queryset(self):
-        return self.filter_queryset(self.request.event.talks)
+        return self.filter_queryset(self.request.event.talks).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,14 +66,14 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_object(self, queryset=None):
         with suppress(AttributeError, TalkSlot.DoesNotExist):
-            return self.request.event.current_schedule.talks.get(
+            return self.request.event.current_schedule.talks.filter(
                 submission__code__iexact=self.kwargs['slug'], is_visible=True
-            )
+            ).first()
         if getattr(self.request, 'is_orga', False):
             with suppress(AttributeError, TalkSlot.DoesNotExist):
-                return self.request.event.wip_schedule.talks.get(
+                return self.request.event.wip_schedule.talks.filter(
                     submission__code__iexact=self.kwargs['slug'], is_visible=True
-                )
+                ).first()
         raise Http404()
 
     @cached_property
@@ -106,19 +106,25 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        slot = self.object
+        submission = self.object.submission
         qs = TalkSlot.objects.none()
+        schedule = Schedule.objects.none()
         if self.request.event.current_schedule:
-            qs = self.request.event.current_schedule.talks.filter(is_visible=True)
+            schedule = self.request.event.current_schedule
+            qs = schedule.talks.filter(is_visible=True)
         elif self.request.is_orga:
-            qs = self.request.event.wip_schedule.talks
-        event_talks = qs.exclude(submission=slot.submission)
-        context['submission'] = slot.submission
+            schedule = self.request.event.wip_schedule
+            qs = schedule.talks.all()
+        # schedule.slots returns submissions
+        other_submissions = schedule.slots.exclude(id=submission.id)
+
+        context['submission'] = submission
+        context['talk_slots'] = qs.filter(submission=submission).order_by('start')
         context['submission_description'] = (
-            slot.submission.description
-            or slot.submission.abstract
+            submission.description
+            or submission.abstract
             or _('The talk »{title}« at {event}').format(
-                title=slot.submission.title, event=slot.submission.event.name
+                title=submission.title, event=submission.event.name
             )
         )
         context['recording_iframe'] = self.recording.get('iframe')
@@ -128,9 +134,9 @@ class TalkView(PermissionRequired, DetailView):
             question__target=QuestionTarget.SUBMISSION,
         )
         context['speakers'] = []
-        for speaker in slot.submission.speakers.all():
+        for speaker in submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
-            speaker.other_talks = event_talks.filter(submission__speakers__in=[speaker])
+            speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])
             context['speakers'].append(speaker)
         return context
 

@@ -36,7 +36,7 @@
         </div>
         </div>
         <small>
-            {% if talk %}
+            {% if talk_slots|length == 1 %}
                 {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
             {% endif %}
             {% if submission.do_not_record %}
@@ -50,6 +50,15 @@
     </h3>
     <div class="talk row">
         <div class="talk-content col-lg-8 col-md-6 col-xs-12">
+            {% if talk_slots|length > 1 %}
+            <ul class="talk-slots">
+                {% for talk in talk_slots %}
+                <li class="talk-slot">
+                    {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {% if recording_iframe %}
                 {{ recording_iframe|safe }}
             {% endif %}
@@ -129,19 +138,19 @@
                         </a>
                         <div class="info">
 
-                            {% if speaker.other_talks.count > 1 %}
+                            {% if speaker.other_submissions.count > 1 %}
                                 {{ phrases.agenda.speaker_other_talks }}
                                 <ul class="speaker-talks">
-                                    {% for talk in speaker.other_talks %}
+                                    {% for submission in speaker.other_submissions %}
                                     <li class="speaker-talk">
-                                        <a href='{{ talk.submission.urls.public }}'>{{ talk.submission.title }}</a>
+                                        <a href='{{ submission.urls.public }}'>{{ submission.title }}</a>
                                     </li>
                                     {% endfor %}
                                 </ul>
-                            {% elif speaker.other_talks.count == 1 %}
+                            {% elif speaker.other_submissions.count == 1 %}
                                 <span class="speaker-talk">
                                     {{ phrases.agenda.speaker_other_talk }}
-                                    "<a href='{{ speaker.other_talks.0.submission.urls.public }}'>{{ speaker.other_talks.0.submission.title }}</a>".
+                                    "<a href='{{ speaker.other_submissions.0.urls.public }}'>{{ speaker.other_submissions.0.title }}</a>".
                                 </span>
                             {% endif %}
                         </div>

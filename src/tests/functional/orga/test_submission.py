@@ -176,6 +176,7 @@ def test_orga_can_create_submission(orga_client, event):
             'content_locale': 'en',
             'description': 'description',
             'duration': '',
+            'slot_count': 1,
             'notes': 'notes',
             'speaker': 'foo@bar.com',
             'speaker_name': 'Foo Speaker',

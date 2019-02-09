@@ -40,6 +40,7 @@ hierarkey.add_default('export_html_on_schedule_release', 'False', bool)
 hierarkey.add_default('html_export_url', '', str)
 hierarkey.add_default('custom_domain', '', str)
 hierarkey.add_default('use_tracks', 'False', bool)
+hierarkey.add_default('allow_slot_count', 'False', bool)
 
 hierarkey.add_default('display_header_pattern', '', str)
 

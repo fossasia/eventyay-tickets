@@ -142,11 +142,11 @@
             </div>
         </div>
     {% elif submission.state == "accepted" or submission.state == "confirmed" %}
-        <h3>{% trans "Cancel submission" %}</h3>
+        <h3 id="change_info">{% trans "Cancel submission" %} / {% trans "change slot count" %}</h3>
         <p>
             {% blocktrans trimmed %}
                 As your submission has been accepted already, please contact the event's organising team to cancel
-                it. The best way to reach out would be an answer to your acceptance mail.
+                it or change the slot count. The best way to reach out would be an answer to your acceptance mail.
             {% endblocktrans %}
         </p>
     {% endif %}

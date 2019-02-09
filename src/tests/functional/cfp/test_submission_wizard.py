@@ -42,6 +42,7 @@ class TestWizard:
         description='Description',
         abstract='Abstract',
         notes='Notes',
+        slot_count=1,
         submission_type=None,
     ):
         submission_data = {
@@ -50,6 +51,7 @@ class TestWizard:
             'info-description': description,
             'info-abstract': abstract,
             'info-notes': notes,
+            'info-slot_count': slot_count,
             'info-submission_type': submission_type,
         }
         key, value = self.get_form_name(response)
@@ -144,6 +146,7 @@ class TestWizard:
         assert sub.description == 'Description'
         assert sub.abstract == 'Abstract'
         assert sub.notes == 'Notes'
+        assert sub.slot_count == 1
         answ = sub.answers.first()
         assert answ.question == question
         assert answ.answer == '42'

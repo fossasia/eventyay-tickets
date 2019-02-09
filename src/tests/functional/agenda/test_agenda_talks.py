@@ -185,7 +185,7 @@ def test_event_talk_visiblity_withdrawn(
 
 
 @pytest.mark.django_db
-def test_talk_speaker_other_talks(
+def test_talk_speaker_other_submissions(
     client,
     django_assert_num_queries,
     event,
@@ -206,16 +206,16 @@ def test_talk_speaker_other_talks(
     other_response = [
         s for s in response.context['speakers'] if s.name != speaker.name
     ][0]
-    assert len(speaker_response.other_talks) == 1
-    assert len(other_response.other_talks) == 0
+    assert len(speaker_response.other_submissions) == 1
+    assert len(other_response.other_submissions) == 0
     assert (
-        speaker_response.other_talks[0].submission.title
+        speaker_response.other_submissions[0].title
         == speaker.submissions.first().title
     )
 
 
 @pytest.mark.django_db
-def test_talk_speaker_other_talks_only_if_visible(
+def test_talk_speaker_other_submissions_only_if_visible(
     client,
     django_assert_num_queries,
     event,
@@ -240,8 +240,8 @@ def test_talk_speaker_other_talks_only_if_visible(
     other_response = [
         s for s in response.context['speakers'] if s.name != speaker.name
     ][0]
-    assert len(speaker_response.other_talks) == 0
-    assert len(other_response.other_talks) == 0
+    assert len(speaker_response.other_submissions) == 0
+    assert len(other_response.other_submissions) == 0
 
 
 @pytest.mark.django_db

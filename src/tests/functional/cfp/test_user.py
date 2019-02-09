@@ -95,6 +95,7 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
         'description': submission.description,
         'abstract': submission.abstract,
         'notes': submission.notes,
+        'slot_count': submission.slot_count,
         'resource-0-id': resource_one.id,
         'resource-0-description': 'new resource name',
         'resource-0-resource': resource_one.resource,

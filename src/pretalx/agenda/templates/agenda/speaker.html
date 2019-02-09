@@ -54,7 +54,7 @@
     <hr/>
     <section class="speaker-talks">
         <h4>{% trans "Talks" %}</h4>
-        {% for talk in talks %}
+        {% for talk in talks_distinct %}
         <a href="{{ talk.urls.public }}"><div class="talk">
             <h5 class="talk-title">
                 {{ talk.title }}

@@ -38,7 +38,8 @@ class SpeakerView(PermissionRequired, DetailView):
             question__event=self.request.event,
             question__target=QuestionTarget.SPEAKER,
         )
-        context['talks'] = obj.talks
+        context['submissions'] = obj.submissions
+        context['talks_distinct'] = obj.talks.distinct()
         return context
 
 

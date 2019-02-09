@@ -99,6 +99,7 @@
         {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
         {% bootstrap_field form.is_featured layout='event' %}
         {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
+        {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
         {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
         {% if questions_form %}{% bootstrap_form questions_form layout='event' %}{% endif %}
 
