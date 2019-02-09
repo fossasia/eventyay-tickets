@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`346` Due to the generous sponsorship of JuliaCon, pretalx is now capable of blind reviews, i.e. making sure that reviewers cannot see speaker names.
 - :feature:`-` The organiser area has now additional, event specific login pages (at /orga/event/<slug>/login/) which redirect by default to the event dashboard, and appear with the color and logo of the event in question.
 - :feature:`-` The review settings have moved from the CfP page to their own settings page.
 - :feature:`-` You can now decide to add the robots=noindex meta tag to prevent bots from crawling your event pages.

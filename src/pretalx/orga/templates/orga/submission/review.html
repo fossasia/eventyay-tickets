@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rich_text %}
+{% load rules %}
 
 {% block submission_content %}
 
@@ -64,21 +65,24 @@
         </div>
     </div>
     {% endif %}
-    {% for speaker in profiles %}
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
-        <div class="col-md-9 mt-1">
-            {% if request.event.settings.cfp_request_biography %}
-            {{ speaker.biography|rich_text|default:'-' }}
-            {% endif %}
-            {% if speaker.submissions.count > 1 %}<br><strong>{% trans "Other submissions" %}:</strong>
-            {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
-            <a href="{{ other_submission.orga_urls.base }}">{{ other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
-            {% endif %}{% endfor %}
-            {% endif %}
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% if can_view_speakers %}
+        {% for speaker in profiles %}
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="id_text">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
+            <div class="col-md-9 mt-1">
+                {% if request.event.settings.cfp_request_biography %}
+                {{ speaker.biography|rich_text|default:'-' }}
+                {% endif %}
+                {% if speaker.submissions.count > 1 %}<br><strong>{% trans "Other submissions" %}:</strong>
+                {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
+                <a href="{{ other_submission.orga_urls.base }}">{{ other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
+                {% endif %}{% endfor %}
+                {% endif %}
+            </div>
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 
     {% if not form.instance.pk and not read_only %}
         {% bootstrap_field form.score layout='event' %}

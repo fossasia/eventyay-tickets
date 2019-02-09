@@ -70,6 +70,12 @@ def is_event_over(user, obj):
     return event.date_to < now().date()
 
 
+@rules.predicate
+def can_view_speaker_names(user, obj):
+    event = obj.event
+    return not event.settings.review_hide_speaker_names
+
+
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
 rules.add_perm('orga.change_settings', can_change_event_settings)
 rules.add_perm('orga.change_organiser_settings', can_change_organiser_settings)
@@ -103,8 +109,8 @@ rules.add_perm('orga.edit_schedule', can_change_submissions)
 rules.add_perm('orga.schedule_talk', can_change_submissions)
 rules.add_perm('orga.view_room', can_change_submissions)
 rules.add_perm('orga.edit_room', can_change_submissions)
-rules.add_perm('orga.view_speakers', can_change_submissions | is_reviewer)
-rules.add_perm('orga.view_speaker', can_change_submissions | is_reviewer)
+rules.add_perm('orga.view_speakers', can_change_submissions | (is_reviewer & can_view_speaker_names))
+rules.add_perm('orga.view_speaker', can_change_submissions | (is_reviewer & can_view_speaker_names))
 rules.add_perm('orga.change_speaker', can_change_submissions)
 rules.add_perm('orga.view_submissions', can_change_submissions | is_reviewer)
 rules.add_perm('orga.create_submission', can_change_submissions)

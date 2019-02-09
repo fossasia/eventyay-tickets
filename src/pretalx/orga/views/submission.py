@@ -216,7 +216,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
 class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
-    permission_required = 'orga.view_submissions'
+    permission_required = 'orga.view_speakers'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -402,16 +402,17 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = Submission
     context_object_name = 'submissions'
     template_name = 'orga/submission/list.html'
-    default_filters = (
-        'code__icontains',
-        'speakers__name__icontains',
-        'title__icontains',
-    )
+    default_filters = {'code__icontains', 'title__icontains'}
     filter_fields = ('submission_type', 'state')
     filter_form_class = SubmissionFilterForm
     sortable_fields = ('code', 'title', 'state', 'is_featured')
     permission_required = 'orga.view_submissions'
     paginate_by = 25
+
+    def dispatch(self, *args, **kwargs):
+        if self.request.user.has_perm('orga.view_speakers', self.request.event):
+            self.default_filters.add('speakers__name__icontains')
+        return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
         qs = (
@@ -502,7 +503,9 @@ class SubmissionFeed(PermissionRequired, Feed):
         return obj.submissions.order_by('-pk')
 
     def item_title(self, item):
-        return _('New {event} submission: {title}').format(event=item.event.name, title=item.title)
+        return _('New {event} submission: {title}').format(
+            event=item.event.name, title=item.title
+        )
 
     def item_link(self, item):
         return item.orga_urls.base.full()

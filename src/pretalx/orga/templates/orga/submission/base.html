@@ -6,10 +6,11 @@
 {% if submission %}
 {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}
 {% has_perm 'orga.view_reviews' request.user request.event as can_view_reviews %}
+{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
     <h2>
         <span>
             »{{ submission.title }}«
-            {% if submission.speakers.exists %}
+            {% if submission.speakers.exists and can_view_speakers %}
                 by {{ submission.display_speaker_names }}
             {% endif %}
             {% include "orga/submission/state_dropdown.html" with submission=submission %}
@@ -24,6 +25,7 @@
             {% trans "Content" %}
         </a>
       </li>
+      {% if can_view_speakers %}
       <li class="nav-item">
           <a
             class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
@@ -32,6 +34,7 @@
             {% trans "Speakers" %}
           </a>
       </li>
+      {% endif %}
       {% if submission.feedback.count %}
           <li class="nav-item">
               <a

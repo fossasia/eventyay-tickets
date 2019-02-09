@@ -287,6 +287,13 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     review_deadline = forms.DateTimeField(label=_('Review deadline'), required=False)
+    review_hide_speaker_names = forms.BooleanField(
+        label=_('Hide speaker names'),
+        help_text=_(
+            'Prevent reviewers from seing speaker names. Please note that reviewers who also have organiser rights will still see speaker names.'
+        ),
+        required=False,
+    )
     allow_override_votes = forms.BooleanField(
         label=_('Allow override votes'),
         help_text=_(

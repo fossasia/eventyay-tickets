@@ -93,8 +93,10 @@ class User(PermissionsMixin, AbstractBaseUser):
         null=True,
         blank=True,
         verbose_name=_('Profile picture'),
-        help_text=_('Optional. Will be displayed publicly. '
-                    'If possible, upload an image that is least 120 Pixels wide.'),
+        help_text=_(
+            'Optional. Will be displayed publicly. '
+            'If possible, upload an image that is least 120 Pixels wide.'
+        ),
     )
     get_gravatar = models.BooleanField(
         default=False,
@@ -200,6 +202,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_events_for_permission(self, **kwargs):
         from pretalx.event.models import Event
+
         if self.is_administrator:
             return Event.objects.all()
 
@@ -207,9 +210,11 @@ class User(PermissionsMixin, AbstractBaseUser):
         absolute = orga_teams.filter(all_events=True).values_list(
             'organiser', flat=True
         )
-        relative = orga_teams.filter(all_events=False)
+        relative = orga_teams.filter(all_events=False).values_list(
+            'limit_events', flat=True
+        )
         return Event.objects.filter(
-            models.Q(organiser__in=absolute) | models.Q(organiser__teams__in=relative)
+            models.Q(organiser__in=absolute) | models.Q(pk__in=relative)
         ).distinct()
 
     def get_permissions_for_event(self, event):
@@ -228,13 +233,11 @@ class User(PermissionsMixin, AbstractBaseUser):
         return set().union(*[team.permission_set for team in teams])
 
     def remaining_override_votes(self, event):
-        allowed = (
-            max(
-                event.teams.filter(members__in=[self], is_reviewer=True).values_list(
-                    'review_override_votes', flat=True
-                )
-                or [0]
+        allowed = max(
+            event.teams.filter(members__in=[self], is_reviewer=True).values_list(
+                'review_override_votes', flat=True
             )
+            or [0]
         )
         overridden = self.reviews.filter(
             submission__event=event, override_vote__isnull=False
@@ -249,6 +252,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     @transaction.atomic
     def reset_password(self, event, user=None):
         from pretalx.common.mail import mail
+
         self.pw_reset_token = get_random_string(32)
         self.pw_reset_time = now()
         self.save()
@@ -268,11 +272,11 @@ class User(PermissionsMixin, AbstractBaseUser):
             context = {
                 'name': self.name or '',
                 'url': build_absolute_uri(
-                    'orga:auth.recover',
-                    kwargs={'token': self.pw_reset_token},
+                    'orga:auth.recover', kwargs={'token': self.pw_reset_token}
                 ),
             }
-            mail_text = _('''Hi {name},
+            mail_text = _(
+                '''Hi {name},
 
 you have requested a new password for your pretalx account.
 To reset your password, click on the following link:
@@ -282,7 +286,8 @@ To reset your password, click on the following link:
 If this wasn\'t you, you can just ignore this email.
 
 All the best,
-the pretalx robot''')
+the pretalx robot'''
+            )
 
         mail(
             self,

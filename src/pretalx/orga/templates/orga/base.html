@@ -147,6 +147,7 @@
             {% has_perm 'orga.change_submissions' request.user request.event as can_see_orga_exclusive %}
             {% has_perm 'orga.change_teams' request.user request.event as can_change_teams %}
             {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
+    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
             {% if can_see_orga_area %}
                 <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{{ request.event.orga_urls.base }}">
                     <i class="fa fa-tachometer"></i>
@@ -230,6 +231,7 @@
                     <i class="fa fa-eye"></i>
                     <span class="sidebar-text">{% trans "Review" %}</span>
                 </a>
+                {% if can_view_speakers %}
                 <div class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.speakers }}">
@@ -250,6 +252,7 @@
                         </a>
                         {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             {% endif %}
             {% if can_see_orga_exclusive %}
