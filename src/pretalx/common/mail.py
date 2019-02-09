@@ -1,6 +1,6 @@
 import logging
 from email.utils import formataddr
-from smtplib import SMTPSenderRefused
+from smtplib import SMTPResponseException, SMTPSenderRefused
 from typing import Any, Dict, Union
 
 from django.conf import settings
@@ -114,7 +114,7 @@ def mail_send_task(
 
     try:
         backend.send_messages([email])
-    except smtplib.SMTPResponseException as exception:
+    except SMTPResponseException as exception:
         # Retry on external problems: Connection issues (101, 111), timeouts (421), filled-up mailboxes (422),
         # out of memory (431), network issues (442), another timeout (447), or too many mails sent (452)
         if exception.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
