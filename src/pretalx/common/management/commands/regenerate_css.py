@@ -1,8 +1,8 @@
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from pretalx.common.tasks import regenerate_css
 from pretalx.event.models.event import Event, Event_SettingsStore
+
 
 class Command(BaseCommand):
     help = 'Rebuild static files and language files'

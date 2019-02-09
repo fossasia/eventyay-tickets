@@ -43,7 +43,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['event']= getattr(self.request, 'event', None)
+        kwargs['event'] = getattr(self.request, 'event', None)
         kwargs['organiser'] = kwargs['event'].organiser or self.request.organiser
         return kwargs
 
