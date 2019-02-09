@@ -9,11 +9,6 @@ from pretalx.event.models import Event
 from pretalx.schedule.models import Room, TalkSlot
 
 
-@pytest.mark.skipif(
-    settings.DATABASES['default']['ENGINE'] == 'django.db.backends.mysql'
-    and datetime.now() <= datetime(year=2018, month=10, day=1),
-    reason='Emoji in MySQL seem not to work',
-)
 @pytest.mark.django_db
 def test_frab_import_minimal(administrator):
     assert Event.objects.count() == 0

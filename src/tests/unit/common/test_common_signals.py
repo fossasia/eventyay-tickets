@@ -7,7 +7,7 @@ from pretalx.common.signals import EventPluginSignal, _populate_app_cache
 
 
 @pytest.mark.skipif(
-    "TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+    ("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true") or ("CI" in os.environ and os.environ["CI"] == "true"),
     reason="Skipping this test on Travis CI, as it breaks for unexplainable reasons."
 )
 @pytest.mark.django_db
