@@ -3,6 +3,7 @@ import urllib
 from contextlib import suppress
 
 from django.conf import settings
+from django.utils.timezone import now
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import FileResponse, Http404
@@ -13,6 +14,9 @@ from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
+from pretalx.common.mail import SendMailException
+from pretalx.cfp.forms.auth import ResetForm
+from pretalx.common.phrases import phrases
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
 
@@ -77,5 +81,30 @@ class GenericLoginView(FormView):
         url = urllib.parse.unquote(params.pop('next', [''])[0])
         if url and is_safe_url(url, allowed_hosts=None):
             return redirect(url + ('?' + params.urlencode() if params else ''))
+
+        return redirect(self.get_success_url())
+
+
+class GenericResetView(FormView):
+    form_class = ResetForm
+
+    def form_valid(self, form):
+        user = form.cleaned_data['user']
+
+        if not user or (
+            user.pw_reset_time
+            and (now() - user.pw_reset_time).total_seconds() < 3600 * 24
+        ):
+            messages.success(self.request, phrases.cfp.auth_password_reset)
+            return redirect(self.get_success_url())
+
+        try:
+            user.reset_password(event=self.request.event)
+        except SendMailException:
+            messages.error(self.request, phrases.base.error_sending_mail)
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        messages.success(self.request, phrases.cfp.auth_password_reset)
+        user.log_action('pretalx.user.password.reset')
 
         return redirect(self.get_success_url())

@@ -9,9 +9,8 @@ from django.utils.timezone import now
 from django.views.generic import FormView
 
 from pretalx.cfp.forms.auth import RecoverForm, ResetForm
-from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.common.views import GenericLoginView
+from pretalx.common.views import GenericLoginView, GenericResetView
 from pretalx.person.models import User
 
 
@@ -34,33 +33,12 @@ def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     return redirect(reverse('orga:login'))
 
 
-class ResetView(FormView):
+class ResetView(GenericResetView):
     template_name = 'orga/auth/reset.html'
     form_class = ResetForm
 
-    def form_valid(self, form):
-        user = form.cleaned_data['user']
-
-        if not user:
-            messages.success(self.request, phrases.cfp.auth_password_reset)
-            return redirect(reverse('orga:login'))
-
-        if (
-            user.pw_reset_time
-            and (now() - user.pw_reset_time).total_seconds() < 3600 * 24
-        ):
-            messages.success(self.request, phrases.cfp.auth_password_reset)
-            return redirect(reverse('orga:login'))
-
-        try:
-            user.reset_password(event=None)
-        except SendMailException:
-            messages.error(self.request, phrases.base.error_sending_mail)
-            return self.get(self.request, *self.args, **self.kwargs)
-
-        messages.success(self.request, phrases.cfp.auth_password_reset)
-        user.log_action('pretalx.user.password.reset')
-        return redirect(reverse('orga:login'))
+    def get_success_url(self):
+        return reverse('orga:login')
 
 
 class RecoverView(FormView):

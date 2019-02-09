@@ -14,11 +14,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, View
 
-from pretalx.cfp.forms.auth import RecoverForm, ResetForm
+from pretalx.cfp.forms.auth import RecoverForm
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
-from pretalx.common.views import GenericLoginView
+from pretalx.common.views import GenericLoginView, GenericResetView
 from pretalx.person.models import User
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -45,40 +44,11 @@ class LoginView(GenericLoginView):
         return self.request.event.urls.reset
 
 
-class ResetView(EventPageMixin, FormView):
+class ResetView(EventPageMixin, GenericResetView):
     template_name = 'cfp/event/reset.html'
-    form_class = ResetForm
 
-    def form_valid(self, form):
-        user = form.cleaned_data['user']
-
-        if not user:
-            messages.success(self.request, phrases.cfp.auth_password_reset)
-            return redirect(
-                reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
-            )
-
-        if (
-            user.pw_reset_time
-            and (now() - user.pw_reset_time).total_seconds() < 3600 * 24
-        ):
-            messages.success(self.request, phrases.cfp.auth_password_reset)
-            return redirect(
-                reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
-            )
-
-        try:
-            user.reset_password(event=self.request.event)
-        except SendMailException:
-            messages.error(self.request, phrases.base.error_sending_mail)
-            return self.get(self.request, *self.args, **self.kwargs)
-
-        messages.success(self.request, phrases.cfp.auth_password_reset)
-        user.log_action('pretalx.user.password.reset')
-
-        return redirect(
-            reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
-        )
+    def get_success_url(self):
+        return reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
 
 
 class RecoverView(FormView):
