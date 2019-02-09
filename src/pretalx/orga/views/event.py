@@ -29,7 +29,7 @@ from pretalx.event.forms import (
 )
 from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
-from pretalx.orga.forms.event import MailSettingsForm
+from pretalx.orga.forms.event import MailSettingsForm, ReviewSettingsForm
 from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
@@ -191,6 +191,26 @@ class EventLive(EventSettingsPermission, TemplateView):
                 )
                 messages.success(request, _('This event is now hidden.'))
         return redirect(event.orga_urls.base)
+
+
+class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
+    form_class = ReviewSettingsForm
+    template_name = 'orga/settings/review.html'
+    write_permission_required = 'orga.change_settings'
+
+    def get_success_url(self) -> str:
+        return self.request.event.orga_urls.review_settings
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['obj'] = self.request.event
+        kwargs['attribute_name'] = 'settings'
+        kwargs['locales'] = self.request.event.locales
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):

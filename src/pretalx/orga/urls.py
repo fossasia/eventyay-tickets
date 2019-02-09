@@ -116,6 +116,7 @@ urlpatterns = [
         url('^reviews/$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
 
         url('^settings/$', event.EventDetail.as_view(), name='settings.event.view'),
+        url('^settings/review$', event.EventReviewSettings.as_view(), name='settings.review'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
 
         url('^settings/team/$', organiser.Teams.as_view(), name='settings.team.view'),

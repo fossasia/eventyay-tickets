@@ -407,3 +407,49 @@ def test_administrator_can_delete_event(event, administrator_client, submission)
     response = administrator_client.post(event.orga_urls.delete, follow=True)
     assert response.status_code == 200
     assert Event.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_edit_review_settings(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    response = orga_client.post(
+        event.orga_urls.review_settings,
+        {
+            'review_min_score': '0',
+            'review_max_score': '2',
+            'review_score_name_0': 'OK',
+            'review_score_name_1': 'Want',
+            'review_score_name_2': 'Super',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(slug=event.slug)
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 2
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_invalid(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    response = orga_client.post(
+        event.orga_urls.review_settings,
+        {
+            'review_min_score': '2',
+            'review_max_score': '2',
+            'review_score_name_0': 'OK',
+            'review_score_name_1': 'Want',
+            'review_score_name_2': 'Super',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    event = Event.objects.get(slug=event.slug)
+    assert response.status_code == 200
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1

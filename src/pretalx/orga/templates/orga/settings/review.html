@@ -1,0 +1,19 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block settings_content %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{% trans "Review settings" %}</h2>
+        {% bootstrap_form form layout='event' %}
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                {% if action == "edit" or action == "create" %}
+                    <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
+                {% endif %}
+            </span>
+        </div>
+    </form>
+{% endblock %}
