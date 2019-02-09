@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=190, verbose_name='Team name')),
-                ('all_events', models.BooleanField(default=False, verbose_name='All events (including newly created ones)')),
+                ('all_events', models.BooleanField(default=False, verbose_name='All events by this organiser (including newly created ones)')),
                 ('can_create_events', models.BooleanField(default=False, verbose_name='Can create events')),
                 ('can_change_teams', models.BooleanField(default=False, verbose_name='Can change teams and permissions')),
                 ('can_change_organiser_settings', models.BooleanField(default=False, verbose_name='Can change organiser settings')),

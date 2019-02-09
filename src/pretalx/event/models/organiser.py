@@ -65,7 +65,7 @@ class Team(LogMixin, models.Model):
         to=User, related_name='teams', verbose_name=_('Team members')
     )
     all_events = models.BooleanField(
-        default=False, verbose_name=_('All events (including newly created ones)')
+        default=False, verbose_name=_('All events by this organiser (including newly created ones)')
     )
     limit_events = models.ManyToManyField(
         to='Event', verbose_name=_('Limit to events'), blank=True
