@@ -5,8 +5,8 @@
 {% block title %}{% trans "Invitation" %} :: {% trans "Sign in" %}{% endblock %}
 {% block content %}
 <h3>
-    {% blocktrans with event=invitation.event.name trimmed %}
-        Invitation to the team organising {{ event }}
+    {% blocktrans with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
+        Invitation to the {{ organiser }} team "{{ name }}"
     {% endblocktrans %}
 </h3>
 

@@ -29,7 +29,6 @@ class EventPluginSignal(django.dispatch.Signal):
         # Find the Django application this belongs to
         searchpath = receiver.__module__
         core_module = any([searchpath.startswith(cm) for cm in settings.CORE_MODULES])
-        app = None
         # Only fire receivers from active plugins and core modules
         if core_module:
             return True
@@ -37,6 +36,7 @@ class EventPluginSignal(django.dispatch.Signal):
         elif sender and not sender.get_plugins():
             return False
         elif sender:
+            app = None
             while True:
                 app = app_cache.get(searchpath)
                 if "." not in searchpath or app:

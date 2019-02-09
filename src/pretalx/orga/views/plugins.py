@@ -25,7 +25,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         from pretalx.common.plugins import get_all_plugins
         plugins_available = {
-            p.name for p in get_all_plugins(self.request.event)
+            p.module for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
