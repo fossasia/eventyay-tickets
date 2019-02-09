@@ -25,7 +25,7 @@ def test_orga_redirect_login(client, orga_user, event):
     response = client.get(request_url, follow=True)
     assert response.status_code == 200
     assert response.redirect_chain[-1] == (
-        f'/orga/login/?next={event.orga_urls.base}&{queryparams}',
+        f'/orga/event/{event.slug}/login/?next={event.orga_urls.base}&{queryparams}',
         302,
     )
 
