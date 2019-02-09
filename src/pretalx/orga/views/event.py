@@ -121,10 +121,16 @@ class EventLive(EventSettingsPermission, TemplateView):
                 }
             )
         # TODO: test that mails can be sent
-        if self.request.event.settings.use_tracks and self.request.event.settings.cfp_request_track and self.request.event.tracks.count() < 2:
+        if (
+            self.request.event.settings.use_tracks
+            and self.request.event.settings.cfp_request_track
+            and self.request.event.tracks.count() < 2
+        ):
             suggestions.append(
                 {
-                    'text': _('You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection. Add at least one track!'),
+                    'text': _(
+                        'You want submitters to choose the tracks for their submissions, but you do not offer tracks for selection. Add at least one track!'
+                    ),
                     'url': self.request.event.cfp.urls.tracks,
                 }
             )
@@ -487,7 +493,7 @@ def event_list(request):
                 'date_range': event.get_date_range_display(),
                 'url': event.orga_urls.base,
             }
-            for event in qs.select_related('organiser')[offset:offset + pagesize]
+            for event in qs.select_related('organiser')[offset: offset + pagesize]
         ],
         'pagination': {"more": total >= (offset + pagesize)},
     }

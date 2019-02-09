@@ -286,7 +286,8 @@ class Event(LogMixin, models.Model):
 
         plugins_active = self.get_plugins()
         plugins_available = {
-            p.module: p for p in get_all_plugins(self)
+            p.module: p
+            for p in get_all_plugins(self)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
@@ -502,7 +503,11 @@ class Event(LogMixin, models.Model):
     def submitters(self):
         from pretalx.person.models import User
 
-        return User.objects.filter(submissions__in=self.submissions.all()).order_by('id').distinct()
+        return (
+            User.objects.filter(submissions__in=self.submissions.all())
+            .order_by('id')
+            .distinct()
+        )
 
     def get_date_range_display(self) -> str:
         return daterange(self.date_from, self.date_to)
@@ -552,7 +557,13 @@ class Event(LogMixin, models.Model):
         from pretalx.common.models import ActivityLog
         from pretalx.person.models import SpeakerProfile
         from pretalx.schedule.models import TalkSlot
-        from pretalx.submission.models import Answer, AnswerOption, Feedback, Question, Resource
+        from pretalx.submission.models import (
+            Answer,
+            AnswerOption,
+            Feedback,
+            Question,
+            Resource,
+        )
 
         deletion_order = [
             self.logged_actions(),
