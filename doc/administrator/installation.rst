@@ -276,6 +276,7 @@ If you want to upgrade pretalx to a specific release, you can substitute
     $ pip3 install -U pretalx gunicorn
     $ python -m pretalx migrate
     $ python -m pretalx rebuild
+    $ python -m pretalx regenerate_css
     # systemctl restart pretalx-web pretalx-worker
 
 

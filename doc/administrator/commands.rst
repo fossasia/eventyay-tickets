@@ -73,6 +73,15 @@ The ``rebuild`` command regenerates all static files. With the ``--clear``
 flag, it deletes all existing compiled static files and compiles everything
 from scratch. Please run this command after every upgrade.
 
+``python -m pretalx regenerate_css``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``regenerate_css`` command regenerates only the custom CSS for events with
+a specified custom color, or custom uploaded styles. This should always be done
+automatically on user changes in the web frontend.
+You can either specify an event slug with ``--event``. If no event is
+specified, the files for all relevant events will be rebuilt.
+
 ``python -m pretalx init``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
