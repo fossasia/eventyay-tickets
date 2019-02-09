@@ -99,7 +99,7 @@ class GenericResetView(FormView):
             return redirect(self.get_success_url())
 
         try:
-            user.reset_password(event=self.request.event)
+            user.reset_password(event=getattr(self.request, 'event', None))
         except SendMailException:
             messages.error(self.request, phrases.base.error_sending_mail)
             return self.get(self.request, *self.args, **self.kwargs)
