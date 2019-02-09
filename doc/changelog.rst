@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` You can now decide to add the robots=noindex meta tag to prevent bots from crawling your event pages.
 - :feature:`-` Plugin developers can now use the ``is_available`` hook to decide if their plugin should be shown on a per-event basis.
 - :bug:`-` Speaker without an avatar and with gravatar disabled had a broken avatar-image in the speaker's view in the orga-backend.
 - :bug:`-` The visual representation of a speaker's avatar is now consistent across all image-sizes and bio-texts.

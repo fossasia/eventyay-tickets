@@ -165,6 +165,9 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         required=False,
         widget=HeaderSelect,
     )
+    meta_noindex = forms.BooleanField(
+        label=_('Ask search engines not to index the event pages')
+    )
 
     def clean_custom_domain(self):
         data = self.cleaned_data['custom_domain']
