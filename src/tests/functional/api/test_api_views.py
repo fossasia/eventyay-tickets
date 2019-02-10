@@ -294,6 +294,23 @@ def test_orga_can_see_all_speakers(
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_see_speakers(
+    review_client,
+    slot,
+    accepted_submission,
+    rejected_submission,
+    submission,
+    impersonal_answer,
+):
+    submission.event.settings.review_hide_speaker_names = True
+    response = review_client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['count'] == 1  # can see the slot's speaker, but not the other submissions'
+
+
+@pytest.mark.django_db
 def test_orga_can_see_all_speakers_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):

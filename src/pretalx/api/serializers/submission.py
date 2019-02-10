@@ -18,11 +18,11 @@ class SlotSerializer(I18nAwareModelSerializer):
 
 
 class SubmissionSerializer(I18nAwareModelSerializer):
-    speakers = SubmitterSerializer(many=True)
     submission_type = SlugRelatedField(slug_field='name', read_only=True)
     track = SlugRelatedField(slug_field='name', read_only=True)
     slot = SlotSerializer(TalkSlot.objects.filter(is_visible=True), read_only=True)
     duration = SerializerMethodField()
+    speakers = SerializerMethodField()
     answers = SerializerMethodField()
 
     @property
@@ -41,6 +41,14 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             return AnswerSerializer(
                 Answer.objects.filter(submission=obj), many=True
             ).data
+        return []
+
+    def get_speakers(self, obj):
+        request = self.context.get('request')
+        has_slots = obj.slots.filter(is_visible=True) and obj.state == SubmissionStates.CONFIRMED
+        has_permission = request and request.user.has_perm('orga.view_speakers', request.event)
+        if has_slots or has_permission:
+            return SubmitterSerializer(obj.speakers.all(), many=True).data
         return []
 
     class Meta:

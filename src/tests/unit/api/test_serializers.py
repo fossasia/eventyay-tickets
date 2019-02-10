@@ -92,8 +92,11 @@ def test_speaker_orga_serializer(slot):
 
 
 @pytest.mark.django_db
-def test_submission_serializer(submission):
-    data = SubmissionSerializer(submission, context={'event': submission.event}).data
+def test_submission_serializer_for_organiser(submission, orga_user):
+    class Request:
+        user = orga_user
+        event = submission.event
+    data = SubmissionSerializer(submission, context={'event': submission.event, 'request': Request()}).data
     assert set(data.keys()) == {
         'code',
         'speakers',
@@ -118,6 +121,32 @@ def test_submission_serializer(submission):
         'biography': '',  # Biography can only be derived from request associated event
         'avatar': None,
     }
+    assert data['submission_type'] == str(submission.submission_type.name)
+    assert data['slot'] is None
+
+
+@pytest.mark.django_db
+def test_submission_serializer(submission):
+    data = SubmissionSerializer(submission, context={'event': submission.event}).data
+    assert set(data.keys()) == {
+        'code',
+        'speakers',
+        'title',
+        'submission_type',
+        'state',
+        'abstract',
+        'description',
+        'duration',
+        'do_not_record',
+        'is_featured',
+        'content_locale',
+        'slot',
+        'image',
+        'answers',
+        'track',
+    }
+    assert isinstance(data['speakers'], list)
+    assert data['speakers'] == []
     assert data['submission_type'] == str(submission.submission_type.name)
     assert data['slot'] is None
 
