@@ -301,7 +301,7 @@ def test_schedule_orga_trigger_export(
 
     mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
 
-    with django_assert_num_queries(33):
+    with django_assert_num_queries(34):
         response = orga_client.post(
             event.orga_urls.schedule_export_trigger, follow=True
         )
