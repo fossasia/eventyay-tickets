@@ -1,0 +1,23 @@
+{% load compress %}
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %} :: pretalx</title>
+        {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/error.scss" %}"/>
+        {% endcompress %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
+    </head>
+    <body>
+        <div id="wrapper">
+            {% block error_image %}{% endblock %}
+            <h2>{% block error_message %}{% endblock %}</h2>
+            <h4 class="mt-4">HTTP {% block error_code %}{% endblock %}</h4>
+        </div>
+    </body>
+</html>
