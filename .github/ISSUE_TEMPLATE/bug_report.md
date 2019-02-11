@@ -4,11 +4,10 @@ about: Create a report about incorrect or unhelpful behaviour.
 
 ---
 
-## Expected Behavior
-
-
 ## Current Behavior
 
+
+## Expected Behavior
 
 
 ## Steps to Reproduce
