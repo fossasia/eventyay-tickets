@@ -290,7 +290,7 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     review_hide_speaker_names = forms.BooleanField(
         label=_('Hide speaker names'),
         help_text=_(
-            'Prevent reviewers from seing speaker names. Please note that reviewers who also have organiser rights will still see speaker names.'
+            'Prevent reviewers from seeing speaker names. Please note that reviewers who also have organiser rights will still see speaker names.'
         ),
         required=False,
     )
