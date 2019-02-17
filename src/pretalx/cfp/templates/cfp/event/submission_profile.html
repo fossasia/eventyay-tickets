@@ -40,6 +40,7 @@
     </div>
     {% bootstrap_field wizard.form.name layout='event' %}
     {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
+    {% if wizard.form.availabilities %}{% bootstrap_field wizard.form.availabilities layout='event' %}{% endif %}
 
     <script src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}
