@@ -54,3 +54,7 @@ class SubmissionType(LogMixin, models.Model):
             name=self.name,
             duration=self.default_duration,
         )
+
+    def update_duration(self):
+        for submission in self.submissions.filter(duration__isnull=True):
+            submission.update_duration()

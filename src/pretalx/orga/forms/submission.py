@@ -32,6 +32,11 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         else:
             self.fields['track'].queryset = event.tracks.all()
 
+    def save(self, *args, **kwargs):
+        instance = super().save(*args, **kwargs)
+        if instance.pk and 'duration' in self.changed_data:
+            instance.update_duration()
+
     class Meta:
         model = Submission
         fields = [

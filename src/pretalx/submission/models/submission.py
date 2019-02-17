@@ -2,6 +2,7 @@ import re
 import string
 import uuid
 import warnings
+from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
@@ -246,6 +247,11 @@ class Submission(LogMixin, models.Model):
         if self.duration is None:
             return self.submission_type.default_duration
         return self.duration
+
+    def update_duration(self):
+        for slot in self.event.wip_schedule.talks.filter(submission=self, start__isnull=False):
+            slot.end = slot.start + timedelta(minutes=self.get_duration())
+            slot.save()
 
     def _set_state(self, new_state, force=False, person=None):
         """

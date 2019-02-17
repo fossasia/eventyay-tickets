@@ -116,6 +116,12 @@ class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
 
 class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
+
+    def save(self, *args, **kwargs):
+        instance = super().save(*args, **kwargs)
+        if instance.pk and 'duration' in self.changed_data:
+            instance.update_duration()
+
     class Meta:
         model = SubmissionType
         fields = ['name', 'default_duration', 'deadline']
