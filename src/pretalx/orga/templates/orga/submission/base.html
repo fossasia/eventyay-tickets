@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load rules %}
 
+{% block title %}{{ submission.title }} :: {{ submission.event.name }}{% endblock %}
+
 {% block content %}
 {% if submission %}
 {% has_perm 'submission.edit_submission' request.user submission as can_edit_submission %}

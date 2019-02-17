@@ -4,6 +4,7 @@
 {% load rules %}
 {% load static %}
 
+{% block title %}{{ form.instance.user.get_display_name }} :: {{ request.event.name }}{% endblock %}
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     <h2>
