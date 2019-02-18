@@ -61,6 +61,7 @@ hierarkey.add_default('cfp_require_do_not_record', 'False', bool)
 hierarkey.add_default('cfp_require_image', 'False', bool)
 hierarkey.add_default('cfp_require_track', 'False', bool)
 
+hierarkey.add_default('cfp_count_length_in', 'chars', str)
 hierarkey.add_default('cfp_abstract_min_length', None, int)
 hierarkey.add_default('cfp_description_min_length', None, int)
 hierarkey.add_default('cfp_biography_min_length', None, int)
