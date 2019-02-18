@@ -1,14 +1,21 @@
 from django.utils.translation import ugettext_lazy as _
 
 
-def get_help_text(text, min_length, max_length):
+def get_help_text(text, min_length, max_length, count_in='chars'):
     if not min_length and not max_length:
         return text
-    text = str(text) + ' '
-    if min_length and max_length:
-        warning = _('Please write between {min} and {max} characters.').format(min=min_length, max=max_length)
-    elif min_length:
-        warning = _('Please write at least {min} characters.').format(min=min_length)
+    if text:
+        text = str(text) + ' '
     else:
-        warning = _('Please write no more than {max} characters.').format(max=max_length)
-    return (text + warning).strip()
+        text = ''
+    texts = {
+        'minmaxwords': _('Please write between {min_length} and {max_length} words.'),
+        'minmaxchars': _('Please write between {min_length} and {max_length} characters.'),
+        'minwords': _('Please write at least {min_length} words.'),
+        'minchars': _('Please write at least {min_length} characters.'),
+        'maxwords': _('Please write at most {max_length} words.'),
+        'maxchars': _('Please write at most {max_length} characters.'),
+    }
+    length = ('min' if min_length else '') + ('max' if max_length else '')
+    message = texts[length + count_in].format(min_length=min_length, max_length=max_length)
+    return (text + str(message)).strip()

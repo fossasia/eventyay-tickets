@@ -23,27 +23,20 @@ class ReadOnlyFlag:
 
 class RequestRequire:
 
-    def clean_variable_field(self, min_length, max_length, count_chars, key):
+    def clean_variable_field(self, min_length, max_length, count_in, key):
         value = self.cleaned_data.get(key)
-        if count_chars:
+        if count_in == 'chars':
             length = len(value)
         else:
             length = len(re.findall(r'\b\w+\b', value))
         if (min_length and min_length > length) or (max_length and max_length < length):
+            error_message = get_help_text('', min_length, max_length, count_in)
             errors = {
-                'minmaxwords': _('Please use between {min_length} and {max_length} words to answer.'),
-                'minmaxchars': _('Please use between {min_length} and {max_length} characters to answer.'),
-                'minwords': _('Please use at least {min_length} words to answer.'),
-                'minchars': _('Please use at least {min_length} characters to answer.'),
-                'maxwords': _('Please use at most {max_length} words to answer.'),
-                'maxchars': _('Please use at most {max_length} characters to answer.'),
                 'chars': _('You wrote {count} characters.'),
                 'words': _('You wrote {count} words.'),
             }
-            error_length = ('min' if min_length else '') + ('max' if max_length else '')
-            error_type = ('chars' if count_chars else 'words')
-            error_message = str(errors[error_length + error_type]) + ' ' + str(errors[error_type])
-            raise forms.ValidationError(error_message.format(min_length=min_length, max_length=max_length, count=length))
+            error_message += ' ' + str(errors[count_in]).format(count=length)
+            raise forms.ValidationError(error_message)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,7 +55,7 @@ class RequestRequire:
                         self.fields[key].widget.attrs[f'minlength'] = min_value
                     if max_value and count_chars:
                         self.fields[key].widget.attrs[f'maxlength'] = max_value
-                    setattr(self, f'clean_{key}', partial(self.clean_variable_field, key=key, min_length=min_value, max_length=max_value, count_chars=count_chars))
+                    setattr(self, f'clean_{key}', partial(self.clean_variable_field, key=key, min_length=min_value, max_length=max_value, count_in=self.event.settings.cfp_count_length_in))
                     self.fields[key].help_text = get_help_text(
-                        self.fields[key].help_text, min_value, max_value
+                        self.fields[key].help_text, min_value, max_value, self.event.settings.cfp_count_length_in,
                     )
