@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`577` You can now decide if text lengths should be counted in words or in characters when restricting how long they should be.
 - :bug:`587` pretalx did not automtically update a talk's duration when it was changed via the submission type or directly. It was only changed when you moved the talk in the schedule editor.
 - :bug:`594` pretalx did not display speaker availabilities during submission, even when they were required, breaking submission workflows.
 - :feature:`346` Due to the generous sponsorship of JuliaCon, pretalx is now capable of blind reviews, i.e. making sure that reviewers cannot see speaker names.

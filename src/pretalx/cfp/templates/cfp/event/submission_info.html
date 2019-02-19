@@ -16,5 +16,7 @@
             Let's get started, this won't take long.
         {% endblocktrans %}
     </p>
-    {% bootstrap_form wizard.form layout='event' %}
+    {% for field in wizard.form %}
+    {% bootstrap_field field layout='event' %}
+    {% endfor %}
 {% endblock %}

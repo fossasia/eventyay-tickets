@@ -45,8 +45,8 @@
                         <th></th>
                         <th>{% trans "Request" %}</th>
                         <th>{% trans "Require" %}</th>
-                        <th>{% trans "Minimum length" %}<div class="text-muted">({% trans "characters" %})</small></div></th>
-                        <th>{% trans "Maximum length" %}<div class="text-muted">({% trans "characters" %})</small></div></th>
+                        <th>{% trans "Minimum length" %}</th>
+                        <th>{% trans "Maximum length" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,6 +110,7 @@
                     </tr>
                 </tbody>
             </table>
+            {% bootstrap_field sform.cfp_count_length_in layout='event' %}
             </fieldset>
 
             {% include "orga/submit_row.html" %}

@@ -16,7 +16,6 @@
             But rest assured, you reached step {{ step }} of {{ steps }} already, we are nearly there!
         {% endblocktrans %}
     </p>
-    {% bootstrap_form_errors wizard.form %}
     {% if wizard.form.submission_fields %}
     <h4>{% trans "… about your submission:" %}</h4>
         {% for field in wizard.form.submission_fields %}

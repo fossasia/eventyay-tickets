@@ -95,10 +95,11 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         step = kwargs.get('step')
+        form = kwargs.get('form')
         step_list = []
         phase = 'done'
-        for stp in self.get_form_list():
-            if stp == step:
+        for stp, form_class in self.get_form_list().items():
+            if stp == step or isinstance(form, form_class):
                 phase = 'current'
             step_list.append(
                 {
@@ -108,7 +109,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     'icon': FORM_DATA[stp]['icon'],
                 }
             )
-            if stp == step:
+            if phase == 'current':
                 phase = 'todo'
         step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
         context['step_list'] = step_list

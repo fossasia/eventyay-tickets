@@ -16,6 +16,7 @@ def test_edit_cfp(orga_client, event):
             'headline_0': 'new headline',
             'text_0': '',
             'deadline': '2000-10-10 20:20',
+            'settings-cfp_count_length_in': 'chars',
         },
         follow=True,
     )
