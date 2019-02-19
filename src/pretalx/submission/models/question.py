@@ -106,13 +106,13 @@ class Question(LogMixin, models.Model):
         null=True,
         blank=True,
         verbose_name=_('Minimum text length'),
-        help_text=_('Minimum allowed text length in characters'),
+        help_text=_('Minimum allowed text in characters or words (set in CfP settings).'),
     )
     max_length = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name=_('Maximum text length'),
-        help_text=_('Maximum allowed text length in characters'),
+        help_text=_('Maximum allowed text lenght in characters or words (set in CfP settings).'),
     )
     objects = QuestionManager()
     all_objects = AllQuestionManager()

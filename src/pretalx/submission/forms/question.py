@@ -1,10 +1,11 @@
 from decimal import Decimal
+from functools import partial
 
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.functional import cached_property
 
-from pretalx.common.forms.utils import get_help_text
+from pretalx.common.forms.utils import get_help_text, validate_field_length
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.submission.models import Answer, Question, QuestionTarget, QuestionVariant
 
@@ -78,6 +79,7 @@ class QuestionsForm(forms.Form):
 
     def get_field(self, *, question, initial, initial_object, readonly):
         help_text = rich_text(question.help_text)
+        count_chars = self.event.settings.cfp_count_length_in == 'chars'
         if question.variant == QuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
@@ -108,30 +110,54 @@ class QuestionsForm(forms.Form):
                 initial=initial,
             )
         if question.variant == QuestionVariant.STRING:
-            return forms.CharField(
+            field = forms.CharField(
                 disabled=readonly,
                 help_text=get_help_text(
-                    help_text, question.min_length, question.max_length
+                    help_text,
+                    question.min_length,
+                    question.max_length,
+                    self.event.settings.cfp_count_length_in,
                 ),
                 label=question.question,
                 required=question.required,
                 initial=initial,
-                min_length=question.min_length,
-                max_length=question.max_length,
+                min_length=question.min_length if count_chars else None,
+                max_length=question.max_length if count_chars else None,
             )
+            field.validators.append(
+                partial(
+                    validate_field_length,
+                    min_length=question.min_length,
+                    max_length=question.max_length,
+                    count_in=self.event.settings.cfp_count_length_in,
+                )
+            )
+            return field
         if question.variant == QuestionVariant.TEXT:
-            return forms.CharField(
+            field = forms.CharField(
                 label=question.question,
                 required=question.required,
                 widget=forms.Textarea,
                 disabled=readonly,
                 help_text=get_help_text(
-                    help_text, question.min_length, question.max_length
+                    help_text,
+                    question.min_length,
+                    question.max_length,
+                    self.event.settings.cfp_count_length_in,
                 ),
                 initial=initial,
-                min_length=question.min_length,
-                max_length=question.max_length,
+                min_length=question.min_length if count_chars else None,
+                max_length=question.max_length if count_chars else None,
             )
+            field.validators.append(
+                partial(
+                    validate_field_length,
+                    min_length=question.min_length,
+                    max_length=question.max_length,
+                    count_in=self.event.settings.cfp_count_length_in,
+                )
+            )
+            return field
         if question.variant == QuestionVariant.FILE:
             return forms.FileField(
                 label=question.question,
