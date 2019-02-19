@@ -8,5 +8,4 @@ Documentation contents
    api/index
    developer/index
 
-   features
    changelog
