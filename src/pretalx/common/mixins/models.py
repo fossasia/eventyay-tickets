@@ -3,6 +3,7 @@ import json
 from django.contrib.contenttypes.models import ContentType
 from i18nfield.utils import I18nJSONEncoder
 
+SENSITIVE_KEYS = ['password', 'secret', 'api_key']
 
 class LogMixin:
 
@@ -11,8 +12,14 @@ class LogMixin:
             return
 
         from pretalx.common.models import ActivityLog
-        if data and not isinstance(data, str):
+        if data and isinstance(data, dict):
+            for key, value in data.items():
+                if any(sensitive_key in key for sensitive_key in SENSITIVE_KEYS):
+                    value = data[key]
+                    data[key] = '********' if value else value
             data = json.dumps(data, cls=I18nJSONEncoder)
+        elif data:
+            raise TypeError('Logged data should always be a dictionary.')
 
         ActivityLog.objects.create(
             event=getattr(self, 'event', None), person=person, content_object=self,
