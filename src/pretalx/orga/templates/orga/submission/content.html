@@ -5,6 +5,7 @@
 {% load i18n %}
 {% load review_score %}
 {% load static %}
+{% load rules %}
 
 {% block submission_content %}
 <script src="{% static "js/jquery.formset.js" %}"></script>
@@ -108,7 +109,8 @@
         <div class="submit-group panel">
             <span></span>
             <span>
-                {% if form.instance.code %}
+                {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
+                {% if form.instance.code and can_send_mails %}
                     <a class="btn btn-lg btn-info" href="{{ request.event.orga_urls.compose_mails }}?submission={{ form.instance.code }}">
                         <i class="fa fa-envelope-o"></i>
                         {% trans "Send mail to speakers" %}
