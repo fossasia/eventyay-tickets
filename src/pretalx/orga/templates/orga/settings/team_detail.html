@@ -52,7 +52,7 @@
                 </td>
                 <td class="text-right">
                     <a
-                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}/{{ member.id }}uninvite"
+                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/uninvite"
                       class="btn btn-sm btn-danger"
                     >
                         <i class="fa fa-trash"></i>
