@@ -226,26 +226,26 @@ class ComposeMail(EventPermissionRequired, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
+        initial = kwargs.get('initial', dict())
         if 'template' in self.request.GET:
             template = MailTemplate.objects.filter(
                 pk=self.request.GET.get('template')
             ).first()
             if template:
-                initial = kwargs.get('initial', dict())
                 initial['subject'] = template.subject
                 initial['text'] = template.text
                 initial['reply_to'] = template.reply_to
                 initial['bcc'] = template.bcc
-                kwargs['initial'] = initial
         if 'submission' in self.request.GET:
             submission = self.request.event.submissions.filter(
                 code=self.request.GET.get('submission')
             ).first()
             if submission:
-                initial = kwargs.get('initial', dict())
                 initial['recipients'] = 'selected_submissions'
                 initial['submissions'] = submission.code
-                kwargs['initial'] = initial
+        if 'email' in self.request.GET:
+            initial['additional_recipients'] = self.request.GET.get('email')
+        kwargs['initial'] = initial
         return kwargs
 
     def get_success_url(self):
@@ -276,6 +276,9 @@ class ComposeMail(EventPermissionRequired, FormView):
                 ).values_list('speakers__email', flat=True)
 
             email_set.update(mails)
+        additional_mails = form.cleaned_data.get('additional_recipients')
+        if additional_mails:
+            email_set.update([m.strip().lower() for m in additional_mails.split(',')])
 
         for email in email_set:
             QueuedMail.objects.create(
@@ -290,8 +293,8 @@ class ComposeMail(EventPermissionRequired, FormView):
         messages.success(
             self.request,
             _(
-                'The emails have been saved to the outbox – you can make individual changes there or just send them all.'
-            ),
+                '{count} emails have been saved to the outbox – you can make individual changes there or just send them all.'
+            ).format(count=len(email_set)),
         )
         return super().form_valid(form)
 

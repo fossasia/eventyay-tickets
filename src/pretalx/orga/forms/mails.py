@@ -47,6 +47,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
 
 class WriteMailForm(forms.ModelForm):
     recipients = forms.MultipleChoiceField(
+        label=_('Recipient groups'),
         choices=(
             (
                 'submitted',
@@ -67,7 +68,9 @@ class WriteMailForm(forms.ModelForm):
             ('reviewers', _('All reviewers in your team')),
         ),
         widget=forms.CheckboxSelectMultiple,
+        required=False,
     )
+    additional_recipients = forms.CharField(label=_('Recipients'), required=False, help_text=_('One email address or several addresses separated by commas.'))
     submissions = forms.MultipleChoiceField(required=False)
     reply_to = forms.CharField(required=False)
 
