@@ -5,6 +5,7 @@ from i18nfield.utils import I18nJSONEncoder
 
 SENSITIVE_KEYS = ['password', 'secret', 'api_key']
 
+
 class LogMixin:
 
     def log_action(self, action, data=None, person=None, orga=False):
