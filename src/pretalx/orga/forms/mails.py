@@ -69,7 +69,7 @@ class WriteMailForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
     )
     submissions = forms.MultipleChoiceField(required=False)
-    reply_to = forms.EmailField(required=False)
+    reply_to = forms.CharField(required=False)
 
     def __init__(self, event, **kwargs):
         super().__init__(**kwargs)

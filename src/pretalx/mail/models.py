@@ -26,7 +26,7 @@ class MailTemplate(LogMixin, models.Model):
     text = I18nTextField(
         verbose_name=_('Text'),
     )
-    reply_to = models.EmailField(
+    reply_to = models.CharField(
         max_length=200,
         blank=True, null=True,
         verbose_name=_('Reply-To'),
@@ -163,7 +163,7 @@ class QueuedMail(LogMixin, models.Model):
                 'subject': self.make_subject(self.subject, event=has_event),
                 'body': text,
                 'html': body_html,
-                'reply_to': self.reply_to or (self.event.email if has_event else None),
+                'reply_to': self.reply_to.split(',') or ([self.event.email] if has_event else None),
                 'event': self.event.pk if has_event else None,
                 'cc': (self.cc or '').split(','),
                 'bcc': (self.bcc or '').split(','),

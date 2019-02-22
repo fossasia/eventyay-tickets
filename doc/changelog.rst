@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`566` The Reply-To field now permits multiple email addresses.
 - :bug:`579` When organisers changed the event timeframe, already submitted availabilites would have to be changed upon new submission.
 - :feature:`577` You can now decide if text lengths should be counted in words or in characters when restricting how long they should be.
 - :bug:`587` pretalx did not automtically update a talk's duration when it was changed via the submission type or directly. It was only changed when you moved the talk in the schedule editor.
