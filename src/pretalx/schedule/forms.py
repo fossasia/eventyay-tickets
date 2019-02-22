@@ -100,23 +100,21 @@ class AvailabilitiesFormMixin(forms.Form):
 
         tz = pytz.timezone(self.event.timezone)
 
-        try:
-            timeframe_start = tz.localize(
-                datetime.datetime.combine(self.event.date_from, datetime.time())
-            )
-            assert rawavail['start'] >= timeframe_start
+        timeframe_start = tz.localize(
+            datetime.datetime.combine(self.event.date_from, datetime.time())
+        )
+        if rawavail['start'] < timeframe_start:
+            rawavail['start'] = timeframe_start
 
-            # add 1 day, not 24 hours, https://stackoverflow.com/a/25427822/2486196
-            timeframe_end = datetime.datetime.combine(
-                self.event.date_to, datetime.time()
-            )
-            timeframe_end = timeframe_end + datetime.timedelta(days=1)
-            timeframe_end = tz.localize(timeframe_end, is_dst=None)
-            assert rawavail['end'] <= timeframe_end
-        except AssertionError:
-            raise forms.ValidationError(
-                _("The submitted availability is not within the event timeframe.")
-            )
+        # add 1 day, not 24 hours, https://stackoverflow.com/a/25427822/2486196
+        timeframe_end = datetime.datetime.combine(
+            self.event.date_to, datetime.time()
+        )
+        timeframe_end = timeframe_end + datetime.timedelta(days=1)
+        timeframe_end = tz.localize(timeframe_end, is_dst=None)
+        if rawavail['end'] > timeframe_end:
+            # If the submitted availability ended outside the event timeframe, fix it silently
+            rawavail['end'] = timeframe_end
 
     def clean_availabilities(self):
         data = self.cleaned_data.get('availabilities')
