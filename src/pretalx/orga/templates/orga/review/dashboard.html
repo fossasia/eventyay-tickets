@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load review_score %}
 {% load rules %}
+{% load url_replace %}
 
 {% block content %}
 {% has_perm 'orga.change_settings' request.user request.event as can_see_settings %}
@@ -89,8 +90,15 @@
 <table class="table table-sm review-table table-hover table-responsive-md">
     <thead>
         <tr>
-            <th>{% trans "Score" %} <i class="fa fa-caret-down"></i></th>
-            <th>{% trans "Reviews" %}</th>
+            <th>
+                {% trans "Score" %}
+                <a href="?{% url_replace request 'sort' 'default' %}"><i class="fa fa-caret-down"></i></a>
+            </th>
+            <th>
+                {% trans "Reviews" %}
+                <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-down"></i></a>
+                <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-up"></i></a>
+            </th>
             <th>{% trans "Title" %}</th>
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
             <th>{% trans "Type" %}</th>

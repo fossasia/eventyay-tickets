@@ -53,9 +53,8 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ]
         )
         queryset = self.filter_queryset(queryset)
-        return (
-            queryset.order_by('review_id')
-            .annotate(has_override=models.Exists(overridden_reviews))
+        queryset = queryset.order_by('review_id')\
+            .annotate(has_override=models.Exists(overridden_reviews))\
             .annotate(
                 avg_score=models.Case(
                     models.When(
@@ -64,9 +63,14 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                     ),
                     default=models.Avg('reviews__score'),
                 )
-            )
-            .order_by('-state', '-avg_score', 'code')
-        )
+            ).annotate(review_count=models.Count('reviews'))
+        ordering = self.request.GET.get('sort', 'default')
+        if ordering == 'default':
+            return queryset.order_by('-state', '-avg_score', 'code')
+        if ordering == 'count':
+            return queryset.order_by('review_count')
+        if ordering == '-count':
+            return queryset.order_by('-review_count')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

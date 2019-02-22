@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`457` You can now order submissions by the number of reviews they have received on the review page.
 - :feature:`566` The Reply-To field now permits multiple email addresses.
 - :bug:`579` When organisers changed the event timeframe, already submitted availabilites would have to be changed upon new submission.
 - :feature:`577` You can now decide if text lengths should be counted in words or in characters when restricting how long they should be.

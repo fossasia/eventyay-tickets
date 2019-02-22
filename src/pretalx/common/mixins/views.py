@@ -70,9 +70,11 @@ class Sortable:
     sortable_fields = []
 
     def sort_queryset(self, qs):
-        sort_key = self.request.GET.get('sort') or getattr(
-            self, 'default_sort_field', ''
-        )
+        sort_key = self.request.GET.get('sort')
+        if not sort_key or sort_key == 'default':
+            sort_key = getattr(
+                self, 'default_sort_field', ''
+            )
         if sort_key:
             plain_key = sort_key[1:] if sort_key.startswith('-') else sort_key
             reverse = not (plain_key == sort_key)
