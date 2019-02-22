@@ -11,6 +11,7 @@
     </h2>
     <form method="post">
         {% csrf_token %}
+        {% bootstrap_form_errors form %}
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning col-md-9 offset-3">
                 {% blocktrans trimmed %}
