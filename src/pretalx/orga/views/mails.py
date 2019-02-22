@@ -25,7 +25,7 @@ class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
     permission_required = 'orga.view_mails'
 
     def get_queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True).order_by('id')
+        qs = self.request.event.queued_mails.filter(sent__isnull=True).order_by('-id')
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
