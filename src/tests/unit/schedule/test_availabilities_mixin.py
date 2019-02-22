@@ -89,20 +89,6 @@ def test_validate_availability_fail_date(availabilitiesform, avail):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('avail', (
-    ({'start': '2017-01-03 01:00:00', 'end': '2017-01-03 02:00:00'}),  # both
-    ({'start': '2016-12-31 23:00:00', 'end': '2017-01-01 02:00:00'}),  # start
-    ({'start': '2017-01-01 10:00:00', 'end': '2017-01-03 02:00:00'}),  # end
-    ({'start': '2017-01-02 00:00:00', 'end': '2017-01-03 00:00:01'}),  # end
-))
-def test_validate_availability_fail_timeframe(availabilitiesform, avail):
-    with pytest.raises(ValidationError) as excinfo:
-        availabilitiesform._validate_availability(avail)
-
-    assert 'timeframe' in str(excinfo)
-
-
-@pytest.mark.django_db
-@pytest.mark.parametrize('avail', (
     ({'start': '2017-01-01 10:00:00', 'end': '2017-01-01 12:00:00'}),  # same day
     ({'start': '2017-01-01 10:00:00', 'end': '2017-01-02 12:00:00'}),  # next day
     ({'start': '2017-01-01 00:00:00', 'end': '2017-01-02 00:00:00'}),  # all day start
@@ -149,25 +135,6 @@ def test_validate_availability_daylightsaving(availabilitiesform):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('avail', (
-    ({'start': '2016-12-31 23:00:00', 'end': '2017-01-01 08:00:00'}),  # local time, start
-    ({'start': '2017-01-02 05:00:00', 'end': '2017-01-03 00:01:00'}),  # local time, end
-    ({'start': '2016-12-31 23:00:00-05:00', 'end': '2017-01-01 00:00:00-05:00'}),  # explicit timezone, start
-    ({'start': '2017-01-02 05:00:00-05:00', 'end': '2017-01-03 00:00:01-05:00'}),  # explicit timezone, end
-    ({'start': '2017-01-01 04:00:00+00:00', 'end': '2017-01-01 00:00:00-05:00'}),  # UTC, start
-    ({'start': '2017-01-02 05:00:00-00:00', 'end': '2017-01-03 06:00:00-00:00'}),  # UTC, end
-))
-def test_validate_availability_tz_fail(availabilitiesform, avail):
-    availabilitiesform.event.timezone = 'America/New_York'
-    availabilitiesform.event.save()
-
-    with pytest.raises(ValidationError) as excinfo:
-        availabilitiesform._validate_availability(avail)
-
-    assert 'timeframe' in str(excinfo)
-
-
-@pytest.mark.django_db
 @pytest.mark.parametrize('strdate,expected', (
     ('2017-01-01 10:00:00', datetime.datetime(2017, 1, 1, 10)),
     ('2017-01-01 10:00:00-05:00', datetime.datetime(2017, 1, 1, 10)),
@@ -185,7 +152,6 @@ def test_parse_datetime(availabilitiesform, strdate, expected):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('json,error', (
-    ('{"availabilities": [{"start": "2017-01-01 10:00:00", "end": "2017-01-03 12:00:00"}]}', 'timeframe'),
     ('{{', 'not valid json'),
     ('{"availabilities": [1]}', 'format'),
 ))
