@@ -41,6 +41,14 @@
             {{ submission.submission_type }}
         </div>
     </div>
+    {% if submission.track %}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Track" %}</label>
+        <div class="col-md-9 mt-1">
+            {{ submission.track.name|default:'-' }}
+        </div>
+    </div>
+    {% endif %}
     {% if request.event.settings.cfp_request_abstract %}
     <div class="form-group row">
         <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
