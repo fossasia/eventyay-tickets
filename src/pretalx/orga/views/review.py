@@ -61,9 +61,6 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
             queryset = queryset.filter(track__in=tracks)
-        queryset = queryset.filter(
-
-        )
         queryset = self.filter_queryset(queryset)
         queryset = queryset.order_by('review_id')\
             .annotate(has_override=models.Exists(overridden_reviews))\
@@ -118,6 +115,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     model = Review
     template_name = 'orga/submission/review.html'
     permission_required = 'submission.view_reviews'
+    write_permission_required = 'submission.review_submission'
 
     @cached_property
     def submission(self):
