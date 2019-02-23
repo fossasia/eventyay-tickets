@@ -13,12 +13,13 @@ class FeedbackForm(ReadOnlyFlag, forms.ModelForm):
         self.fields['speaker'].empty_label = _('All speakers')
 
     def save(self, *args, **kwargs):
-        if not self.cleaned_data['speaker'] and self.instance.talk.speakers.count() == 1:
+        if (
+            not self.cleaned_data['speaker']
+            and self.instance.talk.speakers.count() == 1
+        ):
             self.instance.speaker = self.instance.talk.speakers.first()
         return super().save(*args, **kwargs)
 
     class Meta:
         model = Feedback
-        fields = [
-            'speaker', 'review',
-        ]
+        fields = ['speaker', 'review']

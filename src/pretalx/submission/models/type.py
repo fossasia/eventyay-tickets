@@ -14,21 +14,17 @@ def pleasing_number(number):
 
 class SubmissionType(LogMixin, models.Model):
     event = models.ForeignKey(
-        to='event.Event',
-        related_name='submission_types',
-        on_delete=models.CASCADE,
+        to='event.Event', related_name='submission_types', on_delete=models.CASCADE
     )
-    name = I18nCharField(
-        max_length=100,
-        verbose_name=_('name'),
-    )
+    name = I18nCharField(max_length=100, verbose_name=_('name'))
     default_duration = models.PositiveIntegerField(
         default=30,
         verbose_name=_('default duration'),
         help_text=_('Default duration in minutes'),
     )
     deadline = models.DateTimeField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('deadline'),
         help_text=_('If you want a different deadline than the global deadline for this submission type, enter it here.'),
     )
@@ -51,8 +47,7 @@ class SubmissionType(LogMixin, models.Model):
                 duration=pleasing_number(round(self.default_duration / 60, 1)),
             )
         return _('{name} ({duration} minutes)').format(
-            name=self.name,
-            duration=self.default_duration,
+            name=self.name, duration=self.default_duration
         )
 
     def update_duration(self):

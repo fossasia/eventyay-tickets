@@ -99,7 +99,9 @@ class UserForm(forms.Form):
         return user.pk
 
 
-class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm):
+class SpeakerProfileForm(
+    AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm
+):
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
     FIRST_TIME_EXCLUDE = ['email']
 

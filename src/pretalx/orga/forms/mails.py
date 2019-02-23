@@ -70,7 +70,11 @@ class WriteMailForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
-    additional_recipients = forms.CharField(label=_('Recipients'), required=False, help_text=_('One email address or several addresses separated by commas.'))
+    additional_recipients = forms.CharField(
+        label=_('Recipients'),
+        required=False,
+        help_text=_('One email address or several addresses separated by commas.'),
+    )
     submissions = forms.MultipleChoiceField(required=False)
     reply_to = forms.CharField(required=False)
 

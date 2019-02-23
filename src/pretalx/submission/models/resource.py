@@ -6,18 +6,14 @@ from pretalx.common.mixins import LogMixin
 
 class Resource(LogMixin, models.Model):
     submission = models.ForeignKey(
-        to='submission.Submission',
-        related_name='resources',
-        on_delete=models.PROTECT,
+        to='submission.Submission', related_name='resources', on_delete=models.PROTECT
     )
     resource = models.FileField(
         verbose_name=_('file'),
         help_text=_('Please try to keep your upload small, preferably below 16 MB.'),
     )
     description = models.CharField(
-        null=True, blank=True,
-        max_length=1000,
-        verbose_name=_('description'),
+        null=True, blank=True, max_length=1000, verbose_name=_('description')
     )
 
     def __str__(self):

@@ -17,5 +17,8 @@ def get_all_plugins(event=None):
             plugins.append(meta)
     return sorted(
         plugins,
-        key=lambda m: (0 if m.module.startswith('pretalx.') else 1, str(m.name).lower().replace('pretalx ', ''))
+        key=lambda m: (
+            0 if m.module.startswith('pretalx.') else 1,
+            str(m.name).lower().replace('pretalx ', ''),
+        ),
     )

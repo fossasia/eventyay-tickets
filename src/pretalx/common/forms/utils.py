@@ -20,7 +20,9 @@ def get_help_text(text, min_length, max_length, count_in='chars'):
         'maxchars': _('Please write at most {max_length} characters.'),
     }
     length = ('min' if min_length else '') + ('max' if max_length else '')
-    message = texts[length + count_in].format(min_length=min_length, max_length=max_length)
+    message = texts[length + count_in].format(
+        min_length=min_length, max_length=max_length
+    )
     return (text + str(message)).strip()
 
 

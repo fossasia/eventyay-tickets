@@ -248,7 +248,9 @@ class Submission(LogMixin, models.Model):
         return self.duration
 
     def update_duration(self):
-        for slot in self.event.wip_schedule.talks.filter(submission=self, start__isnull=False):
+        for slot in self.event.wip_schedule.talks.filter(
+            submission=self, start__isnull=False
+        ):
             slot.end = slot.start + timedelta(minutes=self.get_duration())
             slot.save()
 

@@ -59,7 +59,11 @@ class EventPermissionMiddleware:
             params = '&' + request.GET.urlencode() if request.GET else ''
             event = getattr(request, 'event', None)
             if event:
-                return reverse('orga:event.login', kwargs={'event': event.slug}) + f'?next={quote(request.path)}' + params
+                return (
+                    reverse('orga:event.login', kwargs={'event': event.slug})
+                    + f'?next={quote(request.path)}'
+                    + params
+                )
             return reverse('orga:login') + f'?next={quote(request.path)}' + params
         return None
 

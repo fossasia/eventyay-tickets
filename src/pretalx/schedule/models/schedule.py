@@ -200,7 +200,12 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def warnings(self):
-        warnings = {'talk_warnings': [], 'unscheduled': [], 'unconfirmed': [], 'no_track': []}
+        warnings = {
+            'talk_warnings': [],
+            'unscheduled': [],
+            'unconfirmed': [],
+            'no_track': [],
+        }
         for talk in self.talks.all():
             if not talk.start:
                 warnings['unscheduled'].append(talk)

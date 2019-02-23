@@ -87,6 +87,7 @@ def can_be_reviewed(user, obj):
 @rules.predicate
 def has_reviewer_access(user, obj):
     from pretalx.submission.models import Submission
+
     if hasattr(obj, 'submission'):
         obj = obj.submission
     if not isinstance(obj, Submission):
@@ -116,12 +117,14 @@ rules.add_perm(
     'submission.edit_submission', (can_be_edited & is_speaker) | can_change_submissions
 )
 rules.add_perm(
-    'submission.view_submission', is_speaker | can_change_submissions | has_reviewer_access
+    'submission.view_submission',
+    is_speaker | can_change_submissions | has_reviewer_access,
 )
 rules.add_perm('submission.review_submission', has_reviewer_access & can_be_reviewed)
 rules.add_perm('submission.edit_review', can_be_reviewed & is_review_author)
 rules.add_perm('submission.view_reviews', has_reviewer_access)
 rules.add_perm('submission.edit_speaker_list', is_speaker | can_change_submissions)
 rules.add_perm(
-    'submission.view_feedback', is_speaker | can_change_submissions | has_reviewer_access
+    'submission.view_feedback',
+    is_speaker | can_change_submissions | has_reviewer_access,
 )

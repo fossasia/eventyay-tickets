@@ -13,7 +13,9 @@ def fill_recording_urls(event_id, event_slug):
     for event in structure.get('events', []):
         if event.get('frontend_link'):
             with suppress(Submission.DoesNotExist):
-                talk = Submission.objects.get(event__slug=event_slug, pk=event['slug'].split('-')[1])
+                talk = Submission.objects.get(
+                    event__slug=event_slug, pk=event['slug'].split('-')[1]
+                )
                 talk.recording_url = f'{event["frontend_link"]}/oembed'
                 talk.recording_source = 'VOC'
                 talk.save()

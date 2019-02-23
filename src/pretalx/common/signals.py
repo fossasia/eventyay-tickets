@@ -118,7 +118,10 @@ class EventPluginSignal(django.dispatch.Signal):
             raise ValueError("Sender needs to be an event.")
 
         response = named.get(chain_kwarg_name)
-        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
+        if (
+            not self.receivers
+            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
+        ):
             return response
 
         if not app_cache:

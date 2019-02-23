@@ -14,7 +14,9 @@ def can_change_event_settings(user, obj):
     event = getattr(obj, 'event', None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return user.is_administrator or event in user.get_events_for_permission(can_change_event_settings=True)
+    return user.is_administrator or event in user.get_events_for_permission(
+        can_change_event_settings=True
+    )
 
 
 @rules.predicate
@@ -22,12 +24,18 @@ def can_change_organiser_settings(user, obj):
     event = getattr(obj, 'event', None)
     if event:
         obj = event.organiser
-    return user.is_administrator or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
+    return (
+        user.is_administrator
+        or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
+    )
 
 
 @rules.predicate
 def can_change_any_organiser_settings(user, obj):
-    return user.is_administrator or user.teams.filter(can_change_organiser_settings=True).exists()
+    return (
+        user.is_administrator
+        or user.teams.filter(can_change_organiser_settings=True).exists()
+    )
 
 
 @rules.predicate
@@ -38,6 +46,7 @@ def can_create_events(user, obj):
 @rules.predicate
 def can_change_teams(user, obj):
     from pretalx.event.models import Organiser, Team
+
     if isinstance(obj, Team):
         obj = obj.organiser
     if isinstance(obj, Organiser):
@@ -45,7 +54,9 @@ def can_change_teams(user, obj):
     event = getattr(obj, 'event', None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return user.is_administrator or event in user.get_events_for_permission(can_change_teams=True)
+    return user.is_administrator or event in user.get_events_for_permission(
+        can_change_teams=True
+    )
 
 
 @rules.predicate

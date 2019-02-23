@@ -74,9 +74,7 @@ class MailTemplate(LogMixin, models.Model):
 
 class QueuedMail(LogMixin, models.Model):
     event = models.ForeignKey(
-        to='event.Event',
-        on_delete=models.PROTECT,
-        related_name='queued_mails',
+        to='event.Event', on_delete=models.PROTECT, related_name='queued_mails'
     )
     to = models.CharField(
         max_length=1000,
@@ -85,26 +83,26 @@ class QueuedMail(LogMixin, models.Model):
     )
     reply_to = models.CharField(
         max_length=1000,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('Reply-To'),
         help_text=_('By default, the orga address is used as Reply-To.'),
     )
     cc = models.CharField(
         max_length=1000,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('CC'),
         help_text=_('One email address or several addresses separated by commas.'),
     )
     bcc = models.CharField(
         max_length=1000,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_('BCC'),
         help_text=_('One email address or several addresses separated by commas.'),
     )
-    subject = models.CharField(
-        max_length=200,
-        verbose_name=_('Subject'),
-    )
+    subject = models.CharField(max_length=200, verbose_name=_('Subject'))
     text = models.TextField(verbose_name=_('Text'))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
 
@@ -121,9 +119,11 @@ class QueuedMail(LogMixin, models.Model):
 
     @classmethod
     def make_html(cls, text, event=None):
-        body_md = bleach.linkify(bleach.clean(markdown.markdown(text), tags=bleach.ALLOWED_TAGS + [
-            'p', 'pre'
-        ]))
+        body_md = bleach.linkify(
+            bleach.clean(
+                markdown.markdown(text), tags=bleach.ALLOWED_TAGS + ['p', 'pre']
+            )
+        )
         html_context = {
             'body': body_md,
             'event': event,
@@ -157,6 +157,7 @@ class QueuedMail(LogMixin, models.Model):
         text = self.make_text(self.text, event=has_event)
         body_html = self.make_html(text)
         from pretalx.common.mail import mail_send_task
+
         mail_send_task.apply_async(
             kwargs={
                 'to': self.to.split(','),

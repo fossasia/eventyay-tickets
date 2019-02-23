@@ -23,7 +23,11 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
             self.fields['organiser'].initial = organiser
             self.fields['limit_events'].queryset = organiser.events.all()
         if instance and instance.pk:
-            self.fields['is_reviewer'].label += f' (<a href="{instance.orga_urls.base}tracks">' + str(_('Limit to certain tracks')) + '</a>?)'
+            self.fields['is_reviewer'].label += (
+                f' (<a href="{instance.orga_urls.base}tracks">'
+                + str(_('Limit to certain tracks'))
+                + '</a>?)'
+            )
 
     class Meta:
         model = Team
@@ -47,9 +51,13 @@ class TeamTrackForm(I18nModelForm):
         super().__init__(*args, **kwargs)
         instance = kwargs.get('instance')
         if instance and not instance.all_events and instance.limit_events.count():
-            self.fields['limit_tracks'].queryset = Track.objects.filter(event__in=instance.limit_events.all())
+            self.fields['limit_tracks'].queryset = Track.objects.filter(
+                event__in=instance.limit_events.all()
+            )
         else:
-            self.fields['limit_tracks'].queryset = Track.objects.filter(event__organiser=organiser).order_by('-event__date_from', 'name')
+            self.fields['limit_tracks'].queryset = Track.objects.filter(
+                event__organiser=organiser
+            ).order_by('-event__date_from', 'name')
 
     class Meta:
         model = Team

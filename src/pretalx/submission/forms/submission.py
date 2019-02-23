@@ -12,7 +12,6 @@ from pretalx.submission.models import Submission, SubmissionStates
 
 
 class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
-
     def __init__(self, event, **kwargs):
         self.event = event
         self.readonly = kwargs.pop('readonly', False)
@@ -107,12 +106,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'do_not_record',
             'track',
         ]
-        public_fields = [
-            'title',
-            'abstract',
-            'description',
-            'image',
-        ]
+        public_fields = ['title', 'abstract', 'description', 'image']
 
 
 class SubmissionFilterForm(forms.Form):

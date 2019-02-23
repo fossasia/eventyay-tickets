@@ -44,9 +44,7 @@ Receivers are not expected to return a response.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
-nav_event_settings = EventPluginSignal(
-    providing_args=['request']
-)
+nav_event_settings = EventPluginSignal(providing_args=['request'])
 """
 This signal is sent out to collect additiona settings sub-pages of an event.
 Receivers are expected to return a list of dictionaries. The dictionaries

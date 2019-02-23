@@ -18,7 +18,9 @@ class QuestionsForm(forms.Form):
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
         self.review = kwargs.pop('review', None)
-        self.track = kwargs.pop('track', None) or getattr(self.submission, 'track', None)
+        self.track = kwargs.pop('track', None) or getattr(
+            self.submission, 'track', None
+        )
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
         target_object = None
@@ -38,7 +40,9 @@ class QuestionsForm(forms.Form):
         else:
             self.queryset = self.queryset.exclude(target=QuestionTarget.REVIEWER)
         if self.track:
-            self.queryset = self.queryset.filter(Q(tracks__in=[self.track]) | Q(tracks__isnull=True))
+            self.queryset = self.queryset.filter(
+                Q(tracks__in=[self.track]) | Q(tracks__isnull=True)
+            )
         for question in self.queryset.prefetch_related('options'):
             initial_object = None
             initial = question.default_answer
@@ -95,9 +99,6 @@ class QuestionsForm(forms.Form):
                 if question.required
                 else forms.CheckboxInput()
             )
-            initialbool = (
-                (initial == 'True') if initial else bool(question.default_answer)
-            )
 
             return forms.BooleanField(
                 disabled=readonly,
@@ -105,7 +106,9 @@ class QuestionsForm(forms.Form):
                 label=question.question,
                 required=question.required,
                 widget=widget,
-                initial=initialbool,
+                initial=(initial == 'True')
+                if initial
+                else bool(question.default_answer),
             )
         if question.variant == QuestionVariant.NUMBER:
             return forms.DecimalField(

@@ -64,7 +64,8 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if self.invite_form.is_bound:
             if self.invite_form.is_valid():
                 invite = TeamInvite.objects.create(
-                    team=self.get_object(), email=self.invite_form.cleaned_data['email'].lower()
+                    team=self.get_object(),
+                    email=self.invite_form.cleaned_data['email'].lower(),
                 )
                 invite.send(event=None)
                 messages.success(self.request, _('The invitation has been sent.'))
@@ -181,9 +182,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
 
     def post(self, request, *args, **kwargs):
         try:
-            self.user.reset_password(
-                event=None, user=self.request.user
-            )
+            self.user.reset_password(event=None, user=self.request.user)
             messages.success(
                 self.request, _('The password was reset and the user was notified.')
             )

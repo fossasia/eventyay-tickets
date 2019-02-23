@@ -5,7 +5,6 @@ from pretalx.submission.models import Answer, AnswerOption, Question, Submission
 
 
 class AnswerOptionSerializer(ModelSerializer):
-
     class Meta:
         model = AnswerOption
         fields = ('id', 'answer')
@@ -27,4 +26,12 @@ class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('id', 'question', 'answer', 'answer_file', 'submission', 'person', 'options')
+        fields = (
+            'id',
+            'question',
+            'answer',
+            'answer_file',
+            'submission',
+            'person',
+            'options',
+        )

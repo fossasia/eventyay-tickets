@@ -1,5 +1,4 @@
 class BaseRecordingProvider:
-
     def __init__(self, event):
         self.event = event
         super().__init__()

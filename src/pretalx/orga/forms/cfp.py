@@ -99,15 +99,23 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
 
 
 class QuestionForm(ReadOnlyFlag, I18nModelForm):
-
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get('instance')
-        if not (event.settings.use_tracks and event.tracks.all().count() and event.settings.cfp_request_track):
+        if not (
+            event.settings.use_tracks
+            and event.tracks.all().count()
+            and event.settings.cfp_request_track
+        ):
             self.fields.pop('tracks')
         else:
             self.fields['tracks'].queryset = event.tracks.all()
-        if instance and instance.pk and instance.answers.count() and not instance.is_public:
+        if (
+            instance
+            and instance.pk
+            and instance.answers.count()
+            and not instance.is_public
+        ):
             self.fields['is_public'].disabled = True
 
     class Meta:
@@ -133,7 +141,6 @@ class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):
 
 
 class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
-
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
         if instance.pk and 'duration' in self.changed_data:

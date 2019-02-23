@@ -53,8 +53,12 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ]
         )
         limit_tracks = self.request.user.teams.filter(
-            models.Q(all_events=True) | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self.request.event])),
-            limit_tracks__isnull=False
+            models.Q(all_events=True)
+            | models.Q(
+                models.Q(all_events=False)
+                & models.Q(limit_events__in=[self.request.event])
+            ),
+            limit_tracks__isnull=False,
         )
         if limit_tracks.exists():
             tracks = set()
@@ -62,8 +66,9 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
             queryset = queryset.filter(track__in=tracks)
         queryset = self.filter_queryset(queryset)
-        queryset = queryset.order_by('review_id')\
-            .annotate(has_override=models.Exists(overridden_reviews))\
+        queryset = (
+            queryset.order_by('review_id')
+            .annotate(has_override=models.Exists(overridden_reviews))
             .annotate(
                 avg_score=models.Case(
                     models.When(
@@ -72,7 +77,9 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                     ),
                     default=models.Avg('reviews__score'),
                 )
-            ).annotate(review_count=models.Count('reviews'))
+            )
+            .annotate(review_count=models.Count('reviews'))
+        )
         ordering = self.request.GET.get('sort', 'default')
         if ordering == 'default':
             return queryset.order_by('-state', '-avg_score', 'code')

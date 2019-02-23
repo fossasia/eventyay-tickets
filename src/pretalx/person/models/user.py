@@ -93,9 +93,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         null=True,
         blank=True,
         verbose_name=_('Profile picture'),
-        help_text=_(
-            'If possible, upload an image that is least 120 Pixels wide.'
-        ),
+        help_text=_('If possible, upload an image that is least 120 Pixels wide.'),
     )
     get_gravatar = models.BooleanField(
         default=False,

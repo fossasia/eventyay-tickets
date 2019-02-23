@@ -21,15 +21,23 @@ class SpeakerView(PermissionRequired, DetailView):
     slug_field = 'code'
 
     def get_object(self, queryset=None):
-        return SpeakerProfile.objects.filter(
-            event=self.request.event, user__code__iexact=self.kwargs['code']
-        ).select_related('user').first()
+        return (
+            SpeakerProfile.objects.filter(
+                event=self.request.event, user__code__iexact=self.kwargs['code']
+            )
+            .select_related('user')
+            .first()
+        )
 
     def get_context_data(self, **kwargs):
         obj = kwargs.get('object')
         context = super().get_context_data(**kwargs)
         context['speaker'] = obj.user
-        context['answers'] = obj.user.answers.filter(question__is_public=True, question__event=self.request.event, question__target=QuestionTarget.SPEAKER)
+        context['answers'] = obj.user.answers.filter(
+            question__is_public=True,
+            question__event=self.request.event,
+            question__target=QuestionTarget.SPEAKER,
+        )
         context['talks'] = obj.talks
         return context
 
@@ -48,7 +56,7 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         netloc = urlparse(settings.SITE_URL).netloc
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(
-            submission__speakers=speaker.user, is_visible=True,
+            submission__speakers=speaker.user, is_visible=True
         )
 
         cal = vobject.iCalendar()

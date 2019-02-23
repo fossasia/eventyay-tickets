@@ -16,7 +16,8 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['plugins'] = [
-            p for p in get_all_plugins(self.request.event)
+            p
+            for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         ]
         context['plugins_active'] = self.request.event.get_plugins()
@@ -24,8 +25,10 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
 
     def post(self, request, *args, **kwargs):
         from pretalx.common.plugins import get_all_plugins
+
         plugins_available = {
-            p.module for p in get_all_plugins(self.request.event)
+            p.module
+            for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 

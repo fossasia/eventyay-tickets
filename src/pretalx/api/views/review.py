@@ -11,16 +11,18 @@ class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ('submission__code',)
 
     def get_queryset(self):
-        if not self.request.user.has_perm(
-            'orga.view_reviews', self.request.event
-        ):
+        if not self.request.user.has_perm('orga.view_reviews', self.request.event):
             return Review.objects.none()
         queryset = Review.objects.filter(submission__event=self.request.event).exclude(
             submission__speakers__in=[self.request.user]
         )
         limit_tracks = self.request.user.teams.filter(
-            models.Q(all_events=True) | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self.request.event])),
-            limit_tracks__isnull=False
+            models.Q(all_events=True)
+            | models.Q(
+                models.Q(all_events=False)
+                & models.Q(limit_events__in=[self.request.event])
+            ),
+            limit_tracks__isnull=False,
         )
         if limit_tracks.exists():
             tracks = set()

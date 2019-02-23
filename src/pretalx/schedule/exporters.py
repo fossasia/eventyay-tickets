@@ -22,9 +22,7 @@ class ScheduleData(BaseExporter):
     def metadata(self):
         if not self.schedule:
             return []
-        return {
-            'base_url': self.event.urls.schedule.full()
-        }
+        return {'base_url': self.event.urls.schedule.full()}
 
     @cached_property
     def data(self):

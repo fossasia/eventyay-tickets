@@ -1,7 +1,7 @@
 from pretalx.common.signals import EventPluginSignal
 
 submission_state_change = EventPluginSignal(
-    providing_args=['submission', 'old_state', 'user'],
+    providing_args=['submission', 'old_state', 'user']
 )
 """
 This signal allows you to trigger additional events when a submission changes

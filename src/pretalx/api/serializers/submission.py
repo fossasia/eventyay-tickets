@@ -45,8 +45,13 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
     def get_speakers(self, obj):
         request = self.context.get('request')
-        has_slots = obj.slots.filter(is_visible=True) and obj.state == SubmissionStates.CONFIRMED
-        has_permission = request and request.user.has_perm('orga.view_speakers', request.event)
+        has_slots = (
+            obj.slots.filter(is_visible=True)
+            and obj.state == SubmissionStates.CONFIRMED
+        )
+        has_permission = request and request.user.has_perm(
+            'orga.view_speakers', request.event
+        )
         if has_slots or has_permission:
             return SubmitterSerializer(obj.speakers.all(), many=True).data
         return []
