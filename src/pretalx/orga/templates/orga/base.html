@@ -171,7 +171,7 @@
                             <span>{% trans "General" %}</span>
                         </a>
                         {% if can_change_teams %}
-                        <a href="{{ request.event.orga_urls.team_settings }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
+                        <a href="{{ request.event.organiser.orga_urls.base }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
                             <span>{% trans "Teams" %}</span>
                         </a>
                         {% endif %}

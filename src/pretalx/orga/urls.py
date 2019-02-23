@@ -122,13 +122,6 @@ urlpatterns = [
         url('^settings/review$', event.EventReviewSettings.as_view(), name='settings.review'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
 
-        url('^settings/team/$', organiser.Teams.as_view(), name='settings.team.view'),
-        url('^settings/team/new$', organiser.TeamDetail.as_view(), name='settings.team.add'),
-        url('^settings/team/(?P<pk>[0-9]+)/$', organiser.TeamDetail.as_view(), name='settings.team.detail'),
-        url('^settings/team/(?P<pk>[0-9]+)/delete$', organiser.TeamDelete.as_view(), name='settings.team.delete'),
-        url('^settings/team/(?P<pk>[0-9]+)/delete/(?P<user_pk>[0-9]+)$', organiser.TeamDelete.as_view(), name='settings.team.delete_member'),
-        url('^settings/team/(?P<pk>[0-9]+)/reset/(?P<user_pk>[0-9]+)$', organiser.TeamResetPassword.as_view(), name='settings.team.password_reset'),
-        url('^settings/team/(?P<pk>[0-9]+)/uninvite$', organiser.TeamUninvite.as_view(), name='settings.team.uninvite'),
         url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),

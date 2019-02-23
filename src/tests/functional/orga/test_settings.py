@@ -282,7 +282,7 @@ def test_invite_orga_member(orga_client, event):
     assert team.members.count() == 1
     assert team.invites.count() == 0
     response = orga_client.post(
-        event.orga_urls.team_settings + str(team.id) + '/',
+        team.orga_urls.base,
         {'email': 'other@user.org', 'form': 'invite'},
         follow=True,
     )
@@ -296,7 +296,7 @@ def test_invite_orga_member(orga_client, event):
 def test_retract_invitation(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     response = orga_client.post(
-        event.orga_urls.team_settings + str(team.id) + '/',
+        team.orga_urls.base,
         {'email': 'other@user.org', 'form': 'invite'},
         follow=True,
     )
@@ -305,13 +305,13 @@ def test_retract_invitation(orga_client, event):
     assert team.invites.count() == 1, response.content.decode()
     invite = team.invites.first()
     response = orga_client.get(
-        event.orga_urls.team_settings + f'{invite.id}/uninvite', follow=True
+        team.organiser.orga_urls.teams + f'{invite.id}/uninvite', follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
     assert team.invites.count() == 1, response.content.decode()
     response = orga_client.post(
-        event.orga_urls.team_settings + f'{invite.id}/uninvite', follow=True
+        team.organiser.orga_urls.teams + f'{invite.id}/uninvite', follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -325,7 +325,7 @@ def test_delete_team_member(orga_client, event, other_orga_user):
     team.save()
     member = team.members.first()
     count = team.members.count()
-    url = event.orga_urls.team_settings + f'{team.pk}/delete/{member.pk}'
+    url = team.orga_urls.delete + f'/{member.pk}'
     assert count
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
@@ -343,7 +343,7 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
     team.save()
     member = team.members.first()
     assert not member.pw_reset_token
-    url = event.orga_urls.team_settings + f'{team.pk}/reset/{member.pk}'
+    url = team.orga_urls.base + f'reset/{member.pk}'
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     member.refresh_from_db()
@@ -355,11 +355,10 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
 def test_delete_event_team(orga_client, event):
     count = event.teams.count()
     team = event.organiser.teams.get(can_change_submissions=False, is_reviewer=True)
-    url = event.orga_urls.team_settings + f'{team.pk}/delete'
-    response = orga_client.get(url, follow=True)
+    response = orga_client.get(team.orga_urls.delete, follow=True)
     assert response.status_code == 200
     assert event.teams.count() == count
-    response = orga_client.post(url, follow=True)
+    response = orga_client.post(team.orga_urls.delete, follow=True)
     assert response.status_code == 200
     assert event.teams.count() == count - 1
 

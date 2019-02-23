@@ -110,6 +110,10 @@ class Team(LogMixin, models.Model):
             and getattr(self, a, False) is True
         }
 
+    class orga_urls(EventUrls):
+        base = '{self.organiser.orga_urls.teams}{self.pk}/'
+        delete = '{base}delete'
+
 
 def generate_invite_token():
     return get_random_string(

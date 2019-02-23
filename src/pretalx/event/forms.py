@@ -11,7 +11,7 @@ from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 
 
 class TeamForm(ReadOnlyFlag, I18nModelForm):
-    def __init__(self, *args, organiser=None, instance=None, event=None, **kwargs):
+    def __init__(self, *args, organiser=None, instance=None, **kwargs):
         super().__init__(*args, instance=instance, **kwargs)
         self.fields['organiser'].widget = forms.HiddenInput()
         if instance and getattr(instance, 'pk', None):
@@ -20,8 +20,6 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         else:
             self.fields['organiser'].initial = organiser
             self.fields['limit_events'].queryset = organiser.events.all()
-            if event:
-                self.fields['limit_events'].initial = [event]
 
     class Meta:
         model = Team

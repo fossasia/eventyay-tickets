@@ -30,22 +30,55 @@
 
 <fieldset>
     <legend>{% trans "Teams" %}</legend>
-    <div class="dashboard-list">
+    <table class="table table-hover table-sm table-responsive-md">
+        <thead>
+            <tr>
+                <th>{% trans "Team" %}</th>
+                <th>{% trans "Members" %}</th>
+                <th>{% trans "All events" %}</th>
+                <th>{% trans "Reviewer" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
         {% for team in request.organiser.teams.all %}
-            <a href="{% url "orga:organiser.teams.view" organiser=request.organiser.slug pk=team.pk %}" class="dashboard-block">
-                <h1>{{ team.name }}</h1>
-                <span class="dashboard-description">
-                    {% blocktrans trimmed count count=team.members.count %}
-                        {{ count}} member
-                        {% plural %}
-                        {{ count}} members
-                    {% endblocktrans %}
-                </span>
+            <tr>
+                <td>
+                    <a href="{{ team.orga_urls.base }}">
+                        {{ team.name }}
+                    </a>
+                </td>
+                <td>{{ team.members.count }}</td>
+                <td>
+                    <i class="fa fa-{% if team.all_events %}check-circle text-success{% else %}times-circle text-danger{% endif %}">
+                </td>
+                <td>
+                    <i class="fa fa-{% if team.is_reviewer %}check-circle text-success{% else %}times-circle text-danger{% endif %}">
+                </td>
+                <td>
+                    <a href="{{ team.orga_urls.base }}"
+                        class="btn btn-sm btn-info"
+                        title="{% trans "Edit" %}">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="{{ team.orga_urls.delete }}"
+                        class="btn btn-sm btn-danger"
+                        title="{% trans "Delete" %}">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
             </a>
+            </tr>
         {% endfor %}
-        <a href="{{ request.organiser.orga_urls.new_team }}" class="dashboard-block">
-            <h1><i class="fa fa-plus"></i> {% trans "New team" %}</h1>
-        </a>
+        </tbody>
+    </table>
+    <div class="submit-group">
+        <span></span>
+        <span>
+            <a href="{{ request.organiser.orga_urls.new_team }}" class="btn btn-info">
+                <i class="fa fa-plus"></i> {% trans "New team" %}
+            </a>
+        </span>
     </div>
 </fieldset>
 </form>

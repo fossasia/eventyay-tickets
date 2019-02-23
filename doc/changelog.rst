@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Teams settings are now located exclusively at the organiser level. The navigation entry in the event sidebar will take you there directly.
 - :feature:`523` If you use tracks, you can now choose to make questions available only to submissions on certain tracks.
 - :feature:`459` The speaker page in the organiser backend now has a direct link to send an email to that speaker.
 - :feature:`457` You can now order submissions by the number of reviews they have received on the review page.
