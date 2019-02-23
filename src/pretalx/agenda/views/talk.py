@@ -20,7 +20,7 @@ from pretalx.common.phrases import phrases
 from pretalx.person.models.profile import SpeakerProfile
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.forms import FeedbackForm
-from pretalx.submission.models import Feedback, Submission
+from pretalx.submission.models import Feedback, QuestionTarget, Submission
 
 
 class TalkList(EventPermissionRequired, Filterable, ListView):
@@ -122,6 +122,7 @@ class TalkView(PermissionRequired, DetailView):
             )
         )
         context['recording_iframe'] = self.recording.get('iframe')
+        context['answers'] = slot.submission.answers.filter(question__is_public=True, question__event=self.request.event, question__target=QuestionTarget.SUBMISSION)
         context['speakers'] = []
         for speaker in slot.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)

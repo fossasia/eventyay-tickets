@@ -10,6 +10,7 @@ from django.views.generic import DetailView
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.person.models import SpeakerProfile
+from pretalx.submission.models import QuestionTarget
 
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
@@ -28,6 +29,7 @@ class SpeakerView(PermissionRequired, DetailView):
         obj = kwargs.get('object')
         context = super().get_context_data(**kwargs)
         context['speaker'] = obj.user
+        context['answers'] = obj.user.answers.filter(question__is_public=True, question__event=self.request.event, question__target=QuestionTarget.SPEAKER)
         context['talks'] = obj.talks
         return context
 

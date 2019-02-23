@@ -34,6 +34,23 @@
             {% endif %}
         </div>
     </section>
+    {% if answers %}
+    <hr />
+    <section class="answers">
+    {% for answer in answers %}
+        <span class="question"><strong>{{ answer.question.question }}</strong></span>
+        <span class="answer">
+        {% if answer.question.variant == 'file' %}
+            {% if answer.answer_file %}
+                <i class="fa fa-file-o"></i> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
+            {% endif %}
+        {% else %}
+            – {{ answer.answer }}
+        {% endif %}
+        </span>
+    {% endfor %}
+    {% endif %}
+    </section>
     <hr/>
     <section class="speaker-talks">
         <h4>{% trans "Talks" %}</h4>

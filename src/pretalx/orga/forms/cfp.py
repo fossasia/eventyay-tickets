@@ -102,10 +102,13 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
 
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
         if not (event.settings.use_tracks and event.tracks.all().count() and event.settings.cfp_request_track):
             self.fields.pop('tracks')
         else:
             self.fields['tracks'].queryset = event.tracks.all()
+        if instance and instance.pk and instance.answers.count() and not instance.is_public:
+            self.fields['is_public'].disabled = True
 
     class Meta:
         model = Question
@@ -114,6 +117,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             'question',
             'help_text',
             'variant',
+            'is_public',
             'required',
             'tracks',
             'contains_personal_data',

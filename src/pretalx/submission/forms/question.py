@@ -84,6 +84,8 @@ class QuestionsForm(forms.Form):
 
     def get_field(self, *, question, initial, initial_object, readonly):
         help_text = rich_text(question.help_text)
+        if question.is_public:
+            help_text += ' ' + str(phrases.base.public_content)
         count_chars = self.event.settings.cfp_count_length_in == 'chars'
         if question.variant == QuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`403` Organisers can now choose question answers by speakers to be published on the talk/speaker pages. This setting cannot be changed on once the question has been answered, to make sure that speakers are informed about this.
 - :feature:`-` Reviewer teams can now be restricted to one or multiple tracks. Reviewers will only see submissions and reviews from these tracks.
 - :feature:`-` Teams settings are now located exclusively at the organiser level. The navigation entry in the event sidebar will take you there directly.
 - :feature:`523` If you use tracks, you can now choose to make questions available only to submissions on certain tracks.

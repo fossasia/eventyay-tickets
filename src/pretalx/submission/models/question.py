@@ -121,6 +121,11 @@ class Question(LogMixin, models.Model):
         verbose_name=_('Maximum text length'),
         help_text=_('Maximum allowed text lenght in characters or words (set in CfP settings).'),
     )
+    is_public = models.BooleanField(
+        default=False,
+        verbose_name=_('Publish answers'),
+        help_text=_('Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information.'),
+    )
     objects = QuestionManager()
     all_objects = AllQuestionManager()
 
