@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`523` If you use tracks, you can now choose to make questions available only to submissions on certain tracks.
 - :feature:`459` The speaker page in the organiser backend now has a direct link to send an email to that speaker.
 - :feature:`457` You can now order submissions by the number of reviews they have received on the review page.
 - :feature:`566` The Reply-To field now permits multiple email addresses.

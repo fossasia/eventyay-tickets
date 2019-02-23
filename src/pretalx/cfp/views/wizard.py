@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 from django.forms import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -55,7 +56,16 @@ class SubmitStartView(EventPageMixin, View):
 
 
 def show_questions_page(wizard):
-    return wizard.request.event.questions.all().exists()
+    info_data = wizard.get_cleaned_data_for_step('info')
+    if not info_data or not info_data.get('track'):
+        return wizard.request.event.questions.all().exists()
+    return wizard.request.event.questions.exclude(
+        Q(target=QuestionTarget.SUBMISSION)
+        & (
+            ~Q(tracks__in=[info_data.get('track')])
+            & Q(tracks__isnull=False)
+        )
+    ).exists()
 
 
 def show_user_page(wizard):
@@ -90,6 +100,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['essential_only'] = True
         if step == 'questions':
             kwargs['target'] = ''
+            kwargs['track'] = self.get_cleaned_data_for_step('info').get('track')
         return kwargs
 
     def get_context_data(self, **kwargs):

@@ -99,6 +99,14 @@ class CfPForm(ReadOnlyFlag, I18nModelForm):
 
 
 class QuestionForm(ReadOnlyFlag, I18nModelForm):
+
+    def __init__(self, *args, event=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not (event.settings.use_tracks and event.tracks.all().count() and event.settings.cfp_request_track):
+            self.fields.pop('tracks')
+        else:
+            self.fields['tracks'].queryset = event.tracks.all()
+
     class Meta:
         model = Question
         fields = [
@@ -107,6 +115,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             'help_text',
             'variant',
             'required',
+            'tracks',
             'contains_personal_data',
             'min_length',
             'max_length',

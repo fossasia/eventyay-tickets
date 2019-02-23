@@ -272,6 +272,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             data=self.request.POST if self.request.method == 'POST' else None,
             files=self.request.FILES if self.request.method == 'POST' else None,
             submission=self.object,
+            target='submission',
             event=self.request.event,
             readonly=not self.can_edit,
         )

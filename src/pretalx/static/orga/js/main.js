@@ -65,6 +65,10 @@ $(function () {
         $("#id_variant").change(question_page_toggle_view);
         $("#id_required").change(question_page_toggle_view);
         question_page_toggle_view();
+        if ($("#limit-submission").length) {
+            $("#id_target").change(question_page_toggle_tracks_view);
+            question_page_toggle_tracks_view();
+        }
     }
 
     $("input.submission_featured").change(function() {
@@ -248,6 +252,12 @@ function question_page_toggle_view() {
 
     show = variant === "text" || variant === "string";
     $(".limit-length").toggle(show);
+}
+
+function question_page_toggle_tracks_view() {
+    const target = $('#id_target').val();
+    var show_submission_type = target === "submission";
+    $("#limit-submission").toggle(show_submission_type);
 }
 
 function getCookie(name) {

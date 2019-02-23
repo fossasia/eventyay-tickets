@@ -207,6 +207,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
         if not self.object:
             initial = kwargs['initial'] or dict()
             initial['target'] = self.request.GET.get('type')

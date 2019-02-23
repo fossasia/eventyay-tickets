@@ -75,6 +75,13 @@ class Question(LogMixin, models.Model):
         verbose_name=_('question type'),
         help_text=_('Do you require an answer from every speaker or for every talk?'),
     )
+    tracks = models.ManyToManyField(
+        to='submission.Track',
+        related_name='questions',
+        help_text=_('You can limit this question to some tracks. Leave this field empty to apply to all tracks.'),
+        verbose_name=_('Tracks'),
+        blank=True,
+    )
     question = I18nCharField(max_length=800, verbose_name=_('question'))
     help_text = I18nCharField(
         null=True,

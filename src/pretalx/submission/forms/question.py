@@ -3,6 +3,7 @@ from functools import partial
 
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
+from django.db.models import Q
 from django.utils.functional import cached_property
 
 from pretalx.common.forms.utils import get_help_text, validate_field_length
@@ -16,6 +17,7 @@ class QuestionsForm(forms.Form):
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
         self.review = kwargs.pop('review', None)
+        self.track = kwargs.pop('track', None)
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
         target_object = None
@@ -34,6 +36,8 @@ class QuestionsForm(forms.Form):
             self.queryset = self.queryset.filter(target=self.target_type)
         else:
             self.queryset = self.queryset.exclude(target=QuestionTarget.REVIEWER)
+        if self.track:
+            self.queryset = self.queryset.filter(Q(tracks__in=[self.track]) | Q(tracks__isnull=True))
         for question in self.queryset.prefetch_related('options'):
             initial_object = None
             initial = question.default_answer
