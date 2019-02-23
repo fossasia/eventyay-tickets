@@ -7,11 +7,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown
-from pretalx.common.mixins.forms import RequestRequire
+from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates
 
 
-class InfoForm(RequestRequire, forms.ModelForm):
+class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
+
     def __init__(self, event, **kwargs):
         self.event = event
         self.readonly = kwargs.pop('readonly', False)
@@ -103,6 +104,12 @@ class InfoForm(RequestRequire, forms.ModelForm):
             'image',
             'do_not_record',
             'track',
+        ]
+        public_fields = [
+            'title',
+            'abstract',
+            'description',
+            'image',
         ]
 
 

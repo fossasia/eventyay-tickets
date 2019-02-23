@@ -12,7 +12,7 @@ from i18nfield.forms import I18nModelForm
 from pretalx.common.forms.fields import (
     IMAGE_EXTENSIONS, PasswordConfirmationField, PasswordField,
 )
-from pretalx.common.mixins.forms import ReadOnlyFlag
+from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
@@ -99,7 +99,7 @@ class UserForm(forms.Form):
         return user.pk
 
 
-class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm):
+class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm):
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
     FIRST_TIME_EXCLUDE = ['email']
 
@@ -187,6 +187,7 @@ class SpeakerProfileForm(AvailabilitiesFormMixin, ReadOnlyFlag, forms.ModelForm)
     class Meta:
         model = SpeakerProfile
         fields = ('biography',)
+        public_fields = ['name', 'biography', 'avatar']
 
 
 class OrgaProfileForm(forms.ModelForm):

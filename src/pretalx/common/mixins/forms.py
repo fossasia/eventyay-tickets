@@ -4,6 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.forms.utils import get_help_text, validate_field_length
+from pretalx.common.phrases import phrases
 
 
 class ReadOnlyFlag:
@@ -18,6 +19,18 @@ class ReadOnlyFlag:
         if self.read_only:
             raise forms.ValidationError(_('You are trying to change read only data.'))
         return super().clean()
+
+
+class PublicContent:
+
+    public_fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.Meta.public_fields:
+            field = self.fields.get(field_name)
+            if field:
+                field.help_text = (field.help_text or '') + ' ' + str(phrases.base.public_content)
 
 
 class RequestRequire:

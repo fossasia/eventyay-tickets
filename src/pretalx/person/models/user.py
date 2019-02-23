@@ -94,7 +94,6 @@ class User(PermissionsMixin, AbstractBaseUser):
         blank=True,
         verbose_name=_('Profile picture'),
         help_text=_(
-            'Optional. Will be displayed publicly. '
             'If possible, upload an image that is least 120 Pixels wide.'
         ),
     )

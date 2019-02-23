@@ -96,3 +96,4 @@ class BasePhrases(Phrases, app='base'):
         link_start=f'<a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">',
         link_end='</a>',
     )
+    public_content = _('This content will be shown publicly.')
