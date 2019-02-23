@@ -42,6 +42,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         if len(self.event.locales) == 1:
             self.fields['content_locale'].initial = self.event.locales[0]
             self.fields['content_locale'].widget = forms.HiddenInput()
+            self.fields['content_locale'].disabled = True
         else:
             locale_names = dict(settings.LANGUAGES)
             self.fields['content_locale'].choices = [
@@ -66,6 +67,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         if len(pks) == 1:
             self.fields['submission_type'].initial = self.event.submission_types.get(pk=pks.pop())
             self.fields['content_locale'].widget = forms.HiddenInput()
+            self.fields['content_locale'].disabled = True
         else:
             self.fields['submission_type'].queryset = self.event.submission_types.filter(
                 pk__in=pks
