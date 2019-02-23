@@ -1,6 +1,7 @@
 import rules
+from django.db.models import Q
 
-from pretalx.person.permissions import can_change_submissions, is_reviewer
+from pretalx.person.permissions import can_change_submissions
 from pretalx.submission.models import SubmissionStates
 
 
@@ -83,6 +84,20 @@ def can_be_reviewed(user, obj):
     return state and time
 
 
+@rules.predicate
+def has_reviewer_access(user, obj):
+    from pretalx.submission.models import Submission
+    if hasattr(obj, 'submission'):
+        obj = obj.submission
+    if not isinstance(obj, Submission):
+        raise Exception('Incorrect use of reviewer permissions')
+    result = user.teams.filter(
+        Q(Q(all_events=True) | Q(limit_events__in=[obj.event]))
+        & Q(Q(limit_tracks__isnull=True) | Q(limit_tracks__in=[obj.track]))
+    )
+    return result.exists()
+
+
 rules.add_perm('submission.perform_actions', is_speaker)
 rules.add_perm('submission.withdraw_submission', can_be_withdrawn & is_speaker)
 rules.add_perm('submission.reject_submission', can_be_rejected & can_change_submissions)
@@ -100,12 +115,12 @@ rules.add_perm(
     'submission.edit_submission', (can_be_edited & is_speaker) | can_change_submissions
 )
 rules.add_perm(
-    'submission.view_submission', is_speaker | can_change_submissions | is_reviewer
+    'submission.view_submission', is_speaker | can_change_submissions | has_reviewer_access
 )
-rules.add_perm('submission.review_submission', is_reviewer & can_be_reviewed)
+rules.add_perm('submission.review_submission', has_reviewer_access & can_be_reviewed)
 rules.add_perm('submission.edit_review', can_be_reviewed & is_review_author)
-rules.add_perm('submission.view_reviews', is_reviewer)
+rules.add_perm('submission.view_reviews', has_reviewer_access)
 rules.add_perm('submission.edit_speaker_list', is_speaker | can_change_submissions)
 rules.add_perm(
-    'submission.view_feedback', is_speaker | can_change_submissions | is_reviewer
+    'submission.view_feedback', is_speaker | can_change_submissions | has_reviewer_access
 )

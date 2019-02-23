@@ -52,6 +52,18 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 SubmissionStates.CONFIRMED,
             ]
         )
+        limit_tracks = self.request.user.teams.filter(
+            models.Q(all_events=True) | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self.request.event])),
+            limit_tracks__isnull=False
+        )
+        if limit_tracks.exists():
+            tracks = set()
+            for team in limit_tracks:
+                tracks.update(team.limit_tracks.filter(event=self.request.event))
+            queryset = queryset.filter(track__in=tracks)
+        queryset = queryset.filter(
+
+        )
         queryset = self.filter_queryset(queryset)
         queryset = queryset.order_by('review_id')\
             .annotate(has_override=models.Exists(overridden_reviews))\

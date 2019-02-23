@@ -17,7 +17,7 @@ class QuestionsForm(forms.Form):
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
         self.review = kwargs.pop('review', None)
-        self.track = kwargs.pop('track', None)
+        self.track = kwargs.pop('track', None) or getattr(self.submission, 'track', None)
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
         target_object = None

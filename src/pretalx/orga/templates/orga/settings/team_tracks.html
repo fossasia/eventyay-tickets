@@ -1,0 +1,29 @@
+{% extends "orga/settings/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block settings_content %}
+<div>
+    <h2>
+        {% trans "Team" %} »{{ team.name }}«: {% trans "Tracks" %}
+    </h2>
+    <div class="alert alert-info">
+    {% blocktrans trimmed %}
+    Review teams can be restricted to tracks, so that reviewers will only be able to see reviews from that track. Please note that reviewers with additional access rights (e.g. due to being member in another team) will still be able to see all submissions.
+    {% endblocktrans %}
+    </div>
+    {% if form.fields.limit_tracks.queryset.count %}
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout='event' %}
+            {% include "orga/submit_row.html" with submit_value="team" submit_name="form" %}
+        </form>
+    {% else %}
+    <div class="alert alert-danger">
+    {% blocktrans trimmed %}
+    None of the events this team has access to has any tracks configured at this time.
+    {% endblocktrans %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

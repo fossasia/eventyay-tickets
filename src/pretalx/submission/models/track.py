@@ -17,4 +17,4 @@ class Track(LogMixin, models.Model):
         delete = '{base}delete'
 
     def __str__(self) -> str:
-        return str(self.name)
+        return f'{self.name} ({self.event.name})'

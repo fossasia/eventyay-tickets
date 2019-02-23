@@ -70,6 +70,9 @@ class Team(LogMixin, models.Model):
     limit_events = models.ManyToManyField(
         to='Event', verbose_name=_('Limit to events'), blank=True
     )
+    limit_tracks = models.ManyToManyField(
+        to='submission.Track', verbose_name=_('Limit to tracks'), blank=True
+    )
     can_create_events = models.BooleanField(
         default=False, verbose_name=_('Can create events')
     )

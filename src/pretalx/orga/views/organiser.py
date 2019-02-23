@@ -1,10 +1,11 @@
 from django.contrib import messages
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView, UpdateView
+from django.views.generic import (
+    DeleteView, DetailView, ListView, TemplateView, UpdateView,
+)
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
@@ -79,6 +80,27 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if created:
             return redirect(self.request.organiser.orga_urls.base)
         return redirect(self.request.path)
+
+
+class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
+    permission_required = 'orga.change_team_tracks'
+    template_name = 'orga/settings/team_tracks.html'
+    form_class = TeamTrackForm
+    model = Team
+    context_object_name = 'team'
+
+    def get_permission_object(self):
+        return self.request.organiser
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['organiser'] = self.request.organiser
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('The settings have been saved.'))
+        return redirect(self.object.orga_urls.base)
 
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):

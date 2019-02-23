@@ -8,6 +8,7 @@ from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
+from pretalx.submission.models import Track
 
 
 class TeamForm(ReadOnlyFlag, I18nModelForm):
@@ -20,6 +21,7 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         else:
             self.fields['organiser'].initial = organiser
             self.fields['limit_events'].queryset = organiser.events.all()
+        self.fields['is_reviewer'].label += f' (<a href="{instance.orga_urls.base}tracks">' + str(_('Limit to certain tracks')) + '</a>?)'
 
     class Meta:
         model = Team
@@ -36,6 +38,20 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
             'is_reviewer',
             'review_override_votes',
         ]
+
+
+class TeamTrackForm(I18nModelForm):
+    def __init__(self, *args, organiser=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and not instance.all_events and instance.limit_events.count():
+            self.fields['limit_tracks'].queryset = Track.objects.filter(event__in=instance.limit_events.all())
+        else:
+            self.fields['limit_tracks'].queryset = Track.objects.filter(event__organiser=organiser).order_by('-event__date_from', 'name')
+
+    class Meta:
+        model = Team
+        fields = ['limit_tracks']
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
