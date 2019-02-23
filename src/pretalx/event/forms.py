@@ -21,7 +21,8 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
         else:
             self.fields['organiser'].initial = organiser
             self.fields['limit_events'].queryset = organiser.events.all()
-        self.fields['is_reviewer'].label += f' (<a href="{instance.orga_urls.base}tracks">' + str(_('Limit to certain tracks')) + '</a>?)'
+        if instance and instance.pk:
+            self.fields['is_reviewer'].label += f' (<a href="{instance.orga_urls.base}tracks">' + str(_('Limit to certain tracks')) + '</a>?)'
 
     class Meta:
         model = Team
