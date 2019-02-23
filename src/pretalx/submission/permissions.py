@@ -93,7 +93,8 @@ def has_reviewer_access(user, obj):
         raise Exception('Incorrect use of reviewer permissions')
     result = user.teams.filter(
         Q(Q(all_events=True) | Q(limit_events__in=[obj.event]))
-        & Q(Q(limit_tracks__isnull=True) | Q(limit_tracks__in=[obj.track]))
+        & Q(Q(limit_tracks__isnull=True) | Q(limit_tracks__in=[obj.track])),
+        is_reviewer=True,
     )
     return result.exists()
 
