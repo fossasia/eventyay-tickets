@@ -9,6 +9,7 @@
 
 {% block submission_content %}
 <script src="{% static "js/jquery.formset.js" %}"></script>
+<script src="{% static "cfp/js/animateFormset.js" %}"></script>
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}
     <legend>{% trans "Create submission" %}</legend>
@@ -75,11 +76,6 @@
                 </div>
                 {% endif %}
             </div>
-                <script>jQuery(function($) {
-                    $(".formset").formset({
-                        animateForms: true
-                    });
-                    });</script>
         {% endif %}
         {% if form.instance.average_score != None %}
         <div class="form-group row">

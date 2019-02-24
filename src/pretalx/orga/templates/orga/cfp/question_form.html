@@ -6,6 +6,7 @@
 
 {% block cfp_content %}
     <script src="{% static "js/jquery.formset.js" %}"></script>
+    <script src="{% static "cfp/js/animateFormset.js" %}"></script>
     <h2>
         {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
     </h2>
@@ -116,11 +117,6 @@
                 </p>
                 {% endif %}
             </div>
-                <script>jQuery(function($) {
-                    $(".formset").formset({
-                        animateForms: true
-                    });
-                    });</script>
         </fieldset>
         {% include "orga/submit_row.html" %}
     </form>

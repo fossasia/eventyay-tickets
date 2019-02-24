@@ -2,12 +2,8 @@
 {% load i18n %}
 {% load static %}
 
-{% block agenda_custom_header %}
-    <script src="{% static "agenda/js/offline.js" %}"></script>
-{% endblock %}
-
 {% block agenda_content %}
-<span id="offline-vars" data-event="{{ request.event.urls.schedule }}"></span>
+<span id="offline-vars" data-event="/{{ request.event.urls.schedule }}/"></span>
 {% if data|length > 1 %}
 <div id="navigator">
   <i class="fa fa-dot-circle-o"></i> nav
@@ -154,11 +150,5 @@
     {% endfor %}
 </div>
 
-
-<script>
-  if('serviceWorker' in navigator) {
-    var scope = '/{{ request.event.name }}/schedule/';
-    navigator.serviceWorker.register('/sw.js', {scope: scope})
-  }
-</script>
+<script src="{% static "agenda/js/offline.js" %}"></script>
 {% endblock %}

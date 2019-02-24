@@ -6,8 +6,10 @@
 
 {% block title %}{% trans "Your submission" %} :: {% endblock %}
 
+
 {% block content %}
     <script src="{% static "js/jquery.formset.js" %}"></script>
+    <script src="{% static "cfp/js/animateFormset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>
         {% trans "Current state of your submission:" %}
@@ -100,11 +102,6 @@
                 </div>
                 {% endif %}
             </div>
-                <script>jQuery(function($) {
-                    $(".formset").formset({
-                        animateForms: true
-                    });
-                    });</script>
         {% if can_edit %}
             <div class="row mt-4">
                 <div class="col-md-3 ml-auto">
