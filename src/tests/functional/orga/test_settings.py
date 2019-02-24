@@ -169,7 +169,10 @@ def test_add_logo_no_svg(event, orga_client):
 
 
 @pytest.mark.django_db
-def test_change_custom_domain(event, orga_client):
+def test_change_custom_domain(event, orga_client, monkeypatch):
+    from pretalx.orga.forms.event import socket
+    yessocket = lambda x: True
+    monkeypatch.setattr(socket, 'gethostbyname', yessocket)
     assert not event.settings.custom_domain
     response = orga_client.post(
         event.orga_urls.edit_settings,
@@ -239,6 +242,36 @@ def test_change_custom_domain_to_other_event_domain(event, orga_client, other_ev
             'custom_css': None,
             'logo': None,
             'settings-custom_domain': other_event.settings.custom_domain,
+        },
+        follow=True,
+    )
+    event = Event.objects.get(pk=event.pk)
+    assert response.status_code == 200
+    assert not event.settings.custom_domain
+
+
+@pytest.mark.django_db
+def test_change_custom_domain_to_unavailable_domain(event, orga_client, other_event, monkeypatch):
+    from pretalx.orga.forms.event import socket
+    def nosocket(param):
+        raise OSError
+    monkeypatch.setattr(socket, 'gethostbyname', nosocket)
+    assert not event.settings.custom_domain
+    response = orga_client.post(
+        event.orga_urls.edit_settings,
+        {
+            'name_0': event.name,
+            'slug': event.slug,
+            'locales': event.locales,
+            'locale': event.locale,
+            'date_from': event.date_from,
+            'date_to': event.date_to,
+            'timezone': event.timezone,
+            'email': event.email,
+            'primary_color': None,
+            'custom_css': None,
+            'logo': None,
+            'settings-custom_domain': 'https://example.org',
         },
         follow=True,
     )
