@@ -2996,7 +2996,7 @@ msgstr "\"Nur noch EIN Review, versprochen …\""
 
 #: pretalx/orga/phrases.py:35
 msgid "Review saved, thanks!"
-msgstr "Reveiw gespeichert, danke!"
+msgstr "Review gespeichert, danke!"
 
 #: pretalx/orga/phrases.py:36
 msgid "One down, ... some more to go!"
@@ -3007,7 +3007,7 @@ msgid ""
 "Conferences build on good talk selection – which builds on reviewers like "
 "you!"
 msgstr ""
-"Veranstaltungen brauchen gute Inhaltsauswahl – die gibt es nur dank "
+"Veranstaltungen brauchen eine gute Inhaltsauswahl – die gibt es nur dank "
 "Reviewern wie dir."
 
 #: pretalx/orga/phrases.py:38
