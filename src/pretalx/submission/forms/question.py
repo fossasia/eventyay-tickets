@@ -95,7 +95,7 @@ class QuestionsForm(forms.Form):
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
             widget = (
-                forms.CheckboxInput(attrs={'required': 'required'})
+                forms.CheckboxInput(attrs={'required': 'required', 'placeholder': ''})
                 if question.required
                 else forms.CheckboxInput()
             )
@@ -111,7 +111,7 @@ class QuestionsForm(forms.Form):
                 else bool(question.default_answer),
             )
         if question.variant == QuestionVariant.NUMBER:
-            return forms.DecimalField(
+            field = forms.DecimalField(
                 disabled=readonly,
                 help_text=help_text,
                 label=question.question,
@@ -119,6 +119,8 @@ class QuestionsForm(forms.Form):
                 min_value=Decimal('0.00'),
                 initial=initial,
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
+            return field
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
                 disabled=readonly,
@@ -134,6 +136,7 @@ class QuestionsForm(forms.Form):
                 min_length=question.min_length if count_chars else None,
                 max_length=question.max_length if count_chars else None,
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
             field.validators.append(
                 partial(
                     validate_field_length,
@@ -167,17 +170,20 @@ class QuestionsForm(forms.Form):
                     count_in=self.event.settings.cfp_count_length_in,
                 )
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.FILE:
-            return forms.FileField(
+            field = forms.FileField(
                 label=question.question,
                 required=question.required,
                 disabled=readonly,
                 help_text=help_text,
                 initial=initial,
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
+            return field
         if question.variant == QuestionVariant.CHOICES:
-            return forms.ModelChoiceField(
+            field = forms.ModelChoiceField(
                 queryset=question.options.all(),
                 label=question.question,
                 required=question.required,
@@ -187,8 +193,10 @@ class QuestionsForm(forms.Form):
                 disabled=readonly,
                 help_text=help_text,
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
+            return field
         if question.variant == QuestionVariant.MULTIPLE:
-            return forms.ModelMultipleChoiceField(
+            field = forms.ModelMultipleChoiceField(
                 queryset=question.options.all(),
                 label=question.question,
                 required=question.required,
@@ -199,6 +207,8 @@ class QuestionsForm(forms.Form):
                 disabled=readonly,
                 help_text=help_text,
             )
+            field.widget.attrs['placeholder'] = ''  # XSS
+            return field
         return None
 
     def save(self):

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` A dependency of ours introduced an XSS vulnerability, which organisers could use to execute JavaScript during the CfP workflow of speakers via question texts. We have added a fix against this behaviour, and submitted a report including a patch to the upstream library.
 - :feature:`364` Speakers can now invite a co-speaker while in the submission process.
 - :feature:`62` Exporters can now opt in to show a QR code to their location. The XML and iCal exporters show a QR code linking their location by default.
 - :feature:`477` If you only noticed after releasing your schedule that you wanted to changes something in your speaker notifications, you can now generate those emails again from the schedule editor actions menu.
