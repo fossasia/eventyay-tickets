@@ -213,9 +213,9 @@ def test_can_see_review_after_accept(review_client, review):
 
 
 @pytest.mark.django_db
-def test_orga_cannot_see_review(orga_client, review):
+def test_orga_can_see_review(orga_client, review):
     response = orga_client.get(review.urls.base, follow=True)
-    assert response.status_code == 404
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -233,5 +233,5 @@ def test_orga_cannot_add_review(orga_client, submission):
             'text': 'LGTM',
         }
     )
-    assert response.status_code == 404
+    assert response.status_code == 200
     assert submission.reviews.count() == 0

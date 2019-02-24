@@ -344,12 +344,12 @@ def test_anon_cannot_see_reviews(client, event, review):
 
 
 @pytest.mark.django_db
-def test_orga_cannot_see_reviews(orga_client, event, review):
+def test_orga_can_see_reviews(orga_client, event, review):
     response = orga_client.get(event.api_urls.reviews, follow=True)
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
-    assert len(content['results']) == 0, content
+    assert len(content['results']) == 1
 
 
 @pytest.mark.django_db

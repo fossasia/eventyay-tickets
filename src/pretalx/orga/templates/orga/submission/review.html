@@ -13,23 +13,27 @@
         {% endblocktrans %}
     </div>
 {% else %}
-    <div class="alert alert-info">
-        <span>
-        {% if not read_only %}
+    {% if not read_only %}
+        <div class="alert alert-info">
+            <span>
             {{ request.event.settings.review_help_text|rich_text }}
             {% if not form.instance.pk %}
                 {% blocktrans trimmed %}
                     You will be able to see other reviews once you have given yours.
                 {% endblocktrans %}
             {% endif %}
-        {% else %}
+            </span>
+        </div>
+    {% elif deadline_over or submission.state != 'submitted' %}
+        <div class="alert alert-info">
+            <span>
             {% blocktrans trimmed %}
                 This submission can no longer be reviewed, as a decision regarding its
                 role in this event has already been made, or the review deadline is over.
             {% endblocktrans %}
-        {% endif %}
-        </span>
-    </div>
+            </span>
+        </div>
+    {% endif %}
 
 <form method="post">
     {% csrf_token %}
@@ -151,5 +155,5 @@
     </table>
     {% endif %}
 </form>
-{% endif %}
+{% endif %}  {# endif: request.user in submission.speakers #}
 {% endblock %}
