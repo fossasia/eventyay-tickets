@@ -147,6 +147,9 @@ footer {
 .table-responsive {
   display: table;
 }
+@media(max-width: 1400px) {
+  .user-logs {display: none}
+}
 
 @include media-breakpoint-down(sm) {
   #main-container {
@@ -234,7 +237,7 @@ footer {
   position: absolute;
   left: 100%;
   top: 5%;
-  width: 240px;
+  width: 200px;
   z-index: -1;
 
   .panel-heading {
