@@ -18,6 +18,7 @@ from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_submission
+from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
 
 
@@ -527,3 +528,39 @@ class Submission(LogMixin, models.Model):
                 field_content = (self.event.settings.custom_domain or settings.SITE_URL) + field_content.url
             result += f'**{field_name}**: {field_content}\n'
         return result
+
+    def send_invite(self, to, _from=None, subject=None, text=None):
+        if not _from and (not subject or not text):
+            raise Exception('Please tell me how to sign this invitation.')
+
+        subject = subject or _('{speaker} invites you to join their talk!').format(
+            speaker=_from.get_display_name()
+        )
+        subject = f'[{self.event.slug}] {subject}'
+        text = text or  _(
+            '''Hi!
+
+I'd like to invite you to be a speaker in the talk
+
+  »{title}«
+
+at {event}. Please follow this link to join:
+
+  {url}
+
+I'm looking forward to it!
+{speaker}'''
+        ).format(
+            event=self.event.name,
+            title=self.title,
+            url=self.urls.accept_invitation.full(),
+            speaker=_from.get_display_name(),
+        )
+        to = to.split(',') if isinstance(to, str) else to
+        for invite in to:
+            QueuedMail(
+                event=self.event,
+                to=invite,
+                subject=subject,
+                text=text,
+            ).send()

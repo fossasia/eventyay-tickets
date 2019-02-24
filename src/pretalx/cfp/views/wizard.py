@@ -222,6 +222,9 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                     skip_queue=True,
                     locale=self.request.event.locale,
                 )
+            additional_speaker = form_dict['info'].cleaned_data.get('additional_speaker')
+            if additional_speaker:
+                sub.send_invite(to=[additional_speaker], _from=user)
         except SendMailException as exception:
             logging.getLogger('').warning(str(exception))
             messages.warning(self.request, phrases.cfp.submission_email_fail)

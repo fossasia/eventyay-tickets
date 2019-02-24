@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`364` Speakers can now invite a co-speaker while in the submission process.
 - :feature:`62` Exporters can now opt in to show a QR code to their location. The XML and iCal exporters show a QR code linking their location by default.
 - :feature:`477` If you only noticed after releasing your schedule that you wanted to changes something in your speaker notifications, you can now generate those emails again from the schedule editor actions menu.
 - :bug:`479` When telling speakers about their scheduled or rescheduled slots, a hidden mail template was used instead of the actual template visible to the organiser.

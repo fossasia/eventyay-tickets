@@ -19,7 +19,10 @@ class SubmissionInvitationForm(forms.Form):
         initial['text'] = _(
             '''Hi!
 
-I'd like to invite you to be a speaker in my talk »{title}«
+I'd like to invite you to be a speaker in the talk
+
+  »{title}«
+
 at {event}. Please follow this link to join:
 
   {url}
@@ -35,9 +38,8 @@ I'm looking forward to it!
         super().__init__(*args, **kwargs)
 
     def save(self):
-        QueuedMail(
-            event=self.submission.event,
+        self.submission.send_invite(
             to=self.cleaned_data['speaker'],
             subject=self.cleaned_data['subject'],
             text=self.cleaned_data['text'],
-        ).send()
+        )
