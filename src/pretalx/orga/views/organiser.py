@@ -3,9 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import (
-    DeleteView, DetailView, ListView, TemplateView, UpdateView,
-)
+from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
@@ -17,15 +15,6 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 class TeamMixin:
     def get_queryset(self):
         return Team.objects.filter(organiser=self.request.organiser)
-
-
-class Teams(PermissionRequired, TeamMixin, ListView):
-    permission_required = 'orga.change_teams'
-    template_name = 'orga/settings/team_list.html'
-    context_object_name = 'teams'
-
-    def get_permission_object(self):
-        return self.request.organiser
 
 
 class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):

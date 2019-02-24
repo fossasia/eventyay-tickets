@@ -11,8 +11,8 @@ def fix_update_template(apps, schema_editor):
     Event = apps.get_model('event', 'Event')
     for event in Event.objects.all():
         template = event.update_template
-        template.subject=UPDATE_SUBJECT
-        template.text=UPDATE_TEXT
+        template.subject = UPDATE_SUBJECT
+        template.text = UPDATE_TEXT
         template.save()
 
 

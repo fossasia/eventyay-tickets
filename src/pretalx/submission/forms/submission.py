@@ -17,6 +17,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         help_text=_('If you have a co-speaker, please add their email address here, and we will invite them to create an account. If you have more than one co-speaker, you can add more speakers after finishing the submission process.'),
         required=False,
     )
+
     def __init__(self, event, **kwargs):
         self.event = event
         self.readonly = kwargs.pop('readonly', False)

@@ -13,7 +13,6 @@ from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_event
-from pretalx.mail.models import QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.models import SubmissionStates
 

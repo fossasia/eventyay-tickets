@@ -537,7 +537,7 @@ class Submission(LogMixin, models.Model):
             speaker=_from.get_display_name()
         )
         subject = f'[{self.event.slug}] {subject}'
-        text = text or  _(
+        text = text or _(
             '''Hi!
 
 I'd like to invite you to be a speaker in the talk

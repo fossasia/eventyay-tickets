@@ -1,8 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from pretalx.mail.models import QueuedMail
-
 
 class SubmissionInvitationForm(forms.Form):
     speaker = forms.EmailField(label=_('Speaker E-Mail'))
