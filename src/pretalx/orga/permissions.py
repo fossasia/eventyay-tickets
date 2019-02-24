@@ -32,7 +32,7 @@ def can_change_organiser_settings(user, obj):
 
 @rules.predicate
 def can_change_any_organiser_settings(user, obj):
-    return (
+    return not user.is_anonymous and (
         user.is_administrator
         or user.teams.filter(can_change_organiser_settings=True).exists()
     )

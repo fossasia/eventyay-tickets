@@ -171,7 +171,7 @@ def test_add_logo_no_svg(event, orga_client):
 @pytest.mark.django_db
 def test_change_custom_domain(event, orga_client, monkeypatch):
     from pretalx.orga.forms.event import socket
-    yessocket = lambda x: True
+    yessocket = lambda x: True  # noqa
     monkeypatch.setattr(socket, 'gethostbyname', yessocket)
     assert not event.settings.custom_domain
     response = orga_client.post(
@@ -253,6 +253,7 @@ def test_change_custom_domain_to_other_event_domain(event, orga_client, other_ev
 @pytest.mark.django_db
 def test_change_custom_domain_to_unavailable_domain(event, orga_client, other_event, monkeypatch):
     from pretalx.orga.forms.event import socket
+
     def nosocket(param):
         raise OSError
     monkeypatch.setattr(socket, 'gethostbyname', nosocket)

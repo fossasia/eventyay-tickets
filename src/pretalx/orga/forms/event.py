@@ -202,7 +202,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         data = data.rstrip('/')
         try:
             socket.gethostbyname(data.lstrip('https://'))
-        except OSError as e:
+        except OSError:
             raise forms.ValidationError(_('The domain "{domain}" does not have a name server entry at this time.').format(domain=data))
         return data
 
