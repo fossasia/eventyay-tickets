@@ -134,6 +134,7 @@ urlpatterns = [
         url(r'^schedule/quick/(?P<code>\w+)/$', schedule.QuickScheduleView.as_view(), name='schedule.quick'),
         url('^schedule/reset$', schedule.ScheduleResetView.as_view(), name='schedule.reset'),
         url('^schedule/toggle$', schedule.ScheduleToggleView.as_view(), name='schedule.toggle'),
+        url('^schedule/resend_mails$', schedule.ScheduleResendMailsView.as_view(), name='schedule.resend_mails'),
         url('^schedule/rooms/$', schedule.RoomList.as_view(), name='schedule.rooms.list'),
         url('^schedule/rooms/new$', schedule.RoomDetail.as_view(), name='schedule.rooms.create'),
         url('^schedule/rooms/(?P<pk>[0-9]+)/$', schedule.RoomDetail.as_view(), name='schedule.rooms.view'),

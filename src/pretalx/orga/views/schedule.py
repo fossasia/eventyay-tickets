@@ -162,6 +162,24 @@ class ScheduleToggleView(EventPermissionRequired, View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
+class ScheduleResendMailsView(EventPermissionRequired, View):
+    permission_required = 'orga.edit_schedule'
+
+    def dispatch(self, request, event):
+        super().dispatch(request, event)
+        if self.request.event.current_schedule:
+            self.request.event.current_schedule.notify_speakers()
+            messages.success(
+                self.request,
+                _('{count} emails have been saved to the outbox – you can make individual changes there or just send them all.').format(
+                    count=len(self.request.event.current_schedule.notifications)
+                )
+            )
+        else:
+            messages.warning(self.request, _('You can only regenerate mails after the first schedule was released.'))
+        return redirect(self.request.event.orga_urls.schedule)
+
+
 def serialize_slot(slot):
     return {
         'id': slot.pk,

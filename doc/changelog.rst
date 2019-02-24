@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`477` If you only noticed after releasing your schedule that you wanted to changes something in your speaker notifications, you can now generate those emails again from the schedule editor actions menu.
 - :bug:`479` When telling speakers about their scheduled or rescheduled slots, a hidden mail template was used instead of the actual template visible to the organiser.
 - :feature:`563` For later reference, the full submission is included in the confirmation mail sent to the speaker.
 - :bug:`571` When adding a submission as organiser, pretalx did not validate the speaker email address and then tried to send them an email regardless of its validity.

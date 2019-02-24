@@ -71,9 +71,20 @@
                 <button type="submit" class="btn btn-info">{% trans "Reset to current version" %}</button>
             </form>
         {% endif %}
-        <a href="{{ request.event.orga_urls.submission_cards }}" class="btn btn-info ml-auto">
-            <i class="fa fa-print"></i> {% trans "Print cards" %}
-        </a>
+        <div class="dropdown">
+          <a class="btn btn-info dropdown-toggle" href="#" role="button" id="schedule-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% trans "Actions" %}
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="schedule-actions">
+            <a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
+                <i class="fa fa-print"></i> {% trans "Print cards" %}
+            </a>
+            <a href="resend_mails" class="dropdown-item">
+                <i class="fa fa-envelope"></i> {% trans "Resend speaker notifications" %}
+            </a>
+          </div>
+        </div>
     </div>
     {% if not request.event.rooms.count %}
         <div class="alert alert-warning schedule-alert">
