@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -501,3 +502,28 @@ class Submission(LogMixin, models.Model):
         return getattr(
             self.logged_actions().order_by('timestamp').first(), 'timestamp', None
         )
+
+    def get_content_for_mail(self):
+        order = ['title', 'abstract', 'description', 'notes', 'duration', 'content_locale', 'do_not_record', 'image']
+        data = []
+        result = ''
+        for field in order:
+            field_content = getattr(self, field, None)
+            if field_content:
+                _field = self._meta.get_field(field)
+                field_name = _field.verbose_name or _field.name
+                data.append({'name': field_name, 'value': field_content})
+        for answer in self.answers.all():
+            if answer.answer:
+                data.append({'name': answer.question.question, 'value': answer.answer})
+            elif answer.answer_file:
+                data.append({'name': answer.question.question, 'value': answer.answer_file})
+        for content in data:
+            field_name = content['name']
+            field_content = content['value']
+            if isinstance(field_content, bool):
+                field_content = _('Yes') if field_content else _('No')
+            elif isinstance(field_content, FieldFile):
+                field_content = (self.event.settings.custom_domain or settings.SITE_URL) + field_content.url
+            result += f'**{field_name}**: {field_content}\n'
+        return result

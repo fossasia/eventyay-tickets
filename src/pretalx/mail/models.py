@@ -47,13 +47,16 @@ class MailTemplate(LogMixin, models.Model):
         """Help with debugging."""
         return f'MailTemplate(event={self.event.slug}, subject={self.subject})'
 
-    def to_mail(self, user, event, locale=None, context=None, skip_queue=False):
+    def to_mail(self, user, event, locale=None, context=None, skip_queue=False, submission=None, full_submission_content=False):
         address = user.email if hasattr(user, 'email') else user
         with override(locale):
             context = context or dict()
             try:
                 subject = str(self.subject).format(**context)
                 text = str(self.text).format(**context)
+                if submission and full_submission_content:
+                    text += '\n\n\n***********\n\n' + str(_('Full submission content:'))
+                    text += submission.get_content_for_mail()
             except KeyError as e:
                 raise SendMailException(f'Experienced KeyError when rendering Text: {str(e)}')
 

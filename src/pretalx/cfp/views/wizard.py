@@ -207,6 +207,8 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
                 context=template_context_from_submission(sub),
                 skip_queue=True,
                 locale=user.locale,
+                submission=sub,
+                full_submission_content=True,
             )
             if self.request.event.settings.mail_on_new_submission:
                 MailTemplate(

@@ -15,13 +15,13 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
         if not self.instance.pk:
             self.fields['speaker'] = forms.EmailField(
-                label = _('Speaker email'),
+                label=_('Speaker email'),
                 help_text=_(
                     'The email address of the speaker holding the talk. They will be invited to create an account.'
                 )
             )
             self.fields['speaker_name'] = forms.CharField(
-                label = _('Speaker name'),
+                label=_('Speaker name'),
                 help_text=_(
                     'The name of the speaker that should be displayed publicly.'
                 )
