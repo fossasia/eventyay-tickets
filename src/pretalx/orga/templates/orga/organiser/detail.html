@@ -46,6 +46,9 @@
                 <td>
                     <a href="{{ team.orga_urls.base }}">
                         {{ team.name }}
+                        {% if request.user in team.members.all %}
+                        <i class="fa fa-star text-warning" title="{% trans "You are a member of this team" %}"></i>
+                        {% endif %}
                     </a>
                 </td>
                 <td>{{ team.members.count }}</td>
