@@ -176,12 +176,13 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         data = self.cleaned_data['custom_domain']
         if not data:
             return data
+        data = data.lower()
         if data == urlparse(settings.SITE_URL).hostname or data == settings.SITE_URL:
             raise ValidationError(
                 _('You cannot choose the base domain of this installation.')
             )
         known_domains = [
-            domain
+            domain.lower()
             for domain in set(
                 Event_SettingsStore.objects.filter(key='custom_domain').values_list(
                     'value', flat=True
