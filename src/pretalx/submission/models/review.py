@@ -31,6 +31,19 @@ class Review(models.Model):
             .exclude(speakers__in=[user])
             .annotate(review_count=models.Count('reviews'))
         )
+        limit_tracks = user.teams.filter(
+            models.Q(all_events=True)
+            | models.Q(
+                models.Q(all_events=False)
+                & models.Q(limit_events__in=[event])
+            ),
+            limit_tracks__isnull=False,
+        )
+        if limit_tracks.exists():
+            tracks = set()
+            for team in limit_tracks:
+                tracks.update(team.limit_tracks.filter(event=event))
+            queryset = queryset.filter(track__in=tracks)
         if ignore:
             queryset = queryset.exclude(pk__in=[submission.pk for submission in ignore])
         return queryset.order_by('review_count', '?')
