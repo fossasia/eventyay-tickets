@@ -1,4 +1,13 @@
 from typing import Tuple
+from urllib.parse import quote
+from xml.etree import ElementTree
+
+import qrcode
+import qrcode.image.svg
+from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
+
+from pretalx.common.urls import EventUrls
 
 
 class BaseExporter:
@@ -30,10 +39,19 @@ class BaseExporter:
         """
         raise NotImplementedError()  # NOQA
 
+    @cached_property
+    def quoted_identifier(self) -> str:
+        return quote(self.identifier)
+
     @property
     def public(self) -> str:
         """Return True if the exported data should be publicly available once the event is public, False otherwise."""
         raise NotImplementedError()  # NOQA
+
+    @property
+    def show_qrcode(self) -> bool:
+        """Return True if the link to the exporter should be shown as QR code, False (default) otherwise. Override the get_qr_code method to override the QR code itself."""
+        return False
 
     @property
     def icon(self) -> str:
@@ -43,3 +61,16 @@ class BaseExporter:
     def render(self, **kwargs) -> Tuple[str, str, str]:
         """Render the exported file and return a tuple consisting of a file name, a file type and file content."""
         raise NotImplementedError()  # NOQA
+
+    class urls(EventUrls):
+        """
+        The urls.base attribute contains the relative URL where this exporter's
+        data will be found, e.g. /event/schedule/export/myexport.ext
+        Use ``exporter.urls.base.full()`` for the complete URL, taking into
+        account the configured event URL, or HTML export URL.
+        """
+        base = '/{self.event.urls.export}/{self.quoted_identifier}'
+
+    def get_qrcode(self):
+        image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage)
+        return mark_safe(ElementTree.tostring(image.get_image()).decode())

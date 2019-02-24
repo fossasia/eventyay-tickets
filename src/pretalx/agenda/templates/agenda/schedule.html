@@ -65,15 +65,23 @@
         <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-code"></i>
         </button>
-        <div class="dropdown-menu" aria-labelledby="exportDropdown">
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
             {% for exporter in exporters %}{% if exporter.public %}
-            <a class="dropdown-item" href="{{ request.event.urls.export }}{{ exporter.identifier|iriencode }}">
+            <a class="dropdown-item" href="{{ exporter.urls.base }}">
                 {% if exporter.icon|slice:":3" == "fa-" %}
                     <span class="fa {{ exporter.icon }} export-icon"></span>
                 {% else %}
                     <span class="export-icon">{{ exporter.icon }}</span>
                 {% endif %}
                 {{ exporter.verbose_name }}
+                {% if exporter.show_qrcode %}
+                    <span class="export-qrcode">
+                      <div class="btn btn-default btn-sm">
+                          <i class="fa fa-qrcode"></i>
+                      </div>
+                      <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                    </span>
+                {% endif %}
             </a>
             {% endif %}{% endfor %}
         </div>

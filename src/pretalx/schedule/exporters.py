@@ -91,6 +91,7 @@ class FrabXmlExporter(ScheduleData):
     identifier = 'schedule.xml'
     verbose_name = 'XML (frab compatible)'
     public = True
+    show_qrcode = True
     icon = 'fa-code'
 
     def render(self, **kwargs):
@@ -231,6 +232,7 @@ class ICalExporter(BaseExporter):
     identifier = 'schedule.ics'
     verbose_name = 'iCal'
     public = True
+    show_qrcode = True
     icon = 'fa-calendar'
 
     def __init__(self, event, schedule=None):

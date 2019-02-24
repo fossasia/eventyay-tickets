@@ -117,6 +117,7 @@ setup(
         'Markdown==3.0.*',  # https://python-markdown.github.io/change_log/
         'publicsuffixlist==0.6.*',
         'pytz',
+        'qrcode==6.1',  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
         'reportlab==3.5.*',  # https://www.reportlab.com/documentation/relnotes/
         'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
         'rules==2.0.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md

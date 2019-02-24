@@ -48,13 +48,21 @@ schedule release, but you can also trigger that action here.
 <ul>
     {% for exporter in exporters %}
     <li>
-        <a href="{{ request.event.urls.export }}{{ exporter.identifier|iriencode }}">
+        <a href="{{ exporter.urls.base }}">
             {% if exporter.icon|slice:":3" == "fa-" %}
                 <i class="fa {{ exporter.icon }}"></i>
             {% else %}
                 {{ exporter.icon }}
             {% endif %}
             {{ exporter.verbose_name }}
+            {% if exporter.show_qrcode %}
+                <span class="export-qrcode">
+                  <div class="btn btn-default btn-sm">
+                      <i class="fa fa-qrcode"></i>
+                  </div>
+                  <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                </span>
+            {% endif %}
         </a>
     </li>
     {% endfor %}

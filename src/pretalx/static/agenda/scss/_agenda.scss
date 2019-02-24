@@ -48,7 +48,7 @@ header {
 .schedule-header {
   display: flex;
   align-items: flex-end;
-  span, a, div {
+  > span, > a, > div {
     margin-left: 8px;
   }
   a i.fa {

@@ -77,3 +77,11 @@
   color: $white;
   margin-left: 4px;
 }
+.export-qrcode-image, .qrcode-image {
+  display: none;
+  position: absolute;
+  background: white;
+}
+.export-qrcode:hover .export-qrcode-image, .qrcode:hover .qrcode-image {
+  display: block;
+}
