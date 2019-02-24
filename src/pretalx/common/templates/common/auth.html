@@ -1,13 +1,13 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% bootstrap_form_errors form %}
 {% if no_form %}
 <div id="auth-form" class="password-input-form">
 {% else %}
 <form id="auth-form" class="password-input-form" method="post" autocomplete="off">
 {% endif %}
     {% csrf_token %}
-    {% bootstrap_form_errors form %}
     {{ form.media }}
 {% if not hide_login %}
     <div class="auth-form-block">
