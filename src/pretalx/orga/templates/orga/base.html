@@ -142,6 +142,7 @@
     {% endif %}
     <div id="page-wrapper">
         <aside class="nav flex-column sidebar">
+        {% has_perm 'orga.view_organisers' request.user request as can_see_organisers %}
         {% if request.event %}
             {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
             {% has_perm 'orga.change_submissions' request.user request.event as can_see_orga_exclusive %}
@@ -327,10 +328,12 @@
                     <i class="fa fa-calendar-o"></i>
                     <span>{% trans "Events" %}</span>
                 </a>
+                {% if can_see_organisers %}
                 <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="/orga/organiser/">
                     <i class="fa fa-users"></i>
                     <span>{% trans "Organisers" %}</span>
                 </a>
+                {% endif %}
                 {% for nav_element in nav_global %}
                     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
                         {% if nav_element.icon and "." in nav_element.icon %}
