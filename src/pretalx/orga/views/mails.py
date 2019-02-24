@@ -348,6 +348,13 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         template = self.object
         if template and template in template.event.fixed_templates:
             context['placeholders'] = get_context_explanation()
+            if template == template.event.update_template:
+                context['placeholders'].append(
+                    {
+                        'name': 'notifications',
+                        'explanation': _('A list of notifications for this speaker'),
+                    }
+                )
         return context
 
     def get_form_kwargs(self):

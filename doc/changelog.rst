@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`479` When telling speakers about their scheduled or rescheduled slots, a hidden mail template was used instead of the actual template visible to the organiser.
 - :feature:`563` For later reference, the full submission is included in the confirmation mail sent to the speaker.
 - :bug:`571` When adding a submission as organiser, pretalx did not validate the speaker email address and then tried to send them an email regardless of its validity.
 - :feature:`403` Organisers can now choose question answers by speakers to be published on the talk/speaker pages. This setting cannot be changed on once the question has been answered, to make sure that speakers are informed about this.

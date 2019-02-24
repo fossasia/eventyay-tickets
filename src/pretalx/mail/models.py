@@ -47,7 +47,17 @@ class MailTemplate(LogMixin, models.Model):
         """Help with debugging."""
         return f'MailTemplate(event={self.event.slug}, subject={self.subject})'
 
-    def to_mail(self, user, event, locale=None, context=None, skip_queue=False, submission=None, full_submission_content=False):
+    def to_mail(
+        self,
+        user,
+        event,
+        locale=None,
+        context=None,
+        skip_queue=False,
+        commit=True,
+        submission=None,
+        full_submission_content=False,
+    ):
         address = user.email if hasattr(user, 'email') else user
         with override(locale):
             context = context or dict()
@@ -70,7 +80,7 @@ class MailTemplate(LogMixin, models.Model):
             )
             if skip_queue:
                 mail.send()
-            else:
+            elif commit:
                 mail.save()
         return mail
 

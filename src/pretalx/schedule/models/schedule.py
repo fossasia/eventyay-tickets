@@ -12,6 +12,7 @@ from django.utils.translation import override, ugettext_lazy as _
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
+from pretalx.mail.context import template_context_from_event
 from pretalx.mail.models import QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.models import SubmissionStates
@@ -246,16 +247,14 @@ class Schedule(LogMixin, models.Model):
         mails = []
         for speaker in self.speakers_concerned:
             with override(speaker.locale), tzoverride(tz):
-                text = get_template('schedule/speaker_notification.txt').render(
-                    {'speaker': speaker, **self.speakers_concerned[speaker]}
-                )
+                notifications = get_template(
+                    'schedule/speaker_notification.txt'
+                ).render({'speaker': speaker, **self.speakers_concerned[speaker]})
+            context = template_context_from_event(self.event)
+            context['notifications'] = notifications
             mails.append(
-                QueuedMail(
-                    event=self.event,
-                    to=speaker.email,
-                    reply_to=self.event.email,
-                    subject=_('New schedule!').format(event=self.event.slug),
-                    text=text,
+                self.event.update_template.to_mail(
+                    user=speaker, event=self.event, context=context, commit=False
                 )
             )
         return mails

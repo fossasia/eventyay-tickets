@@ -337,6 +337,7 @@ class Event(LogMixin, models.Model):
             ACK_TEXT,
             GENERIC_SUBJECT,
             REJECT_TEXT,
+            UPDATE_SUBJECT,
             UPDATE_TEXT,
             QUESTION_SUBJECT,
             QUESTION_TEXT,
@@ -365,7 +366,7 @@ class Event(LogMixin, models.Model):
             event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT
         )
         self.update_template = self.update_template or MailTemplate.objects.create(
-            event=self, subject=GENERIC_SUBJECT, text=UPDATE_TEXT
+            event=self, subject=UPDATE_SUBJECT, text=UPDATE_TEXT
         )
         self.question_template = self.question_template or MailTemplate.objects.create(
             event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
