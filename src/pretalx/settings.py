@@ -185,6 +185,9 @@ LOGGING = {
             'filename': os.path.join(LOG_DIR, 'pretalx.log'),
             'formatter': 'default',
         },
+        'null': {
+            'class': 'logging.NullHandler',
+        },
     },
     'loggers': {
         '': {'handlers': ['file', 'console'], 'level': loglevel, 'propagate': True},
@@ -197,6 +200,10 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'level': loglevel,
             'propagate': True,
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
         },
         'django.db.backends': {
             'handlers': ['file', 'console'],
