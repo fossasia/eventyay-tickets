@@ -25,6 +25,7 @@ class UserForm(forms.Form):
     login_password = forms.CharField(
         widget=forms.PasswordInput, label=_('Password'), required=False
     )
+    register_name = forms.CharField(label=_('Name'), required=False)
     register_email = forms.EmailField(label=_('Email address'), required=False)
     register_password = PasswordField(label=_('Password'), required=False)
     register_password_repeat = PasswordConfirmationField(
@@ -73,7 +74,7 @@ class UserForm(forms.Form):
 
         if data.get('login_email') and data.get('login_password'):
             self._clean_login(data)
-        elif data.get('register_email') and data.get('register_password'):
+        elif data.get('register_email') and data.get('register_password') and data.get('register_name'):
             self._clean_register(data)
         else:
             raise ValidationError(
@@ -90,6 +91,7 @@ class UserForm(forms.Form):
             return data['user_id']
 
         user = User.objects.create_user(
+            name=data.get('register_name'),
             email=data.get('register_email').lower(),
             password=data.get('register_password'),
             locale=translation.get_language(),
@@ -105,7 +107,7 @@ class SpeakerProfileForm(
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
     FIRST_TIME_EXCLUDE = ['email']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, name=None, **kwargs):
         self.user = kwargs.pop('user', None)
         self.event = kwargs.pop('event', None)
         self.with_email = kwargs.pop('with_email', True)
@@ -116,7 +118,8 @@ class SpeakerProfileForm(
             kwargs['instance'] = SpeakerProfile()
         super().__init__(*args, **kwargs, event=self.event)
         read_only = kwargs.get('read_only', False)
-        initials = dict()
+        initial = kwargs.get('initial', dict())
+        initial['name'] = name
         for field in ('availabilities', 'biography'):
             if self.event and not getattr(
                 self.event.settings, f'cfp_request_{field}', True
@@ -127,10 +130,10 @@ class SpeakerProfileForm(
                     self.event.settings, f'cfp_require_{field}', False
                 )
         if self.user:
-            initials = {field: getattr(self.user, field) for field in self.user_fields}
+            initial.update({field: getattr(self.user, field) for field in self.user_fields})
         for field in self.user_fields:
             self.fields[field] = User._meta.get_field(field).formfield(
-                initial=initials.get(field), disabled=read_only
+                initial=initial.get(field), disabled=read_only
             )
 
     @cached_property

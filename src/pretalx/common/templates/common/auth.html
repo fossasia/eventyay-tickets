@@ -34,6 +34,7 @@
         {% if not hide_login and not hide_register %}
         <h4 class="text-center">{% trans "I need a new account" %}</h4>
         {% endif %}
+        {% bootstrap_field form.register_name layout="inline" %}
         {% bootstrap_field form.register_email layout="inline" %}
         {% bootstrap_field form.register_password layout="inline" %}
         {% bootstrap_field form.register_password_repeat layout="inline" %}

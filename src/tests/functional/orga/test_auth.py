@@ -47,6 +47,7 @@ def test_orga_accept_invitation_once(client, event, invitation):
     response = client.post(
         reverse('orga:invitation.view', kwargs={'code': invitation.token}),
         {
+            'register_name': 'Invite Name',
             'register_email': invitation.email,
             'register_password': 'f00baar!',
             'register_password_repeat': 'f00baar!',
@@ -55,6 +56,7 @@ def test_orga_accept_invitation_once(client, event, invitation):
     )
     assert response.status_code == 200
     assert team.members.count() == count + 1
+    assert team.members.filter(name='Invite Name').exists()
     assert team.invites.count() == 0
     with pytest.raises(TeamInvite.DoesNotExist):
         invitation.refresh_from_db()

@@ -81,6 +81,7 @@ class TestWizard:
     ):
         if register:
             data = {
+                'user-register_name': email,
                 'user-register_email': email,
                 'user-register_password': password,
                 'user-register_password_repeat': password,
