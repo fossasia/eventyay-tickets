@@ -83,7 +83,7 @@ class ScheduleData(BaseExporter):
 
         for d in data.values():
             d['rooms'] = sorted(
-                d['rooms'].values(), key=lambda room: room['position'] or room['id']
+                d['rooms'].values(), key=lambda room: room['position'] if room['position'] is not None else room['id']
             )
         return data.values()
 
