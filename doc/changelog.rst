@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Changing the order of rooms made the schedule break.
 - :feature:`433` Organisers can now view all reviews, except for their own submissions.
 - :feature:`589` Before setting a new custom domain for an event, pretalx now checks if the domain has any nameserver records.
 - :bug:`-` A dependency of ours introduced an XSS vulnerability, which organisers could use to execute JavaScript during the CfP workflow of speakers via question texts. We have added a fix against this behaviour, and submitted a report including a patch to the upstream library. To prevent issues like this one in the future, we've moved all remaining JavaScript sources to files, and set the according CSP header, so that execution of inline JavaScript will be disabled.

@@ -69,6 +69,7 @@ class ScheduleData(BaseExporter):
                 continue
             if str(talk.room.name) not in day_data['rooms']:
                 day_data['rooms'][str(talk.room.name)] = {
+                    'id': talk.room.id,
                     'name': talk.room.name,
                     'position': talk.room.position,
                     'talks': [talk],
@@ -82,7 +83,7 @@ class ScheduleData(BaseExporter):
 
         for d in data.values():
             d['rooms'] = sorted(
-                d['rooms'].values(), key=lambda room: room['position'] or room['name']
+                d['rooms'].values(), key=lambda room: room['position'] or room['id']
             )
         return data.values()
 
