@@ -73,7 +73,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
 
 class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
-    permission_required = 'orga.change_team_tracks'
+    permission_required = 'orga.change_teams'
     template_name = 'orga/settings/team_tracks.html'
     form_class = TeamTrackForm
     model = Team
