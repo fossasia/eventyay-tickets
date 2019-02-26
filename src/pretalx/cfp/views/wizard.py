@@ -91,7 +91,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
         if step in ['info', 'profile', 'questions']:
             kwargs['event'] = self.request.event
         if step == 'profile':
-            user_data = self.get_cleaned_data_for_step('user')
+            user_data = self.get_cleaned_data_for_step('user') or dict()
             if user_data and user_data.get('user_id'):
                 kwargs['user'] = User.objects.filter(pk=user_data['user_id']).first()
             if not kwargs.get('user') and self.request.user.is_authenticated:
