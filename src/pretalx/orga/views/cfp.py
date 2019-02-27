@@ -536,21 +536,15 @@ class TrackDelete(PermissionRequired, View):
         super().dispatch(request, *args, **kwargs)
         track = self.get_object()
 
-        if request.event.tracks.count() == 1:
+        try:
+            track.delete()
+            request.event.log_action(
+                'pretalx.track.delete', person=self.request.user, orga=True
+            )
+            messages.success(request, _('The track has been deleted.'))
+        except ProtectedError:  # TODO: show which/how many submissions are concerned
             messages.error(
                 request,
-                _('You cannot delete the only track. Try creating another one first!'),
+                _('This track is in use in a submission and cannot be deleted.'),
             )
-        else:
-            try:
-                track.delete()
-                request.event.log_action(
-                    'pretalx.track.delete', person=self.request.user, orga=True
-                )
-                messages.success(request, _('The track has been deleted.'))
-            except ProtectedError:  # TODO: show which/how many submissions are concerned
-                messages.error(
-                    request,
-                    _('This track is in use in a submission and cannot be deleted.'),
-                )
         return redirect(self.request.event.cfp.urls.tracks)
