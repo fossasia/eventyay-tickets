@@ -13,7 +13,7 @@ class Track(LogMixin, models.Model):
     color = models.CharField(max_length=7)
 
     class urls(EventUrls):
-        base = edit = '{self.event.cfp.urls.tracks}{self.pk}'
+        base = edit = '{self.event.cfp.urls.tracks}{self.pk}/'
         delete = '{base}delete'
 
     def __str__(self) -> str:
