@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, TemplateView, UpdateView, View
+from django.views.generic import ListView, DetailView, TemplateView, UpdateView, View
 
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
@@ -446,15 +446,16 @@ class SubmissionTypeDefault(PermissionRequired, View):
         return redirect(self.request.event.cfp.urls.types)
 
 
-class SubmissionTypeDelete(PermissionRequired, View):
+class SubmissionTypeDelete(PermissionRequired, DetailView):
     permission_required = 'orga.remove_submission_type'
+    template_name = 'orga/cfp/submission_type_delete.html'
 
     def get_object(self):
         return get_object_or_404(
             self.request.event.submission_types, pk=self.kwargs.get('pk')
         )
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission_type = self.get_object()
 
@@ -526,13 +527,14 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class TrackDelete(PermissionRequired, View):
+class TrackDelete(PermissionRequired, DetailView):
     permission_required = 'orga.remove_track'
+    template_name = 'orga/cfp/track_delete.html'
 
     def get_object(self):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get('pk'))
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         track = self.get_object()
 
