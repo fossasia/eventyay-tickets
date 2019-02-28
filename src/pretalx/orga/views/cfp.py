@@ -456,7 +456,6 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
         )
 
     def post(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
         submission_type = self.get_object()
 
         if request.event.submission_types.count() == 1:
@@ -535,7 +534,6 @@ class TrackDelete(PermissionRequired, DetailView):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get('pk'))
 
     def post(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
         track = self.get_object()
 
         try:
