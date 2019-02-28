@@ -100,8 +100,8 @@
                     {% endescapescript %}
                 </script>
                 {% if action != 'view' %}
-                <div class="col-md-3 offset-md-9">
-                    <button type="button" class="btn btn-info btn-block" data-formset-add>
+                <div class="d-flex flex-row-reverse">
+                    <button type="button" class="btn btn-info" data-formset-add>
                         <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
                 </div>
                 {% endif %}
