@@ -45,14 +45,17 @@
         {% csrf_token %}
         {% bootstrap_form form layout='event' %}
         {% bootstrap_form qform layout='event' %}
+        {% if can_edit or form.instance.resources.count %}
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
                 <label class="col-md-3 col-form-label">{% trans "Resources" %}</label>
                 <div data-formset-body>
+                    {% if can_edit %}
                     <div class="alert alert-info col-md-9 ml-auto">
                         {% trans "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
                     </div>
+                    {% endif %}
                     {% for form in formset %}
                         <div data-formset-form>
                             <div class="sr-only">
@@ -65,7 +68,7 @@
                                     {% bootstrap_field form.description layout='inline' %}
                                     {% bootstrap_field form.resource layout='inline'  %}
                                 </div>
-                                {% if action != 'view' %}
+                                {% if can_edit %}
                                 <div class="resource-option-delete">
                                     <button type="button" class="btn btn-danger" data-formset-delete-button>
                                         <i class="fa fa-trash"></i></button>
@@ -75,6 +78,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                {% if can_edit %}
                 <script type="form-template" data-formset-empty-form>
                     {% escapescript %}
                         <div data-formset-form>
@@ -101,7 +105,9 @@
                         <i class="fa fa-plus"></i> {% trans "Add another resource" %}</button>
                 </div>
                 {% endif %}
+                {% endif %}
             </div>
+        {% endif %}
         {% if can_edit %}
             <div class="row mt-4">
                 <div class="col-md-3 ml-auto">
