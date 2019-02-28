@@ -70,6 +70,9 @@ def test_delete_submission_type(orga_client, submission_type, default_submission
     assert default_submission_type.event.submission_types.count() == 2
     response = orga_client.get(submission_type.urls.delete, follow=True)
     assert response.status_code == 200
+    assert default_submission_type.event.submission_types.count() == 2
+    response = orga_client.post(submission_type.urls.delete, follow=True)
+    assert response.status_code == 200
     assert default_submission_type.event.submission_types.count() == 1
 
 
@@ -77,7 +80,7 @@ def test_delete_submission_type(orga_client, submission_type, default_submission
 def test_delete_last_submission_type(orga_client, event):
     submission_type = event.cfp.default_type
     assert submission_type.event.submission_types.count() == 1
-    response = orga_client.get(submission_type.urls.delete, follow=True)
+    response = orga_client.post(submission_type.urls.delete, follow=True)
     assert response.status_code == 200
     assert submission_type.event.submission_types.count() == 1
 
@@ -87,7 +90,7 @@ def test_delete_default_submission_type(
     orga_client, submission_type, default_submission_type
 ):
     assert default_submission_type.event.submission_types.count() == 2
-    response = orga_client.get(default_submission_type.urls.delete, follow=True)
+    response = orga_client.post(default_submission_type.urls.delete, follow=True)
     assert response.status_code == 200
     assert default_submission_type.event.submission_types.count() == 2
 
