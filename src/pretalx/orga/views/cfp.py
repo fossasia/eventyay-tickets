@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DetailView, TemplateView, UpdateView, View
+from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (

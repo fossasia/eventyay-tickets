@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.template.defaultfilters import timeuntil
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ngettext_lazy, ugettext_lazy as _
 from django.views.generic import TemplateView
 
 from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
@@ -53,10 +53,10 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         max_deadline = event.cfp.max_deadline
         if max_deadline and _now < max_deadline:
             result.append(
-                {'large': timeuntil(max_deadline), 'small': _('until CfP end')}
+                {'large': timeuntil(max_deadline), 'small': _('until the CfP ends')}
             )
         if event.cfp.is_open:
-            result.append({'url': event.urls.base, 'small': _('Go to CfP')})
+            result.append({'url': event.cfp.urls.base, 'large': _('Go to CfP')})
         return result
 
     def get_context_data(self, **kwargs):
@@ -72,20 +72,22 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         today = _now.date()
         context['tiles'] = self.get_cfp_tiles(event, _now)
         if today < event.date_from:
+            days = (event.date_from - today).days
             context['tiles'].append(
                 {
-                    'large': (event.date_from - today).days,
-                    'small': _('days until event start'),
+                    'large': days,
+                    'small': ngettext_lazy('day until event start', 'days until event start', days),
                 }
             )
         elif today > event.date_to:
+            days = (today - event.date_from).days
             context['tiles'].append(
                 {
-                    'large': (today - event.date_from).days,
-                    'small': _('days since event end'),
+                    'large': days,
+                    'small': ngettext_lazy('day since event end', 'days since event end', days),
                 }
             )
-        else:
+        elif event.date_to != event.date_from:
             day = (today - event.date_from).days + 1
             context['tiles'].append(
                 {
@@ -105,10 +107,11 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 }
             )
         if event.submissions.count():
+            count = event.submissions.count()
             context['tiles'].append(
                 {
-                    'large': event.submissions.count(),
-                    'small': _('total submissions'),
+                    'large': count,
+                    'small': ngettext_lazy('submission', 'submissions', count),
                     'url': event.orga_urls.submissions,
                 }
             )
@@ -117,7 +120,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 context['tiles'].append(
                     {
                         'large': talk_count,
-                        'small': _('total talks'),
+                        'small': ngettext_lazy('talk', 'talks', talk_count),
                         'url': event.orga_urls.submissions
                         + f'?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}',
                     }
@@ -126,26 +129,29 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     state=SubmissionStates.CONFIRMED
                 ).count()
                 if confirmed_count != talk_count:
+                    count = talk_count - confirmed_count
                     context['tiles'].append(
                         {
-                            'large': talk_count - confirmed_count,
-                            'small': _('unconfirmed talks'),
+                            'large': count,
+                            'small': ngettext_lazy('unconfirmed talk', 'unconfirmed talks', count),
                             'url': event.orga_urls.submissions
                             + f'?state={SubmissionStates.ACCEPTED}',
                         }
                     )
-        if event.speakers.count():
+        count = event.speakers.count()
+        if count:
             context['tiles'].append(
                 {
-                    'large': event.speakers.count(),
-                    'small': _('speakers'),
+                    'large': count,
+                    'small': ngettext_lazy('speaker', 'speakers', count),
                     'url': event.orga_urls.speakers + '?role=true',
                 }
             )
+        count = event.queued_mails.filter(sent__isnull=False).count()
         context['tiles'].append(
             {
-                'large': event.queued_mails.filter(sent__isnull=False).count(),
-                'small': _('sent emails'),
+                'large': count,
+                'small': ngettext_lazy('sent email', 'sent emails', count),
                 'url': event.orga_urls.compose_mails,
             }
         )
