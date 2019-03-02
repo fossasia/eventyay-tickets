@@ -15,6 +15,7 @@
   background: lighten($gray-100, 2);
   text-align: center;
   max-width: calc(100% - 16px);
+  overflow-wrap: break-word;
 
   &:hover {
     background: $gray-100;
