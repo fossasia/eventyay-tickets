@@ -24,7 +24,7 @@ from pretalx.submission.models import Feedback, QuestionTarget, Submission
 
 
 class TalkList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = 'talks_distinct'
+    context_object_name = 'talks'
     model = Submission
     template_name = 'agenda/talks.html'
     permission_required = 'agenda.view_schedule'
