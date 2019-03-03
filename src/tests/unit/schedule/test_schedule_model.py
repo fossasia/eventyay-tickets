@@ -210,10 +210,5 @@ def test_schedule_changes(event, slot, room, accepted_submission):
     removed.end = None
     removed.save()
     schedule, _ = event.wip_schedule.freeze('test4')
-    assert schedule.changes == {
-        'count': 1,
-        'action': 'update',
-        'new_talks': [],
-        'canceled_talks': [slot],
-        'moved_talks': [],
-    }
+    assert schedule.changes['count'] == 1
+    assert len(schedule.changes['canceled_talks']) == 1
