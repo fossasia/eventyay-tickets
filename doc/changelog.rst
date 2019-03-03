@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`609` Organisers can now filter submissions and reviews by track.
 - :feature:`634` The API now provides internal notes by speakers and organisers to requesting users with adequate permissions.
 - :feature:`-` Organizers can now provide a header image instead of a header color and pattern for their events.
 - :feature:`640` Instead of having to scroll with the mouse wheel or arrow keys when dragging a talk in the schedule editor, you can now just drag the talk to the upper or lower edge of the window instead.
