@@ -13,10 +13,10 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         required=False,
         help_text=_('Do you organise your talks by tracks?'),
     )
-    allow_slot_count = forms.BooleanField(
+    present_multiple_times = forms.BooleanField(
         label=_('Slot Count'),
         required=False,
-        help_text=_('Allow talks to be held multiple times?'),
+        help_text=_('Can talks be held multiple times?'),
     )
     cfp_show_deadline = forms.BooleanField(
         label=_('Display deadline publicly'), required=False
