@@ -3,7 +3,6 @@ import string
 import uuid
 import warnings
 from datetime import timedelta
-# import logging
 
 from django.conf import settings
 from django.db import models
@@ -32,7 +31,7 @@ class SubmissionError(Exception):
 
 
 def submission_image_path(instance, filename):
-    return f'{instance.event.slug}/images/{instance.code}/{filename}' #noqa
+    return f'{instance.event.slug}/images/{instance.code}/{filename}'
 
 
 class SubmissionStates(Choices):
@@ -274,14 +273,14 @@ class Submission(LogMixin, models.Model):
 
         if self.state == new_state:
             return
-        if new_state in valid_next_states or force:
+        if force or new_state in valid_next_states:
             old_state = self.state
             self.state = new_state
             self.save(update_fields=['state'])
+            self.update_talk_slots()
             submission_state_change.send_robust(
                 self.event, submission=self, old_state=old_state, user=person
             )
-            self.update_talk_slots()
         else:
             source_states = (
                 src
@@ -381,10 +380,9 @@ class Submission(LogMixin, models.Model):
 
     def remove(self, person=None, force=False, orga=True):
         self._set_state(SubmissionStates.DELETED, force, person=person)
-        self.log_action('pretalx.submission.deleted', person=person, orga=True)
-
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
+        self.log_action('pretalx.submission.deleted', person=person, orga=True)
 
     @cached_property
     def uuid(self):

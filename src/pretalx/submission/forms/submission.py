@@ -35,11 +35,9 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         if 'abstract' in self.fields:
             self.fields['abstract'].widget.attrs['rows'] = 2
         if 'track' in self.fields:
-            if not event.settings.use_tracks:
-                self.fields.pop('track')
-            elif not instance or instance.state == SubmissionStates.SUBMITTED:
+            if not instance or instance.state == SubmissionStates.SUBMITTED:
                 self.fields['track'].queryset = event.tracks.all()
-            elif instance and instance.state != SubmissionStates.SUBMITTED:
+            elif not event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
                 self.fields.pop('track')
         if instance and instance.pk:
             self.fields.pop('additional_speaker')
@@ -56,21 +54,14 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
                 (a, locale_names[a]) for a in self.event.locales
             ]
 
-        if 'slot_count' in self.fields:
-            if not event.settings.allow_slot_count:
-                self.fields.pop('slot_count')
-            else:
-                # changes only allowed if not accepted or confirmed allready.
-                if instance and (
-                        instance.state == SubmissionStates.ACCEPTED or
-                        instance.state == SubmissionStates.CONFIRMED):
-                    self.fields['slot_count'].disabled = True
-                    self.fields['slot_count'].help_text += (
-                        _(' Locked - for changing see ') +
-                        '<a href="#change_info">' +
-                        str(_('this information')) +
-                        '</a>.'
-                    )
+        if not event.settings.present_multiple_times:
+            self.fields.pop('slot_count', None)
+        elif 'slot_count' in self.fields:
+            if instance and (
+                    instance.state == SubmissionStates.ACCEPTED or
+                    instance.state == SubmissionStates.CONFIRMED):
+                self.fields['slot_count'].disabled = True
+                self.fields['slot_count'].help_text += ' ' + str(_('Please contact the organisers if you want to change how often you\'re presenting this submission.'))
 
         if self.readonly:
             for f in self.fields.values():
