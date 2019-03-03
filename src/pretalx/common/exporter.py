@@ -69,7 +69,7 @@ class BaseExporter:
         Use ``exporter.urls.base.full()`` for the complete URL, taking into
         account the configured event URL, or HTML export URL.
         """
-        base = '/{self.event.urls.export}/{self.quoted_identifier}'
+        base = '{self.event.urls.export}{self.quoted_identifier}'
 
     def get_qrcode(self):
         image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage)
