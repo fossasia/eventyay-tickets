@@ -37,7 +37,7 @@
         </div>
         <small>
             {% if talk_slots|length == 1 %}
-                {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }}
+                {{ talk_slots.0.start.date|date:"c" }}, {{ talk_slots.0.start|date:"H:i" }}–{{ talk_slots.0.end|date:"H:i" }}, {{ talk_slots.0.room.name }}
             {% endif %}
             {% if submission.do_not_record %}
                 <span class="fa-stack">

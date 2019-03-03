@@ -58,22 +58,23 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
 
 
 class TalkView(PermissionRequired, DetailView):
-    context_object_name = 'talk'
+    context_object_name = 'submission'
     model = Submission
     slug_field = 'code'
     template_name = 'agenda/talk.html'
     permission_required = 'agenda.view_slot'
 
     def get_object(self, queryset=None):
-        with suppress(AttributeError, TalkSlot.DoesNotExist):
-            return self.request.event.current_schedule.talks.filter(
+        with suppress(AttributeError, Submission.DoesNotExist):
+            return self.request.event.talks.get(
+                code__iexact=self.kwargs['slug'],
+            )
+        if getattr(self.request, 'is_orga', False):
+            talk = self.request.event.wip_schedule.talks.filter(
                 submission__code__iexact=self.kwargs['slug'], is_visible=True
             ).first()
-        if getattr(self.request, 'is_orga', False):
-            with suppress(AttributeError, TalkSlot.DoesNotExist):
-                return self.request.event.wip_schedule.talks.filter(
-                    submission__code__iexact=self.kwargs['slug'], is_visible=True
-                ).first()
+            if talk:
+                return talk.submission
         raise Http404()
 
     @cached_property
@@ -86,14 +87,14 @@ class TalkView(PermissionRequired, DetailView):
                 and not isinstance(response, Exception)
                 and hasattr(response, 'get_recording')
             ):
-                recording = response.get_recording(self.object.submission)
+                recording = response.get_recording(self.object)
                 if recording and recording['iframe']:
                     return recording
             else:
                 print(response)
-        if self.object.submission.rendered_recording_iframe:
+        if self.object.rendered_recording_iframe:
             return {
-                'iframe': self.object.submission.rendered_recording_iframe,
+                'iframe': self.object.rendered_recording_iframe,
                 'csp_header': 'https://media.ccc.de',
             }
         return {}
@@ -106,19 +107,15 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        submission = self.object.submission
         qs = TalkSlot.objects.none()
         schedule = Schedule.objects.none()
+        submission = self.object
         if self.request.event.current_schedule:
             schedule = self.request.event.current_schedule
             qs = schedule.talks.filter(is_visible=True)
         elif self.request.is_orga:
             schedule = self.request.event.wip_schedule
             qs = schedule.talks.all()
-        # schedule.slots returns submissions
-        other_submissions = schedule.slots.exclude(id=submission.id)
-
-        context['submission'] = submission
         context['talk_slots'] = qs.filter(submission=submission).order_by('start')
         context['submission_description'] = (
             submission.description
@@ -128,12 +125,13 @@ class TalkView(PermissionRequired, DetailView):
             )
         )
         context['recording_iframe'] = self.recording.get('iframe')
-        context['answers'] = slot.submission.answers.filter(
+        context['answers'] = submission.answers.filter(
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SUBMISSION,
         )
         context['speakers'] = []
+        other_submissions = schedule.slots.exclude(pk=submission.pk)
         for speaker in submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
             speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])

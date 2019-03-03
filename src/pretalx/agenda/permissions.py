@@ -24,9 +24,9 @@ def is_sneak_peek_visible(user, event):
 
 
 @rules.predicate
-def is_slot_visible(user, slot):
+def is_submission_visible(user, submission):
     return bool(
-        slot and is_agenda_visible(user, slot.submission.event) and slot.is_visible
+        submission and is_agenda_visible(user, submission.event) and submission.slots.filter(schedule=submission.event.current_schedule, is_visible=True).exists()
     )
 
 
@@ -34,7 +34,7 @@ def is_slot_visible(user, slot):
 def is_feedback_ready(user, submission):
     return bool(
         submission
-        and is_slot_visible(user, submission.slot)
+        and is_submission_visible(user, submission)
         and submission.does_accept_feedback
     )
 
@@ -57,6 +57,6 @@ rules.add_perm(
     ((~is_agenda_visible | ~has_agenda) & is_sneak_peek_visible)
     | can_change_submissions,
 )
-rules.add_perm('agenda.view_slot', is_slot_visible | can_change_submissions)
+rules.add_perm('agenda.view_slot', is_submission_visible | can_change_submissions)
 rules.add_perm('agenda.view_speaker', is_speaker_viewable | can_change_submissions)
 rules.add_perm('agenda.give_feedback', is_feedback_ready)
