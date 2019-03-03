@@ -50,6 +50,9 @@
             {% bootstrap_form search_form %}
             {% bootstrap_field filter_form.submission_type %}
             {% bootstrap_field filter_form.state layout='inline' %}
+            {% if request.event.settings.use_tracks %}
+                {% bootstrap_field filter_form.track %}
+            {% endif %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
         {% if can_create_submission %}

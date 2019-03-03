@@ -133,6 +133,9 @@ class SubmissionFilterForm(forms.Form):
     submission_type = forms.MultipleChoiceField(
         required=False, widget=CheckboxMultiDropdown
     )
+    track = forms.MultipleChoiceField(
+        required=False, widget=CheckboxMultiDropdown
+    )
 
     def __init__(self, event, *args, **kwargs):
         self.event = event
@@ -144,6 +147,11 @@ class SubmissionFilterForm(forms.Form):
         type_count = (
             lambda x: event.submissions(manager='all_objects')
             .filter(submission_type=x)  # noqa
+            .count()
+        )
+        track_count = (
+            lambda x: event.submissions(manager='all_objects')
+            .filter(track=x) #noqa
             .count()
         )
         self.fields['submission_type'].choices = [
@@ -164,3 +172,8 @@ class SubmissionFilterForm(forms.Form):
             for choice in usable_states
         ]
         self.fields['state'].widget.attrs['title'] = _('Submission states')
+        self.fields['track'].choices = [
+            (track.pk, f'{track.name} ({track_count(track.pk)})')
+            for track in event.tracks.all()
+        ]
+        self.fields['track'].widget.attrs['title'] = _('Tracks')

@@ -399,7 +399,7 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     context_object_name = 'submissions'
     template_name = 'orga/submission/list.html'
     default_filters = {'code__icontains', 'title__icontains'}
-    filter_fields = ('submission_type', 'state')
+    filter_fields = ('submission_type', 'state', 'track')
     filter_form_class = SubmissionFilterForm
     sortable_fields = ('code', 'title', 'state', 'is_featured')
     permission_required = 'orga.view_submissions'
