@@ -309,64 +309,34 @@ class Submission(LogMixin, models.Model):
     def update_talk_slots(self):
         from pretalx.schedule.models import TalkSlot
 
-        if self.state == SubmissionStates.ACCEPTED or \
-                self.state == SubmissionStates.CONFIRMED:
-            # get slot_count_current from db
-            slot_count_current = TalkSlot.objects.filter(
+        if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+            TalkSlot.objects.filter(
+                submission=self, schedule=self.event.wip_schedule
+            ).delete()
+            return
+
+        slot_count_current = TalkSlot.objects.filter(
+            submission=self,
+            schedule=self.event.wip_schedule,
+        ).count()
+        diff = slot_count_current - self.slot_count
+
+        if diff > 0:
+            # We build a list of all IDs to delete as .delete() doesn't work on sliced querysets.
+            # We delete unscheduled talks first.
+            talks_to_delete = TalkSlot.objects.filter(
                 submission=self,
                 schedule=self.event.wip_schedule,
-            ).count()
-            # get slot_count_target from object
-            slot_count_target = self.slot_count
-            delete_count = slot_count_current - slot_count_target
-
-            if delete_count > 0:
-                # first delete as many unsheduled slots as possible...
-                # build a list of all ids to delete
-                # this step is needed as the delete operation
-                # does not work on sliced querysets
-                # https://stackoverflow.com/a/20996456/574981
-                talks_to_delete = TalkSlot.objects.filter(
-                    submission=self,
-                    schedule=self.event.wip_schedule,
-                    room__isnull=True,
-                    start__isnull=True,
-                )[:delete_count].values_list("id", flat=True)
-                TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
-
-                # check if we have left any slots to delete
-                # if yes we remove the slots starting from the last one (in time)..
-                slot_count_current = TalkSlot.objects.filter(
-                    submission=self,
-                    schedule=self.event.wip_schedule,
-                ).count()
-                delete_count = slot_count_current - slot_count_target
-                if delete_count > 0:
-                    talks_to_delete = TalkSlot.objects.filter(
-                        submission=self,
-                        schedule=self.event.wip_schedule,
-                        room__isnull=False,
-                        start__isnull=False,
-                    ).order_by(
-                        '-start',
-                        'room'
-                    )[:delete_count].values_list("id", flat=True)
-                    TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
-
-            for index in range(slot_count_current, slot_count_target):
+                room__isnull=True,
+                start__isnull=True,
+            ).order_by('start', 'is_visible')[:diff].values_list("id", flat=True)
+            TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
+        elif diff < 0:
+            for index in range(abs(diff)):
                 TalkSlot.objects.create(
                     submission=self,
                     schedule=self.event.wip_schedule,
                 )
-        else:
-            TalkSlot.objects.filter(
-                submission=self, schedule=self.event.wip_schedule
-            ).delete()
-        # update visibility
-        # TalkSlot.objects.filter(
-        #     submission=self,
-        #     schedule=self.event.wip_schedule,
-        # ).update(is_visible=(self.state == SubmissionStates.CONFIRMED))
 
     def make_submitted(self, person=None, force=False, orga=False):
         self._set_state(SubmissionStates.SUBMITTED, force, person=person)
