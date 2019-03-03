@@ -43,25 +43,13 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             self.fields.pop('additional_speaker')
 
         self._set_submission_types(instance=instance)
-
-        if len(self.event.locales) == 1:
-            self.fields['content_locale'].initial = self.event.locales[0]
-            self.fields['content_locale'].widget = forms.HiddenInput()
-            self.fields['content_locale'].disabled = True
-        else:
-            locale_names = dict(settings.LANGUAGES)
-            self.fields['content_locale'].choices = [
-                (a, locale_names[a]) for a in self.event.locales
-            ]
+        self._set_locales()
 
         if not event.settings.present_multiple_times:
             self.fields.pop('slot_count', None)
-        elif 'slot_count' in self.fields:
-            if instance and (
-                    instance.state == SubmissionStates.ACCEPTED or
-                    instance.state == SubmissionStates.CONFIRMED):
-                self.fields['slot_count'].disabled = True
-                self.fields['slot_count'].help_text += ' ' + str(_('Please contact the organisers if you want to change how often you\'re presenting this submission.'))
+        elif 'slot_count' in self.fields and instance and instance.state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+            self.fields['slot_count'].disabled = True
+            self.fields['slot_count'].help_text += ' ' + str(_('Please contact the organisers if you want to change how often you\'re presenting this submission.'))
 
         if self.readonly:
             for f in self.fields.values():
@@ -86,6 +74,17 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             self.fields['submission_type'].queryset = self.event.submission_types.filter(
                 pk__in=pks
             )
+
+    def _set_locales(self):
+        if len(self.event.locales) == 1:
+            self.fields['content_locale'].initial = self.event.locales[0]
+            self.fields['content_locale'].widget = forms.HiddenInput()
+            self.fields['content_locale'].disabled = True
+        else:
+            locale_names = dict(settings.LANGUAGES)
+            self.fields['content_locale'].choices = [
+                (a, locale_names[a]) for a in self.event.locales
+            ]
 
     def clean_image(self):
         image = self.cleaned_data.get('image')

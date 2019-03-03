@@ -1,7 +1,7 @@
 import pytest
 
 from pretalx.agenda.permissions import (
-    is_agenda_visible, is_feedback_ready, is_submission_visible, is_speaker_viewable,
+    is_agenda_visible, is_feedback_ready, is_speaker_viewable,
 )
 
 
