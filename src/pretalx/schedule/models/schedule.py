@@ -110,9 +110,11 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def scheduled_talks(self):
-        return self.talks.filter(
+        return self.talks.select_related(
+            'submission', 'submission__event', 'room',
+        ).filter(
             room__isnull=False, start__isnull=False, is_visible=True
-        )
+        ).exclude(submission__state=SubmissionStates.DELETED)
 
     @cached_property
     def slots(self):
@@ -129,74 +131,41 @@ class Schedule(LogMixin, models.Model):
             queryset = queryset.filter(published__lt=self.published)
         return queryset.order_by('-published').first()
 
-    @staticmethod
-    def _search_nearest_match(enviroment):
-        '''Search for nearest match in other_slots_qs.'''
-        slot = enviroment['slot']
-        symetric_dif__rooms = enviroment['slots_helper']['symetric_dif__rooms']
+    def _handle_submission_move(self, submission_pk, old_slots, new_slots):
+        new = []
+        canceled = []
+        moved = []
+        all_old_slots = list(old_slots.filter(submission__pk=submission_pk))
+        all_new_slots = list(old_slots.filter(submission__pk=submission_pk))
+        old_slots = [slot for slot in all_old_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_new_slots)]
+        new_slots = [slot for slot in all_new_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_old_slots)]
+        diff = len(old_slots) - len(new_slots)
+        if diff > 0:
+            canceled = old_slots[:diff]
+            old_slots = old_slots[diff:]
+        elif diff < 0:
+            diff = -diff
+            new = new_slots[:diff]
+            new_slots = new_slots[diff:]
+        for move in zip(old_slots, new_slots):
+            old_slot = move[0]
+            new_slot = move[1]
+            moved.append({
+                'submission': new_slot.submission,
+                'old_start': old_slot.start.astimezone(self.tz),
+                'new_start': new_slot.start.astimezone(self.tz),
+                'old_room': old_slot.room.name,
+                'new_room': new_slot.room.name,
+                'new_info': new_slot.room.speaker_info,
+            })
+        return new, canceled, moved
 
-        result = None
-        rooms = symetric_dif__rooms[:]
-        # start with own room
-        room = rooms.pop(rooms.index(slot.room.id))
-        rooms.insert(0, room)
-        rooms = iter(rooms)
-        try:
-            room = next(rooms)
-        except StopIteration:
-            room = None
-        run = True
-        while run:
-            result = Schedule._search_nearest_in_room(enviroment, room)
-            if not result:
-                try:
-                    room = next(rooms)
-                except StopIteration:
-                    run = False
-            else:
-                run = False
-
-        if result:
-            symetric_dif__rooms.remove(slot.room.id)
-            symetric_dif__rooms.remove(room)
-        return result
-
-    @staticmethod
-    def _search_nearest_in_room(enviroment, room):
-        '''Search for nearest match in other_slots_qs with defined room.'''
-        slot = enviroment['slot']
-        other_slots_qs = enviroment['other_slots_qs']
-        other_slots_helper = enviroment['other_slots_helper']
-        symetric_dif__rooms_start = enviroment['slots_helper']['symetric_dif__rooms_start']
-        already_handled = enviroment['slots_helper']['already_handled']
-
-        result = None
-
-        temp_slots = other_slots_qs.filter(
-            submission=slot.submission,
-            room=room,
-            start__in=symetric_dif__rooms_start[room],
-        )
-        temp_slots_namedtuple = list(temp_slots.values_list(
-            'submission',
-            'room',
-            'start',
-            named=True
-        ))
-        if len(temp_slots_namedtuple) > 0:
-            index = 0
-            temp_slot_namedtuple = temp_slots_namedtuple[index]
-            temp_slot = temp_slots[index]
-            if (temp_slot_namedtuple in other_slots_helper):
-                symetric_dif__rooms_start[slot.room.id].remove(slot.start)
-                symetric_dif__rooms_start[room].remove(temp_slot_namedtuple.start)
-                already_handled.append(temp_slot_namedtuple)
-                result =  temp_slot
-        return result
+    @cached_property
+    def tz(self):
+        return pytz.timezone(self.event.timezone)
 
     @cached_property
     def changes(self):
-        tz = pytz.timezone(self.event.timezone)
         result = {
             'count': 0,
             'action': 'update',
@@ -208,127 +177,39 @@ class Schedule(LogMixin, models.Model):
             result['action'] = 'create'
             return result
 
-        old_slots_qs = self.previous_schedule.talks.select_related(
-            'submission', 'submission__event', 'room'
-        ).all().filter(
-            room__isnull=False,
-            start__isnull=False,
-        ).exclude(
-            submission__state=SubmissionStates.DELETED,
-        ).order_by(
-            'submission',
-            'room',
-            'start',
-        )
+        old_slots = self.previous_schedule.scheduled_talks
+        new_slots = self.scheduled_talks
+        old_slot_set = set(old_slots.values_list('submission', 'room', 'start', named=True))
+        new_slot_set = set(new_slots.values_list('submission', 'room', 'start', named=True))
+        old_submissions = set(old_slots.values_list('submission__id', flat=True))
+        new_submissions = set(new_slots.values_list('submission__id', flat=True))
+        handled_submissions = set()
 
-        new_slots_qs = self.talks.select_related(
-            'submission', 'submission__event', 'room'
-        ).all().filter(
-            room__isnull=False,
-            start__isnull=False,
-        ).exclude(
-            submission__state=SubmissionStates.DELETED,
-        ).order_by(
-            'submission',
-            'room',
-            'start',
-        )
+        moved_or_missing = old_slot_set - new_slot_set
+        moved_or_new = new_slot_set - old_slot_set
 
-        # build helper set of talks containing only submission and slot_index
-        # with this we can use the set comparing methodes..
-        old_slots_helper = set(old_slots_qs.values_list(
-            'submission',
-            'room',
-            'start',
-            named=True
-        ))
-        new_slots_helper = set(new_slots_qs.values_list(
-            'submission',
-            'room',
-            'start',
-            named=True
-        ))
-
-        slots_helper = {}
-        slots_helper['already_handled'] = []
-        from operator import attrgetter
-        slots_helper['symetric_dif'] = sorted(
-            new_slots_helper ^ old_slots_helper,
-            key=attrgetter('submission', 'room', 'start',)
-        )
-
-        slots_helper['symetric_dif__rooms_start'] = {}
-        for slot_helper in slots_helper['symetric_dif']:
-            if slot_helper.room not in slots_helper['symetric_dif__rooms_start']:
-                slots_helper['symetric_dif__rooms_start'][slot_helper.room] = []
-            slots_helper['symetric_dif__rooms_start'][slot_helper.room].append(slot_helper.start)
-
-        slots_helper['symetric_dif__rooms'] = list(slot.room for slot in slots_helper['symetric_dif'])
-
-        from pretalx.schedule.models import TalkSlot
-        # handle all possible changes
-        for slot_helper in slots_helper['symetric_dif']:
-            if slot_helper not in slots_helper['already_handled']:
-                # get original database entries
-                old_slot = None
-                try:
-                    old_slot = old_slots_qs.get(
-                        submission=slot_helper.submission,
-                        start=slot_helper.start,
-                        room=slot_helper.room,
-                    )
-                except TalkSlot.DoesNotExist:
-                    pass
-                new_slot = None
-                try:
-                    new_slot = new_slots_qs.get(
-                        submission=slot_helper.submission,
-                        start=slot_helper.start,
-                        room=slot_helper.room,
-                    )
-                except TalkSlot.DoesNotExist:
-                    pass
-                # find first element from other set that matches the submission
-                if new_slot:
-                    old_slot = Schedule._search_nearest_match({
-                        'slot': new_slot,
-                        'slots_qs': new_slots_qs,
-                        'other_slots_qs': old_slots_qs,
-                        'other_slots_helper': old_slots_helper,
-                        'slots_helper': slots_helper,
-                    })
-                elif old_slot:
-                    new_slot = Schedule._search_nearest_match({
-                        'slot': old_slot,
-                        'slots_qs': old_slots_qs,
-                        'other_slots_qs': new_slots_qs,
-                        'other_slots_helper': new_slots_helper,
-                        'slots_helper': slots_helper,
-                    })
-                if old_slot and new_slot:
-                    # if we have found both this is a move.
-                    slots_helper['already_handled'].append(slot_helper)
-                    result['moved_talks'].append(
-                        {
-                            'submission': new_slot.submission,
-                            'old_start': old_slot.start.astimezone(tz),
-                            'new_start': new_slot.start.astimezone(tz),
-                            'old_room': old_slot.room.name,
-                            'new_room': new_slot.room.name,
-                            'new_info': new_slot.room.speaker_info,
-                        }
-                    )
-                elif old_slot and not new_slot:
-                    slots_helper['already_handled'].append(slot_helper)
-                    result['canceled_talks'].append(old_slot)
-                elif not old_slot and new_slot:
-                    slots_helper['already_handled'].append(slot_helper)
-                    result['new_talks'].append(new_slot)
-                else:
-                    raise Exception('slot not found! - uhh - that should never happen!')
-            # else:
-            #     pass
-            #     # this entry is already handled... so we skip it..
+        for entry in moved_or_missing:
+            if entry.submission in handled_submissions:
+                continue
+            if entry.submission not in new_submissions:
+                result['canceled_talks'] += list(old_slots.filter(submission__pk=entry.submission))
+            else:
+                new, canceled, moved = self._handle_submission_move(entry.submission, old_slots, new_slots)
+                result['new_talks'] += new
+                result['canceled_talks'] += canceled
+                result['moved_talks'] += moved
+            handled_submissions.add(entry.submission)
+        for entry in moved_or_new:
+            if entry.submission in handled_submissions:
+                continue
+            if entry.submission not in old_submissions:
+                result['new_talks'] += list(new_slots.filter(submission__pk=entry.submission))
+            else:  # This should never happen, since moved submissions should be handled in the first loop
+                new, canceled, moved = self._handle_submission_move(entry.submission, old_slots, new_slots)
+                result['new_talks'] += new
+                result['canceled_talks'] += canceled
+                result['moved_talks'] += moved
+            handled_submissions.add(entry.submission)
 
         result['count'] = (
             len(result['new_talks'])
@@ -381,10 +262,9 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def notifications(self):
-        tz = pytz.timezone(self.event.timezone)
         mails = []
         for speaker in self.speakers_concerned:
-            with override(speaker.locale), tzoverride(tz):
+            with override(speaker.locale), tzoverride(self.tz):
                 notifications = get_template(
                     'schedule/speaker_notification.txt'
                 ).render({'speaker': speaker, **self.speakers_concerned[speaker]})

@@ -125,6 +125,9 @@ class TalkSlot(LogMixin, models.Model):
             new_slot.save()
         return new_slot
 
+    def is_same_slot(self, other_slot):
+        return self.room == other_slot.room and self.start == other_slot.start
+
     def build_ical(self, calendar, creation_time=None, netloc=None):
         if not self.start or not self.end or not self.room:
             return
