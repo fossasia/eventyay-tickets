@@ -260,6 +260,7 @@ footer {
 
 .search-form {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
   align-content: center;
 
@@ -280,6 +281,7 @@ footer {
   .btn {
     align-self: flex-start;
     margin-top: 8px;
+    margin-left: 8px;
   }
 }
 
