@@ -246,3 +246,17 @@ def test_nonstandard_duration(submission):
 @pytest.mark.django_db
 def test_submission_image_path(submission):
     assert submission_image_path(submission, 'foo') == f'{submission.event.slug}/images/{submission.code}/foo'
+
+
+@pytest.mark.django_db
+def test_submission_change_slot_count(accepted_submission):
+    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1
+    accepted_submission.event.settings.present_multiple_times = True
+    accepted_submission.slot_count = 2
+    accepted_submission.save()
+    accepted_submission.accept()
+    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 2
+    accepted_submission.slot_count = 1
+    accepted_submission.save()
+    accepted_submission.accept()
+    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1

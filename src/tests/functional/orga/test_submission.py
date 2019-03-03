@@ -193,6 +193,37 @@ def test_orga_can_create_submission(orga_client, event):
 
 
 @pytest.mark.django_db
+def test_orga_can_edit_submission(orga_client, event, accepted_submission):
+    event.settings.present_multiple_times = True
+    assert event.submissions.count() == 1
+    assert accepted_submission.slots.count() == 1
+
+    response = orga_client.post(
+        accepted_submission.orga_urls.base,
+        data={
+            'abstract': 'abstract',
+            'content_locale': 'en',
+            'description': 'description',
+            'duration': '',
+            'slot_count': 2,
+            'notes': 'notes',
+            'speaker': 'foo@bar.com',
+            'speaker_name': 'Foo Speaker',
+            'title': 'title',
+            'submission_type': accepted_submission.submission_type.pk,
+            'resource-TOTAL_FORMS': 0,
+            'resource-INITIAL_FORMS': 0,
+        },
+        follow=True,
+    )
+    accepted_submission.refresh_from_db()
+    assert response.status_code == 200
+    assert event.submissions.count() == 1
+    assert accepted_submission.slot_count == 2
+    assert accepted_submission.slots.count() == 2
+
+
+@pytest.mark.django_db
 def test_orga_can_toggle_submission_featured(orga_client, event, submission):
     assert event.submissions.count() == 1
 

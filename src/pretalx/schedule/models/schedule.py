@@ -136,7 +136,7 @@ class Schedule(LogMixin, models.Model):
         canceled = []
         moved = []
         all_old_slots = list(old_slots.filter(submission__pk=submission_pk))
-        all_new_slots = list(old_slots.filter(submission__pk=submission_pk))
+        all_new_slots = list(new_slots.filter(submission__pk=submission_pk))
         old_slots = [slot for slot in all_old_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_new_slots)]
         new_slots = [slot for slot in all_new_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_old_slots)]
         diff = len(old_slots) - len(new_slots)
@@ -204,7 +204,7 @@ class Schedule(LogMixin, models.Model):
                 continue
             if entry.submission not in old_submissions:
                 result['new_talks'] += list(new_slots.filter(submission__pk=entry.submission))
-            else:  # This should never happen, since moved submissions should be handled in the first loop
+            else:
                 new, canceled, moved = self._handle_submission_move(entry.submission, old_slots, new_slots)
                 result['new_talks'] += new
                 result['canceled_talks'] += canceled

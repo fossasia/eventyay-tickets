@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytest
 from django.core import mail as djmail
 from django.utils.timezone import now
@@ -144,7 +146,7 @@ def test_is_archived(event):
 
 
 @pytest.mark.django_db
-def test_schedule_changes(event, slot, room):
+def test_schedule_changes(event, slot, room, accepted_submission):
     djmail.outbox = []
     QueuedMail.objects.filter(sent__isnull=True).update(sent=now())
     assert slot.schedule != event.wip_schedule
@@ -153,6 +155,7 @@ def test_schedule_changes(event, slot, room):
     current_slot.start = slot.start
     current_slot.end = slot.end
     current_slot.save()
+    assert event.wip_schedule.talks.all().count() == 2
     slot.room = None
     slot.start = None
     slot.end = None
@@ -168,4 +171,49 @@ def test_schedule_changes(event, slot, room):
         'moved_talks': [],
     }
     assert len(djmail.outbox) == 0
-    assert QueuedMail.objects.filter(sent__isnull=True).count() == slot.submission.speakers.count()
+    mail_count = QueuedMail.objects.filter(sent__isnull=True).count()
+    assert mail_count == slot.submission.speakers.count()
+
+    current_slot = slot.submission.slots.get(schedule=event.wip_schedule, start=current_slot.start)
+    current_slot.submission.event.submit_multiple_times = True
+    current_slot.submission.slot_count = 2
+    current_slot.submission.save()
+    current_slot.submission.update_talk_slots()
+    assert current_slot.submission.slots.filter(schedule=event.wip_schedule).count() == 2
+    assert event.wip_schedule.talks.all().count() == 3
+    second_slot = slot.submission.slots.exclude(pk=current_slot.pk).filter(schedule=slot.submission.event.wip_schedule).get()
+    second_slot.room = room
+    second_slot.start = current_slot.start + timedelta(hours=2)
+    second_slot.end = current_slot.end + timedelta(hours=2)
+    second_slot.save()
+    schedule, _ = event.wip_schedule.freeze('test2')
+    assert schedule.changes == {
+        'count': 1,
+        'action': 'update',
+        'new_talks': [second_slot],
+        'canceled_talks': [],
+        'moved_talks': [],
+    }
+    mail_count = QueuedMail.objects.filter(sent__isnull=True).count()
+    assert mail_count == slot.submission.speakers.count() * 2
+
+    for slot in event.wip_schedule.talks.filter(start__isnull=False).order_by('-pk'):
+        slot.start += timedelta(hours=1)
+        slot.save()
+    schedule, _ = event.wip_schedule.freeze('test3')
+    assert schedule.changes['count'] == 2
+    assert len(schedule.changes['moved_talks']) == 2
+
+    removed = slot.submission.slots.filter(schedule=event.wip_schedule).first()
+    removed.room = None
+    removed.start = None
+    removed.end = None
+    removed.save()
+    schedule, _ = event.wip_schedule.freeze('test4')
+    assert schedule.changes == {
+        'count': 1,
+        'action': 'update',
+        'new_talks': [],
+        'canceled_talks': [slot],
+        'moved_talks': [],
+    }

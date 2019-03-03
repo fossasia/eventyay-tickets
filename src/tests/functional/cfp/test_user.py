@@ -124,6 +124,51 @@ def test_can_edit_submission(speaker_client, submission, resource, other_resourc
 
 
 @pytest.mark.django_db
+def test_can_edit_slot_count(speaker_client, submission):
+    submission.event.settings.present_multiple_times = True
+    data = {
+        'title': 'Ein ganz neuer Titel',
+        'submission_type': submission.submission_type.pk,
+        'content_locale': submission.content_locale,
+        'description': submission.description,
+        'abstract': submission.abstract,
+        'notes': submission.notes,
+        'slot_count': 13,
+        'resource-TOTAL_FORMS': 0,
+        'resource-INITIAL_FORMS': 0,
+        'resource-MIN_NUM_FORMS': 0,
+        'resource-MAX_NUM_FORMS': 1000,
+    }
+    response = speaker_client.post(submission.urls.user_base, follow=True, data=data)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.slot_count == 13
+
+
+@pytest.mark.django_db
+def test_cannot_edit_confirmed_slot_count(speaker_client, confirmed_submission):
+    submission = confirmed_submission
+    submission.event.settings.present_multiple_times = True
+    data = {
+        'title': 'Ein ganz neuer Titel',
+        'submission_type': submission.submission_type.pk,
+        'content_locale': submission.content_locale,
+        'description': submission.description,
+        'abstract': submission.abstract,
+        'notes': submission.notes,
+        'slot_count': 13,
+        'resource-TOTAL_FORMS': 0,
+        'resource-INITIAL_FORMS': 0,
+        'resource-MIN_NUM_FORMS': 0,
+        'resource-MAX_NUM_FORMS': 1000,
+    }
+    response = speaker_client.post(submission.urls.user_base, follow=True, data=data)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.slot_count != 13
+
+
+@pytest.mark.django_db
 def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submission):
     title = rejected_submission.title
     data = {
