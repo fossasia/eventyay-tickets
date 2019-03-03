@@ -26,7 +26,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         'speakers__name__icontains',
         'title__icontains',
     )
-    filter_fields = ('submission_type', 'state')
+    filter_fields = ('submission_type', 'state', 'track')
 
     def get_filter_form(self):
         return SubmissionFilterForm(
