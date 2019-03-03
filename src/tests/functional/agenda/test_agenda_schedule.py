@@ -33,7 +33,7 @@ def test_speaker_page(
     client, django_assert_num_queries, event, speaker, slot, other_slot
 ):
     url = reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug})
-    with django_assert_num_queries(28):
+    with django_assert_num_queries(25):
         response = client.get(url, follow=True)
     assert response.status_code == 200
     assert speaker.profiles.get(event=event).biography in response.content.decode()
