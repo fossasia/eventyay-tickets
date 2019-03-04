@@ -173,6 +173,12 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         context['skip_for_now'] = Review.find_missing_reviews(
             self.request.event, self.request.user, ignore=[self.submission]
         ).first()
+        context['done'] = self.request.user.reviews.filter(submission__event=self.request.event).count()
+        context['total_reviews'] = Review.find_missing_reviews(
+            self.request.event, self.request.user
+        ).count() + context['done']
+        if context['total_reviews']:
+            context['percentage'] = int(context['done'] * 100 / context['total_reviews'])
         context['profiles'] = [
             speaker.event_profile(self.request.event)
             for speaker in self.submission.speakers.all()

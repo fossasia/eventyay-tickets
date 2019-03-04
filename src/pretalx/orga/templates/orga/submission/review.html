@@ -5,7 +5,6 @@
 {% load rules %}
 
 {% block submission_content %}
-
 {% if request.user in submission.speakers.all %}
     <div class="alert alert-error"><span>
         {% blocktrans trimmed %}
@@ -100,6 +99,11 @@
         {% bootstrap_field form.score layout='event' %}
         {% bootstrap_form qform layout='event' %}
         {% bootstrap_field form.text layout='event' %}
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+                {{ done }} / {{ total_reviews }}
+            </div>
+        </div>
         <div class="submit-group"><span></span>
             <div>
                 {% if skip_for_now %}
