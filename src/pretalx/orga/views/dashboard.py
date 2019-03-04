@@ -56,7 +56,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 {'large': timeuntil(max_deadline), 'small': _('until the CfP ends')}
             )
         if event.cfp.is_open:
-            result.append({'url': event.cfp.urls.base, 'large': _('Go to CfP')})
+            result.append({'url': event.cfp.urls.public, 'large': _('Go to CfP')})
         return result
 
     def get_context_data(self, **kwargs):
