@@ -67,3 +67,41 @@ class Review(models.Model):
     class urls(EventUrls):
         base = '{self.submission.orga_urls.reviews}'
         delete = '{base}{self.pk}/delete'
+
+
+class ReviewPhase(models.Model):
+    event = models.ForeignKey(
+        to='event.Event', related_name='review_phases', on_delete=models.CASCADE
+    )
+    name = models.CharField(verbose_name=_('Name'), max_length=100)
+    start = models.DateTimeField(verbose_name=_('Phase start'), null=True, blank=True)
+    end = models.DateTimeField(verbose_name=_('Phase end'), null=True, blank=True)
+    position = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=False)
+
+    can_review = models.BooleanField(
+        verbose_name=_('Reviewers can write and edit reviews'),
+        default=True,
+    )
+    can_see_other_reviews = models.CharField(
+        verbose_name=_('Reviewers can see other reviews'),
+        max_length=12,
+        choices=(('always', _('Always')), ('never', _('Never')), ('after_review', _('After reviewing the submission'))),
+        default='after_review',
+    )
+    can_see_speaker_names = models.BooleanField(
+        verbose_name=_('Reviewers can see speaker names'),
+        default=True,
+    )
+    can_change_submission_state = models.BooleanField(
+        verbose_name=_('Reviewers can accept and reject submissions'),
+        default=False,
+    )
+
+    class Meta:
+        ordering = ('position', )
+
+    def activate(self):
+        self.event.review_phases.all().update(is_active=False)
+        self.is_active = True
+        self.save()

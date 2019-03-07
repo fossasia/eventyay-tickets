@@ -478,6 +478,10 @@ class Event(LogMixin, models.Model):
         return Review.objects.filter(submission__event=self)
 
     @cached_property
+    def active_review_phase(self):
+        return self.review_phases.filter(is_active=True).first()
+
+    @cached_property
     def submission_questions(self):
         return self.questions.filter(target='submission')
 
