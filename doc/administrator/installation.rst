@@ -62,9 +62,7 @@ Or for PostgreSQL::
   postgres $ psql
   postgres=# GRANT ALL PRIVILEGES ON DATABASE pretalx to pretalx;
 
-Replace the asterisks with a password of your own. For MySQL, we will use a Unix domain socket to
-connect to the database. For PostgreSQL, be sure to configure the interface binding and your
-firewall so that the docker container can reach PostgreSQL.
+Replace the asterisks with a password of your own.
 
 
 Step 3: Package dependencies
