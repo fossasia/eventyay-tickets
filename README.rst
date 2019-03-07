@@ -53,6 +53,7 @@ Previous conferences using pretalx include:
 - `EasterHegg 2018`_
 - `TROOPERS 2018`_
 - `MRMCD`_ (2017, 2018)
+- `Tools4AgileTeams`_ (2019)
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -102,4 +103,5 @@ to this project.
 .. _PrivacyWeek 2018: https://privacyweek.at/
 .. _EasterHegg 2019: https://eh19.easterhegg.eu/
 .. _NorthSec 2019: https://cfp.nsec.io/2019/
-.. _Journées du Logiciel Libre 2019 : https://pretalx.jdll.org/jdll2019/cfp
+.. _Journées du Logiciel Libre 2019: https://pretalx.jdll.org/jdll2019/cfp
+.. _Tools4AgileTeams: https://talks.seibert-media.net/tools4agileteams2019/
