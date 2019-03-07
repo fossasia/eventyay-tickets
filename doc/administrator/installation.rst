@@ -279,6 +279,11 @@ If you want to upgrade pretalx to a specific release, you can substitute
     $ python -m pretalx regenerate_css
     # systemctl restart pretalx-web pretalx-worker
 
+If you're sure that you know what you're doing, you can also install a specific
+commit or branch of pretalx (replace "master" with a short or long commit ID
+for a specific commit)::
+
+    $ pip3 install --user -U git+git://github.com/pretalx/pretalx.git@master#egg=pretalx&subdirectory=src
 
 .. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
