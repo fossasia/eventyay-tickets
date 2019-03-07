@@ -4,7 +4,7 @@ Installation
 ============
 
 This guide will help you to install pretalx on a Linux distribution, as long as
-the prerequesites are present.
+the prerequisites are present.
 
 We also provide an `Ansible role`_ that follows this guide, in case you
 already have an Ansible-based setup. If you prefer a docker setup, please use
@@ -90,7 +90,7 @@ Replace all further "pip" commands with "pip3.6"
 Step 4: Configuration
 ---------------------
 
-We now create a config directory and config file for pretalx::
+We now create a configuration directory and configuration file for pretalx::
 
     # mkdir /etc/pretalx
     # touch /etc/pretalx/pretalx.cfg
@@ -109,17 +109,17 @@ Now we will install pretalx itself. Please execute the following steps as the ``
 install all Python packages, including pretalx, in the user's Python environment, so that your global Python
 installation will not know of them::
 
-    $ pip install --user -U pip setuptools wheel pretalx redis gunicorn
+    $ pip install --user -U pip setuptools wheel pretalx gunicorn
 
 pretalx works your choice of database backends – we recommend using
-PostgresQL, but MySQL, SQLite, and Oracle work as well. use the following
+PostgreSQL, but MySQL, SQLite, and Oracle work as well. Use the following
 command to install the database driver (unless you use SQLite, which has its
 driver built in):
 
 +------------+-------------------------------------------+
 | Database   | pip package                               |
 +============+===========================================+
-| PostgresQL | ``pip install --user -U psycopg2-binary`` |
+| PostgreSQL | ``pip install --user -U psycopg2-binary`` |
 +------------+-------------------------------------------+
 | MySQL      | ``pip install --user -U mysqlclient``     |
 +------------+-------------------------------------------+
@@ -135,7 +135,7 @@ We compile static files and translation data and create the database structure::
     $ python -m pretalx migrate
     $ python -m pretalx rebuild
 
-Now, create an admin user, organiser and team by running::
+Now, create a user with administrator rights, an organiser and a team by running::
 
     $ python -m pretalx init
 
@@ -152,8 +152,8 @@ named ``/etc/systemd/system/pretalx-web.service`` with the following content::
     [Service]
     User=pretalx
     Group=pretalx
-    WorkingDirectory=/home/pretalx/.local/lib/python3.6/site-packages/pretalx
-    ExecStart=/home/pretalx/.local/bin/gunicorn pretalx.wsgi \
+    WorkingDirectory=/var/pretalx/.local/lib/python3.6/site-packages/pretalx
+    ExecStart=/var/pretalx/.local/bin/gunicorn pretalx.wsgi \
                           --name pretalx --workers 4 \
                           --max-requests 1200  --max-requests-jitter 50 \
                           --log-level=info --bind=127.0.0.1:8345
@@ -173,8 +173,8 @@ tasks), you'll also need a second service
     [Service]
     User=pretalx
     Group=pretalx
-    WorkingDirectory=/home/pretalx/.local/lib/python3.6/site-packages/pretalx
-    ExecStart=/home/pretalx/.local/bin/celery -A pretalx.celery_app worker -l info
+    WorkingDirectory=/var/pretalx/.local/lib/python3.6/site-packages/pretalx
+    ExecStart=/var/pretalx/.local/bin/celery -A pretalx.celery_app worker -l info
     WorkingDirectory=/var/pretalx
     Restart=on-failure
 
@@ -273,7 +273,7 @@ if you forget to restart the services.
 If you want to upgrade pretalx to a specific release, you can substitute
 ``pretalx`` with ``pretalx==1.2.3`` in the first line::
 
-    $ pip3 install -U pretalx gunicorn
+    $ pip3 install --user -U pretalx
     $ python -m pretalx migrate
     $ python -m pretalx rebuild
     $ python -m pretalx regenerate_css
