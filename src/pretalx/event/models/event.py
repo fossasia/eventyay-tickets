@@ -1,6 +1,7 @@
 from datetime import datetime, time
 
 import pytz
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import get_connection
@@ -8,7 +9,7 @@ from django.core.mail.backends.base import BaseEmailBackend
 from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils.functional import cached_property
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
@@ -372,14 +373,14 @@ class Event(LogMixin, models.Model):
             event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
         )
 
-        if not self.review_phases.objects.exists():
+        if not self.review_phases.all().exists():
             from pretalx.submission.models import ReviewPhase
 
             cfp_deadline = self.cfp.deadline
             r = ReviewPhase.objects.create(
                 event=self, name=_('Review'),
                 start=cfp_deadline,
-                end=self.date_from - dateutil.relativedelta(months=-3),
+                end=self.date_from - relativedelta(months=-3),
                 is_active=bool(cfp_deadline),
 
                 can_review=True,
@@ -506,6 +507,26 @@ class Event(LogMixin, models.Model):
     @cached_property
     def active_review_phase(self):
         return self.review_phases.filter(is_active=True).first()
+
+    def update_review_phase(self):
+        _now = now()
+        future_phases = self.review_phases.all()
+        old_phase = self.active_review_phase
+        if old_phase:
+            future_phases = future_phases.filter(position__gt=old_phase.position)
+        next_phase = future_phases.order_by('position').first()
+        if old_phase:
+            if old_phase.end:
+                if old_phase.end > _now:
+                    return old_phase
+                else:
+                    old_phase.is_active = False
+                    old_phase.save()
+            elif not (next_phase and next_phase.start and next_phase.start <= _now):
+                return old_phase
+        if next_phase and (not next_phase.start or next_phase.start <= _now):
+            next_phase.activate()
+            return next_phase
 
     @cached_property
     def submission_questions(self):

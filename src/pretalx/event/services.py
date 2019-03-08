@@ -50,5 +50,6 @@ def task_periodic_event_services(event_slug):
 
 @receiver(periodic_task)
 def periodic_event_services(sender, **kwargs):
-    for event in Event.objects.all().values_list('slug', flat=True):
-        task_periodic_event_services.apply_async(args=(event,))
+    for event in Event.objects.all():
+        task_periodic_event_services.apply_async(args=(event.slug,))
+        event.update_review_phase()

@@ -23,7 +23,6 @@ def create_review_phases(apps, schema_editor):
             start=None,
             end=dateutil.parser.parse(deadline) if deadline else None,
             is_active=True,
-            
             can_review=True,
             can_see_other_reviews='after_review',
             can_see_speaker_names=not hide_speakers,
