@@ -1,19 +1,122 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load formset_tags %}
+{% load static %}
 
 {% block settings_content %}
-    <form method="post">
+    <script src="{% static "js/jquery.formset.js" %}"></script>
+    <script src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <form method="post" class="d-flex flex-column">
         {% csrf_token %}
+
         <h2>{% trans "Review settings" %}</h2>
         {% bootstrap_form form layout='event' %}
         <div class="submit-group panel">
             <span></span>
             <span>
                 {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
+                    <button type="submit" class="btn btn-lg btn-success">{% trans "Save" %}</button>
                 {% endif %}
             </span>
+        </div>
+
+        <h2>{% trans "Review phases" %}</h2>
+        <div class="alert alert-info">
+            {% blocktrans trimmed %}
+            Review phases allow you to structure your review process.
+            By default, there are two review phases: The review itself, and
+            the selection process once the review phase is over. But you could for example
+            add another review and selection phase after that, if you require additional
+            review rounds.
+            {% endblocktrans %}
+        </div>
+        <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+        {{ formset.management_form }}
+        {% bootstrap_formset_errors formset %}
+        <div data-formset-body class="card"><div class="list-group">
+            {% for form in formset %}
+                <div data-formset-form class="list-group-item">
+                    <h3 class="d-flex offset-md-3">
+                        <span class="mr-2 ml-2">{% trans "Review Phase" %}</span>
+                        {% bootstrap_field form.name form_group_class="" layout="inline" %}
+                        {% if action != 'view' %}
+                        {% if not form.instance.is_active %}
+                            <a href="{{ form.instance.urls.activate }}"
+                               class="btn btn-outline-warning ml-auto mr-2"
+                               title="{% trans "Activate phase" %}">
+                                <i class="fa fa-star"></i>
+                            </a>
+                        {% else %}
+                            <a href=""
+                               class="btn btn-warning ml-auto mr-2"
+                               title="{% trans "Phase is active" %}">
+                                <i class="fa fa-star"></i>
+                            </a>
+                        {% endif %}
+                        <a href="{{ form.instance.urls.down }}"
+                           class="btn btn-outline-info mr-2"
+                           title="{% trans "Move phase down" %}">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                        <a href="{{ form.instance.urls.up }}"
+                           class="btn btn-outline-info mr-2"
+                           title="{% trans "Move phase up" %}">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <div class="phase-option-delete">
+                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                <i class="fa fa-trash"></i></button>
+                        </div>
+                        {% endif %}
+                    </h3>
+                    <div class="sr-only">
+                        {{ form.id }}
+                        {% bootstrap_field form.DELETE form_group_class="" layout="event" %}
+                    </div>
+                    <div class="phase-option-row ml-auto">
+                        <div class="phase-option-input{% if action == 'view' %} disabled{% endif %}">
+                            {% bootstrap_form_errors form %}
+                            {% bootstrap_form form layout="event" form_group_class="" exclude="DELETE,name" %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <script type="form-template" data-formset-empty-form>
+            {% escapescript %}
+                <div data-formset-form class="list-group-item">
+                    <h3 class="d-flex offset-md-3">
+                        <span class="mr-2 ml-2">{% trans "Review Phase" %}</span>
+                        {% bootstrap_field formset.empty_form.name form_group_class="" layout="inline" %}
+                        {% if action != 'view' %}
+                        <div class="phase-option-delete ml-auto">
+                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                <i class="fa fa-trash"></i></button>
+                        </div>
+                        {% endif %}
+                    </h3>
+                    <div class="sr-only">
+                        {{ formset.empty_form.id }}
+                        {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="event" %}
+                    </div>
+                    <div class="phase-option-row ml-auto">
+                        <div class="phase-option-input">
+                            {% bootstrap_form formset.empty_form layout="event" form_group_class="" exclude="DELETE,name" %}
+                        </div>
+                    </div>
+                </div>
+            {% endescapescript %}
+        </script>
+        </div>
+        {% if action == "edit" or action == "create" %}
+            <div class="list-group-item d-flex">
+                <button type="button" class="btn btn-lg btn-info ml-auto mr-4" data-formset-add>
+                    <i class="fa fa-plus"></i> {% trans "Add another phase" %}
+                </button>
+                <button type="submit" class="btn btn-lg btn-success">{% trans "Save" %}</button>
+            </div>
+        {% endif %}
         </div>
     </form>
 {% endblock %}

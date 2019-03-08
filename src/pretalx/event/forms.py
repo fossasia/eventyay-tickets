@@ -8,7 +8,7 @@ from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
-from pretalx.submission.models import Track
+from pretalx.submission.models import ReviewPhase, Track
 
 
 class TeamForm(ReadOnlyFlag, I18nModelForm):
@@ -224,3 +224,34 @@ class EventWizardCopyForm(forms.Form):
             empty_label=_('Do not copy'),
             required=False,
         )
+
+
+class ReviewPhaseForm(I18nModelForm):
+
+    def __init__(self, *args, event=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        data = super().clean()
+        if data['start'] and data['end'] and data['start'] > data['end']:
+            raise forms.ValidationError(_('The end of a phase has to be after its start.'))
+        for key in ('can_review', 'can_see_speaker_names', 'can_change_submission_state'):
+            if not data[key]:
+                data[key] = False
+        return data
+
+    class Meta:
+        model = ReviewPhase
+        fields = [
+            'name', 'start', 'end',
+            'can_review',
+            'can_see_speaker_names',
+            'can_change_submission_state',
+            'can_see_other_reviews',
+        ]
+        widgets = {
+            'start': forms.DateInput(attrs={'class': 'datepickerfield'}),
+            'end': forms.DateInput(
+                attrs={'class': 'datepickerfield'}
+            ),
+        }

@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Q
+from django.forms.models import inlineformset_factory
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -18,6 +19,7 @@ from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 
+from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, PermissionRequired,
 )
@@ -25,7 +27,7 @@ from pretalx.common.tasks import regenerate_css
 from pretalx.common.views import is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm, EventWizardCopyForm, EventWizardDisplayForm,
-    EventWizardInitialForm, EventWizardTimelineForm,
+    EventWizardInitialForm, EventWizardTimelineForm, ReviewPhaseForm,
 )
 from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
@@ -33,6 +35,7 @@ from pretalx.orga.forms.event import MailSettingsForm, ReviewSettingsForm
 from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
+from pretalx.submission.models import ReviewPhase
 
 
 class EventSettingsPermission(EventPermissionRequired):
@@ -208,9 +211,57 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         kwargs['locales'] = self.request.event.locales
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = self.formset
+        return context
+
+    @transaction.atomic
     def form_valid(self, form):
-        form.save()
+        result = super().form_valid(form)
+        formset = self.save_formset()
+        if not formset:
+            return self.get(self.request, *self.args, **self.kwargs)
         return super().form_valid(form)
+
+    @cached_property
+    def formset(self):
+        formset_class = inlineformset_factory(
+            Event,
+            ReviewPhase,
+            form=ReviewPhaseForm,
+            formset=I18nFormSet,
+            can_delete=True,
+            extra=0,
+        )
+        return formset_class(
+            self.request.POST if self.request.method == 'POST' else None,
+            queryset=ReviewPhase.objects.filter(event=self.request.event),
+            event=self.request.event,
+        )
+
+    def save_formset(self):
+        if not self.formset.is_valid():
+            return False
+        for form in self.formset.initial_forms:
+            if form in self.formset.deleted_forms:
+                if not form.instance.pk:
+                    continue
+                form.instance.delete()
+                form.instance.pk = None
+            elif form.has_changed():
+                form.instance.event = self.request.event
+                form.save()
+
+        extra_forms = [
+            form
+            for form in self.formset.extra_forms
+            if form.has_changed and not self.formset._should_delete_form(form)
+        ]
+        for form in extra_forms:
+            form.instance.event = self.request.event
+            form.save()
+        return True
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
