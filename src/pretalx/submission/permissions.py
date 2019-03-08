@@ -72,8 +72,6 @@ def is_review_author(user, obj):
 
 @rules.predicate
 def can_be_reviewed(user, obj):
-    from django.utils.timezone import now
-
     if not obj:
         return False
     if hasattr(obj, 'submission'):
