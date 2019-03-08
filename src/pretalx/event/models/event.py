@@ -381,8 +381,8 @@ class Event(LogMixin, models.Model):
                 event=self, name=_('Review'),
                 start=cfp_deadline,
                 end=self.date_from - relativedelta(months=-3),
-                is_active=bool(cfp_deadline),
-
+                is_active=bool(not cfp_deadline or cfp_deadline < now()),
+                position=0,
                 can_review=True,
                 can_see_other_reviews='after_review',
                 can_see_speaker_names=True,
@@ -391,8 +391,8 @@ class Event(LogMixin, models.Model):
             ReviewPhase.objects.create(
                 event=self, name=_('Selection'),
                 start=r.end,
-
                 is_active=False,
+                position=1,
                 can_review=False,
                 can_see_other_reviews='always',
                 can_see_speaker_names=True,
@@ -506,9 +506,29 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def active_review_phase(self):
-        return self.review_phases.filter(is_active=True).first()
+        phase = self.review_phases.filter(is_active=True).first()
+        if not phase and not self.review_phases.all().exists():
+            from pretalx.submission.models import ReviewPhase
+
+            cfp_deadline = self.cfp.deadline
+            phase = ReviewPhase.objects.create(
+                event=self, name=_('Review'),
+                start=cfp_deadline,
+                end=self.date_from - relativedelta(months=-3),
+                is_active=bool(cfp_deadline),
+
+                can_review=True,
+                can_see_other_reviews='after_review',
+                can_see_speaker_names=True,
+                can_change_submission_state=False,
+            )
+        return phase
 
     def update_review_phase(self):
+        """
+        This method activates the next review phase if the current one is over,
+        or if no review phase is active and if there is a new one to activate.
+        """
         _now = now()
         future_phases = self.review_phases.all()
         old_phase = self.active_review_phase
