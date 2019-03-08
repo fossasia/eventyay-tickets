@@ -103,7 +103,6 @@ class ExporterView(ScheduleDataView):
                 resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return resp
         except Exception as export_exception:
-            print(export_exception)
             raise Http404()
 
 

@@ -125,7 +125,6 @@ class Filterable:
                 key = f'{key}__in' if not key.endswith('__in') else key
             if value:
                 lookup_key = key.split('__')[0]
-                print(value)
                 if lookup_key in self.filter_fields:
                     qs = qs.filter(**{key: value})
         return qs

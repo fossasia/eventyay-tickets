@@ -90,8 +90,6 @@ class TalkView(PermissionRequired, DetailView):
                 recording = response.get_recording(self.object)
                 if recording and recording['iframe']:
                     return recording
-            else:
-                print(response)
         if self.object.rendered_recording_iframe:
             return {
                 'iframe': self.object.rendered_recording_iframe,
