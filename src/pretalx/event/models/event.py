@@ -371,6 +371,32 @@ class Event(LogMixin, models.Model):
         self.question_template = self.question_template or MailTemplate.objects.create(
             event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
         )
+
+        if not self.review_phases.objects.exists():
+            from pretalx.submission.models import ReviewPhase
+
+            cfp_deadline = self.cfp.deadline
+            r = ReviewPhase.objects.create(
+                event=self, name=_('Review'),
+                start=cfp_deadline,
+                end=self.date_from - dateutil.relativedelta(months=-3),
+                is_active=bool(cfp_deadline),
+
+                can_review=True,
+                can_see_other_reviews='after_review',
+                can_see_speaker_names=True,
+                can_change_submission_state=False,
+            )
+            ReviewPhase.objects.create(
+                event=self, name=_('Selection'),
+                start=r.end,
+
+                is_active=False,
+                can_review=False,
+                can_see_other_reviews='always',
+                can_see_speaker_names=True,
+                can_change_submission_state=True,
+            )
         self.save()
 
     def _delete_mail_templates(self):
