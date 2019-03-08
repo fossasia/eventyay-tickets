@@ -65,13 +65,15 @@ def mail(
         body = str(template)
         if context:
             body = body.format_map(TolerantDict(context))
-
+        reply_to = headers.get('reply-to')
+        if reply_to and isinstance(reply_to, list):
+            reply_to = ','.join(reply_to)
         QueuedMail(
             event=event,
             to=user.email,
             subject=str(subject),
             text=body,
-            reply_to=headers.get('reply-to'),
+            reply_to=reply_to,
             bcc=headers.get('bcc'),
         ).send()
 
@@ -83,7 +85,7 @@ def mail_send_task(
     subject: str,
     body: str,
     html: str,
-    reply_to: str = None,
+    reply_to: list = None,
     event: int = None,
     cc: list = None,
     bcc: list = None,
