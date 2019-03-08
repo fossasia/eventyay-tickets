@@ -55,8 +55,8 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
         follow=True,
         data={
             'to': 'testWIN@gmail.com',
-            'bcc': mail.bcc,
-            'cc': mail.cc,
+            'bcc': 'foo@bar.com,bar@bar.com',
+            'cc': '',
             'reply_to': mail.reply_to,
             'subject': mail.subject,
             'text': 'This is the best test.',
@@ -67,8 +67,13 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
     assert mail.subject not in response.content.decode()  # Is now in the sent mail view, not in the outbox
     mail.refresh_from_db()
     assert mail.to == 'testWIN@gmail.com'
+    assert mail.cc != 'None'
     assert len(djmail.outbox) == 1
-    assert 'This is the best test.' == djmail.outbox[0].body
+    real_mail = djmail.outbox[0]
+    assert real_mail.body =='This is the best test.'
+    assert real_mail.to == ['testWIN@gmail.com']
+    assert real_mail.cc == ['']
+    assert real_mail.bcc == ['foo@bar.com', 'bar@bar.com']
 
 
 @pytest.mark.django_db
