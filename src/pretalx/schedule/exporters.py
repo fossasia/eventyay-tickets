@@ -42,9 +42,9 @@ class ScheduleData(BaseExporter):
         data = {
             current_date.date(): {
                 'index': index + 1,
-                'start': datetime.combine(current_date.date(), time(hour=4, minute=0)),
+                'start': datetime.combine(current_date.date(), time(hour=4, minute=0, tzinfo=tz)),
                 'end': datetime.combine(
-                    current_date.date() + timedelta(days=1), time(hour=3, minute=59)
+                    current_date.date() + timedelta(days=1), time(hour=3, minute=59, tzinfo=tz)
                 ),
                 'first_start': None,
                 'last_end': None,
