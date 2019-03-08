@@ -78,7 +78,7 @@ def can_be_reviewed(user, obj):
         obj = obj.submission
     phase = obj.event.active_review_phase and obj.event.active_review_phase.can_review
     state = obj.state == SubmissionStates.SUBMITTED
-    return state and phase
+    return bool(state and phase)
 
 
 @rules.predicate
