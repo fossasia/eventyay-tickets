@@ -78,10 +78,9 @@ def can_be_reviewed(user, obj):
         return False
     if hasattr(obj, 'submission'):
         obj = obj.submission
-    deadline = obj.event.settings.review_deadline
+    phase = obj.event.active_review_phase and obj.event.active_review_phase.can_review
     state = obj.state == SubmissionStates.SUBMITTED
-    time = True if not deadline else now() <= deadline
-    return state and time
+    return state and phase
 
 
 @rules.predicate

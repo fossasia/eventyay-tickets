@@ -60,10 +60,9 @@ def can_change_teams(user, obj):
 
 
 @rules.predicate
-def review_deadline_unmet(user, obj):
+def reviews_are_open(user, obj):
     event = obj.event
-    deadline = event.settings.review_deadline
-    return True if not deadline else now() <= deadline
+    return event.active_review_phase and event.active_review_phase.can_review
 
 
 @rules.predicate
@@ -86,7 +85,7 @@ def is_event_over(user, obj):
 @rules.predicate
 def can_view_speaker_names(user, obj):
     event = obj.event
-    return not event.settings.review_hide_speaker_names
+    return event.active_review_phase and event.active_review_phase.can_see_speaker_names
 
 
 rules.add_perm('orga.view_orga_area', can_change_submissions | is_reviewer)
@@ -114,7 +113,7 @@ rules.add_perm('orga.view_mail_templates', can_change_submissions)
 rules.add_perm('orga.edit_mail_templates', can_change_submissions)
 rules.add_perm('orga.view_review_dashboard', can_change_submissions | is_reviewer)
 rules.add_perm('orga.view_reviews', can_change_submissions | is_reviewer)
-rules.add_perm('orga.perform_reviews', is_reviewer & review_deadline_unmet)
+rules.add_perm('orga.perform_reviews', is_reviewer & reviews_are_open)
 rules.add_perm('orga.remove_review', is_administrator | (is_review_author & can_be_reviewed))
 rules.add_perm('orga.view_schedule', can_change_submissions)
 rules.add_perm('orga.release_schedule', can_change_submissions)

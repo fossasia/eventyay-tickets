@@ -169,7 +169,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         context['review'] = self.object
         context['read_only'] = self.read_only
         context['qform'] = self.qform
-        context['deadline_over'] = now() > self.request.event.settings.review_deadline if self.request.event.settings.review_deadline else False
         context['skip_for_now'] = Review.find_missing_reviews(
             self.request.event, self.request.user, ignore=[self.submission]
         ).first()

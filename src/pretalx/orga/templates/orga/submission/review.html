@@ -23,12 +23,11 @@
             {% endif %}
             </span>
         </div>
-    {% elif deadline_over or submission.state != 'submitted' %}
+    {% else %}
         <div class="alert alert-info">
             <span>
             {% blocktrans trimmed %}
-                This submission can no longer be reviewed, as a decision regarding its
-                role in this event has already been made, or the review deadline is over.
+                This submission can't be reviewed at the moment.
             {% endblocktrans %}
             </span>
         </div>

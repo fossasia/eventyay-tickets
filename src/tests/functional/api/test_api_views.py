@@ -302,7 +302,8 @@ def test_reviewer_cannot_see_speakers(
     submission,
     impersonal_answer,
 ):
-    submission.event.settings.review_hide_speaker_names = True
+    submission.event.active_review_phase.can_see_speaker_names = False
+    submission.event.active_review_phase.save()
     response = review_client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 

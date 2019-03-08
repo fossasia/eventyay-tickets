@@ -75,7 +75,6 @@ hierarkey.add_default('review_min_score', 0, int)
 hierarkey.add_default('review_max_score', 1, int)
 hierarkey.add_default('review_score_mandatory', 'False', bool)
 hierarkey.add_default('review_text_mandatory', 'False', bool)
-hierarkey.add_default('review_deadline', None, datetime)
 hierarkey.add_default(
     'review_help_text',
     LazyI18nString.from_gettext(

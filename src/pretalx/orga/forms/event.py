@@ -297,14 +297,6 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 
 class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
-    review_deadline = forms.DateTimeField(label=_('Review deadline'), required=False)
-    review_hide_speaker_names = forms.BooleanField(
-        label=_('Hide speaker names'),
-        help_text=_(
-            'Prevent reviewers from seeing speaker names. Please note that reviewers who also have organiser rights will still see speaker names.'
-        ),
-        required=False,
-    )
     allow_override_votes = forms.BooleanField(
         label=_('Allow override votes'),
         help_text=_(
@@ -344,9 +336,6 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             self.fields['allow_override_votes'].help_text += f' {additional}'
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)
-        self.fields['review_deadline'].widget = forms.DateTimeInput(
-            attrs={'class': 'datetimepickerfield'}
-        )
         for number in range(abs(maximum - minimum + 1)):
             index = minimum + number
             self.fields[f'review_score_name_{index}'] = forms.CharField(
