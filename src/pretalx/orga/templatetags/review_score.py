@@ -7,7 +7,7 @@ register = template.Library()
 def _review_score_number(context, score):
     max_score = context['request'].event.settings.get('review_max_score')
     if score is None:
-        return 'ø'
+        return '×'
 
     if isinstance(score, int) or (isinstance(score, float) and score.is_integer()):
         score = int(score)

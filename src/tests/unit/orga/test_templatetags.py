@@ -31,7 +31,7 @@ def event_with_score_context(event):
         (1, '1/3 (»okay«)'),
         (0, '0/3 (»meh.«)'),
         (1.5, '1.5/3'),
-        (None, 'ø'),
+        (None, '×'),
     ),
 )
 @pytest.mark.django_db()

@@ -59,7 +59,7 @@ class Review(models.Model):
         if self.override_vote is False:
             return _('Negative override (Veto)')
         if self.score is None:
-            return 'ø'
+            return '×'
         return self.submission.event.settings.get(
             f'review_score_name_{self.score}'
         ) or str(self.score)

@@ -25,7 +25,7 @@ def test_average_review_score(submission, scores, expected):
 @pytest.mark.parametrize('score,override,expected', (
     (0, None, '0'),
     (1, None, '1'),
-    (None, None, 'ø'),
+    (None, None, '×'),
     (None, True, 'Positive override'),
     (None, False, 'Negative override (Veto)'),
 ))
