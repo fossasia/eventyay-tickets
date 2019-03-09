@@ -99,7 +99,7 @@ def mail_send_task(
     if event:
         sender = event.settings.get('mail_from')
         if sender == 'noreply@example.org' or not sender:
-            sender = settings.MAIL_FROM
+            sender = event.email
         backend = event.get_mail_backend()
         sender = formataddr((str(event.name), sender))
     else:
