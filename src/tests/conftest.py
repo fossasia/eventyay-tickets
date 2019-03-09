@@ -719,7 +719,7 @@ def other_slot(other_confirmed_submission, room, schedule):
 def schedule_schema():
     from lxml import etree
 
-    with open('tests/functional/fixtures/schedule.xsd', 'r') as xsd:
+    with open('tests/fixtures/schedule.xsd', 'r') as xsd:
         source = xsd.read()
     schema = etree.XML(source)
     return etree.XMLSchema(schema)

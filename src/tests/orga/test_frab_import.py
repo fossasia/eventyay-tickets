@@ -12,7 +12,7 @@ def test_frab_import_minimal(administrator):
     assert administrator.teams.count() == 0
 
     call_command(
-        'import_schedule', 'tests/functional/fixtures/frab_schedule_minimal.xml'
+        'import_schedule', 'tests/fixtures/frab_schedule_minimal.xml'
     )
 
     assert Room.objects.count() == 1
@@ -36,7 +36,7 @@ def test_frab_import_minimal(administrator):
 
     with pytest.raises(Exception):
         call_command(
-            'import_schedule', 'tests/functional/fixtures/frab_schedule_minimal.xml'
+            'import_schedule', 'tests/fixtures/frab_schedule_minimal.xml'
         )
 
     assert (
@@ -51,7 +51,7 @@ def test_frab_import_minimal(administrator):
     assert Room.objects.count() == 1
 
     call_command(
-        'import_schedule', 'tests/functional/fixtures/frab_schedule_minimal_2.xml'
+        'import_schedule', 'tests/fixtures/frab_schedule_minimal_2.xml'
     )
 
     assert Room.objects.count() == 1

@@ -77,8 +77,8 @@ def test_test_mail_settings(orga_client, event, availability):
 @pytest.mark.parametrize(
     'path,allowed',
     (
-        ('tests/functional/orga/fixtures/custom.css', True),
-        ('tests/functional/orga/fixtures/malicious.css', False),
+        ('tests/fixtures/custom.css', True),
+        ('tests/fixtures/malicious.css', False),
         ('tests/conftest.py', False),
     ),
 )
