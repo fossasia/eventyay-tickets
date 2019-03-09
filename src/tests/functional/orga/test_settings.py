@@ -447,6 +447,7 @@ def test_edit_review_settings(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
+    assert event.review_phases.count() == 2
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
@@ -455,6 +456,20 @@ def test_edit_review_settings(orga_client, event):
             'review_score_name_0': 'OK',
             'review_score_name_1': 'Want',
             'review_score_name_2': 'Super',
+            'form-TOTAL_FORMS': 2,
+            'form-INITIAL_FORMS': 2,
+            'form-MIN_NUM_FORMS': 0,
+            'form-MAX_NUM_FORMS': 1000,
+            'form-0-name': event.active_review_phase.name + 'xxx',
+            'form-0-id': event.active_review_phase.id,
+            'form-0-start': "",
+            'form-0-end': "",
+            'form-0-can_see_other_reviews': 'after_review',
+            'form-1-name': event.active_review_phase.name + 'xxxy',
+            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-start': "",
+            'form-1-end': "",
+            'form-1-can_see_other_reviews': 'after_review',
         },
         follow=True,
     )
@@ -478,6 +493,20 @@ def test_edit_review_settings_invalid(orga_client, event):
             'review_score_name_0': 'OK',
             'review_score_name_1': 'Want',
             'review_score_name_2': 'Super',
+            'form-TOTAL_FORMS': 2,
+            'form-INITIAL_FORMS': 2,
+            'form-MIN_NUM_FORMS': 0,
+            'form-MAX_NUM_FORMS': 1000,
+            'form-0-name': event.active_review_phase.name + 'xxx',
+            'form-0-id': event.active_review_phase.id,
+            'form-0-start': "",
+            'form-0-end': "",
+            'form-0-can_see_other_reviews': 'after_review',
+            'form-1-name': event.active_review_phase.name + 'xxxy',
+            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-start': "",
+            'form-1-end': "",
+            'form-1-can_see_other_reviews': 'after_review',
         },
         follow=True,
     )

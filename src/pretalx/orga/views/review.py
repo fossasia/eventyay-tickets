@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db.models import Q, Avg, OuterRef, Count, Exists, Case, When, Subquery
+from django.db.models import Avg, Case, Count, Exists, OuterRef, Q, Subquery, When
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _

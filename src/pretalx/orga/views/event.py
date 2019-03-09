@@ -221,6 +221,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         formset = self.save_formset()
         if not formset:
             return self.get(self.request, *self.args, **self.kwargs)
+        form.save()
         return super().form_valid(form)
 
     @cached_property

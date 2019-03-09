@@ -7,7 +7,7 @@ from pretalx.person.permissions import (
     can_change_submissions, is_administrator, is_reviewer,
 )
 from pretalx.submission.permissions import (
-    can_be_reviewed, can_view_reviews, can_view_all_reviews,
+    can_be_reviewed, can_view_all_reviews, can_view_reviews,
     is_review_author, reviewer_can_change_submissions,
 )
 

@@ -233,11 +233,8 @@ class ReviewPhaseForm(I18nModelForm):
 
     def clean(self):
         data = super().clean()
-        if data['start'] and data['end'] and data['start'] > data['end']:
+        if data.get('start') and data.get('end') and data['start'] > data['end']:
             raise forms.ValidationError(_('The end of a phase has to be after its start.'))
-        for key in ('can_review', 'can_see_speaker_names', 'can_change_submission_state'):
-            if not data[key]:
-                data[key] = False
         return data
 
     class Meta:
