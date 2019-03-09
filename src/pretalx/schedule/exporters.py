@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import pytz

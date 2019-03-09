@@ -70,7 +70,7 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
     assert mail.cc != 'None'
     assert len(djmail.outbox) == 1
     real_mail = djmail.outbox[0]
-    assert real_mail.body =='This is the best test.'
+    assert real_mail.body == 'This is the best test.'
     assert real_mail.to == ['testWIN@gmail.com']
     assert real_mail.cc == ['']
     assert real_mail.bcc == ['foo@bar.com', 'bar@bar.com']

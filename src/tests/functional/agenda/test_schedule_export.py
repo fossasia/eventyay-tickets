@@ -48,9 +48,7 @@ def test_schedule_frab_xml_export(
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xml_export_control_char(
-    slot, client, django_assert_num_queries, schedule_schema
-):
+def test_schedule_frab_xml_export_control_char(slot, client, django_assert_num_queries):
     slot.submission.description = "control char: \a"
     slot.submission.save()
 
@@ -75,7 +73,6 @@ def test_schedule_frab_json_export(
     client,
     django_assert_num_queries,
     orga_user,
-    schedule_schema,
 ):
     with django_assert_num_queries(26):
         regular_response = client.get(
@@ -114,9 +111,7 @@ def test_schedule_frab_json_export(
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xcal_export(
-    slot, client, django_assert_num_queries, schedule_schema
-):
+def test_schedule_frab_xcal_export(slot, client, django_assert_num_queries):
     with django_assert_num_queries(20):
         response = client.get(
             reverse(
@@ -132,7 +127,7 @@ def test_schedule_frab_xcal_export(
 
 
 @pytest.mark.django_db
-def test_schedule_ical_export(slot, client, django_assert_num_queries, schedule_schema):
+def test_schedule_ical_export(slot, client, django_assert_num_queries):
     with django_assert_num_queries(22):
         response = client.get(
             reverse(
@@ -148,9 +143,7 @@ def test_schedule_ical_export(slot, client, django_assert_num_queries, schedule_
 
 
 @pytest.mark.django_db
-def test_schedule_single_ical_export(
-    slot, client, django_assert_num_queries, schedule_schema
-):
+def test_schedule_single_ical_export(slot, client, django_assert_num_queries):
     with django_assert_num_queries(23):
         response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
@@ -164,9 +157,7 @@ def test_schedule_single_ical_export(
     'exporter',
     ('schedule.xml', 'schedule.json', 'schedule.xcal', 'schedule.ics', 'feed'),
 )
-def test_schedule_export_nonpublic(
-    exporter, slot, client, django_assert_num_queries, schedule_schema
-):
+def test_schedule_export_nonpublic(exporter, slot, client, django_assert_num_queries):
     slot.submission.event.is_public = False
     slot.submission.event.save()
     exporter = 'feed' if exporter == 'feed' else f'export.{exporter}'
@@ -195,7 +186,7 @@ def test_schedule_speaker_ical_export(
 
 
 @pytest.mark.django_db
-def test_feed_view(slot, client, django_assert_num_queries, schedule_schema, schedule):
+def test_feed_view(slot, client, django_assert_num_queries, schedule):
     with django_assert_num_queries(19):
         response = client.get(slot.submission.event.urls.feed)
     assert response.status_code == 200
