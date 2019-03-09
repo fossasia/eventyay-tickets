@@ -1,7 +1,9 @@
 import json
+import os
 from glob import glob
 
 import pytest
+import requests
 from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import reverse
@@ -10,6 +12,19 @@ from lxml import etree
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.tasks import regenerate_css
 from pretalx.event.models import Event
+
+
+@pytest.mark.skipif(
+    "TRAVIS" not in os.environ or "CI" not in os.environ and os.environ["CI"],
+    reason="No need to bother with this outside of CI."
+)
+def test_schedule_xsd_is_up_to_date():
+    response = requests.get('https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd')
+    assert response.status_code == 200
+    path = os.path.join(os.path.dirname(__file__), '../fixtures/schedule.xsd')
+    with open(path) as schema:
+        schema_content = schema.read()
+    assert response.content.decode() == schema_content
 
 
 @pytest.mark.django_db
