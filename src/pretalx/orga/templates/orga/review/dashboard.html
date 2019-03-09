@@ -67,6 +67,13 @@
                 {% trans "You've got no submissions left to review!" %}
             </div>
         </a>
+    {% else %}
+        <div class="dashboard-block">
+            <h1 class="mt-4 mb-4"></h1>
+            <div class="dashboard-description">
+                {% trans "Reviews are currently closed." %}
+            </div>
+        </div>
     {% endif %}
 </div>
 
@@ -82,6 +89,15 @@
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 
 <table class="table table-sm review-table table-hover table-responsive-md">
+    <colgroup>
+        <col class="nowrap">
+        <col class="nowrap">
+        <col class="w-75">
+        {% if can_view_speakers %}<col class="w-25">{% endif %}
+        <col class="nowrap">
+        <col class="nowrap">
+        <col class="nowrap">
+    </colgroup>
     <thead>
         <tr>
             <th>
@@ -129,7 +145,7 @@
             </td>
             {% if can_view_speakers %}<td>{{ submission.display_speaker_names }}</td>{% endif %}
             <td>{{ submission.submission_type.name }}</td>
-            <td class="col-md-1">
+            <td class="nowrap">
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
             </td>
             <td class="action-row d-flex">

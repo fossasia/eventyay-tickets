@@ -66,6 +66,12 @@
 .table a:hover {
   text-decoration: none;
 }
+.table th {
+  white-space: nowrap;
+}
+.nowrap {
+  white-space: nowrap;
+}
 .badge {
   border-radius: .25em;
   height: 100%;
