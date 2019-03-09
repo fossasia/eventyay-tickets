@@ -297,6 +297,16 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 
 class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+    review_help_text = I18nFormField(
+        label=_('Help text for reviewers'),
+        help_text=_(
+            'This text will be shown at the top of every review, as long as reviews can be created or edited.'
+        )
+        + ' '
+        + phrases.base.use_markdown,
+        widget=I18nTextarea,
+        required=False,
+    )
     allow_override_votes = forms.BooleanField(
         label=_('Allow override votes'),
         help_text=_(
@@ -309,16 +319,6 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     )
     review_text_mandatory = forms.BooleanField(
         label=_('Require a review text'), required=False
-    )
-    review_help_text = I18nFormField(
-        label=_('Help text for reviewers'),
-        help_text=_(
-            'This text will be shown at the top of every review, as long as reviews can be created or edited.'
-        )
-        + ' '
-        + phrases.base.use_markdown,
-        widget=I18nTextarea,
-        required=False,
     )
     review_min_score = forms.IntegerField(
         label=_('Minimum score'), help_text=_('The minimum score reviewers can assign')
