@@ -82,6 +82,18 @@ def can_be_reviewed(user, obj):
 
 
 @rules.predicate
+def can_view_reviews(user, obj):
+    phase = obj.event.active_review_phase
+    if not phase:
+        return False
+    if phase.can_see_other_reviews == 'always':
+        return True
+    elif phase.can_see_other_reviews == 'after_review':
+        return obj.reviews.filter(user=user).exists()
+    return False
+
+
+@rules.predicate
 def has_reviewer_access(user, obj):
     from pretalx.submission.models import Submission
 
