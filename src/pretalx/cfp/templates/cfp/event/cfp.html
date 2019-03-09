@@ -44,7 +44,7 @@
             </a>
         {% endif %}
         <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
-            href="{{ request.event.urls.submit }}">
+            href="{{ request.event.urls.submit }}{{ submit_qs }}">
         {% if cfp.is_open %}
             {% trans "Submit a proposal" %}
         {% else %}

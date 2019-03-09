@@ -389,6 +389,12 @@ class SubmissionTypeList(EventPermissionRequired, ListView):
     context_object_name = 'types'
     permission_required = 'orga.view_submission_type'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for t in context[self.context_object_name]:
+            t.cfp_public_deep_url = f'{t.urls.prefilled_cfp_base}{t.slug()}'
+        return context
+
     def get_queryset(self):
         return self.request.event.submission_types.all()
 
@@ -492,6 +498,12 @@ class TrackList(EventPermissionRequired, ListView):
     template_name = 'orga/cfp/track_view.html'
     context_object_name = 'tracks'
     permission_required = 'orga.view_tracks'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for t in context[self.context_object_name]:
+            t.cfp_public_deep_url = f'{t.urls.prefilled_cfp_base}{t.slug()}'
+        return context
 
     def get_queryset(self):
         return self.request.event.tracks.all()

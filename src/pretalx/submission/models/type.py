@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins import LogMixin, IdBasedSlug
 from pretalx.common.urls import EventUrls
 
 
@@ -12,7 +12,7 @@ def pleasing_number(number):
     return number
 
 
-class SubmissionType(LogMixin, models.Model):
+class SubmissionType(LogMixin, IdBasedSlug, models.Model):
     event = models.ForeignKey(
         to='event.Event', related_name='submission_types', on_delete=models.CASCADE
     )
@@ -33,6 +33,7 @@ class SubmissionType(LogMixin, models.Model):
         base = edit = '{self.event.cfp.urls.types}{self.pk}/'
         default = '{base}default'
         delete = '{base}delete'
+        prefilled_cfp_base = '{self.event.cfp.urls.public}?submission_type='
 
     def __str__(self) -> str:
         """Used in choice drop downs."""

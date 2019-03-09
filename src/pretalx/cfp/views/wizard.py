@@ -25,7 +25,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import Answer, QuestionTarget, QuestionVariant
+from pretalx.submission.models import Answer, QuestionTarget, QuestionVariant, SubmissionType, Track
 
 FORMS = [
     ('info', InfoForm),
@@ -44,16 +44,18 @@ FORM_DATA = {
 class SubmitStartView(EventPageMixin, View):
     @staticmethod
     def get(request, *args, **kwargs):
-        return redirect(
-            reverse(
-                'cfp:event.submit',
-                kwargs={
-                    'event': request.event.slug,
-                    'step': 'info',
-                    'tmpid': get_random_string(length=6),
-                },
-            )
+        url = reverse(
+            'cfp:event.submit',
+            kwargs={
+                'event': request.event.slug,
+                'step': 'info',
+                'tmpid': get_random_string(length=6),
+            },
         )
+        if request.GET:
+            url += f'?{request.GET.urlencode()}'
+
+        return redirect(url)
 
 
 def show_questions_page(wizard):
@@ -128,6 +130,19 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
         context['step_list'] = step_list
 
+        if step == 'info':
+            # use value of query string parameters track and submission_type as initial values for form if they are valid
+            for field, model_name in (('submission_type', SubmissionType), ('track', Track)):
+                request_value = self.request.GET.get(field)
+                try:
+                    request_id = model_name.id_from_slug(request_value) if request_value else None
+                except:
+                    continue
+                # search requested object by ID
+                obj = model_name.objects.filter(event=self.request.event, id=request_id).first()
+                # ensure that the whole slug matches, not only the ID
+                if obj and obj.slug() == request_value:
+                    context['form'].initial[field] = obj
         if step == 'profile':
             if hasattr(self.request.user, 'email'):
                 email = self.request.user.email

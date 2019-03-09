@@ -1,11 +1,12 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins import LogMixin, IdBasedSlug
 from pretalx.common.urls import EventUrls
 
 
-class Track(LogMixin, models.Model):
+class Track(LogMixin, IdBasedSlug, models.Model):
     event = models.ForeignKey(
         to='event.Event', on_delete=models.PROTECT, related_name='tracks'
     )
@@ -15,6 +16,7 @@ class Track(LogMixin, models.Model):
     class urls(EventUrls):
         base = edit = '{self.event.cfp.urls.tracks}{self.pk}/'
         delete = '{base}delete'
+        prefilled_cfp_base = '{self.event.cfp.urls.public}?track='
 
     def __str__(self) -> str:
         return f'{self.name} ({self.event.name})'

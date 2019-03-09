@@ -1,3 +1,6 @@
+from operator import itemgetter
+from urllib.parse import urlencode
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.timezone import now
@@ -34,6 +37,17 @@ class EventStartpage(EventPageMixin, TemplateView):
         context['has_sneak_peek'] = self.request.event.submissions.filter(
             is_featured=True
         ).exists()
+        # Extract track= and submission_type= from query string.
+        # Only used first value if key is used multiple times.
+        track = self.request.GET.get('track', None)
+        submission_type = self.request.GET.get('submission_type', None)
+        params = [('track', track), ('submission_type', submission_type)]
+        # remove keys whose value is None
+        params = [(k, v) for k, v in filter(lambda p: p[1] is not None, params)]
+        if params:
+            context['submit_qs'] = f'?{urlencode(params)}'
+        else:
+            context['submit_qs'] = ''
         return context
 
 

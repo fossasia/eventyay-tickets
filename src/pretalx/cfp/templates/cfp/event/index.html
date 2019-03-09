@@ -25,7 +25,7 @@
             </a>
         {% endif %}
         {% if cfp.is_open %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.cfp.urls.public }}">
+            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.cfp.urls.public }}{{ submit_qs }}">
                 {% trans "Go to CfP" %}
             </a>
         {% endif %}

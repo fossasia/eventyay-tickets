@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.contenttypes.models import ContentType
+from django.utils.text import slugify
 from i18nfield.utils import I18nJSONEncoder
 
 SENSITIVE_KEYS = ['password', 'secret', 'api_key']
@@ -38,3 +39,24 @@ class LogMixin:
             content_type=ContentType.objects.get_for_model(type(self)),
             object_id=self.pk,
         ).select_related('event', 'person')
+
+
+class IdBasedSlug:
+    """
+    Adds a method to retrieve a human-understandable slug based on the `id` field of a model.
+    """
+
+    slug_separator = '-'
+
+    def slug(self):
+        """
+        Get slug of this object.
+        """
+        return f'{self.id}{self.slug_separator}{slugify(self.name)}'
+
+    @classmethod
+    def id_from_slug(cls, slug):
+        """
+        Get ID from slug value.
+        """
+        return int(slug.split(cls.slug_separator)[0])

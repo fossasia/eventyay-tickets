@@ -1,9 +1,11 @@
 from datetime import timedelta
+from urllib.parse import urlparse
 
 import bs4
 import django.forms as forms
 import pytest
 from django.core import mail as djmail
+from django.http.request import QueryDict
 from django.utils.timezone import now
 
 from pretalx.submission.forms import InfoForm
@@ -113,6 +115,23 @@ class TestWizard:
         response, current_url = self.get_response_and_url(client, url, data=data)
         assert current_url.endswith(next), f'{current_url} does not end with {next}!'
         return response, current_url
+
+    @pytest.mark.django_db
+    def test_info_wizard_query_string_handling(self, event, client):
+        # build query string
+        params_dict = QueryDict('track=academic&submission_type=academic_talk')
+        current_url = '/test/submit/?{params_dict}'
+        # Start wizard
+        djmail.outbox = []
+        response, current_url = self.get_response_and_url(
+            client, current_url, method='GET'
+        )
+        # get query string from current URL
+        url_parts = urlparse(current_url)
+        q = QueryDict(url_parts.query)
+        assert url_parts.path.endswith('/info/') is True
+        assert q.get('track') == params_dict.get('academic')
+        assert q.get('submission_type') == params_dict.get('academic_talk')
 
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):

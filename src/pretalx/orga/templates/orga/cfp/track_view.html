@@ -28,6 +28,11 @@
                     </td>
                     <td><div class="color-square" style="background: {{ track.color }}"></div></td>
                     <td class="action-column">
+                        <a href="{{ track.cfp_public_deep_url }}"
+                                title="{% trans 'go to pre-filled CfP form' %}"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-link"></i>
+                        </a>
                         <a href="{{ track.urls.edit }}"
                                 class="btn btn-sm btn-info">
                             <i class="fa fa-edit"></i>

@@ -56,7 +56,7 @@ def test_make_submission_type_default(
 def test_edit_submission_type(orga_client, submission_type):
     response = orga_client.post(
         submission_type.urls.edit,
-        {'default_duration': 31, 'name_0': 'New Type!'},
+        {'default_duration': 31, 'slug': 'New_Type', 'name_0': 'New Type!'},
         follow=True,
     )
     submission_type.refresh_from_db()
