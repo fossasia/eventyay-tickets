@@ -42,10 +42,8 @@ class ScheduleData(BaseExporter):
         data = {
             current_date.date(): {
                 'index': index + 1,
-                'start': datetime.combine(current_date.date(), time(hour=4, minute=0, tzinfo=tz)),
-                'end': datetime.combine(
-                    current_date.date() + timedelta(days=1), time(hour=3, minute=59, tzinfo=tz)
-                ),
+                'start': current_date.replace(hour=4, minute=0).astimezone(tz),
+                'end': current_date.replace(hour=3, minute=59).astimezone(tz) + timedelta(days=1),
                 'first_start': None,
                 'last_end': None,
                 'rooms': dict(),
