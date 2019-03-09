@@ -43,8 +43,8 @@
       <xs:element type="room" name="room" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute type="xs:date" name="date"/>
-    <xs:attribute type="xs:dateTime" name="start"/>
-    <xs:attribute type="xs:dateTime" name="end"/>
+    <xs:attribute type="dateTimeTZ" name="start"/>
+    <xs:attribute type="dateTimeTZ" name="end"/>
     <xs:attribute type="xs:positiveInteger" name="index"/>
   </xs:complexType>
 
@@ -61,7 +61,7 @@
       <xs:element type="xs:string" name="title"/>
       <xs:element type="xs:string" name="subtitle"/>
       <xs:element type="xs:string" name="type"/>
-      <xs:element type="xs:dateTime" name="date"/>
+      <xs:element type="dateTimeTZ" name="date"/>
       <xs:element type="start" name="start"/>
       <xs:element type="duration" name="duration"/>
       <xs:element type="xs:string" name="abstract"/>
@@ -81,6 +81,12 @@
     <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
     <xs:attribute name="guid" type="uuid" use="required"/>
   </xs:complexType>
+
+  <xs:simpleType name="dateTimeTZ">
+    <xs:restriction base="xs:dateTime">
+      <xs:pattern value=".+(Z|\+[0-9]{1,2}:[0-9]{2}|-[0-9]{1,2}:[0-9]{2})"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="duration">
     <xs:restriction base="xs:string">
