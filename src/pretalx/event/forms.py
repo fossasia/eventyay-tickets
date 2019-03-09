@@ -250,8 +250,8 @@ class ReviewPhaseForm(I18nModelForm):
             'can_see_other_reviews',
         ]
         widgets = {
-            'start': forms.DateInput(attrs={'class': 'datepickerfield'}),
+            'start': forms.DateInput(attrs={'class': 'datetimepickerfield'}),
             'end': forms.DateInput(
-                attrs={'class': 'datepickerfield'}
+                attrs={'class': 'datetimepickerfield'}
             ),
         }

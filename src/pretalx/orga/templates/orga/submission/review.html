@@ -159,7 +159,7 @@
                 <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
                 {% endif %}
                 <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
-                <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
+                <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Save and next" %}</button>
             </div>
         </div>
     {% endif %}
