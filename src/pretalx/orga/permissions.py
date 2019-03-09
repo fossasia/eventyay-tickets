@@ -6,7 +6,10 @@ from django.utils.timezone import now
 from pretalx.person.permissions import (
     can_change_submissions, is_administrator, is_reviewer,
 )
-from pretalx.submission.permissions import can_be_reviewed, is_review_author, can_view_reviews
+from pretalx.submission.permissions import (
+    can_be_reviewed, can_view_reviews,
+    is_review_author, reviewer_can_change_submissions,
+)
 
 
 @rules.predicate
@@ -127,7 +130,7 @@ rules.add_perm('orga.change_speaker', can_change_submissions)
 rules.add_perm('orga.view_submissions', can_change_submissions | is_reviewer)
 rules.add_perm('orga.create_submission', can_change_submissions)
 rules.add_perm('orga.change_submissions', can_change_submissions)
-rules.add_perm('orga.change_submission_state', can_change_submissions)
+rules.add_perm('orga.change_submission_state', can_change_submissions | (is_reviewer & reviewer_can_change_submissions))
 rules.add_perm('orga.view_information', can_change_submissions)
 rules.add_perm('orga.change_information', can_change_submissions)
 rules.add_perm('orga.create_events', can_create_events)
