@@ -5,10 +5,12 @@
 {% load rules %}
 
 {% block submission_content %}
+{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+{% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}
 {% if request.user in submission.speakers.all %}
     <div class="alert alert-error"><span>
         {% blocktrans trimmed %}
-        You're not allowed to review your own submissions.
+        You're not allowed to review or see reviews for your own submissions.
         {% endblocktrans %}
     </div>
 {% else %}
@@ -16,7 +18,7 @@
         <div class="alert alert-info">
             <span>
             {{ request.event.settings.review_help_text|rich_text }}
-            {% if not form.instance.pk %}
+            {% if not form.instance.pk and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
                 {% blocktrans trimmed %}
                     You will be able to see other reviews once you have given yours.
                 {% endblocktrans %}
@@ -75,7 +77,6 @@
         </div>
     </div>
     {% endif %}
-    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
     {% if can_view_speakers %}
         {% for speaker in profiles %}
         <div class="form-group row">
@@ -98,21 +99,8 @@
         {% bootstrap_field form.score layout='event' %}
         {% bootstrap_form qform layout='event' %}
         {% bootstrap_field form.text layout='event' %}
-        <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
-                {{ done }} / {{ total_reviews }}
-            </div>
-        </div>
-        <div class="submit-group"><span></span>
-            <div>
-                {% if skip_for_now %}
-                <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
-                {% endif %}
-                <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
-                <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
-            </div>
-        </div>
-    {% else %}
+    {% endif %}
+    {% if can_view_other_reviews %}
     <table class="table review-table table-hover table-responsive-md">
             <tr>
                 <th>{% trans "Points" %}</th>
@@ -123,7 +111,7 @@
                 <th></th>
             </tr>
         <tbody>
-            {% if form.instance.pk or not read_only %}
+            {% if form.instance.pk %}
             <tr>
                 {% csrf_token %}
                 <td>{% bootstrap_field form.score layout="inline" %}</td>
@@ -153,9 +141,27 @@
                         <td>{{ review.user }}</td>
                     </tr>
                 {% endif %}
+            {% empty %}
+                <tr><td colspan="100">{% trans "Nobody else has submitted a review yet." %}</td></tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
+    {% if not read_only %}
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+                {{ done }} / {{ total_reviews }}
+            </div>
+        </div>
+        <div class="submit-group"><span></span>
+            <div>
+                {% if skip_for_now %}
+                <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
+                {% endif %}
+                <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1">{% trans "Save and next" %}</button>
+            </div>
+        </div>
     {% endif %}
 </form>
 {% endif %}  {# endif: request.user in submission.speakers #}
