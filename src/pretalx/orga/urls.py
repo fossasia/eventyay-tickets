@@ -123,7 +123,7 @@ urlpatterns = [
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
         url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
 
-        url('^settings/review$', event.EventReviewSettings.as_view(), name='settings.review'),
+        url('^settings/review/$', event.EventReviewSettings.as_view(), name='settings.review'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/up$', event.phase_move_up, name='settings.review.phase.up'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/down$', event.phase_move_down, name='settings.review.phase.down'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/delete$', event.PhaseDelete.as_view(), name='settings.review.phasedelete'),

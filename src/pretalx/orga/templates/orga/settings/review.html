@@ -64,10 +64,11 @@
                            title="{% trans "Move phase up" %}">
                             <i class="fa fa-arrow-up"></i>
                         </a>
-                        <div class="phase-option-delete">
-                            <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                <i class="fa fa-trash"></i></button>
-                        </div>
+                        <a href="{{ form.instance.urls.delete }}"
+                           class="btn btn-danger"
+                           title="{% trans "Move phase up" %}">
+                            <i class="fa fa-trash"></i>
+                        </a>
                         {% endif %}
                     </h3>
                     <div class="sr-only">

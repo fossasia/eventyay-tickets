@@ -101,6 +101,12 @@ class ReviewPhase(models.Model):
     class Meta:
         ordering = ('position', )
 
+    class urls(EventUrls):
+        base = '{self.event.orga_urls.review_settings}phase/{self.pk}/'
+        delete = '{base}delete'
+        up = '{base}up'
+        down = '{base}down'
+
     def activate(self):
         self.event.review_phases.all().update(is_active=False)
         self.is_active = True
