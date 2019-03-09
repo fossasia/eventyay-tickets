@@ -9,12 +9,12 @@ from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DeleteView, FormView, TemplateView, UpdateView
+from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
@@ -218,7 +218,6 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        result = super().form_valid(form)
         formset = self.save_formset()
         if not formset:
             return self.get(self.request, *self.args, **self.kwargs)
@@ -262,6 +261,54 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             form.instance.event = self.request.event
             form.save()
         return True
+
+
+def phase_move(request, pk, up=True):
+    try:
+        phase = request.event.review_phases.get(pk=pk)
+    except ReviewPhase.DoesNotExist:
+        raise Http404(_('The selected review phase does not exist.'))
+    if not request.user.has_perm('orga.change_settings', phase):
+        messages.error(request, _('Sorry, you are not allowed to reorder review phases.'))
+        return
+    phases = list(request.event.review_phases.order_by('position'))
+
+    index = phases.index(phase)
+    if index != 0 and up:
+        phases[index - 1], phases[index] = phases[index], phases[index - 1]
+    elif index != len(phases) - 1 and not up:
+        phases[index + 1], phases[index] = phases[index], phases[index + 1]
+
+    for i, phase in enumerate(phases):
+        if phase.position != i:
+            phase.position = i
+            phase.save()
+    messages.success(request, _('The order of review phases has been updated.'))
+
+
+def phase_move_up(request, event, pk):
+    phase_move(request, pk, up=True)
+    return redirect(request.event.urls.review_settings)
+
+
+def phase_move_down(request, event, pk):
+    phase_move(request, pk, up=False)
+    return redirect(request.event.urls.review_settings)
+
+
+class PhaseDelete(PermissionRequired, View):
+    permission_required = 'orga.change_settings'
+
+    def get_object(self):
+        return get_object_or_404(
+            ReviewPhase, event=self.request.event, pk=self.kwargs.get('pk')
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        phase = self.get_object()
+        phase.delete()
+        return redirect(self.request.event.orga_urls.review_settings)
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):

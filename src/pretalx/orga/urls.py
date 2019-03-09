@@ -120,10 +120,13 @@ urlpatterns = [
         url('^reviews/$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
 
         url('^settings/$', event.EventDetail.as_view(), name='settings.event.view'),
-        url('^settings/review$', event.EventReviewSettings.as_view(), name='settings.review'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
-
         url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
+
+        url('^settings/review$', event.EventReviewSettings.as_view(), name='settings.review'),
+        url('^settings/review/phase/(?P<pk>[0-9]+)/up$', event.phase_move_up, name='settings.review.phase.up'),
+        url('^settings/review/phase/(?P<pk>[0-9]+)/down$', event.phase_move_down, name='settings.review.phase.down'),
+        url('^settings/review/phase/(?P<pk>[0-9]+)/delete$', event.PhaseDelete.as_view(), name='settings.review.phasedelete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/import/$', schedule.ScheduleImportView.as_view(), name='schedule.import'),
