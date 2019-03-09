@@ -8,7 +8,7 @@
     >
     {% include "cfp/event/fragment_state.html" with state=submission.state %}
   </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownSubmissionState{{ submission.code }}">
+  <div class="dropdown-menu submission-dropdown-menu" aria-labelledby="dropdownSubmissionState{{ submission.code }}">
     {% if submission.state != 'submitted' %}
     <a
         class="dropdown-item submission-state-submitted"
