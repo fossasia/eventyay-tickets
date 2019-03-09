@@ -106,6 +106,7 @@ class ReviewPhase(models.Model):
         delete = '{base}delete'
         up = '{base}up'
         down = '{base}down'
+        activate = '{base}activate'
 
     def activate(self):
         self.event.review_phases.all().update(is_active=False)

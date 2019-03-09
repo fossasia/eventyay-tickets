@@ -127,6 +127,7 @@ urlpatterns = [
         url('^settings/review/phase/(?P<pk>[0-9]+)/up$', event.phase_move_up, name='settings.review.phase.up'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/down$', event.phase_move_down, name='settings.review.phase.down'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/delete$', event.PhaseDelete.as_view(), name='settings.review.phasedelete'),
+        url('^settings/review/phase/(?P<pk>[0-9]+)/activate$', event.PhaseActivate.as_view(), name='settings.review.phasedelete'),
 
         url('^schedule/$', schedule.ScheduleView.as_view(), name='schedule.main'),
         url('^schedule/import/$', schedule.ScheduleImportView.as_view(), name='schedule.import'),
