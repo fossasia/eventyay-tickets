@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db import models
+from django.db.models import Q, Avg, OuterRef, Count, Exists, Case, When, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -41,9 +41,6 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         )
 
     def get_queryset(self):
-        overridden_reviews = Review.objects.filter(
-            override_vote__isnull=False, submission_id=models.OuterRef('pk')
-        )
         queryset = self.request.event.submissions.filter(
             state__in=[
                 SubmissionStates.SUBMITTED,
@@ -53,10 +50,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ]
         )
         limit_tracks = self.request.user.teams.filter(
-            models.Q(all_events=True)
-            | models.Q(
-                models.Q(all_events=False)
-                & models.Q(limit_events__in=[self.request.event])
+            Q(all_events=True)
+            | Q(
+                Q(all_events=False)
+                & Q(limit_events__in=[self.request.event])
             ),
             limit_tracks__isnull=False,
         )
@@ -65,28 +62,43 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
             queryset = queryset.filter(track__in=tracks)
-        queryset = self.filter_queryset(queryset)
+        queryset = self.filter_queryset(queryset).annotate(review_count=Count('reviews'))
+
+        can_see_all_reviews = self.request.user.has_perm('orga.view_all_reviews', self.request.event)
+        ordering = self.request.GET.get('sort', 'default')
+
+        overridden_reviews = Review.objects.filter(
+            override_vote__isnull=False, submission_id=OuterRef('pk')
+        )
+        default = Avg('reviews__score')
+
+        if not can_see_all_reviews:
+            overridden_reviews = overridden_reviews.filter(user=self.request.user)
+            user_reviews = self.request.event.reviews.filter(user=self.request.user)
+            default = Subquery(user_reviews.filter(submission_id=OuterRef('pk')).values_list('score')[:1])
+
         queryset = (
             queryset.order_by('review_id')
-            .annotate(has_override=models.Exists(overridden_reviews))
+            .annotate(has_override=Exists(overridden_reviews))
             .annotate(
-                avg_score=models.Case(
-                    models.When(
+                avg_score=Case(
+                    When(
                         has_override=True,
                         then=self.request.event.settings.review_max_score + 1,
                     ),
-                    default=models.Avg('reviews__score'),
+                    default=default,
                 )
             )
-            .annotate(review_count=models.Count('reviews'))
         )
-        ordering = self.request.GET.get('sort', 'default')
-        if ordering == 'default':
-            return queryset.order_by('-state', '-avg_score', 'code')
         if ordering == 'count':
-            return queryset.order_by('review_count')
+            return queryset.order_by('review_count', 'code')
         if ordering == '-count':
-            return queryset.order_by('-review_count')
+            return queryset.order_by('-review_count', 'code')
+        if ordering == 'score':
+            return queryset.order_by('-avg_score', '-state', 'code')
+        if ordering == '-score':
+            return queryset.order_by('avg_score', '-state', 'code')
+        return queryset.order_by('-state', '-avg_score', 'code')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

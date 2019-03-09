@@ -8,6 +8,8 @@
 {% block content %}
 {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
 {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
+{% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
+{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 <div class="dashboard-list">
     <div class="dashboard-block">
         <h1>{{ review_count }}</h1>
@@ -86,8 +88,6 @@
     </form>
 </div>
 
-{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-
 <table class="table table-sm review-table table-hover table-responsive-md">
     <colgroup>
         <col class="nowrap">
@@ -101,8 +101,13 @@
     <thead>
         <tr>
             <th>
-                {% trans "Score" %}
-                <a href="?{% url_replace request 'sort' 'default' %}"><i class="fa fa-caret-down"></i></a>
+                {% if can_view_all_reviews %}
+                    {% trans "Average score" %}
+                {% else %}
+                    {% trans "Score" %}
+                {% endif %}
+                <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down"></i></a>
+                <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up"></i></a>
             </th>
             <th>
                 {% trans "Reviews" %}
@@ -134,8 +139,10 @@
                 {% else %}
                     –
                 {% endif %}
-                {% if submission.pk in submissions_reviewed %}
-                <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
+                {% if can_view_all_reviews %}
+                    {% if submission.pk in submissions_reviewed %}
+                        <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>

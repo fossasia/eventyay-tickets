@@ -7,7 +7,7 @@ from pretalx.person.permissions import (
     can_change_submissions, is_administrator, is_reviewer,
 )
 from pretalx.submission.permissions import (
-    can_be_reviewed, can_view_reviews,
+    can_be_reviewed, can_view_reviews, can_view_all_reviews,
     is_review_author, reviewer_can_change_submissions,
 )
 
@@ -116,6 +116,7 @@ rules.add_perm('orga.view_mail_templates', can_change_submissions)
 rules.add_perm('orga.edit_mail_templates', can_change_submissions)
 rules.add_perm('orga.view_review_dashboard', can_change_submissions | is_reviewer)
 rules.add_perm('orga.view_reviews', can_change_submissions | (is_reviewer & can_view_reviews))
+rules.add_perm('orga.view_all_reviews', can_change_submissions | (is_reviewer & can_view_all_reviews))
 rules.add_perm('orga.perform_reviews', is_reviewer & reviews_are_open)
 rules.add_perm('orga.remove_review', is_administrator | (is_review_author & can_be_reviewed))
 rules.add_perm('orga.view_schedule', can_change_submissions)
