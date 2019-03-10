@@ -206,7 +206,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header unstuck"><a v-bind:href="room.url">{{ displayName }}</a></div>
+      <div class="room-header"><a v-bind:href="room.url">{{ displayName }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
@@ -279,12 +279,12 @@ var app = new Vue({
         </div>
       </div>
       <div id='unassigned-talks'>
-        <div class="room-header" ref="roomHeader">Unassigned Talks</div>
+        <div class="talk-header" ref="roomHeader">Unassigned Talks</div>
         <div class="input-group">
           <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
           <input type="text" class="form-control" placeholder="Search..." v-model="search">
         </div>
-        <div class="room-container" id="unassigned-container" ref="unassigned">
+        <div id="unassigned-container" ref="unassigned">
             <talk v-for="talk in filteredTalks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
         </div>
       </div>

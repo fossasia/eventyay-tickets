@@ -88,14 +88,12 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   overflow: hidden;
   text-overflow: ellipsis;
   justify-content: center;
-  &.unstuck {
-    position: sticky;
-    color: white;
-    z-index: 100;
-    top: 50px;
-    background: $brand-success;
-    box-shadow: 0 1px 3px rgba($brand-success, 0.18), 0 1px 2px rgba($brand-success, 0.36);
-  }
+  position: sticky;
+  color: white;
+  z-index: 100;
+  top: 50px;
+  background: $brand-success;
+  box-shadow: 0 1px 3px rgba($brand-success, 0.18), 0 1px 2px rgba($brand-success, 0.36);
 }
 
 #unassigned-talks {
@@ -104,30 +102,44 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   position: fixed;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   right: 20px;
-  top: 123px;
+  top: 70px;
   width: 265px;
-  height: calc(100vh - 123px - 20px);
+  padding: 0;
+  height: calc(100vh - 70px - 20px);
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  padding: 5px;
+  z-index: 120;
 
   .input-group {
-    margin-bottom: 5px;
+    margin: 8px;
+    width: auto;
   }
 
   .hover-active {
     background: $gray-lighter;
   }
 
-  .room-container {
+  #unassigned-container {
     overflow-y: auto;
+    height: 100%;
+    margin: 8px;
+    margin-top: 0;
+    padding-top: 8px;
   }
 
   .talk-box {
     position: static;
     margin-bottom: 5px;
+  }
+  .talk-header {
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    background: $brand-info;
+    text-align: center;
+    padding: 8px;
   }
 }
 
@@ -199,6 +211,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   width: calc(100% - 16px);
   margin: 0 8px;
   z-index: 50;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
   span {
     padding-right: 8px;
