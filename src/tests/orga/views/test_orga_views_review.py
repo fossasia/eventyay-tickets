@@ -19,7 +19,20 @@ def test_reviewer_can_add_review(review_client, submission):
 
 
 @pytest.mark.django_db
-def test_reviewer_can_add_review_with_redirect(review_client, submission):
+def test_reviewer_can_add_review_with_redirect(review_client, submission, other_submission):
+    response = review_client.post(
+        submission.orga_urls.reviews, follow=True,
+        data={
+            'score': 1,
+            'text': 'LGTM',
+            'show_next': '1',
+        }
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_reviewer_can_add_review_with_redirect_finished(review_client, submission):
     response = review_client.post(
         submission.orga_urls.reviews, follow=True,
         data={
@@ -219,7 +232,15 @@ def test_orga_can_see_review(orga_client, review):
 
 
 @pytest.mark.django_db
-def test_reviewer_can_see_dashboard(review_client, submission, review):
+@pytest.mark.parametrize('sort', ('count', '-count', 'score', '-score'))
+def test_reviewer_can_see_dashboard(review_client, submission, review, sort):
+    response = review_client.get(submission.event.orga_urls.reviews + '?sort=' + sort)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_reviewer_with_track_limit_can_see_dashboard(review_client, review_user, track, submission, review):
+    review_user.teams.first().limit_tracks.add(track)
     response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
 

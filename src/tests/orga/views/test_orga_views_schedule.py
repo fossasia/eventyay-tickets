@@ -331,3 +331,14 @@ def test_move_rooms_in_list_down_out_of_bounds(orga_client, room, other_room, ev
     other_room.refresh_from_db()
     assert room.position == 0
     assert other_room.position == 1
+
+
+@pytest.mark.django_db
+def test_regenerate_speaker_notifications(orga_client, event, slot):
+    queue_count = event.queued_mails.count()
+    response = orga_client.post(
+        event.orga_urls.schedule + 'resend_mails',
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert event.queued_mails.count() > queue_count

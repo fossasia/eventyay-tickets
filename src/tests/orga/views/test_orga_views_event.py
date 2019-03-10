@@ -109,6 +109,39 @@ def test_add_custom_css(event, orga_client, path, allowed):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    'path',
+    (
+        'tests/fixtures/custom.css',
+        'tests/fixtures/malicious.css',
+        'tests/conftest.py',
+    ),
+)
+def test_add_custom_css_as_administrator(event, administrator_client, path):
+    assert not event.custom_css
+    with open(path, 'r') as custom_css:
+        response = administrator_client.post(
+            event.orga_urls.edit_settings,
+            {
+                'name_0': event.name,
+                'slug': 'csstest',
+                'locales': ','.join(event.locales),
+                'locale': event.locale,
+                'date_from': event.date_from,
+                'date_to': event.date_to,
+                'timezone': event.timezone,
+                'email': event.email,
+                'primary_color': event.primary_color,
+                'custom_css': custom_css,
+            },
+            follow=True,
+        )
+    event.refresh_from_db()
+    assert response.status_code == 200
+    assert event.custom_css
+
+
+@pytest.mark.django_db
 def test_add_logo(event, orga_client):
     assert not event.logo
     response = orga_client.get(event.urls.base, follow=True)
