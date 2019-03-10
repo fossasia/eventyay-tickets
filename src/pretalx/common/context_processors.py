@@ -45,7 +45,7 @@ def messages(request):
 def system_information(request):
     context = {}
     _footer = []
-    for _, response in footer_link.send(
+    for sender, response in footer_link.send(
         getattr(request, 'event', None), request=request
     ):
         if isinstance(response, list):
