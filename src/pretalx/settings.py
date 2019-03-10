@@ -295,13 +295,14 @@ MESSAGE_TAGS = {
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+TIME_ZONE = config.get('locale', 'time_zone')
 LANGUAGES = [('en', _('English')), ('de', _('German')), ('fr', _('French'))]
 LANGUAGES_NATURAL_NAMES = [('en', 'English'), ('de', 'Deutsch'), ('fr', 'Français')]
 LANGUAGES_OFFICIAL = {'en', 'de'}
+LANGUAGE_CODE = config.get('locale', 'language_code')
+LANGUAGE_CODES = [language[0] for language in LANGUAGES]
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
 FORMAT_MODULE_PATH = ['pretalx.common.formats']
-TIME_ZONE = config.get('locale', 'time_zone')
-LANGUAGE_CODE = config.get('locale', 'language_code')
 
 
 ## AUTHENTICATION SETTINGS
