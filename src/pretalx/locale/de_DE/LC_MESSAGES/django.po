@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 11:43+0000\n"
-"PO-Revision-Date: 2019-03-10 12:44+0100\n"
+"POT-Creation-Date: 2019-03-10 14:10+0000\n"
+"PO-Revision-Date: 2019-03-10 15:11+0100\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -323,13 +323,13 @@ msgid "Text"
 msgstr "Text"
 
 #: pretalx/cfp/forms/submissions.py:13
-#: pretalx/submission/models/submission.py:540
+#: pretalx/submission/models/submission.py:541
 #, python-brace-format
 msgid "{speaker} invites you to join their talk!"
 msgstr "{speaker} lädt dich zu einem Talk ein"
 
 #: pretalx/cfp/forms/submissions.py:18
-#: pretalx/submission/models/submission.py:545
+#: pretalx/submission/models/submission.py:546
 #, python-brace-format
 msgid ""
 "Hi!\n"
@@ -560,7 +560,7 @@ msgstr "Zusammenfassung:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:30
 #: pretalx/orga/templates/orga/cfp/question_detail.html:69
-#: pretalx/submission/models/submission.py:530
+#: pretalx/submission/models/submission.py:531
 msgid "No"
 msgstr "Nein"
 
@@ -1071,11 +1071,11 @@ msgstr ""
 msgid "New submission!"
 msgstr "Neue Einreichung!"
 
-#: pretalx/common/context_processors.py:33
+#: pretalx/common/context_processors.py:34
 msgid "“"
 msgstr "„"
 
-#: pretalx/common/context_processors.py:34
+#: pretalx/common/context_processors.py:35
 msgid "”"
 msgstr "“"
 
@@ -2558,7 +2558,7 @@ msgstr "Tracks verwenden"
 msgid "Do you organise your talks by tracks?"
 msgstr "Werden die Vorträge dieser Veranstaltung in Tracks sortiert?"
 
-#: pretalx/orga/forms/cfp.py:17 pretalx/submission/models/submission.py:155
+#: pretalx/orga/forms/cfp.py:17 pretalx/submission/models/submission.py:156
 msgid "Slot Count"
 msgstr "Anzahl"
 
@@ -3312,7 +3312,7 @@ msgstr "verlorene Datei"
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:16
 #: pretalx/orga/templates/orga/speaker/information_delete.html:15
 #: pretalx/orga/templates/orga/speaker/reset_password.html:16
-#: pretalx/submission/models/submission.py:530
+#: pretalx/submission/models/submission.py:531
 msgid "Yes"
 msgstr "Ja"
 
@@ -3456,6 +3456,7 @@ msgstr ""
 "sortieren."
 
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:16
+#: pretalx/submission/models/submission.py:104
 msgid "Submission type"
 msgstr "Einreichungsart"
 
@@ -3583,7 +3584,7 @@ msgid "Recording opt-out"
 msgstr "Aufzeichnungs-Opt-Out"
 
 #: pretalx/orga/templates/orga/cfp/text.html:106
-#: pretalx/submission/models/submission.py:179
+#: pretalx/submission/models/submission.py:180
 msgid "Talk image"
 msgstr "Bild"
 
@@ -4679,20 +4680,20 @@ msgstr "Möchtest du den Status dieser Einreichung wirklich ändern?"
 msgid "Do it"
 msgstr "Los!"
 
-#: pretalx/orga/templates/orga/user.html:5
-#: pretalx/orga/templates/orga/user.html:10
+#: pretalx/orga/templates/orga/user.html:6
+#: pretalx/orga/templates/orga/user.html:11
 msgid "User settings"
 msgstr "Nutzereinstellungen"
 
-#: pretalx/orga/templates/orga/user.html:18
+#: pretalx/orga/templates/orga/user.html:19
 msgid "Login settings"
 msgstr "Login-Einstellungen"
 
-#: pretalx/orga/templates/orga/user.html:27
+#: pretalx/orga/templates/orga/user.html:28
 msgid "API Access"
 msgstr "API-Zugang"
 
-#: pretalx/orga/templates/orga/user.html:29
+#: pretalx/orga/templates/orga/user.html:30
 #, python-format
 msgid ""
 "This token can be used to access the <a %(apiurl)s>pretalx API</a>. You can "
@@ -4703,15 +4704,25 @@ msgstr ""
 "Du kannst hier ein neues Token erstellen, das das alte invalidieren wird. "
 "Für Details sieh dir bitte die <a %(docurl)s>API-Dokumentation</a> an."
 
-#: pretalx/orga/templates/orga/user.html:37
+#: pretalx/orga/templates/orga/user.html:38
 msgid "API Token"
 msgstr "API-Token"
 
-#: pretalx/orga/templates/orga/user.html:41
+#: pretalx/orga/templates/orga/user.html:44
+msgid "Copy token"
+msgstr "API-Token kopieren"
+
+#: pretalx/orga/templates/orga/user.html:49
 msgid "Use for authentication when accessing the API."
 msgstr "Verwende dieses Token, wenn du die API nutzen möchtest."
 
-#: pretalx/orga/templates/orga/user.html:48
+#: pretalx/orga/templates/orga/user.html:55
+msgid "Generate a new token. The current token will not be usable any longer."
+msgstr ""
+"Erstellt ein neues Token. Das bisherige Token wird nicht mehr verwendbar "
+"sein."
+
+#: pretalx/orga/templates/orga/user.html:56
 msgid "Invalidate and regenerate"
 msgstr "Zurücksetzen"
 
@@ -5828,10 +5839,6 @@ msgstr "Reviewer können Einreichungen annehmen und ablehnen"
 msgid "rejected"
 msgstr "abgelehnt"
 
-#: pretalx/submission/models/submission.py:104
-msgid "Submission type"
-msgstr "Einreichungsart"
-
 #: pretalx/submission/models/submission.py:118
 msgid "Submission state"
 msgstr "Einreichungsstatus"
@@ -5844,11 +5851,17 @@ msgstr "Eine Zusammenfassung deiner Veranstaltung in ein bis zwei Sätzen."
 msgid "A full-text description of your talk and its contents."
 msgstr "Eine umfassende Beschreibung deiner Veranstaltung und ihres Inhalts."
 
-#: pretalx/submission/models/submission.py:142
+#: pretalx/submission/models/submission.py:138
+msgid "These notes are meant for the organiser and won't be made public."
+msgstr ""
+"Diese Notizen sind für die Veranstalter bestimmt und werden nicht "
+"veröffentlicht."
+
+#: pretalx/submission/models/submission.py:143
 msgid "Internal notes"
 msgstr "Interner Vermerk"
 
-#: pretalx/submission/models/submission.py:143
+#: pretalx/submission/models/submission.py:144
 msgid ""
 "Internal notes for other organisers/reviewers. Not visible to the speakers "
 "or the public."
@@ -5856,11 +5869,11 @@ msgstr ""
 "Interner Vermerk der Veranstaltenden. Weder für Vortragende noch für die "
 "Öffentlichkeit einsehbar."
 
-#: pretalx/submission/models/submission.py:148
+#: pretalx/submission/models/submission.py:149
 msgid "Duration"
 msgstr "Dauer"
 
-#: pretalx/submission/models/submission.py:150
+#: pretalx/submission/models/submission.py:151
 msgid ""
 "The duration in minutes. Leave empty for default duration for this "
 "submission type."
@@ -5868,15 +5881,15 @@ msgstr ""
 "Die Dauer in Minuten. Wenn du nichts einträgst, wird der Standard für diese "
 "Einreichungsart genommen."
 
-#: pretalx/submission/models/submission.py:157
+#: pretalx/submission/models/submission.py:158
 msgid "How many times this talk will be held."
 msgstr "Wie oft der Vortrag gehalten wird."
 
-#: pretalx/submission/models/submission.py:164
+#: pretalx/submission/models/submission.py:165
 msgid "Language"
 msgstr "Sprache"
 
-#: pretalx/submission/models/submission.py:169
+#: pretalx/submission/models/submission.py:170
 msgid ""
 "Show this talk on the public sneak peek page, if the sneak peek page is "
 "enabled and the talk was accepted."
@@ -5884,26 +5897,26 @@ msgstr ""
 "Zeige diese Einreichung auf der Vorschauseite, wenn diese freigegeben ist "
 "und der Vortrag angenommen wurde."
 
-#: pretalx/submission/models/submission.py:173
+#: pretalx/submission/models/submission.py:174
 msgid "Don't record this talk."
 msgstr "Zeichnet meine Veranstaltung nicht auf."
 
-#: pretalx/submission/models/submission.py:182
+#: pretalx/submission/models/submission.py:183
 msgid "Recording URL"
 msgstr "Aufzeichnungs-Link"
 
-#: pretalx/submission/models/submission.py:189
+#: pretalx/submission/models/submission.py:190
 msgid "Recording Source"
 msgstr "Aufzeichnungsquelle"
 
-#: pretalx/submission/models/submission.py:301
+#: pretalx/submission/models/submission.py:302
 msgctxt ""
 "used in talk confirm/accept/reject/...-errors, like \"... must be accepted "
 "OR foo OR bar ...\""
 msgid " or "
 msgstr " oder "
 
-#: pretalx/submission/models/submission.py:309
+#: pretalx/submission/models/submission.py:310
 #, python-brace-format
 msgid "Submission must be {src_states} not {state} to be {new_state}."
 msgstr ""
