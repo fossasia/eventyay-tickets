@@ -118,11 +118,11 @@ Vue.component('talk', {
   template: `
     <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings}]" v-bind:style="style" @mousedown="onMouseDown"
          :title="title" data-toggle="tooltip">
-      <span class="time" v-if="this.talk.start">
+      <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
+      <span v-if="!isDragged">{{ talk.title }}</span>
+      <span class="time" v-if="this.talk.start && this.isDragged">
         <span>{{ humanStart }}</span>
-        <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
       </span>
-      {{ talk.title }}
     </div>
   `,
   props: {
@@ -132,9 +132,10 @@ Vue.component('talk', {
   },
   computed: {
     title () {
-      let title = this.talk.title + ' (' + this.talk.duration + ' minutes)';
+      let title = this.start ? this.humanStart : '';
+      title += ' (' + this.talk.duration + ' minutes)';
       if (this.displayWarnings) {
-        title = title + '\n' + this.displayWarnings;
+        title = title + '\n\n' + this.displayWarnings;
       }
       return title;
     },
@@ -153,7 +154,7 @@ Vue.component('talk', {
         var dragLeft = dragController.event.clientX - rect.left - dragController.dragPosX
 
         style.transform = 'translate(' + dragLeft + 'px,' + dragTop + 'px)'
-        style.width = colRect.width + 'px'
+        style.width = colRect.width - 16 + 'px'
       } else if (this.talk.room !== null) {
         style.transform = 'translatey(' + moment(this.talk.start).diff(this.start, 'minutes') + 'px)'
       }
@@ -306,7 +307,6 @@ var app = new Vue({
     }
   },
   created () {
-    window.onscroll = function () {onScroll()}
     api.fetchRooms(this.eventSlug).then((result) => {
       this.rooms = result.results
     })
@@ -317,6 +317,9 @@ var app = new Vue({
       this.end = moment.tz(result.end, this.timezone)
     }).then(() => {
       this.loading = false
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
     })
   },
   computed: {
