@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 02:24+0000\n"
+"POT-Creation-Date: 2019-03-10 11:43+0000\n"
 "PO-Revision-Date: 2018-09-19 11:43+0200\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -303,8 +303,9 @@ msgid "No talk matches your search."
 msgstr "Votre recherche n'a retourné aucune intervention."
 
 #: pretalx/agenda/views/talk.py:121
-#, python-brace-format
-msgid "The talk »{title}« at {event}"
+#, fuzzy, python-brace-format
+#| msgid "The talk »{title}« at {event}"
+msgid "The talk “{title}” at {event}"
 msgstr "L'intervention »{title}« pour {event}"
 
 #: pretalx/cfp/forms/auth.py:30 pretalx/person/forms.py:218
@@ -352,7 +353,7 @@ msgid ""
 "\n"
 "I'd like to invite you to be a speaker in the talk\n"
 "\n"
-"  »{title}«\n"
+"  “{title}”\n"
 "\n"
 "at {event}. Please follow this link to join:\n"
 "\n"
@@ -572,10 +573,13 @@ msgid "Accept invitation?"
 msgstr "Accepter l'invitation ?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:9
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "You, %(name)s, have been invited to be a speaker for the submission "
+#| "»%(talk)s«. Do you accept the invitation?"
 msgid ""
 "You, %(name)s, have been invited to be a speaker for the submission "
-"»%(talk)s«. Do you accept the invitation?"
+"“%(talk)s”. Do you accept the invitation?"
 msgstr ""
 "Vous, %(name)s, avez été invité à être intervenant pour la proposition "
 "»%(talk)s«. Acceptez-vous l'invitation ?"
@@ -675,7 +679,7 @@ msgstr "Envoyer"
 #: pretalx/orga/templates/orga/cfp/track_delete.html:12
 #: pretalx/orga/templates/orga/event/delete.html:12
 #: pretalx/orga/templates/orga/mails/confirm.html:12
-#: pretalx/orga/templates/orga/organiser/delete.html:12
+#: pretalx/orga/templates/orga/organiser/delete.html:14
 #: pretalx/orga/templates/orga/schedule/release.html:76
 #: pretalx/orga/templates/orga/settings/team_delete.html:15
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:15
@@ -1110,6 +1114,14 @@ msgstr ""
 #: pretalx/cfp/views/wizard.py:218
 msgid "New submission!"
 msgstr "Nouvelle proposition !"
+
+#: pretalx/common/context_processors.py:33
+msgid "“"
+msgstr ""
+
+#: pretalx/common/context_processors.py:34
+msgid "”"
+msgstr ""
 
 #: pretalx/common/css.py:120
 #, python-brace-format
@@ -1574,12 +1586,23 @@ msgstr ""
 "L'équipe {event}.\n"
 
 #: pretalx/common/models/settings.py:125
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Hi,\n"
+#| "\n"
+#| "you have received a new submission for your event {event_name}:\n"
+#| "»{submission_title}« by {speakers}.\n"
+#| "You can see details at\n"
+#| "\n"
+#| "  {orga_url}\n"
+#| "\n"
+#| "All the best,\n"
+#| "your {event_name} CfP system.\n"
 msgid ""
 "Hi,\n"
 "\n"
 "you have received a new submission for your event {event_name}:\n"
-"»{submission_title}« by {speakers}.\n"
+"“{submission_title}” by {speakers}.\n"
 "You can see details at\n"
 "\n"
 "  {orga_url}\n"
@@ -3398,7 +3421,7 @@ msgstr "fichier perdu"
 #: pretalx/orga/templates/orga/cfp/track_delete.html:16
 #: pretalx/orga/templates/orga/event/delete.html:16
 #: pretalx/orga/templates/orga/mails/confirm.html:15
-#: pretalx/orga/templates/orga/organiser/delete.html:16
+#: pretalx/orga/templates/orga/organiser/delete.html:18
 #: pretalx/orga/templates/orga/settings/team_delete.html:16
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:16
 #: pretalx/orga/templates/orga/speaker/information_delete.html:15
@@ -3999,7 +4022,7 @@ msgstr "Supprimer le modèle"
 msgid "Do you really want to delete this organiser?"
 msgstr "Voulez-vous vraiment supprimer cette information ?"
 
-#: pretalx/orga/templates/orga/organiser/delete.html:7
+#: pretalx/orga/templates/orga/organiser/delete.html:9
 msgid ""
 "ALL related data for ALL events, such as submissions, and speaker profiles, "
 "and uploads, will also be deleted and cannot be restored."
@@ -5408,13 +5431,28 @@ msgid "The information has been deleted."
 msgstr "L'information a été supprimée."
 
 #: pretalx/orga/views/submission.py:55
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Hi!\n"
+#| "\n"
+#| "You have been set as the speaker of a submission to the Call for "
+#| "Participation\n"
+#| "of {event}, titled »{title}«. An account has been created for you – "
+#| "please follow\n"
+#| "this link to set your account password.\n"
+#| "\n"
+#| "{invitation_link}\n"
+#| "\n"
+#| "Afterwards, you can edit your user profile and see the state of your "
+#| "submission.\n"
+#| "\n"
+#| "The {event} orga crew"
 msgid ""
 "Hi!\n"
 "\n"
 "You have been set as the speaker of a submission to the Call for "
 "Participation\n"
-"of {event}, titled »{title}«. An account has been created for you – please "
+"of {event}, titled “{title}”. An account has been created for you – please "
 "follow\n"
 "this link to set your account password.\n"
 "\n"
@@ -5778,19 +5816,25 @@ msgid "A speaker is not available at the scheduled time."
 msgstr "Un intervenant n'est pas disponible au créneau choisi."
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:1
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "- Your talk »%(title)s« will take place at %(start)s in %(location)s"
 msgid ""
 "\n"
-"- Your talk »%(title)s« will take place at %(start)s in %(location)s"
+"- Your talk “%(title)s” will take place at %(start)s in %(location)s"
 msgstr ""
 "\n"
 "- Votre intervention »%(title)s« aura lieu le %(start)s dans %(location)s"
 
 #: pretalx/schedule/templates/schedule/speaker_notification.txt:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "- Your talk »%(title)s« has been moved to %(start)s in %(location)s"
 msgid ""
 "\n"
-"- Your talk »%(title)s« has been moved to %(start)s in %(location)s"
+"- Your talk “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
 "\n"
 "- Votre intervention »%(title)s« a été déplacée à %(start)s dans %(location)s"

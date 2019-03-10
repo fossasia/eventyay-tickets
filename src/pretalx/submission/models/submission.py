@@ -546,7 +546,7 @@ class Submission(LogMixin, models.Model):
 
 I'd like to invite you to be a speaker in the talk
 
-  »{title}«
+  “{title}”
 
 at {event}. Please follow this link to join:
 

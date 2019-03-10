@@ -4,7 +4,7 @@
 {% block settings_content %}
 <div>
     <h2>
-        {% trans "Team" %} »{{ team.name }}«
+        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}
     </h2>
 
     {% trans "Do you really want to go through with this deletion?" %} <em>{{ object.email }}</em>

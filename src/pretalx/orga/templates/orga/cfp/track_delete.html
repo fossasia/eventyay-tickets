@@ -4,7 +4,7 @@
     <h2>
         {% trans "Do you really want to delete this track?" %}
     </h2>
-    <strong>»{{ object.name }}«</strong>
+    <strong>{{ quotation_open }}{{ object.name }}{{ quotation_close }}</strong>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

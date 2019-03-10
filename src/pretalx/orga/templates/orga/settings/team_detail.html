@@ -6,7 +6,7 @@
 <div>
     {% if team.pk %}
     <h2>
-        {% trans "Team" %} »{{ team.name }}«: {% trans "Members" %}
+        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% trans "Members" %}
     </h2>
 
     <form method="post">{% csrf_token %}
@@ -71,7 +71,7 @@
     </table>
     </form>
     <h3 id="permissions">
-        {% trans "Team" %} »{{ team.name }}«: {% trans "Permissions" %}
+        {% trans "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% trans "Permissions" %}
     </h3>
     {% else %}
     <h2>{% trans "New team" %}</h2>

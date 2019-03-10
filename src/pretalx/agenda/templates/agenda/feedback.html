@@ -5,7 +5,7 @@
 {% block content %}
     <h3 class="talk-title">
         <a href="{{ talk.urls.public }}">
-            {% trans "Feedback for" %} »{{ talk.title }}«
+            {% trans "Feedback for" %} {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
         </a>
         <small>
             {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}

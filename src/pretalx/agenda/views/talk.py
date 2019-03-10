@@ -118,7 +118,7 @@ class TalkView(PermissionRequired, DetailView):
         context['submission_description'] = (
             submission.description
             or submission.abstract
-            or _('The talk »{title}« at {event}').format(
+            or _('The talk “{title}” at {event}').format(
                 title=submission.title, event=submission.event.name
             )
         )

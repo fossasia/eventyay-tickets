@@ -5,7 +5,7 @@
 
 {% block cfp_content %}
 <h4>
-    »{{ question.question }}«
+    {{ quotation_open }}{{ question.question }}{{ qutoation_close }}
     <small>({{ question.get_variant_display }})</small>
     <a href="{{ question.urls.edit }}" class="btn btn-sm btn-outline-info">
         <i class="fa fa-edit"></i>
@@ -64,15 +64,15 @@
                     {% if answer.answer %}
                         {% if question.variant == 'boolean' %}
                             {% if answer.answer == "True" %}
-                                »{% trans "Yes" %}«:
+                                {{ quotation_open }}{% trans "Yes" %}{{ quotation_close }}:
                             {% else %}
-                                »{% trans "No" %}«:
+                                {{ quotation_open }}{% trans "No" %}{{ quotation_close }}:
                             {% endif %}
                         {% else %}
-                            »{{ answer.answer }}«:
+                            {{ quotation_open }}{{ answer.answer }}{{ quotation_close }}:
                         {% endif %}
                     {% elif answer.options %}
-                        »{{ answer.options__answer }}«:
+                        {{ quotation_open }}{{ answer.options__answer }}{{ quotation_close }}:
                     {% else %}
                         {% trans "Empty answer" %}:
                     {% endif %}

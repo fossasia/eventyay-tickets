@@ -12,7 +12,7 @@
             <ul>
                 {% for talk in schedule.changes.new_talks %}
                 <li><a href="{{ talk.submission.urls.public }}">
-                    »{{ talk.submission.title }}«
+                    {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talks.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
@@ -23,7 +23,7 @@
             <p>{{ phrases.agenda.changelog_new_talk }}
             {% for talk in schedule.changes.new_talks %}
                 <a href="{{ talk.submission.urls.public }}">
-                    »{{ talk.submission.title }}«
+                    {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
@@ -38,7 +38,7 @@
             <ul>
                 {% for talk in schedule.changes.canceled_talks %}
                 <li>
-                    »{{ talk.submission.title }}«
+                    {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
@@ -48,7 +48,7 @@
         {% else %}
             <p>{{ phrases.agenda.changelog_canceled_talk }}
             {% for talk in schedule.changes.canceled_talks %}
-                »{{ talk.submission.title }}«
+                {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                 {% if talk.submission.speakers.exists %}
                     {% trans "by" %} {{ talk.submission.display_speaker_names }}.
                 {% endif %}
@@ -62,7 +62,7 @@
             <ul>
                 {% for talk in schedule.changes.moved_talks %}
                 <li><a href="{{ talk.submission.urls.public }}">
-                    »{{ talk.submission.title }}«
+                    {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}
@@ -81,7 +81,7 @@
             <p>{{ phrases.agenda.changelog_moved_talk }}
             {% for talk in schedule.changes.moved_talks %}
                 <a href="{{ talk.submission.urls.public }}">
-                    »{{ talk.submission.title }}«
+                    {{ quotation_open }}{{ talk.submission.title }}{{ quotation_close }}
                     {% if talk.submission.speakers.exists %}
                         {% trans "by" %} {{ talk.submission.display_speaker_names }}
                     {% endif %}

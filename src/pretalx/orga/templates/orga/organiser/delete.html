@@ -4,7 +4,9 @@
     <h2>
         {% trans "Do you really want to delete this organiser?" %}
     </h2>
-    <strong>»{{ request.organiser.name }}«</strong> – {% trans "ALL related data for ALL events, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
+    <strong>
+        {{ quotation_open }}{{ request.organiser.name }}{{ quotation_close }}</strong>
+        – {% trans "ALL related data for ALL events, such as submissions, and speaker profiles, and uploads, will also be deleted and cannot be restored." %}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

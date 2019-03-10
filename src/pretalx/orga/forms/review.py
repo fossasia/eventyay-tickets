@@ -29,7 +29,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         for counter in range(abs(self.max_value - self.min_value) + 1):
             value = self.min_value + counter
             name = event.settings.get(f'review_score_name_{value}')
-            name = f'{value} (»{name}«)' if name else value
+            name = f'{value} (“{name}”)' if name else value
             choices.append((value, name))
         if self.may_override:
             choices.insert(1, (self.min_value - 1, _('Negative override (Veto)')))

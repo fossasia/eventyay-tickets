@@ -8,7 +8,7 @@
 <h2>{% trans "Accept invitation?" %}</h2>
 <p>{% blocktrans with name=request.user.get_display_name talk=submission.title trimmed %}
     You, {{ name }}, have been invited to be a speaker for the submission
-    »{{ talk }}«. Do you accept the invitation?
+    “{{ talk }}”. Do you accept the invitation?
 {% endblocktrans %}</p>
 
 {% if submission.abstract %}

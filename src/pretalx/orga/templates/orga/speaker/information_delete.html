@@ -4,7 +4,7 @@
     <h2>
         {% trans "Do you really want to delete this information?" %}
     </h2>
-    <strong>»{{ object.title }}«</strong> – {{ object.text }}<p>
+    <strong>{{ quotation_close }}{{ object.title }}{{ quotation_open }}</strong> – {{ object.text }}<p>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

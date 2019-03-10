@@ -125,7 +125,7 @@ hierarkey.add_default(
             """Hi,
 
 you have received a new submission for your event {event_name}:
-»{submission_title}« by {speakers}.
+“{submission_title}” by {speakers}.
 You can see details at
 
   {orga_url}
