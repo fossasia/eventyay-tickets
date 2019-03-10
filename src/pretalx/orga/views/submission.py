@@ -1,5 +1,6 @@
 import json
 from collections import Counter
+from contextlib import suppress
 from datetime import timedelta
 
 from dateutil import rrule
@@ -25,6 +26,7 @@ from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
+from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
 from pretalx.submission.models import (
@@ -33,13 +35,13 @@ from pretalx.submission.models import (
 
 
 def create_user_as_orga(email, submission=None, name=None):
-    if not email:
-        return None
+    form = OrgaSpeakerForm({'name': name, 'email': email})
+    form.is_valid()
 
     user = User.objects.create_user(
         password=get_random_string(32),
-        email=email.lower(),
-        name=name,
+        email=form.cleaned_data['email'].lower(),
+        name=form.cleaned_data['name'],
         pw_reset_token=get_random_string(32),
         pw_reset_time=now() + timedelta(days=7),
     )
@@ -126,14 +128,6 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         except SubmissionError as e:
             messages.error(self.request, e.message)
 
-    def get_success_url(self):
-        next_url = self.request.POST.get('next', '')
-
-        if next_url == self.object.event.orga_urls.reviews:
-            return next_url
-
-        return self.object.orga_urls.base
-
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         if self.target == self.object.state:
@@ -167,10 +161,12 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
         submission = self.object
         email = request.POST.get('speaker')
         name = request.POST.get('name')
+        speaker = None
         try:
             speaker = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            speaker = create_user_as_orga(email, submission=submission, name=name)
+            with suppress(Exception):
+                speaker = create_user_as_orga(email, submission=submission, name=name)
         if not speaker:
             messages.error(request, _('Please provide a valid email address!'))
         else:

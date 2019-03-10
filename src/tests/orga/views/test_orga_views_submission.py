@@ -92,6 +92,15 @@ def test_accept_submission_redirects_to_review_list(orga_client, submission):
 
 
 @pytest.mark.django_db
+def test_accept_accepted_submission(orga_client, submission):
+    submission.accept()
+    response = orga_client.post(submission.orga_urls.accept, follow=True)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.state == 'accepted'
+
+
+@pytest.mark.django_db
 def test_reject_submission(orga_client, submission):
     assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
@@ -163,6 +172,32 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
 
     assert submission.speakers.count() == 2
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_orga_can_add_speakers_with_incorrect_address(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.post(
+        submission.orga_urls.new_speaker,
+        data={'speaker': 'foooobaaaaar', 'name': 'Name'},
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.speakers.count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_readd_speaker(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.post(
+        submission.orga_urls.new_speaker,
+        data={'speaker': submission.speakers.first().email, 'name': 'Name'},
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.speakers.count() == 1
 
 
 @pytest.mark.django_db
