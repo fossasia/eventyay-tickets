@@ -22,6 +22,7 @@ We also provide an `ansible role`_ compatible with our pip setup.
 
    installation
    configure
+   maintenance
    commands
 
 

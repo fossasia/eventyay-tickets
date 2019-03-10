@@ -1,4 +1,5 @@
 .. spelling:: nginx systemd 
+.. _installation:
 
 Installation
 ============
@@ -99,6 +100,8 @@ Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following cont
 
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
+
+Check out :ref:`configure` for details on the available configuration options.
 
 Step 5: Installation
 --------------------
@@ -252,36 +255,13 @@ case the emails are not sent)::
 In the start-up output, pretalx also lists its logging directory, which is also
 a good place to look for the reason for issues.
 
+Next Steps
+----------
 
-Next Steps: Updates
--------------------
+Check out :ref:`configure` for details on the available configuration options.
 
-.. warning:: While we try hard not to issue breaking updates, **please perform a backup before every upgrade**.
-
-To upgrade pretalx, please first read through our :ref:`changelog` and if
-available our release blog post to check for relevant update notes. Also, make
-sure you have a current backup.
-
-Next, please execute the following commands in the same environment (probably
-your virtualenv) to first update the pretalx source, then update the database
-if necessary, then rebuild changed static files, and then restart the pretalx
-services. Please note that you will run into an entertaining amount of errors
-if you forget to restart the services.
-
-If you want to upgrade pretalx to a specific release, you can substitute
-``pretalx`` with ``pretalx==1.2.3`` in the first line::
-
-    $ pip3 install --user -U pretalx
-    $ python -m pretalx migrate
-    $ python -m pretalx rebuild
-    $ python -m pretalx regenerate_css
-    # systemctl restart pretalx-web pretalx-worker
-
-If you're sure that you know what you're doing, you can also install a specific
-commit or branch of pretalx (replace "master" with a short or long commit ID
-for a specific commit)::
-
-    $ pip3 install --user -U git+git://github.com/pretalx/pretalx.git@master#egg=pretalx&subdirectory=src
+Have a look at our :ref:`maintenance` documentation to read about updates, backups,
+and monitoring.
 
 .. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
