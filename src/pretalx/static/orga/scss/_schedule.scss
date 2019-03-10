@@ -85,7 +85,6 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   margin-right: -1px;
   border-bottom: 1px solid $gray-light;
   font-size: 16pt;
-  font-decoration: underline;
   overflow: hidden;
   text-overflow: ellipsis;
   justify-content: center;
@@ -95,6 +94,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
     z-index: 100;
     top: 50px;
     background: $brand-success;
+    box-shadow: 0 1px 3px rgba($brand-success, 0.18), 0 1px 2px rgba($brand-success, 0.36);
   }
 }
 
