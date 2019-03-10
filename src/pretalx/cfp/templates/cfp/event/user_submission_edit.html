@@ -2,12 +2,14 @@
 {% load bootstrap4 %}
 {% load formset_tags %}
 {% load i18n %}
+{% load rules %}
 {% load static %}
 
 {% block title %}{% trans "Your submission" %} :: {% endblock %}
 
 
 {% block content %}
+{% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
     <script src="{% static "js/jquery.formset.js" %}"></script>
     <script src="{% static "cfp/js/animateFormset.js" %}"></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
@@ -28,7 +30,7 @@
                     {% plural %}
                     Speakers:
                 {% endblocktrans %}
-                {{ submission.display_speaker_names }},
+                {{ submission.display_speaker_names }}{% if can_invite_speakers %},
                 <div class="input-group">
                     <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
                     <span class="input-group-btn">
@@ -37,6 +39,7 @@
                         </button>
                     </span>
                 </div>
+                {% endif %}
             </div>
         </form>
     </h5>

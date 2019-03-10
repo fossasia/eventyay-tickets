@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`620` Speakers can't invite other speakers any longer after the CfP is over.
 - :support:`606` Our documentation now explains which parts of pretalx to back up.
 - :feature:`486` In the schedule editor, the room names and the current date are now fixed to the top when scrolling down.
 - :bug:`618` Fix a bug where some fields in the schedule.xml export were rendered without their timezone offset (only day defintions, not the talk times).

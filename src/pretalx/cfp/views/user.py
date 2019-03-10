@@ -330,7 +330,7 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
 class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
     form_class = SubmissionInvitationForm
     template_name = 'cfp/event/user_submission_invitation.html'
-    permission_required = 'submission.edit_submission'
+    permission_required = 'cfp.add_speakers'
 
     def get_permission_object(self):
         return self.get_object()
@@ -371,6 +371,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
 class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
     template_name = 'cfp/event/invitation.html'
     context_object_name = 'submission'
+    permission_required = 'cfp.add_speakers'
 
     def get_object(self, queryset=None):
         return get_object_or_404(
@@ -378,6 +379,9 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
             code__iexact=self.kwargs['code'],
             invitation_token__iexact=self.kwargs['invitation'],
         )
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def post(self, request, *args, **kwargs):
         submission = self.get_object()
