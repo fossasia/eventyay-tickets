@@ -22,7 +22,6 @@
     </p>
     <h5>
         <form class="add-speaker" action="{{ submission.urls.invite }}">
-            {% csrf_token %}
             <div class="form-group form-inline">
                 {% blocktrans trimmed count count=submission.speakers.count %}
                     Speaker:
@@ -31,7 +30,7 @@
                 {% endblocktrans %}
                 {{ submission.display_speaker_names }},
                 <div class="input-group">
-                    <input name="email" class="form-control form-control-sm" placeholder="another.speaker@example.org">
+                    <input name="email" class="form-control form-control-sm" placeholder="mail@example.org">
                     <span class="input-group-btn">
                         <button class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i>
