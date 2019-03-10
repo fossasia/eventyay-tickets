@@ -38,7 +38,10 @@
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  margin-right: 270px;
+
+  &.narrow {
+    margin-right: 270px;
+  }
 
   .hover-active {
     background: $gray-lighter;
@@ -96,50 +99,61 @@
   box-shadow: 0 1px 3px rgba($brand-success, 0.18), 0 1px 2px rgba($brand-success, 0.36);
 }
 
-#unassigned-talks {
+#unassigned-group {
   flex-direction: column;
-  background: $gray-lightest;
   position: fixed;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   right: 20px;
-  top: 70px;
+  top: 83px;
   width: 265px;
   padding: 0;
-  height: calc(100vh - 70px - 20px);
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
   z-index: 120;
 
-  .input-group {
-    margin: 8px;
-    width: auto;
-  }
-
-  .hover-active {
-    background: $gray-lighter;
-  }
-
-  #unassigned-container {
-    overflow-y: auto;
-    height: 100%;
-    margin: 8px;
-    margin-top: 0;
-    padding-top: 8px;
-  }
-
-  .talk-box {
-    position: static;
-    margin-bottom: 5px;
-  }
   .talk-header {
+    background: $brand-info;
     font-size: 18px;
     color: white;
     cursor: pointer;
-    background: $brand-info;
     text-align: center;
     padding: 8px;
+    margin-left: -1px;
+    margin-right: -1px;
+    &.collapsed {
+      background: rgba($brand-info, 0.5);
+    }
+  }
+
+  #unassigned-talks {
+    flex-direction: column;
+    background: $gray-lightest;
+    height: calc(100vh - 70px - 80px);
+    user-select: none;
+    padding: 0;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    .input-group {
+      margin: 8px;
+      width: auto;
+    }
+
+    .hover-active {
+      background: $gray-lighter;
+    }
+
+    #unassigned-container {
+      overflow-y: auto;
+      height: 100%;
+      margin: 8px;
+      margin-top: 0;
+      padding-top: 8px;
+    }
+
+    .talk-box {
+      position: static;
+      margin-bottom: 5px;
+    }
   }
 }
 
@@ -218,6 +232,10 @@
   }
   .time {
     font-weight: bold;
+  }
+  &:hover {
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.48);
   }
 }
 

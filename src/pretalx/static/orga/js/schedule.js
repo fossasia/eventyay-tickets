@@ -258,7 +258,7 @@ var app = new Vue({
   el: '#fahrplan',
   template: `
     <div @mousemove="onMouseMove" @mouseup="onMouseUp">
-      <div id="fahrplan">
+      <div id="fahrplan" :class="showUnassigned ? 'narrow' : 'wide'">
         <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
         <div id="timeline" v-if="!loading">
           <div class="timeline-container">
@@ -278,14 +278,16 @@ var app = new Vue({
           </room>
         </div>
       </div>
-      <div id='unassigned-talks'>
-        <div class="talk-header" ref="roomHeader">Unassigned Talks</div>
-        <div class="input-group">
-          <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
-          <input type="text" class="form-control" placeholder="Search..." v-model="search">
-        </div>
-        <div id="unassigned-container" ref="unassigned">
-            <talk v-for="talk in filteredTalks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
+      <div id="unassigned-group">
+        <div class="talk-header" ref="roomHeader" @click="showUnassigned = !showUnassigned" :class="showUnassigned ? 'present': 'collapsed'">Unassigned Talks</div>
+        <div id='unassigned-talks' v-if="showUnassigned">
+          <div class="input-group">
+            <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search..." v-model="search">
+          </div>
+          <div id="unassigned-container" ref="unassigned">
+              <talk v-for="talk in filteredTalks" v-if="!talk.room" :talk="talk" :key="talk.id"></talk>
+          </div>
         </div>
       </div>
     </div>
@@ -298,6 +300,7 @@ var app = new Vue({
       end: null,
       timezone: null,
       loading: true,
+      showUnassigned: true,
       search: '',
       dragController: dragController,
     }
