@@ -339,10 +339,13 @@ def other_orga_user(event):
 
 
 @pytest.fixture
-def review_user(event):
+def review_user(organiser, event):
     user = User.objects.create_user(
         password='reviewpassw0rd', email='reviewuser@orga.org'
     )
+    if not event.organiser:
+        event.organiser = organiser
+        event.save()
     team, _ = event.organiser.teams.get_or_create(
         can_change_organiser_settings=False, is_reviewer=True
     )
