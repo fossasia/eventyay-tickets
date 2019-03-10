@@ -42,7 +42,7 @@
                     </td>
                     <td class="text-right">
                         {% if submission.review_code %}
-                            <button data-destination="{{ submission.urls.review }}"
+                            <button data-destination="{{ submission.urls.review.full }}"
                                     class="btn btn-sm btn-info"
                                     data-toggle="tooltip" 
                                     data-placement="top" 
@@ -104,5 +104,5 @@
             </p>
         {% endif %}
     {% endif %}
-    <script src="{% static "submission/js/review_code.js" %}"></script>
+    <script src="{% static "common/js/copy.js" %}"></script>
 {% endblock %}

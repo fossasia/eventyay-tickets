@@ -1,6 +1,7 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "User settings" %}{% endblock %}
 {% block content %}
@@ -36,7 +37,14 @@
         <div class="form-group row">
             <label class="col-md-3 col-form-label">{% trans "API Token" %}</label>
             <div class="col-md-9">
-                {{ token }}
+                <span data-destination="{{ token }}"
+                        class="copyable-text"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="{% trans 'Copy token' %}"
+                >
+                    {{ token }}
+                </span>
                 <div class="help-block">
                     {% trans "Use for authentication when accessing the API." %}
                 </div>
@@ -51,4 +59,5 @@
         </div>
         </fieldset>
     </form>
+    <script src="{% static "common/js/copy.js" %}"></script>
 {% endblock %}

@@ -91,3 +91,10 @@
 .export-qrcode:hover .export-qrcode-image, .qrcode:hover .qrcode-image {
   display: block;
 }
+.copyable-text {
+  cursor: pointer;
+  &:hover {
+    background: $gray-lightest;
+    box-shadow: 0px 0px 4px 4px $gray-lightest;
+  }
+}
