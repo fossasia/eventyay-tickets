@@ -188,6 +188,7 @@ def serialize_slot(slot):
             {'name': speaker.name} for speaker in slot.submission.speakers.all()
         ],
         'submission_type': str(slot.submission.submission_type.name),
+        'track': {'name': slot.submission.track.name, 'color': slot.submission.track.color} if slot.submission.track else None,
         'state': slot.submission.state,
         'description': str(slot.submission.description),
         'abstract': str(slot.submission.abstract),
@@ -222,7 +223,15 @@ class TalkList(EventPermissionRequired, View):
 
         if not schedule:
             return JsonResponse(result)
-        result['results'] = [serialize_slot(slot) for slot in schedule.talks.all()]
+        result['results'] = [
+            serialize_slot(slot)
+            for slot
+            in (
+                schedule.talks.all()
+                .select_related('submission', 'submission__event', 'room', 'submission__submission_type', 'submission__track')
+                .prefetch_related('submission__speakers')
+            )
+        ]
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
 
