@@ -17,35 +17,13 @@
 {% endblock %}
 
 {% block schedule_content %}
-    <div class="alert alert-info schedule-alert">
-        <span>
-        {% if request.event.settings.show_schedule %}
-            {% if request.event.current_schedule %}
-                {% trans "Your schedule is currently publicly visible." %}
-            {% else %}
-                {% trans "Once you release your schedule, it will be publicly visible." %}
-            {% endif %}
-            <a class="btn btn-sm btn-info" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Hide schedule" %}</a>
-        {% else %}
-            {% if request.event.current_schedule %}
-                {% trans "Your schedule is currently only visible to orga members." %}
-            {% else %}
-                {% trans "Once you release your schedule, it will be only visible to orga members." %}
-            {% endif %}
-            <a class="btn btn-sm btn-info" href="{{ request.event.orga_urls.toggle_schedule }}">{% trans "Make schedule public" %}</a>
-        {% endif %}
-        <a class="btn btn-info btn-sm" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
-            <i class="fa fa-eye"></i> {% trans "View in frontend" %}
-        </a>
-        </span>
-    </div>
 
     {% if schedule_version %}
         <div class="alert alert-warning schedule-alert">
             {% trans "You're currently viewing a released schedule version. Released versions cannot be edited directly." %}
         </div>
     {% endif %}
-    <div class="schedule-header submit-group">
+    <div class="schedule-header">
         <div id="schedule-choice">
             <div class="input-group">
                 <form class="form-inline">
@@ -76,7 +54,19 @@
               {% trans "Actions" %}
           </a>
 
-          <div class="dropdown-menu" aria-labelledby="schedule-actions">
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="schedule-actions">
+            <a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
+                <i class="fa fa-link"></i> {% trans "View in frontend" %}
+            </a>
+            {% if request.event.settings.show_schedule %}
+            <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
+                <i class="fa fa-eye"></i> {% trans "Hide schedule" %}
+            </a>
+            {% else %}
+            <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
+                <i class="fa fa-eye"></i> {% trans "Make schedule public" %}
+            </a>
+            {% endif %}
             <a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
                 <i class="fa fa-print"></i> {% trans "Print cards" %}
             </a>
