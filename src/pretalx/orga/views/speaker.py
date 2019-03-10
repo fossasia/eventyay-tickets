@@ -212,7 +212,6 @@ class InformationList(EventPermissionRequired, ListView):
     queryset = SpeakerInformation.objects.order_by('pk')
     template_name = 'orga/speaker/information_list.html'
     context_object_name = 'information'
-    paginate_by = 25
     permission_required = 'orga.view_information'
 
     def get_queryset(self):
