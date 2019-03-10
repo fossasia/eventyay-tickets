@@ -128,3 +128,10 @@ def test_event_model_talks(slot, other_slot, accepted_submission, submission, re
     other_slot.submission.speakers.add(slot.submission.speakers.first())
     assert len(event.talks.all()) == len(set(event.talks.all()))
     assert len(event.speakers.all()) == len(set(event.speakers.all()))
+
+
+@pytest.mark.django_db
+def test_shred_used_event(resource, answered_choice_question, personal_answer, rejected_submission, deleted_submission, mail, sent_mail, room_availability, slot, unreleased_slot, past_slot, feedback, canceled_talk, review, information, other_event):
+    assert Event.objects.count() == 2
+    rejected_submission.event.organiser.shred()
+    assert Event.objects.count() == 1

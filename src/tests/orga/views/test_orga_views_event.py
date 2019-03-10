@@ -1,6 +1,8 @@
+import json
+
 import pytest
-from django.core import mail as djmail
 from django.conf import settings
+from django.core import mail as djmail
 
 from pretalx.event.models import Event
 
@@ -515,3 +517,20 @@ def test_edit_review_settings_invalid(orga_client, event):
     assert response.status_code == 200
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
+
+
+@pytest.mark.django_db
+def test_organiser_can_see_event_suggestions(orga_client, event):
+    response = orga_client.get('/orga/event/typeahead/')
+    assert response.status_code == 200
+    content = json.loads(response.content.decode())['results']
+    assert len(content) == 1
+    assert content[0]['id'] == event.id
+
+
+@pytest.mark.django_db
+def test_speaker_cannot_see_event_suggestions(speaker_client, event):
+    response = speaker_client.get('/orga/event/typeahead/')
+    assert response.status_code == 200
+    content = json.loads(response.content.decode())['results']
+    assert len(content) == 0
