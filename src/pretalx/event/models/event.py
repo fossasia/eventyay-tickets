@@ -380,7 +380,7 @@ class Event(LogMixin, models.Model):
             r = ReviewPhase.objects.create(
                 event=self, name=_('Review'),
                 start=cfp_deadline,
-                end=self.date_from - relativedelta(months=-3),
+                end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(not cfp_deadline or cfp_deadline < now()),
                 position=0,
                 can_review=True,
