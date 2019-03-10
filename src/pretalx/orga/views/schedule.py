@@ -188,7 +188,7 @@ def serialize_slot(slot):
             {'name': speaker.name} for speaker in slot.submission.speakers.all()
         ],
         'submission_type': str(slot.submission.submission_type.name),
-        'track': {'name': slot.submission.track.name, 'color': slot.submission.track.color} if slot.submission.track else None,
+        'track': {'name': str(slot.submission.track.name), 'color': slot.submission.track.color} if slot.submission.track else None,
         'state': slot.submission.state,
         'description': str(slot.submission.description),
         'abstract': str(slot.submission.abstract),
