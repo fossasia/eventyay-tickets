@@ -165,6 +165,20 @@ def test_move_questions_in_list_down_out_of_bounds(
 
 
 @pytest.mark.django_db
+def test_move_questions_in_list_wront_user(review_client, question, speaker_question, event):
+    assert event.questions.count() == 2
+    question.position = 0
+    question.save()
+    speaker_question.position = 1
+    speaker_question.save()
+    review_client.post(question.urls.down, follow=True)
+    question.refresh_from_db()
+    speaker_question.refresh_from_db()
+    assert question.position == 0
+    assert speaker_question.position == 1
+
+
+@pytest.mark.django_db
 def test_delete_question(orga_client, event, question):
     assert event.questions.count() == 1
     response = orga_client.get(question.urls.delete, follow=True)
@@ -227,6 +241,8 @@ def test_can_add_simple_question(orga_client, event):
     assert str(q.question) == 'What is your name?'
     assert q.variant == 'string'
     response = orga_client.get(q.urls.base + '?role=true', follow=True)
+    assert str(q.question) in response.content.decode()
+    response = orga_client.get(q.urls.base + '?role=false', follow=True)
     assert str(q.question) in response.content.decode()
 
 
@@ -296,7 +312,7 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
 
 @pytest.mark.parametrize('role,count', (('true', 1), ('false', 1), ('', 2)))
 @pytest.mark.django_db
-def test_can_remind_question(
+def test_can_remind_speaker_question(
     orga_client,
     event,
     speaker_question,
@@ -308,6 +324,29 @@ def test_can_remind_question(
     count,
 ):
     question = speaker_question
+    question.required = True
+    question.save()
+    original_count = QueuedMail.objects.count()
+    response = orga_client.post(
+        event.cfp.urls.remind_questions, {'role': role}, follow=True
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.count() == original_count + count
+
+
+@pytest.mark.parametrize('role,count', (('true', 1), ('false', 1), ('', 2)))
+@pytest.mark.django_db
+def test_can_remind_submission_question(
+    orga_client,
+    event,
+    question,
+    speaker,
+    slot,
+    other_speaker,
+    other_submission,
+    role,
+    count,
+):
     question.required = True
     question.save()
     original_count = QueuedMail.objects.count()
@@ -338,3 +377,35 @@ def test_can_activate_inactive_question(orga_client, inactive_question):
 
     assert response.status_code == 200
     assert inactive_question.active
+
+
+@pytest.mark.django_db
+def test_can_see_tracks(orga_client, track):
+    response = orga_client.get(track.event.cfp.urls.tracks)
+    assert response.status_code == 200
+    assert track.name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_see_single_track(orga_client, track):
+    response = orga_client.get(track.urls.base)
+    assert response.status_code == 200
+    assert track.name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_edit_track(orga_client, track):
+    response = orga_client.post(track.urls.base, {'name_0': 'Name', 'color': 'ffff99'}, follow=True)
+    assert response.status_code == 200
+    track.refresh_from_db()
+    assert str(track.name) == 'Name'
+
+
+@pytest.mark.django_db
+def test_can_delete_single_track(orga_client, track, event):
+    response = orga_client.get(track.urls.delete)
+    assert response.status_code == 200
+    assert event.tracks.count() == 1
+    response = orga_client.post(track.urls.delete, follow=True)
+    assert response.status_code == 200
+    assert event.tracks.count() == 0

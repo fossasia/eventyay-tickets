@@ -47,13 +47,10 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     def get_object(self):
         return self.request.event.cfp
 
-    @cached_property
-    def object(self):
-        return self.get_object()
-
     def get_success_url(self) -> str:
         return self.object.urls.text
 
+    @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
             messages.error(self.request, _('We had trouble saving your input.'))

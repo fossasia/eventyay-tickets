@@ -11,7 +11,7 @@ from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
     Answer, AnswerOption, Feedback, Question, QuestionVariant,
-    Resource, Review, Submission, SubmissionType,
+    Resource, Review, Submission, SubmissionType, Track,
 )
 
 
@@ -750,3 +750,9 @@ def information(event):
     return SpeakerInformation.objects.create(
         event=event, title='Information title', text='Important information'
     )
+
+
+@pytest.fixture
+def track(event):
+    event.settings.use_tracks = True
+    return Track.objects.create(name='Test Track', color='00ff00', event=event)
