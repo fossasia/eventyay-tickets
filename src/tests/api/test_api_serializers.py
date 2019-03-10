@@ -202,7 +202,7 @@ def test_review_serializer(review):
 @pytest.mark.django_db
 def test_room_serializer(room):
     data = RoomSerializer(room).data
-    assert set(data.keys()) == {'id', 'name', 'description', 'capacity', 'position'}
+    assert set(data.keys()) == {'id', 'name', 'description', 'capacity', 'position', 'url'}
     assert data['id'] == room.pk
 
 
@@ -217,5 +217,6 @@ def test_room_orga_serializer(room):
         'position',
         'speaker_info',
         'availabilities',
+        'url',
     }
     assert data['id'] == room.pk
