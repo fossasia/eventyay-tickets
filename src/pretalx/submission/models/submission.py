@@ -101,7 +101,7 @@ class Submission(LogMixin, models.Model):
         to='submission.SubmissionType',
         related_name='submissions',
         on_delete=models.PROTECT,
-        verbose_name=_('Type of submission'),
+        verbose_name=_('Submission type'),
     )
     track = models.ForeignKey(
         to='submission.Track',
@@ -134,7 +134,8 @@ class Submission(LogMixin, models.Model):
         + phrases.base.use_markdown,
     )
     notes = models.TextField(
-        null=True, blank=True, verbose_name=_('Notes for the organiser')
+        null=True, blank=True, verbose_name=_('Notes'),
+        help_text=_('These notes are meant for the organiser and won\'t be made public.'),
     )
     internal_notes = models.TextField(
         null=True,
@@ -161,7 +162,7 @@ class Submission(LogMixin, models.Model):
         max_length=32,
         default=settings.LANGUAGE_CODE,
         choices=settings.LANGUAGES,
-        verbose_name=_('Language of the submission'),
+        verbose_name=_('Language'),
     )
     is_featured = models.BooleanField(
         default=False,

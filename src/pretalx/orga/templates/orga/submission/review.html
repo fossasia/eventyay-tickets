@@ -71,7 +71,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_notes %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes for the organiser" %}</label>
+        <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.notes|rich_text|default:'-' }}
         </div>

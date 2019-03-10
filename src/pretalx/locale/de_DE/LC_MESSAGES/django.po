@@ -3575,8 +3575,8 @@ msgstr "Verfügbarkeit"
 #: pretalx/orga/templates/orga/cfp/text.html:92
 #: pretalx/orga/templates/orga/submission/review.html:74
 #: pretalx/submission/models/submission.py:137
-msgid "Notes for the organiser"
-msgstr "Notiz für den Veranstalter"
+msgid "Notes"
+msgstr "Notiz"
 
 #: pretalx/orga/templates/orga/cfp/text.html:99
 msgid "Recording opt-out"
@@ -5829,7 +5829,7 @@ msgid "rejected"
 msgstr "abgelehnt"
 
 #: pretalx/submission/models/submission.py:104
-msgid "Type of submission"
+msgid "Submission type"
 msgstr "Einreichungsart"
 
 #: pretalx/submission/models/submission.py:118
@@ -5873,8 +5873,8 @@ msgid "How many times this talk will be held."
 msgstr "Wie oft der Vortrag gehalten wird."
 
 #: pretalx/submission/models/submission.py:164
-msgid "Language of the submission"
-msgstr "Einreichungssprache"
+msgid "Language"
+msgstr "Sprache"
 
 #: pretalx/submission/models/submission.py:169
 msgid ""

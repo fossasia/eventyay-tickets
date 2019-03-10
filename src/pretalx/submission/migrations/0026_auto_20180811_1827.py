@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='submission',
             name='content_locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('fr', 'French')], default='en', max_length=32, verbose_name='Language of the submission'),
+            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('fr', 'French')], default='en', max_length=32, verbose_name='Language'),
         ),
         migrations.AlterField(
             model_name='submission',
