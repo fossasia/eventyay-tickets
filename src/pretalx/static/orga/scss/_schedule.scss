@@ -91,12 +91,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   justify-content: center;
+  text-align: center;
   position: sticky;
   color: white;
   z-index: 100;
   top: 50px;
   background: $brand-success;
   box-shadow: 0 1px 3px rgba($brand-success, 0.18), 0 1px 2px rgba($brand-success, 0.36);
+}
+.room-column a:hover {
+  text-decoration: none;
 }
 
 #unassigned-group {
@@ -211,7 +215,6 @@
 .talk-box {
   border: 1px solid $brand-primary;
   border-left: 4px solid $brand-primary;
-  border-width: 1;
   padding-left: 8px;
   cursor: pointer;
   position: absolute;
@@ -237,7 +240,7 @@
 }
 
 .talk-box.accepted {
-  border-color: lighten($brand-success, 30%);
+  filter: opacity(70%);
   color: $gray;
 }
 
@@ -245,18 +248,11 @@
   opacity: 0.5;
 }
 
-.talk-box.confirmed {
-  border-color: lighten($brand-success, 15%);
-}
-
-.talk-box.warning {
-  border-color: $brand-danger;
-  .warning-sign {
-    color: $brand-danger;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding-right: 8px;
-  }
+.talk-box.warning .warning-sign {
+  color: $brand-danger;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-right: 8px;
 }
 
 .talk-box.dragged {

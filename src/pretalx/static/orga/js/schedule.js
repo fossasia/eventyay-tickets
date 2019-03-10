@@ -137,10 +137,16 @@ Vue.component('talk', {
       if (this.displayWarnings) {
         title = title + '\n\n' + this.displayWarnings;
       }
+      if (this.talk.state === 'accepted') {
+        title = title + '\n Not confirmed yet!'
+      }
       return title;
     },
     style () {
       var style = {height: this.talk.duration + 'px'}
+      if (this.talk.track.color) {
+        style.borderColor = this.talk.track.color
+      }
       if (this.isDragged) {
         var rect = this.$parent.$el.getBoundingClientRect()
 
@@ -207,7 +213,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header"><a v-bind:href="room.url">{{ displayName }}</a></div>
+      <a v-bind:href="room.url"><div class="room-header">{{ displayName }}</div></a>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>

@@ -16,9 +16,14 @@ class AvailabilitySerializer(ModelSerializer):
 
 
 class RoomSerializer(I18nAwareModelSerializer):
+    url = SerializerMethodField()
+
+    def get_url(self, obj):
+        return obj.urls.edit
+
     class Meta:
         model = Room
-        fields = ('id', 'name', 'description', 'capacity', 'position')
+        fields = ('id', 'name', 'description', 'capacity', 'position', 'url')
 
 
 class RoomOrgaSerializer(RoomSerializer):
