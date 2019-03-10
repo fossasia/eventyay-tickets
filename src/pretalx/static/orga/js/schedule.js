@@ -259,13 +259,17 @@ var app = new Vue({
     <div @mousemove="onMouseMove" @mouseup="onMouseUp">
       <div id="fahrplan">
         <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
-        <div id="timeline">
+        <div id="timeline" v-if="!loading">
           <div class="room-container">
             <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start" :thin="false">
             </timestep>
           </div>
         </div>
-        <div id="tracks">
+        <div id="loading" v-if="loading">
+            <i class="fa fa-spinner fa-pulse fa-4x fa-fw text-primary mb-4 mt-4"></i>
+            <h3 class="mt-2 mb-4">Loading talks, please wait.</h3>
+        </div>
+        <div id="rooms" v-else>
           <div class="alert alert-danger room-column" v-if="rooms && rooms.length < 1">
             Please configure some rooms first.
           </div>
@@ -292,19 +296,22 @@ var app = new Vue({
       start: null,
       end: null,
       timezone: null,
+      loading: true,
       search: '',
       dragController: dragController,
     }
   },
   created () {
+    api.fetchRooms(this.eventSlug).then((result) => {
+      this.rooms = result.results
+    })
     api.fetchTalks().then((result) => {
       this.talks = result.results
       this.timezone = result.timezone
       this.start = moment.tz(result.start, this.timezone)
       this.end = moment.tz(result.end, this.timezone)
-    })
-    api.fetchRooms(this.eventSlug).then((result) => {
-      this.rooms = result.results
+    }).then(() => {
+      this.loading = false
     })
   },
   computed: {

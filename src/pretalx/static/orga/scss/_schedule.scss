@@ -45,7 +45,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   }
 }
 
-#tracks, #unassigned-talks, #timeline {
+#rooms, #unassigned-talks, #timeline {
   display: flex;
   flex: 1 0 auto;
   flex-wrap: no-wrap;
@@ -54,8 +54,13 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   padding-left: 0;
 }
 
-#tracks {
+#rooms {
   flex-grow: 1;
+}
+#loading {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .room-column {
