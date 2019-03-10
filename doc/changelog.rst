@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`486` In the schedule editor, the room names and the current date are now fixed to the top when scrolling down.
 - :bug:`618` Fix a bug where some fields in the schedule.xml export were rendered without their timezone offset (only day defintions, not the talk times).
 - :feature:`532` Add a field for notes of the organisers for their own use which is not visible to the public and the speakers.
 - :feature:`-` Reviewers are now shown a progress bar when going through submissions.

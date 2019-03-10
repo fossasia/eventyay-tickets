@@ -179,7 +179,7 @@ Vue.component('talk', {
 
 Vue.component('timestep', {
   template: `
-    <div class="timestep-box" v-bind:style="style" :class="[{midnight: isMidnight, thin: thin}]">
+    <div class="timestep-box" :style="style" :class="[{midnight: isMidnight, thin: thin}]">
       <span v-if="!thin">
         {{ isMidnight ? timestep.format("MM-DD") : timestep.format("HH:mm") }}
       </span>
@@ -192,12 +192,13 @@ Vue.component('timestep', {
   },
   computed: {
     style () {
-      var style = {}
+      if (!this.thin) return {}
+      var style = {position: "absolute", top: 0}
       style.transform = 'translatey(' + moment(this.timestep).diff(this.start, 'minutes') + 'px)'
       return style
     },
     isMidnight () {
-      return (this.timestep.hour() === 0 && this.timestep.minute() === 0);
+      return (this.timestep.hour() === 0 && this.timestep.minute() === 0) & !this.thin;
     }
   },
 })
@@ -205,7 +206,7 @@ Vue.component('timestep', {
 Vue.component('room', {
   template: `
     <div class="room-column">
-      <div class="room-header"><a v-bind:href="room.url">{{ displayName }}</a></div>
+      <div class="room-header unstuck"><a v-bind:href="room.url">{{ displayName }}</a></div>
       <div class="room-container" v-bind:style="style" :data-id="room.id">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
@@ -260,7 +261,7 @@ var app = new Vue({
       <div id="fahrplan">
         <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
         <div id="timeline" v-if="!loading">
-          <div class="room-container">
+          <div class="timeline-container">
             <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start" :thin="false">
             </timestep>
           </div>
@@ -302,6 +303,7 @@ var app = new Vue({
     }
   },
   created () {
+    window.onscroll = function () {onScroll()}
     api.fetchRooms(this.eventSlug).then((result) => {
       this.rooms = result.results
     })

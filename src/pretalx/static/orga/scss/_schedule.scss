@@ -78,15 +78,24 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 
 .room-header {
+  display: flex;
+  height: 31px;
+  margin-bottom: 8px;
+  margin-left: -1px;
+  margin-right: -1px;
   border-bottom: 1px solid $gray-light;
   font-size: 16pt;
   font-decoration: underline;
-  margin-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 31px;
-  display: flex;
   justify-content: center;
+  &.unstuck {
+    position: sticky;
+    color: white;
+    z-index: 100;
+    top: 50px;
+    background: $brand-success;
+  }
 }
 
 #unassigned-talks {
@@ -122,7 +131,7 @@ h3 .orga-title, .schedule-header, .schedule-alert {
   }
 }
 
-.room-container {
+.room-container, .timeline-container {
   position: relative;
   width: 100%;
   height: 100%;
@@ -145,24 +154,31 @@ h3 .orga-title, .schedule-header, .schedule-alert {
 }
 
 .timestep-box {
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
   white-space: nowrap;
   border-top: 1px solid $gray;
   font-size: 12px;
   width: 100%;
-}
-
-.timestep-box.midnight {
-  font-weight: bold;
-  background: $gray;
-  color: white;
-  height: 30px;
-  z-index: 10;
-
   &.thin {
     height: 5px;
+    background: $gray;
+    z-index: 10;
+  }
+  &.midnight {
+    position: sticky;
+    top: 50px;
+    width: calc(100% + 20px);
+    margin-left: -20px;
+    background: $brand-info;
+    color: white;
+    z-index: 10;
+    font-size: 16px;
+    & + .timestep-box {
+      border-top: none;
+    }
   }
 }
 
