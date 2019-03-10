@@ -178,6 +178,7 @@ class Submission(LogMixin, models.Model):
         blank=True,
         upload_to=submission_image_path,
         verbose_name=_('Talk image'),
+        help_text=_('Use this if you want an illustration to go with your submission.'),
     )
     recording_url = models.CharField(
         max_length=200, null=True, blank=True, verbose_name=_('Recording URL')
