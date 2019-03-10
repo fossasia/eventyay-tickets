@@ -180,7 +180,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                         data={},
                     )
                     messages.success(request, _('This event is now public.'))
-        elif action == 'deactivate':
+        else:  # action == 'deactivate'
             if not event.is_public:
                 messages.success(request, _('This event was already hidden.'))
             else:
@@ -244,12 +244,8 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         if not self.formset.is_valid():
             return False
         for form in self.formset.initial_forms:
-            if form in self.formset.deleted_forms:
-                if not form.instance.pk:
-                    continue
-                form.instance.delete()
-                form.instance.pk = None
-            elif form.has_changed():
+            # Deleting is handled elsewhere, so we skip it here
+            if form.has_changed():
                 form.instance.event = self.request.event
                 form.save()
 
@@ -289,12 +285,12 @@ def phase_move(request, pk, up=True):
 
 def phase_move_up(request, event, pk):
     phase_move(request, pk, up=True)
-    return redirect(request.event.urls.review_settings)
+    return redirect(request.event.orga_urls.review_settings)
 
 
 def phase_move_down(request, event, pk):
     phase_move(request, pk, up=False)
-    return redirect(request.event.urls.review_settings)
+    return redirect(request.event.orga_urls.review_settings)
 
 
 class PhaseDelete(PermissionRequired, View):
