@@ -56,7 +56,8 @@ def test_orga_can_see_single_submission_in_feed(orga_client, event, submission):
 
 
 @pytest.mark.django_db
-def test_anon_cannot_see_single_submission_in_feed(client, event, submission):
+def test_wrong_user_cannot_see_single_submission_in_feed(client, user, event, submission):
+    user.teams.remove(user.teams.first())
     response = client.get(submission.event.orga_urls.submission_feed, follow=True)
     assert submission.title not in response.content.decode()
 
@@ -197,6 +198,30 @@ def test_orga_can_readd_speaker(orga_client, submission):
     )
     submission.refresh_from_db()
     assert response.status_code == 200
+    assert submission.speakers.count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_remove_speaker(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.get(
+        submission.orga_urls.delete_speaker + '?id=' + str(submission.speakers.first().pk),
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 200
+    assert submission.speakers.count() == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_remove_wrong_speaker(orga_client, submission):
+    assert submission.speakers.count() == 1
+    response = orga_client.get(
+        submission.orga_urls.delete_speaker + '?id=' + str(submission.speakers.first().pk) + '12',
+        follow=True,
+    )
+    submission.refresh_from_db()
+    assert response.status_code == 404
     assert submission.speakers.count() == 1
 
 

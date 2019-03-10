@@ -256,7 +256,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
     @cached_property
     def write_permission_required(self):
-        if 'code' in self.kwargs:
+        if self.kwargs.get('code'):
             return 'submission.edit_submission'
         return 'orga.create_submission'
 
@@ -476,8 +476,6 @@ class SubmissionFeed(PermissionRequired, Feed):
     feed_type = feedgenerator.Atom1Feed
 
     def get_object(self, request, *args, **kwargs):
-        if not request.user.has_perm('orga.view_submissions', request.event):
-            raise Http404()
         return request.event
 
     def title(self, obj):
