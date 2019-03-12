@@ -144,7 +144,7 @@ Vue.component('talk', {
     },
     style () {
       var style = {height: this.talk.duration + 'px'}
-      if (this.talk.track.color) {
+      if (this.talk.track && this.talk.track.color) {
         style.borderColor = this.talk.track.color
       }
       if (this.isDragged) {
