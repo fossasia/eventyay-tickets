@@ -53,7 +53,7 @@ If you're sure that you know what you're doing, you can also install a specific
 commit or branch of pretalx (replace ``master`` with a short or long commit ID
 for a specific commit)::
 
-    $ pip3 install --user -U git+git://github.com/pretalx/pretalx.git@master#egg=pretalx&subdirectory=src
+    $ pip3 install --user -U "git+git://github.com/pretalx/pretalx.git@master#egg=pretalx&subdirectory=src"
 
 
 Backups
