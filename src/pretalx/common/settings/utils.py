@@ -1,20 +1,23 @@
+from os.path import dirname
+from sys import executable
+
+
 def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
     from pretalx.common.console import start_box, end_box, print_line
     from pretalx import __version__
 
-    mode = 'development' if debug else 'production'
     lines = [
-        (f'This is pretalx v{__version__} calling, running in {mode} mode.', True),
-        ('', False),
-        (f'Settings:', True),
-        (f'Read from: {", ".join(config_files)}', False),
+        (f'pretalx v{__version__}', True),
+        (f'Settings:  {", ".join(config_files)}', False),
         (f'Database:  {db_name} ({db_backend})', False),
         (f'Logging:   {LOG_DIR}', False),
+        (f'Root dir:  {dirname(dirname(dirname(__file__)))}', False),
+        (f'Python:    {executable}', False),
     ]
     if plugins:
         lines += [(f'Plugins:   {",".join(plugins)}', False)]
-    else:
-        lines += [('', False)]
+    if debug:
+        lines += [('DEVELOPMENT MODE, DO NOT USE IN PRODUCTION!', True)]
     image = '''
 ┏━━━━━━━━━━┓
 ┃  ┌─·──╮  ┃
