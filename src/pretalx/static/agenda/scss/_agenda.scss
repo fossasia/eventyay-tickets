@@ -221,6 +221,13 @@ header {
     }
   }
 }
+#talk-buttons {
+  display: flex;
+  justify-content: flex-end;
+  .btn {
+    margin-left: 8px;
+  }
+}
 
 .btn-sm .fa {
   padding-right: 5px;
