@@ -69,21 +69,20 @@ Replace the asterisks with a password of your own.
 Step 3: Package dependencies
 ----------------------------
 
-To build and run pretalx, you will need the following Debian packages beyond the dependencies
-mentioned above (plus ``libmysqlclient-dev`` if you use MariaDB)::
+To build and run pretalx, you might need local system packages beyond the
+dependencies mentioned above.  Due to the impossibility of maintaining an up to
+date list for all Linux flavours out there, we sadly can't provide one here.
 
-    # apt-get install git build-essential python3-virtualenv libssl-dev gettext
+If you're running Ubuntu or a similar system, you'll probably want to install
+packages like ``build-essential``, ``libssl-dev``, and ``gettext``, plus
+``libmysqlclient-dev`` if you use MariaDB.
 
+Please note that pretalx requires Python 3.6 – if your operating system doesn't
+come with Python 3.6, please either find an alternative source for your system,
+or build it from source.
 
-For Ubuntu 16.04/Debian 9 you need the package "python3.6"::
-
-    # add-apt-repository ppa:jonathonf/python-3.6
-    # apt-get update
-    # apt-get install python3.6 python3.6-dev python3.6-venv
-    # wget https://bootstrap.pypa.io/get-pip.py
-    # python3.6 get-pip.py
-
-Replace all further "pip" commands with "pip3.6"
+.. note::
+   You may need to replace all following mentions of ``pip`` with ``pip3.6``.
 
 
 Step 4: Configuration
@@ -267,8 +266,8 @@ and monitoring.
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
-.. _PostgreSQL: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-9-4-on-debian-8
-.. _redis: http://blog.programster.org/debian-8-install-redis-server/
+.. _PostgreSQL: https://www.postgresql.org/docs/
+.. _redis: https://redis.io/documentation
 .. _ufw: https://en.wikipedia.org/wiki/Uncomplicated_Firewall
 .. _strong encryption settings: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
