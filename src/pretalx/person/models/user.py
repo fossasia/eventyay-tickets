@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import get_language, override, ugettext_lazy as _
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.urls import build_absolute_uri
@@ -248,32 +248,20 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @transaction.atomic
     def reset_password(self, event, user=None):
-        from pretalx.common.mail import mail
+        from pretalx.mail.models import QueuedMail
 
         self.pw_reset_token = get_random_string(32)
         self.pw_reset_time = now()
         self.save()
 
-        if event:
-            mail_text = event.settings.mail_text_reset
-            context = {
-                'name': self.name or '',
-                'event': event.name,
-                'url': build_absolute_uri(
-                    'cfp:event.recover',
-                    event=event,
-                    kwargs={'event': event.slug, 'token': self.pw_reset_token},
-                ),
-            }
-        else:
-            context = {
-                'name': self.name or '',
-                'url': build_absolute_uri(
-                    'orga:auth.recover', kwargs={'token': self.pw_reset_token}
-                ),
-            }
-            mail_text = _(
-                '''Hi {name},
+        context = {
+            'name': self.name or '',
+            'url': build_absolute_uri(
+                'orga:auth.recover', kwargs={'token': self.pw_reset_token}
+            ),
+        }
+        mail_text = _(
+            '''Hi {name},
 
 you have requested a new password for your pretalx account.
 To reset your password, click on the following link:
@@ -284,16 +272,15 @@ If this wasn\'t you, you can just ignore this email.
 
 All the best,
 the pretalx robot'''
-            )
-
-        mail(
-            self,
-            _('Password recovery'),
-            mail_text,
-            context,
-            event,
-            locale=get_language(),
         )
+
+        with override(get_language()):
+            mail = QueuedMail.objects.create(
+                subject=_('Password recovery'),
+                text=str(mail_text).format(**context),
+            )
+            mail.to_users.add(self)
+            mail.send()
         self.log_action(
             action='pretalx.user.password.reset', person=user, orga=bool(user)
         )

@@ -6,7 +6,6 @@ from typing import Any, Dict, Union
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.mail.backends.smtp import EmailBackend
-from django.utils.translation import override
 from i18nfield.strings import LazyI18nString
 from inlinestyler.utils import inline_css
 
@@ -46,36 +45,6 @@ class TolerantDict(dict):
 
 class SendMailException(Exception):
     pass
-
-
-def mail(
-    user: User,
-    subject: str,
-    template: Union[str, LazyI18nString],
-    context: Dict[str, Any] = None,
-    event: Event = None,
-    locale: str = None,
-    headers: dict = None,
-):
-    from pretalx.mail.models import QueuedMail
-
-    headers = headers or {}
-
-    with override(locale):
-        body = str(template)
-        if context:
-            body = body.format_map(TolerantDict(context))
-        reply_to = headers.get('reply-to')
-        if reply_to and isinstance(reply_to, list):
-            reply_to = ','.join(reply_to)
-        QueuedMail(
-            event=event,
-            to_users=[user],
-            subject=str(subject),
-            text=body,
-            reply_to=reply_to,
-            bcc=headers.get('bcc'),
-        ).send()
 
 
 @app.task(bind=True)

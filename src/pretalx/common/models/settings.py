@@ -96,27 +96,6 @@ hierarkey.add_default('smtp_password', '', str)
 hierarkey.add_default('smtp_use_tls', 'True', bool)
 hierarkey.add_default('smtp_use_ssl', 'False', bool)
 
-hierarkey.add_default(
-    'mail_text_reset',
-    LazyI18nString.from_gettext(
-        ugettext_noop(
-            """Hello {name},
-
-you have requested a new password for your submission account at {event}.
-
-To reset your password, click on the following link:
-
-{url}
-
-If this wasn't you, you can just ignore this email.
-
-All the best,
-your {event} team.
-"""
-        )
-    ),
-    LazyI18nString,
-)
 hierarkey.add_default('mail_on_new_submission', 'False', bool)
 hierarkey.add_default(
     'mail_text_new_submission',
