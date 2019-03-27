@@ -58,6 +58,7 @@ $(function () {
             header: false,
             timeFormat: 'H:mm',
             slotLabelFormat: 'H:mm',
+            scrollTime: '09:00:00',
             selectable: editable,
             selectHelper: true,
             select: function (start, end) {
