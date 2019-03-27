@@ -76,10 +76,7 @@ class OutboxSend(EventPermissionRequired, TemplateView):
             if mail.sent:
                 messages.error(request, _('This mail had been sent already.'))
             else:
-                mail.send()
-                mail.log_action(
-                    'pretalx.mail.sent', person=self.request.user, orga=True
-                )
+                mail.send(requestor=self.request.user)
                 messages.success(request, _('The mail has been sent.'))
             return redirect(self.request.event.orga_urls.outbox)
         return super().dispatch(request, *args, **kwargs)
@@ -95,8 +92,7 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         qs = self.queryset
         count = qs.count()
         for mail in qs:
-            mail.log_action('pretalx.mail.sent', person=self.request.user, orga=True)
-            mail.send()
+            mail.send(requestor=self.request.user)
         messages.success(
             request, _('{count} mails have been sent.').format(count=count)
         )

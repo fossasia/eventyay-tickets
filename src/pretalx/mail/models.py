@@ -162,7 +162,8 @@ class QueuedMail(LogMixin, models.Model):
             prefix = f'[{prefix}]'
         return f'{prefix} {text}'
 
-    def send(self):
+    @transaction.atomic
+    def send(self, requestor=None, orga=True):
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
@@ -186,6 +187,10 @@ class QueuedMail(LogMixin, models.Model):
 
         self.sent = now()
         if self.pk:
+            self.log_action(
+                'pretalx.mail.sent', person=requestor, orga=orga,
+                data={'to_users': [(user.pk, user.email) for user in self.to_users]},
+            )
             self.save()
 
     def copy_to_draft(self):
