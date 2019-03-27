@@ -590,7 +590,6 @@ class Event(LogMixin, models.Model):
 
     def send_orga_mail(self, text, stats=False):
         from django.utils.translation import override
-        from pretalx.common.mail import mail_send_task
         from pretalx.mail.models import QueuedMail
 
         context = {
@@ -613,17 +612,11 @@ class Event(LogMixin, models.Model):
                 }
             )
         with override(self.locale):
-            text = QueuedMail.make_text(str(text).format(**context), event=self)
-        mail_send_task.apply_async(
-            kwargs={
-                'to': [self.email],
-                'subject': QueuedMail.make_subject(
-                    _('News from your content system'), event=self
-                ),
-                'body': text,
-                'html': QueuedMail.make_html(text, event=self),
-            }
-        )
+            QueuedMail(
+                subject=_('News from your content system'),
+                text=str(text).format(**context),
+                to=self.email,
+            ).send()
 
     @transaction.atomic
     def shred(self):
