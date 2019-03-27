@@ -68,9 +68,8 @@ The {event} orga crew'''
             title=submission.title,
             invitation_link=invitation_link,
         )
-        QueuedMail.objects.create(
+        mail = QueuedMail.objects.create(
             event=submission.event,
-            to=user.email,
             reply_to=submission.event.email,
             subject=str(
                 _('You have been added to a submission for {event}').format(
@@ -79,6 +78,7 @@ The {event} orga crew'''
             ),
             text=invitation_text,
         )
+        mail.to_users.add(user)
     return user
 
 

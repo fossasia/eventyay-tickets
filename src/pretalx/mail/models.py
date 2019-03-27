@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import bleach
 import markdown
-from django.db import models
+from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
@@ -93,6 +93,11 @@ class QueuedMail(LogMixin, models.Model):
         max_length=1000,
         verbose_name=_('To'),
         help_text=_('One email address or several addresses separated by commas.'),
+        null=True, blank=True,
+    )
+    to_users = models.ManyToManyField(
+        to='person.User',
+        related_name='mails',
     )
     reply_to = models.CharField(
         max_length=1000,

@@ -248,16 +248,15 @@ class ComposeMail(EventPermissionRequired, FormView):
         return self.request.event.orga_urls.compose_mails
 
     def form_valid(self, form):
-        email_set = set()
+        user_set = set()
 
         for recipient in form.cleaned_data.get('recipients'):
             if recipient == 'reviewers':
-                mails = (
+                users = (
                     User.objects.filter(
                         teams__in=self.request.event.teams.filter(is_reviewer=True)
                     )
                     .distinct()
-                    .values_list('email', flat=True)
                 )
             else:
                 if recipient == 'selected_submissions':
@@ -267,16 +266,17 @@ class ComposeMail(EventPermissionRequired, FormView):
                 else:
                     submission_filter = {'state': recipient}  # e.g. "submitted"
 
-                mails = self.request.event.submissions.filter(
+                users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
                     **submission_filter
-                ).values_list('speakers__email', flat=True)
+                ))
 
-            email_set.update(mails)
-        additional_mails = form.cleaned_data.get('additional_recipients')
-        if additional_mails:
-            email_set.update([m.strip().lower() for m in additional_mails.split(',')])
+            user_set.update(users)
 
-        for email in email_set:
+        additional_mails = [
+            m.strip().lower()
+            for m in form.cleaned_data.get('additional_recipients', '').split(',')
+        ]
+        for email in additional_mails:
             QueuedMail.objects.create(
                 event=self.request.event,
                 to=email,
@@ -286,11 +286,21 @@ class ComposeMail(EventPermissionRequired, FormView):
                 subject=form.cleaned_data.get('subject'),
                 text=form.cleaned_data.get('text'),
             )
+        for user in user_set:
+            mail = QueuedMail.objects.create(
+                event=self.request.event,
+                reply_to=form.cleaned_data.get('reply_to', self.request.event.email),
+                cc=form.cleaned_data.get('cc'),
+                bcc=form.cleaned_data.get('bcc'),
+                subject=form.cleaned_data.get('subject'),
+                text=form.cleaned_data.get('text'),
+            )
+            mail.to_users.add(user)
         messages.success(
             self.request,
             _(
                 '{count} emails have been saved to the outbox – you can make individual changes there or just send them all.'
-            ).format(count=len(email_set)),
+            ).format(count=len(user_set) + len(additional_mails)),
         )
         return super().form_valid(form)
 

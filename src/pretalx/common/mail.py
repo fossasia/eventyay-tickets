@@ -70,7 +70,7 @@ def mail(
             reply_to = ','.join(reply_to)
         QueuedMail(
             event=event,
-            to=user.email,
+            to_users=[user],
             subject=str(subject),
             text=body,
             reply_to=reply_to,
