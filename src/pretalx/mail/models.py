@@ -87,7 +87,8 @@ class MailTemplate(LogMixin, models.Model):
 
 class QueuedMail(LogMixin, models.Model):
     event = models.ForeignKey(
-        to='event.Event', on_delete=models.PROTECT, related_name='queued_mails'
+        to='event.Event', on_delete=models.PROTECT, related_name='queued_mails',
+        null=True, blank=True,
     )
     to = models.CharField(
         max_length=1000,
@@ -133,7 +134,7 @@ class QueuedMail(LogMixin, models.Model):
     def __str__(self):
         """Help with debugging."""
         sent = self.sent.isoformat() if self.sent else None
-        return f'OutboxMail(event={self.event.slug}, to={self.to}, subject={self.subject}, sent={sent})'
+        return f'OutboxMail(to={self.to}, subject={self.subject}, sent={sent})'
 
     @classmethod
     def make_html(cls, text, event=None):
