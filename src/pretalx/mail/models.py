@@ -176,11 +176,12 @@ class QueuedMail(LogMixin, models.Model):
         has_event = getattr(self, 'event', None)
         text = self.make_text(self.text, event=has_event)
         body_html = self.make_html(text)
+
         from pretalx.common.mail import mail_send_task
 
         mail_send_task.apply_async(
             kwargs={
-                'to': self.to.split(','),
+                'to': (self.to or '').split(',') + [user.email for user in self.to_users.all()],
                 'subject': self.make_subject(self.subject, event=has_event),
                 'body': text,
                 'html': body_html,
@@ -195,7 +196,7 @@ class QueuedMail(LogMixin, models.Model):
         if self.pk:
             self.log_action(
                 'pretalx.mail.sent', person=requestor, orga=orga,
-                data={'to_users': [(user.pk, user.email) for user in self.to_users]},
+                data={'to_users': [(user.pk, user.email) for user in self.to_users.all()]},
             )
             self.save()
 
