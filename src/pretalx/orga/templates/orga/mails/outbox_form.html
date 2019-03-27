@@ -13,7 +13,14 @@
     <form method="post">
         {% csrf_token %}
         <h2>{% trans "Mail Editor" %}</h2>
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form_errors form %}
+        {% bootstrap_field form.to layout='event' %}
+        {% if form.to_users %}{% bootstrap_field form.to_users layout='event' %}{% endif %}
+        {% bootstrap_field form.reply_to layout='event' %}
+        {% bootstrap_field form.cc layout='event' %}
+        {% bootstrap_field form.bcc layout='event' %}
+        {% bootstrap_field form.subject layout='event' %}
+        {% bootstrap_field form.text layout='event' %}
         <div class="submit-group">
             <span></span>
             <span>

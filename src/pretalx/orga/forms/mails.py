@@ -5,6 +5,7 @@ from i18nfield.forms import I18nModelForm
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.mail.context import get_context_explanation
 from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.person.models import User
 
 
 class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
@@ -40,9 +41,39 @@ class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
 
 
 class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance or not self.instance.to_users.all().count():
+            self.fields.pop('to_users')
+        else:
+            self.fields['to_users'].queryset = self.instance.to_users.all()
+            self.fields['to_users'].required = False
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean(*args, **kwargs)
+        if not cleaned_data['to'] and not cleaned_data.get('to_users'):
+            raise forms.ValidationError(_('An email needs to have at least one recipient.'))
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        obj = super().save(*args, **kwargs)
+        if self.has_changed() and 'to' in self.changed_data:
+            addresses = list(set(a.strip().lower() for a in (obj.to or '').split(',') if a.strip()))
+            for address in addresses:
+                user = User.objects.filter(email__iexact=address).first()
+                if user:
+                    addresses.remove(address)
+                    obj.to_users.add(user)
+            addresses = ','.join(addresses) if addresses else ''
+            obj.to = addresses
+            obj.save()
+        return obj
+
     class Meta:
         model = QueuedMail
-        fields = ['to', 'reply_to', 'cc', 'bcc', 'subject', 'text']
+        fields = ['to', 'to_users', 'reply_to', 'cc', 'bcc', 'subject', 'text']
+        widgets = {'to_users': forms.CheckboxSelectMultiple}
 
 
 class WriteMailForm(forms.ModelForm):

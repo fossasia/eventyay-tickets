@@ -107,7 +107,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def __str__(self) -> str:
         """Use a useful string representation."""
-        return self.get_display_name()
+        return self.name + f' <{self.email}>' if self.name else self.email or str(_('Unnamed user'))
 
     def get_display_name(self) -> str:
         return self.name if self.name else str(_('Unnamed user'))
