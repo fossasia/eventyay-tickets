@@ -1,17 +1,14 @@
 import logging
 from email.utils import formataddr
 from smtplib import SMTPResponseException, SMTPSenderRefused
-from typing import Any, Dict, Union
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.mail.backends.smtp import EmailBackend
-from i18nfield.strings import LazyI18nString
 from inlinestyler.utils import inline_css
 
 from pretalx.celery_app import app
 from pretalx.event.models import Event
-from pretalx.person.models import User
 
 logger = logging.getLogger(__name__)
 

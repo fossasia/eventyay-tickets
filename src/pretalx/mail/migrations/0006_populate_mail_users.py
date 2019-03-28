@@ -27,7 +27,6 @@ def populate_to_users(apps, schema_editor):
 
 def depopulate_to_users(apps, schema_editor):
     QueuedMail = apps.get_model('mail', 'QueuedMail')
-    User = apps.get_model('person', 'User')
     for mail in QueuedMail.objects.filter(to_users__isnull=False):
         addresses = [user.email for user in mail.to_users.all()] + (mail.to or '').split(',')
         mail.to_users.clear()
