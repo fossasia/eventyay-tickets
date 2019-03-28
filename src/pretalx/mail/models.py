@@ -179,9 +179,12 @@ class QueuedMail(LogMixin, models.Model):
 
         from pretalx.common.mail import mail_send_task
 
+        to = (self.to or '').split(',')
+        if self.id:
+            to += [user.email for user in self.to_users.all()]
         mail_send_task.apply_async(
             kwargs={
-                'to': (self.to or '').split(',') + [user.email for user in self.to_users.all()],
+                'to': to,
                 'subject': self.make_subject(self.subject, event=has_event),
                 'body': text,
                 'html': body_html,
