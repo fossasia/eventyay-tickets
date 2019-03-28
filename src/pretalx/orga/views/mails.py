@@ -275,6 +275,7 @@ class ComposeMail(EventPermissionRequired, FormView):
         additional_mails = [
             m.strip().lower()
             for m in form.cleaned_data.get('additional_recipients', '').split(',')
+            if m.strip()
         ]
         for email in additional_mails:
             QueuedMail.objects.create(
