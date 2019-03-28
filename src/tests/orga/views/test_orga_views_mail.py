@@ -43,7 +43,7 @@ def test_orga_can_edit_pending_mail(orga_client, event, mail):
     assert response.status_code == 200
     assert mail.subject in response.content.decode()
     mail.refresh_from_db()
-    assert mail.to == 'testWIN@gmail.com'
+    assert mail.to == 'testwin@gmail.com'
     assert len(djmail.outbox) == 0
 
 
@@ -66,12 +66,12 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
     assert response.status_code == 200
     assert mail.subject not in response.content.decode()  # Is now in the sent mail view, not in the outbox
     mail.refresh_from_db()
-    assert mail.to == 'testWIN@gmail.com'
+    assert mail.to == 'testwin@gmail.com'
     assert mail.cc != 'None'
     assert len(djmail.outbox) == 1
     real_mail = djmail.outbox[0]
     assert real_mail.body == 'This is the best test.'
-    assert real_mail.to == ['testWIN@gmail.com']
+    assert real_mail.to == ['testwin@gmail.com']
     assert real_mail.cc == ['']
     assert real_mail.bcc == ['foo@bar.com', 'bar@bar.com']
 
@@ -251,7 +251,8 @@ def test_orga_can_compose_single_mail_selected_submissions(orga_client, event, s
     assert response.status_code == 200
     mails = list(QueuedMail.objects.filter(sent__isnull=True))
     assert len(mails) == 1
-    assert mails[0].to == other_submission.speakers.first().email
+    assert not mails[0].to
+    assert list(mails[0].to_users.all()) == [other_submission.speakers.first()]
 
 
 @pytest.mark.django_db
@@ -267,7 +268,8 @@ def test_orga_can_compose_single_mail_reviewers(orga_client, event, orga_user, r
     assert response.status_code == 200
     mails = list(QueuedMail.objects.filter(sent__isnull=True))
     assert len(mails) == 1
-    assert mails[0].to == review_user.email
+    assert not mails[0].to
+    assert list(mails[0].to_users.all()) == [review_user]
 
 
 @pytest.mark.django_db
