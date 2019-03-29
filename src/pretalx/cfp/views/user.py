@@ -392,3 +392,12 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
         submission.save()
         messages.success(self.request, phrases.cfp.invite_accepted)
         return redirect('cfp:event.user.view', event=self.request.event.slug)
+
+
+class MailListView(LoggedInEventPageMixin, TemplateView):
+    template_name = 'cfp/event/user_mails.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['mails'] = self.request.user.mails.filter(sent__isnull=False).order_by('-sent')
+        return context

@@ -47,6 +47,11 @@ urlpatterns = [
                     name='event.user.submissions',
                 ),
                 url(
+                    '^me/mails/$',
+                    user.MailListView.as_view(),
+                    name='event.user.mails',
+                ),
+                url(
                     r'^me/submissions/(?P<code>[\w-]+)/',
                     include(
                         [
