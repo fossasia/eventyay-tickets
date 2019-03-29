@@ -46,24 +46,17 @@ Step 2: Database setup
 ----------------------
 
 Having the database server installed, we still need a database and a database
-user. We can create these with any kind of database managing tool or directly
-on our database's shell, e.g. for MySQL::
+user. We recommend using PostgreSQL, although pretalx also works (and is tested
+against) MariaDB and SQLite.  For databases other than PostgreSQL, please refer
+to their documentation on how to set up a database and a database user with the
+appropriate permissions::
 
-    $ mysql -u root -p
-    mysql> CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
-    mysql> GRANT ALL PRIVILEGES ON pretalx.* TO pretalx@'localhost' IDENTIFIED BY '*********';
-    mysql> FLUSH PRIVILEGES;
+  # sudo -u postgres createuser pretalx -P
+  # sudo -u postgres createdb -O pretalx pretalx
 
-Or for PostgreSQL::
+When using MySQL, make sure you set the character set of the database to ``utf8mb4``, e.g. like this::
 
-  postgres $ createuser pretalx -P
-  Enter password for new role:
-  Enter it again:
-  postgres $ createdb pretalx
-  postgres $ psql
-  postgres=# GRANT ALL PRIVILEGES ON DATABASE pretalx to pretalx;
-
-Replace the asterisks with a password of your own.
+    mysql > CREATE DATABASE pretix DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unic
 
 
 Step 3: Package dependencies
