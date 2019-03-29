@@ -171,6 +171,7 @@ class FrabJsonExporter(ScheduleData):
                                     'persons': [
                                         {
                                             'id': person.id,
+                                            'code': person.code,
                                             'public_name': person.get_display_name(),
                                             'biography': getattr(
                                                 person.profiles.filter(
