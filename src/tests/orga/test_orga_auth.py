@@ -146,7 +146,7 @@ def test_can_reset_password_by_email(orga_user, client, event):
         data={'login_email': orga_user.email, 'login_password': 'mynewpassword1!'},
         follow=True,
     )
-    assert 'You are logged in as' in response.content.decode()
+    assert orga_user.get_display_name() in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -180,7 +180,7 @@ def test_cannot_reset_password_with_incorrect_input(orga_user, client, event):
         data={'login_email': orga_user.email, 'login_password': 'mynewpassword1!'},
         follow=True,
     )
-    assert 'You are logged in as' not in response.content.decode()
+    assert orga_user.get_display_name() not in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -204,7 +204,7 @@ def test_cannot_reset_password_to_insecure_password(orga_user, client, event):
         data={'login_email': orga_user.email, 'login_password': 'password'},
         follow=True,
     )
-    assert 'You are logged in as' not in response.content.decode()
+    assert orga_user.get_display_name() not in response.content.decode()
 
 
 @pytest.mark.django_db

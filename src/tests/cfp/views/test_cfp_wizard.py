@@ -137,7 +137,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
 
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
@@ -189,7 +189,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
 
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
@@ -228,7 +228,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         answ = sub.answers.first()
@@ -257,7 +257,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         assert not sub.answers.exists()
@@ -286,7 +286,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         assert not sub.answers.exists()
@@ -320,7 +320,7 @@ class TestWizard:
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
-        assert doc.select('.user-row')
+        assert doc.select('#user-dropdown-label')
         sub = Submission.objects.last()
         assert sub.title == 'Submission title'
         assert not sub.answers.exists()
