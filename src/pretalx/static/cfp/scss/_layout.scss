@@ -31,9 +31,9 @@ header {
   word-break: break-word;
 }
 
-.locales {
-  padding-top: 1.3rem;
+#header-row {
   padding-bottom: 4px;
+  color: white;
 
   a {
     color: white;
@@ -65,19 +65,31 @@ header {
   main {
     padding: 20px;
   }
+}
 
-  .user-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: $brand-light solid 4px;
-    background-color: $gray-lightest;
-    padding: 5px 20px;
+#user-dropdown-label {
+  color: $white;
+  #user-dropdown {
+    display: none;
+    flex-direction: column;
+    background: $white;
+    z-index: 1000;
+    position: fixed;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-
     a {
+      text-align: left;
       color: $brand-primary;
-      font-weight: bold;
+      padding: 8px 16px;
+    }
+    a:hover {
+      text-decoration: none;
+      background: $gray-lightest;
+    }
+  }
+  &:hover {
+    text-decoration: none;
+    #user-dropdown {
+      display: flex;
     }
   }
 }

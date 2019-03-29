@@ -75,39 +75,47 @@
                     {% endif %}
                 </a>
             </h1>
+            <div class="d-flex" id="header-row">
             {% if request.event and request.event.locales|length > 1 and not is_html_export %}
                 <div class="locales">
                     {% for l, name in request.event.named_locales %}
                         <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
                                 class="{% if l == request.LANGUAGE_CODE %}active{% endif %}">{{ name }}</a>
                     {% endfor %}
-                    {% if request.user.is_anonymous %}
-                    • <a href="{{ request.event.urls.login }}">login</a>
-                    {% endif %}
+                    •&nbsp;
                 </div>
             {% endif %}
+            {% if request.event and request.user.is_authenticated and not is_html_export %}
+                <div id="user-dropdown-label">
+                    {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
+                    {{ request.user.get_display_name }} <i class="fa fa-caret-down ml-1"></i>
+                    <div id="user-dropdown">
+                        <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
+                            <i class="fa fa-sticky-note-o mr-2"></i>
+                            {% trans "My submissions" %}
+                        </a>
+                        <a href="{{ request.event.urls.user }}">
+                            <i class="fa fa-address-card-o mr-2"></i>
+                            {% trans "My profile" %}
+                        </a>
+                        {% if can_see_orga_area %}
+                        <a href="{{ request.event.orga_urls.base }}">
+                            <i class="fa fa-gears mr-2"></i>
+                            {% trans "Orga area" %}
+                        </a>
+                        {% endif %}
+                        <a href="{% url "cfp:event.logout" event=request.event.slug %}">
+                            <i class="fa fa-sign-out mr-2"></i>
+                            {% trans "Logout" %}
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{{ request.event.urls.login }}">login</a>
+            {% endif %}
+            </div>
         </header>
         <div class="card" id="main-card">
-            {% if request.event and request.user.is_authenticated and not is_html_export %}
-                <nav class="user-row">
-                    {% url "cfp:event.user.view" event=request.event.slug as userurl %}
-                    <div>
-                    {% blocktrans trimmed with name=request.user.get_display_name attr="href='"|add:userurl|add:"'"|safe %}
-                        You are logged in as <a {{ attr }}>{{ name }}</a>.
-                    {% endblocktrans %}
-                    </div>
-                    <div>
-                        {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
-                        {% if can_see_orga_area %}
-                        <a href="{{ request.event.orga_urls.base }}">{% trans "Orga area" %}</a> &middot;
-                        {% endif %}
-                        <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}">
-                            {% trans "My submissions" %}
-                        </a> &middot;
-                        <a href="{% url "cfp:event.logout" event=request.event.slug %}">{% trans "Logout" %}</a>
-                    </div>
-                </nav>
-            {% endif %}
             <main>
                 {% if messages %}
                     {% for message in messages %}
