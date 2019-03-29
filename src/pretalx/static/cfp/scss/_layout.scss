@@ -9,7 +9,14 @@ body {
   width: 100%;
   height: 240px;
   z-index: -1;
+  display: flex;
+  #header-image {
+    object-fit: cover;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
+
 
 #main-container {
   padding-top: 100px;

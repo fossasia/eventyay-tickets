@@ -119,6 +119,17 @@ class Event(LogMixin, models.Model):
             'We will show your logo with a maximal height of 120 pixels.'
         ),
     )
+    header_image = models.FileField(
+        upload_to=event_logo_path,
+        null=True,
+        blank=True,
+        verbose_name=_('Header image'),
+        help_text=_(
+            'If you provide a header image, it will be displayed instead of your event\'s color and/or header pattern '
+            'on top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
+            'continue to be displayed, and not stretched.'
+        ),
+    )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
     locale = models.CharField(
         max_length=32,

@@ -63,6 +63,21 @@
                 {% bootstrap_field form.logo layout='inline' %}
             </div>
         </div>
+        <div class="event-logo-field form-group row">
+            <label class="col-md-3 col-form-label" for="id_custom_css">{% trans "Event header image" %}<br><span class="optional">Optional</span></label>
+            <img class="event-logo-display"
+              {% if request.event.header_image %}
+              src="{{ request.event.header_image.url }}"
+              alt="{% trans "The event's header_image" %}"
+              {% else %}
+              src="{% static "common/img/logo.svg" %}"
+              alt="{% trans "The pretalx logo" %}"
+              {% endif %}
+            />
+            <div class="event-logo-form-fields">
+                {% bootstrap_field form.header_image layout='inline' %}
+            </div>
+        </div>
         {% bootstrap_field sform.display_header_pattern layout='event' %}
         <fieldset>
         <div class="submit-group panel">

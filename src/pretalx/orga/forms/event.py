@@ -27,7 +27,17 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     logo = ExtensionFileField(
         required=False,
         extension_whitelist=IMAGE_EXTENSIONS,
-        label=_('Logo'),
+        label=_('Header image'),
+        help_text=_(
+            'If you provide a header image, it will be displayed instead of your event\'s color and/or header pattern '
+            'on top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
+            'continue to be displayed, and not stretched.'
+        ),
+    )
+    header_image = ExtensionFileField(
+        required=False,
+        extension_whitelist=IMAGE_EXTENSIONS,
+        label=_('Header image'),
         help_text=_(
             'If you provide a logo image, we will by default not show your event\'s name and date in the page header. '
             'We will show your logo in its full size if possible, scaled down to the full header width otherwise.'
@@ -99,6 +109,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             'primary_color',
             'custom_css',
             'logo',
+            'header_image',
             'landing_page_text',
         ]
         widgets = {

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Organizers can now provide a header image instead of a header color and pattern for their events.
 - :feature:`640` Instead of having to scroll with the mouse wheel or arrow keys when dragging a talk in the schedule editor, you can now just drag the talk to the upper or lower edge of the window instead.
 - :feature:`-` In pretalx, emails the organisers send out are now connected with user accounts if the address matches anybody, allowing organisers and speakers to see which emails were sent to a speaker. This serves both as a help for organisers and speakers, in case emails get lost, email addresses are inaccessible, or any other issues occur.
 - :feature:`637` pretalx will now display the schedule wider the more rooms are present, starting at four rooms and reaching maximum browser width for six rooms, to make schedules look less cramped and more readable.
