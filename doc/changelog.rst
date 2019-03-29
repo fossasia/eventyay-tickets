@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` In pretalx, emails the organisers send out are now connected with user accounts if the address matches anybody, allowing organisers and speakers to see which emails were sent to a speaker. This serves both as a help for organisers and speakers, in case emails get lost, email addresses are inaccessible, or any other issues occur.
 - :feature:`637` pretalx will now display the schedule wider the more rooms are present, starting at four rooms and reaching maximum browser width for six rooms, to make schedules look less cramped and more readable.
 - :feature:`620` Speakers can't invite other speakers any longer after the CfP is over.
 - :support:`606` Our documentation now explains which parts of pretalx to back up.
