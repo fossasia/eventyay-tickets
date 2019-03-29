@@ -208,4 +208,6 @@ class QueuedMail(LogMixin, models.Model):
         new_mail.pk = None
         new_mail.sent = None
         new_mail.save()
+        for user in self.to_users.all():
+            new_mail.to_users.add(user)
         return new_mail
