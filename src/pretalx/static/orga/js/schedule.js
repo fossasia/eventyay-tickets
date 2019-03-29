@@ -384,6 +384,32 @@ var app = new Vue({
           dragController.draggedTalk.start = null
           dragController.roomColumn.classList.add('hover-active')
         }
+
+        if (event.clientY < 160) {
+          if (event.clientY < 110) {
+            window.scrollBy({
+              top: -100,
+              behavior: 'smooth'
+            });
+          } else {
+            window.scrollBy({
+              top: -50,
+              behavior: 'smooth'
+            });
+          }
+        } else if (event.clientY > (window.innerHeight - 100)) {
+          if (event.clientY > (window.innerHeight - 40)) {
+            window.scrollBy({
+              top: 100,
+              behavior: 'smooth'
+            });
+          } else {
+            window.scrollBy({
+              top: 50,
+              behavior: 'smooth'
+            });
+          }
+        }
       }
     },
     onMouseUp (event) {
