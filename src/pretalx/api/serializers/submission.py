@@ -6,7 +6,7 @@ from rest_framework.serializers import (
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
-from pretalx.submission.models import Answer, Submission, SubmissionStates
+from pretalx.submission.models import Submission, SubmissionStates
 
 
 class SlotSerializer(I18nAwareModelSerializer):
@@ -23,25 +23,10 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     slot = SlotSerializer(TalkSlot.objects.filter(is_visible=True), read_only=True)
     duration = SerializerMethodField()
     speakers = SerializerMethodField()
-    answers = SerializerMethodField()
-
-    @property
-    def is_orga(self):
-        request = self.context.get('request')
-        if request:
-            return request.user.has_perm('orga.view_submissions', request.event)
-        return False
 
     @staticmethod
     def get_duration(obj):
         return obj.export_duration
-
-    def get_answers(self, obj):
-        if self.is_orga:
-            return AnswerSerializer(
-                Answer.objects.filter(submission=obj), many=True
-            ).data
-        return []
 
     def get_speakers(self, obj):
         request = self.context.get('request')
@@ -58,7 +43,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = Submission
-        fields = (
+        fields = [
             'code',
             'speakers',
             'title',
@@ -74,8 +59,19 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             'content_locale',
             'slot',
             'image',
+        ]
+
+
+class SubmissionOrgaSerializer(SubmissionSerializer):
+    answers = AnswerSerializer(many=True)
+
+    class Meta:
+        model = Submission
+        fields = SubmissionSerializer.Meta.fields + [
             'answers',
-        )
+            'notes',
+            'internal_notes',
+        ]
 
 
 class ScheduleListSerializer(ModelSerializer):

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`634` The API now provides internal notes by speakers and organisers to requesting users with adequate permissions.
 - :feature:`-` Organizers can now provide a header image instead of a header color and pattern for their events.
 - :feature:`640` Instead of having to scroll with the mouse wheel or arrow keys when dragging a talk in the schedule editor, you can now just drag the talk to the upper or lower edge of the window instead.
 - :feature:`-` In pretalx, emails the organisers send out are now connected with user accounts if the address matches anybody, allowing organisers and speakers to see which emails were sent to a speaker. This serves both as a help for organisers and speakers, in case emails get lost, email addresses are inaccessible, or any other issues occur.

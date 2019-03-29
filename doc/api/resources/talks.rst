@@ -30,6 +30,8 @@ content_locale                        string                     The language th
 slot                                  object                     An object with the scheduling details, e.g. ``{"start": …, "end": …, "room": "R101"}`` if they exist.
 slot_count                            number                     How often this submission may be scheduled.
 answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions.
+notes                                 string                     Notes the speaker left for the organisers. Available if the requesting user has organiser permissions.
+internal_notes                        string                     Notes the organisers left on the submission. Available if the requesting user has organiser permissions.
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -90,7 +92,9 @@ Endpoints
               "person": null,
               "options": []
             }
-           ]
+           ],
+           "notes": "Please make sure you give me red M&Ms",
+           "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
         ]
       }
 
@@ -146,7 +150,9 @@ Endpoints
             "person": null,
             "options": []
           }
-         ]
+         ],
+         "notes": "Please make sure you give me red M&Ms",
+         "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
       }
 
    :param event: The ``slug`` field of the event to fetch

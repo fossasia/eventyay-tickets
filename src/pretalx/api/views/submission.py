@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 
 from pretalx.api.serializers.submission import (
-    ScheduleListSerializer, ScheduleSerializer, SubmissionSerializer,
+    ScheduleListSerializer, ScheduleSerializer,
+    SubmissionOrgaSerializer, SubmissionSerializer,
 )
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission
@@ -28,6 +29,11 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.get_base_queryset() or self.queryset
+
+    def get_serializer_class(self):
+        if self.request.is_orga:
+            return SubmissionOrgaSerializer
+        return SubmissionSerializer
 
 
 class TalkViewSet(SubmissionViewSet):

@@ -13,7 +13,7 @@ def test_can_login_with_email(speaker, client, event):
 
 
 @pytest.mark.django_db
-def test_cannot_login_with_incorrect_email(client, event, speakerj):
+def test_cannot_login_with_incorrect_email(client, event, speaker):
     response = client.post(
         event.urls.login,
         data={'login_email': 'jane001@me.space', 'login_password': 'speakerpwd1!'},

@@ -6,7 +6,8 @@ Submissions
 Resource description
 --------------------
 
-The submission resource contains the following public fields:
+The submission resource may contain the following fields. Some fields are only
+accessible if users have the correct permissions:
 
 .. rst-class:: rest-resource-table
 
@@ -29,6 +30,8 @@ slot                                  object                     An object with 
 slot_count                            number                     How often this submission may be scheduled.
 image                                 string                     The submission image URL
 answers                               list                       The question answers given by the speakers. Available if the requesting user has organiser permissions.
+notes                                 string                     Notes the speaker left for the organisers. Available if the requesting user has organiser permissions.
+internal_notes                        string                     Notes the organisers left on the submission. Available if the requesting user has organiser permissions.
 ===================================== ========================== =======================================================
 
 Endpoints
@@ -89,7 +92,9 @@ Endpoints
                 "person": null,
                 "options": []
               }
-             ]
+             ],
+             "notes": "Please make sure you give me red M&Ms",
+             "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
           }
         ]
       }
@@ -147,7 +152,9 @@ Endpoints
             "person": null,
             "options": []
           }
-         ]
+         ],
+         "notes": "Please make sure you give me red M&Ms",
+         "internal_notes": "Absolutely no M&Ms, but cool proposal otherwise!"
       }
 
    :param event: The ``slug`` field of the event to fetch

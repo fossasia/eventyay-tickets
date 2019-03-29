@@ -7,7 +7,9 @@ from pretalx.api.serializers.room import RoomOrgaSerializer, RoomSerializer
 from pretalx.api.serializers.speaker import (
     SpeakerOrgaSerializer, SpeakerSerializer, SubmitterSerializer,
 )
-from pretalx.api.serializers.submission import SubmissionSerializer
+from pretalx.api.serializers.submission import (
+    SubmissionOrgaSerializer, SubmissionSerializer,
+)
 
 
 @pytest.mark.django_db
@@ -96,7 +98,7 @@ def test_submission_serializer_for_organiser(submission, orga_user):
     class Request:
         user = orga_user
         event = submission.event
-    data = SubmissionSerializer(submission, context={'event': submission.event, 'request': Request()}).data
+    data = SubmissionOrgaSerializer(submission, context={'event': submission.event, 'request': Request()}).data
     assert set(data.keys()) == {
         'code',
         'speakers',
@@ -114,6 +116,8 @@ def test_submission_serializer_for_organiser(submission, orga_user):
         'image',
         'answers',
         'track',
+        'notes',
+        'internal_notes',
     }
     assert isinstance(data['speakers'], list)
     assert data['speakers'][0] == {
@@ -144,7 +148,6 @@ def test_submission_serializer(submission):
         'content_locale',
         'slot',
         'image',
-        'answers',
         'track',
     }
     assert isinstance(data['speakers'], list)
@@ -173,7 +176,6 @@ def test_submission_slot_serializer(slot):
         'content_locale',
         'slot',
         'image',
-        'answers',
         'track',
     }
     assert set(data['slot'].keys()) == {'start', 'end', 'room'}
