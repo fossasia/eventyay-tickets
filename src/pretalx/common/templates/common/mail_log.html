@@ -1,0 +1,24 @@
+{% load rich_text %}
+{% if mails %}
+<div id="accordion">
+  {% for mail in mails %}
+  <div class="card mail-card">
+    <div class="card-header" id="subject-{{ mail.pk }}">
+      <h5 class="mb-0 d-flex justify-content-between align-items-baseline w-100" data-toggle="collapse" data-target="#mail-{{ mail.pk }}" aria-controls="mail-{{ mail.pk }}">
+        <span class="mb-2 mt-2">
+        <i class="fa fa-envelope mr-2"></i>
+            {{ mail.subject }}
+        </span>
+        <small class="text-muted">{{ mail.sent }}</small>
+      </h5>
+    </div>
+
+    <div id="mail-{{ mail.pk }}" class="collapse" aria-labelledby="subject-{{ subject.pk }}" aria-expanded="false" data-parent="#accordion">
+      <div class="card-body">
+          {{ mail.text|rich_text }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

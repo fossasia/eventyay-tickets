@@ -110,6 +110,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         context['submission_count'] = submissions.count()
         context['submissions'] = submissions
         context['questions_form'] = self.questions_form
+        context['mails'] = self.object.mails.filter(sent__isnull=False).order_by('-sent')
         return context
 
     @cached_property

@@ -82,5 +82,13 @@
     </form>
 
 
+    <h3>{% trans 'Emails' %}</h3>
+    {% if mails %}
+        {% include 'common/mail_log.html' %}
+    {% else %}
+        {% trans "No mails were sent to this speaker yet." %}
+    {% endif %}
+
+
     <script src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}
