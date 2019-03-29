@@ -15,37 +15,22 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ('state', 'content_locale', 'submission_type')
     search_fields = ('title', 'speakers__name')
 
-    def get_base_queryset(self):
-        if self.request.user.has_perm('orga.view_submissions', self.request.event):
-            return self.request.event.submissions.all()
-        if (
-            not self.request.user.has_perm('agenda.view_schedule', self.request.event)
-            or not self.request.event.current_schedule
-        ):
-            return Submission.objects.none()
-        return self.request.event.submissions.filter(
-            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True)
-        )
-
     def get_queryset(self):
-        return self.get_base_queryset() or self.queryset
+        if self.request._request.path.endswith('/talks/') or not self.request.user.has_perm('orga.view_submissions', self.request.event):
+            if (
+                not self.request.user.has_perm('agenda.view_schedule', self.request.event)
+                or not self.request.event.current_schedule
+            ):
+                return Submission.objects.none()
+            return self.request.event.submissions.filter(
+                slots__in=self.request.event.current_schedule.talks.filter(is_visible=True)
+            )
+        return self.request.event.submissions.all()
 
     def get_serializer_class(self):
         if self.request.is_orga:
             return SubmissionOrgaSerializer
         return SubmissionSerializer
-
-
-class TalkViewSet(SubmissionViewSet):
-    def get_queryset(self):
-        if (
-            not self.request.user.has_perm('agenda.view_schedule', self.request.event)
-            or not self.request.event.current_schedule
-        ):
-            return Submission.objects.none()
-        return self.request.event.submissions.filter(
-            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True)
-        )
 
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
