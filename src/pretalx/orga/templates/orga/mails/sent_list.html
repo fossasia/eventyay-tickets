@@ -38,6 +38,12 @@
                     </a>
                 </td>
                 <td>
+                    {% for user in mail.to_users.all %}
+                    {% if user in request.event.submitters %}
+                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                            {{ user }}
+                        </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+                    {% endfor %}
                     {{ mail.to }}
                 </td>
                 <td>
