@@ -389,10 +389,14 @@ class InvitationView(FormView):
         context['invitation'] = self.object
         return context
 
-    @transaction.atomic()
+    def post(self, *args, **kwargs):
+        if not self.request.user.is_anonymous:
+            self.accept_invite(self.request.user)
+            return redirect('/orga')
+        return super().post(*args, **kwargs)
+
     def form_valid(self, form):
         form.save()
-        invite = self.object
         user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
         if not user:
             messages.error(
@@ -403,17 +407,20 @@ class InvitationView(FormView):
             )
             return redirect(self.request.event.urls.base)
 
+        self.accept_invite(user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return redirect('/orga')
+
+    @transaction.atomic()
+    def accept_invite(self, user):
+        invite = self.object
         invite.team.members.add(user)
         invite.team.save()
-
         invite.team.organiser.log_action(
             'pretalx.invite.orga.accept', person=user, orga=True
         )
         messages.info(self.request, _('You are now part of the team!'))
         invite.delete()
-
-        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect('/orga')
 
 
 class UserSettings(TemplateView):

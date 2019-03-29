@@ -10,6 +10,15 @@
     {% endblocktrans %}
 </h3>
 
-{% include "common/auth.html" %}
+{% if request.user.is_anonymous %}
+    {% include "common/auth.html" %}
+{% else %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-block btn-success font-weight-bold">
+            {% trans "Join the team!" %}
+        </button>
+    </form>
+{% endif %}
 
 {% endblock %}
