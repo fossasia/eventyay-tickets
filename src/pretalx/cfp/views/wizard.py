@@ -102,7 +102,7 @@ class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
             kwargs['essential_only'] = True
         if step == 'questions':
             kwargs['target'] = ''
-            kwargs['track'] = self.get_cleaned_data_for_step('info').get('track')
+            kwargs['track'] = (self.get_cleaned_data_for_step('info') or dict()).get('track')
         return kwargs
 
     def get_context_data(self, **kwargs):
