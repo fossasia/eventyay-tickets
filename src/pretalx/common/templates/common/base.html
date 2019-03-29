@@ -64,7 +64,7 @@
         {% endblocktrans %}
     </div>
     {% endif %}
-    <div class="container" id="main-container">
+    <div class="container{% block container_width %}{% endblock %}" id="main-container">
         <header>
             <h1>
                 <a href="{% block nav_link %}{% endblock %}">

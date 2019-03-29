@@ -133,6 +133,7 @@ class ScheduleView(ScheduleDataView):
             event=self.request.event, schedule=context['schedule']
         ).data
         context['search'] = self.request.GET.get('q', '').lower()
+        max_rooms = 0
         for date in context['data']:
             if date.get('first_start') and date.get('last_end'):
                 start = (
@@ -147,6 +148,7 @@ class ScheduleView(ScheduleDataView):
                 while step < end:
                     date['hours'].append(step.strftime('%H:%M'))
                     step += timedelta(hours=1)
+                max_rooms = max(max_rooms, len(date['rooms']))
                 for room in date['rooms']:
                     for talk in room.get('talks', []):
                         talk.top = int(
@@ -156,6 +158,7 @@ class ScheduleView(ScheduleDataView):
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
+        context['max_rooms'] = max_rooms
         return context
 
 

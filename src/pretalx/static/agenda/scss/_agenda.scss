@@ -1,3 +1,9 @@
+#main-container.container.container-wide {
+  max-width: 100%;
+}
+#main-container.container.container-semi-wide {
+  max-width: 1400px;
+}
 #navigator {
   position: fixed;
   left: 0;

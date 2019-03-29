@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`637` pretalx will now display the schedule wider the more rooms are present, starting at four rooms and reaching maximum browser width for six rooms, to make schedules look less cramped and more readable.
 - :feature:`620` Speakers can't invite other speakers any longer after the CfP is over.
 - :support:`606` Our documentation now explains which parts of pretalx to back up.
 - :feature:`486` In the schedule editor, the room names and the current date are now fixed to the top when scrolling down.
