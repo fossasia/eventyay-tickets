@@ -77,7 +77,6 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         if len(self.event.locales) == 1:
             self.fields['content_locale'].initial = self.event.locales[0]
             self.fields['content_locale'].widget = forms.HiddenInput()
-            self.fields['content_locale'].disabled = True
         else:
             locale_names = dict(settings.LANGUAGES)
             self.fields['content_locale'].choices = [

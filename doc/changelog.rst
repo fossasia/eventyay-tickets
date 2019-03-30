@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`642` Having only one submission type in the event showed a drop-down with submission types from ALL events, instead of hiding the submission type input completely as intended.
 - :feature:`609` Organisers can now filter submissions and reviews by track.
 - :feature:`634` The API now provides internal notes by speakers and organisers to requesting users with adequate permissions.
 - :feature:`-` Organizers can now provide a header image instead of a header color and pattern for their events.
