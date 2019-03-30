@@ -34,9 +34,6 @@ extensions = [
     'releases',
 ]
 
-if HAS_PYENCHANT:
-    extensions.append('sphinxcontrib.spelling')
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -143,25 +140,6 @@ texinfo_documents = [
      author, 'pretalx', 'Event management',
      'Miscellaneous'),
 ]
-
-# -- Options for Spelling output ------------------------------------------
-if HAS_PYENCHANT:
-    # String specifying the language, as understood by PyEnchant and enchant.
-    # Defaults to en_US for US English.
-    spelling_lang = 'en_GB'
-
-    # String specifying a file containing a list of words known to be spelled
-    # correctly but that do not appear in the language dictionary selected by
-    # spelling_lang. The file should contain one word per line.
-    spelling_word_list_filename='spelling_wordlist.txt'
-
-    # Boolean controlling whether suggestions for misspelled words are printed.
-    # Defaults to False.
-    spelling_show_suggestions=True
-
-    # List of filter classes to be added to the tokenizer that produces words to be checked.
-    from filters import EdgecaseFilter
-    spelling_filters=[EdgecaseFilter]
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}

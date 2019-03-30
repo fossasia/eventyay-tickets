@@ -1,5 +1,3 @@
-.. spelling:: de
-
 Submissions
 ===========
 

@@ -1,5 +1,3 @@
-.. spelling:: Orga
-
 .. highlight:: python
    :linenothreshold: 5
 

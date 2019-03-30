@@ -1,4 +1,3 @@
-.. spelling:: nginx systemd 
 .. _installation:
 
 Installation
