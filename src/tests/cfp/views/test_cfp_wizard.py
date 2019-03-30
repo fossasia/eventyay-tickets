@@ -1,10 +1,12 @@
 from datetime import timedelta
 
 import bs4
+import django.forms as forms
 import pytest
 from django.core import mail as djmail
 from django.utils.timezone import now
 
+from pretalx.submission.forms import InfoForm
 from pretalx.submission.models import Submission, SubmissionType
 
 
@@ -336,3 +338,24 @@ class TestWizard:
         event.cfp.save()
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client, success=False)
+
+
+@pytest.mark.django_db
+def test_infoform_set_submission_type(event, other_event):
+    # https://github.com/pretalx/pretalx/issues/642
+    f = InfoForm(event)
+    assert len(SubmissionType.objects.all()) > 1
+    assert len(event.submission_types.all()) == 1
+    assert len(f.fields['submission_type'].queryset) == 1
+    assert f.fields['submission_type'].initial == event.submission_types.all()[0]
+    assert isinstance(f.fields['submission_type'].widget, forms.HiddenInput)
+
+
+@pytest.mark.django_db
+def test_infoform_set_submission_type_2nd_event(event, other_event, submission_type):
+    # https://github.com/pretalx/pretalx/issues/642
+    f = InfoForm(event)
+    assert len(SubmissionType.objects.all()) > 1
+    assert len(event.submission_types.all()) == 2
+    assert len(f.fields['submission_type'].queryset) == 2
+    assert not isinstance(f.fields['submission_type'].widget, forms.HiddenInput)
