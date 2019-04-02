@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :bug:`645` The rendering of the full submission content in the acknowledgment mail (upon submission) looked weird in HTML, due to missing line breaks.
+- :bug:`646` On slow network connections, the login step of the CfP submission loaded in a suboptimal way, leaving users with a seemingly finished page but without the login/registration form. As a consequence, all page loads (but especially that one) were optimized.
 - :bug:`642` Having only one submission type in the event showed a drop-down with submission types from ALL events, instead of hiding the submission type input completely as intended.
 - :feature:`609` Organisers can now filter submissions and reviews by track.
 - :feature:`634` The API now provides internal notes by speakers and organisers to requesting users with adequate permissions.
