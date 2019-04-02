@@ -59,15 +59,15 @@ class UserForm(forms.Form):
 
     def _clean_register(self, data):
         if data.get('register_password') != data.get('register_password_repeat'):
-            raise ValidationError(phrases.base.passwords_differ)
+            self.add_error('register_password_repeat', ValidationError(phrases.base.passwords_differ))
 
         if User.objects.filter(email__iexact=data.get('register_email')).exists():
-            raise ValidationError(
+            self.add_error('register_email', ValidationError(
                 _(
                     'We already have a user with that email address. Did you already register '
                     'before and just need to log in?'
                 )
-            )
+            ))
 
     def clean(self):
         data = super().clean()
@@ -238,7 +238,7 @@ class LoginInfoForm(forms.ModelForm):
         super().clean()
         password = self.cleaned_data.get('password')
         if password and not password == self.cleaned_data.get('password_repeat'):
-            raise ValidationError(phrases.base.passwords_differ)
+            self.add_error('password_repeat', ValidationError(phrases.base.passwords_differ))
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -264,11 +264,11 @@ class SpeakerInformationForm(I18nModelForm):
             self.cleaned_data['include_submitters']
             and self.cleaned_data['exclude_unconfirmed']
         ):
-            raise ValidationError(
+            self.add_error('exclude_unconfirmed', ValidationError(
                 _(
                     'Either target all submitters or only confirmed speakers, these options are exclusive!'
                 )
-            )
+            ))
         return result
 
     class Meta:

@@ -53,7 +53,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
     def clean(self, *args, **kwargs):
         cleaned_data = super().clean(*args, **kwargs)
         if not cleaned_data['to'] and not cleaned_data.get('to_users'):
-            raise forms.ValidationError(_('An email needs to have at least one recipient.'))
+            self.add_error('to', forms.ValidationError(_('An email needs to have at least one recipient.')))
         return cleaned_data
 
     def save(self, *args, **kwargs):

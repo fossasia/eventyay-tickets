@@ -39,5 +39,5 @@ class RecoverForm(forms.Form):
     def clean(self):
         data = super().clean()
         if data.get('password') != data.get('password_repeat'):
-            raise ValidationError(phrases.base.passwords_differ)
+            self.add_error('password_repeat', ValidationError(phrases.base.passwords_differ))
         return data

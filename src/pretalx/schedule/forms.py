@@ -87,7 +87,7 @@ class AvailabilitiesFormMixin(forms.Form):
             assert 'end' in rawavail
         except AssertionError:
             raise forms.ValidationError(
-                _("The submitted availability does not comply with format.")
+                _("The submitted availability does not comply with the required format.")
             )
 
         try:
