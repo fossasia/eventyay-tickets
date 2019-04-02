@@ -7,9 +7,12 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
+from django.forms import ValidationError
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
+from formtools.wizard.forms import ManagementForm
 from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
 
@@ -202,3 +205,46 @@ class PermissionRequired(PermissionRequiredMixin):
 class EventPermissionRequired(PermissionRequired):
     def get_permission_object(self):
         return self.request.event
+
+
+class SensibleBackWizardMixin():
+
+    def post(self, *args, **kwargs):
+        """
+        Don't redirect if user presses the prev. step button, save data instead.
+        The rest of this is copied from WizardView.
+        We want to save data when hitting "back"!
+        """
+        wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
+        management_form = ManagementForm(self.request.POST, prefix=self.prefix)
+        if not management_form.is_valid():
+            raise ValidationError(
+                _('ManagementForm data is missing or has been tampered.'),
+                code='missing_management_form',
+            )
+
+        form_current_step = management_form.cleaned_data['current_step']
+        if (form_current_step != self.steps.current and
+                self.storage.current_step is not None):
+            # form refreshed, change current step
+            self.storage.current_step = form_current_step
+
+        # get the form for the current step
+        form = self.get_form(data=self.request.POST, files=self.request.FILES)
+
+        # and try to validate
+        if form.is_valid():
+            # if the form is valid, store the cleaned data and files.
+            self.storage.set_step_data(self.steps.current, self.process_step(form))
+            self.storage.set_step_files(self.steps.current, self.process_step_files(form))
+
+            # check if the current step is the last step
+            if wizard_goto_step and wizard_goto_step in self.get_form_list():
+                return self.render_goto_step(wizard_goto_step)
+            if self.steps.current == self.steps.last:
+                # no more steps, render done view
+                return self.render_done(form, **kwargs)
+            else:
+                # proceed to the next step
+                return self.render_next_step(form)
+        return self.render(form)

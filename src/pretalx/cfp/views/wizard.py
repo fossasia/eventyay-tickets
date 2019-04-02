@@ -18,6 +18,7 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mail import SendMailException
+from pretalx.common.mixins.views import SensibleBackWizardMixin
 from pretalx.common.phrases import phrases
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
@@ -73,7 +74,7 @@ def show_user_page(wizard):
 
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
-class SubmitWizard(EventPageMixin, NamedUrlSessionWizardView):
+class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizardView):
     form_list = FORMS
     condition_dict = {'questions': show_questions_page, 'user': show_user_page}
     file_storage = FileSystemStorage(os.path.join(settings.MEDIA_ROOT, 'avatars'))

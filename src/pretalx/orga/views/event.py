@@ -21,7 +21,7 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
-    ActionFromUrl, EventPermissionRequired, PermissionRequired,
+    ActionFromUrl, EventPermissionRequired, PermissionRequired, SensibleBackWizardMixin,
 )
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.views import is_form_bound
@@ -482,7 +482,7 @@ def condition_copy(wizard):
     return EventWizardCopyForm.copy_from_queryset(wizard.request.user).exists()
 
 
-class EventWizard(PermissionRequired, SessionWizardView):
+class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView):
     permission_required = 'orga.create_events'
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, 'new_event')
