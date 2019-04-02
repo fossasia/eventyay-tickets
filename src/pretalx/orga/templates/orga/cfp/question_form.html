@@ -8,7 +8,7 @@
 {% block cfp_content %}
     {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
     <h2>
         {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}

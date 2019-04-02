@@ -8,7 +8,7 @@
 {% block settings_content %}
     {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}

@@ -13,8 +13,8 @@
 {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
     <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
-    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
-    <script async src="{% static "orga/js/speakers.js" %}"></script>
+    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script defer src="{% static "orga/js/speakers.js" %}"></script>
 {% endcompress %}
 <form method="post" enctype="multipart/form-data"><fieldset>
     {% if not submission %}

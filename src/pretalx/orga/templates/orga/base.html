@@ -33,9 +33,9 @@
         <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
         <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
-        <script async src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script async src="{% static "orga/js/main.js" %}"></script>
-        <script async src="{% static "orga/js/typeahead.js" %}"></script>
+        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+        <script defer src="{% static "orga/js/main.js" %}"></script>
+        <script defer src="{% static "orga/js/typeahead.js" %}"></script>
     {% endcompress %}
     {% block scripts %}{% endblock %}
 </head>
@@ -374,12 +374,12 @@
     </div>
     <span id="navigateUrl" data-remoteUrl="{{ request.event.orga_urls.url_list }}?search=%QUERY"></span>
     {% compress js %}
-        <script async src="{% static "orga/js/load_late.js" %}"></script>
-        <script async src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
+        <script defer src="{% static "orga/js/load_late.js" %}"></script>
+        <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     {% endcompress %}
     {% if request.event %}
         {% compress js %}
-            <script async src="{% static "orga/js/navigate.js" %}"></script>
+            <script defer src="{% static "orga/js/navigate.js" %}"></script>
         {% endcompress %}
     {% endif %}
 </body>

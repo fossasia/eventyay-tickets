@@ -13,7 +13,7 @@
 {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
     {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>

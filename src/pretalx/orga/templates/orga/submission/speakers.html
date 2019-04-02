@@ -63,6 +63,6 @@
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
     <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
-    <script async src="{% static "orga/js/speakers.js" %}"></script>
+    <script defer src="{% static "orga/js/speakers.js" %}"></script>
     {% endcompress %}
 {% endblock %}

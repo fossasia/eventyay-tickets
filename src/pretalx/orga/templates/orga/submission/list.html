@@ -18,7 +18,7 @@
     {% compress js %}
         <script defer src="{% static "vendored/nvd3/d3.min.js" %}"></script>
         <script defer src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
-        <script async src="{% static "orga/js/stats.js" %}"></script>
+        <script defer src="{% static "orga/js/stats.js" %}"></script>
     {% endcompress %}
 {% endif %}
 {% endblock %}
