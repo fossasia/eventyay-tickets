@@ -65,7 +65,7 @@ class MailTemplate(LogMixin, models.Model):
                 subject = str(self.subject).format(**context)
                 text = str(self.text).format(**context)
                 if submission and full_submission_content:
-                    text += '\n\n\n***********\n\n' + str(_('Full submission content:'))
+                    text += '\n\n\n***********\n\n' + str(_('Full submission content:\n\n'))
                     text += submission.get_content_for_mail()
             except KeyError as e:
                 raise SendMailException(f'Experienced KeyError when rendering Text: {str(e)}')
