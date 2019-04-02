@@ -1,5 +1,7 @@
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
 
 {% bootstrap_form_errors form %}
 {% if no_form %}
@@ -8,7 +10,10 @@
 <form id="auth-form" class="password-input-form" method="post" autocomplete="off">
 {% endif %}
     {% csrf_token %}
-    {{ form.media }}
+    {% compress js %}
+        <script async src="{% static 'common/js/zxcvbn.js' %}"></script>
+        <script async src="{% static 'common/js/password_strength.js' %}"></script>
+    {% endcompress %}
 {% if not hide_login %}
     <div class="auth-form-block">
         {% if not hide_login and not hide_register %}

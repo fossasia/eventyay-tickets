@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %} {% if request.event %} {{ request.event.name }} {% endif %}:: pretalx</title>
     <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
-    <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
     <meta name="application-name" content="pretalx">
     <meta name="generator" content="pretalx">
     <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
@@ -41,15 +41,10 @@
     {% endif %}
     {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
     {% compress js %}
-        <script src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-        <script src="{% static "vendored/popper.js" %}"></script>
-        <script src="{% static "vendored/tether/tether.min.js" %}"></script>
-        <script src="{% static "vendored/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-
-        <script src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
-        <script src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
-        <script src="{% static "common/js/availabilities.js" %}"></script>
+        <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
+        <script defer src="{% static "vendored/popper.js" %}"></script>
+        <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
+        <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.min.js" %}"></script>
     {% endcompress %}
     {% block custom_header %}{% endblock %}
 </head>

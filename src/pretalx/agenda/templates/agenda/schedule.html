@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+{% load compress %}
 {% load i18n %}
 {% load static %}
 
@@ -152,5 +153,7 @@
     {% endfor %}
 </div>
 
-<script src="{% static "agenda/js/offline.js" %}"></script>
+{% compress js %}
+  <script async src="{% static "agenda/js/offline.js" %}"></script>
+{% endcompress %}
 {% endblock %}

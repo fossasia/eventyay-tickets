@@ -1,5 +1,6 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
@@ -63,7 +64,15 @@
             <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info ml-auto">{% trans "Reset password" %}</a>
         </div>
         {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
-        {% if form.availabilities %}{% bootstrap_field form.availabilities layout='event' %}{% endif %}
+        {% if form.availabilities %}
+        {% compress js %}
+            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+            <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+            <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
+            <script async src="{% static "common/js/availabilities.js" %}"></script>
+        {% endcompress %}
+        {% bootstrap_field form.availabilities layout='event' %}
+        {% endif %}
         {% bootstrap_form questions_form layout='event' %}
     <div class="submit-group panel">
         <span>
@@ -90,5 +99,5 @@
     {% endif %}
 
 
-    <script src="{% static "cfp/js/profile.js" %}"></script>
+    <script async src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock %}

@@ -1,8 +1,16 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
 
 {% block content %}
+    {% compress js %}
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+        <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
+        <script async src="{% static "common/js/availabilities.js" %}"></script>
+    {% endcompress %}
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

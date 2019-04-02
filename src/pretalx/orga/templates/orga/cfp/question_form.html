@@ -1,12 +1,15 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load formset_tags %}
 {% load i18n %}
 {% load static %}
 
 {% block cfp_content %}
-    <script src="{% static "js/jquery.formset.js" %}"></script>
-    <script src="{% static "cfp/js/animateFormset.js" %}"></script>
+    {% compress js %}
+    <script defer src="{% static "js/jquery.formset.js" %}"></script>
+    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
+    {% endcompress %}
     <h2>
         {% if form.instance.question %}{% trans "Question" %}: {{ form.instance.question }}{% else %}{% trans "New question" %}{% endif %}
     </h2>

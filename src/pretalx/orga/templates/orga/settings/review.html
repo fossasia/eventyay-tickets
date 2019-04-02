@@ -1,12 +1,15 @@
 {% extends "orga/settings/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load formset_tags %}
 {% load static %}
 
 {% block settings_content %}
-    <script src="{% static "js/jquery.formset.js" %}"></script>
-    <script src="{% static "cfp/js/animateFormset.js" %}"></script>
+    {% compress js %}
+    <script defer src="{% static "js/jquery.formset.js" %}"></script>
+    <script async src="{% static "cfp/js/animateFormset.js" %}"></script>
+    {% endcompress %}
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}
 
