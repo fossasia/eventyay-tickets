@@ -149,7 +149,7 @@ class Filterable:
 
         context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm(
-            self.request.GET if 'q' in self.request.GET else {}
+            self.request.GET if 'q' in self.request.GET else None
         )
         if hasattr(self, 'filter_form_class'):
             context['filter_form'] = self.filter_form_class(
