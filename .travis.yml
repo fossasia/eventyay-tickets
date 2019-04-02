@@ -1,3 +1,4 @@
+dist: xenial  # required to run 3.7+
 language: python
 sudo: true
 python: 3.7
