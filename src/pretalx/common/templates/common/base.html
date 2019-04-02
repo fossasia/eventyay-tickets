@@ -42,9 +42,8 @@
     {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
     {% compress js %}
         <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-        <script defer src="{% static "vendored/popper.js" %}"></script>
         <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
-        <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+        <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
     {% endcompress %}
     {% block custom_header %}{% endblock %}
 </head>
