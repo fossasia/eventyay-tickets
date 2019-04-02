@@ -5,14 +5,15 @@
 
 {% block scripts %}
     {% compress js %}
-    <script src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
     {% if debug %}
-    <script src="{% static "vendored/vue.js" %}"></script>
+    <script defer src="{% static "vendored/vue.js" %}"></script>
     {% else %}
-    <script src="{% static "vendored/vue.min.js" %}"></script>
+    <script defer src="{% static "vendored/vue.min.js" %}"></script>
     {% endif %}
-    <script src="{% static "vendored/vue-async-computed.js" %}"></script>
+    <script defer src="{% static "vendored/vue-async-computed.js" %}"></script>
+    <script defer src="{% static "orga/js/schedule.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 
@@ -88,8 +89,5 @@
         <div id="fahrplan">
         </div>
 
-        {% compress js %}
-        <script src="{% static "orga/js/schedule.js" %}"></script>
-        {% endcompress %}
     {% endif %}
 {% endblock %}
