@@ -10,7 +10,7 @@ def test_can_see_schedule(
 ):
     del event.current_schedule
     assert user.has_perm('agenda.view_schedule', event)
-    with django_assert_num_queries(18):
+    with django_assert_num_queries(22):
         response = client.get(event.urls.schedule, follow=True)
     assert event.schedules.count() == 2
     assert response.status_code == 200
@@ -45,7 +45,7 @@ def test_schedule_page(
     client, django_assert_num_queries, event, speaker, slot, schedule, other_slot
 ):
     url = event.urls.schedule
-    with django_assert_num_queries(18):
+    with django_assert_num_queries(22):
         response = client.get(url, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
@@ -64,12 +64,12 @@ def test_versioned_schedule_page(
     assert slot.submission.title not in response.content.decode()
 
     url = schedule.urls.public
-    with django_assert_num_queries(13):
+    with django_assert_num_queries(17):
         response = client.get(url, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
     url = f'/{event.slug}/schedule?version={quote(schedule.version)}'
-    with django_assert_num_queries(20):
+    with django_assert_num_queries(24):
         redirected_response = client.get(url, follow=True)
     assert redirected_response._request.path == response._request.path

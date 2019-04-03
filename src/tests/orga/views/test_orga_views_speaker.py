@@ -52,7 +52,7 @@ def test_reviewer_cannot_change_speaker_password(
 def test_reviewer_can_access_speaker_page_with_deleted_submission(
     review_client, other_speaker, event, deleted_submission
 ):
-    assert other_speaker.submissions.count() == 0
+    assert other_speaker.submissions.all().count() == 0
     assert other_speaker.submissions(manager='deleted_objects').count() == 1
     response = review_client.get(
         other_speaker.event_profile(event).orga_urls.base, follow=True

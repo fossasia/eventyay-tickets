@@ -33,11 +33,11 @@ def test_orga_can_edit_pending_mail(orga_client, event, mail):
         follow=True,
         data={
             'to': 'testWIN@gmail.com',
-            'bcc': mail.bcc,
-            'cc': mail.cc,
-            'reply_to': mail.reply_to,
+            'bcc': mail.bcc or '',
+            'cc': mail.cc or '',
+            'reply_to': mail.reply_to or '',
             'subject': mail.subject,
-            'text': mail.text,
+            'text': mail.text or '',
         }
     )
     assert response.status_code == 200
@@ -90,11 +90,11 @@ def test_orga_cannot_edit_sent_mail(orga_client, event, sent_mail):
         follow=True,
         data={
             'to': 'testfailure@gmail.com',
-            'bcc': sent_mail.bcc,
-            'cc': sent_mail.cc,
-            'reply_to': sent_mail.reply_to,
+            'bcc': sent_mail.bcc or '',
+            'cc': sent_mail.cc or '',
+            'reply_to': sent_mail.reply_to or '',
             'subject': 'WILD NEW SUBJECT APPEARS',
-            'text': sent_mail.text,
+            'text': sent_mail.text or '',
         }
     )
     assert response.status_code == 200
