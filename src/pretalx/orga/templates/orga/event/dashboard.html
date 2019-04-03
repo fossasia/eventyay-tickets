@@ -1,7 +1,9 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
+{% load rules %}
 
 {% block content %}
+{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 {% if "congratulations" in request.GET %}
 <div class="alert alert-success congratulations">
     {% blocktrans trimmed %}
@@ -74,7 +76,7 @@
     {% endfor %}
 </div>
 
-{% if history %}
+{% if history and can_view_speakers %}
 <div class="dashboard-history">
     {% include "common/logs.html" with entries=history %}
 </div>
