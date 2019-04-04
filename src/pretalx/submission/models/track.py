@@ -17,7 +17,7 @@ class Track(LogMixin, models.Model):
     class urls(EventUrls):
         base = edit = '{self.event.cfp.urls.tracks}{self.pk}/'
         delete = '{base}delete'
-        prefilled_cfp_base = '{self.event.cfp.urls.public}?track='
+        prefilled_cfp = '{self.event.cfp.urls.public}?track={self.slug}'
 
     def __str__(self) -> str:
         return f'{self.name} ({self.event.name})'

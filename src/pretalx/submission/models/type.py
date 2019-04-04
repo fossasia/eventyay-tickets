@@ -34,7 +34,7 @@ class SubmissionType(LogMixin, models.Model):
         base = edit = '{self.event.cfp.urls.types}{self.pk}/'
         default = '{base}default'
         delete = '{base}delete'
-        prefilled_cfp_base = '{self.event.cfp.urls.public}?submission_type='
+        prefilled_cfp = '{self.event.cfp.urls.public}?submission_type={self.slug}'
 
     def __str__(self) -> str:
         """Used in choice drop downs."""
