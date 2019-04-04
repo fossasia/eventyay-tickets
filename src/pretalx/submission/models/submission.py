@@ -121,17 +121,13 @@ class Submission(LogMixin, models.Model):
         null=True,
         blank=True,
         verbose_name=_('Abstract'),
-        help_text=_('A concise summary of your talk in one or two sentences.')
-        + ' '
-        + phrases.base.use_markdown,
+        help_text=phrases.base.use_markdown,
     )
     description = models.TextField(
         null=True,
         blank=True,
         verbose_name=_('Description'),
-        help_text=_('A full-text description of your talk and its contents.')
-        + ' '
-        + phrases.base.use_markdown,
+        help_text=phrases.base.use_markdown,
     )
     notes = models.TextField(
         null=True, blank=True, verbose_name=_('Notes'),
