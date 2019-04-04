@@ -108,6 +108,22 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             kwargs['track'] = (self.get_cleaned_data_for_step('info') or dict()).get('track')
         return kwargs
 
+    def get_form_initial(self, step):
+        initial = super().get_form_initial(step)
+        if step == 'info':
+            for field, model in (('submission_type', SubmissionType), ('track', Track)):
+                request_value = self.request.GET.get(field)
+                if request_value:
+                    try:
+                        pk = int(request_value.split('-'))
+                    except:
+                        continue
+                # search requested object by ID
+                obj = model.objects.filter(event=self.request.event, pk=pk).first()
+                if obj:
+                    initial[field] = obj
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         step = kwargs.get('step')
@@ -130,19 +146,6 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
         context['step_list'] = step_list
 
-        if step == 'info':
-            # use value of query string parameters track and submission_type as initial values for form if they are valid
-            for field, model_name in (('submission_type', SubmissionType), ('track', Track)):
-                request_value = self.request.GET.get(field)
-                try:
-                    request_id = model_name.id_from_slug(request_value) if request_value else None
-                except:
-                    continue
-                # search requested object by ID
-                obj = model_name.objects.filter(event=self.request.event, id=request_id).first()
-                # ensure that the whole slug matches, not only the ID
-                if obj and obj.slug() == request_value:
-                    context['form'].initial[field] = obj
         if step == 'profile':
             if hasattr(self.request.user, 'email'):
                 email = self.request.user.email
