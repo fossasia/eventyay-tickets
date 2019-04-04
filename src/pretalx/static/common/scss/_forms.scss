@@ -46,7 +46,7 @@ form small.form-text.text-muted {
     text-decoration: underline;
   }
 }
-form .checkbox + small.form-text {
+form .form-check + small.form-text {
   margin-top: -8px;
   margin-left: 36px;
 }
@@ -126,7 +126,7 @@ form .form-control:disabled, .form-control[readonly] {
   background-color: $brand-primary;
 }
 
-table .radio, table .checkbox {
+table .form-radio, table .form-check {
   margin-top: -8px;
 }
 
@@ -158,7 +158,7 @@ table .radio, table .checkbox {
   }
 }
 
-.radio, .checkbox {
+.form-check, .checkbox {  /* .radio TODO FIXME radio inputs broken! */
   position: relative;
   padding: 4px 0 4px 36px;
 
