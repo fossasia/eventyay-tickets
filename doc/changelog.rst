@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`641` At the undocumented URL `/<event>/speaker/by-id/123/` there is now a redirect to the canonical speaker URL `/<event>/speaker/CODE/` to work around export format restrictions.
 - :bug:`565` When using the back button to return to the previous step in the submission workflow, the data from the current step had to be filled in to use the button, but was not saved. Now it will be saved, and the progress bar on top can be used for lossy (but quick) navigation to the previous step.
 - :bug:`645` The rendering of the full submission content in the acknowledgment mail (upon submission) looked weird in HTML, due to missing line breaks.
 - :bug:`646` On slow network connections, the login step of the CfP submission loaded in a suboptimal way, leaving users with a seemingly finished page but without the login/registration form. As a consequence, all page loads (but especially that one) were optimized.

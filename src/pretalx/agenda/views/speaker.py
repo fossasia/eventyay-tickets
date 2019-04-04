@@ -4,12 +4,13 @@ import vobject
 from csp.decorators import csp_update
 from django.conf import settings
 from django.core.files.storage import Storage
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 
 from pretalx.common.mixins.views import PermissionRequired
-from pretalx.person.models import SpeakerProfile
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 
 
@@ -40,6 +41,17 @@ class SpeakerView(PermissionRequired, DetailView):
         )
         context['submissions'] = obj.submissions
         return context
+
+
+class SpeakerRedirect(DetailView):
+    model = User
+
+    def dispatch(self, request, **kwargs):
+        speaker = self.get_object()
+        profile = speaker.profiles.filter(event=self.request.event).first()
+        if profile and self.request.user.has_perm('agenda.view_speaker', profile):
+            return redirect(profile.urls.public.full())
+        raise Http404()
 
 
 class SpeakerTalksIcalView(PermissionRequired, DetailView):
