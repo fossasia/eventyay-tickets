@@ -42,6 +42,7 @@ FORM_DATA = {
 
 
 class SubmitStartView(EventPageMixin, View):
+
     @staticmethod
     def get(request, *args, **kwargs):
         url = reverse(
@@ -54,7 +55,6 @@ class SubmitStartView(EventPageMixin, View):
         )
         if request.GET:
             url += f'?{request.GET.urlencode()}'
-
         return redirect(url)
 
 

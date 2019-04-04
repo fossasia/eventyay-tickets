@@ -1,12 +1,13 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin, IdBasedSlug
+from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 
 
-class Track(LogMixin, IdBasedSlug, models.Model):
+class Track(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event', on_delete=models.PROTECT, related_name='tracks'
     )
@@ -20,3 +21,7 @@ class Track(LogMixin, IdBasedSlug, models.Model):
 
     def __str__(self) -> str:
         return f'{self.name} ({self.event.name})'
+
+    @property
+    def slug(self):
+        return f'{self.id}-{slugify(self.name)}'

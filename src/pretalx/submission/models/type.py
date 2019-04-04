@@ -1,8 +1,9 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins import LogMixin, IdBasedSlug
+from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
 
 
@@ -12,7 +13,7 @@ def pleasing_number(number):
     return number
 
 
-class SubmissionType(LogMixin, IdBasedSlug, models.Model):
+class SubmissionType(LogMixin, models.Model):
     event = models.ForeignKey(
         to='event.Event', related_name='submission_types', on_delete=models.CASCADE
     )
@@ -50,6 +51,10 @@ class SubmissionType(LogMixin, IdBasedSlug, models.Model):
         return _('{name} ({duration} minutes)').format(
             name=self.name, duration=self.default_duration
         )
+
+    @property
+    def slug(self):
+        return f'{self.id}-{slugify(self.name)}'
 
     def update_duration(self):
         for submission in self.submissions.filter(duration__isnull=True):
