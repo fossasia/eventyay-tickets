@@ -4,7 +4,7 @@ import vobject
 from csp.decorators import csp_update
 from django.conf import settings
 from django.core.files.storage import Storage
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
