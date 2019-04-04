@@ -249,11 +249,9 @@ class Submission(LogMixin, models.Model):
 
     @property
     def editable(self):
-        return (
-            self.event.cfp.is_open
-            if self.state == SubmissionStates.SUBMITTED
-            else self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
-        )
+        if self.state == SubmissionStates.SUBMITTED:
+            return self.event.cfp.is_open or self.event.active_review_phase.speakers_can_change_submissions
+        return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
 
     def get_duration(self):
         if self.duration is None:

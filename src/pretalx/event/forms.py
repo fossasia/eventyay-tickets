@@ -245,6 +245,7 @@ class ReviewPhaseForm(I18nModelForm):
             'can_see_speaker_names',
             'can_change_submission_state',
             'can_see_other_reviews',
+            'speakers_can_change_submissions',
         ]
         widgets = {
             'start': forms.DateInput(attrs={'class': 'datetimepickerfield'}),

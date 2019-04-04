@@ -395,10 +395,6 @@ class Event(LogMixin, models.Model):
                 end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(not cfp_deadline or cfp_deadline < now()),
                 position=0,
-                can_review=True,
-                can_see_other_reviews='after_review',
-                can_see_speaker_names=True,
-                can_change_submission_state=False,
             )
             ReviewPhase.objects.create(
                 event=self, name=_('Selection'),
@@ -407,7 +403,6 @@ class Event(LogMixin, models.Model):
                 position=1,
                 can_review=False,
                 can_see_other_reviews='always',
-                can_see_speaker_names=True,
                 can_change_submission_state=True,
             )
         self.save()
@@ -528,11 +523,8 @@ class Event(LogMixin, models.Model):
                 start=cfp_deadline,
                 end=self.date_from - relativedelta(months=-3),
                 is_active=bool(cfp_deadline),
-
-                can_review=True,
                 can_see_other_reviews='after_review',
                 can_see_speaker_names=True,
-                can_change_submission_state=False,
             )
         return phase
 

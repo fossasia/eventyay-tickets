@@ -97,6 +97,11 @@ class ReviewPhase(models.Model):
         verbose_name=_('Reviewers can accept and reject submissions'),
         default=False,
     )
+    speakers_can_change_submissions = models.BooleanField(
+        verbose_name=_('Speakers can modify their submissions before acceptance'),
+        help_text=_('By default, modification of submissions is locked after the CfP ends, and is re-enabled once the submission was accepted.'),
+        default=False,
+    )
 
     class Meta:
         ordering = ('position', )
