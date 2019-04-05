@@ -158,6 +158,11 @@
                 {% endfor %}
             </div>
             {% endif %}
+            {% if request.event.is_multilingual %}
+            <div class="speakers">
+                <strong>{% trans "Language" %}:</strong> {{ submission.get_content_locale_display }}
+            </div>
+            {% endif %}
         </aside>
     </div>
 </article>

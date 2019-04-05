@@ -275,6 +275,10 @@ class Event(LogMixin, models.Model):
         return self.locale_array.split(",")
 
     @cached_property
+    def is_multilingual(self):
+        return len(self.locales) > 1
+
+    @cached_property
     def named_locales(self) -> list:
         enabled = set(self.locale_array.split(","))
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]

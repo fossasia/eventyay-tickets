@@ -12,8 +12,11 @@
             <h3 class="talk-title">
                 <a href="{{ talk.urls.public }}"> {{ quotation_open }}{{ talk.title }}{{ quotation_close }}</a>
                 <small>
-                    {{ talk.display_speaker_names }};
-                    <i>{{ talk.submission_type }}</i>
+                    {{ talk.display_speaker_names }} ·
+                    <i>
+                        {{ talk.submission_type }}
+                        {% if request.event.is_multilingual %}· {{ talk.get_content_locale_display }}{% endif %}
+                    </i>
                 </small>
             </h3>
             <p>
