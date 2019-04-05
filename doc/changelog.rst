@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` pretalx is now able to run with Python 3.7 even when using Celery.
 - :feature:`598` Via the new review phase settings, speakers can be allowed to modify their submissions while they are being reviewed.
 - :feature:`641` At the undocumented URL `/<event>/speaker/by-id/123/` there is now a redirect to the canonical speaker URL `/<event>/speaker/CODE/` to work around export format restrictions.
 - :bug:`565` When using the back button to return to the previous step in the submission workflow, the data from the current step had to be filled in to use the button, but was not saved. Now it will be saved, and the progress bar on top can be used for lossy (but quick) navigation to the previous step.

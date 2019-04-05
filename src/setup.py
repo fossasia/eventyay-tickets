@@ -27,17 +27,6 @@ This will install the latest version of pretalx which works on your
 version of Python.
 """.format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
     sys.exit(1)
-elif CURRENT_PYTHON != REQUIRED_PYTHON:
-    sys.stderr.write("""
-==========================
-Unsupported Python version
-==========================
-This version of pretix requires Python {}.{}, but you're trying to
-install it on Python {}.{}.
-pretalx does run correctly with your Python version, but some of
-its dependencies don't – you will not be able to run asynchronous
-workers of pretalx with your Python version.
-""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
 
 # Get the long description from the relevant file
 try:

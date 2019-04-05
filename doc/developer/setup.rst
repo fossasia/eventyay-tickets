@@ -13,12 +13,9 @@ instead.
 * gettext (Debian package: ``gettext``)
 * tox as your development environment
 
-On Arch Linux, Python 3.6 is already in the default repositories::
-
-    sudo pacman -S python python-pip gettext git tox
-
-On Debian and Ubuntu, Python 3.6 is not yet in the repositories. You might need to `compile it
-yourself`_ or install it from the `unstable` or `experimental` repositories.
+If your operating system does not provide Python 3.6 or newer, you might need
+to `compile it yourself`_ or install it from the `unstable` or `experimental`
+repositories.
 
 Some Python dependencies might also need a compiler during installation, the Debian package
 ``build-essential`` or something similar should suffice.

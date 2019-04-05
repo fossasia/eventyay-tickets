@@ -16,7 +16,7 @@ Step 0: Prerequisites
 Please set up the following systems beforehand, we'll not explain them here (but see these links for
 external installation guides):
 
-* **Python 3.6** and ``pip`` for Python 3.6. You can use ``python -V`` and ``pip3 -V`` to check.
+* **Python 3.6 or 3.7** and a ``pip`` to match. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server (you can use SQLite, but we strongly recommend not to run SQLite in production)
@@ -69,9 +69,9 @@ If you're running Ubuntu or a similar system, you'll probably want to install
 packages like ``build-essential``, ``libssl-dev``, and ``gettext``, plus
 ``libmysqlclient-dev`` if you use MariaDB.
 
-Please note that pretalx requires Python 3.6 – if your operating system doesn't
-come with Python 3.6, please either find an alternative source for your system,
-or build it from source.
+Please note that pretalx requires Python 3.6 or Python 3.7 – if your operating
+system doesn't come with one of those Python versions, please either find an
+alternative source for your system, or build it from source.
 
 .. note::
    You may need to replace all following mentions of ``pip`` with ``pip3.6``.
@@ -222,9 +222,6 @@ The following snippet is an example on how to configure a nginx proxy for pretal
             add_header Cache-Control "public";
         }
     }
-
-.. note:: Remember to replace the ``python3.6`` in the ``/static/`` path in the config
-          above with your python version.
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
