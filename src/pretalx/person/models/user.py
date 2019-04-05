@@ -67,7 +67,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     name = models.CharField(
         max_length=120,
         verbose_name=_('Name'),
-        help_text=_('Please enter the name you wish to be displayed publicly.'),
+        help_text=_('Please enter the name you wish to be displayed publicly. This name will be used for all events you are participating in on this server.'),
     )
     email = models.EmailField(
         unique=True,
