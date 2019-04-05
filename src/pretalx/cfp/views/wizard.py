@@ -1,5 +1,6 @@
 import logging
 import os
+from contextlib import suppress
 
 from csp.decorators import csp_update
 from django.conf import settings
@@ -116,14 +117,11 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             for field, model in (('submission_type', SubmissionType), ('track', Track)):
                 request_value = self.request.GET.get(field)
                 if request_value:
-                    try:
+                    with suppress(AttributeError, TypeError):
                         pk = int(request_value.split('-'))
-                    except (AttributeError, TypeError):
-                        continue
-                # search requested object by ID
-                obj = model.objects.filter(event=self.request.event, pk=pk).first()
-                if obj:
-                    initial[field] = obj
+                        obj = model.objects.filter(event=self.request.event, pk=pk).first()
+                        if obj:
+                            initial[field] = obj
         return initial
 
     def get_context_data(self, **kwargs):

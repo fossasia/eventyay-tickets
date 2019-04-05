@@ -141,7 +141,8 @@ class TestWizard:
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(
-            client, response, current_url, submission_type=submission_type
+            client, response, current_url + '?submission_type={}-helpful-slug'.format(submission_type),
+            submission_type=submission_type
         )
         response, current_url = self.perform_question_wizard(
             client, response, current_url, answer_data, next='user'
@@ -198,7 +199,7 @@ class TestWizard:
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(
-            client, response, current_url, submission_type=submission_type
+            client, response, current_url + '?submission_type=123-helpful-slug', submission_type=submission_type
         )
         response, current_url = self.perform_question_wizard(
             client, response, current_url, answer_data, next='user'
