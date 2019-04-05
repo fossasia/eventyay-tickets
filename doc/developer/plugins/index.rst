@@ -1,7 +1,12 @@
 Plugin development
 ==================
 
-Contents:
+The following pages will help you create your first pretalx plugin, and will
+show you common plugin patterns and functionality in the "Writing a … plugin"
+sections.
+
+If you're not quite sure what kind of plugin you'd like to work on, check out
+our `plugin idea collection`_, or add entries there yourself.
 
 .. toctree::
    :maxdepth: 2
@@ -11,3 +16,5 @@ Contents:
    customview
    recording
    exporter
+
+.. _plugin idea collection: https://github.com/pretalx/pretalx/wiki/Plugin-ideas

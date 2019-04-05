@@ -68,6 +68,9 @@ Check our `developer documentation`_ on how to set up pretalx and get started
 on development. Please bear in mind that our Code of Conduct applies to the
 complete contribution process.
 
+If you are interested in plugin development, check both our documentation and
+our `list of plugin ideas`_ in the project wiki.
+
 License
 -------
 We publish `pretalx` under the terms of the Apache License. See the LICENSE
@@ -91,6 +94,7 @@ to this project.
 .. _GitHub: https://github.com/pretalx/pretalx/release/
 .. _PyPI: https://pypi.python.org/pypi/pretalx
 .. _DEPENDENCIES.rst: https://github.com/pretalx/pretalx/blob/master/DEPENDENCIES.rst
+.. _list of plugin ideas: https://github.com/pretalx/pretalx/wiki/Plugin-ideas
 
 .. _MRMCD: https://talks.mrmcd.net/
 .. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
