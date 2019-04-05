@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin

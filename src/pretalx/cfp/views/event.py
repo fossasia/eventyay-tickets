@@ -1,4 +1,3 @@
-from operator import itemgetter
 from urllib.parse import urlencode
 
 from django.contrib.auth.mixins import LoginRequiredMixin

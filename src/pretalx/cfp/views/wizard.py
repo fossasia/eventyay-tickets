@@ -25,7 +25,9 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import Answer, QuestionTarget, QuestionVariant, SubmissionType, Track
+from pretalx.submission.models import (
+    Answer, QuestionTarget, QuestionVariant, SubmissionType, Track,
+)
 
 FORMS = [
     ('info', InfoForm),
@@ -116,7 +118,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
                 if request_value:
                     try:
                         pk = int(request_value.split('-'))
-                    except:
+                    except (AttributeError, TypeError):
                         continue
                 # search requested object by ID
                 obj = model.objects.filter(event=self.request.event, pk=pk).first()

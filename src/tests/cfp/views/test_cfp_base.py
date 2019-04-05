@@ -1,7 +1,7 @@
-import bs4
-import pytest
 from urllib.parse import urlparse
 
+import bs4
+import pytest
 from django.http.request import QueryDict
 
 
