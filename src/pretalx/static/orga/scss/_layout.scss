@@ -484,10 +484,12 @@ td.reviewer {
 
 form #id_settings-display_header_pattern, form #id_display-display_header_pattern {
   display: flex;
-  flex-direction: row;
+  padding: 0;
 
   label {
-    padding-right: 16px;
+    width: 100px;
+    position: relative;
+    margin-right: 8px;
 
     &:before {
       left: 4px;
@@ -504,7 +506,6 @@ form #id_settings-display_header_pattern, form #id_display-display_header_patter
     width: 100px;
     height: 100px;
     background-color: $brand-primary;
-    margin: 0 0 0 -36px;
   }
 }
 
