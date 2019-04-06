@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.db.models import Q
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -22,10 +23,10 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
             self.fields['organiser'].initial = organiser
             self.fields['limit_events'].queryset = organiser.events.all()
         if instance and instance.pk:
-            self.fields['is_reviewer'].label += (
+            self.fields['is_reviewer'].help_text = mark_safe(
                 f' (<a href="{instance.orga_urls.base}tracks">'
-                + str(_('Limit to certain tracks'))
-                + '</a>?)'
+                + str(_('Limit to certain tracks?'))
+                + '</a>)'
             )
 
     class Meta:
