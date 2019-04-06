@@ -2,9 +2,8 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this track?" %}
+        {% trans "Do you really want to delete this track?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
     </h2>
-    <strong>{{ quotation_open }}{{ object.name }}{{ quotation_close }}</strong>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">

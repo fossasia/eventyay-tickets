@@ -2,13 +2,12 @@
 {% load i18n %}
 {% block content %}
     <h2>
-        {% trans "Do you really want to delete this submission type?" %}
+        {% trans "Do you really want to delete this submission type?" %} – {{ quotation_open }}{{ object.name }}{{ quotation_close }}
     </h2>
-    <strong>{{ quotation_open }}{{ object.name }}{{ quotation_close }}</strong>
     <form method="post">
         {% csrf_token %}
         <div class="submit-group">
-            <a href="{{ request.event.cfp.urls.tracks }}" class="btn btn-lg btn-outline-info">
+            <a href="{{ request.event.cfp.urls.types }}" class="btn btn-lg btn-outline-info">
                 {% trans "Back" %}
             </a>
             <button type="submit" class="btn btn-lg btn-danger">
