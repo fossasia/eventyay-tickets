@@ -6,27 +6,29 @@
 {% block title %}Organisers{% endblock %}
 
 {% block content %}
-{% has_perm 'orga.change_organiser_settings' request.user None as can_create_organiser %}
-<div class="dashboard-list">
-    {% for organiser in organisers %}
-        <a href="{{ organiser.orga_urls.base }}" class="dashboard-block">
-            <h1>{{ organiser.name }}</h1>
-            <span class="dashboard-description">
-                {% blocktrans count count=organiser.teams.all|length trimmed %}
-                {{ count }} Team
-                {% plural %}
-                {{ count }} Teams
-                {% endblocktrans %}
-            </span>
-        </a>
-    {% endfor %}
+    {% has_perm 'orga.change_organiser_settings' request.user None as can_create_organiser %}
     {% if can_create_organiser %}
-        <a href="{% url "orga:organiser.create" %}" class="dashboard-block">
-            <h1><i class="fa fa-plus"></i>{% trans "New organiser" %}</h1>
-            <span class="dashboard-description">{% trans "Uh, a new organiser?<br>Head over here, please!" %}</span>
+    <div class="d-flex mb-4">
+        <a href="{% url "orga:organiser.create" %}" class="btn btn-success ml-auto">
+            <i class="fa fa-plus"></i> {% trans "New organiser" %}
         </a>
+    </div>
     {% endif %}
-</div>
+    <table class="table">
+        <thead>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Events" %}</th>
+            <th>{% trans "Teams" %}</th>
+        </thead>
+        <tbody>
+            {% for organiser in organisers %}
+            <tr>
+                <td><a href="{{ organiser.orga_urls.base }}">{{ organiser.name }}</a></td>
+                <td>{{ organiser.events.count }}</td>
+                <td>{{ organiser.teams.count }}</td>
+            {% endfor %}
+        </tbody>
+    </table>
 {% if not organisers and not can_create_organiser %}
 <div class="alert alert-info">
     {% trans "There are no organisers you can edit." %}
