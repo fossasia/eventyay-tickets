@@ -615,16 +615,21 @@ legend .submission-state-dropdown {
   width: 75%;
   display: table;
   .form-group {
-    display: block;
     margin-bottom: 4px;
+    display: flex;
+    align-content: center;
+    .form-check {
+      width: 100%;
+    }
     input {
       margin-left: auto;
       margin-right: auto;
     }
-    .checkbox {
-      width: 16px;
-      margin-right: auto;
-      margin-left: auto;
+    .form-check-label {
+      position: relative;
+      &::after {
+        top: 0;
+      }
     }
   }
   small {
@@ -703,4 +708,7 @@ legend .submission-state-dropdown {
   height: 20px;
   border: 2px solid $gray-light;
   margin-right: 2px;
+}
+.phase-option-row .row {
+  margin-bottom: 8px;
 }
