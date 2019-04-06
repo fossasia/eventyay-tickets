@@ -231,16 +231,16 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
-class CfPQuestionDelete(PermissionRequired, View):
+class CfPQuestionDelete(PermissionRequired, DetailView):
     permission_required = 'orga.remove_question'
+    template_name = 'orga/cfp/question_delete.html'
 
     def get_object(self) -> Question:
         return get_object_or_404(
             Question.all_objects, event=self.request.event, pk=self.kwargs.get('pk')
         )
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
         question = self.get_object()
 
         try:

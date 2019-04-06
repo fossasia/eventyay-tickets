@@ -183,6 +183,9 @@ def test_delete_question(orga_client, event, question):
     assert event.questions.count() == 1
     response = orga_client.get(question.urls.delete, follow=True)
     assert response.status_code == 200
+    assert event.questions.count() == 1
+    response = orga_client.post(question.urls.delete, follow=True)
+    assert response.status_code == 200
     assert event.questions.count() == 0
     assert Question.all_objects.filter(event=event).count() == 0
 
@@ -190,7 +193,7 @@ def test_delete_question(orga_client, event, question):
 @pytest.mark.django_db
 def test_delete_inactive_question(orga_client, event, inactive_question):
     assert Question.all_objects.filter(event=event).count() == 1
-    response = orga_client.get(inactive_question.urls.delete, follow=True)
+    response = orga_client.post(inactive_question.urls.delete, follow=True)
     assert response.status_code == 200
     assert event.questions.count() == 0
     assert Question.all_objects.filter(event=event).count() == 0
@@ -199,7 +202,7 @@ def test_delete_inactive_question(orga_client, event, inactive_question):
 @pytest.mark.django_db
 def test_delete_choice_question(orga_client, event, choice_question):
     assert Question.all_objects.filter(event=event).count() == 1
-    response = orga_client.get(choice_question.urls.delete, follow=True)
+    response = orga_client.post(choice_question.urls.delete, follow=True)
     assert response.status_code == 200
     assert event.questions.count() == 0
     assert Question.all_objects.filter(event=event).count() == 0
@@ -210,7 +213,7 @@ def test_cannot_delete_answered_question(orga_client, event, answered_choice_que
     assert event.questions.count() == 1
     assert answered_choice_question.answers.count() == 1
     assert answered_choice_question.options.count() == 3
-    response = orga_client.get(answered_choice_question.urls.delete, follow=True)
+    response = orga_client.post(answered_choice_question.urls.delete, follow=True)
     assert response.status_code == 200
     answered_choice_question = Question.all_objects.get(pk=answered_choice_question.pk)
     assert answered_choice_question
