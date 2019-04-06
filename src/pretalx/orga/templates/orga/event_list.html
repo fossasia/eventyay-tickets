@@ -6,30 +6,49 @@
 
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
-    <div class="dashboard-list">
-        {% for event in current_orga_events %}
-            <a href="{{ event.orga_urls.base }}" class="dashboard-block">
-                <h1>{{ event.name }}</h1>
-                <span class="dashboard-description">
-                    {{ event.get_date_range_display }}<br>
-                    /{{ event.slug }}
-                </span>
-            </a>
-        {% endfor %}
-        {% for event in past_orga_events %}
-            <a href="{{ event.orga_urls.base }}" class="dashboard-block">
-                <h1>{{ event.name }}</h1>
-                <span class="dashboard-description">
-                    {{ event.get_date_range_display }}<br>
-                    /{{ event.slug }}
-                </span>
-            </a>
-        {% endfor %}
-        {% if can_create_event %}
-            <a href="{% url "orga:event.create" %}" class="dashboard-block">
-                <h1><i class="fa fa-plus"></i>{% trans "New event" %}</h1>
-                <span class="dashboard-description">{% trans "Uh, a new event?<br>Head over here, please!" %}</span>
-            </a>
-        {% endif %}
+    {% if can_create_event %}
+    <div class="d-flex">
+    <a href="{% url "orga:event.create" %}" class="btn btn-success ml-auto">
+        <i class="fa fa-plus"></i> {% trans "New event" %}
+    </a>
     </div>
+    {% endif %}
+    <h2>{% trans "Upcoming events" %}</h2>
+    <table class="table">
+        <thead>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "URL" %}</th>
+            <th>{% trans "Date" %}</th>
+        </thead>
+        <tbody>
+            {% for event in current_orga_events %}
+            <tr>
+                <td>
+                    <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>
+                </td>
+                <td>/{{ event.slug }}</td>
+                <td>{{ event.get_date_range_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>{% trans "Past events" %}</h2>
+    <table class="table">
+        <thead>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "URL" %}</th>
+            <th>{% trans "Date" %}</th>
+        </thead>
+        <tbody>
+            {% for event in past_orga_events %}
+            <tr>
+                <td>
+                    <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>
+                </td>
+                <td>/{{ event.slug }}</td>
+                <td>{{ event.get_date_range_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
