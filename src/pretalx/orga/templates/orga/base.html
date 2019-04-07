@@ -218,10 +218,25 @@
                 </div>
             {% endif %}
             {% if can_see_orga_area %}
-                <a class="nav-link {% if "submissions." in url_name %}active{% endif %}" href="{{ request.event.orga_urls.submissions }}">
-                    <i class="fa fa-sticky-note-o"></i>
-                    <span class="sidebar-text">{% trans "Submissions" %}</span>
-                </a>
+                <div class="nav-fold">
+                    <span class="has-children">
+                        <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.submissions }}">
+                            <i class="fa fa-sticky-note-o"></i>
+                            <span class="sidebar-text">{% trans "Submissions" %}</span>
+                        </a>
+                        <a class="arrow nav-link" data-toggle="collapse" href="#collapseSubmissions" aria-controls="collapseSubmissions">
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
+                    <div class="collapse in{% if "submissions." in url_name|slice:":13" %} show{% endif %}" aria-expand="true" id="collapseSubmissions">
+                        <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name %} active{% endif %}">
+                            <span>{% trans "Submissions" %}</span>
+                        </a>
+                        <a href="{{ request.event.orga_urls.stats }}" class="nav-link nav-link-second-level{% if "submissions.statistics" in url_name %} active{% endif %}">
+                            <span>{% trans "Statistics" %}</span>
+                        </a>
+                    </div>
+                </div>
                 <a class="nav-link {% if "reviews." in url_name %}active{% endif %}" href="{% url "orga:reviews.dashboard" event=request.event.slug %}">
                     <i class="fa fa-eye"></i>
                     <span class="sidebar-text">{% trans "Review" %}</span>

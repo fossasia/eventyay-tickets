@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` There now is a page for submission statistics.
 - :feature:`628` Prefill CfP form with track and submission type if they are available in the query string.
 - :support:`-` pretalx is now able to run with Python 3.7 even when using Celery.
 - :feature:`598` Via the new review phase settings, speakers can be allowed to modify their submissions while they are being reviewed.

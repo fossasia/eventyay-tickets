@@ -1,0 +1,51 @@
+{% extends "orga/cfp/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/nvd3/nv.d3.min.css" %}" />
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "vendored/nvd3/d3.min.js" %}"></script>
+        <script defer src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
+        <script defer src="{% static "orga/js/stats.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+<div id="stats">
+    <h2>{% trans "Submission Statistics" %}</h2>
+
+    {% if timeline_data %}
+    <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
+    <div id="submission-stats"><svg></svg></div>
+    {% endif %}
+
+    {% if state_data %}
+    <div class="card">
+        <div class="card-header">{% trans "Submissions by state" %}</div>
+        <div id="state-data" class="d-none" data-states='{{ state_data }}'></div>
+        <div id="submission-states" class="pie card-body"><svg></svg></div>
+    </div>
+    {% endif %}
+
+    {% if type_data %}
+    <div class="card">
+        <div class="card-header">{% trans "Submissions by submission type" %}</div>
+        <div id="type-data" class="d-none" data-states='{{ type_data }}'></div>
+        <div id="submission-types" class="pie card-body"><svg></svg></div>
+    </div>
+    {% endif %}
+
+    {% if track_data %}
+    <div class="card">
+        <div class="card-header">{% trans "Submissions by track" %}</div>
+        <div id="track-data" class="d-none" data-states='{{ track_data }}'></div>
+        <div id="submission-tracks" class="pie card-body"><svg></svg></div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

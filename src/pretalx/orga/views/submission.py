@@ -423,30 +423,6 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
         qs = self.sort_queryset(qs)
         return qs.distinct()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        data = Counter(
-            timestamp.date()
-            for timestamp in ActivityLog.objects.filter(
-                event=self.request.event, action_type='pretalx.submission.create'
-            ).values_list('timestamp', flat=True)
-        )
-        dates = data.keys()
-        if len(dates) > 1:
-            date_range = rrule.rrule(
-                rrule.DAILY,
-                count=(max(dates) - min(dates)).days + 1,
-                dtstart=min(dates),
-            )
-            if len(data) > 1:
-                context['timeline_data'] = json.dumps(
-                    [
-                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
-                        for date in date_range
-                    ]
-                )
-        return context
-
 
 class FeedbackList(SubmissionViewMixin, ListView):
     template_name = 'orga/submission/feedback_list.html'
@@ -506,3 +482,44 @@ class SubmissionFeed(PermissionRequired, Feed):
 
     def item_pubdate(self, item):
         return item.created
+
+
+class SubmissionStats(PermissionRequired, TemplateView):
+    template_name = 'orga/submission/stats.html'
+    permission_required = 'orga.view_submissions'
+
+    def get_permission_object(self):
+        return self.request.event
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = Counter(
+            timestamp.date()
+            for timestamp in ActivityLog.objects.filter(
+                event=self.request.event, action_type='pretalx.submission.create'
+            ).values_list('timestamp', flat=True)
+        )
+        dates = data.keys()
+        if len(dates) > 1:
+            date_range = rrule.rrule(
+                rrule.DAILY,
+                count=(max(dates) - min(dates)).days + 1,
+                dtstart=min(dates),
+            )
+            if len(data) > 1:
+                context['timeline_data'] = json.dumps(
+                    [
+                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                        for date in date_range
+                    ]
+                )
+        counter = Counter(submission.get_state_display() for submission in self.request.event.submissions(manager='all_objects').all())
+        context['state_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+
+        counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions(manager='all_objects').all())
+        context['type_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+
+        counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
+        if len(counter) > 1:
+            context['track_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+        return context

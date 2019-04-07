@@ -712,3 +712,14 @@ legend .submission-state-dropdown {
 .phase-option-row .row {
   margin-bottom: 8px;
 }
+#stats {
+  .card {
+    display: inline-flex;
+    flex-grow: 1;
+    margin: 16px;
+  }
+  .pie svg {
+    min-height: 500px;
+    max-width: 600px;
+  }
+}
