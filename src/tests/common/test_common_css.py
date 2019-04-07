@@ -1,5 +1,7 @@
 import pytest
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.test import override_settings
 
 from pretalx.common.css import validate_css
 from pretalx.event.models import Event
@@ -58,6 +60,7 @@ def test_invalid_css(invalid_css):
 
 
 @pytest.mark.django_db
+@override_settings(COMPRESS_PRECOMPILERS=settings.COMPRESS_PRECOMPILERS_ORIGINAL)
 def test_regenerate_css(event):
     from pretalx.common.tasks import regenerate_css
 
