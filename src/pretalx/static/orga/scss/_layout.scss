@@ -239,6 +239,7 @@ footer {
 
   .card-body {
     padding: 16px 16px 0px 16px;
+    transition: display 0.5s;
   }
 }
 
@@ -716,10 +717,86 @@ legend .submission-state-dropdown {
   .card {
     display: inline-flex;
     flex-grow: 1;
-    margin: 16px;
+    margin: 4px;
+    &.stats-timeline {
+      width: 100%;
+    }
   }
   .pie svg, .pie {
-    min-height: 500px;
-    max-width: 600px;
+    min-height: 400px;
+    max-width: 500px;
+  }
+  #toggle-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $brand-success;
+    background: $brand-success;
+    &:before,
+    &:after {
+      color: $brand-success;
+    }
+    margin: 0 4rem;
+    padding: 0;
+    position: relative;
+    border: none;
+    height: 1.5rem;
+    width: 3rem;
+    border-radius: 1.5rem;
+
+    &:focus,
+    &.focus {
+      &,
+      &.active {
+        outline: none;
+      }
+    }
+
+    &:before,
+    &:after {
+      line-height: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: absolute;
+      bottom: 0;
+      transition: opacity .25s;
+    }
+    &:before {
+      content: attr(data-left);
+      right: 4rem;
+    }
+    &:after {
+      content: attr(data-right);
+      left: 4rem;
+      opacity: .5;
+    }
+
+    > .handle {
+      position: absolute;
+      top: 0.1875rem;
+      left: 0.1875rem;
+      width: 1.125rem;
+      height: 1.135rem;
+      border-radius: 1.125rem;
+      background: #fff;
+      transition: left .25s;
+    }
+    &.active {
+      transition: background-color .25s;
+      > .handle {
+        left: 1.6875rem;
+        transition: left .25s;
+      }
+      &:before {
+        opacity: .5;
+      }
+      &:after {
+        opacity: 1;
+      }
+    }
   }
 }

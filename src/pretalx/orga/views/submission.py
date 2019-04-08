@@ -2,6 +2,7 @@ import json
 from collections import Counter
 from contextlib import suppress
 from datetime import timedelta
+from operator import itemgetter
 
 from dateutil import rrule
 from django.contrib import messages
@@ -497,7 +498,7 @@ class SubmissionStats(PermissionRequired, Context, TemplateView):
         return self.request.event
 
     @context
-    def timeline_data(self):
+    def submission_timeline_data(self):
         data = Counter(
             timestamp.date()
             for timestamp in ActivityLog.objects.filter(
@@ -520,17 +521,57 @@ class SubmissionStats(PermissionRequired, Context, TemplateView):
                 )
 
     @context
-    def state_data(self):
+    def submission_state_data(self):
         counter = Counter(submission.get_state_display() for submission in self.request.event.submissions(manager='all_objects').all())
-        return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+        return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
-    def type_data(self):
+    def submission_type_data(self):
         counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions(manager='all_objects').all())
-        return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+        return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
-    def track_data(self):
-        counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
-        if len(counter) > 1:
-            return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+    def submission_track_data(self):
+        if self.request.event.settings.use_tracks:
+            counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
+            return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
+
+    @context
+    def talk_timeline_data(self):
+        data = Counter(
+            log.timestamp.date()
+            for log in ActivityLog.objects.filter(
+                event=self.request.event, action_type='pretalx.submission.create',
+            )
+            if getattr(log.content_object, 'state', None) in ['accepted', 'confirmed']
+        )
+        dates = data.keys()
+        if len(dates) > 1:
+            date_range = rrule.rrule(
+                rrule.DAILY,
+                count=(max(dates) - min(dates)).days + 1,
+                dtstart=min(dates),
+            )
+            if len(data) > 1:
+                return json.dumps(
+                    [
+                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                        for date in date_range
+                    ]
+                )
+
+    @context
+    def talk_state_data(self):
+        counter = Counter(submission.get_state_display() for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+        return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
+
+    @context
+    def talk_type_data(self):
+        counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+        return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
+
+    @context
+    def talk_track_data(self):
+        if self.request.event.settings.use_tracks:
+            counter = Counter(str(submission.track) for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+            return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))

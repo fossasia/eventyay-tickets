@@ -17,34 +17,54 @@
 
 {% block content %}
 <div id="stats">
-    <h2>{% trans "Submission Statistics" %}</h2>
+    <h2 class="d-flex justify-content-between align-items-baseline">
+        {% trans "Submission Statistics" %}
+        <button id="toggle-button" type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" data-left="{% trans 'Submissions' %}" data-right="{% trans 'Talks' %}">
+            <div class="handle"></div>
+        </button>
+    </h2>
 
-    {% if timeline_data %}
-    <div id="timeline-data" class="d-none" data-timeline='{{ timeline_data }}'></div>
-    <div id="submission-stats"><svg></svg></div>
-    {% endif %}
-
-    {% if state_data %}
-    <div class="card">
-        <div class="card-header">{% trans "Submissions by state" %}</div>
-        <div id="state-data" class="d-none" data-states='{{ state_data }}'></div>
-        <div id="submission-states" class="pie card-body"><svg></svg></div>
+    {% if submission_timeline_data %}
+    <div class="card stats-timeline">
+        <div class="card-header submissions">{% trans "Submissions by submission date" %}</div>
+        <div class="card-header talks d-none">{% trans "Talks by submission date" %}</div>
+        <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}'></div>
+        <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}'></div>
+        <div id="submission-timeline" class="card-body submissions"><svg></svg></div>
+        <div id="talk-timeline" class="card-body talks d-none"><svg></svg></div>
     </div>
     {% endif %}
 
-    {% if type_data %}
+    {% if submission_state_data %}
     <div class="card">
-        <div class="card-header">{% trans "Submissions by submission type" %}</div>
-        <div id="type-data" class="d-none" data-states='{{ type_data }}'></div>
-        <div id="submission-types" class="pie card-body"><svg></svg></div>
+        <div class="card-header submissions">{% trans "Submissions by state" %}</div>
+        <div class="card-header talks d-none">{% trans "Talks by state" %}</div>
+        <div id="submission-state-data" class="d-none" data-states='{{ submission_state_data }}'></div>
+        <div id="talk-state-data" class="d-none" data-states='{{ talk_state_data }}'></div>
+        <div id="submission-states" class="pie card-body submissions"><svg></svg></div>
+        <div id="talk-states" class="pie card-body talks d-none"><svg></svg></div>
     </div>
     {% endif %}
 
-    {% if track_data %}
+    {% if submission_type_data %}
     <div class="card">
-        <div class="card-header">{% trans "Submissions by track" %}</div>
-        <div id="track-data" class="d-none" data-states='{{ track_data }}'></div>
-        <div id="submission-tracks" class="pie card-body"><svg></svg></div>
+        <div class="card-header submissions">{% trans "Submissions by submission type" %}</div>
+        <div class="card-header talks d-none">{% trans "Talks by submission type" %}</div>
+        <div id="submission-type-data" class="d-none" data-states='{{ submission_type_data }}'></div>
+        <div id="talk-type-data" class="d-none" data-states='{{ talk_type_data }}'></div>
+        <div id="submission-types" class="pie card-body submissions"><svg></svg></div>
+        <div id="talk-types" class="pie card-body talks d-none"><svg></svg></div>
+    </div>
+    {% endif %}
+
+    {% if submission_track_data %}
+    <div class="card">
+        <div class="card-header submissions">{% trans "Submissions by track" %}</div>
+        <div class="card-header talks d-none">{% trans "Talks by track" %}</div>
+        <div id="submission-track-data" class="d-none" data-states='{{ submission_track_data }}'></div>
+        <div id="talk-track-data" class="d-none" data-states='{{ talk_track_data }}'></div>
+        <div id="submission-tracks" class="pie card-body submissions"><svg></svg></div>
+        <div id="talk-tracks" class="pie card-body talks d-none"><svg></svg></div>
     </div>
     {% endif %}
 </div>
