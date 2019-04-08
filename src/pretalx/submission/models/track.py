@@ -19,7 +19,7 @@ class Track(LogMixin, models.Model):
         prefilled_cfp = '{self.event.cfp.urls.public}?track={self.slug}'
 
     def __str__(self) -> str:
-        return f'{self.name} ({self.event.name})'
+        return str(self.name)
 
     @property
     def slug(self):
