@@ -1,3 +1,4 @@
+import inspect
 import os.path
 import urllib
 from contextlib import suppress
@@ -19,6 +20,21 @@ from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
+
+
+def context(func):
+    setattr(func, '_context', True)
+    return func
+
+
+class Context:
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for name, func in inspect.getmembers(self, predicate=inspect.ismethod):
+            if getattr(func, '_context', False):
+                context[name] = func()
+        return context
 
 
 class CreateOrUpdateView(

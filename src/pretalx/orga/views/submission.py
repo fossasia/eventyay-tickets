@@ -23,7 +23,7 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views import Context, CreateOrUpdateView, context
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.forms import OrgaSpeakerForm
@@ -82,7 +82,7 @@ The {event} orga crew'''
     return user
 
 
-class SubmissionViewMixin(PermissionRequired):
+class SubmissionViewMixin(Context, PermissionRequired):
     def get_object(self):
         return get_object_or_404(
             self.request.event.submissions(manager='all_objects'),
@@ -93,10 +93,9 @@ class SubmissionViewMixin(PermissionRequired):
     def object(self):
         return self.get_object()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['submission'] = self.object
-        return context
+    @context
+    def submission(self):
+        return self.object
 
 
 class SubmissionStateChange(SubmissionViewMixin, TemplateView):
@@ -146,11 +145,13 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
             return redirect(url)
         return redirect(self.object.orga_urls.base)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['target'] = self.target
-        context['next'] = self.request.GET.get('next')
-        return context
+    @context
+    def target(self):
+        return self.target
+
+    @context
+    def next(self):
+        return self.request.GET.get('next')
 
 
 class SubmissionSpeakersAdd(SubmissionViewMixin, View):
@@ -214,10 +215,10 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
     template_name = 'orga/submission/speakers.html'
     permission_required = 'orga.view_speakers'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        submission = context['submission']
-        context['speakers'] = [
+    @context
+    def speakers(self):
+        submission = self.object
+        return [
             {
                 'id': speaker.id,
                 'name': speaker.get_display_name(),
@@ -230,8 +231,10 @@ class SubmissionSpeakers(SubmissionViewMixin, TemplateView):
             }
             for speaker in submission.speakers.all()
         ]
-        context['users'] = User.objects.all()  # TODO: yeah, no
-        return context
+
+    @context
+    def users(self):
+        return User.objects.all()
 
 
 class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
@@ -248,12 +251,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                 return None
             return not_found
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['formset'] = self.formset
-        context['questions_form'] = self.questions_form
-        return context
-
     @cached_property
     def write_permission_required(self):
         if self.kwargs.get('code'):
@@ -261,7 +258,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return 'orga.create_submission'
 
     @cached_property
-    def formset(self):
+    def _formset(self):
         formset_class = inlineformset_factory(
             Submission,
             Resource,
@@ -280,8 +277,12 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             prefix='resource',
         )
 
+    @context
+    def formset(self):
+        return self._formset
+
     @cached_property
-    def questions_form(self):
+    def _questions_form(self):
         submission = self.get_object()
         return QuestionsForm(
             self.request.POST if self.request.method == 'POST' else None,
@@ -291,11 +292,15 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             event=self.request.event,
         )
 
+    @context
+    def questions_form(self):
+        return self._questions_form
+
     def save_formset(self, obj):
-        if not self.formset.is_valid():
+        if not self._formset.is_valid():
             return False
-        for form in self.formset.initial_forms:
-            if form in self.formset.deleted_forms:
+        for form in self._formset.initial_forms:
+            if form in self._formset.deleted_forms:
                 if not form.instance.pk:
                     continue
                 obj.log_action(
@@ -316,8 +321,8 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
 
         extra_forms = [
             form
-            for form in self.formset.extra_forms
-            if form.has_changed and not self.formset._should_delete_form(form)
+            for form in self._formset.extra_forms
+            if form.has_changed and not self._formset._should_delete_form(form)
         ]
         for form in extra_forms:
             form.instance.submission = obj
@@ -349,10 +354,10 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         form.instance.event = self.request.event
         form.save()
         self.object = form.instance
-        self.questions_form.submission = self.object
-        if not self.questions_form.is_valid():
+        self._questions_form.submission = self.object
+        if not self._questions_form.is_valid():
             return self.get(self.request, *self.args, **self.kwargs)
-        self.questions_form.save()
+        self._questions_form.save()
 
         if created:
             email = form.cleaned_data['speaker']
@@ -484,15 +489,15 @@ class SubmissionFeed(PermissionRequired, Feed):
         return item.created
 
 
-class SubmissionStats(PermissionRequired, TemplateView):
+class SubmissionStats(PermissionRequired, Context, TemplateView):
     template_name = 'orga/submission/stats.html'
     permission_required = 'orga.view_submissions'
 
     def get_permission_object(self):
         return self.request.event
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    @context
+    def timeline_data(self):
         data = Counter(
             timestamp.date()
             for timestamp in ActivityLog.objects.filter(
@@ -507,19 +512,25 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 dtstart=min(dates),
             )
             if len(data) > 1:
-                context['timeline_data'] = json.dumps(
+                return json.dumps(
                     [
                         {"x": date.isoformat(), "y": data.get(date.date(), 0)}
                         for date in date_range
                     ]
                 )
+
+    @context
+    def state_data(self):
         counter = Counter(submission.get_state_display() for submission in self.request.event.submissions(manager='all_objects').all())
-        context['state_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+        return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
 
+    @context
+    def type_data(self):
         counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions(manager='all_objects').all())
-        context['type_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
+        return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
 
+    @context
+    def track_data(self):
         counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
         if len(counter) > 1:
-            context['track_data'] = json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
-        return context
+            return json.dumps(list({'label': label, 'value': value} for label, value in counter.items()))
