@@ -176,7 +176,7 @@ nv.addGraph(() => {
 
 const button = document.querySelector("#toggle-button")
 button.addEventListener('click', event => {
-  if (event.target.getAttribute("aria-pressed")) { /* switch to submissions */
+  if (event.target.getAttribute("aria-pressed") === "true") { /* switch to submissions */
     const list = document.querySelectorAll('.card-header.submissions, .card-body.submissions')
     for (var i = 0; i < list.length; ++i) {
       list[i].classList.remove('d-none');
