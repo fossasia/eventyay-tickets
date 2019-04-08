@@ -714,6 +714,8 @@ legend .submission-state-dropdown {
   margin-bottom: 8px;
 }
 #stats {
+  display: flex;
+  flex-wrap: wrap;
   .card {
     display: inline-flex;
     flex-grow: 1;
