@@ -112,16 +112,20 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
     }
 
     @cached_property
-    def target(self) -> str:
+    def _target(self) -> str:
         """ Returns one of submit|accept|reject|confirm|delete|withdraw|cancel """
         return self.TARGETS[self.request.resolver_match.url_name.split('.')[-1]]
 
+    @context
+    def target(self):
+        return self._target
+
     @cached_property
     def is_allowed(self):
-        return self.target in SubmissionStates.valid_next_states[self.object.state]
+        return self._target in SubmissionStates.valid_next_states[self.object.state]
 
     def do(self, force=False):
-        method = getattr(self.object, SubmissionStates.method_names[self.target])
+        method = getattr(self.object, SubmissionStates.method_names[self._target])
         try:
             method(person=self.request.user, force=force, orga=True)
         except SubmissionError as e:
@@ -129,7 +133,7 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
-        if self.target == self.object.state:
+        if self._target == self.object.state:
             messages.info(
                 request,
                 _(
@@ -144,10 +148,6 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         if url and is_safe_url(url, allowed_hosts=None):
             return redirect(url)
         return redirect(self.object.orga_urls.base)
-
-    @context
-    def target(self):
-        return self.target
 
     @context
     def next(self):
