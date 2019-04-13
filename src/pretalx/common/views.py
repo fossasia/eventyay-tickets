@@ -29,9 +29,17 @@ class context:
 
     def __set_name__(self, owner, name):
 
+        if hasattr(self.func, '__set_name__'):
+            self.func.__set_name__(owner, name)
+
         if not hasattr(owner, '_context_fields'):
             owner._context_fields = set()
         owner._context_fields.add(name)
+
+        if not getattr(owner, 'get_context_data', False):
+            def get_context_data(_self, **kwargs):
+                return super(_self, owner).get_context_data(**kwargs)
+            owner.get_context_data = get_context_data
 
         if not getattr(owner, '_context_patched', False):
             old_get_context_data = owner.get_context_data
@@ -40,24 +48,16 @@ class context:
                 for name in _self._context_fields:
                     attr = getattr(_self, name)
                     if callable(attr):
-                        attr = attr(_self)
+                        attr = attr()
                     result.setdefault(name, attr)
                 return result
             owner.get_context_data = new_get_context_data
             owner._context_patched = True
 
     def __get__(self, instance, cls=None):
+        if hasattr(self.func, '__get__'):
+            return self.func.__get__(instance, cls)
         return self.func
-
-
-class Context:
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        for name, func in inspect.getmembers(self, predicate=inspect.ismethod):
-            if getattr(func, '_context', False):
-                context[name] = func()
-        return context
 
 
 class CreateOrUpdateView(
