@@ -22,9 +22,32 @@ from pretalx.person.forms import UserForm
 from pretalx.person.models import User
 
 
-def context(func):
-    setattr(func, '_context', True)
-    return func
+class context:
+
+    def __init__(self, func):
+        self.func = func
+
+    def __set_name__(self, owner, name):
+
+        if not hasattr(owner, '_context_fields'):
+            owner._context_fields = set()
+        owner._context_fields.add(name)
+
+        if not getattr(owner, '_context_patched', False):
+            old_get_context_data = owner.get_context_data
+            def new_get_context_data(_self, **kwargs):
+                result = old_get_context_data(_self, **kwargs)
+                for name in _self._context_fields:
+                    attr = getattr(_self, name)
+                    if callable(attr):
+                        attr = attr(_self)
+                    result.setdefault(name, attr)
+                return result
+            owner.get_context_data = new_get_context_data
+            owner._context_patched = True
+
+    def __get__(self, instance, cls=None):
+        return self.func
 
 
 class Context:
