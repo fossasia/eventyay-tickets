@@ -24,7 +24,7 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.views import Context, CreateOrUpdateView, context
+from pretalx.common.views import CreateOrUpdateView, context
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms import SubmissionForm
 from pretalx.person.forms import OrgaSpeakerForm
@@ -83,7 +83,7 @@ The {event} orga crew'''
     return user
 
 
-class SubmissionViewMixin(Context, PermissionRequired):
+class SubmissionViewMixin(PermissionRequired):
     def get_object(self):
         return get_object_or_404(
             self.request.event.submissions(manager='all_objects'),
@@ -490,7 +490,7 @@ class SubmissionFeed(PermissionRequired, Feed):
         return item.created
 
 
-class SubmissionStats(PermissionRequired, Context, TemplateView):
+class SubmissionStats(PermissionRequired, TemplateView):
     template_name = 'orga/submission/stats.html'
     permission_required = 'orga.view_submissions'
 
