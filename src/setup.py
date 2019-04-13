@@ -29,11 +29,8 @@ version of Python.
     sys.exit(1)
 
 # Get the long description from the relevant file
-try:
-    with open(path.join(here, '../README.rst'), encoding='utf-8') as f:
-        long_description = f.read()
-except:  # noqa
-    long_description = ''
+with open(path.join(here, '../README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 
 class CustomBuild(build):
