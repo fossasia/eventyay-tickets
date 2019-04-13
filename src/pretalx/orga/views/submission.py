@@ -521,6 +521,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 )
 
     @context
+    @cached_property
     def submission_state_data(self):
         counter = Counter(submission.get_state_display() for submission in self.request.event.submissions(manager='all_objects').all())
         return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
