@@ -170,7 +170,6 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def filter_form(self):
         return SpeakerFilterForm()
 
-    @context
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         question = self.object

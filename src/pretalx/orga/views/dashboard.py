@@ -15,9 +15,11 @@ from pretalx.submission.models.submission import SubmissionStates
 class DashboardEventListView(TemplateView):
     template_name = 'orga/event_list.html'
 
+    @context
     def current_orga_events(self):
         return [e for e in self.request.orga_events if e.date_to >= now().date()]
 
+    @context
     def past_orga_events(self):
         return [e for e in self.request.orga_events if e.date_to < now().date()]
 
