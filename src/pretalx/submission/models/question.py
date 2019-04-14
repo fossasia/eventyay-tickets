@@ -1,5 +1,5 @@
 import json
-from pretalx.common.utils import I18nStrJSONEncoder
+
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +9,7 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.common.utils import I18nStrJSONEncoder
 
 
 def answer_file_path(instance, filename):
@@ -177,12 +178,12 @@ class Question(LogMixin, models.Model):
         answer_count = answers.count()
         if self.target == QuestionTarget.SUBMISSION:
             submissions = filter_talks or self.event.submissions.all()
-            return submissions.count() - answer_count
+            return max(submissions.count() - answer_count, 0)
         if self.target == QuestionTarget.SPEAKER:
             users = filter_speakers or User.objects.filter(
                 submissions__event_id=self.event.pk
             )
-            return users.count() - answer_count
+            return max(users.count() - answer_count, 0)
         return 0
 
     class Meta:
