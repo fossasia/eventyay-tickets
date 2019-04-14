@@ -122,7 +122,7 @@ class TalkView(PermissionRequired, DetailView):
             qs = schedule.talks.all()
         context['talk_slots'] = qs.filter(submission=self.submission).order_by('start')
         result = []
-        other_submissions = schedule.slots.exclude(pk=self.submission.pk).filter(is_visible=True)
+        other_submissions = schedule.slots.exclude(pk=self.submission.pk)
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
             speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])
