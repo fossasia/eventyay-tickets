@@ -1,3 +1,5 @@
+import json
+from pretalx.common.utils import I18nStrJSONEncoder
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -158,6 +160,10 @@ class Question(LogMixin, models.Model):
             .annotate(count=models.Count('id'))
             .order_by('-count')
         )
+
+    @cached_property
+    def grouped_answers_json(self):
+        return json.dumps(list(self.grouped_answers), cls=I18nStrJSONEncoder)
 
     def missing_answers(self, filter_speakers=False, filter_talks=False):
         from pretalx.person.models import User

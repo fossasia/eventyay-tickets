@@ -1,5 +1,7 @@
 from django.template.defaultfilters import date as _date
 from django.utils.translation import get_language, ugettext_lazy as _
+from i18nfield.strings import LazyI18nString
+from i18nfield.utils import I18nJSONEncoder
 
 
 def daterange_de(date_from, date_to):
@@ -66,3 +68,10 @@ def daterange(date_from, date_to):
     return result or _("{date_from} – {date_to}").format(
         date_from=_date(date_from, "DATE_FORMAT"), date_to=_date(date_to, "DATE_FORMAT")
     )
+
+
+class I18nStrJSONEncoder(I18nJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, LazyI18nString):
+            return str(obj)
+        return super().default(obj)
