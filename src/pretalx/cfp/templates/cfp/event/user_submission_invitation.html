@@ -20,7 +20,7 @@
             (which might get caught by spam filters) you can also give them this link:
         {% endblocktrans %}
         <br>
-        {{ invite_url }}
+        {{ submission.urls.accept_invitation.full }}
     </div>
     <form method="post">
         {% csrf_token %}

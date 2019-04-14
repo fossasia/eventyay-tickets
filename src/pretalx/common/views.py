@@ -1,4 +1,3 @@
-import inspect
 import os.path
 import urllib
 from contextlib import suppress
@@ -14,50 +13,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
+from django_context_decorator import context
 
 from pretalx.cfp.forms.auth import ResetForm
 from pretalx.common.mail import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User
-
-
-class context:
-
-    def __init__(self, func):
-        self.func = func
-
-    def __set_name__(self, owner, name):
-
-        if hasattr(self.func, '__set_name__'):
-            self.func.__set_name__(owner, name)
-
-        if not hasattr(owner, '_context_fields'):
-            owner._context_fields = set()
-        owner._context_fields.add(name)
-
-        if not getattr(owner, 'get_context_data', False):
-            def get_context_data(_self, **kwargs):
-                return super(_self, owner).get_context_data(**kwargs)
-            owner.get_context_data = get_context_data
-
-        if not getattr(owner, '_context_patched', False):
-            old_get_context_data = owner.get_context_data
-            def new_get_context_data(_self, **kwargs):
-                result = old_get_context_data(_self, **kwargs)
-                for name in _self._context_fields:
-                    attr = getattr(_self, name)
-                    if callable(attr):
-                        attr = attr()
-                    result.setdefault(name, attr)
-                return result
-            owner.get_context_data = new_get_context_data
-            owner._context_patched = True
-
-    def __get__(self, instance, cls=None):
-        if hasattr(self.func, '__get__'):
-            return self.func.__get__(instance, cls)
-        return self.func
 
 
 class CreateOrUpdateView(
@@ -94,10 +56,9 @@ def get_static(request, path, content_type):
 class GenericLoginView(FormView):
     form_class = UserForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['password_reset_link'] = self.get_password_reset_link()
-        return context
+    @context
+    def password_reset_link(self):
+        return self.get_password_reset_link()
 
     def form_valid(self, form):
         pk = form.save()

@@ -9,8 +9,8 @@
 {% block content %}
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     <h2>
-        {{ form.instance.user.get_display_name }} ({{ submission_count }}
-        {% blocktrans trimmed count count=submission_count %}
+        {{ form.instance.user.get_display_name }} ({{ submissions.count }}
+        {% blocktrans trimmed count count=submissions.count %}
         submission
         {% plural %}
         submissions
@@ -18,7 +18,13 @@
     </h2>
     <div class="alert alert-info col-md-9 ml-auto">
         <span>
-        <h5>{% if submission_count > 1 %}{% trans "Submissions" %}{% else %}{% trans "Submission" %}{% endif %}</h5>
+        <h5>
+            {% blocktrans trimmed count count=submissions.count %}
+            Submission
+            {% plural %}
+            Submissions
+            {% endblocktrans %})
+        </h5>
         <ul>
             {% for submission in submissions %}
             <li>

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, View
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, Filterable, PermissionRequired, Sortable,
@@ -54,12 +55,11 @@ class OutboxSend(EventPermissionRequired, TemplateView):
     permission_required = 'orga.send_mails'
     template_name = 'orga/mails/confirm.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['question'] = _('Do you really want to send {count} mails?').format(
+    @context
+    def question(self):
+        return _('Do you really want to send {count} mails?').format(
             count=self.queryset.count()
         )
-        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'pk' in self.kwargs:
@@ -110,12 +110,11 @@ class OutboxPurge(PermissionRequired, TemplateView):
             ).first()
         return self.request.event
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['question'] = _('Do you really want to purge {count} mails?').format(
+    @context
+    def question(self):
+        return _('Do you really want to purge {count} mails?').format(
             count=self.queryset.count()
         )
-        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'pk' in self.kwargs:
@@ -350,19 +349,19 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     permission_required = 'orga.view_mail_templates'
     write_permission_required = 'orga.edit_mail_templates'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    @context
+    def placeholders(self):
         template = self.object
         if template and template in template.event.fixed_templates:
-            context['placeholders'] = get_context_explanation()
+            result = get_context_explanation()
             if template == template.event.update_template:
-                context['placeholders'].append(
+                result.append(
                     {
                         'name': 'notifications',
                         'explanation': _('A list of notifications for this speaker'),
                     }
                 )
-        return context
+            return result
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

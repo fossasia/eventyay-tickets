@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, View
+from django_context_decorator import context
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import (
@@ -32,10 +33,9 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
     paginate_by = 25
     permission_required = 'orga.view_speakers'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter_form'] = SpeakerFilterForm()
-        return context
+    @context
+    def filter_form(self):
+        return SpeakerFilterForm()
 
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(
@@ -104,15 +104,15 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             kwargs={'event': self.request.event.slug, 'pk': self.kwargs['pk']},
         )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        submissions = self.request.event.submissions.filter(speakers__in=[self.object])
-        context['submission_count'] = submissions.count()
-        context['submissions'] = submissions
-        context['questions_form'] = self.questions_form
-        context['mails'] = self.object.mails.filter(sent__isnull=False).order_by('-sent')
-        return context
+    @context
+    def submissions(self, **kwargs):
+        return self.request.event.submissions.filter(speakers__in=[self.object])
 
+    @context
+    def mails(self):
+        return self.object.mails.filter(sent__isnull=False).order_by('-sent')
+
+    @context
     @cached_property
     def questions_form(self):
         speaker = self.get_object()
@@ -150,10 +150,9 @@ class SpeakerPasswordReset(EventPermissionRequired, DetailView):
     model = User
     context_object_name = 'speaker'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['profile'] = self.get_object().event_profile(self.request.event)
-        return context
+    @context
+    def profile(self):
+        return self.get_object().event_profile(self.request.event)
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):

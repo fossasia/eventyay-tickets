@@ -3,6 +3,7 @@ from django.template.defaultfilters import timeuntil
 from django.utils.timezone import now
 from django.utils.translation import ngettext_lazy, ugettext_lazy as _
 from django.views.generic import TemplateView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.models.log import ActivityLog
@@ -14,34 +15,27 @@ from pretalx.submission.models.submission import SubmissionStates
 class DashboardEventListView(TemplateView):
     template_name = 'orga/event_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        now_date = now().date()
-        context['current_orga_events'] = [
-            e for e in self.request.orga_events if e.date_to >= now_date
-        ]
-        context['past_orga_events'] = [
-            e for e in self.request.orga_events if e.date_to < now_date
-        ]
-        return context
+    def current_orga_events(self):
+        return [e for e in self.request.orga_events if e.date_to >= now().date()]
+
+    def past_orga_events(self):
+        return [e for e in self.request.orga_events if e.date_to < now().date()]
 
 
 class DashboardOrganiserListView(PermissionRequired, TemplateView):
     template_name = 'orga/organiser/list.html'
     permission_required = 'orga.view_organisers'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    @context
+    def organisers(self):
         if self.request.user.is_administrator:
-            context['organisers'] = Organiser.objects.all()
-        else:
-            context['organisers'] = set(
-                team.organiser
-                for team in self.request.user.teams.filter(
-                    can_change_organiser_settings=True
-                )
+            return Organiser.objects.all()
+        return set(
+            team.organiser
+            for team in self.request.user.teams.filter(
+                can_change_organiser_settings=True
             )
-        return context
+        )
 
 
 class EventDashboardView(EventPermissionRequired, TemplateView):
@@ -59,6 +53,10 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             result.append({'url': event.cfp.urls.public, 'large': _('Go to CfP')})
         return result
 
+    @context
+    def history(self):
+        return ActivityLog.objects.filter(event=self.request.event)[:20]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         event = self.request.event
@@ -67,7 +65,6 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         context['go_to_target'] = (
             'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         )
-        context['history'] = ActivityLog.objects.filter(event=self.request.event)[:20]
         _now = now()
         today = _now.date()
         context['tiles'] = self.get_cfp_tiles(event, _now)

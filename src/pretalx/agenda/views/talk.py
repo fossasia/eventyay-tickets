@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView
+from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
@@ -33,10 +34,9 @@ class TalkList(EventPermissionRequired, Filterable, ListView):
     def get_queryset(self):
         return self.filter_queryset(self.request.event.talks).distinct()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['search'] = self.request.GET.get('q')
-        return context
+    @context
+    def search(self):
+        return self.request.GET.get('q')
 
 
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
@@ -51,14 +51,12 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
         ).select_related('user', 'event').order_by('user__name')
         return self.filter_queryset(qs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['search'] = self.request.GET.get('q')
-        return context
+    @context
+    def search(self):
+        return self.request.GET.get('q')
 
 
 class TalkView(PermissionRequired, DetailView):
-    context_object_name = 'submission'
     model = Submission
     slug_field = 'code'
     template_name = 'agenda/talk.html'
@@ -76,6 +74,11 @@ class TalkView(PermissionRequired, DetailView):
             if talk:
                 return talk.submission
         raise Http404()
+
+    @context
+    @cached_property
+    def submission(self):
+        return self.get_object()
 
     @cached_property
     def recording(self):
@@ -97,6 +100,10 @@ class TalkView(PermissionRequired, DetailView):
             }
         return {}
 
+    @context
+    def recording_iframe(self):
+        return self.recording.get('iframe')
+
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         if self.recording.get('csp_header'):
@@ -107,34 +114,39 @@ class TalkView(PermissionRequired, DetailView):
         context = super().get_context_data(**kwargs)
         qs = TalkSlot.objects.none()
         schedule = Schedule.objects.none()
-        submission = self.object
         if self.request.event.current_schedule:
             schedule = self.request.event.current_schedule
             qs = schedule.talks.filter(is_visible=True)
         elif self.request.is_orga:
             schedule = self.request.event.wip_schedule
             qs = schedule.talks.all()
-        context['talk_slots'] = qs.filter(submission=submission).order_by('start')
-        context['submission_description'] = (
-            submission.description
-            or submission.abstract
+        context['talk_slots'] = qs.filter(submission=self.submission).order_by('start')
+        result = []
+        other_submissions = schedule.slots.exclude(pk=self.submission.pk).filter(is_visible=True)
+        for speaker in self.submission.speakers.all():
+            speaker.talk_profile = speaker.event_profile(event=self.request.event)
+            speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])
+            result.append(speaker)
+        context['speakers'] = result
+        return context
+
+    @context
+    def submission_description(self):
+        return (
+            self.submission.description
+            or self.submission.abstract
             or _('The talk “{title}” at {event}').format(
-                title=submission.title, event=submission.event.name
+                title=self.submission.title, event=self.request.event.name
             )
         )
-        context['recording_iframe'] = self.recording.get('iframe')
-        context['answers'] = submission.answers.filter(
+
+    @context
+    def answers(self):
+        return self.submission.answers.filter(
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SUBMISSION,
         )
-        context['speakers'] = []
-        other_submissions = schedule.slots.exclude(pk=submission.pk)
-        for speaker in submission.speakers.all():
-            speaker.talk_profile = speaker.event_profile(event=self.request.event)
-            speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])
-            context['speakers'].append(speaker)
-        return context
 
 
 class TalkReviewView(DetailView):
@@ -183,8 +195,13 @@ class FeedbackView(PermissionRequired, FormView):
             slots__in=self.request.event.current_schedule.talks.filter(is_visible=True),
         ).first()
 
+    @context
+    @cached_property
+    def talk(self):
+        return self.get_object()
+
     def get(self, *args, **kwargs):
-        talk = self.get_object()
+        talk = self.talk
         if talk and self.request.user in talk.speakers.all():
             return render(
                 self.request,
@@ -200,13 +217,8 @@ class FeedbackView(PermissionRequired, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['talk'] = self.get_object()
+        kwargs['talk'] = self.talk
         return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['talk'] = self.get_object()
-        return context
 
     def form_valid(self, form):
         result = super().form_valid(form)

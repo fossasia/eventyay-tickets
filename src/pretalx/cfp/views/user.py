@@ -12,12 +12,14 @@ from django.utils.functional import cached_property
 from django.views.generic import (
     DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
+from django_context_decorator import context
 
 from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.views import is_form_bound
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
+from pretalx.person.permissions import person_can_view_information
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.submission.forms import InfoForm, QuestionsForm, ResourceForm
 from pretalx.submission.models import Resource, Submission, SubmissionStates
@@ -27,6 +29,7 @@ from pretalx.submission.models import Resource, Submission, SubmissionStates
 class ProfileView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_profile.html'
 
+    @context
     @cached_property
     def login_form(self):
         return LoginInfoForm(
@@ -34,6 +37,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             data=self.request.POST if is_form_bound(self.request, 'login') else None,
         )
 
+    @context
     @cached_property
     def profile_form(self):
         bind = is_form_bound(self.request, 'profile')
@@ -46,6 +50,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             files=self.request.FILES if bind else None,
         )
 
+    @context
     @cached_property
     def questions_form(self):
         bind = is_form_bound(self.request, 'questions')
@@ -58,15 +63,9 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             request_user=self.request.user,
         )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['login_form'] = self.login_form
-        context['profile_form'] = self.profile_form
-        context['questions_form'] = self.questions_form
-        context['questions_exist'] = self.request.event.questions.filter(
-            target='speaker'
-        ).exists()
-        return context
+    @context
+    def questions_exist(self):
+        return self.request.event.questions.filter(target='speaker').exists()
 
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
@@ -106,16 +105,13 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
     template_name = 'cfp/event/user_submissions.html'
     context_object_name = 'submissions'
 
-    def get_context_data(self, **kwargs):
-        from pretalx.person.permissions import person_can_view_information
-
-        context = super().get_context_data(**kwargs)
-        context['information'] = [
+    @context
+    def information(self):
+        return [
             i
             for i in self.request.event.information.all()
             if person_can_view_information(self.request.user, i)
         ]
-        return context
 
     def get_queryset(self):
         return self.request.event.submissions.filter(speakers__in=[self.request.user])
@@ -151,8 +147,13 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
             self.request.event.submissions, code__iexact=self.kwargs.get('code')
         )
 
-    def get_permission_object(self):
+    @context
+    @cached_property
+    def submission(self, **kwargs):
         return self.get_object()
+
+    def get_permission_object(self):
+        return self.submission
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -172,13 +173,8 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
             ].required = self.request.event.settings.cfp_require_availabilities
         return form
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['submission'] = self.get_object()
-        return context
-
     def form_valid(self, form):
-        submission = self.get_object()
+        submission = self.submission
         if self.request.user.has_perm('submission.confirm_submission', submission):
             submission.confirm(person=self.request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
@@ -198,15 +194,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     write_permission_required = 'submission.edit_submission'
 
     def get_permission_object(self):
-        return self.get_object()
+        return self.object
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['qform'] = self.qform
-        context['formset'] = self.formset
-        context['can_edit'] = self.can_edit
-        return context
-
+    @context
     @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
@@ -217,7 +207,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             can_delete=True,
             extra=0,
         )
-        submission = self.get_object()
+        submission = self.object
         return formset_class(
             self.request.POST if self.request.method == 'POST' else None,
             files=self.request.FILES if self.request.method == 'POST' else None,
@@ -266,6 +256,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
 
         return True
 
+    @context
     @cached_property
     def qform(self):
         return QuestionsForm(
@@ -287,6 +278,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             return self.form_valid(form)
         return self.form_invalid(form)
 
+    @context
     @cached_property
     def can_edit(self):
         return self.object.editable
@@ -335,9 +327,14 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
     def get_permission_object(self):
         return self.get_object()
 
+    @context
+    @cached_property
+    def submission(self, **kwargs):
+        return self.get_object()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['submission'] = self.get_object()
+        kwargs['submission'] = self.submission
         kwargs['speaker'] = self.request.user
         if 'email' in self.request.GET and not self.request.method == 'POST':
             initial = kwargs.get('initial', {})
@@ -350,22 +347,16 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
                 messages.warning(self.request, phrases.cfp.invite_invalid_email)
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['submission'] = self.get_object()
-        context['invite_url'] = context['submission'].urls.accept_invitation.full()
-        return context
-
     def form_valid(self, form):
         form.save()
         messages.success(self.request, phrases.cfp.invite_sent)
-        self.get_object().log_action(
+        self.submission.log_action(
             'pretalx.submission.speakers.invite', person=self.request.user
         )
         return super().form_valid(form)
 
     def get_success_url(self):
-        return self.get_object().urls.user_base
+        return self.submission.urls.user_base
 
 
 class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
@@ -397,7 +388,6 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
 class MailListView(LoggedInEventPageMixin, TemplateView):
     template_name = 'cfp/event/user_mails.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['mails'] = self.request.user.mails.filter(sent__isnull=False).order_by('-sent')
-        return context
+    @context
+    def mails(self):
+        return self.request.user.mails.filter(sent__isnull=False).order_by('-sent')

@@ -3,6 +3,7 @@ import os
 from bakery.views import BuildableDetailView
 from django.conf import settings
 from django.utils.functional import cached_property
+from django_context_decorator import context
 
 from pretalx.agenda.views.schedule import ExporterView, ScheduleView
 from pretalx.agenda.views.speaker import SpeakerView
@@ -25,10 +26,9 @@ class PretalxExportContextMixin:
     def object(self):
         return self.get_object()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['is_html_export'] = True
-        return context
+    @context
+    def is_html_export(self):
+        return True
 
     @staticmethod
     def get_url(obj):

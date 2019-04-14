@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
+from django_context_decorator import context
 
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
@@ -28,15 +29,11 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     permission_required = 'orga.edit_cfp'
     write_permission_required = 'orga.edit_cfp'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sform'] = self.sform
-        return context
-
+    @context
     @cached_property
     def sform(self):
         return CfPSettingsForm(
-            read_only=(self._action == 'view'),
+            read_only=(self.action == 'view'),
             locales=self.request.event.locales,
             obj=self.request.event,
             attribute_name='settings',
@@ -70,10 +67,9 @@ class CfPQuestionList(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/question_view.html'
     permission_required = 'orga.view_question'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['questions'] = Question.all_objects.filter(event=self.request.event)
-        return context
+    @context
+    def questions(self):
+        return Question.all_objects.filter(event=self.request.event)
 
 
 class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -100,6 +96,12 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def object(self):
         return self.get_object()
 
+    @context
+    @cached_property
+    def question(self):
+        return self.object
+
+    @context
     @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
@@ -164,18 +166,20 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
         return True
 
+    @context
+    def filter_form(self):
+        return SpeakerFilterForm()
+
+    @context
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         question = self.object
-        context['formset'] = self.formset
-        context['filter_form'] = SpeakerFilterForm()
-        context['question'] = question
         if question:
             role = self.request.GET.get('role')
             if role == 'true':
                 talks = self.request.event.talks.all()
                 speakers = self.request.event.speakers.all()
-                answers = context['question'].answers.filter(
+                answers = question.answers.filter(
                     models.Q(person__in=speakers) | models.Q(submission__in=talks)
                 )
             elif role == 'false':
@@ -187,11 +191,11 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                         'code', flat=True
                     )
                 )
-                answers = context['question'].answers.filter(
+                answers = question.answers.filter(
                     models.Q(person__in=speakers) | models.Q(submission__in=talks)
                 )
             else:
-                answers = context['question'].answers.all()
+                answers = question.answers.all()
             context['answer_count'] = answers.count()
             context['missing_answers'] = (
                 question.missing_answers()
@@ -323,11 +327,7 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/question_remind.html'
     permission_required = 'orga.view_question'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter_form'] = self.filter_form
-        return context
-
+    @context
     @cached_property
     def filter_form(self):
         data = self.request.GET if self.request.method == 'GET' else self.request.POST

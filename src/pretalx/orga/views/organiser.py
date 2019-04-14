@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView
+from django_context_decorator import context
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
@@ -36,18 +37,13 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
             return None
         return self.get_queryset().filter(pk=self.kwargs.get('pk')).first()
 
+    @context
     @cached_property
     def invite_form(self):
         is_bound = (
             self.request.method == 'POST' and self.request.POST.get('form') == 'invite'
         )
         return TeamInviteForm(self.request.POST if is_bound else None)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['team'] = self.object
-        context['invite_form'] = self.invite_form
-        return context
 
     def post(self, *args, **kwargs):
         if self.invite_form.is_bound:
@@ -100,6 +96,7 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     def get_permission_object(self):
         return self.request.organiser
 
+    @context
     @cached_property
     def team(self):
         return get_object_or_404(Team, pk=self.kwargs['pk'])
@@ -109,13 +106,11 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
             return self.team.members.filter(pk=self.kwargs.get('user_pk')).first()
         return self.team
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['team'] = self.team
-        context['member'] = self.get_object()
-        if context['member'] == context['team']:
-            context['member'] = None
-        return context
+    @context
+    def member(self, **kwargs):
+        member = self.get_object()
+        if member != self.team:
+            return member
 
     def post(self, request, *args, **kwargs):
         if 'user_pk' in self.kwargs:
@@ -135,11 +130,9 @@ class TeamUninvite(PermissionRequired, DetailView):
     def get_permission_object(self):
         return self.request.organiser
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['team'] = self.object.team
-        context['member'] = self.object
-        return context
+    @context
+    def team(self):
+        return self.object.team
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
@@ -155,19 +148,15 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.request.organiser
 
+    @context
     @cached_property
     def team(self):
         return get_object_or_404(Team, pk=self.kwargs['pk'])
 
+    @context
     @cached_property
     def user(self):
         return get_object_or_404(self.team.members, pk=self.kwargs['user_pk'])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['team'] = self.team
-        context['member'] = self.user
-        return context
 
     def post(self, request, *args, **kwargs):
         try:

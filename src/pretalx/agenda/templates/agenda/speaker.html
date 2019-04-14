@@ -2,9 +2,9 @@
 {% load i18n %}
 {% load rich_text %}
 
-{% block title %}{{ speaker.get_display_name }} ::{% endblock %}
-{% block meta_title %}{{ speaker.get_display_name }}{% endblock %}
-{% block social_title %}{{ speaker.get_display_name }}{% endblock %}
+{% block title %}{{ profile.user.get_display_name }} ::{% endblock %}
+{% block meta_title %}{{ profile.user.get_display_name }}{% endblock %}
+{% block social_title %}{{ profile.user.get_display_name }}{% endblock %}
 
 {% block agenda_content %}
 <article>
@@ -13,7 +13,7 @@
         {% blocktrans with event=request.event.name trimmed %}
         {{ event }} speaker:
         {% endblocktrans %}
-        {{ speaker.get_display_name }}
+        {{ profile.user.get_display_name }}
     </h3>
     <div class="buttons ml-auto">
         <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
@@ -27,10 +27,10 @@
             {{ profile.biography|rich_text }}
         </div>
         <div class="speaker-avatar">
-            {% if speaker.get_gravatar %}
-            <img width="100%" src="https://www.gravatar.com/avatar/{{ speaker.gravatar_parameter }}" alt="{% trans "The speaker's profile picture" %}"/>
-            {% elif speaker.avatar %}
-            <img width="100%" src="{{ speaker.avatar.url }}" alt="{% trans "The speaker's profile picture" %}">
+            {% if profile.user.get_gravatar %}
+            <img width="100%" src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}" alt="{% trans "The speaker's profile picture" %}"/>
+            {% elif profile.user.avatar %}
+            <img width="100%" src="{{ profile.user.avatar.url }}" alt="{% trans "The speaker's profile picture" %}">
             {% endif %}
         </div>
     </section>

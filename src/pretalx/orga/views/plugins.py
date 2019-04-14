@@ -3,25 +3,27 @@ from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
+from pretalx.common.plugins import get_all_plugins
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
     template_name = 'orga/plugins.html'
     permission_required = 'orga.change_plugins'
 
-    def get_context_data(self, **kwargs) -> dict:
-        from pretalx.common.plugins import get_all_plugins
-
-        context = super().get_context_data(**kwargs)
-        context['plugins'] = [
+    @context
+    def plugins(self):
+        return [
             p
             for p in get_all_plugins(self.request.event)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         ]
-        context['plugins_active'] = self.request.event.get_plugins()
-        return context
+
+    @context
+    def plugins_active(self):
+        return self.request.event.get_plugins()
 
     def post(self, request, *args, **kwargs):
         from pretalx.common.plugins import get_all_plugins

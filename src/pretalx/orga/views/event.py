@@ -15,6 +15,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
+from django_context_decorator import context
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
@@ -55,10 +56,11 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
     def object(self):
         return self.request.event
 
+    @context
     @cached_property
     def sform(self):
         return EventSettingsForm(
-            read_only=(self._action == 'view'),
+            read_only=(self.action == 'view'),
             locales=self.request.event.locales,
             obj=self.request.event,
             attribute_name='settings',
@@ -71,11 +73,9 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
         response['is_administrator'] = self.request.user.is_administrator
         return response
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sform'] = self.sform
-        context['url_placeholder'] = f'https://{self.request.host}/'
-        return context
+    @context
+    def url_placeholder(self):
+        return f'https://{self.request.host}/'
 
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
@@ -211,11 +211,6 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         kwargs['locales'] = self.request.event.locales
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['formset'] = self.formset
-        return context
-
     @transaction.atomic
     def form_valid(self, form):
         formset = self.save_formset()
@@ -224,6 +219,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         form.save()
         return super().form_valid(form)
 
+    @context
     @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
@@ -380,14 +376,10 @@ class InvitationView(FormView):
     template_name = 'orga/invitation.html'
     form_class = UserForm
 
+    @context
     @cached_property
-    def object(self):
+    def invitation(self):
         return get_object_or_404(TeamInvite, token__iexact=self.kwargs.get('code'))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['invitation'] = self.object
-        return context
 
     def post(self, *args, **kwargs):
         if not self.request.user.is_anonymous:
@@ -413,7 +405,7 @@ class InvitationView(FormView):
 
     @transaction.atomic()
     def accept_invite(self, user):
-        invite = self.object
+        invite = self.invitation
         invite.team.members.add(user)
         invite.team.save()
         invite.team.organiser.log_action(
@@ -430,6 +422,7 @@ class UserSettings(TemplateView):
     def get_success_url(self) -> str:
         return reverse('orga:user.view')
 
+    @context
     @cached_property
     def login_form(self):
         return LoginInfoForm(
@@ -437,6 +430,7 @@ class UserSettings(TemplateView):
             data=self.request.POST if is_form_bound(self.request, 'login') else None,
         )
 
+    @context
     @cached_property
     def profile_form(self):
         return OrgaProfileForm(
@@ -444,14 +438,11 @@ class UserSettings(TemplateView):
             data=self.request.POST if is_form_bound(self.request, 'profile') else None,
         )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['token'] = Token.objects.filter(
+    @context
+    def token(self):
+        return Token.objects.filter(
             user=self.request.user
         ).first() or Token.objects.create(user=self.request.user)
-        context['login_form'] = self.login_form
-        context['profile_form'] = self.profile_form
-        return context
 
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
@@ -499,18 +490,21 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
     def get_template_names(self):
         return f'orga/event/wizard/{self.steps.current}.html'
 
-    def get_context_data(self, form, **kwargs):
-        context = super().get_context_data(form, **kwargs)
-        context['has_organiser'] = (
+    @context
+    def has_organiser(self):
+        return (
             self.request.user.teams.filter(can_create_events=True).exists()
             or self.request.user.is_administrator
         )
-        context['url_placeholder'] = f'https://{self.request.host}/'
+
+    @context
+    def url_placeholder(self):
+        return f'https://{self.request.host}/'
+
+    @context
+    def organiser(self):
         if self.steps.current != 'initial':
-            context['organiser'] = self.get_cleaned_data_for_step('initial').get(
-                'organiser'
-            )
-        return context
+            return self.get_cleaned_data_for_step('initial').get('organiser')
 
     def render(self, form=None, **kwargs):
         if self.steps.current != 'initial':

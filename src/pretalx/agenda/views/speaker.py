@@ -7,7 +7,9 @@ from django.core.files.storage import Storage
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.views.generic import DetailView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.person.models import SpeakerProfile, User
@@ -17,7 +19,6 @@ from pretalx.submission.models import QuestionTarget
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SpeakerView(PermissionRequired, DetailView):
     template_name = 'agenda/speaker.html'
-    context_object_name = 'profile'
     permission_required = 'agenda.view_speaker'
     slug_field = 'code'
 
@@ -30,17 +31,18 @@ class SpeakerView(PermissionRequired, DetailView):
             .first()
         )
 
-    def get_context_data(self, **kwargs):
-        obj = kwargs.get('object')
-        context = super().get_context_data(**kwargs)
-        context['speaker'] = obj.user
-        context['answers'] = obj.user.answers.filter(
+    @context
+    @cached_property
+    def profile(self):
+        return self.get_object()
+
+    @context
+    def answers(self):
+        return self.profile.user.answers.filter(
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SPEAKER,
         )
-        context['submissions'] = obj.submissions
-        return context
 
 
 class SpeakerRedirect(DetailView):

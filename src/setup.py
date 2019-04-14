@@ -90,6 +90,7 @@ setup(
         'django-bakery==0.12.*',  # http://django-bakery.readthedocs.io/en/latest/changelog.html
         'django-bootstrap4==0.0.8',  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         'django-compressor==2.2.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
+        'django-context-decorator',
         'django-csp==3.5.*',  # https://github.com/mozilla/django-csp/blob/master/CHANGES
         'django-filter==2.1.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         'django-formset-js-improved==0.5.0.2',  # no changelog, https://github.com/pretix/django-formset-js

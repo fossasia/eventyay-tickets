@@ -15,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, TemplateView, UpdateView, View
+from django_context_decorator import context
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import (
@@ -54,13 +55,12 @@ class ScheduleExportView(EventPermissionRequired, TemplateView):
     template_name = 'orga/schedule/export.html'
     permission_required = 'orga.view_schedule'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['exporters'] = list(
+    @context
+    def decorators(self):
+        return list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
         )
-        return context
 
 
 class ScheduleExportTriggerView(EventPermissionRequired, View):
@@ -105,13 +105,21 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
         kwargs['event'] = self.request.event
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['warnings'] = self.request.event.wip_schedule.warnings
-        context['changes'] = self.request.event.wip_schedule.changes
-        context['notifications'] = len(self.request.event.wip_schedule.notifications)
-        context['suggested_version'] = guess_schedule_version(self.request.event)
-        return context
+    @context
+    def warnings(self):
+        return self.request.event.wip_schedule.warnings
+
+    @context
+    def changes(self):
+        return self.request.event.wip_schedule.changes
+
+    @context
+    def notifications(self):
+        return len(self.request.event.wip_schedule.notifications)
+
+    @context
+    def suggested_version(self):
+        return guess_schedule_version(self.request.event)
 
     def form_invalid(self, form):
         messages.error(

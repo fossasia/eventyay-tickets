@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.timezone import now
 from django.views.generic import TemplateView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import PermissionRequired
 from pretalx.event.models import Event
@@ -25,24 +26,27 @@ class LoggedInEventPageMixin(LoginRequiredMixin, EventPageMixin):
 class EventStartpage(EventPageMixin, TemplateView):
     template_name = 'cfp/event/index.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_submissions'] = (
+    @context
+    def has_submissions(self):
+        return (
             not self.request.user.is_anonymous
             and self.request.event.submissions.filter(
                 speakers__in=[self.request.user]
             ).exists()
         )
-        context['has_sneak_peek'] = self.request.event.submissions.filter(
-            is_featured=True
-        ).exists()
+
+    @context
+    def has_sneak_peek(self):
+        return self.request.event.submissions.filter(is_featured=True).exists()
+
+    @context
+    def submit_qs(self):
         params = [
             (key, self.request.GET.get(key))
             for key in ['track', 'submission_type']
             if self.request.GET.get(key) is not None
         ]
-        context['submit_qs'] = f'?{urlencode(params)}' if params else ''
-        return context
+        return f'?{urlencode(params)}' if params else ''
 
 
 class EventCfP(EventStartpage):

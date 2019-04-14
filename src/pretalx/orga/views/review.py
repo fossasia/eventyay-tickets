@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import (
     EventPermissionRequired, Filterable, PermissionRequired,
@@ -100,27 +101,34 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             return queryset.order_by('avg_score', '-state', 'code')
         return queryset.order_by('-state', '-avg_score', 'code')
 
+    @context
+    def submissions_reviewed(self):
+        return self.request.event.submissions.filter(
+            pk__in=self.request.user.reviews.values_list('submission__pk', flat=True)
+        ).values_list('pk', flat=True)
+
+    @context
+    def review_count(self):
+        return self.request.event.reviews.count()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
+        context['missing_reviews'] = missing_reviews
+        context['next_submission'] = missing_reviews.first()
+
         reviewers = User.objects.filter(
             teams__in=self.request.event.teams.filter(is_reviewer=True)
         ).distinct()
-        context['missing_reviews'] = missing_reviews
-        context['next_submission'] = missing_reviews.first()
         context['reviewers'] = reviewers.count()
-        context['submissions_reviewed'] = self.request.event.submissions.filter(
-            pk__in=self.request.user.reviews.values_list('submission__pk', flat=True)
-        ).values_list('pk', flat=True)
         context['active_reviewers'] = (
             reviewers.filter(reviews__isnull=False)
             .order_by('user__id')
             .distinct()
             .count()
         )
-        context['review_count'] = self.request.event.reviews.count()
         if context['active_reviewers'] > 1:
             context['avg_reviews'] = round(
                 context['review_count'] / context['active_reviewers'], 1
@@ -136,6 +144,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     permission_required = 'submission.view_reviews'
     write_permission_required = 'submission.review_submission'
 
+    @context
     @cached_property
     def submission(self):
         return get_object_or_404(
@@ -156,44 +165,23 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     def get_permission_object(self):
         return self.submission
 
+    @context
     @cached_property
     def read_only(self):
         return not self.request.user.has_perm(
             'submission.review_submission', self.get_object() or self.submission
         )
 
-    @cached_property
-    def qform(self):
-        return QuestionsForm(
-            target='reviewer',
-            event=self.request.event,
-            data=(self.request.POST if self.request.method == 'POST' else None),
-            files=(self.request.FILES if self.request.method == 'POST' else None),
-            speaker=self.request.user,
-            review=self.object,
-            readonly=self.read_only,
-        )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['submission'] = self.submission
-        context['review'] = self.object
-        context['read_only'] = self.read_only
-        context['qform'] = self.qform
-        context['skip_for_now'] = Review.find_missing_reviews(
-            self.request.event, self.request.user, ignore=[self.submission]
-        ).first()
-        context['done'] = self.request.user.reviews.filter(submission__event=self.request.event).count()
-        context['total_reviews'] = Review.find_missing_reviews(
-            self.request.event, self.request.user
-        ).count() + context['done']
-        if context['total_reviews']:
-            context['percentage'] = int(context['done'] * 100 / context['total_reviews'])
-        context['profiles'] = [
+    @context
+    def profiles(self):
+        return [
             speaker.event_profile(self.request.event)
             for speaker in self.submission.speakers.all()
         ]
-        context['reviews'] = [
+
+    @context
+    def reviews(self):
+        return [
             {
                 'score': review.display_score,
                 'text': review.text,
@@ -207,6 +195,34 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
                 pk=(self.object.pk if self.object else None)
             )
         ]
+
+    @context
+    @cached_property
+    def qform(self):
+        return QuestionsForm(
+            target='reviewer',
+            event=self.request.event,
+            data=(self.request.POST if self.request.method == 'POST' else None),
+            files=(self.request.FILES if self.request.method == 'POST' else None),
+            speaker=self.request.user,
+            review=self.object,
+            readonly=self.read_only,
+        )
+
+    @context
+    def skip_for_now(self):
+        return Review.find_missing_reviews(
+            self.request.event, self.request.user, ignore=[self.submission]
+        ).first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['done'] = self.request.user.reviews.filter(submission__event=self.request.event).count()
+        context['total_reviews'] = Review.find_missing_reviews(
+            self.request.event, self.request.user
+        ).count() + context['done']
+        if context['total_reviews']:
+            context['percentage'] = int(context['done'] * 100 / context['total_reviews'])
         return context
 
     def get_form_kwargs(self):
