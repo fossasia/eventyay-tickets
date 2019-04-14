@@ -803,3 +803,17 @@ legend .submission-state-dropdown {
     }
   }
 }
+#question-stats {
+  .table {
+    width: auto;
+    padding: 16px;
+  }
+  .card {
+    min-height: 300px;
+    min-width: 450px;
+    max-width: 450px;
+    max-height: 450px;
+    margin-right: 16px;
+  }
+
+}

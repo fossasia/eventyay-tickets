@@ -1,7 +1,21 @@
 {% extends "orga/cfp/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
 {% load times %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/nvd3/nv.d3.min.css" %}" />
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "vendored/nvd3/d3.min.js" %}"></script>
+        <script defer src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
+        <script defer src="{% static "orga/js/question_stats.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block cfp_content %}
 <h4>
@@ -47,9 +61,23 @@
             This question has been answered <strong>{{ count }}</strong>, and no answers are missing.
         {% endblocktrans %}
     {% endif %}
-    <ul>
+  <div id="question-stats" class="d-flex">
+    {% if question.variant != "file" and question.grouped_answers|length < 50 %}
+    <div class="card">
+        <div class="card-header">{% trans "Answers" %}</div>
+      <div id="question-data" class="d-none" data-states='{{ question.grouped_answers_json }}'></div>
+      <div id="question-answers" class="pie card-body"><svg></svg></div>
+    </div>
+    {% endif %}
+    <table class="table table-responsive">
+      <thead>
+        <th>{% trans "Answer" %}</th>
+        <th>{% trans "Amount" %}</th>
+      </thead>
+      <tbody>
         {% for answer in question.grouped_answers %}
-            <li>
+          <tr>
+            <td>
                 {% if question.variant == "file" %}
                     {% if answer.answer.answer_file %}
                         <i class="fa fa-file-o"></i>
@@ -64,22 +92,27 @@
                     {% if answer.answer %}
                         {% if question.variant == 'boolean' %}
                             {% if answer.answer == "True" %}
-                                {{ quotation_open }}{% trans "Yes" %}{{ quotation_close }}:
+                                {{ quotation_open }}{% trans "Yes" %}{{ quotation_close }}
                             {% else %}
-                                {{ quotation_open }}{% trans "No" %}{{ quotation_close }}:
+                                {{ quotation_open }}{% trans "No" %}{{ quotation_close }}
                             {% endif %}
                         {% else %}
-                            {{ quotation_open }}{{ answer.answer }}{{ quotation_close }}:
+                            {{ quotation_open }}{{ answer.answer }}{{ quotation_close }}
                         {% endif %}
                     {% elif answer.options %}
-                        {{ quotation_open }}{{ answer.options__answer }}{{ quotation_close }}:
+                        {{ quotation_open }}{{ answer.options__answer }}{{ quotation_close }}
                     {% else %}
-                        {% trans "Empty answer" %}:
+                        {% trans "Empty answer" %}
                     {% endif %}
-                    {{ answer.count|times }}
                 {% endif %}
-            </li>
+                </td>
+                <td>
+                    {{ answer.count|times }}
+                </td>
+          </tr>
         {% endfor %}
-    </ul>
+      </tbody>
+    </table>
+  </div>
 {% endif %}
 {% endblock %}
