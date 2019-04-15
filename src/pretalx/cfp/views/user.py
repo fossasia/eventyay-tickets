@@ -243,7 +243,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
         extra_forms = [
             form
             for form in self.formset.extra_forms
-            if form.has_changed and not self.formset._should_delete_form(form)
+            if form.has_changed and not self.formset._should_delete_form(form) and form.instance.resource
         ]
         for form in extra_forms:
             form.instance.submission = obj

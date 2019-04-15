@@ -300,6 +300,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     def save_formset(self, obj):
         if not self._formset.is_valid():
             return False
+
         for form in self._formset.initial_forms:
             if form in self._formset.deleted_forms:
                 if not form.instance.pk:
@@ -323,7 +324,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         extra_forms = [
             form
             for form in self._formset.extra_forms
-            if form.has_changed and not self._formset._should_delete_form(form)
+            if form.has_changed and not self._formset._should_delete_form(form) and form.instance.resource
         ]
         for form in extra_forms:
             form.instance.submission = obj
