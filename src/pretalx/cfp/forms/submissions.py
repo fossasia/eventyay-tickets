@@ -37,7 +37,7 @@ I'm looking forward to it!
 
     def save(self):
         self.submission.send_invite(
-            to=self.cleaned_data['speaker'],
+            to=self.cleaned_data['speaker'].strip(),
             subject=self.cleaned_data['subject'],
             text=self.cleaned_data['text'],
         )

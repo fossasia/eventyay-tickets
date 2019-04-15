@@ -113,7 +113,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.name if self.name else str(_('Unnamed user'))
 
     def save(self, *args, **kwargs):
-        self.email = self.email.lower()
+        self.email = self.email.lower().strip()
         if not self.code:
             assign_code(self)
         return super().save(args, kwargs)

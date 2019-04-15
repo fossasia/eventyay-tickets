@@ -91,8 +91,8 @@ class UserForm(forms.Form):
             return data['user_id']
 
         user = User.objects.create_user(
-            name=data.get('register_name'),
-            email=data.get('register_email').lower(),
+            name=data.get('register_name').strip(),
+            email=data.get('register_email').lower().strip(),
             password=data.get('register_password'),
             locale=translation.get_language(),
             timezone=timezone.get_current_timezone_name(),

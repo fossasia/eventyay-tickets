@@ -41,8 +41,8 @@ def create_user_as_orga(email, submission=None, name=None):
 
     user = User.objects.create_user(
         password=get_random_string(32),
-        email=form.cleaned_data['email'].lower(),
-        name=form.cleaned_data['name'],
+        email=form.cleaned_data['email'].lower().strip(),
+        name=form.cleaned_data['name'].strip(),
         pw_reset_token=get_random_string(32),
         pw_reset_time=now() + timedelta(days=7),
     )

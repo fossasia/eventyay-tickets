@@ -243,7 +243,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
                     skip_queue=True,
                     locale=self.request.event.locale,
                 )
-            additional_speaker = form_dict['info'].cleaned_data.get('additional_speaker')
+            additional_speaker = form_dict['info'].cleaned_data.get('additional_speaker').strip()
             if additional_speaker:
                 sub.send_invite(to=[additional_speaker], _from=user)
         except SendMailException as exception:
