@@ -70,6 +70,9 @@ class MailTemplate(LogMixin, models.Model):
             except KeyError as e:
                 raise SendMailException(f'Experienced KeyError when rendering Text: {str(e)}')
 
+            if len(subject) > 200:
+                subject = subject[:198] + '…'
+
             mail = QueuedMail(
                 event=self.event,
                 to=address,

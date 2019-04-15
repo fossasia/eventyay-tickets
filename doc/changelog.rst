@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`655` Mails to submissions with titles near the length cap (of 200 characters) could not be created, since with the added "[event]" prefix the mail subject was too long to be saved.
 - :feature:`-` Question pages now feature visual statistics where appropriate.
 - :feature:`-` There now is a page for submission statistics.
 - :feature:`628` Prefill CfP form with track and submission type if they are available in the query string.
