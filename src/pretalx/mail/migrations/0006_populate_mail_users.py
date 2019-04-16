@@ -7,17 +7,17 @@ def populate_to_users(apps, schema_editor):
     QueuedMail = apps.get_model('mail', 'QueuedMail')
     User = apps.get_model('person', 'User')
     user_lookup = {
-        user.email: user
+        user.email.lower().strip(): user
         for user in User.objects.all()
         if user.email
     }
     for mail in QueuedMail.objects.all():
         addresses = (mail.to or '').split(',')
         for address in addresses:
-            address = address.strip().lower()
+            address = address.lower().strip()
             if not address:
                 continue
-            user = user_lookup.get(address.strip().lower())
+            user = user_lookup.get(address)
             if user:
                 addresses.remove(address)
                 mail.to_users.add(user)
