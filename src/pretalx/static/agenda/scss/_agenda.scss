@@ -315,3 +315,12 @@ header {
     overflow: visible !important;
   }
 }
+.heading-with-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  &>:last-child {
+    margin-left: auto;
+  }
+}

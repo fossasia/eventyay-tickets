@@ -15,10 +15,10 @@
 {% block agenda_content %}
 <article>
     <h3 class="talk-title">
-        <div>
-        {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
+        <div class="heading-with-buttons">
+        {{ submission.title }}
         <div class="buttons" id="talk-buttons">
-            <a class="btn btn-outline-success" href="{{ submission.urls.ical }}">
+            <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
                 <i class="fa fa-calendar"></i> .ical
             </a>
             {% if submission.does_accept_feedback and not is_html_export %}

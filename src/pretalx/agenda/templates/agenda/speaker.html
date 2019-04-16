@@ -9,17 +9,14 @@
 {% block agenda_content %}
 <article>
 <div class="d-flex mb-2">
-    <h3>
-        {% blocktrans with event=request.event.name trimmed %}
-        {{ event }} speaker:
-        {% endblocktrans %}
+    <h3 class="heading-with-buttons">
         {{ profile.user.get_display_name }}
+        <div class="buttons ml-auto">
+            <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
+                <i class="fa fa-calendar"></i> .ical
+            </a>
+        </div>
     </h3>
-    <div class="buttons ml-auto">
-        <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
-            <i class="fa fa-calendar"></i> .ical
-        </a>
-    </div>
 </div>
 <div class="speaker-container">
     <section class="speaker-info">
