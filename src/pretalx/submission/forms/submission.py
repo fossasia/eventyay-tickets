@@ -142,12 +142,12 @@ class SubmissionFilterForm(forms.Form):
             lambda x: event.submissions(manager='all_objects').filter(state=x).count()
         )  # noqa
         type_count = (
-            lambda x: event.submissions(manager='all_objects')
+            lambda x: event.submissions
             .filter(submission_type=x)  # noqa
             .count()
         )
         track_count = (
-            lambda x: event.submissions(manager='all_objects')
+            lambda x: event.submissions
             .filter(track=x) #noqa
             .count()
         )
