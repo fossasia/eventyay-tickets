@@ -12,11 +12,12 @@ def populate_to_users(apps, schema_editor):
         if user.email
     }
     for mail in QueuedMail.objects.all():
-        addresses = (mail.to or '').split(',')
-        for address in addresses:
+        addresses = []
+        for address in (mail.to or '').split(','):
             address = address.lower().strip()
-            if not address:
-                continue
+            if address:
+                addresses.append(address)
+        for address in addresses:
             user = user_lookup.get(address)
             if user:
                 addresses.remove(address)
