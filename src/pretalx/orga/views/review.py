@@ -19,7 +19,7 @@ from pretalx.submission.models import Review, SubmissionStates
 
 class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     template_name = 'orga/review/dashboard.html'
-    paginate_by = 25
+    paginate_by = None
     context_object_name = 'submissions'
     permission_required = 'orga.view_review_dashboard'
     default_filters = (
@@ -58,7 +58,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ),
             limit_tracks__isnull=False,
         )
-        if limit_tracks.exists():
+        if len(limit_tracks):
             tracks = set()
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
@@ -89,7 +89,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                     ),
                     default=default,
                 )
-            )
+            ).select_related('track').select_related('submission_type').prefetch_related('speakers').prefetch_related('reviews')
         )
         if ordering == 'count':
             return queryset.order_by('review_count', 'code')
@@ -100,16 +100,6 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         if ordering == '-score':
             return queryset.order_by('avg_score', '-state', 'code')
         return queryset.order_by('-state', '-avg_score', 'code')
-
-    @context
-    def submissions_reviewed(self):
-        return self.request.event.submissions.filter(
-            pk__in=self.request.user.reviews.values_list('submission__pk', flat=True)
-        ).values_list('pk', flat=True)
-
-    @context
-    def review_count(self):
-        return self.request.event.reviews.count()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

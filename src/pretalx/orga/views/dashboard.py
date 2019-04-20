@@ -9,6 +9,7 @@ from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequi
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.models import Organiser
 from pretalx.event.stages import get_stages
+from pretalx.person.models import User
 from pretalx.submission.models.submission import SubmissionStates
 
 
