@@ -8,6 +8,15 @@ from pretalx.common.forms.widgets import (
     ClearableBasenameFileInput, PasswordConfirmationInput, PasswordStrengthInput,
 )
 
+"""
+SVG image uploads were possible in the past, but have been removed due to
+security concerns.
+SVG validation is nontrivial to the point of not having been convincingly
+implemented so far, and always pose the risk of data leakage.
+
+As a compromise, users with the `is_administrator` flag are still allowed to
+upload SVGs, since they are presumed to have root access to the system.
+"""
 IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg")
 
 
