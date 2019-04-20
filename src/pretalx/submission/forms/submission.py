@@ -2,6 +2,7 @@ import os
 
 from django import forms
 from django.conf import settings
+from django.db.models import Count
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -138,21 +139,20 @@ class SubmissionFilterForm(forms.Form):
         self.event = event
         usable_states = kwargs.pop('usable_states', None)
         super().__init__(*args, **kwargs)
-        sub_count = (
-            lambda x: event.submissions(manager='all_objects').filter(state=x).count()
-        )  # noqa
-        type_count = (
-            lambda x: event.submissions
-            .filter(submission_type=x)  # noqa
-            .count()
-        )
-        track_count = (
-            lambda x: event.submissions
-            .filter(track=x) #noqa
-            .count()
-        )
+        state_count = {
+            d['state']: d['state__count']
+            for d in event.submissions(manager='all_objects').order_by('state').values('state').annotate(Count('state'))
+        }
+        type_count = {
+            d['submission_type_id']: d['submission_type_id__count']
+            for d in event.submissions.order_by('submission_type_id').values('submission_type_id').annotate(Count('submission_type_id'))
+        }
+        track_count = {
+            d['track']: d['track__count']
+            for d in event.submissions.order_by('track').values('track').annotate(Count('track'))
+        }
         self.fields['submission_type'].choices = [
-            (sub_type.pk, f'{str(sub_type)} ({type_count(sub_type.pk)})')
+            (sub_type.pk, f'{str(sub_type)} ({type_count.get(sub_type.pk, 0)})')
             for sub_type in event.submission_types.all()
         ]
         self.fields['submission_type'].widget.attrs['title'] = _('Submission types')
@@ -165,12 +165,12 @@ class SubmissionFilterForm(forms.Form):
         else:
             usable_states = self.fields['state'].choices
         self.fields['state'].choices = [
-            (choice[0], f'{choice[1].capitalize()} ({sub_count(choice[0])})')
+            (choice[0], f'{choice[1].capitalize()} ({state_count.get(choice[0], 0)})')
             for choice in usable_states
         ]
         self.fields['state'].widget.attrs['title'] = _('Submission states')
         self.fields['track'].choices = [
-            (track.pk, f'{track.name} ({track_count(track.pk)})')
+            (track.pk, f'{track.name} ({track_count.get(track.pk, 0)})')
             for track in event.tracks.all()
         ]
         self.fields['track'].widget.attrs['title'] = _('Tracks')
