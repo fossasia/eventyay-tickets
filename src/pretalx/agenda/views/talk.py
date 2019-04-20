@@ -49,7 +49,13 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
         qs = SpeakerProfile.objects.filter(
             user__in=self.request.event.speakers, event=self.request.event
         ).select_related('user', 'event').order_by('user__name')
-        return self.filter_queryset(qs)
+        qs = self.filter_queryset(qs)
+        all_talks = list(self.request.event.talks.all().prefetch_related('speakers'))
+        for profile in qs:
+            profile.talks = [
+                talk for talk in all_talks if profile.user in talk.speakers.all()
+            ]
+        return qs
 
     @context
     def search(self):
