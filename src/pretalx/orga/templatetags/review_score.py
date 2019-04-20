@@ -35,11 +35,13 @@ def _review_score_override(positive_overrides, negative_overrides):
 
 @register.simple_tag(takes_context=True)
 def review_score(context, submission):
-    score = submission.average_score
+    score = getattr(submission, 'avg_score', False)
+    if score is False:
+        score = submission.average_score
+    if not score:
+        return '-'
+    if not hasattr(submission, 'has_overriden_reviews') or not submission.has_overridden_reviews:
+        return _review_score_number(context, score)
     positive_overrides = submission.reviews.filter(override_vote=True).count()
     negative_overrides = submission.reviews.filter(override_vote=False).count()
-
-    if positive_overrides or negative_overrides:
-        return mark_safe(_review_score_override(positive_overrides, negative_overrides))
-
-    return _review_score_number(context, score)
+    return mark_safe(_review_score_override(positive_overrides, negative_overrides))

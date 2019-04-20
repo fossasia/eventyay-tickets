@@ -78,18 +78,10 @@
         {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
         <tr class="{{ submission.state }}">
             <td>
-                {% if submission.avg_score != None %}
-                    {% review_score submission %}
-                {% else %}
-                    –
-                {% endif %}
+                {% review_score submission %}
             </td>
             <td>
-                {% if submission.reviews.all.count %}
-                    {{ submission.reviews.all.count }}
-                {% else %}
-                    –
-                {% endif %}
+                {{ submission.reviews.all.count|default:'-' }}
                 {% if can_view_all_reviews %}
                     {% if submission.pk in submissions_reviewed %}
                         <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
