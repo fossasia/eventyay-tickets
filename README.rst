@@ -54,6 +54,7 @@ Previous conferences using pretalx include:
 - `TROOPERS 2018`_
 - `MRMCD`_ (2017, 2018)
 - `Tools4AgileTeams`_ (2019)
+- `Camp++ 2019`_
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -109,3 +110,4 @@ to this project.
 .. _NorthSec 2019: https://cfp.nsec.io/2019/
 .. _Journées du Logiciel Libre 2019: https://pretalx.jdll.org/jdll2019/cfp
 .. _Tools4AgileTeams: https://talks.seibert-media.net/tools4agileteams2019/
+.. _Camp++ 2019: https://camp.hsbp.org/2019/pp7e3/
