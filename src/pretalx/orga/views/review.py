@@ -12,7 +12,6 @@ from pretalx.common.mixins.views import (
 from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
-from pretalx.person.models import User
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, SubmissionStates
 
