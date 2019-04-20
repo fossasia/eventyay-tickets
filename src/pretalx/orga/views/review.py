@@ -118,21 +118,6 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         )
         context['missing_reviews'] = missing_reviews
         context['next_submission'] = missing_reviews.first()
-
-        reviewers = User.objects.filter(
-            teams__in=self.request.event.teams.filter(is_reviewer=True)
-        ).distinct()
-        context['reviewers'] = reviewers.count()
-        context['active_reviewers'] = (
-            reviewers.filter(reviews__isnull=False)
-            .order_by('user__id')
-            .distinct()
-            .count()
-        )
-        if context['active_reviewers'] > 1:
-            context['avg_reviews'] = round(
-                context['review_count'] / context['active_reviewers'], 1
-            )
         return context
 
 

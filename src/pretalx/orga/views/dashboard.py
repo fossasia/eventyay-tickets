@@ -55,6 +55,25 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             result.append({'url': event.cfp.urls.public, 'large': _('Go to CfP')})
         return result
 
+    def get_review_tiles(self):
+        result = []
+        review_count = self.request.event.reviews.count()
+        can_change_settings = self.request.user.has_perm('orga.change_settings', self.request.event)
+        if review_count:
+            active_reviewers = (
+                User.objects
+                .filter(
+                    teams__in=self.request.event.teams.filter(is_reviewer=True),
+                    reviews__isnull=False,
+                )
+                .order_by('user__id')
+                .distinct()
+                .count()
+            )
+            result.append({'large': review_count, 'small': _('Reviews')})
+            result.append({'large': active_reviewers, 'small': _('Active reviewers'), 'url': self.request.event.organiser.orga_urls.teams if can_change_settings else None})
+        return result
+
     @context
     def history(self):
         return ActivityLog.objects.filter(event=self.request.event)[:20]
@@ -154,6 +173,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 'url': event.orga_urls.compose_mails,
             }
         )
+        context['tiles'] += self.get_review_tiles()
         return context
 
 
