@@ -517,7 +517,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         kwargs = {'user': self.request.user}
         if step != 'initial':
             fdata = self.get_cleaned_data_for_step('initial')
-            kwargs.update(fdata)
+            kwargs.update(fdata or dict())
         return kwargs
 
     @transaction.atomic()
