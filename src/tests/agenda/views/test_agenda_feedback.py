@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.django_db()
 def test_can_create_feedback(django_assert_num_queries, past_slot, client):
     assert past_slot.submission.speakers.count() == 1
-    with django_assert_num_queries(53):
+    with django_assert_num_queries(54):
         response = client.post(
             past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
         )
@@ -24,7 +24,7 @@ def test_can_create_feedback_for_multiple_speakers(
     past_slot.submission.speakers.add(other_speaker)
     past_slot.submission.speakers.add(speaker)
     assert past_slot.submission.speakers.count() == 2
-    with django_assert_num_queries(55):
+    with django_assert_num_queries(56):
         response = client.post(
             past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
         )
@@ -36,19 +36,19 @@ def test_can_create_feedback_for_multiple_speakers(
 
 @pytest.mark.django_db()
 def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, client):
-    with django_assert_num_queries(22):
+    with django_assert_num_queries(25):
         response = client.post(
             slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
         )
     assert slot.submission.speakers.count() == 1
-    assert response.status_code == 404
+    assert response.status_code == 200
     assert slot.submission.feedback.count() == 0
 
 
 @pytest.mark.django_db()
 def test_can_see_feedback(django_assert_num_queries, feedback, client):
     client.force_login(feedback.talk.speakers.first())
-    with django_assert_num_queries(25):
+    with django_assert_num_queries(24):
         response = client.get(feedback.talk.urls.feedback)
     assert response.status_code == 200
     assert feedback.review in response.content.decode()
@@ -63,6 +63,6 @@ def test_can_see_feedback_form(django_assert_num_queries, past_slot, client):
 
 @pytest.mark.django_db()
 def test_cannot_see_feedback_form_before_talk(django_assert_num_queries, slot, client):
-    with django_assert_num_queries(22):
+    with django_assert_num_queries(25):
         response = client.get(slot.submission.urls.feedback, follow=True)
-    assert response.status_code == 404
+    assert response.status_code == 200

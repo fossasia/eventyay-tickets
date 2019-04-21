@@ -11,7 +11,7 @@
         <div class="talk-content"><div class="description">
             {{ phrases.agenda.feedback_explanation }}
             {{ phrases.agenda.feedback_success }}
-        {% if not talk.does_accept_feedback %}
+        {% if not talk.does_accept_feedback or not can_give_feedback %}
             {{ phrases.agenda.feedback_not_now }}
         {% else %}
             <form method="post">

@@ -199,7 +199,7 @@ class SingleICalView(EventPageMixin, DetailView):
 class FeedbackView(PermissionRequired, FormView):
     form_class = FeedbackForm
     template_name = 'agenda/feedback_form.html'
-    permission_required = 'agenda.give_feedback'
+    permission_required = 'agenda.view_slot'
 
     def get_object(self):
         return self.request.event.talks.filter(
@@ -210,6 +210,11 @@ class FeedbackView(PermissionRequired, FormView):
     @cached_property
     def talk(self):
         return self.get_object()
+
+    @context
+    @cached_property
+    def can_give_feedback(self):
+        return self.request.user.has_perm('agenda.give_feedback', self.talk)
 
     @context
     @cached_property
@@ -237,6 +242,8 @@ class FeedbackView(PermissionRequired, FormView):
         return kwargs
 
     def form_valid(self, form):
+        if not self.can_give_feedback:
+            return super().form_invalid(form)
         result = super().form_valid(form)
         form.save()
         messages.success(self.request, phrases.agenda.feedback_success)
