@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db.models import Avg, Case, Count, Exists, OuterRef, Q, Subquery, When
+from django.db.models import Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -65,40 +65,56 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         queryset = self.filter_queryset(queryset).annotate(review_count=Count('reviews'))
 
         can_see_all_reviews = self.request.user.has_perm('orga.view_all_reviews', self.request.event)
-        ordering = self.request.GET.get('sort', 'default')
-
         overridden_reviews = Review.objects.filter(
             override_vote__isnull=False, submission_id=OuterRef('pk')
         )
-        default = Avg('reviews__score')
-
         if not can_see_all_reviews:
             overridden_reviews = overridden_reviews.filter(user=self.request.user)
-            user_reviews = self.request.event.reviews.filter(user=self.request.user)
-            default = Subquery(user_reviews.filter(submission_id=OuterRef('pk')).values_list('score')[:1])
 
         queryset = (
-            queryset.order_by('review_id')
-            .annotate(has_override=Exists(overridden_reviews))
-            .annotate(
-                avg_score=Case(
-                    When(
-                        has_override=True,
-                        then=self.request.event.settings.review_max_score + 1,
-                    ),
-                    default=default,
-                )
-            ).select_related('track').select_related('submission_type').prefetch_related('speakers').prefetch_related('reviews')
+            queryset.annotate(has_override=Exists(overridden_reviews))
+            .select_related('track', 'submission_type')
+            .prefetch_related('speakers', 'reviews', 'reviews__user')
         )
-        if ordering == 'count':
-            return queryset.order_by('review_count', 'code')
-        if ordering == '-count':
-            return queryset.order_by('-review_count', 'code')
-        if ordering == 'score':
-            return queryset.order_by('-avg_score', '-state', 'code')
-        if ordering == '-score':
-            return queryset.order_by('avg_score', '-state', 'code')
-        return queryset.order_by('-state', '-avg_score', 'code')
+
+        for submission in queryset:
+            if can_see_all_reviews:
+                submission.current_score = submission.median_score
+            else:
+                reviews = [review for review in submission.reviews.all() if review.user == self.request.user]
+                submission.current_score = None
+                if reviews:
+                    submission.current_score = reviews[0].score
+
+        return self.sort_queryset(queryset)
+
+    def sort_queryset(self, queryset):
+        order_prevalence = {
+            'default': ('state', 'current_score', 'code'),
+            'score': ('current_score', 'state', 'code'),
+            'count': ('review_count', 'code')
+        }
+        ordering = self.request.GET.get('sort', 'default')
+        reverse = True
+        if ordering.startswith('-'):
+            reverse = False
+            ordering = ordering[1:]
+
+        order = order_prevalence.get(ordering, order_prevalence['default'])
+
+        def get_order_tuple(obj):
+            return tuple(
+                getattr(obj, key)
+                if not (key == 'current_score' and not obj.current_score)
+                else 100 * -int(reverse)
+                for key in order
+            )
+
+        return sorted(
+            queryset,
+            key=get_order_tuple,
+            reverse=reverse,
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -3,7 +3,6 @@
 {% load compress %}
 {% load formset_tags %}
 {% load i18n %}
-{% load review_score %}
 {% load static %}
 {% load rules %}
 
@@ -83,15 +82,14 @@
                 {% endif %}
             </div>
         {% endif %}
-        {% if form.instance.average_score != None and can_view_all_reviews %}
+        {% if form.instance.median_score != None and can_view_all_reviews %}
         <div class="form-group row">
             <label class="col-md-3 col-form-label">
-                {% trans "Review score" %}
+                {% trans "Reviews" %}
             </label>
             <div class="col-md-9">
                 <label>
-                    {% review_score form.instance %}
-                    ({{ submission.reviews.count }} {% trans "reviews" %})
+                    {{ submission.reviews.count }} {% trans "reviews" %}
                 </label>
             </div>
         </div>

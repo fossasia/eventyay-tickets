@@ -1,4 +1,5 @@
 import re
+import statistics
 import string
 import uuid
 import warnings
@@ -465,8 +466,9 @@ class Submission(LogMixin, models.Model):
             return template.render(context={'url': self.recording_url})
 
     @cached_property
-    def average_score(self):
-        return self.reviews.all().aggregate(avg=models.Avg('score'))['avg']
+    def median_score(self):
+        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        return statistics.median(scores) if scores else None
 
     @cached_property
     def active_resources(self):

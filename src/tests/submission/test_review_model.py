@@ -12,12 +12,13 @@ from pretalx.submission.models import Review
     ([1, None], 1),
     ([1, 2], 1.5),
     ([1, 2, None], 1.5),
+    ([1, 1, 1, 5], 1),
 ))
-def test_average_review_score(submission, scores, expected):
+def test_median_review_score(submission, scores, expected):
     speaker = submission.speakers.first()
     reviews = [Review(submission=submission, score=score, user=speaker) for score in scores]
     Review.objects.bulk_create(reviews)
-    assert submission.average_score == expected
+    assert submission.median_score == expected
     submission.reviews.all().delete()
 
 

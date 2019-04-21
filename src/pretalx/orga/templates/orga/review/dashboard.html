@@ -53,7 +53,7 @@
         <tr>
             <th>
                 {% if can_view_all_reviews %}
-                    {% trans "Average score" %}
+                    {% trans "Median score" %}
                 {% else %}
                     {% trans "Score" %}
                 {% endif %}
@@ -62,8 +62,8 @@
             </th>
             <th>
                 {% trans "Reviews" %}
-                <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-down"></i></a>
-                <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-up"></i></a>
+                <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down"></i></a>
+                <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up"></i></a>
             </th>
             <th>{% trans "Title" %}</th>
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
@@ -82,10 +82,8 @@
             </td>
             <td>
                 {{ submission.reviews.all|length|default:'-' }}
-                {% if can_view_all_reviews %}
-                    {% if submission.pk in submissions_reviewed %}
-                        <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
-                    {% endif %}
+                {% if submission.pk in submissions_reviewed %}
+                    <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
                 {% endif %}
             </td>
             <td>

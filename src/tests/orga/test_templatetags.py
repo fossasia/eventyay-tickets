@@ -61,6 +61,7 @@ def test_templatetag_review_score_override(positive, negative, expected):
 @pytest.mark.django_db
 def test_template_tag_review_score(review):
     review.override_vote = True
+    review.submission.current_score = 0
     review.save()
     assert (
         '<i class="fa fa-arrow-circle-up override text-success"></i>'
