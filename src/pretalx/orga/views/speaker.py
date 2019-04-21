@@ -20,7 +20,7 @@ from pretalx.person.forms import (
 )
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm
-from pretalx.submission.models.submission import SubmissionStates
+from pretalx.submission.models.submission import SubmissionStates, Submission
 
 
 class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
@@ -75,12 +75,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_object(self):
         return get_object_or_404(
             User.objects.filter(
-                Q(submissions__in=self.request.event.submissions.all())
-                | Q(
-                    submissions__in=self.request.event.submissions(
-                        manager='deleted_objects'
-                    ).all()
-                )
+                submissions__in=Submission.all_objects.filter(event=self.request.event)
             )
             .order_by('id')
             .distinct(),

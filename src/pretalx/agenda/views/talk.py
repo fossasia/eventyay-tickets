@@ -9,7 +9,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
@@ -21,7 +21,7 @@ from pretalx.common.phrases import phrases
 from pretalx.person.models.profile import SpeakerProfile
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
-from pretalx.submission.models import Feedback, QuestionTarget, Submission
+from pretalx.submission.models import QuestionTarget, Submission
 
 
 class TalkList(EventPermissionRequired, Filterable, ListView):
@@ -62,7 +62,7 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
         return self.request.GET.get('q')
 
 
-class TalkView(PermissionRequired, DetailView):
+class TalkView(PermissionRequired, TemplateView):
     model = Submission
     slug_field = 'code'
     template_name = 'agenda/talk.html'
@@ -86,6 +86,9 @@ class TalkView(PermissionRequired, DetailView):
     def submission(self):
         return self.get_object()
 
+    def get_permission_object(self):
+        return self.submission
+
     @cached_property
     def recording(self):
         for receiver, response in register_recording_provider.send_robust(
@@ -96,12 +99,12 @@ class TalkView(PermissionRequired, DetailView):
                 and not isinstance(response, Exception)
                 and hasattr(response, 'get_recording')
             ):
-                recording = response.get_recording(self.object)
+                recording = response.get_recording(self.submission)
                 if recording and recording['iframe']:
                     return recording
-        if self.object.rendered_recording_iframe:
+        if self.submission.rendered_recording_iframe:
             return {
-                'iframe': self.object.rendered_recording_iframe,
+                'iframe': self.submission.rendered_recording_iframe,
                 'csp_header': 'https://media.ccc.de',
             }
         return {}
@@ -122,21 +125,22 @@ class TalkView(PermissionRequired, DetailView):
         schedule = Schedule.objects.none()
         if self.request.event.current_schedule:
             schedule = self.request.event.current_schedule
-            qs = schedule.talks.filter(is_visible=True)
+            qs = schedule.talks.filter(is_visible=True).select_related('room')
         elif self.request.is_orga:
             schedule = self.request.event.wip_schedule
-            qs = schedule.talks.all()
-        context['talk_slots'] = qs.filter(submission=self.submission).order_by('start')
+            qs = schedule.talks.filter(room__isnull=False).select_related('room')
+        context['talk_slots'] = qs.filter(submission=self.submission).order_by('start').select_related('room')
         result = []
         other_submissions = schedule.slots.exclude(pk=self.submission.pk)
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
-            speaker.other_submissions = other_submissions.filter(speakers__in=[speaker])
+            speaker.other_submissions = other_submissions.filter(speakers__in=[speaker]).select_related('event')
             result.append(speaker)
         context['speakers'] = result
         return context
 
     @context
+    @cached_property
     def submission_description(self):
         return (
             self.submission.description
@@ -160,6 +164,9 @@ class TalkReviewView(DetailView):
     model = Submission
     slug_field = 'review_code'
     template_name = 'agenda/talk.html'
+
+    def get_object(self):
+        return self.request.event.submissions.filter(review_code=self.kwargs['slug'])
 
 
 class SingleICalView(EventPageMixin, DetailView):
@@ -190,16 +197,13 @@ class SingleICalView(EventPageMixin, DetailView):
 
 
 class FeedbackView(PermissionRequired, FormView):
-    model = Feedback
     form_class = FeedbackForm
     template_name = 'agenda/feedback_form.html'
     permission_required = 'agenda.give_feedback'
 
     def get_object(self):
-        return Submission.objects.filter(
-            event=self.request.event,
-            code__iexact=self.kwargs['slug'],
-            slots__in=self.request.event.current_schedule.talks.filter(is_visible=True),
+        return self.request.event.talks.filter(
+            code__iexact=self.kwargs['slug']
         ).first()
 
     @context
@@ -207,9 +211,14 @@ class FeedbackView(PermissionRequired, FormView):
     def talk(self):
         return self.get_object()
 
+    @context
+    @cached_property
+    def speakers(self):
+        return self.talk.speakers.all()
+
     def get(self, *args, **kwargs):
         talk = self.talk
-        if talk and self.request.user in talk.speakers.all():
+        if talk and self.request.user in self.speakers:
             return render(
                 self.request,
                 'agenda/feedback.html',

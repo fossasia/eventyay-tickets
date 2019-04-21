@@ -10,13 +10,13 @@ from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import TemplateView
+from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 
 
 class ScheduleDataView(EventPermissionRequired, TemplateView):
-    template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
 
     @cached_property
@@ -46,9 +46,14 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
             return self.request.event.current_schedule
         return None
 
+    @context
+    @cached_property
+    def schedule(self):
+        return self.get_object()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        schedule = self.get_object()
+        schedule = self.schedule
         event = self.request.event
 
         if not schedule and self.version:
@@ -58,7 +63,6 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
         if not schedule:
             context['error'] = 'Schedule not found.'
             return context
-        context['schedule'] = schedule
         context['schedules'] = event.schedules.filter(
             published__isnull=False
         ).values_list('version')
@@ -90,7 +94,7 @@ class ExporterView(ScheduleDataView):
         if not exporter:
             raise Http404()
         try:
-            exporter.schedule = self.get_object()
+            exporter.schedule = self.schedule
             exporter.is_orga = getattr(self.request, 'is_orga', False)
             file_name, file_type, data = exporter.render()
             etag = hashlib.sha1(str(data).encode()).hexdigest()
@@ -130,7 +134,7 @@ class ScheduleView(ScheduleDataView):
             return context
 
         context['data'] = ScheduleData(
-            event=self.request.event, schedule=context['schedule']
+            event=self.request.event, schedule=self.schedule
         ).data
         context['search'] = self.request.GET.get('q', '').lower()
         max_rooms = 0

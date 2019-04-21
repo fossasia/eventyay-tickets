@@ -86,7 +86,7 @@ The {event} orga crew'''
 class SubmissionViewMixin(PermissionRequired):
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submissions(manager='all_objects'),
+            Submission.all_objects.filter(event=self.request.event),
             code__iexact=self.kwargs.get('code'),
         )
 

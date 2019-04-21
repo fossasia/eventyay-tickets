@@ -426,7 +426,7 @@ class Submission(LogMixin, models.Model):
             intval += table[char]
         return intval
 
-    @property
+    @cached_property
     def slot(self):
         return (
             self.event.current_schedule.talks.filter(submission=self).first()
@@ -434,11 +434,11 @@ class Submission(LogMixin, models.Model):
             else None
         )
 
-    @property
+    @cached_property
     def display_speaker_names(self):
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
 
-    @property
+    @cached_property
     def does_accept_feedback(self):
         slot = self.slot
         if slot and slot.start:
@@ -461,11 +461,11 @@ class Submission(LogMixin, models.Model):
             )
             return template.render(context={'url': self.recording_url})
 
-    @property
+    @cached_property
     def average_score(self):
         return self.reviews.all().aggregate(avg=models.Avg('score'))['avg']
 
-    @property
+    @cached_property
     def active_resources(self):
         return self.resources.filter(resource__isnull=False)
 
