@@ -28,6 +28,8 @@
     </div>
 </fieldset>
 
+{% if request.organiser %}
+
 <fieldset>
     <legend>{% trans "Teams" %}</legend>
     <table class="table table-hover table-sm table-responsive-md">
@@ -84,5 +86,6 @@
         </span>
     </div>
 </fieldset>
+{% endif %}
 </form>
 {% endblock %}
