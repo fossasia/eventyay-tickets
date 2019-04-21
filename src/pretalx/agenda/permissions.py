@@ -9,7 +9,7 @@ def is_agenda_visible(user, event):
         event
         and event.is_public
         and event.settings.show_schedule
-        and event.schedules.filter(version__isnull=False).exists()
+        and event.current_schedule
     )
 
 
