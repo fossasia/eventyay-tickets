@@ -2,6 +2,7 @@ import re
 import string
 import uuid
 import warnings
+from contextlib import suppress
 from datetime import timedelta
 
 from django.conf import settings
@@ -14,14 +15,16 @@ from django.utils.translation import pgettext, ugettext_lazy as _
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
-from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
 
-INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
+INSTANCE_IDENTIFIER = None
+with suppress(Exception):
+    from pretalx.common.models.settings import GlobalSettings
+    INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
 
 
 def generate_invite_code(length=32):
