@@ -31,7 +31,7 @@ def test_schedule_xsd_is_up_to_date():
 def test_schedule_frab_xml_export(
     slot, client, django_assert_num_queries, schedule_schema
 ):
-    with django_assert_num_queries(20):
+    with django_assert_num_queries(23):
         response = client.get(
             reverse(
                 f'agenda:export.schedule.xml',
