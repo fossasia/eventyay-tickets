@@ -198,6 +198,7 @@ class EventWizardDisplayForm(forms.Form):
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['primary_color'].widget.attrs['class'] = 'colorpickerfield'
 
 
 class EventWizardCopyForm(forms.Form):

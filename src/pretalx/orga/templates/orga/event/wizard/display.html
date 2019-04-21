@@ -1,5 +1,18 @@
 {% extends "orga/event/wizard/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+    {% compress js %}
+    <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+    <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block wizard_content %}
 <div class="alert alert-info col-md-9 offset-3">

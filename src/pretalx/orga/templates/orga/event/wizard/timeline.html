@@ -1,5 +1,16 @@
 {% extends "orga/event/wizard/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
+
+{% block scripts %}
+    {% compress js %}
+    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+    <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
+    <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+    <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block wizard_content %}
 <div class="alert alert-info col-md-9 offset-3">
