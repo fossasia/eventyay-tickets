@@ -12,8 +12,8 @@
 <div class="alert alert-info">
     {% if can_review and next_submission %}
         <a href="{{ next_submission.orga_urls.reviews }}">
-        {{ missing_reviews.count }}
-        {% blocktrans trimmed count count=missing_reviews.count %}
+        {{ missing_reviews|length }}
+        {% blocktrans trimmed count count=missing_reviews|length %}
         submission is waiting for your review.
         {% plural %}
         submissions are waiting for your review.
@@ -81,7 +81,7 @@
                 {% review_score submission %}
             </td>
             <td>
-                {{ submission.reviews.all.count|default:'-' }}
+                {{ submission.reviews.all|length|default:'-' }}
                 {% if can_view_all_reviews %}
                     {% if submission.pk in submissions_reviewed %}
                         <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>

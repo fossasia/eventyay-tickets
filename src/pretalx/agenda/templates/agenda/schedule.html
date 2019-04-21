@@ -114,7 +114,7 @@
 
                                 <div class="talk{% if request.user in talk.submission.speakers.all %} talk-personal{% endif %}{% if talk.is_active %} active{% endif %}{% if search %} {% if search in talk.submission.title.lower or search in talk.submission.display_speaker_names.lower %} search-hit{% else %} search-fail{% endif %}{% endif %}"
                                      id="{{ talk.submission.code }}"
-                                     title="{{ talk.submission.title }} {% if talk.submission.speakers.exists %}({{ talk.submission.display_speaker_names }}){% endif %}"
+                                     title="{{ talk.submission.title }} ({{ talk.submission.display_speaker_names|default:'' }})"
                                      style="height: {{ talk.height }}px; min-height: {% if talk.height >= 30 %}{{ talk.height }}{% else %}30{% endif %}px; top: {{ talk.top }}px;{% if request.event.settings.use_tracks and talk.submission.track %} border-color: {{ talk.submission.track.color }}{% endif %}"
                                      data-time="{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}">
                                     <div class="talk-content">
@@ -130,7 +130,7 @@
                                         {% else %}
                                             <span class="talk-title">{{ talk.submission.title }}</span>
 
-                                            {% if talk.submission.speakers.exists %}
+                                            {% if talk.submission.speakers %}
                                               <span class="talk-speakers">({{ talk.submission.display_speaker_names }})</span><br>
                                             {% endif %}
                                         {% endif %}

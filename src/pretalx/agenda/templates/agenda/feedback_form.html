@@ -6,9 +6,6 @@
         <a href="{{ talk.urls.public }}">
             {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
         </a>
-        <small>
-            {{ talk.slot.start.date|date:"c" }}, {{ talk.slot.start|date:"H:i" }}–{{ talk.slot.end|date:"H:i" }}, {{ talk.slot.room.name }}
-        </small>
     </h3>
     <div class="talk row col-lg-12">
         <div class="talk-content"><div class="description">
@@ -20,7 +17,7 @@
             <form method="post">
                 {% bootstrap_form_errors form %}
                 {% csrf_token %}
-                {% if talk.speakers.count > 1 %}
+                {% if speakers|length > 1 %}
                     {% bootstrap_field form.speaker layout='inline' %}
                 {% endif %}
                 {% bootstrap_field form.review layout='inline' %}
