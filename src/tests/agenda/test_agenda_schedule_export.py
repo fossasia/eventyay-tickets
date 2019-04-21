@@ -98,7 +98,7 @@ def test_schedule_frab_json_export(
             follow=True,
         )
     client.force_login(orga_user)
-    with django_assert_num_queries(22):
+    with django_assert_num_queries(23):
         orga_response = client.get(
             reverse(
                 f'agenda:export.schedule.json',
@@ -307,7 +307,7 @@ def test_schedule_orga_trigger_export(
 
     mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
 
-    with django_assert_num_queries(39):
+    with django_assert_num_queries(41):
         response = orga_client.post(
             event.orga_urls.schedule_export_trigger, follow=True
         )
@@ -324,7 +324,7 @@ def test_schedule_orga_download_export(
     from pretalx.agenda.tasks import export_schedule_html
 
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(12):
         response = orga_client.get(
             event.orga_urls.schedule_export_download, follow=True
         )
@@ -445,7 +445,7 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
 
 @pytest.mark.django_db
 def test_speaker_csv_export(slot, orga_client, django_assert_num_queries):
-    with django_assert_num_queries(19):
+    with django_assert_num_queries(20):
         response = orga_client.get(
             reverse(
                 f'agenda:export',
