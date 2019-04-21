@@ -395,6 +395,10 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def uuid(self):
+        global INSTANCE_IDENTIFIER
+        if not INSTANCE_IDENTIFIER:
+            from pretalx.common.models.settings import GlobalSettings
+            INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
         return uuid.uuid5(INSTANCE_IDENTIFIER, self.code)
 
     @cached_property
