@@ -56,7 +56,7 @@ class ScheduleExportView(EventPermissionRequired, TemplateView):
     permission_required = 'orga.view_schedule'
 
     @context
-    def decorators(self):
+    def exporters(self):
         return list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
