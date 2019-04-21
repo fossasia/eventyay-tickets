@@ -388,13 +388,6 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
     assert talk_html.count(slot.submission.title) >= 2
 
     speaker = slot.submission.speakers.all()[0]
-    speaker_html = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT, 'test', f'test/speaker/{speaker.code}/index.html'
-        )
-    ).read()
-    assert speaker.name in speaker_html
-
     schedule_html = open(
         os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')
     ).read()
