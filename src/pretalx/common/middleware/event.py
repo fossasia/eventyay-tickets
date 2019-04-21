@@ -44,10 +44,7 @@ class EventPermissionMiddleware:
                 )
                 if hasattr(request, 'event'):
                     request.is_orga = request.event in request.orga_events
-                    request.is_reviewer = (
-                        request.event
-                        in request.user.get_events_for_permission(is_reviewer=True)
-                    )
+                    request.is_reviewer = request.event.teams.filter(members__in=[request.user], is_reviewer=True).exists()
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
