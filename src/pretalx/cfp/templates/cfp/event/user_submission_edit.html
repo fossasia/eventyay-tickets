@@ -23,6 +23,14 @@
             <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                 <i class="fa fa-check"></i>{% trans "Confirm your attendance" %}
             </a>
+        {% elif submission.state == 'confirmed' %}
+            · <a href="{{ submission.urls.feedback }}">
+                {% if submission.does_accept_feedback %}
+                {% trans "Audience feedback" %}
+                {% else %}
+                {% trans "Attendees can leave feedback here after your talk has taken place." %}
+                {% endif %}
+            </a>
         {% endif %}
     </p>
     <h5>
