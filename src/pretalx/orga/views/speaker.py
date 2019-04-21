@@ -1,7 +1,6 @@
 from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -20,7 +19,7 @@ from pretalx.person.forms import (
 )
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm
-from pretalx.submission.models.submission import SubmissionStates, Submission
+from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
 class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
