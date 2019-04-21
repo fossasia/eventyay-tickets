@@ -139,17 +139,22 @@ class SubmissionFilterForm(forms.Form):
         self.event = event
         usable_states = kwargs.pop('usable_states', None)
         super().__init__(*args, **kwargs)
+        qs = event.submissions
+        state_qs = event.submissions(manager='all_objects')
+        if usable_states:
+            qs = qs.filter(state__in=usable_states)
+            state_qs = state_qs.filter(state__in=usable_states)
         state_count = {
             d['state']: d['state__count']
-            for d in event.submissions(manager='all_objects').order_by('state').values('state').annotate(Count('state'))
+            for d in state_qs.order_by('state').values('state').annotate(Count('state'))
         }
         type_count = {
             d['submission_type_id']: d['submission_type_id__count']
-            for d in event.submissions.order_by('submission_type_id').values('submission_type_id').annotate(Count('submission_type_id'))
+            for d in qs.order_by('submission_type_id').values('submission_type_id').annotate(Count('submission_type_id'))
         }
         track_count = {
             d['track']: d['track__count']
-            for d in event.submissions.order_by('track').values('track').annotate(Count('track'))
+            for d in qs.order_by('track').values('track').annotate(Count('track'))
         }
         self.fields['submission_type'].choices = [
             (sub_type.pk, f'{str(sub_type)} ({type_count.get(sub_type.pk, 0)})')
