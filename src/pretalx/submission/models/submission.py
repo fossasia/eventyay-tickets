@@ -21,6 +21,8 @@ from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
 
+INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
+
 
 def generate_invite_code(length=32):
     return get_random_string(length=length, allowed_chars=Submission.CODE_CHARSET)
@@ -389,7 +391,7 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def uuid(self):
-        return uuid.uuid5(GlobalSettings().get_instance_identifier(), self.code)
+        return uuid.uuid5(INSTANCE_IDENTIFIER, self.code)
 
     @cached_property
     def frab_slug(self):

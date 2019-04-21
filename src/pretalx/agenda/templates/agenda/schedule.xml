@@ -19,7 +19,7 @@
                 <duration>{{ talk.export_duration }}</duration>
                 <room>{{ room.name|xmlescape }}</room>
                 <slug>{{ talk.submission.frab_slug }}</slug>
-                <url>{{ talk.submission.urls.public.full }}</url>
+                <url>{{ base_url }}{{ talk.submission.urls.public }}</url>
                 <recording>
                     <license>{{ talk.submission.license|xmlescape }}</license>
                     <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>

@@ -100,6 +100,7 @@ class FrabXmlExporter(ScheduleData):
             'schedule': self.schedule,
             'event': self.event,
             'version': __version__,
+            'base_url': get_base_url(self.event),
         }
         content = get_template('agenda/schedule.xml').render(context=context)
         return f'{self.event.slug}-schedule.xml', 'text/xml', content
