@@ -134,7 +134,7 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
             notify_speakers=form.cleaned_data['notify_speakers'],
         )
         messages.success(self.request, _('Nice, your schedule has been released!'))
-        return redirect(self.request.event.orga_urls.release_schedule)
+        return redirect(self.request.event.orga_urls.schedule)
 
 
 class ScheduleResetView(EventPermissionRequired, View):
