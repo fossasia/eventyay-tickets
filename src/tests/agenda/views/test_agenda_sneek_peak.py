@@ -4,8 +4,7 @@ import pytest
 @pytest.mark.django_db
 def test_sneak_peek_invisible_because_setting(client, django_assert_num_queries, event):
     event.settings.show_sneak_peek = False
-    with django_assert_num_queries(16):
-        response = client.get(event.urls.sneakpeek, follow=True)
+    response = client.get(event.urls.sneakpeek, follow=True)
     assert response.status_code == 404
 
 
@@ -41,7 +40,7 @@ def test_sneak_peek_visible_despite_schedule(client, django_assert_num_queries, 
     event.settings.show_sneak_peek = True
     event.settings.show_schedule = False
     event.release_schedule("42")
-    with django_assert_num_queries(15):
+    with django_assert_num_queries(17):
         response = client.get(event.urls.sneakpeek, follow=True)
     assert response.status_code == 200
     assert 'peek' in response.content.decode()
@@ -60,7 +59,7 @@ def test_sneak_peek_talk_list(
 
     event.settings.show_sneak_peek = True
 
-    with django_assert_num_queries(19):
+    with django_assert_num_queries(18):
         response = client.get(event.urls.sneakpeek, follow=True)
     assert response.status_code == 200
     content = response.content.decode()

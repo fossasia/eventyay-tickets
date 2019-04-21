@@ -587,6 +587,7 @@ class Event(LogMixin, models.Model):
 
         return (
             User.objects.filter(submissions__in=self.submissions.all())
+            .prefetch_related('submissions')
             .order_by('id')
             .distinct()
         )

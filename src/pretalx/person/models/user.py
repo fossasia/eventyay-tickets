@@ -119,7 +119,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         return super().save(args, kwargs)
 
     def event_profile(self, event):
-        return self.profiles.get_or_create(event=event)[0]
+        return self.profiles.select_related('event').get_or_create(event=event)[0]
 
     def log_action(self, action, data=None, person=None, orga=False):
         from pretalx.common.models import ActivityLog

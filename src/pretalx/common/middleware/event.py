@@ -87,7 +87,7 @@ class EventPermissionMiddleware:
 
         event_slug = url.kwargs.get('event')
         if event_slug:
-            request.event = get_object_or_404(Event, slug__iexact=event_slug)
+            request.event = get_object_or_404(Event.objects.prefetch_related('schedules', 'submissions'), slug__iexact=event_slug)
 
         self._set_orga_events(request)
         self._select_locale(request)

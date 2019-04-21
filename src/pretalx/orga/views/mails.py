@@ -26,7 +26,7 @@ class OutboxList(EventPermissionRequired, Sortable, Filterable, ListView):
     permission_required = 'orga.view_mails'
 
     def get_queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True).order_by('-id')
+        qs = self.request.event.queued_mails.prefetch_related('to_users').filter(sent__isnull=True).order_by('-id')
         qs = self.filter_queryset(qs)
         qs = self.sort_queryset(qs)
         return qs
@@ -43,7 +43,7 @@ class SentMail(EventPermissionRequired, Sortable, Filterable, ListView):
     permission_required = 'orga.view_mails'
 
     def get_queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=False).order_by(
+        qs = self.request.event.queued_mails.prefetch_related('to_users').filter(sent__isnull=False).order_by(
             '-sent'
         )
         qs = self.filter_queryset(qs)

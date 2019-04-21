@@ -42,7 +42,7 @@ class SpeakerView(PermissionRequired, DetailView):
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SPEAKER,
-        )
+        ).select_related('question')
 
 
 class SpeakerRedirect(DetailView):
@@ -71,7 +71,7 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(
             submission__speakers=speaker.user, is_visible=True
-        )
+        ).select_related('room', 'submission')
 
         cal = vobject.iCalendar()
         cal.add(

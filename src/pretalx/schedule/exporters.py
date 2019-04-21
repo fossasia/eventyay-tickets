@@ -35,7 +35,7 @@ class ScheduleData(BaseExporter):
 
         talks = (
             schedule.talks.filter(is_visible=True)
-            .select_related('submission', 'submission__event', 'room')
+            .select_related('submission', 'submission__event', 'submission__submission_type', 'submission__track', 'room')
             .prefetch_related('submission__speakers')
             .order_by('start')
         )
@@ -248,7 +248,7 @@ class ICalExporter(BaseExporter):
         talks = (
             self.schedule.talks.filter(is_visible=True)
             .prefetch_related('submission__speakers')
-            .select_related('submission', 'room')
+            .select_related('submission', 'room', 'submission__event')
             .order_by('start')
         )
         for talk in talks:

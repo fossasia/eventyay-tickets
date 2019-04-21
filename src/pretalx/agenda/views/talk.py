@@ -32,7 +32,7 @@ class TalkList(EventPermissionRequired, Filterable, ListView):
     default_filters = ('speakers__name__icontains', 'title__icontains')
 
     def get_queryset(self):
-        return self.filter_queryset(self.request.event.talks).distinct()
+        return self.filter_queryset(self.request.event.talks).select_related('event').prefetch_related('speakers').distinct()
 
     @context
     def search(self):
@@ -70,15 +70,15 @@ class TalkView(PermissionRequired, DetailView):
 
     def get_object(self, queryset=None):
         with suppress(AttributeError, Submission.DoesNotExist):
-            return self.request.event.talks.get(
+            return self.request.event.talks.prefetch_related('slots', 'answers', 'resources').get(
                 code__iexact=self.kwargs['slug'],
             )
         if getattr(self.request, 'is_orga', False):
-            talk = self.request.event.wip_schedule.talks.filter(
-                submission__code__iexact=self.kwargs['slug'], is_visible=True
-            ).first()
+            talk = self.request.event.submissions.filter(
+                code__iexact=self.kwargs['slug'],
+            ).prefetch_related('speakers', 'slots', 'answers', 'resources').select_related('submission_type').first()
             if talk:
-                return talk.submission
+                return talk
         raise Http404()
 
     @context
@@ -147,12 +147,13 @@ class TalkView(PermissionRequired, DetailView):
         )
 
     @context
+    @cached_property
     def answers(self):
         return self.submission.answers.filter(
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SUBMISSION,
-        )
+        ).select_related('question')
 
 
 class TalkReviewView(DetailView):
@@ -216,7 +217,7 @@ class FeedbackView(PermissionRequired, FormView):
                     'talk': talk,
                     'feedback': talk.feedback.filter(
                         Q(speaker__isnull=True) | Q(speaker=self.request.user)
-                    ),
+                    ).select_related('speaker'),
                 },
             )
         return super().get(*args, **kwargs)

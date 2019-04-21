@@ -15,7 +15,7 @@ class SneakpeekView(EventPermissionRequired, TemplateView):
         return self.request.event.submissions.filter(
             state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED],
             is_featured=True,
-        ).order_by('id')
+        ).select_related('event', 'submission_type').prefetch_related('speakers').order_by('title')
 
     def dispatch(self, request, *args, **kwargs):
         can_peek = self.has_permission()
