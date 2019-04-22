@@ -13,6 +13,9 @@
         {% trans "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
     </p>
+    {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p>{% trans "Submission type" %}: {{ submission.submission_type }}</p>{% endif %}
+    {% if submission.track and request.event.tracks.all|length > 1 %}<p>{% trans "Track" %}: {{ submission.track.name }}</p>{% endif %}
+    {% if request.event.locales|length > 1 %}<p>{% trans "Language" %}: {{ submission.get_content_locale_display }}</p>{% endif %}
     <div class="text">
     {% blocktrans trimmed %}
     Congratulations on your acceptance!
