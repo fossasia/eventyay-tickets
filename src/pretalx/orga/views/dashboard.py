@@ -134,6 +134,14 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     'url': event.orga_urls.submissions,
                 }
             )
+            submitter_count = event.submitters.count()
+            context['tiles'].append(
+                {
+                    'large': submitter_count,
+                    'small': ngettext_lazy('submitter', 'submitters', submitter_count),
+                    'url': event.orga_urls.speakers,
+                }
+            )
             talk_count = event.talks.count()
             if talk_count:
                 context['tiles'].append(
