@@ -75,9 +75,16 @@
                             </li>
                         </ul>
                     {% elif request.event %}
-                        <a class="nav-link">
+                        <a id="eventDropdown" class="nav-link">
                             <i class="fa fa-calendar"></i>
-                            {{ request.event.name }}
+                            <div class="event-text">
+                                {% if request.event %}
+                                <span class="event-name">{{ request.event.name }}</span>
+                                <span class="event-date">{{ request.event.get_date_range_display }}</span>
+                                {% else %}
+                                    {% trans "Events" %}
+                                {% endif %}
+                            </div>
                         </a>
                     {% endif %}
                 </li>
