@@ -476,7 +476,7 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def active_resources(self):
-        return self.resources.filter(resource__isnull=False)
+        return self.resources.exclude(resource=None).exclude(resource="")
 
     @property
     def is_deleted(self):
