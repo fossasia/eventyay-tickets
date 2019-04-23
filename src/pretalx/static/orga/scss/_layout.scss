@@ -876,7 +876,7 @@ legend .submission-state-dropdown {
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom: 0;
   background: $gray-lightest;
