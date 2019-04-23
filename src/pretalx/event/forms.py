@@ -119,11 +119,11 @@ class EventWizardBasicsForm(I18nModelForm):
         self.fields['locale'].choices = [
             (a, b) for a, b in settings.LANGUAGES if a in locales
         ]
-        self.fields['slug'].help_text = _(
+        self.fields['slug'].help_text = str(_(
             'This is the address your event will be available at. '
             'Should be short, only contain lowercase letters and numbers, and must be unique. '
             'We recommend some kind of abbreviation with less than 10 characters that can be easily remembered.'
-        )
+        )) + ' <strong>' + str(_('You cannot change the slug later on!')) + '</strong>'
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']

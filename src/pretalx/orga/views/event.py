@@ -13,6 +13,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
@@ -514,6 +515,15 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             fdata = self.get_cleaned_data_for_step('initial')
             if fdata is None:
                 return self.render_goto_step('initial')
+        if self.steps.current == 'timeline':
+            fdata = self.get_cleaned_data_for_step('basics')
+            year = now().year % 100
+            if fdata and not str(year) in fdata['slug'] and not str(year + 1) in fdata['slug']:
+                messages.warning(self.request, str(_('Please consider including your event\'s year in the slug, e.g. myevent{number}.')).format(number=year))
+        if self.steps.current == 'display':
+            fdata = self.get_cleaned_data_for_step('timeline')
+            if fdata and fdata.get('date_to') < now().date():
+                messages.warning(self.request, _('Did you really mean to make your event take place in the past?'))
         return super().render(form, **kwargs)
 
     def get_form_kwargs(self, step=None):
