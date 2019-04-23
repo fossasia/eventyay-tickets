@@ -203,6 +203,10 @@ The mail section
 The celery section
 ------------------
 
+Celery is not a requirement for pretalx. Celery runs as a separate process, and
+allows you to execute long-running tasks away from the usual request-response
+cycle.
+
 ``backend``
 ~~~~~~~~~~~
 
