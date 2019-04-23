@@ -111,7 +111,7 @@
                         </a>
                     </div>
                 </div>
-            {% else %}
+            {% elif request.event %}
                 <a href="{{ request.event.urls.login }}">login</a>
             {% endif %}
             </div>
