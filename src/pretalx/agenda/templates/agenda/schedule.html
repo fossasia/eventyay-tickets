@@ -88,7 +88,7 @@
     </div>
     {% for day in data %}
         <h3 id="{{ day.start.date|date:"c" }}">
-            <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"DATE_FORMAT" }}</a>
+            <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}</a>
         </h3>
         <div class="day">
             {% if day.first_start %}
@@ -144,8 +144,8 @@
                 </div>
             {% else %}
                 <div class="no-talks">
-                    {% blocktrans with day.start.date as current_day trimmed %}
-                        No talks on {{ current_day }}.
+                    {% blocktrans with current_day=day.start.date|date:'DATE_FORMAT' weekday=day.start.date|date:'l' trimmed %}
+                      No talks on {{ weekday }}, {{ current_day }}.
                     {% endblocktrans %}
                 </div>
             {% endif %}
