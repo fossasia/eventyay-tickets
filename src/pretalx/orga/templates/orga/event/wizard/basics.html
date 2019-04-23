@@ -1,6 +1,12 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
+
+{% block scripts %}
+{% compress js %}<script src="{% static 'orga/js/event_wizard.js' %}" defer></script>{% endcompress %}
+{% endblock %}
 
 {% block content %}
 <form method="post"><fieldset>
@@ -17,7 +23,7 @@
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form_errors wizard.form %}
-        {% bootstrap_field wizard.form.name layout='event' %}
+        <span id="event-name">{% bootstrap_field wizard.form.name layout='event' %}</span>
         {% bootstrap_field wizard.form.slug layout='event' addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
         {% bootstrap_field wizard.form.timezone layout='event' %}
         {% bootstrap_field wizard.form.email layout='event' %}
