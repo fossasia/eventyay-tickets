@@ -109,8 +109,7 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     @context
     def member(self, **kwargs):
         member = self.get_object()
-        if member != self.team:
-            return member
+        return member if member != self.team else None
 
     def post(self, request, *args, **kwargs):
         if 'user_pk' in self.kwargs:

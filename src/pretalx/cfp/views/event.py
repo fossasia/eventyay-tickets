@@ -69,12 +69,12 @@ class GeneralView(TemplateView):
         ]
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         _now = now().date()
         qs = Event.objects.order_by('-date_to')
-        context['current_events'] = self.filter_events(
+        result['current_events'] = self.filter_events(
             qs.filter(date_from__lte=_now, date_to__gte=_now)
         )
-        context['past_events'] = self.filter_events(qs.filter(date_to__lt=_now))
-        context['future_events'] = self.filter_events(qs.filter(date_from__gt=_now))
-        return context
+        result['past_events'] = self.filter_events(qs.filter(date_to__lt=_now))
+        result['future_events'] = self.filter_events(qs.filter(date_from__gt=_now))
+        return result

@@ -520,6 +520,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
                         for date in date_range
                     ]
                 )
+        return ''
 
     @context
     @cached_property
@@ -537,6 +538,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         if self.request.event.settings.use_tracks:
             counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
             return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
+        return ''
 
     @context
     def talk_timeline_data(self):
@@ -561,6 +563,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
                         for date in date_range
                     ]
                 )
+        return ''
 
     @context
     def talk_state_data(self):
@@ -577,3 +580,4 @@ class SubmissionStats(PermissionRequired, TemplateView):
         if self.request.event.settings.use_tracks:
             counter = Counter(str(submission.track) for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
             return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
+        return ''

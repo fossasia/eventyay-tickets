@@ -40,15 +40,15 @@ class ScheduleView(EventPermissionRequired, TemplateView):
     permission_required = 'orga.view_schedule'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         version = self.request.GET.get('version')
-        context['schedule_version'] = version
-        context['active_schedule'] = (
+        result['schedule_version'] = version
+        result['active_schedule'] = (
             self.request.event.schedules.filter(version=version).first()
             if version
             else self.request.event.wip_schedule
         )
-        return context
+        return result
 
 
 class ScheduleExportView(EventPermissionRequired, TemplateView):

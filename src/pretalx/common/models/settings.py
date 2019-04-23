@@ -1,6 +1,5 @@
 import json
 import uuid
-from datetime import datetime
 
 from django.utils.translation import ugettext_noop
 from hierarkey.models import GlobalSettingsBase, Hierarkey

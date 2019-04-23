@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 
 
 class MeView(APIView):
-    def get(self, request, format=None):
+    def get(self, request, **kwargs):
         return Response(
             {
                 'email': getattr(request.user, 'email', None),

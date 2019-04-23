@@ -76,7 +76,7 @@ class Sortable:
             sort_key = getattr(self, 'default_sort_field', '')
         if sort_key:
             plain_key = sort_key[1:] if sort_key.startswith('-') else sort_key
-            reverse = not (plain_key == sort_key)
+            reverse = not plain_key == sort_key
             if plain_key in self.sortable_fields:
                 is_text = False
                 if '__' not in plain_key:
@@ -163,6 +163,7 @@ class Filterable:
                 if hasattr(field, 'queryset'):
                     field.queryset = field.queryset.filter(event=self.request.event)
             return _form
+        return None
 
 
 class PermissionRequired(PermissionRequiredMixin):
@@ -244,7 +245,6 @@ class SensibleBackWizardMixin():
             if self.steps.current == self.steps.last:
                 # no more steps, render done view
                 return self.render_done(form, **kwargs)
-            else:
-                # proceed to the next step
-                return self.render_next_step(form)
+            # proceed to the next step
+            return self.render_next_step(form)
         return self.render(form)

@@ -58,7 +58,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             ),
             limit_tracks__isnull=False,
         )
-        if len(limit_tracks):
+        if limit_tracks:
             tracks = set()
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
@@ -118,13 +118,13 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         )
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
-        context['missing_reviews'] = missing_reviews
-        context['next_submission'] = missing_reviews.first()
-        return context
+        result['missing_reviews'] = missing_reviews
+        result['next_submission'] = missing_reviews.first()
+        return result
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -235,14 +235,14 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         ).first()
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['done'] = self.request.user.reviews.filter(submission__event=self.request.event).count()
-        context['total_reviews'] = Review.find_missing_reviews(
+        result = super().get_context_data(**kwargs)
+        result['done'] = self.request.user.reviews.filter(submission__event=self.request.event).count()
+        result['total_reviews'] = Review.find_missing_reviews(
             self.request.event, self.request.user
-        ).count() + context['done']
-        if context['total_reviews']:
-            context['percentage'] = int(context['done'] * 100 / context['total_reviews'])
-        return context
+        ).count() + result['done']
+        if result['total_reviews']:
+            result['percentage'] = int(result['done'] * 100 / result['total_reviews'])
+        return result
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

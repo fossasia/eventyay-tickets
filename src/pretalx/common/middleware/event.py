@@ -89,8 +89,10 @@ class EventPermissionMiddleware:
         self._set_orga_events(request)
         self._select_locale(request)
         is_exempt = (
-            'agenda' in url.namespaces and url.url_name == 'export'
-        ) or request.path.startswith('/api/')
+            url.url_name == 'export'
+            if 'agenda' in url.namespaces
+            else request.path.startswith('/api/')
+        )
 
         if 'orga' in url.namespaces or (
             'plugins' in url.namespaces and request.path.startswith('/orga')
@@ -170,3 +172,4 @@ class EventPermissionMiddleware:
                 value = get_supported_language_variant(request.user.locale)
                 if value and value in supported:
                     return value
+        return None

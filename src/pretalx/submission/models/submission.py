@@ -2,7 +2,6 @@ import re
 import statistics
 import string
 import uuid
-import warnings
 from contextlib import suppress
 from datetime import timedelta
 
@@ -340,7 +339,7 @@ class Submission(LogMixin, models.Model):
             ).order_by('start', 'is_visible')[:diff].values_list("id", flat=True)
             TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
         elif diff < 0:
-            for index in range(abs(diff)):
+            for __ in range(abs(diff)):
                 TalkSlot.objects.create(
                     submission=self,
                     schedule=self.event.wip_schedule,

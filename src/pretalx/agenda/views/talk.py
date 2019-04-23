@@ -120,7 +120,7 @@ class TalkView(PermissionRequired, TemplateView):
         return response
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         qs = TalkSlot.objects.none()
         schedule = Schedule.objects.none()
         if self.request.event.current_schedule:
@@ -129,15 +129,15 @@ class TalkView(PermissionRequired, TemplateView):
         elif self.request.is_orga:
             schedule = self.request.event.wip_schedule
             qs = schedule.talks.filter(room__isnull=False).select_related('room')
-        context['talk_slots'] = qs.filter(submission=self.submission).order_by('start').select_related('room')
+        result['talk_slots'] = qs.filter(submission=self.submission).order_by('start').select_related('room')
         result = []
         other_submissions = schedule.slots.exclude(pk=self.submission.pk)
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
             speaker.other_submissions = other_submissions.filter(speakers__in=[speaker]).select_related('event')
             result.append(speaker)
-        context['speakers'] = result
-        return context
+        result['speakers'] = result
+        return result
 
     @context
     @cached_property

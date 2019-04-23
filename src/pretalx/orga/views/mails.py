@@ -310,28 +310,28 @@ class TemplateList(EventPermissionRequired, TemplateView):
     permission_required = 'orga.view_mail_templates'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         accept = self.request.event.accept_template
         ack = self.request.event.ack_template
         reject = self.request.event.reject_template
         update = self.request.event.update_template
-        context['accept'] = MailTemplateForm(
+        result['accept'] = MailTemplateForm(
             instance=accept, read_only=True, event=self.request.event
         )
-        context['ack'] = MailTemplateForm(
+        result['ack'] = MailTemplateForm(
             instance=ack, read_only=True, event=self.request.event
         )
-        context['reject'] = MailTemplateForm(
+        result['reject'] = MailTemplateForm(
             instance=reject, read_only=True, event=self.request.event
         )
-        context['update'] = MailTemplateForm(
+        result['update'] = MailTemplateForm(
             instance=update, read_only=True, event=self.request.event
         )
         pks = [
             template.pk if template else None
             for template in [accept, ack, reject, update]
         ]
-        context['other'] = [
+        result['other'] = [
             MailTemplateForm(
                 instance=template, read_only=True, event=self.request.event
             )
@@ -339,7 +339,7 @@ class TemplateList(EventPermissionRequired, TemplateView):
                 pk__in=[pk for pk in pks if pk]
             )
         ]
-        return context
+        return result
 
 
 class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -362,6 +362,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                     }
                 )
             return result
+        return None
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

@@ -99,7 +99,7 @@ class EventLive(EventSettingsPermission, TemplateView):
     permission_required = 'orga.change_settings'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         warnings = []
         suggestions = []
         # TODO: move to signal
@@ -151,9 +151,9 @@ class EventLive(EventSettingsPermission, TemplateView):
                     'url': self.request.event.cfp.urls.new_question,
                 }
             )
-        context['warnings'] = warnings
-        context['suggestions'] = suggestions
-        return context
+        result['warnings'] = warnings
+        result['suggestions'] = suggestions
+        return result
 
     def post(self, request, *args, **kwargs):
         event = request.event
@@ -503,8 +503,11 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
     @context
     def organiser(self):
-        if self.steps.current != 'initial':
-            return self.get_cleaned_data_for_step('initial').get('organiser')
+        return (
+            self.get_cleaned_data_for_step('initial').get('organiser')
+            if self.steps.current != 'initial'
+            else None
+        )
 
     def render(self, form=None, **kwargs):
         if self.steps.current != 'initial':

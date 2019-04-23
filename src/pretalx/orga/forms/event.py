@@ -183,7 +183,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         if not data:
             return data
         data = data.lower()
-        if data == urlparse(settings.SITE_URL).hostname or data == settings.SITE_URL:
+        if data in [urlparse(settings.SITE_URL).hostname, settings.SITE_URL]:
             raise ValidationError(
                 _('You cannot choose the base domain of this installation.')
             )

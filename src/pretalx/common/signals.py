@@ -33,9 +33,9 @@ class EventPluginSignal(django.dispatch.Signal):
         if core_module:
             return True
         # Short out on events without plugins
-        elif sender and not sender.get_plugins():
+        if sender and not sender.get_plugins():
             return False
-        elif sender:
+        if sender:
             app = None
             while True:
                 app = app_cache.get(searchpath)

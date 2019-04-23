@@ -10,7 +10,7 @@ class ZXCVBNValidator:
     DEFAULT_USER_ATTRIBUTES = ('first_name', 'last_name', 'email')
 
     def __init__(self, min_score=3, user_attributes=DEFAULT_USER_ATTRIBUTES):
-        if not (0 <= min_score <= 4):
+        if not 0 <= min_score <= 4:
             raise Exception('min_score must be between 0 and 4!')
         self.min_score = min_score
         self.user_attributes = user_attributes

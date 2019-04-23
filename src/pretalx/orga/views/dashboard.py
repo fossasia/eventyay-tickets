@@ -80,19 +80,19 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         return ActivityLog.objects.filter(event=self.request.event)[:20]
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         event = self.request.event
         stages = get_stages(event)
-        context['timeline'] = stages.values()
-        context['go_to_target'] = (
+        result['timeline'] = stages.values()
+        result['go_to_target'] = (
             'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         )
         _now = now()
         today = _now.date()
-        context['tiles'] = self.get_cfp_tiles(event, _now)
+        result['tiles'] = self.get_cfp_tiles(event, _now)
         if today < event.date_from:
             days = (event.date_from - today).days
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': days,
                     'small': ngettext_lazy('day until event start', 'days until event start', days),
@@ -100,7 +100,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             )
         elif today > event.date_to:
             days = (today - event.date_from).days
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': days,
                     'small': ngettext_lazy('day since event end', 'days since event end', days),
@@ -108,7 +108,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             )
         elif event.date_to != event.date_from:
             day = (today - event.date_from).days + 1
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': _('Day {number}').format(number=day),
                     'small': _('of {total_days} days').format(
@@ -118,7 +118,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 }
             )
         if event.current_schedule:
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': event.current_schedule.version,
                     'small': _('current schedule'),
@@ -127,7 +127,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             )
         if event.submissions.count():
             count = event.submissions.count()
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': count,
                     'small': ngettext_lazy('submission', 'submissions', count),
@@ -135,7 +135,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 }
             )
             submitter_count = event.submitters.count()
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': submitter_count,
                     'small': ngettext_lazy('submitter', 'submitters', submitter_count),
@@ -144,7 +144,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             )
             talk_count = event.talks.count()
             if talk_count:
-                context['tiles'].append(
+                result['tiles'].append(
                     {
                         'large': talk_count,
                         'small': ngettext_lazy('talk', 'talks', talk_count),
@@ -157,7 +157,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 ).count()
                 if confirmed_count != talk_count:
                     count = talk_count - confirmed_count
-                    context['tiles'].append(
+                    result['tiles'].append(
                         {
                             'large': count,
                             'small': ngettext_lazy('unconfirmed talk', 'unconfirmed talks', count),
@@ -167,7 +167,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     )
         count = event.speakers.count()
         if count:
-            context['tiles'].append(
+            result['tiles'].append(
                 {
                     'large': count,
                     'small': ngettext_lazy('speaker', 'speakers', count),
@@ -175,15 +175,15 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                 }
             )
         count = event.queued_mails.filter(sent__isnull=False).count()
-        context['tiles'].append(
+        result['tiles'].append(
             {
                 'large': count,
                 'small': ngettext_lazy('sent email', 'sent emails', count),
                 'url': event.orga_urls.compose_mails,
             }
         )
-        context['tiles'] += self.get_review_tiles()
-        return context
+        result['tiles'] += self.get_review_tiles()
+        return result
 
 
 def url_list(request, event=None):

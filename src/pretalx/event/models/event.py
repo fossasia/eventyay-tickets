@@ -549,14 +549,14 @@ class Event(LogMixin, models.Model):
             if old_phase.end:
                 if old_phase.end > _now:
                     return old_phase
-                else:
-                    old_phase.is_active = False
-                    old_phase.save()
+                old_phase.is_active = False
+                old_phase.save()
             elif not (next_phase and next_phase.start and next_phase.start <= _now):
                 return old_phase
         if next_phase and (not next_phase.start or next_phase.start <= _now):
             next_phase.activate()
             return next_phase
+        return None
 
     @cached_property
     def submission_questions(self):

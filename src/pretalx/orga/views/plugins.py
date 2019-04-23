@@ -26,8 +26,6 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
         return self.request.event.get_plugins()
 
     def post(self, request, *args, **kwargs):
-        from pretalx.common.plugins import get_all_plugins
-
         plugins_available = {
             p.module
             for p in get_all_plugins(self.request.event)

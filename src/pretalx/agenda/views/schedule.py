@@ -52,21 +52,21 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
         return self.get_object()
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         schedule = self.schedule
         event = self.request.event
 
         if not schedule and self.version:
-            context['version'] = self.version
-            context['error'] = f'Schedule "{self.version}" not found.'
-            return context
+            result['version'] = self.version
+            result['error'] = f'Schedule "{self.version}" not found.'
+            return result
         if not schedule:
-            context['error'] = 'Schedule not found.'
-            return context
-        context['schedules'] = event.schedules.filter(
+            result['error'] = 'Schedule not found.'
+            return result
+        result['schedules'] = event.schedules.filter(
             published__isnull=False
         ).values_list('version')
-        return context
+        return result
 
 
 class ExporterView(ScheduleDataView):
@@ -124,21 +124,21 @@ class ScheduleView(ScheduleDataView):
     def get_context_data(self, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
 
-        context = super().get_context_data(**kwargs)
-        context['exporters'] = list(
+        result = super().get_context_data(**kwargs)
+        result['exporters'] = list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
         )
         timezone = pytz.timezone(self.request.event.timezone)
-        if 'schedule' not in context:
-            return context
+        if 'schedule' not in result:
+            return result
 
-        context['data'] = ScheduleData(
+        result['data'] = ScheduleData(
             event=self.request.event, schedule=self.schedule
         ).data
-        context['search'] = self.request.GET.get('q', '').lower()
+        result['search'] = self.request.GET.get('q', '').lower()
         max_rooms = 0
-        for date in context['data']:
+        for date in result['data']:
             if date.get('first_start') and date.get('last_end'):
                 start = (
                     date.get('first_start')
@@ -162,8 +162,8 @@ class ScheduleView(ScheduleDataView):
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
-        context['max_rooms'] = max_rooms
-        return context
+        result['max_rooms'] = max_rooms
+        return result
 
 
 class ChangelogView(EventPermissionRequired, TemplateView):

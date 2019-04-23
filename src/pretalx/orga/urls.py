@@ -14,12 +14,12 @@ urlpatterns = [
     url('^login/$', auth.LoginView.as_view(), name='login'),
     url('^logout/$', auth.logout_view, name='logout'),
     url('^reset/$', auth.ResetView.as_view(), name='auth.reset'),
-    url('^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='auth.recover'),
+    url(r'^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='auth.recover'),
 
     url('^$', RedirectView.as_view(url='event', permanent=False)),
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
-    url('^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
+    url(r'^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
 
     url('^organiser/$', dashboard.DashboardOrganiserListView.as_view(), name='organiser.list'),
     url('^organiser/new$', organiser.OrganiserDetail.as_view(), name='organiser.create'),
@@ -44,7 +44,7 @@ urlpatterns = [
         url('^$', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
         url('^login/$', auth.LoginView.as_view(), name='event.login'),
         url('^reset/$', auth.ResetView.as_view(), name='event.auth.reset'),
-        url('^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='event.auth.recover'),
+        url(r'^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='event.auth.recover'),
         url('^delete$', event.EventDelete.as_view(), name='event.delete'),
         url('^live$', event.EventLive.as_view(), name='event.live'),
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
@@ -91,7 +91,7 @@ urlpatterns = [
         url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
         url('^submissions/feed/$', submission.SubmissionFeed(), name='submissions.feed'),
         url('^submissions/statistics/$', submission.SubmissionStats.as_view(), name='submissions.statistics'),
-        url('^submissions/(?P<code>[\w-]+)/', include([
+        url(r'^submissions/(?P<code>[\w-]+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^submit$', submission.SubmissionStateChange.as_view(), name='submissions.submit'),
             url('^accept$', submission.SubmissionStateChange.as_view(), name='submissions.accept'),

@@ -171,7 +171,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return SpeakerFilterForm()
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        result = super().get_context_data(**kwargs)
         question = self.object
         if question:
             role = self.request.GET.get('role')
@@ -195,15 +195,15 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 )
             else:
                 answers = question.answers.all()
-            context['answer_count'] = answers.count()
-            context['missing_answers'] = (
+            result['answer_count'] = answers.count()
+            result['missing_answers'] = (
                 question.missing_answers()
                 if not role
                 else question.missing_answers(
                     filter_speakers=speakers, filter_talks=talks
                 )
             )
-        return context
+        return result
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -365,7 +365,7 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
             submissions = request.event.submissions.all()
 
         mandatory_questions = request.event.questions.filter(required=True)
-        context = {
+        data = {
             'url': request.event.urls.user_submissions.full(),
             'event_name': request.event.name,
         }
@@ -374,11 +374,11 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                 questions=mandatory_questions, person=person, submissions=submissions
             )
             if missing:
-                context['questions'] = '\n'.join(
+                data['questions'] = '\n'.join(
                     [f'- {question.question}' for question in missing]
                 )
                 request.event.question_template.to_mail(
-                    person, event=request.event, context=context
+                    person, event=request.event, context=data
                 )
         return redirect(request.event.orga_urls.outbox)
 
