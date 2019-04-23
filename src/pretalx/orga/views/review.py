@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
@@ -13,7 +14,7 @@ from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
-from pretalx.submission.models import Review, SubmissionStates
+from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
 class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
@@ -124,6 +125,34 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         context['missing_reviews'] = missing_reviews
         context['next_submission'] = missing_reviews.first()
         return context
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        total = {'accept': 0, 'reject': 0, 'error': 0}
+        for key, value in request.POST.items():
+            if not key.startswith('s-') or value not in ['accept', 'reject']:
+                continue
+            pk = key.strip('s-')
+            try:
+                submission = request.event.submissions.filter(state='submitted').get(pk=pk)
+            except Submission.DoesNotExist:
+                total['error'] += 1
+                continue
+            if not request.user.has_perm('submission.' + value + '_submission', submission):
+                total['error'] += 1
+                continue
+            getattr(submission, value)(person=request.user)
+            total[value] += 1
+        if not total['accept'] and not total['reject'] and not total['error']:
+            messages.success(request, _('There was nothing to do.'))
+        elif total['accept'] or total['reject']:
+            msg = str(_('Success! {accepted} submissions were accepted, {rejected} submissions were rejected.')).format(accepted=total['accept'], rejected=total['reject'])
+            if total['error']:
+                msg += ' ' + str(_('We were unable to change the state of {count} submissions.')).format(count=total['error'])
+            messages.success(request, msg)
+        else:
+            messages.error(request, str(_('We were unable to change the state of all {count} submissions.')).format(count=total['error']))
+        return super().get(request, *args, **kwargs)
 
 
 class ReviewSubmission(PermissionRequired, CreateOrUpdateView):

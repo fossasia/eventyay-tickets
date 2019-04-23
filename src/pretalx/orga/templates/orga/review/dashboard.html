@@ -1,9 +1,17 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load review_score %}
 {% load rules %}
 {% load url_replace %}
+{% load static %}
+
+{% block scripts %}
+{% compress js %}
+    <script src="{% static 'orga/js/review.js' %}" defer></script>
+{% endcompress %}
+{% endblock %}
 
 {% block content %}
 {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
@@ -39,7 +47,8 @@
     </form>
 </div>
 
-<table class="table table-sm review-table table-hover table-responsive-md">
+<form method="post">{% csrf_token %}
+<table class="table review-table table-hover table-responsive-md">
     <colgroup>
         <col class="nowrap">
         <col class="nowrap">
@@ -69,13 +78,12 @@
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
             <th>{% trans "Type" %}</th>
             <th>{% trans "State" %}</th>
-            <th></th>
+            <th class="text-center"></th>
         </tr>
     </thead>
     <tbody>
     {% for submission in submissions %}
         {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
-        {% has_perm 'submission.reject_submission' request.user submission as can_reject_submission %}
         <tr class="{{ submission.state }}">
             <td>
                 {% review_score submission %}
@@ -96,14 +104,17 @@
             <td class="nowrap">
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
             </td>
-            <td class="action-row d-flex">
-                {% if submission.state == 'submitted' %}
-                    {% if can_accept_submission %}
-                        <a class="btn btn-success btn-sm" href="{{ submission.orga_urls.accept }}?next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}">{% trans "Accept" %}</a>
-                    {% endif %}
-                    {% if can_reject_submission %}
-                        <a class="btn btn-danger btn-sm" href="{{ submission.orga_urls.reject }}?next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}">{% trans "Reject" %}</a>
-                    {% endif %}
+            <td class="action-row d-flex justify-space-around">
+                {% if submission.state == 'submitted' and can_accept_submission %}
+                <div class="radio form-radio accept">
+                    <input type="radio" id="a-{{ submission.pk }}" name="s-{{ submission.pk }}" value="accept" class="radio">
+                    <label for="a-{{ submission.pk }}" title="{% trans "Accept" %}"></label>
+                </div>
+                <div class="radio form-radio reject">
+                    <input type="radio" id="r-{{ submission.pk }}" name="s-{{ submission.pk }}" value="reject" class="radio">
+                    <label for="r-{{ submission.pk }}" title="{% trans "Reject" %}"></label>
+                </div>
+                <div class="unmark-radio" title="{% trans "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>
                 {% endif %}
             </td>
         </tr>
@@ -114,4 +125,12 @@
     {% endfor %}
     </tbody>
 </table>
+<div id="submitBar">
+    <span id="submitText" class="d-none">
+        {% trans "Accept" %}: <span id="acceptCount" class="text-success"></span>
+        {% trans "Reject" %}: <span id="rejectCount" class="text-danger"></span>
+    </span>
+    <button type="submit" class="btn btn-success">{% trans "Go!" %}</button>
+</div>
+</form>
 {% endblock %}

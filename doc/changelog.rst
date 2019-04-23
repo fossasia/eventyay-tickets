@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`360` Within the review dashboard, organisers can now accept and reject multiple submissions at the same time.
 - :feature:`656` Instead of by average, review scores are now shown aggregated by the median.
 - :bug:`655` Mails to submissions with titles near the length cap (of 200 characters) could not be created, since with the added "[event]" prefix the mail subject was too long to be saved.
 - :feature:`-` Question pages now feature visual statistics where appropriate.

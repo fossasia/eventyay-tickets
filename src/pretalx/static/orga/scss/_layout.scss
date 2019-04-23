@@ -820,3 +820,77 @@ legend .submission-state-dropdown {
 #release #id_version {
   height: auto;
 }
+.review-table.table {
+  thead th {
+    position: sticky;
+    top: 50px;
+    background-color: white;
+    border-bottom: none;
+    &:after {
+      border-bottom: 2px solid #c7d1d3;
+      content: ' ';
+      position: absolute;
+      width: 100%;
+      bottom:0px;
+      left: 0px;
+    }
+  }
+  tbody tr{
+    .unmark-radio {
+      opacity: 0;
+      margin-top: -4px;
+      color: $gray-500;
+      font-size: 16px;
+    }
+    .radio {
+      label::before {
+        font-family: ForkAwesome;
+        font-weight: bold;
+        color: rgba(0,0,0,0.3);
+        text-align: center;
+      }
+      &.reject {
+        label::after {
+          background: $brand-danger;
+        }
+        label::before {
+          content: '\f00d';
+        }
+      }
+      &.accept {
+        label::before {
+          content: '\f00c';
+        }
+      }
+    }
+    &:hover .unmark-radio.active {
+      opacity: 1;
+      cursor: pointer;
+    }
+    &:first-child td {
+      border-top: none;
+    }
+  }
+}
+.review-table + #submitBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: $gray-lightest;
+  width: 100%;
+  z-index: 50;
+  > span {
+    font-size: 16px;
+    margin-right: 16px;
+    span {
+      font-weight: bold;
+      margin-right: 16px;
+    }
+  }
+  button {
+    margin: 16px;
+  }
+}
