@@ -440,13 +440,7 @@ def test_delete_event_team(orga_client, event):
 
 @pytest.mark.django_db
 def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
-    class Plugin:
-        module = name = 'test_plugin'
-        visible = True
-        app = None
-
-    monkeypatch.setattr('pretalx.common.plugins.get_all_plugins', lambda x: [Plugin()])
-    plugin_name = 'plugin:test_plugin'
+    plugin_name = 'plugin:tests'
     orga_user.is_administrator = True
     orga_user.save()
 
@@ -456,7 +450,7 @@ def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
     )
     assert response.status_code == 200
     event.refresh_from_db()
-    assert event.plugins == 'test_plugin'
+    assert event.plugins == 'tests'
     response = orga_client.post(
         event.orga_urls.plugins, follow=True, data={plugin_name: 'disable'}
     )
