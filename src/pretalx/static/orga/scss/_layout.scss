@@ -826,6 +826,7 @@ legend .submission-state-dropdown {
     top: 50px;
     background-color: white;
     border-bottom: none;
+    z-index: 50;
     &:after {
       border-bottom: 2px solid #c7d1d3;
       content: ' ';
