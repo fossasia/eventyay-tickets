@@ -454,21 +454,6 @@ class Submission(LogMixin, models.Model):
         return False
 
     @cached_property
-    def rendered_recording_iframe(self):
-        if self.recording_url and self.recording_source:
-            warnings.warn(
-                'Please use a recording source plugin instead of pretalx core functionality.',
-                DeprecationWarning,
-            )
-            from django.template import engines
-
-            django_engine = engines['django']
-            template = django_engine.from_string(
-                '<div class="embed-responsive embed-responsive-16by9"><iframe src="{{ url }}" frameborder="0" allowfullscreen></iframe></div>'
-            )
-            return template.render(context={'url': self.recording_url})
-
-    @cached_property
     def median_score(self):
         scores = [r.score for r in self.reviews.all() if r.score is not None]
         return statistics.median(scores) if scores else None

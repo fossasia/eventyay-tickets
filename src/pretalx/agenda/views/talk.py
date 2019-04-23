@@ -102,11 +102,6 @@ class TalkView(PermissionRequired, TemplateView):
                 recording = response.get_recording(self.submission)
                 if recording and recording['iframe']:
                     return recording
-        if self.submission.rendered_recording_iframe:
-            return {
-                'iframe': self.submission.rendered_recording_iframe,
-                'csp_header': 'https://media.ccc.de',
-            }
         return {}
 
     @context

@@ -228,15 +228,6 @@ def test_submission_remove_removes_answers(submission, answer):
 
 
 @pytest.mark.django_db
-def test_submission_recording_iframe(submission):
-    submission.recording_url = submission.recording_source = 'https://example.org'
-    assert (
-        submission.rendered_recording_iframe
-        == '<div class="embed-responsive embed-responsive-16by9"><iframe src="https://example.org" frameborder="0" allowfullscreen></iframe></div>'
-    )
-
-
-@pytest.mark.django_db
 def test_nonstandard_duration(submission):
     assert submission.get_duration() == submission.submission_type.default_duration
     submission.duration = 9
