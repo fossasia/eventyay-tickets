@@ -1,3 +1,5 @@
+.. _`devsetup`:
+
 The development setup
 =====================
 

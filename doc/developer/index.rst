@@ -19,4 +19,5 @@ documentation to help the next one who is running into the same problem. 😉
 
    concepts
    setup
+   contributing
    plugins/index
