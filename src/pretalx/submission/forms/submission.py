@@ -33,6 +33,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
+        self.fields['title'].label = _('Submission title')
         if 'abstract' in self.fields:
             self.fields['abstract'].widget.attrs['rows'] = 2
         if 'track' in self.fields:
