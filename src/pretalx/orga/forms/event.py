@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
@@ -43,6 +44,12 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             'We will show your logo in its full size if possible, scaled down to the full header width otherwise.'
         ),
     )
+    custom_css_text = forms.CharField(
+        required=False,
+        widget=forms.Textarea(),
+        label='',
+        help_text=_('You can type in your CSS instead of uploading it, too.')
+    )
 
     def __init__(self, *args, **kwargs):
         self.is_administrator = kwargs.pop('is_administrator', False)
@@ -62,7 +69,6 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields['slug'].disabled = True
 
     def clean_custom_css(self):
-
         if self.cleaned_data.get('custom_css') or self.files.get('custom_css'):
             css = self.cleaned_data['custom_css'] or self.files['custom_css']
             if self.is_administrator:
@@ -78,6 +84,13 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             self.instance.save(update_fields=['custom_css'])
         return None
 
+    def clean_custom_css_text(self):
+        css = self.cleaned_data.get('custom_css_text').strip()
+        if not css or self.is_administrator:
+            return css
+        validate_css(css)
+        return css
+
     def clean(self):
         data = super().clean()
         if data.get('locale') not in data.get('locales', []):
@@ -89,7 +102,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
     def save(self, *args, **kwargs):
         self.instance.locale_array = ','.join(self.cleaned_data['locales'])
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        css_text = self.cleaned_data['custom_css_text']
+        if css_text:
+            self.instance.custom_css.save(self.instance.slug + '.css', ContentFile(css_text))
+        return result
 
     class Meta:
         model = Event

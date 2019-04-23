@@ -895,3 +895,11 @@ legend .submission-state-dropdown {
     margin: 16px;
   }
 }
+#csswrap {
+  position: relative;
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

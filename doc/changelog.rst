@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`326` During event creation, pretalx provides more critical feedback, such as asking if the event is supposed to take place in the past, or suggesting good slugs.
+- :feature:`393` As an alternative to file uploads, organisers can now also provide their custom CSS directly as text.
 - :feature:`360` Within the review dashboard, organisers can now accept and reject multiple submissions at the same time.
 - :feature:`656` Instead of by average, review scores are now shown aggregated by the median.
 - :bug:`655` Mails to submissions with titles near the length cap (of 200 characters) could not be created, since with the added "[event]" prefix the mail subject was too long to be saved.

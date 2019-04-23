@@ -55,9 +55,17 @@
         </legend>
         {% bootstrap_field form.landing_page_text layout='event' %}
         {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-readable" %}
+        <div id="csswrap">
         {% bootstrap_field form.custom_css layout='event' %}
+        <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
+          <i class="fa fa-code"></i>
+        </button>
+        </div>
+        <div class="collapse" id="collapseCSSBox">
+          {% bootstrap_field form.custom_css_text layout='event' %}
+        </div>
         <div class="event-logo-field form-group row">
-            <label class="col-md-3 col-form-label" for="id_custom_css">{% trans "Event logo" %}<br><span class="optional">Optional</span></label>
+            <label class="col-md-3 col-form-label" for="id_logo">{% trans "Event logo" %}<br><span class="optional">Optional</span></label>
             <img class="event-logo-display"
               {% if request.event.logo %}
               src="{{ request.event.logo.url }}"
