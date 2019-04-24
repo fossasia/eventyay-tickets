@@ -29,7 +29,9 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinx_autodoc_typehints',
     'sphinxcontrib.httpdomain',
+    'sphinxcontrib_django',
     'releases',
 ]
 
@@ -163,3 +165,6 @@ html_context = {
 }
 
 favicon = 'images/favicon.ico'
+
+# Autodoc options
+autodoc_member_order = 'bysource'

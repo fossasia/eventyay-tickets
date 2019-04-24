@@ -1,5 +1,7 @@
 releases
 sphinx
 sphinx-autobuild
+sphinx-autodoc-typehints
+sphinxcontrib_django
 sphinxcontrib-httpdomain
 -e src/

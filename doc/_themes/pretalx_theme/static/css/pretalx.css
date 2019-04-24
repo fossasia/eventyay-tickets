@@ -4464,3 +4464,27 @@ table td p, table th p {
 table tbody tr:nth-child(2n-1) {
     background-color: #f6f6f8;
 }
+dd, dt {
+    margin-bottom: 0;
+}
+.rst-content dl dd > p {
+    margin-bottom: 0 !important;
+}
+.rst-content dt {
+    display: flex;
+    align-items: baseline;
+}
+.rst-content dt a.reference.internal {
+    margin-left: auto;
+}
+dl.field-list.simple {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+.rst-content dl.field-list.simple dd {
+    flex-basis: 80%;
+}
+dl.method > dt, dl.class > dt, dl.attribute > dt {
+    width: 100%;
+}
