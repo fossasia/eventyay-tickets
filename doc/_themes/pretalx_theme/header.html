@@ -1,0 +1,15 @@
+<header>
+  {% if logo and theme_logo_only %}
+    <a href="{{ pathto(master_doc) }}">
+  {% else %}
+    <a href="{{ pathto(master_doc) }}" class="icon icon-home"> {{ project }}
+  {% endif %}
+
+  {% if logo %}
+    {# Not strictly valid HTML, but it's the only way to display/scale it properly, without weird scripting or heaps of work #}
+    <img src="{{ pathto('_static/' + logo, 1) }}" class="logo" />
+  {% endif %}
+  </a>
+
+  {% include "searchbox.html" %}
+</header>

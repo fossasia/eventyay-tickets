@@ -1,61 +1,81 @@
 ﻿* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
-    display: block
+a, a:hover {
+    color: #3aa57c;
+    text-decoration: none;
+    cursor: pointer
+}
+a:hover, a:active {
+    outline: 0
 }
 
-audio, canvas, video {
-    display: inline-block;
-    *display: inline;
-    *zoom: 1
+html {
+    height: 100%;
 }
 
-audio:not([controls]) {
-    display: none
+body {
+    font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-weight: normal;
+    color: #404040;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin: 0;
+    color: #34495e;
+}
+
+header {
+    height: 70px;
+    background-color: #1c4a3b;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    display: flex;
+}
+
+main {
+    margin-left: 400px;
+    margin-top: 70px;
+    background: white;
+    min-height: 100%
+}
+
+header img {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 70px;
+}
+
+#header-search {
+    position: fixed;
+    width: 100%;
+}
+#header-search form {
+    width: 100%;
+    height: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#header-search form input[type=text] {
+    width: 260px;
+    height: 40px;
+    border-radius: 40px;
 }
 
 [hidden] {
     display: none
 }
 
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box
-}
-
-html {
-    font-size: 100%;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%
-}
-
-body {
-    margin: 0
-}
-
-a:hover, a:active {
-    outline: 0
-}
-
 abbr[title] {
     border-bottom: 1px dotted
-}
-
-b, strong {
-    font-weight: bold
-}
-
-blockquote {
-    margin: 0
-}
-
-dfn {
-    font-style: italic
 }
 
 ins {
@@ -73,7 +93,6 @@ mark {
 
 pre, code, .rst-content tt, .rst-content code, kbd, samp {
     font-family: monospace, serif;
-    _font-family: "courier new", monospace;
     font-size: 1em
 }
 
@@ -81,32 +100,8 @@ pre {
     white-space: pre
 }
 
-q {
-    quotes: none
-}
-
-q:before, q:after {
-    content: "";
-    content: none
-}
-
 small {
     font-size: 85%
-}
-
-sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline
-}
-
-sup {
-    top: -0.5em
-}
-
-sub {
-    bottom: -0.25em
 }
 
 ul, ol, dl {
@@ -120,94 +115,10 @@ li {
     list-style: none
 }
 
-dd {
-    margin: 0
-}
-
 img {
     border: 0;
-    -ms-interpolation-mode: bicubic;
     vertical-align: middle;
     max-width: 100%
-}
-
-svg:not(:root) {
-    overflow: hidden
-}
-
-figure {
-    margin: 0
-}
-
-form {
-    margin: 0
-}
-
-fieldset {
-    border: 0;
-    margin: 0;
-    padding: 0
-}
-
-label {
-    cursor: pointer
-}
-
-legend {
-    border: 0;
-    *margin-left: -7px;
-    padding: 0;
-    white-space: normal
-}
-
-button, input, select, textarea {
-    font-size: 100%;
-    margin: 0;
-    vertical-align: baseline;
-    *vertical-align: middle
-}
-
-button, input {
-    line-height: normal
-}
-
-button, input[type="button"], input[type="reset"], input[type="submit"] {
-    cursor: pointer;
-    -webkit-appearance: button;
-    *overflow: visible
-}
-
-button[disabled], input[disabled] {
-    cursor: default
-}
-
-input[type="checkbox"], input[type="radio"] {
-    box-sizing: border-box;
-    padding: 0;
-    *width: 13px;
-    *height: 13px
-}
-
-input[type="search"] {
-    -webkit-appearance: textfield;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box
-}
-
-input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none
-}
-
-button::-moz-focus-inner, input::-moz-focus-inner {
-    border: 0;
-    padding: 0
-}
-
-textarea {
-    overflow: auto;
-    vertical-align: top;
-    resize: vertical
 }
 
 table {
@@ -215,68 +126,13 @@ table {
     border-spacing: 0
 }
 
-td {
-    vertical-align: top
-}
-
-.chromeframe {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0
-}
-
-.ir {
-    display: block;
-    border: 0;
-    text-indent: -999em;
-    overflow: hidden;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    text-align: left;
-    direction: ltr;
-    *line-height: 0
-}
-
-.ir br {
-    display: none
-}
-
 .hidden {
     display: none !important;
     visibility: hidden
 }
 
-.visuallyhidden {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px
-}
-
-.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
-    clip: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    position: static;
-    width: auto
-}
-
 .invisible {
     visibility: hidden
-}
-
-.relative {
-    position: relative
-}
-
-big, small {
-    font-size: 100%
 }
 
 @media print {
@@ -293,10 +149,6 @@ big, small {
 
     a, a:visited {
         text-decoration: underline
-    }
-
-    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
-        content: ""
     }
 
     pre, blockquote {
@@ -319,32 +171,8 @@ big, small {
         margin: 0.5cm
     }
 
-    p, h2, .rst-content .toctree-wrapper p.caption, h3 {
-        orphans: 3;
-        widows: 3
-    }
-
-    h2, .rst-content .toctree-wrapper p.caption, h3 {
-        page-break-after: avoid
-    }
 }
 
-.fa:before, .wy-menu-vertical li span.toctree-expand:before, .wy-menu-vertical li.on a span.toctree-expand:before, .wy-menu-vertical li.current > a span.toctree-expand:before, .rst-content .admonition-title:before, .rst-content h1 .headerlink:before, .rst-content h2 .headerlink:before, .rst-content h3 .headerlink:before, .rst-content h4 .headerlink:before, .rst-content h5 .headerlink:before, .rst-content h6 .headerlink:before, .rst-content dl dt .headerlink:before, .rst-content p.caption .headerlink:before, .rst-content tt.download span:first-child:before, .rst-content code.download span:first-child:before, .icon:before, .wy-dropdown .caret:before, .wy-inline-validate.wy-inline-validate-success .wy-input-context:before, .wy-inline-validate.wy-inline-validate-danger .wy-input-context:before, .wy-inline-validate.wy-inline-validate-warning .wy-input-context:before, .wy-inline-validate.wy-inline-validate-info .wy-input-context:before, .wy-alert, .rst-content .note, .rst-content .attention, .rst-content .caution, .rst-content .danger, .rst-content .error, .rst-content .hint, .rst-content .important, .rst-content .tip, .rst-content .warning, .rst-content .seealso, .rst-content .admonition-todo, .btn, input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="date"], input[type="month"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="week"], input[type="number"], input[type="search"], input[type="tel"], input[type="color"], select, textarea, .wy-menu-vertical li.on a, .wy-menu-vertical li.current > a, .wy-side-nav-search > a, .wy-side-nav-search .wy-dropdown > a, .wy-nav-top a {
-    -webkit-font-smoothing: antialiased
-}
-
-.clearfix {
-    *zoom: 1
-}
-
-.clearfix:before, .clearfix:after {
-    display: table;
-    content: ""
-}
-
-.clearfix:after {
-    clear: both
-}
 
 /*!
  *  Font Awesome 4.6.3 by @davegandy - http://fontawesome.io - @fontawesome
@@ -358,9 +186,8 @@ big, small {
     font-style: normal
 }
 
-.fa, .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current > a span.toctree-expand, .rst-content .admonition-title, .rst-content h1 .headerlink, .rst-content h2 .headerlink, .rst-content h3 .headerlink, .rst-content h4 .headerlink, .rst-content h5 .headerlink, .rst-content h6 .headerlink, .rst-content dl dt .headerlink, .rst-content p.caption .headerlink, .rst-content tt.download span:first-child, .rst-content code.download span:first-child, .icon {
+.fa, .nav-menu-vertical li span.toctree-expand, .nav-menu-vertical li.on a span.toctree-expand, .nav-menu-vertical li.current > a span.toctree-expand, .rst-content .admonition-title, .rst-content h1 .headerlink, .rst-content h2 .headerlink, .rst-content h3 .headerlink, .rst-content h4 .headerlink, .rst-content h5 .headerlink, .rst-content h6 .headerlink, .rst-content dl dt .headerlink, .rst-content p.caption .headerlink, .rst-content tt.download span:first-child, .rst-content code.download span:first-child, .icon {
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
@@ -422,36 +249,12 @@ big, small {
     border-radius: .1em
 }
 
-.fa-pull-left {
+.fa-pull-left, .pull-left {
     float: left
 }
 
-.fa-pull-right {
+.fa-pull-right, .pull-right {
     float: right
-}
-
-.fa.fa-pull-left, .wy-menu-vertical li span.fa-pull-left.toctree-expand, .wy-menu-vertical li.on a span.fa-pull-left.toctree-expand, .wy-menu-vertical li.current > a span.fa-pull-left.toctree-expand, .rst-content .fa-pull-left.admonition-title, .rst-content h1 .fa-pull-left.headerlink, .rst-content h2 .fa-pull-left.headerlink, .rst-content h3 .fa-pull-left.headerlink, .rst-content h4 .fa-pull-left.headerlink, .rst-content h5 .fa-pull-left.headerlink, .rst-content h6 .fa-pull-left.headerlink, .rst-content dl dt .fa-pull-left.headerlink, .rst-content p.caption .fa-pull-left.headerlink, .rst-content tt.download span.fa-pull-left:first-child, .rst-content code.download span.fa-pull-left:first-child, .fa-pull-left.icon {
-    margin-right: .3em
-}
-
-.fa.fa-pull-right, .wy-menu-vertical li span.fa-pull-right.toctree-expand, .wy-menu-vertical li.on a span.fa-pull-right.toctree-expand, .wy-menu-vertical li.current > a span.fa-pull-right.toctree-expand, .rst-content .fa-pull-right.admonition-title, .rst-content h1 .fa-pull-right.headerlink, .rst-content h2 .fa-pull-right.headerlink, .rst-content h3 .fa-pull-right.headerlink, .rst-content h4 .fa-pull-right.headerlink, .rst-content h5 .fa-pull-right.headerlink, .rst-content h6 .fa-pull-right.headerlink, .rst-content dl dt .fa-pull-right.headerlink, .rst-content p.caption .fa-pull-right.headerlink, .rst-content tt.download span.fa-pull-right:first-child, .rst-content code.download span.fa-pull-right:first-child, .fa-pull-right.icon {
-    margin-left: .3em
-}
-
-.pull-right {
-    float: right
-}
-
-.pull-left {
-    float: left
-}
-
-.fa.pull-left, .wy-menu-vertical li span.pull-left.toctree-expand, .wy-menu-vertical li.on a span.pull-left.toctree-expand, .wy-menu-vertical li.current > a span.pull-left.toctree-expand, .rst-content .pull-left.admonition-title, .rst-content h1 .pull-left.headerlink, .rst-content h2 .pull-left.headerlink, .rst-content h3 .pull-left.headerlink, .rst-content h4 .pull-left.headerlink, .rst-content h5 .pull-left.headerlink, .rst-content h6 .pull-left.headerlink, .rst-content dl dt .pull-left.headerlink, .rst-content p.caption .pull-left.headerlink, .rst-content tt.download span.pull-left:first-child, .rst-content code.download span.pull-left:first-child, .pull-left.icon {
-    margin-right: .3em
-}
-
-.fa.pull-right, .wy-menu-vertical li span.pull-right.toctree-expand, .wy-menu-vertical li.on a span.pull-right.toctree-expand, .wy-menu-vertical li.current > a span.pull-right.toctree-expand, .rst-content .pull-right.admonition-title, .rst-content h1 .pull-right.headerlink, .rst-content h2 .pull-right.headerlink, .rst-content h3 .pull-right.headerlink, .rst-content h4 .pull-right.headerlink, .rst-content h5 .pull-right.headerlink, .rst-content h6 .pull-right.headerlink, .rst-content dl dt .pull-right.headerlink, .rst-content p.caption .pull-right.headerlink, .rst-content tt.download span.pull-right:first-child, .rst-content code.download span.pull-right:first-child, .pull-right.icon {
-    margin-left: .3em
 }
 
 .fa-spin {
@@ -881,11 +684,11 @@ big, small {
     content: ""
 }
 
-.fa-times-circle:before, .wy-inline-validate.wy-inline-validate-danger .wy-input-context:before {
+.fa-times-circle:before {
     content: ""
 }
 
-.fa-check-circle:before, .wy-inline-validate.wy-inline-validate-success .wy-input-context:before {
+.fa-check-circle:before {
     content: ""
 }
 
@@ -953,7 +756,7 @@ big, small {
     content: ""
 }
 
-.fa-exclamation-circle:before, .wy-inline-validate.wy-inline-validate-warning .wy-input-context:before, .wy-inline-validate.wy-inline-validate-info .wy-input-context:before, .rst-content .admonition-title:before {
+.fa-exclamation-circle:before, .rst-content .admonition-title:before {
     content: ""
 }
 
@@ -1313,7 +1116,7 @@ big, small {
     content: ""
 }
 
-.fa-caret-down:before, .wy-dropdown .caret:before, .icon-caret-down:before {
+.fa-caret-down:before, .icon-caret-down:before {
     content: ""
 }
 
@@ -1725,7 +1528,7 @@ big, small {
     content: ""
 }
 
-.fa-minus-square-o:before, .wy-menu-vertical li.on a span.toctree-expand:before, .wy-menu-vertical li.current > a span.toctree-expand:before {
+.fa-minus-square-o:before, .nav-menu-vertical li.on a span.toctree-expand:before, .nav-menu-vertical li.current > a span.toctree-expand:before {
     content: ""
 }
 
@@ -2021,7 +1824,7 @@ big, small {
     content: ""
 }
 
-.fa-plus-square-o:before, .wy-menu-vertical li span.toctree-expand:before {
+.fa-plus-square-o:before, .nav-menu-vertical li span.toctree-expand:before {
     content: ""
 }
 
@@ -3100,20 +2903,11 @@ big, small {
     border: 0
 }
 
-.sr-only-focusable:active, .sr-only-focusable:focus {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    clip: auto
-}
-
-.fa, .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current > a span.toctree-expand, .rst-content .admonition-title, .rst-content h1 .headerlink, .rst-content h2 .headerlink, .rst-content h3 .headerlink, .rst-content h4 .headerlink, .rst-content h5 .headerlink, .rst-content h6 .headerlink, .rst-content dl dt .headerlink, .rst-content p.caption .headerlink, .rst-content tt.download span:first-child, .rst-content code.download span:first-child, .icon, .wy-dropdown .caret, .wy-inline-validate.wy-inline-validate-success .wy-input-context, .wy-inline-validate.wy-inline-validate-danger .wy-input-context, .wy-inline-validate.wy-inline-validate-warning .wy-input-context, .wy-inline-validate.wy-inline-validate-info .wy-input-context {
+.fa {
     font-family: inherit
 }
 
-.fa:before, .wy-menu-vertical li span.toctree-expand:before, .wy-menu-vertical li.on a span.toctree-expand:before, .wy-menu-vertical li.current > a span.toctree-expand:before, .rst-content .admonition-title:before, .rst-content h1 .headerlink:before, .rst-content h2 .headerlink:before, .rst-content h3 .headerlink:before, .rst-content h4 .headerlink:before, .rst-content h5 .headerlink:before, .rst-content h6 .headerlink:before, .rst-content dl dt .headerlink:before, .rst-content p.caption .headerlink:before, .rst-content tt.download span:first-child:before, .rst-content code.download span:first-child:before, .icon:before, .wy-dropdown .caret:before, .wy-inline-validate.wy-inline-validate-success .wy-input-context:before, .wy-inline-validate.wy-inline-validate-danger .wy-input-context:before, .wy-inline-validate.wy-inline-validate-warning .wy-input-context:before, .wy-inline-validate.wy-inline-validate-info .wy-input-context:before {
+.fa:before {
     font-family: "FontAwesome";
     display: inline-block;
     font-style: normal;
@@ -3122,47 +2916,29 @@ big, small {
     text-decoration: inherit
 }
 
-a .fa, a .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li a span.toctree-expand, .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current > a span.toctree-expand, a .rst-content .admonition-title, .rst-content a .admonition-title, a .rst-content h1 .headerlink, .rst-content h1 a .headerlink, a .rst-content h2 .headerlink, .rst-content h2 a .headerlink, a .rst-content h3 .headerlink, .rst-content h3 a .headerlink, a .rst-content h4 .headerlink, .rst-content h4 a .headerlink, a .rst-content h5 .headerlink, .rst-content h5 a .headerlink, a .rst-content h6 .headerlink, .rst-content h6 a .headerlink, a .rst-content dl dt .headerlink, .rst-content dl dt a .headerlink, a .rst-content p.caption .headerlink, .rst-content p.caption a .headerlink, a .rst-content tt.download span:first-child, .rst-content tt.download a span:first-child, a .rst-content code.download span:first-child, .rst-content code.download a span:first-child, a .icon {
-    display: inline-block;
-    text-decoration: inherit
-}
-
-.btn .fa, .btn .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li .btn span.toctree-expand, .btn .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.on a .btn span.toctree-expand, .btn .wy-menu-vertical li.current > a span.toctree-expand, .wy-menu-vertical li.current > a .btn span.toctree-expand, .btn .rst-content .admonition-title, .rst-content .btn .admonition-title, .btn .rst-content h1 .headerlink, .rst-content h1 .btn .headerlink, .btn .rst-content h2 .headerlink, .rst-content h2 .btn .headerlink, .btn .rst-content h3 .headerlink, .rst-content h3 .btn .headerlink, .btn .rst-content h4 .headerlink, .rst-content h4 .btn .headerlink, .btn .rst-content h5 .headerlink, .rst-content h5 .btn .headerlink, .btn .rst-content h6 .headerlink, .rst-content h6 .btn .headerlink, .btn .rst-content dl dt .headerlink, .rst-content dl dt .btn .headerlink, .btn .rst-content p.caption .headerlink, .rst-content p.caption .btn .headerlink, .btn .rst-content tt.download span:first-child, .rst-content tt.download .btn span:first-child, .btn .rst-content code.download span:first-child, .rst-content code.download .btn span:first-child, .btn .icon, .nav .fa, .nav .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li .nav span.toctree-expand, .nav .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.on a .nav span.toctree-expand, .nav .wy-menu-vertical li.current > a span.toctree-expand, .wy-menu-vertical li.current > a .nav span.toctree-expand, .nav .rst-content .admonition-title, .rst-content .nav .admonition-title, .nav .rst-content h1 .headerlink, .rst-content h1 .nav .headerlink, .nav .rst-content h2 .headerlink, .rst-content h2 .nav .headerlink, .nav .rst-content h3 .headerlink, .rst-content h3 .nav .headerlink, .nav .rst-content h4 .headerlink, .rst-content h4 .nav .headerlink, .nav .rst-content h5 .headerlink, .rst-content h5 .nav .headerlink, .nav .rst-content h6 .headerlink, .rst-content h6 .nav .headerlink, .nav .rst-content dl dt .headerlink, .rst-content dl dt .nav .headerlink, .nav .rst-content p.caption .headerlink, .rst-content p.caption .nav .headerlink, .nav .rst-content tt.download span:first-child, .rst-content tt.download .nav span:first-child, .nav .rst-content code.download span:first-child, .rst-content code.download .nav span:first-child, .nav .icon {
-    display: inline
-}
-
-.btn .fa.fa-large, .btn .wy-menu-vertical li span.fa-large.toctree-expand, .wy-menu-vertical li .btn span.fa-large.toctree-expand, .btn .rst-content .fa-large.admonition-title, .rst-content .btn .fa-large.admonition-title, .btn .rst-content h1 .fa-large.headerlink, .rst-content h1 .btn .fa-large.headerlink, .btn .rst-content h2 .fa-large.headerlink, .rst-content h2 .btn .fa-large.headerlink, .btn .rst-content h3 .fa-large.headerlink, .rst-content h3 .btn .fa-large.headerlink, .btn .rst-content h4 .fa-large.headerlink, .rst-content h4 .btn .fa-large.headerlink, .btn .rst-content h5 .fa-large.headerlink, .rst-content h5 .btn .fa-large.headerlink, .btn .rst-content h6 .fa-large.headerlink, .rst-content h6 .btn .fa-large.headerlink, .btn .rst-content dl dt .fa-large.headerlink, .rst-content dl dt .btn .fa-large.headerlink, .btn .rst-content p.caption .fa-large.headerlink, .rst-content p.caption .btn .fa-large.headerlink, .btn .rst-content tt.download span.fa-large:first-child, .rst-content tt.download .btn span.fa-large:first-child, .btn .rst-content code.download span.fa-large:first-child, .rst-content code.download .btn span.fa-large:first-child, .btn .fa-large.icon, .nav .fa.fa-large, .nav .wy-menu-vertical li span.fa-large.toctree-expand, .wy-menu-vertical li .nav span.fa-large.toctree-expand, .nav .rst-content .fa-large.admonition-title, .rst-content .nav .fa-large.admonition-title, .nav .rst-content h1 .fa-large.headerlink, .rst-content h1 .nav .fa-large.headerlink, .nav .rst-content h2 .fa-large.headerlink, .rst-content h2 .nav .fa-large.headerlink, .nav .rst-content h3 .fa-large.headerlink, .rst-content h3 .nav .fa-large.headerlink, .nav .rst-content h4 .fa-large.headerlink, .rst-content h4 .nav .fa-large.headerlink, .nav .rst-content h5 .fa-large.headerlink, .rst-content h5 .nav .fa-large.headerlink, .nav .rst-content h6 .fa-large.headerlink, .rst-content h6 .nav .fa-large.headerlink, .nav .rst-content dl dt .fa-large.headerlink, .rst-content dl dt .nav .fa-large.headerlink, .nav .rst-content p.caption .fa-large.headerlink, .rst-content p.caption .nav .fa-large.headerlink, .nav .rst-content tt.download span.fa-large:first-child, .rst-content tt.download .nav span.fa-large:first-child, .nav .rst-content code.download span.fa-large:first-child, .rst-content code.download .nav span.fa-large:first-child, .nav .fa-large.icon {
-    line-height: 0.9em
-}
-
-.btn .fa.fa-spin, .btn .wy-menu-vertical li span.fa-spin.toctree-expand, .wy-menu-vertical li .btn span.fa-spin.toctree-expand, .btn .rst-content .fa-spin.admonition-title, .rst-content .btn .fa-spin.admonition-title, .btn .rst-content h1 .fa-spin.headerlink, .rst-content h1 .btn .fa-spin.headerlink, .btn .rst-content h2 .fa-spin.headerlink, .rst-content h2 .btn .fa-spin.headerlink, .btn .rst-content h3 .fa-spin.headerlink, .rst-content h3 .btn .fa-spin.headerlink, .btn .rst-content h4 .fa-spin.headerlink, .rst-content h4 .btn .fa-spin.headerlink, .btn .rst-content h5 .fa-spin.headerlink, .rst-content h5 .btn .fa-spin.headerlink, .btn .rst-content h6 .fa-spin.headerlink, .rst-content h6 .btn .fa-spin.headerlink, .btn .rst-content dl dt .fa-spin.headerlink, .rst-content dl dt .btn .fa-spin.headerlink, .btn .rst-content p.caption .fa-spin.headerlink, .rst-content p.caption .btn .fa-spin.headerlink, .btn .rst-content tt.download span.fa-spin:first-child, .rst-content tt.download .btn span.fa-spin:first-child, .btn .rst-content code.download span.fa-spin:first-child, .rst-content code.download .btn span.fa-spin:first-child, .btn .fa-spin.icon, .nav .fa.fa-spin, .nav .wy-menu-vertical li span.fa-spin.toctree-expand, .wy-menu-vertical li .nav span.fa-spin.toctree-expand, .nav .rst-content .fa-spin.admonition-title, .rst-content .nav .fa-spin.admonition-title, .nav .rst-content h1 .fa-spin.headerlink, .rst-content h1 .nav .fa-spin.headerlink, .nav .rst-content h2 .fa-spin.headerlink, .rst-content h2 .nav .fa-spin.headerlink, .nav .rst-content h3 .fa-spin.headerlink, .rst-content h3 .nav .fa-spin.headerlink, .nav .rst-content h4 .fa-spin.headerlink, .rst-content h4 .nav .fa-spin.headerlink, .nav .rst-content h5 .fa-spin.headerlink, .rst-content h5 .nav .fa-spin.headerlink, .nav .rst-content h6 .fa-spin.headerlink, .rst-content h6 .nav .fa-spin.headerlink, .nav .rst-content dl dt .fa-spin.headerlink, .rst-content dl dt .nav .fa-spin.headerlink, .nav .rst-content p.caption .fa-spin.headerlink, .rst-content p.caption .nav .fa-spin.headerlink, .nav .rst-content tt.download span.fa-spin:first-child, .rst-content tt.download .nav span.fa-spin:first-child, .nav .rst-content code.download span.fa-spin:first-child, .rst-content code.download .nav span.fa-spin:first-child, .nav .fa-spin.icon {
-    display: inline-block
-}
-
-.btn.fa:before, .wy-menu-vertical li span.btn.toctree-expand:before, .rst-content .btn.admonition-title:before, .rst-content h1 .btn.headerlink:before, .rst-content h2 .btn.headerlink:before, .rst-content h3 .btn.headerlink:before, .rst-content h4 .btn.headerlink:before, .rst-content h5 .btn.headerlink:before, .rst-content h6 .btn.headerlink:before, .rst-content dl dt .btn.headerlink:before, .rst-content p.caption .btn.headerlink:before, .rst-content tt.download span.btn:first-child:before, .rst-content code.download span.btn:first-child:before, .btn.icon:before {
+.btn.fa:before, .nav-menu-vertical li span.btn.toctree-expand:before, .rst-content .btn.admonition-title:before, .rst-content h1 .btn.headerlink:before, .rst-content h2 .btn.headerlink:before, .rst-content h3 .btn.headerlink:before, .rst-content h4 .btn.headerlink:before, .rst-content h5 .btn.headerlink:before, .rst-content h6 .btn.headerlink:before, .rst-content dl dt .btn.headerlink:before, .rst-content p.caption .btn.headerlink:before, .rst-content tt.download span.btn:first-child:before, .rst-content code.download span.btn:first-child:before, .btn.icon:before {
     opacity: 0.5;
     -webkit-transition: opacity 0.05s ease-in;
     -moz-transition: opacity 0.05s ease-in;
     transition: opacity 0.05s ease-in
 }
 
-.btn.fa:hover:before, .wy-menu-vertical li span.btn.toctree-expand:hover:before, .rst-content .btn.admonition-title:hover:before, .rst-content h1 .btn.headerlink:hover:before, .rst-content h2 .btn.headerlink:hover:before, .rst-content h3 .btn.headerlink:hover:before, .rst-content h4 .btn.headerlink:hover:before, .rst-content h5 .btn.headerlink:hover:before, .rst-content h6 .btn.headerlink:hover:before, .rst-content dl dt .btn.headerlink:hover:before, .rst-content p.caption .btn.headerlink:hover:before, .rst-content tt.download span.btn:first-child:hover:before, .rst-content code.download span.btn:first-child:hover:before, .btn.icon:hover:before {
+.btn.fa:hover:before, .nav-menu-vertical li span.btn.toctree-expand:hover:before, .rst-content .btn.admonition-title:hover:before, .rst-content h1 .btn.headerlink:hover:before, .rst-content h2 .btn.headerlink:hover:before, .rst-content h3 .btn.headerlink:hover:before, .rst-content h4 .btn.headerlink:hover:before, .rst-content h5 .btn.headerlink:hover:before, .rst-content h6 .btn.headerlink:hover:before, .rst-content dl dt .btn.headerlink:hover:before, .rst-content p.caption .btn.headerlink:hover:before, .rst-content tt.download span.btn:first-child:hover:before, .rst-content code.download span.btn:first-child:hover:before, .btn.icon:hover:before {
     opacity: 1
 }
 
-.btn-mini .fa:before, .btn-mini .wy-menu-vertical li span.toctree-expand:before, .wy-menu-vertical li .btn-mini span.toctree-expand:before, .btn-mini .rst-content .admonition-title:before, .rst-content .btn-mini .admonition-title:before, .btn-mini .rst-content h1 .headerlink:before, .rst-content h1 .btn-mini .headerlink:before, .btn-mini .rst-content h2 .headerlink:before, .rst-content h2 .btn-mini .headerlink:before, .btn-mini .rst-content h3 .headerlink:before, .rst-content h3 .btn-mini .headerlink:before, .btn-mini .rst-content h4 .headerlink:before, .rst-content h4 .btn-mini .headerlink:before, .btn-mini .rst-content h5 .headerlink:before, .rst-content h5 .btn-mini .headerlink:before, .btn-mini .rst-content h6 .headerlink:before, .rst-content h6 .btn-mini .headerlink:before, .btn-mini .rst-content dl dt .headerlink:before, .rst-content dl dt .btn-mini .headerlink:before, .btn-mini .rst-content p.caption .headerlink:before, .rst-content p.caption .btn-mini .headerlink:before, .btn-mini .rst-content tt.download span:first-child:before, .rst-content tt.download .btn-mini span:first-child:before, .btn-mini .rst-content code.download span:first-child:before, .rst-content code.download .btn-mini span:first-child:before, .btn-mini .icon:before {
+.btn-mini .fa:before, .btn-mini .nav-menu-vertical li span.toctree-expand:before, .nav-menu-vertical li .btn-mini span.toctree-expand:before, .btn-mini .rst-content .admonition-title:before, .rst-content .btn-mini .admonition-title:before, .btn-mini .rst-content h1 .headerlink:before, .rst-content h1 .btn-mini .headerlink:before, .btn-mini .rst-content h2 .headerlink:before, .rst-content h2 .btn-mini .headerlink:before, .btn-mini .rst-content h3 .headerlink:before, .rst-content h3 .btn-mini .headerlink:before, .btn-mini .rst-content h4 .headerlink:before, .rst-content h4 .btn-mini .headerlink:before, .btn-mini .rst-content h5 .headerlink:before, .rst-content h5 .btn-mini .headerlink:before, .btn-mini .rst-content h6 .headerlink:before, .rst-content h6 .btn-mini .headerlink:before, .btn-mini .rst-content dl dt .headerlink:before, .rst-content dl dt .btn-mini .headerlink:before, .btn-mini .rst-content p.caption .headerlink:before, .rst-content p.caption .btn-mini .headerlink:before, .btn-mini .rst-content tt.download span:first-child:before, .rst-content tt.download .btn-mini span:first-child:before, .btn-mini .rst-content code.download span:first-child:before, .rst-content code.download .btn-mini span:first-child:before, .btn-mini .icon:before {
     font-size: 14px;
-    vertical-align: -15%
 }
 
-.wy-alert, .rst-content .note, .rst-content .attention, .rst-content .caution, .rst-content .danger, .rst-content .error, .rst-content .hint, .rst-content .important, .rst-content .tip, .rst-content .warning, .rst-content .seealso, .rst-content .admonition-todo {
+.rst-content .note, .rst-content .attention, .rst-content .caution, .rst-content .danger, .rst-content .error, .rst-content .hint, .rst-content .important, .rst-content .tip, .rst-content .warning, .rst-content .seealso, .rst-content .admonition-todo {
     padding: 12px;
     line-height: 24px;
     margin-bottom: 24px;
     background: #e7f2fa
 }
 
-.wy-alert-title, .rst-content .admonition-title {
+.rst-content .admonition-title {
     color: #fff;
     font-weight: bold;
     display: block;
@@ -3173,116 +2949,44 @@ a .fa, a .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li a span.t
     margin-bottom: 12px
 }
 
-.wy-alert.wy-alert-danger, .rst-content .wy-alert-danger.note, .rst-content .wy-alert-danger.attention, .rst-content .wy-alert-danger.caution, .rst-content .danger, .rst-content .error, .rst-content .wy-alert-danger.hint, .rst-content .wy-alert-danger.important, .rst-content .wy-alert-danger.tip, .rst-content .wy-alert-danger.warning, .rst-content .wy-alert-danger.seealso, .rst-content .wy-alert-danger.admonition-todo {
+.note, .rst-content .danger, .rst-content .error {
     background: white;
     border: 1px solid #b23e65;
 }
 
-.wy-alert.wy-alert-danger .wy-alert-title, .rst-content .wy-alert-danger.note .wy-alert-title, .rst-content .wy-alert-danger.attention .wy-alert-title, .rst-content .wy-alert-danger.caution .wy-alert-title, .rst-content .danger .wy-alert-title, .rst-content .error .wy-alert-title, .rst-content .wy-alert-danger.hint .wy-alert-title, .rst-content .wy-alert-danger.important .wy-alert-title, .rst-content .wy-alert-danger.tip .wy-alert-title, .rst-content .wy-alert-danger.warning .wy-alert-title, .rst-content .wy-alert-danger.seealso .wy-alert-title, .rst-content .wy-alert-danger.admonition-todo .wy-alert-title, .wy-alert.wy-alert-danger .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-danger .admonition-title, .rst-content .wy-alert-danger.note .admonition-title, .rst-content .wy-alert-danger.attention .admonition-title, .rst-content .wy-alert-danger.caution .admonition-title, .rst-content .danger .admonition-title, .rst-content .error .admonition-title, .rst-content .wy-alert-danger.hint .admonition-title, .rst-content .wy-alert-danger.important .admonition-title, .rst-content .wy-alert-danger.tip .admonition-title, .rst-content .wy-alert-danger.warning .admonition-title, .rst-content .wy-alert-danger.seealso .admonition-title, .rst-content .wy-alert-danger.admonition-todo .admonition-title {
+.rst-content .danger .admonition-title, .rst-content .error .admonition-title {
     background: #b23e65
 }
 
-.wy-alert.wy-alert-warning, .rst-content .wy-alert-warning.note, .rst-content .attention, .rst-content .caution, .rst-content .wy-alert-warning.danger, .rst-content .wy-alert-warning.error, .rst-content .wy-alert-warning.hint, .rst-content .wy-alert-warning.important, .rst-content .wy-alert-warning.tip, .rst-content .warning, .rst-content .wy-alert-warning.seealso, .rst-content .admonition-todo {
+.rst-content .attention, .rst-content .caution, .rst-content .warning, .rst-content .admonition-todo {
     border: 1px solid #f9a557;
     background: white;
 }
 
-.wy-alert.wy-alert-warning .wy-alert-title, .rst-content .wy-alert-warning.note .wy-alert-title, .rst-content .attention .wy-alert-title, .rst-content .caution .wy-alert-title, .rst-content .wy-alert-warning.danger .wy-alert-title, .rst-content .wy-alert-warning.error .wy-alert-title, .rst-content .wy-alert-warning.hint .wy-alert-title, .rst-content .wy-alert-warning.important .wy-alert-title, .rst-content .wy-alert-warning.tip .wy-alert-title, .rst-content .warning .wy-alert-title, .rst-content .wy-alert-warning.seealso .wy-alert-title, .rst-content .admonition-todo .wy-alert-title, .wy-alert.wy-alert-warning .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-warning .admonition-title, .rst-content .wy-alert-warning.note .admonition-title, .rst-content .attention .admonition-title, .rst-content .caution .admonition-title, .rst-content .wy-alert-warning.danger .admonition-title, .rst-content .wy-alert-warning.error .admonition-title, .rst-content .wy-alert-warning.hint .admonition-title, .rst-content .wy-alert-warning.important .admonition-title, .rst-content .wy-alert-warning.tip .admonition-title, .rst-content .warning .admonition-title, .rst-content .wy-alert-warning.seealso .admonition-title, .rst-content .admonition-todo .admonition-title {
+.rst-content .attention .admonition-title, .rst-content .caution .admonition-title, .rst-content .warning .admonition-title, .rst-content .admonition-todo .admonition-title {
     background: #f9a557
 }
 
-.wy-alert.wy-alert-info, .rst-content .note, .rst-content .wy-alert-info.attention, .rst-content .wy-alert-info.caution, .rst-content .wy-alert-info.danger, .rst-content .wy-alert-info.error, .rst-content .wy-alert-info.hint, .rst-content .wy-alert-info.important, .rst-content .wy-alert-info.tip, .rst-content .wy-alert-info.warning, .rst-content .seealso, .rst-content .wy-alert-info.admonition-todo {
+.rst-content .note, .rst-content .seealso {
     border: 1px solid #4697c9;
     background: white;
 }
 
-.wy-alert.wy-alert-info .wy-alert-title, .rst-content .note .wy-alert-title, .rst-content .wy-alert-info.attention .wy-alert-title, .rst-content .wy-alert-info.caution .wy-alert-title, .rst-content .wy-alert-info.danger .wy-alert-title, .rst-content .wy-alert-info.error .wy-alert-title, .rst-content .wy-alert-info.hint .wy-alert-title, .rst-content .wy-alert-info.important .wy-alert-title, .rst-content .wy-alert-info.tip .wy-alert-title, .rst-content .wy-alert-info.warning .wy-alert-title, .rst-content .seealso .wy-alert-title, .rst-content .wy-alert-info.admonition-todo .wy-alert-title, .wy-alert.wy-alert-info .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-info .admonition-title, .rst-content .note .admonition-title, .rst-content .wy-alert-info.attention .admonition-title, .rst-content .wy-alert-info.caution .admonition-title, .rst-content .wy-alert-info.danger .admonition-title, .rst-content .wy-alert-info.error .admonition-title, .rst-content .wy-alert-info.hint .admonition-title, .rst-content .wy-alert-info.important .admonition-title, .rst-content .wy-alert-info.tip .admonition-title, .rst-content .wy-alert-info.warning .admonition-title, .rst-content .seealso .admonition-title, .rst-content .wy-alert-info.admonition-todo .admonition-title {
+.rst-content .note .admonition-title, .rst-content .seealso .admonition-title {
     background: #4697c9
 }
 
-.wy-alert.wy-alert-success, .rst-content .wy-alert-success.note, .rst-content .wy-alert-success.attention, .rst-content .wy-alert-success.caution, .rst-content .wy-alert-success.danger, .rst-content .wy-alert-success.error, .rst-content .hint, .rst-content .important, .rst-content .tip, .rst-content .wy-alert-success.warning, .rst-content .wy-alert-success.seealso, .rst-content .wy-alert-success.admonition-todo {
+.rst-content .hint, .rst-content .important, .rst-content .tip {
     border: 1px solid #3aa57c;
     background: white;
 }
 
-.wy-alert.wy-alert-success .wy-alert-title, .rst-content .wy-alert-success.note .wy-alert-title, .rst-content .wy-alert-success.attention .wy-alert-title, .rst-content .wy-alert-success.caution .wy-alert-title, .rst-content .wy-alert-success.danger .wy-alert-title, .rst-content .wy-alert-success.error .wy-alert-title, .rst-content .hint .wy-alert-title, .rst-content .important .wy-alert-title, .rst-content .tip .wy-alert-title, .rst-content .wy-alert-success.warning .wy-alert-title, .rst-content .wy-alert-success.seealso .wy-alert-title, .rst-content .wy-alert-success.admonition-todo .wy-alert-title, .wy-alert.wy-alert-success .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-success .admonition-title, .rst-content .wy-alert-success.note .admonition-title, .rst-content .wy-alert-success.attention .admonition-title, .rst-content .wy-alert-success.caution .admonition-title, .rst-content .wy-alert-success.danger .admonition-title, .rst-content .wy-alert-success.error .admonition-title, .rst-content .hint .admonition-title, .rst-content .important .admonition-title, .rst-content .tip .admonition-title, .rst-content .wy-alert-success.warning .admonition-title, .rst-content .wy-alert-success.seealso .admonition-title, .rst-content .wy-alert-success.admonition-todo .admonition-title {
+.rst-content .hint .admonition-title, .rst-content .important .admonition-title, .rst-content .tip .admonition-title {
     background: #3aa57c
 }
 
-.wy-alert.wy-alert-neutral, .rst-content .wy-alert-neutral.note, .rst-content .wy-alert-neutral.attention, .rst-content .wy-alert-neutral.caution, .rst-content .wy-alert-neutral.danger, .rst-content .wy-alert-neutral.error, .rst-content .wy-alert-neutral.hint, .rst-content .wy-alert-neutral.important, .rst-content .wy-alert-neutral.tip, .rst-content .wy-alert-neutral.warning, .rst-content .wy-alert-neutral.seealso, .rst-content .wy-alert-neutral.admonition-todo {
-    background: white;
-    border: 1px solid #404040;
-}
-
-.wy-alert.wy-alert-neutral .wy-alert-title, .rst-content .wy-alert-neutral.note .wy-alert-title, .rst-content .wy-alert-neutral.attention .wy-alert-title, .rst-content .wy-alert-neutral.caution .wy-alert-title, .rst-content .wy-alert-neutral.danger .wy-alert-title, .rst-content .wy-alert-neutral.error .wy-alert-title, .rst-content .wy-alert-neutral.hint .wy-alert-title, .rst-content .wy-alert-neutral.important .wy-alert-title, .rst-content .wy-alert-neutral.tip .wy-alert-title, .rst-content .wy-alert-neutral.warning .wy-alert-title, .rst-content .wy-alert-neutral.seealso .wy-alert-title, .rst-content .wy-alert-neutral.admonition-todo .wy-alert-title, .wy-alert.wy-alert-neutral .rst-content .admonition-title, .rst-content .wy-alert.wy-alert-neutral .admonition-title, .rst-content .wy-alert-neutral.note .admonition-title, .rst-content .wy-alert-neutral.attention .admonition-title, .rst-content .wy-alert-neutral.caution .admonition-title, .rst-content .wy-alert-neutral.danger .admonition-title, .rst-content .wy-alert-neutral.error .admonition-title, .rst-content .wy-alert-neutral.hint .admonition-title, .rst-content .wy-alert-neutral.important .admonition-title, .rst-content .wy-alert-neutral.tip .admonition-title, .rst-content .wy-alert-neutral.warning .admonition-title, .rst-content .wy-alert-neutral.seealso .admonition-title, .rst-content .wy-alert-neutral.admonition-todo .admonition-title {
-    color: #404040;
-    background: #e1e4e5
-}
-
-.wy-alert.wy-alert-neutral a, .rst-content .wy-alert-neutral.note a, .rst-content .wy-alert-neutral.attention a, .rst-content .wy-alert-neutral.caution a, .rst-content .wy-alert-neutral.danger a, .rst-content .wy-alert-neutral.error a, .rst-content .wy-alert-neutral.hint a, .rst-content .wy-alert-neutral.important a, .rst-content .wy-alert-neutral.tip a, .rst-content .wy-alert-neutral.warning a, .rst-content .wy-alert-neutral.seealso a, .rst-content .wy-alert-neutral.admonition-todo a {
-    color: #3aa57c
-}
-
-.wy-alert p:last-child, .rst-content .note p:last-child, .rst-content .attention p:last-child, .rst-content .caution p:last-child, .rst-content .danger p:last-child, .rst-content .error p:last-child, .rst-content .hint p:last-child, .rst-content .important p:last-child, .rst-content .tip p:last-child, .rst-content .warning p:last-child, .rst-content .seealso p:last-child, .rst-content .admonition-todo p:last-child {
+.rst-content .note p:last-child, .rst-content .attention p:last-child, .rst-content .caution p:last-child, .rst-content .danger p:last-child, .rst-content .error p:last-child, .rst-content .hint p:last-child, .rst-content .important p:last-child, .rst-content .tip p:last-child, .rst-content .warning p:last-child, .rst-content .seealso p:last-child, .rst-content .admonition-todo p:last-child {
     margin-bottom: 0
-}
-
-.wy-tray-container {
-    position: fixed;
-    bottom: 0px;
-    left: 0;
-    z-index: 600
-}
-
-.wy-tray-container li {
-    display: block;
-    width: 300px;
-    background: transparent;
-    color: #fff;
-    text-align: center;
-    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.1);
-    padding: 0 24px;
-    min-width: 20%;
-    opacity: 0;
-    height: 0;
-    line-height: 56px;
-    overflow: hidden;
-    -webkit-transition: all 0.3s ease-in;
-    -moz-transition: all 0.3s ease-in;
-    transition: all 0.3s ease-in
-}
-
-.wy-tray-container li.wy-tray-item-success {
-    background: #27AE60
-}
-
-.wy-tray-container li.wy-tray-item-info {
-    background: #1a4c3b
-}
-
-.wy-tray-container li.wy-tray-item-warning {
-    background: #E67E22
-}
-
-.wy-tray-container li.wy-tray-item-danger {
-    background: #E74C3C
-}
-
-.wy-tray-container li.on {
-    opacity: 1;
-    height: 56px
-}
-
-@media screen and (max-width: 768px) {
-    .wy-tray-container {
-        bottom: auto;
-        top: 0;
-        width: 100%
-    }
-
-    .wy-tray-container li {
-        width: 100%
-    }
 }
 
 button {
@@ -3471,339 +3175,10 @@ button[disabled] {
     color: #9B59B6
 }
 
-.wy-btn-group .btn, .wy-control .btn {
-    vertical-align: middle
-}
-
-.wy-btn-group {
-    margin-bottom: 24px;
-    *zoom: 1
-}
-
-.wy-btn-group:before, .wy-btn-group:after {
-    display: table;
-    content: ""
-}
-
-.wy-btn-group:after {
-    clear: both
-}
-
-.wy-dropdown {
-    position: relative;
-    display: inline-block
-}
-
-.wy-dropdown-active .wy-dropdown-menu {
-    display: block
-}
-
-.wy-dropdown-menu {
-    position: absolute;
-    left: 0;
-    display: none;
-    float: left;
-    top: 100%;
-    min-width: 100%;
-    background: #fcfcfc;
-    z-index: 100;
-    border: solid 1px #cfd7dd;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
-    padding: 12px
-}
-
-.wy-dropdown-menu > dd > a {
-    display: block;
-    clear: both;
-    color: #404040;
-    white-space: nowrap;
-    font-size: 90%;
-    padding: 0 12px;
-    cursor: pointer
-}
-
-.wy-dropdown-menu > dd > a:hover {
-    background: #3aa57c;
-    color: #fff
-}
-
-.wy-dropdown-menu > dd.divider {
-    border-top: solid 1px #cfd7dd;
-    margin: 6px 0
-}
-
-.wy-dropdown-menu > dd.search {
-    padding-bottom: 12px
-}
-
-.wy-dropdown-menu > dd.search input[type="search"] {
-    width: 100%
-}
-
-.wy-dropdown-menu > dd.call-to-action {
-    background: #e3e3e3;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 80%
-}
-
-.wy-dropdown-menu > dd.call-to-action:hover {
-    background: #e3e3e3
-}
-
-.wy-dropdown-menu > dd.call-to-action .btn {
-    color: #fff
-}
-
-.wy-dropdown.wy-dropdown-up .wy-dropdown-menu {
-    bottom: 100%;
-    top: auto;
-    left: auto;
-    right: 0
-}
-
-.wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu {
-    background: #fcfcfc;
-    margin-top: 2px
-}
-
-.wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a {
-    padding: 6px 12px
-}
-
-.wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a:hover {
-    background: #3aa57c;
-    color: #fff
-}
-
-.wy-dropdown.wy-dropdown-left .wy-dropdown-menu {
-    right: 0;
-    left: auto;
-    text-align: right
-}
-
-.wy-dropdown-arrow:before {
-    content: " ";
-    border-bottom: 5px solid #f5f5f5;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    position: absolute;
-    display: block;
-    top: -4px;
-    left: 50%;
-    margin-left: -3px
-}
-
-.wy-dropdown-arrow.wy-dropdown-arrow-left:before {
-    left: 11px
-}
-
-.wy-form-stacked select {
-    display: block
-}
-
-.wy-form-aligned input, .wy-form-aligned textarea, .wy-form-aligned select, .wy-form-aligned .wy-help-inline, .wy-form-aligned label {
-    display: inline-block;
-    *display: inline;
-    *zoom: 1;
-    vertical-align: middle
-}
-
-.wy-form-aligned .wy-control-group > label {
-    display: inline-block;
-    vertical-align: middle;
-    width: 10em;
-    margin: 6px 12px 0 0;
-    float: left
-}
-
-.wy-form-aligned .wy-control {
-    float: left
-}
-
-.wy-form-aligned .wy-control label {
-    display: block
-}
-
-.wy-form-aligned .wy-control select {
-    margin-top: 6px
-}
-
-fieldset {
-    border: 0;
-    margin: 0;
-    padding: 0
-}
-
-legend {
-    display: block;
-    width: 100%;
-    border: 0;
-    padding: 0;
-    white-space: normal;
-    margin-bottom: 24px;
-    font-size: 150%;
-    *margin-left: -7px
-}
-
 label {
     display: block;
     margin: 0 0 .3125em 0;
     color: #333;
-    font-size: 90%
-}
-
-input, select, textarea {
-    font-size: 100%;
-    margin: 0;
-    vertical-align: baseline;
-    *vertical-align: middle
-}
-
-.wy-control-group {
-    margin-bottom: 24px;
-    *zoom: 1;
-    max-width: 68em;
-    margin-left: auto;
-    margin-right: auto;
-    *zoom: 1
-}
-
-.wy-control-group:before, .wy-control-group:after {
-    display: table;
-    content: ""
-}
-
-.wy-control-group:after {
-    clear: both
-}
-
-.wy-control-group:before, .wy-control-group:after {
-    display: table;
-    content: ""
-}
-
-.wy-control-group:after {
-    clear: both
-}
-
-.wy-control-group.wy-control-group-required > label:after {
-    content: " *";
-    color: #E74C3C
-}
-
-.wy-control-group .wy-form-full, .wy-control-group .wy-form-halves, .wy-control-group .wy-form-thirds {
-    padding-bottom: 12px
-}
-
-.wy-control-group .wy-form-full select, .wy-control-group .wy-form-halves select, .wy-control-group .wy-form-thirds select {
-    width: 100%
-}
-
-.wy-control-group .wy-form-full input[type="text"], .wy-control-group .wy-form-full input[type="password"], .wy-control-group .wy-form-full input[type="email"], .wy-control-group .wy-form-full input[type="url"], .wy-control-group .wy-form-full input[type="date"], .wy-control-group .wy-form-full input[type="month"], .wy-control-group .wy-form-full input[type="time"], .wy-control-group .wy-form-full input[type="datetime"], .wy-control-group .wy-form-full input[type="datetime-local"], .wy-control-group .wy-form-full input[type="week"], .wy-control-group .wy-form-full input[type="number"], .wy-control-group .wy-form-full input[type="search"], .wy-control-group .wy-form-full input[type="tel"], .wy-control-group .wy-form-full input[type="color"], .wy-control-group .wy-form-halves input[type="text"], .wy-control-group .wy-form-halves input[type="password"], .wy-control-group .wy-form-halves input[type="email"], .wy-control-group .wy-form-halves input[type="url"], .wy-control-group .wy-form-halves input[type="date"], .wy-control-group .wy-form-halves input[type="month"], .wy-control-group .wy-form-halves input[type="time"], .wy-control-group .wy-form-halves input[type="datetime"], .wy-control-group .wy-form-halves input[type="datetime-local"], .wy-control-group .wy-form-halves input[type="week"], .wy-control-group .wy-form-halves input[type="number"], .wy-control-group .wy-form-halves input[type="search"], .wy-control-group .wy-form-halves input[type="tel"], .wy-control-group .wy-form-halves input[type="color"], .wy-control-group .wy-form-thirds input[type="text"], .wy-control-group .wy-form-thirds input[type="password"], .wy-control-group .wy-form-thirds input[type="email"], .wy-control-group .wy-form-thirds input[type="url"], .wy-control-group .wy-form-thirds input[type="date"], .wy-control-group .wy-form-thirds input[type="month"], .wy-control-group .wy-form-thirds input[type="time"], .wy-control-group .wy-form-thirds input[type="datetime"], .wy-control-group .wy-form-thirds input[type="datetime-local"], .wy-control-group .wy-form-thirds input[type="week"], .wy-control-group .wy-form-thirds input[type="number"], .wy-control-group .wy-form-thirds input[type="search"], .wy-control-group .wy-form-thirds input[type="tel"], .wy-control-group .wy-form-thirds input[type="color"] {
-    width: 100%
-}
-
-.wy-control-group .wy-form-full {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 100%;
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-full:last-child {
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-halves {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 48.82117%
-}
-
-.wy-control-group .wy-form-halves:last-child {
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-halves:nth-of-type(2n) {
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-halves:nth-of-type(2n+1) {
-    clear: left
-}
-
-.wy-control-group .wy-form-thirds {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 31.76157%
-}
-
-.wy-control-group .wy-form-thirds:last-child {
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-thirds:nth-of-type(3n) {
-    margin-right: 0
-}
-
-.wy-control-group .wy-form-thirds:nth-of-type(3n+1) {
-    clear: left
-}
-
-.wy-control-group.wy-control-group-no-input .wy-control {
-    margin: 6px 0 0 0;
-    font-size: 90%
-}
-
-.wy-control-no-input {
-    display: inline-block;
-    margin: 6px 0 0 0;
-    font-size: 90%
-}
-
-.wy-control-group.fluid-input input[type="text"], .wy-control-group.fluid-input input[type="password"], .wy-control-group.fluid-input input[type="email"], .wy-control-group.fluid-input input[type="url"], .wy-control-group.fluid-input input[type="date"], .wy-control-group.fluid-input input[type="month"], .wy-control-group.fluid-input input[type="time"], .wy-control-group.fluid-input input[type="datetime"], .wy-control-group.fluid-input input[type="datetime-local"], .wy-control-group.fluid-input input[type="week"], .wy-control-group.fluid-input input[type="number"], .wy-control-group.fluid-input input[type="search"], .wy-control-group.fluid-input input[type="tel"], .wy-control-group.fluid-input input[type="color"] {
-    width: 100%
-}
-
-.wy-form-message-inline {
-    display: inline-block;
-    padding-left: 0.3em;
-    color: #666;
-    vertical-align: middle;
-    font-size: 90%
-}
-
-.wy-form-message {
-    display: block;
-    color: #999;
-    font-size: 70%;
-    margin-top: .3125em;
-    font-style: italic
-}
-
-.wy-form-message p {
-    font-size: inherit;
-    font-style: italic;
-    margin-bottom: 6px
-}
-
-.wy-form-message p:last-child {
-    margin-bottom: 0
-}
-
-input {
-    line-height: normal
-}
-
-input[type="button"], input[type="reset"], input[type="submit"] {
-    -webkit-appearance: button;
-    cursor: pointer;
-    font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
-    *overflow: visible
 }
 
 input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="date"], input[type="month"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="week"], input[type="number"], input[type="search"], input[type="tel"], input[type="color"] {
@@ -3820,14 +3195,6 @@ input[type="text"], input[type="password"], input[type="email"], input[type="url
     transition: border 0.3s linear
 }
 
-input[type="datetime-local"] {
-    padding: .34375em .625em
-}
-
-input[disabled] {
-    cursor: default
-}
-
 input[type="checkbox"], input[type="radio"] {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -3836,31 +3203,6 @@ input[type="checkbox"], input[type="radio"] {
     margin-right: .3125em;
     *height: 13px;
     *width: 13px
-}
-
-input[type="search"] {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box
-}
-
-input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration {
-    -webkit-appearance: none
-}
-
-input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus {
-    outline: 0;
-    outline: thin dotted \9;
-    border-color: #333
-}
-
-input.no-focus:focus {
-    border-color: #ccc !important
-}
-
-input[type="file"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus {
-    outline: thin dotted #333;
-    outline: 1px auto #129FEA
 }
 
 input[type="text"][disabled], input[type="password"][disabled], input[type="email"][disabled], input[type="url"][disabled], input[type="date"][disabled], input[type="month"][disabled], input[type="time"][disabled], input[type="datetime"][disabled], input[type="datetime-local"][disabled], input[type="week"][disabled], input[type="number"][disabled], input[type="search"][disabled], input[type="tel"][disabled], input[type="color"][disabled] {
@@ -3875,278 +3217,6 @@ input:focus:invalid, textarea:focus:invalid, select:focus:invalid {
 
 input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:focus {
     border-color: #E74C3C
-}
-
-input[type="file"]:focus:invalid:focus, input[type="radio"]:focus:invalid:focus, input[type="checkbox"]:focus:invalid:focus {
-    outline-color: #E74C3C
-}
-
-input.wy-input-large {
-    padding: 12px;
-    font-size: 100%
-}
-
-textarea {
-    overflow: auto;
-    vertical-align: top;
-    width: 100%;
-    font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
-}
-
-select, textarea {
-    padding: .5em .625em;
-    display: inline-block;
-    border: 1px solid #ccc;
-    font-size: 80%;
-    box-shadow: inset 0 1px 3px #ddd;
-    -webkit-transition: border 0.3s linear;
-    -moz-transition: border 0.3s linear;
-    transition: border 0.3s linear
-}
-
-select {
-    border: 1px solid #ccc;
-    background-color: #fff
-}
-
-select[multiple] {
-    height: auto
-}
-
-select:focus, textarea:focus {
-    outline: 0
-}
-
-select[disabled], textarea[disabled], input[readonly], select[readonly], textarea[readonly] {
-    cursor: not-allowed;
-    background-color: #fafafa
-}
-
-input[type="radio"][disabled], input[type="checkbox"][disabled] {
-    cursor: not-allowed
-}
-
-.wy-checkbox, .wy-radio {
-    margin: 6px 0;
-    color: #404040;
-    display: block
-}
-
-.wy-checkbox input, .wy-radio input {
-    vertical-align: baseline
-}
-
-.wy-form-message-inline {
-    display: inline-block;
-    *display: inline;
-    *zoom: 1;
-    vertical-align: middle
-}
-
-.wy-input-prefix, .wy-input-suffix {
-    white-space: nowrap;
-    padding: 6px
-}
-
-.wy-input-prefix .wy-input-context, .wy-input-suffix .wy-input-context {
-    line-height: 27px;
-    padding: 0 8px;
-    display: inline-block;
-    font-size: 80%;
-    background-color: #f3f6f6;
-    border: solid 1px #ccc;
-    color: #999
-}
-
-.wy-input-suffix .wy-input-context {
-    border-left: 0
-}
-
-.wy-input-prefix .wy-input-context {
-    border-right: 0
-}
-
-.wy-switch {
-    width: 36px;
-    height: 12px;
-    margin: 12px 0;
-    position: relative;
-    background: #ccc;
-    cursor: pointer;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out
-}
-
-.wy-switch:before {
-    position: absolute;
-    content: "";
-    display: block;
-    width: 18px;
-    height: 18px;
-    background: #999;
-    left: -3px;
-    top: -3px;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out
-}
-
-.wy-switch:after {
-    content: "false";
-    position: absolute;
-    left: 48px;
-    display: block;
-    font-size: 12px;
-    color: #ccc
-}
-
-.wy-switch.active {
-    background: #1e8449
-}
-
-.wy-switch.active:before {
-    left: 24px;
-    background: #27AE60
-}
-
-.wy-switch.active:after {
-    content: "true"
-}
-
-.wy-switch.disabled, .wy-switch.active.disabled {
-    cursor: not-allowed
-}
-
-.wy-control-group.wy-control-group-error .wy-form-message, .wy-control-group.wy-control-group-error > label {
-    color: #E74C3C
-}
-
-.wy-control-group.wy-control-group-error input[type="text"], .wy-control-group.wy-control-group-error input[type="password"], .wy-control-group.wy-control-group-error input[type="email"], .wy-control-group.wy-control-group-error input[type="url"], .wy-control-group.wy-control-group-error input[type="date"], .wy-control-group.wy-control-group-error input[type="month"], .wy-control-group.wy-control-group-error input[type="time"], .wy-control-group.wy-control-group-error input[type="datetime"], .wy-control-group.wy-control-group-error input[type="datetime-local"], .wy-control-group.wy-control-group-error input[type="week"], .wy-control-group.wy-control-group-error input[type="number"], .wy-control-group.wy-control-group-error input[type="search"], .wy-control-group.wy-control-group-error input[type="tel"], .wy-control-group.wy-control-group-error input[type="color"] {
-    border: solid 1px #E74C3C
-}
-
-.wy-control-group.wy-control-group-error textarea {
-    border: solid 1px #E74C3C
-}
-
-.wy-inline-validate {
-    white-space: nowrap
-}
-
-.wy-inline-validate .wy-input-context {
-    padding: .5em .625em;
-    display: inline-block;
-    font-size: 80%
-}
-
-.wy-inline-validate.wy-inline-validate-success .wy-input-context {
-    color: #27AE60
-}
-
-.wy-inline-validate.wy-inline-validate-danger .wy-input-context {
-    color: #E74C3C
-}
-
-.wy-inline-validate.wy-inline-validate-warning .wy-input-context {
-    color: #E67E22
-}
-
-.wy-inline-validate.wy-inline-validate-info .wy-input-context {
-    color: #3aa57c;
-}
-
-.rotate-90 {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg)
-}
-
-.rotate-180 {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg)
-}
-
-.rotate-270 {
-    -webkit-transform: rotate(270deg);
-    -moz-transform: rotate(270deg);
-    -ms-transform: rotate(270deg);
-    -o-transform: rotate(270deg);
-    transform: rotate(270deg)
-}
-
-.mirror {
-    -webkit-transform: scaleX(-1);
-    -moz-transform: scaleX(-1);
-    -ms-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    transform: scaleX(-1)
-}
-
-.mirror.rotate-90 {
-    -webkit-transform: scaleX(-1) rotate(90deg);
-    -moz-transform: scaleX(-1) rotate(90deg);
-    -ms-transform: scaleX(-1) rotate(90deg);
-    -o-transform: scaleX(-1) rotate(90deg);
-    transform: scaleX(-1) rotate(90deg)
-}
-
-.mirror.rotate-180 {
-    -webkit-transform: scaleX(-1) rotate(180deg);
-    -moz-transform: scaleX(-1) rotate(180deg);
-    -ms-transform: scaleX(-1) rotate(180deg);
-    -o-transform: scaleX(-1) rotate(180deg);
-    transform: scaleX(-1) rotate(180deg)
-}
-
-.mirror.rotate-270 {
-    -webkit-transform: scaleX(-1) rotate(270deg);
-    -moz-transform: scaleX(-1) rotate(270deg);
-    -ms-transform: scaleX(-1) rotate(270deg);
-    -o-transform: scaleX(-1) rotate(270deg);
-    transform: scaleX(-1) rotate(270deg)
-}
-
-@media only screen and (max-width: 480px) {
-    .wy-form button[type="submit"] {
-        margin: 0.7em 0 0
-    }
-
-    .wy-form input[type="text"], .wy-form input[type="password"], .wy-form input[type="email"], .wy-form input[type="url"], .wy-form input[type="date"], .wy-form input[type="month"], .wy-form input[type="time"], .wy-form input[type="datetime"], .wy-form input[type="datetime-local"], .wy-form input[type="week"], .wy-form input[type="number"], .wy-form input[type="search"], .wy-form input[type="tel"], .wy-form input[type="color"] {
-        margin-bottom: 0.3em;
-        display: block
-    }
-
-    .wy-form label {
-        margin-bottom: 0.3em;
-        display: block
-    }
-
-    .wy-form input[type="password"], .wy-form input[type="email"], .wy-form input[type="url"], .wy-form input[type="date"], .wy-form input[type="month"], .wy-form input[type="time"], .wy-form input[type="datetime"], .wy-form input[type="datetime-local"], .wy-form input[type="week"], .wy-form input[type="number"], .wy-form input[type="search"], .wy-form input[type="tel"], .wy-form input[type="color"] {
-        margin-bottom: 0
-    }
-
-    .wy-form-aligned .wy-control-group label {
-        margin-bottom: 0.3em;
-        text-align: left;
-        display: block;
-        width: 100%
-    }
-
-    .wy-form-aligned .wy-control {
-        margin: 1.5em 0 0 0
-    }
-
-    .wy-form .wy-help-inline, .wy-form-message-inline, .wy-form-message {
-        display: block;
-        font-size: 80%;
-        padding: 6px 0
-    }
 }
 
 @media screen and (max-width: 768px) {
@@ -4173,280 +3243,6 @@ input[type="radio"][disabled], input[type="checkbox"][disabled] {
     width: 100%
 }
 
-.wy-table, .rst-content table.docutils, .rst-content table.field-list {
-    border-collapse: collapse;
-    border-spacing: 0;
-    empty-cells: show;
-    margin-bottom: 24px
-}
-
-.wy-table caption, .rst-content table.docutils caption, .rst-content table.field-list caption {
-    color: #000;
-    font: italic 85%/1 arial, sans-serif;
-    padding: 1em 0;
-    text-align: center
-}
-
-.wy-table td, .rst-content table.docutils td, .rst-content table.field-list td, .wy-table th, .rst-content table.docutils th, .rst-content table.field-list th {
-    font-size: 14px;
-    margin: 0;
-    overflow: visible;
-    padding: 8px 16px
-}
-.rst-content table td p, .rst-content .section table td ul {
-    font-size: 14px;
-    margin-bottom: 12px;
-}
-
-.wy-table td:first-child, .rst-content table.docutils td:first-child, .rst-content table.field-list td:first-child, .wy-table th:first-child, .rst-content table.docutils th:first-child, .rst-content table.field-list th:first-child {
-    border-left-width: 0
-}
-
-.wy-table thead, .rst-content table.docutils thead, .rst-content table.field-list thead {
-    color: #000;
-    text-align: left;
-    vertical-align: bottom;
-    white-space: nowrap
-}
-
-.wy-table thead th, .rst-content table.docutils thead th, .rst-content table.field-list thead th {
-    font-weight: bold;
-    border-bottom: solid 2px #e1e4e5
-}
-
-.wy-table td, .rst-content table.docutils td, .rst-content table.field-list td {
-    background-color: transparent;
-    vertical-align: middle
-}
-
-.wy-table td p, .rst-content table.docutils td p, .rst-content table.field-list td p {
-    line-height: 18px
-}
-
-.wy-table td p:last-child, .rst-content table.docutils td p:last-child, .rst-content table.field-list td p:last-child {
-    margin-bottom: 0
-}
-
-.wy-table .wy-table-cell-min, .rst-content table.docutils .wy-table-cell-min, .rst-content table.field-list .wy-table-cell-min {
-    width: 1%;
-    padding-right: 0
-}
-
-.wy-table .wy-table-cell-min input[type=checkbox], .rst-content table.docutils .wy-table-cell-min input[type=checkbox], .rst-content table.field-list .wy-table-cell-min input[type=checkbox], .wy-table .wy-table-cell-min input[type=checkbox], .rst-content table.docutils .wy-table-cell-min input[type=checkbox], .rst-content table.field-list .wy-table-cell-min input[type=checkbox] {
-    margin: 0
-}
-
-.wy-table-secondary {
-    color: gray;
-    font-size: 90%
-}
-
-.wy-table-tertiary {
-    color: gray;
-    font-size: 80%
-}
-
-.wy-table-odd td, .wy-table-striped tr:nth-child(2n-1) td, .rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
-    background-color: #f3f6f6
-}
-
-.wy-table-backed {
-    background-color: #f3f6f6
-}
-
-.wy-table-bordered-all, .rst-content table.docutils {
-    border: 1px solid #e1e4e5
-}
-
-.wy-table-bordered-all td, .rst-content table.docutils td {
-    border-bottom: 1px solid #e1e4e5;
-    border-left: 1px solid #e1e4e5
-}
-
-.wy-table-bordered-all tbody > tr:last-child td, .rst-content table.docutils tbody > tr:last-child td {
-    border-bottom-width: 0
-}
-
-.wy-table-bordered {
-    border: 1px solid #e1e4e5
-}
-
-.wy-table-bordered-rows td {
-    border-bottom: 1px solid #e1e4e5
-}
-
-.wy-table-bordered-rows tbody > tr:last-child td {
-    border-bottom-width: 0
-}
-
-.wy-table-horizontal tbody > tr:last-child td {
-    border-bottom-width: 0
-}
-
-.wy-table-horizontal td, .wy-table-horizontal th {
-    border-width: 0 0 1px 0;
-    border-bottom: 1px solid #e1e4e5
-}
-
-.wy-table-horizontal tbody > tr:last-child td {
-    border-bottom-width: 0
-}
-
-.wy-table-responsive {
-    margin-bottom: 24px;
-    max-width: 100%;
-    overflow: auto
-}
-
-.wy-table-responsive table {
-    margin-bottom: 0 !important
-}
-
-.wy-table-responsive table td, .wy-table-responsive table th {
-    white-space: nowrap
-}
-
-a {
-    color: #3aa57c;
-    text-decoration: none;
-    cursor: pointer
-}
-
-a:hover {
-    color: #1a4c3b;
-}
-
-a:visited {
-}
-
-html {
-    height: 100%;
-    overflow-x: hidden
-}
-
-body {
-    font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
-    font-weight: normal;
-    color: #404040;
-    min-height: 100%;
-    overflow-x: hidden;
-    background: #edf0f2
-}
-
-.wy-text-left {
-    text-align: left
-}
-
-.wy-text-center {
-    text-align: center
-}
-
-.wy-text-right {
-    text-align: right
-}
-
-.wy-text-large {
-    font-size: 120%
-}
-
-.wy-text-normal {
-    font-size: 100%
-}
-
-.wy-text-small, small {
-    font-size: 80%
-}
-
-.wy-text-strike {
-    text-decoration: line-through
-}
-
-.wy-text-warning {
-    color: #E67E22 !important
-}
-
-a.wy-text-warning:hover {
-    color: #eb9950 !important
-}
-
-.wy-text-info {
-    color: #1a4c3b !important
-}
-
-a.wy-text-info:hover {
-    color: #409ad5 !important
-}
-
-.wy-text-success {
-    color: #27AE60 !important
-}
-
-a.wy-text-success:hover {
-    color: #36d278 !important
-}
-
-.wy-text-danger {
-    color: #E74C3C !important
-}
-
-a.wy-text-danger:hover {
-    color: #ed7669 !important
-}
-
-.wy-text-neutral {
-    color: #404040 !important
-}
-
-a.wy-text-neutral:hover {
-    color: #595959 !important
-}
-
-h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
-    margin-top: 0;
-    font-weight: 700;
-    font-family: "Open Sans", Helvetica, Arial, sans-serif
-}
-
-p {
-    line-height: 24px;
-    margin: 0;
-    font-size: 16px;
-    margin-bottom: 24px
-}
-
-h1 {
-    font-size: 175%
-}
-
-h2, .rst-content .toctree-wrapper p.caption {
-    font-size: 150%
-}
-
-h3 {
-    font-size: 125%
-}
-
-h4 {
-    font-size: 115%
-}
-
-h5 {
-    font-size: 110%
-}
-
-h6 {
-    font-size: 100%
-}
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #e1e4e5;
-    margin: 24px 0;
-    padding: 0
-}
-
 code, .rst-content tt, .rst-content code {
     white-space: nowrap;
     max-width: 100%;
@@ -4459,61 +3255,57 @@ code, .rst-content tt, .rst-content code {
     overflow-x: auto
 }
 
-code.code-large, .rst-content tt.code-large {
-    font-size: 90%
-}
-
-.wy-plain-list-disc, .rst-content .section ul, .rst-content .toctree-wrapper ul, article ul {
+.rst-content .section ul, .rst-content .toctree-wrapper ul, article ul {
     list-style: disc;
     line-height: 24px;
     margin-bottom: 24px
 }
 
-.wy-plain-list-disc li, .rst-content .section ul li, .rst-content .toctree-wrapper ul li, article ul li {
+.rst-content .section ul li, .rst-content .toctree-wrapper ul li, article ul li {
     list-style: disc;
     margin-left: 24px
 }
 
-.wy-plain-list-disc li p:last-child, .rst-content .section ul li p:last-child, .rst-content .toctree-wrapper ul li p:last-child, article ul li p:last-child {
+.rst-content .section ul li p:last-child, .rst-content .toctree-wrapper ul li p:last-child, article ul li p:last-child {
     margin-bottom: 0
 }
 
-.wy-plain-list-disc li ul, .rst-content .section ul li ul, .rst-content .toctree-wrapper ul li ul, article ul li ul {
+.rst-content .section ul li ul, .rst-content .toctree-wrapper ul li ul, article ul li ul {
     margin-bottom: 0
 }
 
-.wy-plain-list-disc li li, .rst-content .section ul li li, .rst-content .toctree-wrapper ul li li, article ul li li {
+.rst-content .section ul li li, .rst-content .toctree-wrapper ul li li, article ul li li {
     list-style: circle
 }
 
-.wy-plain-list-disc li li li, .rst-content .section ul li li li, .rst-content .toctree-wrapper ul li li li, article ul li li li {
+.rst-content .section ul li li li, .rst-content .toctree-wrapper ul li li li, article ul li li li {
     list-style: square
 }
 
-.wy-plain-list-disc li ol li, .rst-content .section ul li ol li, .rst-content .toctree-wrapper ul li ol li, article ul li ol li {
+.rst-content .section ul li ol li, .rst-content .toctree-wrapper ul li ol li, article ul li ol li {
     list-style: decimal
 }
 
-.wy-plain-list-decimal, .rst-content .section ol, .rst-content ol.arabic, article ol {
+.rst-content .section ol, .rst-content ol.arabic, article ol {
     list-style: decimal;
     line-height: 24px;
     margin-bottom: 24px
 }
 
-.wy-plain-list-decimal li, .rst-content .section ol li, .rst-content ol.arabic li, article ol li {
+.rst-content .section ol li, .rst-content ol.arabic li, article ol li {
     list-style: decimal;
     margin-left: 24px
 }
 
-.wy-plain-list-decimal li p:last-child, .rst-content .section ol li p:last-child, .rst-content ol.arabic li p:last-child, article ol li p:last-child {
+.rst-content .section ol li p:last-child, .rst-content ol.arabic li p:last-child, article ol li p:last-child {
     margin-bottom: 0
 }
 
-.wy-plain-list-decimal li ul, .rst-content .section ol li ul, .rst-content ol.arabic li ul, article ol li ul {
+.rst-content .section ol li ul, .rst-content ol.arabic li ul, article ol li ul {
     margin-bottom: 0
 }
 
-.wy-plain-list-decimal li ul li, .rst-content .section ol li ul li, .rst-content ol.arabic li ul li, article ol li ul li {
+.rst-content .section ol li ul li, .rst-content ol.arabic li ul li, article ol li ul li {
     list-style: disc
 }
 
@@ -4860,343 +3652,48 @@ div[class^='highlight'] pre {
     background-color: #EAF2F5
 }
 
-.wy-breadcrumbs li {
-    display: inline-block
+.nav-menu-vertical {
+    width: 400px
 }
 
-.wy-breadcrumbs li.wy-breadcrumbs-aside {
-    float: right
+#toctree {
+    line-height: 1.5em;
+    padding: 40px 20px 60px 60px;
 }
-
-.wy-breadcrumbs li a {
-    display: inline-block;
-    padding: 5px
+#toctree li {
+    margin-top: 0.5em;
 }
-
-.wy-breadcrumbs li a:first-child {
-    padding-left: 0
+#toctree a {
+    font-weight: normal;
+    color: #7f8c8d;
 }
-
-.wy-breadcrumbs li code, .wy-breadcrumbs li .rst-content tt, .rst-content .wy-breadcrumbs li tt {
-    padding: 5px;
-    border: none;
-    background: none
+#toctree a:hover {
+    border-bottom: 2px #3aa57c solid;
 }
-
-.wy-breadcrumbs li code.literal, .wy-breadcrumbs li .rst-content tt.literal, .rst-content .wy-breadcrumbs li tt.literal {
-    color: #404040
+#toctree .toctree-l1 > a {
+    color: #2c3e50;
+    font-weight: 600;
 }
-
-.wy-breadcrumbs-extra {
-    margin-bottom: 0;
-    color: #b3b3b3;
-    font-size: 80%;
-    display: inline-block
+#toctree .toctree-l1 {
+    margin-top: 1.5em;
 }
-
-@media screen and (max-width: 480px) {
-    .wy-breadcrumbs-extra {
-        display: none
-    }
-
-    .wy-breadcrumbs li.wy-breadcrumbs-aside {
-        display: none
-    }
+#toctree .toctree-l2 > a {
+    margin-top: 1em;
 }
-
-@media print {
-    .wy-breadcrumbs li.wy-breadcrumbs-aside {
-        display: none
-    }
+#toctree .toctree-l2, #toctree .toctree-l3, #toctree .toctree-l4 {
+    padding-left: 1.5em;
 }
-
-.wy-affix {
-    position: fixed;
-    top: 1.618em
-}
-
-.wy-menu a:hover {
-    text-decoration: none
-}
-
-.wy-menu-horiz {
-    *zoom: 1
-}
-
-.wy-menu-horiz:before, .wy-menu-horiz:after {
-    display: table;
-    content: ""
-}
-
-.wy-menu-horiz:after {
-    clear: both
-}
-
-.wy-menu-horiz ul, .wy-menu-horiz li {
-    display: inline-block
-}
-
-.wy-menu-horiz li:hover {
-    background: rgba(255, 255, 255, 0.1)
-}
-
-.wy-menu-horiz li.divide-left {
-    border-left: solid 1px #404040
-}
-
-.wy-menu-horiz li.divide-right {
-    border-right: solid 1px #404040
-}
-
-.wy-menu-horiz a {
-    height: 32px;
-    display: inline-block;
-    line-height: 32px;
-    padding: 0 16px
-}
-
-.wy-menu-vertical {
-    width: 300px
-}
-
-.wy-menu-vertical header, .wy-menu-vertical p.caption {
-    height: 32px;
-    display: inline-block;
-    line-height: 32px;
-    padding: 0 1.618em;
-    margin-bottom: 0;
-    display: block;
+#toctree .toctree-l2.current > a, #toctree .toctree-l3.current > a, #toctree .toctree-l4.current > a {
+    color: #3aa57c;
     font-weight: bold;
-    text-transform: uppercase;
-    font-size: 80%;
-    color: #555;
-    white-space: nowrap
 }
-
-.wy-menu-vertical ul {
-    margin-bottom: 0
+#toctree .toctree-l2.current a, #toctree .toctree-l3.current a, #toctree .toctree-l4.current a {
+    color: #3aa57c;
 }
-
-.wy-menu-vertical li.divide-top {
-    border-top: solid 1px #404040
-}
-
-.wy-menu-vertical li.divide-bottom {
-    border-bottom: solid 1px #404040
-}
-
-.wy-menu-vertical li.current {
-    background: #f8f8f8
-}
-
-.wy-menu-vertical li.current a {
-    color: gray;
-    padding: .4045em 2.427em
-}
-
-.wy-menu-vertical li.current a:hover {
-    background: #eeeeee
-}
-
-.wy-menu-vertical li code, .wy-menu-vertical li .rst-content tt, .rst-content .wy-menu-vertical li tt {
+#toctree code {
     border: none;
-    background: inherit;
+    font-size: 85%;
     color: inherit;
-    padding-left: 0;
-    padding-right: 0
-}
-
-.wy-menu-vertical li span.toctree-expand {
-    display: block;
-    float: left;
-    margin-left: -1.2em;
-    font-size: 0.8em;
-    line-height: 1.6em;
-    color: #4d4d4d
-}
-
-.wy-menu-vertical li.on a, .wy-menu-vertical li.current > a {
-    color: #404040;
-    padding: .4045em 1.618em;
-    font-weight: bold;
-    position: relative;
-    background: #e8e8e8;
-    border: none;
-    padding-left: 1.618em -4px
-}
-
-.wy-menu-vertical li.on a:hover, .wy-menu-vertical li.current > a:hover {
-    background: #fcfcfc
-}
-
-.wy-menu-vertical li.on a:hover span.toctree-expand, .wy-menu-vertical li.current > a:hover span.toctree-expand {
-    color: gray
-}
-
-.wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current > a span.toctree-expand {
-    display: block;
-    font-size: 0.8em;
-    line-height: 1.6em;
-    color: #333
-}
-
-.wy-menu-vertical li.toctree-l1.current li.toctree-l2 > ul, .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > ul {
-    display: none
-}
-
-.wy-menu-vertical li.toctree-l1.current li.toctree-l2.current > ul, .wy-menu-vertical li.toctree-l2.current li.toctree-l3.current > ul {
-    display: block
-}
-
-.wy-menu-vertical li.toctree-l2.current > a {
-    background: #eeeeee;
-    padding: .4045em 2.427em
-}
-
-.wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
-    display: block;
-    background: #eeeeee;
-    padding: .4045em 4.045em
-}
-
-.wy-menu-vertical li.toctree-l2 a:hover span.toctree-expand {
-    color: gray
-}
-
-.wy-menu-vertical li.toctree-l2 span.toctree-expand {
-    color: #a3a3a3
-}
-
-.wy-menu-vertical li.toctree-l3 {
-    font-size: 0.9em
-}
-
-.wy-menu-vertical li.toctree-l3.current > a {
-    background: #dddddd;
-    padding: .4045em 4.045em
-}
-
-.wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a {
-    display: block;
-    background: #dddddd;
-    padding: .4045em 5.663em;
-    border-top: none;
-    border-bottom: none
-}
-
-.wy-menu-vertical li.toctree-l3 a:hover span.toctree-expand {
-    color: gray
-}
-
-.wy-menu-vertical li.toctree-l3 span.toctree-expand {
-    color: #969696
-}
-
-.wy-menu-vertical li.toctree-l4 {
-    font-size: 0.9em
-}
-
-.wy-menu-vertical li.current ul {
-    display: block
-}
-
-.wy-menu-vertical li ul {
-    margin-bottom: 0;
-    display: none
-}
-
-.wy-menu-vertical .local-toc li ul {
-    display: block
-}
-
-.wy-menu-vertical li ul li a {
-    margin-bottom: 0;
-    color: #b3b3b3;
-    font-weight: normal
-}
-
-.wy-menu-vertical a {
-    display: inline-block;
-    line-height: 18px;
-    padding: .4045em 1.618em;
-    display: block;
-    position: relative;
-    font-size: 90%;
-    color: #3aa57c
-}
-
-.wy-menu-vertical a:hover {
-    background-color: #eeeeee;
-    cursor: pointer
-}
-
-.wy-menu-vertical a:hover span.toctree-expand {
-    color: #b3b3b3
-}
-
-.wy-menu-vertical a:active {
-    background-color: #eeeeee;
-    cursor: pointer;
-}
-
-.wy-menu-vertical a:active span.toctree-expand {
-    color: #fff
-}
-
-.wy-side-nav-search {
-    display: block;
-    width: 300px;
-    padding: .809em;
-    margin-bottom: .809em;
-    z-index: 200;
-    background-color: #1a4c3b;
-    text-align: center;
-    padding: .809em;
-    display: block;
-    color: #fcfcfc;
-    margin-bottom: .809em
-}
-
-.wy-side-nav-search input[type=text] {
-    width: 100%;
-    padding: 6px 12px;
-    border-color: #2472a4
-}
-
-.wy-side-nav-search img {
-    display: block;
-    margin: auto auto .809em auto;
-    height: 45px;
-    width: 45px;
-    background-color: #1a4c3b;
-    border-radius: 100%
-}
-
-.wy-side-nav-search > a, .wy-side-nav-search .wy-dropdown > a {
-    color: #fcfcfc;
-    font-size: 100%;
-    font-weight: bold;
-    display: inline-block;
-    margin-top: -.405em;
-    margin-bottom: -.809em;
-}
-
-.wy-side-nav-search > a:hover, .wy-side-nav-search .wy-dropdown > a:hover {
-    background: rgba(255, 255, 255, 0.1)
-}
-
-.wy-side-nav-search > a img.logo, .wy-side-nav-search .wy-dropdown > a img.logo {
-    display: block;
-    margin: 0 auto;
-    height: 100px;
-    width: auto;
-    border-radius: 0;
-    max-width: 100%;
-    background: transparent
-}
-
-.wy-side-nav-search > a.icon img.logo, .wy-side-nav-search .wy-dropdown > a.icon img.logo {
-    margin-top: 0.85em
 }
 
 div.version {
@@ -5205,18 +3702,6 @@ div.version {
     color: #aaaaaa;
     font-size: 11px;
     margin: .4045em 0;
-}
-
-.wy-nav .wy-menu-vertical header {
-    color: #2980B
-}
-
-.wy-nav .wy-menu-vertical a {
-    color: #b3b3b3
-}
-
-.wy-nav .wy-menu-vertical a:hover {
-    color: #fff
 }
 
 [data-menu-wrap] {
@@ -5247,42 +3732,30 @@ div.version {
     opacity: 0
 }
 
-.wy-body-for-nav {
-    background: left repeat-y #fcfcfc;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxOERBMTRGRDBFMUUxMUUzODUwMkJCOThDMEVFNURFMCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxOERBMTRGRTBFMUUxMUUzODUwMkJCOThDMEVFNURFMCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjE4REExNEZCMEUxRTExRTM4NTAyQkI5OEMwRUU1REUwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjE4REExNEZDMEUxRTExRTM4NTAyQkI5OEMwRUU1REUwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+EwrlwAAAAA5JREFUeNpiMDU0BAgwAAE2AJgB9BnaAAAAAElFTkSuQmCC);
-    background-size: 300px 1px
-}
-
-.wy-grid-for-nav {
-    position: absolute;
-    width: 100%;
-    height: 100%
-}
-
-.wy-nav-side {
+.nav-side {
     position: fixed;
-    top: 0;
+    top: 70px;
     bottom: 0;
     left: 0;
     padding-bottom: 2em;
-    width: 300px;
+    width: 400px;
     overflow-x: hidden;
     overflow-y: hidden;
     min-height: 100%;
-    background: #F8F8F8;
+    background: white;
     border-right: 1px solid #e7e7e7;
     z-index: 200
 }
 
-.wy-side-scroll {
-    width: 320px;
+.nav-scroll {
+    width: 400px;
     position: relative;
     overflow-x: hidden;
     overflow-y: scroll;
     height: 100%
 }
 
-.wy-nav-top {
+.nav-top {
     display: none;
     background: #1a4c3b;
     color: #fff;
@@ -5294,21 +3767,17 @@ div.version {
     *zoom: 1
 }
 
-.wy-nav-top:before, .wy-nav-top:after {
+.nav-top:before, .nav-top:after {
     display: table;
     content: ""
 }
 
-.wy-nav-top:after {
-    clear: both
-}
-
-.wy-nav-top a {
+.nav-top a {
     color: #fff;
     font-weight: bold
 }
 
-.wy-nav-top img {
+.nav-top img {
     margin-right: 12px;
     height: 45px;
     width: 45px;
@@ -5317,37 +3786,10 @@ div.version {
     border-radius: 100%
 }
 
-.wy-nav-top i {
-    font-size: 30px;
-    float: left;
-    cursor: pointer;
-    padding-top: inherit
-}
-
-.wy-nav-content-wrap {
-    margin-left: 300px;
-    background: #fcfcfc;
-    min-height: 100%
-}
-
-.wy-nav-content {
-    padding: 1.618em 3.236em;
+.nav-content {
+    margin: 2em 8em;
     height: 100%;
     max-width: 800px;
-    margin: auto
-}
-
-.wy-body-mask {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    display: none;
-    z-index: 499
-}
-
-.wy-body-mask.on {
-    display: block
 }
 
 footer {
@@ -5380,20 +3822,6 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     clear: both
 }
 
-.rst-breadcrumbs-buttons {
-    margin-top: 12px;
-    *zoom: 1
-}
-
-.rst-breadcrumbs-buttons:before, .rst-breadcrumbs-buttons:after {
-    display: table;
-    content: ""
-}
-
-.rst-breadcrumbs-buttons:after {
-    clear: both
-}
-
 #search-results .search li {
     margin-bottom: 24px;
     border-bottom: solid 1px #e1e4e5;
@@ -5417,79 +3845,32 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 }
 
 @media screen and (max-width: 768px) {
-    .wy-body-for-nav {
-        background: #fcfcfc
-    }
-
-    .wy-nav-top {
+    .nav-top {
         display: block
     }
 
-    .wy-nav-side {
-        left: -300px
+    .nav-side {
+        left: -400px
     }
 
-    .wy-nav-side.shift {
+    .nav-side.shift {
         width: 85%;
         left: 0
-    }
-
-    .wy-side-scroll {
-        width: auto
-    }
-
-    .wy-side-nav-search {
-        width: auto
-    }
-
-    .wy-menu.wy-menu-vertical {
-        width: auto
-    }
-
-    .wy-nav-content-wrap {
-        margin-left: 0
-    }
-
-    .wy-nav-content-wrap .wy-nav-content {
-        padding: 1.618em
-    }
-
-    .wy-nav-content-wrap.shift {
-        position: fixed;
-        min-width: 100%;
-        left: 85%;
-        top: 0;
-        height: 100%;
-        overflow: hidden
-    }
-}
-
-@media screen and (min-width: 1400px) {
-    .wy-nav-content-wrap {
-        background: rgba(0, 0, 0, 0.05)
-    }
-
-    .wy-nav-content {
-        margin: 0;
-        background: #fcfcfc
     }
 }
 
 @media print {
-    .rst-versions, footer, .wy-nav-side {
+    .rst-versions, footer, .nav-side {
         display: none
     }
 
-    .wy-nav-content-wrap {
-        margin-left: 0
-    }
 }
 
 .rst-versions {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 300px;
+    width: 400px;
     color: #fcfcfc;
     background: #1f1d1d;
     border-top: solid 10px #343131;
@@ -5526,7 +3907,7 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     clear: both
 }
 
-.rst-versions .rst-current-version .fa, .rst-versions .rst-current-version .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li .rst-versions .rst-current-version span.toctree-expand, .rst-versions .rst-current-version .rst-content .admonition-title, .rst-content .rst-versions .rst-current-version .admonition-title, .rst-versions .rst-current-version .rst-content h1 .headerlink, .rst-content h1 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h2 .headerlink, .rst-content h2 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h3 .headerlink, .rst-content h3 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h4 .headerlink, .rst-content h4 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h5 .headerlink, .rst-content h5 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h6 .headerlink, .rst-content h6 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content dl dt .headerlink, .rst-content dl dt .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content p.caption .headerlink, .rst-content p.caption .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content tt.download span:first-child, .rst-content tt.download .rst-versions .rst-current-version span:first-child, .rst-versions .rst-current-version .rst-content code.download span:first-child, .rst-content code.download .rst-versions .rst-current-version span:first-child, .rst-versions .rst-current-version .icon {
+.rst-versions .rst-current-version .fa, .rst-versions .rst-current-version .nav-menu-vertical li span.toctree-expand, .nav-menu-vertical li .rst-versions .rst-current-version span.toctree-expand, .rst-versions .rst-current-version .rst-content .admonition-title, .rst-content .rst-versions .rst-current-version .admonition-title, .rst-versions .rst-current-version .rst-content h1 .headerlink, .rst-content h1 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h2 .headerlink, .rst-content h2 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h3 .headerlink, .rst-content h3 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h4 .headerlink, .rst-content h4 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h5 .headerlink, .rst-content h5 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content h6 .headerlink, .rst-content h6 .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content dl dt .headerlink, .rst-content dl dt .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content p.caption .headerlink, .rst-content p.caption .rst-versions .rst-current-version .headerlink, .rst-versions .rst-current-version .rst-content tt.download span:first-child, .rst-content tt.download .rst-versions .rst-current-version span:first-child, .rst-versions .rst-current-version .rst-content code.download span:first-child, .rst-content code.download .rst-versions .rst-current-version span:first-child, .rst-versions .rst-current-version .icon {
     color: #fcfcfc
 }
 
@@ -5965,24 +4346,10 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     margin-right: 4px
 }
 
-.rst-content .guilabel {
-    border: 1px solid #7fbbe3;
-    background: #e7f2fa;
-    font-size: 80%;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 2.4px 6px;
-    margin: auto 2px
-}
-
 @media screen and (max-width: 480px) {
     .rst-content .sidebar {
         width: 100%
     }
-}
-
-span[id*='MathJax-Span'] {
-    color: #404040
 }
 
 .math {
@@ -6034,13 +4401,6 @@ a {
     }
 }
 
-/* REST */
-@media screen and (min-width: 480px) {
-    .wy-table-responsive table.rest-resource-table td, .wy-table-responsive table.rest-resource-table th {
-        white-space: normal;
-    }
-}
-
 img.screenshot, a.screenshot img {
     box-shadow: 0 4px 18px 0 rgba(0,0,0,0.1), 0 6px 20px 0 rgba(0,0,0,0.09);
 }
@@ -6076,4 +4436,31 @@ img.screenshot, a.screenshot img {
 .versionchanged p:last-child {
     margin-bottom: 0;
 }
+footer {
+    margin-top: 5em;
+    padding-top: 1em;
+    border-top: 1px solid;
+}
+footer #source-link {
+    padding-top: 1em;
+    border-top: 1px solid;
+}
+footer #source-link a.fa {
+    font-weight: bold;
+}
 
+table th {
+    text-align: left;
+}
+table td, table th {
+    border: 1px solid #ccc;
+    padding: .5em 1em;
+    vertical-align: top;
+}
+table td p, table th p {
+    padding: 0;
+    margin: 0;
+}
+table tbody tr:nth-child(2n-1) {
+    background-color: #f6f6f8;
+}
