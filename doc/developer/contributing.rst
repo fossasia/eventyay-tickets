@@ -109,6 +109,8 @@ you do, please note that these are the meanings we ascribe to them:
 +----+--------------------+
 | ⬆  | Dependency upgrade |
 +----+--------------------+
+| 🚨 | Fix CI build       |
++----+--------------------+
 | 📦 | Packaging          |
 +----+--------------------+
 | 🚀 | Release            |
