@@ -333,7 +333,7 @@ class Event(LogMixin, models.Model):
 
         if module not in plugins_active:
             plugins_active.append(module)
-            self.set_active_plugins(plugins_active)
+            self.plugin_list = plugins_active
 
     def disable_plugin(self, module: str) -> None:
         """Disbles a named plugin.
@@ -346,7 +346,7 @@ class Event(LogMixin, models.Model):
 
         if module in plugins_active:
             plugins_active.remove(module)
-            self.set_active_plugins(plugins_active)
+            self.plugin_list = plugins_active
 
     def _get_default_submission_type(self):
         from pretalx.submission.models import SubmissionType
