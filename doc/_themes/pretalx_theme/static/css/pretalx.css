@@ -3932,7 +3932,6 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     color: #27AE60;
     *zoom: 1
 }
-
 .rst-versions .rst-current-version:before, .rst-versions .rst-current-version:after {
     display: table;
     content: ""
@@ -3962,6 +3961,13 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 .rst-versions .rst-current-version.rst-active-old-version {
     background-color: #F1C40F;
     color: #000
+}
+
+.rst-versions:hover .rst-other-versions, .rst-versions .rst-current-version:hover + .rst-other-versions {
+    display:block;
+}
+.rst-versions .rst-other-versions:hover {
+    display:block;
 }
 
 .rst-versions.shift-up .rst-other-versions {
