@@ -55,7 +55,7 @@ appropriate permissions::
 
 When using MySQL, make sure you set the character set of the database to ``utf8mb4``, e.g. like this::
 
-    mysql > CREATE DATABASE pretix DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unic
+    mysql > CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unic
 
 
 Step 3: Package dependencies
