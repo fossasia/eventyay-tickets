@@ -2,6 +2,6 @@ releases
 sphinx
 sphinx-autobuild
 sphinx-autodoc-typehints
-sphinxcontrib_django
+git+https://github.com/rixx/sphinxcontrib-django.git@master
 sphinxcontrib-httpdomain
--e src/
+#-e src/
