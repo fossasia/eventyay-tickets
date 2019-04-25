@@ -181,16 +181,6 @@ class Submission(LogMixin, models.Model):
         verbose_name=_('Talk image'),
         help_text=_('Use this if you want an illustration to go with your submission.'),
     )
-    recording_url = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name=_('Recording URL')
-    )
-    recording_source = models.CharField(
-        choices=(('VOC', 'media.ccc.de'),),
-        max_length=3,
-        null=True,
-        blank=True,
-        verbose_name=_('Recording Source'),
-    )
     invitation_token = models.CharField(max_length=32, default=generate_invite_code)
     review_code = models.CharField(
         max_length=32, unique=True, null=True, blank=True, default=generate_invite_code
