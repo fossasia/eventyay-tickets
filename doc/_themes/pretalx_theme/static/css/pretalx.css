@@ -28,15 +28,6 @@ body {
     color: #34495e;
 }
 
-header {
-    height: 70px;
-    background-color: #1c4a3b;
-    width: 100%;
-    position: fixed;
-    z-index: 100;
-    display: flex;
-}
-
 main {
     margin-left: 400px;
     margin-top: 70px;
@@ -44,10 +35,17 @@ main {
     min-height: 100%
 }
 
-header img {
+header {
+    height: 70px;
+    background-color: #1c4a3b;
+    width: 100%;
     position: fixed;
-    left: 0;
-    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+}
+header img, header a {
+    z-index: 300;
     height: 70px;
 }
 
@@ -68,6 +66,43 @@ header img {
     width: 260px;
     height: 40px;
     border-radius: 40px;
+    text-align: center;
+}
+header #related {
+    display:flex;
+    align-items: center;
+    z-index: 300;
+}
+header #related .dropdown {
+    position: relative;
+}
+header #related .dropdown .dropdown-body {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    right: 20px;
+    padding: 16px;
+}
+header #related .dropdown .dropdown-body .dropdown-item {
+    padding: 6px;
+}
+header #related .dropdown .dropdown-body .dropdown-item a {
+    font-weight: normal;
+    color: #2c3e50;
+}
+header #related .dropdown .dropdown-body .dropdown-item a:hover {
+    color: #3aa57c;
+    border-bottom: 2px solid #3aa57c;
+}
+header #related .dropdown .dropdown-title {
+    color: white;
+    font-weight: bold;
+    margin-right: 24px;
+}
+header #related .dropdown:hover .dropdown-body {
+    display: block;
 }
 
 [hidden] {

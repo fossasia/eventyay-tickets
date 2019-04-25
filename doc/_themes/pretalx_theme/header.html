@@ -1,8 +1,8 @@
 <header>
   {% if logo and theme_logo_only %}
-    <a href="{{ pathto(master_doc) }}">
+    <a id="logourl" href="{{ pathto(master_doc) }}">
   {% else %}
-    <a href="{{ pathto(master_doc) }}" class="icon icon-home"> {{ project }}
+    <a id="logourl" href="{{ pathto(master_doc) }}" class="icon icon-home"> {{ project }}
   {% endif %}
 
   {% if logo %}
@@ -12,4 +12,24 @@
   </a>
 
   {% include "searchbox.html" %}
+
+  <div id="related">
+    <div class="dropdown">
+      <div class="dropdown-title">Support us</div>
+      <div class="dropdown-body">
+        <div class="dropdown-item"><a href="https://pretalx.com/pricing">Hosted pretalx</a></div>
+        <div class="dropdown-item"><a href="https://pretalx.com/pricing">pretalx support</a></div>
+        <div class="dropdown-item"><a href="https://patreon.com/rixx">Developer patreon</a></div>
+        <div class="dropdown-item"><a href="https://liberapay.com/rixx">Developer liberapay</a></div>
+      </div>
+    </div>
+    <div class="dropdown">
+      <div class="dropdown-title">Resources</div>
+      <div class="dropdown-body">
+        <div class="dropdown-item"><a href="https://pretalx.com/p/news/">Blog</a></div>
+        <div class="dropdown-item"><a href="https://github.com/pretalx/pretalx/">Source code</a></div>
+        <div class="dropdown-item"><a href="https://twitter.com/pretalx">Twitter</a></div>
+      </div>
+    </div>
+  </div>
 </header>
