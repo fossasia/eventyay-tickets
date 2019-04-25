@@ -3902,15 +3902,29 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 }
 
 .rst-versions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 400px;
-    color: #fcfcfc;
-    background: #1f1d1d;
-    border-top: solid 10px #343131;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 400px !important;
+    color: #fcfcfc !important;
+    background: #1f1d1d !important;
+    border-top: solid 10px #343131 !important;
     font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
-    z-index: 400
+    z-index: 400 !important;
+}
+
+.rst-versions:hover > .rst-other-versions { /* makes things look wonky in dev, but correct in prod, due to rtd insert */
+    padding: 0 !important;
+}
+.injected .rst-versions:hover > .rst-other-versions {
+    padding: 12px !important;
+}
+
+.injected .rst-versions.rst-badge {
+    max-width: 400px !important;
+}
+.rst-versions .rst-other-versions:hover {
+    display: block;
 }
 
 .rst-versions a {
