@@ -23,7 +23,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
 
     @context
     def plugins_active(self):
-        return self.request.event.get_plugins()
+        return self.request.event.plugin_list
 
     def post(self, request, *args, **kwargs):
         plugins_available = {

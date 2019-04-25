@@ -8,9 +8,9 @@ from pretalx.common.signals import EventPluginSignal, _populate_app_cache
 def test_is_plugin_active(event):
     _populate_app_cache()
     event.plugins = None
-    assert EventPluginSignal._is_active(event, footer_link_test) is False, event.get_plugins()
+    assert EventPluginSignal._is_active(event, footer_link_test) is False, event.plugin_list
     event.plugins = 'tests'
-    assert EventPluginSignal._is_active(event, footer_link_test) is True, event.get_plugins()
+    assert EventPluginSignal._is_active(event, footer_link_test) is True, event.plugin_list
 
 
 @pytest.mark.django_db

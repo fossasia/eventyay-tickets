@@ -295,15 +295,18 @@ class Event(LogMixin, models.Model):
         if was_created:
             self.build_initial_data()
 
-    def get_plugins(self):
+    @property
+    def plugin_list(self) -> list:
+        """Provides a list of active plugins, and is also an attribute setter."""
         if not self.plugins:
             return []
         return self.plugins.split(',')
 
-    def set_active_plugins(self, modules):
+    @plugin_list.setter
+    def plugin_list(self, modules: list) -> None:
         from pretalx.common.plugins import get_all_plugins
 
-        plugins_active = self.get_plugins()
+        plugins_active = self.plugin_list
         plugins_available = {
             p.module: p
             for p in get_all_plugins(self)
@@ -318,15 +321,28 @@ class Event(LogMixin, models.Model):
 
         self.plugins = ",".join(modules)
 
-    def enable_plugin(self, module):
-        plugins_active = self.get_plugins()
+    def enable_plugin(self, module: str) -> None:
+        """Enables a named plugin.
+
+        Caution, no validation is performed at this point. No exception is
+        raised if the module is unknown. An already active module will not
+        be added to the plugin list again.
+
+        :param module: The module to be activated."""
+        plugins_active = self.plugin_list
 
         if module not in plugins_active:
             plugins_active.append(module)
             self.set_active_plugins(plugins_active)
 
-    def disable_plugin(self, module):
-        plugins_active = self.get_plugins()
+    def disable_plugin(self, module: str) -> None:
+        """Disbles a named plugin.
+
+        Caution, no validation is performed at this point. No exception is
+        raised if the module was not part of the active plugins.
+
+        :param module: The module to be deactivated."""
+        plugins_active = self.plugin_list
 
         if module in plugins_active:
             plugins_active.remove(module)
