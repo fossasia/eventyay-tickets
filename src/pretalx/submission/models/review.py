@@ -33,7 +33,7 @@ class Review(models.Model):
         return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})'
 
     @classmethod
-    def find_missing_reviews(cls, event: 'pretalx.event.models.Event', user: 'pretalx.person.models.User', ignore=None) -> 'pretalx.submission.models.submission.Submission':
+    def find_missing_reviews(cls, event, user, ignore=None):
         """
         Returns all :class:`~pretalx.submission.models.submission.Submission`
         objects this :class:`~pretalx.person.models.user.User` still has to
@@ -43,6 +43,8 @@ class Review(models.Model):
         :class:`~pretalx.event.models.organiser.Team` permissions into account.
         The result is ordered by review count.
 
+        :type event: :class:`~pretalx.event.models.event.Event`
+        :type user: :class:`~pretalx.person.models.user.User`
         :rtype: Queryset of :class:`~pretalx.submission.models.submission.Submission` objects
         """
         from pretalx.submission.models import SubmissionStates

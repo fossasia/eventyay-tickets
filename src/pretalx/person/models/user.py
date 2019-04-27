@@ -131,16 +131,21 @@ class User(PermissionsMixin, AbstractBaseUser):
             assign_code(self)
         return super().save(args, kwargs)
 
-    def event_profile(self, event: 'Event') -> 'EventProfile':
-        """Retrieve (and/or create) the event :class:`~pretalx.person.models.profile.SpeakerProfile` for this user."""
+    def event_profile(self, event):
+        """Retrieve (and/or create) the event :class:`~pretalx.person.models.profile.SpeakerProfile` for this user.
+
+        :type event: :class:`pretalx.event.models.event.Event`
+        :retval: :class:`pretalx.person.models.profile.EventProfile`
+        """
         return self.profiles.select_related('event').get_or_create(event=event)[0]
 
-    def log_action(self, action: str, data: dict=None, person: 'pretalx.person.models.user.User'=None, orga: bool=False):
+    def log_action(self, action: str, data: dict=None, person=None, orga: bool=False):
         """Create a log entry for this user.
 
         :param action: The log action that took place.
         :param data: Addition data to be saved.
         :param person: The person modifying this user. Defaults to this user.
+        :type person: :class:`~pretalx.person.models.user.User`
         :param orga: Was this action initiated by a privileged user?"""
         from pretalx.common.models import ActivityLog
 
@@ -241,8 +246,10 @@ class User(PermissionsMixin, AbstractBaseUser):
             models.Q(organiser__in=absolute) | models.Q(pk__in=relative)
         ).distinct()
 
-    def get_permissions_for_event(self, event: 'pretalx.event.models.event.Event') -> set:
-        """Returns a set of all permission a user has for the given event."""
+    def get_permissions_for_event(self, event) -> set:
+        """Returns a set of all permission a user has for the given event.
+
+        :type event: :class:`~pretalx.event.models.event.Event`"""
         if self.is_administrator:
             return {
                 'can_create_events',
@@ -257,8 +264,11 @@ class User(PermissionsMixin, AbstractBaseUser):
             return set()
         return set().union(*[team.permission_set for team in teams])
 
-    def remaining_override_votes(self, event: 'pretalx.event.models.event.Event') -> int:
-        """Returns the amount of override votes a user may still give in reviews in the given event."""
+    def remaining_override_votes(self, event) -> int:
+        """Returns the amount of override votes a user may still give in reviews in the given event.
+
+        :type event: :class:`~pretalx.event.models.event.Event`
+        """
         allowed = max(
             event.teams.filter(members__in=[self], is_reviewer=True).values_list(
                 'review_override_votes', flat=True

@@ -214,10 +214,11 @@ class QueuedMail(LogMixin, models.Model):
         return f'{prefix} {text}'
 
     @transaction.atomic
-    def send(self, requestor: 'User'=None, orga: bool=True):
+    def send(self, requestor=None, orga: bool=True):
         """Sends an email.
 
         :param requestor: The user issuing the command. Used for logging.
+        :type requestor: :class:`~pretalx.person.models.user.User`
         :param orga: Was this email sent as by a privileged user?"""
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))

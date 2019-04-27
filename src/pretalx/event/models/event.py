@@ -509,8 +509,10 @@ class Event(LogMixin, models.Model):
         return self.queued_mails.filter(sent__isnull=True).count()
 
     @cached_property
-    def wip_schedule(self) -> 'Schedule':
-        """Returns the latest unreleased :class:`~pretalx.schedule.models.schedule.Schedule`."""
+    def wip_schedule(self):
+        """Returns the latest unreleased :class:`~pretalx.schedule.models.schedule.Schedule`.
+
+        :retval: :class:`~pretalx.schedule.models.schedule.Schedule`"""
         schedule, _ = self.schedules.get_or_create(version__isnull=True)
         return schedule
 
