@@ -66,8 +66,8 @@ dependencies mentioned above.  Due to the impossibility of maintaining an up to
 date list for all Linux flavours out there, we sadly can't provide one here.
 
 If you're running Ubuntu or a similar system, you'll probably want to install
-packages like ``build-essential``, ``libssl-dev``, and ``gettext``, plus
-``libmysqlclient-dev`` if you use MariaDB.
+packages like ``build-essential``, ``libssl-dev``, ``python3-dev`` and
+``gettext``, plus ``libmysqlclient-dev`` if you use MariaDB.
 
 Please note that pretalx requires Python 3.6 or Python 3.7 – if your operating
 system doesn't come with one of those Python versions, please either find an
@@ -101,7 +101,8 @@ Now we will install pretalx itself. Please execute the following steps as the ``
 install all Python packages, including pretalx, in the user's Python environment, so that your global Python
 installation will not know of them::
 
-    $ pip install --user -U pip setuptools wheel pretalx gunicorn
+    $ pip install --user -U pip setuptools wheel gunicorn redis
+    $ pip install --user -U pretalx
 
 pretalx works your choice of database backends – we recommend using
 PostgreSQL, but MySQL, SQLite, and Oracle work as well. Use the following
