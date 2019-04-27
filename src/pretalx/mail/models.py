@@ -14,6 +14,11 @@ from pretalx.common.urls import EventUrls
 
 
 class MailTemplate(LogMixin, models.Model):
+    """MailTemplates can be used to create :class:`~pretalx.mail.models.QueuedMail` objects.
+
+    The process does not come with variable substitution except for hardcoded
+    cases, for now.
+    """
     event = models.ForeignKey(
         to='event.Event',
         on_delete=models.PROTECT,
@@ -51,14 +56,29 @@ class MailTemplate(LogMixin, models.Model):
         self,
         user,
         event,
-        locale=None,
-        context=None,
-        skip_queue=False,
-        commit=True,
+        locale: str=None,
+        context: dict=None,
+        skip_queue: bool=False,
+        commit: bool=True,
         submission=None,
-        full_submission_content=False,
+        full_submission_content: bool=False,
     ):
-        address = user.email if hasattr(user, 'email') else user
+        """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a MailTemplate.
+
+        :param user: Either a :class:`~pretalx.person.models.user.User` or an
+            email address as a string.
+        :param event: The event to which this email belongs. May be ``None``.
+        :param locale: The locale will be set via the event and the recipient,
+            but can be overridden with this parameter.
+        :param context: Context to be used when rendering the template.
+        :param skip_queue: Send directly without saving. Use with caution, as
+            it removes any logging and traces.
+        :param commit: Set ``False`` to return an unsaved object.
+        :param submission: Pass a submission if one is related to the mail.
+            Will be used to generate context.
+        :param full_submission_content: Attach the complete submission with
+            all its fields to the email.
+        """
         with override(locale):
             context = context or dict()
             try:
@@ -81,14 +101,26 @@ class MailTemplate(LogMixin, models.Model):
                 subject=subject,
                 text=text,
             )
-            if skip_queue:
-                mail.send()
-            elif commit:
+            if commit and not skip_queue:
                 mail.save()
+                mail.to_users.set(users)
+            elif skip_queue:
+                mail.send()
         return mail
 
 
 class QueuedMail(LogMixin, models.Model):
+    """Emails in pretalx are rarely sent directly, hence the name QueuedMail.
+
+    This mechanism allows organisers to make sure they send out the right
+    content, and to include personal changes in emails.
+
+    :param sent_at: ``None`` if the mail has not been sent yet.
+    :param to_users: All known users to whom this email is addressed.
+    :param to: A comma-separated list of email addresses to whom this email
+        is addressed. Does not contain any email addresses known to belong
+        to users.
+    """
     event = models.ForeignKey(
         to='event.Event', on_delete=models.PROTECT, related_name='queued_mails',
         null=True, blank=True,
@@ -172,7 +204,11 @@ class QueuedMail(LogMixin, models.Model):
         return f'{prefix} {text}'
 
     @transaction.atomic
-    def send(self, requestor=None, orga=True):
+    def send(self, requestor: 'User'=None, orga: bool=True):
+        """Sends an email.
+
+        :param requestor: The user issuing the command. Used for logging.
+        :param orga: Was this email sent as by a privileged user?"""
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
@@ -207,6 +243,7 @@ class QueuedMail(LogMixin, models.Model):
             self.save()
 
     def copy_to_draft(self):
+        """Copies an already sent email to a new object and adds it to the outbox."""
         new_mail = deepcopy(self)
         new_mail.pk = None
         new_mail.sent = None

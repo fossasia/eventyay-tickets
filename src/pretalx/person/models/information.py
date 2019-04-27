@@ -8,6 +8,7 @@ from pretalx.common.urls import EventUrls
 
 
 class SpeakerInformation(LogMixin, models.Model):
+    """Represents any information organisers want to show all or some submitters or speakers."""
     event = models.ForeignKey(
         to='event.Event', related_name='information', on_delete=models.CASCADE
     )

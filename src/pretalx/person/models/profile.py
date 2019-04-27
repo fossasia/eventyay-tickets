@@ -8,6 +8,11 @@ from pretalx.common.urls import EventUrls
 
 
 class SpeakerProfile(LogMixin, models.Model):
+    """All :class:`~pretalx.event.models.event.Event` related data concerning a :class:`~pretalx.person.models.user.User` is stored here.
+
+    :param has_arrived: Can be set to track speaker arrival. Will be used in
+        warnings about missing speakers.
+    """
     user = models.ForeignKey(
         to='person.User',
         related_name='profiles',
@@ -48,14 +53,22 @@ class SpeakerProfile(LogMixin, models.Model):
 
     @cached_property
     def submissions(self):
+        """All non-deleted :class:`~pretalx.submission.models.submission.Submission` objects by this user on this event."""
         return self.user.submissions.filter(event=self.event)
 
     @cached_property
     def talks(self):
+        """A queryset of :class:`~pretalx.submission.models.submission.Submission` objects.
+
+        Contains all visible talks by this user on this event."""
         return self.event.talks.filter(speakers__in=[self.user])
 
     @cached_property
     def answers(self):
+        """A queryset of :class:`~pretalx.submission.models.question.Answer` objects.
+
+        Includes all answers the user has given either for themselves or for
+        their talks for this event."""
         from pretalx.submission.models import Answer, Submission
 
         submissions = Submission.objects.filter(

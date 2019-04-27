@@ -94,6 +94,24 @@ class AllSubmissionManager(models.Manager):
 
 
 class Submission(LogMixin, models.Model):
+    """Submissions are, next to :class:`~pretalx.event.models.event.Event`, the central model in pretalx.
+
+    A submission, which belongs to exactly one event, can have multiple
+    speakers and a lot of other related data, such as a
+    :class:`~pretalx.submission.models.type.SubmissionType`, a
+    :class:`~pretalx.submission.models.track.Track`, multiple
+    :class:`~pretalx.submission.models.question.Answer` objects, and so on.
+
+    :param code: The unique alphanumeric identifier used to refer to a
+        submission.
+    :param state: The submission can be 'submitted', 'accepted', 'confirmed',
+        'rejected', 'withdrawn', or 'canceled'. State changes should be done via
+        the corresponding methods, like ``accept()``. The ``SubmissionStates``
+        class comes with a ``method_names`` dictionary for method lookup.
+    :param image: An image illustrating the talk or topic.
+    :param review_code: A token used in secret URLs giving read-access to the
+        submission.
+    """
     code = models.CharField(max_length=16, unique=True)
     speakers = models.ManyToManyField(
         to='person.User', related_name='submissions', blank=True
@@ -248,12 +266,20 @@ class Submission(LogMixin, models.Model):
             return self.event.cfp.is_open or (self.event.active_review_phase and self.event.active_review_phase.speakers_can_change_submissions)
         return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
 
-    def get_duration(self):
+    def get_duration(self) -> int:
+        """Returns this submission's duration in minutes.
+
+        Falls back to the
+        :class:`~pretalx.submission.models.type.SubmissionType`'s default
+        duration if none is set on the submission."""
         if self.duration is None:
             return self.submission_type.default_duration
         return self.duration
 
     def update_duration(self):
+        """Apply the submission's duration to its currently scheduled :class:`~pretalx.schedule.models.slot.TalkSlot`.
+
+        Should be called whenever the duration changes."""
         for slot in self.event.wip_schedule.talks.filter(
             submission=self, start__isnull=False
         ):
@@ -304,6 +330,10 @@ class Submission(LogMixin, models.Model):
             )
 
     def update_talk_slots(self):
+        """Makes sure the correct amount of :class:`~pretalx.schedule.models.slot.TalkSlot` objects exists.
+
+        After an update or state change, talk slots should either be all deleted,
+        or all created, or the number of talk slots might need to be adjusted."""
         from pretalx.schedule.models import TalkSlot
 
         if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
@@ -335,14 +365,20 @@ class Submission(LogMixin, models.Model):
                     schedule=self.event.wip_schedule,
                 )
 
-    def make_submitted(self, person=None, force=False, orga=False):
+    def make_submitted(self, person=None, force: bool=False, orga: bool=False):
+        """Sets the submission's state to 'submitted'."""
         self._set_state(SubmissionStates.SUBMITTED, force, person=person)
 
-    def confirm(self, person=None, force=False, orga=False):
+    def confirm(self, person=None, force: bool=False, orga: bool=False):
+        """Sets the submission's state to 'confirmed'."""
         self._set_state(SubmissionStates.CONFIRMED, force, person=person)
         self.log_action('pretalx.submission.confirm', person=person, orga=orga)
 
-    def accept(self, person=None, force=False, orga=True):
+    def accept(self, person=None, force: bool=False, orga: bool=True):
+        """Sets the submission's state to 'accepted'.
+
+        Creates an acceptance :class:`~pretalx.mail.models.QueuedMail` unless
+        the submission was previously confirmed."""
         previous = self.state
         self._set_state(SubmissionStates.ACCEPTED, force, person=person)
         self.log_action('pretalx.submission.accept', person=person, orga=True)
@@ -356,7 +392,9 @@ class Submission(LogMixin, models.Model):
                     locale=self.content_locale,
                 )
 
-    def reject(self, person=None, force=False, orga=True):
+    def reject(self, person=None, force: bool=False, orga: bool=True):
+        """Sets the submission's state to 'rejected' and creates a rejection
+        :class:`~pretalx.mail.models.QueuedMail`."""
         self._set_state(SubmissionStates.REJECTED, force, person=person)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
 
@@ -368,15 +406,18 @@ class Submission(LogMixin, models.Model):
                 locale=self.content_locale,
             )
 
-    def cancel(self, person=None, force=False, orga=True):
+    def cancel(self, person=None, force: bool=False, orga: bool=True):
+        """Sets the submission's state to 'canceled'."""
         self._set_state(SubmissionStates.CANCELED, force, person=person)
         self.log_action('pretalx.submission.cancel', person=person, orga=True)
 
-    def withdraw(self, person=None, force=False, orga=False):
+    def withdraw(self, person=None, force: bool=False, orga: bool=False):
+        """Sets the submission's state to 'withdrawn'."""
         self._set_state(SubmissionStates.WITHDRAWN, force, person=person)
         self.log_action('pretalx.submission.withdraw', person=person, orga=orga)
 
-    def remove(self, person=None, force=False, orga=True):
+    def remove(self, person=None, force: bool=False, orga: bool=True):
+        """Sets the submission's state to 'deleted'."""
         self._set_state(SubmissionStates.DELETED, force, person=person)
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
@@ -384,6 +425,7 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def uuid(self):
+        """A UUID5, calculated from the submission code and the instance identifier."""
         global INSTANCE_IDENTIFIER
         if not INSTANCE_IDENTIFIER:
             from pretalx.common.models.settings import GlobalSettings
@@ -425,6 +467,9 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def slot(self):
+        """The first scheduled :class:`~pretalx.schedule.models.slot.TalkSlot` of this submission in the current :class:`~pretalx.schedule.models.schedule.Schedule`.
+
+        Note that this slot is not guaranteed to be visible."""
         return (
             self.event.current_schedule.talks.filter(submission=self).first()
             if self.event.current_schedule
@@ -433,6 +478,7 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def display_speaker_names(self):
+        """Helper method for a consistent speaker name display."""
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())
 
     @cached_property
@@ -476,6 +522,7 @@ class Submission(LogMixin, models.Model):
 
     @property
     def availabilities(self):
+        """The intersection of all :class:`~pretalx.schedule.models.availability.Availability` objects of all speakers of this submission."""
         from pretalx.schedule.models.availability import Availability
 
         all_availabilities = self.event.availabilities.filter(

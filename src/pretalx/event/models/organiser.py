@@ -15,7 +15,7 @@ SLUG_CHARS = 'a-zA-Z0-9.-'
 
 
 class Organiser(LogMixin, models.Model):
-    """The Organiser model represents the entity responsible for one or several events."""
+    """The Organiser model represents the entity responsible for at least one :class:`~pretalx.event.models.event.Event`."""
 
     name = I18nCharField(max_length=190, verbose_name=_('Name'))
     slug = models.SlugField(
@@ -48,6 +48,7 @@ class Organiser(LogMixin, models.Model):
 
     @transaction.atomic
     def shred(self):
+        """Irrevocably deletes the organiser and all related events and their data."""
         for event in self.events.all():
             event.shred()
         self.logged_actions().delete()
@@ -55,7 +56,13 @@ class Organiser(LogMixin, models.Model):
 
 
 class Team(LogMixin, models.Model):
-    """Team members share permissions for one or several events of one organiser."""
+    """A team is a group of people working for the same organiser.
+
+    Team members (of type :class:`~pretalx.person.models.user.User`) share
+    permissions for one or several events of
+    :class:`~pretalx.event.models.organiser.Organiser`.  People can be in
+    multiple Teams, and will have all permissions *any* of their teams has.
+    """
 
     organiser = models.ForeignKey(
         to=Organiser, related_name='teams', on_delete=models.CASCADE
@@ -106,6 +113,7 @@ class Team(LogMixin, models.Model):
 
     @cached_property
     def permission_set(self) -> set:
+        """A set of all permissions this team has, as strings."""
         attribs = dir(self)
         return {
             a

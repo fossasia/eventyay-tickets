@@ -11,6 +11,12 @@ from pretalx.common.urls import get_base_url
 
 
 class TalkSlot(LogMixin, models.Model):
+    """The TalkSlot object is the scheduled version of a :class:`~pretalx.submission.models.submission.Submission`.
+
+    TalkSlots always belong to one submission and one :class:`~pretalx.schedule.models.schedule.Schedule`.
+
+    :param is_visible: This parameter is set on schedule release. Only confirmed talks will be visible.
+    """
     submission = models.ForeignKey(
         to='submission.Submission', on_delete=models.PROTECT, related_name='slots'
     )
@@ -37,7 +43,8 @@ class TalkSlot(LogMixin, models.Model):
         return self.submission.event
 
     @cached_property
-    def duration(self):
+    def duration(self) -> int:
+        """Returns the actual duration in minutes if the talk is scheduled, and the planned duration in minutes otherwise."""
         if self.start and self.end:
             return int((self.end - self.start).total_seconds() / 60)
         return self.submission.get_duration()
@@ -58,13 +65,14 @@ class TalkSlot(LogMixin, models.Model):
 
     @cached_property
     def real_end(self):
+        """Guaranteed to provide a useful end datetime if ``start`` is set, even if ``end`` is empty."""
         return self.end or (
             self.start + timedelta(minutes=self.duration) if self.start else None
         )
 
     @cached_property
     def as_availability(self):
-        """ 'Casts' a slot as availability, useful for availability arithmetics. """
+        """ 'Casts' a slot as :class:`~pretalx.schedule.models.availability.Availability`, useful for availability arithmetics. """
         from pretalx.schedule.models import Availability
 
         return Availability(
@@ -72,7 +80,13 @@ class TalkSlot(LogMixin, models.Model):
         )
 
     @cached_property
-    def warnings(self):
+    def warnings(self) -> list:
+        """A list of warnings that apply to this slot.
+
+        Warnings are dictionaries with a ``type`` (``room`` or ``speaker``, for
+        now) and a ``message`` fit for public display.  This property only
+        shows availability based warnings.
+        """
         if not self.start:
             return []
         warnings = []
@@ -111,6 +125,7 @@ class TalkSlot(LogMixin, models.Model):
         return warnings
 
     def copy_to_schedule(self, new_schedule, save=True):
+        """Create a new slot for the given :class:`~pretalx.schedule.models.schedule.Schedule` with all other fields identical to this one."""
         new_slot = TalkSlot(schedule=new_schedule)
 
         for field in [f for f in self._meta.fields if f.name not in ('id', 'schedule')]:
@@ -120,7 +135,8 @@ class TalkSlot(LogMixin, models.Model):
             new_slot.save()
         return new_slot
 
-    def is_same_slot(self, other_slot):
+    def is_same_slot(self, other_slot) -> bool:
+        """Checks if both slots have the same room and start time."""
         return self.room == other_slot.room and self.start == other_slot.start
 
     def build_ical(self, calendar, creation_time=None, netloc=None):

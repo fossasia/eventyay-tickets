@@ -10,6 +10,13 @@ zerotime = datetime.time(0, 0)
 
 
 class Availability(LogMixin, models.Model):
+    """The Availability class models when people or rooms are available for :class:`~pretalx.schedule.models.slot.TalkSlot` objects.
+
+    The power of this class is not within its rather simple data model, but
+    with the operations available on it. An availability object can span
+    multiple days, but due to our choice of input widget, it will usually
+    only span a single day at most.
+    """
     event = models.ForeignKey(
         to='event.Event', related_name='availabilities', on_delete=models.CASCADE
     )
@@ -37,6 +44,11 @@ class Availability(LogMixin, models.Model):
         return f'Availability(event={event}, person={person}, room={room})'
 
     def __eq__(self, other: 'Availability') -> bool:
+        """Comparisons like ``availability1 == availability2``.
+
+        Checks if ``event``, ``person``, ``room``, ``start`` and ``end`` are
+        the same.
+        """
         return all(
             [
                 getattr(self, attribute, None) == getattr(other, attribute, None)
@@ -45,7 +57,8 @@ class Availability(LogMixin, models.Model):
         )
 
     @cached_property
-    def all_day(self):
+    def all_day(self) -> bool:
+        """Checks if the Availability spans one (or, technically: multiple) complete day."""
         return self.start.time() == zerotime and self.end.time() == zerotime
 
     def serialize(self) -> dict:
@@ -54,7 +67,10 @@ class Availability(LogMixin, models.Model):
         return AvailabilitySerializer(self).data
 
     def overlaps(self, other: 'Availability', strict: bool) -> bool:
-        """ Test if two Availabilities overlap. Includes direct adjacency, if in strict mode """
+        """Test if two Availabilities overlap.
+
+        :param strict: Count direct adjacency as overlap.
+        """
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object')
@@ -74,10 +90,11 @@ class Availability(LogMixin, models.Model):
         )
 
     def contains(self, other: 'Availability') -> bool:
+        """Tests if this availability starts before and ends after the other."""
         return self.start <= other.start and self.end >= other.end
 
     def merge_with(self, other: 'Availability') -> 'Availability':
-        """ Return a new Availability which spans the range of this one and the given one """
+        """Return a new Availability which spans the range of this one and the given one."""
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object.')
@@ -89,10 +106,11 @@ class Availability(LogMixin, models.Model):
         )
 
     def __or__(self, other: 'Availability') -> 'Availability':
+        """Performs the merge operation: ``availability1 | availability2``"""
         return self.merge_with(other)
 
     def intersect_with(self, other: 'Availability') -> 'Availability':
-        """ Return a new Availability which spans the range covered both by this one and the given one """
+        """Return a new Availability which spans the range covered both by this one and the given one."""
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object.')
@@ -104,6 +122,7 @@ class Availability(LogMixin, models.Model):
         )
 
     def __and__(self, other: 'Availability') -> 'Availability':
+        """Performs the intersect operation: ``availability1 & availability2``"""
         return self.intersect_with(other)
 
     @classmethod

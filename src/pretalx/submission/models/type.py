@@ -14,6 +14,13 @@ def pleasing_number(number):
 
 
 class SubmissionType(LogMixin, models.Model):
+    """Each :class:`~pretalx.submission.models.submission.Submission` has one SubmissionType.
+
+    SubmissionTypes are used to group submissions by default duration (which
+    can be overridden on a per-submission basis), and to be able to offer
+    different deadlines for some parts of the
+    :class:`~pretalx.event.models.event.Event`.
+    """
     event = models.ForeignKey(
         to='event.Event', related_name='submission_types', on_delete=models.CASCADE
     )
@@ -53,9 +60,18 @@ class SubmissionType(LogMixin, models.Model):
         )
 
     @property
-    def slug(self):
+    def slug(self) -> str:
+        """The slug makes tracks more readable in URLs.
+
+        It consists of the ID, followed by a slugified (and, in lookups,
+        optional) form of the submission type name.
+        """
         return f'{self.id}-{slugify(self.name)}'
 
     def update_duration(self):
+        """Updates the duration of all :class:`~pretalx.schedule.models.slot.TalkSlot` objects of :class:`~pretalx.submission.models.submission.Submission` objects of this type.
+
+        Runs only for submissions that do not override their default duration.
+        Should be called whenever ``duration`` changes."""
         for submission in self.submissions.filter(duration__isnull=True):
             submission.update_duration()
