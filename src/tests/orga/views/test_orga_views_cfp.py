@@ -398,10 +398,18 @@ def test_can_see_single_track(orga_client, track):
 
 @pytest.mark.django_db
 def test_can_edit_track(orga_client, track):
-    response = orga_client.post(track.urls.base, {'name_0': 'Name', 'color': 'ffff99'}, follow=True)
+    response = orga_client.post(track.urls.base, {'name_0': 'Name', 'color': '#ffff99'}, follow=True)
     assert response.status_code == 200
     track.refresh_from_db()
     assert str(track.name) == 'Name'
+
+
+@pytest.mark.django_db
+def test_cannot_set_incorrect_track_color(orga_client, track):
+    response = orga_client.post(track.urls.base, {'name_0': 'Name', 'color': '#fgff99'}, follow=True)
+    assert response.status_code == 200
+    track.refresh_from_db()
+    assert str(track.name) != 'Name'
 
 
 @pytest.mark.django_db
