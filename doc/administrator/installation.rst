@@ -3,27 +3,29 @@
 Installation
 ============
 
-This guide will help you to install pretalx on a Linux distribution, as long as
-the prerequisites are present.
+This guide will help you to install pretalx on Linux, as long as the
+prerequisites are present.
 
-We also provide an `Ansible role`_ that follows this guide, in case you
-already have an Ansible-based setup. If you prefer a docker setup, please use
-our `docker-compose setup`_.
+We also provide an `Ansible role`_ that follows this guide.  If you prefer a
+docker setup, please use our `docker-compose setup`_. (Please note that the
+pretalx community provides the docker setup. It is not supported by the pretalx
+team.)
 
 Step 0: Prerequisites
 ---------------------
 
-Please set up the following systems beforehand, we'll not explain them here (but see these links for
-external installation guides):
+Please set up the following systems beforehand. We will not explain their use
+and configuration here (but have a look at the linked pages).
 
 * **Python 3.6 or 3.7** and a ``pip`` to match. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server (you can use SQLite, but we strongly recommend not to run SQLite in production)
+* A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server. You can use SQLite, but we strongly recommend not to run SQLite in production.
 * A `redis`_ server
 
-We also recommend that you use a firewall, although this is not a pretalx-specific recommendation.
-If you're new to Linux and firewalls, we recommend that you start with `ufw`_.
+We assume that you also have the usual security measures in place, such as a
+firewall. If you're new to Linux and firewalls, we recommend that you start
+with `ufw`_.
 
 .. note:: Please do not run pretalx without HTTPS encryption. You'll handle user data and thanks
           to `Let's Encrypt`_, SSL certificates are free these days. We also *do not* provide
@@ -32,23 +34,24 @@ If you're new to Linux and firewalls, we recommend that you start with `ufw`_.
 Step 1: Unix user
 -----------------
 
+.. hint:: All code lines prepended with a ``#`` symbol are commands that you
+          need to execute on your server as ``root`` user (e.g. using
+          ``sudo``); you should run all lines prepended with a ``$`` symbol as
+          the unprivileged user.
+
 As we do not want to run pretalx as root, we first create a new unprivileged user::
 
     # adduser pretalx --disabled-password --home /var/pretalx
-
-In this guide, all code lines prepended with a ``#`` symbol are commands that
-you need to execute on your server as ``root`` user (e.g. using ``sudo``); you
-should run all lines prepended with a ``$`` symbol as the unprivileged user.
 
 
 Step 2: Database setup
 ----------------------
 
 Having the database server installed, we still need a database and a database
-user. We recommend using PostgreSQL, although pretalx also works (and is tested
-against) MariaDB and SQLite.  For databases other than PostgreSQL, please refer
-to their documentation on how to set up a database and a database user with the
-appropriate permissions::
+user. We recommend using PostgreSQL. pretalx also works (and runs tests
+against) MariaDB and SQLite. If you do not use PostgreSQL, please refer to the
+appropriate documentation on how to set up a database. For PostgreSQL, run
+these commands::
 
   # sudo -u postgres createuser pretalx -P
   # sudo -u postgres createdb -O pretalx pretalx
@@ -61,33 +64,38 @@ When using MySQL, make sure you set the character set of the database to ``utf8m
 Step 3: Package dependencies
 ----------------------------
 
-To build and run pretalx, you might need local system packages beyond the
-dependencies mentioned above.  Due to the impossibility of maintaining an up to
-date list for all Linux flavours out there, we sadly can't provide one here.
+Besides the packages above, you might need local system packages to build and
+run pretalx. We cannot maintain an up-to-date dependency list for all Linux
+flavours, but we can offer you a list for Ubuntu. You should be able to find
+the appropriate packages on your system from there:
 
-If you're running Ubuntu or a similar system, you'll probably want to install
-packages like ``build-essential``, ``libssl-dev``, ``python3-dev`` and
-``gettext``, plus ``libmysqlclient-dev`` if you use MariaDB.
+On Ubuntu-esque systems, you will need packages like:
 
-Please note that pretalx requires Python 3.6 or Python 3.7 – if your operating
-system doesn't come with one of those Python versions, please either find an
-alternative source for your system, or build it from source.
+- ``build-essential``
+- ``libssl-dev``
+- ``python3-dev``
+- ``gettext``
+- ``libmysqlclient-dev`` if you use MariaDB
 
-.. note::
-   You may need to replace all following mentions of ``pip`` with ``pip3.6``.
+pretalx requires Python 3.6 or Python 3.7. If you cannot find one of these
+versions for your system, you can build it from source.
+
+.. note:: You may need to replace all following mentions of ``pip`` with
+          ``pip3.6`` or ``pip3``.
 
 
 Step 4: Configuration
 ---------------------
 
-We now create a configuration directory and configuration file for pretalx::
+Now we'll create a configuration directory and configuration file for pretalx::
 
     # mkdir /etc/pretalx
     # touch /etc/pretalx/pretalx.cfg
     # chown -R pretalx:pretalx /etc/pretalx/
     # chmod 0600 /etc/pretalx/pretalx.cfg
 
-Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following content (adjusted to your environment):
+Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following
+content. But don't forget to adjust it to your environment::
 
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
@@ -97,17 +105,16 @@ Check out :ref:`configure` for details on the available configuration options.
 Step 5: Installation
 --------------------
 
-Now we will install pretalx itself. Please execute the following steps as the ``pretalx`` user. We will
-install all Python packages, including pretalx, in the user's Python environment, so that your global Python
-installation will not know of them::
+Now we will install pretalx itself. Please execute the following steps as the
+``pretalx`` user. This isolates the pretalx environment from your global Python
+versions and binaries::
 
     $ pip install --user -U pip setuptools wheel gunicorn redis
     $ pip install --user -U pretalx
 
-pretalx works your choice of database backends – we recommend using
-PostgreSQL, but MySQL, SQLite, and Oracle work as well. Use the following
-command to install the database driver (unless you use SQLite, which has its
-driver built in):
+pretalx works your choice of database backends – we recommend using PostgreSQL,
+but MySQL and SQLite work as well. Use this command to install the database
+driver (unless you use SQLite, which has its driver built in):
 
 +------------+-------------------------------------------+
 | Database   | pip package                               |
@@ -226,8 +233,8 @@ The following snippet is an example on how to configure a nginx proxy for pretal
 
 We recommend reading about setting `strong encryption settings`_ for your web server.
 
-You've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/ and log in as
-the administrator you configured above. You can now create an event, and off you go!
+You've made it! You should now be able to reach pretalx at https://pretalx.yourdomain.com/orga/
+Log in as the administrator you configured above, and create your first event!
 
 Step 8: Check the installation
 -------------------------------
@@ -241,16 +248,16 @@ case the emails are not sent)::
 
     # journalctl -u pretalx-worker
 
-In the start-up output, pretalx also lists its logging directory, which is also
-a good place to look for the reason for issues.
+If you're looking for errors, check the pretalx log. You can find the logging
+directory in the start-up output.
 
 Next Steps
 ----------
 
 Check out :ref:`configure` for details on the available configuration options.
 
-Have a look at our :ref:`maintenance` documentation to read about updates, backups,
-and monitoring.
+If you want to read about updates, backups, and monitoring, head over to our
+:ref:`maintenance` documentation!
 
 .. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
