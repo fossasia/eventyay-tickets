@@ -126,7 +126,9 @@ class Event(LogMixin, models.Model):
         max_length=7,
         null=True,
         blank=True,
-        validators=[],
+        validators=[
+            RegexValidator(r'#([0-9A-Fa-f]{3}){1,2}'),
+        ],
         verbose_name=_('Main event colour'),
         help_text=_(
             'Please provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
