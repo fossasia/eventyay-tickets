@@ -73,10 +73,10 @@ class Team(LogMixin, models.Model):
     )
     all_events = models.BooleanField(
         default=False,
-        verbose_name=_('All events by this organiser (including newly created ones)'),
+        verbose_name=_('Apply permissions to all events by this organiser (including newly created ones)'),
     )
     limit_events = models.ManyToManyField(
-        to='Event', verbose_name=_('Limit to events'), blank=True
+        to='Event', verbose_name=_('Limit permissions to these events'), blank=True
     )
     limit_tracks = models.ManyToManyField(
         to='submission.Track', verbose_name=_('Limit to tracks'), blank=True

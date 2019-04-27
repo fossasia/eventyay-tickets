@@ -105,7 +105,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         null=True,
         blank=True,
         verbose_name=_('Profile picture'),
-        help_text=_('If possible, upload an image that is least 120 Pixels wide.'),
+        help_text=_('If possible, upload an image that is least 120 pixels wide.'),
     )
     get_gravatar = models.BooleanField(
         default=False,
@@ -114,8 +114,8 @@ class User(PermissionsMixin, AbstractBaseUser):
             'If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'
         ),
     )
-    pw_reset_token = models.CharField(null=True, max_length=160)
-    pw_reset_time = models.DateTimeField(null=True)
+    pw_reset_token = models.CharField(null=True, max_length=160, verbose_name='Password reset token')
+    pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
 
     def __str__(self) -> str:
         """Not for public consumption as it includes the email address."""

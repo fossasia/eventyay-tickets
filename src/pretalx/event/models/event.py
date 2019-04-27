@@ -105,6 +105,7 @@ class Event(LogMixin, models.Model):
             validate_event_slug_blacklist,
         ],
         verbose_name=_("Short form"),
+        help_text=_('The slug may only contain letters, numbers, dots and dashes.'),
     )
     organiser = models.ForeignKey(
         to='Organiser',
@@ -116,11 +117,12 @@ class Event(LogMixin, models.Model):
     date_from = models.DateField(verbose_name=_('Event start date'))
     date_to = models.DateField(verbose_name=_('Event end date'))
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default='UTC'
+        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default='UTC',
+        help_text=_('All event dates will be localized and interpreted to be in this timezone.'),
     )
     email = models.EmailField(
-        verbose_name=_('Orga email address'),
-        help_text=_('Will be used as sender/reply-to in emails'),
+        verbose_name=_('Organiser email address'),
+        help_text=_('Will be used as sender/reply-to in emails.'),
     )
     primary_color = models.CharField(
         max_length=7,
@@ -131,7 +133,7 @@ class Event(LogMixin, models.Model):
         ],
         verbose_name=_('Main event colour'),
         help_text=_(
-            'Please provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
+            'Provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
         ),
     )
     custom_css = models.FileField(
@@ -149,8 +151,9 @@ class Event(LogMixin, models.Model):
         blank=True,
         verbose_name=_('Logo'),
         help_text=_(
-            'If you provide a logo image, we will by default not show your events name and date in the page header. '
-            'We will show your logo with a maximal height of 120 pixels.'
+            'If you provide a logo image, your event\'s name will not be shown in the event header. '
+            'The logo will be displayed left-aligned, and be allowed to grow up to the width of the'
+            'event content, if it is larger than that.'
         ),
     )
     header_image = models.FileField(
@@ -160,7 +163,7 @@ class Event(LogMixin, models.Model):
         verbose_name=_('Header image'),
         help_text=_(
             'If you provide a header image, it will be displayed instead of your event\'s color and/or header pattern '
-            'on top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
+            'at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
             'continue to be displayed, and not stretched.'
         ),
     )

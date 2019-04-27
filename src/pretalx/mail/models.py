@@ -35,7 +35,7 @@ class MailTemplate(LogMixin, models.Model):
         max_length=200,
         blank=True, null=True,
         verbose_name=_('Reply-To'),
-        help_text=_('Change the Reply-To address if you do not want to use the default orga address'),
+        help_text=_('Change the Reply-To address if you do not want to use the default organiser address'),
     )
     bcc = models.CharField(
         max_length=1000,
@@ -140,7 +140,7 @@ class QueuedMail(LogMixin, models.Model):
         null=True,
         blank=True,
         verbose_name=_('Reply-To'),
-        help_text=_('By default, the orga address is used as Reply-To.'),
+        help_text=_('By default, the organiser address is used as Reply-To.'),
     )
     cc = models.CharField(
         max_length=1000,
