@@ -17,7 +17,8 @@ documentation to help the next one who is running into the same problem. 😉
    :maxdepth: 2
    :caption: Contents:
 
-   concepts
    setup
    contributing
+   concepts
+   interfaces/index
    plugins/index

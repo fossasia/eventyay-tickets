@@ -4532,6 +4532,14 @@ dd, dt {
 .rst-content dt a.reference.internal {
     margin-left: auto;
 }
+a.reference.internal code {
+    font-family: "Open Sans", Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: inherit;
+    border: none;
+    background: none;
+    padding: inherit;
+    color: inherit;
+}
 dl.field-list.simple {
     display: flex;
     align-items: baseline;

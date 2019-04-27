@@ -167,4 +167,4 @@ html_context = {
 favicon = 'images/favicon.ico'
 
 # Autodoc options
-autodoc_member_order = 'bysource'
+autodoc_member_order = 'groupwise'
