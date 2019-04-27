@@ -169,7 +169,14 @@ class EventWizardDisplayForm(forms.Form):
         label=_('Show on dashboard'),
         help_text=_('Show this event on this website\'s dashboard, once it is public?'),
     )
-    primary_color = forms.CharField(required=False)
+    primary_color = forms.CharField(
+        max_length=7,
+        label=_('Main event colour'),
+        help_text=_(
+            'Provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
+        ),
+        required=False,
+    )
     logo = ExtensionFileField(
         required=False,
         extension_whitelist=IMAGE_EXTENSIONS,
