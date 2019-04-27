@@ -79,6 +79,16 @@ class MailTemplate(LogMixin, models.Model):
         :param full_submission_content: Attach the complete submission with
             all its fields to the email.
         """
+        from pretalx.person.models import User
+        if isinstance(user, str):
+            address = user
+            users = None
+        elif isinstance(user, User):
+            address = None
+            users = [user]
+        else:
+            raise Exception('First argument to to_mail must be a string or a User, not ' + str(type(user)))
+
         with override(locale):
             context = context or dict()
             try:
