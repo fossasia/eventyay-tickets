@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='submission',
             name='abstract',
-            field=models.TextField(blank=True, help_text='A concise summary of your talk in one or two sentences. You can use markdown here.', null=True, verbose_name='Abstract'),
+            field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='description',
-            field=models.TextField(blank=True, help_text='A full-text description of your talk and its contents. You can use markdown here.', null=True, verbose_name='Description'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

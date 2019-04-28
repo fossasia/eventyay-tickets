@@ -16,13 +16,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='date_from',
-            field=models.DateField(default=datetime.date(2017, 7, 15), verbose_name='Event start date'),
+            field=models.DateField(default=datetime.date(2017, 7, 15)),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='event',
             name='date_to',
-            field=models.DateField(default=datetime.date(2017, 7, 15), verbose_name='Event end date'),
+            field=models.DateField(default=datetime.date(2017, 7, 15)),
             preserve_default=False,
         ),
     ]

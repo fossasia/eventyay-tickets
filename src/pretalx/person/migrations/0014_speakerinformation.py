@@ -17,11 +17,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SpeakerInformation',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('include_submitters', models.BooleanField(default=False, help_text="Show to every submitter regardless of their submissions' status", verbose_name='Include all submitters')),
-                ('exclude_unconfirmed', models.BooleanField(default=False, help_text='Show to speakers only once they have confirmed attendance', verbose_name='Exclude unconfirmed speakers')),
-                ('title', i18nfield.fields.I18nCharField(max_length=200, verbose_name='Subject')),
-                ('text', i18nfield.fields.I18nTextField(help_text='You can use markdown here.', verbose_name='Text')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                ('include_submitters', models.BooleanField(default=False)),
+                ('exclude_unconfirmed', models.BooleanField(default=False)),
+                ('title', i18nfield.fields.I18nCharField(max_length=200)),
+                ('text', i18nfield.fields.I18nTextField()),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='information', to='event.Event')),
             ],
             bases=(pretalx.common.mixins.models.LogMixin, models.Model),

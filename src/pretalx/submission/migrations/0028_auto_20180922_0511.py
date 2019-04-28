@@ -14,21 +14,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cfp',
             name='text',
-            field=i18nfield.fields.I18nTextField(blank=True, help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='text'),
+            field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='feedback',
             name='review',
-            field=models.TextField(help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', verbose_name='Review'),
+            field=models.TextField(),
         ),
         migrations.AlterField(
             model_name='submission',
             name='abstract',
-            field=models.TextField(blank=True, help_text='A concise summary of your talk in one or two sentences. You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='Abstract'),
+            field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='description',
-            field=models.TextField(blank=True, help_text='A full-text description of your talk and its contents. You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='Description'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='mailtemplate',
             name='reply_to',
-            field=models.CharField(blank=True, help_text='Change the Reply-To address if you do not want to use the default orga address', max_length=200, null=True, verbose_name='Reply-To'),
+            field=models.CharField(blank=True, max_length=200, null=True),
         ),
     ]

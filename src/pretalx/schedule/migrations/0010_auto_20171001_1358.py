@@ -16,26 +16,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='room',
             name='capacity',
-            field=models.PositiveIntegerField(blank=True, help_text='How many people can fit in the room?', null=True, verbose_name='Capacity'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='room',
             name='description',
-            field=i18nfield.fields.I18nCharField(blank=True, help_text='A description, for example directions.', max_length=1000, null=True, verbose_name='Description'),
+            field=i18nfield.fields.I18nCharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
             model_name='room',
             name='name',
-            field=i18nfield.fields.I18nCharField(max_length=100, verbose_name='Name'),
+            field=i18nfield.fields.I18nCharField(max_length=100),
         ),
         migrations.AlterField(
             model_name='room',
             name='position',
-            field=models.PositiveIntegerField(blank=True, help_text='This is the order that rooms are displayed in in the schedule (lower = left).', null=True, verbose_name='Position'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='schedule',
             name='version',
-            field=models.CharField(blank=True, max_length=190, null=True, verbose_name='version'),
+            field=models.CharField(blank=True, max_length=190, null=True),
         ),
     ]

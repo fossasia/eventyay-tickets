@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ActivityLog',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField(db_index=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True, db_index=True)),
                 ('action_type', models.CharField(max_length=200)),
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GlobalSettings_SettingsStore',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('key', models.CharField(max_length=255)),
                 ('value', models.TextField()),
             ],

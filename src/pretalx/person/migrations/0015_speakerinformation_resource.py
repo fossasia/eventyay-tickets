@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='speakerinformation',
             name='resource',
-            field=models.FileField(blank=True, help_text='Please try to keep your upload small, preferably below 16 MB.', null=True, upload_to='', verbose_name='file'),
+            field=models.FileField(blank=True, null=True, upload_to=''),
         ),
     ]

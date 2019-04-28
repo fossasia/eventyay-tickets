@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='email',
-            field=models.EmailField(help_text='Your email address will be used for password resets and notification about your event/submissions.', max_length=254, unique=True, verbose_name='E-Mail'),
+            field=models.EmailField(max_length=254, unique=True),
         ),
         migrations.AlterField(
             model_name='user',
             name='locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('fr', 'French')], default='en', max_length=32, verbose_name='Preferred language'),
+            field=models.CharField(default='en', max_length=32),
         ),
         migrations.AlterField(
             model_name='user',

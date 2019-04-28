@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='review',
             name='score',
-            field=models.IntegerField(blank=True, null=True, verbose_name='Score'),
+            field=models.IntegerField(blank=True, null=True),
         ),
     ]

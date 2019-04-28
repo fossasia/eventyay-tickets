@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='plugins',
-            field=models.TextField(blank=True, null=True, verbose_name='Plugins'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -15,16 +15,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='track',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.Track', verbose_name='Track'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.Track'),
         ),
         migrations.AlterField(
             model_name='question',
             name='help_text',
-            field=i18nfield.fields.I18nCharField(blank=True, help_text='Will appear just like this text below the question input field. You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', max_length=200, null=True, verbose_name='help text'),
+            field=i18nfield.fields.I18nCharField(blank=True, max_length=200, null=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='is_featured',
-            field=models.BooleanField(default=False, verbose_name='Show this talk on the public sneak peek page, if the sneak peek page is enabled and the talk was accepted.'),
+            field=models.BooleanField(default=False),
         ),
     ]

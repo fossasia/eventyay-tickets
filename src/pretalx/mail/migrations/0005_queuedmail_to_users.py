@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='queuedmail',
             name='to',
-            field=models.CharField(blank=True, help_text='One email address or several addresses separated by commas.', max_length=1000, null=True, verbose_name='To'),
+            field=models.CharField(blank=True, max_length=1000, null=True),
         ),
     ]

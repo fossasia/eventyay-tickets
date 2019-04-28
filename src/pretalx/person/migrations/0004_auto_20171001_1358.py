@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventpermission',
             name='is_reviewer',
-            field=models.BooleanField(default=False, verbose_name='May write reviews for this event'),
+            field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
             model_name='speakerprofile',
             name='biography',
-            field=models.TextField(blank=True, help_text='You can use markdown here.', null=True, verbose_name='Biography'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

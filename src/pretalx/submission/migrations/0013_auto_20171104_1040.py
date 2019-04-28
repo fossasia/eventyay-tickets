@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='variant',
-            field=models.CharField(choices=[('number', 'Number'), ('string', 'Text (one-line)'), ('text', 'Multi-line text'), ('boolean', 'Yes/No'), ('file', 'File upload'), ('choices', 'Choose one from a list'), ('multiple_choice', 'Choose multiple from a list')], default='string', max_length=15),
+            field=models.CharField(default='string', max_length=15),
         ),
     ]

@@ -17,17 +17,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='email',
-            field=models.EmailField(default='event@localhost', help_text='Will be used as sender/reply-to in emails', max_length=254, verbose_name='Orga email address'),
+            field=models.EmailField(default='event@localhost', max_length=254),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='event',
             name='slug',
-            field=models.SlugField(help_text='Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.', validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$')], verbose_name='Short form'),
+            field=models.SlugField(validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$')]),
         ),
         migrations.AlterField(
             model_name='event',
             name='subtitle',
-            field=i18nfield.fields.I18nCharField(blank=True, help_text='A tagline, or motto, or description. Not mandatory.', max_length=200, null=True, verbose_name='Subtitle'),
+            field=i18nfield.fields.I18nCharField(blank=True, max_length=200, null=True),
         ),
     ]

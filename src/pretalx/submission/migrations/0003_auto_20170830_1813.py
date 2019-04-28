@@ -19,26 +19,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Feedback',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rating', models.IntegerField(blank=True, null=True, verbose_name='Rating')),
-                ('review', models.TextField(help_text='You can use markdown here!', verbose_name='Review')),
-                ('speaker', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='feedback', to=settings.AUTH_USER_MODEL, verbose_name='Speaker')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                ('rating', models.IntegerField(blank=True, null=True)),
+                ('review', models.TextField()),
+                ('speaker', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='feedback', to=settings.AUTH_USER_MODEL)),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.AddField(
             model_name='submission',
             name='accept_feedback',
-            field=models.BooleanField(default=True, verbose_name='Accept feedback'),
+            field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='do_not_record',
-            field=models.BooleanField(default=False, verbose_name="Don't record this talk."),
+            field=models.BooleanField(default=False),
         ),
         migrations.AddField(
             model_name='feedback',
             name='talk',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='feedback', to='submission.Submission', verbose_name='Talk'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='feedback', to='submission.Submission'),
         ),
     ]

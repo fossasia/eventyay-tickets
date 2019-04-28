@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='name',
-            field=models.CharField(default='', help_text='Please enter the name you wish to be displayed publicly.', max_length=120, verbose_name='Name'),
+            field=models.CharField(default='', max_length=120),
             preserve_default=False,
         ),
     ]

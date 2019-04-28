@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='logo',
-            field=models.FileField(blank=True, help_text='If you provide a logo image, we will by default not show your events name and date in the page header. We will show your logo with a maximal height of 120 pixels.', null=True, upload_to=pretalx.event.models.event.event_logo_path, verbose_name='Logo'),
+            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_logo_path),
         ),
     ]

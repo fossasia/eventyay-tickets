@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='is_featured',
-            field=models.BooleanField(default=False, verbose_name='Show this talk on the public sneak peek page, if it is enabled.'),
+            field=models.BooleanField(default=False),
         ),
     ]

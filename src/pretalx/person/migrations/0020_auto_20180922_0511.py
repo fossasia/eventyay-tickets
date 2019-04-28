@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='speakerinformation',
             name='text',
-            field=i18nfield.fields.I18nTextField(help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', verbose_name='Text'),
+            field=i18nfield.fields.I18nTextField(),
         ),
         migrations.AlterField(
             model_name='speakerprofile',
             name='biography',
-            field=models.TextField(blank=True, help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='Biography'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

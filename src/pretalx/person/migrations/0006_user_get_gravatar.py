@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='get_gravatar',
-            field=models.BooleanField(default=False, help_text='If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.', verbose_name='Retrieve profile picture via gravatar'),
+            field=models.BooleanField(default=False),
         ),
     ]

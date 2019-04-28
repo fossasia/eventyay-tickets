@@ -13,16 +13,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='tracks',
-            field=models.ManyToManyField(blank=True, help_text='You can limit this question to some tracks. Leave this field empty to apply to all tracks.', related_name='questions', to='submission.Track', verbose_name='Tracks'),
+            field=models.ManyToManyField(blank=True, related_name='questions', to='submission.Track'),
         ),
         migrations.AlterField(
             model_name='question',
             name='max_length',
-            field=models.PositiveIntegerField(blank=True, help_text='Maximum allowed text lenght in characters or words (set in CfP settings).', null=True, verbose_name='Maximum text length'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='question',
             name='min_length',
-            field=models.PositiveIntegerField(blank=True, help_text='Minimum allowed text in characters or words (set in CfP settings).', null=True, verbose_name='Minimum text length'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

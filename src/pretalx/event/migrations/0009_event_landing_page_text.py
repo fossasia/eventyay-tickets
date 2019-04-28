@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='landing_page_text',
-            field=i18nfield.fields.I18nTextField(blank=True, help_text='This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use markdown here.', null=True, verbose_name='Landing page text'),
+            field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
     ]

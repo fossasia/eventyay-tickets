@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='contains_personal_data',
-            field=models.BooleanField(default=True, help_text='If a user deletes their account, answers of questions for personal data will be removed, too.', verbose_name='Answers contain personal data'),
+            field=models.BooleanField(default=True),
         ),
     ]

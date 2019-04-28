@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Answer',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('answer', models.TextField()),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AnswerOption',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('answer', i18nfield.fields.I18nCharField(max_length=200)),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CfP',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('headline', i18nfield.fields.I18nCharField(blank=True, max_length=300, null=True)),
                 ('text', i18nfield.fields.I18nTextField(blank=True, null=True)),
                 ('deadline', models.DateTimeField(blank=True, null=True)),
@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('variant', models.CharField(choices=[('number', 'number'), ('string', 'one-line text'), ('text', 'multi-line text'), ('boolean', 'yes/no'), ('choices', 'single choice'), ('muliple_choice', 'multiple choice')], default='string', max_length=14)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                ('variant', models.CharField(default='string', max_length=14)),
                 ('question', i18nfield.fields.I18nCharField(max_length=200)),
                 ('default_answer', models.TextField(blank=True, null=True)),
                 ('required', models.BooleanField(default=False)),
@@ -64,16 +64,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Submission',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('code', models.CharField(db_index=True, max_length=16)),
-                ('title', models.CharField(max_length=200, verbose_name='Title')),
-                ('state', models.CharField(choices=[('submitted', 'submitted'), ('rejected', 'rejected'), ('accepted', 'accepted'), ('confirmed', 'confirmed'), ('canceled', 'canceled'), ('withdrawn', 'withdrawn')], default='submitted', max_length=9, verbose_name='Submission state')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Description')),
-                ('abstract', models.TextField(blank=True, null=True, verbose_name='Abstract')),
-                ('notes', models.TextField(blank=True, null=True, verbose_name='Notes', help_text='These notes are meant for the organiser and won\'t be made public.')),
+                ('title', models.CharField(max_length=200)),
+                ('state', models.CharField(default='submitted', max_length=9)),
+                ('description', models.TextField(blank=True, null=True)),
+                ('abstract', models.TextField(blank=True, null=True)),
+                ('notes', models.TextField(blank=True, null=True)),
                 ('duration', models.PositiveIntegerField(blank=True, null=True)),
-                ('content_locale', models.CharField(choices=[('en', 'English'), ('de', 'German')], default='en', max_length=32, verbose_name='Language')),
-                ('do_not_record', models.BooleanField(default=False, verbose_name="Don't record my talk.")),
+                ('content_locale', models.CharField(default='en', max_length=32)),
+                ('do_not_record', models.BooleanField(default=False)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='event.Event')),
                 ('speakers', models.ManyToManyField(blank=True, related_name='submissions', to=settings.AUTH_USER_MODEL)),
             ],
@@ -82,10 +82,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SubmissionType',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('name', i18nfield.fields.I18nCharField(max_length=100)),
-                ('default_duration', models.PositiveIntegerField(default=30, help_text='Default duration in minutes')),
-                ('max_duration', models.PositiveIntegerField(default=60, help_text='Maximum duration in minutes')),
+                ('default_duration', models.PositiveIntegerField(default=30)),
+                ('max_duration', models.PositiveIntegerField(default=60)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='submission_types', to='event.Event')),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Track',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('name', i18nfield.fields.I18nCharField(max_length=200)),
                 ('color', models.CharField(max_length=7)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='tracks', to='event.Event')),
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='submission_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.SubmissionType', verbose_name='Submission type'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.SubmissionType'),
         ),
         migrations.AddField(
             model_name='cfp',

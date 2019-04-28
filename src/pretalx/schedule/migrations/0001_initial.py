@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Availability',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='availabilities', to='event.Event')),
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Room',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('name', i18nfield.fields.I18nCharField(max_length=100)),
                 ('description', i18nfield.fields.I18nCharField(blank=True, max_length=1000, null=True)),
                 ('capacity', models.PositiveIntegerField(blank=True, null=True)),
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Schedule',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('version', models.CharField(blank=True, max_length=190, null=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='schedules', to='event.Event')),
             ],
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TalkSlot',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
                 ('room', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='talks', to='schedule.Room')),

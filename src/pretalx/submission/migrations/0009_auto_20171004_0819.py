@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='target',
-            field=models.CharField(choices=[('submission', 'per submission'), ('speaker', 'per speaker')], default='submission', max_length=10),
+            field=models.CharField(default='submission', max_length=10),
         ),
         migrations.AlterField(
             model_name='answer',

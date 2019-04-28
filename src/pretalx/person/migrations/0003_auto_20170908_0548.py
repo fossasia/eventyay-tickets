@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='speakerprofile',
             name='biography',
-            field=models.TextField(blank=True, help_text='You can use markdown here', null=True, verbose_name='Biography'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

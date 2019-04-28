@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='header_image',
-            field=models.FileField(blank=True, help_text="If you provide a header image, it will be displayed instead of your event's color and/or header pattern on top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will continue to be displayed, and not stretched.", null=True, upload_to=pretalx.event.models.event.event_logo_path, verbose_name='Header image'),
+            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_logo_path),
         ),
     ]

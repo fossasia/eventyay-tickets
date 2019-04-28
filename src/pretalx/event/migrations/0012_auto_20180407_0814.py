@@ -19,16 +19,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='custom_css',
-            field=models.FileField(blank=True, help_text='Upload a custom CSS file if changing the primary colour is not sufficient for you.', null=True, upload_to=pretalx.event.models.event.event_css_path, verbose_name='Custom Event CSS'),
+            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_css_path),
         ),
         migrations.AlterField(
             model_name='event',
             name='primary_color',
-            field=models.CharField(blank=True, help_text="Please provide a hex value like #00ff00 if you want to style pretalx in your event's colour scheme.", max_length=7, null=True, verbose_name='Main event colour'),
+            field=models.CharField(blank=True, max_length=7, null=True),
         ),
         migrations.AlterField(
             model_name='event',
             name='slug',
-            field=models.SlugField(unique=True, validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$'), pretalx.event.models.event.validate_event_slug_blacklist], verbose_name='Short form'),
+            field=models.SlugField(unique=True, validators=[django.core.validators.RegexValidator(message='The slug may only contain letters, numbers, dots and dashes.', regex='^[a-zA-Z0-9.-]+$'), pretalx.event.models.event.validate_event_slug_blacklist]),
         ),
     ]

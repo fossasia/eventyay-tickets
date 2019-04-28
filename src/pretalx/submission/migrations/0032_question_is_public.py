@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='is_public',
-            field=models.BooleanField(default=False, help_text='Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information.', verbose_name='Publish answers'),
+            field=models.BooleanField(default=False),
         ),
     ]

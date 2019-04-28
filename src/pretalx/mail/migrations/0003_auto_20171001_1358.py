@@ -16,46 +16,46 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='mailtemplate',
             name='subject',
-            field=i18nfield.fields.I18nCharField(max_length=200, verbose_name='Subject'),
+            field=i18nfield.fields.I18nCharField(max_length=200),
         ),
         migrations.AlterField(
             model_name='mailtemplate',
             name='text',
-            field=i18nfield.fields.I18nTextField(verbose_name='Text'),
+            field=i18nfield.fields.I18nTextField(),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='bcc',
-            field=models.CharField(blank=True, help_text='One email address or several addresses separated by commas.', max_length=1000, null=True, verbose_name='BCC'),
+            field=models.CharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='cc',
-            field=models.CharField(blank=True, help_text='One email address or several addresses separated by commas.', max_length=1000, null=True, verbose_name='CC'),
+            field=models.CharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='reply_to',
-            field=models.CharField(blank=True, help_text='By default, the orga address is used as Reply-To.', max_length=1000, null=True, verbose_name='Reply-To'),
+            field=models.CharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='sent',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Sent at'),
+            field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='subject',
-            field=models.CharField(max_length=200, verbose_name='Subject'),
+            field=models.CharField(max_length=200),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='text',
-            field=models.TextField(verbose_name='Text'),
+            field=models.TextField(),
         ),
         migrations.AlterField(
             model_name='queuedmail',
             name='to',
-            field=models.CharField(help_text='One email address or several addresses separated by commas.', max_length=1000, verbose_name='To'),
+            field=models.CharField(max_length=1000),
         ),
     ]

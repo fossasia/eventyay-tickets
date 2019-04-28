@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='custom_css',
-            field=models.FileField(blank=True, help_text='Upload a custom CSS file if changing the primary color is not sufficient for you.', null=True, upload_to=pretalx.event.models.event.event_css_path, verbose_name='Custom Event CSS'),
+            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_css_path),
         ),
     ]

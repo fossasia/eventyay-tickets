@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submissiontype',
             name='deadline',
-            field=models.DateTimeField(blank=True, help_text='If you want a different deadline than the global deadline for this submission type, enter it here.', null=True, verbose_name='deadline'),
+            field=models.DateTimeField(blank=True, null=True),
         ),
     ]

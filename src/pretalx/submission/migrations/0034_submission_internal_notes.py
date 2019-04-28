@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='internal_notes',
-            field=models.TextField(blank=True, help_text='Internal notes for other organisers/reviewers. Not visible to the speakers or the public.', null=True, verbose_name='Internal notes'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

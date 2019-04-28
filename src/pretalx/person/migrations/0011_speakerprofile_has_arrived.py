@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='speakerprofile',
             name='has_arrived',
-            field=models.BooleanField(default=False, verbose_name='The speaker has arrived'),
+            field=models.BooleanField(default=False),
         ),
     ]

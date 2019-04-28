@@ -13,21 +13,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='max_length',
-            field=models.PositiveIntegerField(blank=True, help_text='Maximum allowed text length in characters', null=True, verbose_name='Maximum text length'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name='question',
             name='min_length',
-            field=models.PositiveIntegerField(blank=True, help_text='Minimum allowed text length in characters', null=True, verbose_name='Minimum text length'),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='content_locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('fr', 'French')], default='en', max_length=32, verbose_name='Language'),
+            field=models.CharField(default='en', max_length=32),
         ),
         migrations.AlterField(
             model_name='submission',
             name='state',
-            field=models.CharField(choices=[('submitted', 'submitted'), ('accepted', 'accepted'), ('confirmed', 'confirmed'), ('rejected', 'rejected'), ('canceled', 'canceled'), ('withdrawn', 'withdrawn'), ('deleted', 'deleted')], default='submitted', max_length=9, verbose_name='Submission state'),
+            field=models.CharField(default='submitted', max_length=9),
         ),
     ]

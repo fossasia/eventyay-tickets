@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='active',
-            field=models.BooleanField(default=True, help_text='Inactive questions will no longer be asked.', verbose_name='active'),
+            field=models.BooleanField(default=True),
         ),
     ]

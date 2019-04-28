@@ -16,16 +16,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='help_text',
-            field=i18nfield.fields.I18nCharField(blank=True, help_text='Will appear just like this text below the question input field.', max_length=200, null=True, verbose_name='help text'),
+            field=i18nfield.fields.I18nCharField(blank=True, max_length=200, null=True),
         ),
         migrations.AlterField(
             model_name='question',
             name='target',
-            field=models.CharField(choices=[('submission', 'per submission'), ('speaker', 'per speaker'), ('reviewer', 'for reviewers')], default='submission', help_text='Do you require an answer from every speaker or for every talk?', max_length=10, verbose_name='question type'),
+            field=models.CharField(default='submission', max_length=10),
         ),
         migrations.AlterField(
             model_name='question',
             name='variant',
-            field=models.CharField(choices=[('number', 'Number'), ('string', 'Text (one-line)'), ('text', 'Multi-line text'), ('boolean', 'Yes/No'), ('choices', 'Choose one from a list'), ('multiple_choice', 'Choose multiple from a list')], default='string', max_length=15),
+            field=models.CharField(default='string', max_length=15),
         ),
     ]

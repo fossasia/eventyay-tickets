@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='recording_source',
-            field=models.CharField(blank=True, choices=[('VOC', 'media.ccc.de')], max_length=3, null=True, verbose_name='Recording Source'),
+            field=models.CharField(blank=True, max_length=3, null=True),
         ),
         migrations.AddField(
             model_name='submission',
             name='recording_url',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Recording URL'),
+            field=models.CharField(blank=True, max_length=200, null=True),
         ),
     ]

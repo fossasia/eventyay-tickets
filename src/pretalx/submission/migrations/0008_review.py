@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Review',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(blank=True, null=True, verbose_name='What do you think?')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                ('text', models.TextField(blank=True, null=True)),
                 ('score', models.IntegerField(blank=True, null=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),

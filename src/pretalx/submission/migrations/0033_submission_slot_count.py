@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='slot_count',
-            field=models.PositiveIntegerField(default=1, help_text='How many times this talk will be held.', verbose_name='Slot Count'),
+            field=models.PositiveIntegerField(default=1),
         ),
     ]

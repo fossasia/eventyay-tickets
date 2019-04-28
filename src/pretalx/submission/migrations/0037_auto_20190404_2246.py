@@ -13,16 +13,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='reviewphase',
             name='speakers_can_change_submissions',
-            field=models.BooleanField(default=False, help_text='By default, modification of submissions is locked after the CfP ends, and is re-enabled once the submission was accepted.', verbose_name='Speakers can modify their submissions before acceptance'),
+            field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
             model_name='submission',
             name='abstract',
-            field=models.TextField(blank=True, help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='Abstract'),
+            field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='submission',
             name='description',
-            field=models.TextField(blank=True, help_text='You can use <a href="https://docs.pretalx.org/en/latest/user/markdown.html" target="_blank" rel="noopener">Markdown</a> here.', null=True, verbose_name='Description'),
+            field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Resource',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('resource', models.FileField(help_text='Please try to keep your upload small, preferably below 16 MB.', upload_to='', verbose_name='file')),
-                ('description', models.CharField(blank=True, max_length=1000, null=True, verbose_name='description')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                ('resource', models.FileField(upload_to='')),
+                ('description', models.CharField(blank=True, max_length=1000, null=True)),
                 ('submission', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='resources', to='submission.Submission')),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),

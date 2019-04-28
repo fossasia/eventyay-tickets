@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='name',
-            field=models.CharField(blank=True, help_text='Please enter the name you wish to be displayed.', max_length=120, null=True, verbose_name='Name'),
+            field=models.CharField(blank=True, max_length=120, null=True),
         ),
     ]

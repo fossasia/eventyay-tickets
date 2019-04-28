@@ -20,11 +20,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MailTemplate',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('subject', i18nfield.fields.I18nCharField(max_length=200)),
                 ('text', i18nfield.fields.I18nTextField()),
-                ('reply_to', models.EmailField(blank=True, help_text='Change the Reply-To address if you do not want to use the default orga address', max_length=200, null=True, verbose_name='Reply-To')),
-                ('bcc', models.CharField(blank=True, help_text='Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!', max_length=1000, null=True, verbose_name='BCC')),
+                ('reply_to', models.EmailField(blank=True, max_length=200, null=True)),
+                ('bcc', models.CharField(blank=True, max_length=1000, null=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='mail_templates', to='event.Event')),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='QueuedMail',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('to', models.CharField(max_length=1000)),
                 ('reply_to', models.CharField(max_length=1000)),
                 ('cc', models.CharField(blank=True, max_length=1000, null=True)),

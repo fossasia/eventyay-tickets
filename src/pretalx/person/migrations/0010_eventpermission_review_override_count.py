@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventpermission',
             name='review_override_count',
-            field=models.PositiveIntegerField(default=0, help_text='How many times may this user cast an overriding votes or vetos?', verbose_name='Override votes for reviews'),
+            field=models.PositiveIntegerField(default=0),
         ),
     ]
