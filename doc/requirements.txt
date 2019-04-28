@@ -4,4 +4,4 @@ sphinx-autobuild
 sphinx-autodoc-typehints
 git+https://github.com/rixx/sphinxcontrib-django.git@master
 sphinxcontrib-httpdomain
-#-e src/
+-e src/
