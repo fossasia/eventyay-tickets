@@ -55,6 +55,7 @@ Previous conferences using pretalx include:
 - `MRMCD`_ (2017, 2018)
 - `Tools4AgileTeams`_ (2019)
 - `Camp++ 2019`_
+- `Klimacamp Leipziger Land`_ & `Degrowth Summerschool`_ (2019) 
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -111,3 +112,5 @@ to this project.
 .. _Journées du Logiciel Libre 2019: https://pretalx.jdll.org/jdll2019/cfp
 .. _Tools4AgileTeams: https://talks.seibert-media.net/tools4agileteams2019/
 .. _Camp++ 2019: https://camp.hsbp.org/2019/pp7e3/
+.. _Klimacamp Leipziger Land: https://event.klimacamp-leipzigerland.de/2019/cfp
+.. _Degrowth Summerschool: https://summerschool.degrowth.info/sc2019/cfp
