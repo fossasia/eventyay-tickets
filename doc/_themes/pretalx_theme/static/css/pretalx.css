@@ -4261,8 +4261,8 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     border: none;
 }
 
-.rst-content dd table tr {
-    background-color: none;
+.rst-content dd table tr, .rst-content dd table th, .rst-content dd table tbody tr:nth-child(2n-1) {
+    background-color: white;
     border: none;
 }
 
