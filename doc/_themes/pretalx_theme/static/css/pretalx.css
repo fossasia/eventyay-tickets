@@ -4257,6 +4257,15 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     padding-left: 0
 }
 
+.rst-content dd table {
+    border: none;
+}
+
+.rst-content dd table tr {
+    background-color: none;
+    border: none;
+}
+
 .rst-content tt, .rst-content tt, .rst-content code {
     color: #000;
     padding: 2px 5px
