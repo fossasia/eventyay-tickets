@@ -24,7 +24,7 @@ reviewing and selection of submissions, and the scheduling and release
 handling. After the event, `pretalx` allows speakers to receive feedback,
 upload their slides, and organisers to embed recordings.
 
-Read our extensive `feature list`_ in our docs to get a better idea of what
+Read our `feature list`_ in our main site to get a better idea of what
 `pretalx` can do for you, but it probably involves everything you'll need to
 curate submissions and contents for a conference with up to 200 talks.
 
@@ -88,7 +88,7 @@ to this project.
    :alt: pretalx logo
    :target: https://pretalx.com
 .. _issues: https://github.com/pretalx/pretalx/issues/
-.. _feature list: https://pretalx.readthedocs.io/en/latest/features.html
+.. _feature list: https://pretalx.com/p/features
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
 .. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
 .. _pretalx.com: https://pretalx.com/
