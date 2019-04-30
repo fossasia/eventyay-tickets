@@ -152,15 +152,14 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         + f'?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}',
                     }
                 )
-                confirmed_count = event.talks.filter(
-                    state=SubmissionStates.CONFIRMED
+                accepted_count = event.talks.filter(
+                    state=SubmissionStates.ACCEPTED
                 ).count()
-                if confirmed_count != talk_count:
-                    count = talk_count - confirmed_count
+                if accepted_count != 0:
                     result['tiles'].append(
                         {
-                            'large': count,
-                            'small': ngettext_lazy('unconfirmed talk', 'unconfirmed talks', count),
+                            'large': accepted_count,
+                            'small': ngettext_lazy('unconfirmed talk', 'unconfirmed talks', accepted_count),
                             'url': event.orga_urls.submissions
                             + f'?state={SubmissionStates.ACCEPTED}',
                         }
