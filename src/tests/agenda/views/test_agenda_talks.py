@@ -250,6 +250,7 @@ def test_talk_speaker_other_submissions_only_if_visible(
 def test_talk_review_page(
     client, django_assert_num_queries, event, submission, other_submission
 ):
-    with django_assert_num_queries(17):
+    with django_assert_num_queries(22):
         response = client.get(submission.urls.review, follow=True)
     assert response.status_code == 200
+    assert submission.title in response.content.decode()

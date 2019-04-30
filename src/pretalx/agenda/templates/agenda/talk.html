@@ -18,9 +18,11 @@
         <div class="heading-with-buttons">
         {{ submission.title }}
         <div class="buttons" id="talk-buttons">
+            {% if submission.state == 'confirmed' %}
             <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
                 <i class="fa fa-calendar"></i> .ical
             </a>
+            {% endif %}
             {% if submission.does_accept_feedback and not is_html_export %}
                 <a href="{{ submission.urls.feedback }}"
                         class="btn btn-success">
@@ -30,7 +32,7 @@
             {% if request.user in submission.speakers.all %}
                 <a href="{{ submission.urls.user_base }}"
                         class="btn btn-info">
-                    <i class="fa fa-edit"></i>{{ phrases.base.edit }}
+                    <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                 </a>
             {% endif %}
         </div>

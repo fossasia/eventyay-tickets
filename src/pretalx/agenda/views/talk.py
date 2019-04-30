@@ -21,7 +21,7 @@ from pretalx.common.phrases import phrases
 from pretalx.person.models.profile import SpeakerProfile
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
-from pretalx.submission.models import QuestionTarget, Submission
+from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
 
 
 class TalkList(EventPermissionRequired, Filterable, ListView):
@@ -126,7 +126,7 @@ class TalkView(PermissionRequired, TemplateView):
             qs = schedule.talks.filter(room__isnull=False).select_related('room')
         ctx['talk_slots'] = qs.filter(submission=self.submission).order_by('start').select_related('room')
         result = []
-        other_submissions = schedule.slots.exclude(pk=self.submission.pk)
+        other_submissions = schedule.slots.exclude(pk=self.submission.pk) if schedule else Submission.objects.none()
         for speaker in self.submission.speakers.all():
             speaker.talk_profile = speaker.event_profile(event=self.request.event)
             speaker.other_submissions = other_submissions.filter(speakers__in=[speaker]).select_related('event')
@@ -155,13 +155,26 @@ class TalkView(PermissionRequired, TemplateView):
         ).select_related('question')
 
 
-class TalkReviewView(DetailView):
+class TalkReviewView(TalkView):
     model = Submission
     slug_field = 'review_code'
     template_name = 'agenda/talk.html'
 
+    def has_permission(self):
+        return True
+
     def get_object(self):
-        return self.request.event.submissions.filter(review_code=self.kwargs['slug'])
+        obj = self.request.event.submissions.filter(
+            review_code=self.kwargs['slug'],
+            state__in=[
+                SubmissionStates.SUBMITTED,
+                SubmissionStates.ACCEPTED,
+                SubmissionStates.CONFIRMED,
+            ],
+        ).first()
+        if obj:
+            return obj
+        raise Http404()
 
 
 class SingleICalView(EventPageMixin, DetailView):
