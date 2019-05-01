@@ -134,7 +134,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 continue
             pk = key.strip('s-')
             try:
-                submission = request.event.submissions.filter(state='submitted').get(pk=pk)
+                submission = request.event.submissions.filter(state=SubmissionStates.SUBMITTED).get(pk=pk)
             except Submission.DoesNotExist:
                 total['error'] += 1
                 continue

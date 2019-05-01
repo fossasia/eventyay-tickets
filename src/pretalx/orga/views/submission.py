@@ -547,7 +547,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
             for log in ActivityLog.objects.filter(
                 event=self.request.event, action_type='pretalx.submission.create',
             )
-            if getattr(log.content_object, 'state', None) in ['accepted', 'confirmed']
+            if getattr(log.content_object, 'state', None) in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
         )
         dates = data.keys()
         if len(dates) > 1:
@@ -567,17 +567,17 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def talk_state_data(self):
-        counter = Counter(submission.get_state_display() for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+        counter = Counter(submission.get_state_display() for submission in self.request.event.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]))
         return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
     def talk_type_data(self):
-        counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+        counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]))
         return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
     def talk_track_data(self):
         if self.request.event.settings.use_tracks:
-            counter = Counter(str(submission.track) for submission in self.request.event.submissions.filter(state__in=['accepted', 'confirmed']))
+            counter = Counter(str(submission.track) for submission in self.request.event.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]))
             return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
         return ''
