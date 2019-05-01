@@ -566,7 +566,7 @@ class Event(LogMixin, models.Model):
         """
         return make_aware(
             datetime.combine(self.date_from, time(hour=0, minute=0, second=0)),
-            pytz.timezone(self.timezone),
+            self.tz,
         )
 
     @cached_property
@@ -577,8 +577,12 @@ class Event(LogMixin, models.Model):
         """
         return make_aware(
             datetime.combine(self.date_to, time(hour=23, minute=59, second=59)),
-            pytz.timezone(self.timezone),
+            self.tz,
         )
+
+    @cached_property
+    def tz(self):
+        return pytz.timezone(self.timezone)
 
     @cached_property
     def reviews(self):

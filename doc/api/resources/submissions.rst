@@ -14,6 +14,7 @@ Field                                 Type                       Description
 ===================================== ========================== =======================================================
 code                                  string                     A unique, alphanumeric identifier, also used in URLs
 speakers                              list                       A list of speaker objects, e.g. ``[{"name": "Jane", "code": "ABCDEF", "biography": "", "avatar": ""}]``
+created                               string                     The time of submission creation as an ISO-8601 formatted datetime. Available if the requesting user has organiser permission.
 title                                 string                     The submission's title
 submission_type                       string                     The submission type (e.g. "talk", "workshop")
 track                                 string                     The track this talk belongs to (e.g. "security", "design", or ``null``)

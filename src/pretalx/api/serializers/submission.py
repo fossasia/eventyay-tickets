@@ -64,10 +64,15 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
 class SubmissionOrgaSerializer(SubmissionSerializer):
     answers = AnswerSerializer(many=True)
+    created = SerializerMethodField()
+
+    def get_created(self, obj):
+        return obj.created.astimezone(obj.event.tz).isoformat()
 
     class Meta:
         model = Submission
         fields = SubmissionSerializer.Meta.fields + [
+            'created',
             'answers',
             'notes',
             'internal_notes',

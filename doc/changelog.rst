@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`682` The submission endpoint now provides a ``created`` field to organiser users.
 - :feature:`326` During event creation, pretalx provides more critical feedback, such as asking if the event is supposed to take place in the past, or suggesting good slugs.
 - :feature:`393` As an alternative to file uploads, organisers can now also provide their custom CSS directly as text.
 - :feature:`360` Within the review dashboard, organisers can now accept and reject multiple submissions at the same time.

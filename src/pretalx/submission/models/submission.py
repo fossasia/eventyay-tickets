@@ -112,6 +112,7 @@ class Submission(LogMixin, models.Model):
     :param review_code: A token used in secret URLs giving read-access to the
         submission.
     """
+    created = models.DateTimeField(null=True, auto_now_add=True)
     code = models.CharField(max_length=16, unique=True)
     speakers = models.ManyToManyField(
         to='person.User', related_name='submissions', blank=True
@@ -529,12 +530,6 @@ class Submission(LogMixin, models.Model):
             person__in=self.speaker_profiles
         )
         return Availability.intersection(all_availabilities)
-
-    @cached_property
-    def created(self):
-        return getattr(
-            self.logged_actions().order_by('timestamp').first(), 'timestamp', None
-        )
 
     def get_content_for_mail(self):
         order = ['title', 'abstract', 'description', 'notes', 'duration', 'content_locale', 'do_not_record', 'image']
