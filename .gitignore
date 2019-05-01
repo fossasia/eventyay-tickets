@@ -126,3 +126,6 @@ pretalx.cfg
 
 .pytest_cache
 *.cfg
+
+# django-perf-rec
+src/tests/**/*.yml
