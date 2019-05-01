@@ -111,6 +111,8 @@ you do, please note that these are the meanings we ascribe to them:
 +----+--------------------+
 | 🚨 | Fix CI build       |
 +----+--------------------+
+| 🧹 | Housekeeping       |
++----+--------------------+
 | 📦 | Packaging          |
 +----+--------------------+
 | 🚀 | Release            |
