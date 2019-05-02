@@ -131,7 +131,7 @@ table .form-radio, table .form-check {
 }
 
 .checkbox-multi-select {
-  height: calc(2.25rem + 2px);
+  height: calc(2.25rem - 2px);
   margin-top: 0px !important;
   width: 300px;
 
@@ -149,7 +149,7 @@ table .form-radio, table .form-check {
     border: 1px solid #ced4da;
     color: #495057;
     width: 300px;
-    z-index: 10;
+    z-index: 100;
   }
   &:hover {
     .multi-select-options {
