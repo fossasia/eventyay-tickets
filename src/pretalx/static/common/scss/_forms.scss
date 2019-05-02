@@ -144,7 +144,7 @@ table .form-radio, table .form-check {
   .multi-select-options {
     display: none;
     position: absolute;
-    margin-top: calc(2.25rem + 2px);
+    margin-top: calc(2.25rem - 2px);
     background-color: $white;
     border: 1px solid #ced4da;
     color: #495057;
