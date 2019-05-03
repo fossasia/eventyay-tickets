@@ -43,12 +43,12 @@
                         {{ question.get_target_display }}
                     </td>
                     <td>
-                        <i class="fa fa-{% if question.required %}check-circle text-success{% else %}times-circle text-danger{% endif %}">
+                        <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
 
                         </i>
                     </td>
                     <td>
-                        <i class="fa fa-{% if question.active %}check-circle text-success{% else %}times-circle text-danger{% endif %}">
+                        <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
 
                         </i>
                     </td>
