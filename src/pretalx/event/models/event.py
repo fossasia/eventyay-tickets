@@ -122,7 +122,7 @@ class Event(LogMixin, models.Model):
     )
     email = models.EmailField(
         verbose_name=_('Organiser email address'),
-        help_text=_('Will be used as sender/reply-to in emails.'),
+        help_text=_('Will be used as Reply-To in emails.'),
     )
     primary_color = models.CharField(
         max_length=7,
