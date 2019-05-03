@@ -64,6 +64,7 @@ def mail_send_task(
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()
         sender = event.settings.get('mail_from')
+        reply_to = reply_to or event.settings.get('mail_reply_to')
         if not sender or sender == 'noreply@example.org':
             reply_to = reply_to or [formataddr((str(event.name), event.email))]
             sender = settings.MAIL_FROM

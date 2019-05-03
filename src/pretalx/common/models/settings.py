@@ -85,6 +85,7 @@ hierarkey.add_default(
 )
 
 hierarkey.add_default('mail_from', '', str)
+hierarkey.add_default('mail_reply_to', '', str)
 hierarkey.add_default('mail_subject_prefix', '', str)
 hierarkey.add_default('mail_signature', '', str)
 hierarkey.add_default('smtp_use_custom', 'False', bool)
