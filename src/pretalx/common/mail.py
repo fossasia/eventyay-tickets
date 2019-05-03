@@ -61,8 +61,7 @@ def mail_send_task(
     if reply_to and isinstance(reply_to, str):
         reply_to = reply_to.split(',')
     if event:
-        event = Event.objects.filter(id=event).first()
-    if event:
+        event = Event.objects.get(pk=event)
         sender = event.settings.get('mail_from')
         if sender == 'noreply@example.org' or not sender:
             sender = event.email
