@@ -43,6 +43,9 @@ class Availability(LogMixin, models.Model):
         event = getattr(getattr(self, 'event', None), 'slug', None)
         return f'Availability(event={event}, person={person}, room={room})'
 
+    def __hash__(self):
+        return hash((self.event, self.person, self.room, self.start, self.end))
+
     def __eq__(self, other: 'Availability') -> bool:
         """Comparisons like ``availability1 == availability2``.
 
