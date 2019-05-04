@@ -3,6 +3,7 @@ from rest_framework import viewsets
 
 from pretalx.api.serializers.review import ReviewSerializer
 from pretalx.submission.models import Review
+from pretalx.submission.models.submission import SubmissionStates
 
 
 class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
@@ -15,7 +16,7 @@ class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
             return Review.objects.none()
         queryset = Review.objects.filter(submission__event=self.request.event).exclude(
             submission__speakers__in=[self.request.user]
-        )
+        ).exclude(submission__state=SubmissionStates.DELETED)
         limit_tracks = self.request.user.teams.filter(
             models.Q(all_events=True)
             | models.Q(

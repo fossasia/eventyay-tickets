@@ -354,6 +354,17 @@ def test_orga_can_see_reviews(orga_client, event, review):
 
 
 @pytest.mark.django_db
+def test_orga_cannot_see_reviews_of_deleted_submission(orga_client, event, review):
+    review.submission.state = 'deleted'
+    review.submission.save()
+    response = orga_client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content['results']) == 0
+
+
+@pytest.mark.django_db
 def test_reviewer_can_see_reviews(review_client, event, review, other_review):
     response = review_client.get(event.api_urls.reviews, follow=True)
     content = json.loads(response.content.decode())
