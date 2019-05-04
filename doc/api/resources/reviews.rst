@@ -30,7 +30,12 @@ Endpoints
 
 .. http:get:: /api/events/{event}/reviews
 
-   Returns a list of all reviews the authenticated user/token has access to.
+   Returns a list of all reviews the authenticated user/token has access to. For
+   organisers, this includes all reviews on the event except for talks the
+   requesting user has submitted. For reviewers it will include all reviews
+   they have access to, which may vary depending on track permissions and the
+   current review phase.
+
 
    **Example request**:
 
@@ -59,8 +64,8 @@ Endpoints
             "text": "This is a good submission",
             "score": 10,
             "override_vote": null,
-            "created": 
-            "updated": 
+            "created": "2019-05-04T23:40:00",
+            "updated": "2019-05-04T23:40:00";
             "answers": [
               {
                 "id": 1,
@@ -106,8 +111,8 @@ Endpoints
          "text": "This is a good submission",
          "score": 10,
          "override_vote": null,
-         "created": 
-         "updated": 
+         "created": "2019-05-04T23:40:00",
+         "updated": "2019-05-04T23:40:00";
          "answers": [
            {
              "id": 1,
