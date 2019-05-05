@@ -137,7 +137,14 @@ class User(PermissionsMixin, AbstractBaseUser):
         :type event: :class:`pretalx.event.models.event.Event`
         :retval: :class:`pretalx.person.models.profile.EventProfile`
         """
-        return self.profiles.select_related('event').get_or_create(event=event)[0]
+        from pretalx.person.models.profile import SpeakerProfile
+        profile = self.profiles.select_related('event').filter(event=event).first()
+        if profile:
+            return profile
+        profile = SpeakerProfile(event=event, user=self)
+        if self.pk:
+            profile.save()
+        return profile
 
     def log_action(self, action: str, data: dict=None, person=None, orga: bool=False):
         """Create a log entry for this user.

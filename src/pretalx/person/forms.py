@@ -113,7 +113,7 @@ class SpeakerProfileForm(
         self.with_email = kwargs.pop('with_email', True)
         self.essential_only = kwargs.pop('essential_only', False)
         if self.user:
-            kwargs['instance'] = self.user.profiles.filter(event=self.event).first()
+            kwargs['instance'] = self.user.event_profile(self.event)
         else:
             kwargs['instance'] = SpeakerProfile()
         super().__init__(*args, **kwargs, event=self.event)
