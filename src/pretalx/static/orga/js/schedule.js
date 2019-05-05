@@ -119,7 +119,7 @@ Vue.component('talk', {
     <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings}]" v-bind:style="style" @mousedown="onMouseDown"
          :title="title" data-toggle="tooltip">
       <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
-      <span v-if="!isDragged">{{ talk.title }}</span>
+      <span v-if="!isDragged || !this.talk.start">{{ talk.title }}</span>
       <span class="time" v-if="this.talk.start && this.isDragged">
         <span>{{ humanStart }}</span>
       </span>
