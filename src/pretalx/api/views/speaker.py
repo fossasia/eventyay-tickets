@@ -18,7 +18,7 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_base_queryset(self):
         if self.request.user.has_perm('orga.view_speakers', self.request.event):
-            return SpeakerProfile.objects.filter(event=self.request.event)
+            return SpeakerProfile.objects.filter(event=self.request.event, user__isnull=False)
         if (
             self.request.event.current_schedule
             and self.request.event.settings.show_schedule
