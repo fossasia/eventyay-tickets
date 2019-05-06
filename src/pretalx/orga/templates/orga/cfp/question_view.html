@@ -13,7 +13,9 @@
     <div class="submit-group">
         <span></span>
         <span>
+            {% if questions %}
             <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% trans "Send out reminders for unanswered questions" %}</a>
+            {% endif %}
             <a href="{{request.event.cfp.urls.new_question }}" class="btn btn-success">
                 <i class="fa fa-plus"></i>
                 {% trans "Add a new question" %}
