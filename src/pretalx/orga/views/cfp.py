@@ -215,8 +215,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        question = self.object or self.instance
-        return question.urls.base
+        if 'pk' in self.kwargs and self.object:
+            return self.object.urls.base
+        return self.request.event.cfp.urls.questions
 
     @transaction.atomic
     def form_valid(self, form):
