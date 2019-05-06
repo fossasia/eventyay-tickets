@@ -80,13 +80,14 @@
                     </td>
                 </tr>
             {% empty %}
-                <tr colspan=100><td>
-                    {% trans "You have configured no questions yet." %}
-                    <a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-info">
+                <tr>
+                    <td colspan=3 class="w-75">{% trans "You have configured no questions yet." %}</td>
+                    <td class="text-right"><a href="{{request.event.cfp.urls.new_question }}?type={{ type }}" class="btn btn-small btn-success ml-auto">
                         <i class="fa fa-plus"></i>
                         {% trans "Add a question now!" %}
                     </a>
-                </td></tr>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
