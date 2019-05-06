@@ -23,13 +23,14 @@ class QuestionsForm(forms.Form):
         )
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
-        target_object = None
         if self.target_type == QuestionTarget.SUBMISSION:
             target_object = self.submission
         elif self.target_type == QuestionTarget.SPEAKER:
             target_object = self.speaker
         elif self.target_type == QuestionTarget.REVIEWER:
             target_object = self.review
+        else:
+            target_object = self.speaker
         readonly = kwargs.pop('readonly', False)
 
         super().__init__(*args, **kwargs)

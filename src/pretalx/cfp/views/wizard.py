@@ -109,6 +109,8 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         if step == 'questions':
             kwargs['target'] = ''
             kwargs['track'] = (self.get_cleaned_data_for_step('info') or dict()).get('track')
+            if not self.request.user.is_anonymous:
+                kwargs['speaker'] = self.request.user
         return kwargs
 
     def get_form_initial(self, step):
