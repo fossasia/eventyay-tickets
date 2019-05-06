@@ -229,7 +229,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             if not formset:
                 return self.get(self.request, *self.args, **self.kwargs)
         if form.has_changed():
-            action = 'pretalx.question.' + ('update' if self.object else 'create')
+            action = 'pretalx.question.' + ('update' if 'pk' in self.kwargs else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
         messages.success(self.request, 'The question has been saved.')
         return result
