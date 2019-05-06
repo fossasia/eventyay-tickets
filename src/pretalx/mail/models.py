@@ -88,6 +88,9 @@ class MailTemplate(LogMixin, models.Model):
             users = [user]
         else:
             raise Exception('First argument to to_mail must be a string or a User, not ' + str(type(user)))
+        if users and (not commit or skip_queue):
+            address = ','.join(user.email for user in users)
+            users = None
 
         with override(locale):
             context = context or dict()
@@ -111,11 +114,11 @@ class MailTemplate(LogMixin, models.Model):
                 subject=subject,
                 text=text,
             )
-            if commit and not skip_queue:
+            if skip_queue:
+                mail.send()
+            elif commit:
                 mail.save()
                 mail.to_users.set(users)
-            elif skip_queue:
-                mail.send()
         return mail
 
 

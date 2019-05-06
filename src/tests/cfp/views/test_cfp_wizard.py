@@ -230,6 +230,10 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
+        mail = djmail.outbox[0]
+        assert sub.title in mail.subject
+        assert sub.title in mail.body
+        assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user(
@@ -261,6 +265,10 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
+        mail = djmail.outbox[0]
+        assert sub.title in mail.subject
+        assert sub.title in mail.body
+        assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
@@ -288,6 +296,10 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
+        mail = djmail.outbox[0]
+        assert sub.title in mail.subject
+        assert sub.title in mail.body
+        assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_only_review_questions(
@@ -317,6 +329,10 @@ class TestWizard:
         assert s_user.name == 'Jane Doe'
         assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
         assert len(djmail.outbox) == 1
+        mail = djmail.outbox[0]
+        assert sub.title in mail.subject
+        assert sub.title in mail.body
+        assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions_broken_template(
