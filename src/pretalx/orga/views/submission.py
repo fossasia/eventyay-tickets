@@ -501,7 +501,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     def submission_timeline_data(self):
         data = Counter(
-            timestamp.date()
+            timestamp.astimezone(self.request.event.tz).date()
             for timestamp in ActivityLog.objects.filter(
                 event=self.request.event, action_type='pretalx.submission.create'
             ).values_list('timestamp', flat=True)
@@ -543,7 +543,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     def talk_timeline_data(self):
         data = Counter(
-            log.timestamp.date()
+            log.timestamp.astimezone(self.request.event.tz).date()
             for log in ActivityLog.objects.filter(
                 event=self.request.event, action_type='pretalx.submission.create',
             )
