@@ -178,7 +178,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             {
                 'large': count,
                 'small': ngettext_lazy('sent email', 'sent emails', count),
-                'url': event.orga_urls.compose_mails,
+                'url': event.orga_urls.sent_mails,
             }
         )
         result['tiles'] += self.get_review_tiles()
