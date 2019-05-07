@@ -28,7 +28,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
         return self.request.event.submissions.all()
 
     def get_serializer_class(self):
-        if self.request.is_orga:
+        if self.request.user.has_perm('orga.view_submissions', self.request.event):
             return SubmissionOrgaSerializer
         return SubmissionSerializer
 
