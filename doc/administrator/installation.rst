@@ -95,7 +95,7 @@ Now we'll create a configuration directory and configuration file for pretalx::
     # chmod 0600 /etc/pretalx/pretalx.cfg
 
 Fill the configuration file ``/etc/pretalx/pretalx.cfg`` with the following
-content. But don't forget to adjust it to your environment::
+content. But don't forget to adjust it to your environment:
 
 .. literalinclude:: ../../src/pretalx.example.cfg
    :language: ini
