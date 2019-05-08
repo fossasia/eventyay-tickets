@@ -1,5 +1,14 @@
 {% extends 'orga/base.html' %}
+{% load compress %}
+{% load copyable %}
 {% load i18n %}
+{% load static %}
+
+{% block scripts %}
+{% compress js %}
+<script defer src="{% static "common/js/copy.js" %}"></script>
+{% endcompress %}
+{% endblock %}
 
 {% block content %}
 
@@ -7,7 +16,11 @@
 
 {% if settings.DEBUG %}
 <div class="alert alert-danger"><span></span><span>
-    {% trans "You are running pretalx in development mode. Please <strong>STOP</strong> and set the DEBUG variable to False if this page is in any way reachable from the internet." %}
+    {% blocktrans trimmed %}
+    You are running pretalx in development mode. Please <strong>STOP</strong>
+    and set the DEBUG variable to False if this page is in any way reachable
+    from the internet.
+    {% endblocktrans %}
     </span>
 </div>
 {% endif %}
@@ -24,30 +37,30 @@
 <ul>
     <li>{% trans "Database" %}
         <ul>
-            <li>{% trans "Driver" %}: {{ settings.DATABASES.default.ENGINE }}</li>
-            <li>{% trans "Name" %}: {{ settings.DATABASES.default.NAME }}</li>
+            <li>{% trans "Driver" %}: {{ settings.DATABASES.default.ENGINE|copyable }}</li>
+            <li>{% trans "Name" %}: {{ settings.DATABASES.default.NAME|copyable }}</li>
         </ul>
     </li>
     <li>{% trans "Files" %}
         <ul>
-            <li>{% trans "Log" %}: {{ settings.LOG_DIR }}</li>
-            <li>{% trans "Static files" %}: {{ settings.STATIC_ROOT }}</li>
-            <li>{% trans "Media files" %}: {{ settings.MEDIA_ROOT }}</li>
+            <li>{% trans "Log" %}: {{ settings.LOG_DIR|copyable }}</li>
+            <li>{% trans "Static files" %}: {{ settings.STATIC_ROOT|copyable }}</li>
+            <li>{% trans "Media files" %}: {{ settings.MEDIA_ROOT|copyable }}</li>
         </ul>
     </li>
     <li>{% trans "Mails" %}
         <ul>
-            <li>{% trans "Host" %}: {{ settings.EMAIL_HOST }}</li>
-            <li>{% trans "Port" %}: {{ settings.EMAIL_PORT }}</li>
-            <li>{% trans "User" %}: {{ settings.EMAIL_USER }}</li>
+            <li>{% trans "Host" %}: {{ settings.EMAIL_HOST|copyable }}</li>
+            <li>{% trans "Port" %}: {{ settings.EMAIL_PORT|copyable }}</li>
+            <li>{% trans "User" %}: {{ settings.EMAIL_USER|copyable }}</li>
             <li>{% trans "Password" %}: {% if settings.EMAIL_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
         </ul>
     </li>
 </ul>
 <h2>{% trans "System" %}</h2>
 <ul>
-    <li>{% trans "Executable" %}: {{ executable }}</li>
-    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin }}</li>{% endfor %}{% else %}–{% endif %}</li>
+    <li>{% trans "Executable" %}: {{ executable|copyable }}</li>
+    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}{% else %}–{% endif %}</li>
     <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}{{ settings.ADMINS|join:', ' }}{% else %}{% trans "On errors, no emails will be sent." %}{% endif %}</li>
 </ul>
 <h2>{% trans "Links" %}</h2>
