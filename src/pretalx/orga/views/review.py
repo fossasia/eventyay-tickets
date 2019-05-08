@@ -106,7 +106,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         def get_order_tuple(obj):
             return tuple(
                 getattr(obj, key)
-                if not (key == 'current_score' and not obj.current_score)
+                if not (key == 'current_score' and obj.current_score is None)
                 else 100 * -int(reverse)
                 for key in order
             )
