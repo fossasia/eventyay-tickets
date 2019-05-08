@@ -44,7 +44,9 @@
                             {{ user }}
                         </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
                     {% endfor %}
-                    {{ mail.to }}
+                    {% if mail.to %}
+                        {{ mail.to }}
+                    {% endif %}
                 </td>
                 <td>
                     {{ mail.sent }}

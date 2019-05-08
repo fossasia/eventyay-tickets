@@ -57,7 +57,9 @@
                             {{ user }}
                         </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
                     {% endfor %}
+                    {% if mail.to %}
                     {{ mail.to }}
+                    {% endif %}
                 </td>
                 <td class="action-column">
                     <a href="{{ mail.urls.send }}"
