@@ -1,5 +1,6 @@
 import pytest
 
+from pretalx.common.templatetags.copyable import copyable
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.templatetags.times import times
 from pretalx.common.templatetags.xmlescape import xmlescape
@@ -41,3 +42,19 @@ def test_common_templatetag_xmlescape(input_, output):
 ))
 def test_common_templatetag_rich_text(text, richer_text):
     assert rich_text(text) == f'<p>{richer_text}</p>'
+
+
+@pytest.mark.parametrize('value,copy', (
+    ('"foo', '"foo'),
+    ('foo', """
+    <span data-destination="foo"
+            class="copyable-text"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Copy"
+    >
+        foo
+    </span>""")
+))
+def test_common_templatetag_copyable(value, copy):
+    assert copyable(value) == copy
