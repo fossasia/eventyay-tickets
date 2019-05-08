@@ -2,7 +2,7 @@ import sys
 
 from django.views.generic import TemplateView
 from django_context_decorator import context
-from djanog.conf import settings
+from django.conf import settings
 
 from pretalx.celery_app import app
 from pretalx.common.mixins.views import PermissionRequired
