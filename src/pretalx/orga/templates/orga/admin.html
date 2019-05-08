@@ -63,5 +63,24 @@
     <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}{% else %}–{% endif %}</li>
     <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}{{ settings.ADMINS|join:', ' }}{% else %}{% trans "On errors, no emails will be sent." %}{% endif %}</li>
 </ul>
+
+<h3>redis</h3>
+{% if not settings.HAS_REDIS %}
+    {% trans "No redis server has been configured." %}
+{% else %}
+
+{% endif %}
+
+<h3>Celery</h3>
+{% if not settings.HAS_CELERY %}
+    {% trans "No celery workers have been configured." %}
+{% else %}
+    <ul>
+        <li>{% trans "Broker" %}: {{ settings.CELERY_BROKER_URL|copyable }}</li>
+        <li>{% trans "Backend" %}: {{ settings.CELERY_RESULT_BACKEND|copyable }}</li>
+        <li>{% trans "Current queue length" %}: {{ queue_length }}</li>
+    </ul>
+{% endif %}
+
 <h2>{% trans "Links" %}</h2>
 {% endblock %}
