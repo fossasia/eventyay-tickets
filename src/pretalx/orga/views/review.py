@@ -117,6 +117,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             reverse=reverse,
         )
 
+    @context
+    def can_accept_submissions(self):
+        return self.request.event.submissions.filter(state=SubmissionStates.SUBMITTED).exists() and self.request.user.has_perm('submission.accept_or_reject_submissions', self.request.event)
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(

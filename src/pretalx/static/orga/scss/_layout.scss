@@ -836,12 +836,16 @@ legend .submission-state-dropdown {
       left: 0px;
     }
   }
-  tbody tr{
+  tbody tr, thead tr {
     .unmark-radio {
       opacity: 0;
       margin-top: -4px;
       color: $gray-500;
       font-size: 16px;
+    }
+    .unmark-radio.always-active {
+      opacity: 1;
+      cursor: pointer;
     }
     .radio {
       label::before {

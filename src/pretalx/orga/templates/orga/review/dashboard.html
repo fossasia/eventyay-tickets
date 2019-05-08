@@ -17,6 +17,7 @@
 {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
 {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+{% has_perm 'submission.accept_or_reject_submissions' request.user request.event as can_accept_or_reject %}
 <div class="alert alert-info">
     {% if can_review and next_submission %}
         <a href="{{ next_submission.orga_urls.reviews }}">
@@ -78,7 +79,19 @@
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
             <th>{% trans "Type" %}</th>
             <th>{% trans "State" %}</th>
-            <th class="text-center"></th>
+            <th class="action-row d-flex justify-space-around">
+                {% if can_accept_or_reject %}
+                <div class="radio form-radio accept">
+                    <input type="radio" id="a-all" name="s-all" value="accept" class="radio">
+                    <label for="a-all" title="{% trans "Accept all" %}"></label>
+                </div>
+                <div class="radio form-radio reject">
+                    <input type="radio" id="r-all" name="s-all" value="reject" class="radio">
+                    <label for="r-all" title="{% trans "Reject all" %}"></label>
+                </div>
+                <div class="unmark-radio always-active" id="u-all" title="{% trans "Unset accept/reject vote for all" %}"><i class="fa fa-ban"></i></div>
+                {% endif %}
+            </th>
         </tr>
     </thead>
     <tbody>
