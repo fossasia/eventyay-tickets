@@ -96,7 +96,6 @@
     </thead>
     <tbody>
     {% for submission in submissions %}
-        {% has_perm 'submission.accept_submission' request.user submission as can_accept_submission %}
         <tr class="{{ submission.state }}">
             <td>
                 {% review_score submission %}
@@ -118,7 +117,7 @@
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
             </td>
             <td class="action-row d-flex justify-space-around">
-                {% if submission.state == 'submitted' and can_accept_submission %}
+                {% if submission.state == 'submitted' and can_accept_or_reject %}
                 <div class="radio form-radio accept">
                     <input type="radio" id="a-{{ submission.pk }}" name="s-{{ submission.pk }}" value="accept" class="radio">
                     <label for="a-{{ submission.pk }}" title="{% trans "Accept" %}"></label>
