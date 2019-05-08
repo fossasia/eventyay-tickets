@@ -1,0 +1,54 @@
+{% extends 'orga/base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+<h1>{% trans "Administrator information" %}</h1>
+
+{% if settings.DEBUG %}
+<div class="alert alert-danger"><span></span><span>
+    {% trans "You are running pretalx in development mode. Please <strong>STOP</strong> and set the DEBUG variable to False if this page is in any way reachable from the internet." %}
+    </span>
+</div>
+{% endif %}
+
+<h2>{% trans "Settings" %}</h2>
+
+<div class="alert alert-info">
+    {% if settings.CONFIG_FILES %}
+    {% trans "Settings have been loaded from:" %} {{ settings.CONFIG_FILES|join:', ' }}
+    {% else %}
+    {% trans "No settings files were found, all settings are either set to their default value or have been read from environment variables." %}
+    {% endif %}
+</div>
+<ul>
+    <li>{% trans "Database" %}
+        <ul>
+            <li>{% trans "Driver" %}: {{ settings.DATABASES.default.ENGINE }}</li>
+            <li>{% trans "Name" %}: {{ settings.DATABASES.default.NAME }}</li>
+        </ul>
+    </li>
+    <li>{% trans "Files" %}
+        <ul>
+            <li>{% trans "Log" %}: {{ settings.LOG_DIR }}</li>
+            <li>{% trans "Static files" %}: {{ settings.STATIC_ROOT }}</li>
+            <li>{% trans "Media files" %}: {{ settings.MEDIA_ROOT }}</li>
+        </ul>
+    </li>
+    <li>{% trans "Mails" %}
+        <ul>
+            <li>{% trans "Host" %}: {{ settings.EMAIL_HOST }}</li>
+            <li>{% trans "Port" %}: {{ settings.EMAIL_PORT }}</li>
+            <li>{% trans "User" %}: {{ settings.EMAIL_USER }}</li>
+            <li>{% trans "Password" %}: {% if settings.EMAIL_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
+        </ul>
+    </li>
+</ul>
+<h2>{% trans "System" %}</h2>
+<ul>
+    <li>{% trans "Executable" %}: {{ executable }}</li>
+    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin }}</li>{% endfor %}{% else %}–{% endif %}</li>
+    <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}{{ settings.ADMINS|join:', ' }}{% else %}{% trans "On errors, no emails will be sent." %}{% endif %}</li>
+</ul>
+<h2>{% trans "Links" %}</h2>
+{% endblock %}

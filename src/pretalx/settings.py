@@ -11,7 +11,7 @@ from pretalx.common.settings.config import build_config
 from pretalx.common.settings.utils import log_initial
 
 
-config, config_files = build_config()
+config, CONFIG_FILES = build_config()
 CONFIG = config
 
 ##
@@ -463,7 +463,7 @@ if DEBUG:
 WSGI_APPLICATION = 'pretalx.wsgi.application'
 log_initial(
     debug=DEBUG,
-    config_files=config_files,
+    config_files=CONFIG_FILES,
     db_name=db_name,
     db_backend=db_backend,
     LOG_DIR=LOG_DIR,

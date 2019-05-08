@@ -5,8 +5,8 @@ from pretalx.event.models.event import SLUG_CHARS
 from pretalx.orga.views import cards
 
 from .views import (
-    auth, cfp, dashboard, event, mails, organiser, person,
-    plugins, review, schedule, speaker, submission,
+    admin, auth, cfp, dashboard, event, mails, organiser,
+    person, plugins, review, schedule, speaker, submission,
 )
 
 app_name = 'orga'
@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='auth.recover'),
 
     url('^$', RedirectView.as_view(url='event', permanent=False)),
+    url('^admin/', admin.AdminDashboard.as_view(), name='admin.dashboard'),
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url(r'^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
