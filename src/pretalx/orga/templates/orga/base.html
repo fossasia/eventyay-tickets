@@ -350,6 +350,12 @@
                     <span>{% trans "Organisers" %}</span>
                 </a>
                 {% endif %}
+                {% if request.user.is_administrator %}
+                <a class="nav-link {% if "/orga/admin/" in request.path %} active{% endif %}" href="/orga/admin/">
+                    <i class="fa fa-users"></i>
+                    <span>{% trans "Admin information" %}</span>
+                </a>
+                {% endif %}
                 {% for nav_element in nav_global %}
                     <a class="nav-link {% if nav_element.active %} active{% endif %}" href="{{ nav_element.url }}">
                         {% if nav_element.icon and "." in nav_element.icon %}
