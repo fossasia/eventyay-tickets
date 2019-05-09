@@ -836,6 +836,9 @@ legend .submission-state-dropdown {
       left: 0px;
     }
   }
+  td {
+    margin-top: -1px;
+  }
   tbody tr, thead tr {
     .unmark-radio {
       opacity: 0;

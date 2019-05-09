@@ -79,7 +79,7 @@
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
             <th>{% trans "Type" %}</th>
             <th>{% trans "State" %}</th>
-            <th class="action-row d-flex justify-space-around">
+            <th><span class="action-row d-flex justify-space-around">
                 {% if can_accept_or_reject %}
                 <div class="radio form-radio accept">
                     <input type="radio" id="a-all" name="s-all" value="accept" class="radio">
@@ -91,7 +91,7 @@
                 </div>
                 <div class="unmark-radio always-active" id="u-all" title="{% trans "Unset accept/reject vote for all" %}"><i class="fa fa-ban"></i></div>
                 {% endif %}
-            </th>
+            </span></th>
         </tr>
     </thead>
     <tbody>
