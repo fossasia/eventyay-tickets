@@ -21,8 +21,8 @@
 <div class="alert alert-info">
     {% if can_review and next_submission %}
         <a href="{{ next_submission.orga_urls.reviews }}">
-        {{ missing_reviews|length }}
-        {% blocktrans trimmed count count=missing_reviews|length %}
+        {{ missing_reviews }}
+        {% blocktrans trimmed count count=missing_reviews %}
         submission is waiting for your review.
         {% plural %}
         submissions are waiting for your review.
