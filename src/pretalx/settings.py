@@ -135,6 +135,13 @@ else:
             os.chown(SECRET_FILE, os.getuid(), os.getgid())
             f.write(SECRET_KEY)
 
+## TASK RUNNER SETTINGS
+HAS_CELERY = bool(config.get('celery', 'broker', fallback=None))
+if HAS_CELERY:
+    CELERY_BROKER_URL = config.get('celery', 'broker')
+    CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+else:
+    CELERY_TASK_ALWAYS_EAGER = True
 
 ## DATABASE SETTINGS
 db_backend = config.get('database', 'backend')
@@ -155,7 +162,7 @@ DATABASES = {
         'PASSWORD': config.get('database', 'password'),
         'HOST': config.get('database', 'host'),
         'PORT': config.get('database', 'port'),
-        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
+        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' or HAS_CELERY else 120,
         'OPTIONS': db_opts,
         'TEST': {
             'CHARSET': 'utf8mb4',
@@ -278,12 +285,6 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-HAS_CELERY = bool(config.get('celery', 'broker', fallback=None))
-if HAS_CELERY:
-    CELERY_BROKER_URL = config.get('celery', 'broker')
-    CELERY_RESULT_BACKEND = config.get('celery', 'backend')
-else:
-    CELERY_TASK_ALWAYS_EAGER = True
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 MESSAGE_TAGS = {
     messages.INFO: 'info',
