@@ -117,6 +117,8 @@ you do, please note that these are the meanings we ascribe to them:
 +----+--------------------+
 | 🚀 | Release            |
 +----+--------------------+
+| 🗺  | Translations       |
++----+--------------------+
 
 .. _open an issue: https://github.com/pretalx/pretalx/issues/new
 .. _GitHub: https://github.com/pretalx/pretalx
