@@ -137,7 +137,7 @@
                                 {{ answer.answer }}
                             </td>
                         {% endfor %}
-                        <td>{{ review.text }}</td>
+                        <td>{{ review.text|rich_text }}</td>
                         <td>{{ review.user }}</td>
                     </tr>
                 {% endif %}

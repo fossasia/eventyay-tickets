@@ -51,6 +51,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         self.fields['text'].widget.attrs['rows'] = 2
         self.fields['text'].widget.attrs['placeholder'] = phrases.orga.example_review
         self.fields['text'].required = event.settings.review_text_mandatory
+        self.fields['text'].help_text += ' ' + phrases.base.use_markdown
 
     def clean_score(self):
         score = self.cleaned_data.get('score')
