@@ -65,6 +65,11 @@ class TeamTrackForm(I18nModelForm):
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
+
     class Meta:
         model = TeamInvite
         fields = ('email',)
