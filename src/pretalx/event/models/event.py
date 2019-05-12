@@ -746,6 +746,7 @@ class Event(LogMixin, models.Model):
             AnswerOption.objects.filter(question__event=self),
             Question.all_objects.filter(event=self),
             self.submissions(manager='all_objects').all(),
+            self.tracks.all(),
             self.submission_types.all(),
             self.schedules.all(),
             SpeakerProfile.objects.filter(event=self),

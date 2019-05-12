@@ -131,7 +131,9 @@ def test_event_model_talks(slot, other_slot, accepted_submission, submission, re
 
 
 @pytest.mark.django_db
-def test_shred_used_event(resource, answered_choice_question, personal_answer, rejected_submission, deleted_submission, mail, sent_mail, room_availability, slot, unreleased_slot, past_slot, feedback, canceled_talk, review, information, other_event):
+def test_shred_used_event(resource, answered_choice_question, personal_answer, rejected_submission, deleted_submission, mail, sent_mail, room_availability, slot, unreleased_slot, past_slot, feedback, canceled_talk, review, information, other_event, track):
+    rejected_submission.track = track
+    rejected_submission.save()
     assert Event.objects.count() == 2
     rejected_submission.event.organiser.shred()
     assert Event.objects.count() == 1
