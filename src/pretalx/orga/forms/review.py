@@ -38,6 +38,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         self.fields['score'] = forms.ChoiceField(
             choices=choices,
             required=event.settings.review_score_mandatory,
+            widget=forms.RadioSelect,
             disabled=kwargs.get('read_only', False),
             help_text=ngettext_lazy(
                 'You have {count} override vote left.',
