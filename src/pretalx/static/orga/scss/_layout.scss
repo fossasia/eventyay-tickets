@@ -910,3 +910,9 @@ legend .submission-state-dropdown {
     right: 0;
   }
 }
+main .progress::after {
+  color: black;
+  content: attr(title);
+  margin-left: auto;
+  margin-right: auto;
+}

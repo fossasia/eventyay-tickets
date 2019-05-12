@@ -148,9 +148,8 @@
     </table>
     {% endif %}
     {% if not read_only %}
-        <div class="progress">
+        <div class="progress" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
-                {{ done }} / {{ total_reviews }}
             </div>
         </div>
         <div class="submit-group"><span></span>
