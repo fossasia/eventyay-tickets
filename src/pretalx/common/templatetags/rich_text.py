@@ -16,6 +16,7 @@ ALLOWED_TAGS = [
     'code',
     'div',
     'em',
+    'hr',
     'i',
     'li',
     'ol',
