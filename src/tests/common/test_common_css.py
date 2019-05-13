@@ -42,14 +42,6 @@ a.other-descriptor {
     )
 
 
-@pytest.fixture
-def some_object():
-    class Foo:
-        pass
-
-    return Foo()
-
-
 def test_valid_css(valid_css):
     assert validate_css(valid_css) == valid_css
 

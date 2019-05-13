@@ -308,13 +308,6 @@ def administrator():
 
 
 @pytest.fixture
-def superuser():
-    return User.objects.create_superuser(
-        email='testuser@examplecom', password='testpassw0rd!'
-    )
-
-
-@pytest.fixture
 def orga_user(event):
     user = User.objects.create_user(password='orgapassw0rd', email='orgauser@orga.org')
     team = event.organiser.teams.filter(
@@ -385,12 +378,6 @@ def orga_client(orga_user, client):
 
 
 @pytest.fixture
-def other_orga_client(other_orga_user, client):
-    client.force_login(other_orga_user)
-    return client
-
-
-@pytest.fixture
 def review_client(review_user, client):
     client.force_login(review_user)
     return client
@@ -405,12 +392,6 @@ def other_review_client(other_review_user, client):
 @pytest.fixture
 def administrator_client(administrator, client):
     client.force_login(administrator)
-    return client
-
-
-@pytest.fixture
-def superuser_client(superuser, client):
-    client.force_login(superuser)
     return client
 
 
