@@ -29,5 +29,5 @@ class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
             tracks = set()
             for team in limit_tracks:
                 tracks.update(team.limit_tracks.filter(event=self.request.event))
-            queryset = queryset.filter(track__in=tracks)
+            queryset = queryset.filter(submission__track__in=tracks)
         return queryset
