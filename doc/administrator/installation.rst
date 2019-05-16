@@ -20,8 +20,11 @@ and configuration here (but have a look at the linked pages).
 * **Python 3.6 or 3.7** and a ``pip`` to match. You can use ``python -V`` and ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
-* A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server. You can use SQLite, but we strongly recommend not to run SQLite in production.
-* A `redis`_ server
+* A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server.
+  You can use SQLite, but we strongly recommend not to run SQLite in
+  production.
+* A `redis`_ server, if you want to use pretalx with an asynchronous task
+  runner or improved caching.
 
 We assume that you also have the usual security measures in place, such as a
 firewall. If you're new to Linux and firewalls, we recommend that you start
@@ -109,8 +112,13 @@ Now we will install pretalx itself. Please execute the following steps as the
 ``pretalx`` user. This isolates the pretalx environment from your global Python
 versions and binaries::
 
-    $ pip install --user -U pip setuptools wheel gunicorn redis
+    $ pip install --user -U pip setuptools wheel gunicorn
     $ pip install --user -U pretalx
+
+If you intend to run pretalx with asynchronous task runners or with redis as
+cache server, you can install ``pretalx[redis]`` instead, which will pull in
+the appropriate dependencies. Please note that you should also use
+``pretalx[redis]`` when you upgrade pretalx in this case.
 
 pretalx works your choice of database backends – we recommend using PostgreSQL,
 but MySQL and SQLite work as well. Use this command to install the database
