@@ -18,7 +18,7 @@
         <div class="alert alert-info">
             <span>
             {{ request.event.settings.review_help_text|rich_text }}
-            {% if not form.instance.pk and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
+            {% if not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
                 {% blocktrans trimmed %}
                     You will be able to see other reviews once you have given yours.
                 {% endblocktrans %}
