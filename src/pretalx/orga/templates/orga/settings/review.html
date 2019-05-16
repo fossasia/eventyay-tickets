@@ -18,6 +18,13 @@
         {% csrf_token %}
 
         <h2>{% trans "Review settings" %}</h2>
+        <div class="alert alert-info col-md-9 ml-auto">
+            {% blocktrans trimmed %}
+            If you require neither a review score nor a review text, reviewers will
+            be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
+            button when reviewing submissions.
+            {% endblocktrans %}
+        </div>
         {% bootstrap_form form layout='event' %}
         <div class="submit-group panel">
             <span></span>

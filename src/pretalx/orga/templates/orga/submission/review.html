@@ -152,12 +152,17 @@
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
             </div>
         </div>
-        <div class="submit-group"><span></span>
+        <div class="submit-group">
+            <div>
+                <button type="submit" class="btn btn-lg btn-outline-success">{% trans "Save" %}</button>
+            </div>
             <div>
                 {% if skip_for_now %}
                 <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
                 {% endif %}
-                <button type="submit" class="btn btn-lg btn-info">{% trans "Save" %}</button>
+                {% if not request.event.settings.review_score_mandatory and not request.event.settings.review_text_mandatory %}
+                <button type="submit" class="btn btn-lg btn-info" name="show_next" value="1" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Abstain" %}</button>
+                {% endif %}
                 <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Save and next" %}</button>
             </div>
         </div>

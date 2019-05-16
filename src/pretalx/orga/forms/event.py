@@ -325,6 +325,12 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
 
 
 class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
+    review_score_mandatory = forms.BooleanField(
+        label=_('Require a review score'), required=False
+    )
+    review_text_mandatory = forms.BooleanField(
+        label=_('Require a review text'), required=False
+    )
     review_help_text = I18nFormField(
         label=_('Help text for reviewers'),
         help_text=_(
@@ -342,12 +348,6 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         ),
         required=False,
     )
-    review_score_mandatory = forms.BooleanField(
-        label=_('Require a review score'), required=False
-    )
-    review_text_mandatory = forms.BooleanField(
-        label=_('Require a review text'), required=False
-    )
     review_min_score = forms.IntegerField(
         label=_('Minimum score'), help_text=_('The minimum score reviewers can assign')
     )
@@ -364,6 +364,7 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
             self.fields['allow_override_votes'].help_text += f' {additional}'
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)
+        self.score_label_fields = []
         for number in range(abs(maximum - minimum + 1)):
             index = minimum + number
             self.fields[f'review_score_name_{index}'] = forms.CharField(
