@@ -31,6 +31,13 @@ If you ran into trouble during ``migrate``, run ``showmigrations``. It will
 show you the current state of all pretalx migrations. It may be useful debug
 output to include in bug reports about database problems.
 
+``python -m pretalx clearsessions``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This command will remove old and unusable sessions from the database. We
+recommend that you run it about once a month to keep your database at a
+reasonable size.
+
 Debug commands
 --------------
 

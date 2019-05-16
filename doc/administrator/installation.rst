@@ -251,6 +251,19 @@ case the emails are not sent)::
 If you're looking for errors, check the pretalx log. You can find the logging
 directory in the start-up output.
 
+Step 9: Provide periodic tasks
+------------------------------
+
+There are a couple of things in pretalx that should be run periodically. It
+doesn't matter how you run them, so you can go with your choice of periodic
+tasks, be they systemd timers, cron, or something else entirely.
+
+In the same environment as you ran the previous pretalx commands (e.g. the
+``pretalx`` user), you should run
+
+- ``python -m pretalx runperiodic`` about every five minutes.
+- ``python -m pretalx clearsessions`` about once a month.
+
 Next Steps
 ----------
 
