@@ -10,6 +10,7 @@ from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mail import SendMailException
 from pretalx.common.mixins import LogMixin
+from pretalx.common.templatetags.rich_text import ALLOWED_TAGS
 from pretalx.common.urls import EventUrls
 
 
@@ -187,9 +188,8 @@ class QueuedMail(LogMixin, models.Model):
     @classmethod
     def make_html(cls, text, event=None):
         body_md = bleach.linkify(
-            bleach.clean(
-                markdown.markdown(text), tags=bleach.ALLOWED_TAGS + ['p', 'pre']
-            )
+            bleach.clean(markdown.markdown(text), tags=ALLOWED_TAGS),
+            parse_email=True,
         )
         html_context = {
             'body': body_md,
