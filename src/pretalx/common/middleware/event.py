@@ -140,7 +140,7 @@ class EventPermissionMiddleware:
 
     @staticmethod
     def _language_from_browser(request, supported):
-        accept_value = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+        accept_value = request.headers.get('Accept-Language', '')
         for accept_lang, _ in parse_accept_lang_header(accept_value):
             if accept_lang == '*':
                 break

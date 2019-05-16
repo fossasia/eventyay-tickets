@@ -26,10 +26,10 @@ class MultiDomainMiddleware:
     @staticmethod
     def get_host(request):
         # We try three options, in order of decreasing preference.
-        if settings.USE_X_FORWARDED_HOST and ('HTTP_X_FORWARDED_HOST' in request.META):
-            host = request.META['HTTP_X_FORWARDED_HOST']
-        elif 'HTTP_HOST' in request.META:
-            host = request.META['HTTP_HOST']
+        if settings.USE_X_FORWARDED_HOST and ('X-Forwarded-Host' in request.headers):
+            host = request.headers['X-Forwarded-Host']
+        elif 'Host' in request.headers:
+            host = request.headers['Host']
         else:
             # Reconstruct the host using the algorithm from PEP 333.
             host = request.META['SERVER_NAME']

@@ -19,8 +19,8 @@ class AuthenticationTokenMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if not request.user.is_authenticated and 'HTTP_AUTHORIZATION' in request.META:
-            token = request.META['HTTP_AUTHORIZATION'].lower().lstrip('token ')
+        if not request.user.is_authenticated and 'Authorization' in request.headers:
+            token = request.headers['Authorization'].lower().lstrip('token ')
             user = authenticate(
                 request,
                 token=token,

@@ -98,8 +98,8 @@ class ExporterView(ScheduleDataView):
             exporter.is_orga = getattr(self.request, 'is_orga', False)
             file_name, file_type, data = exporter.render()
             etag = hashlib.sha1(str(data).encode()).hexdigest()
-            if 'HTTP_IF_NONE_MATCH' in request.META:
-                if request.META['HTTP_IF_NONE_MATCH'] == etag:
+            if 'If-None-Match' in request.headers:
+                if request.headers['If-None-Match'] == etag:
                     return HttpResponseNotModified()
             resp = HttpResponse(data, content_type=file_type)
             resp['ETag'] = etag
