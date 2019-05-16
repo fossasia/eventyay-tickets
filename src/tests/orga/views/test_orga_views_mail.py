@@ -238,12 +238,60 @@ def test_orga_can_compose_single_mail(orga_client, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
+    submission.track = track
+    submission.save()
+    response = orga_client.get(
+        event.orga_urls.compose_mails, follow=True,
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails, follow=True,
+        data={'bcc': '', 'cc': '', 'reply_to': '', 'subject': 'foo', 'text': 'bar', 'tracks': [track.pk]}
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_mail_for_submission_type(orga_client, event, submission):
+    response = orga_client.get(
+        event.orga_urls.compose_mails, follow=True,
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails, follow=True,
+        data={'bcc': '', 'cc': '', 'reply_to': '', 'subject': 'foo', 'text': 'bar', 'submission_types': [submission.submission_type.pk]}
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_mail_for_track_and_type_no_doubles(orga_client, event, submission, track):
+    submission.track = track
+    submission.save()
+    response = orga_client.get(
+        event.orga_urls.compose_mails, follow=True,
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails, follow=True,
+        data={'bcc': '', 'cc': '', 'reply_to': '', 'subject': 'foo', 'text': 'bar', 'tracks': [track.pk], 'submission_types': [submission.submission_type.pk]}
+    )
+    assert response.status_code == 200
+    assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
+
+
+@pytest.mark.django_db
 def test_orga_can_compose_single_mail_selected_submissions(orga_client, event, submission, other_submission):
     assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
     response = orga_client.post(
         event.orga_urls.compose_mails, follow=True,
         data={
-            'recipients': 'selected_submissions',
             'submissions': [other_submission.code],
             'bcc': '', 'cc': '', 'reply_to': '', 'subject': 'foo', 'text': 'bar',
         },

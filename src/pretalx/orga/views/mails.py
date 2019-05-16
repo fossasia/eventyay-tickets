@@ -236,7 +236,6 @@ class ComposeMail(EventPermissionRequired, FormView):
                 code=self.request.GET.get('submission')
             ).first()
             if submission:
-                initial['recipients'] = 'selected_submissions'
                 initial['submissions'] = submission.code
         if 'email' in self.request.GET:
             initial['additional_recipients'] = self.request.GET.get('email')
@@ -249,6 +248,26 @@ class ComposeMail(EventPermissionRequired, FormView):
     def form_valid(self, form):
         user_set = set()
 
+        submission_filters = dict()
+        submissions = form.cleaned_data.get('submissions')
+        if submissions:
+            users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
+                code__in=submissions
+            ))
+            user_set.update(users)
+        tracks = form.cleaned_data.get('tracks')
+        if tracks:
+            users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
+                track_id__in=tracks
+            ))
+            user_set.update(users)
+        submission_types = form.cleaned_data.get('submission_types')
+        if submission_types:
+            users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
+                submission_type_id__in=submission_types
+            ))
+            user_set.update(users)
+
         for recipient in form.cleaned_data.get('recipients'):
             if recipient == 'reviewers':
                 users = (
@@ -258,12 +277,7 @@ class ComposeMail(EventPermissionRequired, FormView):
                     .distinct()
                 )
             else:
-                if recipient == 'selected_submissions':
-                    submission_filter = {
-                        'code__in': form.cleaned_data.get('submissions')
-                    }
-                else:
-                    submission_filter = {'state': recipient}  # e.g. "submitted"
+                submission_filter = {'state': recipient}  # e.g. "submitted"
 
                 users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
                     **submission_filter
@@ -277,15 +291,19 @@ class ComposeMail(EventPermissionRequired, FormView):
             if m.strip()
         ]
         for email in additional_mails:
-            QueuedMail.objects.create(
-                event=self.request.event,
-                to=email,
-                reply_to=form.cleaned_data.get('reply_to', self.request.event.email),
-                cc=form.cleaned_data.get('cc'),
-                bcc=form.cleaned_data.get('bcc'),
-                subject=form.cleaned_data.get('subject'),
-                text=form.cleaned_data.get('text'),
-            )
+            user = User.objects.filter(email__iexact=email).first()
+            if user:
+                user_set.add(user)
+            else:
+                QueuedMail.objects.create(
+                    event=self.request.event,
+                    to=email,
+                    reply_to=form.cleaned_data.get('reply_to', self.request.event.email),
+                    cc=form.cleaned_data.get('cc'),
+                    bcc=form.cleaned_data.get('bcc'),
+                    subject=form.cleaned_data.get('subject'),
+                    text=form.cleaned_data.get('text'),
+                )
         for user in user_set:
             mail = QueuedMail.objects.create(
                 event=self.request.event,

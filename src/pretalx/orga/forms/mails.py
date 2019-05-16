@@ -92,27 +92,34 @@ class WriteMailForm(forms.ModelForm):
             ),
             ('confirmed', _('All confirmed speakers')),
             ('rejected', _('All rejected speakers')),
-            (
-                'selected_submissions',
-                _('All speakers of the selected submissions below'),
-            ),
             ('reviewers', _('All reviewers in your team')),
         ),
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
+    tracks = forms.MultipleChoiceField(label=_('All submissions in these tracks'), required=False)
+    submission_types = forms.MultipleChoiceField(label=_('All submissions of these types'), required=False)
+    submissions = forms.MultipleChoiceField(required=False)
     additional_recipients = forms.CharField(
         label=_('Recipients'),
         required=False,
         help_text=_('One email address or several addresses separated by commas.'),
     )
-    submissions = forms.MultipleChoiceField(required=False)
     reply_to = forms.CharField(required=False)
 
     def __init__(self, event, **kwargs):
         super().__init__(**kwargs)
         self.fields['submissions'].choices = [
             (sub.code, sub.title) for sub in event.submissions.all()
+        ]
+        if event.settings.use_tracks and event.tracks.all().exists():
+            self.fields['tracks'].choices = [
+                (track.pk, track.name) for track in event.tracks.all()
+            ]
+        else:
+            del self.fields['tracks']
+        self.fields['submission_types'].choices = [
+            (submission_type.pk, submission_type.name) for submission_type in event.submission_types.all()
         ]
         self.fields['text'].help_text = _(
             'Please note: Placeholders will not be substituted, this is an upcoming feature. '
