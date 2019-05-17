@@ -13,6 +13,7 @@ from django.utils.timezone import make_aware, now
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
+from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
@@ -327,6 +328,15 @@ class Event(LogMixin, models.Model):
     @cached_property
     def html_export_url(self) -> str:
         return get_base_url(self) + self.orga_urls.schedule_export_download
+
+    @cached_property
+    def cache(self):
+        """
+        Returns an :py:class:`ObjectRelatedCache` object. This behaves equivalent to
+        Django's built-in cache backends, but puts you into an isolated environment for
+        this event, so you don't have to prefix your cache keys.
+        """
+        return ObjectRelatedCache(self, field='slug')
 
     def save(self, *args, **kwargs):
         was_created = not bool(self.pk)
