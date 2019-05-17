@@ -103,6 +103,7 @@ setup(
         'libsass==0.18.0',  # https://sass.github.io/libsass-python/changes.html
         'Markdown==3.1.*',  # https://python-markdown.github.io/change_log/
         'publicsuffixlist==0.6.*',
+        'python-dateutil==2.8.*',  # https://dateutil.readthedocs.io/en/stable/changelog.html
         'pytz',
         'qrcode==6.1',  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
         'reportlab==3.5.*',  # https://www.reportlab.com/documentation/relnotes/
