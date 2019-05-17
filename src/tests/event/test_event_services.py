@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 from django.core import mail as djmail
+from django.test import override_settings
 from django.utils.timezone import now
 
 from pretalx.common.models.log import ActivityLog
@@ -94,6 +95,23 @@ def test_periodic_event_services(event):
     event = event.__class__.objects.get(slug=event.slug)
     assert event.settings.sent_mail_event_created
     assert len(djmail.outbox) == 1
+
+
+@pytest.mark.django_db
+@override_settings(CACHES={
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'lalala',
+    }
+})
+@pytest.mark.parametrize('should_rebuild_schedule', (True, False))
+def test_periodic_event_services_schedule_export(event, schedule, should_rebuild_schedule):
+    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    event.cache.set('rebuild_schedule_export', should_rebuild_schedule)
+    assert event.cache.get('rebuild_schedule_export') is should_rebuild_schedule
+    periodic_event_services(event.slug)
+    event = event.__class__.objects.get(slug=event.slug)
+    assert not event.cache.get('rebuild_schedule_export')
 
 
 @pytest.mark.django_db

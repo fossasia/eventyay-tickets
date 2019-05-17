@@ -6,6 +6,7 @@ from datetime import timedelta
 
 import dateutil.parser
 from csp.decorators import csp_update
+from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
@@ -67,11 +68,19 @@ class ScheduleExportTriggerView(EventPermissionRequired, View):
     permission_required = 'orga.view_schedule'
 
     def post(self, request, event):
-        export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
-        messages.success(
-            self.request,
-            _('A new export is being generated and will be available soon.'),
-        )
+        if settings.HAS_CELERY:
+            export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id})
+            messages.success(
+                self.request,
+                _('A new export is being generated and will be available soon.'),
+            )
+        else:
+            self.request.event.cache.set('rebuild_schedule_export', True, None)
+            messages.success(
+                self.request,
+                _('A new export will be generated on the next scheduled opportunity – please contact your administrator for details.'),
+            )
+
         return redirect(self.request.event.orga_urls.schedule_export)
 
 

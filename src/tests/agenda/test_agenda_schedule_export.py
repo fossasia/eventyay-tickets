@@ -4,6 +4,7 @@ from glob import glob
 
 import pytest
 import requests
+from django.conf import settings
 from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import reverse
@@ -210,7 +211,7 @@ def test_feed_view(slot, client, django_assert_num_queries, schedule):
 
 @pytest.mark.django_db
 def test_html_export_event_required():
-    from django.core.management import call_command
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html')
@@ -220,7 +221,7 @@ def test_html_export_event_required():
 
 @pytest.mark.django_db
 def test_html_export_event_unknown(event):
-    from django.core.management import call_command
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html', 'foobar222')
@@ -230,13 +231,37 @@ def test_html_export_event_unknown(event):
 
 
 @pytest.mark.django_db
-def test_html_export_release(mocker, event):
-    mocker.patch('django.core.management.call_command')
-
+@override_settings(CACHES={
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'lalala',
+    }
+})
+def test_html_export_release_without_celery(mocker, event):
+    event.cache.delete('rebuild_schedule_export')
+    assert not event.cache.get('rebuild_schedule_export')
     event.settings.export_html_on_schedule_release = True
     event.wip_schedule.freeze(name="ohaio means hello")
+    assert event.cache.get('rebuild_schedule_export')
 
-    from django.core.management import call_command
+
+@pytest.mark.django_db
+@override_settings(CACHES={
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'lalala',
+    }},
+    HAS_CELERY=True,
+)
+def test_html_export_release_with_celery(mocker, event):
+    mocker.patch('django.core.management.call_command')
+
+    from django.core.management import call_command  # Import here to avoid overriding mocks
+
+    event.cache.delete('rebuild_schedule_export')
+    event.settings.export_html_on_schedule_release = True
+    event.wip_schedule.freeze(name="ohaio means hello")
+    assert not event.cache.get('rebuild_schedule_export')
 
     call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
 
@@ -245,19 +270,18 @@ def test_html_export_release(mocker, event):
 def test_html_export_release_disabled(mocker, event):
     mocker.patch('django.core.management.call_command')
 
+    from django.core.management import call_command  # Import here to avoid overriding mocks
+
     event.settings.export_html_on_schedule_release = False
     event.wip_schedule.freeze(name="ohaio means hello")
-
-    from django.core.management import call_command
 
     call_command.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_html_export_language(event, slot):
-    from django.core.management import call_command
-    from django.conf import settings
-    import os.path
+
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     event.locale = 'de'
     event.locale_array = 'de,en'
@@ -276,12 +300,9 @@ def test_html_export_language(event, slot):
 @pytest.mark.django_db
 def test_schedule_export_schedule_html_task(mocker, event, slot):
     mocker.patch('django.core.management.call_command')
-
-    from pretalx.agenda.tasks import export_schedule_html
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     export_schedule_html.apply_async(kwargs={'event_id': event.id})
-
-    from django.core.management import call_command
 
     call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
 
@@ -289,23 +310,41 @@ def test_schedule_export_schedule_html_task(mocker, event, slot):
 @pytest.mark.django_db
 def test_schedule_export_schedule_html_task_nozip(mocker, event, slot):
     mocker.patch('django.core.management.call_command')
-
-    from pretalx.agenda.tasks import export_schedule_html
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': False})
-
-    from django.core.management import call_command
-
     call_command.assert_called_with('export_schedule_html', event.slug)
 
 
+@override_settings(CACHES={
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'lalala',
+    }
+})
 @pytest.mark.django_db
-def test_schedule_orga_trigger_export(
+def test_schedule_orga_trigger_export_without_celery(
+    orga_client, django_assert_max_num_queries, event
+):
+    event.cache.delete('rebuild_schedule_export')
+    assert not event.cache.get('rebuild_schedule_export')
+    with django_assert_max_num_queries(50):
+        response = orga_client.post(
+            event.orga_urls.schedule_export_trigger, follow=True
+        )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert event.cache.get('rebuild_schedule_export')
+
+
+@pytest.mark.django_db
+@override_settings(HAS_CELERY=True)
+def test_schedule_orga_trigger_export_with_celery(
     mocker, orga_client, django_assert_max_num_queries, event
 ):
-    from pretalx.agenda.tasks import export_schedule_html
 
     mocker.patch('pretalx.agenda.tasks.export_schedule_html.apply_async')
+    from pretalx.agenda.tasks import export_schedule_html
 
     with django_assert_max_num_queries(50):
         response = orga_client.post(
@@ -321,8 +360,6 @@ def test_schedule_orga_trigger_export(
 def test_schedule_orga_download_export(
     mocker, orga_client, django_assert_max_num_queries, event, slot
 ):
-    from pretalx.agenda.tasks import export_schedule_html
-
     export_schedule_html.apply_async(kwargs={'event_id': event.id, 'make_zip': True})
     with django_assert_max_num_queries(45):
         response = orga_client.get(
@@ -335,9 +372,7 @@ def test_schedule_orga_download_export(
 
 @pytest.mark.django_db
 def test_html_export_full(event, other_event, slot, canceled_talk):
-    from django.core.management import call_command
-    from django.conf import settings
-    import os.path
+    from django.core.management import call_command  # Import here to avoid overriding mocks
 
     event.primary_color = '#111111'
     event.save()

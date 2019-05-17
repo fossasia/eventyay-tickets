@@ -1,8 +1,13 @@
+import os.path
 from datetime import timedelta
 
 from django.dispatch import receiver
 from django.utils.timezone import now
 
+from pretalx.agenda.management.commands.export_schedule_html import (
+    Command as ExportScheduleHtml,
+)
+from pretalx.agenda.tasks import export_schedule_html
 from pretalx.celery_app import app
 from pretalx.common.signals import periodic_task
 from pretalx.event.models import Event
@@ -48,8 +53,33 @@ def task_periodic_event_services(event_slug):
                 event.settings.sent_mail_event_over = True
 
 
+@app.task()
+def task_periodic_schedule_export(event_slug):
+    event = (
+        Event.objects.filter(slug=event_slug)
+        .prefetch_related('_settings_objects', 'submissions__slots')
+        .first()
+    )
+    zip_path = ExportScheduleHtml.get_output_zip_path(event)
+    last_time = event.cache.get('last_schedule_rebuild')
+    _now = now()
+    should_rebuild_schedule = (
+        event.cache.get('rebuild_schedule_export') or (
+            event.settings.export_html_on_schedule_release and not os.path.exists(zip_path) and (
+                not last_time or now() - last_time > timedelta(days=1)
+            )
+        )
+    )
+    if should_rebuild_schedule:
+        event.cache.delete('rebuild_schedule_export')
+        event.cache.set('last_schedule_rebuild', _now, None)
+        export_schedule_html.apply_async(kwargs={'event_id': event.id})
+
+
 @receiver(periodic_task)
 def periodic_event_services(sender, **kwargs):
     for event in Event.objects.all():
         task_periodic_event_services.apply_async(args=(event.slug,))
+        if event.current_schedule:
+            task_periodic_schedule_export.apply_async(args=(event.slug,))
         event.update_review_phase()

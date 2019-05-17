@@ -3,6 +3,7 @@ from contextlib import suppress
 from urllib.parse import quote
 
 import pytz
+from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.functional import cached_property
@@ -94,8 +95,10 @@ class Schedule(LogMixin, models.Model):
             del wip_schedule.event.current_schedule
 
         if self.event.settings.export_html_on_schedule_release:
-            export_schedule_html.apply_async(kwargs={'event_id': self.event.id})
-
+            if settings.HAS_CELERY:
+                export_schedule_html.apply_async(kwargs={'event_id': self.event.id})
+            else:
+                self.event.cache.set('rebuild_schedule_export', True, None)
         return self, wip_schedule
 
     @transaction.atomic
