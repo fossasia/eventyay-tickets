@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
-from pretalx.common.forms.widgets import CheckboxMultiDropdown
+from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates
 
@@ -121,6 +121,11 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'track',
         ]
         public_fields = ['title', 'abstract', 'description', 'image']
+        widgets = {
+            'abstract': MarkdownWidget,
+            'description': MarkdownWidget,
+            'notes': MarkdownWidget,
+        }
 
 
 class SubmissionFilterForm(forms.Form):

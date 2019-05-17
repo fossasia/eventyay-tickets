@@ -12,6 +12,7 @@ from i18nfield.forms import I18nModelForm
 from pretalx.common.forms.fields import (
     IMAGE_EXTENSIONS, PasswordConfirmationField, PasswordField,
 )
+from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag
 from pretalx.common.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
@@ -193,6 +194,9 @@ class SpeakerProfileForm(
         model = SpeakerProfile
         fields = ('biography',)
         public_fields = ['name', 'biography', 'avatar']
+        widgets = {
+            'biography': MarkdownWidget,
+        }
 
 
 class OrgaProfileForm(forms.ModelForm):

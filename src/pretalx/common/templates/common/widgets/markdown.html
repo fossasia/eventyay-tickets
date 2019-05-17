@@ -1,0 +1,12 @@
+<nav class="markdown-nav">
+  <div class="nav nav-tabs" id="nav-tab-{{ widget.name }}" role="tablist">
+    <a class="nav-item nav-link active" id="nav-tab-{{ widget.name }}-text" data-toggle="tab" href="#nav-{{ widget.name }}-text" role="tab" aria-controls="nav-{{ widget.name }}-text" aria-selected="true">Text</a>
+    <a class="nav-item nav-link" id="nav-tab-{{ widget.name }}-preview" data-toggle="tab" href="#nav-{{ widget.name }}-preview" role="tab" aria-controls="nav-{{ widget.name }}-preview" aria-selected="false">Preview</a>
+  </div>
+</nav>
+<div class="tab-content markdown-wrapper" id="nav-{{ widget.name }}">
+    <div class="tab-pane fade show active" id="nav-{{ widget.name }}-text" role="tabpanel" aria-labelledby="nav-tab-{{ widget.name }}-text">
+    {% include "django/forms/widgets/textarea.html" %}
+  </div>
+  <div class="tab-pane fade preview" id="nav-{{ widget.name }}-preview" role="tabpanel" aria-labelledby="nav-tab-{{ widget.name }}-preview"></div>
+</div>

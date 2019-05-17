@@ -247,8 +247,6 @@ class ComposeMail(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         user_set = set()
-
-        submission_filters = dict()
         submissions = form.cleaned_data.get('submissions')
         if submissions:
             users = User.objects.filter(submissions__in=self.request.event.submissions.filter(

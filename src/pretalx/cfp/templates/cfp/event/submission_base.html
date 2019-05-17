@@ -1,9 +1,16 @@
 {% extends "cfp/event/base.html" %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Create submission" %} :: {{ request.event.name }}{% endblock %}
 
 {% block content %}
+    {% compress js %}
+        <script src="{% static "vendored/marked.min.js" %}" defer></script>
+        <script src="{% static "common/js/markdown.js" %}" defer></script>
+    {% endcompress %}
+
     <div id="submission-steps" class="stages">
         {% for stp in step_list %}
         <a {% if stp.phase == 'done' %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">

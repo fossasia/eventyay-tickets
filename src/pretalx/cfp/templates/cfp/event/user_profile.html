@@ -7,6 +7,13 @@
 {% block title %}{% trans "Your Profile" %} :: {% endblock %}
 
 {% block content %}
+    {% if profile_form.biography %}
+        {% compress js %}
+           <script src="{% static "vendored/marked.min.js" %}" defer></script>
+           <script src="{% static "common/js/markdown.js" %}" defer></script>
+        {% endcompress %}
+    {% endif %}
+
     <h2>{% trans "Your Profile" %}</h2>
     <p>
         {% trans "This data will be displayed publicly if your talk is accepted. It is also visible to reviewers." %}

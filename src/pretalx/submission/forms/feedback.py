@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 
+from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.submission.models import Feedback
 
@@ -23,3 +24,6 @@ class FeedbackForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['speaker', 'review']
+        widgets = {
+            'review': MarkdownWidget,
+        }

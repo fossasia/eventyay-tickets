@@ -256,3 +256,40 @@ table .action-column {
   font-size: inherit;
   line-height: inherit;
 }
+
+nav.markdown-nav {
+  a:active, a:focus, a:hover {
+    outline: none !important;
+  }
+}
+.markdown-wrapper {
+  max-height: 160px;
+  textarea {
+    max-height: 160px;
+    border-top: none;
+  }
+  .preview {
+    border: 1px solid #ced4da;
+    border-top: none;
+    min-height: 160px;
+    max-height: 160px;
+    padding: 8px;
+    overflow-y: auto;
+    width: auto;
+    background: $white;
+  }
+}
+.markdown-column .form-group {
+  flex-direction: column
+}
+.markdown-table {
+  .form-group {
+    flex-direction: column;
+  }
+  .preview, nav {
+    display: none;
+  }
+  textarea {
+    border: 1px solid #ced4da;
+  }
+}

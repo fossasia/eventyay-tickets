@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`402` Fields with markdown support now come with a preview next to the input field (if JavaScript is enabled).
 - :feature:`669` Emails can now also be sent grouped by submission track or submission type.
 - :support:`-` You can now install ``pretalx[redis]`` if you use pretalx with a redis server for better caching and/or asynchronous task runners.
 - :support:`-` Our documentation now lists the tasks a pretalx instance should run periodically, namely ``runperiodic`` about once every five minutes, and ``clearsessions`` about once a month.

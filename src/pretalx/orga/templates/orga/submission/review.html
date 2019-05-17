@@ -1,10 +1,17 @@
 {% extends "orga/submission/base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
+{% load static %}
 
 {% block submission_content %}
+{% compress js %}
+    <script src="{% static "vendored/marked.min.js" %}" defer></script>
+    <script src="{% static "common/js/markdown.js" %}" defer></script>
+{% endcompress %}
+
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 {% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}
 {% if request.user in submission.speakers.all %}
@@ -118,7 +125,7 @@
                 {% for field in qform %}
                     <td>{% bootstrap_field field layout="inline" %}</td>
                 {% endfor %}
-                <td>{% bootstrap_field form.text layout="inline" %}</td>
+                <td class="markdown-table">{% bootstrap_field form.text layout="inline" %}</td>
                 <td>
                     {% if not read_only %}
                         <button type="submit" class="btn btn-success">{% trans "Save" %}

@@ -1,6 +1,8 @@
 import os
 
-from django.forms import CheckboxSelectMultiple, ClearableFileInput, PasswordInput
+from django.forms import (
+    CheckboxSelectMultiple, ClearableFileInput, PasswordInput, Textarea,
+)
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
@@ -92,3 +94,7 @@ class ClearableBasenameFileInput(ClearableFileInput):
             'initial': conditional_escape(bname),
             'initial_url': conditional_escape(value.url),
         }
+
+
+class MarkdownWidget(Textarea):
+    template_name = 'common/widgets/markdown.html'
