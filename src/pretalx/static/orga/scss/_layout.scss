@@ -33,6 +33,10 @@ aside.sidebar {
   margin-top: 50px;
   overflow-y: auto;
 
+  a {
+    color: $brand-primary;
+  }
+
   .nav-fold span.has-children {
     display: flex;
     flex-direction: row;
@@ -154,6 +158,9 @@ aside.sidebar {
       font-size: 11px;
       color: $gray;
     }
+  }
+  a {
+    color: $brand-primary;
   }
 }
 

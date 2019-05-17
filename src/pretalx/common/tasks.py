@@ -35,6 +35,7 @@ def regenerate_css(event_id: int):
 
         if event.primary_color:
             sassrules.append('$brand-primary: {};'.format(event.primary_color))
+            sassrules.append('$link-color: $brand-primary;')
             sassrules.append(f'@import "{path}";')
 
         custom_functions = dict(django_libsass.CUSTOM_FUNCTIONS)
