@@ -47,14 +47,14 @@
     {% bootstrap_form_errors form %}
     {% bootstrap_form_errors qform %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Submission Type" %}</label>
+        <label class="col-md-3 col-form-label">{% trans "Submission Type" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.submission_type }}
         </div>
     </div>
     {% if submission.track %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Track" %}</label>
+        <label class="col-md-3 col-form-label">{% trans "Track" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.track.name|default:'-' }}
         </div>
@@ -62,7 +62,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_abstract %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Abstract" %}</label>
+        <label class="col-md-3 col-form-label">{% trans "Abstract" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.abstract|rich_text|default:'-' }}
         </div>
@@ -70,7 +70,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_description %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Description" %}</label>
+        <label class="col-md-3 col-form-label">{% trans "Description" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.description|rich_text|default:'-' }}
         </div>
@@ -78,7 +78,7 @@
     {% endif %}
     {% if request.event.settings.cfp_request_notes %}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="id_text">{% trans "Notes" %}</label>
+        <label class="col-md-3 col-form-label">{% trans "Notes" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.notes|rich_text|default:'-' }}
         </div>
@@ -87,7 +87,7 @@
     {% if can_view_speakers %}
         {% for speaker in profiles %}
         <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="id_text">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
+            <label class="col-md-3 col-form-label">{% trans "Speaker" %}: {{ speaker.user.get_display_name }}</label>
             <div class="col-md-9 mt-1">
                 {% if request.event.settings.cfp_request_biography %}
                 {{ speaker.biography|rich_text|default:'-' }}
