@@ -203,13 +203,13 @@ class SpeakerToggleArrived(PermissionRequired, View):
 
 
 class InformationList(EventPermissionRequired, ListView):
-    queryset = SpeakerInformation.objects.order_by('pk')
+    queryset = SpeakerInformation.objects.none()
     template_name = 'orga/speaker/information_list.html'
     context_object_name = 'information'
     permission_required = 'orga.view_information'
 
     def get_queryset(self):
-        return self.request.event.information.all()
+        return self.request.event.information.all().order_by('pk')
 
 
 class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):

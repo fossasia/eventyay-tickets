@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.fields import I18nCharField
+from django_scopes import ScopedManager
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -143,8 +144,8 @@ class Question(LogMixin, models.Model):
         verbose_name=_('Publish answers'),
         help_text=_('Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information.'),
     )
-    objects = QuestionManager()
-    all_objects = AllQuestionManager()
+    objects = ScopedManager(event='event', _manager_class=QuestionManager)
+    all_objects = ScopedManager(event='event', _manager_class=AllQuestionManager)
 
     class urls(EventUrls):
         base = '{self.event.cfp.urls.questions}{self.pk}/'
@@ -219,6 +220,8 @@ class AnswerOption(LogMixin, models.Model):
     )
     answer = I18nCharField(max_length=200)
 
+    objects = ScopedManager(event='question__event')
+
     @cached_property
     def event(self):
         return self.question.event
@@ -265,6 +268,8 @@ class Answer(LogMixin, models.Model):
     options = models.ManyToManyField(
         to='submission.AnswerOption', related_name='answers'
     )
+
+    objects = ScopedManager(event='question__event')
 
     @cached_property
     def event(self):

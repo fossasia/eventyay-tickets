@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
+from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType, Track
@@ -117,7 +118,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         model = Question
         fields = [
             'target',
-            'question',
+            #'question',  ## SCOOOPES
             'help_text',
             'variant',
             'is_public',
@@ -127,6 +128,11 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             'min_length',
             'max_length',
         ]
+        field_classes = {
+            'question': SafeModelChoiceField,
+            'variant': SafeModelChoiceField,
+            'tracks': SafeModelMultipleChoiceField,
+        }
 
 
 class AnswerOptionForm(ReadOnlyFlag, I18nModelForm):

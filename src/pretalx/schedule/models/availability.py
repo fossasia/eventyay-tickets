@@ -3,6 +3,7 @@ from typing import List
 
 from django.db import models
 from django.utils.functional import cached_property
+from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin
 
@@ -36,6 +37,8 @@ class Availability(LogMixin, models.Model):
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    objects = ScopedManager(event='event')
 
     def __str__(self) -> str:
         person = self.person.user.get_display_name() if self.person else None

@@ -11,6 +11,7 @@ from i18nfield.forms import I18nModelForm
 from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.schedule.models import Availability, Room, TalkSlot
+from django_scopes.forms import SafeModelChoiceField
 
 
 class AvailabilitiesFormMixin(forms.Form):
@@ -211,3 +212,6 @@ class QuickScheduleForm(forms.ModelForm):
     class Meta:
         model = TalkSlot
         fields = ('room',)
+        field_classes = {
+            'room': SafeModelChoiceField,
+        }

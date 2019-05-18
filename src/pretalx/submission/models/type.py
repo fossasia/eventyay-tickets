@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
@@ -36,6 +37,8 @@ class SubmissionType(LogMixin, models.Model):
         verbose_name=_('deadline'),
         help_text=_('If you want a different deadline than the global deadline for this submission type, enter it here.'),
     )
+
+    objects = ScopedManager(event='event')
 
     class urls(EventUrls):
         base = edit = '{self.event.cfp.urls.types}{self.pk}/'

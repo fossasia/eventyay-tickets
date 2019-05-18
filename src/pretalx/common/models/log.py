@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.models import Answer, AnswerOption, CfP, Question, Submission
@@ -115,6 +116,8 @@ class ActivityLog(models.Model):
     action_type = models.CharField(max_length=200)
     data = models.TextField(null=True, blank=True)
     is_orga_action = models.BooleanField(default=False)
+
+    objects = ScopedManager(event='event')
 
     class Meta:
         ordering = ('-timestamp',)

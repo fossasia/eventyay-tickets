@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
@@ -30,6 +31,8 @@ class SpeakerInformation(LogMixin, models.Model):
         blank=True,
         help_text=_('Please try to keep your upload small, preferably below 16 MB.'),
     )
+
+    objects = ScopedManager(event='event')
 
     class orga_urls(EventUrls):
         base = edit = '{self.event.orga_urls.information}{self.pk}/'

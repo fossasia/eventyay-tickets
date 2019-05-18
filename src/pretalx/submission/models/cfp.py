@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
@@ -41,6 +42,8 @@ class CfP(LogMixin, models.Model):
             'Please put in the last date you want to accept submissions from users.'
         ),
     )
+
+    objects = ScopedManager(event='event')
 
     class urls(EventUrls):
         base = '{self.event.orga_urls.cfp}'

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.common.urls import EventUrls
 
@@ -28,6 +29,8 @@ class Review(models.Model):
     override_vote = models.BooleanField(default=None, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = ScopedManager(event='submission__event')
 
     def __str__(self):
         return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})'
@@ -135,6 +138,8 @@ class ReviewPhase(models.Model):
         help_text=_('By default, modification of submissions is locked after the CfP ends, and is re-enabled once the submission was accepted.'),
         default=False,
     )
+
+    objects = ScopedManager(event='event')
 
     class Meta:
         ordering = ('position', )

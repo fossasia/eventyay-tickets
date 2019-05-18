@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.phrases import phrases
@@ -29,6 +30,8 @@ class Feedback(LogMixin, models.Model):
     review = models.TextField(
         verbose_name=_('Review'), help_text=phrases.base.use_markdown
     )
+
+    objects = ScopedManager(event='talk__event')
 
     def __str__(self):
         """Help when debugging."""

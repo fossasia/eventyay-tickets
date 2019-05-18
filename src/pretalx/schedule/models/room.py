@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
@@ -46,6 +47,8 @@ class Room(LogMixin, models.Model):
             'This is the order that rooms are displayed in in the schedule (lower = left).'
         ),
     )
+
+    objects = ScopedManager(event='event')
 
     class Meta:
         ordering = ('position',)

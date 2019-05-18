@@ -9,6 +9,7 @@ from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
 from django.utils.translation import override, ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins import LogMixin
@@ -33,6 +34,8 @@ class Schedule(LogMixin, models.Model):
         max_length=190, null=True, blank=True, verbose_name=_('version')
     )
     published = models.DateTimeField(null=True, blank=True)
+
+    objects = ScopedManager(event='event')
 
     class Meta:
         ordering = ('-published',)

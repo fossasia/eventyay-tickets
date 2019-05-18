@@ -5,6 +5,7 @@ import pytz
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import get_base_url
@@ -33,6 +34,8 @@ class TalkSlot(LogMixin, models.Model):
     is_visible = models.BooleanField(default=False)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
+
+    objects = ScopedManager(event='submission__event')
 
     def __str__(self):
         """Help when debugging."""

@@ -6,6 +6,7 @@ from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mail import SendMailException
@@ -44,6 +45,8 @@ class MailTemplate(LogMixin, models.Model):
         verbose_name=_('BCC'),
         help_text=_('Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!'),
     )
+
+    objects = ScopedManager(event='event')
 
     class urls(EventUrls):
         base = edit = '{self.event.orga_urls.mail_templates}{self.pk}/'
@@ -173,6 +176,8 @@ class QueuedMail(LogMixin, models.Model):
     subject = models.CharField(max_length=200, verbose_name=_('Subject'))
     text = models.TextField(verbose_name=_('Text'))
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
+
+    objects = ScopedManager(event='event')
 
     class urls(EventUrls):
         base = edit = '{self.event.orga_urls.mail}{self.pk}/'

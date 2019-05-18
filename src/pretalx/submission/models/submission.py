@@ -12,6 +12,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import pgettext, ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -207,9 +208,9 @@ class Submission(LogMixin, models.Model):
     )
     CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
-    objects = SubmissionManager()
-    deleted_objects = DeletedSubmissionManager()
-    all_objects = AllSubmissionManager()
+    objects = ScopedManager(event='event', _manager_class=SubmissionManager)
+    deleted_objects = ScopedManager(event='event', _manager_class=DeletedSubmissionManager)
+    all_objects = ScopedManager(event='event', _manager_class=AllSubmissionManager)
 
     class urls(EventUrls):
         user_base = '{self.event.urls.user_submissions}{self.code}/'

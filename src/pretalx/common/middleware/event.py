@@ -9,6 +9,7 @@ from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
     get_supported_language_variant, language_code_re, parse_accept_lang_header,
 )
+from django_scopes import scope
 
 from pretalx.event.models import Event, Organiser, Team
 
@@ -85,6 +86,7 @@ class EventPermissionMiddleware:
         event_slug = url.kwargs.get('event')
         if event_slug:
             request.event = get_object_or_404(Event.objects.prefetch_related('schedules', 'submissions'), slug__iexact=event_slug)
+        event = getattr(request, 'event', None)
 
         self._set_orga_events(request)
         self._select_locale(request)
@@ -101,7 +103,7 @@ class EventPermissionMiddleware:
             if url:
                 return redirect(url)
         elif (
-            getattr(request, 'event', None)
+            event
             and request.event.settings.custom_domain
             and not request.uses_custom_domain
             and not is_exempt
@@ -109,6 +111,9 @@ class EventPermissionMiddleware:
             return redirect(
                 urljoin(request.event.settings.custom_domain, request.get_full_path())
             )
+        if event:
+            with scope(event=event):
+                return self.get_response(request)
         return self.get_response(request)
 
     def _select_locale(self, request):

@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
+from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
 from pretalx.submission.models import Submission, SubmissionType
@@ -60,4 +61,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             'image',
             'is_featured',
         ]
+        field_classes = {
+            'submission_type': SafeModelChoiceField,
+            'track': SafeModelChoiceField,
+        }
         request_require = {'abstract', 'description', 'notes', 'image', 'do_not_record'}

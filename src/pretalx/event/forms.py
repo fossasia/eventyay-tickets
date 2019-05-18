@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from i18nfield.forms import I18nModelForm
+from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.mixins.forms import ReadOnlyFlag
@@ -62,6 +63,9 @@ class TeamTrackForm(I18nModelForm):
     class Meta:
         model = Team
         fields = ['limit_tracks']
+        field_classes = {
+            'limit_tracks': SafeModelMultipleChoiceField,
+        }
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):

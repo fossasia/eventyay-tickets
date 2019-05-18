@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin
 
@@ -16,6 +17,8 @@ class Resource(LogMixin, models.Model):
     description = models.CharField(
         null=True, blank=True, max_length=1000, verbose_name=_('description')
     )
+
+    objects = ScopedManager(event='submission__event')
 
     def __str__(self):
         """Help when debugging."""

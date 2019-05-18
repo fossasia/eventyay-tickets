@@ -101,6 +101,7 @@ setup(
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
         'django-i18nfield>=1.5,<1.6',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
+        'django_scopes @ git+https://github.com/raphaelm/django-scopes@master#egg=django_scopes',
         'djangorestframework==3.9.*',  # http://www.django-rest-framework.org/topics/release-notes/
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         'libsass==0.19.1',  # https://sass.github.io/libsass-python/changes.html

@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
@@ -26,6 +27,8 @@ class Track(LogMixin, models.Model):
             RegexValidator(r'#([0-9A-Fa-f]{3}){1,2}'),
         ],
     )
+
+    objects = ScopedManager(event='event')
 
     class urls(EventUrls):
         base = edit = '{self.event.cfp.urls.tracks}{self.pk}/'
