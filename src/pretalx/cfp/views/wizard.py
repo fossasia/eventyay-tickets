@@ -1,5 +1,4 @@
 import logging
-import os
 from contextlib import suppress
 
 from csp.decorators import csp_update
@@ -82,7 +81,7 @@ def show_user_page(wizard):
 class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizardView):
     form_list = FORMS
     condition_dict = {'questions': show_questions_page, 'user': show_user_page}
-    file_storage = FileSystemStorage(os.path.join(settings.MEDIA_ROOT, 'avatars'))
+    file_storage = FileSystemStorage(str(settings.MEDIA_ROOT / 'avatars'))
 
     def dispatch(self, request, *args, **kwargs):
         if not request.event.cfp.is_open:

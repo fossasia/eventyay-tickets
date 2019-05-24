@@ -1,13 +1,14 @@
 import configparser
 import os
 import sys
+from pathlib import Path
 
 from pretalx.common.settings.utils import reduce_dict
 
 CONFIG = {
     'filesystem': {
         'base': {
-            'default': os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+            'default': Path(__file__).parent.parent.parent.parent,
         },
         'logs': {
             'default': None,
@@ -147,7 +148,7 @@ def read_config_files(config):
     else:
         config_files = config.read([
             '/etc/pretalx/pretalx.cfg',
-            os.path.expanduser('~/.pretalx.cfg'),
+            Path.home() / '.pretalx.cfg',
             'pretalx.cfg',
         ], encoding='utf-8')
     return config, config_files or []  # .read() returns None if there are no config files

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from django.contrib.auth.password_validation import validate_password
 from django.forms import CharField, FileField, ValidationError
@@ -56,8 +56,7 @@ class ExtensionFileField(FileField):
         data = super().clean(*args, **kwargs)
         if data:
             filename = data.name
-            extension = os.path.splitext(filename)[1]
-            extension = extension.lower()
+            extension = Path(filename).suffix.lower()
             if extension not in self.extension_whitelist:
                 raise ValidationError(
                     _(

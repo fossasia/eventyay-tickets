@@ -1,6 +1,7 @@
 import os
 from contextlib import suppress
 from urllib.parse import urlparse
+from pathlib import Path
 
 from django.contrib.messages import constants as messages
 from django.utils.crypto import get_random_string
@@ -26,23 +27,23 @@ DEBUG = config.getboolean('site', 'debug')
 
 
 ## DIRECTORY SETTINGS
-BASE_DIR = config.get('filesystem', 'base')
-DATA_DIR = config.get(
+BASE_DIR = Path(config.get('filesystem', 'base'))
+DATA_DIR = Path(config.get(
     'filesystem',
     'data',
-    fallback=os.environ.get('PRETALX_DATA_DIR', os.path.join(BASE_DIR, 'data')),
-)
-LOG_DIR = config.get('filesystem', 'logs', fallback=os.path.join(DATA_DIR, 'logs'))
-MEDIA_ROOT = config.get('filesystem', 'media', fallback=os.path.join(DATA_DIR, 'media'))
-STATIC_ROOT = config.get(
-    'filesystem', 'static', fallback=os.path.join(BASE_DIR, 'static.dist')
-)
-HTMLEXPORT_ROOT = config.get(
-    'filesystem', 'htmlexport', fallback=os.path.join(DATA_DIR, 'htmlexport')
-)
+    fallback=os.environ.get('PRETALX_DATA_DIR', BASE_DIR / 'data'),
+))
+LOG_DIR = Path(config.get('filesystem', 'logs', fallback=DATA_DIR / 'logs'))
+MEDIA_ROOT = Path(config.get('filesystem', 'media', fallback=DATA_DIR / 'media'))
+STATIC_ROOT = Path(config.get(
+    'filesystem', 'static', fallback=BASE_DIR / 'static.dist',
+))
+HTMLEXPORT_ROOT = Path(config.get(
+    'filesystem', 'htmlexport', fallback=DATA_DIR / 'htmlexport',
+))
 
 for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT, HTMLEXPORT_ROOT):
-    os.makedirs(directory, exist_ok=True)
+    directory.mkdir(parents=True, exist_ok=True)
 
 
 ## APP SETTINGS
@@ -123,15 +124,15 @@ SESSION_COOKIE_SECURE = config.getboolean(
 if config.has_option('site', 'secret'):
     SECRET_KEY = config.get('site', 'secret')
 else:
-    SECRET_FILE = os.path.join(DATA_DIR, '.secret')
-    if os.path.exists(SECRET_FILE):
-        with open(SECRET_FILE, 'r') as f:
+    SECRET_FILE = DATA_DIR / '.secret'
+    if SECRET_FILE.exists():
+        with SECRET_FILE.open() as f:
             SECRET_KEY = f.read().strip()
     else:
         chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
         SECRET_KEY = get_random_string(50, chars)
-        with open(SECRET_FILE, 'w') as f:
-            os.chmod(SECRET_FILE, 0o600)
+        with SECRET_FILE.open(mode='w') as f:
+            SECRET_FILE.chmod(0o600)
             os.chown(SECRET_FILE, os.getuid(), os.getgid())
             f.write(SECRET_KEY)
 
@@ -145,7 +146,7 @@ else:
 
 ## DATABASE SETTINGS
 db_backend = config.get('database', 'backend')
-db_name = config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3'))
+db_name = config.get('database', 'name', fallback=str(DATA_DIR / 'db.sqlite3'))
 if db_backend == 'mysql':
     db_opts = {
         'charset': 'utf8mb4',
@@ -191,7 +192,7 @@ LOGGING = {
         'file': {
             'level': loglevel,
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'pretalx.log'),
+            'filename': LOG_DIR / 'pretalx.log',
             'formatter': 'default',
         },
         'null': {
@@ -304,7 +305,7 @@ LANGUAGES_NATURAL_NAMES = [('en', 'English'), ('de', 'Deutsch'), ('fr', 'França
 LANGUAGES_OFFICIAL = {'en', 'de'}
 LANGUAGE_CODE = config.get('locale', 'language_code')
 LANGUAGE_CODES = [language[0] for language in LANGUAGES]
-LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), 'locale'),)
+LOCALE_PATHS = (Path(__file__).resolve().parent / 'locale', )
 FORMAT_MODULE_PATH = ['pretalx.common.formats']
 
 
@@ -356,8 +357,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(DATA_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'templates'),
+            DATA_DIR / 'templates',
+            BASE_DIR / 'templates',
         ],
         'OPTIONS': {
             'context_processors': [
@@ -385,9 +386,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+static_path = BASE_DIR / 'pretalx' / 'static'
 STATICFILES_DIRS = (
-    [os.path.join(BASE_DIR, 'pretalx', 'static')]
-    if os.path.exists(os.path.join(BASE_DIR, 'pretalx', 'static'))
+    [static_path]
+    if static_path.exists()
     else []
 )
 

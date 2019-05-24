@@ -1,4 +1,4 @@
-import os.path
+from pathlib import Path
 from shutil import make_archive
 
 from bakery.management.commands.build import Command as BakeryBuildCommand
@@ -26,19 +26,16 @@ class Command(BakeryBuildCommand):
 
     @classmethod
     def get_output_dir(cls, event):
-        return os.path.join(
-            settings.HTMLEXPORT_ROOT, event.slug
-        )  # Do not change, this is used to build the correct zip path
+        # Do not change, this is used to build the correct zip path
+        return settings.HTMLEXPORT_ROOT / event.slug
 
     @classmethod
     def get_output_zip_path(cls, event):
-        return cls.get_output_dir(event) + '.zip'
+        return Path(str(cls.get_output_dir(event)) + '.zip')
 
     def build_media(self):
         output_dir = self.get_output_dir(self._exporting_event)
-        os.makedirs(
-            os.path.join(output_dir, 'media', self._exporting_event.slug), exist_ok=True
-        )
+        (output_dir / 'media' / self._exporting_event.slug).mkdir(parents=True, exist_ok=True)
         return super().build_media()
 
     def handle(self, *args, **options):
@@ -55,9 +52,9 @@ class Command(BakeryBuildCommand):
         with override_settings(
             COMPRESS_ENABLED=True,
             COMPRESS_OFFLINE=True,
-            BUILD_DIR=output_dir,
-            MEDIA_URL=os.path.join(settings.MEDIA_URL, event_slug),
-            MEDIA_ROOT=os.path.join(settings.MEDIA_ROOT, event_slug),
+            BUILD_DIR=str(output_dir),
+            MEDIA_URL=str(Path(settings.MEDIA_URL) / event_slug),
+            MEDIA_ROOT=str(Path(settings.MEDIA_ROOT) / event_slug),
         ):
             with override_timezone(event.timezone):
                 super().handle(*args, **options)
@@ -68,8 +65,8 @@ class Command(BakeryBuildCommand):
                         root_dir=settings.HTMLEXPORT_ROOT,
                         base_dir=event.slug,
                     )
-                    output_dir += '.zip'
-        self.stdout.write(output_dir)
+                    output_dir = self.get_output_zip_path(event)
+        self.stdout.write(str(output_dir))
 
     def build_views(self):
         for view_str in self.view_list:

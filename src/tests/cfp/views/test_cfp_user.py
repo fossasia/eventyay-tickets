@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from django.conf import settings
 from django.core import mail as djmail
@@ -311,9 +309,7 @@ def test_can_edit_and_update_speaker_answers(
     file_answer = speaker.answers.get(question_id=speaker_file_question.pk)
     assert file_answer.answer.startswith('file://')
     assert file_answer.answer_file.read() == b'file_content'
-    assert os.path.exists(
-        os.path.join(settings.MEDIA_ROOT, file_answer.answer_file.name)
-    )
+    assert (settings.MEDIA_ROOT / file_answer.answer_file.name).exists()
 
     response = speaker_client.post(
         event.urls.user,

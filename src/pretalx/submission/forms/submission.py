@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from django import forms
 from django.conf import settings
@@ -88,7 +88,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            extension = os.path.splitext(image.name)[1].lower()
+            extension = Path(image.name).suffix.lower()
             if extension not in IMAGE_EXTENSIONS:
                 raise forms.ValidationError(
                     _(

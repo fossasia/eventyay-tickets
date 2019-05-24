@@ -1,5 +1,4 @@
 import json
-import os.path
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from datetime import timedelta
@@ -90,8 +89,7 @@ class ScheduleExportDownloadView(EventPermissionRequired, View):
     def get(self, request, event):
         try:
             zip_path = ExportScheduleHtml.get_output_zip_path(self.request.event)
-            zip_name = os.path.basename(zip_path)
-            response = FileResponse(open(zip_path, 'rb'), as_attachment=True)
+            response = FileResponse(open(zip_path.name, 'rb'), as_attachment=True)
         except Exception as e:
             messages.error(
                 request,
@@ -100,7 +98,7 @@ class ScheduleExportDownloadView(EventPermissionRequired, View):
                 ).format(error=str(e)),
             )
             return redirect(self.request.event.orga_urls.schedule_export)
-        response['Content-Disposition'] = 'attachment; filename=' + zip_name
+        response['Content-Disposition'] = 'attachment; filename=' + zip_path.name
         return response
 
 

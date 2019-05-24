@@ -1,4 +1,4 @@
-from os.path import dirname
+from pathlib import Path
 from sys import executable
 
 
@@ -11,7 +11,7 @@ def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
         (f'Settings:  {", ".join(config_files)}', False),
         (f'Database:  {db_name} ({db_backend})', False),
         (f'Logging:   {LOG_DIR}', False),
-        (f'Root dir:  {dirname(dirname(dirname(__file__)))}', False),
+        (f'Root dir:  {Path(__file__).parent.parent.parent}', False),
         (f'Python:    {executable}', False),
     ]
     if plugins:

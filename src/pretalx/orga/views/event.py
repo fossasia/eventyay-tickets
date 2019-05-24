@@ -1,6 +1,6 @@
 import json
-import os
 from contextlib import suppress
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
@@ -477,7 +477,7 @@ def condition_copy(wizard):
 class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView):
     permission_required = 'orga.create_events'
     file_storage = FileSystemStorage(
-        location=os.path.join(settings.MEDIA_ROOT, 'new_event')
+        location=Path(settings.MEDIA_ROOT) / 'new_event'
     )
     form_list = [
         ('initial', EventWizardInitialForm),

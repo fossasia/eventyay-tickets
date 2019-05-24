@@ -1,4 +1,3 @@
-import os.path
 from datetime import timedelta
 
 from django.dispatch import receiver
@@ -65,7 +64,7 @@ def task_periodic_schedule_export(event_slug):
     _now = now()
     should_rebuild_schedule = (
         event.cache.get('rebuild_schedule_export') or (
-            event.settings.export_html_on_schedule_release and not os.path.exists(zip_path) and (
+            event.settings.export_html_on_schedule_release and not zip_path.exists() and (
                 not last_time or now() - last_time > timedelta(days=1)
             )
         )

@@ -1,6 +1,6 @@
 import json
 import os
-from glob import glob
+from pathlib import Path
 
 import pytest
 import requests
@@ -22,7 +22,7 @@ from pretalx.event.models import Event
 def test_schedule_xsd_is_up_to_date():
     response = requests.get('https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd')
     assert response.status_code == 200
-    path = os.path.join(os.path.dirname(__file__), '../fixtures/schedule.xsd')
+    path = Path(__file__).parent / '../fixtures/schedule.xsd'
     with open(path) as schema:
         schema_content = schema.read()
     assert response.content.decode() == schema_content
@@ -291,7 +291,7 @@ def test_html_export_language(event, slot):
         call_command('export_schedule_html', event.slug)
 
     schedule_html = open(
-        os.path.join(settings.HTMLEXPORT_ROOT, 'test', 'test/schedule/index.html')
+        settings.HTMLEXPORT_ROOT / 'test' / 'test/schedule/index.html'
     ).read()
     assert 'Kontakt' in schedule_html
     assert 'locale/set' not in schedule_html  # bug #494
@@ -404,72 +404,47 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
     ]
 
     for path in paths:
-        full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test', path)
-        assert os.path.exists(full_path)
+        full_path = settings.HTMLEXPORT_ROOT / 'test' / path
+        assert full_path.exists()
 
-    for path in glob(os.path.join(settings.HTMLEXPORT_ROOT, 'test/media/*')):
+    for path in (settings.HTMLEXPORT_ROOT / 'test/media/').glob('*'):
+        path = str(path)
         assert event.slug in path
         assert other_event.slug not in path
 
-    full_path = os.path.join(settings.HTMLEXPORT_ROOT, 'test.zip')
-    assert os.path.exists(full_path)
+    full_path = settings.HTMLEXPORT_ROOT / 'test.zip'
+    assert full_path.exists()
 
     # views and templates are the same for export and online viewing, so a naive test is enough here
-    talk_html = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT,
-            'test',
-            f'test/talk/{slot.submission.code}/index.html',
-        )
-    ).read()
+    talk_html = (
+        settings.HTMLEXPORT_ROOT / 'test' / f'test/talk/{slot.submission.code}/index.html'
+    ).open().read()
     assert talk_html.count(slot.submission.title) >= 2
 
     speaker = slot.submission.speakers.all()[0]
-    schedule_html = open(
-        os.path.join(settings.HTMLEXPORT_ROOT, 'test', f'test/schedule/index.html')
-    ).read()
+    schedule_html = (
+        settings.HTMLEXPORT_ROOT / 'test' / f'test/schedule/index.html'
+    ).open().read()
     assert 'Contact us' in schedule_html  # locale
     assert canceled_talk.submission.title not in schedule_html
 
-    schedule_json = json.load(
-        open(
-            os.path.join(
-                settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.json'
-            )
-        )
-    )
+    schedule_json = json.load((settings.HTMLEXPORT_ROOT / f'test/test/schedule/export/schedule.json').open())
     assert schedule_json['schedule']['conference']['title'] == event.name
 
-    schedule_ics = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.ics'
-        )
-    ).read()
+    schedule_ics = (settings.HTMLEXPORT_ROOT / f'test/test/schedule/export/schedule.ics').open().read()
     assert slot.submission.code in schedule_ics
     assert canceled_talk.submission.code not in schedule_ics
 
-    schedule_xcal = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.xcal'
-        )
-    ).read()
+    schedule_xcal = (settings.HTMLEXPORT_ROOT / f'test/test/schedule/export/schedule.xcal').open().read()
     assert event.slug in schedule_xcal
     assert speaker.name in schedule_xcal
 
-    schedule_xml = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT, f'test/test/schedule/export/schedule.xml'
-        )
-    ).read()
+    schedule_xml = (settings.HTMLEXPORT_ROOT / f'test/test/schedule/export/schedule.xml').open().read()
     assert slot.submission.title in schedule_xml
     assert canceled_talk.submission.frab_slug not in schedule_xml
     assert str(canceled_talk.submission.uuid) not in schedule_xml
 
-    talk_ics = open(
-        os.path.join(
-            settings.HTMLEXPORT_ROOT, f'test/test/talk/{slot.submission.code}.ics'
-        )
-    ).read()
+    talk_ics = (settings.HTMLEXPORT_ROOT / f'test/test/talk/{slot.submission.code}.ics').open().read()
     assert slot.submission.title in talk_ics
 
 

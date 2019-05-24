@@ -2,23 +2,25 @@ import atexit
 import os
 import tempfile
 from contextlib import suppress
+from pathlib import Path
 
 tmpdir = tempfile.TemporaryDirectory()
 os.environ.setdefault('DATA_DIR', tmpdir.name)
-if os.path.exists('test/sqlite.cfg'):
-    os.environ.setdefault('PRETALX_CONFIG_FILE', 'test/sqlite.cfg')
+config_path = Path('test/sqlite.cfg')
+if config_path.exists():
+    os.environ.setdefault('PRETALX_CONFIG_FILE', str(config_path))
 
 from pretalx.settings import *  # NOQA
 
-BASE_DIR = tmpdir.name
-DATA_DIR = tmpdir.name
-LOG_DIR = os.path.join(DATA_DIR, 'logs')
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
-HTMLEXPORT_ROOT = os.path.join(DATA_DIR, 'htmlexport')
+BASE_DIR = Path(tmpdir.name)
+DATA_DIR = BASE_DIR
+LOG_DIR = DATA_DIR / 'logs'
+MEDIA_ROOT = DATA_DIR / 'media'
+STATIC_ROOT = DATA_DIR / 'static'
+HTMLEXPORT_ROOT = DATA_DIR / 'htmlexport'
 
 for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT, HTMLEXPORT_ROOT):
-    os.makedirs(directory, exist_ok=True)
+    directory.mkdir(parents=True, exist_ok=True)
 
 INSTALLED_APPS.append('tests.dummy_app.PluginApp')  # noqa
 

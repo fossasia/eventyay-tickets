@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from bakery.views import BuildableDetailView
 from django.conf import settings
@@ -38,11 +38,10 @@ class PretalxExportContextMixin:
         return super().get_queryset().filter(event=self._exporting_event)
 
     def get_file_build_path(self, obj):
-        dir_path, file_name = os.path.split(self.get_url(obj))
-        path = os.path.join(settings.BUILD_DIR, dir_path[1:])
-        if not os.path.exists(path):
-            os.makedirs(path)
-        return os.path.join(path, file_name)
+        url_path = Path(self.get_url(obj))
+        path = Path(settings.BUILD_DIR) / str(url_path.parents[0])[1:]
+        path.mkdir(exist_ok=True)
+        return str(path / url_path.name)
 
 
 class ExportScheduleView(PretalxExportContextMixin, BuildableDetailView, ScheduleView):

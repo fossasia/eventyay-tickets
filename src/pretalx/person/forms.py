@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from django import forms
 from django.contrib.auth import authenticate
@@ -156,7 +156,7 @@ class SpeakerProfileForm(
                 and avatar._size > 10 * 1024 * 1024
             ):
                 raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
-            extension = os.path.splitext(avatar.name)[1].lower()
+            extension = Path(avatar.name).suffix.lower()
             if extension not in IMAGE_EXTENSIONS:
                 raise ValidationError(
                     _(

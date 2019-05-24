@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from django.forms import (
     CheckboxSelectMultiple, ClearableFileInput, PasswordInput, Textarea,
@@ -89,7 +89,7 @@ class ClearableBasenameFileInput(ClearableFileInput):
         """
         Return value-related substitutions.
         """
-        bname = os.path.basename(value.name)
+        bname = Path(value.name).name
         return {
             'initial': conditional_escape(bname),
             'initial_url': conditional_escape(value.url),
