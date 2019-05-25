@@ -58,7 +58,7 @@ def mail_send_task(
     headers: dict = None,
 ):
     headers = headers or dict()
-    if not reply_to:
+    if not reply_to or (len(reply_to) == 1 and reply_to[0] == ''):
         reply_to = []
     elif isinstance(reply_to, str):
         reply_to = reply_to.split(',')
