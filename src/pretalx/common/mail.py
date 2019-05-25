@@ -58,13 +58,16 @@ def mail_send_task(
     headers: dict = None,
 ):
     headers = headers or dict()
-    if reply_to and isinstance(reply_to, str):
+    if not reply_to:
+        reply_to = []
+    elif isinstance(reply_to, str):
         reply_to = reply_to.split(',')
     if event:
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()
         sender = event.settings.get('mail_from')
-        reply_to = reply_to or event.settings.get('mail_reply_to')
+        if not reply_to and event.settings.get('mail_reply_to'):
+            reply_to = [formataddr((str(event.name), event.settings.get('mail_reply_to')))]
         if not sender or sender == 'noreply@example.org':
             reply_to = reply_to or [formataddr((str(event.name), event.email))]
             sender = settings.MAIL_FROM
