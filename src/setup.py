@@ -96,11 +96,11 @@ setup(
         'django-formset-js-improved==0.5.0.2',  # no changelog, https://github.com/pretix/django-formset-js
         'django-formtools==2.1.*',  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
-        'django-i18nfield==1.4.*',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
+        'django-i18nfield>=1.5,<1.6',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
         'djangorestframework==3.9.*',  # http://www.django-rest-framework.org/topics/release-notes/
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
-        'libsass==0.18.0',  # https://sass.github.io/libsass-python/changes.html
+        'libsass==0.19.1',  # https://sass.github.io/libsass-python/changes.html
         'Markdown==3.1.*',  # https://python-markdown.github.io/change_log/
         'publicsuffixlist==0.6.*',
         'python-dateutil==2.8.*',  # https://dateutil.readthedocs.io/en/stable/changelog.html
