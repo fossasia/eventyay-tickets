@@ -4,10 +4,8 @@
 {% load static %}
 
 {% block content %}
-    {% compress js %}
-        <script src="{% static "vendored/marked.min.js" %}" defer></script>
-        <script src="{% static "common/js/markdown.js" %}" defer></script>
-    {% endcompress %}
+    <script src="{% static "vendored/marked.min.js" %}" defer></script>
+    <script src="{% static "common/js/markdown.js" %}" defer></script>
 
     <h3 class="talk-title">
         <a href="{{ talk.urls.public }}">

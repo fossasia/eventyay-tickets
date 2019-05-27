@@ -7,10 +7,8 @@
 {% load static %}
 
 {% block submission_content %}
-{% compress js %}
-    <script src="{% static "vendored/marked.min.js" %}" defer></script>
-    <script src="{% static "common/js/markdown.js" %}" defer></script>
-{% endcompress %}
+<script src="{% static "vendored/marked.min.js" %}" defer></script>
+<script src="{% static "common/js/markdown.js" %}" defer></script>
 
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 {% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}
