@@ -14,6 +14,8 @@
     {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+    <script src="{% static "vendored/marked.min.js" %}" defer></script>
+    <script src="{% static "common/js/markdown.js" %}" defer></script>
     {% endcompress %}
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     <p>
