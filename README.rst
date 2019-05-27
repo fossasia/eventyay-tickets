@@ -56,6 +56,8 @@ Previous conferences using pretalx include:
 - `Tools4AgileTeams`_ (2019)
 - `Camp++ 2019`_
 - `Klimacamp Leipziger Land`_ & `Degrowth Summerschool`_ (2019) 
+- `OWASP Ukraine`_ (four events to date)
+- `NoNameCon`_
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -114,3 +116,5 @@ to this project.
 .. _Camp++ 2019: https://camp.hsbp.org/2019/pp7e3/
 .. _Klimacamp Leipziger Land: https://event.klimacamp-leipzigerland.de/2019/cfp
 .. _Degrowth Summerschool: https://summerschool.degrowth.info/sc2019/cfp
+.. _OWASP Ukraine: https://cfp.owaspukraine.org/
+.. _NoNameCon: https://cfp.nonamecon.org/
