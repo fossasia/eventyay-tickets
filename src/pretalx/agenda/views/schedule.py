@@ -121,14 +121,21 @@ class ScheduleView(ScheduleDataView):
             return self.request.event.wip_schedule
         return super().get_object()
 
+    @context
+    def exporters(self):
+        return list(
+            exporter(self.request.event)
+            for _, exporter in register_data_exporters.send(self.request.event)
+        )
+
+    @context
+    def search(self):
+        return self.request.GET.get('q', '').lower()
+
     def get_context_data(self, **kwargs):
         from pretalx.schedule.exporters import ScheduleData
 
         result = super().get_context_data(**kwargs)
-        result['exporters'] = list(
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
-        )
         timezone = pytz.timezone(self.request.event.timezone)
         if 'schedule' not in result:
             return result
@@ -136,7 +143,6 @@ class ScheduleView(ScheduleDataView):
         result['data'] = ScheduleData(
             event=self.request.event, schedule=self.schedule
         ).data
-        result['search'] = self.request.GET.get('q', '').lower()
         max_rooms = 0
         for date in result['data']:
             if date.get('first_start') and date.get('last_end'):
