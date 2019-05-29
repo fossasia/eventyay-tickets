@@ -3,12 +3,14 @@ from datetime import timedelta
 from urllib.parse import unquote
 
 import pytz
+from django.conf import settings
 from django.http import (
     Http404, HttpResponse, HttpResponseNotModified, HttpResponsePermanentRedirect,
 )
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
@@ -113,6 +115,42 @@ class ExporterView(ScheduleDataView):
 class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
+
+    def get_text(self, request, **kwargs):
+        data, max_rooms = self.get_schedule_data()
+        output_format = request.GET.get('format', 'table')
+        if output_format not in ['list', 'table']:
+            output_format = 'table'
+        if output_format == 'list':
+            result = ''
+            for date in data:
+                talk_list = sorted(
+                    (
+                        talk
+                        for room in date['rooms']
+                        for talk in room.get('talks', [])
+                    ),
+                    key=lambda x: x.start
+                )
+                talks = ''
+                if talk_list:
+                    result += '\033[33m{:%Y-%m-%d}\033[0m\n'.format(date['start'])
+                    result += ''.join(
+                        '* \033[33m{:%H:%M}\033[0m {} ({}), {}; in {}\n'.format(
+                            talk.start, talk.submission.title,
+                            talk.submission.content_locale,
+                            talk.submission.display_speaker_names or _('No speakers'),
+                            talk.room.name,
+                        )
+                        for talk in talk_list
+                    )
+
+        return HttpResponse(result, content_type='text/plain')
+
+    def get(self, request, **kwargs):
+        if not 'text/html' in request.headers.get('Accept', ''):
+            return self.get_text(request, **kwargs)
+        return super().get(request, **kwargs)
 
     def get_object(self):
         if self.version == 'wip' and self.request.user.has_perm(
