@@ -133,18 +133,22 @@ class ScheduleView(ScheduleDataView):
         return self.request.GET.get('q', '').lower()
 
     def get_context_data(self, **kwargs):
-        from pretalx.schedule.exporters import ScheduleData
-
         result = super().get_context_data(**kwargs)
-        timezone = pytz.timezone(self.request.event.timezone)
         if 'schedule' not in result:
             return result
 
-        result['data'] = ScheduleData(
+        result['data'], result['max_rooms'] = self.get_schedule_data()
+        return result
+
+    def get_schedule_data(self):
+        from pretalx.schedule.exporters import ScheduleData
+
+        timezone = pytz.timezone(self.request.event.timezone)
+        data = ScheduleData(
             event=self.request.event, schedule=self.schedule
         ).data
         max_rooms = 0
-        for date in result['data']:
+        for date in data:
             if date.get('first_start') and date.get('last_end'):
                 start = (
                     date.get('first_start')
@@ -168,8 +172,7 @@ class ScheduleView(ScheduleDataView):
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
-        result['max_rooms'] = max_rooms
-        return result
+        return data, max_rooms
 
 
 class ChangelogView(EventPermissionRequired, TemplateView):
