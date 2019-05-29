@@ -1,9 +1,9 @@
 import hashlib
+import textwrap
 from datetime import timedelta
 from urllib.parse import unquote
 
 import pytz
-from django.conf import settings
 from django.http import (
     Http404, HttpResponse, HttpResponseNotModified, HttpResponsePermanentRedirect,
 )
@@ -84,7 +84,7 @@ class ExporterView(ScheduleDataView):
 
         exporter = exporter.lstrip('export.')
         responses = register_data_exporters.send(request.event)
-        for _, response in responses:
+        for sender, response in responses:
             ex = response(request.event)
             if ex.identifier == exporter:
                 if ex.public or request.is_orga:
@@ -116,39 +116,58 @@ class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
 
+    def _get_text_list(self, data):
+        result = ''
+        for date in data:
+            talk_list = sorted(
+                (
+                    talk
+                    for room in date['rooms']
+                    for talk in room.get('talks', [])
+                ),
+                key=lambda x: x.start
+            )
+            if talk_list:
+                result += '\033[33m{:%Y-%m-%d}\033[0m\n'.format(date['start'])
+                result += ''.join(
+                    '* \033[33m{:%H:%M}\033[0m {} ({}), {}; in {}\n'.format(
+                        talk.start, talk.submission.title,
+                        talk.submission.content_locale,
+                        talk.submission.display_speaker_names or _('No speakers'),
+                        talk.room.name,
+                    )
+                    for talk in talk_list
+                )
+        return result
+
+    def _get_text_table(self, data):
+        pass
+
     def get_text(self, request, **kwargs):
         data, max_rooms = self.get_schedule_data()
+        response_start = textwrap.dedent(f'''
+        \033[1m{request.event.name}\033[0m
+
+        Get different formats:
+           curl {request.event.urls.schedule.full()}\?format=table (default)
+           curl {request.event.urls.schedule.full()}\?format=list
+
+        ''')
         output_format = request.GET.get('format', 'table')
         if output_format not in ['list', 'table']:
             output_format = 'table'
         if output_format == 'list':
-            result = ''
-            for date in data:
-                talk_list = sorted(
-                    (
-                        talk
-                        for room in date['rooms']
-                        for talk in room.get('talks', [])
-                    ),
-                    key=lambda x: x.start
-                )
-                talks = ''
-                if talk_list:
-                    result += '\033[33m{:%Y-%m-%d}\033[0m\n'.format(date['start'])
-                    result += ''.join(
-                        '* \033[33m{:%H:%M}\033[0m {} ({}), {}; in {}\n'.format(
-                            talk.start, talk.submission.title,
-                            talk.submission.content_locale,
-                            talk.submission.display_speaker_names or _('No speakers'),
-                            talk.room.name,
-                        )
-                        for talk in talk_list
-                    )
+            result = self._get_text_list(data)
+        else:
+            result = self._get_text_table(data)
 
-        return HttpResponse(result, content_type='text/plain')
+        return HttpResponse(
+            response_start + result,
+            content_type='text/plain',
+        )
 
     def get(self, request, **kwargs):
-        if not 'text/html' in request.headers.get('Accept', ''):
+        if 'text/html' not in request.headers.get('Accept', ''):
             return self.get_text(request, **kwargs)
         return super().get(request, **kwargs)
 
