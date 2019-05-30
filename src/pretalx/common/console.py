@@ -1,5 +1,23 @@
 BOLD = '\033[1m'
 RESET = '\033[0m'
+UD = '│'
+LR = '─'
+SEPARATORS = {
+    (False, True, True, False): '┬',
+    (True, False, False, True): '┴',
+    (False, False, True, True): '┤',
+    (True, True, False, False): '├',
+    (False, True, False, True): '┼',
+    (True, False, True, False): '┼',
+}
+
+def get_seperator(*args):
+    """(upright, downright, downleft, upleft): Tuple[bool] -> seperator: str"""
+    if sum(args) >= 3:
+        return '┼'
+    elif sum(args) == 1:
+        return ('└', '┌', '┐', '┘')[args.index(True)]
+    return SEPARATORS[tuple(args)]
 
 
 def start_box(size):

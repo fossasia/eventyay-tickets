@@ -11,7 +11,7 @@ def test_can_see_schedule(
     del event.current_schedule
     assert user.has_perm('agenda.view_schedule', event)
     with django_assert_num_queries(18):
-        response = client.get(event.urls.schedule, follow=True)
+        response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT='text/html')
     assert event.schedules.count() == 2
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
@@ -57,7 +57,7 @@ def test_schedule_page(
 ):
     url = event.urls.schedule
     with django_assert_num_queries(18):
-        response = client.get(url, follow=True)
+        response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
@@ -71,16 +71,16 @@ def test_versioned_schedule_page(
 
     url = event.urls.schedule
     with django_assert_num_queries(17):
-        response = client.get(url, follow=True)
+        response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
     assert slot.submission.title not in response.content.decode()
 
     url = schedule.urls.public
     with django_assert_num_queries(13):
-        response = client.get(url, follow=True)
+        response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 
     url = f'/{event.slug}/schedule?version={quote(schedule.version)}'
     with django_assert_num_queries(22):
-        redirected_response = client.get(url, follow=True)
+        redirected_response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
     assert redirected_response._request.path == response._request.path
