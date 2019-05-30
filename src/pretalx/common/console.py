@@ -11,6 +11,7 @@ SEPARATORS = {
     (True, False, True, False): '┼',
 }
 
+
 def get_seperator(*args):
     """(upright, downright, downleft, upleft): Tuple[bool] -> seperator: str"""
     if sum(args) >= 3:

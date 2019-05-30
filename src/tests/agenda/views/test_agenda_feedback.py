@@ -43,8 +43,8 @@ def test_can_create_feedback_for_multiple_speakers(
 def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, client):
     _now = now()
     TalkSlot.objects.filter(submission__event=slot.event).update(
-        start=now() + timedelta(minutes=30),
-        end=now() + timedelta(minutes=60),
+        start=_now + timedelta(minutes=30),
+        end=_now + timedelta(minutes=60),
     )
     with django_assert_num_queries(23):
         response = client.post(
