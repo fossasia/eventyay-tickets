@@ -86,7 +86,6 @@ def test_can_see_talk_edit_btn(
     content = response.content.decode()
     assert 'fa-edit' in content  # edit btn
     assert 'fa-video' not in content
-    assert 'fa-comments' not in content
 
 
 @pytest.mark.django_db
@@ -99,7 +98,6 @@ def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, sl
     content = response.content.decode()
     assert 'fa-edit' not in content  # edit btn
     assert 'fa-video' in content
-    assert 'fa-comments' not in content
 
 
 @pytest.mark.django_db

@@ -1,4 +1,9 @@
+from datetime import timedelta
+
 import pytest
+from django.utils.timezone import now
+
+from pretalx.schedule.models import TalkSlot
 
 
 @pytest.mark.django_db()
@@ -36,13 +41,18 @@ def test_can_create_feedback_for_multiple_speakers(
 
 @pytest.mark.django_db()
 def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, client):
-    with django_assert_num_queries(25):
+    _now = now()
+    TalkSlot.objects.filter(submission__event=slot.event).update(
+        start=now() + timedelta(minutes=30),
+        end=now() + timedelta(minutes=60),
+    )
+    with django_assert_num_queries(23):
         response = client.post(
             slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
         )
-    assert slot.submission.speakers.count() == 1
     assert response.status_code == 200
     assert slot.submission.feedback.count() == 0
+    assert slot.submission.speakers.count() == 1
 
 
 @pytest.mark.django_db()
