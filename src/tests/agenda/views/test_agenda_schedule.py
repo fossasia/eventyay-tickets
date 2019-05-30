@@ -1,3 +1,4 @@
+import textwrap
 from urllib.parse import quote
 
 import pytest
@@ -58,6 +59,31 @@ def test_schedule_page(
     url = event.urls.schedule
     with django_assert_num_queries(18):
         response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
+    assert response.status_code == 200
+    assert slot.submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_schedule_page_text_table(
+    client, django_assert_num_queries, event, speaker, slot, schedule, other_slot
+):
+    url = event.urls.schedule
+    with django_assert_num_queries(18):
+        response = client.get(url, follow=True)
+    assert response.status_code == 200
+    title_lines = textwrap.wrap(slot.submission.title, width=16)
+    content = response.content.decode()
+    for line in title_lines:
+        assert line in content
+
+
+@pytest.mark.django_db
+def test_schedule_page_text_list(
+    client, django_assert_num_queries, event, speaker, slot, schedule, other_slot
+):
+    url = event.urls.schedule
+    with django_assert_num_queries(18):
+        response = client.get(url, {'format': 'list'}, follow=True)
     assert response.status_code == 200
     assert slot.submission.title in response.content.decode()
 

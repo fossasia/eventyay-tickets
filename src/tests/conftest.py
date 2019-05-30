@@ -641,7 +641,7 @@ def slot(confirmed_submission, room, schedule):
         defaults={'is_visible': True},
     )
     slots = TalkSlot.objects.filter(submission=confirmed_submission)
-    slots.update(start=now(), end=now() + datetime.timedelta(minutes=60), room=room)
+    slots.update(start=room.event.datetime_from, end=room.event.datetime_from + datetime.timedelta(minutes=60), room=room)
     return slots.get(schedule=schedule)
 
 
@@ -650,8 +650,8 @@ def unreleased_slot(confirmed_submission, room):
     schedule = confirmed_submission.event.wip_schedule
     slot = schedule.talks.filter(submission=confirmed_submission)
     slot.update(
-        start=now(),
-        end=now() + datetime.timedelta(minutes=30),
+        start=room.event.datetime_from,
+        end=room.event.datetime_from + datetime.timedelta(minutes=30),
         room=room,
         schedule=schedule,
         is_visible=True,
@@ -690,8 +690,8 @@ def feedback(past_slot):
 @pytest.fixture
 def other_slot(other_confirmed_submission, room, schedule):
     return TalkSlot.objects.create(
-        start=now(),
-        end=now() + datetime.timedelta(minutes=30),
+        start=room.event.datetime_from + datetime.timedelta(minutes=60),
+        end=room.event.datetime_from + datetime.timedelta(minutes=90),
         submission=other_confirmed_submission,
         room=room,
         schedule=schedule,
