@@ -23,6 +23,10 @@ def get_context_explanation():
             'name': 'speakers',
             'explanation': _('The name(s) of all speakers in this submission.'),
         },
+        {
+            'name': 'track_name',
+            'explanation': _('The track the submission falls under'),
+        },
     ]
 
 
@@ -42,6 +46,7 @@ def template_context_from_submission(submission):
             'submission_url': submission.urls.user_base.full(),
             'speakers': submission.display_speaker_names,
             'orga_url': submission.orga_urls.base.full(),
+            'track_name': submission.track,
         }
     )
     return context
