@@ -6,8 +6,10 @@
 {% for schedule in request.event.schedules.all %}{% if schedule.version %}
 <section>
     <h4>
-        {% trans "Version" %} {{ schedule.version }}
-        <small class="text-muted">{{ schedule.published|date }}</small>
+        <a href="{% url "agenda:versioned-schedule" event=request.event.slug version=schedule.version %}">
+            {% trans "Version" %} {{ schedule.version }}
+            <small class="text-muted">{{ schedule.published|date }}</small>
+        </a>
     </h4>
     {% include "agenda/changelog_block.html" with schedule=schedule %}
 </section>
