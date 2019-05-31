@@ -46,7 +46,7 @@ def template_context_from_submission(submission):
             'submission_url': submission.urls.user_base.full(),
             'speakers': submission.display_speaker_names,
             'orga_url': submission.orga_urls.base.full(),
-            'track_name': submission.track,
+            'track_name': str(submission.track.name),
         }
     )
     return context
