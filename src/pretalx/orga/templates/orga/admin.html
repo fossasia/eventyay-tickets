@@ -68,7 +68,7 @@
 {% if not settings.HAS_REDIS %}
     {% trans "No redis server has been configured." %}
 {% else %}
-    {% trans "Redis is used as cache backend:"} {{ settings.CACHES.redis.location|copyable }}
+    {% trans "Redis is used as cache backend:" %} {{ settings.CACHES.redis.location|copyable }}
 {% endif %}
 
 <h3>Celery</h3>

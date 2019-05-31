@@ -64,9 +64,9 @@ Release Notes
 - :bug:`587` pretalx did not automtically update a talk's duration when it was changed via the submission type or directly. It was only changed when you moved the talk in the schedule editor.
 - :bug:`594` pretalx did not display speaker availabilities during submission, even when they were required, breaking submission workflows.
 - :feature:`346` Due to the generous sponsorship of JuliaCon, pretalx is now capable of blind reviews, i.e. making sure that reviewers cannot see speaker names.
-- :feature:`-` The organiser area has now additional, event specific login pages (at /orga/event/<slug>/login/) which redirect by default to the event dashboard, and appear with the color and logo of the event in question.
+- :feature:`-` The organiser area has now additional, event specific login pages (at ``/orga/event/<slug>/login/``) which redirect by default to the event dashboard, and appear with the color and logo of the event in question.
 - :feature:`-` The review settings have moved from the CfP page to their own settings page.
-- :feature:`-` You can now decide to add the robots=noindex meta tag to prevent bots from crawling your event pages.
+- :feature:`-` You can now decide to add the ``robots=noindex`` meta tag to prevent bots from crawling your event pages.
 - :feature:`-` Plugin developers can now use the ``is_available`` hook to decide if their plugin should be shown on a per-event basis.
 - :bug:`-` Speaker without an avatar and with gravatar disabled had a broken avatar-image in the speaker's view in the orga-backend.
 - :bug:`-` The visual representation of a speaker's avatar is now consistent across all image-sizes and bio-texts.
