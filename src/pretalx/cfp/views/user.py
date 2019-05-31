@@ -1,3 +1,4 @@
+import textwrap
 import urllib
 
 from csp.decorators import csp_update
@@ -9,6 +10,7 @@ from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
     DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )
@@ -129,6 +131,24 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         if self.request.user.has_perm('submission.withdraw_submission', obj):
+            if obj.state == SubmissionStates.ACCEPTED:
+                obj.event.send_orga_mail(str(_(textwrap.dedent('''
+                    Hi,
+
+                    this is your content system at {event_dashboard}.
+                    Your accepted talk “{title}” by {speakers} was just withdrawn by {user}.
+                    You can find details at {url}.
+
+                    Best regards,
+                    pretalx
+                    '''))).format(
+                        title=obj.title,
+                        speakers=obj.display_speaker_names,
+                        user=request.user.get_display_name(),
+                        event_dashboard=request.event.orga_urls.base.full(),
+                        url=obj.orga_urls.edit.full(),
+                    )
+                )
             obj.state = SubmissionStates.WITHDRAWN
             obj.save(update_fields=['state'])
             messages.success(self.request, phrases.cfp.submission_withdrawn)

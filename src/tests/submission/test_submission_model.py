@@ -133,7 +133,7 @@ def test_cancel_fail(submission, state):
     assert submission.logged_actions().count() == 0
 
 
-@pytest.mark.parametrize('state', (SubmissionStates.SUBMITTED,))
+@pytest.mark.parametrize('state', (SubmissionStates.SUBMITTED, SubmissionStates.ACCEPTED))
 @pytest.mark.django_db
 def test_withdraw_success(submission, state):
     submission.state = state
@@ -151,7 +151,6 @@ def test_withdraw_success(submission, state):
 @pytest.mark.parametrize(
     'state',
     (
-        SubmissionStates.ACCEPTED,
         SubmissionStates.CONFIRMED,
         SubmissionStates.REJECTED,
         SubmissionStates.CANCELED,

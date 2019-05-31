@@ -37,17 +37,25 @@
         {% endcompress %}
             {% bootstrap_field form.availabilities layout='inline' %}
         {% endif %}
+        <p></p>
         {% blocktrans trimmed %}
         By confirming your submission, you agree that you are able and willing to participate in this event and
-        present the content of this submission.<br>
+        present the content of this submission.
         The submission data, such as title, abstract, description, and any uploads you provided, can be made
         publicly available once the submission is confirmed.
         {% endblocktrans %}
-        <div class="submit-group"><span></span><span>
+        <p></p>
+        <div class="submit-group"><span>
             <a href="{{ submission.urls.user_base }}"
                class="btn btn-lg btn-info">
                 {% trans "Go back" %}
             </a>
+            <a href="{{ submission.urls.withdraw }}"
+               class="btn btn-lg btn-danger">
+                {% trans "Withdraw" %}
+            </a>
+        </span>
+        <span>
             <button type="submit"
                class="btn btn-lg btn-success">
                 {% trans "Confirm" %}

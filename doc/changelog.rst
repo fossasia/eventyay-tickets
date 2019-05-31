@@ -3,6 +3,8 @@
 Release Notes
 =============
 
+- :feature:`700` Submitters can now choose to withdraw their talk even if it was accepted. When an accepted talk is withdrawn, the organisers will receive a notification email.
+- :feature:`-` When using a command line client to access a schedule page, pretalx will now output ASCII tables or lists, depending on the format parameter.
 - :feature:`402` Fields with markdown support now come with a preview next to the input field (if JavaScript is enabled).
 - :feature:`669` Emails can now also be sent grouped by submission track or submission type.
 - :support:`-` You can now install ``pretalx[redis]`` if you use pretalx with a redis server for better caching and/or asynchronous task runners.

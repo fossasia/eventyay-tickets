@@ -471,6 +471,7 @@ def test_submission_accept_wrong_code(client, submission):
 
 @pytest.mark.django_db
 def test_submission_withdraw(speaker_client, submission):
+    djmail.outbox = []
     submission.state = SubmissionStates.SUBMITTED
     submission.save()
 
@@ -478,11 +479,35 @@ def test_submission_withdraw(speaker_client, submission):
     assert response.status_code == 200
     submission.refresh_from_db()
     assert submission.state == SubmissionStates.WITHDRAWN
+    assert len(djmail.outbox) == 0
 
 
 @pytest.mark.django_db
-def test_submission_withdraw_if_not_accepted(speaker_client, submission):
+def test_submission_withdraw_if_accepted(speaker_client, submission):
+    djmail.outbox = []
     submission.accept()
+
+    response = speaker_client.post(submission.urls.withdraw, follow=True)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.state == SubmissionStates.WITHDRAWN
+    assert len(djmail.outbox) == 1
+
+
+@pytest.mark.django_db
+def test_submission_withdraw_if_confirmed(speaker_client, submission):
+    submission.accept()
+    submission.confirm()
+
+    response = speaker_client.post(submission.urls.withdraw, follow=True)
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.state != SubmissionStates.WITHDRAWN
+
+
+@pytest.mark.django_db
+def test_submission_withdraw_if_rejected(speaker_client, submission):
+    submission.reject()
 
     response = speaker_client.post(submission.urls.withdraw, follow=True)
     assert response.status_code == 200
