@@ -89,7 +89,7 @@ setup(
         'Django>=2.2.1,<2.3.0',  # https://docs.djangoproject.com/en/2.0/releases/
         'django-bakery==0.12.*',  # http://django-bakery.readthedocs.io/en/latest/changelog.html
         'django-bootstrap4==0.0.8',  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
-        'django-compressor==2.2.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
+        'django-compressor==2.3.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
         'django-context-decorator',
         'django-csp==3.5.*',  # https://github.com/mozilla/django-csp/blob/master/CHANGES
         'django-filter==2.1.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
