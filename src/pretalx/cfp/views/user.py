@@ -317,6 +317,8 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             if not result:
                 return self.get(self.request, *self.args, **self.kwargs)
             if form.has_changed():
+                if form.instance.pk and 'duration' in form.changed_data:
+                    form.instance.update_duration()
                 form.instance.log_action(
                     'pretalx.submission.update', person=self.request.user
                 )

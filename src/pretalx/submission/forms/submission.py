@@ -111,6 +111,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'slot_count',
             'do_not_record',
             'image',
+            'duration',
         ]
         request_require = [
             'abstract',
@@ -119,6 +120,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'image',
             'do_not_record',
             'track',
+            'duration',
         ]
         public_fields = ['title', 'abstract', 'description', 'image']
         widgets = {

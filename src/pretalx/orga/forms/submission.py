@@ -41,6 +41,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             instance.update_duration()
         if 'slot_count' in self.changed_data and 'slot_count' in self.initial:
             instance.update_talk_slots()
+        return instance
 
     class Meta:
         model = Submission

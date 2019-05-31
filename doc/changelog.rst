@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`427` Organisers can now permit users to submit (and change) their own talk duration length.
 - :feature:`700` Submitters can now choose to withdraw their talk even if it was accepted. When an accepted talk is withdrawn, the organisers will receive a notification email.
 - :feature:`-` When using a command line client to access a schedule page, pretalx will now output ASCII tables or lists, depending on the format parameter.
 - :feature:`402` Fields with markdown support now come with a preview next to the input field (if JavaScript is enabled).

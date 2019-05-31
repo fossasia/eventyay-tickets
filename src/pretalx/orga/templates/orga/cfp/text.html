@@ -121,6 +121,13 @@
                         <td></td>
                         <td></td>
                     </tr>
+                    <tr>
+                        <th>{% trans "Duration" %}</th>
+                        <td class="request">{% bootstrap_field sform.cfp_request_duration use_label=False layout='event-inline' %}</td>
+                        <td class="require">{% bootstrap_field sform.cfp_require_duration use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
             {% bootstrap_field sform.cfp_count_length_in layout='event' %}

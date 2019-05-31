@@ -31,6 +31,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_request_do_not_record = forms.BooleanField(label='', required=False)
     cfp_request_image = forms.BooleanField(label='', required=False)
     cfp_request_track = forms.BooleanField(label='', required=False)
+    cfp_request_duration = forms.BooleanField(label='', required=False)
     cfp_require_abstract = forms.BooleanField(label='', required=False)
     cfp_require_description = forms.BooleanField(label='', required=False)
     cfp_require_notes = forms.BooleanField(label='', required=False)
@@ -38,6 +39,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_require_availabilities = forms.BooleanField(label='', required=False)
     cfp_require_image = forms.BooleanField(label='', required=False)
     cfp_require_track = forms.BooleanField(label='', required=False)
+    cfp_require_duration = forms.BooleanField(label='', required=False)
     cfp_abstract_min_length = forms.IntegerField(
         label=_('Minimum length'), required=False, min_value=0
     )
