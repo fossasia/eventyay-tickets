@@ -423,7 +423,7 @@ def test_not_everybody_can_see_rooms(client, room):
 
 
 @pytest.mark.django_db
-def test_not_everybody_can_see_rooms(client, room, slot):
+def test_everybody_can_see_published_rooms(client, room, slot):
     room.event.is_public = True
     room.event.save()
     response = client.get(room.event.api_urls.rooms, follow=True)
