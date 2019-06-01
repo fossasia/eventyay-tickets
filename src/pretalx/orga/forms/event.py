@@ -288,7 +288,6 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         super().__init__(*args, **kwargs)
         event = kwargs.get('obj')
         if event:
-            self.fields['mail_from'].widget.attrs['placeholder'] = event.email
             self.fields['mail_from'].help_text += ' ' + _(
                 'Leave empty to use the default address: {}'
             ).format(settings.MAIL_FROM)
