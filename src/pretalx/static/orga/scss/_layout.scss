@@ -414,6 +414,12 @@ footer {
 }
 
 @include media-breakpoint-down(md) {
+  nav input, nav #navigate, nav .twiter-typeahead {
+    display: none !important;
+  }
+  nav #event-navigation #eventDropdown {
+    display: none;
+  }
   .container-fluid {
     padding: 0;
     width: 100%;
@@ -447,9 +453,13 @@ footer {
 
   aside.sidebar-uncollapsed {
     display: inherit;
-    z-index: 6;
+    z-index: 600;
 
     /* display above timeline in dashboard */
+  }
+
+  fieldset .alert.col-md-9.offset-3 {
+    margin: 0;
   }
 
   .history-sidebar {
