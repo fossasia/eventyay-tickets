@@ -202,6 +202,27 @@ footer {
         padding-left: 4px;
       }
     }
+    .url-links {
+      flex-direction: column-reverse;
+      a {
+        flex-basis: 0;
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    .orga-edit-link {
+      max-height: 40px;
+    }
+    #user-dropdown {
+      right: 0;
+    }
+
+    .table td.text-right {
+      display: flex;
+      flex-direction: row;
+      margin-left: auto;
+      > * { margin-left: 4px }
+    }
 
     .formset {
       padding-bottom: 16px;
