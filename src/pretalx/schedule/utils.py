@@ -16,7 +16,6 @@ def guess_schedule_version(event):
         return '0.1'
 
     version = event.current_schedule.version
-    # TODO: check if a formatted date is in there
     prefix = ''
     for separator in [',', '.', '-', '_']:
         if separator in version:
