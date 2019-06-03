@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`713` The sneak peek toggle in the submission list did not actually work due to a changed URL.
 - :bug:`718` Regular installation from PyPI was broken due to an incorrect file reference.
 - :release:`1.0.0 <2019-06-02>`
 - :feature:`427` Organisers can now permit users to submit (and change) their own talk duration length.

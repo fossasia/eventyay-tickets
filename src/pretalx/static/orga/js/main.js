@@ -22,7 +22,7 @@ $(function () {
 
         $working.removeClass('d-none');
 
-        var url = 'submissions/' + id + '/toggle_featured';
+        var url = window.location.pathname + id + '/toggle_featured';
         let options = {
             method: 'POST',
             headers: {
