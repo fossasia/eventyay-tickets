@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`719` In the submission process, file upload questions would not be saved correctly.
 - :bug:`713` The sneak peek toggle in the submission list did not actually work due to a changed URL.
 - :bug:`718` Regular installation from PyPI was broken due to an incorrect file reference.
 - :release:`1.0.0 <2019-06-02>`

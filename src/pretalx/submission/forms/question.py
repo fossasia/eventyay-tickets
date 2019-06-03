@@ -224,12 +224,10 @@ class QuestionsForm(forms.Form):
                     self._save_to_answer(field, field.answer, v)
                     field.answer.save()
             elif v != '' and v is not None:
-                # Not distinguishing between the external question types helps to make
-                # experiences smoother if orga changes a question type.
                 answer = Answer(
-                    review=self.review,
-                    submission=self.submission,
-                    person=self.speaker,
+                    review=self.review if field.question.target == QuestionTarget.REVIEWER else None,
+                    submission=self.submission if field.question.target == QuestionTarget.SUBMISSION else None,
+                    person=self.speaker if field.question.target == QuestionTarget.SPEAKER else None,
                     question=field.question,
                 )
                 self._save_to_answer(field, answer, v)

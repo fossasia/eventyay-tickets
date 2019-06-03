@@ -25,9 +25,7 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import (
-    Answer, QuestionTarget, QuestionVariant, SubmissionType, Track,
-)
+from pretalx.submission.models import QuestionTarget, SubmissionType, Track
 
 FORMS = [
     ('info', InfoForm),
@@ -172,31 +170,6 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             },
         )
 
-    def _handle_question_answer(self, sub, qid, value, user=None):
-        question = self.request.event.questions.filter(pk=qid).first()
-        if not question:
-            return
-        if question.target == QuestionTarget.SUBMISSION:
-            answer = Answer(question=question, submission=sub)
-        elif question.target == QuestionTarget.SPEAKER:
-            answer = Answer(question=question, person=user)
-
-        if question.variant == QuestionVariant.MULTIPLE:
-            answstr = ', '.join([str(o) for o in value])
-            answer.save()
-            if value:
-                answer.answer = answstr
-                answer.options.add(*value)
-        elif question.variant == QuestionVariant.CHOICES:
-            answer.save()
-            if value:
-                answer.options.add(value)
-                answer.answer = value.answer
-        else:
-            answer.answer = value or ''
-        if answer.answer is not None:
-            answer.save()
-
     def done(self, form_list, **kwargs):
         form_dict = kwargs.get('form_dict')
         if self.request.user.is_authenticated:
@@ -218,9 +191,9 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         form_dict['profile'].user = user
         form_dict['profile'].save()
         if 'questions' in form_dict:
-            for k, value in form_dict['questions'].cleaned_data.items():
-                qid = k.split('_')[1]
-                self._handle_question_answer(sub, qid, value, user=user)
+            form_dict['questions'].speaker = user
+            form_dict['questions'].submission = form_dict['info'].instance
+            form_dict['questions'].save()
 
         try:
             sub.event.ack_template.to_mail(
