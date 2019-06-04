@@ -9,11 +9,11 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import I18nStrJSONEncoder
+from pretalx.common.utils import I18nStrJSONEncoder, path_with_hash
 
 
 def answer_file_path(instance, filename):
-    return f'{instance.question.event.slug}/question_uploads/{filename}'
+    return f'{instance.question.event.slug}/question_uploads/{path_with_hash(filename)}'
 
 
 class QuestionManager(models.Manager):

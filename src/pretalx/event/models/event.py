@@ -18,7 +18,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls, get_base_url
-from pretalx.common.utils import daterange
+from pretalx.common.utils import daterange, path_with_hash
 
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
@@ -50,11 +50,11 @@ def validate_event_slug_blacklist(value):
 
 
 def event_css_path(instance, filename):
-    return f'{instance.slug}/css/{filename}'
+    return f'{instance.slug}/css/{path_with_hash(filename)}'
 
 
 def event_logo_path(instance, filename):
-    return f'{instance.slug}/img/{filename}'
+    return f'{instance.slug}/img/{path_with_hash(filename)}'
 
 
 @hierarkey.add()

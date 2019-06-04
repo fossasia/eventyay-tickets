@@ -17,6 +17,7 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.common.utils import path_with_hash
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
@@ -36,7 +37,7 @@ class SubmissionError(Exception):
 
 
 def submission_image_path(instance, filename):
-    return f'{instance.event.slug}/images/{instance.code}/{filename}'
+    return f'{instance.event.slug}/images/{instance.code}/{path_with_hash(filename)}'
 
 
 class SubmissionStates(Choices):

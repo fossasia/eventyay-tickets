@@ -1,5 +1,6 @@
 from datetime import date
 
+import pytest
 from django.utils import translation
 
 from pretalx.common.utils import daterange
@@ -77,3 +78,20 @@ def test_different_dates_english():
         df = date(2003, 2, 1)
         dt = date(2005, 4, 3)
         assert daterange(df, dt) == "Feb. 1, 2003 – April 3, 2005"
+
+
+@pytest.mark.parametrize('path,expected', (
+    ('foo.bar', 'foo_aaaaaaa.bar'),
+    ('foo_.bar', 'foo__aaaaaaa.bar'),
+    ('foo', 'foo_aaaaaaa'),
+    ('/home/foo.bar', '/home/foo_aaaaaaa.bar'),
+    ('/home/foo_.bar', '/home/foo__aaaaaaa.bar'),
+    ('/home/foo', '/home/foo_aaaaaaa'),
+    ('home/foo.bar', 'home/foo_aaaaaaa.bar'),
+    ('home/foo_.bar', 'home/foo__aaaaaaa.bar'),
+    ('home/foo', 'home/foo_aaaaaaa'),
+))
+def test_path_with_hash(path, expected, monkeypatch):
+    monkeypatch.setattr('pretalx.common.utils.get_random_string', lambda x: 'aaaaaaa')
+    from pretalx.common.utils import path_with_hash
+    assert path_with_hash(path) == expected

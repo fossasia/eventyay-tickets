@@ -1,4 +1,7 @@
+import os
+
 from django.template.defaultfilters import date as _date
+from django.utils.crypto import get_random_string
 from django.utils.translation import get_language, ugettext_lazy as _
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
@@ -75,3 +78,10 @@ class I18nStrJSONEncoder(I18nJSONEncoder):
         if isinstance(obj, LazyI18nString):
             return str(obj)
         return super().default(obj)
+
+
+def path_with_hash(name):
+    dir_name, file_name = os.path.split(name)
+    file_root, file_ext = os.path.splitext(file_name)
+    random = get_random_string(7)
+    return os.path.join(dir_name, f"{file_root}_{random}{file_ext}")

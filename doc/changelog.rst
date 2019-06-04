@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` We now add a hash to all uploaded file names to avoid collisions.
 - :release:`1.0.1 <2019-06-03>`
 - :bug:`719` In the submission process, file upload questions would not be saved correctly.
 - :bug:`713` The sneak peek toggle in the submission list did not actually work due to a changed URL.
