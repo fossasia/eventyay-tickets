@@ -108,21 +108,14 @@ Check out :ref:`configure` for details on the available configuration options.
 Step 5: Installation
 --------------------
 
-Now we will install pretalx itself. Please execute the following steps as the
-``pretalx`` user. This isolates the pretalx environment from your global Python
-versions and binaries::
+Please execute the following steps as the ``pretalx`` user. This isolates the
+pretalx environment from your global Python versions and binaries::
 
     $ pip install --user -U pip setuptools wheel gunicorn
-    $ pip install --user -U pretalx
 
-If you intend to run pretalx with asynchronous task runners or with redis as
-cache server, you can install ``pretalx[redis]`` instead, which will pull in
-the appropriate dependencies. Please note that you should also use
-``pretalx[redis]`` when you upgrade pretalx in this case.
-
-pretalx works your choice of database backends – we recommend using PostgreSQL,
-but MySQL and SQLite work as well. Use this command to install the database
-driver (unless you use SQLite, which has its driver built in):
+pretalx works with your choice of database backends – we recommend using
+PostgreSQL, but MySQL and SQLite work as well. Use this command to install the
+database driver (unless you use SQLite, which has its driver built in):
 
 +------------+-------------------------------------------+
 | Database   | pip package                               |
@@ -133,6 +126,15 @@ driver (unless you use SQLite, which has its driver built in):
 +------------+-------------------------------------------+
 | Oracle     | ``pip install --user -U cx_Oracle``       |
 +------------+-------------------------------------------+
+
+Now we will install pretalx itself::
+
+    $ pip install --user -U pretalx
+
+If you intend to run pretalx with asynchronous task runners or with redis as
+cache server, you can install ``pretalx[redis]`` instead, which will pull in
+the appropriate dependencies. Please note that you should also use
+``pretalx[redis]`` when you upgrade pretalx in this case.
 
 We also need to create a data directory::
 
