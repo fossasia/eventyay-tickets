@@ -104,7 +104,7 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     @context
     def mails(self):
-        return self.object.mails.filter(sent__isnull=False).order_by('-sent')
+        return self.object.mails.filter(sent__isnull=False, event=self.request.event).order_by('-sent')
 
     @context
     @cached_property

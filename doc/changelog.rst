@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Organisers were able to see all emails sent to a user in their events, instead of only emails sent for the currently active event. This is a data leak. You can find more information `on our blog <https://pretalx.com/p/news/incident-report-data-leak-in-pretalx-10/>`_.
 - :feature:`-` We now add a hash to all uploaded file names to avoid collisions.
 - :release:`1.0.1 <2019-06-03>`
 - :bug:`719` In the submission process, file upload questions would not be saved correctly.
