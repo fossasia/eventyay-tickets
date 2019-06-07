@@ -43,7 +43,7 @@ STAGES = {
         'icon': 'paper-plane',
         'links': [
             {'title': _('Configure the event'), 'url': ['orga_urls', 'settings']},
-            {'title': _('Gather your team'), 'url': ['orga_urls', 'team_settings']},
+            {'title': _('Gather your team'), 'url': ['organiser', 'orga_urls', 'base']},
             {'title': _('Write a CfP'), 'url': ['cfp', 'urls', 'edit_text']},
             {
                 'title': _('Customize mail templates'),
