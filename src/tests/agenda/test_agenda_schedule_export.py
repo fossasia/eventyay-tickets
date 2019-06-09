@@ -372,7 +372,7 @@ def test_schedule_orga_download_export(
         )
     assert response.status_code == 200
     if hasattr(response, 'streaming_content'):
-        assert len(b"".join(response.streaming_content)) > 1_000_000  # 1MB
+        assert len(b"".join(response.streaming_content)) > 100_000  # 100 KB
 
 
 @pytest.mark.django_db
