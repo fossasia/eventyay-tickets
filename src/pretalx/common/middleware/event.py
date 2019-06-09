@@ -9,7 +9,7 @@ from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
     get_supported_language_variant, language_code_re, parse_accept_lang_header,
 )
-from django_scopes import scope
+from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event, Organiser, Team
 
@@ -85,7 +85,8 @@ class EventPermissionMiddleware:
 
         event_slug = url.kwargs.get('event')
         if event_slug:
-            request.event = get_object_or_404(Event.objects.prefetch_related('schedules', 'submissions'), slug__iexact=event_slug)
+            with scopes_disabled():
+                request.event = get_object_or_404(Event.objects.prefetch_related('schedules', 'submissions'), slug__iexact=event_slug)
         event = getattr(request, 'event', None)
 
         self._set_orga_events(request)

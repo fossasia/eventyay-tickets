@@ -12,7 +12,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import pgettext, ugettext_lazy as _
-from django_scopes import ScopedManager
+from django_scopes import ScopedManager, scopes_disabled
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -254,9 +254,10 @@ class Submission(LogMixin, models.Model):
         # handwriting (2/Z, 4/A, 5/S, 6/G).
         while True:
             code = get_random_string(length=length, allowed_chars=self.CODE_CHARSET)
-            if not Submission.objects.filter(code__iexact=code).exists():
-                self.code = code
-                return
+            with scopes_disabled():
+                if not Submission.objects.filter(code__iexact=code).exists():
+                    self.code = code
+                    return
 
     def save(self, *args, **kwargs):
         if not self.code:

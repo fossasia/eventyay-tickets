@@ -1,13 +1,12 @@
+from django_scopes import scopes_disabled
 from rest_framework.serializers import (
     ModelSerializer, SerializerMethodField, SlugRelatedField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.submission.models import Answer, Review
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
-
 
     class ReviewSerializer(ModelSerializer):
         submission = SlugRelatedField(slug_field='code', read_only=True)

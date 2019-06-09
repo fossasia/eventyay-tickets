@@ -1,7 +1,7 @@
+from django_scopes import scopes_disabled
 from rest_framework.serializers import ModelSerializer
 
 from pretalx.event.models import Event
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
     class EventSerializer(ModelSerializer):

@@ -1,17 +1,15 @@
+from django_scopes import scopes_disabled
 from rest_framework.serializers import ModelSerializer, SlugRelatedField
 
 from pretalx.person.models import User
 from pretalx.submission.models import Answer, AnswerOption, Question, Submission
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
-
 
     class AnswerOptionSerializer(ModelSerializer):
         class Meta:
             model = AnswerOption
             fields = ('id', 'answer')
-
 
     class QuestionSerializer(ModelSerializer):
         options = AnswerOptionSerializer(many=True)
@@ -19,7 +17,6 @@ with scopes_disabled():
         class Meta:
             model = Question
             fields = ('id', 'question', 'required', 'target', 'options')
-
 
     class AnswerSerializer(ModelSerializer):
         question = QuestionSerializer(Question.objects.all(), read_only=True)

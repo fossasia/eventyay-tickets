@@ -17,6 +17,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
+from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
@@ -540,28 +541,30 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             for step in ('initial', 'basics', 'timeline', 'display', 'copy')
         }
 
-        event = Event.objects.create(
-            organiser=steps['initial']['organiser'],
-            locale_array=','.join(steps['initial']['locales']),
-            name=steps['basics']['name'],
-            slug=steps['basics']['slug'],
-            timezone=steps['basics']['timezone'],
-            email=steps['basics']['email'],
-            locale=steps['basics']['locale'],
-            primary_color=steps['display']['primary_color'],
-            logo=steps['display']['logo'],
-            date_from=steps['timeline']['date_from'],
-            date_to=steps['timeline']['date_to'],
-        )
-        deadline = steps['timeline'].get('deadline')
-        if deadline:
-            zone = timezone(event.timezone)
-            event.cfp.deadline = zone.localize(deadline.replace(tzinfo=None))
-            event.cfp.save()
-        for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
-            value = steps['display'].get(setting)
-            if value:
-                event.settings.set(setting, value)
+        with scopes_disabled():
+            event = Event.objects.create(
+                organiser=steps['initial']['organiser'],
+                locale_array=','.join(steps['initial']['locales']),
+                name=steps['basics']['name'],
+                slug=steps['basics']['slug'],
+                timezone=steps['basics']['timezone'],
+                email=steps['basics']['email'],
+                locale=steps['basics']['locale'],
+                primary_color=steps['display']['primary_color'],
+                logo=steps['display']['logo'],
+                date_from=steps['timeline']['date_from'],
+                date_to=steps['timeline']['date_to'],
+            )
+        with scope(event=event):
+            deadline = steps['timeline'].get('deadline')
+            if deadline:
+                zone = timezone(event.timezone)
+                event.cfp.deadline = zone.localize(deadline.replace(tzinfo=None))
+                event.cfp.save()
+            for setting in ['custom_domain', 'display_header_data', 'show_on_dashboard']:
+                value = steps['display'].get(setting)
+                if value:
+                    event.settings.set(setting, value)
 
         has_control_rights = self.request.user.teams.filter(
             organiser=event.organiser,
@@ -582,12 +585,13 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         logdata = {}
         for f in form_list:
             logdata.update({k: v for k, v in f.cleaned_data.items()})
-        event.log_action(
-            'pretalx.event.create', person=self.request.user, data=logdata, orga=True
-        )
+        with scope(event=event):
+            event.log_action(
+                'pretalx.event.create', person=self.request.user, data=logdata, orga=True
+            )
 
-        if steps['copy'] and steps['copy']['copy_from_event']:
-            event.copy_data_from(steps['copy']['copy_from_event'])
+            if steps['copy'] and steps['copy']['copy_from_event']:
+                event.copy_data_from(steps['copy']['copy_from_event'])
 
         return redirect(event.orga_urls.base + '?congratulations')
 

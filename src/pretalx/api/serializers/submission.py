@@ -1,3 +1,4 @@
+from django_scopes import scopes_disabled
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
     ModelSerializer, SerializerMethodField, SlugRelatedField,
@@ -7,10 +8,8 @@ from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
-
 
     class SlotSerializer(I18nAwareModelSerializer):
         room = SlugRelatedField(slug_field='name', read_only=True)
@@ -18,7 +17,6 @@ with scopes_disabled():
         class Meta:
             model = TalkSlot
             fields = ('room', 'start', 'end')
-
 
     class SubmissionSerializer(I18nAwareModelSerializer):
         submission_type = SlugRelatedField(slug_field='name', read_only=True)
@@ -64,7 +62,6 @@ with scopes_disabled():
                 'image',
             ]
 
-
     class SubmissionOrgaSerializer(SubmissionSerializer):
         answers = AnswerSerializer(many=True)
         created = SerializerMethodField()
@@ -81,7 +78,6 @@ with scopes_disabled():
                 'internal_notes',
             ]
 
-
     class ScheduleListSerializer(ModelSerializer):
         version = SerializerMethodField()
 
@@ -92,7 +88,6 @@ with scopes_disabled():
         class Meta:
             model = Schedule
             fields = ('version',)
-
 
     class ScheduleSerializer(ModelSerializer):
         slots = SubmissionSerializer(

@@ -11,6 +11,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.test import Client, override_settings
 from django.utils.timezone import override as override_timezone
+from django_scopes import scope, scopes_disabled
 
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import rolledback_transaction
@@ -178,35 +179,36 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         event_slug = options.get('event')
 
-        try:
-            event = Event.objects.get(slug__iexact=event_slug)
-        except Event.DoesNotExist:
-            raise CommandError(f'Could not find event with slug "{event_slug}".')
+        with scopes_disabled():
+            try:
+                event = Event.objects.get(slug__iexact=event_slug)
+            except Event.DoesNotExist:
+                raise CommandError(f'Could not find event with slug "{event_slug}".')
 
-        logging.info(f'Exporting {event.name}')
+        with scope(event=event):
+            logging.info(f'Exporting {event.name}')
+            export_dir = get_export_path(event)
+            zip_path = get_export_zip_path(event)
+            tmp_dir = export_dir.with_name(export_dir.name + '-new')
 
-        export_dir = get_export_path(event)
-        zip_path = get_export_zip_path(event)
-        tmp_dir = export_dir.with_name(export_dir.name + '-new')
-
-        delete_directory(tmp_dir)
-        tmp_dir.mkdir()
-
-        try:
-            export_event(event, tmp_dir)
-            delete_directory(export_dir)
-            tmp_dir.rename(export_dir)
-        finally:
             delete_directory(tmp_dir)
+            tmp_dir.mkdir()
 
-        logging.info(f'Exported to {export_dir}')
+            try:
+                export_event(event, tmp_dir)
+                delete_directory(export_dir)
+                tmp_dir.rename(export_dir)
+            finally:
+                delete_directory(tmp_dir)
 
-        if options.get('zip'):
-            make_archive(
-                root_dir=settings.HTMLEXPORT_ROOT,
-                base_dir=event.slug,
-                base_name=zip_path.parent / zip_path.stem,
-                format='zip',
-            )
+            logging.info(f'Exported to {export_dir}')
 
-            logging.info(f'Exported to {zip_path}')
+            if options.get('zip'):
+                make_archive(
+                    root_dir=settings.HTMLEXPORT_ROOT,
+                    base_dir=event.slug,
+                    base_name=zip_path.parent / zip_path.stem,
+                    format='zip',
+                )
+
+                logging.info(f'Exported to {zip_path}')

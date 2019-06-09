@@ -1,3 +1,4 @@
+from django_scopes import scopes_disabled
 from rest_framework.serializers import (
     CharField, ImageField, ModelSerializer, SerializerMethodField,
 )
@@ -5,10 +6,8 @@ from rest_framework.serializers import (
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import Answer
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
-
 
     class SubmitterSerializer(ModelSerializer):
         biography = SerializerMethodField()
@@ -25,7 +24,6 @@ with scopes_disabled():
         class Meta:
             model = User
             fields = ('code', 'name', 'biography', 'avatar')
-
 
     class SpeakerSerializer(ModelSerializer):
         code = CharField(source='user.code')
@@ -45,7 +43,6 @@ with scopes_disabled():
         class Meta:
             model = SpeakerProfile
             fields = ('code', 'name', 'biography', 'submissions', 'avatar')
-
 
     class SpeakerOrgaSerializer(SpeakerSerializer):
         email = CharField(source='user.email')

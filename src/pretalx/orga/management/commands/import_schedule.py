@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django_scopes import scopes_disabled
 
 from pretalx.event.models import Event, Organiser, Team
 from pretalx.person.models import User
@@ -23,22 +24,23 @@ class Command(BaseCommand):
 
         event_data = root.find('conference')
         event = Event.objects.filter(slug__iexact=event_data.find('acronym').text).first()
-        if not event:
-            event = self.create_event(event_data)
 
-        team = event.organiser.teams.filter(
-            can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
-            can_change_event_settings=True, can_change_submissions=True,
-        ).first()
-        if not team:
-            team = Team.objects.create(
-                name=str(event.name) + ' Organisers', organiser=event.organiser, all_events=True,
+        with scopes_disabled():
+            if not event:
+                event = self.create_event(event_data)
+            team = event.organiser.teams.filter(
                 can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
                 can_change_event_settings=True, can_change_submissions=True,
-            )
-        for user in User.objects.filter(is_administrator=True):
-            team.members.add(user)
-        team.save()
+            ).first()
+            if not team:
+                team = Team.objects.create(
+                    name=str(event.name) + ' Organisers', organiser=event.organiser, all_events=True,
+                    can_create_events=True, can_change_teams=True, can_change_organiser_settings=True,
+                    can_change_event_settings=True, can_change_submissions=True,
+                )
+            for user in User.objects.filter(is_administrator=True):
+                team.members.add(user)
+            team.save()
 
         self.stdout.write(self.style.SUCCESS(process_frab(root, event)))
 

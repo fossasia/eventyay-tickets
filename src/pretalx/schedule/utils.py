@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from dateutil.parser import parse
 from django.db import transaction
+from django_scopes import scope
 
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.models import Room, TalkSlot
@@ -29,28 +30,33 @@ def guess_schedule_version(event):
 
 @transaction.atomic()
 def process_frab(root, event):
-    """Take an xml document root and an event, and releases a schedule with the data from the xml document."""
-    for day in root.findall('day'):
-        for rm in day.findall('room'):
-            room, _ = Room.objects.get_or_create(event=event, name=rm.attrib['name'])
-            for talk in rm.findall('event'):
-                _create_talk(talk=talk, room=room, event=event)
+    """
+    Takes an xml document root and an event, and releases a schedule with the data from the xml document.
 
-    schedule_version = root.find('version').text
-    try:
-        event.wip_schedule.freeze(schedule_version, notify_speakers=False)
-        schedule = event.schedules.get(version=schedule_version)
-    except Exception:
-        raise Exception(
-            f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.'
-        )
+    Called from the `import_schedule` manage command, at least.
+    """
+    with scope(event=event):
+        for day in root.findall('day'):
+            for rm in day.findall('room'):
+                room, _ = Room.objects.get_or_create(event=event, name=rm.attrib['name'])
+                for talk in rm.findall('event'):
+                    _create_talk(talk=talk, room=room, event=event)
 
-    schedule.talks.update(is_visible=True)
-    start = schedule.talks.order_by('start').first().start
-    end = schedule.talks.order_by('-end').first().end
-    event.date_from = start.date()
-    event.date_to = end.date()
-    event.save()
+        schedule_version = root.find('version').text
+        try:
+            event.wip_schedule.freeze(schedule_version, notify_speakers=False)
+            schedule = event.schedules.get(version=schedule_version)
+        except Exception:
+            raise Exception(
+                f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.'
+            )
+
+        schedule.talks.update(is_visible=True)
+        start = schedule.talks.order_by('start').first().start
+        end = schedule.talks.order_by('-end').first().end
+        event.date_from = start.date()
+        event.date_to = end.date()
+        event.save()
     return (
         f'Successfully imported "{event.name}" schedule version "{schedule_version}".'
     )

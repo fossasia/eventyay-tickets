@@ -1,11 +1,10 @@
+from django_scopes import scopes_disabled
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from pretalx.schedule.models import Availability, Room
-from django_scopes import scopes_disabled
 
 with scopes_disabled():
-
 
     class AvailabilitySerializer(ModelSerializer):
         allDay = SerializerMethodField()
@@ -17,7 +16,6 @@ with scopes_disabled():
             model = Availability
             fields = ('id', 'start', 'end', 'allDay')
 
-
     class RoomSerializer(I18nAwareModelSerializer):
         url = SerializerMethodField()
 
@@ -27,7 +25,6 @@ with scopes_disabled():
         class Meta:
             model = Room
             fields = ('id', 'name', 'description', 'capacity', 'position', 'url')
-
 
     class RoomOrgaSerializer(RoomSerializer):
         availabilities = AvailabilitySerializer(many=True)

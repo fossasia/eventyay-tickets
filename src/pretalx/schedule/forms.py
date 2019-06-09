@@ -6,12 +6,12 @@ from django import forms
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
+from django_scopes.forms import SafeModelChoiceField
 from i18nfield.forms import I18nModelForm
 
 from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.forms import ReadOnlyFlag
 from pretalx.schedule.models import Availability, Room, TalkSlot
-from django_scopes.forms import SafeModelChoiceField
 
 
 class AvailabilitiesFormMixin(forms.Form):

@@ -3,8 +3,8 @@ import json
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from i18nfield.fields import I18nCharField
 from django_scopes import ScopedManager
+from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin

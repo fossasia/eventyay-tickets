@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django_scopes.forms import SafeModelMultipleChoiceField
+from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
@@ -130,7 +130,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'notes': MarkdownWidget,
         }
         field_classes = {
-            'submission_type': SafeModelMultipleChoiceField,
+            'submission_type': SafeModelChoiceField,
             'track': SafeModelMultipleChoiceField,
         }
 

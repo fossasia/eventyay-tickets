@@ -5,6 +5,7 @@ from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import scope, scopes_disabled
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
@@ -50,8 +51,10 @@ class Organiser(LogMixin, models.Model):
     def shred(self):
         """Irrevocably deletes the organiser and all related events and their data."""
         for event in self.events.all():
-            event.shred()
-        self.logged_actions().delete()
+            with scope(event=event):
+                event.shred()
+        with scopes_disabled():
+            self.logged_actions().delete()
         self.delete()
 
 
