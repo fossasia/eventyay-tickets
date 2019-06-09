@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from django_scopes import scope
 
 
 @pytest.mark.django_db
@@ -153,8 +154,9 @@ def test_orga_can_see_all_talks_even_nonpublic(
 
 
 @pytest.mark.django_db
-def test_user_can_see_schedule(client, slot):
-    assert slot.submission.event.schedules.count() == 2
+def test_user_can_see_schedule(client, slot, event):
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = client.get(slot.submission.event.api_urls.schedules, follow=True)
     content = json.loads(response.content.decode())
 
@@ -163,17 +165,19 @@ def test_user_can_see_schedule(client, slot):
 
 
 @pytest.mark.django_db
-def test_user_cannot_see_wip_schedule(client, slot):
-    assert slot.submission.event.schedules.count() == 2
+def test_user_cannot_see_wip_schedule(client, slot, event):
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = client.get(slot.submission.event.api_urls.schedules + 'wip', follow=True)
     json.loads(response.content.decode())
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_user_cannot_see_schedule_if_not_public(client, slot):
+def test_user_cannot_see_schedule_if_not_public(client, slot, event):
     slot.submission.event.settings.set('show_schedule', False)
-    assert slot.submission.event.schedules.count() == 2
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = client.get(slot.submission.event.api_urls.schedules, follow=True)
     content = json.loads(response.content.decode())
 
@@ -182,8 +186,9 @@ def test_user_cannot_see_schedule_if_not_public(client, slot):
 
 
 @pytest.mark.django_db
-def test_orga_can_see_schedule(orga_client, slot):
-    assert slot.submission.event.schedules.count() == 2
+def test_orga_can_see_schedule(orga_client, slot, event):
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = orga_client.get(slot.submission.event.api_urls.schedules, follow=True)
     content = json.loads(response.content.decode())
 
@@ -192,8 +197,9 @@ def test_orga_can_see_schedule(orga_client, slot):
 
 
 @pytest.mark.django_db
-def test_orga_can_see_wip_schedule(orga_client, slot):
-    assert slot.submission.event.schedules.count() == 2
+def test_orga_can_see_wip_schedule(orga_client, slot, event):
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = orga_client.get(
         slot.submission.event.api_urls.schedules + 'wip', follow=True
     )
@@ -202,20 +208,23 @@ def test_orga_can_see_wip_schedule(orga_client, slot):
 
 
 @pytest.mark.django_db
-def test_orga_can_see_current_schedule(orga_client, slot):
-    assert slot.submission.event.schedules.count() == 2
+def test_orga_can_see_current_schedule(orga_client, slot, event):
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = orga_client.get(
         slot.submission.event.api_urls.schedules + 'latest', follow=True
     )
     json.loads(response.content.decode())
     assert response.status_code == 200
-    assert slot.submission.title in response.content.decode()
+    with scope(event=event):
+        assert slot.submission.title in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot):
+def test_orga_cannot_see_schedule_even_if_not_public(orga_client, slot, event):
     slot.submission.event.settings.set('show_schedule', False)
-    assert slot.submission.event.schedules.count() == 2
+    with scope(event=event):
+        assert slot.submission.event.schedules.count() == 2
     response = orga_client.get(slot.submission.event.api_urls.schedules, follow=True)
     content = json.loads(response.content.decode())
 
@@ -231,13 +240,15 @@ def test_can_only_see_public_speakers(
     rejected_submission,
     submission,
     impersonal_answer,
+    event,
 ):
     response = client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 
     assert response.status_code == 200
     assert content['count'] == 1
-    assert content['results'][0]['name'] == accepted_submission.speakers.first().name
+    with scope(event=event):
+        assert content['results'][0]['name'] == accepted_submission.speakers.first().name
     assert set(content['results'][0].keys()) == {
         'name',
         'code',
@@ -318,9 +329,11 @@ def test_reviewer_cannot_see_speakers(
     rejected_submission,
     submission,
     impersonal_answer,
+    event,
 ):
-    submission.event.active_review_phase.can_see_speaker_names = False
-    submission.event.active_review_phase.save()
+    with scope(event=event):
+        submission.event.active_review_phase.can_see_speaker_names = False
+        submission.event.active_review_phase.save()
     response = review_client.get(submission.event.api_urls.speakers, follow=True)
     content = json.loads(response.content.decode())
 

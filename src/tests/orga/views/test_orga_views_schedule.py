@@ -5,6 +5,7 @@ import pytest
 import pytz
 from django.urls import reverse
 from django.utils.timezone import now
+from django_scopes import scope
 
 from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
@@ -37,9 +38,10 @@ def test_talk_list_with_filter(orga_client, event, schedule):
 
 @pytest.mark.django_db
 def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
-    slot = event.wip_schedule.talks.first()
-    start = now()
-    assert slot.start != start
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        start = now()
+        assert slot.start != start
     response = orga_client.patch(
         reverse(
             f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
@@ -47,20 +49,22 @@ def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
         data=json.dumps({'room': room.pk, 'start': start.isoformat()}),
         follow=True,
     )
-    slot.refresh_from_db()
-    content = json.loads(response.content.decode())
-    assert content['title'] == slot.submission.title
-    assert slot.start == start
-    assert slot.room == room
+    with scope(event=event):
+        slot.refresh_from_db()
+        content = json.loads(response.content.decode())
+        assert content['title'] == slot.submission.title
+        assert slot.start == start
+        assert slot.room == room
 
 
 @pytest.mark.django_db
 def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room):
-    slot = event.wip_schedule.talks.first()
-    slot.start = now()
-    slot.room = room
-    slot.save()
-    assert slot.start
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        slot.start = now()
+        slot.room = room
+        slot.save()
+        assert slot.start
     response = orga_client.patch(
         reverse(
             f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
@@ -68,29 +72,31 @@ def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room
         data=json.dumps(dict()),
         follow=True,
     )
-    slot.refresh_from_db()
-    content = json.loads(response.content.decode())
-    assert content['title'] == slot.submission.title
-    assert not slot.start
-    assert not slot.room
+    with scope(event=event):
+        slot.refresh_from_db()
+        content = json.loads(response.content.decode())
+        assert content['title'] == slot.submission.title
+        assert not slot.start
+        assert not slot.room
 
 
 @pytest.mark.usefixtures('accepted_submission')
 @pytest.mark.django_db
 def test_api_availabilities(orga_client, event, room, speaker, confirmed_submission):
-    talk = TalkSlot.objects.get(submission=confirmed_submission)
-    Availability.objects.create(
-        event=event,
-        room=room,
-        start=datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
-        end=datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
-    )
-    Availability.objects.create(
-        event=event,
-        person=speaker.profiles.first(),
-        start=datetime(2017, 1, 1, 3, tzinfo=pytz.utc),
-        end=datetime(2017, 1, 1, 6, tzinfo=pytz.utc),
-    )
+    with scope(event=event):
+        talk = TalkSlot.objects.get(submission=confirmed_submission)
+        Availability.objects.create(
+            event=event,
+            room=room,
+            start=datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
+            end=datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
+        )
+        Availability.objects.create(
+            event=event,
+            person=speaker.profiles.first(),
+            start=datetime(2017, 1, 1, 3, tzinfo=pytz.utc),
+            end=datetime(2017, 1, 1, 6, tzinfo=pytz.utc),
+        )
 
     response = orga_client.get(
         reverse(
@@ -111,8 +117,9 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
 def test_orga_can_quick_schedule_submission(
     orga_client, event, room, accepted_submission
 ):
-    slot = accepted_submission.slots.get(schedule=event.wip_schedule)
-    assert not slot.room
+    with scope(event=event):
+        slot = accepted_submission.slots.get(schedule=event.wip_schedule)
+        assert not slot.room
     response = orga_client.get(
         accepted_submission.orga_urls.quick_schedule, follow=True
     )
@@ -127,9 +134,10 @@ def test_orga_can_quick_schedule_submission(
         follow=True,
     )
     assert response.status_code == 200
-    slot.refresh_from_db()
-    assert slot.room == room, response.content.decode()
-    assert slot.start.date() == event.date_from
+    with scope(event=event):
+        slot.refresh_from_db()
+        assert slot.room == room, response.content.decode()
+        assert slot.start.date() == event.date_from
 
 
 @pytest.mark.django_db
@@ -150,53 +158,61 @@ def test_orga_can_see_schedule_release_view(orga_client, event):
 
 @pytest.mark.django_db
 def test_orga_cannot_reset_to_wrong_version(orga_client, event):
-    assert Schedule.objects.count() == 1
+    with scope(event=event):
+        assert Schedule.objects.count() == 1
     response = orga_client.get(
         event.orga_urls.reset_schedule, follow=True, data={'version': 'Test version 2'}
     )
     assert response.status_code == 200
-    assert Schedule.objects.count() == 1
+    with scope(event=event):
+        assert Schedule.objects.count() == 1
 
 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('accepted_submission')
 @pytest.mark.usefixtures('room')
 def test_orga_can_release_and_reset_schedule(orga_client, event):
-    assert Schedule.objects.count() == 1
+    with scope(event=event):
+        assert Schedule.objects.count() == 1
     response = orga_client.post(
         event.orga_urls.release_schedule,
         follow=True,
         data={'version': 'Test version 2'},
     )
     assert response.status_code == 200
-    assert Schedule.objects.count() == 2
+    with scope(event=event):
+        assert Schedule.objects.count() == 2
     response = orga_client.get(
         event.orga_urls.reset_schedule, follow=True, data={'version': 'Test version 2'}
     )
     assert response.status_code == 200
-    assert Schedule.objects.count() == 2
+    with scope(event=event):
+        assert Schedule.objects.count() == 2
 
 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('accepted_submission')
 @pytest.mark.usefixtures('room')
 def test_orga_cannot_reuse_schedule_name(orga_client, event):
-    assert Schedule.objects.count() == 1
+    with scope(event=event):
+        assert Schedule.objects.count() == 1
     response = orga_client.post(
         event.orga_urls.release_schedule,
         follow=True,
         data={'version': 'Test version 2'},
     )
     assert response.status_code == 200
-    assert Schedule.objects.count() == 2
-    assert Schedule.objects.get(version='Test version 2')
+    with scope(event=event):
+        assert Schedule.objects.count() == 2
+        assert Schedule.objects.get(version='Test version 2')
     response = orga_client.post(
         event.orga_urls.release_schedule,
         follow=True,
         data={'version': 'Test version 2'},
     )
     assert response.status_code == 200
-    assert Schedule.objects.count() == 2
+    with scope(event=event):
+        assert Schedule.objects.count() == 2
 
 
 @pytest.mark.django_db
@@ -213,12 +229,14 @@ def test_orga_can_toggle_schedule_visibility(orga_client, event):
     response = orga_client.get(event.orga_urls.toggle_schedule, follow=True)
     assert response.status_code == 200
     event = Event.objects.get(pk=event.pk)
-    assert event.settings.show_schedule is True
+    with scope(event=event):
+        assert event.settings.show_schedule is True
 
 
 @pytest.mark.django_db
 def test_create_room(orga_client, event, availability):
-    assert event.rooms.count() == 0
+    with scope(event=event):
+        assert event.rooms.count() == 0
     response = orga_client.post(
         event.orga_urls.new_room,
         follow=True,
@@ -237,108 +255,125 @@ def test_create_room(orga_client, event, availability):
         },
     )
     assert response.status_code == 200
-    assert event.rooms.count() == 1
-    assert str(event.rooms.first().name) == 'A room'
-    assert event.rooms.first().availabilities.count() == 1
-    assert event.rooms.first().availabilities.first().start == availability.start
+    with scope(event=event):
+        assert event.rooms.count() == 1
+        assert str(event.rooms.first().name) == 'A room'
+        assert event.rooms.first().availabilities.count() == 1
+        assert event.rooms.first().availabilities.first().start == availability.start
 
 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('room_availability')
 def test_edit_room(orga_client, event, room):
-    assert event.rooms.count() == 1
-    assert event.rooms.first().availabilities.count() == 1
-    assert str(event.rooms.first().name) != 'A room'
+    with scope(event=event):
+        assert event.rooms.count() == 1
+        assert event.rooms.first().availabilities.count() == 1
+        assert str(event.rooms.first().name) != 'A room'
     response = orga_client.post(
         room.urls.edit,
         follow=True,
         data={'name_0': 'A room', 'availabilities': '{"availabilities": []}'},
     )
     assert response.status_code == 200
-    assert event.rooms.count() == 1
-    assert str(event.rooms.first().name) == 'A room'
-    assert event.rooms.first().availabilities.count() == 0
+    with scope(event=event):
+        assert event.rooms.count() == 1
+        assert str(event.rooms.first().name) == 'A room'
+        assert event.rooms.first().availabilities.count() == 0
 
 
 @pytest.mark.django_db
 def test_delete_room(orga_client, event, room):
-    assert event.rooms.count() == 1
+    with scope(event=event):
+        assert event.rooms.count() == 1
     response = orga_client.get(room.urls.delete, follow=True)
     assert response.status_code == 200
-    assert event.rooms.count() == 0
+    with scope(event=event):
+        assert event.rooms.count() == 0
 
 
 @pytest.mark.django_db
 def test_delete_used_room(orga_client, event, room, slot):
-    assert event.rooms.count() == 1
+    with scope(event=event):
+        assert event.rooms.count() == 1
     assert slot.room == room
     response = orga_client.get(room.urls.delete, follow=True)
     assert response.status_code == 200
-    assert event.rooms.count() == 1
+    with scope(event=event):
+        assert event.rooms.count() == 1
 
 
 @pytest.mark.django_db
 def test_move_rooms_in_list_down(orga_client, room, other_room, event):
-    assert event.rooms.count() == 2
-    room.position = 0
-    room.save()
-    other_room.position = 1
-    other_room.save()
+    with scope(event=event):
+        assert event.rooms.count() == 2
+        room.position = 0
+        room.save()
+        other_room.position = 1
+        other_room.save()
     orga_client.post(room.urls.down, follow=True)
-    room.refresh_from_db()
-    other_room.refresh_from_db()
-    assert room.position == 1
-    assert other_room.position == 0
+    with scope(event=event):
+        room.refresh_from_db()
+        other_room.refresh_from_db()
+        assert room.position == 1
+        assert other_room.position == 0
 
 
 @pytest.mark.django_db
 def test_move_rooms_in_list_up(orga_client, room, other_room, event):
-    assert event.rooms.count() == 2
-    room.position = 1
-    room.save()
-    other_room.position = 0
-    other_room.save()
+    with scope(event=event):
+        assert event.rooms.count() == 2
+        room.position = 1
+        room.save()
+        other_room.position = 0
+        other_room.save()
     orga_client.post(room.urls.up, follow=True)
-    room.refresh_from_db()
-    other_room.refresh_from_db()
-    assert room.position == 0
-    assert other_room.position == 1
+    with scope(event=event):
+        room.refresh_from_db()
+        other_room.refresh_from_db()
+        assert room.position == 0
+        assert other_room.position == 1
 
 
 @pytest.mark.django_db
 def test_move_rooms_in_list_up_out_of_bounds(orga_client, room, other_room, event):
-    assert event.rooms.count() == 2
-    room.position = 0
-    room.save()
-    other_room.position = 1
-    other_room.save()
+    with scope(event=event):
+        assert event.rooms.count() == 2
+        room.position = 0
+        room.save()
+        other_room.position = 1
+        other_room.save()
     orga_client.post(room.urls.up, follow=True)
-    room.refresh_from_db()
-    other_room.refresh_from_db()
-    assert room.position == 0
-    assert other_room.position == 1
+    with scope(event=event):
+        room.refresh_from_db()
+        other_room.refresh_from_db()
+        assert room.position == 0
+        assert other_room.position == 1
 
 
 @pytest.mark.django_db
 def test_move_rooms_in_list_down_out_of_bounds(orga_client, room, other_room, event):
-    assert event.rooms.count() == 2
-    room.position = 0
-    room.save()
-    other_room.position = 1
-    other_room.save()
+    with scope(event=event):
+        assert event.rooms.count() == 2
+        room.position = 0
+        room.save()
+        other_room.position = 1
+        other_room.save()
     orga_client.post(other_room.urls.down, follow=True)
-    room.refresh_from_db()
-    other_room.refresh_from_db()
-    assert room.position == 0
-    assert other_room.position == 1
+    with scope(event=event):
+        room.refresh_from_db()
+        other_room.refresh_from_db()
+        assert room.position == 0
+        assert other_room.position == 1
 
 
 @pytest.mark.django_db
 def test_regenerate_speaker_notifications(orga_client, event, slot):
-    queue_count = event.queued_mails.count()
+    with scope(event=event):
+        queue_count = event.queued_mails.count()
     response = orga_client.post(
         event.orga_urls.schedule + 'resend_mails',
         follow=True,
     )
     assert response.status_code == 200
-    assert event.queued_mails.count() > queue_count
+    with scope(event=event):
+        assert event.queued_mails.count() > queue_count

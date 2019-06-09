@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.api.serializers.event import EventSerializer
 from pretalx.api.serializers.question import AnswerSerializer, QuestionSerializer
@@ -28,17 +29,18 @@ def test_event_serializer(event):
 
 @pytest.mark.django_db
 def test_question_serializer(answer):
-    data = AnswerSerializer(answer).data
-    assert set(data.keys()) == {
-        'id',
-        'question',
-        'answer',
-        'answer_file',
-        'submission',
-        'person',
-        'options',
-    }
-    data = QuestionSerializer(answer.question).data
+    with scope(event=answer.question.event):
+        data = AnswerSerializer(answer).data
+        assert set(data.keys()) == {
+            'id',
+            'question',
+            'answer',
+            'answer_file',
+            'submission',
+            'person',
+            'options',
+        }
+        data = QuestionSerializer(answer.question).data
     assert set(data.keys()) == {'id', 'question', 'required', 'target', 'options'}
 
 
@@ -53,9 +55,10 @@ def test_submitter_serializer(submission):
 
 @pytest.mark.django_db
 def test_submitter_serializer_without_profile(submission):
-    user = submission.speakers.first()
-    user.profiles.all().delete()
-    data = SubmitterSerializer(user, context={'event': submission.event}).data
+    with scope(event=submission.event):
+        user = submission.speakers.first()
+        user.profiles.all().delete()
+        data = SubmitterSerializer(user, context={'event': submission.event}).data
     assert data.keys() == {'name', 'code', 'biography', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
@@ -64,20 +67,22 @@ def test_submitter_serializer_without_profile(submission):
 
 @pytest.mark.django_db
 def test_speaker_serializer(slot):
-    user_profile = slot.submission.speakers.first().profiles.first()
-    user = user_profile.user
-    data = SpeakerSerializer(user_profile).data
+    with scope(event=slot.submission.event):
+        user_profile = slot.submission.speakers.first().profiles.first()
+        user = user_profile.user
+        data = SpeakerSerializer(user_profile).data
+        assert slot.submission.code in data['submissions']
     assert data.keys() == {'name', 'code', 'biography', 'submissions', 'avatar'}
     assert data['name'] == user.name
     assert data['code'] == user.code
-    assert slot.submission.code in data['submissions']
 
 
 @pytest.mark.django_db
 def test_speaker_orga_serializer(slot):
-    user_profile = slot.submission.speakers.first().profiles.first()
-    user = user_profile.user
-    data = SpeakerOrgaSerializer(user_profile).data
+    with scope(event=slot.submission.event):
+        user_profile = slot.submission.speakers.first().profiles.first()
+        user = user_profile.user
+        data = SpeakerOrgaSerializer(user_profile).data
     assert data.keys() == {
         'name',
         'code',
@@ -98,109 +103,113 @@ def test_submission_serializer_for_organiser(submission, orga_user):
     class Request:
         user = orga_user
         event = submission.event
-    data = SubmissionOrgaSerializer(submission, context={'event': submission.event, 'request': Request()}).data
-    assert set(data.keys()) == {
-        'code',
-        'speakers',
-        'title',
-        'submission_type',
-        'state',
-        'abstract',
-        'description',
-        'duration',
-        'slot_count',
-        'do_not_record',
-        'is_featured',
-        'content_locale',
-        'slot',
-        'image',
-        'answers',
-        'track',
-        'notes',
-        'internal_notes',
-        'created',
-    }
-    assert isinstance(data['speakers'], list)
-    assert data['speakers'][0] == {
-        'name': submission.speakers.first().name,
-        'code': submission.speakers.first().code,
-        'biography': '',  # Biography can only be derived from request associated event
-        'avatar': None,
-    }
-    assert data['submission_type'] == str(submission.submission_type.name)
-    assert data['slot'] is None
-    assert data['created'] == submission.created.astimezone(submission.event.tz).isoformat()
+    with scope(event=submission.event):
+        data = SubmissionOrgaSerializer(submission, context={'event': submission.event, 'request': Request()}).data
+        assert set(data.keys()) == {
+            'code',
+            'speakers',
+            'title',
+            'submission_type',
+            'state',
+            'abstract',
+            'description',
+            'duration',
+            'slot_count',
+            'do_not_record',
+            'is_featured',
+            'content_locale',
+            'slot',
+            'image',
+            'answers',
+            'track',
+            'notes',
+            'internal_notes',
+            'created',
+        }
+        assert isinstance(data['speakers'], list)
+        assert data['speakers'][0] == {
+            'name': submission.speakers.first().name,
+            'code': submission.speakers.first().code,
+            'biography': '',  # Biography can only be derived from request associated event
+            'avatar': None,
+        }
+        assert data['submission_type'] == str(submission.submission_type.name)
+        assert data['slot'] is None
+        assert data['created'] == submission.created.astimezone(submission.event.tz).isoformat()
 
 
 @pytest.mark.django_db
 def test_submission_serializer(submission):
-    data = SubmissionSerializer(submission, context={'event': submission.event}).data
-    assert set(data.keys()) == {
-        'code',
-        'speakers',
-        'title',
-        'submission_type',
-        'state',
-        'abstract',
-        'description',
-        'duration',
-        'slot_count',
-        'do_not_record',
-        'is_featured',
-        'content_locale',
-        'slot',
-        'image',
-        'track',
-    }
-    assert isinstance(data['speakers'], list)
-    assert data['speakers'] == []
-    assert data['submission_type'] == str(submission.submission_type.name)
-    assert data['slot'] is None
+    with scope(event=submission.event):
+        data = SubmissionSerializer(submission, context={'event': submission.event}).data
+        assert set(data.keys()) == {
+            'code',
+            'speakers',
+            'title',
+            'submission_type',
+            'state',
+            'abstract',
+            'description',
+            'duration',
+            'slot_count',
+            'do_not_record',
+            'is_featured',
+            'content_locale',
+            'slot',
+            'image',
+            'track',
+        }
+        assert isinstance(data['speakers'], list)
+        assert data['speakers'] == []
+        assert data['submission_type'] == str(submission.submission_type.name)
+        assert data['slot'] is None
 
 
 @pytest.mark.django_db
 def test_submission_slot_serializer(slot):
-    data = SubmissionSerializer(
-        slot.submission, context={'event': slot.submission.event}
-    ).data
-    assert set(data.keys()) == {
-        'code',
-        'speakers',
-        'title',
-        'submission_type',
-        'state',
-        'abstract',
-        'description',
-        'duration',
-        'slot_count',
-        'do_not_record',
-        'is_featured',
-        'content_locale',
-        'slot',
-        'image',
-        'track',
-    }
-    assert set(data['slot'].keys()) == {'start', 'end', 'room'}
-    assert data['slot']['room'] == slot.room.name
+    with scope(event=slot.submission.event):
+        data = SubmissionSerializer(
+            slot.submission, context={'event': slot.submission.event}
+        ).data
+        assert set(data.keys()) == {
+            'code',
+            'speakers',
+            'title',
+            'submission_type',
+            'state',
+            'abstract',
+            'description',
+            'duration',
+            'slot_count',
+            'do_not_record',
+            'is_featured',
+            'content_locale',
+            'slot',
+            'image',
+            'track',
+        }
+        assert set(data['slot'].keys()) == {'start', 'end', 'room'}
+        assert data['slot']['room'] == slot.room.name
 
 
 @pytest.mark.django_db
 def test_review_serializer(review):
-    data = ReviewSerializer(review).data
-    assert set(data.keys()) == {
-        'id',
-        'answers',
-        'submission',
-        'user',
-        'text',
-        'score',
-        'override_vote',
-        'created',
-        'updated',
-    }
-    assert data['submission'] == review.submission.code
-    assert data['user'] == review.user.name
-    assert data['answers'] == []
+    with scope(event=review.event):
+        data = ReviewSerializer(review).data
+        assert set(data.keys()) == {
+            'id',
+            'answers',
+            'submission',
+            'user',
+            'text',
+            'score',
+            'override_vote',
+            'created',
+            'updated',
+        }
+        assert data['submission'] == review.submission.code
+        assert data['user'] == review.user.name
+        assert data['answers'] == []
 
 
 @pytest.mark.django_db
@@ -212,15 +221,16 @@ def test_room_serializer(room):
 
 @pytest.mark.django_db
 def test_room_orga_serializer(room):
-    data = RoomOrgaSerializer(room).data
-    assert set(data.keys()) == {
-        'id',
-        'name',
-        'description',
-        'capacity',
-        'position',
-        'speaker_info',
-        'availabilities',
-        'url',
-    }
-    assert data['id'] == room.pk
+    with scope(event=room.event):
+        data = RoomOrgaSerializer(room).data
+        assert set(data.keys()) == {
+            'id',
+            'name',
+            'description',
+            'capacity',
+            'position',
+            'speaker_info',
+            'availabilities',
+            'url',
+        }
+        assert data['id'] == room.pk

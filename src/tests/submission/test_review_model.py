@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.submission.models import Review
 
@@ -15,11 +16,12 @@ from pretalx.submission.models import Review
     ([1, 1, 1, 5], 1),
 ))
 def test_median_review_score(submission, scores, expected):
-    speaker = submission.speakers.first()
-    reviews = [Review(submission=submission, score=score, user=speaker) for score in scores]
-    Review.objects.bulk_create(reviews)
-    assert submission.median_score == expected
-    submission.reviews.all().delete()
+    with scope(event=submission.event):
+        speaker = submission.speakers.first()
+        reviews = [Review(submission=submission, score=score, user=speaker) for score in scores]
+        Review.objects.bulk_create(reviews)
+        assert submission.median_score == expected
+        submission.reviews.all().delete()
 
 
 @pytest.mark.django_db

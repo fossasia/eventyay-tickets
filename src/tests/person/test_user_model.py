@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scopes_disabled
 
 from pretalx.person.models.user import User
 from pretalx.submission.models.question import Answer
@@ -18,26 +19,27 @@ def test_gravatar_parameter(email, expected):
 
 @pytest.mark.django_db
 def test_user_deactivate(speaker, personal_answer, impersonal_answer, other_speaker):
-    assert Answer.objects.count() == 2
-    count = speaker.own_actions().count()
-    name = speaker.name
-    email = speaker.email
-    organiser = speaker.submissions.first().event.organiser
-    team = organiser.teams.first()
-    team.members.add(speaker)
-    team.save()
-    team_members = team.members.count()
-    speaker.deactivate()
-    speaker.refresh_from_db()
-    assert speaker.own_actions().count() == count
-    assert speaker.profiles.first().biography == ''
-    assert speaker.name != name
-    assert speaker.email != email
-    assert Answer.objects.count() == 1
-    assert Answer.objects.first().question.contains_personal_data is False
-    assert team.members.count() == team_members - 1
-    assert 'deleted' in str(speaker).lower()
-    assert speaker.get_permissions_for_event(Answer.objects.first().event) == set()
+    with scopes_disabled():
+        assert Answer.objects.count() == 2
+        count = speaker.own_actions().count()
+        name = speaker.name
+        email = speaker.email
+        organiser = speaker.submissions.first().event.organiser
+        team = organiser.teams.first()
+        team.members.add(speaker)
+        team.save()
+        team_members = team.members.count()
+        speaker.deactivate()
+        speaker.refresh_from_db()
+        assert speaker.own_actions().count() == count
+        assert speaker.profiles.first().biography == ''
+        assert speaker.name != name
+        assert speaker.email != email
+        assert Answer.objects.count() == 1
+        assert Answer.objects.first().question.contains_personal_data is False
+        assert team.members.count() == team_members - 1
+        assert 'deleted' in str(speaker).lower()
+        assert speaker.get_permissions_for_event(Answer.objects.first().event) == set()
 
 
 @pytest.mark.django_db

@@ -3,6 +3,7 @@ import json
 import pytest
 from django.conf import settings
 from django.core import mail as djmail
+from django_scopes import scope
 
 from pretalx.event.models import Event
 
@@ -482,7 +483,9 @@ def test_edit_review_settings(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
-    assert event.review_phases.count() == 2
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
@@ -495,13 +498,13 @@ def test_edit_review_settings(orga_client, event):
             'form-INITIAL_FORMS': 2,
             'form-MIN_NUM_FORMS': 0,
             'form-MAX_NUM_FORMS': 1000,
-            'form-0-name': event.active_review_phase.name + 'xxx',
-            'form-0-id': event.active_review_phase.id,
+            'form-0-name': active_phase.name + 'xxx',
+            'form-0-id': active_phase.id,
             'form-0-start': "",
             'form-0-end': "",
             'form-0-can_see_other_reviews': 'after_review',
-            'form-1-name': event.active_review_phase.name + 'xxxy',
-            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-name': active_phase.name + 'xxxy',
+            'form-1-id': active_phase.id + 1,
             'form-1-start': "",
             'form-1-end': "",
             'form-1-can_see_other_reviews': 'after_review',
@@ -520,6 +523,8 @@ def test_edit_review_settings_invalid(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
+    with scope(event=event):
+        active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
@@ -532,13 +537,13 @@ def test_edit_review_settings_invalid(orga_client, event):
             'form-INITIAL_FORMS': 2,
             'form-MIN_NUM_FORMS': 0,
             'form-MAX_NUM_FORMS': 1000,
-            'form-0-name': event.active_review_phase.name + 'xxx',
-            'form-0-id': event.active_review_phase.id,
+            'form-0-name': active_phase.name + 'xxx',
+            'form-0-id': active_phase.id,
             'form-0-start': "",
             'form-0-end': "",
             'form-0-can_see_other_reviews': 'after_review',
-            'form-1-name': event.active_review_phase.name + 'xxxy',
-            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-name': active_phase.name + 'xxxy',
+            'form-1-id': active_phase.id + 1,
             'form-1-start': "",
             'form-1-end': "",
             'form-1-can_see_other_reviews': 'after_review',
@@ -557,7 +562,9 @@ def test_edit_review_settings_invalid_formset(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
-    assert event.review_phases.count() == 2
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
@@ -570,13 +577,13 @@ def test_edit_review_settings_invalid_formset(orga_client, event):
             'form-INITIAL_FORMS': 2,
             'form-MIN_NUM_FORMS': 0,
             'form-MAX_NUM_FORMS': 1000,
-            'form-0-name': event.active_review_phase.name + 'xxx',
-            'form-0-id': event.active_review_phase.id,
+            'form-0-name': active_phase.name + 'xxx',
+            'form-0-id': active_phase.id,
             'form-0-start': "lalala",
             'form-0-end': "",
             'form-0-can_see_other_reviews': 'after_review',
-            'form-1-name': event.active_review_phase.name + 'xxxy',
-            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-name': active_phase.name + 'xxxy',
+            'form-1-id': active_phase.id + 1,
             'form-1-start': "",
             'form-1-end': "",
             'form-1-can_see_other_reviews': 'after_review',
@@ -594,7 +601,9 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
     assert event.settings.review_score_names is None
-    assert event.review_phases.count() == 2
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        active_phase = event.active_review_phase
     response = orga_client.post(
         event.orga_urls.review_settings,
         {
@@ -607,13 +616,13 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
             'form-INITIAL_FORMS': 2,
             'form-MIN_NUM_FORMS': 0,
             'form-MAX_NUM_FORMS': 1000,
-            'form-0-name': event.active_review_phase.name + 'xxx',
-            'form-0-id': event.active_review_phase.id,
+            'form-0-name': active_phase.name + 'xxx',
+            'form-0-id': active_phase.id,
             'form-0-start': "",
             'form-0-end': "",
             'form-0-can_see_other_reviews': 'after_review',
-            'form-1-name': event.active_review_phase.name + 'xxxy',
-            'form-1-id': event.active_review_phase.id + 1,
+            'form-1-name': active_phase.name + 'xxxy',
+            'form-1-id': active_phase.id + 1,
             'form-1-start': "",
             'form-1-end': "",
             'form-1-can_see_other_reviews': 'after_review',
@@ -626,41 +635,50 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
     )
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
-    assert event.review_phases.count() == 3
+    with scope(event=event):
+        assert event.review_phases.count() == 3
 
 
 @pytest.mark.django_db
 def test_edit_review_settings_delete_review_phase(orga_client, event):
-    assert event.review_phases.count() == 2
-    response = orga_client.get(event.review_phases.first().urls.delete, follow=True)
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.first()
+    response = orga_client.get(phase.urls.delete, follow=True)
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
-    assert event.review_phases.count() == 1
+    with scope(event=event):
+        assert event.review_phases.count() == 1
 
 
 @pytest.mark.django_db
 def test_edit_review_settings_activate_review_phase(orga_client, event):
-    assert event.review_phases.count() == 2
-    phase = event.active_review_phase
-    other_phase = event.review_phases.exclude(pk=phase.pk).first()
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.active_review_phase
+        other_phase = event.review_phases.exclude(pk=phase.pk).first()
     response = orga_client.get(other_phase.urls.activate, follow=True)
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
-    assert event.active_review_phase == other_phase
+    with scope(event=event):
+        assert event.active_review_phase == other_phase
 
 
 @pytest.mark.django_db
 def test_edit_review_settings_move_review_phase(orga_client, event):
-    assert event.review_phases.count() == 2
-    phase = event.review_phases.first()
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.first()
     assert phase.position == 0
     response = orga_client.get(phase.urls.down, follow=True)
     assert response.status_code == 200
-    phase.refresh_from_db()
+    with scope(event=event):
+        phase.refresh_from_db()
     assert phase.position == 1
     response = orga_client.get(phase.urls.up, follow=True)
     assert response.status_code == 200
-    phase.refresh_from_db()
+    with scope(event=event):
+        phase.refresh_from_db()
     assert phase.position == 0
 
 

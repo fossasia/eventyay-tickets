@@ -3,6 +3,7 @@ import datetime
 import pytest
 import pytz
 from django.utils import formats
+from django_scopes import scope
 
 
 @pytest.mark.django_db
@@ -17,25 +18,27 @@ def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other
 def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot):
     with django_assert_num_queries(31):
         response = client.get(slot.submission.urls.public, follow=True)
-    assert event.schedules.count() == 2
+    with scope(event=event):
+        assert event.schedules.count() == 2
     assert response.status_code == 200
     content = response.content.decode()
-    assert content.count(slot.submission.title) >= 2  # meta+h1
-    assert slot.submission.abstract in content
-    assert slot.submission.description in content
-    assert (
-        formats.date_format(
-            slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+    with scope(event=event):
+        assert content.count(slot.submission.title) >= 2  # meta+h1
+        assert slot.submission.abstract in content
+        assert slot.submission.description in content
+        assert (
+            formats.date_format(
+                slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+            )
+            in content
         )
-        in content
-    )
-    assert (
-        formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
-        in content
-    )
-    assert str(slot.room.name) in content
-    assert 'fa-edit' not in content  # edit btn
-    assert 'fa-video' not in content  # do not record
+        assert (
+            formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
+            in content
+        )
+        assert str(slot.room.name) in content
+        assert 'fa-edit' not in content  # edit btn
+        assert 'fa-video' not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -43,8 +46,9 @@ def test_cannot_see_new_talk(client, django_assert_num_queries, event, unrelease
     slot = unreleased_slot
     with django_assert_num_queries(18):
         response = client.get(slot.submission.urls.public, follow=True)
-    assert event.schedules.count() == 1
     assert response.status_code == 404
+    with scope(event=event):
+        assert event.schedules.count() == 1
 
 
 @pytest.mark.django_db
@@ -54,25 +58,26 @@ def test_orga_can_see_new_talk(
     slot = unreleased_slot
     with django_assert_num_queries(31):
         response = orga_client.get(slot.submission.urls.public, follow=True)
-    assert event.schedules.count() == 1
     assert response.status_code == 200
     content = response.content.decode()
-    assert content.count(slot.submission.title) >= 2  # meta+h1
-    assert slot.submission.abstract in content
-    assert slot.submission.description in content
-    assert (
-        formats.date_format(
-            slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+    with scope(event=event):
+        assert event.schedules.count() == 1
+        assert content.count(slot.submission.title) >= 2  # meta+h1
+        assert slot.submission.abstract in content
+        assert slot.submission.description in content
+        assert (
+            formats.date_format(
+                slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+            )
+            in content
         )
-        in content
-    )
-    assert (
-        formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
-        in content
-    )
-    assert str(slot.room.name) in content
-    assert 'fa-edit' not in content  # edit btn
-    assert 'fa-video' not in content  # do not record
+        assert (
+            formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
+            in content
+        )
+        assert str(slot.room.name) in content
+        assert 'fa-edit' not in content  # edit btn
+        assert 'fa-video' not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -192,7 +197,8 @@ def test_talk_speaker_other_submissions(
     other_slot,
     other_submission,
 ):
-    other_submission.speakers.add(speaker)
+    with scope(event=event):
+        other_submission.speakers.add(speaker)
     with django_assert_num_queries(34):
         response = client.get(other_submission.urls.public, follow=True)
 
@@ -207,10 +213,11 @@ def test_talk_speaker_other_submissions(
     ][0]
     assert len(speaker_response.other_submissions) == 1
     assert len(other_response.other_submissions) == 0
-    assert (
-        speaker_response.other_submissions[0].title
-        == speaker.submissions.first().title
-    )
+    with scope(event=event):
+        assert (
+            speaker_response.other_submissions[0].title
+            == speaker.submissions.first().title
+        )
 
 
 @pytest.mark.django_db
@@ -223,13 +230,15 @@ def test_talk_speaker_other_submissions_only_if_visible(
     other_slot,
     other_submission,
 ):
-    other_submission.speakers.add(speaker)
+    with scope(event=event):
+        other_submission.speakers.add(speaker)
     with django_assert_num_queries(34):
         response = client.get(other_submission.urls.public, follow=True)
-    slot.submission.accept(force=True)
-    slot.is_visible = False
-    slot.save()
-    slot.submission.save()
+    with scope(event=event):
+        slot.submission.accept(force=True)
+        slot.is_visible = False
+        slot.save()
+        slot.submission.save()
 
     assert response.status_code == 200
     assert response.context['speakers']

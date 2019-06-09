@@ -4,6 +4,7 @@ import pytest
 from django.core.cache import cache as django_cache
 from django.test import TestCase, override_settings
 from django.utils.timezone import now
+from django_scopes import scopes_disabled
 
 from pretalx.common.cache import ObjectRelatedCache
 from pretalx.event.models import Event, Organiser
@@ -22,11 +23,12 @@ class CacheTest(TestCase):
     """
     @classmethod
     def setUpTestData(cls):
-        o = Organiser.objects.create(name='Dummy', slug='dummy')
-        cls.event = Event.objects.create(
-            organiser=o, name='Dummy', slug='dummy',
-            date_from=now().date(), date_to=now().date(),
-        )
+        with scopes_disabled():
+            o = Organiser.objects.create(name='Dummy', slug='dummy')
+            cls.event = Event.objects.create(
+                organiser=o, name='Dummy', slug='dummy',
+                date_from=now().date(), date_to=now().date(),
+            )
 
     def setUp(self):
         self.cache = self.event.cache

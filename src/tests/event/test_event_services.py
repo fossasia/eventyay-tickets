@@ -4,6 +4,7 @@ import pytest
 from django.core import mail as djmail
 from django.test import override_settings
 from django.utils.timezone import now
+from django_scopes import scopes_disabled
 
 from pretalx.common.models.log import ActivityLog
 from pretalx.event.services import periodic_event_services, task_periodic_event_services
@@ -27,10 +28,11 @@ def test_task_periodic_event_created(event):
 @pytest.mark.django_db
 def test_task_periodic_event_created_long_ago(event):
     djmail.outbox = []
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-    ActivityLog.objects.filter(event=event).update(timestamp=now() - timedelta(days=11))
-    event.cfp.deadline = now() - timedelta(days=10)
-    event.cfp.save()
+    with scopes_disabled():
+        ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+        ActivityLog.objects.filter(event=event).update(timestamp=now() - timedelta(days=11))
+        event.cfp.deadline = now() - timedelta(days=10)
+        event.cfp.save()
     assert not event.settings.sent_mail_event_created
     task_periodic_event_services(event.slug)
     event = event.__class__.objects.get(slug=event.slug)

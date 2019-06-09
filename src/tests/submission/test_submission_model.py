@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.submission.models import Answer, SubmissionError, SubmissionStates
 from pretalx.submission.models.submission import submission_image_path
@@ -16,43 +17,41 @@ from pretalx.submission.models.submission import submission_image_path
 )
 @pytest.mark.django_db
 def test_accept_success(submission, state):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    submission.accept()
-
-    assert submission.state == SubmissionStates.ACCEPTED
-    assert submission.logged_actions().count() == (count + 1)
-    if state != SubmissionStates.CONFIRMED:
-        assert submission.event.queued_mails.count() == 1
-    else:
-        assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 1
+        submission.accept()
+        assert submission.state == SubmissionStates.ACCEPTED
+        assert submission.event.queued_mails.count() == int(state != SubmissionStates.CONFIRMED)
+        assert submission.logged_actions().count() == (count + 1)
+        assert submission.event.wip_schedule.talks.count() == 1
 
 
 @pytest.mark.parametrize('state', (SubmissionStates.WITHDRAWN,))
 @pytest.mark.parametrize('force', (True, False))
 @pytest.mark.django_db
 def test_accept_fail(submission, state, force):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    if force:
-        submission.accept(force=force)
-
-        assert submission.state == SubmissionStates.ACCEPTED
-        assert submission.logged_actions().count() == (count + 1)
-        assert submission.event.queued_mails.count() == 1
-        assert submission.event.wip_schedule.talks.count() == 1
-
-    else:
-        with pytest.raises(SubmissionError):
+        if force:
             submission.accept(force=force)
-        assert submission.state == state
-        assert submission.event.queued_mails.count() == 0
-        assert submission.event.wip_schedule.talks.count() == 0
+
+            assert submission.state == SubmissionStates.ACCEPTED
+            assert submission.logged_actions().count() == (count + 1)
+            assert submission.event.queued_mails.count() == 1
+            assert submission.event.wip_schedule.talks.count() == 1
+
+        else:
+            with pytest.raises(SubmissionError):
+                submission.accept(force=force)
+            assert submission.state == state
+            assert submission.event.queued_mails.count() == 0
+            assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -60,16 +59,17 @@ def test_accept_fail(submission, state, force):
 )
 @pytest.mark.django_db
 def test_reject_success(submission, state):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    submission.reject()
+        submission.reject()
 
-    assert submission.state == SubmissionStates.REJECTED
-    assert submission.logged_actions().count() == (count + 1)
-    assert submission.event.queued_mails.count() == 1
-    assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.state == SubmissionStates.REJECTED
+        assert submission.logged_actions().count() == (count + 1)
+        assert submission.event.queued_mails.count() == 1
+        assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -79,24 +79,25 @@ def test_reject_success(submission, state):
 @pytest.mark.parametrize('force', (True, False))
 @pytest.mark.django_db
 def test_reject_fail(submission, state, force):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    if force:
-        submission.reject(force=force)
-
-        assert submission.state == SubmissionStates.REJECTED
-        assert submission.logged_actions().count() == (count + 1)
-        assert submission.event.queued_mails.count() == 1
-        assert submission.event.wip_schedule.talks.count() == 0
-    else:
-        with pytest.raises(SubmissionError):
+        if force:
             submission.reject(force=force)
-        assert submission.state == state
-        assert submission.logged_actions().count() == count
-        assert submission.event.queued_mails.count() == 0
-        assert submission.event.wip_schedule.talks.count() == 0
+
+            assert submission.state == SubmissionStates.REJECTED
+            assert submission.logged_actions().count() == (count + 1)
+            assert submission.event.queued_mails.count() == 1
+            assert submission.event.wip_schedule.talks.count() == 0
+        else:
+            with pytest.raises(SubmissionError):
+                submission.reject(force=force)
+            assert submission.state == state
+            assert submission.logged_actions().count() == count
+            assert submission.event.queued_mails.count() == 0
+            assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -104,16 +105,17 @@ def test_reject_fail(submission, state, force):
 )
 @pytest.mark.django_db
 def test_cancel_success(submission, state):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    submission.cancel()
+        submission.cancel()
 
-    assert submission.state == SubmissionStates.CANCELED
-    assert submission.logged_actions().count() == (count + 1)
-    assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.state == SubmissionStates.CANCELED
+        assert submission.logged_actions().count() == (count + 1)
+        assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -122,30 +124,32 @@ def test_cancel_success(submission, state):
 )
 @pytest.mark.django_db
 def test_cancel_fail(submission, state):
-    submission.state = state
-    submission.save()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
 
-    with pytest.raises(SubmissionError):
-        submission.cancel()
-    assert submission.state == state
-    assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 0
-    assert submission.logged_actions().count() == 0
+        with pytest.raises(SubmissionError):
+            submission.cancel()
+        assert submission.state == state
+        assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.logged_actions().count() == 0
 
 
 @pytest.mark.parametrize('state', (SubmissionStates.SUBMITTED, SubmissionStates.ACCEPTED))
 @pytest.mark.django_db
 def test_withdraw_success(submission, state):
-    submission.state = state
-    submission.save()
-    count = submission.logged_actions().count()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.logged_actions().count()
 
-    submission.withdraw()
+        submission.withdraw()
 
-    assert submission.state == SubmissionStates.WITHDRAWN
-    assert submission.logged_actions().count() == (count + 1)
-    assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.state == SubmissionStates.WITHDRAWN
+        assert submission.logged_actions().count() == (count + 1)
+        assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -158,15 +162,16 @@ def test_withdraw_success(submission, state):
 )
 @pytest.mark.django_db
 def test_withdraw_fail(submission, state):
-    submission.state = state
-    submission.save()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
 
-    with pytest.raises(SubmissionError):
-        submission.withdraw()
-    assert submission.state == state
-    assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 0
-    assert submission.logged_actions().count() == 0
+        with pytest.raises(SubmissionError):
+            submission.withdraw()
+        assert submission.state == state
+        assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.logged_actions().count() == 0
 
 
 @pytest.mark.parametrize(
@@ -181,27 +186,29 @@ def test_withdraw_fail(submission, state):
 )
 @pytest.mark.django_db
 def test_make_submitted(submission, state):
-    submission.state = state
-    submission.save()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
 
-    submission.make_submitted(force=True)
-    assert submission.state == SubmissionStates.SUBMITTED
-    assert submission.event.queued_mails.count() == 0
-    assert submission.event.wip_schedule.talks.count() == 0
-    assert submission.logged_actions().count() == 0
+        submission.make_submitted(force=True)
+        assert submission.state == SubmissionStates.SUBMITTED
+        assert submission.event.queued_mails.count() == 0
+        assert submission.event.wip_schedule.talks.count() == 0
+        assert submission.logged_actions().count() == 0
 
 
 @pytest.mark.django_db
 def test_submission_set_state_error_msg(submission):
-    submission.state = SubmissionStates.CANCELED
+    with scope(event=submission.event):
+        submission.state = SubmissionStates.CANCELED
 
-    with pytest.raises(SubmissionError) as excinfo:
-        submission._set_state(SubmissionStates.SUBMITTED)
+        with pytest.raises(SubmissionError) as excinfo:
+            submission._set_state(SubmissionStates.SUBMITTED)
 
-    assert (
-        'must be rejected or accepted or withdrawn not canceled to be submitted'
-        in str(excinfo.value)
-    )
+        assert (
+            'must be rejected or accepted or withdrawn not canceled to be submitted'
+            in str(excinfo.value)
+        )
 
 
 @pytest.mark.parametrize(
@@ -210,20 +217,22 @@ def test_submission_set_state_error_msg(submission):
 )
 @pytest.mark.django_db
 def test_submission_is_deleted(submission, state, expected):
-    submission.state = state
-    submission.save()
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
 
-    assert submission.is_deleted == expected
+        assert submission.is_deleted == expected
 
 
 @pytest.mark.django_db
 def test_submission_remove_removes_answers(submission, answer):
-    count = Answer.objects.count()
-    answer_count = submission.answers.count()
-    assert answer_count
-    submission.remove(force=True)
-    assert submission.is_deleted
-    assert Answer.objects.count() == count - answer_count
+    with scope(event=submission.event):
+        count = Answer.objects.count()
+        answer_count = submission.answers.count()
+        assert answer_count
+        submission.remove(force=True)
+        assert submission.is_deleted
+        assert Answer.objects.count() == count - answer_count
 
 
 @pytest.mark.django_db
@@ -240,13 +249,14 @@ def test_submission_image_path(submission):
 
 @pytest.mark.django_db
 def test_submission_change_slot_count(accepted_submission):
-    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1
-    accepted_submission.event.settings.present_multiple_times = True
-    accepted_submission.slot_count = 2
-    accepted_submission.save()
-    accepted_submission.accept()
-    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 2
-    accepted_submission.slot_count = 1
-    accepted_submission.save()
-    accepted_submission.accept()
-    assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1
+    with scope(event=accepted_submission.event):
+        assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1
+        accepted_submission.event.settings.present_multiple_times = True
+        accepted_submission.slot_count = 2
+        accepted_submission.save()
+        accepted_submission.accept()
+        assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 2
+        accepted_submission.slot_count = 1
+        accepted_submission.save()
+        accepted_submission.accept()
+        assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1

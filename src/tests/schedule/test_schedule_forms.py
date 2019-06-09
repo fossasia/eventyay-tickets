@@ -5,6 +5,7 @@ import pytest
 import pytz
 from django.forms import ModelForm, ValidationError
 from django.utils import timezone
+from django_scopes import scope
 
 from pretalx.person.models import SpeakerProfile
 from pretalx.schedule.forms import AvailabilitiesFormMixin
@@ -207,34 +208,35 @@ def test_set_foreignkeys(availabilitiesform, instancegen, fk_name):
 
 @pytest.mark.django_db
 def test_replace_availabilities(availabilitiesform):
-    instance = Room.objects.create(event_id=availabilitiesform.event.id)
-    Availability.objects.bulk_create([
-        Availability(
-            room_id=instance.id, event_id=availabilitiesform.event.id,
-            start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)
-        ),
-        Availability(
-            room_id=instance.id, event_id=availabilitiesform.event.id,
-            start=datetime.datetime(2017, 1, 2, 10), end=datetime.datetime(2017, 1, 2, 15)
-        ),
-    ])
+    with scope(event=availabilitiesform.event):
+        instance = Room.objects.create(event_id=availabilitiesform.event.id)
+        Availability.objects.bulk_create([
+            Availability(
+                room_id=instance.id, event_id=availabilitiesform.event.id,
+                start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)
+            ),
+            Availability(
+                room_id=instance.id, event_id=availabilitiesform.event.id,
+                start=datetime.datetime(2017, 1, 2, 10), end=datetime.datetime(2017, 1, 2, 15)
+            ),
+        ])
 
-    expected = [
-        Availability(
-            room_id=instance.id, event_id=availabilitiesform.event.id,
-            start=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12)
-        ),
-        Availability(
-            room_id=instance.id, event_id=availabilitiesform.event.id,
-            start=datetime.datetime(2017, 1, 2, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 2, 15)
-        ),
-    ]
+        expected = [
+            Availability(
+                room_id=instance.id, event_id=availabilitiesform.event.id,
+                start=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12)
+            ),
+            Availability(
+                room_id=instance.id, event_id=availabilitiesform.event.id,
+                start=datetime.datetime(2017, 1, 2, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 2, 15)
+            ),
+        ]
 
-    availabilitiesform._replace_availabilities(instance, expected)
+        availabilitiesform._replace_availabilities(instance, expected)
 
-    actual = instance.availabilities.all()
-    for act, exp in zip(actual, expected):
-        assert act.start == exp.start
+        actual = instance.availabilities.all()
+        for act, exp in zip(actual, expected):
+            assert act.start == exp.start
 
 
 @pytest.mark.django_db
@@ -290,60 +292,62 @@ def test_serialize_availability(availabilitiesform, avail, expected):
     ),
 ))
 def test_serialize(availabilitiesform, avails, expected, tzname):
-    availabilitiesform.event.timezone = tzname
-    availabilitiesform.event.save()
+    with scope(event=availabilitiesform.event):
+        availabilitiesform.event.timezone = tzname
+        availabilitiesform.event.save()
 
-    if avails is not None:
-        instance = Room.objects.create(event_id=availabilitiesform.event.id)
-        for avail in avails:
-            avail.event_id = availabilitiesform.event.id
-            avail.room_id = instance.id
-            avail.save()
-    else:
-        instance = None
+        if avails is not None:
+            instance = Room.objects.create(event_id=availabilitiesform.event.id)
+            for avail in avails:
+                avail.event_id = availabilitiesform.event.id
+                avail.room_id = instance.id
+                avail.save()
+        else:
+            instance = None
 
-    if avails:
-        expected = json.loads(expected)
-        for a, j in zip(avails, expected['availabilities']):
-            j['id'] = a.pk
-        expected = json.dumps(expected)
+        if avails:
+            expected = json.loads(expected)
+            for a, j in zip(avails, expected['availabilities']):
+                j['id'] = a.pk
+            expected = json.dumps(expected)
 
-    actual = availabilitiesform._serialize(availabilitiesform.event, instance)
-    assert actual == expected
+        actual = availabilitiesform._serialize(availabilitiesform.event, instance)
+        assert actual == expected
 
 
 @pytest.mark.django_db
 def test_chained(availabilitiesform, room):
     """ make sure the Mixin can actually deserialize the data it serialized """
-    room.event.timezone = 'America/New_York'
-    tz = pytz.timezone(room.event.timezone)
-    room.event.save()
-    room.save()
-    # normal
-    Availability.objects.create(
-        event=availabilitiesform.event, room=room,
-        start=tz.localize(datetime.datetime(2017, 1, 1, 10)),
-        end=tz.localize(datetime.datetime(2017, 1, 1, 12)),
-    )
-    # all day
-    Availability.objects.create(
-        event=availabilitiesform.event, room=room,
-        start=tz.localize(datetime.datetime(2017, 1, 1)),
-        end=tz.localize(datetime.datetime(2017, 1, 3)),
-    )
+    with scope(event=room.event):
+        room.event.timezone = 'America/New_York'
+        tz = pytz.timezone(room.event.timezone)
+        room.event.save()
+        room.save()
+        # normal
+        Availability.objects.create(
+            event=availabilitiesform.event, room=room,
+            start=tz.localize(datetime.datetime(2017, 1, 1, 10)),
+            end=tz.localize(datetime.datetime(2017, 1, 1, 12)),
+        )
+        # all day
+        Availability.objects.create(
+            event=availabilitiesform.event, room=room,
+            start=tz.localize(datetime.datetime(2017, 1, 1)),
+            end=tz.localize(datetime.datetime(2017, 1, 3)),
+        )
 
-    form = AvailabilitiesForm(
-        event=availabilitiesform.event,
-        instance=room,
-    )
+        form = AvailabilitiesForm(
+            event=availabilitiesform.event,
+            instance=room,
+        )
 
-    form.cleaned_data = form.initial
-    form.cleaned_data['availabilities'] = form.clean_availabilities()
-    form.save()
+        form.cleaned_data = form.initial
+        form.cleaned_data['availabilities'] = form.clean_availabilities()
+        form.save()
 
-    avails = Room.objects.first().availabilities.order_by('-start')
-    assert len(avails) == 2
-    assert avails[0].start == datetime.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
-    assert avails[0].end == datetime.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
-    assert avails[1].start == datetime.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
-    assert avails[1].end == datetime.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)
+        avails = Room.objects.first().availabilities.order_by('-start')
+        assert len(avails) == 2
+        assert avails[0].start == datetime.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
+        assert avails[0].end == datetime.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
+        assert avails[1].start == datetime.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
+        assert avails[1].end == datetime.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)

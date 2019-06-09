@@ -7,6 +7,7 @@ import pytest
 from django.core import mail as djmail
 from django.http.request import QueryDict
 from django.utils.timezone import now
+from django_scopes import scope, scopes_disabled
 
 from pretalx.submission.forms import InfoForm
 from pretalx.submission.models import Submission, SubmissionType
@@ -22,7 +23,8 @@ class TestWizard:
         return response, current_url
 
     def get_form_name(self, response):
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
+        with scope(event=self.event):
+            doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         input_hidden = doc.select("input[name^=submit_wizard]")[0]
         return input_hidden['name'], input_hidden['value']
 
@@ -119,6 +121,7 @@ class TestWizard:
     @pytest.mark.django_db
     def test_info_wizard_query_string_handling(self, event, client):
         # build query string
+        self.event = event
         params_dict = QueryDict('track=academic&submission_type=academic_talk')
         current_url = '/test/submit/?{params_dict}'
         # Start wizard
@@ -135,8 +138,10 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
+        self.event = event
         event.settings.set('mail_on_new_submission', True)
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
         answer_data = {f'questions-question_{question.pk}': '42'}
 
         response, current_url = self.perform_init_wizard(client)
@@ -161,22 +166,23 @@ class TestWizard:
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
 
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        assert sub.submission_type is not None
-        assert sub.content_locale == 'en'
-        assert sub.description == 'Description'
-        assert sub.abstract == 'Abstract'
-        assert sub.notes == 'Notes'
-        assert sub.slot_count == 1
-        answ = sub.answers.first()
-        assert answ.question == question
-        assert answ.answer == '42'
-        user = sub.speakers.first()
-        assert user.email == 'testuser@example.org'
-        assert user.name == 'Jane Doe'
-        assert user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 2  # user email plus orga email
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            assert sub.submission_type is not None
+            assert sub.content_locale == 'en'
+            assert sub.description == 'Description'
+            assert sub.abstract == 'Abstract'
+            assert sub.notes == 'Notes'
+            assert sub.slot_count == 1
+            answ = sub.answers.first()
+            assert answ.question == question
+            assert answ.answer == '42'
+            user = sub.speakers.first()
+            assert user.email == 'testuser@example.org'
+            assert user.name == 'Jane Doe'
+            assert user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 2  # user email plus orga email
 
     @pytest.mark.django_db
     def test_wizard_existing_user(
@@ -189,13 +195,15 @@ class TestWizard:
         choice_question,
         multiple_choice_question,
     ):
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {
-            f'questions-question_{question.pk}': '42',
-            f'questions-question_{speaker_question.pk}': 'green',
-            f'questions-question_{choice_question.pk}': choice_question.options.first().pk,
-            f'questions-question_{multiple_choice_question.pk}': multiple_choice_question.options.first().pk,
-        }
+        self.event = event
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            answer_data = {
+                f'questions-question_{question.pk}': '42',
+                f'questions-question_{speaker_question.pk}': 'green',
+                f'questions-question_{choice_question.pk}': choice_question.options.first().pk,
+                f'questions-question_{multiple_choice_question.pk}': multiple_choice_question.options.first().pk,
+            }
 
         response, current_url = self.perform_init_wizard(client)
         response, current_url = self.perform_info_wizard(
@@ -213,34 +221,37 @@ class TestWizard:
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
 
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        answ = sub.answers.filter(question__target='submission').first()
-        assert answ.question == question
-        assert answ.answer == '42'
-        assert answ.submission == sub
-        assert not answ.person
-        answ = user.answers.filter(question__target='speaker').first()
-        assert answ.question == speaker_question
-        assert answ.person == user
-        assert not answ.submission
-        assert answ.answer == 'green'
-        s_user = sub.speakers.first()
-        assert s_user.pk == user.pk
-        assert s_user.name == 'Jane Doe'
-        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 1
-        mail = djmail.outbox[0]
-        assert sub.title in mail.subject
-        assert sub.title in mail.body
-        assert s_user.email in mail.to
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            answ = sub.answers.filter(question__target='submission').first()
+            assert answ.question == question
+            assert answ.answer == '42'
+            assert answ.submission == sub
+            assert not answ.person
+            answ = user.answers.filter(question__target='speaker').first()
+            assert answ.question == speaker_question
+            assert answ.person == user
+            assert not answ.submission
+            assert answ.answer == 'green'
+            s_user = sub.speakers.first()
+            assert s_user.pk == user.pk
+            assert s_user.name == 'Jane Doe'
+            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 1
+            mail = djmail.outbox[0]
+            assert sub.title in mail.subject
+            assert sub.title in mail.body
+            assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user(
         self, event, client, question, user, review_question
     ):
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
-        answer_data = {f'questions-question_{question.pk}': '42'}
+        self.event = event
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            answer_data = {f'questions-question_{question.pk}': '42'}
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client)
@@ -255,24 +266,27 @@ class TestWizard:
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        answ = sub.answers.first()
-        assert answ.question == question
-        assert answ.answer == '42'
-        s_user = sub.speakers.first()
-        assert s_user.pk == user.pk
-        assert s_user.name == 'Jane Doe'
-        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 1
-        mail = djmail.outbox[0]
-        assert sub.title in mail.subject
-        assert sub.title in mail.body
-        assert s_user.email in mail.to
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            answ = sub.answers.first()
+            assert answ.question == question
+            assert answ.answer == '42'
+            s_user = sub.speakers.first()
+            assert s_user.pk == user.pk
+            assert s_user.name == 'Jane Doe'
+            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 1
+            mail = djmail.outbox[0]
+            assert sub.title in mail.subject
+            assert sub.title in mail.body
+            assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
+        self.event = event
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client)
@@ -288,24 +302,27 @@ class TestWizard:
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        assert not sub.answers.exists()
-        s_user = sub.speakers.first()
-        assert s_user.pk == user.pk
-        assert s_user.name == 'Jane Doe'
-        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 1
-        mail = djmail.outbox[0]
-        assert sub.title in mail.subject
-        assert sub.title in mail.body
-        assert s_user.email in mail.to
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            assert not sub.answers.exists()
+            s_user = sub.speakers.first()
+            assert s_user.pk == user.pk
+            assert s_user.name == 'Jane Doe'
+            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 1
+            mail = djmail.outbox[0]
+            assert sub.title in mail.subject
+            assert sub.title in mail.body
+            assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_only_review_questions(
         self, event, client, user, review_question
     ):
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
+        self.event = event
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client)
@@ -321,29 +338,32 @@ class TestWizard:
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        assert not sub.answers.exists()
-        s_user = sub.speakers.first()
-        assert s_user.pk == user.pk
-        assert s_user.name == 'Jane Doe'
-        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 1
-        mail = djmail.outbox[0]
-        assert sub.title in mail.subject
-        assert sub.title in mail.body
-        assert s_user.email in mail.to
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            assert not sub.answers.exists()
+            s_user = sub.speakers.first()
+            assert s_user.pk == user.pk
+            assert s_user.name == 'Jane Doe'
+            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 1
+            mail = djmail.outbox[0]
+            assert sub.title in mail.subject
+            assert sub.title in mail.body
+            assert s_user.email in mail.to
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions_broken_template(
         self, event, client, user
     ):
-        submission_type = SubmissionType.objects.filter(event=event).first().pk
+        self.event = event
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
 
-        event.ack_template.text = (
-            str(event.ack_template.text) + '{name} and {nonexistent}'
-        )
-        event.ack_template.save()
+            event.ack_template.text = (
+                str(event.ack_template.text) + '{name} and {nonexistent}'
+            )
+            event.ack_template.save()
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client)
@@ -359,14 +379,15 @@ class TestWizard:
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
         assert doc.select('#user-dropdown-label')
-        sub = Submission.objects.last()
-        assert sub.title == 'Submission title'
-        assert not sub.answers.exists()
-        s_user = sub.speakers.first()
-        assert s_user.pk == user.pk
-        assert s_user.name == 'Jane Doe'
-        assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-        assert len(djmail.outbox) == 0
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            assert not sub.answers.exists()
+            s_user = sub.speakers.first()
+            assert s_user.pk == user.pk
+            assert s_user.name == 'Jane Doe'
+            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
+            assert len(djmail.outbox) == 0
 
     @pytest.mark.django_db
     def test_wizard_cfp_closed(self, event, client, user):
@@ -379,19 +400,23 @@ class TestWizard:
 @pytest.mark.django_db
 def test_infoform_set_submission_type(event, other_event):
     # https://github.com/pretalx/pretalx/issues/642
-    f = InfoForm(event)
-    assert len(SubmissionType.objects.all()) > 1
-    assert len(event.submission_types.all()) == 1
-    assert len(f.fields['submission_type'].queryset) == 1
-    assert f.fields['submission_type'].initial == event.submission_types.all()[0]
-    assert isinstance(f.fields['submission_type'].widget, forms.HiddenInput)
+    with scopes_disabled():
+        assert len(SubmissionType.objects.all()) > 1
+    with scope(event=event):
+        f = InfoForm(event)
+        assert len(event.submission_types.all()) == 1
+        assert len(f.fields['submission_type'].queryset) == 1
+        assert f.fields['submission_type'].initial == event.submission_types.all()[0]
+        assert isinstance(f.fields['submission_type'].widget, forms.HiddenInput)
 
 
 @pytest.mark.django_db
 def test_infoform_set_submission_type_2nd_event(event, other_event, submission_type):
     # https://github.com/pretalx/pretalx/issues/642
-    f = InfoForm(event)
-    assert len(SubmissionType.objects.all()) > 1
-    assert len(event.submission_types.all()) == 2
-    assert len(f.fields['submission_type'].queryset) == 2
-    assert not isinstance(f.fields['submission_type'].widget, forms.HiddenInput)
+    with scopes_disabled():
+        assert len(SubmissionType.objects.all()) > 1
+    with scope(event=event):
+        f = InfoForm(event)
+        assert len(event.submission_types.all()) == 2
+        assert len(f.fields['submission_type'].queryset) == 2
+        assert not isinstance(f.fields['submission_type'].widget, forms.HiddenInput)

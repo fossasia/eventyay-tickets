@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 from django.utils.timezone import now
+from django_scopes import scope
 
 from pretalx.event.stages import STAGE_ORDER, in_stage
 
@@ -34,20 +35,21 @@ def test_event_stages(
     deadline_delta,
     has_submissions,
 ):
-    _now = now()
-    event.is_public = is_public
-    event.date_from = (_now + timedelta(days=from_delta)).date()
-    event.date_to = (_now + timedelta(days=to_delta)).date()
-    event.cfp.deadline = _now + timedelta(days=deadline_delta)
-    event.save()
-    event.cfp.save()
-    event = event.__class__.objects.get(pk=event.pk)
-    if not has_submissions:
-        submission.state = 'DELETED'
-        submission.save()
-    for stage in STAGE_ORDER:
-        assert in_stage(event, stage) == (
-            stage == target
-        ), f'Event is{" not" if stage == target else ""} {stage} when it should be {target}!'
-        if stage == target:
-            break
+    with scope(event=event):
+        _now = now()
+        event.is_public = is_public
+        event.date_from = (_now + timedelta(days=from_delta)).date()
+        event.date_to = (_now + timedelta(days=to_delta)).date()
+        event.cfp.deadline = _now + timedelta(days=deadline_delta)
+        event.save()
+        event.cfp.save()
+        event = event.__class__.objects.get(pk=event.pk)
+        if not has_submissions:
+            submission.state = 'DELETED'
+            submission.save()
+        for stage in STAGE_ORDER:
+            assert in_stage(event, stage) == (
+                stage == target
+            ), f'Event is{" not" if stage == target else ""} {stage} when it should be {target}!'
+            if stage == target:
+                break

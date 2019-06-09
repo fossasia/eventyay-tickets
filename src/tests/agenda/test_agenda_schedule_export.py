@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import reverse
+from django_scopes import scope
 from lxml import etree
 
 from pretalx.agenda.tasks import export_schedule_html
@@ -190,8 +191,9 @@ def test_schedule_export_nonpublic(exporter, slot, client, django_assert_max_num
 def test_schedule_speaker_ical_export(
     slot, other_slot, client, django_assert_max_num_queries
 ):
-    speaker = slot.submission.speakers.all()[0]
-    profile = speaker.profiles.get(event=slot.event)
+    with scope(event=slot.submission.event):
+        speaker = slot.submission.speakers.all()[0]
+        profile = speaker.profiles.get(event=slot.event)
     with django_assert_max_num_queries(35):
         response = client.get(profile.urls.talks_ical, follow=True)
     assert response.status_code == 200
@@ -238,11 +240,12 @@ def test_html_export_event_unknown(event):
     }
 })
 def test_html_export_release_without_celery(mocker, event):
-    event.cache.delete('rebuild_schedule_export')
-    assert not event.cache.get('rebuild_schedule_export')
-    event.settings.export_html_on_schedule_release = True
-    event.wip_schedule.freeze(name="ohaio means hello")
-    assert event.cache.get('rebuild_schedule_export')
+    with scope(event=event):
+        event.cache.delete('rebuild_schedule_export')
+        assert not event.cache.get('rebuild_schedule_export')
+        event.settings.export_html_on_schedule_release = True
+        event.wip_schedule.freeze(name="ohaio means hello")
+        assert event.cache.get('rebuild_schedule_export')
 
 
 @pytest.mark.django_db
@@ -258,10 +261,11 @@ def test_html_export_release_with_celery(mocker, event):
 
     from django.core.management import call_command  # Import here to avoid overriding mocks
 
-    event.cache.delete('rebuild_schedule_export')
-    event.settings.export_html_on_schedule_release = True
-    event.wip_schedule.freeze(name="ohaio means hello")
-    assert not event.cache.get('rebuild_schedule_export')
+    with scope(event=event):
+        event.cache.delete('rebuild_schedule_export')
+        event.settings.export_html_on_schedule_release = True
+        event.wip_schedule.freeze(name="ohaio means hello")
+        assert not event.cache.get('rebuild_schedule_export')
 
     call_command.assert_called_with('export_schedule_html', event.slug, '--zip')
 
@@ -272,8 +276,9 @@ def test_html_export_release_disabled(mocker, event):
 
     from django.core.management import call_command  # Import here to avoid overriding mocks
 
-    event.settings.export_html_on_schedule_release = False
-    event.wip_schedule.freeze(name="ohaio means hello")
+    with scope(event=event):
+        event.settings.export_html_on_schedule_release = False
+        event.wip_schedule.freeze(name="ohaio means hello")
 
     call_command.assert_not_called()
 

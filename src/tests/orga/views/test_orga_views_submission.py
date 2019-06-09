@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 from django.utils.timezone import now
+from django_scopes import scope
 
 from pretalx.submission.models import Submission, SubmissionStates
 
@@ -75,7 +76,6 @@ def test_wrong_user_cannot_see_single_submission_in_feed(client, user, event, su
 
 @pytest.mark.django_db
 def test_accept_submission(orga_client, submission):
-    assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.get(submission.orga_urls.accept, follow=True)
@@ -83,11 +83,12 @@ def test_accept_submission(orga_client, submission):
     assert response.status_code == 200
     assert submission.state == SubmissionStates.SUBMITTED
     response = orga_client.post(submission.orga_urls.accept, follow=True)
-    submission.refresh_from_db()
-
     assert response.status_code == 200
-    assert submission.event.queued_mails.count() == 1
-    assert submission.state == SubmissionStates.ACCEPTED
+
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.event.queued_mails.count() == 1
+        assert submission.state == SubmissionStates.ACCEPTED
 
 
 @pytest.mark.django_db
@@ -105,27 +106,32 @@ def test_accept_submission_redirects_to_review_list(orga_client, submission):
 
 @pytest.mark.django_db
 def test_accept_accepted_submission(orga_client, submission):
-    submission.accept()
+    with scope(event=submission.event):
+        submission.accept()
     response = orga_client.post(submission.orga_urls.accept, follow=True)
     assert response.status_code == 200
-    submission.refresh_from_db()
+    with scope(event=submission.event):
+        submission.refresh_from_db()
     assert submission.state == 'accepted'
 
 
 @pytest.mark.django_db
 def test_reject_submission(orga_client, submission):
-    assert submission.event.queued_mails.count() == 0
+    with scope(event=submission.event):
+        assert submission.event.queued_mails.count() == 0
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.get(submission.orga_urls.reject, follow=True)
-    submission.refresh_from_db()
-    assert submission.state == SubmissionStates.SUBMITTED
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.state == SubmissionStates.SUBMITTED
     assert response.status_code == 200
     response = orga_client.post(submission.orga_urls.reject, follow=True)
-    submission.refresh_from_db()
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.event.queued_mails.count() == 1
 
     assert response.status_code == 200
-    assert submission.event.queued_mails.count() == 1
     assert submission.state == SubmissionStates.REJECTED
 
 
@@ -146,23 +152,26 @@ def test_orga_can_confirm_submission(orga_client, accepted_submission):
 
 @pytest.mark.django_db
 def test_orga_can_delete_submission(orga_client, submission, answered_choice_question):
-    assert submission.state == SubmissionStates.SUBMITTED
-    assert submission.answers.count() == 1
-    assert Submission.objects.count() == 1
-    option_count = answered_choice_question.options.count()
+    with scope(event=submission.event):
+        assert submission.state == SubmissionStates.SUBMITTED
+        assert submission.answers.count() == 1
+        assert Submission.objects.count() == 1
+        option_count = answered_choice_question.options.count()
 
     response = orga_client.get(submission.orga_urls.delete, follow=True)
-    submission.refresh_from_db()
-    assert response.status_code == 200
-    assert submission.state == SubmissionStates.SUBMITTED
-    assert Submission.objects.count() == 1
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert response.status_code == 200
+        assert submission.state == SubmissionStates.SUBMITTED
+        assert Submission.objects.count() == 1
 
     response = orga_client.post(submission.orga_urls.delete, follow=True)
     assert response.status_code == 200
-    assert Submission.objects.count() == 0
-    assert Submission.deleted_objects.count() == 1
-    assert Submission.deleted_objects.get(code=submission.code)
-    assert answered_choice_question.options.count() == option_count
+    with scope(event=submission.event):
+        assert Submission.objects.count() == 0
+        assert Submission.deleted_objects.count() == 1
+        assert Submission.deleted_objects.get(code=submission.code)
+        assert answered_choice_question.options.count() == option_count
 
 
 @pytest.mark.django_db
@@ -238,7 +247,9 @@ def test_orga_can_remove_wrong_speaker(orga_client, submission):
 
 @pytest.mark.django_db
 def test_orga_can_create_submission(orga_client, event):
-    assert event.submissions.count() == 0
+    with scope(event=event):
+        assert event.submissions.count() == 0
+        type_pk = event.submission_types.first().pk
 
     response = orga_client.post(
         event.orga_urls.new_submission,
@@ -253,22 +264,24 @@ def test_orga_can_create_submission(orga_client, event):
             'speaker': 'foo@bar.com',
             'speaker_name': 'Foo Speaker',
             'title': 'title',
-            'submission_type': event.submission_types.first().pk,
+            'submission_type': type_pk,
         },
         follow=True,
     )
     assert response.status_code == 200
-    assert event.submissions.count() == 1
-    sub = event.submissions.first()
-    assert sub.title == 'title'
-    assert sub.speakers.count() == 1
+    with scope(event=event):
+        assert event.submissions.count() == 1
+        sub = event.submissions.first()
+        assert sub.title == 'title'
+        assert sub.speakers.count() == 1
 
 
 @pytest.mark.django_db
 def test_orga_can_edit_submission(orga_client, event, accepted_submission):
     event.settings.present_multiple_times = True
-    assert event.submissions.count() == 1
-    assert accepted_submission.slots.count() == 1
+    with scope(event=event):
+        assert event.submissions.count() == 1
+        assert accepted_submission.slots.count() == 1
 
     response = orga_client.post(
         accepted_submission.orga_urls.base,
@@ -288,20 +301,22 @@ def test_orga_can_edit_submission(orga_client, event, accepted_submission):
         },
         follow=True,
     )
-    accepted_submission.refresh_from_db()
     assert response.status_code == 200
-    assert event.submissions.count() == 1
-    assert accepted_submission.slot_count == 2
-    assert accepted_submission.slots.count() == 2
+    with scope(event=event):
+        accepted_submission.refresh_from_db()
+        assert event.submissions.count() == 1
+        assert accepted_submission.slot_count == 2
+        assert accepted_submission.slots.count() == 2
 
 
 @pytest.mark.django_db
 def test_orga_can_edit_submission_duration(orga_client, event, accepted_submission):
-    slot = accepted_submission.slots.filter(schedule=event.wip_schedule).first()
-    slot.start = now()
-    slot.end = slot.start + timedelta(minutes=accepted_submission.get_duration())
-    slot.save()
-    assert slot.duration == accepted_submission.get_duration()
+    with scope(event=event):
+        slot = accepted_submission.slots.filter(schedule=event.wip_schedule).first()
+        slot.start = now()
+        slot.end = slot.start + timedelta(minutes=accepted_submission.get_duration())
+        slot.save()
+        assert slot.duration == accepted_submission.get_duration()
 
     response = orga_client.post(
         accepted_submission.orga_urls.base,
@@ -322,16 +337,19 @@ def test_orga_can_edit_submission_duration(orga_client, event, accepted_submissi
         follow=True,
     )
     assert response.status_code == 200
-    slot.refresh_from_db()
-    assert (slot.end - slot.start).seconds / 60 == 123
+    with scope(event=event):
+        slot.refresh_from_db()
+        assert (slot.end - slot.start).seconds / 60 == 123
 
 
 @pytest.mark.django_db
 def test_orga_can_toggle_submission_featured(orga_client, event, submission):
-    assert event.submissions.count() == 1
+    with scope(event=event):
+        assert event.submissions.count() == 1
 
     response = orga_client.post(submission.orga_urls.toggle_featured, follow=True)
 
     assert response.status_code == 200
-    sub = event.submissions.first()
-    assert sub.is_featured
+    with scope(event=event):
+        sub = event.submissions.first()
+        assert sub.is_featured

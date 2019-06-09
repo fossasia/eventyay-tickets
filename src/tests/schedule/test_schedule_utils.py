@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.schedule.utils import guess_schedule_version
 
@@ -16,6 +17,7 @@ from pretalx.schedule.utils import guess_schedule_version
     ('something.1', 'something.2'),
 ))
 def test_schedule_version_guessing(event, previous, suggestion):
-    if previous:
-        event.release_schedule(previous)
-    assert guess_schedule_version(event) == suggestion
+    with scope(event=event):
+        if previous:
+            event.release_schedule(previous)
+        assert guess_schedule_version(event) == suggestion

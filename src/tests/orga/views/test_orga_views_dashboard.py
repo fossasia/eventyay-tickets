@@ -1,5 +1,6 @@
 import pytest
 from django.urls import reverse
+from django_scopes import scope
 
 
 @pytest.mark.parametrize('test_user', ('orga', 'speaker', 'superuser', 'None'))
@@ -44,8 +45,9 @@ def test_event_dashboard(orga_user, orga_client, review_user, speaker, event, te
         orga_user.is_administrator = True
         orga_user.save()
     elif test_user == 'reviewer':
-        event.active_review_phase.can_see_speaker_names = False
-        event.active_review_phase.save()
+        with scope(event=event):
+            event.active_review_phase.can_see_speaker_names = False
+            event.active_review_phase.save()
         orga_client.force_login(review_user)
 
     response = orga_client.get(event.orga_urls.base, follow=True)

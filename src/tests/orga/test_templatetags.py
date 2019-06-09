@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.orga.templatetags.orga_edit_link import orga_edit_link
 from pretalx.orga.templatetags.review_score import (
@@ -36,7 +37,8 @@ def event_with_score_context(event):
 )
 @pytest.mark.django_db()
 def test_templatetag_review_score(score, expected, event_with_score_context):
-    assert _review_score_number(event_with_score_context, score) == expected
+    with scope(event=event_with_score_context):
+        assert _review_score_number(event_with_score_context, score) == expected
 
 
 @pytest.mark.parametrize(
@@ -60,13 +62,14 @@ def test_templatetag_review_score_override(positive, negative, expected):
 
 @pytest.mark.django_db
 def test_template_tag_review_score(review):
-    review.override_vote = True
-    review.submission.current_score = 0
-    review.save()
-    assert (
-        '<i class="fa fa-arrow-circle-up override text-success"></i>'
-        == review_score(None, review.submission)
-    )
+    with scope(event=review.submission.event):
+        review.override_vote = True
+        review.submission.current_score = 0
+        review.save()
+        assert (
+            '<i class="fa fa-arrow-circle-up override text-success"></i>'
+            == review_score(None, review.submission)
+        )
 
 
 @pytest.mark.parametrize(
