@@ -18,9 +18,7 @@ from django.views.generic import FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.agenda.management.commands.export_schedule_html import (
-    Command as ExportScheduleHtml,
-)
+from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.mixins.views import (
@@ -88,8 +86,8 @@ class ScheduleExportDownloadView(EventPermissionRequired, View):
 
     def get(self, request, event):
         try:
-            zip_path = ExportScheduleHtml.get_output_zip_path(self.request.event)
-            response = FileResponse(open(zip_path.name, 'rb'), as_attachment=True)
+            zip_path = get_export_zip_path(self.request.event)
+            response = FileResponse(open(zip_path, 'rb'), as_attachment=True)
         except Exception as e:
             messages.error(
                 request,

@@ -1,5 +1,7 @@
+import contextlib
 import os
 
+from django.db import transaction
 from django.template.defaultfilters import date as _date
 from django.utils.crypto import get_random_string
 from django.utils.translation import get_language, ugettext_lazy as _
@@ -85,3 +87,27 @@ def path_with_hash(name):
     file_root, file_ext = os.path.splitext(file_name)
     random = get_random_string(7)
     return os.path.join(dir_name, f"{file_root}_{random}{file_ext}")
+
+
+@contextlib.contextmanager
+def rolledback_transaction():
+    """
+    This context manager runs your code in a database transaction that will be rolled back in the end.
+    This can come in handy to simulate the effects of a database operation that you do not actually
+    want to perform.
+    Note that rollbacks are a very slow operation on most database backends. Also, long-running
+    transactions can slow down other operations currently running and you should not use this
+    in a place that is called frequently.
+    """
+
+    class DummyRollbackException(Exception):
+        pass
+
+    try:
+        with transaction.atomic():
+            yield
+            raise DummyRollbackException()
+    except DummyRollbackException:
+        pass
+    else:
+        raise Exception('Invalid state, should have rolled back.')

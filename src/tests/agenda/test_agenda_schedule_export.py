@@ -371,10 +371,11 @@ def test_schedule_orga_download_export(
 
 
 @pytest.mark.django_db
-def test_html_export_full(event, other_event, slot, canceled_talk):
+def test_html_export_full(event, other_event, slot, confirmed_resource, canceled_talk):
     from django.core.management import call_command  # Import here to avoid overriding mocks
 
     event.primary_color = '#111111'
+    event.is_public = False
     event.save()
     other_event.primary_color = '#222222'
     other_event.save()
@@ -401,6 +402,7 @@ def test_html_export_full(event, other_event, slot, canceled_talk):
         ],
         f'test/talk/{slot.submission.code}/index.html',
         f'test/talk/{slot.submission.code}.ics',
+        confirmed_resource.resource.url.lstrip('/'),
     ]
 
     for path in paths:

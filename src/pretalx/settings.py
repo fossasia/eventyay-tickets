@@ -55,7 +55,6 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 EXTERNAL_APPS = [
-    'bakery',
     'compressor',
     'djangoformsetjs',
     'jquery',
@@ -370,6 +369,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'pretalx.agenda.context_processors.is_html_export',
                 'pretalx.common.context_processors.add_events',
                 'pretalx.common.context_processors.locale_context',
                 'pretalx.common.context_processors.messages',
@@ -426,19 +426,6 @@ COMPRESS_CSS_FILTERS = (
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
 
-# django-bakery / HTML export
-BUILD_DIR = HTMLEXPORT_ROOT
-BAKERY_VIEWS = (
-    'pretalx.agenda.views.htmlexport.ExportScheduleView',
-    'pretalx.agenda.views.htmlexport.ExportFrabXmlView',
-    'pretalx.agenda.views.htmlexport.ExportFrabXCalView',
-    'pretalx.agenda.views.htmlexport.ExportFrabJsonView',
-    'pretalx.agenda.views.htmlexport.ExportICalView',
-    'pretalx.agenda.views.htmlexport.ExportScheduleVersionsView',
-    'pretalx.agenda.views.htmlexport.ExportTalkView',
-    'pretalx.agenda.views.htmlexport.ExportTalkICalView',
-    'pretalx.agenda.views.htmlexport.ExportSpeakerView',
-)
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('i18nfield.rest_framework.I18nJSONRenderer',),
     'DEFAULT_AUTHENTICATION_CLASSES': (

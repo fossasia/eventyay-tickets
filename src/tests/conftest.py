@@ -140,6 +140,14 @@ def resource(submission):
 
 
 @pytest.fixture
+def confirmed_resource(confirmed_submission):
+    f = SimpleUploadedFile('confirmed_testresource.txt', b'a confirmed resource')
+    return Resource.objects.create(
+        submission=confirmed_submission, resource=f, description='Confirmed test resource'
+    )
+
+
+@pytest.fixture
 def other_resource(submission):
     f = SimpleUploadedFile('testresource2.txt', b'another resource')
     return Resource.objects.create(

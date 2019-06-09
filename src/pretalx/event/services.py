@@ -3,9 +3,7 @@ from datetime import timedelta
 from django.dispatch import receiver
 from django.utils.timezone import now
 
-from pretalx.agenda.management.commands.export_schedule_html import (
-    Command as ExportScheduleHtml,
-)
+from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.celery_app import app
 from pretalx.common.signals import periodic_task
@@ -59,7 +57,7 @@ def task_periodic_schedule_export(event_slug):
         .prefetch_related('_settings_objects', 'submissions__slots')
         .first()
     )
-    zip_path = ExportScheduleHtml.get_output_zip_path(event)
+    zip_path = get_export_zip_path(event)
     last_time = event.cache.get('last_schedule_rebuild')
     _now = now()
     should_rebuild_schedule = (
