@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 import pytz
+from django.core import management
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
 
@@ -13,6 +14,11 @@ from pretalx.submission.models import (
     Answer, AnswerOption, Feedback, Question, QuestionVariant,
     Resource, Review, Submission, SubmissionType, Track,
 )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def collect_static(request):
+    management.call_command('collectstatic', '--noinput', '--clear')
 
 
 @pytest.fixture
