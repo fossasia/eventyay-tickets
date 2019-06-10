@@ -102,3 +102,9 @@
 .mail-card .card-header {
   cursor: pointer;
 }
+.nowline {
+    border-top: $brand-danger solid 2px;
+    display: flex;
+    position: relative;
+    visibility: hidden;
+}

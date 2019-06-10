@@ -90,7 +90,7 @@
         <h3 id="{{ day.start.date|date:"c" }}">
             <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}</a>
         </h3>
-        <div class="day">
+        <div class="day" data-start="{{ day.display_start|date:"c" }}" data-height="{{ day.height_seconds }}">
             {% if day.first_start %}
                 <div class="header-row">
                     <span class="time-column header"></span>
@@ -98,6 +98,7 @@
                         <div class="room-header">{{ room.name }}</div>
                     {% endfor %}
                 </div>
+                <div class="nowline"></div>
                 <div class="rooms">
                     <div class="time-column">
                         {% for hour in day.hours %}
