@@ -3786,7 +3786,7 @@ div.version {
     width: 400px;
     position: relative;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%
 }
 
