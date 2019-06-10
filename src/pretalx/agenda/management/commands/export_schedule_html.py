@@ -12,6 +12,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.test import Client, override_settings
 from django.utils.timezone import override as override_timezone
 
+from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import rolledback_transaction
 from pretalx.event.models import Event
 
@@ -67,6 +68,12 @@ def event_speaker_urls(event):
         yield profile.urls.talks_ical
 
 
+def event_exporter_urls(event):
+    for _, exporter in register_data_exporters.send(event):
+        if exporter.public:
+            yield exporter(event).urls.base
+
+
 def schedule_version_urls(event):
     for schedule in event.schedules.filter(version__isnull=False):
         yield schedule.urls.public
@@ -81,12 +88,9 @@ def event_urls(event):
     yield from event_talk_urls(event)
     yield event.urls.speakers
     yield from event_speaker_urls(event)
+    yield from event_exporter_urls(event)
     yield event.urls.changelog
     yield event.urls.feed
-    yield event.urls.frab_xml
-    yield event.urls.frab_json
-    yield event.urls.frab_xcal
-    yield event.urls.ical
 
 
 def get_path(url):

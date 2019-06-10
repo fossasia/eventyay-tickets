@@ -44,7 +44,7 @@ class BaseExporter:
         return quote(self.identifier)
 
     @property
-    def public(self) -> str:
+    def public(self) -> bool:
         """Return True if the exported data should be publicly available once the event is public, False otherwise."""
         raise NotImplementedError()  # NOQA
 
