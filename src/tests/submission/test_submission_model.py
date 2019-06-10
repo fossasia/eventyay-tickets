@@ -260,3 +260,21 @@ def test_submission_change_slot_count(accepted_submission):
         accepted_submission.save()
         accepted_submission.accept()
         assert accepted_submission.slots.filter(schedule=accepted_submission.event.wip_schedule).count() == 1
+
+
+@pytest.mark.django_db
+def test_submission_assign_code(submission, monkeypatch):
+    from pretalx.submission.models import submission as pretalx_submission
+    called = -1
+    submission_codes = [submission.code, submission.code, 'abcdef']
+
+    def yield_random_codes(*args, **kwargs):
+        nonlocal called
+        called += 1
+        return submission_codes[called]
+    monkeypatch.setattr(pretalx_submission, 'get_random_string', yield_random_codes)
+    new_submission = pretalx_submission.Submission()
+    assert not new_submission.code
+    new_submission.assign_code()
+    assert new_submission.code == 'abcdef'
+    assert new_submission.code != submission.code

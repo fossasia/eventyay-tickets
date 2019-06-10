@@ -186,10 +186,10 @@ class TestEventCreation:
             },
         )
 
-    def submit_display(self):
-        return self.post(
-            step='display', data={'header_pattern': '', 'logo': '', 'primary_color': ''}
-        )
+    def submit_display(self, **kwargs):
+        data = {'header_pattern': '', 'logo': '', 'primary_color': ''}
+        data.update(kwargs)
+        return self.post(step='display', data=data)
 
     def submit_copy(self, copy=False):
         return self.post(step='copy', data={'copy_from_event': copy if copy else ''})
@@ -239,10 +239,11 @@ class TestEventCreation:
         self.submit_initial(organiser)
         self.submit_basics()
         self.submit_timeline(deadline=deadline)
-        self.submit_display()
+        self.submit_display(primary_color='#00ff00')
         self.submit_copy()
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count
+        assert Event.objects.filter(primary_color='#00ff00').exists()
 
 
 @pytest.mark.django_db
