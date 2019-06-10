@@ -117,7 +117,9 @@
                                      id="{{ talk.submission.code }}"
                                      title="{{ talk.submission.title }} ({{ talk.submission.display_speaker_names|default:'' }})"
                                      style="height: {{ talk.height }}px; min-height: {% if talk.height >= 30 %}{{ talk.height }}{% else %}30{% endif %}px; top: {{ talk.top }}px;{% if request.event.settings.use_tracks and talk.submission.track %} border-color: {{ talk.submission.track.color }}{% endif %}"
-                                     data-time="{% if talk.submission.state == 'confirmed' %}{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}{% else %}{% trans "Not confirmed yet!" %}{% endif %}">
+                                     data-time="{% if talk.submission.state == 'confirmed' %}{{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}{% else %}{% trans "Not confirmed yet!" %}{% endif %}"
+                                     data-start="{{ talk.start|date:"c" }}"
+                                     data-end="{{ talk.end|date:"c" }}">
                                     <div class="talk-content">
                                         {% if talk.submission.do_not_record %}
                                             <span class="fa-stack">
