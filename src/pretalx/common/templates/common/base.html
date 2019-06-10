@@ -114,7 +114,7 @@
                         </a>
                     </div>
                 </div>
-            {% elif request.event %}
+            {% elif request.event and not is_html_export %}
                 <a href="{{ request.event.urls.login }}">login</a>
             {% endif %}
             </div>

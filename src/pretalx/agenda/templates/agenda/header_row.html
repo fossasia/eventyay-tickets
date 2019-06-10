@@ -7,6 +7,7 @@
         </a><a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}"><i class="fa fa-group"></i> {% trans "Speakers" %}</a>
     </div>
     <div class="header-right">
+        {% if not is_html_export %}
         <form class="search">
           <div class="input-group">
             <input type="text" class="form-control" name="q" placeholder="{% trans "Title or speaker name" %}"{% if search %} value="{{ search }}"{% endif %}>
@@ -15,5 +16,6 @@
             </div>
           </div>
         </form>
+        {% endif %}
     </div>
 </nav>
