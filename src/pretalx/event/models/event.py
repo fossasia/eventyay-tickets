@@ -242,7 +242,7 @@ class Event(LogMixin, models.Model):
         sneakpeek = '{base}sneak/'
         talks = '{base}talk/'
         speakers = '{base}speaker/'
-        changelog = '{schedule}changelog'
+        changelog = '{schedule}changelog/'
         feed = '{schedule}feed.xml'
         export = '{schedule}export/'
         frab_xml = '{export}schedule.xml'

@@ -32,7 +32,7 @@ urlpatterns = [
         fr'^(?P<event>[{SLUG_CHARS}]+)/',
         include(
             [
-                url(r'^schedule/changelog$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
+                url(r'^schedule/changelog/$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
                 url(r'^schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
 
                 *get_schedule_urls('^schedule'),
