@@ -331,7 +331,6 @@ class ScheduleView(ScheduleDataView):
                 end = date.get('last_end').astimezone(timezone)
                 height_seconds = (end - start).total_seconds()
                 date['display_start'] = start
-                date['height_seconds'] = height_seconds
                 date['height'] = int(height_seconds / 60 * 2)
                 date['hours'] = []
                 step = start
