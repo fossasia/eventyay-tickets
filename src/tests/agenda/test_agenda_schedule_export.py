@@ -448,6 +448,7 @@ def test_html_export_full(event, other_event, slot, confirmed_resource, canceled
 
     talk_ics = (settings.HTMLEXPORT_ROOT / f'test/test/talk/{slot.submission.code}.ics').open().read()
     assert slot.submission.title in talk_ics
+    assert event.is_public is False
 
 
 @pytest.mark.django_db

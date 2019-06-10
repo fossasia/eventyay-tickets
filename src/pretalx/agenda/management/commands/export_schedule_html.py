@@ -13,36 +13,23 @@ from django.test import Client, override_settings
 from django.utils.timezone import override as override_timezone
 
 from pretalx.common.utils import rolledback_transaction
-from pretalx.event.models import Event, Team
-from pretalx.person.models import User
+from pretalx.event.models import Event
 
 
 @contextlib.contextmanager
 def fake_admin(event):
     with rolledback_transaction():
-        user = User.objects.create_user(
-            email=f'export-{event.slug}@pretalx.invalid',
-            name=f'export-{event.slug}',
-            locale=event.locale,
-        )
-        team = Team.objects.create(
-            organiser=event.organiser,
-            name=f'export-team-{event.slug}',
-            can_change_submissions=True,
-        )
-        team.limit_events.add(event)
-        team.members.add(user)
-
-        c = Client()
-        c.force_login(user)
+        event.is_public = True
+        event.save()
+        client = Client()
 
         def get(url):
             try:
-                # try getting the file from disk directly first, ...
+                # Try getting the file from disk directly first, …
                 return get_mediastatic_content(url)
             except FileNotFoundError:
-                # ... then fall-back to asking the views.
-                response = c.get(url, is_html_export=True, HTTP_ACCEPT='text/html')
+                # … then fall back to asking the views.
+                response = client.get(url, is_html_export=True, HTTP_ACCEPT='text/html')
                 content = get_content(response)
                 return content
 
@@ -50,22 +37,21 @@ def fake_admin(event):
 
 
 def find_assets(html):
-    """ find URLs of additional files needed to render `html`, e.g. images, js, css, ... """
+    """ Find URLs of images, style sheets and scripts included in `html`. """
     soup = BeautifulSoup(html, "lxml")
 
-    for asset in soup.find_all(['script', 'img', 'link']):
-        if asset.name in ['script', 'img']:
-            yield asset.attrs['src']
-        elif asset.name == 'link':
-            if asset.attrs['rel'][0] in ['icon', 'stylesheet']:
-                yield asset.attrs['href']
+    for asset in soup.find_all(['script', 'img']):
+        yield asset.attrs['src']
+    for asset in soup.find_all(['link']):
+        if asset.attrs['rel'][0] in ['icon', 'stylesheet']:
+            yield asset.attrs['href']
 
 
 def find_urls(css):
     return re.findall(r'url\("?(/[^")]+)"?\)', css.decode('utf-8'), re.IGNORECASE)
 
 
-def urls_event_talks(event):
+def event_talk_urls(event):
     for talk in event.talks:
         yield talk.urls.public
         yield talk.urls.ical
@@ -74,27 +60,27 @@ def urls_event_talks(event):
             yield resource.resource.url
 
 
-def urls_event_speakers(event):
+def event_speaker_urls(event):
     for speaker in event.speakers:
         profile = speaker.event_profile(event)
         yield profile.urls.public
         yield profile.urls.talks_ical
 
 
-def urls_schedule_versions(event):
+def schedule_version_urls(event):
     for schedule in event.schedules.filter(version__isnull=False):
         yield schedule.urls.public
 
 
-def urls_event(event):
+def event_urls(event):
     yield event.urls.base
     yield event.urls.schedule
-    yield from urls_schedule_versions(event)
+    yield from schedule_version_urls(event)
     yield event.urls.sneakpeek
     yield event.urls.talks
-    yield from urls_event_talks(event)
+    yield from event_talk_urls(event)
     yield event.urls.speakers
-    yield from urls_event_speakers(event)
+    yield from event_speaker_urls(event)
     yield event.urls.changelog
     yield event.urls.feed
     yield event.urls.frab_xml
@@ -110,19 +96,21 @@ def get_path(url):
 def get_content(response):
     if response.streaming:
         return b''.join(response.streaming_content)
-    else:
-        return response.content
+    return response.content
 
 
-def dump_content(dest, path, content):
+def dump_content(destination, path, getter):
+    logging.debug(path)
+    content = getter(path)
     if path.endswith('/'):
         path = path + 'index.html'
 
-    path = Path(dest) / path.lstrip('/')
+    path = Path(destination) / path.lstrip('/')
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, 'wb') as f:
         f.write(content)
+    return content
 
 
 def get_mediastatic_content(url):
@@ -137,37 +125,30 @@ def get_mediastatic_content(url):
         return f.read()
 
 
-def export_event(event, dest):
+def export_event(event, destination):
     with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True), override_timezone(event.timezone):
         with fake_admin(event) as get:
-            logging.info("collecting page URLs")
-            urls = [*urls_event(event)]
+            logging.info("Collecting URLs for export")
+            urls = [*event_urls(event)]
             assets = set()
 
-            logging.info(f"exporting {len(urls)} pages")
+            logging.info(f"Exporting {len(urls)} pages")
             for url in map(get_path, urls):
-                logging.debug(url)
-                content = get(url)
-                dump_content(dest, url, content)
+                content = dump_content(destination, url, get)
                 assets |= set(map(get_path, find_assets(content)))
 
             css_assets = set()
 
-            logging.info(f"exporting {len(assets)} assets linked to in HTML")
+            logging.info(f"Exporting {len(assets)} static files from HTML links")
             for url in assets:
-                logging.debug(url)
-                content = get(url)
-
-                dump_content(dest, url, content)
+                content = dump_content(destination, url, get)
 
                 if url.endswith('.css'):
                     css_assets |= set(find_urls(content))
 
-            logging.info(f"exporting {len(css_assets)} assets linked to in CSS")
+            logging.info(f"Exporting {len(css_assets)} files from CSS links")
             for url in (get_path(urllib.parse.unquote(url)) for url in css_assets):
-                logging.debug(url)
-                content = get(url)
-                dump_content(dest, url, content)
+                dump_content(destination, url, get)
 
 
 def delete_directory(path):
@@ -198,7 +179,7 @@ class Command(BaseCommand):
         except Event.DoesNotExist:
             raise CommandError(f'Could not find event with slug "{event_slug}".')
 
-        logging.info(f'exporting {event.name}')
+        logging.info(f'Exporting {event.name}')
 
         export_dir = get_export_path(event)
         zip_path = get_export_zip_path(event)
@@ -214,7 +195,7 @@ class Command(BaseCommand):
         finally:
             delete_directory(tmp_dir)
 
-        logging.info(f'exported to {export_dir}')
+        logging.info(f'Exported to {export_dir}')
 
         if options.get('zip'):
             make_archive(
@@ -224,4 +205,4 @@ class Command(BaseCommand):
                 format='zip',
             )
 
-            logging.info(f'exported to {zip_path}')
+            logging.info(f'Exported to {zip_path}')
