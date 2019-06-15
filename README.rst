@@ -58,6 +58,7 @@ Previous conferences using pretalx include:
 - `Klimacamp Leipziger Land`_ & `Degrowth Summerschool`_ (2019) 
 - `OWASP Ukraine`_ (four events to date)
 - `NoNameCon`_
+- `ToxCon`_
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -118,3 +119,4 @@ to this project.
 .. _Degrowth Summerschool: https://summerschool.degrowth.info/sc2019/cfp
 .. _OWASP Ukraine: https://cfp.owaspukraine.org/
 .. _NoNameCon: https://cfp.nonamecon.org/
+.. _ToxCon: https://pretalx.tox.zoff.cc/toxcon2019/
