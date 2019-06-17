@@ -282,8 +282,14 @@ class ScheduleView(ScheduleDataView):
             result = self._get_text_table(data)
         return HttpResponse(response_start + result, content_type='text/plain; charset=utf-8')
 
+    @cached_property
+    def answer_type(self):
+        if 'text/html' not in self.request.headers.get('Accept', '') and not hasattr(self, 'is_html_export'):
+            return 'text'
+        return 'html'
+
     def get(self, request, **kwargs):
-        if 'text/html' not in request.headers.get('Accept', '') and not hasattr(self, 'is_html_export'):
+        if self.answer_type == 'text':
             return self.get_text(request, **kwargs)
         return super().get(request, **kwargs)
 
@@ -318,7 +324,8 @@ class ScheduleView(ScheduleDataView):
 
         timezone = pytz.timezone(self.request.event.timezone)
         data = ScheduleData(
-            event=self.request.event, schedule=self.schedule
+            event=self.request.event, schedule=self.schedule,
+            with_accepted=self.answer_type == 'html' and self.schedule == self.request.event.wip_schedule
         ).data
         max_rooms = 0
         for date in data:

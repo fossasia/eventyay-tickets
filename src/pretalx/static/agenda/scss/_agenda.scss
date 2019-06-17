@@ -178,6 +178,10 @@ header {
             }
           }
 
+          &.accepted {
+            background-image: repeating-linear-gradient(135deg, $gray-lighter , $gray-lighter 10px, white 10px, white 20px)
+          }
+
           &:hover {
             background-color: $gray-200;
             height: auto !important;

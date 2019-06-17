@@ -14,9 +14,10 @@ from pretalx.common.urls import get_base_url
 
 
 class ScheduleData(BaseExporter):
-    def __init__(self, event, schedule=None):
+    def __init__(self, event, schedule=None, with_accepted=False):
         super().__init__(event)
         self.schedule = schedule
+        self.with_accepted = with_accepted
 
     @cached_property
     def metadata(self):
@@ -32,9 +33,12 @@ class ScheduleData(BaseExporter):
         event = self.event
         schedule = self.schedule
         tz = pytz.timezone(event.timezone)
+        base_qs = schedule.talks.all()
+        if not self.with_accepted:
+            base_qs = base_qs.filter(is_visible=True)
 
         talks = (
-            schedule.talks.filter(is_visible=True)
+            base_qs
             .select_related('submission', 'submission__event', 'submission__submission_type', 'submission__track', 'room')
             .prefetch_related('submission__speakers')
             .order_by('start')
