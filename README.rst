@@ -45,7 +45,7 @@ Previous conferences using pretalx include:
 - `NorthSec 2019`_
 - `Journées du Logiciel Libre 2019`_ (a good example of our French localisation)
 - `EasterHegg 2019`_
-- `PrivacyWeek 2018`_
+- `PrivacyWeek`_ (2018, 2019)
 - `hack.lu 2018`_
 - `DjangoCon 2018`_
 - `OsmoDevCon 2018`_
@@ -110,7 +110,7 @@ to this project.
 .. _DjangoCon Europe 2018: https://2018.djangocontent.eu/hd/schedule/
 .. _hack.lu 2018: https://cfp.hack.lu/hacklu18/
 .. _DjangoCon 2018: https://2018.djangocon.eu
-.. _PrivacyWeek 2018: https://privacyweek.at/
+.. _PrivacyWeek: https://privacyweek.at/
 .. _EasterHegg 2019: https://eh19.easterhegg.eu/
 .. _NorthSec 2019: https://cfp.nsec.io/2019/
 .. _Journées du Logiciel Libre 2019: https://pretalx.jdll.org/jdll2019/cfp
