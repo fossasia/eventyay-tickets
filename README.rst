@@ -59,6 +59,7 @@ Previous conferences using pretalx include:
 - `OWASP Ukraine`_ (four events to date)
 - `NoNameCon`_
 - `ToxCon`_
+- `Technik Camp 2019`_
 
 Note
   If you use pretalx for your event, please tell us about it!
@@ -120,3 +121,4 @@ to this project.
 .. _OWASP Ukraine: https://cfp.owaspukraine.org/
 .. _NoNameCon: https://cfp.nonamecon.org/
 .. _ToxCon: https://pretalx.tox.zoff.cc/toxcon2019/
+.. _Technik Camp 2019: https://ffbsee.net/camp/
