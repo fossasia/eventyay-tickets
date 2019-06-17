@@ -33,10 +33,8 @@ class ScheduleData(BaseExporter):
         event = self.event
         schedule = self.schedule
         tz = pytz.timezone(event.timezone)
-        base_qs = schedule.talks.all()
-        if not self.with_accepted:
-            base_qs = base_qs.filter(is_visible=True)
 
+        base_qs = schedule.talks.all() if self.with_accepted else schedule.talks.filter(is_visible=True)
         talks = (
             base_qs
             .select_related('submission', 'submission__event', 'submission__submission_type', 'submission__track', 'room')
