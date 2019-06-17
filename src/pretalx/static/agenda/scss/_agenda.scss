@@ -93,6 +93,7 @@ header {
     background: $gray-lightest;
     margin-bottom: 16px;
     width: auto;
+    overflow: hidden;  /* This hides the .nowline element. */
 
     .header-row {
       background: $gray-lightest;
