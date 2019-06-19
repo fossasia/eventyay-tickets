@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
@@ -49,16 +50,17 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
 
 class TeamTrackForm(I18nModelForm):
     def __init__(self, *args, organiser=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        instance = kwargs.get('instance')
-        if instance and not instance.all_events and instance.limit_events.count():
-            self.fields['limit_tracks'].queryset = Track.objects.filter(
-                event__in=instance.limit_events.all()
-            )
-        else:
-            self.fields['limit_tracks'].queryset = Track.objects.filter(
-                event__organiser=organiser
-            ).order_by('-event__date_from', 'name')
+        with scopes_disabled():
+            super().__init__(*args, **kwargs)
+            instance = kwargs.get('instance')
+            if instance and not instance.all_events and instance.limit_events.count():
+                self.fields['limit_tracks'].queryset = Track.objects.filter(
+                    event__in=instance.limit_events.all()
+                )
+            else:
+                self.fields['limit_tracks'].queryset = Track.objects.filter(
+                    event__organiser=organiser
+                ).order_by('-event__date_from', 'name')
 
     class Meta:
         model = Team
