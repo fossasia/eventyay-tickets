@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Some custom domains could not be set via the frontend.
 - :feature:`-` Organisers can now also see unconfirmed talks in their preview of the public schedule page. The unconfirmed talks are clearly marked to avoid confusion.
 - :release:`1.0.2 <2019-06-07>`
 - :bug:`-` Organisers were able to see all emails sent to a user in their events, instead of only emails sent for the currently active event. This is a data leak. You can find more information `on our blog <https://pretalx.com/p/news/incident-report-data-leak-in-pretalx-10/>`_.

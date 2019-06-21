@@ -20,7 +20,8 @@ class AuthenticationTokenMiddleware:
 
     def __call__(self, request):
         if not request.user.is_authenticated and 'Authorization' in request.headers:
-            token = request.headers['Authorization'].lower().lstrip('token ')
+            token = request.headers['Authorization'].lower()
+            token = token[len('token '):] if token.startswith('token ') else token
             user = authenticate(
                 request,
                 token=token,

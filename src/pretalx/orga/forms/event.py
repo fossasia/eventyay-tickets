@@ -219,12 +219,11 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
                 _('This domain is already in use for a different event.')
             )
         if not data.startswith('https://'):
-            if data.startswith('http://'):
-                data.lstrip('http://')
+            data = data[len('http://'):] if data.startswith('http://') else data
             data = 'https://' + data
         data = data.rstrip('/')
         try:
-            socket.gethostbyname(data.lstrip('https://'))
+            socket.gethostbyname(data[len('https://'):])
         except OSError:
             raise forms.ValidationError(_('The domain "{domain}" does not have a name server entry at this time.').format(domain=data))
         return data
