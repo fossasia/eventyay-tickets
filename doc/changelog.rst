@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`731` Users can now see (and potentially edit) their submission's submission type.
 - :bug:`-` Some custom domains could not be set via the frontend.
 - :feature:`-` Organisers can now also see unconfirmed talks in their preview of the public schedule page. The unconfirmed talks are clearly marked to avoid confusion.
 - :release:`1.0.2 <2019-06-07>`

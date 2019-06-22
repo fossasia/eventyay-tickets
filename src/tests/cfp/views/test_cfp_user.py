@@ -198,6 +198,53 @@ def test_cannot_edit_rejected_submission(other_speaker_client, rejected_submissi
 
 
 @pytest.mark.django_db
+def test_can_edit_submission_type(speaker_client, submission, event):
+    with scope(event=submission.event):
+        new_type = event.submission_types.create(name='Other', default_duration=13)
+        data = {
+            'title': 'Ein ganz neuer Titel',
+            'submission_type': new_type.pk,
+            'content_locale': submission.content_locale,
+            'description': submission.description,
+            'abstract': submission.abstract,
+            'notes': submission.notes,
+            'resource-TOTAL_FORMS': 0,
+            'resource-INITIAL_FORMS': 0,
+            'resource-MIN_NUM_FORMS': 0,
+            'resource-MAX_NUM_FORMS': 1000,
+        }
+    response = speaker_client.post(submission.urls.user_base, follow=True, data=data)
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.submission_type == new_type
+
+
+@pytest.mark.django_db
+def test_cannot_edit_submission_type_after_acceptance(speaker_client, submission, event):
+    with scope(event=submission.event):
+        submission.accept()
+        new_type = event.submission_types.create(name='Other', default_duration=13)
+        data = {
+            'title': 'Ein ganz neuer Titel',
+            'submission_type': new_type.pk,
+            'content_locale': submission.content_locale,
+            'description': submission.description,
+            'abstract': submission.abstract,
+            'notes': submission.notes,
+            'resource-TOTAL_FORMS': 0,
+            'resource-INITIAL_FORMS': 0,
+            'resource-MIN_NUM_FORMS': 0,
+            'resource-MAX_NUM_FORMS': 1000,
+        }
+    response = speaker_client.post(submission.urls.user_base, follow=True, data=data)
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.submission_type != new_type
+
+
+@pytest.mark.django_db
 def test_can_edit_profile(speaker, event, speaker_client):
     response = speaker_client.post(
         event.urls.user,

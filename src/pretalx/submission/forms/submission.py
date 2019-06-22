@@ -58,6 +58,12 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
 
     def _set_submission_types(self, instance=None):
         _now = now()
+        if instance and instance.pk and (
+            instance.state != SubmissionStates.SUBMITTED or not self.event.cfp.is_open
+        ):
+            self.fields['submission_type'].queryset = self.event.submission_types.filter(pk=instance.submission_type_id)
+            self.fields['submission_type'].disabled = True
+            return
         if (
             not self.event.cfp.deadline or self.event.cfp.deadline >= _now
         ):  # No global deadline or still open
