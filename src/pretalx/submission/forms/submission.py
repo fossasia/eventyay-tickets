@@ -25,12 +25,10 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         self.readonly = kwargs.pop('readonly', False)
         instance = kwargs.get('instance')
         initial = kwargs.pop('initial', {})
-        initial['submission_type'] = getattr(
-            instance, 'submission_type', self.event.cfp.default_type
-        )
-        initial['content_locale'] = getattr(
-            instance, 'content_locale', self.event.locale
-        )
+        if not instance or not instance.submission_type:
+            initial['submission_type'] = self.event.cfp.default_type
+        if not instance or not instance.content_locale:
+            initial['content_locale'] = self.event.locale
 
         super().__init__(initial=initial, **kwargs)
 
