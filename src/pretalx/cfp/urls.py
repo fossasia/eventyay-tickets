@@ -56,29 +56,29 @@ urlpatterns = [
                     include(
                         [
                             url(
-                                '^$',
+                                r'^$',
                                 user.SubmissionsEditView.as_view(),
                                 name='event.user.submission.edit',
                             ),
                             url(
-                                '^withdraw$',
+                                r'^withdraw$',
                                 user.SubmissionsWithdrawView.as_view(),
                                 name='event.user.submission.withdraw',
                             ),
                             url(
-                                '^confirm$',
+                                r'^confirm$',
                                 user.SubmissionConfirmView.as_view(),
                                 name='event.user.submission.confirm',
                             ),
                             url(
-                                '^invite$',
+                                r'^invite$',
                                 user.SubmissionInviteView.as_view(),
                                 name='event.user.submission.invite',
                             ),
                         ]
                     ),
                 ),
-                url('^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
+                url(r'^locale/set', locale.LocaleSet.as_view(), name='locale.set'),
             ]
         ),
     ),
@@ -88,5 +88,5 @@ urlpatterns = [
         name='notpretix',
     ),
     url(r'^robots.txt$', robots.robots_txt, name='robots.txt'),
-    url('^$', event.GeneralView.as_view(), name='root.main'),
+    url(r'^$', event.GeneralView.as_view(), name='root.main'),
 ]
