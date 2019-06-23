@@ -35,26 +35,24 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         self.fields['title'].label = _('Submission title')
         if 'abstract' in self.fields:
             self.fields['abstract'].widget.attrs['rows'] = 2
-        if 'track' in self.fields:
-            if not instance or instance.state == SubmissionStates.SUBMITTED:
-                self.fields['track'].queryset = event.tracks.all()
-            elif not event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
-                self.fields.pop('track')
         if instance and instance.pk:
             self.fields.pop('additional_speaker')
 
+        self._set_track(instance=instance)
         self._set_submission_types(instance=instance)
         self._set_locales()
-
-        if not event.settings.present_multiple_times:
-            self.fields.pop('slot_count', None)
-        elif 'slot_count' in self.fields and instance and instance.state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
-            self.fields['slot_count'].disabled = True
-            self.fields['slot_count'].help_text += ' ' + str(_('Please contact the organisers if you want to change how often you\'re presenting this submission.'))
+        self._set_slot_count(instance=instance)
 
         if self.readonly:
             for f in self.fields.values():
                 f.disabled = True
+
+    def _set_track(self, instance=None):
+        if 'track' in self.fields:
+            if not instance or instance.state == SubmissionStates.SUBMITTED:
+                self.fields['track'].queryset = self.event.tracks.all()
+            elif not self.event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
+                self.fields.pop('track')
 
     def _set_submission_types(self, instance=None):
         _now = now()
@@ -89,6 +87,13 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             self.fields['content_locale'].choices = [
                 (a, locale_names[a]) for a in self.event.locales
             ]
+
+    def _set_slot_count(self, instance=None):
+        if not self.event.settings.present_multiple_times:
+            self.fields.pop('slot_count', None)
+        elif 'slot_count' in self.fields and instance and instance.state in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+            self.fields['slot_count'].disabled = True
+            self.fields['slot_count'].help_text += ' ' + str(_('Please contact the organisers if you want to change how often you\'re presenting this submission.'))
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
