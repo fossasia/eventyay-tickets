@@ -9,20 +9,18 @@ from django_scopes import scope, scopes_disabled
 
 
 class Command(BaseCommand):
-    help = 'Rebuild static files and language files'
+    help = 'Run a Python REPL scoped to a specific event. Run with --event__slug=eventslug or with --override to access all events.'
 
     def create_parser(self, *args, **kwargs):
         parser = super().create_parser(*args, **kwargs)
         parser.parse_args = lambda x: parser.parse_known_args(x)[0]
         return parser
 
-    def add_arguments(self, parser):
-        parser.add_argument('args', nargs=argparse.REMAINDER)
-
     def handle(self, *args, **options):
         flags = self.create_parser(sys.argv[0], sys.argv[1]).parse_known_args(sys.argv[2:])[1]
         if '--override' in flags:
             with scopes_disabled():
+                self.stdout.write(self.style.SUCCESS('All scopes are disabled for this shell session – please be careful!'))
                 return self.call_command(*args, **options)
 
         lookups = {}
@@ -35,11 +33,14 @@ class Command(BaseCommand):
             for app_name, app_content in apps.all_models.items()
             for (model_name, model_class) in app_content.items()
         }
+        if not all(app_name in models for app_name in lookups):
+            self.stdout.write(self.style.ERROR(f'Unknown model! Available models: {", ".join(models.keys())}'))
+            return
+
         scope_options = {
             app_name: models[app_name].objects.get(**app_value)
             for app_name, app_value in lookups.items()
         }
-
         with scope(**scope_options):
             return self.call_command(*args, **options)
 
