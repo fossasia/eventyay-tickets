@@ -5,7 +5,7 @@ from contextlib import suppress
 from django.apps import apps
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
-from django_scopes import scope
+from django_scopes import scope, scopes_disabled
 
 
 class Command(BaseCommand):
@@ -21,6 +21,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         flags = self.create_parser(sys.argv[0], sys.argv[1]).parse_known_args(sys.argv[2:])[1]
+        if '--override' in flags:
+            with scopes_disabled():
+                return self.call_command(*args, **options)
+
         lookups = {}
         for flag in flags:
             lookup, value = flag.lstrip('-').split('=')
@@ -37,7 +41,10 @@ class Command(BaseCommand):
         }
 
         with scope(**scope_options):
-            with suppress(ImportError):
-                import django_extensions  # noqa
-                return call_command('shell_plus', *args, **options)
-            return call_command('shell', *args, **options)
+            return self.call_command(*args, **options)
+
+    def call_command(self, *args, **options):
+        with suppress(ImportError):
+            import django_extensions  # noqa
+            return call_command('shell_plus', *args, **options)
+        return call_command('shell', *args, **options)

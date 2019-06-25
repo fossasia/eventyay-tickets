@@ -55,6 +55,10 @@ database isolation::
 
     python -m pretalx shell_scoped --event__slug=myevent
 
+Alternatively, you can specify that you want to be able to access all events::
+
+    python -m pretalx shell_scoped --override
+
 ``python -m pretalx print_settings``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
