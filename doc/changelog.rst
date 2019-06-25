@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` To keep in line with our new database scoping, if you access the pretalx shell, you are now advised to use the ``shell_scoped`` command instead of the ``shell`` command, and call it with the flags for your event, like ``--event__slug=myevent`` (or an ``--override`` flag to access all events).
 - :feature:`731` Users can now see (and potentially edit) their submission's submission type.
 - :bug:`-` Some custom domains could not be set via the frontend.
 - :feature:`-` Organisers can now also see unconfirmed talks in their preview of the public schedule page. The unconfirmed talks are clearly marked to avoid confusion.

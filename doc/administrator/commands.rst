@@ -41,14 +41,19 @@ reasonable size.
 Debug commands
 --------------
 
-``python -m pretalx shell`` or ``python -m pretalx shell_plus``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``python -m pretalx shell_scoped``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``shell`` command opens a Python shell with the pretalx configuration and
-environment. You can use it to import pretalx modules and execute methods. For
-a better environment, install ``django_extensions`` and ``ipython``, and
-execute ``shell_plus`` instead. This shell gives you tab completion, and a
-range of useful initial imports.
+The ``shell_scoped`` command opens a Python shell with the pretalx
+configuration and environment. You can use it to import pretalx modules and
+execute methods. For a better environment, install ``django_extensions`` and
+``ipython``, and execute ``shell_plus`` instead. This shell gives you tab
+completion, and a range of useful initial imports.
+
+You'll have to provide the event you want to interact with to provide proper
+database isolation::
+
+    python -m pretalx shell_scoped --event__slug=myevent
 
 ``python -m pretalx print_settings``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
