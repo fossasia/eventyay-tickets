@@ -61,7 +61,7 @@ STAGES = {
                 'title': _('Submit talks for your speakers'),
                 'url': ['orga_urls', 'new_submission'],
             },
-            {'title': _('Invite reviewers'), 'url': ['orga_urls', 'team_settings']},
+            {'title': _('Invite reviewers'), 'url': ['organiser', 'orga_urls', 'base']},
         ],
     },
     'REVIEW': {
