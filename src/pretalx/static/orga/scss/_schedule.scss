@@ -50,7 +50,7 @@
 
 #rooms, #unassigned-talks, #timeline {
   display: flex;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   flex-wrap: no-wrap;
   align-self: stretch;
   padding: 18px;
@@ -74,6 +74,7 @@
   margin-right: 18px;
   flex-grow: 1;
   flex-basis: 0;
+  min-width: 0;
 }
 
 .room-column:last-child {

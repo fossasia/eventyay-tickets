@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`729` The “unscheduled talks” column in the schedule editor could overlap with the room columns on events with many rooms.
 - :bug:`728` The “Invite reviewers” link on the main event dashboard led to an incorrect page.
 - :feature:`732` Speaker availability is now included in the API for organizers.
 - :feature:`475` Organisers can now regenerate the accept/reject emails from the review dashboard context menu.
