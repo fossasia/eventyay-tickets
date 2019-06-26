@@ -1,4 +1,3 @@
-from contextlib import suppress
 from urllib.parse import urlparse
 
 import vobject
@@ -69,10 +68,11 @@ class TalkView(PermissionRequired, TemplateView):
     permission_required = 'agenda.view_slot'
 
     def get_object(self, queryset=None):
-        with suppress(AttributeError, Submission.DoesNotExist):
-            return self.request.event.talks.prefetch_related('slots', 'answers', 'resources').filter(
-                code__iexact=self.kwargs['slug'],
-            ).first()
+        talk = self.request.event.talks.prefetch_related('slots', 'answers', 'resources').filter(
+            code__iexact=self.kwargs['slug'],
+        ).first()
+        if talk:
+            return talk
         if getattr(self.request, 'is_orga', False):
             talk = self.request.event.submissions.filter(
                 code__iexact=self.kwargs['slug'],
