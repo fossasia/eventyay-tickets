@@ -70,9 +70,9 @@ class TalkView(PermissionRequired, TemplateView):
 
     def get_object(self, queryset=None):
         with suppress(AttributeError, Submission.DoesNotExist):
-            return self.request.event.talks.prefetch_related('slots', 'answers', 'resources').get(
+            return self.request.event.talks.prefetch_related('slots', 'answers', 'resources').filter(
                 code__iexact=self.kwargs['slug'],
-            )
+            ).first()
         if getattr(self.request, 'is_orga', False):
             talk = self.request.event.submissions.filter(
                 code__iexact=self.kwargs['slug'],
