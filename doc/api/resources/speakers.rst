@@ -17,7 +17,11 @@ biography                             string                     The speaker's s
 submissions                           list                       A list of submission codes, e.g. ``["ABCDEF", "GHIJKL"]``
 avatar                                string                     The speaker avatar URL
 email                                 string                     The speaker's email address. Available if the requesting user has organizer privileges.
+availabilities                        list                       A list of availability objects, containing the fields ``id``, ``start``, ``end``, and ``allDay`` for each availability object. Available if the requesting user has organizer privileges.
 ===================================== ========================== =======================================================
+
+.. versionadded:: 1.1.0
+   The ``availabilities`` field for organizers was added in pretalx v1.1.0.
 
 Endpoints
 ---------
@@ -52,8 +56,15 @@ Endpoints
             "name": "Jane",
             "biography": "A good speaker",
             "submissions": ["DEFAB"],
-            "avatar": "https://example.org/media/avatar.png"
-            }
+            "avatar": "https://example.org/media/avatar.png",
+            "availabilities": [
+              {
+                "id": 1,
+                "start": "2019-07-24T04:00:00Z",
+                "end": "2019-07-25T04:00:00Z",
+                "allDay": false
+              }
+            ]
           }
         ]
       }
@@ -86,7 +97,13 @@ Endpoints
         "name": "Jane",
         "biography": "A good speaker",
         "submissions": ["DEFAB"],
-        "avatar": "https://example.org/media/avatar.png"
+        "avatar": "https://example.org/media/avatar.png",
+        {
+          "id": 1,
+          "start": "2019-07-24T04:00:00Z",
+          "end": "2019-07-25T04:00:00Z",
+          "allDay": false
+        }
       }
 
    :param event: The ``slug`` field of the event to fetch

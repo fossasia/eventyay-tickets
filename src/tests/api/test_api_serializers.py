@@ -91,6 +91,7 @@ def test_speaker_orga_serializer(slot):
         'avatar',
         'answers',
         'email',
+        'availabilities',
     }
     assert data['name'] == user.name
     assert data['code'] == user.code

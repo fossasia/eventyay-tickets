@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`732` Speaker availability is now included in the API for organizers.
 - :feature:`475` Organisers can now regenerate the accept/reject emails from the review dashboard context menu.
 - :support:`-` To keep in line with our new database scoping, if you access the pretalx shell, you are now advised to use the ``shell_scoped`` command instead of the ``shell`` command, and call it with the flags for your event, like ``--event__slug=myevent`` (or an ``--override`` flag to access all events).
 - :feature:`731` Users can now see (and potentially edit) their submission's submission type.
