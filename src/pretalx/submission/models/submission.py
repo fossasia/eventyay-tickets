@@ -388,27 +388,30 @@ class Submission(LogMixin, models.Model):
         self.log_action('pretalx.submission.accept', person=person, orga=True)
 
         if previous != SubmissionStates.CONFIRMED:
-            for speaker in self.speakers.all():
-                self.event.accept_template.to_mail(
-                    user=speaker,
-                    event=self.event,
-                    context=template_context_from_submission(self),
-                    locale=self.content_locale,
-                )
+            self.send_state_mail()
 
     def reject(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'rejected' and creates a rejection
         :class:`~pretalx.mail.models.QueuedMail`."""
         self._set_state(SubmissionStates.REJECTED, force, person=person)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
+        self.send_state_mail()
 
+    def send_state_mail(self):
+        if self.state == SubmissionStates.ACCEPTED:
+            template = self.event.accept_template
+        elif self.state == SubmissionStates.REJECTED:
+            template = self.event.reject_template
+        else:
+            return
+
+        kwargs = {
+            'event': self.event,
+            'context': template_context_from_submission(self),
+            'locale': self.content_locale,
+        }
         for speaker in self.speakers.all():
-            self.event.reject_template.to_mail(
-                user=speaker,
-                event=self.event,
-                context=template_context_from_submission(self),
-                locale=self.content_locale,
-            )
+            template.to_mail(user=speaker, **kwargs)
 
     def cancel(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'canceled'."""
