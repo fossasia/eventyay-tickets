@@ -46,6 +46,17 @@
         {% endif %}
         <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
     </form>
+        <div class="dropdown ml-auto">
+          <a class="btn btn-info dropdown-toggle" href="#" role="button" id="schedule-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% trans "Actions" %}
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="schedule-actions">
+            <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
+                <i class="fa fa-link"></i> {% trans "Regenerate decision emails" %}
+            </a>
+          </div>
+        </div>
 </div>
 
 <form method="post">{% csrf_token %}

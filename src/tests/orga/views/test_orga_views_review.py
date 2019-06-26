@@ -277,3 +277,17 @@ def test_orga_cannot_add_review(orga_client, submission):
     assert response.status_code == 200
     with scope(event=submission.event):
         assert submission.reviews.count() == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_regenerate_emails(orga_client, submission, accepted_submission, rejected_submission, event):
+    with scope(event=event):
+        event.queued_mails.all().delete()
+    response = orga_client.get(event.orga_urls.reviews + 'regenerate/')
+    assert response.status_code == 200
+
+    response = orga_client.post(event.orga_urls.reviews + 'regenerate/', follow=True)
+    assert response.status_code == 200
+
+    with scope(event=event):
+        assert event.queued_mails.filter(sent__isnull=True).count() == 2  # One for the accepted, one for the rejected, none for the submitted

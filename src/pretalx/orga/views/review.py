@@ -299,3 +299,25 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 class ReviewSubmissionDelete(EventPermissionRequired, TemplateView):
     template_name = 'orga/review/submission_delete.html'
     permission_required = 'orga.remove_review'
+
+
+class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
+    template_name = 'orga/review/regenerate_decision_mails.html'
+    permission_required = 'orga.change_submissions'
+
+    def get_queryset(self):
+        return self.request.event.submissions.filter(
+            state__in=[SubmissionStates.ACCEPTED, SubmissionStates.REJECTED],
+            speakers__isnull=False,
+        )
+
+    @context
+    @cached_property
+    def count(self):
+        return self.get_queryset().count()
+
+    def post(self, request, **kwargs):
+        for submission in self.get_queryset():
+            submission.send_state_mail()
+        messages.success(request, _('{count} emails were generated and placed in the outbox.').format(count=self.count))
+        return redirect(self.request.event.orga_urls.reviews)

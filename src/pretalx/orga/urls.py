@@ -120,6 +120,7 @@ urlpatterns = [
         url('^info/(?P<pk>[0-9]+)/delete$', speaker.InformationDelete.as_view(), name='speakers.information.delete'),
 
         url('^reviews/$', review.ReviewDashboard.as_view(), name='reviews.dashboard'),
+        url('^reviews/regenerate/$', review.RegenerateDecisionMails.as_view(), name='reviews.regenerate'),
 
         url('^settings/$', event.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),

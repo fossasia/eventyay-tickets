@@ -1,0 +1,23 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% block content %}
+    <h2>
+        {% trans "Regenerate notification emails" %}
+    </h2>
+    {% blocktrans trimmed with count=count %}
+    Do you really want to regenerate {{ count }} acceptance and rejection emails?
+    They will be placed in the outbox and not sent out directly.
+    {% endblocktrans %}
+    {{ question }}
+    <form method="post">
+        {% csrf_token %}
+        <div class="submit-group">
+            <a href="{{ request.event.orga_urls.reviews }}" class="btn btn-lg btn-danger">
+                {% trans "Back" %}
+            </a>
+            <button type="submit" class="btn btn-lg btn-success">
+                {% trans "Yes" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}
