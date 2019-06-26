@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`1.0.3 <2019-06-27>`
 - :bug:`730` The talk page of talks with multiple slots did not work and threw an error instead.
 - :bug:`729` The “unscheduled talks” column in the schedule editor could overlap with the room columns on events with many rooms.
 - :bug:`728` The “Invite reviewers” link on the main event dashboard led to an incorrect page.
