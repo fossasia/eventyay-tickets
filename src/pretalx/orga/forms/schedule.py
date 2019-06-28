@@ -1,4 +1,4 @@
-from django.forms import BooleanField, FileField, Form, ModelForm, ValidationError
+from django.forms import BooleanField, ModelForm, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from pretalx.schedule.models import Schedule
@@ -23,10 +23,3 @@ class ScheduleReleaseForm(ModelForm):
     class Meta:
         model = Schedule
         fields = ('version',)
-
-
-class ScheduleImportForm(Form):
-    upload = FileField()
-
-    class Meta:
-        fields = ('upload',)

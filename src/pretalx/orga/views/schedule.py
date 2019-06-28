@@ -1,5 +1,4 @@
 import json
-import xml.etree.ElementTree as ET
 from contextlib import suppress
 from datetime import timedelta
 
@@ -7,7 +6,6 @@ import dateutil.parser
 from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
-from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import redirect
@@ -26,7 +24,7 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.orga.forms.schedule import ScheduleImportForm, ScheduleReleaseForm
+from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room
 from pretalx.schedule.utils import guess_schedule_version
@@ -322,32 +320,6 @@ class RoomTalkAvailabilities(EventPermissionRequired, View):
         return JsonResponse(
             {'results': AvailabilitySerializer(availabilities, many=True).data}
         )
-
-
-class ScheduleImportView(EventPermissionRequired, FormView):
-    permission_required = 'orga.release_schedule'
-    template_name = 'orga/schedule/import.html'
-    form_class = ScheduleImportForm
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.schedule_import
-
-    def form_valid(self, form):
-        from pretalx.schedule.utils import process_frab
-
-        try:
-            tree = ET.ElementTree(ET.fromstring(self.request.FILES['upload'].read()))
-            root = tree.getroot()
-        except Exception as e:
-            messages.error(self.request, _('Unable to parse XML file: ') + str(e))
-            return super().form_invalid(form)
-        try:
-            with transaction.atomic():
-                messages.success(self.request, process_frab(root, self.request.event))
-            return super().form_valid(form)
-        except Exception as e:
-            messages.error(self.request, _('Unable to release new schedule: ' + str(e)))
-        return super().form_invalid(form)
 
 
 class RoomList(EventPermissionRequired, TemplateView):

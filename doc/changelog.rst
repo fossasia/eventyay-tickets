@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Due to the powerful and hard-to-specify nature of the schedule HTML import, the frontend facing schedule xml import has been removed. Administrators can still import schedule files with the ``import_schedule`` command.
 - :release:`1.0.3 <2019-06-27>`
 - :bug:`730` The talk page of talks with multiple slots did not work and threw an error instead.
 - :bug:`729` The “unscheduled talks” column in the schedule editor could overlap with the room columns on events with many rooms.

@@ -243,7 +243,7 @@ class ScheduleView(ScheduleDataView):
         yield empty_line
         for line in titlelines:
             yield f'  \033[1m{line:<{text_width}}\033[0m  '
-        for _ in repeat(None, height - len(titlelines) - 3):
+        for __ in repeat(None, height - len(titlelines) - 3):
             yield empty_line
         yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
                f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')
