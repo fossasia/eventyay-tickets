@@ -1,6 +1,7 @@
 import hashlib
 import textwrap
 from datetime import timedelta
+from itertools import repeat
 from urllib.parse import unquote
 
 import pytz
@@ -242,7 +243,7 @@ class ScheduleView(ScheduleDataView):
         yield empty_line
         for line in titlelines:
             yield f'  \033[1m{line:<{text_width}}\033[0m  '
-        for empty in range(height - len(titlelines) - 3):
+        for _ in repeat(None, height - len(titlelines) - 3):
             yield empty_line
         yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
                f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')

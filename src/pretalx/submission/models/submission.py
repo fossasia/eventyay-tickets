@@ -4,6 +4,7 @@ import string
 import uuid
 from contextlib import suppress
 from datetime import timedelta
+from itertools import repeat
 
 from django.conf import settings
 from django.db import models
@@ -363,7 +364,7 @@ class Submission(LogMixin, models.Model):
             ).order_by('start', 'is_visible')[:diff].values_list("id", flat=True)
             TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
         elif diff < 0:
-            for __ in range(abs(diff)):
+            for __ in repeat(None, abs(diff)):
                 TalkSlot.objects.create(
                     submission=self,
                     schedule=self.event.wip_schedule,

@@ -1,3 +1,4 @@
+from itertools import repeat
 from pathlib import Path
 from sys import executable
 
@@ -31,7 +32,7 @@ def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
     )
     img_width = len(image[0])
     image[-1] += ' ' * (img_width - len(image[-1]))
-    image += [' ' * img_width for _ in range((len(lines) - len(image)))]
+    image += [' ' * img_width for _ in repeat(None, (len(lines) - len(image)))]
 
     lines = [(f'{image[n]}  {line[0]}', line[1]) for n, line in enumerate(lines)]
 

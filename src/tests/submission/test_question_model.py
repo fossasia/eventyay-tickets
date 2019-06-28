@@ -1,3 +1,5 @@
+from itertools import repeat
+
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
@@ -38,7 +40,7 @@ def test_question_grouped_answers_choice(submission, question):
         one.refresh_from_db()
         two.refresh_from_db()
 
-        answers = [Answer.objects.create(submission=submission, question=question, answer='True') for _ in range(3)]
+        answers = [Answer.objects.create(submission=submission, question=question, answer='True') for _ in repeat(None, 3)]
         answers[0].options.set([one])
         answers[1].options.set([two])
         answers[2].options.set([two])
@@ -56,7 +58,7 @@ def test_question_grouped_answers_file(submission, question):
         f = SimpleUploadedFile('testfile.txt', b'file_content')
         question.variant = 'file'
         question.save()
-        [Answer.objects.create(submission=submission, question=question, answer='file://testfile.txt', answer_file=f) for _ in range(3)]
+        [Answer.objects.create(submission=submission, question=question, answer='file://testfile.txt', answer_file=f) for _ in repeat(None, 3)]
 
         assert len(question.grouped_answers) == 3
         assert all([a['count'] == 1 for a in question.grouped_answers])
