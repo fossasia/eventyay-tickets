@@ -42,6 +42,7 @@ their respective changelogs on GitHub_ or install pretalx via PyPI_.
 
 Previous conferences using pretalx include:
 
+- `deRSE19`_
 - `NorthSec 2019`_
 - `Journées du Logiciel Libre 2019`_ (a good example of our French localisation)
 - `EasterHegg 2019`_
@@ -103,6 +104,7 @@ to this project.
 .. _list of plugin ideas: https://github.com/pretalx/pretalx/wiki/Plugin-ideas
 
 .. _MRMCD: https://talks.mrmcd.net/
+.. _deRSE19: https://derse19.uni-jena.de/derse19/schedule/
 .. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
 .. _EasterHegg 2018: https://pretalx.eh18.easterhegg.eu/eh18/schedule/
 .. _GPN 2018: https://pretalx.entropia.de/gpn18/
