@@ -41,7 +41,6 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
         ('settings.mail.view', 200, 404),
         ('settings.plugins.select', 404, 404),
         ('schedule.main', 200, 404),
-        ('schedule.import', 200, 404),
         ('schedule.export', 200, 404),
         ('schedule.rooms.list', 200, 404),
         ('schedule.rooms.create', 200, 404),
