@@ -129,6 +129,7 @@ setup(
             'pytest-mock',
             'pytest-rerunfailures',
             'pytest-sugar',
+            'pytest-tldr',
         ],
         'mysql': ['mysqlclient'],
         'postgres': ['psycopg2-binary'],
