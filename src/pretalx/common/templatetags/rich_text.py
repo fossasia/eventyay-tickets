@@ -70,8 +70,9 @@ def rich_text(text: str):
             markdown.markdown(
                 str(text),
                 extensions=[
-                    'markdown.extensions.sane_lists',
                     'markdown.extensions.nl2br',
+                    'markdown.extensions.sane_lists',
+                    'markdown.extensions.tables',
                 ]
             ),
             tags=ALLOWED_TAGS,
