@@ -43,7 +43,7 @@ def test_parse_availabilities_json_fail(availabilitiesform, json, error):
     with pytest.raises(ValidationError) as excinfo:
         availabilitiesform._parse_availabilities_json(json)
 
-    assert error in str(excinfo)
+    assert error in str(excinfo.value)
 
 
 @pytest.mark.django_db
@@ -71,7 +71,7 @@ def test_validate_availability_fail_format(availabilitiesform, avail):
     with pytest.raises(ValidationError) as excinfo:
         availabilitiesform._validate_availability(avail)
 
-    assert 'format' in str(excinfo)
+    assert 'format' in str(excinfo.value)
 
 
 @pytest.mark.django_db
@@ -85,7 +85,7 @@ def test_validate_availability_fail_date(availabilitiesform, avail):
     with pytest.raises(ValidationError) as excinfo:
         availabilitiesform._validate_availability(avail)
 
-    assert 'invalid date' in str(excinfo)
+    assert 'invalid date' in str(excinfo.value)
 
 
 @pytest.mark.django_db
@@ -161,7 +161,7 @@ def test_clean_availabilities_fail(availabilitiesform, json, error):
         availabilitiesform.cleaned_data = {'availabilities': json}
         availabilitiesform.clean_availabilities()
 
-    assert error in str(excinfo)
+    assert error in str(excinfo.value)
 
 
 @pytest.mark.django_db

@@ -218,7 +218,7 @@ def test_html_export_event_required():
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html')
 
-    assert 'the following arguments are required: event' in str(excinfo)
+    assert 'the following arguments are required: event' in str(excinfo.value)
 
 
 @pytest.mark.django_db
@@ -227,7 +227,7 @@ def test_html_export_event_unknown(event):
 
     with pytest.raises(CommandError) as excinfo:
         call_command('export_schedule_html', 'foobar222')
-    assert 'Could not find event with slug "foobar222"' in str(excinfo)
+    assert 'Could not find event with slug "foobar222"' in str(excinfo.value)
     export_schedule_html(event_id=22222)
     export_schedule_html(event_id=event.pk)
 

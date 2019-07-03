@@ -106,7 +106,7 @@ def test_availability_fail(method, args, expected):
     with pytest.raises(Exception) as excinfo:
         method(avail, *args)
 
-    assert expected in str(excinfo)
+    assert expected in str(excinfo.value)
 
 
 @pytest.mark.django_db
