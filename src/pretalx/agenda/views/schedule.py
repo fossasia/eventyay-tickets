@@ -6,8 +6,10 @@ from urllib.parse import unquote
 
 import pytz
 from dateutil import rrule
+from django.contrib import messages
 from django.http import (
-    Http404, HttpResponse, HttpResponseNotModified, HttpResponsePermanentRedirect,
+    Http404, HttpResponse, HttpResponseNotModified,
+    HttpResponsePermanentRedirect, HttpResponseRedirect,
 )
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
@@ -288,6 +290,12 @@ class ScheduleView(ScheduleDataView):
         if 'text/html' not in self.request.headers.get('Accept', '') and not hasattr(self, 'is_html_export'):
             return 'text'
         return 'html'
+
+    def dispatch(self, request, **kwargs):
+        if not self.request.user.has_perm('agenda.view_schedule', self.request.event) and self.request.user.has_perm('agenda.view_sneak_peek', self.request.event):
+            messages.success(request, _('Our schedule is not live yet, but we have this sneak peek available!'))
+            return HttpResponseRedirect(self.request.event.urls.sneakpeek)
+        return super().dispatch(request, **kwargs)
 
     def get(self, request, **kwargs):
         if self.answer_type == 'text':

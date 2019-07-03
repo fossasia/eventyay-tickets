@@ -22,6 +22,34 @@ def test_can_see_schedule(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize('sneak_peek', (True, False))
+def test_cannot_see_schedule_by_setting(client, user, event, slot, other_slot, sneak_peek):
+    with scope(event=event):
+        event.settings.show_schedule = False
+        assert not user.has_perm('agenda.view_schedule', event)
+        event.settings.show_sneak_peek = sneak_peek
+    response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT='text/html')
+    assert response.status_code == (404 if not sneak_peek else 200)
+    if sneak_peek:
+        assert response.redirect_chain == [(event.urls.sneakpeek, 302)]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('sneak_peek', (True, False))
+def test_cannot_see_no_schedule(client, user, event, slot, other_slot, sneak_peek):
+    with scope(event=event):
+        event.current_schedule.talks.all().delete()
+        event.current_schedule.delete()
+        del event.current_schedule
+        event.settings.show_sneak_peek = sneak_peek
+        assert not user.has_perm('agenda.view_schedule', event)
+    response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT='text/html')
+    assert response.status_code == (404 if not sneak_peek else 200)
+    if sneak_peek:
+        assert response.redirect_chain == [(event.urls.sneakpeek, 302)]
+
+
+@pytest.mark.django_db
 def test_speaker_list(
     client, django_assert_num_queries, event, speaker, slot, other_slot
 ):
@@ -114,6 +142,6 @@ def test_versioned_schedule_page(
         assert slot.submission.title in response.content.decode()
 
     url = f'/{event.slug}/schedule?version={quote(schedule.version)}'
-    with django_assert_num_queries(23):
+    with django_assert_num_queries(24):
         redirected_response = client.get(url, follow=True, HTTP_ACCEPT='text/html')
     assert redirected_response._request.path == response._request.path

@@ -9,12 +9,13 @@ def test_sneak_peek_invisible_because_setting(client, django_assert_num_queries,
     assert response.status_code == 404
 
 
+@pytest.mark.parametrize('sneak_hidden', (True, False))
 @pytest.mark.django_db
 def test_sneak_peek_invisible_because_schedule(
-    client, django_assert_num_queries, event
+    client, django_assert_num_queries, event, sneak_hidden
 ):
     with scope(event=event):
-        event.settings.show_sneak_peek = True
+        event.settings.show_sneak_peek = sneak_hidden
         event.release_schedule("42")
     with django_assert_num_queries(27):
         response = client.get(event.urls.sneakpeek, follow=True)
@@ -22,9 +23,8 @@ def test_sneak_peek_invisible_because_schedule(
     # there might be multiple redirects to correct trailing slashes, so the
     # one we're looking for is not always the last one.
     assert any(
-        True
+        r[0].rstrip('/') == event.urls.schedule.rstrip('/') and r[1] == 302
         for r in response.redirect_chain
-        if r[0].rstrip('/') == event.urls.schedule.rstrip('/') and r[1] == 302
     )
 
 
