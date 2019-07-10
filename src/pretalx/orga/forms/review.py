@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ngettext_lazy, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag

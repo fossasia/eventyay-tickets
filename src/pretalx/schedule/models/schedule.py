@@ -8,7 +8,7 @@ from django.db import models, transaction
 from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.timezone import now, override as tzoverride
-from django.utils.translation import override, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from django_scopes import ScopedManager
 
 from pretalx.agenda.tasks import export_schedule_html

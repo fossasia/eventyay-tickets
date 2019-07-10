@@ -12,7 +12,7 @@ from django.db.models.fields.files import FieldFile
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import pgettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext
 from django_scopes import ScopedManager, scopes_disabled
 
 from pretalx.common.choices import Choices

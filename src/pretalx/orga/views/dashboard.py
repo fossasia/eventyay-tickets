@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.template.defaultfilters import timeuntil
 from django.utils.timezone import now
-from django.utils.translation import ngettext_lazy, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
