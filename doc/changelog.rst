@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`742` Organisers can now set a minimum or maximum length for submission titles.
 - :feature:`743` If no schedule has been published but a sneak peek is available, the schedule page now redirects to the sneak peek page.
 - :feature:`-` The pretalx markdown display now supports markdown tables.
 - :feature:`-` Due to the powerful and hard-to-specify nature of the schedule HTML import, the frontend facing schedule xml import has been removed. Administrators can still import schedule files with the ``import_schedule`` command.

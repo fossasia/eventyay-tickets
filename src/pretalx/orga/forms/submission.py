@@ -65,4 +65,4 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             'submission_type': SafeModelChoiceField,
             'track': SafeModelChoiceField,
         }
-        request_require = {'abstract', 'description', 'notes', 'image', 'do_not_record'}
+        request_require = {'title', 'abstract', 'description', 'notes', 'image', 'do_not_record'}

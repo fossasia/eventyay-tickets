@@ -124,6 +124,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             'duration',
         ]
         request_require = [
+            'title',
             'abstract',
             'description',
             'notes',

@@ -41,6 +41,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_require_image = forms.BooleanField(label='', required=False)
     cfp_require_track = forms.BooleanField(label='', required=False)
     cfp_require_duration = forms.BooleanField(label='', required=False)
+    cfp_title_min_length = forms.IntegerField(label='', required=False, min_value=0)
     cfp_abstract_min_length = forms.IntegerField(
         label=_('Minimum length'), required=False, min_value=0
     )
@@ -50,6 +51,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_biography_min_length = forms.IntegerField(
         label=_('Minimum length'), required=False, min_value=0
     )
+    cfp_title_max_length = forms.IntegerField(label='', required=False, min_value=0)
     cfp_abstract_max_length = forms.IntegerField(
         label=_('Maximum length'), required=False, min_value=0
     )

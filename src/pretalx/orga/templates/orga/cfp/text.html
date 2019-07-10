@@ -64,6 +64,13 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <th>{% trans "Title" %}</th>
+                        <td></td>
+                        <td></td>
+                        <td>{% bootstrap_field sform.cfp_title_min_length use_label=False layout='inline' %}</td>
+                        <td>{% bootstrap_field sform.cfp_title_max_length use_label=False layout='inline' %}</td>
+                    </tr>
+                    <tr>
                         <th>{% trans "Abstract" %}</th>
                         <td class="request">{% bootstrap_field sform.cfp_request_abstract use_label=False layout='event-inline' %}</td>
                         <td class="require">{% bootstrap_field sform.cfp_require_abstract use_label=False layout='event-inline' %}</td>
