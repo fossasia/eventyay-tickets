@@ -1,7 +1,7 @@
 import random
 from abc import ABCMeta
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 _phrase_book = dict()
 

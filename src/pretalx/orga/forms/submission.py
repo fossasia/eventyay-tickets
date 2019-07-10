@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire

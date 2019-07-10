@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from django.utils.translation import ugettext_noop
+from django.utils.translation import gettext_noop
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
 
@@ -83,7 +83,7 @@ hierarkey.add_default('review_text_mandatory', 'False', bool)
 hierarkey.add_default(
     'review_help_text',
     LazyI18nString.from_gettext(
-        ugettext_noop(
+        gettext_noop(
             "Please give a fair review on why you'd like to see this submission at the conference, or why you think it would not be a good fit."
         )
     ),
@@ -106,7 +106,7 @@ hierarkey.add_default('mail_on_new_submission', 'False', bool)
 hierarkey.add_default(
     'mail_text_new_submission',
     LazyI18nString.from_gettext(
-        ugettext_noop(
+        gettext_noop(
             """Hi,
 
 you have received a new submission for your event {event_name}:
@@ -129,7 +129,7 @@ hierarkey.add_default('sent_mail_event_over', 'False', bool)
 hierarkey.add_default(
     'mail_text_event_created',
     LazyI18nString.from_gettext(
-        ugettext_noop(
+        gettext_noop(
             """Hi,
 
 we hope you're happy with pretalx as your event's CfP system.
@@ -150,7 +150,7 @@ email to mailto:rixx@cutebit.de!
 hierarkey.add_default(
     'mail_text_cfp_closed',
     LazyI18nString.from_gettext(
-        ugettext_noop(
+        gettext_noop(
             """Hi,
 
 just writing you to let you know that your Call for Participation is now
@@ -168,7 +168,7 @@ And create your schedule here, once you have accepted submissions: {event_schedu
 hierarkey.add_default(
     'mail_text_event_over',
     LazyI18nString.from_gettext(
-        ugettext_noop(
+        gettext_noop(
             """Hi,
 
 congratulations, your event is over! Hopefully it went well. Here are some

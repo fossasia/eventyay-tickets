@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import gettext_noop as _
 from i18nfield.strings import LazyI18nString
 
 GENERIC_SUBJECT = LazyI18nString.from_gettext(_('Your submission: {submission_title}'))

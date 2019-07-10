@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language, override, ugettext_lazy as _
+from django.utils.translation import get_language, override, gettext_lazy as _
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.urls import build_absolute_uri

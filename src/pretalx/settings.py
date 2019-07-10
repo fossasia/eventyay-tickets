@@ -5,7 +5,7 @@ from pathlib import Path
 
 from django.contrib.messages import constants as messages
 from django.utils.crypto import get_random_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pkg_resources import iter_entry_points
 
 from pretalx.common.settings.config import build_config

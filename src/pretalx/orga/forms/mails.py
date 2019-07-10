@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag

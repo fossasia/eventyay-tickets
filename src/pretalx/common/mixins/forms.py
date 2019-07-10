@@ -1,7 +1,7 @@
 from functools import partial
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.utils import get_help_text, validate_field_length
 from pretalx.common.phrases import phrases

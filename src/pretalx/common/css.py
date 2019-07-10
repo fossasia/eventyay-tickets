@@ -3,7 +3,7 @@ import re
 from cssutils import CSSParser
 from cssutils.css import CSSComment, CSSMediaRule
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 acceptable_css_keywords = set(
     [

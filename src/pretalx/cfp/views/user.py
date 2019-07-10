@@ -10,7 +10,7 @@ from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     DetailView, FormView, ListView, TemplateView, UpdateView, View,
 )

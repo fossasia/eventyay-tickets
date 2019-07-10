@@ -5,7 +5,7 @@ from django.forms.models import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 

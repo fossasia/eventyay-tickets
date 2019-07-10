@@ -16,7 +16,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
-from django.utils.translation import override, ugettext as _
+from django.utils.translation import override, gettext as _
 from django.views.generic import ListView, TemplateView, View
 
 from pretalx.common.mixins.views import (

@@ -5,7 +5,7 @@ import pytz
 from django import forms
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 from i18nfield.forms import I18nModelForm
 

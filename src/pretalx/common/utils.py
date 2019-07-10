@@ -4,7 +4,7 @@ import os
 from django.db import transaction
 from django.template.defaultfilters import date as _date
 from django.utils.crypto import get_random_string
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import get_language, gettext_lazy as _
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 

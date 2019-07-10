@@ -8,7 +8,7 @@ from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView

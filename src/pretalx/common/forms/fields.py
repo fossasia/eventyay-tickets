@@ -2,7 +2,7 @@ from pathlib import Path
 
 from django.contrib.auth.password_validation import validate_password
 from django.forms import CharField, FileField, ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.widgets import (
     ClearableBasenameFileInput, PasswordConfirmationInput, PasswordStrengthInput,

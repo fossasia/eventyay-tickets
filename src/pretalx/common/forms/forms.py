@@ -1,6 +1,6 @@
 import i18nfield.forms
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
 class SearchForm(forms.Form):

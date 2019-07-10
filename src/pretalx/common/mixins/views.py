@@ -12,7 +12,7 @@ from django.forms import ValidationError
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_context_decorator import context
 from formtools.wizard.forms import ManagementForm
 from i18nfield.forms import I18nModelForm

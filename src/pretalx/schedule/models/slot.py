@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 import pytz
 from django.db import models
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin

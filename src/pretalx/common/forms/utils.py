@@ -1,7 +1,7 @@
 import re
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def get_help_text(text, min_length, max_length, count_in='chars'):

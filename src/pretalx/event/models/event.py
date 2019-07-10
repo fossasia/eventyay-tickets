@@ -10,7 +10,7 @@ from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.timezone import make_aware, now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
