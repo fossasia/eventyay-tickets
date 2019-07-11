@@ -241,16 +241,29 @@ class ScheduleView(ScheduleDataView):
             titlelines = titlelines[:max_title_lines]
             titlelines[-1] = titlelines[-1][:text_width - 1] + '…'
 
+        join_speaker_and_locale = height - len(titlelines) <= 3
         speaker_str = talk.submission.display_speaker_names
-        if len(speaker_str) > text_width - 4:
-            speaker_str = speaker_str[:text_width-5] + '…'
+        cutoff = (text_width - 4) if join_speaker_and_locale else text_width
+        if len(speaker_str) > cutoff:
+            speaker_str = speaker_str[:cutoff-1] + '…'
 
-        yield empty_line
+        if height > 4:
+            yield empty_line
         for line in titlelines:
             yield f'  \033[1m{line:<{text_width}}\033[0m  '
-        yield empty_line
-        yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
-               f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')
+        if height - len(titlelines) > 2:
+            yield empty_line
+        if speaker_str:
+            if join_speaker_and_locale:
+                yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
+                       f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')
+            else:
+                yield f'  \033[33m{speaker_str:<{text_width}}\033[0m  '
+                if height - len(titlelines) > 4:
+                    yield empty_line
+                yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
+        else:
+            yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
         for __ in repeat(None, height - len(titlelines) - 2):
             yield empty_line
 
