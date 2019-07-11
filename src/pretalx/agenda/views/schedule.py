@@ -1,5 +1,6 @@
 import hashlib
 import textwrap
+from contextlib import suppress
 from datetime import timedelta
 from itertools import repeat
 from urllib.parse import unquote
@@ -201,7 +202,8 @@ class ScheduleView(ScheduleDataView):
         if start or end:
             line_parts.append(get_seperator(bool(end), bool(start), False, False) + LR * col_width)
         elif run:
-            line_parts.append(UD + next(cards_by_id[run.pk]))
+            with suppress(StopIteration):
+                line_parts.append(UD + next(cards_by_id[run.pk]))
         else:
             line_parts.append(fill_char * (col_width + 1))
 
@@ -210,7 +212,8 @@ class ScheduleView(ScheduleDataView):
             start2, run2, end2 = starting_events[loc2], running_events[loc2], ending_events[loc2]
             line_parts += self._get_line_parts(start1, start2, end1, end2, run1, run2, fill_char=fill_char)
             if run2:
-                line_parts.append(next(cards_by_id[run2.pk]))
+                with suppress(StopIteration):
+                    line_parts.append(next(cards_by_id[run2.pk]))
             elif start2 or end2:
                 line_parts.append(LR * col_width)
             else:
