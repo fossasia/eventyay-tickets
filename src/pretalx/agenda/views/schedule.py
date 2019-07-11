@@ -245,11 +245,11 @@ class ScheduleView(ScheduleDataView):
         yield empty_line
         for line in titlelines:
             yield f'  \033[1m{line:<{text_width}}\033[0m  '
-        for __ in repeat(None, height - len(titlelines) - 3):
-            yield empty_line
+        yield empty_line
         yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
                f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')
-        yield empty_line
+        for __ in repeat(None, height - len(titlelines) - 2):
+            yield empty_line
 
     def _get_line_parts(self, start1, start2, end1, end2, run1, run2, fill_char):
         start_end = [end2, start2, start1, end1]
