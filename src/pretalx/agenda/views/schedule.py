@@ -236,8 +236,9 @@ class ScheduleView(ScheduleDataView):
 
         max_title_lines = 1 if height <= 5 else height - 4
         if len(titlelines) > max_title_lines:
-            titlelines = titlelines[:max_title_lines]
-            titlelines[-1] = titlelines[-1][:text_width - 1] + '…'
+            titlelines, remainder = titlelines[:max_title_lines], titlelines[max_title_lines:]
+            last_line = titlelines[-1] + ' ' + ' '.join(remainder)
+            titlelines[-1] = last_line[:text_width - 1] + '…'
 
         height_after_title = height - len(titlelines)
         join_speaker_and_locale = height_after_title <= 3
