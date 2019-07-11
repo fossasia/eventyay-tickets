@@ -1,6 +1,5 @@
 import hashlib
 import textwrap
-from contextlib import suppress
 from datetime import timedelta
 from itertools import repeat
 from urllib.parse import unquote
@@ -202,8 +201,7 @@ class ScheduleView(ScheduleDataView):
         if start or end:
             line_parts.append(get_seperator(bool(end), bool(start), False, False) + LR * col_width)
         elif run:
-            with suppress(StopIteration):
-                line_parts.append(UD + next(cards_by_id[run.pk]))
+            line_parts.append(UD + next(cards_by_id[run.pk]))
         else:
             line_parts.append(fill_char * (col_width + 1))
 
@@ -212,8 +210,7 @@ class ScheduleView(ScheduleDataView):
             start2, run2, end2 = starting_events[loc2], running_events[loc2], ending_events[loc2]
             line_parts += self._get_line_parts(start1, start2, end1, end2, run1, run2, fill_char=fill_char)
             if run2:
-                with suppress(StopIteration):
-                    line_parts.append(next(cards_by_id[run2.pk]))
+                line_parts.append(next(cards_by_id[run2.pk]))
             elif start2 or end2:
                 line_parts.append(LR * col_width)
             else:
@@ -235,13 +232,15 @@ class ScheduleView(ScheduleDataView):
         text_width = col_width - 4
         titlelines = textwrap.wrap(talk.submission.title, text_width)
         height = talk.duration // 5 - 1
+        yielded_lines = 0
 
         max_title_lines = 1 if height <= 5 else height - 4
         if len(titlelines) > max_title_lines:
             titlelines = titlelines[:max_title_lines]
             titlelines[-1] = titlelines[-1][:text_width - 1] + '…'
 
-        join_speaker_and_locale = height - len(titlelines) <= 3
+        height_after_title = height - len(titlelines)
+        join_speaker_and_locale = height_after_title <= 3
         speaker_str = talk.submission.display_speaker_names
         cutoff = (text_width - 4) if join_speaker_and_locale else text_width
         if len(speaker_str) > cutoff:
@@ -249,22 +248,30 @@ class ScheduleView(ScheduleDataView):
 
         if height > 4:
             yield empty_line
+            yielded_lines += 1
         for line in titlelines:
             yield f'  \033[1m{line:<{text_width}}\033[0m  '
-        if height - len(titlelines) > 2:
+            yielded_lines += 1
+        if height_after_title > 2:
             yield empty_line
+            yielded_lines += 1
         if speaker_str:
             if join_speaker_and_locale:
                 yield (f'  \033[33m{speaker_str:<{text_width-4}}\033[0m'
                        f'  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  ')
+                yielded_lines += 1
             else:
                 yield f'  \033[33m{speaker_str:<{text_width}}\033[0m  '
-                if height - len(titlelines) > 4:
+                yielded_lines += 1
+                if height_after_title > 4:
                     yield empty_line
+                    yielded_lines += 1
                 yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
+                yielded_lines += 1
         else:
             yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
-        for __ in repeat(None, height - len(titlelines) - 2):
+            yielded_lines += 1
+        for __ in repeat(None, height - yielded_lines + 1):
             yield empty_line
 
     def _get_line_parts(self, start1, start2, end1, end2, run1, run2, fill_char):
