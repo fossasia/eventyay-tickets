@@ -75,7 +75,7 @@ class Availability(LogMixin, models.Model):
     def overlaps(self, other: 'Availability', strict: bool) -> bool:
         """Test if two Availabilities overlap.
 
-        :param strict: Count direct adjacency as overlap.
+        :param strict: Only count a real overlap as overlap, not direct adjacency.
         """
 
         if not isinstance(other, Availability):
