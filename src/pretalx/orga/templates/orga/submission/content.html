@@ -11,7 +11,6 @@
 {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
 {% compress js %}
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
-    <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     <script defer src="{% static "orga/js/speakers.js" %}"></script>
 {% endcompress %}
