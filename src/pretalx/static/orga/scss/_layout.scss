@@ -58,7 +58,8 @@ aside.sidebar {
     }
   }
 
-  .nav-link, .nav-fold {
+  .nav-link,
+  .nav-fold {
     border-top: 1px solid $gray-light;
   }
 
@@ -80,11 +81,16 @@ aside.sidebar {
     }
   }
 
-  .nav-link.nav-link-second-level, .nav-link.nav-link-inner, .nav-link.nav-link-inner.active {
+  .nav-link.nav-link-second-level,
+  .nav-link.nav-link-inner,
+  .nav-link.nav-link-inner.active {
     border: none;
   }
 
-  .nav-link.active, .nav-link:hover, .nav-link.nav-link-second-level.active, .nav-link.nav-link-second-level:hover {
+  .nav-link.active,
+  .nav-link:hover,
+  .nav-link.nav-link-second-level.active,
+  .nav-link.nav-link-second-level:hover {
     background-color: $gray-lighter;
     color: $brand-primary;
   }
@@ -120,7 +126,8 @@ aside.sidebar {
     background: $offwhite;
     li {
       border-top: $gray-light 1px solid;
-      &:hover, &.active {
+      &:hover,
+      &.active {
         background: $gray-lightest;
       }
     }
@@ -138,7 +145,8 @@ aside.sidebar {
       background: $gray-lighter;
     }
   }
-  #eventDropdown .event-text, .dropdown-menu .event-text {
+  #eventDropdown .event-text,
+  .dropdown-menu .event-text {
     padding: 8px;
     font-size: 14px;
     line-height: 15px;
@@ -151,10 +159,10 @@ aside.sidebar {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-
     }
 
-    .event-date, .event-organiser {
+    .event-date,
+    .event-organiser {
       font-size: 11px;
       color: $gray;
     }
@@ -181,7 +189,8 @@ aside.sidebar {
 }
 
 #speaker-typeahead {
-  span.twitter-typeahead, input {
+  span.twitter-typeahead,
+  input {
     width: 350px;
     margin-right: 8px;
   }
@@ -199,11 +208,13 @@ ul.nav-tabs {
     border: none;
   }
 
-  .nav-link:hover, .nav-link:focus {
+  .nav-link:hover,
+  .nav-link:focus {
     border-bottom: $gray-light solid 2px;
   }
 
-  .nav-link:hover, .nav-link:focus .nav-link.active {
+  .nav-link:hover,
+  .nav-link:focus .nav-link.active {
     border-bottom: $brand-primary 2px solid;
     background-color: $white;
   }
@@ -237,7 +248,8 @@ footer {
   font-size: 22px;
 }
 
-.dashboard-live-text, .dashboard-live {
+.dashboard-live-text,
+.dashboard-live {
   margin-top: 12px;
 }
 
@@ -293,7 +305,8 @@ footer {
   }
 }
 
-.resource-option-row, .resource-option-input {
+.resource-option-row,
+.resource-option-input {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -414,7 +427,9 @@ footer {
 }
 
 @include media-breakpoint-down(md) {
-  nav input, nav #navigate, nav .twiter-typeahead {
+  nav input,
+  nav #navigate,
+  nav .twiter-typeahead {
     display: none !important;
   }
   nav #event-navigation #eventDropdown {
@@ -494,13 +509,13 @@ footer {
   }
 }
 
-
 td.reviewer {
   display: flex;
   flex-direction: row;
 }
 
-form #id_settings-display_header_pattern, form #id_display-display_header_pattern {
+form #id_settings-display_header_pattern,
+form #id_display-display_header_pattern {
   display: flex;
   padding: 0;
 
@@ -558,7 +573,8 @@ form #id_settings-display_header_pattern, form #id_display-display_header_patter
 legend .submission-state-dropdown {
   padding: 8px;
 
-  button, a {
+  button,
+  a {
     font-size: 16px;
   }
 }
@@ -566,7 +582,8 @@ legend .submission-state-dropdown {
 .submission-state-dropdown {
   display: inline-block;
 
-  button.dropdown-toggle, a {
+  button.dropdown-toggle,
+  a {
     font-weight: bold;
     border-width: 3px;
   }
@@ -575,11 +592,15 @@ legend .submission-state-dropdown {
   padding: 0;
 }
 
-.submission-state-deleted, .submission-state-withdrawn, .submission-state-canceled {
+.submission-state-deleted,
+.submission-state-withdrawn,
+.submission-state-canceled {
   color: $gray;
   border-color: $gray;
 }
-.submission-state-deleted:hover, .submission-state-withdrawn:hover, .submission-state-canceled:hover {
+.submission-state-deleted:hover,
+.submission-state-withdrawn:hover,
+.submission-state-canceled:hover {
   color: $white;
   background-color: $gray;
   border-color: $gray;
@@ -662,16 +683,18 @@ legend .submission-state-dropdown {
       font-weight: normal;
     }
   }
-  input[type=number] {
+  input[type="number"] {
     width: 64px;
     margin-top: -8px;
   }
-  tr, tr td {
+  tr,
+  tr td {
     padding-top: 16px;
     line-height: 2.5;
   }
 }
-#id_locales .checkbox, #id_initial-locales .checkbox {
+#id_locales .checkbox,
+#id_initial-locales .checkbox {
   display: flex;
   margin-left: 8px;
 }
@@ -742,7 +765,8 @@ legend .submission-state-dropdown {
       width: 100%;
     }
   }
-  .pie svg, .pie {
+  .pie svg,
+  .pie {
     min-height: 400px;
     min-width: 500px;
     max-width: 500px;
@@ -784,7 +808,7 @@ legend .submission-state-dropdown {
       letter-spacing: 2px;
       position: absolute;
       bottom: 0;
-      transition: opacity .25s;
+      transition: opacity 0.25s;
     }
     &:before {
       content: attr(data-left);
@@ -793,7 +817,7 @@ legend .submission-state-dropdown {
     &:after {
       content: attr(data-right);
       left: 4rem;
-      opacity: .5;
+      opacity: 0.5;
     }
 
     > .handle {
@@ -804,16 +828,16 @@ legend .submission-state-dropdown {
       height: 1.135rem;
       border-radius: 1.125rem;
       background: #fff;
-      transition: left .25s;
+      transition: left 0.25s;
     }
     &.active {
-      transition: background-color .25s;
+      transition: background-color 0.25s;
       > .handle {
         left: 1.6875rem;
-        transition: left .25s;
+        transition: left 0.25s;
       }
       &:before {
-        opacity: .5;
+        opacity: 0.5;
       }
       &:after {
         opacity: 1;
@@ -833,7 +857,6 @@ legend .submission-state-dropdown {
     max-height: 450px;
     margin-right: 16px;
   }
-
 }
 #release #id_version {
   height: auto;
@@ -847,17 +870,18 @@ legend .submission-state-dropdown {
     z-index: 50;
     &:after {
       border-bottom: 2px solid #c7d1d3;
-      content: ' ';
+      content: " ";
       position: absolute;
       width: 100%;
-      bottom:0px;
+      bottom: 0px;
       left: 0px;
     }
   }
   td {
     margin-top: -1px;
   }
-  tbody tr, thead tr {
+  tbody tr,
+  thead tr {
     .unmark-radio {
       opacity: 0;
       margin-top: -4px;
@@ -872,7 +896,7 @@ legend .submission-state-dropdown {
       label::before {
         font-family: ForkAwesome;
         font-weight: bold;
-        color: rgba(0,0,0,0.3);
+        color: rgba(0, 0, 0, 0.3);
         text-align: center;
       }
       &.reject {
@@ -880,12 +904,12 @@ legend .submission-state-dropdown {
           background: $brand-danger;
         }
         label::before {
-          content: '\f00d';
+          content: "\f00d";
         }
       }
       &.accept {
         label::before {
-          content: '\f00c';
+          content: "\f00c";
         }
       }
     }

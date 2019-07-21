@@ -1,5 +1,5 @@
 /* colors */
-$brand-primary: #1a4c3B !default;
+$brand-primary: #1a4c3b !default;
 $brand-success: #3aa57c !default;
 $brand-info: #4697c9 !default;
 $brand-warning: #f9a557 !default;
@@ -31,7 +31,15 @@ $btn-primary-color: $white !default;
 $fa-font-path: "vendored/forkawesome/fonts";
 
 /* colors */
-$theme-colors: (primary: $brand-primary, success: $brand-success, info: $brand-info, warning: $brand-warning, danger: $brand-danger, light: $gray-100, dark: $gray-800);
+$theme-colors: (
+  primary: $brand-primary,
+  success: $brand-success,
+  info: $brand-info,
+  warning: $brand-warning,
+  danger: $brand-danger,
+  light: $gray-100,
+  dark: $gray-800,
+);
 
 .btn:focus {
   box-shadow: none !important;

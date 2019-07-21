@@ -1,5 +1,5 @@
 jQuery(function($) {
-    $(".formset").formset({
-        animateForms: true
-    });
-});
+  $(".formset").formset({
+    animateForms: true,
+  })
+})

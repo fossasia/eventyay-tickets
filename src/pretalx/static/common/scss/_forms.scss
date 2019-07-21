@@ -14,13 +14,13 @@
   font-size: 14px;
 }
 
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -51,7 +51,8 @@ form .form-check + small.form-text {
   margin-left: 36px;
 }
 
-form .form-control:disabled, .form-control[readonly] {
+form .form-control:disabled,
+.form-control[readonly] {
   background-color: $gray-lightest !important;
 }
 
@@ -62,7 +63,6 @@ form .form-control:disabled, .form-control[readonly] {
   .auth-form-block {
     flex-grow: 1;
     margin: 12px;
-
   }
 }
 
@@ -71,7 +71,8 @@ form .form-control:disabled, .form-control[readonly] {
   margin-left: auto;
   margin-right: auto;
 
-  input.password_strength, input.password_confirmation {
+  input.password_strength,
+  input.password_confirmation {
     height: 100%;
     display: block;
     width: 100%;
@@ -86,7 +87,8 @@ form .form-control:disabled, .form-control[readonly] {
   }
 }
 
-.password-input-form, .labelless-password-input-form {
+.password-input-form,
+.labelless-password-input-form {
   p.text-muted {
     font-size: 80%;
     padding-top: 2px;
@@ -126,7 +128,8 @@ form .form-control:disabled, .form-control[readonly] {
   background-color: $brand-primary;
 }
 
-table .form-radio, table .form-check {
+table .form-radio,
+table .form-check {
   margin-top: -8px;
 }
 
@@ -158,7 +161,9 @@ table .form-radio, table .form-check {
   }
 }
 
-.form-check, .checkbox, .radio {
+.form-check,
+.checkbox,
+.radio {
   position: relative;
   padding: 4px 0 4px 36px;
 
@@ -169,7 +174,7 @@ table .form-radio, table .form-check {
 
     &:before,
     &:after {
-      content: '';
+      content: "";
       position: absolute;
     }
 
@@ -200,7 +205,8 @@ table .form-radio, table .form-check {
     opacity: 0;
 
     &:checked + label {
-      &:before {}
+      &:before {
+      }
 
       &:after {
         opacity: 1;
@@ -211,14 +217,18 @@ table .form-radio, table .form-check {
 
 .radio {
   input {
-    + label:before, + label:after {
+    + label:before,
+    + label:after {
       border-radius: 50% !important;
     }
   }
 }
 
-table .form-check label, table .checkbox label, table .form-check .radio label {
-  &:before, &:after {
+table .form-check label,
+table .checkbox label,
+table .form-check .radio label {
+  &:before,
+  &:after {
     margin-left: 0;
   }
 }
@@ -258,7 +268,9 @@ table .action-column {
 }
 
 nav.markdown-nav {
-  a:active, a:focus, a:hover {
+  a:active,
+  a:focus,
+  a:hover {
     outline: none !important;
   }
 }
@@ -280,13 +292,14 @@ nav.markdown-nav {
   }
 }
 .markdown-column .form-group {
-  flex-direction: column
+  flex-direction: column;
 }
 .markdown-table {
   .form-group {
     flex-direction: column;
   }
-  .preview, nav {
+  .preview,
+  nav {
     display: none;
   }
   textarea {

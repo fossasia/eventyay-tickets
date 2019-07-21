@@ -15,7 +15,8 @@
     &:after {
       left: 50%;
     }
-    &:after, &:before {
+    &:after,
+    &:before {
       position: absolute;
       top: 28px;
       width: 50%;
@@ -29,7 +30,8 @@
       width: 0;
     }
 
-    &.step-current, &.step-done {
+    &.step-current,
+    &.step-done {
       &:before {
         background: $brand-success;
       }
@@ -51,7 +53,8 @@
         background: $brand-success;
       }
     }
-    &:hover, &:active {
+    &:hover,
+    &:active {
       text-decoration: none;
     }
     .step-icon {
@@ -88,7 +91,6 @@
     }
     &:last-of-type .step-links {
       left: -50px;
-
     }
   }
   a {

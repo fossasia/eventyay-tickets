@@ -48,13 +48,20 @@ so we'd like to ask you to follow these style guide notes:
 Code
 ~~~~
 
-Generally, pretalx follows `PEP8`_. We run ``pylama`` and ``isort`` as style
-checkers, so those should help you if you're not sure how to format something.
-They are configured via the ``setup.cfg`` file in the ``src`` directory.
+Generally, pretalx Python code follows `PEP8`_. We run ``pylama`` and ``isort``
+as style checkers, so those should help you if you're not sure how to format
+something. They are configured via the ``setup.cfg`` file in the ``src``
+directory.
 
 While we enforce no strict line length, please try to keep your lines **below
 120 characters**. Other than that, we generally subscribe to the `Django
 project style guide`_.
+
+For JavaScript and (S)CSS files we follow the conventions established by
+prettier_, although it doesn't run automatically on commit. These flags should
+do the right thing::
+
+    prettier --trailing-comma es5 --no-semi --write "path/to/file"
 
 Our tests run with py.test, so please use their ``assert`` statement
 conventions.

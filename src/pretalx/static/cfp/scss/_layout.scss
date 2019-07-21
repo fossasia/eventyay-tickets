@@ -17,7 +17,6 @@ body {
   }
 }
 
-
 #main-container {
   padding-top: 100px;
 }
@@ -167,8 +166,10 @@ footer {
 .table-responsive {
   display: table;
 }
-@media(max-width: 1400px) {
-  .user-logs {display: none}
+@media (max-width: 1400px) {
+  .user-logs {
+    display: none;
+  }
 }
 
 @include media-breakpoint-down(sm) {
@@ -221,7 +222,9 @@ footer {
       display: flex;
       flex-direction: row;
       margin-left: auto;
-      > * { margin-left: 4px }
+      > * {
+        margin-left: 4px;
+      }
     }
 
     .formset {
@@ -248,7 +251,6 @@ footer {
   }
 }
 
-
 .url-links {
   display: flex;
   flex-direction: row;
@@ -257,7 +259,8 @@ footer {
   align-content: stretch;
   padding: 10px;
 
-  a, button {
+  a,
+  button {
     margin: 5px;
     flex-basis: 100px;
     flex-grow: 1;
@@ -288,7 +291,8 @@ footer {
   }
 }
 
-.resource-option-row, .resource-option-input {
+.resource-option-row,
+.resource-option-input {
   display: flex;
   flex-direction: row;
   width: 100%;

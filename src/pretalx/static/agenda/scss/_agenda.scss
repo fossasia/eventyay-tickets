@@ -54,7 +54,9 @@ header {
 .schedule-header {
   display: flex;
   align-items: flex-end;
-  > span, > a, > div {
+  > span,
+  > a,
+  > div {
     margin-left: 8px;
   }
   a i.fa {
@@ -93,7 +95,7 @@ header {
     background: $gray-lightest;
     margin-bottom: 16px;
     width: auto;
-    overflow: hidden;  /* This hides the .nowline element. */
+    overflow: hidden; /* This hides the .nowline element. */
 
     .header-row {
       background: $gray-lightest;
@@ -128,7 +130,17 @@ header {
         text-align: right;
       }
 
-      background: repeating-linear-gradient(to bottom, $gray-200, $gray-200 2px, $white 2px, $white 30px, $gray-200 30px, $gray-200 31px, $white 31px, $white 60px);
+      background: repeating-linear-gradient(
+        to bottom,
+        $gray-200,
+        $gray-200 2px,
+        $white 2px,
+        $white 30px,
+        $gray-200 30px,
+        $gray-200 31px,
+        $white 31px,
+        $white 60px
+      );
     }
 
     .rooms {
@@ -138,7 +150,17 @@ header {
       .room {
         border-left: 2px solid #ccc;
         flex: 1 0;
-        background: repeating-linear-gradient(to bottom, $gray-200, $gray-200 2px, $white 2px, $white 30px, $gray-200 30px, $gray-200 31px, $white 31px, $white 60px);
+        background: repeating-linear-gradient(
+          to bottom,
+          $gray-200,
+          $gray-200 2px,
+          $white 2px,
+          $white 30px,
+          $gray-200 30px,
+          $gray-200 31px,
+          $white 31px,
+          $white 60px
+        );
 
         .talk-container {
           position: relative;
@@ -180,14 +202,21 @@ header {
           }
 
           &.accepted {
-            background-image: repeating-linear-gradient(135deg, $gray-lighter , $gray-lighter 10px, white 10px, white 20px)
+            background-image: repeating-linear-gradient(
+              135deg,
+              $gray-lighter,
+              $gray-lighter 10px,
+              white 10px,
+              white 20px
+            );
           }
 
           &:hover {
             background-color: $gray-200;
             height: auto !important;
             z-index: 6;
-            box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16), 0 5px 8px 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16),
+              0 5px 8px 0 rgba(0, 0, 0, 0.12);
 
             &::before {
               position: absolute;
@@ -204,7 +233,7 @@ header {
 
             &::after {
               position: absolute;
-              content: '';
+              content: "";
               left: 24px;
               width: 0;
               height: 0;
@@ -216,7 +245,8 @@ header {
           }
         }
 
-        .talk.talk-personal, .talk.active {
+        .talk.talk-personal,
+        .talk.active {
           background-color: rgba(155, 255, 155, 0.76);
         }
 
@@ -286,7 +316,8 @@ header {
       overflow-x: auto;
     }
 
-    .room, .room-header {
+    .room,
+    .room-header {
       min-width: 150px;
     }
   }
@@ -297,21 +328,25 @@ header {
     overflow: visible !important;
     height: auto;
   }
-  #navigator, #legend,
+  #navigator,
+  #legend,
   #schedule-nav,
   #main-card .user-row,
-  header, footer,
+  header,
+  footer,
   .schedule-header .btn,
   #event-nonpublic {
     display: none;
   }
-  h3:not(:first-of-type) { /* improve look of day captions after page break */
+  h3:not(:first-of-type) {
+    /* improve look of day captions after page break */
     margin-top: 5em;
   }
   .container {
     max-width: 100%;
   }
-  #fahrplan, .card {
+  #fahrplan,
+  .card {
     display: block;
     overflow: visible !important;
   }
@@ -325,7 +360,7 @@ header {
   flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
-  &>:last-child {
+  & > :last-child {
     margin-left: auto;
   }
 }

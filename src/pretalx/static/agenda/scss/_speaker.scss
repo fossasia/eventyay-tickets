@@ -122,7 +122,8 @@
     margin-bottom: 16px;
     color: black;
 
-    &:hover, &:hover .talk-title {
+    &:hover,
+    &:hover .talk-title {
       background-color: $gray-lightest;
     }
   }

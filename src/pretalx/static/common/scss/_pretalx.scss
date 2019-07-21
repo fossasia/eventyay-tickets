@@ -56,7 +56,8 @@
   }
 }
 
-.alert, .btn {
+.alert,
+.btn {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
@@ -74,22 +75,24 @@
   white-space: nowrap;
 }
 .badge {
-  border-radius: .25em;
+  border-radius: 0.25em;
   height: 100%;
   text-align: center;
   vertical-align: baseline;
-  padding: .4em .6em .4em;
+  padding: 0.4em 0.6em 0.4em;
   font-size: 75%;
   font-weight: bold;
   color: $white;
   margin-left: 4px;
 }
-.export-qrcode-image, .qrcode-image {
+.export-qrcode-image,
+.qrcode-image {
   display: none;
   position: absolute;
   background: white;
 }
-.export-qrcode:hover .export-qrcode-image, .qrcode:hover .qrcode-image {
+.export-qrcode:hover .export-qrcode-image,
+.qrcode:hover .qrcode-image {
   display: block;
 }
 .copyable-text {
@@ -103,8 +106,8 @@
   cursor: pointer;
 }
 .nowline {
-    border-top: $brand-danger solid 2px;
-    display: flex;
-    position: relative;
-    visibility: hidden;
+  border-top: $brand-danger solid 2px;
+  display: flex;
+  position: relative;
+  visibility: hidden;
 }
