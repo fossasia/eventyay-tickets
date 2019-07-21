@@ -1,23 +1,29 @@
-['#id_get_gravatar', '#id_profile-get_gravatar'].forEach((selector) => {
-    var $avatarImg = $('.avatar-form img');
-    var $avatarInput = $('.user-avatar-display');
-    $(selector).click(() => {
-        if ($(selector).is(':checked')) {
-            $avatarInput.slideUp();
-            $avatarImg.css('display', 'block');
-            $avatarImg.attr('src', 'https://www.gravatar.com/avatar/' + $avatarImg.attr('data-gravatar'));
-        } else {
-            $avatarInput.slideDown();
-            var local_avatar = $avatarImg.attr('data-avatar');
-            if (local_avatar) {
-                $avatarImg.css('display', 'block');
-                $avatarImg.attr('src', $avatarImg.attr('data-avatar'));
-            } else {
-                $avatarImg.css('display', 'none');
-            }
+document.addEventListener("DOMContentLoaded", function() {
+    const avatarImage = document.querySelector('.avatar-form img');
+    const avatarInput = document.querySelector('.user-avatar-display')
+    for (const selector of ['#id_get_gravatar', '#id_profile-get_gravatar']) {
+        let element = document.querySelector(selector)
+        if (element) {
+            element.addEventListener('click', () => {
+                if (element.checked) {
+                    avatarImage.style.display = 'block'
+                    avatarImage.src = "https://www.gravatar.com/avatar/" + avatarImage.dataset.gravatar
+                    avatarInput.style.display = 'none'
+                } else {
+                    avatarInput.style.display = 'block'
+                    if (avatarImage.dataset.avatar) {
+                        avatarImage.style.display = 'block'
+                        avatarImage.src = avatarImage.dataset.avatar
+                    } else {
+                        avatarImage.style.display = 'none'
+                    }
+                }
+            })
         }
-    })
-});
-if ($('#id_get_gravatar').is(':checked')) {
-    $('.user-avatar-display').hide()
-}
+    };
+    const gravatarInput = document.querySelector("#id_get_gravatar")
+    if (gravatarInput && gravatarInput.checked) {
+        avatarInput.style.display = 'none'
+        avatarImage.src = "https://www.gravatar.com/avatar/" + avatarImage.dataset.gravatar
+    }
+})

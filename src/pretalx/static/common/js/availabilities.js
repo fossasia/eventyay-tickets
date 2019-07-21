@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener("DOMContentLoaded", function() {
     "use strict";
 
     $('input.availabilities-editor-data').each(function () {

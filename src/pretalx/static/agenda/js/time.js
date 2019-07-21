@@ -1,34 +1,29 @@
-$(function () {
+document.addEventListener("DOMContentLoaded", function() {
     function updateNowlines() {
-        var now = moment();
-
-        $('.nowline').each(function (index, element) {
-            var day = $(element).parent();
-            var start = moment(day.data('start'));
-            var diff_seconds = now.diff(start, 'seconds');
-            var diff_px = diff_seconds / 60 / 60 * 120;
-            $(element).css('top', diff_px + 'px');
-        });
+        const now = moment();
+        document.querySelectorAll(".nowline").forEach(element => {
+            const start = moment(element.parentElement.dataset.start);
+            const diff_seconds = now.diff(start, 'seconds');
+            const diff_px = diff_seconds / 60 / 60 * 120;
+            element.style.top = diff_px + 'px'
+        })
     }
 
     function updateCurrentTalk() {
-        var now = moment();
-
-        $('.talk').each(function (index, element) {
-            element = $(element);
-            var start = moment(element.data('start'));
-            var end = moment(element.data('end'));
-
+        const now = moment();
+        document.querySelectorAll(".talk").forEach(element => {
+            const start = moment(element.dataset.start);
+            const end = moment(element.dataset.end);
             if(start < now && end > now) {
-                element.addClass('active');
+                element.classList.add("active")
             } else {
-                element.removeClass('active');
+                element.classList.remove("active")
             }
-        });
+        })
     }
 
     updateNowlines();
-    $('.nowline').css('visibility', 'visible');
+    document.querySelectorAll(".nowline").forEach(element => { element.style.visibility = 'visible' })
 
     updateCurrentTalk();
 

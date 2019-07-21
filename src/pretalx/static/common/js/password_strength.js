@@ -1,4 +1,4 @@
-$(function($) {
+document.addEventListener("DOMContentLoaded", function() {
     var match_passwords = function(password_field, confirmation_fields) {
         // Optional parameter: if no specific confirmation field is given, check all
         if( confirmation_fields === undefined ) { confirmation_fields = $('.password_confirmation') }

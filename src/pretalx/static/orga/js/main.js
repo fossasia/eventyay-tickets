@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener("DOMContentLoaded", function() {
     "use strict";
     $('[data-toggle="tooltip"]').tooltip()
     if ($("#answer-options").length) {
@@ -78,15 +78,10 @@ $(function () {
 
 function update_review_override_votes() {
     const review = document.querySelector('#id_is_reviewer')
-    if (!review) {return}
-    if (review.checked) {
-        document.querySelector('label[for=id_review_override_votes]').style.display = ''
-        document.querySelector('#id_review_override_votes').style.display = ''
-        document.querySelector('#id_review_override_votes + small').style.display = ''
-    } else {
-        document.querySelector('label[for=id_review_override_votes]').style.display = 'none'
-        document.querySelector('#id_review_override_votes').style.display = 'none'
-        document.querySelector('#id_review_override_votes + small').style.display = 'none'
+    if (review) {
+        setVisibility("label[for=id_review_override_votes]", review.checked)
+        setVisibility("#id_review_override_votes", review.checked)
+        setVisibility("#id_review_override_votes + small", review.checked)
     }
 }
 function update_multi_select_caption(element) {
@@ -102,29 +97,22 @@ function update_multi_select_caption(element) {
 }
 
 function question_page_toggle_view() {
-    const variant = $('#id_variant').val()
-    var show = variant === "choices" || variant === "multiple_choice";
-    $("#answer-options").toggle(show);
-
-    show = variant === "boolean" && $("#id_required").prop("checked");
-    $(".alert-required-boolean").toggle(show);
-
-    show = variant === "text" || variant === "string";
-    $(".limit-length").toggle(show);
+    const variant = document.querySelector('#id_variant').value
+    setVisibility("#answer-options", variant === "choices" || variant === "multiple_choice")
+    setVisibility("#alert-required-boolean", variant === "boolean" && document.querySelector("#id_required").checked)
+    setVisibility("#limit-length", variant === "text" || variant === "string")
 }
 
 function question_page_toggle_tracks_view() {
-    const target = $('#id_target').val();
-    var show_submission_type = target === "submission";
-    $("#limit-submission").toggle(show_submission_type);
+    setVisibility("#limit-submission", document.querySelector("#id_target").value === "submission")
 }
 
 function getCookie(name) {
-    var cookieValue = null;
+    let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
+        const cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
+            let cookie = jQuery.trim(cookies[i]);
             // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -133,4 +121,13 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function setVisibility(element, value) {
+    if (typeof(element) === "string") {
+        element = document.querySelector(element)
+    }
+    if (element) {
+        element.style.display = value ? "" : "none"
+    }
 }

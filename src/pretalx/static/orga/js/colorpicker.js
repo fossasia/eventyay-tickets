@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener("DOMContentLoaded", function() {
     if ($('.colorpickerfield').length) {
         $('.colorpickerfield').parent().colorpicker({
             format: 'hex',
@@ -64,7 +64,7 @@ $(function () {
             }
         })
     }
-})
+});
 
 function luminanace(r, g, b) {
     var a = [r, g, b].map(function (v) {

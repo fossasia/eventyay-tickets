@@ -48,7 +48,7 @@
         {% bootstrap_field form.variant layout='event' %}
         {% bootstrap_field form.question layout='event' %}
         {% bootstrap_field form.help_text layout='event' %}
-        <div class="alert alert-info alert-required-boolean col-md-9 offset-3">
+        <div class="alert alert-info col-md-9 offset-3" id="alert-required-boolean">
             {% blocktrans trimmed %}
                 If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
                 accepted. If you want to allow both options, do not make this field required.
@@ -61,7 +61,7 @@
             {% bootstrap_field form.tracks layout='event' %}
         </span>
         {% endif %}
-        <span class="limit-length">
+        <span id="limit-length">
             {% bootstrap_field form.min_length layout='event' %}
             {% bootstrap_field form.max_length layout='event' %}
         </span>
