@@ -85,7 +85,7 @@ setup(
     ],
     keywords='conference cfp event barcamp',
     install_requires=[
-        'beautifulsoup4==4.7.*',  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
+        'beautifulsoup4==4.8.*',  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
         'bleach==3.1.*',  # https://bleach.readthedocs.io/en/latest/changes.html
         'celery==4.3.*',  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         'csscompressor==0.9.*',  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
@@ -95,14 +95,14 @@ setup(
         'django-compressor==2.3.*',  # https://django-compressor.readthedocs.io/en/latest/changelog/
         'django-context-decorator',
         'django-csp==3.5.*',  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        'django-filter==2.1.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        'django-filter==2.2.*',  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         'django-formset-js-improved==0.5.0.2',  # no changelog, https://github.com/pretix/django-formset-js
         'django-formtools==2.1.*',  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
         'django-i18nfield>=1.5,<1.6',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
         'django-scopes==1.2.*',  # https://github.com/raphaelm/django-scopes/releases
-        'djangorestframework==3.9.*',  # http://www.django-rest-framework.org/topics/release-notes/
+        'djangorestframework==3.10.*',  # http://www.django-rest-framework.org/topics/release-notes/
         'inlinestyler==0.2.*',  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         'libsass==0.19.*',  # https://sass.github.io/libsass-python/changes.html
         'Markdown==3.1.*',  # https://python-markdown.github.io/change_log/
