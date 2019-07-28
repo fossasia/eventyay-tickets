@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`754` Reviews could be returned multiple times in the reviews API endpoint (though the total count returned was correct).
 - :feature:`742` Organisers can now set a minimum or maximum length for submission titles.
 - :feature:`743` If no schedule has been published but a sneak peek is available, the schedule page now redirects to the sneak peek page.
 - :feature:`-` The pretalx markdown display now supports markdown tables.
