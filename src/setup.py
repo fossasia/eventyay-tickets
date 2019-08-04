@@ -99,7 +99,7 @@ setup(
         'django-formset-js-improved==0.5.0.2',  # no changelog, https://github.com/pretix/django-formset-js
         'django-formtools==2.1.*',  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         'django-hierarkey==1.0.*',  # no changelog, https://github.com/raphaelm/django-hierarkey
-        'django-i18nfield>=1.5,<1.6',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
+        'django-i18nfield==1.6.*',  # 2017-11, no changelog, https://github.com/raphaelm/django-i18nfield/
         'django-libsass==0.7',  # inactive, https://github.com/torchbox/django-libsass/blob/master/CHANGELOG.txt
         'django-scopes==1.2.*',  # https://github.com/raphaelm/django-scopes/releases
         'djangorestframework==3.10.*',  # http://www.django-rest-framework.org/topics/release-notes/
@@ -135,7 +135,7 @@ setup(
         'postgres': ['psycopg2-binary'],
         'redis': [
             'django_redis==4.10.*',
-            'redis==3.2.*',
+            'redis==3.3.*',
         ],
     },
     packages=find_packages(exclude=['tests', 'tests.*']),
