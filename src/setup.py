@@ -112,7 +112,7 @@ setup(
         'qrcode==6.1',  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
         'reportlab==3.5.*',  # https://www.reportlab.com/documentation/relnotes/
         'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
-        'rules==2.0.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
+        'rules==2.1.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         'urlman==1.2.*',  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         'vobject==0.9.*',  # 2017-06, http://eventable.github.io/vobject/ look for "release"
         'whitenoise==4.1.*',  # http://whitenoise.evans.io/en/stable/changelog.html
