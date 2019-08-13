@@ -485,6 +485,16 @@ class Submission(LogMixin, models.Model):
         )
 
     @cached_property
+    def public_slots(self):
+        """All publicly visible :class:`~pretalx.schedule.models.slot.TalkSlot` objects of this submission in the current :class:`~pretalx.schedule.models.schedule.Schedule`."""
+        from pretalx.agenda.permissions import is_agenda_visible
+        if not is_agenda_visible(None, self.event):
+            return []
+        if not self.event.current_schedule:
+            return []
+        return self.event.current_schedule.talks.filter(submission=self, is_visible=True)
+
+    @cached_property
     def display_speaker_names(self):
         """Helper method for a consistent speaker name display."""
         return ', '.join(speaker.get_display_name() for speaker in self.speakers.all())

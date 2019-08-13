@@ -48,7 +48,7 @@ Submissions are the most central model to pretalx, and everything else is
 connected to submissions.
 
 .. autoclass:: pretalx.submission.models.submission.Submission(*args, **kwargs)
-   :members: get_duration,update_duration,update_talk_slots,make_submitted,confirm,accept,reject,cancel,withdraw,delete,uuid,slot,display_speaker_names,median_score,availabilities
+   :members: get_duration,update_duration,update_talk_slots,make_submitted,confirm,accept,reject,cancel,withdraw,delete,uuid,public_slots,slot,display_speaker_names,median_score,availabilities
 
 .. autoclass:: pretalx.submission.models.review.Review(*args, **kwargs)
    :members: find_missing_reviews, display_score

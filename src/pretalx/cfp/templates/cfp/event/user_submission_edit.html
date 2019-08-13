@@ -18,6 +18,13 @@
     <script src="{% static "vendored/marked.min.js" %}" defer></script>
     <script src="{% static "common/js/markdown.js" %}" defer></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
+    {% if submission.public_slots %}
+    <h3><small>
+        {% for talk in submission.public_slots %}
+        {{ talk.start.date|date:"c" }}, {{ talk.start|date:"H:i" }}–{{ talk.end|date:"H:i" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
+        {% endfor %}
+    </small></h3>
+    {% endif %}
     <p>
         {% trans "Current state of your submission:" %}
         {% include "cfp/event/fragment_state.html" with state=submission.state %}
