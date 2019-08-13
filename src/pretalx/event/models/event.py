@@ -17,7 +17,7 @@ from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.mixins import LogMixin
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
-from pretalx.common.urls import EventUrls, get_base_url
+from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
 SLUG_CHARS = 'a-zA-Z0-9.-'

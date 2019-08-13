@@ -23,6 +23,7 @@ def test_event_serializer(event):
         'date_from',
         'date_to',
         'timezone',
+        'urls',
     }
 
 

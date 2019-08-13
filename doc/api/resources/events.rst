@@ -17,7 +17,11 @@ Field                                 Type                       Description
 `date_from`                           datetime                   The event's start date
 `date_to`                             datetime                   The event's end date (or ``null``)
 `timezone`                            string                     The event's chosen time zone
+`urls`                                object                     Contains URLs to relevant event pages. ``"base"``, ``"schedule"``, ``"login"``, and ``"feed"`` are guaranteed to be present.
 ===================================== ========================== =======================================================
+
+.. versionadded:: 1.1
+   The ``urls`` field.
 
 Endpoints
 ---------
@@ -54,6 +58,12 @@ Endpoints
             "date_from": "2017-12-27T10:00:00Z",
             "date_to": null,
             "is_public": true,
+            "urls": {
+              "base": "https://…/sampleconf",
+              "schedule": "https://…/sampleconf/schedule/",
+              "login": "https://…/sampleconf/login/",
+              "feed": "https://…/sampleconf/schedule/feed.xml",
+            }
           }
         ]
       }
@@ -86,6 +96,12 @@ Endpoints
          "date_from": "2017-12-27T10:00:00Z",
          "date_to": null,
          "is_public": true,
+         "urls": {
+           "base": "https://…/sampleconf",
+           "schedule": "https://…/sampleconf/schedule/",
+           "login": "https://…/sampleconf/login/",
+           "feed": "https://…/sampleconf/schedule/feed.xml",
+         }
       }
 
    :param event: The ``slug`` field of the event to fetch
