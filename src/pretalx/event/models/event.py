@@ -325,10 +325,6 @@ class Event(LogMixin, models.Model):
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
 
     @cached_property
-    def html_export_url(self) -> str:
-        return get_base_url(self) + self.orga_urls.schedule_export_download
-
-    @cached_property
     def cache(self):
         """
         Returns an :py:class:`ObjectRelatedCache` object. This behaves equivalent to

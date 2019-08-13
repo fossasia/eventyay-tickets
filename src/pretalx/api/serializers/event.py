@@ -13,5 +13,4 @@ class EventSerializer(ModelSerializer):
             'date_from',
             'date_to',
             'timezone',
-            'html_export_url',
         )
