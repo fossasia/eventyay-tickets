@@ -1,5 +1,6 @@
 include LICENSE
 include README.rst
+include pretalx.example.cfg
 recursive-include pretalx/static *
 recursive-include pretalx/static.dist *
 recursive-include pretalx/locale *
