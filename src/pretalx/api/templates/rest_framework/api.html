@@ -1,0 +1,17 @@
+{% extends "rest_framework/base.html" %}
+{% load static %}
+
+{% block bootstrap_theme %}
+          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "api/css/api.css" %}"/>
+{% endblock %}
+
+{% block branding %}
+                <a class='navbar-brand' rel="nofollow" href='https://docs.pretalx.org/en/latest/api/index.html'>
+                    <img src="{% static "common/img/icon.svg" %}">
+                    <span>
+                    pretalx API
+                    </span>
+                </a>
+{% endblock %}

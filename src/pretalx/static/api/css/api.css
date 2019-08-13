@@ -1,0 +1,46 @@
+body {
+    font-family: "Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    font-size: 14px;
+}
+body pre {
+    font-size: 14px;
+}
+body .pun, body .opn, body .clo {
+    color: #7a899a;
+}
+body a {
+    color: #1a4c3b;
+}
+.navbar {
+ height: 50px;
+ color: #1a4c3b;
+ background-color: #f8f9fa;
+ border-bottom: 4px #1a4c3b solid;
+ border-top: none;
+ padding: .25rem;
+ box-shadow: 1px 1px 3px rgba(0,0,0,0.12),1px 1px 2px rgba(0,0,0,0.24);
+ z-index: 200
+}
+.navbar .nav li.navbar-text, .navbar .navbar-brand, .navbar .navbar-brand:hover {
+  color: #1a4c3b
+}
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  color: #1a4c3b;
+  padding: 0 !important;
+  font-size: 20px;
+  line-height: 30px;
+}
+.navbar-brand img {
+  height: 30px;
+  width: auto;
+  margin-right: 8px;
+  margin-top: -6px;
+}
+.navbar-brand span {
+  margin-top: -10px;
+}
+.navbar .container {
+  width: 100%;
+}

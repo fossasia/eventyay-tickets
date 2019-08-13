@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The API is now also available as an HTML browsable API. Filters and searches should be working as well as just browsing around.
 - :feature:`-` The events API endpoint now comes with a ``urls`` field exposing links to the schedule page, and the login page, among other things.
 - :bug:`754` Reviews could be returned multiple times in the reviews API endpoint (though the total count returned was correct).
 - :feature:`742` Organisers can now set a minimum or maximum length for submission titles.
