@@ -4,6 +4,7 @@ recursive-include pretalx/static *
 recursive-include pretalx/static.dist *
 recursive-include pretalx/locale *
 recursive-include pretalx/agenda/templates *
+recursive-include pretalx/api/templates *
 recursive-include pretalx/common/templates *
 recursive-include pretalx/cfp/templates *
 recursive-include pretalx/mail/templates *
