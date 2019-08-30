@@ -1,3 +1,5 @@
+import os
+
 from itertools import repeat
 from pathlib import Path
 from sys import executable
@@ -6,6 +8,9 @@ from sys import executable
 def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
     from pretalx.common.console import start_box, end_box, print_line
     from pretalx import __version__
+
+    if os.geteuid() == 0:
+        print_line('You are running pretalx as root, why?', bold=True)
 
     lines = [
         (f'pretalx v{__version__}', True),
