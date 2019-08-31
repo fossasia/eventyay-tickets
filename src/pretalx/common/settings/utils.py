@@ -1,5 +1,4 @@
 import os
-
 from itertools import repeat
 from pathlib import Path
 from sys import executable
