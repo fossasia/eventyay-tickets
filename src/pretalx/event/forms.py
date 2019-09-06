@@ -155,7 +155,7 @@ class EventWizardBasicsForm(I18nModelForm):
 
 class EventWizardTimelineForm(forms.ModelForm):
     deadline = forms.DateTimeField(
-        required=False, help_text=_('The default deadline for your Call for Papers.')
+        required=False, help_text=_('The default deadline for your Call for Papers. You can assign additional deadlines to individual submission types, which will take precedence over this deadline.')
     )
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
