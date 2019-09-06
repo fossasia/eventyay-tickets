@@ -19,6 +19,7 @@
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
+        {% if request.event.settings.cfp_request_avatar %}
         <div class="avatar-form form-group row">
             <label class="col-md-3 col-form-label">
             {% trans "Profile picture" %}
@@ -43,6 +44,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         {% bootstrap_field profile_form.name layout='event' %}
         {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}
         {% if profile_form.availabilities %}

@@ -130,6 +130,9 @@ class SpeakerProfileForm(
                 self.fields[field].required = getattr(
                     self.event.settings, f'cfp_require_{field}', False
                 )
+        if not self.event.settings.cfp_request_avatar:
+            self.fields.pop('avatar')
+            self.fields.pop('get_gravatar')
         if self.user:
             initial.update({field: getattr(self.user, field) for field in self.user_fields})
         for field in self.user_fields:
@@ -176,6 +179,13 @@ class SpeakerProfileForm(
                 _('Please choose a different email address, this one is taken.')
             )
         return email
+
+    def clean(self):
+        data = super().clean()
+        if self.event.settings.cfp_require_avatar:
+            if not data['avatar'] and not data['get_gravatar']:
+                raise ValidationError(_('Please provide a profile picture or allow us to load your picture from gravatar!'))
+        return data
 
     def save(self, **kwargs):
         for user_attribute in self.user_fields:

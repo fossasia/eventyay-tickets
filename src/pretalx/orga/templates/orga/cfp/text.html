@@ -101,6 +101,13 @@
                         <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
                     </tr>
                     <tr>
+                        <th>{% trans "Profile picture" %}</th>
+                        <td class="request">{% bootstrap_field sform.cfp_request_avatar use_label=False layout='event-inline' %}</td>
+                        <td class="require">{% bootstrap_field sform.cfp_require_avatar use_label=False layout='event-inline' %}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
                         <th>{% trans "Availability" %}</th>
                         <td class="request">{% bootstrap_field sform.cfp_request_availabilities use_label=False layout='event-inline' %}</td>
                         <td class="require">{% bootstrap_field sform.cfp_require_availabilities use_label=False layout='event-inline' %}</td>

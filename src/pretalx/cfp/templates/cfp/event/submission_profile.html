@@ -19,6 +19,7 @@
         {% endblocktrans %}
     </p>
 
+    {% if request.event.settings.cfp_request_avatar %}
     {% bootstrap_form_errors wizard.form %}
     <div class="avatar-form form-group row">
         <label class="col-md-3 col-form-label">
@@ -39,6 +40,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     {% bootstrap_field wizard.form.name layout='event' %}
     {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
     {% if wizard.form.availabilities %}

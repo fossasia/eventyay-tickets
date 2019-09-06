@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Organisers can now disable/remove the profile picture input field if they don't want any speaker pictures at all.
 - :feature:`-` The event creation assistant now suggests more sensible event slugs.
 - :feature:`-` The time(s), date(s) and location(s) of scheduled talks were added to the private speaker pages of those talks, making it easier for speakers to find out when and where their talk is taking place.
 - :feature:`-` The API is now also available as an HTML browsable API. Filters and searches should be working as well as just browsing around.

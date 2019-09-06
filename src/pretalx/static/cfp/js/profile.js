@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   const avatarImage = document.querySelector(".avatar-form img")
   const avatarInput = document.querySelector(".user-avatar-display")
+  if (!avatarImage || !avatarInput)
+    return
   for (const selector of ["#id_get_gravatar", "#id_profile-get_gravatar"]) {
     let element = document.querySelector(selector)
     if (element) {
