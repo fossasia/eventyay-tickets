@@ -1,9 +1,11 @@
-const number = new Date().getYear() - 100
+const number = new Date().getYear() + 1900
 const updateSlug = ev => {
   const value = document.querySelector("#event-name input").value
-  const matches = value.match(/\b(\w)/g)
-  if (matches)
-    document.querySelector("#id_basics-slug").value = matches.join("") + number
+  let slug = value.replace(/\W+/g, '-').toLowerCase()
+  if (slug && (slug.indexOf(number) == -1))
+    slug += "-" + number
+  if (slug)
+    document.querySelector("#id_basics-slug").value = slug
 }
 document.querySelectorAll("#event-name input").forEach(element => {
   element.addEventListener("input", updateSlug)
