@@ -131,8 +131,8 @@ class SpeakerProfileForm(
                     self.event.settings, f'cfp_require_{field}', False
                 )
         if not self.event.settings.cfp_request_avatar:
-            self.fields.pop('avatar')
-            self.fields.pop('get_gravatar')
+            self.fields.pop('avatar', None)
+            self.fields.pop('get_gravatar', None)
         if self.user:
             initial.update({field: getattr(self.user, field) for field in self.user_fields})
         for field in self.user_fields:
