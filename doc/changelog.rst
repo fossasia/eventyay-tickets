@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The main schedule page now returns a 303 See Also redirect if accessed with JSON or XML accept headers.
 - :bug:`773` In the ``/talks`` and ``/submissions`` endpoints, speaker biographies were not exposed. They were available in the ``/speakers`` endpoint as expected, so if you cannot currently upgrade, please be advised to use that endpoint.
 - :feature:`-` Organisers can now disable/remove the profile picture input field if they don't want any speaker pictures at all.
 - :feature:`-` The event creation assistant now suggests more sensible event slugs.
