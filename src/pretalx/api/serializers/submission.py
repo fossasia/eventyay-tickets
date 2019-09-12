@@ -38,7 +38,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             'orga.view_speakers', request.event
         )
         if has_slots or has_permission:
-            return SubmitterSerializer(obj.speakers.all(), many=True).data
+            return SubmitterSerializer(obj.speakers.all(), many=True, context={'request': request}).data
         return []
 
     class Meta:

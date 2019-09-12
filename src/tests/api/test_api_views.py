@@ -106,7 +106,7 @@ def test_only_see_talks_when_a_release_exists(
 
 @pytest.mark.django_db
 def test_can_only_see_public_talks(
-    client, slot, accepted_submission, rejected_submission, submission
+    event, client, slot, accepted_submission, rejected_submission, submission
 ):
     response = client.get(submission.event.api_urls.talks, follow=True)
     content = json.loads(response.content.decode())
@@ -114,6 +114,10 @@ def test_can_only_see_public_talks(
     assert response.status_code == 200
     assert content['count'] == 1
     assert content['results'][0]['title'] == slot.submission.title
+    with scope(event=event):
+        speaker = slot.submission.speakers.first()
+        assert content['results'][0]['speakers'][0]['name'] == speaker.name
+        assert content['results'][0]['speakers'][0]['biography'] == speaker.event_profile(event).biography
 
 
 @pytest.mark.django_db
@@ -248,7 +252,9 @@ def test_can_only_see_public_speakers(
     assert response.status_code == 200
     assert content['count'] == 1
     with scope(event=event):
-        assert content['results'][0]['name'] == accepted_submission.speakers.first().name
+        speaker = accepted_submission.speakers.first()
+        assert content['results'][0]['name'] == speaker.name
+        assert content['results'][0]['biography'] == speaker.event_profile(event).biography
     assert set(content['results'][0].keys()) == {
         'name',
         'code',
