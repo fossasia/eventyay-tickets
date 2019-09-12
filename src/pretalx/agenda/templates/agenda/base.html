@@ -3,7 +3,10 @@
 {% load rules %}
 
 {% block custom_header %}
+    {% block alternate_link %}
     <link rel="alternate" type="application/atom+xml" title="{{ request.event.name }} Schedule Versions" href="{{ request.event.urls.feed }}" />
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
+    {% endblock %}
     {% block agenda_custom_header %}
     {% endblock %}
 {% endblock %}

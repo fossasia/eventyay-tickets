@@ -11,6 +11,9 @@
     <script src="{% static "vendored/marked.min.js" %}" defer></script>
     <script src="{% static "common/js/markdown.js" %}" defer></script>
 {% endif %}
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
+{% endblock %}
 
 {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     <h2>

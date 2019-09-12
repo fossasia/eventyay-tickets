@@ -11,6 +11,9 @@
 {% block meta_image %}{% if submission.image %}<meta property="thumbnail" content="{{ submission.urls.image.full }}">
     <meta property="og:image" content="{{ submission.urls.image.full }}">{% elif request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">
     <meta property="og:image" content="{{ request.event.urls.logo.full }}">{% endif %}{% endblock %}
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
+{% endblock %}
 
 {% block agenda_content %}
 <article>

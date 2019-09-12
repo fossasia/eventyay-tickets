@@ -18,6 +18,9 @@
     <meta name="theme-color" content="#1c4a3b">
     <meta name="HandheldFriendly" content="True"/>
     {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
+    {% block alternate_link %}
+        <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
+    {% endblock %}
 
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">

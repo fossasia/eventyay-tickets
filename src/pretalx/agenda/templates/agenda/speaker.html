@@ -5,6 +5,9 @@
 {% block title %}{{ profile.user.get_display_name }} ::{% endblock %}
 {% block meta_title %}{{ profile.user.get_display_name }}{% endblock %}
 {% block social_title %}{{ profile.user.get_display_name }}{% endblock %}
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
+{% endblock %}
 
 {% block agenda_content %}
 <article>

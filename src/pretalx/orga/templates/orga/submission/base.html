@@ -3,6 +3,9 @@
 {% load rules %}
 
 {% block title %}{{ submission.title }} :: {{ submission.event.name }}{% endblock %}
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
+{% endblock %}
 
 {% block content %}
 {% if submission %}
