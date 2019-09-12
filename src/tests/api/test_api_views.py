@@ -28,6 +28,23 @@ def test_can_only_see_public_events(client, event, other_event):
 
 
 @pytest.mark.django_db
+def test_can_only_see_public_events_in_detail(client, event):
+    assert event.is_public
+    response = client.get(event.api_urls.base, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content['name']['en'] == event.name
+
+    event.is_public = False
+    event.save()
+
+    response = client.get(event.api_urls.base, follow=True)
+    assert response.status_code == 404
+    assert event.name not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_orga_can_see_nonpublic_events(orga_client, event, other_event):
     event.is_public = False
     event.save()

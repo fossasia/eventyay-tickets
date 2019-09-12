@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`774` The API endpoint for events always returned a 404 on the detail view, even when event was visible in the list view.
 - :feature:`-` Speaker and talk detail pages now contain links to their respective API detail pages as alternate links.
 - :feature:`-` The main schedule page now returns a 303 See Also redirect if accessed with JSON or XML accept headers.
 - :bug:`773` In the ``/talks`` and ``/submissions`` endpoints, speaker biographies were not exposed. They were available in the ``/speakers`` endpoint as expected, so if you cannot currently upgrade, please be advised to use that endpoint.
