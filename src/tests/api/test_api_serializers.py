@@ -131,7 +131,7 @@ def test_submission_serializer_for_organiser(submission, orga_user):
         assert data['speakers'][0] == {
             'name': submission.speakers.first().name,
             'code': submission.speakers.first().code,
-            'biography': '',  # Biography can only be derived from request associated event
+            'biography': submission.speakers.first().event_profile(submission.event).biography,
             'avatar': None,
         }
         assert data['submission_type'] == str(submission.submission_type.name)
