@@ -13,11 +13,6 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
 django.setup()
 
-try:
-    import enchant
-    HAS_PYENCHANT = True
-except:
-    HAS_PYENCHANT = False
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
