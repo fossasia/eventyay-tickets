@@ -122,6 +122,10 @@ header {
 
     .time-column {
       flex: 0 0 4em;
+      position: sticky;
+      left: 0px;
+      z-index: 50;
+      border-right: 2px solid lighten($gray-800, 55%);
 
       .hour {
         height: 120px;
@@ -283,7 +287,7 @@ header {
   display: inline-block;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   header {
     text-align: right;
     flex-direction: column;
@@ -307,6 +311,12 @@ header {
       }
     }
   }
+  .container-semi-wide #fahrplan .rooms {
+    min-width: 900px;  // hack to get the time sidebar to stay in place when sidescrolling
+  }
+  .container-wide #fahrplan .rooms {
+    min-width: 1500px;  // hack to get the time sidebar to stay in place when sidescrolling
+  }
 }
 
 @media (max-width: 640px) {
@@ -318,7 +328,7 @@ header {
 
     .room,
     .room-header {
-      min-width: 150px;
+      min-width: 200px;
     }
   }
 }
