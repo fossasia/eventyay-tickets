@@ -1,4 +1,5 @@
 releases
+semantic-version==2.6.0  # https://github.com/bitprophet/releases/issues/84
 sphinx
 sphinx-autobuild
 sphinx-autodoc-typehints
