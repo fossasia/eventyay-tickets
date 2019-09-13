@@ -124,7 +124,7 @@ header {
       flex: 0 0 4em;
       position: sticky;
       left: 0px;
-      z-index: 50;
+      z-index: 40;
       border-right: 2px solid lighten($gray-800, 55%);
 
       .hour {
