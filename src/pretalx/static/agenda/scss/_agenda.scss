@@ -156,6 +156,12 @@ header {
     .rooms {
       display: flex;
       flex-direction: row;
+      position: relative;
+
+      .nowline {
+        position: absolute;
+        width: 100%;
+      }
 
       .room {
         border-left: 2px solid #ccc;
