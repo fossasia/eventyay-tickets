@@ -95,7 +95,8 @@ header {
     background: $gray-lightest;
     margin-bottom: 16px;
     width: auto;
-    overflow: hidden; /* This hides the .nowline element. */
+    overflow-y: hidden; /* This hides the .nowline element. */
+    overflow-x: auto;
 
     .header-row {
       background: $gray-lightest;
@@ -117,6 +118,7 @@ header {
         padding: 8px 0;
         overflow-wrap: break-word;
         overflow: hidden;
+        min-width: 150px;
       }
     }
 
@@ -147,6 +149,10 @@ header {
       );
     }
 
+    .rooms, .header-row {
+      min-width: min-content;
+    }
+
     .rooms {
       display: flex;
       flex-direction: row;
@@ -154,6 +160,7 @@ header {
       .room {
         border-left: 2px solid #ccc;
         flex: 1 0;
+        min-width: 150px;
         background: repeating-linear-gradient(
           to bottom,
           $gray-200,
@@ -304,10 +311,8 @@ header {
     width: 100%;
 
     .day {
-      overflow-y: hidden;
-      overflow-x: auto;
-      .room,
-      .room-header {
+      .rooms .room,
+      .header-row .room-header {
         min-width: 200px;
       }
 
@@ -316,16 +321,6 @@ header {
         text-align: center;
         padding: 10px;
       }
-    }
-  }
-  .container-semi-wide #fahrplan {
-    .rooms, .header-row {
-      min-width: 900px;  // hack to get the time sidebar to stay in place when sidescrolling. TODO: fix
-    }
-  }
-  .container-wide #fahrplan {
-    .rooms, .header-row {
-      min-width: 1500px;  // hack to get the time sidebar to stay in place when sidescrolling. TODO: fix
     }
   }
 }
