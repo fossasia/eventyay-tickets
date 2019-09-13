@@ -57,7 +57,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 & Q(limit_events__in=[self.request.event])
             ),
             limit_tracks__isnull=False,
-        )
+        ).prefetch_related('limit_tracks')
         if limit_tracks:
             tracks = set()
             for team in limit_tracks:
@@ -65,11 +65,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             queryset = queryset.filter(track__in=tracks)
         queryset = self.filter_queryset(queryset).annotate(review_count=Count('reviews'))
 
-        can_see_all_reviews = self.request.user.has_perm('orga.view_all_reviews', self.request.event)
         overridden_reviews = Review.objects.filter(
             override_vote__isnull=False, submission_id=OuterRef('pk')
         )
-        if not can_see_all_reviews:
+        if not self.can_see_all_reviews:
             overridden_reviews = overridden_reviews.filter(user=self.request.user)
 
         queryset = (
@@ -79,7 +78,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         )
 
         for submission in queryset:
-            if can_see_all_reviews:
+            if self.can_see_all_reviews:
                 submission.current_score = submission.median_score
             else:
                 reviews = [review for review in submission.reviews.all() if review.user == self.request.user]
@@ -121,13 +120,22 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     def can_accept_submissions(self):
         return self.request.event.submissions.filter(state=SubmissionStates.SUBMITTED).exists() and self.request.user.has_perm('submission.accept_or_reject_submissions', self.request.event)
 
+    @context
+    @cached_property
+    def can_see_all_reviews(self):
+        return self.request.user.has_perm('orga.view_all_reviews', self.request.event)
+
+    @context
+    def submissions_reviewed(self):
+        return Review.objects.filter(user=self.request.user, submission__event=self.request.event).values_list('pk', flat=True)
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
-        result['missing_reviews'] = missing_reviews.count()
-        result['next_submission'] = missing_reviews.first()
+        result['missing_reviews'] = len(missing_reviews)
+        result['next_submission'] = missing_reviews[0] if missing_reviews else None
         return result
 
     @transaction.atomic

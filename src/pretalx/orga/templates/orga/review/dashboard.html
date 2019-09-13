@@ -15,9 +15,7 @@
 
 {% block content %}
 {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
-{% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-{% has_perm 'submission.accept_or_reject_submissions' request.user request.event as can_accept_or_reject %}
 <div class="alert alert-info">
     {% if can_review and next_submission %}
         <a href="{{ next_submission.orga_urls.reviews }}">
@@ -73,7 +71,7 @@
     <thead>
         <tr>
             <th>
-                {% if can_view_all_reviews %}
+                {% if can_see_all_reviews %}
                     {% trans "Median score" %}
                 {% else %}
                     {% trans "Score" %}
@@ -91,7 +89,7 @@
             <th>{% trans "Type" %}</th>
             <th>{% trans "State" %}</th>
             <th><span class="action-row d-flex justify-space-around">
-                {% if can_accept_or_reject %}
+                {% if can_accept_submissions %}
                 <div class="radio form-radio accept">
                     <input type="radio" id="a-all" name="s-all" value="accept" class="radio">
                     <label for="a-all" title="{% trans "Accept all" %}"></label>
@@ -128,7 +126,7 @@
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
             </td>
             <td class="action-row d-flex justify-space-around">
-                {% if submission.state == 'submitted' and can_accept_or_reject %}
+                {% if submission.state == 'submitted' and can_accept_submissions %}
                 <div class="radio form-radio accept">
                     <input type="radio" id="a-{{ submission.pk }}" name="s-{{ submission.pk }}" value="accept" class="radio">
                     <label for="a-{{ submission.pk }}" title="{% trans "Accept" %}"></label>
