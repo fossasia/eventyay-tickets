@@ -72,29 +72,26 @@ class AvailabilitiesFormMixin(forms.Form):
         tz = pytz.timezone(self.event.timezone)
 
         obj = parse_datetime(strdate)
-        assert obj
+        if not obj:
+            raise TypeError
         if obj.tzinfo is None:
             obj = tz.localize(obj)
 
         return obj
 
     def _validate_availability(self, rawavail):
-        try:
-            assert isinstance(rawavail, dict)
-            rawavail.pop('id', None)
-            rawavail.pop('allDay', None)
-            assert len(rawavail) == 2
-            assert 'start' in rawavail
-            assert 'end' in rawavail
-        except AssertionError:
-            raise forms.ValidationError(
-                _("The submitted availability does not comply with the required format.")
-            )
+        message = _("The submitted availability does not comply with the required format.")
+        if not isinstance(rawavail, dict):
+            raise forms.ValidationError(message)
+        rawavail.pop('id', None)
+        rawavail.pop('allDay', None)
+        if not set(rawavail.keys()) == {'start', 'end'}:
+            raise forms.ValidationError(message)
 
         try:
             rawavail['start'] = self._parse_datetime(rawavail['start'])
             rawavail['end'] = self._parse_datetime(rawavail['end'])
-        except (AssertionError, TypeError, ValueError):
+        except (TypeError, ValueError):
             raise forms.ValidationError(
                 _("The submitted availability contains an invalid date.")
             )
