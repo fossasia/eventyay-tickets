@@ -43,7 +43,6 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
             return ScheduleListSerializer
         if self.action == 'retrieve':
             return ScheduleSerializer
-        raise Exception('Methods other than GET are not supported on this ressource.')
 
     def get_object(self):
         try:

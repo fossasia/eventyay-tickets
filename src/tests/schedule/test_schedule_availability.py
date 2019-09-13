@@ -321,12 +321,18 @@ def test_intersection(availsets, expected):
 
 
 @pytest.mark.django_db
-def test_equality(event):
-    avail = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7)),
-    avail2 = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7)),
+def test_availability_equality(event):
+    avail = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7))
+    avail2 = Availability(start=datetime.datetime(2017, 1, 1, 5), end=datetime.datetime(2017, 1, 1, 7))
     assert 'None' in str(avail)
 
     assert avail == avail2
+
+    avail.event = event
+    assert hash(avail) != hash(avail2)
+
+    avail2.event = event
+    assert hash(avail) == hash(avail2)
 
 
 @pytest.mark.django_db

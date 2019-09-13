@@ -77,11 +77,33 @@ def test_speaker_page(
 def test_speaker_redirect(
     client, django_assert_num_queries, event, speaker, slot, other_slot
 ):
+    target_url = reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug})
+    url = event.urls.speakers + f'by-id/{speaker.pk}/'
+    with django_assert_num_queries(25):
+        response = client.get(url)
+    assert response.status_code == 302
+    assert response._headers['location']['Location'] == target_url
+
+
+@pytest.mark.django_db
+def test_speaker_redirect(
+    client, django_assert_num_queries, event, speaker, slot, other_slot
+):
     target = reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug})
     url = reverse('agenda:speaker.redirect', kwargs={'pk': speaker.pk, 'event': event.slug})
     response = client.get(url)
     assert response.status_code == 302
     assert response.url.endswith(target)
+
+
+@pytest.mark.django_db
+def test_speaker_redirect_unknown(
+    client, django_assert_num_queries, event, submission
+):
+    with scope(event=event):
+        url = reverse('agenda:speaker.redirect', kwargs={'pk': submission.speakers.first().pk, 'event': event.slug})
+    response = client.get(url)
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
