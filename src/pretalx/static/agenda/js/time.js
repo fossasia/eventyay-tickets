@@ -29,6 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   updateCurrentTalk()
 
-  setInterval(updateNowlines, 60)
-  setInterval(updateCurrentTalk, 60)
+  setInterval(updateNowlines, 60 * 60)
+  setInterval(updateCurrentTalk, 60 * 60)
 })
