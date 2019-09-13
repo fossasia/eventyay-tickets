@@ -304,6 +304,13 @@ header {
     width: 100%;
 
     .day {
+      overflow-y: hidden;
+      overflow-x: auto;
+      .room,
+      .room-header {
+        min-width: 200px;
+      }
+
       .no-talks {
         margin-top: 0;
         text-align: center;
@@ -311,26 +318,19 @@ header {
       }
     }
   }
-  .container-semi-wide #fahrplan .rooms {
-    min-width: 900px;  // hack to get the time sidebar to stay in place when sidescrolling
+  .container-semi-wide #fahrplan {
+    .rooms, .header-row {
+      min-width: 900px;  // hack to get the time sidebar to stay in place when sidescrolling. TODO: fix
+    }
   }
-  .container-wide #fahrplan .rooms {
-    min-width: 1500px;  // hack to get the time sidebar to stay in place when sidescrolling
+  .container-wide #fahrplan {
+    .rooms, .header-row {
+      min-width: 1500px;  // hack to get the time sidebar to stay in place when sidescrolling. TODO: fix
+    }
   }
 }
 
 @media (max-width: 640px) {
-  #fahrplan {
-    .day {
-      overflow-y: hidden;
-      overflow-x: auto;
-    }
-
-    .room,
-    .room-header {
-      min-width: 200px;
-    }
-  }
 }
 @media print {
   body {
