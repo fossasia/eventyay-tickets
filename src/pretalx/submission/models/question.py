@@ -284,3 +284,10 @@ class Answer(LogMixin, models.Model):
         for option in self.options.all():
             option.answers.remove(self)
         self.delete()
+
+    @cached_property
+    def boolean_answer(self):
+        if self.answer == 'True':
+            return True
+        if self.answer == 'False':
+            return False
