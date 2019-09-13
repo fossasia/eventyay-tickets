@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def create_event(self, event_data):
         name = event_data.find('title').text
-        organiser = Organiser.objects.create(name=name)
+        organiser = Organiser.objects.create(name=name, slug=event_data.find('acronym').text)
         event = Event(
             name=name, organiser=organiser,
             slug=event_data.find('acronym').text,
