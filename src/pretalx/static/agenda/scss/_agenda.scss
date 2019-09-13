@@ -97,6 +97,7 @@ header {
     width: auto;
     overflow-y: hidden; /* This hides the .nowline element. */
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
 
     .header-row {
       background: $gray-lightest;
@@ -167,6 +168,7 @@ header {
         border-left: 2px solid #ccc;
         flex: 1 0;
         min-width: 150px;
+        scroll-snap-align: center;
         background: repeating-linear-gradient(
           to bottom,
           $gray-200,
