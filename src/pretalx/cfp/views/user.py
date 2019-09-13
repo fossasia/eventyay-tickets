@@ -149,8 +149,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
                         url=obj.orga_urls.edit.full(),
                     )
                 )
-            obj.state = SubmissionStates.WITHDRAWN
-            obj.save(update_fields=['state'])
+            obj.withdraw(person=request.user)
             messages.success(self.request, phrases.cfp.submission_withdrawn)
         else:
             messages.error(self.request, phrases.cfp.submission_not_withdrawn)
