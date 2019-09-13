@@ -252,7 +252,7 @@ def test_orga_can_see_review(orga_client, review):
 @pytest.mark.django_db
 @pytest.mark.parametrize('sort', ('count', '-count', 'score', '-score'))
 def test_reviewer_can_see_dashboard(review_client, submission, review, sort, django_assert_num_queries, other_submission):
-    with django_assert_num_queries(48):
+    with django_assert_num_queries(46):
         response = review_client.get(submission.event.orga_urls.reviews + '?sort=' + sort)
     assert response.status_code == 200
 
@@ -260,7 +260,7 @@ def test_reviewer_can_see_dashboard(review_client, submission, review, sort, dja
 @pytest.mark.django_db
 def test_reviewer_with_track_limit_can_see_dashboard(review_client, review_user, track, submission, review, django_assert_num_queries, other_submission):
     review_user.teams.first().limit_tracks.add(track)
-    with django_assert_num_queries(48):
+    with django_assert_num_queries(46):
         response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
 

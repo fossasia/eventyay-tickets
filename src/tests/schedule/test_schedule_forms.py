@@ -52,10 +52,7 @@ def test_parse_availabilities_json_fail(availabilitiesform, json, error):
     ('{"availabilities": [1]}'),
 ))
 def test_parse_availabilities_json_success(availabilitiesform, json):
-    try:
-        availabilitiesform._parse_availabilities_json(json)
-    except ValidationError:
-        pytest.fail("Unexpected ValidationError")
+    availabilitiesform._parse_availabilities_json(json)
 
 
 @pytest.mark.django_db
@@ -96,10 +93,7 @@ def test_validate_availability_fail_date(availabilitiesform, avail):
     ({'start': '2017-01-02 00:00:00', 'end': '2017-01-03 00:00:00'}),  # all day end
 ))
 def test_validate_availability_success(availabilitiesform, avail):
-    try:
-        availabilitiesform._validate_availability(avail)
-    except ValidationError:
-        pytest.fail("Unexpected ValidationError")
+    availabilitiesform._validate_availability(avail)
 
 
 @pytest.mark.django_db
@@ -114,11 +108,7 @@ def test_validate_availability_success(availabilitiesform, avail):
 def test_validate_availability_tz_success(availabilitiesform, avail):
     availabilitiesform.event.timezone = 'America/New_York'
     availabilitiesform.event.save()
-
-    try:
-        availabilitiesform._validate_availability(avail)
-    except ValidationError:
-        pytest.fail("Unexpected ValidationError")
+    availabilitiesform._validate_availability(avail)
 
 
 @pytest.mark.django_db
@@ -128,11 +118,7 @@ def test_validate_availability_daylightsaving(availabilitiesform):
     availabilitiesform.event.date_from = datetime.date(2018, 10, 22)
     availabilitiesform.event.date_to = datetime.date(2018, 10, 28)
     availabilitiesform.event.save()
-
-    try:
-        availabilitiesform._validate_availability(({'start': '2018-10-22 00:00:00', 'end': '2018-10-29 00:00:00'}))
-    except ValidationError:
-        pytest.fail("Unexpected ValidationError")
+    availabilitiesform._validate_availability(({'start': '2018-10-22 00:00:00', 'end': '2018-10-29 00:00:00'}))
 
 
 @pytest.mark.django_db

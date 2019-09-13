@@ -121,7 +121,7 @@ def test_dev_settings_warning(orga_client, event, settings):
 def test_user_can_see_correct_urls(orga_user, client, review_user, test_user, event):
     if test_user == 'orga':
         client.force_login(orga_user)
-    elif test_user == 'reviewer':
+    else:
         client.force_login(review_user)
 
     response = client.get(

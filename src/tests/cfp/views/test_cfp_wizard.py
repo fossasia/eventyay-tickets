@@ -17,7 +17,7 @@ class TestWizard:
     def get_response_and_url(self, client, url, follow=True, method='POST', data=None):
         if method == 'GET':
             response = client.get(url, follow=follow, data=data)
-        elif method == 'POST':
+        else:
             response = client.post(url, follow=follow, data=data)
         current_url = response.redirect_chain[-1][0]
         return response, current_url
