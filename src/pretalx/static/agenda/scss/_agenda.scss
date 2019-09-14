@@ -98,6 +98,8 @@ header {
     overflow-y: hidden; /* This hides the .nowline element. */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    -webkit-scroll-snap-type: x mandatory; /* Safari/MacOS in general */
+    -webkit-overflow-scrolling: touch; /* Safari/MacOS in general */
 
     .header-row {
       background: $gray-lightest;
@@ -169,6 +171,7 @@ header {
         flex: 1 0;
         min-width: 150px;
         scroll-snap-align: center;
+        -webkit-scroll-snap-coordinate: 50% 0%; /* older (Safari) */
         background: repeating-linear-gradient(
           to bottom,
           $gray-200,
