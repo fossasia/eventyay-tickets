@@ -172,6 +172,7 @@ header {
         min-width: 150px;
         scroll-snap-align: center;
         -webkit-scroll-snap-coordinate: 50% 0%; /* older (Safari) */
+        scroll-snap-stop: always;
         background: repeating-linear-gradient(
           to bottom,
           $gray-200,
