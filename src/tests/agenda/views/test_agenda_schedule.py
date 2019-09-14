@@ -79,8 +79,7 @@ def test_speaker_redirect(
 ):
     target_url = reverse('agenda:speaker', kwargs={'code': speaker.code, 'event': event.slug})
     url = event.urls.speakers + f'by-id/{speaker.pk}/'
-    with django_assert_num_queries(25):
-        response = client.get(url)
+    response = client.get(url)
     assert response.status_code == 302
     assert response._headers['location']['Location'] == target_url
 
