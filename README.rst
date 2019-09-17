@@ -25,8 +25,9 @@ handling. After the event, `pretalx` allows speakers to receive feedback,
 upload their slides, and organisers to embed recordings.
 
 Read our `feature list`_ in our main site to get a better idea of what
-`pretalx` can do for you, but it probably involves everything you'll need to
-curate submissions and contents for a conference with up to 200 talks.
+`pretalx` can do for you, but it typically involves everything you'll need to
+curate submissions and contents for a conference with several tracks and
+conference days.
 
 You can host pretalx yourself, as detailed in our `administrator documentation`_,
 or use our public instance at `pretalx.com`_.
@@ -39,6 +40,32 @@ supported features in the `feature list`_ in our documentation, and our planned
 features in our open issues_.
 `pretalx` has regular releases – you can download the latest releases with
 their respective changelogs on GitHub_ or install pretalx via PyPI_.
+
+Contributing
+------------
+If you want to contribute to pretalx, please choose an issue and comment on it
+if anything is unclear. If you find bugs you want to fix yourself, please also
+open an issue for documentation purposes.
+
+Check our `developer documentation`_ on how to set up pretalx and get started
+on development. Please bear in mind that our Code of Conduct applies to the
+complete contribution process.
+
+If you are interested in plugin development, check both our documentation and
+our `list of plugin ideas`_ in the project wiki.
+
+License
+-------
+We publish `pretalx` under the terms of the Apache License. See the LICENSE
+file for further information and the complete license text. The licenses of all
+dependencies are documented in the `DEPENDENCIES.rst`_ file.
+
+The primary maintainer of this project is Tobias Kunze <r@rixx.de>.
+See the CONTRIBUTORS file for a list of all the awesome folks who contributed
+to this project.
+
+Users
+-----
 
 Previous conferences using pretalx include:
 
@@ -64,30 +91,6 @@ Previous conferences using pretalx include:
 
 Note
   If you use pretalx for your event, please tell us about it!
-
-Contributing
-------------
-If you want to contribute to pretalx, please choose an issue and comment on it
-if anything is unclear. If you find bugs you want to fix yourself, please also
-open an issue for documentation purposes.
-
-Check our `developer documentation`_ on how to set up pretalx and get started
-on development. Please bear in mind that our Code of Conduct applies to the
-complete contribution process.
-
-If you are interested in plugin development, check both our documentation and
-our `list of plugin ideas`_ in the project wiki.
-
-License
--------
-We publish `pretalx` under the terms of the Apache License. See the LICENSE
-file for further information and the complete license text. The licenses of all
-dependencies are documented in the `DEPENDENCIES.rst`_ file.
-
-The primary maintainer of this project is Tobias Kunze <r@rixx.de>.
-See the CONTRIBUTORS file for a list of all the awesome folks who contributed
-to this project.
-
 
 .. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon-32x32.png
    :alt: pretalx logo
