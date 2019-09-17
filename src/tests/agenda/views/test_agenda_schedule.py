@@ -81,7 +81,7 @@ def test_speaker_redirect(
     url = event.urls.speakers + f'by-id/{speaker.pk}/'
     response = client.get(url)
     assert response.status_code == 302
-    assert response._headers['location'][1] == target_url
+    assert response._headers['location'][1].endswith(target_url)
 
 
 @pytest.mark.django_db
