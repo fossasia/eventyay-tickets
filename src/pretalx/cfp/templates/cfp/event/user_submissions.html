@@ -73,7 +73,7 @@
                         {% if submission.does_accept_feedback %}
                             <a href="{{ submission.urls.feedback }}"
                                     class="btn btn-sm btn-info">
-                                <i class="fa fa-comments"></i> {% trans "Feedback" %}
+                                <i class="fa fa-comments"></i> {% trans "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}
                             </a>
                         {% endif %}
                     </td>
