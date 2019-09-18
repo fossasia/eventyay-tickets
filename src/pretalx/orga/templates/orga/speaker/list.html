@@ -26,7 +26,8 @@
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
-                <th>{% trans "Talks" %}</th>
+                <th>{% trans "Scheduled Talks" %}</th>
+                <th>{% trans "Accepted Submissions" %}</th>
                 <th>{% trans "Submissions" %}</th>
                 {% if can_mark_speaker or can_see_speaker_status %}<th></th>{% endif %}
             </tr>
@@ -36,6 +37,7 @@
                 <tr>
                     <td><a href="{{ profile.orga_urls.base }}">{{ profile.user.get_display_name }}</a></td>
                     <td>{{ profile.talks.count }}</td>
+                    <td>{{ profile.accepted_confirmed_submissions.count }}</td>
                     <td>{{ profile.submissions.count }}</td>
                     {% if can_mark_speaker or can_see_speaker_status %}
                         <td class="action-column">
