@@ -125,6 +125,25 @@ class TalkSlot(LogMixin, models.Model):
                         ),
                     }
                 )
+            overlaps = TalkSlot.objects.filter(
+                    schedule=self.schedule, submission__speakers__in=[speaker]
+                ).filter(
+                        models.Q(start__lt=self.start, end__gt=self.start)
+                        | models.Q(start__lt=self.end, end__gt=self.end)).exists()
+            if overlaps:
+                warnings.append(
+                        {
+                            'type': 'speaker',
+                            'speaker': {
+                                'name': speaker.get_display_name(),
+                                'id': speaker.pk,
+                            },
+                            'message': _(
+                                'A speaker is giving another talk at the scheduled time.'
+                            ),
+                        }
+                    )
+
         return warnings
 
     def copy_to_schedule(self, new_schedule, save=True):
