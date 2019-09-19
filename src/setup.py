@@ -111,7 +111,6 @@ setup(
         'pytz',
         'qrcode==6.1',  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
         'reportlab==3.5.*',  # https://www.reportlab.com/documentation/relnotes/
-        'requests',  # http://docs.python-requests.org/en/master/community/updates/#release-history
         'rules==2.1.*',  # https://github.com/dfunckt/django-rules/blob/master/CHANGELOG.md
         'urlman==1.3.*',  # https://github.com/andrewgodwin/urlman/blob/master/CHANGELOG
         'vobject==0.9.*',  # 2017-06, http://eventable.github.io/vobject/ look for "release"
@@ -131,6 +130,7 @@ setup(
             'pytest-sugar',
             'pytest-tldr',
             'semantic-version==2.6.0',  # https://github.com/bitprophet/releases/issues/84
+            'urllib3',
         ],
         'mysql': ['mysqlclient'],
         'postgres': ['psycopg2-binary'],

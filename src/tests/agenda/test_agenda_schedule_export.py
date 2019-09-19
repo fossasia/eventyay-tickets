@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 import pytest
-import requests
+import urllib3
 from django.conf import settings
 from django.core.management.base import CommandError
 from django.test import override_settings
@@ -21,12 +21,13 @@ from pretalx.event.models import Event
     reason="No need to bother with this outside of CI."
 )
 def test_schedule_xsd_is_up_to_date():
-    response = requests.get('https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd')
-    assert response.status_code == 200
+    http = urllib3.PoolManager()
+    response = http.request('GET', 'https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd')
+    assert response.status == 200
     path = Path(__file__).parent / '../fixtures/schedule.xsd'
     with open(path) as schema:
         schema_content = schema.read()
-    assert response.content.decode() == schema_content
+    assert response.data.decode() == schema_content
 
 
 @pytest.mark.django_db
