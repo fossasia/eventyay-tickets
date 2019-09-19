@@ -76,13 +76,13 @@
                 {% else %}
                     {% trans "Score" %}
                 {% endif %}
-                <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down"></i></a>
-                <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up"></i></a>
+                <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down" title="{% trans "Sort by score (highest first)" %}"></i></a>
+                <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% trans "Sort by score (lowest first)" %}"></i></a>
             </th>
             <th>
                 {% trans "Reviews" %}
-                <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down"></i></a>
-                <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up"></i></a>
+                <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down" title="{% trans "Sort by review count (highest first)" %}"></i></a>
+                <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up" title="{% trans "Sort by review count (lowest first)" %}"></i></a>
             </th>
             <th>{% trans "Title" %}</th>
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}

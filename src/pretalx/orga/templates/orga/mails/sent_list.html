@@ -14,18 +14,18 @@
             <tr>
                 <th>
                     {% trans "Subject" %}
-                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% trans "Sort by subject (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% trans "Sort by subject (z-a)" %}"></i></a>
                 </th>
                 <th>
                     {% trans "To" %}
-                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% trans "Sort by recipient (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% trans "Sort by recipient (z-a)" %}"></i></a>
                 </th>
                 <th>
                     {% trans "Sent" %}
-                    <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-sent' %}"><i class="fa fa-caret-down" title="{% trans "Sort by sending time (most recent first)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' 'sent' %}"><i class="fa fa-caret-up" title="{% trans "Sort by sending time (earliest first)" %}"></i></a>
                 </th>
             </tr>
         </thead>

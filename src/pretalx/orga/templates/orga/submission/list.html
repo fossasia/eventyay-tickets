@@ -56,8 +56,8 @@
                 {% endif %}
                 <th>
                     {% trans "Title" %}
-                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-down" title="{% trans "Sort by title (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-up" title="{% trans "Sort by title (z-a)" %}"></i></a>
                 </th>
                 {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
                 <th>
@@ -65,13 +65,13 @@
                 </th>
                 <th>
                     {% trans "State" %}
-                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' 'state' %}"><i class="fa fa-caret-down" title="{% trans "Sort by state (a-z)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-state' %}"><i class="fa fa-caret-up" title="{% trans "Sort by state (z-a)" %}"></i></a>
                 </th>
                 <th>
                     {% trans "Sneak peek" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% trans "Show this submission on the public preview page, if it was accepted" %}"></i>
-                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up"></i></a>
+                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% trans "Sort by sneak peek first" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% trans "Sort sneak peek last" %}"></i></a>
                 </th>
                 <th></th>
             </tr>
