@@ -8,7 +8,9 @@ from .views import feed, schedule, sneakpeek, speaker, talk
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
     """given a prefix (e.g. /schedule) generate matching schedule-URLs (e.g.
-    /schedule.json, /schedule/feed.xml, ...)"""
+
+    /schedule.json, /schedule/feed.xml, ...)
+    """
 
     regex_prefix = regex_prefix.rstrip('/')
 

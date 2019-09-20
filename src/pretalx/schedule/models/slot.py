@@ -12,7 +12,8 @@ from pretalx.common.urls import get_base_url
 
 
 class TalkSlot(LogMixin, models.Model):
-    """The TalkSlot object is the scheduled version of a
+    """The TalkSlot object is the scheduled version of a.
+
     :class:`~pretalx.submission.models.submission.Submission`.
 
     TalkSlots always belong to one submission and one :class:`~pretalx.schedule.models.schedule.Schedule`.
@@ -78,9 +79,11 @@ class TalkSlot(LogMixin, models.Model):
 
     @cached_property
     def as_availability(self):
-        """'Casts' a slot as
+        """'Casts' a slot as.
+
         :class:`~pretalx.schedule.models.availability.Availability`, useful for
-        availability arithmetics."""
+        availability arithmetics.
+        """
         from pretalx.schedule.models import Availability
 
         return Availability(
@@ -153,9 +156,11 @@ class TalkSlot(LogMixin, models.Model):
         return warnings
 
     def copy_to_schedule(self, new_schedule, save=True):
-        """Create a new slot for the given
+        """Create a new slot for the given.
+
         :class:`~pretalx.schedule.models.schedule.Schedule` with all other
-        fields identical to this one."""
+        fields identical to this one.
+        """
         new_slot = TalkSlot(schedule=new_schedule)
 
         for field in [f for f in self._meta.fields if f.name not in ('id', 'schedule')]:

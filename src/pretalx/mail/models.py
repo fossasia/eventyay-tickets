@@ -16,7 +16,8 @@ from pretalx.common.urls import EventUrls
 
 
 class MailTemplate(LogMixin, models.Model):
-    """MailTemplates can be used to create
+    """MailTemplates can be used to create.
+
     :class:`~pretalx.mail.models.QueuedMail` objects.
 
     The process does not come with variable substitution except for

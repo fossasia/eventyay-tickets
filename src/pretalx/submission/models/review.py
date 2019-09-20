@@ -7,7 +7,8 @@ from pretalx.common.urls import EventUrls
 
 
 class Review(models.Model):
-    """Reviews model the opinion of reviewers of a
+    """Reviews model the opinion of reviewers of a.
+
     :class:`~pretalx.submission.models.submission.Submission`.
 
     They can, but don't have to, include a score and a text.
@@ -38,7 +39,8 @@ class Review(models.Model):
 
     @classmethod
     def find_missing_reviews(cls, event, user, ignore=None):
-        """Returns all
+        """Returns all.
+
         :class:`~pretalx.submission.models.submission.Submission` objects this
         :class:`~pretalx.person.models.user.User` still has to review for the
         given :class:`~pretalx.event.models.event.Event`.

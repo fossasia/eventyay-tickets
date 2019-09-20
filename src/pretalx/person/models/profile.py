@@ -9,7 +9,9 @@ from pretalx.common.urls import EventUrls
 
 
 class SpeakerProfile(LogMixin, models.Model):
-    """All :class:`~pretalx.event.models.event.Event` related data concerning a
+    """All :class:`~pretalx.event.models.event.Event` related data concerning
+    a.
+
     :class:`~pretalx.person.models.user.User` is stored here.
 
     :param has_arrived: Can be set to track speaker arrival. Will be used in
@@ -57,16 +59,20 @@ class SpeakerProfile(LogMixin, models.Model):
 
     @cached_property
     def submissions(self):
-        """All non-deleted
+        """All non-deleted.
+
         :class:`~pretalx.submission.models.submission.Submission` objects by
-        this user on this event."""
+        this user on this event.
+        """
         return self.user.submissions.filter(event=self.event)
 
     @cached_property
     def accepted_and_confirmed_submissions(self):
-        """All non-deleted
+        """All non-deleted.
+
         :class:`~pretalx.submission.models.submission.Submission` objects by
-        this user that have been accepted or confirmed on this event."""
+        this user that have been accepted or confirmed on this event.
+        """
         from pretalx.submission.models.submission import SubmissionStates
         return self.submissions.filter(
             state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
@@ -74,7 +80,8 @@ class SpeakerProfile(LogMixin, models.Model):
 
     @cached_property
     def talks(self):
-        """A queryset of
+        """A queryset of.
+
         :class:`~pretalx.submission.models.submission.Submission` objects.
 
         Contains all visible talks by this user on this event.

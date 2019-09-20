@@ -344,7 +344,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',  # Uses sessions
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Protects against clickjacking
     'csp.middleware.CSPMiddleware',  # Modifies/sets CSP headers
-    'pretalx.common.middleware.PrettifyHtmlMiddleware',
 ]
 
 

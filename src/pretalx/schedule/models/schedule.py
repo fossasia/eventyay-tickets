@@ -144,10 +144,12 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def slots(self):
-        """Returns all
+        """Returns all.
+
         :class:`~pretalx.submission.models.submission.Submission` objects with
         :class:`~pretalx.schedule.models.slot.TalkSlot` objects in this
-        schedule."""
+        schedule.
+        """
         from pretalx.submission.models import Submission
 
         return Submission.objects.filter(

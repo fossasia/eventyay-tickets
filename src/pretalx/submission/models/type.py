@@ -73,7 +73,8 @@ class SubmissionType(LogMixin, models.Model):
         return f'{self.id}-{slugify(self.name)}'
 
     def update_duration(self):
-        """Updates the duration of all
+        """Updates the duration of all.
+
         :class:`~pretalx.schedule.models.slot.TalkSlot` objects of
         :class:`~pretalx.submission.models.submission.Submission` objects of
         this type.

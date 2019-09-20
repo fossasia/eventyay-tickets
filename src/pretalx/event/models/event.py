@@ -515,13 +515,16 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def pending_mails(self) -> int:
-        """The amount of currently unsent
-        :class:`~pretalx.mail.models.QueuedMail` objects."""
+        """The amount of currently unsent.
+
+        :class:`~pretalx.mail.models.QueuedMail` objects.
+        """
         return self.queued_mails.filter(sent__isnull=True).count()
 
     @cached_property
     def wip_schedule(self):
-        """Returns the latest unreleased
+        """Returns the latest unreleased.
+
         :class:`~pretalx.schedule.models.schedule.Schedule`.
 
         :retval: :class:`~pretalx.schedule.models.schedule.Schedule`
@@ -531,9 +534,11 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def current_schedule(self):
-        """Returns the latest released
+        """Returns the latest released.
+
         :class:`~pretalx.schedule.models.schedule.Schedule`, or ``None`` before
-        the first release."""
+        the first release.
+        """
         return (
             self.schedules.order_by('-published')
             .filter(published__isnull=False)
@@ -655,9 +660,11 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def talks(self):
-        """Returns a queryset of all
+        """Returns a queryset of all.
+
         :class:`~pretalx.submission.models.submission.Submission` object in the
-        current released schedule."""
+        current released schedule.
+        """
         from pretalx.submission.models.submission import Submission
 
         if self.current_schedule:
@@ -672,9 +679,11 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def speakers(self):
-        """Returns a queryset of all speakers (of type
+        """Returns a queryset of all speakers (of type.
+
         :class:`~pretalx.person.models.user.User`) visible in the current
-        released schedule."""
+        released schedule.
+        """
         from pretalx.person.models import User
 
         return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()

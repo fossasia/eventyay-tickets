@@ -131,7 +131,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         return super().save(args, kwargs)
 
     def event_profile(self, event):
-        """Retrieve (and/or create) the event
+        """Retrieve (and/or create) the event.
+
         :class:`~pretalx.person.models.profile.SpeakerProfile` for this user.
 
         :type event: :class:`pretalx.event.models.event.Event`

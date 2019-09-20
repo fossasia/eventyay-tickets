@@ -16,8 +16,10 @@ SLUG_CHARS = 'a-zA-Z0-9.-'
 
 
 class Organiser(LogMixin, models.Model):
-    """The Organiser model represents the entity responsible for at least one
-    :class:`~pretalx.event.models.event.Event`."""
+    """The Organiser model represents the entity responsible for at least one.
+
+    :class:`~pretalx.event.models.event.Event`.
+    """
 
     name = I18nCharField(max_length=190, verbose_name=_('Name'))
     slug = models.SlugField(

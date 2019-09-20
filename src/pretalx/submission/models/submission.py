@@ -284,7 +284,8 @@ class Submission(LogMixin, models.Model):
         return self.duration
 
     def update_duration(self):
-        """Apply the submission's duration to its currently scheduled
+        """Apply the submission's duration to its currently scheduled.
+
         :class:`~pretalx.schedule.models.slot.TalkSlot`.
 
         Should be called whenever the duration changes.
@@ -340,7 +341,8 @@ class Submission(LogMixin, models.Model):
             )
 
     def update_talk_slots(self):
-        """Makes sure the correct amount of
+        """Makes sure the correct amount of.
+
         :class:`~pretalx.schedule.models.slot.TalkSlot` objects exists.
 
         After an update or state change, talk slots should either be all
@@ -488,7 +490,8 @@ class Submission(LogMixin, models.Model):
     @cached_property
     def slot(self):
         """The first scheduled :class:`~pretalx.schedule.models.slot.TalkSlot`
-        of this submission in the current
+        of this submission in the current.
+
         :class:`~pretalx.schedule.models.schedule.Schedule`.
 
         Note that this slot is not guaranteed to be visible.
@@ -502,8 +505,10 @@ class Submission(LogMixin, models.Model):
     @cached_property
     def public_slots(self):
         """All publicly visible :class:`~pretalx.schedule.models.slot.TalkSlot`
-        objects of this submission in the current
-        :class:`~pretalx.schedule.models.schedule.Schedule`."""
+        objects of this submission in the current.
+
+        :class:`~pretalx.schedule.models.schedule.Schedule`.
+        """
         from pretalx.agenda.permissions import is_agenda_visible
         if not is_agenda_visible(None, self.event):
             return []
@@ -557,9 +562,11 @@ class Submission(LogMixin, models.Model):
 
     @property
     def availabilities(self):
-        """The intersection of all
+        """The intersection of all.
+
         :class:`~pretalx.schedule.models.availability.Availability` objects of
-        all speakers of this submission."""
+        all speakers of this submission.
+        """
         from pretalx.schedule.models.availability import Availability
 
         all_availabilities = self.event.availabilities.filter(

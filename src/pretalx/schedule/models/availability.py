@@ -11,7 +11,8 @@ zerotime = datetime.time(0, 0)
 
 
 class Availability(LogMixin, models.Model):
-    """The Availability class models when people or rooms are available for
+    """The Availability class models when people or rooms are available for.
+
     :class:`~pretalx.schedule.models.slot.TalkSlot` objects.
 
     The power of this class is not within its rather simple data model,
