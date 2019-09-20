@@ -83,7 +83,7 @@ todo_include_todos = False
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = [
     '_static',
-    os.path.abspath('../src/pretalx/static/vendored/fontawesome/fonts/'),
+    os.path.abspath('../src/pretalx/static/vendored/fortawesome/fonts/'),
 ]
 html_additional_pages = {
     'index': 'index.html'
@@ -95,47 +95,13 @@ html_theme_options = {
     'display_version': False,
 }
 html_logo = 'images/logo.svg'
+html_favicon = os.path.abspath('../src/pretalx/static/common/img/favicon-32x32.png')
+html_link_suffix = ''
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pretalxdoc'
-
-
-# -- Options for LaTeX output ---------------------------------------------
-
-latex_elements = {
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'pretalx.tex', 'pretalx Documentation',
-     'Tobias Kunze', 'manual'),
-]
-
-
-# -- Options for manual page output ---------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'pretalx', 'pretalx Documentation',
-     [author], 1)
-]
-
-
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'pretalx', 'pretalx Documentation',
-     author, 'pretalx', 'Event management',
-     'Miscellaneous'),
-]
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
@@ -159,8 +125,6 @@ html_context = {
     "github_version": "master", # Version
     "conf_py_path": "/doc/", # Path in the checkout to the docs root
 }
-
-favicon = 'images/favicon.ico'
 
 # Autodoc options
 autodoc_member_order = 'groupwise'
