@@ -126,8 +126,6 @@
       </div>
     </main>
 
-  {% include "versions.html" %}
-
   {% if not embedded %}
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
@@ -143,11 +141,6 @@
       <script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
     {%- endfor %}
 
-  {% endif %}
-
-  {# RTD hosts this file, so just load on non RTD builds #}
-  {% if not READTHEDOCS %}
-    <script type="text/javascript" src="{{ pathto('_static/js/theme.js', 1) }}"></script>
   {% endif %}
 
   {# STICKY NAVIGATION #}
