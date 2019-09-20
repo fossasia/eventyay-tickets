@@ -20,8 +20,8 @@ from pretalx.submission.models import SubmissionStates
 
 
 class Schedule(LogMixin, models.Model):
-    """
-    The Schedule model contains all scheduled
+    """The Schedule model contains all scheduled.
+
     :class:`~pretalx.schedule.models.slot.TalkSlot` objects (visible or not)
     for a schedule release for an :class:`~pretalx.event.models.event.Event`.
 
@@ -134,7 +134,8 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def scheduled_talks(self):
-        """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects that have been scheduled."""
+        """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects
+        that have been scheduled."""
         return self.talks.select_related(
             'submission', 'submission__event', 'room',
         ).filter(
@@ -143,7 +144,10 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def slots(self):
-        """Returns all :class:`~pretalx.submission.models.submission.Submission` objects with :class:`~pretalx.schedule.models.slot.TalkSlot` objects in this schedule."""
+        """Returns all
+        :class:`~pretalx.submission.models.submission.Submission` objects with
+        :class:`~pretalx.schedule.models.slot.TalkSlot` objects in this
+        schedule."""
         from pretalx.submission.models import Submission
 
         return Submission.objects.filter(
@@ -193,11 +197,13 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def changes(self) -> dict:
-        """Returns a dictionary of changes when compared to the previous version.
+        """Returns a dictionary of changes when compared to the previous
+        version.
 
-        The ``action`` field is either ``create`` or ``update``. If it's an
-        update, the ``count`` integer, and the ``new_talks``,
-        ``canceled_talks`` and ``moved_talks`` lists are also present."""
+        The ``action`` field is either ``create`` or ``update``. If it's
+        an update, the ``count`` integer, and the ``new_talks``,
+        ``canceled_talks`` and ``moved_talks`` lists are also present.
+        """
         result = {
             'count': 0,
             'action': 'update',
@@ -256,9 +262,9 @@ class Schedule(LogMixin, models.Model):
 
         ``talk_warnings`` contains a list of talk-related warnings.
         ``unscheduled`` is the list of talks without a scheduled slot,
-        ``unconfirmed`` is the list of submissions that will not be visible due
-        to their unconfirmed status, and ``no_track`` are submissions without a
-        track in a conference that uses tracks.
+        ``unconfirmed`` is the list of submissions that will not be
+        visible due to their unconfirmed status, and ``no_track`` are
+        submissions without a track in a conference that uses tracks.
         """
         warnings = {
             'talk_warnings': [],
@@ -279,10 +285,11 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def speakers_concerned(self):
-        """Returns a dictionary of speakers with their new and changed talks in this schedule.
+        """Returns a dictionary of speakers with their new and changed talks in
+        this schedule.
 
-        Each speaker is assigned a dictionary with ``create`` and ``update``
-        fields, each containing a list of submissions.
+        Each speaker is assigned a dictionary with ``create`` and
+        ``update`` fields, each containing a list of submissions.
         """
         if self.changes['action'] == 'create':
             return {
@@ -307,7 +314,8 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def notifications(self):
-        """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects to be sent on schedule release."""
+        """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
+        to be sent on schedule release."""
         mails = []
         for speaker in self.speakers_concerned:
             with override(speaker.locale), tzoverride(self.tz):
@@ -324,7 +332,8 @@ class Schedule(LogMixin, models.Model):
         return mails
 
     def notify_speakers(self):
-        """Save the ``notifications`` :class:`~pretalx.mail.models.QueuedMail` objects to the outbox."""
+        """Save the ``notifications`` :class:`~pretalx.mail.models.QueuedMail`
+        objects to the outbox."""
         for notification in self.notifications:
             notification.save()
 

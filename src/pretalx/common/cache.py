@@ -84,17 +84,15 @@ class NamespacedCache:
 
 
 class ObjectRelatedCache(NamespacedCache):
-    """
-    This object behaves exactly like the cache implementations by Django
-    but with one important difference: It stores all keys related to a
-    certain object, so you pass an object when creating this object and if
-    you store data in this cache, it is only stored for this object. The
-    main purpose of this is to be able to flush all cached data related
-    to this object at once.
+    """This object behaves exactly like the cache implementations by Django but
+    with one important difference: It stores all keys related to a certain
+    object, so you pass an object when creating this object and if you store
+    data in this cache, it is only stored for this object. The main purpose of
+    this is to be able to flush all cached data related to this object at once.
 
     The ObjectRelatedCache instance itself is stateless, all state is
-    stored in the cache backend, so you can instantiate this class as many
-    times as you want.
+    stored in the cache backend, so you can instantiate this class as
+    many times as you want.
     """
 
     def __init__(self, obj: Model, cache: str='default', field: str='pk'):

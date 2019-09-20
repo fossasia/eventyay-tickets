@@ -50,8 +50,7 @@ def assign_code(obj, length=6):
 
 
 class User(PermissionsMixin, AbstractBaseUser):
-    """
-    The pretalx user model.
+    """The pretalx user model.
 
     Users describe all kinds of persons who interact with pretalx: Organisers, reviewers, submitters, speakers.
 
@@ -132,7 +131,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         return super().save(args, kwargs)
 
     def event_profile(self, event):
-        """Retrieve (and/or create) the event :class:`~pretalx.person.models.profile.SpeakerProfile` for this user.
+        """Retrieve (and/or create) the event
+        :class:`~pretalx.person.models.profile.SpeakerProfile` for this user.
 
         :type event: :class:`pretalx.event.models.event.Event`
         :retval: :class:`pretalx.person.models.profile.EventProfile`
@@ -153,7 +153,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         :param data: Addition data to be saved.
         :param person: The person modifying this user. Defaults to this user.
         :type person: :class:`~pretalx.person.models.user.User`
-        :param orga: Was this action initiated by a privileged user?"""
+        :param orga: Was this action initiated by a privileged user?
+        """
         from pretalx.common.models import ActivityLog
 
         if data:
@@ -218,7 +219,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.avatar and self.avatar != 'False'
 
     def get_events_with_any_permission(self):
-        """Returns a queryset of events for which this user has any type of permission."""
+        """Returns a queryset of events for which this user has any type of
+        permission."""
         from pretalx.event.models import Event
 
         if self.is_administrator:
@@ -234,9 +236,12 @@ class User(PermissionsMixin, AbstractBaseUser):
         )
 
     def get_events_for_permission(self, **kwargs):
-        """Returns a queryset of events for which this user as all of the given permissions.
+        """Returns a queryset of events for which this user as all of the given
+        permissions.
 
-        Permissions are given as named arguments, e.g. ``get_events_for_permission(is_reviewer=True)``."""
+        Permissions are given as named arguments, e.g.
+        ``get_events_for_permission(is_reviewer=True)``.
+        """
         from pretalx.event.models import Event
 
         if self.is_administrator:
@@ -256,7 +261,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_permissions_for_event(self, event) -> set:
         """Returns a set of all permission a user has for the given event.
 
-        :type event: :class:`~pretalx.event.models.event.Event`"""
+        :type event: :class:`~pretalx.event.models.event.Event`
+        """
         if self.is_administrator:
             return {
                 'can_create_events',
@@ -272,7 +278,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         return set().union(*[team.permission_set for team in teams])
 
     def remaining_override_votes(self, event) -> int:
-        """Returns the amount of override votes a user may still give in reviews in the given event.
+        """Returns the amount of override votes a user may still give in
+        reviews in the given event.
 
         :type event: :class:`~pretalx.event.models.event.Event`
         """

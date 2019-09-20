@@ -114,7 +114,8 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
 
     @cached_property
     def _target(self) -> str:
-        """ Returns one of submit|accept|reject|confirm|delete|withdraw|cancel """
+        """Returns one of
+        submit|accept|reject|confirm|delete|withdraw|cancel."""
         return self.TARGETS[self.request.resolver_match.url_name.split('.')[-1]]
 
     @context

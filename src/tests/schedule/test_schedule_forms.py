@@ -303,7 +303,7 @@ def test_serialize(availabilitiesform, avails, expected, tzname):
 
 @pytest.mark.django_db
 def test_chained(availabilitiesform, room):
-    """ make sure the Mixin can actually deserialize the data it serialized """
+    """make sure the Mixin can actually deserialize the data it serialized."""
     with scope(event=room.event):
         room.event.timezone = 'America/New_York'
         tz = pytz.timezone(room.event.timezone)

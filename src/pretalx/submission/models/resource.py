@@ -6,7 +6,8 @@ from pretalx.common.mixins import LogMixin
 
 
 class Resource(LogMixin, models.Model):
-    """Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`."""
+    """Resources are file uploads belonging to a
+    :class:`~pretalx.submission.models.submission.Submission`."""
     submission = models.ForeignKey(
         to='submission.Submission', related_name='resources', on_delete=models.PROTECT
     )

@@ -119,6 +119,7 @@ setup(
     ],
     extras_require={
         'dev': [
+            'docformatter',
             'isort',
             'lxml',
             'pylama',

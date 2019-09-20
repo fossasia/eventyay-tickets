@@ -12,8 +12,7 @@ from pretalx.common.urls import EventUrls
 class Track(LogMixin, models.Model):
     """A track groups :class:`~pretalx.submission.models.submission.Submission`
     objects within an :class:`~pretalx.event.models.event.Event`, e.g. by
-    topic.
-    """
+    topic."""
     event = models.ForeignKey(
         to='event.Event', on_delete=models.PROTECT, related_name='tracks'
     )
@@ -42,5 +41,7 @@ class Track(LogMixin, models.Model):
     def slug(self) -> str:
         """The slug makes tracks more readable in URLs.
 
-        It consists of the ID, followed by a slugified (and, in lookups, optional) form of the track name."""
+        It consists of the ID, followed by a slugified (and, in lookups,
+        optional) form of the track name.
+        """
         return f'{self.id}-{slugify(self.name)}'

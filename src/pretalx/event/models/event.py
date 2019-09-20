@@ -320,16 +320,18 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def named_locales(self) -> list:
-        """Is a list of tuples of locale codes and natural names for this event."""
+        """Is a list of tuples of locale codes and natural names for this
+        event."""
         enabled = set(self.locale_array.split(","))
         return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
 
     @cached_property
     def cache(self):
-        """
-        Returns an :py:class:`ObjectRelatedCache` object. This behaves equivalent to
-        Django's built-in cache backends, but puts you into an isolated environment for
-        this event, so you don't have to prefix your cache keys.
+        """Returns an :py:class:`ObjectRelatedCache` object.
+
+        This behaves equivalent to Django's built-in cache backends, but
+        puts you into an isolated environment for this event, so you
+        don't have to prefix your cache keys.
         """
         return ObjectRelatedCache(self, field='slug')
 
@@ -342,7 +344,8 @@ class Event(LogMixin, models.Model):
 
     @property
     def plugin_list(self) -> list:
-        """Provides a list of active plugins as strings, and is also an attribute setter."""
+        """Provides a list of active plugins as strings, and is also an
+        attribute setter."""
         if not self.plugins:
             return []
         return self.plugins.split(',')
@@ -373,7 +376,8 @@ class Event(LogMixin, models.Model):
         raised if the module is unknown. An already active module will not
         be added to the plugin list again.
 
-        :param module: The module to be activated."""
+        :param module: The module to be activated.
+        """
         plugins_active = self.plugin_list
 
         if module not in plugins_active:
@@ -386,7 +390,8 @@ class Event(LogMixin, models.Model):
         Caution, no validation is performed at this point. No exception is
         raised if the module was not part of the active plugins.
 
-        :param module: The module to be deactivated."""
+        :param module: The module to be deactivated.
+        """
         plugins_active = self.plugin_list
 
         if module in plugins_active:
@@ -510,20 +515,25 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def pending_mails(self) -> int:
-        """The amount of currently unsent :class:`~pretalx.mail.models.QueuedMail` objects."""
+        """The amount of currently unsent
+        :class:`~pretalx.mail.models.QueuedMail` objects."""
         return self.queued_mails.filter(sent__isnull=True).count()
 
     @cached_property
     def wip_schedule(self):
-        """Returns the latest unreleased :class:`~pretalx.schedule.models.schedule.Schedule`.
+        """Returns the latest unreleased
+        :class:`~pretalx.schedule.models.schedule.Schedule`.
 
-        :retval: :class:`~pretalx.schedule.models.schedule.Schedule`"""
+        :retval: :class:`~pretalx.schedule.models.schedule.Schedule`
+        """
         schedule, _ = self.schedules.get_or_create(version__isnull=True)
         return schedule
 
     @cached_property
     def current_schedule(self):
-        """Returns the latest released :class:`~pretalx.schedule.models.schedule.Schedule`, or ``None`` before the first release."""
+        """Returns the latest released
+        :class:`~pretalx.schedule.models.schedule.Schedule`, or ``None`` before
+        the first release."""
         return (
             self.schedules.order_by('-published')
             .filter(published__isnull=False)
@@ -555,7 +565,8 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def teams(self):
-        """Returns all :class:`~pretalx.event.models.organiser.Team` objects that concern this event."""
+        """Returns all :class:`~pretalx.event.models.organiser.Team` objects
+        that concern this event."""
         from .organiser import Team
 
         return Team.objects.filter(
@@ -613,10 +624,11 @@ class Event(LogMixin, models.Model):
         return phase
 
     def update_review_phase(self):
-        """
-        This method activates the next review phase if the current one is over.
+        """This method activates the next review phase if the current one is
+        over.
 
-        If no review phase is active and if there is a new one to activate.
+        If no review phase is active and if there is a new one to
+        activate.
         """
         _now = now()
         future_phases = self.review_phases.all()
@@ -643,7 +655,9 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def talks(self):
-        """Returns a queryset of all :class:`~pretalx.submission.models.submission.Submission` object in the current released schedule."""
+        """Returns a queryset of all
+        :class:`~pretalx.submission.models.submission.Submission` object in the
+        current released schedule."""
         from pretalx.submission.models.submission import Submission
 
         if self.current_schedule:
@@ -658,16 +672,20 @@ class Event(LogMixin, models.Model):
 
     @cached_property
     def speakers(self):
-        """Returns a queryset of all speakers (of type :class:`~pretalx.person.models.user.User`) visible in the current released schedule."""
+        """Returns a queryset of all speakers (of type
+        :class:`~pretalx.person.models.user.User`) visible in the current
+        released schedule."""
         from pretalx.person.models import User
 
         return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()
 
     @cached_property
     def submitters(self):
-        """Returns a queryset of all :class:`~pretalx.person.models.user.User` objects who have submitted to this event.
+        """Returns a queryset of all :class:`~pretalx.person.models.user.User`
+        objects who have submitted to this event.
 
-        Ignores users who have deleted all of their submissions."""
+        Ignores users who have deleted all of their submissions.
+        """
         from pretalx.person.models import User
 
         return (
@@ -680,12 +698,14 @@ class Event(LogMixin, models.Model):
     def get_date_range_display(self) -> str:
         """Returns the localised, prettily formatted date range for this event.
 
-        E.g. as long as the event takes place within the same month, the month
-        is only named once."""
+        E.g. as long as the event takes place within the same month, the
+        month is only named once.
+        """
         return daterange(self.date_from, self.date_to)
 
     def release_schedule(self, name: str, user=None, notify_speakers: bool=False):
-        """Releases a new :class:`~pretalx.schedule.models.schedule.Schedule` by finalizing the current WIP schedule.
+        """Releases a new :class:`~pretalx.schedule.models.schedule.Schedule`
+        by finalizing the current WIP schedule.
 
         :param name: The new version name
         :param user: The :class:`~pretalx.person.models.user.User` executing the release

@@ -22,20 +22,19 @@ class BaseExporter:
 
     @property
     def verbose_name(self) -> str:
-        """
-        A human-readable name for this exporter.
+        """A human-readable name for this exporter.
 
-        This should be short but self-explaining. Good examples include 'JSON' or 'Microsoft Excel'.
+        This should be short but self-explaining. Good examples include
+        'JSON' or 'Microsoft Excel'.
         """
         raise NotImplementedError()  # NOQA
 
     @property
     def identifier(self) -> str:
-        """
-        A short and unique identifier for this exporter.
+        """A short and unique identifier for this exporter.
 
-        This should only contain lower-case letters and in most
-        cases will be the same as your package name.
+        This should only contain lower-case letters and in most cases
+        will be the same as your package name.
         """
         raise NotImplementedError()  # NOQA
 
@@ -45,30 +44,35 @@ class BaseExporter:
 
     @property
     def public(self) -> bool:
-        """Return True if the exported data should be publicly available once the event is public, False otherwise."""
+        """Return True if the exported data should be publicly available once
+        the event is public, False otherwise."""
         raise NotImplementedError()  # NOQA
 
     @property
     def show_qrcode(self) -> bool:
-        """Return True if the link to the exporter should be shown as QR code, False (default) otherwise. Override the get_qr_code method to override the QR code itself."""
+        """Return True if the link to the exporter should be shown as QR code,
+        False (default) otherwise.
+
+        Override the get_qr_code method to override the QR code itself.
+        """
         return False
 
     @property
     def icon(self) -> str:
-        """Return either a fa- string or some other symbol to accompany the exporter in displays."""
+        """Return either a fa- string or some other symbol to accompany the
+        exporter in displays."""
         raise NotImplementedError()  # NOQA
 
     def render(self, **kwargs) -> Tuple[str, str, str]:
-        """Render the exported file and return a tuple consisting of a file name, a file type and file content."""
+        """Render the exported file and return a tuple consisting of a file
+        name, a file type and file content."""
         raise NotImplementedError()  # NOQA
 
     class urls(EventUrls):
-        """
-        The urls.base attribute contains the relative URL where this exporter's
-        data will be found, e.g. /event/schedule/export/myexport.ext
+        """The urls.base attribute contains the relative URL where this
+        exporter's data will be found, e.g. /event/schedule/export/myexport.ext
         Use ``exporter.urls.base.full()`` for the complete URL, taking into
-        account the configured event URL, or HTML export URL.
-        """
+        account the configured event URL, or HTML export URL."""
         base = '{self.event.urls.export}{self.quoted_identifier}'
 
     def get_qrcode(self):

@@ -85,9 +85,7 @@ class RecoverView(FormView):
 
 
 class EventAuth(View):
-    """
-    Taken from pretix' brilliant solution for multidomain auth.
-    """
+    """Taken from pretix' brilliant solution for multidomain auth."""
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

@@ -16,7 +16,8 @@ SLUG_CHARS = 'a-zA-Z0-9.-'
 
 
 class Organiser(LogMixin, models.Model):
-    """The Organiser model represents the entity responsible for at least one :class:`~pretalx.event.models.event.Event`."""
+    """The Organiser model represents the entity responsible for at least one
+    :class:`~pretalx.event.models.event.Event`."""
 
     name = I18nCharField(max_length=190, verbose_name=_('Name'))
     slug = models.SlugField(
@@ -49,7 +50,8 @@ class Organiser(LogMixin, models.Model):
 
     @transaction.atomic
     def shred(self):
-        """Irrevocably deletes the organiser and all related events and their data."""
+        """Irrevocably deletes the organiser and all related events and their
+        data."""
         for event in self.events.all():
             with scope(event=event):
                 event.shred()
@@ -137,7 +139,8 @@ def generate_invite_token():
 
 
 class TeamInvite(models.Model):
-    """A TeamInvite is someone who has been invited to a team but hasn't accept the invitation yet."""
+    """A TeamInvite is someone who has been invited to a team but hasn't accept
+    the invitation yet."""
 
     team = models.ForeignKey(to=Team, related_name='invites', on_delete=models.CASCADE)
     email = models.EmailField(null=True, blank=True, verbose_name=_('Email'))

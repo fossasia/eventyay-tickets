@@ -13,7 +13,8 @@ SEPARATORS = {
 
 
 def get_seperator(*args):
-    """(upright, downright, downleft, upleft): Tuple[bool] -> seperator: str"""
+    """(upright, downright, downleft, upleft): Tuple[bool] -> seperator:
+    str."""
     if sum(args) >= 3:
         return '┼'
     elif sum(args) == 1:

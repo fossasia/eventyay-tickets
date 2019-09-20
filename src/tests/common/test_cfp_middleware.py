@@ -63,7 +63,7 @@ def test_event_on_custom_port_in_orga_area(event_on_custom_port, client):
 
 @pytest.mark.django_db
 def test_event_with_custom_domain_on_main_domain(event_on_foobar, client):
-    """ redirect from common domain to custom domain """
+    """redirect from common domain to custom domain."""
     r = client.get(f'/{event_on_foobar.slug}/', HTTP_HOST='example.com')
     assert r.status_code == 302
     assert r['Location'] == f'https://foobar/{event_on_foobar.slug}/'
@@ -71,7 +71,7 @@ def test_event_with_custom_domain_on_main_domain(event_on_foobar, client):
 
 @pytest.mark.django_db
 def test_event_with_custom_port_on_main_domain(event_on_custom_port, client):
-    """ redirect from common domain to custom domain """
+    """redirect from common domain to custom domain."""
     r = client.get(f'/{event_on_custom_port.slug}/', HTTP_HOST='example.com')
     assert r.status_code == 302
     assert r['Location'] == f'https://foobar:8000/{event_on_custom_port.slug}/'

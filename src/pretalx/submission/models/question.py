@@ -64,7 +64,9 @@ class QuestionTarget(Choices):
 
 
 class Question(LogMixin, models.Model):
-    """Questions can be asked per :class:`~pretalx.submission.models.submission.Submission`, per speaker, or of reviewers per :class:`~pretalx.submission.models.review.Review`.
+    """Questions can be asked per
+    :class:`~pretalx.submission.models.submission.Submission`, per speaker, or
+    of reviewers per :class:`~pretalx.submission.models.review.Review`.
 
     Questions can have many types, which offers a flexible framework to give organisers
     the opportunity to get all the information they need.
@@ -214,7 +216,9 @@ class Question(LogMixin, models.Model):
 
 
 class AnswerOption(LogMixin, models.Model):
-    """Provides the possible answers for :class:`~pretalx.submission.models.question.Question` objects of variant 'choice' or 'multiple_choice'."""
+    """Provides the possible answers for
+    :class:`~pretalx.submission.models.question.Question` objects of variant
+    'choice' or 'multiple_choice'."""
     question = models.ForeignKey(
         to='submission.Question', on_delete=models.PROTECT, related_name='options'
     )
@@ -232,8 +236,8 @@ class AnswerOption(LogMixin, models.Model):
 
 
 class Answer(LogMixin, models.Model):
-    """
-    Answers are connected to a
+    """Answers are connected to a.
+
     :class:`~pretalx.submission.models.question.Question`, and, depending on
     type, a :class:`~pretalx.person.models.user.User`, a
     :class:`~pretalx.submission.models.submission.Submission`, or a

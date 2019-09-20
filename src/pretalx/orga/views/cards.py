@@ -33,10 +33,8 @@ class SubmissionCard(Flowable):
         self.height = min(2.5 * max(submission.get_duration(), 30) * mm, A4[1])
 
     def coord(self, x, y, unit=1):
-        """
-        http://stackoverflow.com/questions/4726011/wrap-text-in-a-table-reportlab
-        Helper class to help position flowables in Canvas objects
-        """
+        """http://stackoverflow.com/questions/4726011/wrap-text-in-a-table-
+        reportlab Helper class to help position flowables in Canvas objects."""
         x, y = x * unit, self.height - y * unit
         return x, y
 

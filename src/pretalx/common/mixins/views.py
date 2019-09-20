@@ -56,16 +56,13 @@ class ActionFromUrl:
 
 
 class Sortable:
-    """
-    In the main class, you'll have to call sort_queryset() in get_queryset.
+    """In the main class, you'll have to call sort_queryset() in get_queryset.
     In the template, do this:
 
-        {% load url_replace %}
-        <th>
-            {% trans "Title" %}
-            <a href="?{% url_replace request 'sort' '-title' %}"><i class="fa fa-caret-down"></i></a>
-            <a href="?{% url_replace request 'sort' 'title' %}"><i class="fa fa-caret-up"></i></a>
-        </th>
+    {% load url_replace %} <th>     {% trans "Title" %}     <a href="?{%
+    url_replace request 'sort' '-title' %}"><i class="fa fa-caret-
+    down"></i></a>     <a href="?{% url_replace request 'sort' 'title'
+    %}"><i class="fa fa-caret-up"></i></a> </th>
     """
 
     sortable_fields = []
@@ -211,10 +208,10 @@ class EventPermissionRequired(PermissionRequired):
 class SensibleBackWizardMixin():
 
     def post(self, *args, **kwargs):
-        """
-        Don't redirect if user presses the prev. step button, save data instead.
-        The rest of this is copied from WizardView.
-        We want to save data when hitting "back"!
+        """Don't redirect if user presses the prev.
+
+        step button, save data instead. The rest of this is copied from
+        WizardView. We want to save data when hitting "back"!
         """
         wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)

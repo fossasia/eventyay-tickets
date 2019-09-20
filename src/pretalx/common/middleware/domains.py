@@ -78,11 +78,10 @@ class MultiDomainMiddleware:
 
 
 class SessionMiddleware(BaseSessionMiddleware):
-    """
-    We override the default implementation from Django.
+    """We override the default implementation from Django.
 
-    We do this because we need to handle cookie domains differently depending on
-    whether we are on the main domain or a custom domain.
+    We do this because we need to handle cookie domains differently
+    depending on whether we are on the main domain or a custom domain.
     """
 
     def __init__(self, get_response, *args, **kwargs):
@@ -142,11 +141,10 @@ class SessionMiddleware(BaseSessionMiddleware):
 
 
 class CsrfViewMiddleware(BaseCsrfMiddleware):
-    """
-    We override the default implementation from Django.
+    """We override the default implementation from Django.
 
-    We do this because we need to handle cookie domains differently depending on
-    whether we are on the main domain or a custom domain.
+    We do this because we need to handle cookie domains differently
+    depending on whether we are on the main domain or a custom domain.
     """
 
     def __init__(self, get_response, *args, **kwargs):

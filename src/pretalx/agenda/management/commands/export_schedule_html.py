@@ -39,7 +39,7 @@ def fake_admin(event):
 
 
 def find_assets(html):
-    """ Find URLs of images, style sheets and scripts included in `html`. """
+    """Find URLs of images, style sheets and scripts included in `html`."""
     soup = BeautifulSoup(html, "lxml")
 
     for asset in soup.find_all(['script', 'img']):

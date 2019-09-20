@@ -13,8 +13,8 @@ from pretalx.common.urls import EventUrls
 
 
 class CfP(LogMixin, models.Model):
-    """
-    Every :class:`~pretalx.event.models.event.Event` has one Call for P(apers|articipation|roposals).
+    """Every :class:`~pretalx.event.models.event.Event` has one Call for
+    P(apers|articipation|roposals).
 
     :param deadline: The regular deadline. Please note that submissions can be available for longer than this if different deadlines are configured on single submission types.
     """
@@ -64,7 +64,8 @@ class CfP(LogMixin, models.Model):
 
     @cached_property
     def is_open(self) -> bool:
-        """``True`` if ``max_deadline`` is not over yet, or if no deadline is set."""
+        """``True`` if ``max_deadline`` is not over yet, or if no deadline is
+        set."""
         if self.deadline is None:
             return True
         return self.max_deadline >= now() if self.max_deadline else True
@@ -73,7 +74,9 @@ class CfP(LogMixin, models.Model):
     def max_deadline(self) -> datetime:
         """Returns the latest date any submission is possible.
 
-        This includes the deadlines set on any submission type for this event."""
+        This includes the deadlines set on any submission type for this
+        event.
+        """
         deadlines = list(
             self.event.submission_types.filter(deadline__isnull=False).values_list(
                 'deadline', flat=True

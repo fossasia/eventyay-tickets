@@ -269,10 +269,11 @@ class CfPQuestionDelete(PermissionRequired, DetailView):
 
 
 def question_move(request, pk, up=True):
-    """
-    This is a helper function to avoid duplicating code in question_move_up and
-    question_move_down. It takes a question and a direction and then tries to bring
-    all items for this question in a new order.
+    """This is a helper function to avoid duplicating code in question_move_up
+    and question_move_down.
+
+    It takes a question and a direction and then tries to bring all
+    items for this question in a new order.
     """
     try:
         question = request.event.questions.get(pk=pk)

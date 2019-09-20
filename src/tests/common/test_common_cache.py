@@ -17,10 +17,7 @@ from pretalx.event.models import Event, Organiser
     }
 })
 class CacheTest(TestCase):
-    """
-    This test case tests the invalidation of the event related
-    cache.
-    """
+    """This test case tests the invalidation of the event related cache."""
     @classmethod
     def setUpTestData(cls):
         with scopes_disabled():

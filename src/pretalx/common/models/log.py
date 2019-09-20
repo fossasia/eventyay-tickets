@@ -94,7 +94,9 @@ LOG_NAMES = {
 class ActivityLog(models.Model):
     """This model logs actions within an event.
 
-    It is **not** designed to provide a complete or reliable audit trail."""
+    It is **not** designed to provide a complete or reliable audit
+    trail.
+    """
     event = models.ForeignKey(
         to='event.Event',
         on_delete=models.PROTECT,
@@ -147,7 +149,8 @@ class ActivityLog(models.Model):
         return ''
 
     def get_orga_url(self) -> str:
-        """Returns an organiser backend URL to the object in question (if any)."""
+        """Returns an organiser backend URL to the object in question (if
+        any)."""
         if isinstance(self.content_object, Submission):
             return self.content_object.orga_urls.base
         if isinstance(self.content_object, Question):

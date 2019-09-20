@@ -10,8 +10,8 @@ from pretalx.common.urls import EventUrls
 class Room(LogMixin, models.Model):
     """A Room is an actual place where talks will be scheduled.
 
-    The Room object stores some meta information. Most, like capacity, are not
-    in use right now.
+    The Room object stores some meta information. Most, like capacity,
+    are not in use right now.
     """
     event = models.ForeignKey(
         to='event.Event', on_delete=models.PROTECT, related_name='rooms'

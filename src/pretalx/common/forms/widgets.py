@@ -86,9 +86,7 @@ class PasswordConfirmationInput(PasswordInput):
 
 class ClearableBasenameFileInput(ClearableFileInput):
     def get_template_substitution_values(self, value):
-        """
-        Return value-related substitutions.
-        """
+        """Return value-related substitutions."""
         bname = Path(value.name).name
         return {
             'initial': conditional_escape(bname),

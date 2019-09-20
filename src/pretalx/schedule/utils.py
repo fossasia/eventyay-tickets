@@ -30,8 +30,8 @@ def guess_schedule_version(event):
 
 @transaction.atomic()
 def process_frab(root, event):
-    """
-    Takes an xml document root and an event, and releases a schedule with the data from the xml document.
+    """Takes an xml document root and an event, and releases a schedule with
+    the data from the xml document.
 
     Called from the `import_schedule` manage command, at least.
     """

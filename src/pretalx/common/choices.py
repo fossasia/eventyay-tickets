@@ -1,6 +1,5 @@
 class Choices:
-    """
-    Helper class to make choices available as class variables.
+    """Helper class to make choices available as class variables.
 
     It exposes a list with valid choices and at the same time generate the
     choices tuples forthe model class.

@@ -97,7 +97,8 @@ class AllSubmissionManager(models.Manager):
 
 
 class Submission(LogMixin, models.Model):
-    """Submissions are, next to :class:`~pretalx.event.models.event.Event`, the central model in pretalx.
+    """Submissions are, next to :class:`~pretalx.event.models.event.Event`, the
+    central model in pretalx.
 
     A submission, which belongs to exactly one event, can have multiple
     speakers and a lot of other related data, such as a
@@ -276,15 +277,18 @@ class Submission(LogMixin, models.Model):
 
         Falls back to the
         :class:`~pretalx.submission.models.type.SubmissionType`'s default
-        duration if none is set on the submission."""
+        duration if none is set on the submission.
+        """
         if self.duration is None:
             return self.submission_type.default_duration
         return self.duration
 
     def update_duration(self):
-        """Apply the submission's duration to its currently scheduled :class:`~pretalx.schedule.models.slot.TalkSlot`.
+        """Apply the submission's duration to its currently scheduled
+        :class:`~pretalx.schedule.models.slot.TalkSlot`.
 
-        Should be called whenever the duration changes."""
+        Should be called whenever the duration changes.
+        """
         for slot in self.event.wip_schedule.talks.filter(
             submission=self, start__isnull=False
         ):
@@ -292,10 +296,11 @@ class Submission(LogMixin, models.Model):
             slot.save()
 
     def _set_state(self, new_state, force=False, person=None):
-        """
-        Check if the new state is valid for this Submission (based on SubmissionStates.valid_next_states).
+        """Check if the new state is valid for this Submission (based on
+        SubmissionStates.valid_next_states).
 
-        If yes, set it and save the object. if no, raise a SubmissionError with a helpful message.
+        If yes, set it and save the object. if no, raise a
+        SubmissionError with a helpful message.
         """
         valid_next_states = SubmissionStates.valid_next_states.get(self.state, [])
 
@@ -335,10 +340,13 @@ class Submission(LogMixin, models.Model):
             )
 
     def update_talk_slots(self):
-        """Makes sure the correct amount of :class:`~pretalx.schedule.models.slot.TalkSlot` objects exists.
+        """Makes sure the correct amount of
+        :class:`~pretalx.schedule.models.slot.TalkSlot` objects exists.
 
-        After an update or state change, talk slots should either be all deleted,
-        or all created, or the number of talk slots might need to be adjusted."""
+        After an update or state change, talk slots should either be all
+        deleted, or all created, or the number of talk slots might need
+        to be adjusted.
+        """
         from pretalx.schedule.models import TalkSlot
 
         if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
@@ -382,8 +390,9 @@ class Submission(LogMixin, models.Model):
     def accept(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'accepted'.
 
-        Creates an acceptance :class:`~pretalx.mail.models.QueuedMail` unless
-        the submission was previously confirmed."""
+        Creates an acceptance :class:`~pretalx.mail.models.QueuedMail`
+        unless the submission was previously confirmed.
+        """
         previous = self.state
         self._set_state(SubmissionStates.ACCEPTED, force, person=person)
         self.log_action('pretalx.submission.accept', person=person, orga=True)
@@ -392,8 +401,10 @@ class Submission(LogMixin, models.Model):
             self.send_state_mail()
 
     def reject(self, person=None, force: bool=False, orga: bool=True):
-        """Sets the submission's state to 'rejected' and creates a rejection
-        :class:`~pretalx.mail.models.QueuedMail`."""
+        """Sets the submission's state to 'rejected' and creates a rejection.
+
+        :class:`~pretalx.mail.models.QueuedMail`.
+        """
         self._set_state(SubmissionStates.REJECTED, force, person=person)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
         self.send_state_mail()
@@ -433,7 +444,8 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def uuid(self):
-        """A UUID5, calculated from the submission code and the instance identifier."""
+        """A UUID5, calculated from the submission code and the instance
+        identifier."""
         global INSTANCE_IDENTIFIER
         if not INSTANCE_IDENTIFIER:
             from pretalx.common.models.settings import GlobalSettings
@@ -475,9 +487,12 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def slot(self):
-        """The first scheduled :class:`~pretalx.schedule.models.slot.TalkSlot` of this submission in the current :class:`~pretalx.schedule.models.schedule.Schedule`.
+        """The first scheduled :class:`~pretalx.schedule.models.slot.TalkSlot`
+        of this submission in the current
+        :class:`~pretalx.schedule.models.schedule.Schedule`.
 
-        Note that this slot is not guaranteed to be visible."""
+        Note that this slot is not guaranteed to be visible.
+        """
         return (
             self.event.current_schedule.talks.filter(submission=self).first()
             if self.event.current_schedule
@@ -486,7 +501,9 @@ class Submission(LogMixin, models.Model):
 
     @cached_property
     def public_slots(self):
-        """All publicly visible :class:`~pretalx.schedule.models.slot.TalkSlot` objects of this submission in the current :class:`~pretalx.schedule.models.schedule.Schedule`."""
+        """All publicly visible :class:`~pretalx.schedule.models.slot.TalkSlot`
+        objects of this submission in the current
+        :class:`~pretalx.schedule.models.schedule.Schedule`."""
         from pretalx.agenda.permissions import is_agenda_visible
         if not is_agenda_visible(None, self.event):
             return []
@@ -540,7 +557,9 @@ class Submission(LogMixin, models.Model):
 
     @property
     def availabilities(self):
-        """The intersection of all :class:`~pretalx.schedule.models.availability.Availability` objects of all speakers of this submission."""
+        """The intersection of all
+        :class:`~pretalx.schedule.models.availability.Availability` objects of
+        all speakers of this submission."""
         from pretalx.schedule.models.availability import Availability
 
         all_availabilities = self.event.availabilities.filter(

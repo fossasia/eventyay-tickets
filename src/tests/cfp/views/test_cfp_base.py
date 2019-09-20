@@ -19,7 +19,8 @@ def test_no_crash_on_incorrect_event_for_orga(orga_client, event):
 
 @pytest.mark.django_db
 def test_event_startpage_query_string_handling(client, event):
-    """The link to the CfP page should contain the query parameters given in the request URL."""
+    """The link to the CfP page should contain the query parameters given in
+    the request URL."""
     params_dict = QueryDict('track=academic&submission_type=academic_talk')
     response = client.get(f'/{event.slug}/?{params_dict}',)
     assert response.status_code == 200
@@ -41,8 +42,8 @@ def test_event_startpage_query_string_handling(client, event):
 
 @pytest.mark.django_db
 def test_event_cfp_query_string_handling(client, event):
-    """The link to the submission form should contain the query parameters given in the request
-    URL."""
+    """The link to the submission form should contain the query parameters
+    given in the request URL."""
     params_dict = QueryDict('track=academic&submission_type=academic_talk')
     response = client.get(f'/{event.slug}/cfp?{params_dict}',)
     assert response.status_code == 200

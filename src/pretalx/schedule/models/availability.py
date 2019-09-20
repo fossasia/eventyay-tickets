@@ -11,12 +11,13 @@ zerotime = datetime.time(0, 0)
 
 
 class Availability(LogMixin, models.Model):
-    """The Availability class models when people or rooms are available for :class:`~pretalx.schedule.models.slot.TalkSlot` objects.
+    """The Availability class models when people or rooms are available for
+    :class:`~pretalx.schedule.models.slot.TalkSlot` objects.
 
-    The power of this class is not within its rather simple data model, but
-    with the operations available on it. An availability object can span
-    multiple days, but due to our choice of input widget, it will usually
-    only span a single day at most.
+    The power of this class is not within its rather simple data model,
+    but with the operations available on it. An availability object can
+    span multiple days, but due to our choice of input widget, it will
+    usually only span a single day at most.
     """
     event = models.ForeignKey(
         to='event.Event', related_name='availabilities', on_delete=models.CASCADE
@@ -52,8 +53,8 @@ class Availability(LogMixin, models.Model):
     def __eq__(self, other: 'Availability') -> bool:
         """Comparisons like ``availability1 == availability2``.
 
-        Checks if ``event``, ``person``, ``room``, ``start`` and ``end`` are
-        the same.
+        Checks if ``event``, ``person``, ``room``, ``start`` and ``end``
+        are the same.
         """
         return all(
             [
@@ -64,7 +65,8 @@ class Availability(LogMixin, models.Model):
 
     @cached_property
     def all_day(self) -> bool:
-        """Checks if the Availability spans one (or, technically: multiple) complete day."""
+        """Checks if the Availability spans one (or, technically: multiple)
+        complete day."""
         return self.start.time() == zerotime and self.end.time() == zerotime
 
     def serialize(self) -> dict:
@@ -96,11 +98,13 @@ class Availability(LogMixin, models.Model):
         )
 
     def contains(self, other: 'Availability') -> bool:
-        """Tests if this availability starts before and ends after the other."""
+        """Tests if this availability starts before and ends after the
+        other."""
         return self.start <= other.start and self.end >= other.end
 
     def merge_with(self, other: 'Availability') -> 'Availability':
-        """Return a new Availability which spans the range of this one and the given one."""
+        """Return a new Availability which spans the range of this one and the
+        given one."""
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object.')
@@ -116,7 +120,8 @@ class Availability(LogMixin, models.Model):
         return self.merge_with(other)
 
     def intersect_with(self, other: 'Availability') -> 'Availability':
-        """Return a new Availability which spans the range covered both by this one and the given one."""
+        """Return a new Availability which spans the range covered both by this
+        one and the given one."""
 
         if not isinstance(other, Availability):
             raise Exception('Please provide an Availability object.')
@@ -128,12 +133,14 @@ class Availability(LogMixin, models.Model):
         )
 
     def __and__(self, other: 'Availability') -> 'Availability':
-        """Performs the intersect operation: ``availability1 & availability2``"""
+        """Performs the intersect operation: ``availability1 &
+        availability2``"""
         return self.intersect_with(other)
 
     @classmethod
     def union(cls, availabilities: List['Availability']) -> List['Availability']:
-        """ Return the minimal list of Availability objects which are covered by at least one given Availability """
+        """Return the minimal list of Availability objects which are covered by
+        at least one given Availability."""
         if not availabilities:
             return []
 
@@ -155,7 +162,8 @@ class Availability(LogMixin, models.Model):
         availabilities_a: List['Availability'],
         availabilities_b: List['Availability'],
     ) -> List['Availability']:
-        """ return the list of Availabilities, which are covered by each of the given sets """
+        """return the list of Availabilities, which are covered by each of the
+        given sets."""
         result = []
 
         # yay for O(b*a) time! I am sure there is some fancy trick to make this faster,
@@ -171,7 +179,8 @@ class Availability(LogMixin, models.Model):
     def intersection(
         cls, *availabilitysets: List['Availability']
     ) -> List['Availability']:
-        """ Return the list of Availabilities which are covered by all of the given sets """
+        """Return the list of Availabilities which are covered by all of the
+        given sets."""
 
         # get rid of any overlaps and unmerged ranges in each set
         availabilitysets = [cls.union(avialset) for avialset in availabilitysets]

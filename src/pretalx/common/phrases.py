@@ -33,10 +33,11 @@ phrases = PhraseBook()
 
 
 class BasePhrases(Phrases, app='base'):
-    """
-    This class contains base phrases that are guaranteed to remain the same (i.e., are not
-    randomly chosen). They are still provided as a list to make it possible to combine them
-    with new phrases in other classes.
+    """This class contains base phrases that are guaranteed to remain the same
+    (i.e., are not randomly chosen).
+
+    They are still provided as a list to make it possible to combine
+    them with new phrases in other classes.
     """
 
     send = [_('Send')]

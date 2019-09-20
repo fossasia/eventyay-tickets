@@ -16,10 +16,11 @@ from pretalx.common.urls import EventUrls
 
 
 class MailTemplate(LogMixin, models.Model):
-    """MailTemplates can be used to create :class:`~pretalx.mail.models.QueuedMail` objects.
+    """MailTemplates can be used to create
+    :class:`~pretalx.mail.models.QueuedMail` objects.
 
-    The process does not come with variable substitution except for hardcoded
-    cases, for now.
+    The process does not come with variable substitution except for
+    hardcoded cases, for now.
     """
     event = models.ForeignKey(
         to='event.Event',
@@ -67,7 +68,8 @@ class MailTemplate(LogMixin, models.Model):
         submission=None,
         full_submission_content: bool=False,
     ):
-        """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a MailTemplate.
+        """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a
+        MailTemplate.
 
         :param user: Either a :class:`~pretalx.person.models.user.User` or an
             email address as a string.
@@ -227,7 +229,8 @@ class QueuedMail(LogMixin, models.Model):
 
         :param requestor: The user issuing the command. Used for logging.
         :type requestor: :class:`~pretalx.person.models.user.User`
-        :param orga: Was this email sent as by a privileged user?"""
+        :param orga: Was this email sent as by a privileged user?
+        """
         if self.sent:
             raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
@@ -262,7 +265,8 @@ class QueuedMail(LogMixin, models.Model):
             self.save()
 
     def copy_to_draft(self):
-        """Copies an already sent email to a new object and adds it to the outbox."""
+        """Copies an already sent email to a new object and adds it to the
+        outbox."""
         new_mail = deepcopy(self)
         new_mail.pk = None
         new_mail.sent = None

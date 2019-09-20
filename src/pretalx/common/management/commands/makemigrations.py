@@ -7,9 +7,12 @@ original_deconstruct = models.Field.deconstruct
 
 
 def new_deconstruct(self):
-    """Patches makemigration's logic to ignore fields that are not of relevance to our database.
+    """Patches makemigration's logic to ignore fields that are not of relevance
+    to our database.
 
-    This avoids unnecessary, annoying migrations whenever a frontend facing string is changed."""
+    This avoids unnecessary, annoying migrations whenever a frontend
+    facing string is changed.
+    """
     name, path, args, kwargs = original_deconstruct(self)
     for attr in IGNORED_ATTRS:
         kwargs.pop(attr, None)
