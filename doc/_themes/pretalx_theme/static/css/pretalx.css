@@ -209,17 +209,18 @@ table {
 }
 
 
-/*!
- *  Font Awesome 4.6.3 by @davegandy - http://fontawesome.io - @fontawesome
- *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
- */
 @font-face {
-    font-family: 'FontAwesome';
-    src: url("/_static/fonts/fontawesome-webfont.eot");
-    src: url("/_static/fonts/fontawesome-webfont.eot?#iefix&v=4.6.3") format("embedded-opentype"), url("/_static/fonts/fontawesome-webfont.woff2") format("woff2"), url("/_static/fonts/fontawesome-webfont.woff") format("woff"), url("../fontawesome-webfont.ttf") format("truetype"), url("../fontawesome-webfont.svg#fontawesomeregular") format("svg");
-    font-weight: normal;
-    font-style: normal
+  font-family: 'ForkAwesome';
+  src: url('/_static/forkawesome-webfont.eot');
+  src: url('/_static/forkawesome-webfont.eot') format('embedded-opentype'),
+    url('/_static/forkawesome-webfont.woff2') format('woff2'),
+    url('/_static/forkawesome-webfont.woff') format('woff'),
+    url('/_static/forkawesome-webfont.ttf') format('truetype'),
+    url('/_static/forkawesome-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
+
 
 .fa, .nav-menu-vertical li span.toctree-expand, .nav-menu-vertical li.on a span.toctree-expand, .nav-menu-vertical li.current > a span.toctree-expand, .rst-content .admonition-title, .rst-content h1 .headerlink, .rst-content h2 .headerlink, .rst-content h3 .headerlink, .rst-content h4 .headerlink, .rst-content h5 .headerlink, .rst-content h6 .headerlink, .rst-content dl dt .headerlink, .rst-content p.caption .headerlink, .rst-content tt.download span:first-child, .rst-content code.download span:first-child, .icon {
     display: inline-block;
@@ -2943,7 +2944,7 @@ table {
 }
 
 .fa:before {
-    font-family: "FontAwesome";
+    font-family: "ForkAwesome";
     display: inline-block;
     font-style: normal;
     font-weight: normal;
@@ -4161,7 +4162,7 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
 .rst-content h1 .headerlink:after, .rst-content h2 .headerlink:after, .rst-content .toctree-wrapper p.caption .headerlink:after, .rst-content h3 .headerlink:after, .rst-content h4 .headerlink:after, .rst-content h5 .headerlink:after, .rst-content h6 .headerlink:after, .rst-content dl dt .headerlink:after, .rst-content p.caption .headerlink:after {
     visibility: visible;
     content: "";
-    font-family: FontAwesome;
+    font-family: ForkAwesome;
     display: inline-block
 }
 
@@ -4488,7 +4489,7 @@ img.screenshot, a.screenshot img {
     font-family: inherit;
 }
 .versionmodified:before {
-    font-family: "FontAwesome";
+    font-family: "ForkAwesome";
     display: inline-block;
     font-style: normal;
     font-weight: normal;
