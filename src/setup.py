@@ -56,19 +56,22 @@ class CustomBuild(build):
         build.run(self)
 
 
-cmdclass = {'build': CustomBuild}
-
-
 setup(
     name='pretalx',
     version=pretalx_version,
-    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
+    license='Apache License 2.0',
+
     description='Conference organisation: CfPs, scheduling, much more',
     long_description=long_description,
-    url='https://pretalx.com',
     author='Tobias Kunze',
     author_email='r@rixx.de',
-    license='Apache License 2.0',
+
+    url='https://pretalx.com',
+    project_urls={
+        'Documentation': 'https://docs.pretalx.org',
+        'Source': 'https://github.com/pretalx/pretalx',
+        'Issues': 'https://github.com/pretalx/pretalx/issues',
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -83,7 +86,9 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
-    keywords='conference cfp event barcamp',
+    keywords='conference cfp event schedule',
+
+    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     install_requires=[
         'beautifulsoup4==4.8.*',  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
         'bleach==3.1.*',  # https://bleach.readthedocs.io/en/latest/changes.html
@@ -140,9 +145,11 @@ setup(
             'redis==3.3.*',
         ],
     },
+
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     data_files=[('.', ['../LICENSE', '../README.rst'])],
     zip_safe=False,
-    cmdclass=cmdclass,
+
+    cmdclass={'build': CustomBuild},
 )
