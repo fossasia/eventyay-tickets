@@ -96,7 +96,7 @@ html_theme_options = {
 }
 html_logo = 'images/logo.svg'
 html_favicon = os.path.abspath('../src/pretalx/static/common/img/favicon-32x32.png')
-html_link_suffix = ''
+# html_link_suffix = ''
 
 # -- Options for HTMLHelp output ------------------------------------------
 
