@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`787` Provide the file uploads a speaker added to their submission via the ``/talks`` and ``/submissions`` API endpoint.
 - :feature:`-` Show speakers how many feedback notes have been left (if any) in their personal submission list view.
 - :feature:`-` Answers to boolean questions are not displayed as "yes", "no", and "maybe" in public display, instead of "true" or "false".
 - :bug:`775` When a speaker withdrew their already-accepted talk, the talk slot was not removed from the schedule editor. It did work when setting the state via the organiser interface.

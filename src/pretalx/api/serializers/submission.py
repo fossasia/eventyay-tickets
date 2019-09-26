@@ -1,12 +1,32 @@
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
-    ModelSerializer, SerializerMethodField, SlugRelatedField,
+    Field, ModelSerializer, SerializerMethodField, SlugRelatedField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
 from pretalx.api.serializers.speaker import SubmitterSerializer
 from pretalx.schedule.models import Schedule, TalkSlot
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Resource, Submission, SubmissionStates
+
+
+class FileField(Field):
+    """Serializer class for Django Restframework."""
+
+    read_only = True
+    write_only = False
+    label = None
+    source = '*'
+
+    def to_representation(self, value):
+        return value.path
+
+
+class ResourceSerializer(ModelSerializer):
+    resource = FileField()
+
+    class Meta:
+        model = Resource
+        fields = ('resource', 'description')
 
 
 class SlotSerializer(I18nAwareModelSerializer):
@@ -23,6 +43,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     slot = SlotSerializer(TalkSlot.objects.none().filter(is_visible=True), read_only=True)
     duration = SerializerMethodField()
     speakers = SerializerMethodField()
+    resources = ResourceSerializer(Resource.objects.none(), read_only=True, many=True)
 
     @staticmethod
     def get_duration(obj):
@@ -59,6 +80,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
             'content_locale',
             'slot',
             'image',
+            'resources',
         ]
 
 

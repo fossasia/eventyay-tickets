@@ -100,7 +100,7 @@ def test_speaker_orga_serializer(slot):
 
 
 @pytest.mark.django_db
-def test_submission_serializer_for_organiser(submission, orga_user):
+def test_submission_serializer_for_organiser(submission, orga_user, resource):
     class Request:
         user = orga_user
         event = submission.event
@@ -126,6 +126,7 @@ def test_submission_serializer_for_organiser(submission, orga_user):
             'notes',
             'internal_notes',
             'created',
+            'resources',
         }
         assert isinstance(data['speakers'], list)
         assert data['speakers'][0] == {
@@ -137,10 +138,14 @@ def test_submission_serializer_for_organiser(submission, orga_user):
         assert data['submission_type'] == str(submission.submission_type.name)
         assert data['slot'] is None
         assert data['created'] == submission.created.astimezone(submission.event.tz).isoformat()
+        assert data['resources'] == [{
+            'resource': resource.resource.path,
+            'description': resource.description,
+        }]
 
 
 @pytest.mark.django_db
-def test_submission_serializer(submission):
+def test_submission_serializer(submission, resource):
     with scope(event=submission.event):
         data = SubmissionSerializer(submission, context={'event': submission.event}).data
         assert set(data.keys()) == {
@@ -159,11 +164,16 @@ def test_submission_serializer(submission):
             'slot',
             'image',
             'track',
+            'resources',
         }
         assert isinstance(data['speakers'], list)
         assert data['speakers'] == []
         assert data['submission_type'] == str(submission.submission_type.name)
         assert data['slot'] is None
+        assert data['resources'] == [{
+            'resource': resource.resource.path,
+            'description': resource.description,
+        }]
 
 
 @pytest.mark.django_db
@@ -188,6 +198,7 @@ def test_submission_slot_serializer(slot):
             'slot',
             'image',
             'track',
+            'resources',
         }
         assert set(data['slot'].keys()) == {'start', 'end', 'room'}
         assert data['slot']['room'] == slot.room.name
