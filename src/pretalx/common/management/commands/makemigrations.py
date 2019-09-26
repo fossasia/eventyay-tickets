@@ -2,6 +2,7 @@ from django.core.management.commands.makemigrations import Command  # noqa
 from django.db import models
 
 IGNORED_ATTRS = ['verbose_name', 'help_text', 'choices']
+EXEMPT_FIELDS = ['CountryField']
 
 original_deconstruct = models.Field.deconstruct
 
@@ -14,8 +15,11 @@ def new_deconstruct(self):
     facing string is changed.
     """
     name, path, args, kwargs = original_deconstruct(self)
-    for attr in IGNORED_ATTRS:
-        kwargs.pop(attr, None)
+    if 'countr' in path.lower():
+        print(path)
+    if not any(field in path for field in EXEMPT_FIELDS):
+        for attr in IGNORED_ATTRS:
+            kwargs.pop(attr, None)
     return name, path, args, kwargs
 
 
