@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugin authors will now have access to all configuration sections starting with ``[plugin:*]``, to ease the integration of system level settings.
 - :feature:`787` Provide the file uploads a speaker added to their submission via the ``/talks`` and ``/submissions`` API endpoint.
 - :feature:`-` Show speakers how many feedback notes have been left (if any) in their personal submission list view.
 - :feature:`-` Answers to boolean questions are not displayed as "yes", "no", and "maybe" in public display, instead of "true" or "false".

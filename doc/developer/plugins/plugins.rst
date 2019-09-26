@@ -130,6 +130,27 @@ your Django application label.
    with checking that the calling user has logged in, has appropriate permissions,
    and more. We plan on providing native support for this in a later version.
 
+Configuration
+-------------
+
+Occasionally, your plugin may need system-level configuration that doesn't need
+its own API. In this case, you can ask users to provide this configuration via
+their ``pretalx.cfg`` file. Ask them to put their configuration in a section
+with the title ``[plugin:your_plugin_name]``, which pretalx will then provide
+in ``settings.PLUGIN_SETTINGS[your_plugin_name]``, like this::
+
+   [plugin:pretalx_soap]
+   endpoint=https://example.com
+   api_key=123456
+
+Which you can use in your code like this::
+
+   from django.conf import settings
+   assert settings.PLUGIN_SETTINGS["pretalx_soap"]["endpoint"] == "https://example.com"
+
+.. versionadded:: 1.1
+   The ``PLUGIN_SETTINGS`` configuration was added in pretalx 1.1.
+
 .. _Django application: https://docs.djangoproject.com/en/1.7/ref/applications/
 .. _signal dispatcher: https://docs.djangoproject.com/en/1.7/topics/signals/
 .. _namespace packages: http://legacy.python.org/dev/peps/pep-0420/

@@ -89,6 +89,13 @@ for entry_point in iter_entry_points(group='pretalx.plugin', name=None):
 CORE_MODULES = LOCAL_APPS + [module for module in config.get('site', 'core_modules').split(',') if module]
 
 
+## PLUGIN SETTINGS
+PLUGIN_SETTINGS = dict()
+for section in config.sections():
+    if section.startswith('plugin:'):
+        PLUGIN_SETTINGS[section[len('plugin:'):]] = dict(config.items(section))
+
+
 ## URL SETTINGS
 SITE_URL = config.get('site', 'url', fallback='http://localhost')
 SITE_NETLOC = urlparse(SITE_URL).netloc
