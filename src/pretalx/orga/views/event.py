@@ -13,6 +13,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
@@ -27,6 +28,7 @@ from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, PermissionRequired, SensibleBackWizardMixin,
 )
 from pretalx.common.tasks import regenerate_css
+from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.views import is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm, EventWizardCopyForm, EventWizardDisplayForm,
@@ -171,7 +173,10 @@ class EventLive(EventSettingsPermission, TemplateView):
                     if isinstance(response[1], Exception)
                 ]
                 if exceptions:
-                    messages.error(request, '\n'.join([str(e) for e in exceptions]))
+                    messages.error(
+                        request,
+                        mark_safe('\n'.join([rich_text(e) for e in exceptions])),
+                    )
                 else:
                     event.is_public = True
                     event.save()
