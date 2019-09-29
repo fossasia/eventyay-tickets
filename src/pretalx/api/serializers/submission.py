@@ -18,7 +18,7 @@ class FileField(Field):
     source = '*'
 
     def to_representation(self, value):
-        return value.path
+        return value.url
 
 
 class ResourceSerializer(ModelSerializer):

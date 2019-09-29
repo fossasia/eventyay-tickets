@@ -139,7 +139,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource):
         assert data['slot'] is None
         assert data['created'] == submission.created.astimezone(submission.event.tz).isoformat()
         assert data['resources'] == [{
-            'resource': resource.resource.path,
+            'resource': resource.resource.url,
             'description': resource.description,
         }]
 
@@ -171,7 +171,7 @@ def test_submission_serializer(submission, resource):
         assert data['submission_type'] == str(submission.submission_type.name)
         assert data['slot'] is None
         assert data['resources'] == [{
-            'resource': resource.resource.path,
+            'resource': resource.resource.url,
             'description': resource.description,
         }]
 
