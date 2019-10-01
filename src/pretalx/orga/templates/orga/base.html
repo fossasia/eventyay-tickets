@@ -22,8 +22,13 @@
         <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
     {% endblock %}
 
+    {% if development_warning %}
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
+    {% else %}
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
+    {% endif %}
 
     <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
     {% compress css %}

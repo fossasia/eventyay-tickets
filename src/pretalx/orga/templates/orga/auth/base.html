@@ -11,8 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1C4A3B">
 
+    {% if development_warning %}
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32_debug.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16_debug.png" %}">
+    {% else %}
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "common/img/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "common/img/favicon-16x16.png" %}">
+    {% endif %}
     {% compress js %}
         <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
         <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
