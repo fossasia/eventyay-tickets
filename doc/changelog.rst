@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` On the sneak peek preview page, markdown wasn't rendered correctly to HTML.
 - :feature:`-` If pretalx is running in development mode, its favicon will be red.
 - :feature:`-` Plugin authors will now have access to all configuration sections starting with ``[plugin:*]``, to ease the integration of system level settings.
 - :feature:`787` Provide the file uploads a speaker added to their submission via the ``/talks`` and ``/submissions`` API endpoint.

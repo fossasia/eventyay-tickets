@@ -1,6 +1,7 @@
 {% extends "agenda/base.html" %}
 {% load compress %}
 {% load i18n %}
+{% load rich_text %}
 {% load static %}
 
 {% block agenda_content %}
@@ -31,7 +32,7 @@
                 </small>
             </h3>
             <p>
-                {{ talk.abstract|default:talk.description|default:"" }}
+                {{ talk.abstract|default:talk.description|default:""|rich_text }}
             </p>
             {% if not forloop.last %}
             <hr>
