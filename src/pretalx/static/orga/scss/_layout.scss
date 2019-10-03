@@ -790,14 +790,6 @@ legend .submission-state-dropdown {
     width: 3rem;
     border-radius: 1.5rem;
 
-    &:focus,
-    &.focus {
-      &,
-      &.active {
-        outline: none;
-      }
-    }
-
     &:before,
     &:after {
       line-height: 1.5rem;
