@@ -54,6 +54,7 @@
             {% trans "Display settings" %}
         </legend>
         {% bootstrap_field form.landing_page_text layout='event' %}
+        {% bootstrap_field sform.imprint_url layout='event' %}
         {% bootstrap_field form.primary_color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-readable" %}
         <div id="csswrap">
         {% bootstrap_field form.custom_css layout='event' %}

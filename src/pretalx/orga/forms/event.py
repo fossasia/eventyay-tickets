@@ -139,6 +139,11 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         help_text=_('Enter a custom domain, such as https://my.event.example.org'),
         required=False,
     )
+    imprint_url = forms.URLField(
+        label=_("Imprint URL"),
+        help_text=_("This should point e.g. to a part of your website that has your contact details and legal information."),
+        required=False,
+    )
     show_on_dashboard = forms.BooleanField(
         label=_('Show on dashboard'),
         help_text=_(

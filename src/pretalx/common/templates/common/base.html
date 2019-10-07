@@ -153,6 +153,10 @@
                 &middot;
                 <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
             {% endif %}
+            {% if request.event.settings.imprint_url %}
+                &middot;
+                <a href="{{ request.event.settings.imprint_url }}" target="_blank" rel="noopener">{% trans "Imprint" %}</a>
+            {% endif %}
             {% for footer in footer_links %}
                 &middot;
                 <a href="{{ footer.link }}">{{ footer.label }}</a>
