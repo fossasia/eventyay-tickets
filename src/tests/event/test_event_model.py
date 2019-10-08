@@ -59,7 +59,7 @@ def test_initial_data(event):
     'widget',
 ))
 @pytest.mark.django_db
-def test_event_model_slug_blacklist_validation(slug):
+def test_event_model_slug_permitted_validation(slug):
     with pytest.raises(ValidationError):
         Event(
             name='Event', slug=slug, is_public=True,

@@ -27,7 +27,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     )
     logo = ExtensionFileField(
         required=False,
-        extension_whitelist=IMAGE_EXTENSIONS,
+        extensions=IMAGE_EXTENSIONS,
         label=_('Header image'),
         help_text=_(
             'If you provide a header image, it will be displayed instead of your event\'s color and/or header pattern '
@@ -37,7 +37,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
     )
     header_image = ExtensionFileField(
         required=False,
-        extension_whitelist=IMAGE_EXTENSIONS,
+        extensions=IMAGE_EXTENSIONS,
         label=_('Header image'),
         help_text=_(
             'If you provide a logo image, we will by default not show your event\'s name and date in the page header. '

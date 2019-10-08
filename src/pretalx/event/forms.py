@@ -190,7 +190,7 @@ class EventWizardDisplayForm(forms.Form):
     )
     logo = ExtensionFileField(
         required=False,
-        extension_whitelist=IMAGE_EXTENSIONS,
+        extensions=IMAGE_EXTENSIONS,
         label=_('Logo'),
         help_text=_(
             'If you provide a logo image, we will by default not show your event\'s name and date in the page header. '

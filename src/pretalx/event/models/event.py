@@ -23,8 +23,8 @@ from pretalx.common.utils import daterange, path_with_hash
 SLUG_CHARS = 'a-zA-Z0-9.-'
 
 
-def validate_event_slug_blacklist(value):
-    blacklist = [
+def validate_event_slug_permitted(value):
+    forbidden = [
         '_global',
         '__debug__',
         'api',
@@ -39,7 +39,7 @@ def validate_event_slug_blacklist(value):
         'redirect',
         'widget',
     ]
-    if value in blacklist:
+    if value in forbidden:
         raise ValidationError(
             _('Invalid event slug – this slug is reserved: {value}.').format(
                 value=value
@@ -82,7 +82,7 @@ class Event(LogMixin, models.Model):
     :param primary_color: Main event color. Accepts hex values like
         ``#00ff00``.
     :param custom_css: Custom event CSS. Has to pass fairly restrictive
-        whitelist for security considerations.
+        validation for security considerations.
     :param logo: Replaces the event name in the public header. Will be
         displayed at up to full header height and up to full content width.
     :param header_image: Replaces the header pattern and/or background
@@ -103,7 +103,7 @@ class Event(LogMixin, models.Model):
                     'The slug may only contain letters, numbers, dots and dashes.'
                 ),
             ),
-            validate_event_slug_blacklist,
+            validate_event_slug_permitted,
         ],
         verbose_name=_("Short form"),
         help_text=_('The slug may only contain letters, numbers, dots and dashes.'),

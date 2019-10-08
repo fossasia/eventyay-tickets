@@ -48,8 +48,8 @@ class ExtensionFileField(FileField):
     widget = ClearableBasenameFileInput
 
     def __init__(self, *args, **kwargs):
-        extension_whitelist = kwargs.pop("extension_whitelist")
-        self.extension_whitelist = [i.lower() for i in extension_whitelist]
+        extensions = kwargs.pop("extensions")
+        self.extensions = [i.lower() for i in extensions]
         super().__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
@@ -57,11 +57,11 @@ class ExtensionFileField(FileField):
         if data:
             filename = data.name
             extension = Path(filename).suffix.lower()
-            if extension not in self.extension_whitelist:
+            if extension not in self.extensions:
                 raise ValidationError(
                     _(
                         "This filetype is not allowed, it has to be one of the following: "
                     )
-                    + ', '.join(self.extension_whitelist)
+                    + ', '.join(self.extensions)
                 )
         return data
