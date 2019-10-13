@@ -69,7 +69,7 @@ def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room
         reverse(
             f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
         ),
-        data=json.dumps(dict()),
+        data=json.dumps({}),
         follow=True,
     )
     with scope(event=event):

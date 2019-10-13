@@ -209,7 +209,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
         if not self.object:
-            initial = kwargs['initial'] or dict()
+            initial = kwargs['initial'] or {}
             initial['target'] = self.request.GET.get('type')
             kwargs['initial'] = initial
         return kwargs
@@ -334,8 +334,9 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
         data = self.request.GET if self.request.method == 'GET' else self.request.POST
         return SpeakerFilterForm(data)
 
-    def get_missing_answers(self, *, questions, person, submissions):
-        missing = list()
+    @staticmethod
+    def get_missing_answers(*, questions, person, submissions):
+        missing = []
         submissions = submissions.filter(speakers__in=[person])
         for question in questions:
             if question.target == QuestionTarget.SUBMISSION:
@@ -377,7 +378,7 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
             )
             if missing:
                 data['questions'] = '\n'.join(
-                    [f'- {question.question}' for question in missing]
+                    f'- {question.question}' for question in missing
                 )
                 request.event.question_template.to_mail(
                     person, event=request.event, context=data

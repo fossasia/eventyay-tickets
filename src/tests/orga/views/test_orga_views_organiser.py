@@ -148,19 +148,20 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
 class TestEventCreation:
     url = '/orga/event/new/'
 
-    def post(self, step, data):
+    def post(self, step, data, client):
         data = {f'{step}-{key}': value for key, value in data.items()}
         data['event_wizard-current_step'] = step
-        response = self.client.post(self.url, data=data, follow=True)
+        response = client.post(self.url, data=data, follow=True)
         assert response.status_code == 200
         return response
 
-    def submit_initial(self, organiser):
+    def submit_initial(self, organiser, client):
         return self.post(
-            step='initial', data={'locales': ['en', 'de'], 'organiser': organiser.pk}
+            step='initial', data={'locales': ['en', 'de'], 'organiser': organiser.pk},
+            client=client,
         )
 
-    def submit_basics(self):
+    def submit_basics(self, client):
         return self.post(
             step='basics',
             data={
@@ -170,9 +171,10 @@ class TestEventCreation:
                 'slug': 'newevent',
                 'timezone': 'Europe/Amsterdam',
             },
+            client=client,
         )
 
-    def submit_timeline(self, deadline):
+    def submit_timeline(self, deadline, client):
         _now = now()
         tomorrow = _now + timedelta(days=1)
         date = '%Y-%m-%d'
@@ -184,26 +186,26 @@ class TestEventCreation:
                 'date_to': tomorrow.strftime(date),
                 'deadline': _now.strftime(datetime) if deadline else '',
             },
+            client=client,
         )
 
-    def submit_display(self, **kwargs):
+    def submit_display(self, client, **kwargs):
         data = {'header_pattern': '', 'logo': '', 'primary_color': ''}
         data.update(kwargs)
-        return self.post(step='display', data=data)
+        return self.post(step='display', data=data, client=client)
 
-    def submit_copy(self, copy=False):
-        return self.post(step='copy', data={'copy_from_event': copy if copy else ''})
+    def submit_copy(self, copy=False, client=None):
+        return self.post(step='copy', data={'copy_from_event': copy if copy else ''}, client=client)
 
     def test_orga_create_event(self, orga_client, organiser, deadline):
         organiser.teams.all().update(can_create_events=True)
-        self.client = orga_client
         count = Event.objects.count()
         team_count = organiser.teams.count()
-        self.submit_initial(organiser)
-        self.submit_basics()
-        self.submit_timeline(deadline=deadline)
-        self.submit_display()
-        self.submit_copy()
+        self.submit_initial(organiser, client=orga_client)
+        self.submit_basics(client=orga_client)
+        self.submit_timeline(deadline=deadline, client=orga_client)
+        self.submit_display(client=orga_client)
+        self.submit_copy(client=orga_client)
         event = Event.objects.get(slug='newevent')
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
@@ -214,15 +216,14 @@ class TestEventCreation:
         assert event.locales == ['en', 'de']
 
     def test_orga_create_event_with_copy(self, orga_client, organiser, event, deadline):
-        self.client = orga_client
         organiser.teams.all().update(can_create_events=True)
         count = Event.objects.count()
         team_count = organiser.teams.count()
-        self.submit_initial(organiser)
-        self.submit_basics()
-        self.submit_timeline(deadline=deadline)
-        self.submit_display()
-        self.submit_copy(copy=event.pk)
+        self.submit_initial(organiser, client=orga_client)
+        self.submit_basics(client=orga_client)
+        self.submit_timeline(deadline=deadline, client=orga_client)
+        self.submit_display(client=orga_client)
+        self.submit_copy(copy=event.pk, client=orga_client)
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count + 1
         assert organiser.teams.filter(
@@ -232,15 +233,14 @@ class TestEventCreation:
     def test_orga_create_event_no_new_team(
         self, orga_client, organiser, event, deadline
     ):
-        self.client = orga_client
         organiser.teams.update(all_events=True, can_create_events=True)
         count = Event.objects.count()
         team_count = organiser.teams.count()
-        self.submit_initial(organiser)
-        self.submit_basics()
-        self.submit_timeline(deadline=deadline)
-        self.submit_display(primary_color='#00ff00')
-        self.submit_copy()
+        self.submit_initial(organiser, client=orga_client)
+        self.submit_basics(client=orga_client)
+        self.submit_timeline(deadline=deadline, client=orga_client)
+        self.submit_display(primary_color='#00ff00', client=orga_client)
+        self.submit_copy(client=orga_client)
         assert Event.objects.count() == count + 1
         assert organiser.teams.count() == team_count
         assert Event.objects.filter(primary_color='#00ff00').exists()

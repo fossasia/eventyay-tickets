@@ -45,15 +45,15 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
     template_name = 'orga/event/dashboard.html'
     permission_required = 'orga.view_orga_area'
 
-    def get_cfp_tiles(self, event, _now):
+    def get_cfp_tiles(self, _now):
         result = []
-        max_deadline = event.cfp.max_deadline
+        max_deadline = self.request.event.cfp.max_deadline
         if max_deadline and _now < max_deadline:
             result.append(
                 {'large': timeuntil(max_deadline), 'small': _('until the CfP ends')}
             )
-        if event.cfp.is_open:
-            result.append({'url': event.cfp.urls.public, 'large': _('Go to CfP')})
+        if self.request.event.cfp.is_open:
+            result.append({'url': self.request.event.cfp.urls.public, 'large': _('Go to CfP')})
         return result
 
     def get_review_tiles(self):
@@ -89,7 +89,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         )
         _now = now()
         today = _now.date()
-        result['tiles'] = self.get_cfp_tiles(event, _now)
+        result['tiles'] = self.get_cfp_tiles(_now)
         if today < event.date_from:
             days = (event.date_from - today).days
             result['tiles'].append(

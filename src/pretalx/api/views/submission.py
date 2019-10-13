@@ -41,8 +41,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return ScheduleListSerializer
-        if self.action == 'retrieve':
-            return ScheduleSerializer
+        return ScheduleSerializer  # self.action == 'retrieve'
 
     def get_object(self):
         try:

@@ -165,9 +165,12 @@ class Filterable:
 
 class PermissionRequired(PermissionRequiredMixin):
 
-    def has_permission(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         if not hasattr(self, 'get_permission_object') and hasattr(self, 'object'):
             self.get_permission_object = lambda self: self.object
+
+    def has_permission(self):
         result = super().has_permission()
         if not result:
             request = getattr(self, 'request', None)

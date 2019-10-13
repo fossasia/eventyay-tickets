@@ -1,6 +1,6 @@
 from typing import Tuple
 from urllib.parse import quote
-from xml.etree import ElementTree
+from xml.etree import ElementTree as ET
 
 import qrcode
 import qrcode.image.svg
@@ -77,4 +77,4 @@ class BaseExporter:
 
     def get_qrcode(self):
         image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage)
-        return mark_safe(ElementTree.tostring(image.get_image()).decode())
+        return mark_safe(ET.tostring(image.get_image()).decode())

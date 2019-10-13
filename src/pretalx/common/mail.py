@@ -23,13 +23,13 @@ class CustomSMTPBackend(EmailBackend):
                 logger.warning(
                     f'Error testing mail settings, code {code}, resp: {resp}'
                 )
-                raise SMTPSenderRefused(code, resp)
+                raise SMTPSenderRefused(code, resp, sender=from_addr)
             (code, resp) = self.connection.rcpt('test@example.com')
             if code not in (250, 251):
                 logger.warning(
                     f'Error testing mail settings, code {code}, resp: {resp}'
                 )
-                raise SMTPSenderRefused(code, resp)
+                raise SMTPSenderRefused(code, resp, sender=from_addr)
         finally:
             self.close()
 
@@ -73,7 +73,7 @@ def mail_send_task(
         backend = get_connection(fail_silently=False)
 
     email = EmailMultiAlternatives(
-        subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers or dict(), reply_to=reply_to
+        subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers or {}, reply_to=reply_to
     )
     if html is not None:
         email.attach_alternative(inline_css(html), 'text/html')

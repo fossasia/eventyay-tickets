@@ -31,6 +31,7 @@ class SubmissionCard(Flowable):
         self.styles = styles
         self.width = width
         self.height = min(2.5 * max(submission.get_duration(), 30) * mm, A4[1])
+        self.text_location = 0
 
     def coord(self, x, y, unit=1):
         """http://stackoverflow.com/questions/4726011/wrap-text-in-a-table-
@@ -68,7 +69,7 @@ class SubmissionCard(Flowable):
         self.render_paragraph(
             Paragraph(
                 ", ".join(
-                    [s.get_display_name() for s in self.submission.speakers.all()]
+                    s.get_display_name() for s in self.submission.speakers.all()
                 ),
                 style=self.styles["Speaker"],
             )

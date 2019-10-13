@@ -14,7 +14,9 @@ from pretalx.submission.models import Submission, SubmissionType
 
 
 class TestWizard:
-    def get_response_and_url(self, client, url, follow=True, method='POST', data=None):
+
+    @staticmethod
+    def get_response_and_url(client, url, follow=True, method='POST', data=None):
         if method == 'GET':
             response = client.get(url, follow=follow, data=data)
         else:
@@ -22,13 +24,13 @@ class TestWizard:
         current_url = response.redirect_chain[-1][0]
         return response, current_url
 
-    def get_form_name(self, response):
-        with scope(event=self.event):
+    def get_form_name(self, response, event):
+        with scope(event=event):
             doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         input_hidden = doc.select("input[name^=submit_wizard]")[0]
         return input_hidden['name'], input_hidden['value']
 
-    def perform_init_wizard(self, client, success=True):
+    def perform_init_wizard(self, client, success=True, event=None):
         # Start wizard
         djmail.outbox = []
         response, current_url = self.get_response_and_url(
@@ -42,7 +44,7 @@ class TestWizard:
         client,
         response,
         url,
-        next='questions',
+        next_step='questions',
         title='Submission title',
         content_locale='en',
         description='Description',
@@ -50,6 +52,7 @@ class TestWizard:
         notes='Notes',
         slot_count=1,
         submission_type=None,
+        event=None,
     ):
         submission_data = {
             'info-title': title,
@@ -60,21 +63,21 @@ class TestWizard:
             'info-slot_count': slot_count,
             'info-submission_type': submission_type,
         }
-        key, value = self.get_form_name(response)
+        key, value = self.get_form_name(response, event)
         submission_data[key] = value
         response, current_url = self.get_response_and_url(
             client, url, data=submission_data
         )
         assert current_url.endswith(
-            f'/{next}/'
-        ), f'{current_url} does not end with /{next}/!'
+            f'/{next_step}/'
+        ), f'{current_url} does not end with /{next_step}/!'
         return response, current_url
 
-    def perform_question_wizard(self, client, response, url, data, next='profile'):
-        key, value = self.get_form_name(response)
+    def perform_question_wizard(self, client, response, url, data, next_step='profile', event=None):
+        key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(f'/{next}/')
+        assert current_url.endswith(f'/{next_step}/')
         return response, current_url
 
     def perform_user_wizard(
@@ -83,9 +86,10 @@ class TestWizard:
         response,
         url,
         password,
-        next='profile',
+        next_step='profile',
         email=None,
         register=False,
+        event=None,
     ):
         if register:
             data = {
@@ -96,10 +100,10 @@ class TestWizard:
             }
         else:
             data = {'user-login_email': email, 'user-login_password': password}
-        key, value = self.get_form_name(response)
+        key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(f'/{next}/')
+        assert current_url.endswith(f'/{next_step}/')
         return response, current_url
 
     def perform_profile_form(
@@ -109,24 +113,24 @@ class TestWizard:
         url,
         name='Jane Doe',
         bio='l337 hax0r',
-        next='me/submissions/',
+        next_step='me/submissions/',
+        event=None,
     ):
         data = {'profile-name': name, 'profile-biography': bio}
-        key, value = self.get_form_name(response)
+        key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(next), f'{current_url} does not end with {next}!'
+        assert current_url.endswith(next_step), f'{current_url} does not end with {next_step}!'
         return response, current_url
 
     @pytest.mark.django_db
     def test_info_wizard_query_string_handling(self, event, client):
         # build query string
-        self.event = event
         params_dict = QueryDict('track=academic&submission_type=academic_talk')
         current_url = '/test/submit/?{params_dict}'
         # Start wizard
         djmail.outbox = []
-        response, current_url = self.get_response_and_url(
+        _, current_url = self.get_response_and_url(
             client, current_url, method='GET'
         )
         # get query string from current URL
@@ -138,19 +142,19 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
-        self.event = event
         event.settings.set('mail_on_new_submission', True)
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
         answer_data = {f'questions-question_{question.pk}': '42'}
 
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
             client, response, current_url + '?submission_type={}-helpful-slug'.format(submission_type),
-            submission_type=submission_type
+            submission_type=submission_type, event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, next='user'
+            client, response, current_url, answer_data, next_step='user',
+            event=event
         )
         response, current_url = self.perform_user_wizard(
             client,
@@ -159,8 +163,9 @@ class TestWizard:
             password='testpassw0rd!',
             email='testuser@example.org',
             register=True,
+            event=event,
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -195,7 +200,6 @@ class TestWizard:
         choice_question,
         multiple_choice_question,
     ):
-        self.event = event
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
             answer_data = {
@@ -205,17 +209,20 @@ class TestWizard:
                 f'questions-question_{multiple_choice_question.pk}': multiple_choice_question.options.first().pk,
             }
 
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
-            client, response, current_url + '?submission_type=123-helpful-slug', submission_type=submission_type
+            client, response, current_url + '?submission_type=123-helpful-slug', submission_type=submission_type,
+            event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, next='user'
+            client, response, current_url, answer_data, next_step='user',
+            event=event,
         )
         response, current_url = self.perform_user_wizard(
-            client, response, current_url, email=user.email, password='testpassw0rd!'
+            client, response, current_url, email=user.email, password='testpassw0rd!',
+            event=event,
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -248,20 +255,21 @@ class TestWizard:
     def test_wizard_logged_in_user(
         self, event, client, question, user, review_question
     ):
-        self.event = event
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
             answer_data = {f'questions-question_{question.pk}': '42'}
 
         client.force_login(user)
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
-            client, response, current_url, submission_type=submission_type
+            client, response, current_url, submission_type=submission_type,
+            event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, next='profile'
+            client, response, current_url, answer_data, next_step='profile',
+            event=event,
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -284,20 +292,20 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
-        self.event = event
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
 
         client.force_login(user)
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
             client,
             response,
             current_url,
             submission_type=submission_type,
-            next='profile',
+            next_step='profile',
+            event=event,
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -320,20 +328,20 @@ class TestWizard:
     def test_wizard_logged_in_user_only_review_questions(
         self, event, client, user, review_question
     ):
-        self.event = event
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
 
         client.force_login(user)
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
             client,
             response,
             current_url,
             submission_type=submission_type,
-            next='profile',
+            next_step='profile',
+            event=event
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -356,7 +364,6 @@ class TestWizard:
     def test_wizard_logged_in_user_no_questions_broken_template(
         self, event, client, user
     ):
-        self.event = event
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
 
@@ -366,15 +373,16 @@ class TestWizard:
             event.ack_template.save()
 
         client.force_login(user)
-        response, current_url = self.perform_init_wizard(client)
+        response, current_url = self.perform_init_wizard(client, event=event)
         response, current_url = self.perform_info_wizard(
             client,
             response,
             current_url,
             submission_type=submission_type,
-            next='profile',
+            next_step='profile',
+            event=event,
         )
-        response, current_url = self.perform_profile_form(client, response, current_url)
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         assert doc.select('.alert-success')
@@ -394,7 +402,7 @@ class TestWizard:
         event.cfp.deadline = now() - timedelta(days=1)
         event.cfp.save()
         client.force_login(user)
-        response, current_url = self.perform_init_wizard(client, success=False)
+        self.perform_init_wizard(client, success=False, event=event)
 
 
 @pytest.mark.django_db

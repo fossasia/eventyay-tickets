@@ -3,11 +3,12 @@
 from django.db import migrations
 
 
-class Migration(migrations.Migration):
+def create_administrators(apps, schema_editor):
+    User = apps.get_model("person", "User")
+    User.objects.filter(is_superuser=True).update(is_superuser=False, is_administrator=True)
 
-    def create_administrators(apps, schema_editor):
-        User = apps.get_model("person", "User")
-        User.objects.filter(is_superuser=True).update(is_superuser=False, is_administrator=True)
+
+class Migration(migrations.Migration):
 
     dependencies = [
         ('person', '0012_user_is_administrator'),

@@ -48,13 +48,11 @@ class ScheduleData(BaseExporter):
                 'end': current_date.replace(hour=3, minute=59).astimezone(tz) + timedelta(days=1),
                 'first_start': None,
                 'last_end': None,
-                'rooms': dict(),
+                'rooms': {},
             }
             for index, current_date in enumerate(
-                [
-                    event.datetime_from + timedelta(days=i)
-                    for i in range((event.date_to - event.date_from).days + 1)
-                ]
+                event.datetime_from + timedelta(days=i)
+                for i in range((event.date_to - event.date_from).days + 1)
             )
         }
 

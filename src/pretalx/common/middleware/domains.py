@@ -47,7 +47,7 @@ class MultiDomainMiddleware:
 
         resolved = resolve(request.path)
         if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path.startswith('/api/'):
-            return
+            return None
         event_slug = resolved.kwargs.get('event')
         if event_slug:
             event = get_object_or_404(Event, slug__iexact=event_slug)
@@ -57,14 +57,14 @@ class MultiDomainMiddleware:
                 event_domain, event_port = split_domain_port(custom_domain.netloc)
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
-                    return
+                    return None
 
         default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
         if domain == default_domain:
-            return
+            return None
 
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
-            return
+            return None
 
         if request.path.startswith('/orga'):
             if default_port not in (80, 443):

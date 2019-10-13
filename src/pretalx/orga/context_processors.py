@@ -40,7 +40,7 @@ def orga_events(request):
         and request.user.is_authenticated
     ):
         _nav_event = []
-        for receiver, response in nav_event.send_robust(request.event, request=request):
+        for _, response in nav_event.send_robust(request.event, request=request):
             if isinstance(response, list):
                 _nav_event += response
             else:

@@ -8,6 +8,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from pkg_resources import iter_entry_points
 
+from pretalx import __version__
 from pretalx.common.settings.config import build_config
 from pretalx.common.settings.utils import log_initial
 
@@ -90,7 +91,7 @@ CORE_MODULES = LOCAL_APPS + [module for module in config.get('site', 'core_modul
 
 
 ## PLUGIN SETTINGS
-PLUGIN_SETTINGS = dict()
+PLUGIN_SETTINGS = {}
 for section in config.sections():
     if section.startswith('plugin:'):
         PLUGIN_SETTINGS[section[len('plugin:'):]] = dict(config.items(section))
@@ -462,6 +463,17 @@ if DEBUG:
     REST_FRAMEWORK['COMPACT_JSON'] = False
 
 WSGI_APPLICATION = 'pretalx.wsgi.application'
+
+PRETALX_VERSION = __version__
+if DEBUG:
+    with suppress(Exception):
+        import subprocess
+        PRETALX_VERSION = (
+            subprocess.check_output(['git', 'describe', '--always'])
+            .decode()
+            .strip()
+        )
+
 log_initial(
     debug=DEBUG,
     config_files=CONFIG_FILES,

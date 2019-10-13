@@ -175,7 +175,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                 if exceptions:
                     messages.error(
                         request,
-                        mark_safe('\n'.join([rich_text(e) for e in exceptions])),
+                        mark_safe('\n'.join(rich_text(e) for e in exceptions)),
                     )
                 else:
                     event.is_public = True
@@ -536,7 +536,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         kwargs = {'user': self.request.user}
         if step != 'initial':
             fdata = self.get_cleaned_data_for_step('initial')
-            kwargs.update(fdata or dict())
+            kwargs.update(fdata or {})
         return kwargs
 
     @transaction.atomic()

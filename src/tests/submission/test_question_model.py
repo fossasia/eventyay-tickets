@@ -44,7 +44,8 @@ def test_question_grouped_answers_choice(submission, question):
         answers[0].options.set([one])
         answers[1].options.set([two])
         answers[2].options.set([two])
-        [a.save() for a in answers]
+        for answer in answers:
+            answer.save()
 
         assert list(question.grouped_answers) == [
             {'options': two.pk, 'options__answer': two.answer, 'count': 2},
@@ -58,10 +59,11 @@ def test_question_grouped_answers_file(submission, question):
         f = SimpleUploadedFile('testfile.txt', b'file_content')
         question.variant = 'file'
         question.save()
-        [Answer.objects.create(submission=submission, question=question, answer='file://testfile.txt', answer_file=f) for _ in repeat(None, 3)]
+        for _ in repeat(None, 3):
+            Answer.objects.create(submission=submission, question=question, answer='file://testfile.txt', answer_file=f)
 
         assert len(question.grouped_answers) == 3
-        assert all([a['count'] == 1 for a in question.grouped_answers])
+        assert all(a['count'] == 1 for a in question.grouped_answers)
 
 
 @pytest.mark.django_db

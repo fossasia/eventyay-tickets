@@ -221,7 +221,7 @@ class ComposeMail(EventPermissionRequired, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
-        initial = kwargs.get('initial', dict())
+        initial = kwargs.get('initial', {})
         if 'template' in self.request.GET:
             template = MailTemplate.objects.filter(
                 pk=self.request.GET.get('template')

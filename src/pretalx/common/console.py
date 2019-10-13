@@ -19,7 +19,7 @@ def get_seperator(*args):
     """
     if sum(args) >= 3:
         return '┼'
-    elif sum(args) == 1:
+    if sum(args) == 1:
         return ('└', '┌', '┐', '┘')[args.index(True)]
     return SEPARATORS[tuple(args)]
 

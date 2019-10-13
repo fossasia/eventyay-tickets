@@ -3,16 +3,16 @@ from abc import ABCMeta
 
 from django.utils.translation import gettext as _
 
-_phrase_book = dict()
+_phrase_book = {}
 
 
 class PhrasesMetaClass(ABCMeta):
-    def __new__(mcls, class_name, bases, namespace, app):
-        new = super().__new__(mcls, class_name, bases, namespace)
+    def __new__(mcs, class_name, bases, namespace, app):
+        new = super().__new__(mcs, class_name, bases, namespace)
         _phrase_book[app] = new()
         return new
 
-    def __init__(self, *args, app, **kwargs):
+    def __init__(cls, *args, app, **kwargs):
         super().__init__(*args, **kwargs)
 
 

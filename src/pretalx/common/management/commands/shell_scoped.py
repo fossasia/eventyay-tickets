@@ -34,7 +34,7 @@ class Command(BaseCommand):
         }
         if not all(app_name in models for app_name in lookups):
             self.stdout.write(self.style.ERROR(f'Unknown model! Available models: {", ".join(models.keys())}'))
-            return
+            return ""
 
         scope_options = {
             app_name: models[app_name].objects.get(**app_value)

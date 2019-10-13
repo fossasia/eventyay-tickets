@@ -1,5 +1,3 @@
-from contextlib import suppress
-
 from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
@@ -23,7 +21,7 @@ def add_events(request):
             url_name = ''
             url_namespace = ''
         return {'url_name': url_name, 'url_namespace': url_namespace}
-    return dict()
+    return {}
 
 
 def locale_context(request):
@@ -45,7 +43,7 @@ def messages(request):
 def system_information(request):
     context = {}
     _footer = []
-    for sender, response in footer_link.send(
+    for __, response in footer_link.send(
         getattr(request, 'event', None), request=request
     ):
         if isinstance(response, list):
@@ -56,17 +54,5 @@ def system_information(request):
 
     if settings.DEBUG:
         context['development_warning'] = True
-        with suppress(Exception):
-            import subprocess
-
-            context['pretalx_version'] = (
-                subprocess.check_output(['git', 'describe', '--always'])
-                .decode()
-                .strip()
-            )
-    else:
-        with suppress(Exception):
-            import pretalx
-
-            context['pretalx_version'] = pretalx.__version__
+        context['pretalx_version'] = settings.PRETALX_VERSION
     return context

@@ -24,4 +24,4 @@ class Choices:
 
     @classmethod
     def get_max_length(cls):
-        return max([len(val) for val, label in cls.valid_choices])
+        return max(len(val) for val, label in cls.valid_choices)

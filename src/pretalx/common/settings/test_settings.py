@@ -62,7 +62,7 @@ with suppress(ValueError):
 
 
 # Don't run migrations
-class DisableMigrations(object):
+class DisableMigrations:
 
     def __contains__(self, item):
         return True

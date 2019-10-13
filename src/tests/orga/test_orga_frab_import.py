@@ -66,6 +66,6 @@ def test_frab_import_minimal(administrator):
             == 1
         )
         assert TalkSlot.objects.count() == 5  # 3 for the first talk, 2 for the second talk
-        assert set(event.schedules.all().values_list('version', flat=True)) == set(
-            ['1.99b 🍕', '1.99c 🍕', None]
-        )
+        assert set(event.schedules.all().values_list('version', flat=True)) == {
+            '1.99b 🍕', '1.99c 🍕', None
+        }

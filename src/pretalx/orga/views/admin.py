@@ -14,12 +14,13 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
     @context
     def queue_length(self):
-        if settings.HAS_CELERY:
-            try:
-                client = app.broker_connection().channel().client
-                return client.llen('celery')
-            except Exception as e:
-                return str(e)
+        if not settings.HAS_CELERY:
+            return None
+        try:
+            client = app.broker_connection().channel().client
+            return client.llen('celery')
+        except Exception as e:
+            return str(e)
 
     @context
     def executable(self):

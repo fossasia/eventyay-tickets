@@ -89,7 +89,7 @@ class ExporterView(ScheduleDataView):
 
         exporter = exporter[len('export.'):] if exporter.startswith('export.') else exporter
         responses = register_data_exporters.send(request.event)
-        for sender, response in responses:
+        for __, response in responses:
             ex = response(request.event)
             if ex.identifier == exporter:
                 if ex.public or request.is_orga:
@@ -121,7 +121,8 @@ class ScheduleView(ScheduleDataView):
     template_name = 'agenda/schedule.html'
     permission_required = 'agenda.view_schedule'
 
-    def _get_text_list(self, data):
+    @staticmethod
+    def _get_text_list(data):
         result = ''
         for date in data:
             talk_list = sorted(
@@ -166,7 +167,7 @@ class ScheduleView(ScheduleDataView):
             key=lambda x: x.start
         )
         if not talk_list:
-            return
+            return None
 
         global_start = date.get('first_start', min(talk.start for talk in talk_list))
         global_end = date.get('last_end', max(talk.end for talk in talk_list))
@@ -227,7 +228,8 @@ class ScheduleView(ScheduleDataView):
             line_parts.append(fill_char)
         return ''.join(line_parts)
 
-    def _card(self, talk, col_width):
+    @staticmethod
+    def _card(talk, col_width):
         empty_line = ' ' * col_width
         text_width = col_width - 4
         titlelines = textwrap.wrap(talk.submission.title, text_width)
@@ -275,7 +277,8 @@ class ScheduleView(ScheduleDataView):
         for __ in repeat(None, height - yielded_lines + 1):
             yield empty_line
 
-    def _get_line_parts(self, start1, start2, end1, end2, run1, run2, fill_char):
+    @staticmethod
+    def _get_line_parts(start1, start2, end1, end2, run1, run2, fill_char):
         start_end = [end2, start2, start1, end1]
         result = []
         if run1 and (start2 or end2):
@@ -291,7 +294,7 @@ class ScheduleView(ScheduleDataView):
         return result
 
     def get_text(self, request, **kwargs):
-        data, max_rooms = self.get_schedule_data()
+        data, _ = self.get_schedule_data()
         response_start = textwrap.dedent(f'''
         \033[1m{request.event.name}\033[0m
 

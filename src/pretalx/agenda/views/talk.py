@@ -91,7 +91,7 @@ class TalkView(PermissionRequired, TemplateView):
 
     @cached_property
     def recording(self):
-        for receiver, response in register_recording_provider.send_robust(
+        for __, response in register_recording_provider.send_robust(
             self.request.event
         ):
             if (

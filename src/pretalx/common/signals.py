@@ -27,7 +27,7 @@ class EventPluginSignal(django.dispatch.Signal):
     def _is_active(sender, receiver):
         # Find the Django application this belongs to
         searchpath = receiver.__module__
-        core_module = any([searchpath.startswith(cm) for cm in settings.CORE_MODULES])
+        core_module = any(searchpath.startswith(cm) for cm in settings.CORE_MODULES)
         # Only fire receivers from active plugins and core modules
         if core_module:
             return True

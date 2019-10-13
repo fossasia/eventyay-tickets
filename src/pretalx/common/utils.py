@@ -20,6 +20,7 @@ def daterange_de(date_from, date_to):
         return "{}.–{}".format(_date(date_from, "j"), _date(date_to, "j. F Y"))
     if date_from.year == date_to.year:
         return "{} – {}".format(_date(date_from, "j. F"), _date(date_to, "j. F Y"))
+    return ""
 
 
 def daterange_en(date_from, date_to):
@@ -33,6 +34,7 @@ def daterange_en(date_from, date_to):
         return "{} – {}".format(_date(date_from, "N jS"), _date(date_to, "jS, Y"))
     if date_from.year == date_to.year:
         return "{} – {}".format(_date(date_from, "N jS"), _date(date_to, "N jS, Y"))
+    return ""
 
 
 def daterange_es(date_from, date_to):
@@ -57,6 +59,7 @@ def daterange_es(date_from, date_to):
             _date(date_to, "F"),
             _date(date_to, "Y"),
         )
+    return ""
 
 
 def daterange(date_from, date_to):
