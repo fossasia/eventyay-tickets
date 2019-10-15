@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` In feedback pages for talks that contained multiple speakers, the email addresses of those speakers were shown next to their names.
 - :feature:`-` Allow users to add an imprint URL that will be shown at the bottom of every public event page.
 - :bug:`-` On the sneak peek preview page, markdown wasn't rendered correctly to HTML.
 - :feature:`-` If pretalx is running in development mode, its favicon will be red.
