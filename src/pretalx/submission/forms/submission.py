@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
+from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget

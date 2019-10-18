@@ -117,7 +117,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
 
     def __str__(self) -> str:
-        """For public consumption as it is used for Select widgets, e.g. on the feedback form."""
+        """For public consumption as it is used for Select widgets, e.g. on the
+        feedback form."""
         return self.name or str(_('Unnamed user'))
 
     def get_display_name(self) -> str:
