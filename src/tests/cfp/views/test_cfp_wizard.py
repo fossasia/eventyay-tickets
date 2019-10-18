@@ -118,13 +118,82 @@ class TestWizard:
         bio='l337 hax0r',
         next_step='me/submissions/',
         event=None,
+        success=True,
     ):
         data = {'profile-name': name, 'profile-biography': bio}
         key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
         assert current_url.endswith(next_step), f'{current_url} does not end with {next_step}!'
+        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
+        if success:
+            assert doc.select('.alert-success')
+            assert doc.select('#user-dropdown-label')
+        else:
+            assert not doc.select('.alert-success')
+            assert not doc.select('#user-dropdown-label')
         return response, current_url
+
+    def assert_submission(
+        self,
+        event,
+        title='Submission title',
+        content_locale='en',
+        description='Description',
+        abstract='Abstract',
+        notes='Notes',
+        question=None,
+        answer='42',
+        track=None,
+    ):
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == title
+            assert sub.submission_type is not None
+            assert sub.content_locale == content_locale
+            assert sub.description == description
+            assert sub.abstract == abstract
+            assert sub.notes == notes
+            assert sub.slot_count == 1
+            if question:
+                answ = sub.answers.first()
+                assert answ.question == question
+                assert answ.answer == answer
+            else:
+                assert sub.answers.count() == 0
+            if track:
+                assert sub.track == track
+            else:
+                assert sub.track is None
+        return sub
+
+    def assert_user(
+        self,
+        submission,
+        email='testuser@example.com',
+        name='Jane Doe',
+        biography='l337 hax0r',
+        question=None,
+        answer=None,
+    ):
+        with scope(event=submission.event):
+            user = submission.speakers.get(email=email)
+            assert user.name == name
+            assert user.profiles.get(event=submission.event).biography == biography
+            if question:
+                answ = user.answers.filter(question__target='speaker').first()
+                assert answ.question == question
+                assert answ.person == user
+                assert not answ.submission
+                assert answ.answer == 'green'
+        return user
+
+    def assert_mail(self, submission, user, count=1):
+        assert len(djmail.outbox) == count
+        mail = djmail.outbox[0]
+        assert submission.title in mail.subject
+        assert submission.title in mail.body
+        assert user.email in mail.to
 
     @pytest.mark.django_db
     def test_info_wizard_query_string_handling(self, event, client):
@@ -132,7 +201,6 @@ class TestWizard:
         params_dict = QueryDict('track=academic&submission_type=academic_talk')
         current_url = '/test/submit/?{params_dict}'
         # Start wizard
-        djmail.outbox = []
         _, current_url = self.get_response_and_url(
             client, current_url, method='GET'
         )
@@ -169,28 +237,9 @@ class TestWizard:
             event=event,
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            assert sub.submission_type is not None
-            assert sub.content_locale == 'en'
-            assert sub.description == 'Description'
-            assert sub.abstract == 'Abstract'
-            assert sub.notes == 'Notes'
-            assert sub.slot_count == 1
-            answ = sub.answers.first()
-            assert answ.question == question
-            assert answ.answer == '42'
-            user = sub.speakers.first()
-            assert user.email == 'testuser@example.org'
-            assert user.name == 'Jane Doe'
-            assert user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 2  # user email plus orga email
+        submission = self.assert_submission(event, question=question)
+        self.assert_user(submission, email='testuser@example.org')
+        assert len(djmail.outbox) == 2  # user email plus orga email
 
     @pytest.mark.django_db
     def test_wizard_existing_user(
@@ -227,32 +276,9 @@ class TestWizard:
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
 
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            answ = sub.answers.filter(question__target='submission').first()
-            assert answ.question == question
-            assert answ.answer == '42'
-            assert answ.submission == sub
-            assert not answ.person
-            answ = user.answers.filter(question__target='speaker').first()
-            assert answ.question == speaker_question
-            assert answ.person == user
-            assert not answ.submission
-            assert answ.answer == 'green'
-            s_user = sub.speakers.first()
-            assert s_user.pk == user.pk
-            assert s_user.name == 'Jane Doe'
-            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 1
-            mail = djmail.outbox[0]
-            assert sub.title in mail.subject
-            assert sub.title in mail.body
-            assert s_user.email in mail.to
+        submission = self.assert_submission(event, question=question)
+        user = self.assert_user(submission, question=speaker_question, answer='green')
+        self.assert_mail(submission, user)
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user(
@@ -269,29 +295,13 @@ class TestWizard:
             event=event,
         )
         response, current_url = self.perform_question_wizard(
-            client, response, current_url, answer_data, next_step='profile',
+            client, response, current_url, answer_data,
             event=event,
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            answ = sub.answers.first()
-            assert answ.question == question
-            assert answ.answer == '42'
-            s_user = sub.speakers.first()
-            assert s_user.pk == user.pk
-            assert s_user.name == 'Jane Doe'
-            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 1
-            mail = djmail.outbox[0]
-            assert sub.title in mail.subject
-            assert sub.title in mail.body
-            assert s_user.email in mail.to
+        submission = self.assert_submission(event, question=question)
+        user = self.assert_user(submission)
+        self.assert_mail(submission, user)
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions(self, event, client, user):
@@ -309,23 +319,9 @@ class TestWizard:
             event=event,
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            assert not sub.answers.exists()
-            s_user = sub.speakers.first()
-            assert s_user.pk == user.pk
-            assert s_user.name == 'Jane Doe'
-            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 1
-            mail = djmail.outbox[0]
-            assert sub.title in mail.subject
-            assert sub.title in mail.body
-            assert s_user.email in mail.to
+        submission = self.assert_submission(event)
+        user = self.assert_user(submission)
+        self.assert_mail(submission, user)
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_only_review_questions(
@@ -345,23 +341,9 @@ class TestWizard:
             event=event
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            assert not sub.answers.exists()
-            s_user = sub.speakers.first()
-            assert s_user.pk == user.pk
-            assert s_user.name == 'Jane Doe'
-            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 1
-            mail = djmail.outbox[0]
-            assert sub.title in mail.subject
-            assert sub.title in mail.body
-            assert s_user.email in mail.to
+        submission = self.assert_submission(event)
+        user = self.assert_user(submission)
+        self.assert_mail(submission, user)
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user_no_questions_broken_template(
@@ -386,19 +368,9 @@ class TestWizard:
             event=event,
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            assert not sub.answers.exists()
-            s_user = sub.speakers.first()
-            assert s_user.pk == user.pk
-            assert s_user.name == 'Jane Doe'
-            assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
-            assert len(djmail.outbox) == 0
+        submission = self.assert_submission(event)
+        user = self.assert_user(submission)
+        assert len(djmail.outbox) == 0
 
     @pytest.mark.django_db
     def test_wizard_with_tracks(self, event, client, track, other_track):
@@ -424,18 +396,12 @@ class TestWizard:
             password='testpassw0rd!',
             email='testuser@example.org',
             register=True,
-            next_step='profile',
             event=event,
         )
         response, current_url = self.perform_profile_form(client, response, current_url, event=event)
-
-        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        assert doc.select('.alert-success')
-        assert doc.select('#user-dropdown-label')
-        with scope(event=event):
-            sub = Submission.objects.last()
-            assert sub.title == 'Submission title'
-            assert sub.track == track
+        submission = self.assert_submission(event, track=track)
+        user = self.assert_user(submission, email='testuser@example.org')
+        self.assert_mail(submission, user)
 
     @pytest.mark.django_db
     def test_wizard_cfp_closed(self, event, client, user):
