@@ -815,3 +815,10 @@ def track(event):
     with scope(event=event):
         event.settings.use_tracks = True
         return Track.objects.create(name='Test Track', color='00ff00', event=event)
+
+
+@pytest.fixture
+def other_track(event):
+    with scope(event=event):
+        event.settings.use_tracks = True
+        return Track.objects.create(name='Second Test Track', color='ff0000', event=event)

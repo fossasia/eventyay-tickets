@@ -141,7 +141,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
         }
         field_classes = {
             'submission_type': SafeModelChoiceField,
-            'track': SafeModelMultipleChoiceField,
+            'track': SafeModelChoiceField,
         }
 
 

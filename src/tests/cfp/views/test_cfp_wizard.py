@@ -53,6 +53,7 @@ class TestWizard:
         slot_count=1,
         submission_type=None,
         event=None,
+        track=None,
     ):
         submission_data = {
             'info-title': title,
@@ -63,6 +64,8 @@ class TestWizard:
             'info-slot_count': slot_count,
             'info-submission_type': submission_type,
         }
+        if track:
+            submission_data['info-track'] = getattr(track, 'pk', track)
         key, value = self.get_form_name(response, event)
         submission_data[key] = value
         response, current_url = self.get_response_and_url(
@@ -396,6 +399,43 @@ class TestWizard:
             assert s_user.name == 'Jane Doe'
             assert s_user.profiles.get(event=event).biography == 'l337 hax0r'
             assert len(djmail.outbox) == 0
+
+    @pytest.mark.django_db
+    def test_wizard_with_tracks(self, event, client, track, other_track):
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            event.settings.cfp_request_track = True
+            event.settings.cfp_require_track = True
+
+        response, current_url = self.perform_init_wizard(client, event=event)
+        response, current_url = self.perform_info_wizard(
+            client,
+            response,
+            current_url,
+            submission_type=submission_type,
+            next_step='user',
+            event=event,
+            track=track,
+        )
+        response, current_url = self.perform_user_wizard(
+            client,
+            response,
+            current_url,
+            password='testpassw0rd!',
+            email='testuser@example.org',
+            register=True,
+            next_step='profile',
+            event=event,
+        )
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
+
+        doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
+        assert doc.select('.alert-success')
+        assert doc.select('#user-dropdown-label')
+        with scope(event=event):
+            sub = Submission.objects.last()
+            assert sub.title == 'Submission title'
+            assert sub.track == track
 
     @pytest.mark.django_db
     def test_wizard_cfp_closed(self, event, client, user):
