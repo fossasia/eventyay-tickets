@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` If pretalx encounters an error it can't recover from, the error page now shows a link to a partially pre-filled GitHub issue.
 - :bug:`-` pretalx would show an error when users were asked to select their submission's track during the CfP workflow.
 - :release:`1.0.4 <2019-10-15>`
 - :bug:`-` In feedback pages for talks that contained multiple speakers, the email addresses of those speakers were shown next to their names.

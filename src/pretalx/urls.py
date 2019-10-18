@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'', include((plugin_patterns, 'plugins'))),
 ]
 
+handler500 = 'pretalx.common.views.handle_500'
+
 if settings.DEBUG:
     with suppress(ImportError):
         import debug_toolbar

@@ -69,17 +69,6 @@ class BasePhrases(Phrases, app='base'):
         _('This page has ceased to be.'),
         _('Huh.'),
     ]
-    internal_error = [
-        _('Internal server error.'),
-        _('Internal error, sorry.'),
-        _('Internal server error, we\'ve informed the maintenance robot.'),
-        '',
-        _('Ouch, this page is broken.'),
-        _('This shouldn\'t happen, sorry. We\'re looking into it.'),
-        _('Huh. This seems broken. Please try again later.'),
-        _('This seems broken. We\'re looking into it, please give us a bit.'),
-        _('It\'s a bug, not a feature. We\'re looking into it.'),
-    ]
 
     enter_email = _('Email address')
     password_repeat = _('New password (again)')

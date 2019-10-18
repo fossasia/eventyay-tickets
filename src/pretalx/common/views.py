@@ -4,8 +4,9 @@ from contextlib import suppress
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponseServerError
 from django.shortcuts import redirect
+from django.template import TemplateDoesNotExist, loader
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -107,3 +108,19 @@ class GenericResetView(FormView):
         user.log_action('pretalx.user.password.reset')
 
         return redirect(self.get_success_url())
+
+
+def handle_500(request):
+    try:
+        template = loader.get_template('500.html')
+    except TemplateDoesNotExist:
+        return HttpResponseServerError(
+            'Internal server error. Please contact the administrator for details.',
+            content_type='text/html',
+        )
+    context = {}
+    try:  # This should never fail, but can't be too cautious in error views
+        context['request_path'] = urllib.parse.quote(request.path)
+    except Exception:
+        pass
+    return HttpResponseServerError(template.render(context))
