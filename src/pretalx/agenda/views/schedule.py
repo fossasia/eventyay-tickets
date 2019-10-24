@@ -340,6 +340,8 @@ class ScheduleView(ScheduleDataView):
                 response = HttpResponseRedirect(target_url)
                 response.status_code = 303
                 return response
+        if '*/*' in accept_header:
+            return self.get_text(request, **kwargs)
         return super().get(request, **kwargs)  # Fallback to standard HTML response
 
     def get_object(self):
