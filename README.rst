@@ -67,30 +67,9 @@ to this project.
 Users
 -----
 
-Previous conferences using pretalx include:
-
-- `deRSE19`_
-- `NorthSec 2019`_
-- `Journées du Logiciel Libre 2019`_ (a good example of our French localisation)
-- `EasterHegg 2019`_
-- `PrivacyWeek`_ (2018, 2019)
-- `hack.lu 2018`_
-- `DjangoCon 2018`_
-- `OsmoDevCon 2018`_
-- `GPN 2018`_
-- `EasterHegg 2018`_
-- `TROOPERS 2018`_
-- `MRMCD`_ (2017, 2018)
-- `Tools4AgileTeams`_ (2019)
-- `Camp++ 2019`_
-- `Klimacamp Leipziger Land`_ & `Degrowth Summerschool`_ (2019) 
-- `OWASP Ukraine`_ (four events to date)
-- `NoNameCon`_
-- `ToxCon`_
-- `Technik Camp 2019`_
-
-Note
-  If you use pretalx for your event, please tell us about it!
+If you want to look at conferences using pretalx, head over to the wiki for a
+`list of events`_. And if you use pretalx for your event, please add it to the
+list (or tell us about it, and we'll add it)!
 
 .. |logo| image:: https://raw.githubusercontent.com/pretalx/pretalx/master/assets/favicon-32x32.png
    :alt: pretalx logo
@@ -105,25 +84,4 @@ Note
 .. _PyPI: https://pypi.python.org/pypi/pretalx
 .. _DEPENDENCIES.rst: https://github.com/pretalx/pretalx/blob/master/DEPENDENCIES.rst
 .. _list of plugin ideas: https://github.com/pretalx/pretalx/wiki/Plugin-ideas
-
-.. _MRMCD: https://talks.mrmcd.net/
-.. _deRSE19: https://derse19.uni-jena.de/derse19/schedule/
-.. _TROOPERS 2018: https://cfp.ernw-insight.de/tr18/cfp
-.. _EasterHegg 2018: https://pretalx.eh18.easterhegg.eu/eh18/schedule/
-.. _GPN 2018: https://pretalx.entropia.de/gpn18/
-.. _OsmoDevCon 2018: https://pretalx.sysmocom.de/osmodevcon2018/schedule/
-.. _DjangoCon Europe 2018: https://2018.djangocontent.eu/hd/schedule/
-.. _hack.lu 2018: https://cfp.hack.lu/hacklu18/
-.. _DjangoCon 2018: https://2018.djangocon.eu
-.. _PrivacyWeek: https://privacyweek.at/
-.. _EasterHegg 2019: https://eh19.easterhegg.eu/
-.. _NorthSec 2019: https://cfp.nsec.io/2019/
-.. _Journées du Logiciel Libre 2019: https://pretalx.jdll.org/jdll2019/cfp
-.. _Tools4AgileTeams: https://talks.seibert-media.net/tools4agileteams2019/
-.. _Camp++ 2019: https://camp.hsbp.org/2019/pp7e3/
-.. _Klimacamp Leipziger Land: https://event.klimacamp-leipzigerland.de/2019/cfp
-.. _Degrowth Summerschool: https://summerschool.degrowth.info/sc2019/cfp
-.. _OWASP Ukraine: https://cfp.owaspukraine.org/
-.. _NoNameCon: https://cfp.nonamecon.org/
-.. _ToxCon: https://pretalx.tox.zoff.cc/toxcon2019/
-.. _Technik Camp 2019: https://ffbsee.net/camp/
+.. _list of events: https://github.com/pretalx/pretalx/wiki/Events
