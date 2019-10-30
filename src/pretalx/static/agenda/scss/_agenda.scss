@@ -139,8 +139,12 @@ header {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  float: left;
+  width: 100%;
   .pretalx-schedule-day {
     background: $gray-lightest;
+    float: right;
+    width: 100%;
     margin-bottom: 16px;
     overflow-y: hidden; /* This hides the .nowline element. */
     overflow-x: auto;
@@ -217,7 +221,7 @@ header {
         border-left: 2px solid #ccc;
         flex: 1 0;
         min-width: 150px;
-        scroll-snap-align: center;
+        scroll-snap-align: none center;
         -webkit-scroll-snap-coordinate: 50% 0%; /* older (Safari) */
         scroll-snap-stop: always;
         background: repeating-linear-gradient(
