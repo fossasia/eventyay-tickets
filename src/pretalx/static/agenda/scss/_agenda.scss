@@ -20,9 +20,11 @@
       flex-direction: column;
     }
   }
-
-  .days {
-    display: none;
+  &.container-wide {
+    max-width: 100%;
+  }
+  &.container-semi-wide {
+    max-width: 1400px;
   }
 }
 #legend {
@@ -83,6 +85,24 @@ header {
 
   .header-right {
     margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    & > * {
+      margin-right: 8px;
+      height: 90%;
+      &.dropdown {
+        height: 100%;
+        #exportDropdown {
+          height: 90%;
+          margin-bottom: 3px;
+        }
+      }
+      .input-group-append button {
+        display: flex;
+        align-items: center;
+      }
+    }
   }
 }
 
@@ -90,29 +110,27 @@ header {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-
-  .day {
+  .pretalx-schedule-day {
     background: $gray-lightest;
     margin-bottom: 16px;
-    width: auto;
     overflow-y: hidden; /* This hides the .nowline element. */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-scroll-snap-type: x mandatory; /* Safari/MacOS in general */
     -webkit-overflow-scrolling: touch; /* Safari/MacOS in general */
 
-    .header-row {
+    .pretalx-schedule-day-header-row {
       background: $gray-lightest;
       display: flex;
       flex-direction: row;
       font-weight: bold;
 
-      .header {
+      .pretalx-schedule-day-header {
         border-bottom: 4px solid $brand-primary;
         background: inherit;
       }
 
-      .room-header {
+      .pretalx-schedule-day-room-header {
         border-left: 2px solid lighten($gray-800, 55%);
         border-bottom: 4px solid $brand-primary;
         flex: 1 0;
@@ -125,17 +143,17 @@ header {
       }
     }
 
-    .time-column {
+    .pretalx-schedule-time-column {
       flex: 0 0 4em;
       position: sticky;
       left: 0px;
       z-index: 40;
       border-right: 2px solid lighten($gray-800, 55%);
 
-      .hour {
+      .pretalx-schedule-hour {
         height: 120px;
         line-height: 30px;
-        padding-right: 16px;
+        padding-right: 8px;
         text-align: right;
       }
 
@@ -152,21 +170,21 @@ header {
       );
     }
 
-    .rooms, .header-row {
+    .pretalx-schedule-rooms, .pretalx-schedule-day-header-row {
       min-width: min-content;
     }
 
-    .rooms {
+    .pretalx-schedule-rooms {
       display: flex;
       flex-direction: row;
       position: relative;
 
-      .nowline {
+      .pretalx-schedule-nowline {
         position: absolute;
         width: 100%;
       }
 
-      .room {
+      .pretalx-schedule-room {
         border-left: 2px solid #ccc;
         flex: 1 0;
         min-width: 150px;
@@ -185,11 +203,11 @@ header {
           $white 60px
         );
 
-        .talk-container {
+        .pretalx-schedule-talk-container {
           position: relative;
         }
 
-        .talk {
+        .pretalx-schedule-talk {
           border: 1px solid lighten($brand-primary, 25%);
           border-left: 4px solid lighten($brand-primary, 25%);
           background-color: rgba(255, 255, 255, 0.76);
@@ -206,7 +224,7 @@ header {
             display: block;
           }
 
-          .talk-content {
+          .pretalx-schedule-talk-content {
             height: 100%;
             overflow: hidden;
 
@@ -214,12 +232,12 @@ header {
               color: rgba(180, 20, 23, 0.87);
             }
 
-            .talk-title {
+            .pretalx-schedule-talk-title {
               line-height: 26px;
               font-weight: bold;
             }
 
-            .talk-speakers {
+            .pretalx-schedule-talk-speakers {
               line-height: 26px;
             }
           }
@@ -268,12 +286,12 @@ header {
           }
         }
 
-        .talk.talk-personal,
-        .talk.active {
+        .pretalx-schedule-talk.talk-personal,
+        .pretalx-schedule-talk.active {
           background-color: rgba(155, 255, 155, 0.76);
         }
 
-        .talk.search-fail {
+        .pretalx-schedule-talk.search-fail {
           color: $gray-light;
           border-color: $gray-light;
         }
@@ -322,9 +340,9 @@ header {
   #fahrplan {
     width: 100%;
 
-    .day {
-      .rooms .room,
-      .header-row .room-header {
+    .pretalx-schedule-day {
+      .pretalx-schedule-rooms .pretalx-schedule-room,
+      .pretalx-schedule-day-header-row .pretalx-schedule-day-room-header {
         min-width: 200px;
       }
 
@@ -362,12 +380,12 @@ header {
   .container {
     max-width: 100%;
   }
-  #fahrplan,
+  #fahrplan, .pretalx-schedule-wrapper,
   .card {
     display: block;
     overflow: visible !important;
   }
-  .day {
+  .pretalx-schedule-day {
     page-break-after: always;
     overflow: visible !important;
   }

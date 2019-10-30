@@ -4,10 +4,10 @@ window.addEventListener("load", function(event) {
       'msScrollSnapAlign' in document.documentElement.style) {
     return
   }
-  document.querySelector(".day").forEach((element) => {
+  document.querySelector(".pretalx-schedule-day").forEach((element) => {
     element.style.scrollSnapType = null
   })
-  document.querySelector(".room").forEach((element) => {
+  document.querySelector(".pretalx-schedule-room").forEach((element) => {
     element.style.scrollSnapAlign = null
   })
 })
