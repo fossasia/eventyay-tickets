@@ -1,24 +1,6 @@
-#main-container.container.container-wide {
-  max-width: 100%;
-}
-#main-container.container.container-semi-wide {
-  max-width: 1400px;
-}
-#navigator {
-  position: fixed;
-  left: 0;
-  margin-top: 50px;
-  background-color: $offwhite;
-  padding: 8px 16px;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16), 0 5px 8px 0 rgba(0, 0, 0, 0.12);
-  z-index: 100;
-
-  &:hover {
-    .days {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-    }
+#main-container.container {
+  &.container-wide #main-card main, &.container-semi-wide #main-card main, &.container-narrow #main-card main {
+    padding: 0;
   }
   &.container-wide {
     max-width: 100%;
@@ -106,7 +88,54 @@ header {
   }
 }
 
-#fahrplan {
+.pretalx-tabbed {
+  display: flex;
+  flex-direction: column-reverse;
+  input[name=tabs] {
+    display: none;
+
+    &:not(:checked) + .pretalx-tab-content {
+      display: none;
+    }
+  }
+  .pretalx-tab-content {
+    margin : 48px 0 0 -100%;
+  }
+}
+.pretalx-tabs {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid $gray-lighter;
+  position: sticky;
+  top: 0;
+  background-color: $white;
+  z-index: 200;
+
+  h4, h3, h2, h1, .pretalx-tab {
+    height: 48px;
+    padding: 8px 24px;
+    font-size: 14pt;
+    overflow: hidden;
+    border: 1px solid $gray-lighter;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-shadow: 0 0 0.5em $gray-lightest;
+    cursor: pointer;
+    &.active {
+      border-top: 4px solid $brand-primary;
+    }
+    label {
+      user-select: none;
+      cursor: pointer;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+  }
+}
+
+#fahrplan, .pretalx-schedule-wrapper {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -329,10 +358,6 @@ header {
     text-align: right;
     flex-direction: column;
   }
-  #navigator {
-    top: 10px;
-    margin-top: 0;
-  }
   #legend {
     top: 50px;
     margin-top: 0;
@@ -363,7 +388,6 @@ header {
     overflow: visible !important;
     height: auto;
   }
-  #navigator,
   #legend,
   #schedule-nav,
   #main-card .user-row,

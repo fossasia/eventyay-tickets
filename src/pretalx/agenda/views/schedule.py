@@ -368,6 +368,14 @@ class ScheduleView(ScheduleDataView):
             return result
 
         result['data'], result['max_rooms'] = self.get_schedule_data()
+        result['day_count'] = len(result['data'])
+        if result['day_count']:
+            today = now().date()
+            result['initial_day'] = (
+                today
+                if result['data'][0]['start'].date() <= today <= result['data'][-1]['start'].date()
+                else result['data'][0]['start']
+            )
         return result
 
     def get_schedule_data(self):
@@ -405,7 +413,7 @@ class ScheduleView(ScheduleDataView):
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
-        return data, max_rooms
+        return list(data), max_rooms
 
 
 class ChangelogView(EventPermissionRequired, TemplateView):

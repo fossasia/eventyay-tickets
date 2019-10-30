@@ -3,20 +3,16 @@
 {% load i18n %}
 {% load static %}
 
-{% block container_width %} {% if max_rooms > 6 %}container-wide{% elif max_rooms > 3 %}container-semi-wide{% endif %}{% endblock %}
+{% block container_width %} {% if max_rooms > 6 %}container-wide{% elif max_rooms > 3 %}container-semi-wide{% else %}container-narrow{% endif %}{% endblock %}
+
+{% block agenda_custom_header %}
+{% compress js %}
+<script src="{% static 'common/js/tabbed.js' %}"></script>
+{% endcompress %}
+{% endblock %}
 
 {% block agenda_content %}
 <span id="offline-vars" data-event="/{{ request.event.urls.schedule }}/"></span>
-{% if data|length > 1 %}
-<div id="navigator">
-  <i class="fa fa-dot-circle-o"></i> nav
-  <div class="days">
-    {% for day in data %}
-    <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date }}</a>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
 
 {% if request.event.settings.use_tracks and request.event.tracks.count > 1 %}
 <div id="legend">
@@ -58,10 +54,10 @@
 
     <div class="pretalx-tabbed"><div class="pretalx-tabbed-content">
     {% for day in data %}
-        <h3 id="{{ day.start.date|date:"c" }}">
-            <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}</a>
-        </h3>
-        <div class="day" data-start="{{ day.display_start|date:"c" }}">
+      {% if day_count > 1 %}
+      <input name="tabs" id="{{ day.start.date|date:"c" }}" type="radio" {% if day.start == initial_day %}checked{% endif %}>
+      {% endif %}
+        <div class="pretalx-schedule-day pretalx-tab-content" data-start="{{ day.display_start|date:"c" }}">
             {% if day.first_start %}
                 <div class="pretalx-schedule-day-header-row">
                     <span class="pretalx-schedule-time-column pretalx-schedule-day-header"></span>
@@ -125,6 +121,17 @@
             {% endif %}
         </div>
     {% endfor %}
+    {% if day_count > 1 %}
+    <div class="pretalx-tabs">
+    {% for day in data %}
+        <div class="pretalx-tab">
+          <label class="pretalx-tab-label" for="{{ day.start.date|date:"c" }}">
+              {{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}
+          </label>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
 </div>
 
 {% compress js %}

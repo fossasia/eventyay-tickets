@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` For events that span multiple days, pretalx now shows the conference days in a tabbed display, instead of requiring you to scroll a lot.
 - :feature:`-` If pretalx encounters an error it can't recover from, the error page now shows a link to a partially pre-filled GitHub issue.
 - :bug:`-` pretalx would show an error when users were asked to select their submission's track during the CfP workflow.
 - :release:`1.0.4 <2019-10-15>`
