@@ -1,10 +1,11 @@
 import contextlib
 import os
 
+from django.conf import settings
 from django.db import transaction
 from django.template.defaultfilters import date as _date
 from django.utils.crypto import get_random_string
-from django.utils.translation import get_language, gettext_lazy as _
+from django.utils.translation import activate, get_language, gettext_lazy as _
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
@@ -116,3 +117,13 @@ def rolledback_transaction():
         pass
     else:
         raise Exception('Invalid state, should have rolled back.')
+
+
+@contextlib.contextmanager
+def language(language_code):
+    previous_language = get_language()
+    activate(language_code or settings.LANGUAGE_CODE)
+    try:
+        yield
+    finally:
+        activate(previous_language)

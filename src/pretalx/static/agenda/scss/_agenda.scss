@@ -423,3 +423,33 @@ header {
     margin-left: auto;
   }
 }
+.pretalx-schedule-wrapper { // widget specific styling
+  position: relative;
+  margin-bottom: 60px;
+
+  .pretalx-schedule-day-wrapper {
+    border-bottom: 1px solid $gray-lighter;
+    overflow-y: auto;
+    .pretalx-schedule-day {
+      margin-bottom: 0;
+    }
+  }
+  .pretalx-tab {
+    height: auto;
+  }
+
+  &.mobile {
+    .pretalx-schedule-day {
+      .rooms .pretalx-schedule-room,
+      .pretalx-schedule-day-header-row .pretalx-schedule-day-room-header {
+        min-width: 200px;
+      }
+
+      .no-talks {
+        margin-top: 0;
+        text-align: center;
+        padding: 10px;
+      }
+    }
+  }
+}

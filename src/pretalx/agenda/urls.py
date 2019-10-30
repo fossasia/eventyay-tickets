@@ -3,7 +3,7 @@ from django.conf.urls import include, url
 from pretalx.common.views import get_static
 from pretalx.event.models.event import SLUG_CHARS
 
-from .views import feed, schedule, sneakpeek, speaker, talk
+from .views import feed, schedule, sneakpeek, speaker, talk, widget
 
 
 def get_schedule_urls(regex_prefix, name_prefix=""):
@@ -35,6 +35,9 @@ urlpatterns = [
             [
                 url(r'^schedule/changelog/$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
                 url(r'^schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
+                url(r'^schedule/widget/v1.(?P<locale>[a-z]{2}).js$', widget.widget_script, name='widget.script'),
+                url(r'^schedule/widget/v1.css$', widget.widget_style, name='widget.style'),
+                url(r'^schedule/widget/v1.json$', widget.WidgetData.as_view(), name='widget.data'),
 
                 *get_schedule_urls('^schedule'),
                 *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),

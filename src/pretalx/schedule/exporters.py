@@ -125,10 +125,10 @@ class FrabJsonExporter(ScheduleData):
     public = True
     icon = '{ }'
 
-    def render(self, **kwargs):
+    def get_data(self, **kwargs):
         tz = pytz.timezone(self.event.timezone)
         schedule = self.schedule
-        content = {
+        return {
             'version': schedule.version,
             'base_url': self.metadata['base_url'],
             'conference': {
@@ -222,6 +222,9 @@ class FrabJsonExporter(ScheduleData):
                 ],
             },
         }
+
+    def render(self, **kwargs):
+        content = self.get_data()
         return (
             f'{self.event.slug}.json'.format(self.event.slug),
             'application/json',
