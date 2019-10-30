@@ -31,7 +31,7 @@
 
 <div id="fahrplan">
     {% if schedule != schedule.event.current_schedule %}
-        <div class="alert alert-warning"><span>
+        <div class="alert alert-warning m-3"><span>
             {% if not schedule.version %}
                 {{ phrases.agenda.schedule_editable }}
             {% else %}
@@ -46,7 +46,7 @@
             {% endif %}
         </span></div>
     {% endif %}
-    <div id="offline-warning" class="alert alert-danger d-none"><span>
+    <div id="offline-warning" class="alert alert-danger d-none m-3"><span>
       {% blocktrans trimmed %}
       You're currently viewing an offline version of the schedule, so it may be
       outdated. <strong>Refresh</strong> this page once you have an internet
@@ -54,38 +54,9 @@
       {% endblocktrans %}
     </span></div>
 
-    {% include "agenda/header_row.html" %}
+    {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
 
-  <div class="schedule-header ml-auto mt-4">
-    <span>{% trans "Version" %} {{ schedule.version|default:"–" }}</span>
-    <a href="{{ request.event.urls.changelog }}" class="btn btn-outline-info btn-sm" title="{% trans "Changelog" %}"><i class="fa fa-clock-o"></i></a>
-    <a href="{{ request.event.urls.feed }}" class="btn btn-outline-info btn-sm" title="{% trans "Feed" %}"><i class="fa fa-feed"></i></a>
-    <div class="dropdown">
-        <button class="btn btn-sm btn-outline-info dropdown-toggle" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-code"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-            {% for exporter in exporters %}{% if exporter.public %}
-            <a class="dropdown-item" href="{{ exporter.urls.base }}">
-                {% if exporter.icon|slice:":3" == "fa-" %}
-                    <span class="fa {{ exporter.icon }} export-icon"></span>
-                {% else %}
-                    <span class="export-icon">{{ exporter.icon }}</span>
-                {% endif %}
-                {{ exporter.verbose_name }}
-                {% if exporter.show_qrcode %}
-                    <span class="export-qrcode">
-                      <div class="btn btn-default btn-sm">
-                          <i class="fa fa-qrcode"></i>
-                      </div>
-                      <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                    </span>
-                {% endif %}
-            </a>
-            {% endif %}{% endfor %}
-        </div>
-      </div>
-    </div>
+    <div class="pretalx-tabbed"><div class="pretalx-tabbed-content">
     {% for day in data %}
         <h3 id="{{ day.start.date|date:"c" }}">
             <a href="#{{ day.start.date|date:"c" }}">{{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}</a>
