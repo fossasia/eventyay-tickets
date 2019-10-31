@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx has the new management command ``create_test_event``, which creates a demo event in a stage of your choice (``cfp``, ``review``, ``schedule`` or ``over``). All user accounts are created with ``@example.org`` email addresses.
 - :feature:`-` If you want to display your schedule on your own homepage, pretalx now offers you a schedule widget. You can generate the code for the widget in your organiser settings.
 - :feature:`-` For events that span multiple days, pretalx now shows the conference days in a tabbed display, instead of requiring you to scroll a lot.
 - :feature:`-` If pretalx encounters an error it can't recover from, the error page now shows a link to a partially pre-filled GitHub issue.

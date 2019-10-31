@@ -134,3 +134,16 @@ with the specified slug in the database, it will create a new event and a new
 organiser.
 
 For existing events, pretalx will release a new schedule version instead.
+
+``python -m pretalx create_test_event``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This command will create a test event for you, with a set of test submissions,
+and speakers, and the like. You will need to install the ``freezegun`` and
+``Faker`` libraries.
+
+With the ``--stage`` flag, you can determine which stage the event in question
+should be in. The available choices are ``cfp`` (CfP still open, plenty of
+submissions, but no reviews), ``review`` (submissions have been reviewed and
+accepted/rejected), ``schedule`` (there is a schedule and the event is
+currently running), and ``over``. ``schedule`` is the default value.

@@ -63,6 +63,21 @@ To be able to log in, you should also create an admin user, organiser and team b
 
     tox -e dev manage.py init
 
+Additionally, if you want to get started with an event right away, run the ``create_test_event`` command::
+
+
+    tox -e dev manage.py create_test_event
+
+This command will create a test event for you, with a set of test submissions,
+and speakers, and the like. You will need to install the ``freezegun`` and
+``Faker`` libraries.
+
+With the ``--stage`` flag, you can determine which stage the event in question
+should be in. The available choices are ``cfp`` (CfP still open, plenty of
+submissions, but no reviews), ``review`` (submissions have been reviewed and
+accepted/rejected), ``schedule`` (there is a schedule and the event is
+currently running), and ``over``. ``schedule`` is the default value.
+
 If you want to see pretalx in a different language than English, you have to compile our language
 files::
 
