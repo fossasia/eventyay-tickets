@@ -7,7 +7,7 @@ from django.db import transaction
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from pretalx.event.utils import create_organiser_with_user
+from pretalx.event.utils import create_organiser_with_team
 from pretalx.person.models import User
 
 
@@ -56,8 +56,8 @@ class Command(BaseCommand):
         organiser_name = get_nonempty(_('\nName (e.g. "The Conference Organiser"): '))
         organiser_slug = get_nonempty(_('Slug (e.g. "conforg", used in urls): '))
 
-        organiser, team = create_organiser_with_user(
-            name=organiser_name, slug=organiser_slug, user=user
+        organiser, team = create_organiser_with_team(
+            name=organiser_name, slug=organiser_slug, users=[user]
         )
 
         event_url = urljoin(settings.SITE_URL, reverse('orga:event.create'))

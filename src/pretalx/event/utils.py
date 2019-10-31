@@ -1,7 +1,7 @@
 from pretalx.event.models import Organiser, Team
 
 
-def create_organiser_with_user(*, name, slug, user):
+def create_organiser_with_team(*, name, slug, users=None):
 
     organiser = Organiser.objects.create(name=name, slug=slug)
     team = Team.objects.create(
@@ -11,5 +11,6 @@ def create_organiser_with_user(*, name, slug, user):
         can_change_teams=True,
         can_change_organiser_settings=True,
     )
-    team.members.add(user)
+    for user in users:
+        team.members.add(user)
     return organiser, team
