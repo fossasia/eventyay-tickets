@@ -5,12 +5,21 @@ from django.contrib.staticfiles import finders
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.http import Http404, HttpResponse, JsonResponse
-from django.templatetags.static import static
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.common.tasks import generate_widget_css
 from pretalx.common.utils import language
+
+
+def widget_css_etag(request, **kwargs):
+    return request.event.settings.widget_css_checksum
+
+
+def widget_js_etag(request, locale, **kwargs):
+    return request.event.settings.get(f'widget_checksum_{locale}')
 
 
 class WidgetData(ScheduleView):
@@ -74,6 +83,8 @@ let dataSource = "{event.urls.widget_data_source}";
     return code
 
 
+@condition(etag_func=widget_js_etag)
+@cache_page(60)
 def widget_script(request, event, locale):
     if not request.user.has_perm('agenda.view_widget'):
         return Http404()
@@ -96,6 +107,8 @@ def widget_script(request, event, locale):
     return HttpResponse(data, content_type='text/javascript')
 
 
+@condition(etag_func=widget_css_etag)
+@cache_page(60)
 def widget_style(request, event):
     if not request.user.has_perm('agenda.view_widget'):
         return Http404()
