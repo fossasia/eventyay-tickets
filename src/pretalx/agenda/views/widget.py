@@ -1,7 +1,5 @@
 import hashlib
 
-import django_libsass
-import sass
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.files.base import ContentFile
@@ -11,6 +9,7 @@ from django.templatetags.static import static
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.views.schedule import ScheduleView
+from pretalx.common.tasks import generate_widget_css
 from pretalx.common.utils import language
 
 
@@ -97,24 +96,6 @@ def widget_script(request, event, locale):
     return HttpResponse(data, content_type='text/javascript')
 
 
-def generate_widget_css(event):
-    agenda_path = finders.find('agenda/scss/_agenda.scss')
-    variables_path = finders.find('common/scss/_variables.scss')
-    custom_functions = dict(django_libsass.CUSTOM_FUNCTIONS)
-    custom_functions['static'] = static
-    sassrules = []
-    if event.primary_color:
-        sassrules.append('$brand-primary: {};'.format(event.primary_color))
-        sassrules.append('$link-color: $brand-primary;')
-    sassrules.append(f'@import "{variables_path}";')
-    sassrules.append(f'@import "{agenda_path}";')
-    return sass.compile(
-        string="\n".join(sassrules),
-        output_style='compressed',
-        custom_functions=custom_functions,
-    )
-
-
 def widget_style(request, event):
     if not request.user.has_perm('agenda.view_widget'):
         return Http404()
@@ -122,13 +103,5 @@ def widget_style(request, event):
     if existing_file and not settings.DEBUG:
         return HttpResponse(default_storage.open(existing_file).read(), content_type='text/css')
 
-    data = generate_widget_css(request.event).encode()
-    if not settings.DEBUG:
-        checksum = hashlib.sha1(data).hexdigest()
-        file_name = default_storage.save(
-            'widget/widget.{}.css'.format(checksum),
-            ContentFile(data)
-        )
-        request.event.settings.set('widget_style', 'file://' + file_name)
-        request.event.settings.set('widget_style_checksum', checksum)
+    data = generate_widget_css(request.event, save=not settings.DEBUG)
     return HttpResponse(data, content_type='text/css')
