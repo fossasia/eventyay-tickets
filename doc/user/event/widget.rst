@@ -20,7 +20,7 @@ If this is inconvenient, you can put it in the ``<body>`` part as well::
 
 The second snippet should be embedded at the position where the widget should show up::
 
-    <pretalx-schedule-widget event="https://pretalx.eu/democon/" height="500px"></pretalx-widget>
+    <pretalx-schedule-widget event="https://pretalx.com/democon/" height="500px"></pretalx-widget>
     <noscript>
        <div class="pretalx-widget">
             <div class="pretalx-widget-info-message">
@@ -32,10 +32,16 @@ The second snippet should be embedded at the position where the widget should sh
 
 .. note::
 
-    Some website builders like Jimdo have trouble with our custom HTML tag. In
-    that case, you can use
-    ``<div class="pretalx-schedule-widget-compat" …></div>`` instead of
-    ``<pretalx-schedule-widget …></pretalx-schedule-widget>``.
+    Some website builders like have trouble with our custom HTML tag. In that
+    case, you can use ``<div class="pretalx-schedule-widget-compat" …></div>``
+    instead of ``<pretalx-schedule-widget …></pretalx-schedule-widget>``.
+
+
+.. note::
+
+    You can of course embed multiple widgets of multiple events on your page.
+    In this case, please add the first snippet only *once* and the second
+    snippets once *for each event*.
 
 Example
 -------
@@ -44,10 +50,10 @@ Your embedded widget could look like the following:
 
 .. raw:: html
 
-    <link rel="stylesheet" type="text/css" href="http://localhost:8000/35c3/schedule/widget/v1.css">
-    <script type="text/javascript" src="http://localhost:8000/35c3/schedule/widget/v1.de.js" async></script>
+    <link rel="stylesheet" type="text/css" href="https://pretalx.com/democon/schedule/widget/v1.css">
+    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v1.en.js" async></script>
 
-    <pretalx-schedule-widget event="http://localhost:8000/35c3/" height="500px"></pretalx-schedule-widget>
+    <pretalx-schedule-widget event="https://pretalx.com/democon/" height="500px"></pretalx-schedule-widget>
     <noscript>
        <div class="pretalx-widget">
             <div class="pretalx-widget-info-message">

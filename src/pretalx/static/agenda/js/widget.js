@@ -184,11 +184,7 @@ Vue.component('pretalx-schedule-widget', {
 /* Function to create the actual Vue instances */
 
 let widgetData = {}
-const create_widget = () => {
-    let element = document.querySelector("pretalx-schedule-widget")
-    if (!element) {
-        element = document.querySelector(".pretalx-schedule-widget-compat")
-    }
+const create_widget = (element) => {
     for (var i = 0; i < element.attributes.length; i++) {
         var attrib = element.attributes[i];
         if (attrib.name.match(/^data-.*$/)) {
@@ -200,10 +196,13 @@ const create_widget = () => {
     if (!widgetData.event.match(/\/$/)) {
         widgetData.event += "/";
     }
-
-    var app = new Vue({el: "pretalx-schedule-widget"});
-    return app;
+    new Vue({el: element, propsData: {widgetData: widgetData}});
 };
+
+const create_widgets = () => {
+    document.querySelectorAll("pretalx-schedule-widget").forEach((element) => {create_widget(element)})
+    document.querySelectorAll(".pretalx-schedule-widget-compat").forEach((element) => {create_widget(element)})
+}
 
 function docReady(fn) {
     // see if DOM is already available
@@ -215,4 +214,4 @@ function docReady(fn) {
     }
 }
 
-docReady(create_widget)
+docReady(create_widgets)
