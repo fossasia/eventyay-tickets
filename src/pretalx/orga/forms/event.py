@@ -387,3 +387,41 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
                 _('Please assign a minimum score smaller than the maximum score!')
             ))
         return data
+
+
+class WidgetSettingsForm(HierarkeyForm):
+    show_widget_if_not_public = forms.BooleanField(
+        label=_('Show the widget even if the schedule is not public'),
+        help_text=_(
+            'Set to allow external pages to show the schedule widget, even if the schedule is not shown here using pretalx.'
+        ),
+        required=False,
+    )
+
+
+class WidgetGenerationForm(forms.ModelForm):
+    height = forms.CharField(
+        label=_('Widget height'),
+        help_text=_(
+            'Leave empty if you want the widget to expand to its maximum height. If you want the widget to have a limited height and a scroll bar, choose its height here.'
+        ),
+        required=False,
+    )
+    compatibility_mode = forms.BooleanField(
+        label=_('Compatibility mode'),
+        help_text=_(
+            'Our regular widget doesn\'t work in all website builders. If you run into trouble, try using this compatibility mode.'
+        ),
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        initial['height'] = '500px'
+        kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+        self.fields['locale'].label = _('Widget language')
+
+    class Meta:
+        model = Event
+        fields = ['locale']

@@ -111,3 +111,16 @@
   position: relative;
   visibility: hidden;
 }
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+  word-wrap: break-word;
+  color:#333;
+  background-color: $gray-lightest;
+  border: 1px solid $gray-light;
+  border-radius: 3px;
+}

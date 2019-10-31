@@ -125,6 +125,7 @@ urlpatterns = [
         url('^settings/$', event.EventDetail.as_view(), name='settings.event.view'),
         url('^settings/mail$', event.EventMailSettings.as_view(), name='settings.mail.view'),
         url('^settings/plugins$', plugins.EventPluginsView.as_view(), name='settings.plugins.select'),
+        url('^settings/widget$', event.WidgetSettings.as_view(), name='settings.widget'),
 
         url('^settings/review/$', event.EventReviewSettings.as_view(), name='settings.review'),
         url('^settings/review/phase/(?P<pk>[0-9]+)/up$', event.phase_move_up, name='settings.review.phase.up'),

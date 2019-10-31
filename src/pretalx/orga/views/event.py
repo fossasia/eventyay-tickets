@@ -36,7 +36,9 @@ from pretalx.event.forms import (
 )
 from pretalx.event.models import Event, Team, TeamInvite
 from pretalx.orga.forms import EventForm, EventSettingsForm
-from pretalx.orga.forms.event import MailSettingsForm, ReviewSettingsForm
+from pretalx.orga.forms.event import (
+    MailSettingsForm, ReviewSettingsForm, WidgetGenerationForm, WidgetSettingsForm,
+)
 from pretalx.orga.signals import activate_event
 from pretalx.person.forms import LoginInfoForm, OrgaProfileForm, UserForm
 from pretalx.person.models import User
@@ -651,3 +653,27 @@ def event_list(request):
         'pagination': {"more": total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
+
+
+class WidgetSettings(EventPermissionRequired, FormView):
+    form_class = WidgetSettingsForm
+    permission_required = 'orga.change_settings'
+    template_name = 'orga/settings/widget.html'
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('The widget settings have been saved.'))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['obj'] = self.request.event
+        kwargs['attribute_name'] = 'settings'
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result['extra_form'] = WidgetGenerationForm(instance=self.request.event)
+        return result
+
+    def get_success_url(self) -> str:
+        return self.object.orga_urls.widget_settings
