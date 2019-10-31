@@ -101,9 +101,11 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
         return Room.objects.create(event=self.event, name=f'{name} Room', position=self.fake.random_digit())
 
     def build_cfp_stage(self):
-        """
-        Targeting 53-85 total submissions, with at least some speakers with double submissions and some with multiple speakers.
-        Submissions are distributed across the submission timeline in a realistic fashion.
+        """Targeting 53-85 total submissions, with at least some speakers with
+        double submissions and some with multiple speakers.
+
+        Submissions are distributed across the submission timeline in a
+        realistic fashion.
         """
         target_talk_submissions = self.fake.random_int(min=40, max=65)
         target_workshop_submissions = self.fake.random_int(min=13, max=20)
@@ -178,14 +180,13 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
                 content_locale='en',
                 do_not_record=random.choice([False] * 10 + [True]),
             )
+            submission.log_action('pretalx.submission.create', person=speaker)
         submission.speakers.add(speaker)
         return submission
 
     def build_review_stage(self):
-        """
-        We will go with only three reviewers: One to review all submissions, one
-        to review more positively, one to review more negatively.
-        """
+        """We will go with only three reviewers: One to review all submissions,
+        one to review more positively, one to review more negatively."""
         reviewers = [
             User.objects.create_user(
                 name=self.fake.name(),

@@ -125,6 +125,8 @@ setup(
     extras_require={
         'dev': [
             'docformatter',
+            'Faker',
+            'freezegun',
             'isort',
             'lxml',
             'pylama',

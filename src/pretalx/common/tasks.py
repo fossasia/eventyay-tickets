@@ -15,7 +15,7 @@ from pretalx.event.models import Event
 logger = logging.getLogger(__name__)
 
 
-def generate_widget_css(event, save=True, force_save=False):
+def generate_widget_css(event, save=True):
     agenda_path = finders.find('agenda/scss/_agenda.scss')
     variables_path = finders.find('common/scss/_variables.scss')
     custom_functions = dict(django_libsass.CUSTOM_FUNCTIONS)
@@ -33,7 +33,7 @@ def generate_widget_css(event, save=True, force_save=False):
     ).encode('utf-8')
     if save:
         checksum = hashlib.sha1(css).hexdigest()
-        if event.settings.widget_css_checksum != checksum or force_save:
+        if event.settings.widget_css_checksum != checksum:
             file_name = default_storage.save(
                 'widget/widget.{}.css'.format(checksum),
                 ContentFile(css)

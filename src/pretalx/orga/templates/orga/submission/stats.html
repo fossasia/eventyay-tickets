@@ -35,17 +35,6 @@
     </div>
     {% endif %}
 
-    {% if submission_state_data %}
-    <div class="card">
-        <div class="card-header submissions">{% trans "Submissions by state" %}</div>
-        <div class="card-header talks d-none">{% trans "Talks by state" %}</div>
-        <div id="submission-state-data" class="d-none" data-states='{{ submission_state_data }}'></div>
-        <div id="talk-state-data" class="d-none" data-states='{{ talk_state_data }}'></div>
-        <div id="submission-states" class="pie card-body submissions"><svg></svg></div>
-        <div id="talk-states" class="pie card-body talks d-none"><svg></svg></div>
-    </div>
-    {% endif %}
-
     {% if submission_type_data %}
     <div class="card">
         <div class="card-header submissions">{% trans "Submissions by submission type" %}</div>
@@ -65,6 +54,17 @@
         <div id="talk-track-data" class="d-none" data-states='{{ talk_track_data }}'></div>
         <div id="submission-tracks" class="pie card-body submissions"><svg></svg></div>
         <div id="talk-tracks" class="pie card-body talks d-none"><svg></svg></div>
+    </div>
+    {% endif %}
+
+    {% if submission_state_data %}
+    <div class="card">
+        <div class="card-header submissions">{% trans "Submissions by state" %}</div>
+        <div class="card-header talks d-none">{% trans "Talks by state" %}</div>
+        <div id="submission-state-data" class="d-none" data-states='{{ submission_state_data }}'></div>
+        <div id="talk-state-data" class="d-none" data-states='{{ talk_state_data }}'></div>
+        <div id="submission-states" class="pie card-body submissions"><svg></svg></div>
+        <div id="talk-states" class="pie card-body talks d-none"><svg></svg></div>
     </div>
     {% endif %}
 </div>
