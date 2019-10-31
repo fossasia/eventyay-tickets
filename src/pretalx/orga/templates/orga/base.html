@@ -188,8 +188,11 @@
                         <a href="{{ request.event.orga_urls.review_settings }}" class="nav-link nav-link-second-level{% if "settings.review." in url_name %} active{% endif %}">
                             <span>{% trans "Review" %}</span>
                         </a>
-                        <a href="{{ request.event.orga_urls.mail_settings }}" class="nav-link nav-link-second-level{% if "settings.mail." in url_name %} active{% endif %}">
+                        <a href="{{ request.event.orga_urls.mail_settings }}" class="nav-link nav-link-second-level{% if "settings.mail" in url_name %} active{% endif %}">
                             <span>{% trans "E-mail" %}</span>
+                        </a>
+                        <a href="{{ request.event.orga_urls.widget_settings }}" class="nav-link nav-link-second-level{% if "settings.widget" in url_name %} active{% endif %}">
+                            <span>{% trans "Widget" %}</span>
                         </a>
                         {% if request.user.is_administrator %}
                         <a href="{{ request.event.orga_urls.plugins }}" class="nav-link nav-link-second-level{% if "settings.plugins.select" in url_name %} active{% endif %}">

@@ -23,9 +23,13 @@ def widget_js_etag(request, locale, **kwargs):
 
 
 class WidgetData(ScheduleView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('agenda.view_widget', request.event):
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        if not request.user.has_perm('agenda.view_widget'):
-            return Http404()
         locale = request.GET.get('locale', 'en')
         with language(locale):
             schedule = list(self.get_schedule_data()[0])
@@ -86,8 +90,8 @@ let dataSource = "{event.urls.widget_data_source}";
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
 def widget_script(request, event, locale):
-    if not request.user.has_perm('agenda.view_widget'):
-        return Http404()
+    if not request.user.has_perm('agenda.view_widget', request.event):
+        raise Http404()
     if locale not in [lc for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
@@ -110,8 +114,8 @@ def widget_script(request, event, locale):
 @condition(etag_func=widget_css_etag)
 @cache_page(60)
 def widget_style(request, event):
-    if not request.user.has_perm('agenda.view_widget'):
-        return Http404()
+    if not request.user.has_perm('agenda.view_widget', request.event):
+        raise Http404()
     existing_file = request.event.settings.widget_css
     if existing_file and not settings.DEBUG:
         return HttpResponse(default_storage.open(existing_file).read(), content_type='text/css')

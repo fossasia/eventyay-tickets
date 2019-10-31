@@ -661,8 +661,9 @@ class WidgetSettings(EventPermissionRequired, FormView):
     template_name = 'orga/settings/widget.html'
 
     def form_valid(self, form):
-        form.save()
         messages.success(self.request, _('The widget settings have been saved.'))
+        form.save()
+        return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -676,4 +677,4 @@ class WidgetSettings(EventPermissionRequired, FormView):
         return result
 
     def get_success_url(self) -> str:
-        return self.object.orga_urls.widget_settings
+        return self.request.event.orga_urls.widget_settings
