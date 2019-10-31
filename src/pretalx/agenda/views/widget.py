@@ -16,6 +16,8 @@ from pretalx.common.utils import language
 
 class WidgetData(ScheduleView):
     def get(self, request, *args, **kwargs):
+        if not request.user.has_perm('agenda.view_widget'):
+            return Http404()
         locale = request.GET.get('locale', 'en')
         with language(locale):
             schedule = list(self.get_schedule_data()[0])
@@ -74,6 +76,8 @@ let dataSource = "{event.urls.widget_data_source}";
 
 
 def widget_script(request, event, locale):
+    if not request.user.has_perm('agenda.view_widget'):
+        return Http404()
     if locale not in [lc for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
@@ -112,7 +116,9 @@ def generate_widget_css(event):
 
 
 def widget_style(request, event):
-    existing_file = request.event.settings.widget_style
+    if not request.user.has_perm('agenda.view_widget'):
+        return Http404()
+    existing_file = request.event.settings.widget_css
     if existing_file and not settings.DEBUG:
         return HttpResponse(default_storage.open(existing_file).read(), content_type='text/css')
 
