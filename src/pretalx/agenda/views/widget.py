@@ -97,7 +97,7 @@ def widget_script(request, event, locale):
 
     existing_file = request.event.settings.get('widget_file_{}'.format(locale))
     if existing_file and not settings.DEBUG:
-        return HttpResponse(default_storage.open(existing_file).read(), content_type='text/javascript')
+        return HttpResponse(existing_file.read(), content_type='text/javascript')
 
     data = generate_widget_js(request.event, locale).encode()
     if not settings.DEBUG:
@@ -118,7 +118,7 @@ def widget_style(request, event):
         raise Http404()
     existing_file = request.event.settings.widget_css
     if existing_file and not settings.DEBUG:
-        return HttpResponse(default_storage.open(existing_file).read(), content_type='text/css')
+        return HttpResponse(existing_file.read(), content_type='text/css')
 
     data = generate_widget_css(request.event, save=not settings.DEBUG)
     return HttpResponse(data, content_type='text/css')
