@@ -94,7 +94,7 @@
             {% endblocktrans %}
         </p>
         <link rel="stylesheet" type="text/css" href="{{ request.event.urls.schedule.full }}widget/v1.css">
-        <script type="text/javascript" src="{{ request.event.urls.schedule.full }}widget/v1.LOCALE.js" async></script>
+         <script type="text/javascript" src="{{ request.event.urls.schedule.full }}widget/v1.{{ request.event.locale }}.js" async></script>
         <pretalx-schedule-widget event="{{ request.event.urls.base.full }}" height="500px"></pretalx-schedule-widget>
         <noscript>
            <div class="pretalx-widget">
