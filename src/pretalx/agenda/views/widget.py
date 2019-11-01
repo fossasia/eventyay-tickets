@@ -35,6 +35,7 @@ class WidgetData(ScheduleView):
             schedule = list(self.get_schedule_data()[0])
             for day in schedule:
                 for room in day['rooms']:
+                    room['name'] = str(room['name'])
                     room['talks'] = [
                         {
                             'title': talk.submission.title,
