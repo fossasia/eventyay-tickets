@@ -13,7 +13,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, pgettext
-from django_scopes import ScopedManager, scopes_disabled
+from django_scopes import ScopedManager
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
@@ -32,7 +32,7 @@ with suppress(Exception):
 
 
 def generate_invite_code(length=32):
-    return get_random_string(length=length, allowed_chars=Submission.CODE_CHARSET)
+    return get_random_string(length=length, allowed_chars=Submission._code_charset)
 
 
 class SubmissionError(Exception):
@@ -206,6 +206,12 @@ class Submission(LogMixin, GenerateCode, models.Model):
         help_text=_('Use this if you want an illustration to go with your submission.'),
     )
     invitation_token = models.CharField(max_length=32, default=generate_invite_code)
+    access_code = models.ForeignKey(
+        to='submission.SubmitterAccessCode',
+        related_name='submissions',
+        on_delete=models.PROTECT,
+        null=True, blank=True,
+    )
     review_code = models.CharField(
         max_length=32, unique=True, null=True, blank=True, default=generate_invite_code
     )
@@ -454,7 +460,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         # codes can contain 34 different characters (including compatibility with frab imported data) and normally have
         # 6 charactes. Since log2(34 **6) == 30.52, that just fits in to a positive 32-bit signed integer (that
         # Engelsystem expects), if we do it correctly.
-        charset = self.CODE_CHARSET + [
+        charset = self._code_charset + [
             '1',
             '2',
             '4',

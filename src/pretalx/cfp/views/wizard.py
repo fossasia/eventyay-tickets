@@ -83,7 +83,14 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
     file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / 'avatars'))
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.event.cfp.is_open:
+        self.access_code = None
+        if 'access_code' in request.GET:
+            access_code = request.event.submitter_access_codes.filter(
+                code__iexact=request.GET['access_code']
+            ).first()
+            if access_code and access_code.is_valid:
+                self.access_code = access_code
+        if not request.event.cfp.is_open and not self.access_code:
             messages.error(request, phrases.cfp.submissions_closed)
             return redirect(
                 reverse('cfp:event.start', kwargs={'event': request.event.slug})
@@ -109,6 +116,8 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             kwargs['track'] = (self.get_cleaned_data_for_step('info') or dict()).get('track')
             if not self.request.user.is_anonymous:
                 kwargs['speaker'] = self.request.user
+        if step == 'info':
+            kwargs['access_code'] = self.access_code
         return kwargs
 
     def get_form_initial(self, step):

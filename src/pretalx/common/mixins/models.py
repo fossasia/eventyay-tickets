@@ -1,6 +1,8 @@
 import json
 
 from django.contrib.contenttypes.models import ContentType
+from django.utils.crypto import get_random_string
+from django_scopes import scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
 
 SENSITIVE_KEYS = ['password', 'secret', 'api_key']

@@ -1,3 +1,4 @@
+from .access_code import SubmitterAccessCode
 from .cfp import CfP
 from .feedback import Feedback
 from .question import Answer, AnswerOption, Question, QuestionTarget, QuestionVariant
@@ -22,5 +23,6 @@ __all__ = [
     'SubmissionError',
     'SubmissionStates',
     'SubmissionType',
+    'SubmitterAccessCode',
     'Track',
 ]

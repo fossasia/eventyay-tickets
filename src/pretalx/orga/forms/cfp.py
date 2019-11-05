@@ -5,7 +5,9 @@ from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.submission.models import AnswerOption, CfP, Question, SubmissionType, Track
+from pretalx.submission.models import (
+    AnswerOption, CfP, Question, SubmissionType, SubmitterAccessCode, Track,
+)
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
@@ -152,7 +154,8 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = SubmissionType
-        fields = ['name', 'default_duration', 'deadline']
+        fields = ('name', 'default_duration', 'deadline',)
+        # fields = ('name', 'default_duration', 'deadline', 'requires_access_key')
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
         }
@@ -165,4 +168,24 @@ class TrackForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = Track
-        fields = ['name', 'color']
+        # fields = ('name', 'color', 'requires_access_key')
+        fields = ('name', 'color')
+
+
+class SubmitterAccessCodeForm(forms.ModelForm):
+
+    def __init__(self, *args, event, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+        self.fields['track'].queryset = Track.objects.filter(event=self.event)
+        self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
+
+    class Meta:
+        model = SubmitterAccessCode
+        fields = (
+            'code',  'valid_until', 'maximum_uses', 'track', 'submission_type',
+        )
+        field_classes = {
+            'track': SafeModelChoiceField,
+            'submission_type': SafeModelChoiceField,
+        }

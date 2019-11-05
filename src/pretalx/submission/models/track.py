@@ -26,6 +26,11 @@ class Track(LogMixin, models.Model):
             RegexValidator(r'#([0-9A-Fa-f]{3}){1,2}'),
         ],
     )
+    requires_access_code = models.BooleanField(
+        verbose_name=_('Requires access code'),
+        help_text=_('This track will only be shown to submitters with a matching access code.'),
+        default=False,
+    )
 
     objects = ScopedManager(event='event')
 

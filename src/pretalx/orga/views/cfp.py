@@ -18,7 +18,8 @@ from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackF
 from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
 from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
-    AnswerOption, CfP, Question, QuestionTarget, SubmissionType, Track,
+    AnswerOption, CfP, Question, QuestionTarget,
+    SubmissionType, SubmitterAccessCode, Track,
 )
 
 
@@ -547,3 +548,62 @@ class TrackDelete(PermissionRequired, DetailView):
                 _('This track is in use in a submission and cannot be deleted.'),
             )
         return redirect(self.request.event.cfp.urls.tracks)
+
+
+class AccessCodeList(EventPermissionRequired, ListView):
+    template_name = 'orga/cfp/access_code_view.html'
+    context_object_name = 'access_codes'
+    permission_required = 'orga.view_access_codes'
+
+    def get_queryset(self):
+        return self.request.event.submitter_access_codes.all()
+
+
+class AccessCodeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+    model = SubmitterAccessCode
+    form_class = SubmitterAccessCode
+    template_name = 'orga/cfp/access_code_form.html'
+    permission_required = 'orga.view_access_code'
+    write_permission_required = 'orga.edit_access_code'
+
+    def get_success_url(self) -> str:
+        return self.request.event.cfp.urls.access_codes
+
+    def get_object(self):
+        return self.request.event.submitter_access_codes.filter(code__iexact=self.kwargs.get('code')).first()
+
+    def get_permission_object(self):
+        return self.get_object() or self.request.event
+
+    def form_valid(self, form):
+        messages.success(self.request, _('The access code has been saved.'))
+        form.instance.event = self.request.event
+        result = super().form_valid(form)
+        if form.has_changed():
+            action = 'pretalx.access_code.' + ('update' if self.object else 'create')
+            form.instance.log_action(action, person=self.request.user, orga=True)
+        return result
+
+
+class AccessCodeDelete(PermissionRequired, DetailView):
+    permission_required = 'orga.remove_access_code'
+    template_name = 'orga/cfp/access_code_delete.html'
+
+    def get_object(self):
+        return get_object_or_404(self.request.event.access_codes, code__iexact=self.kwargs.get('code'))
+
+    def post(self, request, *args, **kwargs):
+        access_code = self.get_object()
+
+        try:
+            access_code.delete()
+            request.event.log_action(
+                'pretalx.access_code.delete', person=self.request.user, orga=True
+            )
+            messages.success(request, _('The access code has been deleted.'))
+        except ProtectedError:
+            messages.error(
+                request,
+                _('This access code has been used for a submission and cannot be deleted. To disable it, you can set its validity date to the past.'),
+            )
+        return redirect(self.request.event.cfp.urls.access_codes)

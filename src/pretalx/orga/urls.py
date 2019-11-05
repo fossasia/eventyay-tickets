@@ -70,6 +70,10 @@ urlpatterns = [
         url('^cfp/tracks/new$', cfp.TrackDetail.as_view(), name='cfp.track.create'),
         url('^cfp/tracks/(?P<pk>[0-9]+)/$', cfp.TrackDetail.as_view(), name='cfp.track.view'),
         url('^cfp/tracks/(?P<pk>[0-9]+)/delete$', cfp.TrackDelete.as_view(), name='cfp.track.delete'),
+        url('^cfp/access-codes/$', cfp.AccessCodeList.as_view(), name='cfp.access_code.view'),
+        url('^cfp/access-codes/new$', cfp.AccessCodeDetail.as_view(), name='cfp.access_code.create'),
+        url('^cfp/access-codes/(?P<code>[A-z0-9]+)/$', cfp.AccessCodeDetail.as_view(), name='cfp.access_code.view'),
+        url('^cfp/access-codes/(?P<code>[A-z0-9]+)/delete$', cfp.AccessCodeDelete.as_view(), name='cfp.access_code.delete'),
 
         url('^mails/', include([
             url('^(?P<pk>[0-9]+)/$', mails.MailDetail.as_view(), name='mails.outbox.mail.view'),

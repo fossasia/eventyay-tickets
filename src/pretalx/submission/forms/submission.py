@@ -2,7 +2,7 @@ from pathlib import Path
 
 from django import forms
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
@@ -23,6 +23,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
     def __init__(self, event, **kwargs):
         self.event = event
         self.readonly = kwargs.pop('readonly', False)
+        self.access_code = kwargs.pop('access_code', None)
         instance = kwargs.get('instance')
         initial = kwargs.pop('initial', {})
         if not instance or not instance.submission_type:
@@ -50,7 +51,11 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
     def _set_track(self, instance=None):
         if 'track' in self.fields:
             if not instance or instance.state == SubmissionStates.SUBMITTED:
-                self.fields['track'].queryset = self.event.tracks.all()
+                access_code = self.access_code or getattr(instance, 'access_code', None)
+                if not access_code or not access_code.track:
+                    self.fields['track'].queryset = self.event.tracks.filter(requires_access_code=False)
+                else:
+                    self.fields['track'].queryset = self.event.tracks.filter(Q(requires_access_code=False) | Q(pk=access_code.pk))
             elif not self.event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
                 self.fields.pop('track')
 
@@ -62,12 +67,19 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             self.fields['submission_type'].queryset = self.event.submission_types.filter(pk=instance.submission_type_id)
             self.fields['submission_type'].disabled = True
             return
+        access_code = self.access_code or getattr(instance, 'access_code', None)
+        if access_code and access_code.submission_type:
+            queryset = self.event.submission_types.filter(
+                Q(requires_access_code=False) | Q(pk=self.submission_type.pk)
+            )
+        else:
+            queryset = self.event.submission_types.filter(requires_access_code=False)
         if (
             not self.event.cfp.deadline or self.event.cfp.deadline >= _now
         ):  # No global deadline or still open
-            types = self.event.submission_types.exclude(deadline__lt=_now)
+            types = queryset.exclude(deadline__lt=_now)
         else:
-            types = self.event.submission_types.filter(deadline__gte=_now)
+            types = queryset.filter(deadline__gte=_now)
         pks = set(types.values_list('pk', flat=True))
         if instance and instance.pk:
             pks |= {instance.submission_type.pk}
