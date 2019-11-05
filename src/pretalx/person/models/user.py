@@ -16,6 +16,7 @@ from django.utils.timezone import now
 from django.utils.translation import get_language, gettext_lazy as _, override
 from rest_framework.authtoken.models import Token
 
+from pretalx.common.mixins.models import GenerateCode
 from pretalx.common.urls import build_absolute_uri
 
 
@@ -37,19 +38,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-def assign_code(obj, length=6):
-    # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
-    # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
-    # handwriting (2/Z, 4/A, 5/S, 6/G).
-    while True:
-        code = get_random_string(length=length, allowed_chars=User.CODE_CHARSET)
-
-        if not User.objects.filter(code__iexact=code).exists():
-            obj.code = code
-            return code
-
-
-class User(PermissionsMixin, AbstractBaseUser):
+class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     """The pretalx user model.
 
     Users describe all kinds of persons who interact with pretalx: Organisers, reviewers, submitters, speakers.
@@ -69,7 +58,6 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
-    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = UserManager()
 
@@ -127,8 +115,6 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()
-        if not self.code:
-            assign_code(self)
         return super().save(args, kwargs)
 
     def event_profile(self, event):

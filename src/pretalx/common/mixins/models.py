@@ -38,3 +38,27 @@ class LogMixin:
             content_type=ContentType.objects.get_for_model(type(self)),
             object_id=self.pk,
         ).select_related('event', 'person')
+
+
+class GenerateCode:
+    """ Generates a random code on first save.
+    Omits some character pairs because they are hard to read/differentiate:
+    1/I, O/0, 2/Z, 4/A, 5/S, 6/G."""
+
+    _code_length = 6
+    _code_charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+    _code_property = 'code'
+
+    def assign_code(self, length=None):
+        length = length or self._code_length
+        while True:
+            code = get_random_string(length=length, allowed_chars=self._code_charset)
+            with scopes_disabled():
+                if not self.__class__.objects.filter(**{f'{self._code_property}__iexact': code}).exists():
+                    setattr(self, self._code_property, code)
+                    return
+
+    def save(self, *args, **kwargs):
+        if not getattr(self, self._code_property, None):
+            self.assign_code()
+        return super().save(*args, **kwargs)

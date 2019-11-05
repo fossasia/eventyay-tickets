@@ -17,6 +17,7 @@ from django_scopes import ScopedManager, scopes_disabled
 
 from pretalx.common.choices import Choices
 from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import GenerateCode
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -96,7 +97,7 @@ class AllSubmissionManager(models.Manager):
     pass
 
 
-class Submission(LogMixin, models.Model):
+class Submission(LogMixin, GenerateCode, models.Model):
     """Submissions are, next to :class:`~pretalx.event.models.event.Event`, the
     central model in pretalx.
 
@@ -208,7 +209,6 @@ class Submission(LogMixin, models.Model):
     review_code = models.CharField(
         max_length=32, unique=True, null=True, blank=True, default=generate_invite_code
     )
-    CODE_CHARSET = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
 
     objects = ScopedManager(event='event', _manager_class=SubmissionManager)
     deleted_objects = ScopedManager(event='event', _manager_class=DeletedSubmissionManager)
@@ -249,22 +249,6 @@ class Submission(LogMixin, models.Model):
     @property
     def image_url(self):
         return self.image.url if self.image else ''
-
-    def assign_code(self, length=6):
-        # This omits some character pairs completely because they are hard to read even on screens (1/I and O/0)
-        # and includes only one of two characters for some pairs because they are sometimes hard to distinguish in
-        # handwriting (2/Z, 4/A, 5/S, 6/G).
-        while True:
-            code = get_random_string(length=length, allowed_chars=self.CODE_CHARSET)
-            with scopes_disabled():
-                if not Submission.objects.filter(code__iexact=code).exists():
-                    self.code = code
-                    return
-
-    def save(self, *args, **kwargs):
-        if not self.code:
-            self.assign_code()
-        super().save(*args, **kwargs)
 
     @property
     def editable(self):
