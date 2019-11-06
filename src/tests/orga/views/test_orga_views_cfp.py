@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+from django.core import mail as djmail
 from django_scopes import scope
 from pytz import UTC
 
@@ -469,3 +470,72 @@ def test_can_delete_single_track(orga_client, track, event):
     assert response.status_code == 200
     with scope(event=event):
         assert event.tracks.count() == 0
+
+
+@pytest.mark.django_db
+def test_can_see_access_codes(orga_client, access_code):
+    response = orga_client.get(access_code.event.cfp.urls.access_codes)
+    assert response.status_code == 200
+    assert access_code.code in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_see_single_access_code(orga_client, access_code):
+    response = orga_client.get(access_code.urls.edit)
+    assert response.status_code == 200
+    assert access_code.code in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_create_access_code(orga_client, event):
+    assert event.submitter_access_codes.all().count() == 0
+    response = orga_client.get(event.cfp.urls.new_access_code, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(event.cfp.urls.new_access_code, {'code': 'LOLCODE'}, follow=True)
+    assert response.status_code == 200
+    assert event.submitter_access_codes.get(code='LOLCODE')
+
+
+@pytest.mark.django_db
+def test_can_edit_access_code(orga_client, access_code):
+    response = orga_client.post(access_code.urls.edit, {'code': 'LOLCODE'}, follow=True)
+    assert response.status_code == 200
+    access_code.refresh_from_db()
+    assert access_code.code == 'LOLCODE'
+
+
+@pytest.mark.django_db
+def test_can_delete_single_access_code(orga_client, access_code, event):
+    response = orga_client.get(access_code.urls.delete)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.submitter_access_codes.count() == 1
+    response = orga_client.post(access_code.urls.delete, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.submitter_access_codes.count() == 0
+
+
+@pytest.mark.django_db
+def test_can_send_access_code(orga_client, access_code):
+    djmail.outbox = []
+    response = orga_client.get(access_code.urls.send, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(access_code.urls.send, {'to': 'test@example.org', 'text': 'test test', 'subject': 'test'}, follow=True)
+    assert response.status_code == 200
+    assert len(djmail.outbox) == 1
+    mail = djmail.outbox[0]
+    assert mail.to == ['test@example.org']
+    assert mail.body == 'test test'
+    assert mail.subject == 'test'
+
+
+@pytest.mark.django_db
+def test_can_send_special_access_code(orga_client, access_code, track):
+    access_code.track = track
+    access_code.valid_until = access_code.event.datetime_from
+    access_code.maximum_uses = 3
+    access_code.save()
+    djmail.outbox = []
+    response = orga_client.get(access_code.urls.send, follow=True)
+    assert response.status_code == 200

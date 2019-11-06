@@ -6,10 +6,10 @@ from django.db import migrations
 
 
 def populate_code(apps, schema_editor):
-    from pretalx.person.models.user import assign_code
+    from pretalx.common.mixins.models import GenerateCode
     User = apps.get_model('person', 'User')
     for person in User.objects.all():
-        assign_code(person)
+        person.code = GenerateCode.generate_code()
         person.save()
 
 

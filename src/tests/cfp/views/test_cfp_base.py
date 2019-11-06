@@ -18,10 +18,10 @@ def test_no_crash_on_incorrect_event_for_orga(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_event_startpage_query_string_handling(client, event):
+def test_event_startpage_query_string_handling(client, event, access_code):
     """The link to the CfP page should contain the query parameters given in
     the request URL."""
-    params_dict = QueryDict('track=academic&submission_type=academic_talk')
+    params_dict = QueryDict(f'track=academic&submission_type=academic_talk&access_code={access_code.code}')
     response = client.get(f'/{event.slug}/?{params_dict}',)
     assert response.status_code == 200
     doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
