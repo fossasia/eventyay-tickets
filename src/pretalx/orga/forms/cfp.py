@@ -154,8 +154,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = SubmissionType
-        fields = ('name', 'default_duration', 'deadline',)
-        # fields = ('name', 'default_duration', 'deadline', 'requires_access_key')
+        fields = ('name', 'default_duration', 'deadline', 'requires_access_code')
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
         }
@@ -168,17 +167,24 @@ class TrackForm(ReadOnlyFlag, I18nModelForm):
 
     class Meta:
         model = Track
-        # fields = ('name', 'color', 'requires_access_key')
-        fields = ('name', 'color')
+        fields = ('name', 'color', 'requires_access_code')
 
 
 class SubmitterAccessCodeForm(forms.ModelForm):
 
     def __init__(self, *args, event, **kwargs):
         self.event = event
+        initial = kwargs.get('initial', {})
+        if not kwargs.get('instance'):
+            initial['code'] = SubmitterAccessCode().generate_code()
+            initial['valid_until'] = event.cfp.deadline
+        kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
-        self.fields['track'].queryset = Track.objects.filter(event=self.event)
         self.fields['submission_type'].queryset = SubmissionType.objects.filter(event=self.event)
+        if event.settings.use_tracks:
+            self.fields['track'].queryset = Track.objects.filter(event=self.event)
+        else:
+            self.fields.pop('track')
 
     class Meta:
         model = SubmitterAccessCode
@@ -189,3 +195,49 @@ class SubmitterAccessCodeForm(forms.ModelForm):
             'track': SafeModelChoiceField,
             'submission_type': SafeModelChoiceField,
         }
+        widgets = {
+            'valid_until': forms.DateTimeInput(attrs={'class': 'datetimepickerfield'})
+        }
+
+
+class AccessCodeSendForm(forms.Form):
+    to = forms.EmailField(label=_('To'))
+    subject = forms.CharField(label=_('Subject'))
+    text = forms.CharField(widget=forms.Textarea(), label=_('Text'))
+
+    def __init__(self, *args, instance, user, **kwargs):
+        self.access_code = instance
+        subject = _('Access code for the {event} CfP').format(event=instance.event.name)
+        text = str(_('''Hi!
+
+This is an access code for the {event} CfP.''').format(event=instance.event.name)) + ' '
+        if instance.track:
+            text += str(_('It will allow you to submit a proposal to the “{track}” track.').format(track=instance.track.name)) + ' '
+        else:
+            text += str(_('It will allow you to submit a proposal to our CfP.')) + ' '
+        if instance.valid_until:
+            text += str(_('This access code is valid until {date}.').format(date=instance.valid_until.strftime('%Y-%m-%d %H:%M'))) + ' '
+        if instance.maximum_uses and instance.maximum_uses != 1 and instance.maximum_uses - instance.redeemed > 1:
+            text += str(_('The code can be redeemed multiple times ({num}).').format(num=instance.redemptions_left))
+        text += _('''
+Please follow this URL to use the code:
+
+  {url}
+
+I'm looking forward to your submission!
+{name}''').format(
+            url=instance.urls.cfp_url.full(),
+            name=user.get_display_name(),
+        )
+        initial = kwargs.get('intial', {})
+        initial['subject'] = f'[{instance.event.slug}] {subject}'
+        initial['text'] = text
+        kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        self.access_code.send_invite(
+            to=self.cleaned_data['to'].strip(),
+            subject=self.cleaned_data['subject'],
+            text=self.cleaned_data['text'],
+        )

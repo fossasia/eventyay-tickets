@@ -51,10 +51,14 @@ class GenerateCode:
     _code_charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
     _code_property = 'code'
 
+    def generate_code(self, length=None):
+        length = length or self._code_length
+        return get_random_string(length=length, allowed_chars=self._code_charset)
+
     def assign_code(self, length=None):
         length = length or self._code_length
         while True:
-            code = get_random_string(length=length, allowed_chars=self._code_charset)
+            code = self.generate_code(length=length)
             with scopes_disabled():
                 if not self.__class__.objects.filter(**{f'{self._code_property}__iexact': code}).exists():
                     setattr(self, self._code_property, code)

@@ -73,6 +73,7 @@ urlpatterns = [
         url('^cfp/access-codes/$', cfp.AccessCodeList.as_view(), name='cfp.access_code.view'),
         url('^cfp/access-codes/new$', cfp.AccessCodeDetail.as_view(), name='cfp.access_code.create'),
         url('^cfp/access-codes/(?P<code>[A-z0-9]+)/$', cfp.AccessCodeDetail.as_view(), name='cfp.access_code.view'),
+        url('^cfp/access-codes/(?P<code>[A-z0-9]+)/send$', cfp.AccessCodeSend.as_view(), name='cfp.access_code.send'),
         url('^cfp/access-codes/(?P<code>[A-z0-9]+)/delete$', cfp.AccessCodeDelete.as_view(), name='cfp.access_code.delete'),
 
         url('^mails/', include([

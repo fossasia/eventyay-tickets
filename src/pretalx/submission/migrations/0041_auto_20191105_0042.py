@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             name='SubmitterAccessCode',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('code', models.CharField(db_index=True, default=pretalx.common.mixins.models.GenerateCode.assign_code, max_length=255)),
+                ('code', models.CharField(db_index=True, max_length=255)),
                 ('valid_until', models.DateTimeField(blank=True, null=True)),
                 ('maximum_uses', models.PositiveIntegerField(blank=True, default=1, null=True)),
                 ('redeemed', models.PositiveIntegerField(default=0)),

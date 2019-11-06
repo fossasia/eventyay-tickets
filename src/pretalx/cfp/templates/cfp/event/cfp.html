@@ -43,9 +43,9 @@
                 {% trans "Edit or view your submissions" %}
             </a>
         {% endif %}
-        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open %}disabled{% endif %}"
+        <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"
             href="{{ request.event.urls.submit }}{{ submit_qs }}">
-        {% if cfp.is_open %}
+        {% if cfp.is_open or access_code.is_valid %}
             {% trans "Submit a proposal" %}
         {% else %}
             {% trans "Submissions are closed" %}

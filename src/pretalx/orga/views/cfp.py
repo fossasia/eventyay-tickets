@@ -15,7 +15,9 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
-from pretalx.orga.forms.cfp import AnswerOptionForm, CfPSettingsForm
+from pretalx.orga.forms.cfp import (
+    AccessCodeSendForm, AnswerOptionForm, CfPSettingsForm, SubmitterAccessCodeForm,
+)
 from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
     AnswerOption, CfP, Question, QuestionTarget,
@@ -559,9 +561,9 @@ class AccessCodeList(EventPermissionRequired, ListView):
         return self.request.event.submitter_access_codes.all()
 
 
-class AccessCodeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
+class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
     model = SubmitterAccessCode
-    form_class = SubmitterAccessCode
+    form_class = SubmitterAccessCodeForm
     template_name = 'orga/cfp/access_code_form.html'
     permission_required = 'orga.view_access_code'
     write_permission_required = 'orga.edit_access_code'
@@ -571,6 +573,11 @@ class AccessCodeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_object(self):
         return self.request.event.submitter_access_codes.filter(code__iexact=self.kwargs.get('code')).first()
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['event'] = self.request.event
+        return result
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
@@ -585,12 +592,41 @@ class AccessCodeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return result
 
 
+class AccessCodeSend(PermissionRequired, UpdateView):
+    model = SubmitterAccessCode
+    form_class = AccessCodeSendForm
+    context_object_name = 'access_code'
+    template_name = 'orga/cfp/access_code_send.html'
+    permission_required = 'orga.view_access_code'
+
+    def get_success_url(self) -> str:
+        return self.request.event.cfp.urls.access_codes
+
+    def get_object(self):
+        return self.request.event.submitter_access_codes.filter(code__iexact=self.kwargs.get('code')).first()
+
+    def get_permission_object(self):
+        return self.get_object()
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['user'] = self.request.user
+        return result
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        messages.success(self.request, _('The access code has been sent.'))
+        code = self.get_object()
+        code.log_action('pretalx.access_code.send', person=self.request.user, orga=True, data={'email': form.cleaned_data['to']})
+        return result
+
+
 class AccessCodeDelete(PermissionRequired, DetailView):
     permission_required = 'orga.remove_access_code'
     template_name = 'orga/cfp/access_code_delete.html'
 
     def get_object(self):
-        return get_object_or_404(self.request.event.access_codes, code__iexact=self.kwargs.get('code'))
+        return get_object_or_404(self.request.event.submitter_access_codes, code__iexact=self.kwargs.get('code'))
 
     def post(self, request, *args, **kwargs):
         access_code = self.get_object()

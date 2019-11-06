@@ -171,7 +171,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         return super().get_prefix(request, *args, **kwargs) + ':' + kwargs.get('tmpid')
 
     def get_step_url(self, step):
-        return reverse(
+        url = reverse(
             self.url_name,
             kwargs={
                 'step': step,
@@ -179,6 +179,9 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
                 'event': self.kwargs.get('event'),
             },
         )
+        if self.request.GET:
+            url += f'?{self.request.GET.urlencode()}'
+        return url
 
     def done(self, form_list, **kwargs):
         form_dict = kwargs.get('form_dict')
@@ -233,6 +236,12 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         except SendMailException as exception:
             logging.getLogger('').warning(str(exception))
             messages.warning(self.request, phrases.cfp.submission_email_fail)
+
+        if self.access_code:
+            sub.access_code = self.access_code
+            sub.save()
+            self.access_code.redeemed += 1
+            self.access_code.save()
 
         sub.log_action('pretalx.submission.create', person=user)
         messages.success(self.request, phrases.cfp.submission_success)

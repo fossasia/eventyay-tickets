@@ -1,0 +1,80 @@
+{% extends "orga/cfp/base.html" %}
+{% load copyable %}
+{% load i18n %}
+{% load static %}
+
+{% block scripts %}
+    <script defer src="{% static "common/js/copy.js" %}"></script>
+{% endblock %}
+
+
+{% block cfp_content %}
+    <h2>{% trans "Access codes" %}</h2>
+    <div class="alert alert-info">
+        {% blocktrans trimmed %}
+        Access codes can be used to allow talk submissions even when the CfP
+        is over. You can also use them for hidden tracks or hidden submission
+        types, which can only be seen with a matching access code.
+        {% endblocktrans %}
+    </div>
+    <div class="submit-group"><span></span>
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_access_code }}">
+            <i class="fa fa-plus"></i>
+            {% trans "New access code" %}
+        </a>
+    </div>
+    {% if access_codes %}
+    <table class="table table-sm table-hover table-responsive-md" id="access-codes">
+        <thead>
+            <tr>
+                <th>{% trans "Code" %}</th>
+                {% if request.event.settings.use_track %}<th>{% trans "Track" %}</th>{% endif %}
+                <th>{% trans "Submission Type" %}</th>
+                <th>{% trans "Uses" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for code in access_codes %}
+                <tr>
+                    <td>
+                        {{ code.code|copyable }}
+                    </td>
+                    {% if request.event.settings.use_track %}<td>
+                        {{ code.track.name|default:'-' }}
+                    </td>{% endif %}
+                    <td>
+                        {{ code.submission_type.name|default:'-' }}
+                    </td>
+                    <td>
+                        {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:'∞' }}
+                    </td>
+                    <td class="action-column">
+                        <div data-destination="{{ code.urls.cfp_url.full }}"
+                                title="{% trans 'Copy access code link' %}"
+                                class="btn btn-sm btn-info copyable-text">
+                                <i class="fa fa-link"></i>
+                        </div>
+                        <a href="{{ code.urls.send }}"
+                                title="{% trans 'Send access code as email' %}"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                        <a href="{{ code.urls.edit }}"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        {% if not code.submissions.exists %}
+                        <a href="{{ code.urls.delete }}"
+                                class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+{% endblock %}

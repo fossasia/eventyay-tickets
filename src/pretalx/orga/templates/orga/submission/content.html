@@ -19,6 +19,13 @@
     <legend>{% trans "Create submission" %}</legend>
     {% endif %}
 
+    {% if submission.access_code %}
+    <div class="alert alert-info"><span></span><span>
+        {% blocktrans trimmed %}
+        This submission was created using an access code:
+        {% endblocktrans %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
+    </span></div>
+    {% endif %}
         {% bootstrap_form_errors form %}
         {% csrf_token %}
         {% bootstrap_field form.title layout='event' %}

@@ -230,7 +230,10 @@
                         </a>
                         {% endif %}
                         <a href="{{ request.event.cfp.urls.types }}" class="nav-link nav-link-second-level{% if "cfp.types" in url_name %} active{% endif %}">
-                            <span>{% trans "Submission Types" %}</span>
+                            <span>{% trans "Submission types" %}</span>
+                        </a>
+                        <a href="{{ request.event.cfp.urls.access_codes }}" class="nav-link nav-link-second-level{% if "cfp.access_code" in url_name %} active{% endif %}">
+                            <span>{% trans "Access codes" %}</span>
                         </a>
                     </div>
                 </div>

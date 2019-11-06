@@ -1,0 +1,33 @@
+{% extends "orga/cfp/base.html" %}
+{% load bootstrap4 %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block cfp_content %}
+    <h2>
+        {% trans "Send access code" %}
+    </h2>
+    <div class="alert alert-info">
+        {% blocktrans trimmed %}
+        Access codes can allow access to your CfP beyond its deadline for one or multiple
+        submissions. If the code is circulated more widely than you'd like, you can always delete or invalidate it.
+        {% endblocktrans %}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        {% bootstrap_form form layout='event' %}
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {% trans "Send" %}
+                </button>
+            </span>
+        </div>
+    </form>
+
+{% endblock %}
+
