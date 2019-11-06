@@ -21,7 +21,10 @@ class TestWizard:
             response = client.get(url, follow=follow, data=data)
         else:
             response = client.post(url, follow=follow, data=data)
-        current_url = response.redirect_chain[-1][0]
+        try:
+            current_url = response.redirect_chain[-1][0]
+        except IndexError:  # We are not being redirected at all!
+            current_url = url
         return response, current_url
 
     def get_form_name(self, response, event):
@@ -30,13 +33,14 @@ class TestWizard:
         input_hidden = doc.select("input[name^=submit_wizard]")[0]
         return input_hidden['name'], input_hidden['value']
 
-    def perform_init_wizard(self, client, success=True, event=None):
+    def perform_init_wizard(self, client, success=True, event=None, access_code=None):
         # Start wizard
         djmail.outbox = []
-        response, current_url = self.get_response_and_url(
-            client, '/test/submit/', method='GET'
-        )
-        assert current_url.endswith('/info/') is success
+        url = '/test/submit/'
+        if access_code:
+            url += f'?access_code={access_code.code}'
+        response, current_url = self.get_response_and_url(client, url, method='GET')
+        assert ('/info/' in current_url) is success
         return response, current_url
 
     def perform_info_wizard(
@@ -71,16 +75,14 @@ class TestWizard:
         response, current_url = self.get_response_and_url(
             client, url, data=submission_data
         )
-        assert current_url.endswith(
-            f'/{next_step}/'
-        ), f'{current_url} does not end with /{next_step}/!'
+        assert f'/{next_step}/' in current_url, f'{current_url} does not end with /{next_step}/!'
         return response, current_url
 
     def perform_question_wizard(self, client, response, url, data, next_step='profile', event=None):
         key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(f'/{next_step}/')
+        assert f'/{next_step}/' in current_url, f'{current_url} does not end with /{next_step}/!'
         return response, current_url
 
     def perform_user_wizard(
@@ -106,7 +108,7 @@ class TestWizard:
         key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(f'/{next_step}/')
+        assert f'/{next_step}/' in current_url, f'{current_url} does not end with /{next_step}/!'
         return response, current_url
 
     def perform_profile_form(
@@ -116,7 +118,7 @@ class TestWizard:
         url,
         name='Jane Doe',
         bio='l337 hax0r',
-        next_step='me/submissions/',
+        next_step='me/submissions',
         event=None,
         success=True,
     ):
@@ -124,7 +126,7 @@ class TestWizard:
         key, value = self.get_form_name(response, event)
         data[key] = value
         response, current_url = self.get_response_and_url(client, url, data=data)
-        assert current_url.endswith(next_step), f'{current_url} does not end with {next_step}!'
+        assert f'/{next_step}/' in current_url, f'{current_url} does not end with /{next_step}/!'
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
         if success:
             assert doc.select('.alert-success')
@@ -409,6 +411,129 @@ class TestWizard:
         event.cfp.save()
         client.force_login(user)
         self.perform_init_wizard(client, success=False, event=event)
+
+    @pytest.mark.django_db
+    def test_wizard_cfp_closed_access_code(self, event, client, access_code):
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.save()
+        response, current_url = self.perform_init_wizard(client, event=event, access_code=access_code)
+        response, current_url = self.perform_info_wizard(
+            client, response, current_url,
+            submission_type=submission_type, event=event,
+            next_step='user',
+        )
+        response, current_url = self.perform_user_wizard(
+            client,
+            response,
+            current_url,
+            password='testpassw0rd!',
+            email='testuser@example.org',
+            register=True,
+            event=event,
+        )
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
+        submission = self.assert_submission(event)
+        assert submission.access_code == access_code
+
+    @pytest.mark.django_db
+    def test_wizard_cfp_closed_expired_access_code(self, event, client, access_code):
+        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.save()
+        access_code.valid_until = now() - timedelta(hours=1)
+        access_code.save()
+        response, current_url = self.perform_init_wizard(client, event=event, access_code=access_code, success=False)
+
+    @pytest.mark.django_db
+    def test_wizard_track_access_code(self, event, client, access_code, track, other_track):
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            event.settings.cfp_request_track = True
+            event.settings.cfp_require_track = True
+            track.requires_access_code = True
+            track.save()
+            other_track.requires_access_code = True
+            other_track.save()
+            access_code.track = track
+            access_code.save()
+
+        response, current_url = self.perform_init_wizard(client, event=event)
+        self.perform_info_wizard(  # Does not work without token
+            client,
+            response,
+            current_url,
+            submission_type=submission_type,
+            next_step='info',
+            event=event,
+            track=track,
+        )
+        self.perform_info_wizard(  # Does not work with token, because wrong track
+            client,
+            response,
+            current_url + '?access_code=' + access_code.code,
+            submission_type=submission_type,
+            next_step='info',
+            event=event,
+            track=other_track,
+        )
+        response, current_url = self.perform_info_wizard(  # Works with token and right track
+            client,
+            response,
+            current_url + '?access_code=' + access_code.code,
+            submission_type=submission_type,
+            next_step='user',
+            event=event,
+            track=track,
+        )
+        response, current_url = self.perform_user_wizard(
+            client,
+            response,
+            current_url,
+            password='testpassw0rd!',
+            email='testuser@example.org',
+            register=True,
+            event=event,
+        )
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
+        self.assert_submission(event, track=track)
+
+    @pytest.mark.django_db
+    def test_wizard_submission_type_access_code(self, event, client, access_code):
+        with scope(event=event):
+            submission_type = SubmissionType.objects.filter(event=event).first()
+            submission_type.requires_access_code = True
+            submission_type.save()
+            submission_type = submission_type.pk
+
+        response, current_url = self.perform_init_wizard(client, event=event)
+        response, current_url = self.perform_info_wizard(  # Does not work without access token
+            client,
+            response,
+            current_url,
+            submission_type=submission_type,
+            next_step='info',
+            event=event,
+        )
+        response, current_url = self.perform_info_wizard(
+            client,
+            response,
+            current_url + '?access_code=' + access_code.code,
+            submission_type=submission_type,
+            next_step='user',
+            event=event,
+        )
+        response, current_url = self.perform_user_wizard(
+            client,
+            response,
+            current_url,
+            password='testpassw0rd!',
+            email='testuser@example.org',
+            register=True,
+            event=event,
+        )
+        response, current_url = self.perform_profile_form(client, response, current_url, event=event)
+        self.assert_submission(event)
 
 
 @pytest.mark.django_db

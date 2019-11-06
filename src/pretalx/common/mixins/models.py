@@ -43,9 +43,11 @@ class LogMixin:
 
 
 class GenerateCode:
-    """ Generates a random code on first save.
-    Omits some character pairs because they are hard to read/differentiate:
-    1/I, O/0, 2/Z, 4/A, 5/S, 6/G."""
+    """Generates a random code on first save.
+
+    Omits some character pairs because they are hard to
+    read/differentiate: 1/I, O/0, 2/Z, 4/A, 5/S, 6/G.
+    """
 
     _code_length = 6
     _code_charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')

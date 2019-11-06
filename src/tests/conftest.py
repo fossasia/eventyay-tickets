@@ -12,8 +12,8 @@ from pretalx.mail.models import MailTemplate
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.submission.models import (
-    Answer, AnswerOption, Feedback, Question, QuestionVariant,
-    Resource, Review, Submission, SubmissionType, Track,
+    Answer, AnswerOption, Feedback, Question, QuestionVariant, Resource,
+    Review, Submission, SubmissionType, SubmitterAccessCode, Track,
 )
 
 
@@ -822,3 +822,9 @@ def other_track(event):
     with scope(event=event):
         event.settings.use_tracks = True
         return Track.objects.create(name='Second Test Track', color='ff0000', event=event)
+
+
+@pytest.fixture
+def access_code(event):
+    with scope(event=event):
+        return SubmitterAccessCode.objects.create(event=event)

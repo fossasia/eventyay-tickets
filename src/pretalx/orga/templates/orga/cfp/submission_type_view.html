@@ -22,6 +22,9 @@
             {% for type in types %}
                 <tr>
                     <td>
+                        {% if type.requires_access_code %}
+                            <i class="fa fa-lock" title="{% trans "Requires access code" %}"></i>
+                        {% endif %}
                         <a href="{{ type.urls.edit }}">
                             {{ type.name }}
                         </a>

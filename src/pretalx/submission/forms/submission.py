@@ -52,14 +52,17 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
 
     def _set_track(self, instance=None):
         if 'track' in self.fields:
-            if not instance or instance.state == SubmissionStates.SUBMITTED:
-                access_code = self.access_code or getattr(instance, 'access_code', None)
-                if not access_code or not access_code.track:
-                    self.fields['track'].queryset = self.event.tracks.filter(requires_access_code=False)
-                else:
-                    self.fields['track'].queryset = self.event.tracks.filter(Q(requires_access_code=False) | Q(pk=access_code.track.pk))
-            elif not self.event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
+            if not self.event.settings.use_tracks or instance and instance.state != SubmissionStates.SUBMITTED:
                 self.fields.pop('track')
+                return
+            access_code = self.access_code or getattr(instance, 'access_code', None)
+            if not access_code or not access_code.track:
+                self.fields['track'].queryset = self.event.tracks.filter(requires_access_code=False)
+            else:
+                self.fields['track'].queryset = self.event.tracks.filter(Q(requires_access_code=False) | Q(pk=access_code.track.pk))
+            if len(self.fields['track'].queryset) == 1:
+                self.fields['track'].initial = self.fields['track'].queryset.first()
+                self.fields['track'].widget = forms.HiddenInput()
 
     def _set_submission_types(self, instance=None):
         _now = now()
@@ -72,7 +75,7 @@ class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
             return
         access_code = self.access_code or getattr(instance, 'access_code', None)
         if access_code and not access_code.submission_type:
-            pks = self.event.submission_types.values_list('pk', flat=True)
+            pks = set(self.event.submission_types.values_list('pk', flat=True))
         else:
             queryset = self.event.submission_types.filter(requires_access_code=False)
             if (

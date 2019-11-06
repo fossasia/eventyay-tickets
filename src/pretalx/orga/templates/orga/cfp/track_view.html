@@ -22,6 +22,9 @@
             {% for track in tracks %}
                 <tr>
                     <td>
+                        {% if track.requires_access_code %}
+                            <i class="fa fa-lock" title="{% trans "Requires access code" %}"></i>
+                        {% endif %}
                         <a href="{{ track.urls.edit }}">
                             {{ track.name }}
                         </a>
