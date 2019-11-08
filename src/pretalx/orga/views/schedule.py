@@ -27,7 +27,7 @@ from pretalx.common.signals import register_data_exporters
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
-from pretalx.schedule.models import Availability, Room
+from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
 
 
@@ -241,6 +241,7 @@ class TalkList(EventPermissionRequired, View):
             'start': request.event.datetime_from.isoformat(),
             'end': request.event.datetime_to.isoformat(),
             'timezone': request.event.timezone,
+            'locales': request.event.locales,
             'results': [],
         }
         version = self.request.GET.get('version')
@@ -260,6 +261,17 @@ class TalkList(EventPermissionRequired, View):
         ]
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
+    def post(self, request, event):
+        data = json.loads(request.body.decode())
+        slot = TalkSlot.objects.create(
+            schedule=request.event.wip_schedule,
+            room=request.event.rooms.first(),
+            start=request.event.datetime_from,
+            end=request.event.datetime_from + timedelta(minutes=int(data.get('duration'))),
+            description=LazyI18nString(data.get('description')),
+        )
+        return JsonResponse(serialize_break(slot))
+
 
 class TalkUpdate(PermissionRequired, View):
     permission_required = 'orga.schedule_talk'
@@ -278,20 +290,39 @@ class TalkUpdate(PermissionRequired, View):
             return JsonResponse({'error': 'Talk not found'})
         data = json.loads(request.body.decode())
         if data.get('start'):
+            duration = talk.duration
             talk.start = dateutil.parser.parse(data.get('start'))
-            talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
+            if data.get('end'):
+                talk.end = dateutil.parser.parse(data['end'])
+            elif data.get('duration'):
+                talk.end = talk.start + timedelta(minutes=int(data['duration']))
+            elif not talk.submission:
+                talk.end = talk.start + timedelta(minutes=duration)
+            else:
+                talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
+            if data.get('room'):
+                talk.room = request.event.rooms.get(pk=data.get('room'))
+            if not talk.submission:
+                description = data.get('description')
+                if description:
+                    talk.description = LazyI18nString(description)
+            talk.save(update_fields=['start', 'end', 'room', 'description'])
         else:
             talk.start = None
             talk.end = None
-
-        if data.get('room'):
-            talk.room = request.event.rooms.get(pk=data.get('room'))
-        else:
             talk.room = None
-
-        talk.save(update_fields=['start', 'end', 'room'])
+            talk.save(update_fields=['start', 'end', 'room'])
 
         return JsonResponse(serialize_slot(talk))
+
+    def delete(self, request, event, pk):
+        talk = self.get_object()
+        if not talk:
+            return JsonResponse({'error': 'Talk not found'})
+        if talk.submission:
+            return JsonResponse({'error': 'Cannot delete talk.'})
+        talk.delete()
+        return JsonResponse({'success': True})
 
 
 class QuickScheduleView(PermissionRequired, UpdateView):

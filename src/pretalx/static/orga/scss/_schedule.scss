@@ -244,6 +244,25 @@
   }
 }
 
+.talk-box.break {
+  border: none;
+  background-color: $gray-light;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  z-index: 40;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
+  span.description {
+    text-align: center;
+    width: 100%;
+    color: $gray;
+    padding-top: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+
 .talk-box.accepted {
   filter: opacity(70%);
   color: $gray;
@@ -253,7 +272,7 @@
   opacity: 0.5;
 }
 
-.talk-box.warning .warning-sign {
+.talk-box .warning-sign {
   color: $brand-danger;
   margin-top: auto;
   margin-bottom: auto;
@@ -276,4 +295,47 @@
     margin-left: auto;
     margin-right: auto;
   }
+}
+#schedule-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 600px;
+  z-index: 1000;
+  top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  form {
+    min-height: 200px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  .button-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+#new-talk {
+  border-radius: 100%;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  color: $white;
+  background-color: $brand-info;
+  z-index: 1000;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }

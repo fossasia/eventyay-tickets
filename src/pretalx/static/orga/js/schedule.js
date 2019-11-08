@@ -79,26 +79,38 @@ var api = {
       window.location.host,
       window.location.pathname,
       "api/talks/",
-      talk.id,
-      "/",
+      talk.id ? (talk.id + "/") : "",
       window.location.search,
     ].join("")
-    return api.http("PATCH", url, {
+    const action = talk.action || "PATCH"
+    return api.http(action, url, {
       room: talk.room,
       start: talk.start,
+      action: talk.action,
+      duration: talk.duration,
+      description: talk.description,
     })
   },
+  deleteTalk(talk) {
+    return api.saveTalk({id: talk.id, action: "DELETE"})
+  },
+  createTalk(talk) {
+    talk.action = "POST"
+    return api.saveTalk(talk)
+  }
 }
 
 var dragController = {
   draggedTalk: null,
+  modalTalk: null,
+
   event: null,
   roomColumn: null,
   dragPosX: null,
   dragPosY: null,
   dragSource: null,
 
-  startDragging(talk, dragSource, dragPosX, dragPosY) {
+  startDraggingTalk(talk, dragSource, dragPosX, dragPosY) {
     this.draggedTalk = JSON.parse(JSON.stringify(talk))
     this.dragPosX = dragPosX
     this.dragSource = dragSource
@@ -113,6 +125,19 @@ var dragController = {
       this.event = null
     }
   },
+  startModal(talk) {
+    this.modalTalk = talk
+    this.draggedTalk = null
+    this.stopDragging()
+  },
+  switchToModal() {
+    this.modalTalk = this.draggedTalk
+    this.draggedTalk = null
+    this.stopDragging()
+  },
+  closeModal() {
+    this.modalTalk = null;
+  }
 }
 
 function generateTimesteps(start, interval, intervalunit, end) {
@@ -157,12 +182,79 @@ Vue.component("availability", {
   },
 })
 
+Vue.component("modal", {
+  template: `
+    <div id="schedule-modal" class="schedule-modal">
+      <h2 v-if="talk.id">Edit break</h2>
+      <h2 v-else>New break</h2>
+      <form class="form-control">
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label">Description</label>
+          <div class="col-md-9"><div class="i18n-form-group">
+            <input type="text" class="form-control" :title="locale" :lang="locale" v-model="talk.description[locale]" v-for="locale in locales">
+          </div></div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label">Duration</label>
+          <div class="col-md-9"><div class="input-group">
+            <input type="number" name="duration" value="30" min="0" class="form-control" placeholder="Duration" title="Duration in minutes" v-model="talk.duration">
+            <div class="input-group-append"><span class="input-group-append input-group-text">minutes</span></div>
+          </div>
+        </div></div>
+        <div class="button-row">
+          <div class="btn btn-outline-danger" @click="deleteTalk" v-if="talk.id">Delete</div>
+          <div v-else></div>
+          <div class="btn btn-success" @click="saveTalk">Save</div>
+        </div>
+      </form>
+    </div>
+  `,
+  props: {
+    talk: Object,
+    locales: Array,
+  },
+  created () {
+    if (!this.talk.description) {
+      this.talk.description = {"en": ""}
+    }
+    if (!this.talk.duration && this.talk.start) {
+      this.talk.duration = moment(this.talk.end).diff(this.talk.start, "minutes")
+    }
+  },
+  methods: {
+    deleteTalk () {
+      api.deleteTalk(this.talk).then((resp) => {
+        this.$emit("deleteTalk", this.talk)
+        dragController.closeModal()
+      })
+    },
+    saveTalk () {
+      if (this.talk.id) {
+        this.talk.end = moment(this.talk.start).add(this.talk.duration, "minutes")
+        api.saveTalk(this.talk).then(resp => {
+          dragController.closeModal()
+          this.talk.duration = resp.duration
+          this.talk.start = resp.start
+          this.talk.end = resp.end
+          this.$emit("saveTalk", this.talk)
+        })
+      } else {
+        api.createTalk(this.talk).then(resp => {
+          dragController.closeModal()
+          this.$emit("newTalk", resp)
+        })
+      }
+    },
+  }
+})
+
 Vue.component("talk", {
   template: `
-    <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings}]" v-bind:style="style" @mousedown="onMouseDown"
-         :title="title" data-toggle="tooltip">
+    <div class="talk-box" :class="[talk.state, {dragged: isDragged, warning: displayWarnings, break: isBreak}]" v-bind:style="style" @mousedown="onMouseDown"
+         :title="title" :data-original-title="title" data-toggle="tooltip">
       <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
-      <span v-if="!isDragged || !this.talk.start">{{ talk.title }}</span>
+      <span v-if="(!isDragged || !this.talk.start) && talk.title">{{ talk.title }}</span>
+      <span v-if="isBreak && !isDragged" class="description">{{ breakDescription }}</span>
       <span class="time" v-if="this.talk.start && this.isDragged">
         <span>{{ humanStart }}</span>
       </span>
@@ -184,6 +276,11 @@ Vue.component("talk", {
         title = title + "\n Not confirmed yet!"
       }
       return title
+    },
+    breakDescription () {
+      if (!this.talk.description) return ""
+      if (this.talk.description.en) return this.talk.description.en
+      return this.talk.description.values[0]
     },
     style() {
       var style = { height: this.talk.duration + "px" }
@@ -225,12 +322,15 @@ Vue.component("talk", {
         ? this.talk.warnings.map(warning => warning.message).join("\n")
         : null
     },
+    isBreak() {
+      return !this.talk.submission_type
+    },
   },
   methods: {
     onMouseDown(event) {
       if (event.buttons === 1) {
         var talkRect = this.$el.getBoundingClientRect()
-        dragController.startDragging(
+        dragController.startDraggingTalk(
           this.talk,
           this.$el,
           event.clientX - talkRect.left,
@@ -326,6 +426,7 @@ var app = new Vue({
   template: `
     <div @mousemove="onMouseMove" @mouseup="onMouseUp">
       <div id="fahrplan" :class="showUnassigned ? 'narrow' : 'wide'">
+        <modal ref="modalTalk" v-if="dragController.modalTalk" :talk="dragController.modalTalk" v-on:deleteTalk="deleteTalk" v-on:saveTalk="saveTalk" :locales="locales" v-on:newTalk="newTalk"></modal>
         <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
         <div id="timeline" v-if="!loading">
           <div class="timeline-container">
@@ -357,6 +458,9 @@ var app = new Vue({
           </div>
         </div>
       </div>
+      <div id="new-talk" @click="dragController.startModal({})">
+        +
+      </div>
     </div>
   `,
   data() {
@@ -366,6 +470,7 @@ var app = new Vue({
       start: null,
       end: null,
       timezone: null,
+      locales: null,
       loading: true,
       showUnassigned: true,
       search: "",
@@ -383,6 +488,7 @@ var app = new Vue({
         this.timezone = result.timezone
         this.start = moment.tz(result.start, this.timezone)
         this.end = moment.tz(result.end, this.timezone)
+        this.locales = result.locales
       })
       .then(() => {
         this.loading = false
@@ -411,6 +517,21 @@ var app = new Vue({
     },
   },
   methods: {
+    deleteTalk (event) {
+      // only removes talk from display
+      const index = this.talks.indexOf(event);
+      this.talks.splice(index, 1);
+    },
+    newTalk(talk) {
+      this.talks.push(talk)
+    },
+    saveTalk (talk) {
+      this.talks.forEach((talk, index) => {
+        if (talk.id == response.id) {
+          Vue.set(this.talks[index], talk)
+        }
+      })
+    },
     onMouseMove(event) {
       if (dragController.draggedTalk) {
         dragController.event = event
@@ -485,16 +606,43 @@ var app = new Vue({
     onMouseUp(event) {
       if (dragController.draggedTalk) {
         if (dragController.event) {
-          api.saveTalk(dragController.draggedTalk).then(response => {
-            this.talks.forEach((talk, index) => {
-              if (talk.id == response.id) {
-                Object.assign(this.talks[index], response)
-              }
+          // got dragged
+          if (!dragController.draggedTalk.submission_type && !dragController.draggedTalk.room) {
+            api.deleteTalk(dragController.draggedTalk).then(response => {
+              this.deleteTalk(dragController.draggedTalk)
             })
-          })
+          } else {
+            api.saveTalk(dragController.draggedTalk).then(response => {
+              this.talks.forEach((talk, index) => {
+                if (talk.id == response.id) {
+                  Object.assign(this.talks[index], response)
+                }
+              })
+            })
+          }
         } else {
-          window.open(dragController.draggedTalk.url)
-          dragController.stopDragging()
+          // this is a click
+          const url = dragController.draggedTalk.url
+          if (url) { // this is a talk, so we open a link
+            dragController.stopDragging()
+            window.open(url)
+          } else {
+            dragController.switchToModal()
+          }
+        }
+      } else if (dragController.modalTalk) {
+          let clickElement = document.elementFromPoint(
+            event.clientX,
+            event.clientY
+          )
+          while (
+            clickElement.id !== "schedule-modal" &&
+            clickElement.parentElement
+          ) {
+            clickElement = clickElement.parentElement
+          }
+        if (clickElement.id !== "schedule-modal") {
+          dragController.closeModal();
         }
       }
       dragController.stopDragging()
