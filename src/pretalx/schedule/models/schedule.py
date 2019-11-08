@@ -81,7 +81,8 @@ class Schedule(LogMixin, models.Model):
             is_visible=False,
         ).update(is_visible=True)
         self.talks.filter(is_visible=True).exclude(
-            start__isnull=False, submission__state=SubmissionStates.CONFIRMED
+            models.Q(start__isnull=False, submission__state=SubmissionStates.CONFIRMED)
+            | models.Q(submission__isnull=True)
         ).update(is_visible=False)
 
         talks = []
@@ -139,8 +140,13 @@ class Schedule(LogMixin, models.Model):
         return self.talks.select_related(
             'submission', 'submission__event', 'room',
         ).filter(
-            room__isnull=False, start__isnull=False, is_visible=True
+            room__isnull=False, start__isnull=False, is_visible=True,
+            submission__isnull=False,
         ).exclude(submission__state=SubmissionStates.DELETED)
+
+    @cached_property
+    def breaks(self):
+        return self.talks.select_related('room').filter(submission__isnull=True)
 
     @cached_property
     def slots(self):
@@ -225,11 +231,11 @@ class Schedule(LogMixin, models.Model):
         new_submissions = set(new_slots.values_list('submission__id', flat=True))
         handled_submissions = set()
 
-        moved_or_missing = old_slot_set - new_slot_set
-        moved_or_new = new_slot_set - old_slot_set
+        moved_or_missing = old_slot_set - new_slot_set - {None}
+        moved_or_new = new_slot_set - old_slot_set - {None}
 
         for entry in moved_or_missing:
-            if entry.submission in handled_submissions:
+            if entry.submission in handled_submissions or not entry.submission:
                 continue
             if entry.submission not in new_submissions:
                 result['canceled_talks'] += list(old_slots.filter(submission__pk=entry.submission))
@@ -274,7 +280,7 @@ class Schedule(LogMixin, models.Model):
             'unconfirmed': [],
             'no_track': [],
         }
-        for talk in self.talks.all():
+        for talk in self.talks.filter(submission__isnull=False):
             if not talk.start:
                 warnings['unscheduled'].append(talk)
             elif talk.warnings:

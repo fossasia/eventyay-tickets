@@ -14,10 +14,11 @@ from pretalx.common.urls import get_base_url
 
 
 class ScheduleData(BaseExporter):
-    def __init__(self, event, schedule=None, with_accepted=False):
+    def __init__(self, event, schedule=None, with_accepted=False, with_breaks=False):
         super().__init__(event)
         self.schedule = schedule
         self.with_accepted = with_accepted
+        self.with_breaks = with_breaks
 
     @cached_property
     def metadata(self):
@@ -57,7 +58,7 @@ class ScheduleData(BaseExporter):
         }
 
         for talk in talks:
-            if not talk.start or not talk.room:
+            if not talk.start or not talk.room or (not talk.submission and not self.with_breaks):
                 continue
             talk_date = talk.start.astimezone(tz).date()
             if talk.start.astimezone(tz).hour < 3 and talk_date != event.date_from:

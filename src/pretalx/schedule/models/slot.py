@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
+from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import get_base_url
@@ -21,7 +22,8 @@ class TalkSlot(LogMixin, models.Model):
     :param is_visible: This parameter is set on schedule release. Only confirmed talks will be visible.
     """
     submission = models.ForeignKey(
-        to='submission.Submission', on_delete=models.PROTECT, related_name='slots'
+        to='submission.Submission', on_delete=models.PROTECT, related_name='slots',
+        null=True, blank=True,  # If the submission is empty, this is a break or similar event
     )
     room = models.ForeignKey(
         to='schedule.Room',
@@ -36,8 +38,9 @@ class TalkSlot(LogMixin, models.Model):
     is_visible = models.BooleanField(default=False)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
+    description = I18nCharField(null=True)
 
-    objects = ScopedManager(event='submission__event')
+    objects = ScopedManager(event='schedule__event')
 
     def __str__(self):
         """Help when debugging."""
@@ -47,12 +50,14 @@ class TalkSlot(LogMixin, models.Model):
     def event(self):
         return self.submission.event
 
-    @cached_property
+    @property
     def duration(self) -> int:
         """Returns the actual duration in minutes if the talk is scheduled, and
         the planned duration in minutes otherwise."""
         if self.start and self.end:
             return int((self.end - self.start).total_seconds() / 60)
+        if not self.submission:
+            return None
         return self.submission.get_duration()
 
     @cached_property

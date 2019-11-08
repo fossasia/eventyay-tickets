@@ -14,6 +14,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
+from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
@@ -191,29 +192,45 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
         return redirect(self.request.event.orga_urls.schedule)
 
 
-def serialize_slot(slot):
+def serialize_break(slot):
     return {
         'id': slot.pk,
-        'title': str(slot.submission.title),
-        'speakers': [
-            {'name': speaker.name} for speaker in slot.submission.speakers.all()
-        ],
-        'submission_type': str(slot.submission.submission_type.name),
-        'track': {'name': str(slot.submission.track.name), 'color': slot.submission.track.color} if slot.submission.track else None,
-        'state': slot.submission.state,
-        'description': str(slot.submission.description),
-        'abstract': str(slot.submission.abstract),
-        'notes': slot.submission.notes,
-        'duration': slot.submission.duration
-        or slot.submission.submission_type.default_duration,
-        'content_locale': slot.submission.content_locale,
-        'do_not_record': slot.submission.do_not_record,
+        'title': '',
+        'description': slot.description.data if slot.description else '',
         'room': slot.room.pk if slot.room else None,
         'start': slot.start.isoformat() if slot.start else None,
         'end': slot.end.isoformat() if slot.end else None,
-        'url': slot.submission.orga_urls.base,
-        'warnings': slot.warnings,
+        'duration': slot.duration,
     }
+
+
+def serialize_slot(slot):
+    base_data = serialize_break(slot)
+    if slot.submission:
+        submission_data = {
+            'id': slot.pk,
+            'title': str(slot.submission.title),
+            'speakers': [
+                {'name': speaker.name} for speaker in slot.submission.speakers.all()
+            ],
+            'submission_type': str(slot.submission.submission_type.name),
+            'track': {'name': str(slot.submission.track.name), 'color': slot.submission.track.color} if slot.submission.track else None,
+            'state': slot.submission.state,
+            'description': str(slot.submission.description),
+            'abstract': str(slot.submission.abstract),
+            'notes': slot.submission.notes,
+            'duration': slot.submission.duration
+            or slot.submission.submission_type.default_duration,
+            'content_locale': slot.submission.content_locale,
+            'do_not_record': slot.submission.do_not_record,
+            'room': slot.room.pk if slot.room else None,
+            'start': slot.start.isoformat() if slot.start else None,
+            'end': slot.end.isoformat() if slot.end else None,
+            'url': slot.submission.orga_urls.base,
+            'warnings': slot.warnings,
+        }
+        return {**base_data, **submission_data}
+    return base_data
 
 
 class TalkList(EventPermissionRequired, View):
@@ -232,8 +249,6 @@ class TalkList(EventPermissionRequired, View):
         else:
             schedule = request.event.wip_schedule
 
-        if not schedule:
-            return JsonResponse(result)
         result['results'] = [
             serialize_slot(slot)
             for slot
@@ -249,6 +264,9 @@ class TalkList(EventPermissionRequired, View):
 class TalkUpdate(PermissionRequired, View):
     permission_required = 'orga.schedule_talk'
 
+    def get_permission_object(self):
+        return self.request.event
+
     def get_object(self):
         return self.request.event.wip_schedule.talks.filter(
             pk=self.kwargs.get('pk')
@@ -259,7 +277,6 @@ class TalkUpdate(PermissionRequired, View):
         if not talk:
             return JsonResponse({'error': 'Talk not found'})
         data = json.loads(request.body.decode())
-
         if data.get('start'):
             talk.start = dateutil.parser.parse(data.get('start'))
             talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
@@ -309,7 +326,7 @@ class RoomTalkAvailabilities(EventPermissionRequired, View):
         room = request.event.rooms.filter(pk=roomid).first()
         if not (talk and room):
             return JsonResponse({'results': []})
-        if talk.submission.availabilities:
+        if talk.submission and talk.submission.availabilities:
             availabilitysets = [
                 room.availabilities.all(),
                 talk.submission.availabilities,

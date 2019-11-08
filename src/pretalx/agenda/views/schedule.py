@@ -384,7 +384,8 @@ class ScheduleView(ScheduleDataView):
         timezone = pytz.timezone(self.request.event.timezone)
         data = ScheduleData(
             event=self.request.event, schedule=self.schedule,
-            with_accepted=self.answer_type == 'html' and self.schedule == self.request.event.wip_schedule
+            with_accepted=self.answer_type == 'html' and self.schedule == self.request.event.wip_schedule,
+            with_breaks=True,
         ).data
         max_rooms = 0
         for date in data:
