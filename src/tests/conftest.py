@@ -749,13 +749,14 @@ def past_slot(other_confirmed_submission, room, schedule, speaker):
 @pytest.fixture
 def break_slot(room, schedule):
     with scope(event=schedule.event):
-        TalkSlot.objects.update_or_create(
+        TalkSlot.objects.create(
+            description='Break',
             schedule=schedule.event.wip_schedule,
-            defaults={'is_visible': True},
         )
-        slot = TalkSlot.objects.update_or_create(
+        slot = TalkSlot.objects.create(
+            description='Break',
             schedule=schedule,
-            defaults={'is_visible': True},
+            is_visible=True,
         )
         slots = TalkSlot.objects.filter(submission__isnull=True)
         slots.update(start=room.event.datetime_from + datetime.timedelta(minutes=90), end=room.event.datetime_from + datetime.timedelta(minutes=120), room=room)

@@ -75,15 +75,11 @@ class Schedule(LogMixin, models.Model):
         wip_schedule = Schedule.objects.create(event=self.event)
 
         # Set visibility
+        self.talks.all().update(is_visible=False)
         self.talks.filter(
+            models.Q(submission__state=SubmissionStates.CONFIRMED) | models.Q(submission__isnull=True),
             start__isnull=False,
-            submission__state=SubmissionStates.CONFIRMED,
-            is_visible=False,
         ).update(is_visible=True)
-        self.talks.filter(is_visible=True).exclude(
-            models.Q(start__isnull=False, submission__state=SubmissionStates.CONFIRMED)
-            | models.Q(submission__isnull=True)
-        ).update(is_visible=False)
 
         talks = []
         for talk in self.talks.select_related('submission', 'room').all():

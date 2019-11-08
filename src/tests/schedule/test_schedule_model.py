@@ -132,8 +132,10 @@ def test_scheduled_talks(slot, break_slot, room):
         current_slot.start = now()
         current_slot.save()
         _, new = current_slot.schedule.freeze('test-version')
+        assert slot_count == 1
         assert new.scheduled_talks.count() == slot_count
         assert new.breaks.count() == break_count
+        assert new.breaks.first().is_visible
         current_slot = current_slot.submission.slots.filter(schedule__version__isnull=True).first()
         current_slot.room = None
         current_slot.start = now()
@@ -141,6 +143,7 @@ def test_scheduled_talks(slot, break_slot, room):
         _, new = current_slot.schedule.freeze('test-version2')
         assert new.scheduled_talks.count() == slot_count - 1
         assert new.breaks.count() == break_count
+        assert new.breaks.first().is_visible
 
 
 @pytest.mark.django_db
