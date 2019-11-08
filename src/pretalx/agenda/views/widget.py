@@ -1,16 +1,11 @@
-import hashlib
-
 from django.conf import settings
-from django.contrib.staticfiles import finders
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 from django.http import Http404, HttpResponse, JsonResponse
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.views.schedule import ScheduleView
-from pretalx.common.tasks import generate_widget_css
+from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
 
 
@@ -70,24 +65,6 @@ class WidgetData(ScheduleView):
             return response
 
 
-def generate_widget_js(event, locale):
-    code = f'''
-const lang = "{locale}";
-let dataSource = "{event.urls.widget_data_source}";
-'''
-    files = [
-        'vendored/vue.js' if settings.DEBUG else 'vendored/vue.min.js',
-        'vendored/moment-with-locales.js',
-        'agenda/js/widget.js',
-    ]
-    for fname in files:
-        f = finders.find(fname)
-        with open(f, 'r', encoding='utf-8') as fp:
-            code += fp.read()
-
-    return code
-
-
 @condition(etag_func=widget_js_etag)
 @cache_page(60)
 def widget_script(request, event, locale):
@@ -100,15 +77,7 @@ def widget_script(request, event, locale):
     if existing_file and not settings.DEBUG:
         return HttpResponse(existing_file.read(), content_type='text/javascript')
 
-    data = generate_widget_js(request.event, locale).encode()
-    if not settings.DEBUG:
-        checksum = hashlib.sha1(data).hexdigest()
-        file_name = default_storage.save(
-            'widget/widget.{}.{}.js'.format(locale, checksum),
-            ContentFile(data)
-        )
-        request.event.settings.set('widget_file_{}'.format(locale), 'file://' + file_name)
-        request.event.settings.set('widget_checksum_{}'.format(locale), checksum)
+    data = generate_widget_js(request.event, locale, save=not settings.DEBUG)
     return HttpResponse(data, content_type='text/javascript')
 
 

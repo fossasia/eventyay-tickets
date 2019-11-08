@@ -43,6 +43,32 @@ def generate_widget_css(event, save=True):
     return css
 
 
+def generate_widget_js(event, locale, save=True):
+    code = f'''
+const lang = "{locale}";
+let dataSource = "{event.urls.widget_data_source}";
+'''
+    files = [
+        'vendored/vue.js' if settings.DEBUG else 'vendored/vue.min.js',
+        'vendored/moment-with-locales.js',
+        'agenda/js/widget.js',
+    ]
+    for fname in files:
+        f = finders.find(fname)
+        with open(f, 'r', encoding='utf-8') as fp:
+            code += fp.read()
+    data = code.encode()
+    if save:
+        checksum = hashlib.sha1(data).hexdigest()
+        file_name = default_storage.save(
+            'widget/widget.{}.{}.js'.format(locale, checksum),
+            ContentFile(data)
+        )
+        event.settings.set('widget_file_{}'.format(locale), 'file://' + file_name)
+        event.settings.set('widget_checksum_{}'.format(locale), checksum)
+    return data
+
+
 @app.task()
 def regenerate_css(event_id: int):
     event = Event.objects.filter(pk=event_id).first()
@@ -53,6 +79,9 @@ def regenerate_css(event_id: int):
 
     if event.settings.widget_css_checksum:
         generate_widget_css(event)
+    for locale in event.locales:
+        if event.settings.get(f'widget_checksum_{locale}'):
+            generate_widget_js(event, locale)
 
     if not event.primary_color:
         for local_app in local_apps:
