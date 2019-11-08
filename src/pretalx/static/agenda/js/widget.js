@@ -3,23 +3,24 @@
 Vue.component('pretalx-schedule-talk', {
     template: `
         <a
-            :class="['pretalx-schedule-talk', isActive ? 'active': '']"
-            :id="'pretalx-' + talk.code"
-            :title="talk.title + '(' + talk.display_speaker_names + ')'"
+            :class="['pretalx-schedule-talk', isActive ? 'active': '', isBreak ? 'break' : '']"
+            :id="'pretalx-' + talk.code || 'break'"
+            :title="(talk.title || talk.description) + talk.display_speaker_names ? ('(' + talk.display_speaker_names + ')') : ''"
             :style="style"
             :data-time="timeDisplay"
             :data-start="talk.start"
             :data-end="talk.end"
             target="_blank"
             rel="noopener"
-            :href="data.event + 'talk/' + talk.code"
+            :href="talk.code ? (data.event + 'talk/' + talk.code) : '#'"
         >
             <div class="pretalx-schedule-talk-content">
                 <span v-if="talk.do_not_record" class="fa-stack">
                     <i class="fa fa-video-camera fa-stack-1x"></i>
                     <i class="fa fa-ban do-not-record fa-stack-2x" aria-hidden="true"></i>
                 </span>
-                <span class="pretalx-schedule-talk-title">{{ talk.title }}</span>
+                <span class="pretalx-schedule-talk-title" v-if="!isBreak">{{ talk.title }}</span>
+                <span class="pretalx-schedule-break-title" v-else>{{ talk.title }}</span>
                 <span class="pretalx-schedule-talk-speakers" v-if="talk.display_speaker_names">({{ talk.display_speaker_names }})</span><br>
             </div>
         </a>
@@ -35,13 +36,16 @@ Vue.component('pretalx-schedule-talk', {
                 height: this.talk.height + "px",
                 "top": this.talk.top + "px",
                 "min-height": (this.talk.height >= 30 ? this.talk.height : 30) + "px",
-                "border-color": this.talk.track.color || "inherit",
-                "cursor": "pointer",
+                "border-color": (this.talk.track && this.talk.track.color) ? this.talk.track.color : "inherit",
+                "cursor": this.isBreak ? "default" : "pointer",
             }
         },
         isActive () {
             const now = moment()
             return moment(this.talk.start) > now && moment(this.talk.end) < now
+        },
+        isBreak () {
+            return !this.talk.code
         },
         timeDisplay () {
             return moment(this.talk.start).format("LT") + ' - ' + moment(this.talk.end).format("LT")

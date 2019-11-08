@@ -38,21 +38,21 @@ class WidgetData(ScheduleView):
                     room['name'] = str(room['name'])
                     room['talks'] = [
                         {
-                            'title': talk.submission.title,
-                            'code': talk.submission.code,
-                            'display_speaker_names': talk.submission.display_speaker_names,
+                            'title': talk.submission.title if talk.submission else str(talk.description),
+                            'code': talk.submission.code if talk.submission else None,
+                            'display_speaker_names': talk.submission.display_speaker_names if talk.submission else None,
                             'speakers': [
                                 {
                                     'name': speaker.name,
                                     'code': speaker.code
                                 } for speaker in talk.submission.speakers.all()
-                            ],
+                            ] if talk.submission else None,
                             'height': talk.height,
                             'top': talk.top,
                             'start': talk.start,
                             'end': talk.end,
-                            'do_not_record': talk.submission.do_not_record,
-                            'track': getattr(talk.submission.track, 'name', ''),
+                            'do_not_record': talk.submission.do_not_record if talk.submission else None,
+                            'track': getattr(talk.submission.track, 'name', '') if talk.submission else None,
                         }
                         for talk in room['talks']
                     ]

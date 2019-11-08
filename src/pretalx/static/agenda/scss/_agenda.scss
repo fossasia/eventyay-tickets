@@ -328,6 +328,34 @@ header {
           color: $gray-light;
           border-color: $gray-light;
         }
+
+        .pretalx-schedule-talk.break {
+          margin: 0;
+          width: 100%;
+          background-color: $gray-lightest;
+          color: $gray;
+          border: 0;
+          display: flex;
+          align-items: center;
+          flex-grow: 1;
+          .pretalx-schedule-talk-content {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+          }
+          .pretalx-schedule-break-title {
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 16px;
+          }
+          &:hover {
+            box-shadow: none;
+            height: auto !important;
+          }
+        }
       }
     }
 
