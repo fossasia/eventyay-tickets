@@ -262,9 +262,14 @@ table .action-column {
   }
 }
 /* fix input group prepend look */
-.input-group-text.input-group-prepend {
-  font-size: inherit;
-  line-height: inherit;
+.input-group-text {
+  .input-group-text.input-group-append {
+    padding: 0 0.75rem;
+  }
+  .input-group-prepend {
+    font-size: inherit;
+    line-height: inherit;
+  }
 }
 
 .markdown-wrapper {
