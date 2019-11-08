@@ -263,12 +263,14 @@ class TalkList(EventPermissionRequired, View):
 
     def post(self, request, event):
         data = json.loads(request.body.decode())
+        start = dateutil.parser.parse(data.get('start')) if data.get('start') else request.event.datetime_from
+        end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + timedelta(minutes=int(data.get('duration', 30)))
         slot = TalkSlot.objects.create(
             schedule=request.event.wip_schedule,
-            room=request.event.rooms.first(),
-            start=request.event.datetime_from,
-            end=request.event.datetime_from + timedelta(minutes=int(data.get('duration'))),
+            room=request.event.rooms.get(pk=data.get('room')) if data.get('room') else request.event.rooms.first(),
             description=LazyI18nString(data.get('description')),
+            start=start,
+            end=end,
         )
         return JsonResponse(serialize_break(slot))
 
@@ -297,7 +299,7 @@ class TalkUpdate(PermissionRequired, View):
             elif data.get('duration'):
                 talk.end = talk.start + timedelta(minutes=int(data['duration']))
             elif not talk.submission:
-                talk.end = talk.start + timedelta(minutes=duration)
+                talk.end = talk.start + timedelta(minutes=duration or 30)
             else:
                 talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
             if 'room' in data:

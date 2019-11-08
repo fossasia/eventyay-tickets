@@ -285,7 +285,6 @@
   pointer-events: none;
   color: white;
   z-index: 9001;
-  width: auto;
   justify-content: center;
   align-items: center;
   .time {
@@ -326,7 +325,7 @@
   border-radius: 100%;
   width: 70px;
   height: 70px;
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 20px;
   color: $white;

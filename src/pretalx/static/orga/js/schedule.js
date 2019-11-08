@@ -108,7 +108,9 @@ var dragController = {
   roomColumn: null,
   dragPosX: null,
   dragPosY: null,
+  startY: null,
   dragSource: null,
+  isCreating: false,
 
   startDraggingTalk(talk, dragSource, dragPosX, dragPosY) {
     this.draggedTalk = JSON.parse(JSON.stringify(talk))
@@ -123,6 +125,7 @@ var dragController = {
       this.dragSource.classList.remove("drag-source")
       this.draggedTalk = null
       this.event = null
+      this.startY = null
     }
   },
   startModal(talk) {
@@ -255,8 +258,11 @@ Vue.component("talk", {
       <span v-if="displayWarnings" class="warning-sign"><i class="fa fa-warning"></i></span>
       <span v-if="(!isDragged || !this.talk.start) && talk.title">{{ talk.title }}</span>
       <span v-if="isBreak && !isDragged" class="description">{{ breakDescription }}</span>
-      <span class="time" v-if="this.talk.start && this.isDragged">
+      <span class="time" v-if="this.talk.start && this.isDragged && this.talk.id">
         <span>{{ humanStart }}</span>
+      </span>
+      <span class="time" v-else-if="this.isDragged">
+        <span>{{ talk.duration }} minutes</span>
       </span>
     </div>
   `,
@@ -287,31 +293,10 @@ Vue.component("talk", {
       if (this.talk.track && this.talk.track.color) {
         style.borderColor = this.talk.track.color
       }
-      if (this.isDragged) {
-        var rect = this.$parent.$el.getBoundingClientRect()
-
-        var colRect
-        if (dragController.roomColumn) {
-          colRect = dragController.roomColumn.getBoundingClientRect()
-        } else {
-          colRect = app.$refs.unassigned.getBoundingClientRect()
-        }
-        var dragTop =
-          Math.max(
-            colRect.top,
-            dragController.event.clientY - dragController.dragPosY
-          ) - rect.top
-        var dragLeft =
-          dragController.event.clientX - rect.left - dragController.dragPosX
-
-        style.transform = "translate(" + dragLeft + "px," + dragTop + "px)"
-        style.width = colRect.width - 16 + "px"
-      } else if (this.talk.room !== null) {
-        style.transform =
-          "translatey(" +
-          moment(this.talk.start).diff(this.start, "minutes") +
-          "px)"
-      }
+      style.transform =
+        "translateY(" +
+        moment(this.talk.start).diff(this.start, "minutes") +
+        "px)"
       return style
     },
     humanStart() {
@@ -330,6 +315,7 @@ Vue.component("talk", {
     onMouseDown(event) {
       if (event.buttons === 1) {
         var talkRect = this.$el.getBoundingClientRect()
+        dragController.isCreating = false
         dragController.startDraggingTalk(
           this.talk,
           this.$el,
@@ -377,8 +363,11 @@ Vue.component("room", {
   template: `
     <div class="room-column">
       <a v-bind:href="room.url" :title="displayName"><div class="room-header">{{ displayName }}</div></a>
-      <div class="room-container" v-bind:style="style" :data-id="room.id">
+      <div class="room-container" v-bind:style="style" :data-id="room.id" @mousedown="onMouseDown">
       <availability v-for="avail in availabilities" :availability="avail" :start="start" :key="avail.id"></availability>
+      <talk ref="draggedTalk"
+          v-if="dragController.draggedTalk && dragController.event && dragController.draggedTalk.room == this.room.id" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true" :start="start">
+      </talk>
       <talk v-for="talk in myTalks" :talk="talk" :start="start" :key="talk.id"></talk>
       <timestep v-for="timestep in midnights" :timestep="timestep" :start="start" :thin="true">
       </timestep>
@@ -394,7 +383,7 @@ Vue.component("room", {
   },
   asyncComputed: {
     availabilities() {
-      if (dragController.draggedTalk) {
+      if (dragController.draggedTalk && dragController.draggedTalk.id) {
         return api
           .fetchAvailabilities(dragController.draggedTalk.id, this.room.id)
           .then(result => result.results)
@@ -418,7 +407,22 @@ Vue.component("room", {
         height: this.duration + "px",
       }
     },
+    dragController () { return dragController }
   },
+  methods: {
+    onMouseDown(event) {
+      if (event.buttons === 1 && !dragController.draggedTalk) {
+        var talkRect = this.$el.getBoundingClientRect()
+        dragController.isCreating = true
+        dragController.startDraggingTalk(
+          {start: null, end: null, room: this.room, duration: null, description: null},
+          this.$el,
+          event.clientX - talkRect.left,
+          0
+        )
+      }
+    }
+  }
 })
 
 var app = new Vue({
@@ -427,7 +431,6 @@ var app = new Vue({
     <div @mousemove="onMouseMove" @mouseup="onMouseUp">
       <div id="fahrplan" :class="showUnassigned ? 'narrow' : 'wide'">
         <modal ref="modalTalk" v-if="dragController.modalTalk" :talk="dragController.modalTalk" v-on:deleteTalk="deleteTalk" v-on:saveTalk="saveTalk" :locales="locales" v-on:newTalk="newTalk"></modal>
-        <talk ref="draggedTalk" v-if="dragController.draggedTalk && dragController.event" :talk="dragController.draggedTalk" :key="dragController.draggedTalk.id" :is-dragged="true"></talk>
         <div id="timeline" v-if="!loading">
           <div class="timeline-container">
             <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start" :thin="false">
@@ -525,12 +528,9 @@ var app = new Vue({
     newTalk(talk) {
       this.talks.push(talk)
     },
-    saveTalk (talk) {
-      this.talks.forEach((talk, index) => {
-        if (talk.id == response.id) {
-          Vue.set(this.talks[index], talk)
-        }
-      })
+    saveTalk (response) {
+      const talk = this.talks.find((talk) => talk.id == response.id)
+      Object.assign(talk, response)
     },
     onMouseMove(event) {
       if (dragController.draggedTalk) {
@@ -556,14 +556,23 @@ var app = new Vue({
           dragController.roomColumn = newRoomColumn
           dragController.draggedTalk.room = newRoomColumn.dataset.id
           dragController.roomColumn.classList.add("hover-active")
-          if (dragController.roomColumn && app.$refs.draggedTalk) {
+          if (dragController.roomColumn) {
             var colRect = dragController.roomColumn.getBoundingClientRect()
-            var dragRect = app.$refs.draggedTalk.$el.getBoundingClientRect()
-            var position = dragRect.top - colRect.top
+            var position = event.clientY - colRect.top - (dragController.dragPosY || 0)
             position -= position % 5
-            dragController.draggedTalk.start = moment(this.start)
+            const cursorTime = moment(this.start)
               .add(position, "minutes")
               .format()
+            if (dragController.isCreating) {
+              if (!dragController.draggedTalk.start) {
+                dragController.draggedTalk.start = cursorTime
+                dragController.startY = dragController.event.clientY
+              }
+              dragController.draggedTalk.end = cursorTime
+              dragController.draggedTalk.duration = moment(cursorTime).diff(moment(dragController.draggedTalk.start), "minutes")
+            } else {
+              dragController.draggedTalk.start = cursorTime
+            }
           }
         } else if (newRoomColumn.id === "unassigned-container") {
           if (newRoomColumn && newRoomColumn !== dragController.roomColumn) {
@@ -604,7 +613,7 @@ var app = new Vue({
       }
     },
     onMouseUp(event) {
-      if (dragController.draggedTalk) {
+      if (dragController.draggedTalk && !dragController.modalTalk) {
         if (dragController.event) {
           // got dragged
           if (!dragController.draggedTalk.submission_type && !dragController.draggedTalk.room) {
@@ -612,13 +621,11 @@ var app = new Vue({
               this.deleteTalk(dragController.draggedTalk)
             })
           } else {
-            api.saveTalk(dragController.draggedTalk).then(response => {
-              this.talks.forEach((talk, index) => {
-                if (talk.id == response.id) {
-                  Object.assign(this.talks[index], response)
-                }
-              })
-            })
+            if (!dragController.draggedTalk.id) {
+              dragController.switchToModal()
+            } else {
+              api.saveTalk(dragController.draggedTalk).then(response => { this.saveTalk(response) })
+            }
           }
         } else {
           // this is a click
