@@ -32,7 +32,7 @@ def test_schedule_xsd_is_up_to_date():
 
 @pytest.mark.django_db
 def test_schedule_frab_xml_export(
-    slot, client, django_assert_max_num_queries, schedule_schema
+    slot, client, django_assert_max_num_queries, schedule_schema, break_slot,
 ):
     with django_assert_max_num_queries(30):
         response = client.get(
@@ -86,6 +86,7 @@ def test_schedule_frab_xml_export_control_char(slot, client, django_assert_max_n
 @pytest.mark.django_db
 def test_schedule_frab_json_export(
     slot,
+    break_slot,
     answered_choice_question,
     personal_answer,
     client,
@@ -129,7 +130,7 @@ def test_schedule_frab_json_export(
 
 
 @pytest.mark.django_db
-def test_schedule_frab_xcal_export(slot, client, django_assert_max_num_queries):
+def test_schedule_frab_xcal_export(slot, client, django_assert_max_num_queries, break_slot):
     with django_assert_max_num_queries(23):
         response = client.get(
             reverse(

@@ -300,12 +300,11 @@ class TalkUpdate(PermissionRequired, View):
                 talk.end = talk.start + timedelta(minutes=duration)
             else:
                 talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
-            if data.get('room'):
-                talk.room = request.event.rooms.get(pk=data.get('room'))
+            if 'room' in data:
+                room = data['room']
+                talk.room = request.event.rooms.get(pk=room) if room else None
             if not talk.submission:
-                description = data.get('description')
-                if description:
-                    talk.description = LazyI18nString(description)
+                talk.description = LazyI18nString(data.get('description', ''))
             talk.save(update_fields=['start', 'end', 'room', 'description'])
         else:
             talk.start = None

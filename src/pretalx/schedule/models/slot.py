@@ -44,7 +44,7 @@ class TalkSlot(LogMixin, models.Model):
 
     def __str__(self):
         """Help when debugging."""
-        return f'TalkSlot(event={self.submission.event.slug}, submission={self.submission.title}, schedule={self.schedule.version})'
+        return f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, schedule={self.schedule.version})'
 
     @cached_property
     def event(self):

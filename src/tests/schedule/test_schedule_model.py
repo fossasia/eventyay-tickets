@@ -123,21 +123,24 @@ def test_unfreeze_unreleased_schedule(event):
 
 
 @pytest.mark.django_db
-def test_scheduled_talks(slot, room):
+def test_scheduled_talks(slot, break_slot, room):
     with scope(event=slot.submission.event):
+        break_count = slot.schedule.breaks.count()
         slot_count = slot.schedule.scheduled_talks.count()
-        current_slot = slot.submission.slots.filter(schedule__version__isnull=True).first()
+        current_slot = slot.submission.slots.filter(schedule__version__isnull=True, submission__isnull=False).first()
         current_slot.room = slot.room
         current_slot.start = now()
         current_slot.save()
         _, new = current_slot.schedule.freeze('test-version')
         assert new.scheduled_talks.count() == slot_count
+        assert new.breaks.count() == break_count
         current_slot = current_slot.submission.slots.filter(schedule__version__isnull=True).first()
         current_slot.room = None
         current_slot.start = now()
         current_slot.save()
         _, new = current_slot.schedule.freeze('test-version2')
         assert new.scheduled_talks.count() == slot_count - 1
+        assert new.breaks.count() == break_count
 
 
 @pytest.mark.django_db

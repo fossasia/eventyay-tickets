@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 import pytz
@@ -12,7 +12,7 @@ from pretalx.schedule.models import Availability, Schedule, TalkSlot
 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('accepted_submission')
-def test_talk_list(orga_client, event):
+def test_talk_list(orga_client, event, break_slot):
     response = orga_client.get(
         reverse(f'orga:schedule.api.talks', kwargs={'event': event.slug}), follow=True
     )
@@ -37,7 +37,30 @@ def test_talk_list_with_filter(orga_client, event, schedule):
 
 
 @pytest.mark.django_db
-def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
+def test_talk_schedule_api_create_break(orga_client, event, schedule, room):
+    with scope(event=event):
+        slot_count = event.wip_schedule.talks.count()
+    response = orga_client.post(
+        reverse(
+            f'orga:schedule.api.talks', kwargs={'event': event.slug}
+        ),
+        json.dumps({'room': room.pk, 'duration': 50, 'description': 'Break'}),
+        content_type='application/json',
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.wip_schedule.talks.count() == slot_count + 1
+        slot = event.wip_schedule.talks.filter(submission__isnull=True).first()
+        assert slot
+        assert slot.description == 'Break'
+        assert slot.room == room
+        assert slot.duration == 50
+
+
+@pytest.mark.parametrize('with_room', (True, False))
+@pytest.mark.django_db
+def test_talk_schedule_api_update(orga_client, event, schedule, slot, room, with_room):
     with scope(event=event):
         slot = event.wip_schedule.talks.first()
         start = now()
@@ -46,15 +69,128 @@ def test_talk_schedule_api_update(orga_client, event, schedule, slot, room):
         reverse(
             f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
         ),
-        data=json.dumps({'room': room.pk, 'start': start.isoformat()}),
+        data=json.dumps({'room': room.pk if with_room else None, 'start': start.isoformat()}),
         follow=True,
     )
+    assert response.status_code == 200
     with scope(event=event):
         slot.refresh_from_db()
         content = json.loads(response.content.decode())
         assert content['title'] == slot.submission.title
         assert slot.start == start
+        if with_room:
+            assert slot.room == room
+        else:
+            assert slot.room is None
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_update_break_slot(orga_client, event, schedule, break_slot, room):
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        start = now()
+        assert slot.start != start
+    response = orga_client.patch(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
+        ),
+        data=json.dumps({'room': room.pk, 'start': start.isoformat(), 'duration': 90, 'description': 'New break'}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        slot.refresh_from_db()
+        assert slot.duration == 90
+        assert str(slot.description) == 'New break'
+        assert slot.start == start
         assert slot.room == room
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_update_break_slot_explicit_end(orga_client, event, schedule, break_slot, room):
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        start = now()
+        assert slot.start != start
+    response = orga_client.patch(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
+        ),
+        data=json.dumps({'room': room.pk, 'start': start.isoformat(), 'end': (start + timedelta(minutes=90)).isoformat(), 'description': 'New break'}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        slot.refresh_from_db()
+        assert slot.duration == 90
+        assert str(slot.description) == 'New break'
+        assert slot.start == start
+        assert slot.room == room
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_update_break_slot_no_duration(orga_client, event, schedule, break_slot, room):
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        start = now()
+        assert slot.start != start
+        previous_duration = slot.duration
+    response = orga_client.patch(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
+        ),
+        data=json.dumps({'room': room.pk, 'start': start.isoformat()}),
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        slot.refresh_from_db()
+        assert slot.duration == previous_duration
+        assert slot.start == start
+        assert slot.room == room
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_delete_slot(orga_client, event, schedule, break_slot):
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        slot_count = event.wip_schedule.talks.count()
+    response = orga_client.delete(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
+        ),
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.wip_schedule.talks.count() == slot_count - 1
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_do_not_delete_slot_with_submission(orga_client, event, schedule, slot):
+    with scope(event=event):
+        slot = event.wip_schedule.talks.first()
+        slot_count = event.wip_schedule.talks.count()
+    response = orga_client.delete(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
+        ),
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert event.wip_schedule.talks.count() == slot_count
+
+
+@pytest.mark.django_db
+def test_talk_schedule_api_delete_bogus_slot(orga_client, event, schedule):
+    response = orga_client.delete(
+        reverse(
+            f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': 100}
+        ),
+        follow=True,
+    )
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
