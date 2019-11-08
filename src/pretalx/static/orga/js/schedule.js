@@ -84,7 +84,7 @@ var api = {
     ].join("")
     const action = talk.action || "PATCH"
     return api.http(action, url, {
-      room: talk.room,
+      room: (talk.room && talk.room.id) ? talk.room.id : talk.room,
       start: talk.start,
       action: talk.action,
       duration: talk.duration,
@@ -286,7 +286,7 @@ Vue.component("talk", {
     breakDescription () {
       if (!this.talk.description) return ""
       if (this.talk.description.en) return this.talk.description.en
-      return this.talk.description.values[0]
+      return this.talk.description.values ? this.talk.description.values[0] : ""
     },
     style() {
       var style = { height: this.talk.duration + "px" }

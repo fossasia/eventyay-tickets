@@ -265,9 +265,11 @@ class TalkList(EventPermissionRequired, View):
         data = json.loads(request.body.decode())
         start = dateutil.parser.parse(data.get('start')) if data.get('start') else request.event.datetime_from
         end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + timedelta(minutes=int(data.get('duration', 30)))
+        room = data.get('room')
+        room = room.get('id') if isinstance(room, dict) else room
         slot = TalkSlot.objects.create(
             schedule=request.event.wip_schedule,
-            room=request.event.rooms.get(pk=data.get('room')) if data.get('room') else request.event.rooms.first(),
+            room=request.event.rooms.get(pk=room) if room else request.event.rooms.first(),
             description=LazyI18nString(data.get('description')),
             start=start,
             end=end,
