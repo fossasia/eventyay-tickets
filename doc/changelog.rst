@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`760` Speakers can now see and reset their API token in their profile page.
 - :support:`-` We have added a couple of pages to the pretalx wiki on GitHub, most importantly a list of events using pretalx, and a list of available plugins. The wiki is world-writable, so please add to it if you have an event or plugin that hasn't been mentioned yet!
 - :feature:`277` The static HTML export will now be triggered when talk or speaker data is changed (as long as it's also generated on schedule release). To protect against high server load, it will still run at most once every hour.
 - :feature:`-` To reduce scroll wheel abrasions, pretalx schedules are now tabbed with one tab per event day.

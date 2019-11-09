@@ -99,6 +99,7 @@
             </div>
         </div>
     </form>
+    {% include "common/user_api_token.html" %}
     <div>&nbsp;</div>
     <h3>{% trans "Account deletion" %}</h3>
     <form action="{{ request.event.urls.user_delete }}" method="post" class="form">

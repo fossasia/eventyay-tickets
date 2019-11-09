@@ -4,6 +4,7 @@ from django.core import mail as djmail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django_scopes import scope
+from rest_framework.authtoken.models import Token
 
 from pretalx.submission.models import SubmissionStates
 
@@ -260,6 +261,22 @@ def test_can_edit_profile(speaker, event, speaker_client):
         speaker.refresh_from_db()
         assert speaker.profiles.get(event=event).biography == 'Ruling since forever.'
         assert speaker.name == 'Lady Imperator'
+
+
+@pytest.mark.django_db
+def test_can_change_api_token(speaker, event, speaker_client):
+    speaker.regenerate_token()
+    old_token = Token.objects.filter(user=speaker).first().key
+    response = speaker_client.post(
+        event.urls.user,
+        data={
+            'form': 'token',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    new_token = Token.objects.filter(user=speaker).first().key
+    assert new_token != old_token
 
 
 @pytest.mark.django_db

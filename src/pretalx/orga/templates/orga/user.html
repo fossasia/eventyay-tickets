@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
-{% load copyable %}
 {% load i18n %}
 {% load static %}
 
@@ -23,35 +22,5 @@
         {% include "orga/submit_row.html" with submit_name="form" submit_value="login" %}
         </fieldset>
     </form>
-    <form method="post">
-        {% csrf_token %}
-        <fieldset>
-        <legend>{% trans "API Access" %}</legend>
-        <div class="alert alert-info col-md-9 offset-3"><span>
-            {% blocktrans trimmed with apiurl='href="//api/events/" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"' docurl='href="https://docs.pretalx.org/en/latest/api/index.html" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm"'%}
-                This token can be used to access the <a {{ apiurl }}>pretalx API</a>.
-                You can generate a new token, which will invalidate the old one.
-                To find out more, please have a look at the <a {{ docurl }}>
-                API documentation</a>.
-            {% endblocktrans %}
-        </span></div>
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label">{% trans "API Token" %}</label>
-            <div class="col-md-9">
-                {{ token|copyable }}
-                <div class="help-block">
-                    {% trans "Use for authentication when accessing the API." %}
-                </div>
-            </div>
-        </div>
-        <div class="submit-group"><span></span>
-            <div>
-                <button type="submit" class="btn btn-lg btn-danger" name="form" value="token" data-toggle="tooltip" title="{% trans "Generate a new token. The current token will not be usable any longer." %}">
-                    {% trans "Invalidate and regenerate" %}
-                </button>
-            </div>
-        </div>
-        </fieldset>
-    </form>
-    <script defer src="{% static "common/js/copy.js" %}"></script>
+    {% include "common/user_api_token.html" with orga="true" %}
 {% endblock %}

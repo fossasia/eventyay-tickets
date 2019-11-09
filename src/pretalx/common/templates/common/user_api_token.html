@@ -1,0 +1,34 @@
+{% load copyable %}
+{% load i18n %}
+{% load static %}
+
+<form method="post">
+    {% csrf_token %}
+    <fieldset>
+    <h3>{% trans "API Access" %}</h3>
+    <div><p>{% blocktrans trimmed with apiurl='href="/api/events/" target="_blank" rel="noopener"' docurl='href="https://docs.pretalx.org/en/latest/api/index.html" target="_blank" rel="noopener"'%}
+            This token can be used to access the <a {{ apiurl }}>pretalx API</a>.
+            You can generate a new token, which will invalidate the old one.
+            To find out more, please have a look at the <a {{ docurl }}>
+            API documentation</a>.
+        {% endblocktrans %}
+    </p></div>
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label">{% trans "API Token" %}</label>
+        <div class="col-md-9">
+            {{ token|copyable }}
+            <div class="help-block">
+                {% trans "Use for authentication when accessing the API." %}
+            </div>
+        </div>
+    </div>
+    <div class="{% if orga %}submit-group{% else %}col-md-4 ml-auto{% endif %}"><span></span>
+        {% if orga %}<div>{% endif %}
+            <button type="submit" class="btn btn-lg btn-danger {% if not orga %}btn-block{% endif %}" name="form" value="token" data-toggle="tooltip" title="{% trans "Generate a new token. The current token will not be usable any longer." %}">
+                {% trans "Invalidate and regenerate" %}
+            </button>
+        {% if orga %}</div>{% endif %}
+    </div>
+    </fieldset>
+</form>
+<script defer src="{% static "common/js/copy.js" %}"></script>
