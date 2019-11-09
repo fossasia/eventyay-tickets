@@ -5,7 +5,6 @@ Vue.component('pretalx-schedule-talk', {
         <a
             :class="['pretalx-schedule-talk', isActive ? 'active': '', isBreak ? 'break' : '']"
             :id="'pretalx-' + talk.code || 'break'"
-            :title="(talk.title || talk.description) + talk.display_speaker_names ? ('(' + talk.display_speaker_names + ')') : ''"
             :style="style"
             :data-time="timeDisplay"
             :data-start="talk.start"
@@ -38,6 +37,7 @@ Vue.component('pretalx-schedule-talk', {
                 "min-height": (this.talk.height >= 30 ? this.talk.height : 30) + "px",
                 "border-color": (this.talk.track && this.talk.track.color) ? this.talk.track.color : "inherit",
                 "cursor": this.isBreak ? "default" : "pointer",
+                "text-decoration": "none",
             }
         },
         isActive () {
