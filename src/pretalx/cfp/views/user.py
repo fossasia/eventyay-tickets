@@ -79,8 +79,12 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
                 event=self.request.event
             )[0]
             profile.log_action('pretalx.user.profile.update', person=request.user)
+            if self.profile_form.has_changed():
+                self.request.event.cache.set('rebuild_schedule_export', True, None)
         elif self.questions_form.is_bound and self.questions_form.is_valid():
             self.questions_form.save()
+            if self.questions_form.has_changed():
+                self.request.event.cache.set('rebuild_schedule_export', True, None)
         else:
             messages.error(self.request, phrases.base.error_saving_changes)
             return super().get(request, *args, **kwargs)
@@ -321,6 +325,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                 form.instance.log_action(
                     'pretalx.submission.update', person=self.request.user
                 )
+                self.request.event.cache.set('rebuild_schedule_export', True, None)
             messages.success(self.request, phrases.base.saved)
         else:
             messages.error(self.request, phrases.cfp.submission_uneditable)

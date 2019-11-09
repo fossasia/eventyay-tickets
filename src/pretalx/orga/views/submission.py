@@ -354,12 +354,12 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     @transaction.atomic()
     def form_valid(self, form):
         created = not self.object
-        form.instance.event = self.request.event
-        form.save()
         self.object = form.instance
         self._questions_form.submission = self.object
         if not self._questions_form.is_valid():
             return self.get(self.request, *self.args, **self.kwargs)
+        form.instance.event = self.request.event
+        form.save()
         self._questions_form.save()
 
         if created:
@@ -394,6 +394,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         if form.has_changed():
             action = 'pretalx.submission.' + ('create' if created else 'update')
             form.instance.log_action(action, person=self.request.user, orga=True)
+            self.request.event.cache.set('rebuild_schedule_export', True, None)
         return redirect(self.get_success_url())
 
     def get_form_kwargs(self):

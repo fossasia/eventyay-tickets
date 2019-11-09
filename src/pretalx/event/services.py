@@ -65,13 +65,11 @@ def task_periodic_schedule_export(event_slug):
         zip_path = get_export_zip_path(event)
         last_time = event.cache.get('last_schedule_rebuild')
         _now = now()
-        should_rebuild_schedule = (
-            event.cache.get('rebuild_schedule_export') or (
-                event.settings.export_html_on_schedule_release and not zip_path.exists() and (
-                    not last_time or now() - last_time > timedelta(days=1)
-                )
-            )
-        )
+        if not event.settings.export_html_on_schedule_release:
+            return
+        if last_time and _now - last_time < timedelta(hours=1):
+            return
+        should_rebuild_schedule = event.cache.get('rebuild_schedule_export') or not zip_path.exists()
         if should_rebuild_schedule:
             event.cache.delete('rebuild_schedule_export')
             event.cache.set('last_schedule_rebuild', _now, None)

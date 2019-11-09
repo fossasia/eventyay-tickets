@@ -129,6 +129,8 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             self.get_object().event_profile(self.request.event).log_action(
                 'pretalx.user.profile.update', person=self.request.user, orga=True
             )
+        if form.has_changed() or self.questions_form.has_changed():
+            self.request.event.cache.set('rebuild_schedule_export', True, None)
         messages.success(self.request, 'The speaker profile has been updated.')
         return result
 
