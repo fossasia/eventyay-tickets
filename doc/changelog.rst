@@ -3,6 +3,10 @@
 Release Notes
 =============
 
+- :feature:`277` The static HTML export will now be triggered when talk or speaker data is changed (as long as it's also generated on schedule release). To protect against high server load, it will still run at most once every hour.
+- :feature:`-` To reduce scroll wheel abrasions, pretalx schedules are now tabbed with one tab per event day.
+- :feature:`-` You can now embed a widget of the pretalx schedule on your own pages. You can generate the HTML necessary for the widget in your event settings.
+- :feature:`242` pretalx has learned what breaks are. Organisers can create those in the schedule editor, and they will be shown in an appropriately muted way in the schedule.
 - :feature:`324` Organisers can create access tokens that allow users to submit after the CfP deadline, or that give access to hidden tracks or submission types.
 - :feature:`-` pretalx has the new management command ``create_test_event``, which creates a demo event in a stage of your choice (``cfp``, ``review``, ``schedule`` or ``over``). All user accounts are created with ``@example.org`` email addresses.
 - :feature:`-` If you want to display your schedule on your own homepage, pretalx now offers you a schedule widget. You can generate the code for the widget in your organiser settings.
