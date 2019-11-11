@@ -14,6 +14,7 @@
     <script defer src="{% static "vendored/vue.min.js" %}"></script>
     {% endif %}
     {% compress js %}
+    <script defer src="{% static "vendored/marked.min.js" %}"></script>
     <script defer src="{% static "vendored/vue-async-computed.js" %}"></script>
     <script defer src="{% static "orga/js/cfp_workflow.js" %}"></script>
     {% endcompress %}

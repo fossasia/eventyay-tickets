@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load orga_edit_link %}
 {% load rules %}
+{% load rich_text %}
 
 {% block inner %}
     <div class="d-flex">
@@ -11,7 +12,7 @@
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.questions %}{% endif %}
     </div>
     <p>
-        {{ step_text }}
+        {{ step_text|rich_text }}
     </p>
     {% if wizard.form.submission_fields %}
     <h4>{% trans "… about your submission:" %}</h4>

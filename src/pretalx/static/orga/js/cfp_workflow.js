@@ -35,6 +35,24 @@ let currentModal = Vue.observable({
   data: null,
   show: false,
 })
+marked.setOptions({
+  baseUrl: null,
+  breaks: false,
+  gfm: true,
+  headerIds: true,
+  headerPrefix: "",
+  highlight: null,
+  langPrefix: "language-",
+  mangle: true,
+  pedantic: false,
+  sanitize: false,
+  sanitizer: null,
+  silent: false,
+  smartLists: true,
+  smartypants: false,
+  tables: true,
+  xhtml: false,
+})
 document.onclick = (event) => {
   if (currentModal.data) {
     currentModal.data = null;
@@ -192,7 +210,7 @@ Vue.component("step", {
           </span>
         </h2>
         <div class="edit-container">
-          <span v-if="!editingText" :class="[editable ? 'editable' : '']" @click.stop="editText">{{ step.text[currentLanguage] }}</span>
+          <span v-if="!editingText" :class="[editable ? 'editable' : '']" @click.stop="editText" v-html="marked(step.text[currentLanguage])"></span>
           <span v-else @click.stop="">
             <div class="col-md-9"><div class="i18n-form-group">
               <textarea type="text" class="form-control" :title="locale" :lang="locale" v-model="step.text[locale]" v-for="locale in locales"></textarea>
@@ -244,6 +262,9 @@ Vue.component("step", {
     },
     editText() {
       if (this.editable) this.editingText = true
+    },
+    marked (value) {
+      return marked(value)
     },
   },
   computed: {
@@ -315,7 +336,9 @@ var app = new Vue({
         </div>
       </div>
       <div id="dirty-workflow" class="alert alert-warning" v-if="configurationChanged">
-        Unsaved configuration changes!
+        <span>
+          Unsaved configuration changes!
+        </span>
         <button class="btn btn-success" @click="save" :disabled="saving">
           <span v-if="saving">
             <i class="fa fa-spinner fa-pulse fa-fw text-success mb-2 mt-2"></i>

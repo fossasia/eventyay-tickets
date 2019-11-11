@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% load orga_edit_link %}
+{% load rich_text %}
 {% load rules %}
 
 {% block inner %}
@@ -11,7 +12,7 @@
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.workflow %}{% endif %}
     </div>
     <p>
-        {{ step_text }}
+        {{ step_text|rich_text }}
     </p>
     {% for field in wizard.form %}
     {% bootstrap_field field layout='event' %}

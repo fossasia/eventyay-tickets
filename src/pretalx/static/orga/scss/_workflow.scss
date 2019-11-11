@@ -98,11 +98,8 @@
   left: 250px;
   right: 0;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12), 1px 1px 2px rgba(0, 0, 0, 0.24);
-  span {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
+  button {
+    margin-left: auto;
   }
 }
 #workflow-modal {
