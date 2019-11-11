@@ -3,13 +3,9 @@
 {% load i18n %}
 
 {% block inner %}
-    <h2>{% trans "That's it about your submission! We now just need a way to contact you." %}</h2>
+    <h2>{{ step_title }}</h2>
     <p>
-        {% blocktrans trimmed %}
-            To create your submission, you need an account on this page. This not only gives us a way
-            to contact you, it also gives you the possibility to edit your submission or to view its
-            current state.
-        {% endblocktrans %}
+        {{ step_text }}
     </p>
     {% include "common/auth.html" with form=wizard.form no_form=True no_buttons=True %}
 {% endblock %}

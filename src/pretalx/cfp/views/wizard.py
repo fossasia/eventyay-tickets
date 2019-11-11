@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.files.storage import FileSystemStorage
+from django.db import transaction
 from django.db.models import Q
 from django.forms import ValidationError
 from django.shortcuts import redirect
@@ -84,6 +85,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
 
     def dispatch(self, request, *args, **kwargs):
         self.access_code = None
+        self.event = request.event
         if 'access_code' in request.GET:
             access_code = request.event.submitter_access_codes.filter(
                 code__iexact=request.GET['access_code']
@@ -136,18 +138,17 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         step = kwargs.get('step')
-        form = kwargs.get('form')
         step_list = []
         phase = 'done'
         for stp, form_class in self.get_form_list().items():
-            if stp == step or isinstance(form, form_class):
+            if stp == step:
                 phase = 'current'
             step_list.append(
                 {
                     'url': self.get_step_url(stp),
                     'phase': phase,
-                    'label': FORM_DATA[stp]['label'],
-                    'icon': FORM_DATA[stp]['icon'],
+                    'label': self.event.cfp_workflow.steps_dict[stp]['icon_label'],
+                    'icon': self.event.cfp_workflow.steps_dict[stp]['icon'],
                 }
             )
             if phase == 'current':
@@ -155,17 +156,25 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
         context['step_list'] = step_list
 
-        if step == 'profile':
-            if hasattr(self.request.user, 'email'):
-                email = self.request.user.email
-            else:
-                data = self.get_cleaned_data_for_step('user') or dict()
-                email = data.get('register_email', '')
+        step_info = self.event.cfp_workflow.steps_dict[step]
+        context['step_title'] = step_info.get('title')
+        context['step_text'] = step_info.get('text')
+
+        if hasattr(self.request.user, 'email'):
+            email = self.request.user.email
+        else:
+            data = self.get_cleaned_data_for_step('user') or dict()
+            email = data.get('register_email', '')
+        if email:
             context['gravatar_parameter'] = User(email=email).gravatar_parameter
         return context
 
     def get_template_names(self):
-        return f'cfp/event/submission_{self.steps.current}.html'
+        if self.steps.current == 'user':
+            return f'cfp/event/submission_user.html'
+        if self.steps.current == 'questions':
+            return f'cfp/event/submission_questions.html'
+        return f'cfp/event/submission_step.html'
 
     def get_prefix(self, request, *args, **kwargs):
         return super().get_prefix(request, *args, **kwargs) + ':' + kwargs.get('tmpid')
@@ -183,6 +192,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             url += f'?{self.request.GET.urlencode()}'
         return url
 
+    @transaction.atomic
     def done(self, form_list, **kwargs):
         form_dict = kwargs.get('form_dict')
         if self.request.user.is_authenticated:
