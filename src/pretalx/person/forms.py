@@ -35,6 +35,7 @@ class UserForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        kwargs.pop('event', None)
         super().__init__(*args, **kwargs)
         self.fields['register_email'].widget.attrs = {'placeholder': _('Email address')}
 

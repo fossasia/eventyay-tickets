@@ -9,7 +9,7 @@ from pretalx.submission.models import Question, QuestionTarget, QuestionVariant
 
 class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop('event')
+        self.event = kwargs.pop('event', None)
         self.submission = kwargs.pop('submission', None)
         self.speaker = kwargs.pop('speaker', None)
         self.review = kwargs.pop('review', None)
