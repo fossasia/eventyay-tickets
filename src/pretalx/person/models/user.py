@@ -14,6 +14,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import get_language, gettext_lazy as _, override
+from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.models import GenerateCode
@@ -198,11 +199,12 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     @transaction.atomic
     def shred(self):
         """Actually remove the user account."""
-        if self.submissions(manager='all_objects').count() or self.teams.count() or self.answers.count():
-            raise Exception('Cannot delete user because they have submissions, answers, or teams. Please deactivate this user instead.')
-        self.logged_actions().delete()
-        self.own_actions.update(person=None)
-        self.delete()
+        with scopes_disabled():
+            if self.submissions(manager='all_objects').count() or self.teams.count() or self.answers.count():
+                raise Exception('Cannot delete user because they have submissions, answers, or teams. Please deactivate this user instead.')
+            self.logged_actions().delete()
+            self.own_actions().update(person=None)
+            self.delete()
 
     @cached_property
     def gravatar_parameter(self) -> str:

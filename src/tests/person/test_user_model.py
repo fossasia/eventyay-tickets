@@ -75,3 +75,18 @@ def test_organizer_permissions(event, orga_user):
         'can_change_submissions',
     }
     assert orga_user.get_permissions_for_event(event) == permission_set
+
+
+@pytest.mark.django_db
+def test_do_not_shred_user_with_teams(orga_user):
+    assert User.objects.count() == 1
+    with pytest.raises(Exception):
+        orga_user.shred()
+    assert User.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_shred_user(user):
+    assert User.objects.count() == 1
+    user.shred()
+    assert User.objects.count() == 0
