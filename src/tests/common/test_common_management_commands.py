@@ -20,3 +20,9 @@ def test_common_test_event(administrator, stage):
 def test_common_test_event_without_user():
     call_command('create_test_event')
     assert Event.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_common_test_regenerate_css(event):
+    call_command('regenerate_css')
+    call_command('regenerate_css', event=event.slug)

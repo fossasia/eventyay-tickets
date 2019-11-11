@@ -88,8 +88,6 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_list(self):
-        if not self.event:
-            return [UserForm]
         form_list = self.event.cfp_workflow.get_form_list()
         result = OrderedDict()
         for form_key in form_list:

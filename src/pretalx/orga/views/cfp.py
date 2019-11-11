@@ -682,8 +682,7 @@ class CfPWorkflowEditor(EventPermissionRequired, TemplateView):
                 workflow = CfPWorkflow(None, self.request.event)
             else:
                 workflow = CfPWorkflow(data, self.request.event)
-        except Exception as e:
-            print(e)
+        except Exception:
             return JsonResponse({'error': 'Invalid data'}, status=400)
 
         workflow.save()

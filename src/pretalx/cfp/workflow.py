@@ -54,6 +54,7 @@ DEFAULT_CFP_STEPS = {
 
 
 def i18n_string(data, locales):
+    locales = copy.deepcopy(locales)
     with language("en"):
         if hasattr(data, "_proxy____prepared"):
             data = str(data)
@@ -64,7 +65,7 @@ def i18n_string(data, locales):
         english = data.get("en", "")
 
     for locale in locales:
-        if locale not in data:
+        if locale != 'en' and not data.get(locale):
             with language(locale):
                 data[locale] = gettext(english)
     return LazyI18nString(data)
