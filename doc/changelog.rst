@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`638` You can now determine if the answers to talk questions should be visible to reviewers. This allows you to ask personal questions of your submitters, even when you are running an anonymous review process.
 - :feature:`648` pretalx now comes with a CfP editor that allows you to change the headline, text, and help texts on each of the CfP step pages.
 - :feature:`760` Speakers can now see and reset their API token in their profile page.
 - :support:`-` We have added a couple of pages to the pretalx wiki on GitHub, most importantly a list of events using pretalx, and a list of available plugins. The wiki is world-writable, so please add to it if you have an event or plugin that hasn't been mentioned yet!

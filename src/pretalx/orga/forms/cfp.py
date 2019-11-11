@@ -128,6 +128,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             'help_text',
             'variant',
             'is_public',
+            'is_visible_to_reviewers',
             'required',
             'tracks',
             'contains_personal_data',

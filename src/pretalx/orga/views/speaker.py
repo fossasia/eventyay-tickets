@@ -116,6 +116,10 @@ class SpeakerDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             target='speaker',
             speaker=speaker,
             event=self.request.event,
+            for_reviewers=(
+                not self.request.user.has_perm('orga.change_submissions', self.request.event)
+                and self.request.user.has_perm('orga.view_review_dashboard', self.request.event)
+            ),
         )
 
     @transaction.atomic()

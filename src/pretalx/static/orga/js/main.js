@@ -5,10 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
     $("#id_variant").change(question_page_toggle_view)
     $("#id_required").change(question_page_toggle_view)
     question_page_toggle_view()
-    if ($("#limit-submission").length) {
-      $("#id_target").change(question_page_toggle_tracks_view)
-      question_page_toggle_tracks_view()
-    }
+    $("#id_target").change(question_page_toggle_target_view)
+    question_page_toggle_target_view()
   }
 
   $("input.submission_featured").change(function() {
@@ -122,10 +120,16 @@ function question_page_toggle_view() {
   setVisibility("#limit-length", variant === "text" || variant === "string")
 }
 
-function question_page_toggle_tracks_view() {
+function question_page_toggle_target_view() {
+  if ($("#limit-submission").length) {
+    setVisibility(
+      "#limit-submission",
+      document.querySelector("#id_target").value === "submission"
+    )
+  }
   setVisibility(
-    "#limit-submission",
-    document.querySelector("#id_target").value === "submission"
+    "#is-visible-to-reviewers",
+    document.querySelector("#id_target").value !== "reviewer"
   )
 }
 

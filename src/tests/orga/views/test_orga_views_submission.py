@@ -40,11 +40,26 @@ def test_orga_can_see_single_submission(orga_client, event, submission):
 
 
 @pytest.mark.django_db
-def test_reviewer_can_see_single_submission(review_client, event, submission):
+def test_reviewer_can_see_single_submission(review_client, event, submission, answer):
     event.settings.use_tracks = True
     response = review_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
+    with scope(event=event):
+        assert answer.question.question in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_can_see_single_submission_but_hide_question(review_client, event, submission, answer):
+    with scope(event=event):
+        answer.question.is_visible_to_reviewers = False
+        answer.question.save()
+    event.settings.use_tracks = True
+    response = review_client.get(submission.orga_urls.base, follow=True)
+    assert response.status_code == 200
+    assert submission.title in response.content.decode()
+    with scope(event=event):
+        assert answer.question.question not in response.content.decode()
 
 
 @pytest.mark.django_db

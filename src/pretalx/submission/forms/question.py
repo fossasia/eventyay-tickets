@@ -18,6 +18,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         )
         self.request_user = kwargs.pop('request_user', None)
         self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
+        self.for_reviewers = kwargs.pop('for_reviewers', False)
         if self.target_type == QuestionTarget.SUBMISSION:
             target_object = self.submission
         elif self.target_type == QuestionTarget.SPEAKER:
@@ -39,6 +40,8 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             self.queryset = self.queryset.filter(
                 Q(tracks__in=[self.track]) | Q(tracks__isnull=True)
             )
+        if self.for_reviewers:
+            self.queryset = self.queryset.filter(is_visible_to_reviewers=True)
         for question in self.queryset.prefetch_related('options'):
             initial_object = None
             initial = question.default_answer

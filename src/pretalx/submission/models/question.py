@@ -147,6 +147,11 @@ class Question(LogMixin, models.Model):
         verbose_name=_('Publish answers'),
         help_text=_('Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information.'),
     )
+    is_visible_to_reviewers = models.BooleanField(
+        default=True,
+        verbose_name=_('Show answers to reviewers'),
+        help_text=_('Should answers to this question be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews.'),
+    )
     objects = ScopedManager(event='event', _manager_class=QuestionManager)
     all_objects = ScopedManager(event='event', _manager_class=AllQuestionManager)
 
