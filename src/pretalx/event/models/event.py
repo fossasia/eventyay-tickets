@@ -706,6 +706,11 @@ class Event(LogMixin, models.Model):
             .distinct()
         )
 
+    @cached_property
+    def cfp_workflow(self):
+        from pretalx.cfp.workflow import CfPWorkflow
+        return CfPWorkflow(self.settings.cfp_workflow, self)
+
     def get_date_range_display(self) -> str:
         """Returns the localised, prettily formatted date range for this event.
 
