@@ -66,6 +66,7 @@ def task_periodic_schedule_export(event_slug):
         last_time = event.cache.get('last_schedule_rebuild')
         _now = now()
         if not event.settings.export_html_on_schedule_release:
+            event.cache.delete('rebuild_schedule_export')
             return
         if last_time and _now - last_time < timedelta(hours=1):
             return

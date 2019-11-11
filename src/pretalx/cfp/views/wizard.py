@@ -156,7 +156,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         step_list.append({'phase': 'todo', 'label': _('Done!'), 'icon': 'check'})
         context['step_list'] = step_list
 
-        step_info = self.event.cfp_workflow.steps_dict[step]
+        step_info = self.event.cfp_workflow.steps_dict.get(step, {})
         context['step_title'] = step_info.get('title')
         context['step_text'] = step_info.get('text')
 

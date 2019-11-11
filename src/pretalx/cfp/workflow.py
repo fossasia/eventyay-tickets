@@ -91,16 +91,16 @@ class CfPWorkflow:
 
     @staticmethod
     def data(self):
-        """Returns the canonical CfPWorkflow data format.
-        Each step contains a 'title', a 'text', an 'icon', an 'icon_label', and
-        a 'fields' list.
-        The login/register form has instead an 'identifier', which is 'auth'.
+        """Returns the canonical CfPWorkflow data format. Each step contains a
+        'title', a 'text', an 'icon', an 'icon_label', and a 'fields' list. The
+        login/register form has instead an 'identifier', which is 'auth'.
 
         All fields will have:
             - A field_source, one of submission, user, profile, or question
             - For the types submission, user, and profile: a field_name
             - For the question type: a question_pk
-            - The keys help_text and required"""
+            - The keys help_text and required
+        """
         return json.dumps(self.all_data(), cls=I18nJSONEncoder)
 
     def to_json(self):
