@@ -143,7 +143,7 @@ Vue.component("field", {
         </template>
       </label>
       <div class="col-md-9">
-        <input class="form-control" type="text" :placeholder="field.title" readonly v-if="field.widget === 'TextInput'">
+        <input class="form-control" type="text" :placeholder="field.title" readonly v-if="field.widget === 'TextInput' || field.widget === 'NumberInput' || field.widget === 'EmailInput'">
         <select class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Select'"></select>
         <textarea class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Textarea' || field.widget === 'MarkdownWidget'"></textarea>
         <div class="form-check" v-else-if="field.widget === 'CheckboxInput'">
@@ -171,7 +171,7 @@ Vue.component("field", {
         </p>
       </div>
     </div>
-  `, // TODO: file upload, checkboxes, help_text to html
+  `,
   data() {
     return {
       editRequirement: false
@@ -257,7 +257,7 @@ Vue.component("step", {
           </span>
         </div>
         <form v-if="step.identifier != 'user'">
-          <field :field="field" v-for="field in step.fields" :key="field.key" :locales="locales">
+          <field :field="field" v-for="field in step.fields" :key="field.key" :locales="locales" v-if="field.widget !== 'HiddenInput'">
           </field>
         </form>
         <form v-else id="auth-form">
