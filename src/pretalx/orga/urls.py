@@ -51,6 +51,7 @@ urlpatterns = [
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
         url('^api/urls/$', dashboard.url_list, name='url_list'),
 
+        url('^cfp/workflow/$', cfp.CfPWorkflowEditor.as_view(), name='cfp.workflow'),
         url('^cfp/questions/$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),
         url('^cfp/questions/remind$', cfp.CfPQuestionRemind.as_view(), name='cfp.questions.remind'),

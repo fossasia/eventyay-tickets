@@ -1,14 +1,19 @@
+import json
+
+from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import models, transaction
 from django.db.models.deletion import ProtectedError
 from django.forms.models import inlineformset_factory
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
+from pretalx.cfp.workflow import CfPWorkflow
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, PermissionRequired,
@@ -643,3 +648,43 @@ class AccessCodeDelete(PermissionRequired, DetailView):
                 _('This access code has been used for a submission and cannot be deleted. To disable it, you can set its validity date to the past.'),
             )
         return redirect(self.request.event.cfp.urls.access_codes)
+
+
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
+class CfPWorkflowEditor(EventPermissionRequired, TemplateView):
+    template_name = 'orga/cfp/workflow.html'
+    permission_required = 'orga.edit_cfp'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_configuration'] = self.request.event.cfp_workflow.json_safe_data()
+        context['event_configuration'] = {
+            "header_pattern": self.request.event.settings.display_header_pattern or 'bg-primary',
+            "header_image": self.request.event.header_image.url if self.request.event.header_image else None,
+            "logo_image": self.request.event.logo.url if self.request.event.logo else None,
+            "primary_color": self.request.event.primary_color,
+            "locales": self.request.event.locales,
+        }
+        # context['all_fields'] = [
+        #     *Submission.cfp_fields(self.request.event),
+        #     *User.cfp_fields(self.request.event),
+        #     *SpeakerProfile.cfp_fields(self.request.event),
+        #     *Question.cfp_fields(self.request.event),
+        # ]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # TODO: check validity
+        # TODO: clean all text input against XSS
+        try:
+            data = json.loads(request.body.decode())
+            if 'action' in data and data['action'] == 'reset':
+                workflow = CfPWorkflow(None, self.request.event)
+            else:
+                workflow = CfPWorkflow(data, self.request.event)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+
+        workflow.save()
+        return JsonResponse({'success': True})

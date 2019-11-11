@@ -1,0 +1,121 @@
+#workflow {
+  display: flex;
+  flex-wrap: no-wrap;
+  position: relative;
+  user-select: none;
+  margin-right: 270px;
+
+  #steps {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: no-wrap;
+    align-self: stretch;
+    padding-left: 0;
+    flex-direction: column;
+    > .step {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      margin: 18px;
+      margin-bottom: 24px;
+
+      .step-header {
+        height: 200px;
+        position: absolute;
+        width: calc(100% - 36px);
+        img {
+          object-fit: cover;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      .step-main-container {
+        padding: 24px;
+        margin-top: 200px;
+        .edit-container {
+          input {
+            width: 100%;
+          }
+        }
+        .editable {
+          padding: 4px;
+          border-radius: 6px;
+          &:hover {
+            filter: opacity(50%);
+            background-color: $gray-light;
+            transition: all 0.5s ease;
+          }
+          &:hover, & *:hover {
+            cursor: pointer;
+          }
+        }
+
+        form {
+          margin-top: 12px;
+
+          &#auth-form {
+            position: relative;
+            .overlay {
+              position: absolute;
+              left: 0;
+              top: 30%;
+              width: calc(100% - 40px);
+              margin-left: auto;
+              margin-right: auto;
+              text-align: center;
+              padding: 20px;
+              margin: 20px;
+              font-weight: bold;
+              font-size: 22px;
+              box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.18), 3px 1px 4px rgba(0, 0, 0, 0.30);
+              border: $brand-danger 4px solid;
+              background-color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.defocused {
+  #workflow {
+    background-color: $gray-light;
+    opacity: 0.5;
+    * {
+      cursor: default !important;
+      &:hover {
+        color: default !important;
+        background-color: default !important;
+      }
+    }
+  }
+}
+#dirty-workflow {
+  z-index: 400;
+  position: fixed;
+  background-color: white;
+  margin-bottom: 0;
+  bottom: 1px;
+  left: 250px;
+  right: 0;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12), 1px 1px 2px rgba(0, 0, 0, 0.24);
+  span {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+  }
+}
+#workflow-modal {
+  position: fixed;
+  width: 800px;
+  max-width: 100%;
+  left: 0;
+  right: 0;
+  top: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px 32px;
+  background: white;
+  z-index: 50;
+  box-shadow: 0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15);
+}

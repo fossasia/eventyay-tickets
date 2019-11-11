@@ -1,0 +1,33 @@
+{% extends "orga/cfp/base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block scripts %}
+    {{ current_configuration|json_script:"currentConfiguration" }}
+    {{ all_fields|json_script:"allFields" }}
+    {{ event_configuration|json_script:"eventConfiguration" }}
+
+    {% if debug %}
+    <script defer src="{% static "vendored/vue.js" %}"></script>
+    {% else %}
+    <script defer src="{% static "vendored/vue.min.js" %}"></script>
+    {% endif %}
+    {% compress js %}
+    <script defer src="{% static "vendored/vue-async-computed.js" %}"></script>
+    <script defer src="{% static "orga/js/cfp_workflow.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block cfp_content %}
+    <h1>{% trans "CfP Editor" %}</h1>
+    <p>
+        {% blocktrans trimmed %}
+        You are currently looking at the work-in-progress version of the CfP editor.
+        Currently, you can change the texts displayed on the individual CfP steps, just by clicking on them!
+        {% endblocktrans %}
+    </p>
+    <div id="workflow">
+    </div>
+{% endblock %}
+
