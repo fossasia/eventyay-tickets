@@ -171,6 +171,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
 
         return ActivityLog.objects.filter(person=self)
 
+    @transaction.atomic
     def deactivate(self):
         """Delete the user by unsetting all of their information."""
         from pretalx.submission.models import Answer
@@ -193,6 +194,15 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         ).delete()
         for team in self.teams.all():
             team.members.remove(self)
+
+    @transaction.atomic
+    def shred(self):
+        """Actually remove the user account."""
+        if self.submissions(manager='all_objects').count() or self.teams.count() or self.answers.count():
+            raise Exception('Cannot delete user because they have submissions, answers, or teams. Please deactivate this user instead.')
+        self.logged_actions().delete()
+        self.own_actions.update(person=None)
+        self.delete()
 
     @cached_property
     def gravatar_parameter(self) -> str:
