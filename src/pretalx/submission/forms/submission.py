@@ -7,13 +7,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 
+from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates
 
 
-class InfoForm(RequestRequire, PublicContent, forms.ModelForm):
+class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
     additional_speaker = forms.EmailField(
         label=_('Additional Speaker'),
         help_text=_('If you have a co-speaker, please add their email address here, and we will invite them to create an account. If you have more than one co-speaker, you can add more speakers after finishing the submission process.'),

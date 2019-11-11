@@ -9,6 +9,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
     IMAGE_EXTENSIONS, PasswordConfirmationField, PasswordField,
 )
@@ -103,7 +104,7 @@ class UserForm(forms.Form):
 
 
 class SpeakerProfileForm(
-    AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm
+    CfPFormMixin, AvailabilitiesFormMixin, ReadOnlyFlag, PublicContent, forms.ModelForm
 ):
     USER_FIELDS = ['name', 'email', 'avatar', 'get_gravatar']
     FIRST_TIME_EXCLUDE = ['email']

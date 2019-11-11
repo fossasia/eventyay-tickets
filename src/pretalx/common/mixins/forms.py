@@ -33,7 +33,9 @@ class PublicContent:
         for field_name in self.Meta.public_fields:
             field = self.fields.get(field_name)
             if field:
-                field.help_text = (field.help_text or '') + ' ' + str(phrases.base.public_content)
+                field.original_help_text = getattr(field, 'original_help_text', '')
+                field.added_help_text = getattr(field, 'added_help_text', '') + str(phrases.base.public_content)
+                field.help_text = field.original_help_text + ' ' + field.added_help_text
 
 
 class RequestRequire:
@@ -64,17 +66,20 @@ class RequestRequire:
                             count_in=self.event.settings.cfp_count_length_in,
                         )
                     )
-                    field.help_text = get_help_text(
-                        self.fields[key].help_text,
+                    field.original_help_text = getattr(field, 'original_help_text', '')
+                    field.added_help_text = get_help_text(
+                        '',
                         min_value,
                         max_value,
                         self.event.settings.cfp_count_length_in,
                     )
+                    field.help_text = field.original_help_text + ' ' + field.added_help_text
 
 
 class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
+        original_help_text = question.help_text
         help_text = rich_text(question.help_text)
         if question.is_public:
             help_text += ' ' + str(phrases.base.public_content)
@@ -88,7 +93,7 @@ class QuestionFieldsMixin:
                 else forms.CheckboxInput()
             )
 
-            return forms.BooleanField(
+            field = forms.BooleanField(
                 disabled=readonly,
                 help_text=help_text,
                 label=question.question,
@@ -98,6 +103,8 @@ class QuestionFieldsMixin:
                 if initial
                 else bool(question.default_answer),
             )
+            field.original_help_text = original_help_text
+            return field
         if question.variant == QuestionVariant.NUMBER:
             field = forms.DecimalField(
                 disabled=readonly,
@@ -107,6 +114,7 @@ class QuestionFieldsMixin:
                 min_value=Decimal('0.00'),
                 initial=initial,
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.STRING:
@@ -124,6 +132,7 @@ class QuestionFieldsMixin:
                 min_length=question.min_length if count_chars else None,
                 max_length=question.max_length if count_chars else None,
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             field.validators.append(
                 partial(
@@ -158,6 +167,7 @@ class QuestionFieldsMixin:
                     count_in=self.event.settings.cfp_count_length_in,
                 )
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.FILE:
@@ -168,6 +178,7 @@ class QuestionFieldsMixin:
                 help_text=help_text,
                 initial=initial,
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.CHOICES:
@@ -181,6 +192,7 @@ class QuestionFieldsMixin:
                 disabled=readonly,
                 help_text=help_text,
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.MULTIPLE:
@@ -195,6 +207,7 @@ class QuestionFieldsMixin:
                 disabled=readonly,
                 help_text=help_text,
             )
+            field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         return None

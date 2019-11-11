@@ -124,35 +124,63 @@ function areEqual () {
 
 Vue.component("field", {
   template: `
-    <div :class="['form-group', 'row', field.field_source].concat(isModal ? '' : 'editable')" v-bind:style="style" @click.stop="makeModal">
+    <div>
+      <h2 v-if="isModal">Change field text<br></h2>
+      <div :class="['form-group', 'row', field.field_source].concat(isModal ? '' : 'editable')" v-bind:style="style" @click.stop="makeModal" v-if="!(isModal && isQuestion)">
       <label class="col-md-3 col-form-label">
-        {{ field.title }}
-        <br>
-        <template v-if="isModal">
-          <span v-if="!field.required & !field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=true">Optional</span>
-          <span v-else-if="!field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=false"><strong>Required</strong></span>
-          <span v-else class="optional"><strong>Required</strong></span>
-        </template>
-        <template v-else>
-          <span v-if="!field.required" class="optional">Optional</span>
-          <span v-else class="optional"><strong>Required</strong></span>
+        <template v-if="field.widget !== 'CheckboxInput'">
+          {{ field.label[currentLanguage] }}
+          <br>
+          <template v-if="isModal && editRequirement">
+            <span v-if="!field.required & !field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=true">Optional</span>
+            <span v-else-if="!field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=false"><strong>Required</strong></span>
+            <span v-else class="optional"><strong>Required</strong></span>
+          </template>
+          <template v-else>
+            <span v-if="!field.required" class="optional">Optional</span>
+            <span v-else class="optional"><strong>Required</strong></span>
+          </template>
         </template>
       </label>
       <div class="col-md-9">
         <input class="form-control" type="text" :placeholder="field.title" readonly v-if="field.widget === 'TextInput'">
         <select class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Select'"></select>
-        <textarea class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Textarea'"></textarea>
+        <textarea class="form-control" type="text" :placeholder="field.title" readonly v-else-if="field.widget === 'Textarea' || field.widget === 'MarkdownWidget'"></textarea>
+        <div class="form-check" v-else-if="field.widget === 'CheckboxInput'">
+          <input type="checkbox" class="form-check-input">
+          <label class="form-check-label">{{ field.label[currentLanguage] }}</label>
+        </div>
+        <div class="row bootstrap4-multi-input" v-else-if="field.widget === 'ClearableFileInput'">
+          <div class="col-12"><input type="file"></div>
+        </div>
 
-        <small class="form-text text-muted" v-if="help_text">{{ field.help_text[currentLanguage] }}</small>
+        <template v-if="!isModal">
+          <small class="form-text text-muted" v-if="display_help_text" v-html="display_help_text"></small>
+        </template>
+        <template v-else>
+          <div class="i18n-form-group" @click.stop="">
+            <input type="text" class="form-control" :title="locale" :lang="locale" v-model="field.help_text[locale]" v-for="locale in locales">
+          </div>
+          <small class="form-text text-muted" v-if="fixed_help_text">{{ fixed_help_text }}</small>
+        </template>
+      </div>
+      </div>
+      <div v-else>
+        <p>
+          This is a custom question you added to teh CfP. You can change or remove this CfP question <a :href="questionUrl">here</a>.
+        </p>
       </div>
     </div>
   `, // TODO: file upload, checkboxes, help_text to html
   data() {
-    return {}
+    return {
+      editRequirement: false
+    }
   },
   props: {
     field: Object,
     isModal: { type: Boolean, default: false },
+    locales: Array,
   },
   computed: {
     style () {
@@ -164,8 +192,19 @@ Vue.component("field", {
     editable () {
       return !currentModal.data
     },
-    help_text () {
-      return this.field.help_text || this.field.defaultHelpText
+    fixed_help_text () {
+      return this.field.full_help_text.replace(this.field.help_text[currentLanguage], "")
+
+    },
+    display_help_text () {
+      if (this.isQuestion) return marked(this.fixed_help_text)
+      return marked(this.field.help_text[currentLanguage] + " " + this.fixed_help_text)
+    },
+    isQuestion () {
+      return this.field.key.startsWith("question_")
+    },
+    questionUrl () {
+      return window.location.pathname.replace('workflow/', this.field.key.replace('question_', 'questions/')) + '/edit'
     }
   },
   methods: {
@@ -180,7 +219,7 @@ Vue.component("field", {
         currentModal.type = "field"
         currentModal.show = true
       }
-    }
+    },
   },
 })
 
@@ -218,6 +257,8 @@ Vue.component("step", {
           </span>
         </div>
         <form v-if="step.identifier != 'user'">
+          <field :field="field" v-for="field in step.fields" :key="field.key" :locales="locales">
+          </field>
         </form>
         <form v-else id="auth-form">
           <div class="auth-form-block">
@@ -310,7 +351,7 @@ var app = new Vue({
     <div :class="currentModal.data ? 'defocused' : 'focused'">
       <div id="workflow-modal" v-if="currentModal.data">
         <form>
-          <field :field="currentModal.data" :isModal="true" key="modal"></field>
+          <field :field="currentModal.data" :isModal="true" key="modal" :locales="locales"></field>
         </form>
       </div>
       <div id="workflow">
@@ -369,30 +410,9 @@ var app = new Vue({
     this.eventConfiguration = JSON.parse(document.getElementById('eventConfiguration').textContent);
     this.locales = this.eventConfiguration.locales;
     if (!this.locales.includes("en")) currentLanguage = this.locales[0];
-    // let allFields = JSON.parse(document.getElementById('allFields').textContent);
-    // this.fieldLookup = allFields.reduce((accumulator, currentValue) => {
-    //   currentValue.key = currentValue.field_type + '_' + currentValue.field_source
-    //   accumulator[currentValue.key] = currentValue
-    //   return accumulator
-    // }, {})
-    // this.unassignedFields = JSON.parse(JSON.stringify(this.fieldLookup))
     let currentConfiguration = JSON.parse(document.getElementById('currentConfiguration').textContent);
     this.eventSlug = currentConfiguration.event
     this.stepsConfiguration = currentConfiguration
-    this.stepsConfiguration.steps.forEach((step) => {
-      if (!step.fields) {
-        return
-      }
-      step.fields.forEach((field) => {
-        const defaultField = this.fieldLookup[field.field_type + '_' + field.field_source]
-        field.key = defaultField.key
-        field.hardRequired = (defaultField.hardRequired || false)
-        field.defaultHelpText = defaultField.help_text
-        field.title = defaultField.title
-        field.widget = defaultField.widget
-        delete this.unassignedFields[field.key]
-      })
-    })
     this.originalConfiguration = JSON.parse(JSON.stringify(this.stepsConfiguration))
     this.loading = false
   },

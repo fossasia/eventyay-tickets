@@ -1,4 +1,5 @@
 import logging
+from collections import OrderedDict
 from contextlib import suppress
 from pathlib import Path
 
@@ -24,23 +25,9 @@ from pretalx.common.mixins.views import SensibleBackWizardMixin
 from pretalx.common.phrases import phrases
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate
-from pretalx.person.forms import SpeakerProfileForm, UserForm
+from pretalx.person.forms import UserForm
 from pretalx.person.models import User
-from pretalx.submission.forms import InfoForm, QuestionsForm
 from pretalx.submission.models import QuestionTarget, SubmissionType, Track
-
-FORMS = [
-    ('info', InfoForm),
-    ('questions', QuestionsForm),
-    ('user', UserForm),
-    ('profile', SpeakerProfileForm),
-]
-FORM_DATA = {
-    'info': {'label': _('General'), 'icon': 'paper-plane'},
-    'questions': {'label': _('Questions'), 'icon': 'question-circle-o'},
-    'user': {'label': _('Account'), 'icon': 'user-circle-o'},
-    'profile': {'label': _('Profile'), 'icon': 'address-card-o'},
-}
 
 
 class SubmitStartView(EventPageMixin, View):
@@ -79,13 +66,14 @@ def show_user_page(wizard):
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizardView):
-    form_list = FORMS
     condition_dict = {'questions': show_questions_page, 'user': show_user_page}
     file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / 'avatars'))
+    form_list = [UserForm]
 
     def dispatch(self, request, *args, **kwargs):
+        self.event = self.request.event
+        self.form_list = self.get_form_list()
         self.access_code = None
-        self.event = request.event
         if 'access_code' in request.GET:
             access_code = request.event.submitter_access_codes.filter(
                 code__iexact=request.GET['access_code']
@@ -99,10 +87,24 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
             )
         return super().dispatch(request, *args, **kwargs)
 
+    def get_form_list(self):
+        if not self.event:
+            return [UserForm]
+        form_list = self.event.cfp_workflow.get_form_list()
+        result = OrderedDict()
+        for form_key in form_list:
+            condition = self.condition_dict.get(form_key, True)
+            if callable(condition):
+                condition = condition(self)
+            if condition:
+                result[form_key] = form_list[form_key]
+        return result
+
     def get_form_kwargs(self, step=None):
         kwargs = super().get_form_kwargs(step)
         if step in ['info', 'profile', 'questions']:
             kwargs['event'] = self.request.event
+            kwargs['field_configuration'] = self.request.event.cfp_workflow.steps_dict.get(step, {}).get('fields')
         if step == 'profile':
             user_data = self.get_cleaned_data_for_step('user') or dict()
             if user_data and user_data.get('user_id'):
@@ -140,7 +142,7 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         step = kwargs.get('step')
         step_list = []
         phase = 'done'
-        for stp, form_class in self.get_form_list().items():
+        for stp, form_class in self.form_list.items():
             if stp == step:
                 phase = 'current'
             step_list.append(
@@ -170,10 +172,12 @@ class SubmitWizard(EventPageMixin, SensibleBackWizardMixin, NamedUrlSessionWizar
         return context
 
     def get_template_names(self):
-        if self.steps.current == 'user':
+        if self.steps.current == 'user':  # We need the user template for the login/registration form formatting
             return f'cfp/event/submission_user.html'
-        if self.steps.current == 'questions':
+        if self.steps.current == 'questions':  # We need the question template for the diff between question types
             return f'cfp/event/submission_questions.html'
+        if self.steps.current == 'profile':  # We need the profile template for the avatar and availabilities fields
+            return f'cfp/event/submission_profile.html'
         return f'cfp/event/submission_step.html'
 
     def get_prefix(self, request, *args, **kwargs):

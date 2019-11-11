@@ -2,11 +2,12 @@ from django import forms
 from django.db.models import Q
 from django.utils.functional import cached_property
 
+from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.mixins.forms import QuestionFieldsMixin
 from pretalx.submission.models import Question, QuestionTarget, QuestionVariant
 
 
-class QuestionsForm(QuestionFieldsMixin, forms.Form):
+class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         self.submission = kwargs.pop('submission', None)
