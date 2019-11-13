@@ -400,7 +400,7 @@ class SubmissionTypeList(EventPermissionRequired, ListView):
     permission_required = 'orga.view_submission_type'
 
     def get_queryset(self):
-        return self.request.event.submission_types.all()
+        return self.request.event.submission_types.all().annotate(submission_count=models.Count('submissions'))
 
 
 class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
@@ -504,7 +504,7 @@ class TrackList(EventPermissionRequired, ListView):
     permission_required = 'orga.view_tracks'
 
     def get_queryset(self):
-        return self.request.event.tracks.all()
+        return self.request.event.tracks.all().annotate(submission_count=models.Count('submissions'))
 
 
 class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
