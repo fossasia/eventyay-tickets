@@ -89,3 +89,4 @@ class SubmissionType(LogMixin, models.Model):
         """
         for submission in self.submissions.filter(duration__isnull=True):
             submission.update_duration()
+    update_duration.alters_data = True

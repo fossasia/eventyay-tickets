@@ -479,12 +479,14 @@ class Event(LogMixin, models.Model):
                 can_change_submission_state=True,
             )
         self.save()
+    build_initial_data.alters_data = True
 
     def _delete_mail_templates(self):
         for template in self.template_names:
             setattr(self, template, None)
         self.save()
         self.mail_templates.all().delete()
+    _delete_mail_templates.alters_data = True
 
     def copy_data_from(self, other_event):
         protected_settings = ['custom_domain', 'display_header_data']
@@ -514,6 +516,7 @@ class Event(LogMixin, models.Model):
             s.pk = None
             s.save()
         self.build_initial_data()  # make sure we get a functioning event
+    copy_data_from.alters_data = True
 
     @cached_property
     def pending_mails(self) -> int:
@@ -655,6 +658,7 @@ class Event(LogMixin, models.Model):
             next_phase.activate()
             return next_phase
         return None
+    update_review_phase.alters_data = True
 
     @cached_property
     def submission_questions(self):
@@ -729,6 +733,7 @@ class Event(LogMixin, models.Model):
         :type user: :class:`~pretalx.person.models.user.User`
         """
         self.wip_schedule.freeze(name=name, user=user, notify_speakers=notify_speakers)
+    release_schedule.alters_data = True
 
     def send_orga_mail(self, text, stats=False):
         from django.utils.translation import override
@@ -799,3 +804,4 @@ class Event(LogMixin, models.Model):
         self._delete_mail_templates()
         for entry in deletion_order:
             entry.delete()
+    shred.alters_data = True

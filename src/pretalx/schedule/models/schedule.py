@@ -100,6 +100,7 @@ class Schedule(LogMixin, models.Model):
             else:
                 self.event.cache.set('rebuild_schedule_export', True, None)
         return self, wip_schedule
+    freeze.alters_data = True
 
     @transaction.atomic
     def unfreeze(self, user=None):
@@ -128,6 +129,7 @@ class Schedule(LogMixin, models.Model):
             del wip_schedule.event.wip_schedule
 
         return self, wip_schedule
+    unfreeze.alters_data = True
 
     @cached_property
     def scheduled_talks(self):
@@ -340,6 +342,7 @@ class Schedule(LogMixin, models.Model):
         objects to the outbox."""
         for notification in self.notifications:
             notification.save()
+    notify_speakers.alters_data = True
 
     @cached_property
     def url_version(self):

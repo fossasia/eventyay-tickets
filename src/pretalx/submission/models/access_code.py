@@ -82,3 +82,4 @@ class SubmitterAccessCode(LogMixin, GenerateCode, models.Model):
                 subject=subject,
                 text=text,
             ).send()
+    send_invite.alters_data = True

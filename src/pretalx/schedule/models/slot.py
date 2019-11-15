@@ -174,6 +174,7 @@ class TalkSlot(LogMixin, models.Model):
         if save:
             new_slot.save()
         return new_slot
+    copy_to_schedule.alters_data = True
 
     def is_same_slot(self, other_slot) -> bool:
         """Checks if both slots have the same room and start time."""

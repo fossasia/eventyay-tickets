@@ -127,6 +127,7 @@ class MailTemplate(LogMixin, models.Model):
                 mail.save()
                 mail.to_users.set(users)
         return mail
+    to_mail.alters_data = True
 
 
 class QueuedMail(LogMixin, models.Model):
@@ -264,6 +265,7 @@ class QueuedMail(LogMixin, models.Model):
                 data={'to_users': [(user.pk, user.email) for user in self.to_users.all()]},
             )
             self.save()
+    send.alters_data = True
 
     def copy_to_draft(self):
         """Copies an already sent email to a new object and adds it to the
@@ -275,3 +277,4 @@ class QueuedMail(LogMixin, models.Model):
         for user in self.to_users.all():
             new_mail.to_users.add(user)
         return new_mail
+    copy_to_draft.alters_data = True

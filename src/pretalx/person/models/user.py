@@ -195,6 +195,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         ).delete()
         for team in self.teams.all():
             team.members.remove(self)
+    deactivate.alters_data = True
 
     @transaction.atomic
     def shred(self):
@@ -205,6 +206,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
             self.logged_actions().delete()
             self.own_actions().update(person=None)
             self.delete()
+    shred.alters_data = True
 
     @cached_property
     def gravatar_parameter(self) -> str:
@@ -299,6 +301,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         self.log_action(action='pretalx.user.token.reset')
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
+    regenerate_token.alters_data = True
 
     @transaction.atomic
     def reset_password(self, event, user=None):
@@ -338,3 +341,4 @@ the pretalx robot'''
         self.log_action(
             action='pretalx.user.password.reset', person=user, orga=bool(user)
         )
+    reset_password.alters_data = True

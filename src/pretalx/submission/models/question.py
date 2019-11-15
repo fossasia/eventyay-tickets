@@ -296,6 +296,7 @@ class Answer(LogMixin, models.Model):
         for option in self.options.all():
             option.answers.remove(self)
         self.delete()
+    remove.alters_data = True
 
     @cached_property
     def boolean_answer(self):

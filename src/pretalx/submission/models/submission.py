@@ -285,6 +285,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         ):
             slot.end = slot.start + timedelta(minutes=self.get_duration())
             slot.save()
+    update_duration.alters_data = True
 
     def _set_state(self, new_state, force=False, person=None):
         """Check if the new state is valid for this Submission (based on
@@ -369,15 +370,18 @@ class Submission(LogMixin, GenerateCode, models.Model):
                     submission=self,
                     schedule=self.event.wip_schedule,
                 )
+    update_talk_slots.alters_data = True
 
     def make_submitted(self, person=None, force: bool=False, orga: bool=False):
         """Sets the submission's state to 'submitted'."""
         self._set_state(SubmissionStates.SUBMITTED, force, person=person)
+    make_submitted.alters_data = True
 
     def confirm(self, person=None, force: bool=False, orga: bool=False):
         """Sets the submission's state to 'confirmed'."""
         self._set_state(SubmissionStates.CONFIRMED, force, person=person)
         self.log_action('pretalx.submission.confirm', person=person, orga=orga)
+    confirm.alters_data = True
 
     def accept(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'accepted'.
@@ -391,6 +395,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
 
         if previous != SubmissionStates.CONFIRMED:
             self.send_state_mail()
+    accept.alters_data = True
 
     def reject(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'rejected' and creates a rejection.
@@ -400,6 +405,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         self._set_state(SubmissionStates.REJECTED, force, person=person)
         self.log_action('pretalx.submission.reject', person=person, orga=True)
         self.send_state_mail()
+    reject.alters_data = True
 
     def send_state_mail(self):
         if self.state == SubmissionStates.ACCEPTED:
@@ -416,16 +422,19 @@ class Submission(LogMixin, GenerateCode, models.Model):
         }
         for speaker in self.speakers.all():
             template.to_mail(user=speaker, **kwargs)
+    send_state_mail.alters_data = True
 
     def cancel(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'canceled'."""
         self._set_state(SubmissionStates.CANCELED, force, person=person)
         self.log_action('pretalx.submission.cancel', person=person, orga=True)
+    cancel.alters_data = True
 
     def withdraw(self, person=None, force: bool=False, orga: bool=False):
         """Sets the submission's state to 'withdrawn'."""
         self._set_state(SubmissionStates.WITHDRAWN, force, person=person)
         self.log_action('pretalx.submission.withdraw', person=person, orga=orga)
+    withdraw.alters_data = True
 
     def remove(self, person=None, force: bool=False, orga: bool=True):
         """Sets the submission's state to 'deleted'."""
@@ -433,6 +442,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         for answer in self.answers.all():
             answer.remove(person=person, force=force)
         self.log_action('pretalx.submission.deleted', person=person, orga=True)
+    remove.alters_data = True
 
     @cached_property
     def uuid(self):
@@ -624,3 +634,4 @@ I'm looking forward to it!
                 subject=subject,
                 text=text,
             ).send()
+    send_invite.alters_data = True

@@ -60,6 +60,7 @@ class Organiser(LogMixin, models.Model):
         with scopes_disabled():
             self.logged_actions().delete()
         self.delete()
+    shred.alters_data = True
 
 
 class Team(LogMixin, models.Model):
@@ -191,3 +192,4 @@ The {event} team'''
         else:
             mail.send()
         return mail
+    send.alters_data = True

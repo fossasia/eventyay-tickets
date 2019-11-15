@@ -161,3 +161,4 @@ class ReviewPhase(models.Model):
         self.event.review_phases.all().update(is_active=False)
         self.is_active = True
         self.save()
+    activate.alters_data = True
