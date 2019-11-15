@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` We documented the implicit requirement that the filesystem pretalx accesses should work with non-ASCII file names. Please check the installation documentation if you want to make sure this is the case for you.
 - :feature:`-` The submission type list and the track list now list the numbers of submissions per entry.
 - :feature:`638` You can now determine if the answers to talk questions should be visible to reviewers. This allows you to ask personal questions of your submitters, even when you are running an anonymous review process.
 - :feature:`648` pretalx now comes with a CfP editor that allows you to change the headline, text, and help texts on each of the CfP step pages.

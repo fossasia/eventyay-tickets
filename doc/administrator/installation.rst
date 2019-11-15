@@ -17,7 +17,8 @@ Step 0: Prerequisites
 Please set up the following systems beforehand. We will not explain their use
 and configuration here (but have a look at the linked pages).
 
-* **Python 3.6 or 3.7** and a ``pip`` to match. You can use ``python -V`` and ``pip3 -V`` to check.
+* **Python 3.6 or newer** and a ``pip`` to match. You can use ``python -V`` and
+  ``pip3 -V`` to check.
 * An SMTP server to send out mails
 * An HTTP reverse proxy, e.g. `nginx`_ or Apache to allow HTTPS connections
 * A `MySQL`_ (5.6 or higher) or `PostgreSQL`_ (9.4 or higher) database server.
@@ -29,6 +30,13 @@ and configuration here (but have a look at the linked pages).
 We assume that you also have the usual security measures in place, such as a
 firewall. If you're new to Linux and firewalls, we recommend that you start
 with `ufw`_.
+
+Please ensure that the environment used to run pretalx is configured to work
+with non-ASCII file names. You can check this by running::
+
+    python -c "import sys; print(sys.getfilesystemencoding())"
+
+This should output ``"utf-8"``.
 
 .. note:: Please do not run pretalx without HTTPS encryption. You'll handle user data and thanks
           to `Let's Encrypt`_, SSL certificates are free these days. We also *do not* provide
