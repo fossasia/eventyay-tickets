@@ -5,7 +5,6 @@ import pytest
 from pretalx.schedule.models import Availability
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize('one,two,expected_strict,expected', (
     (
         #    0000
@@ -65,7 +64,6 @@ def test_overlaps(one, two, expected_strict, expected):
     test(False, expected)
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize('one,two,expected', (
     (
         # real overlap
@@ -109,7 +107,6 @@ def test_availability_fail(method, args, expected):
     assert expected in str(excinfo.value)
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize('avails,expected', (
     (
         [],
@@ -186,7 +183,6 @@ def test_union(avails, expected):
         assert act.end == exp.end
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize('availsets,expected', (
     (
         [],
@@ -335,7 +331,6 @@ def test_availability_equality(event):
     assert hash(avail) == hash(avail2)
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize('one,two,expected', (
     (
         #    0000
