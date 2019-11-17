@@ -77,8 +77,14 @@ applies to the complete contribution process.
 If you are interested in plugin development, check both our documentation and
 our `list of plugin ideas`_ in the project wiki.
 
-License
--------
+Project information
+-------------------
+
+The pretalx source code is available on `GitHub`_, where you can also find the
+issue tracker. The documentation is available at `docs.pretalx.org`_, and you
+can find up to date information on `our blog`_ and `Twitter`_. The pretalx
+package is available via `PyPI`_.
+
 We publish `pretalx` under the terms of the Apache License. See the LICENSE
 file for further information and the complete license text. The licenses of all
 dependencies are documented in the `DEPENDENCIES.rst`_ file.
@@ -110,3 +116,7 @@ list (or tell us about it, and we'll add it)!
 .. _list of events: https://github.com/pretalx/pretalx/wiki/Events
 .. _many events: https://github.com/pretalx/pretalx/wiki/Events
 .. _our blog: https://pretalx.com/p/news/
+.. _GitHub: https://github.com/pretalx/pretalx
+.. _docs.pretalx.org: https://docs.pretalx.org
+.. _Twitter: https://twitter.com/pretalx
+.. _PyPI: https://pypi.org/project/pretalx/
