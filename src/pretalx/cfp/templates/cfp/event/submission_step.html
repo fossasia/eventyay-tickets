@@ -7,14 +7,14 @@
 
 {% block inner %}
     <div class="d-flex">
-        <h2>{{ step_title }}</h2>
+        <h2>{{ title }}</h2>
         {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
-        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.workflow %}{% endif %}
+        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.editor %}{% endif %}
     </div>
     <p>
-        {{ step_text|rich_text }}
+        {{ text|rich_text }}
     </p>
-    {% for field in wizard.form %}
+    {% for field in form %}
     {% bootstrap_field field layout='event' %}
     {% endfor %}
 {% endblock %}

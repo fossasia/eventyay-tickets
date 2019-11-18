@@ -25,9 +25,7 @@ urlpatterns = [
                 url('^submit/$', wizard.SubmitStartView.as_view(), name='event.submit'),
                 url(
                     '^submit/(?P<tmpid>.+)/(?P<step>.+)/$',
-                    wizard.SubmitWizard.as_view(
-                        url_name='cfp:event.submit', done_step_name='finished'
-                    ),
+                    wizard.SubmitWizard.as_view(),
                     name='event.submit',
                 ),
                 url(

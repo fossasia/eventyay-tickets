@@ -26,9 +26,12 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         self.readonly = kwargs.pop('readonly', False)
         self.access_code = kwargs.pop('access_code', None)
         instance = kwargs.get('instance')
-        initial = kwargs.pop('initial', {})
+        initial = kwargs.pop('initial', {}) or {}
         if not instance or not instance.submission_type:
-            initial['submission_type'] = getattr(self.access_code, 'submission_type', self.event.cfp.default_type)
+            initial['submission_type'] = getattr(
+                self.access_code, 'submission_type',
+                initial.get('submission_type') or self.event.cfp.default_type
+            )
         if not instance and self.access_code:
             initial['track'] = self.access_code.track
         if not instance or not instance.content_locale:

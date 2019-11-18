@@ -1,4 +1,4 @@
-#workflow {
+#flow {
   display: flex;
   flex-wrap: no-wrap;
   position: relative;
@@ -79,7 +79,7 @@
   }
 }
 .defocused {
-  #workflow {
+  #flow {
     background-color: $gray-light;
     opacity: 0.5;
     * {
@@ -91,7 +91,7 @@
     }
   }
 }
-#dirty-workflow {
+#dirty-flow {
   z-index: 400;
   position: fixed;
   background-color: white;
@@ -104,7 +104,7 @@
     margin-left: auto;
   }
 }
-#workflow-modal {
+#flow-modal {
   position: fixed;
   width: 800px;
   max-width: 100%;

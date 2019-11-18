@@ -1,9 +1,9 @@
 class CfPFormMixin:
     """All forms used in the CfP step process should use this mixin.
 
-    It serves to make it work with the CfP workflow editor, e.g. by
-    allowing users to change help_text attributes of fields. Needs to go
-    first before all other forms changing help_text behaviour.
+    It serves to make it work with the CfP Flow editor, e.g. by allowing
+    users to change help_text attributes of fields. Needs to go first
+    before all other forms changing help_text behaviour.
     """
 
     def __init__(self, *args, field_configuration=None, **kwargs):

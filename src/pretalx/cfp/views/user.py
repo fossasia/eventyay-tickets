@@ -55,7 +55,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             event=self.request.event,
             read_only=False,
             with_email=False,
-            field_configuration=self.request.event.cfp_workflow.steps_dict.get('profile', {}).get('fields'),
+            field_configuration=self.request.event.cfp_flow.config.get('profile', {}).get('fields'),
             data=self.request.POST if bind else None,
             files=self.request.FILES if bind else None,
         )
@@ -326,7 +326,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
-        kwargs['field_configuration'] = self.request.event.cfp_workflow.steps_dict.get('info', {}).get('fields')
+        kwargs['field_configuration'] = self.request.event.cfp_flow.config.get('info', {}).get('fields')
         kwargs['readonly'] = not self.can_edit
         return kwargs
 

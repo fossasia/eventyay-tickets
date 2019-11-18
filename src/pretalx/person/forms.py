@@ -20,7 +20,7 @@ from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 
 
-class UserForm(forms.Form):
+class UserForm(CfPFormMixin, forms.Form):
     login_email = forms.EmailField(
         max_length=60, label=phrases.base.enter_email, required=False
     )

@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
-from pretalx.cfp.workflow import CfPWorkflow
+from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, PermissionRequired,
@@ -651,13 +651,13 @@ class AccessCodeDelete(PermissionRequired, DetailView):
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
-class CfPWorkflowEditor(EventPermissionRequired, TemplateView):
-    template_name = 'orga/cfp/workflow.html'
+class CfPFlowEditor(EventPermissionRequired, TemplateView):
+    template_name = 'orga/cfp/flow.html'
     permission_required = 'orga.edit_cfp'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['current_configuration'] = self.request.event.cfp_workflow.json_safe_data()
+        context['current_configuration'] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
         context['event_configuration'] = {
             "header_pattern": self.request.event.settings.display_header_pattern or 'bg-primary',
             "header_image": self.request.event.header_image.url if self.request.event.header_image else None,
@@ -665,25 +665,17 @@ class CfPWorkflowEditor(EventPermissionRequired, TemplateView):
             "primary_color": self.request.event.primary_color,
             "locales": self.request.event.locales,
         }
-        # context['all_fields'] = [
-        #     *Submission.cfp_fields(self.request.event),
-        #     *User.cfp_fields(self.request.event),
-        #     *SpeakerProfile.cfp_fields(self.request.event),
-        #     *Question.cfp_fields(self.request.event),
-        # ]
         return context
 
     def post(self, request, *args, **kwargs):
-        # TODO: check validity
-        # TODO: clean all text input against XSS
         try:
             data = json.loads(request.body.decode())
-            if 'action' in data and data['action'] == 'reset':
-                workflow = CfPWorkflow(None, self.request.event)
-            else:
-                workflow = CfPWorkflow(data, self.request.event)
         except Exception:
             return JsonResponse({'error': 'Invalid data'}, status=400)
 
-        workflow.save()
+        flow = CfPFlow(self.request.event)
+        if 'action' in data and data['action'] == 'reset':
+            flow.reset()
+        else:
+            flow.save_config(data)
         return JsonResponse({'success': True})

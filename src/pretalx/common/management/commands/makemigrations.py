@@ -15,8 +15,6 @@ def new_deconstruct(self):
     facing string is changed.
     """
     name, path, args, kwargs = original_deconstruct(self)
-    if 'countr' in path.lower():
-        print(path)
     if not any(field in path for field in EXEMPT_FIELDS):
         for attr in IGNORED_ATTRS:
             kwargs.pop(attr, None)

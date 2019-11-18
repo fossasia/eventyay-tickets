@@ -52,7 +52,7 @@ urlpatterns = [
         url('^api/urls/$', dashboard.url_list, name='url_list'),
 
         url('^cfp/$', RedirectView.as_view(pattern_name='orga:cfp.text.view'), name='cfp'),
-        url('^cfp/workflow/$', cfp.CfPWorkflowEditor.as_view(), name='cfp.workflow'),
+        url('^cfp/flow/$', cfp.CfPFlowEditor.as_view(), name='cfp.flow'),
         url('^cfp/questions/$', cfp.CfPQuestionList.as_view(), name='cfp.questions.view'),
         url('^cfp/questions/new$', cfp.CfPQuestionDetail.as_view(), name='cfp.questions.create'),
         url('^cfp/questions/remind$', cfp.CfPQuestionRemind.as_view(), name='cfp.questions.remind'),

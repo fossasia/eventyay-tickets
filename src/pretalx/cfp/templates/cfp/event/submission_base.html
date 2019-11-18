@@ -10,10 +10,10 @@
     <script src="{% static "common/js/markdown.js" %}" defer></script>
 
     <div id="submission-steps" class="stages">
-        {% for stp in step_list %}
-        <a {% if stp.phase == 'done' %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
+        {% for stp in cfp_flow %}
+        <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}{% endif %}">
             <div class="step-icon">
-                <span class="fa {% if stp.phase == 'done' %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
+                <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
             </div>
             <div class="step-label">
                 {{ stp.label }}
@@ -29,19 +29,14 @@
         <div class="row wizard-row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% if wizard.steps.next %}
-                        {% trans "Continue" %} &raquo;
-                    {% else %}
-                        {% trans "Submit" %} &raquo;
-                    {% endif %}
+                    {% trans "Continue" %} &raquo;
                 </button>
             </div>
             <div class="col-md-3">
-                {% if wizard.steps.prev %}
-                    <button type="submit" class="btn btn-block btn-info btn-lg"
-                            value="{{ wizard.steps.prev }}" name="wizard_goto_step">
+                {% if prev_url %}
+                    <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
                         &laquo; {% trans "Back" %}
-                    </button>
+                    </a>
                 {% endif %}
             </div>
         </div>

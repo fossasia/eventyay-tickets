@@ -42,15 +42,15 @@ def test_edit_cfp_timezones(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_edit_cfp_workflow(orga_client, event):
-    response = orga_client.get(event.cfp.urls.workflow)
+def test_edit_cfp_flow(orga_client, event):
+    response = orga_client.get(event.cfp.urls.editor)
     assert response.status_code == 200, response.content.decode()
-    response = orga_client.post(event.cfp.urls.workflow, {'action': 'reset'}, content_type='application/json')
+    response = orga_client.post(event.cfp.urls.editor, {'action': 'reset'}, content_type='application/json')
     assert response.status_code == 200, response.content.decode()
-    response = orga_client.post(event.cfp.urls.workflow, "not actually useful data", content_type='application/json')
+    response = orga_client.post(event.cfp.urls.editor, "not actually useful data", content_type='application/json')
     assert response.status_code == 400, response.content.decode()
     with scope(event=event):
-        response = orga_client.post(event.cfp.urls.workflow, event.cfp_workflow.to_json(), content_type='application/json')
+        response = orga_client.post(event.cfp.urls.editor, event.cfp_flow.config, content_type='application/json')
     assert response.status_code == 200, response.content.decode()
 
 

@@ -47,7 +47,7 @@ class CfP(LogMixin, models.Model):
 
     class urls(EventUrls):
         base = '{self.event.orga_urls.cfp}'
-        workflow = '{base}workflow/'
+        editor = '{base}flow/'
         questions = '{base}questions/'
         new_question = '{questions}new'
         remind_questions = '{questions}remind'

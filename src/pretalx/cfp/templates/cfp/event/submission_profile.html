@@ -9,16 +9,16 @@
 
 {% block inner %}
     <div class="d-flex">
-        <h2>{{ step_title }}</h2>
+        <h2>{{ title }}</h2>
         {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
     </div>
     <p>
-        {{ step_text|rich_text }}
+        {{ text|rich_text }}
     </p>
 
     {% if request.event.settings.cfp_request_avatar %}
-    {% bootstrap_form_errors wizard.form %}
+    {% bootstrap_form_errors form %}
     <div class="avatar-form form-group row">
         <label class="col-md-3 col-form-label">
             {% trans "Profile picture" %}
@@ -31,24 +31,24 @@
             />
         </label>
         <div class="avatar-form-fields col-md-9">
-            {% bootstrap_field wizard.form.get_gravatar layout='event-inline' %}
+            {% bootstrap_field form.get_gravatar layout='event-inline' %}
             <div class="user-avatar-display">
-                {% bootstrap_field wizard.form.avatar layout='inline' %}
+                {% bootstrap_field form.avatar layout='inline' %}
                 <small class="form-text text-muted d-block">{{ profile_form.avatar.help_text }}</small>
             </div>
         </div>
     </div>
     {% endif %}
-    {% bootstrap_field wizard.form.name layout='event' %}
-    {% if wizard.form.biography %}{% bootstrap_field wizard.form.biography layout='event' %}{% endif %}
-    {% if wizard.form.availabilities %}
+    {% bootstrap_field form.name layout='event' %}
+    {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
+    {% if form.availabilities %}
     {% compress js %}
         <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
         <script defer src="{% static "vendored/moment-timezone-with-data-2012-2022.js" %}"></script>
         <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
         <script defer src="{% static "common/js/availabilities.js" %}"></script>
     {% endcompress %}
-    {% bootstrap_field wizard.form.availabilities layout='event' %}
+    {% bootstrap_field form.availabilities layout='event' %}
     {% endif %}
 
     {% compress js %}

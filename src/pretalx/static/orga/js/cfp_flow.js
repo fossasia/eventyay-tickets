@@ -204,7 +204,7 @@ Vue.component("field", {
       return this.field.key.startsWith("question_")
     },
     questionUrl () {
-      return window.location.pathname.replace('workflow/', this.field.key.replace('question_', 'questions/')) + '/edit'
+      return window.location.pathname.replace('flow/', this.field.key.replace('question_', 'questions/')) + '/edit'
     }
   },
   methods: {
@@ -346,21 +346,21 @@ Vue.component("step", {
 })
 
 var app = new Vue({
-  el: "#workflow",
+  el: "#flow",
   template: `
     <div :class="currentModal.data ? 'defocused' : 'focused'">
-      <div id="workflow-modal" v-if="currentModal.data">
+      <div id="flow-modal" v-if="currentModal.data">
         <form>
           <field :field="currentModal.data" :isModal="true" key="modal" :locales="locales"></field>
         </form>
       </div>
-      <div id="workflow">
+      <div id="flow">
         <div id="loading" v-if="loading">
             <i class="fa fa-spinner fa-pulse fa-4x fa-fw text-primary mb-4 mt-4"></i>
             <h3 class="mt-2 mb-4">Loading talks, please wait.</h3>
         </div>
         <div id="steps" v-else>
-          <step v-for="step in stepsConfiguration.steps" :step="step" :eventConfiguration="eventConfiguration" :key="step.identifier" :steps="stepsConfiguration.steps" :locales="locales">
+          <step v-for="step in stepsConfiguration" :step="step" :eventConfiguration="eventConfiguration" :key="step.identifier" :steps="stepsConfiguration" :locales="locales">
           </step>
         </div>
       </div>
@@ -376,7 +376,7 @@ var app = new Vue({
           </div>
         </div>
       </div>
-      <div id="dirty-workflow" class="alert alert-warning" v-if="configurationChanged">
+      <div id="dirty-flow" class="alert alert-warning" v-if="configurationChanged">
         <span>
           Unsaved configuration changes!
         </span>

@@ -4,9 +4,9 @@
 {% load rich_text %}
 
 {% block inner %}
-    <h2>{{ step_title }}</h2>
+    <h2>{{ title }}</h2>
     <p>
-        {{ step_text|rich_text }}
+        {{ text|rich_text }}
     </p>
-    {% include "common/auth.html" with form=wizard.form no_form=True no_buttons=True %}
+    {% include "common/auth.html" with form=form no_form=True no_buttons=True %}
 {% endblock %}

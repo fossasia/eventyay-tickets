@@ -45,7 +45,7 @@ hierarkey.add_default('present_multiple_times', 'False', bool)
 
 hierarkey.add_default('display_header_pattern', '', str)
 
-hierarkey.add_default('cfp_workflow', '', str)
+hierarkey.add_default('cfp_flow', '', str)
 
 hierarkey.add_default('cfp_request_title', 'True', bool)
 hierarkey.add_default('cfp_request_abstract', 'True', bool)
