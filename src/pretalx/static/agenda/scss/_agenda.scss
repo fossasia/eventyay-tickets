@@ -99,7 +99,7 @@ header {
     }
   }
   .pretalx-tab-content {
-    margin : 48px 0 0 -100%;
+    margin : 0 0 0 -100%;
   }
 }
 .pretalx-tabs {
@@ -112,7 +112,6 @@ header {
   z-index: 200;
 
   h4, h3, h2, h1, .pretalx-tab {
-    height: 48px;
     padding: 8px 24px;
     font-size: 14pt;
     overflow: hidden;
@@ -126,6 +125,7 @@ header {
       border-top: 4px solid $brand-primary;
     }
     label {
+      margin-bottom: 0; /* container .pretalx-tab takes care of the spacing */
       user-select: none;
       cursor: pointer;
       -moz-user-select: none;

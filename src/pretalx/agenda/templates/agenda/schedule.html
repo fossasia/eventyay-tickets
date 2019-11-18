@@ -53,6 +53,17 @@
     {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
 
     <div class="pretalx-tabbed"><div class="pretalx-tabbed-content">
+        {% if day_count > 1 %}
+        <div class="pretalx-tabs">
+        {% for day in data %}
+            <div class="pretalx-tab">
+              <label class="pretalx-tab-label" for="{{ day.start.date|date:"c" }}">
+                  {{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}
+              </label>
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
     {% for day in data %}
       {% if day_count > 1 %}
       <input name="tabs" id="{{ day.start.date|date:"c" }}" type="radio" {% if day.start == initial_day %}checked{% endif %}>
@@ -127,17 +138,6 @@
             {% endif %}
         </div>
     {% endfor %}
-    {% if day_count > 1 %}
-    <div class="pretalx-tabs">
-    {% for day in data %}
-        <div class="pretalx-tab">
-          <label class="pretalx-tab-label" for="{{ day.start.date|date:"c" }}">
-              {{ day.start.date|date:"l" }}, {{ day.start.date|date:"DATE_FORMAT" }}
-          </label>
-        </div>
-    {% endfor %}
-    </div>
-    {% endif %}
 </div>
 
 {% compress js %}
