@@ -1,10 +1,7 @@
 import logging
-from pathlib import Path
 
 from csp.decorators import csp_update
-from django.conf import settings
 from django.contrib import messages
-from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
@@ -40,7 +37,6 @@ class SubmitStartView(EventPageMixin, View):
 
 @method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
 class SubmitWizard(EventPageMixin, View):
-    file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / 'avatars'))
 
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):

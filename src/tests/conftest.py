@@ -238,6 +238,18 @@ def speaker_boolean_question(event):
 
 
 @pytest.fixture
+def file_question(event):
+    with scope(event=event):
+        return Question.objects.create(
+            event=event,
+            question='Please submit your paper.',
+            variant=QuestionVariant.FILE,
+            target='submission',
+            required=False,
+        )
+
+
+@pytest.fixture
 def speaker_file_question(event):
     with scope(event=event):
         return Question.objects.create(

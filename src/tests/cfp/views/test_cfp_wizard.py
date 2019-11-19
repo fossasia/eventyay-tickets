@@ -5,6 +5,7 @@ import bs4
 import django.forms as forms
 import pytest
 from django.core import mail as djmail
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http.request import QueryDict
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
@@ -245,6 +246,7 @@ class TestWizard:
         speaker_question,
         choice_question,
         multiple_choice_question,
+        file_question,
     ):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
@@ -253,6 +255,7 @@ class TestWizard:
                 f'question_{speaker_question.pk}': 'green',
                 f'question_{choice_question.pk}': choice_question.options.first().pk,
                 f'question_{multiple_choice_question.pk}': multiple_choice_question.options.first().pk,
+                f'question_{file_question.pk}': SimpleUploadedFile('testfile.txt', b'file_content'),
             }
 
         response, current_url = self.perform_init_wizard(client, event=event)
@@ -273,6 +276,8 @@ class TestWizard:
         submission = self.assert_submission(event, question=question)
         user = self.assert_user(submission, question=speaker_question, answer='green')
         self.assert_mail(submission, user)
+        with scope(event=event):
+            assert file_question.answers.first().answer_file.read() == b'file_content'
 
     @pytest.mark.django_db
     def test_wizard_logged_in_user(
