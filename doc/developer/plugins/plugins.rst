@@ -103,12 +103,16 @@ your receivers available::
             from . import signals  # noqa
 
 You can optionally specify code that you want to execute when the organiser
-activates your plugin for an event in the ``installed`` method::
+activates your plugin for an event in the ``installed`` method, and code to
+execute upon removal in the ``uninstalled`` method::
 
     class PaypalApp(AppConfig):
         …
 
         def installed(self, event):
+            pass  # Your code here
+
+        def uninstalled(self, event):
             pass  # Your code here
 
 The ``AppConfig`` class may also implement the method ``is_available(event)``

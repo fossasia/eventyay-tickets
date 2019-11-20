@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import datetime, time
 
 import pytz
@@ -356,18 +357,24 @@ class Event(LogMixin, models.Model):
     def plugin_list(self, modules: list) -> None:
         from pretalx.common.plugins import get_all_plugins
 
-        plugins_active = self.plugin_list
+        plugins_active = set(self.plugin_list)
         plugins_available = {
             p.module: p
             for p in get_all_plugins(self)
             if not p.name.startswith('.') and getattr(p, 'visible', True)
         }
 
-        enable = set(modules) & (set(plugins_available) - set(plugins_active))
+        enable = set(modules) & (set(plugins_available) - plugins_active)
+        disable = plugins_active - set(modules)
 
         for module in enable:
             if hasattr(plugins_available[module].app, 'installed'):
-                getattr(plugins_available[module].app, 'installed')(self)
+                with suppress(Exception):
+                    getattr(plugins_available[module].app, 'installed')(self)
+        for module in disable:
+            if hasattr(plugins_available[module].app, 'uninstalled'):
+                with suppress(Exception):
+                    getattr(plugins_available[module].app, 'uninstalled')(self)
 
         self.plugins = ",".join(modules)
 
