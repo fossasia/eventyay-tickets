@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`814` Questions of the type "choose one from a list" are now shown as a list of radio input options instead of a single dropdown.
 - :feature:`-` Plugins can now implement the ``uninstalled`` method to perform actions when a user deactivates them for an event.
 - :support:`-` We documented the implicit requirement that the filesystem pretalx accesses should work with non-ASCII file names. Please check the installation documentation if you want to make sure this is the case for you.
 - :feature:`-` The submission type list and the track list now list the numbers of submissions per entry.

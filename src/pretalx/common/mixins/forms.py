@@ -186,11 +186,13 @@ class QuestionFieldsMixin:
                 queryset=question.options.all(),
                 label=question.question,
                 required=question.required,
+                empty_label=None,
                 initial=initial_object.options.first()
                 if initial_object
                 else question.default_answer,
                 disabled=readonly,
                 help_text=help_text,
+                widget=forms.RadioSelect,
             )
             field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
