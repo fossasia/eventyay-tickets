@@ -119,11 +119,25 @@
             {% if form.instance.pk %}
             <tr>
                 {% csrf_token %}
-                <td>{% bootstrap_field form.score layout="inline" %}</td>
+                <td>
+                    {% if not read_only %}
+                        {% bootstrap_field form.score layout="inline" %}
+                    {% else %}
+                        {{ form.instance.score }}
+                    {% endif %}
+                </td>
                 {% for field in qform %}
-                    <td>{% bootstrap_field field layout="inline" %}</td>
+                    <td>
+                        {% bootstrap_field field layout="inline" %}
+                    </td>
                 {% endfor %}
-                <td class="markdown-table">{% bootstrap_field form.text layout="inline" %}</td>
+                <td class="markdown-table">
+                    {% if not read_only %}
+                        {% bootstrap_field form.text layout="inline" %}
+                    {% else %}
+                        {{ form.instance.text|rich_text }}
+                    {% endif %}
+                </td>
                 <td>
                     {% if not read_only %}
                         <button type="submit" class="btn btn-success">{% trans "Save" %}
