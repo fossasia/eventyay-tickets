@@ -182,8 +182,9 @@ class QuestionFieldsMixin:
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == QuestionVariant.CHOICES:
+            choices = question.options.all()
             field = forms.ModelChoiceField(
-                queryset=question.options.all(),
+                queryset=choices,
                 label=question.question,
                 required=question.required,
                 empty_label=None,
@@ -192,7 +193,7 @@ class QuestionFieldsMixin:
                 else question.default_answer,
                 disabled=readonly,
                 help_text=help_text,
-                widget=forms.RadioSelect,
+                widget=forms.RadioSelect if len(choices) < 4 else None,
             )
             field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
