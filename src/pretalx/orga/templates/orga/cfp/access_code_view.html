@@ -28,7 +28,7 @@
         <thead>
             <tr>
                 <th>{% trans "Code" %}</th>
-                {% if request.event.settings.use_track %}<th>{% trans "Track" %}</th>{% endif %}
+                {% if request.event.settings.use_tracks %}<th>{% trans "Track" %}</th>{% endif %}
                 <th>{% trans "Submission Type" %}</th>
                 <th>{% trans "Uses" %}</th>
                 <th></th>
@@ -40,11 +40,15 @@
                     <td>
                         {{ code.code|copyable }}
                     </td>
-                    {% if request.event.settings.use_track %}<td>
-                        {{ code.track.name|default:'-' }}
+                    {% if request.event.settings.use_tracks %}<td>
+                        {% if code.track %}
+                        <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
+                        {% else %}–{% endif %}
                     </td>{% endif %}
                     <td>
-                        {{ code.submission_type.name|default:'-' }}
+                        {% if code.submission_type %}
+                        <a href="{{ code.submission_type.urls.base }}">{{ code.submission_type.name }}</a>
+                        {% else %}–{% endif %}
                     </td>
                     <td>
                         {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:'∞' }}
