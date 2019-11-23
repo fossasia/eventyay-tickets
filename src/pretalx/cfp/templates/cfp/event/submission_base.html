@@ -21,11 +21,13 @@
         </a>
         {% endfor %}
     </div>
+    {% block cfp_form %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ wizard.management_form }}
         {% block inner %}
         {% endblock %}
+        {% block buttons %}
         <div class="row wizard-row">
             <div class="col-md-3 ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg">
@@ -40,5 +42,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endblock %}
     </form>
+    {% endblock %}
 {% endblock %}
