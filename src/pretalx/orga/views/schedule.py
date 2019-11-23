@@ -264,7 +264,7 @@ class TalkList(EventPermissionRequired, View):
     def post(self, request, event):
         data = json.loads(request.body.decode())
         start = dateutil.parser.parse(data.get('start')) if data.get('start') else request.event.datetime_from
-        end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + timedelta(minutes=int(data.get('duration', 30)))
+        end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + timedelta(minutes=int(data.get('duration', 30) or 30))
         room = data.get('room')
         room = room.get('id') if isinstance(room, dict) else room
         slot = TalkSlot.objects.create(
