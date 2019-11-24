@@ -37,38 +37,43 @@
 <ul>
     <li>{% trans "Database" %}
         <ul>
-            <li>{% trans "Driver" %}: {{ settings.DATABASES.default.ENGINE|copyable }}</li>
-            <li>{% trans "Name" %}: {{ settings.DATABASES.default.NAME|copyable }}</li>
+            <li>{% trans "Driver" %}: <code>{{ settings.DATABASES.default.ENGINE|copyable }}</code></li>
+            <li>{% trans "Name" %}: <code>{{ settings.DATABASES.default.NAME|copyable }}</code></li>
         </ul>
     </li>
     <li>{% trans "Files" %}
         <ul>
-            <li>{% trans "Log" %}: {{ settings.LOG_DIR|copyable }}</li>
-            <li>{% trans "Static files" %}: {{ settings.STATIC_ROOT|copyable }}</li>
-            <li>{% trans "Media files" %}: {{ settings.MEDIA_ROOT|copyable }}</li>
+            <li>{% trans "Log" %}: <code>{{ settings.LOG_DIR|copyable }}</code></li>
+            <li>{% trans "Static files" %}: <code>{{ settings.STATIC_ROOT|copyable }}</code></li>
+            <li>{% trans "Media files" %}: <code>{{ settings.MEDIA_ROOT|copyable }}</code></li>
         </ul>
     </li>
     <li>{% trans "Mails" %}
         <ul>
-            <li>{% trans "Host" %}: {{ settings.EMAIL_HOST|copyable }}</li>
-            <li>{% trans "Port" %}: {{ settings.EMAIL_PORT|copyable }}</li>
-            <li>{% trans "User" %}: {{ settings.EMAIL_USER|copyable }}</li>
+            <li>{% trans "Host" %}: <code>{{ settings.EMAIL_HOST|copyable }}</code></li>
+            <li>{% trans "Port" %}: <code>{{ settings.EMAIL_PORT|copyable }}</code></li>
+            <li>{% trans "User" %}: <code>{{ settings.EMAIL_USER|copyable }}</code></li>
             <li>{% trans "Password" %}: {% if settings.EMAIL_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
         </ul>
     </li>
 </ul>
 <h2>{% trans "System" %}</h2>
 <ul>
-    <li>{% trans "Executable" %}: {{ executable|copyable }}</li>
-    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}{% else %}–{% endif %}</li>
-    <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}{{ settings.ADMINS|join:', ' }}{% else %}{% trans "On errors, no emails will be sent." %}{% endif %}</li>
+    <li>{% trans "Executable" %}: <code>{{ executable|copyable }}</code></li>
+    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}{% else %}–{% endif %}</ul></li>
+    <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}
+            {% for admin in settings.ADMINS %}
+            <code>{{ admin.0|copyable }}</code>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% else %}{% trans "On errors, no emails will be sent." %}{% endif %}
+    </li>
 </ul>
 
 <h3>redis</h3>
 {% if not settings.HAS_REDIS %}
     {% trans "No redis server has been configured." %}
 {% else %}
-    {% trans "Redis is used as cache backend:" %} {{ settings.CACHES.redis.location|copyable }}
+    {% trans "Redis is used as cache backend:" %} <code>{{ settings.CACHES.redis.LOCATION|copyable }}</code>
 {% endif %}
 
 <h3>Celery</h3>
@@ -76,8 +81,8 @@
     {% trans "No celery workers have been configured." %}
 {% else %}
     <ul>
-        <li>{% trans "Broker" %}: {{ settings.CELERY_BROKER_URL|copyable }}</li>
-        <li>{% trans "Backend" %}: {{ settings.CELERY_RESULT_BACKEND|copyable }}</li>
+        <li>{% trans "Broker" %}: <code>{{ settings.CELERY_BROKER_URL|copyable }}</code></li>
+        <li>{% trans "Backend" %}: <code>{{ settings.CELERY_RESULT_BACKEND|copyable }}</code></li>
         <li>{% trans "Current queue length" %}: <strong>{{ queue_length }}</strong></li>
     </ul>
 {% endif %}
