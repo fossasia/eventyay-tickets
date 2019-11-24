@@ -155,9 +155,13 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             submission.speakers.add(speaker)
 
     def build_speaker(self):
+        email = self.fake.user_name() + '@example.org',
+        user = User.objects.filter(email__iexact=email).first()
+        if user:
+            return user
         user = User.objects.create_user(
             name=self.fake.name(),
-            email=self.fake.user_name() + '@example.org',
+            email=email,
             locale='en',
             timezone='Europe/Berlin',
             # TODO: generate avatar,
