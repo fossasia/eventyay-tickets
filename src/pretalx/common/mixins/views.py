@@ -48,10 +48,9 @@ class ActionFromUrl:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['read_only'] = self.action == 'view'
-        if hasattr(self.request, 'event') and issubclass(
-            self.form_class, I18nModelForm
-        ):
-            kwargs['locales'] = self.request.event.locales
+        event = getattr(self.request, "event", None)
+        if event and issubclass(self.form_class, I18nModelForm):
+            kwargs['locales'] = event.locales
         return kwargs
 
 

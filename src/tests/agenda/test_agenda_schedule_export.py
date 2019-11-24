@@ -373,7 +373,8 @@ def test_schedule_orga_download_export(
             event.orga_urls.schedule_export_download, follow=True
         )
     assert response.status_code == 200
-    if hasattr(response, 'streaming_content'):
+    streaming_content = getattr(response, "streaming_content", None)
+    if streaming_content:
         assert len(b"".join(response.streaming_content)) > 100_000  # 100 KB
 
 

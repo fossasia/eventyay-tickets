@@ -30,8 +30,7 @@ def is_sneak_peek_visible(user, event):
 
 @rules.predicate
 def is_submission_visible(user, submission):
-    if hasattr(submission, 'submission'):
-        submission = submission.submission
+    submission = getattr(submission, "submission", submission)
     return bool(
         submission
         and is_agenda_visible(user, submission.event)

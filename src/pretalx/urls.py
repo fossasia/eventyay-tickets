@@ -8,12 +8,13 @@ from django.conf.urls.static import static
 
 plugin_patterns = []
 for app in apps.get_app_configs():
-    if hasattr(app, 'PretalxPluginMeta'):
+    if getattr(app, 'PretalxPluginMeta', None):
         if importlib.util.find_spec(app.name + '.urls'):
             urlmod = importlib.import_module(app.name + '.urls')
             single_plugin_patterns = []
-            if hasattr(urlmod, 'urlpatterns'):
-                single_plugin_patterns += urlmod.urlpatterns
+            urlpatterns = getattr(urlmod, "urlpatterns", None)
+            if urlpatterns:
+                single_plugin_patterns += urlpatterns
             plugin_patterns.append(
                 url(r'', include((single_plugin_patterns, app.label)))
             )

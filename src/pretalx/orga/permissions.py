@@ -64,7 +64,7 @@ def reviews_are_open(user, obj):
 
 @rules.predicate
 def can_edit_mail(user, obj):
-    return hasattr(obj, 'sent') and obj.sent is None
+    return getattr(obj, "sent", False) is None
 
 
 @rules.predicate

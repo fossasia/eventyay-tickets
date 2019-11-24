@@ -36,7 +36,7 @@ def i18n_string(data, locales):
         return data
     data = copy.deepcopy(data)
     with language("en"):
-        if hasattr(data, "_proxy____prepared"):
+        if getattr(data, "_proxy____prepared", None):
             data = str(data)
         if isinstance(data, str):
             data = {"en": str(data)}
@@ -95,16 +95,18 @@ class BaseCfPStep:
         return cfp_session(self.request)
 
     def get_next_applicable(self, request):
-        if hasattr(self, '_next') and self._next:
-            if not self._next.is_applicable(request):
-                return self._next.get_next_applicable(request)
-            return self._next
+        next_step = getattr(self, "_next", None)
+        if next_step:
+            if not next_step.is_applicable(request):
+                return next_step.get_next_applicable(request)
+            return next_step
 
     def get_prev_applicable(self, request):
-        if hasattr(self, '_previous') and self._previous:
-            if not self._previous.is_applicable(request):
-                return self._previous.get_prev_applicable(request)
-            return self._previous
+        previous_step = getattr(self, "_previous", None)
+        if previous_step:
+            if not previous_step.is_applicable(request):
+                return previous_step.get_prev_applicable(request)
+            return previous_step
 
     def get_prev_url(self, request):
         prev = self.get_prev_applicable(request)
@@ -199,9 +201,9 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_data(self, data):
         def serialize_value(value):
-            if hasattr(value, 'pk'):
+            if getattr(value, 'pk', None):
                 return value.pk
-            if hasattr(value, '__iter__'):
+            if getattr(value, '__iter__', None):
                 return [serialize_value(v) for v in value]
             return str(value)
         self.cfp_session["data"][self.identifier] = json.loads(json.dumps(data, default=serialize_value))
@@ -443,9 +445,8 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        if hasattr(self.request.user, 'email'):
-            email = self.request.user.email
-        else:
+        email = getattr(self.request.user, "email", None)
+        if email is None:
             data = self.cfp_session.get("data", {}).get('user', {})
             email = data.get('register_email', '')
         if email:

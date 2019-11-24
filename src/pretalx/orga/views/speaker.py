@@ -239,7 +239,7 @@ class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        if not hasattr(form.instance, 'event') or not form.instance.event:
+        if not getattr(form.instance, 'event', None):
             form.instance.event = self.request.event
         return super().form_valid(form)
 

@@ -5,9 +5,10 @@ from pretalx.submission.models.submission import SubmissionStates
 
 @rules.predicate
 def can_change_submissions(user, obj):
-    if not user or user.is_anonymous or not obj or not hasattr(obj, 'event'):
+    event = getattr(obj, "event", None)
+    if not user or user.is_anonymous or not obj or not event:
         return False
-    return user.is_administrator or obj.event.teams.filter(members__in=[user], can_change_submissions=True).exists()
+    return user.is_administrator or event.teams.filter(members__in=[user], can_change_submissions=True).exists()
 
 
 @rules.predicate

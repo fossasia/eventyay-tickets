@@ -368,13 +368,11 @@ class Event(LogMixin, models.Model):
         disable = plugins_active - set(modules)
 
         for module in enable:
-            if hasattr(plugins_available[module].app, 'installed'):
-                with suppress(Exception):
-                    getattr(plugins_available[module].app, 'installed')(self)
+            with suppress(Exception):
+                plugins_available[module].app.installed(self)
         for module in disable:
-            if hasattr(plugins_available[module].app, 'uninstalled'):
-                with suppress(Exception):
-                    getattr(plugins_available[module].app, 'uninstalled')(self)
+            with suppress(Exception):
+                plugins_available[module].app.uninstalled(self)
 
         self.plugins = ",".join(modules)
 
@@ -436,10 +434,9 @@ class Event(LogMixin, models.Model):
             QUESTION_TEXT,
         )
         from pretalx.mail.models import MailTemplate
+        from pretalx.submission.models import CfP
 
-        if not hasattr(self, 'cfp'):
-            from pretalx.submission.models import CfP
-
+        if not hasattr(self, "cfp"):
             CfP.objects.create(
                 event=self, default_type=self._get_default_submission_type()
             )

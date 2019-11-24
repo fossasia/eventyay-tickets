@@ -97,7 +97,7 @@ class TalkView(PermissionRequired, TemplateView):
             if (
                 response
                 and not isinstance(response, Exception)
-                and hasattr(response, 'get_recording')
+                and getattr(response, 'get_recording', None)
             ):
                 recording = response.get_recording(self.submission)
                 if recording and recording['iframe']:

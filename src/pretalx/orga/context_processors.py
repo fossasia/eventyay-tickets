@@ -25,7 +25,7 @@ def orga_events(request):
     if not request.path.startswith('/orga/'):
         return {}
 
-    if not hasattr(request, 'user') or not request.user.is_authenticated:
+    if not getattr(request, 'user', None) or not request.user.is_authenticated:
         return context
 
     if not getattr(request, 'event', None):
@@ -34,11 +34,7 @@ def orga_events(request):
         )
         return context
 
-    if (
-        getattr(request, 'event', None)
-        and hasattr(request, 'user')
-        and request.user.is_authenticated
-    ):
+    if getattr(request, 'event', None):
         _nav_event = []
         for _, response in nav_event.send_robust(request.event, request=request):
             if isinstance(response, list):

@@ -13,8 +13,7 @@ def has_submissions(user, obj):
 
 @rules.predicate
 def is_speaker(user, obj):
-    if hasattr(obj, 'submission'):
-        obj = obj.submission
+    obj = getattr(obj, "submission", obj)
     return obj and user in obj.speakers.all()
 
 
@@ -74,8 +73,7 @@ def is_review_author(user, obj):
 def can_be_reviewed(user, obj):
     if not obj:
         return False
-    if hasattr(obj, 'submission'):
-        obj = obj.submission
+    obj = getattr(obj, "submission", obj)
     phase = obj.event.active_review_phase and obj.event.active_review_phase.can_review
     state = obj.state == SubmissionStates.SUBMITTED
     return bool(state and phase)
@@ -105,8 +103,7 @@ def can_view_all_reviews(user, obj):
 def has_reviewer_access(user, obj):
     from pretalx.submission.models import Submission
 
-    if hasattr(obj, 'submission'):
-        obj = obj.submission
+    obj = getattr(obj, "submission", obj)
     if not isinstance(obj, Submission):
         raise Exception('Incorrect use of reviewer permissions')
     result = user.teams.filter(

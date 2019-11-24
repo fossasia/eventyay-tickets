@@ -6,7 +6,7 @@ def get_all_plugins(event=None):
     installed Django apps."""
     plugins = []
     for app in apps.get_app_configs():
-        if hasattr(app, 'PretalxPluginMeta'):
+        if getattr(app, 'PretalxPluginMeta', None):
             meta = app.PretalxPluginMeta
             meta.module = app.name
             meta.app = app

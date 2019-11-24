@@ -314,7 +314,7 @@ class ScheduleView(ScheduleDataView):
 
     @cached_property
     def answer_type(self):
-        if 'text/html' not in self.request.headers.get('Accept', '') and not hasattr(self, 'is_html_export'):
+        if 'text/html' not in self.request.headers.get('Accept', '') and not getattr(self, 'is_html_export', None):
             return 'text'
         return 'html'
 

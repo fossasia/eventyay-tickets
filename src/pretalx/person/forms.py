@@ -155,10 +155,11 @@ class SpeakerProfileForm(
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
         if avatar:
+            size = getattr(avatar, "_size", None)
             if (
                 avatar.file
-                and hasattr(avatar, '_size')
-                and avatar._size > 10 * 1024 * 1024
+                and size
+                and size > 10 * 1024 * 1024
             ):
                 raise ValidationError(_('Your avatar may not be larger than 10 MB.'))
             extension = Path(avatar.name).suffix.lower()
