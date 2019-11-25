@@ -1,4 +1,3 @@
-from defusedcsv import csv
 from io import StringIO
 from typing import Tuple
 from urllib.parse import quote
@@ -6,6 +5,7 @@ from xml.etree import ElementTree as ET
 
 import qrcode
 import qrcode.image.svg
+from defusedcsv import csv
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 

@@ -277,9 +277,9 @@ def choice_question(event):
 
 
 @pytest.fixture
-def answered_choice_question(choice_question, submission):
+def answered_choice_question(choice_question, submission, speaker):
     with scope(event=submission.event):
-        a = Answer.objects.create(submission=submission, question=choice_question)
+        a = Answer.objects.create(submission=submission, question=choice_question, person=speaker)
         a.options.set([choice_question.options.first()])
         a.save()
     return choice_question
@@ -325,16 +325,16 @@ def personal_question(submission):
 
 
 @pytest.fixture
-def impersonal_answer(question, speaker):
+def impersonal_answer(question, speaker, submission):
     with scope(event=question.event):
-        return Answer.objects.create(answer='True', person=speaker, question=question)
+        return Answer.objects.create(answer='True', submission=submission, person=speaker, question=question)
 
 
 @pytest.fixture
-def personal_answer(personal_question, speaker):
+def personal_answer(personal_question, speaker, submission):
     with scope(event=personal_question.event):
         return Answer.objects.create(
-            answer='True', person=speaker, question=personal_question
+            answer='True', person=speaker, question=personal_question, submission=submission,
         )
 
 

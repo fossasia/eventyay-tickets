@@ -471,3 +471,29 @@ def test_speaker_csv_export(slot, orga_client, django_assert_max_num_queries):
         )
     assert response.status_code == 200, str(response.content.decode())
     assert slot.submission.speakers.first().name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_submission_question_csv_export(slot, orga_client, answer, answered_choice_question, impersonal_answer, personal_answer):
+    response = orga_client.get(
+        reverse(
+            f'agenda:export',
+            kwargs={'event': slot.submission.event.slug, 'name': 'submission-questions.csv'},
+        ),
+        follow=True,
+    )
+    assert response.status_code == 200, str(response.content.decode())
+    assert slot.submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_speaker_question_csv_export(slot, orga_client, answer, answered_choice_question, impersonal_answer, personal_answer):
+    response = orga_client.get(
+        reverse(
+            f'agenda:export',
+            kwargs={'event': slot.submission.event.slug, 'name': 'speaker-questions.csv'},
+        ),
+        follow=True,
+    )
+    assert response.status_code == 200, str(response.content.decode())
+    assert slot.submission.speakers.first().name in response.content.decode()

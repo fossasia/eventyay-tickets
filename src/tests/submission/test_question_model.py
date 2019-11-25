@@ -4,7 +4,7 @@ import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
 
-from pretalx.submission.models import Answer, AnswerOption
+from pretalx.submission.models import Answer, AnswerOption, Question
 
 
 @pytest.mark.parametrize('target', ('submission', 'speaker', 'reviewer'))
@@ -77,3 +77,21 @@ def test_question_grouped_answers_other(submission, question):
             {'answer': 'True', 'count': 2},
             {'answer': 'False', 'count': 1},
         ]
+
+
+@pytest.mark.parametrize('variant,answer,expected', (
+    ('number', '1', '1'),
+    ('string', 'hm', 'hm'),
+    ('text', '', ''),
+    ('boolean', 'True', 'Yes'),
+    ('boolean', 'False', 'No'),
+    ('boolean', 'None', ''),
+    ('file', 'answer', ''),
+    ('choices', 'answer', '')
+))
+@pytest.mark.django_db
+def test_answer_string_property(event, variant, answer, expected):
+    with scope(event=event):
+        question = Question.objects.create(question='?', variant=variant, event=event)
+        answer = Answer.objects.create(question=question, answer=answer)
+        assert answer.answer_string == expected

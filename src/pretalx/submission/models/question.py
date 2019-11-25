@@ -304,3 +304,18 @@ class Answer(LogMixin, models.Model):
             return True
         if self.answer == 'False':
             return False
+
+    @property
+    def answer_string(self):
+        if self.question.variant in ('number', 'string', 'text'):
+            return self.answer or ''
+        if self.question.variant == 'boolean':
+            if self.boolean_answer is True:
+                return _('Yes')
+            if self.boolean_answer is False:
+                return _('No')
+            return ''
+        if self.question.variant == 'file':
+            return self.answer_file.url if self.answer_file else ''
+        if self.question.variant in ('choices', 'multiple_choice'):
+            return ', '.join(str(option.answer) for option in self.options.all())

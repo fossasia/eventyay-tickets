@@ -1,6 +1,3 @@
-import csv
-import io
-
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.exporter import BaseExporter, CSVExporterMixin
@@ -22,7 +19,7 @@ class CSVSpeakerExporter(CSVExporterMixin, BaseExporter):
         return f'{self.event.slug}-speakers.csv'
 
     def get_data(self, **kwargs):
-        fieldnames=['name', 'email', 'confirmed']
+        fieldnames = ['name', 'email', 'confirmed']
         data = []
         for speaker in self.event.submitters:
             accepted_talks = speaker.submissions.filter(
@@ -41,4 +38,3 @@ class CSVSpeakerExporter(CSVExporterMixin, BaseExporter):
                 }
             )
         return fieldnames, data
-
