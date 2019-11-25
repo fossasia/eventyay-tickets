@@ -1,3 +1,5 @@
+from defusedcsv import csv
+from io import StringIO
 from typing import Tuple
 from urllib.parse import quote
 from xml.etree import ElementTree as ET
@@ -78,3 +80,15 @@ class BaseExporter:
     def get_qrcode(self):
         image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage)
         return mark_safe(ET.tostring(image.get_image()).decode())
+
+
+class CSVExporterMixin:
+
+    def render(self, **kwargs):
+        fieldnames, data = self.get_data()
+        output = StringIO()
+        writer = csv.DictWriter(output, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+        content = output.getvalue()
+        return self.filename, 'text/plain', content

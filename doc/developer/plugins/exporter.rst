@@ -64,6 +64,15 @@ The exporter class
 
       This is an abstract method, you **must** override this!
 
+
+If you are planning to write an exporter that exports to CSV, have a look at
+the ``pretalx.common.exporters.CSVExporterMixin`` class. If you inherit from
+this class next to ``BaseExporter``, you can provide a ``filename`` attribute
+and a ``get_data`` method, which should return the ``fieldnames`` as an iterable,
+and the ``data`` as a list of dictionaries.
+This has the advantage of sparing you CSV formatting issues and security
+considerations, since the mixin takes care of all that.
+
 Access
 ------
 
