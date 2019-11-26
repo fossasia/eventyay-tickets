@@ -49,18 +49,23 @@ class TeamForm(ReadOnlyFlag, I18nModelForm):
 
 
 class TeamTrackForm(I18nModelForm):
+
+    @scopes_disabled()
     def __init__(self, *args, organiser=None, **kwargs):
-        with scopes_disabled():
-            super().__init__(*args, **kwargs)
-            instance = kwargs.get('instance')
-            if instance and not instance.all_events and instance.limit_events.count():
-                self.fields['limit_tracks'].queryset = Track.objects.filter(
-                    event__in=instance.limit_events.all()
-                )
-            else:
-                self.fields['limit_tracks'].queryset = Track.objects.filter(
-                    event__organiser=organiser
-                ).order_by('-event__date_from', 'name')
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and not instance.all_events and instance.limit_events.count():
+            self.fields['limit_tracks'].queryset = Track.objects.filter(
+                event__in=instance.limit_events.all()
+            )
+        else:
+            self.fields['limit_tracks'].queryset = Track.objects.filter(
+                event__organiser=organiser
+            ).order_by('-event__date_from', 'name')
+
+    @scopes_disabled()
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
 
     class Meta:
         model = Team
