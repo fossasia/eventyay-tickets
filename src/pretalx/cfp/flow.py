@@ -583,7 +583,7 @@ class CfPFlow:
         return json.dumps(self.config, cls=I18nJSONEncoder)
 
     def save_config(self, data):
-        if isinstance(data, dict) and "steps" not in data:
+        if isinstance(data, list) or (isinstance(data, dict) and "steps" not in data):
             data = {"steps": data}
         data = self.get_config(data, json_compat=True)
         self.event.settings.cfp_flow = data
