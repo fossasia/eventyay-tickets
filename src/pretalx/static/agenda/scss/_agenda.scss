@@ -397,6 +397,22 @@ header {
   #fahrplan {
     width: 100%;
 
+    #schedule-nav {
+      align-items: baseline;
+
+      &>.navigation {
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: stretch;
+      }
+      .header-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        .btn-outline-info {
+          display: none;
+        }
+      }
+    }
     .pretalx-schedule-day {
       .pretalx-schedule-rooms .pretalx-schedule-room,
       .pretalx-schedule-day-header-row .pretalx-schedule-day-room-header {
@@ -411,9 +427,12 @@ header {
     }
   }
 }
-
-@media (max-width: 640px) {
+@media (max-width: 1000px) {
+  #fahrplan #schedule-nav {
+    flex-direction: column;
+  }
 }
+
 @media print {
   body {
     background: none;
