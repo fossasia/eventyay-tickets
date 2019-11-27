@@ -26,8 +26,8 @@
             {% trans "Log in" %}
         </button>
         {% endif %}
-        {% if password_reset_link %}
-        <a class="btn btn-block btn-link" href="{{ password_reset_link }}">
+        {% if password_reset_link or request.event %}
+        <a class="btn btn-block btn-link" href="{% if password_reset_link %}{{ password_reset_link }}{% else %}{{ request.event.urls.reset }}{% endif %}">
             {% trans "Reset password" %}
         </a>
         {% endif %}
