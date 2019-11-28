@@ -40,7 +40,7 @@ def validate_event_slug_permitted(value):
         'redirect',
         'widget',
     ]
-    if value in forbidden:
+    if value.lower() in forbidden:
         raise ValidationError(
             _('Invalid event slug – this slug is reserved: {value}.').format(
                 value=value

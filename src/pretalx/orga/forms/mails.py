@@ -29,10 +29,9 @@ class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
                     for language, local_text in text.data.items():
                         local_text.format(**context)
                 except KeyError as e:
-                    msg = _('Unknown template key: "{key}", locale: {locale}').format(
+                    raise forms.ValidationError(('Unknown template key: "{key}", locale: {locale}').format(
                         key=e.args[0], locale=language
-                    )
-                    raise forms.ValidationError(msg)
+                    ))
         return text
 
     class Meta:

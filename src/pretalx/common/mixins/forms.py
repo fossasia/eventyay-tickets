@@ -20,7 +20,7 @@ class ReadOnlyFlag:
 
     def clean(self):
         if self.read_only:
-            raise forms.ValidationError(_('You are trying to change read only data.'))
+            raise forms.ValidationError(_('You are trying to change read-only data.'))
         return super().clean()
 
 

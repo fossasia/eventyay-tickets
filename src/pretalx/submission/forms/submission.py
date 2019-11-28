@@ -124,8 +124,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             if extension not in IMAGE_EXTENSIONS:
                 raise forms.ValidationError(
                     _(
-                        "This filetype is not allowed, it has to be one of the following: "
-                    )
+                        "This filetype ({extension}) is not allowed, it has to be one of the following: "
+                    ).format(extension=extension)
                     + ', '.join(IMAGE_EXTENSIONS)
                 )
         return image

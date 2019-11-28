@@ -219,7 +219,7 @@ class SensibleBackWizardMixin():
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
             raise ValidationError(
-                _('ManagementForm data is missing or has been tampered.'),
+                _('ManagementForm data is missing or has been tampered with.'),
                 code='missing_management_form',
             )
 

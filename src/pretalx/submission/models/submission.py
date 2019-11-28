@@ -601,7 +601,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
 
     def send_invite(self, to, _from=None, subject=None, text=None):
         if not _from and (not subject or not text):
-            raise Exception('Please tell me how to sign this invitation.')
+            raise Exception('Please enter a sender for this invitation.')
 
         subject = subject or _('{speaker} invites you to join their talk!').format(
             speaker=_from.get_display_name()

@@ -108,7 +108,7 @@ class MailTemplate(LogMixin, models.Model):
                     text += '\n\n\n***********\n\n' + str(_('Full submission content:\n\n'))
                     text += submission.get_content_for_mail()
             except KeyError as e:
-                raise SendMailException(f'Experienced KeyError when rendering Text: {str(e)}')
+                raise SendMailException(f'Experienced KeyError when rendering email text: {str(e)}')
 
             if len(subject) > 200:
                 subject = subject[:198] + '…'

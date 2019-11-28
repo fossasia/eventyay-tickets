@@ -22,7 +22,7 @@ class LogMixin:
                     data[key] = '********' if value else value
             data = json.dumps(data, cls=I18nJSONEncoder)
         elif data:
-            raise TypeError('Logged data should always be a dictionary.')
+            raise TypeError(f'Logged data should always be a dictionary, not {type(data)}.')
 
         ActivityLog.objects.create(
             event=getattr(self, 'event', None),

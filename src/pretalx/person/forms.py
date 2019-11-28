@@ -82,7 +82,7 @@ class UserForm(CfPFormMixin, forms.Form):
         else:
             raise ValidationError(
                 _(
-                    'You need to fill all fields of either the login or the registration form.'
+                    'Please fill all fields of either the login or the registration form.'
                 )
             )
 
@@ -166,8 +166,8 @@ class SpeakerProfileForm(
             if extension not in IMAGE_EXTENSIONS:
                 raise ValidationError(
                     _(
-                        "This filetype is not allowed, it has to be one of the following: "
-                    )
+                        "This filetype ({extension}) is not allowed, it has to be one of the following: "
+                    ).format(extension=extension)
                     + ', '.join(IMAGE_EXTENSIONS)
                 )
         return avatar
@@ -179,7 +179,7 @@ class SpeakerProfileForm(
             qs = qs.exclude(pk=self.user.pk)
         if qs.filter(email__iexact=email):
             raise ValidationError(
-                _('Please choose a different email address, this one is taken.')
+                _('Please choose a different email address.')
             )
         return email
 

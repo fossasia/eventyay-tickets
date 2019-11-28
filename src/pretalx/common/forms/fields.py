@@ -60,8 +60,8 @@ class ExtensionFileField(FileField):
             if extension not in self.extensions:
                 raise ValidationError(
                     _(
-                        "This filetype is not allowed, it has to be one of the following: "
-                    )
+                        "This filetype ({extension}) is not allowed, it has to be one of the following: "
+                    ).format(extension=extension)
                     + ', '.join(self.extensions)
                 )
         return data

@@ -55,16 +55,16 @@ class AvailabilitiesFormMixin(forms.Form):
     def _parse_availabilities_json(self, jsonavailabilities):
         try:
             rawdata = json.loads(jsonavailabilities)
-        except ValueError:
-            raise forms.ValidationError("Submitted availabilities are not valid json.")
+        except ValueError as e:
+            raise forms.ValidationError(f"Submitted availabilities are not valid json: {e}.")
         if not isinstance(rawdata, dict):
             raise forms.ValidationError(
-                "Submitted json does not comply with expected format, should be object."
+                f"Availability JSON does not comply with expected format: Should be object, but is {type(rawdata)}"
             )
         availabilities = rawdata.get('availabilities')
         if not isinstance(availabilities, list):
             raise forms.ValidationError(
-                "Submitted json does not comply with expected format, missing or malformed availabilities field"
+                f"Availability JSON does not comply with expected format: `availabilities` should be a list, but is {type(availabilities)}"
             )
         return availabilities
 
@@ -119,7 +119,7 @@ class AvailabilitiesFormMixin(forms.Form):
         )
         if not data:
             if required:
-                raise forms.ValidationError(_('Please fill in your availabilities!'))
+                raise forms.ValidationError(_('Please fill in your availability!'))
             return None
 
         rawavailabilities = self._parse_availabilities_json(data)
@@ -129,7 +129,7 @@ class AvailabilitiesFormMixin(forms.Form):
             self._validate_availability(rawavail)
             availabilities.append(Availability(event_id=self.event.id, **rawavail))
         if not availabilities and required:
-            raise forms.ValidationError(_('Please fill in your availabilities!'))
+            raise forms.ValidationError(_('Please fill in your availability!'))
         return availabilities
 
     def _set_foreignkeys(self, instance, availabilities):

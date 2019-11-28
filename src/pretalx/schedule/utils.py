@@ -46,9 +46,9 @@ def process_frab(root, event):
         try:
             event.wip_schedule.freeze(schedule_version, notify_speakers=False)
             schedule = event.schedules.get(version=schedule_version)
-        except Exception:
+        except Exception as e:
             raise Exception(
-                f'Could not import "{event.name}" schedule version "{schedule_version}": failed creating schedule release.'
+                f'Could not import "{event.name}" schedule version "{schedule_version}": {e}'
             )
 
         schedule.talks.update(is_visible=True)

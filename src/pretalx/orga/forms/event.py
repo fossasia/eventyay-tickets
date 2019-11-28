@@ -207,7 +207,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         data = data.lower()
         if data in [urlparse(settings.SITE_URL).hostname, settings.SITE_URL]:
             raise ValidationError(
-                _('You cannot choose the base domain of this installation.')
+                _('Please do not choose the default domain as custom event domain.')
             )
         known_domains = [
             domain.lower()
@@ -230,7 +230,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         try:
             socket.gethostbyname(data[len('https://'):])
         except OSError:
-            raise forms.ValidationError(_('The domain "{domain}" does not have a name server entry at this time.').format(domain=data))
+            raise forms.ValidationError(_('The domain "{domain}" does not have a name server entry at this time. Please make sure the domain is working before configuring it here.').format(domain=data))
         return data
 
 
