@@ -577,11 +577,11 @@ msgstr "Programm-Vorschau ansehen"
 #: pretalx/cfp/templates/cfp/event/cfp.html:43
 #: pretalx/cfp/templates/cfp/event/index.html:16
 msgid "Edit or view your submissions"
-msgstr "Einreichungen ansehen/bearbeiten"
+msgstr "Meine Einreichungen ansehen/bearbeiten"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:49
 msgid "Submit a proposal"
-msgstr "Einreichung abschicken"
+msgstr "Neue Einreichung"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:51
 msgid "Submissions are closed"
@@ -1073,7 +1073,7 @@ msgstr "Review-Link kopieren"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:88
 msgid "Create a new submission"
-msgstr "Einreichung erstellen"
+msgstr "Weitere Einreichung"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:94
 msgid "It seems like you haven't submitted anything to this event yet."
@@ -1751,7 +1751,7 @@ msgstr "E-Mail-Adresse"
 
 #: pretalx/common/phrases.py:74
 msgid "New password (again)"
-msgstr "Neues Passwort (noch mal)"
+msgstr "Neues Passwort (nochmal)"
 
 #: pretalx/common/phrases.py:76
 msgid "You entered two different passwords. Please input the same one twice!"
@@ -2578,7 +2578,7 @@ msgid ""
 msgstr ""
 "Hi!\n"
 "\n"
-"leider können wir deine Einreichtung \"{submission_title}\" für\n"
+"leider können wir deine Einreichung \"{submission_title}\" für\n"
 "{event_name} nicht akzeptieren. Es gab schlicht zu viele tolle "
 "Einreichungen,\n"
 "sodass wir nicht alle berücksichtigen konnten. Wir hoffen, dich als "
@@ -6105,7 +6105,7 @@ msgstr "Vortragenden-CSV"
 
 #: pretalx/person/forms.py:34
 msgid "Password (again)"
-msgstr "Passwort, noch mal"
+msgstr "Passwort, nochmal"
 
 #: pretalx/person/forms.py:53
 msgid ""
@@ -6291,8 +6291,10 @@ msgstr "Passwortwiederherstellung"
 #: pretalx/schedule/forms.py:21
 msgid "Please click and drag to mark the availability during the conference."
 msgstr ""
-"Mit klicken und ziehen kannst du die zur Verfügung stehenden Zeiten "
-"markieren."
+"Mit Klicken und Ziehen kannst Zeiträume markieren, in denen du verfügbar bist. (= grün)"
+"<br>Wir versuchen deinen Vortrag dort unterzubringen."
+"<br>Durch Klick auf einen grünen Block wird er rot (= nicht verfügbar)."
+"<br>Ein weiterer Klick (auf den roten Block) entfernt diesen."
 
 #: pretalx/schedule/forms.py:83
 msgid "The submitted availability does not comply with the required format."

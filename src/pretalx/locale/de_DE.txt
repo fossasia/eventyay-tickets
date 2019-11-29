@@ -16,7 +16,7 @@ css
 CSS
 Dashboard
 diever
-Einreichtung
+Einreichung
 Einreichungs
 Einreichungsart
 Einreichungsarten
