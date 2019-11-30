@@ -84,3 +84,16 @@ def test_no_crash_on_root_view_as_organiser(orga_client, event, other_event):
 def test_no_crash_on_robots_txt(client):
     response = client.get('/robots.txt',)
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize('url,expected', (
+    ('/400', 400),
+    ('/403', 403),
+    ('/403/csrf', 403),
+    ('/404', 404),
+    ('/500', 500),
+))
+@pytest.mark.django_db
+def test_example_error_views(client, url, expected):
+    response = client.get(url)
+    assert response.status_code == expected

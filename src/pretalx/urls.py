@@ -6,6 +6,8 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 
+from pretalx.common.views import error_view
+
 plugin_patterns = []
 for app in apps.get_app_configs():
     if getattr(app, 'PretalxPluginMeta', None):
@@ -20,6 +22,12 @@ for app in apps.get_app_configs():
             )
 
 urlpatterns = [
+    url(r'^400$', error_view(400)),
+    url(r'^403$', error_view(403)),
+    url(r'^403/csrf$', error_view(4031)),
+    url(r'^404$', error_view(404)),
+    url(r'^500$', error_view(500)),
+
     url(r'^orga/', include('pretalx.orga.urls', namespace='orga')),
     url(r'^api/', include('pretalx.api.urls', namespace='api')),
     url(r'', include('pretalx.agenda.urls', namespace='agenda')),

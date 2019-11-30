@@ -39,6 +39,10 @@ def validate_event_slug_permitted(value):
         'orga',
         'redirect',
         'widget',
+        '400',
+        '403',
+        '404',
+        '500',
     ]
     if value.lower() in forbidden:
         raise ValidationError(

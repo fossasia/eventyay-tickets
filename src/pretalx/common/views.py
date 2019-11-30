@@ -4,9 +4,11 @@ from contextlib import suppress
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import FileResponse, Http404, HttpResponseServerError
 from django.shortcuts import redirect
 from django.template import TemplateDoesNotExist, loader
+from django.urls import get_callable
 from django.utils.http import is_safe_url
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -124,3 +126,21 @@ def handle_500(request):
     except Exception:
         pass
     return HttpResponseServerError(template.render(context))
+
+
+def error_view(status_code):
+    if status_code == 4031:
+        return get_callable(settings.CSRF_FAILURE_VIEW)
+    if status_code == 500:
+        return handle_500
+    exceptions = {
+        400: SuspiciousOperation,
+        403: PermissionDenied,
+        404: Http404,
+    }
+    exception = exceptions[status_code]
+
+    def error_view(request, *args, **kwargs):
+        raise exception
+
+    return error_view
