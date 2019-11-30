@@ -1,0 +1,15 @@
+{% extends "common/error.html" %}
+{% load i18n %}
+{% load static %}
+{% block error_image %}<img src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% trans "Verification failed." %}">{% endblock %}
+{% block error_message %}
+    <p>{% trans "Verification failed." %}<br></p></h2>
+<h3><p class="ml-auto mr-auto text-center">
+    {% blocktrans trimmed %}
+    We could not verify that this request really was sent by you. For security reasons, we cannot process it.<br>
+    Please go back to the last page, refresh, and then try again.
+    {% endblocktrans %}
+    </p>
+</h3><h2>
+{% endblock %}
+{% block error_code %}403: CSRF{% endblock %}
