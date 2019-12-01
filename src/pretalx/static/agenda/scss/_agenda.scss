@@ -372,7 +372,7 @@ header {
   }
 }
 
-.btn-sm .fa {
+.btn-sm .fa:not(:only-child) {
   padding-right: 5px;
 }
 
