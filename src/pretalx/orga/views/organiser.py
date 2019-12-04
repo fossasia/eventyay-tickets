@@ -170,7 +170,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
                     'The password reset email could not be sent, so the password was not reset.'
                 ),
             )
-        return redirect(self.request.organiser.orga_urls.teams)
+        return redirect(self.request.organiser.orga_urls.base)
 
 
 class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
