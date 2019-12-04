@@ -136,11 +136,13 @@ class ScheduleView(ScheduleDataView):
             if talk_list:
                 result += '\n\033[33m{:%Y-%m-%d}\033[0m\n'.format(date['start'])
                 result += ''.join(
-                    '* \033[33m{:%H:%M}\033[0m {} ({}), {}; in {}\n'.format(
-                        talk.start, talk.submission.title,
-                        talk.submission.content_locale,
-                        talk.submission.display_speaker_names or _('No speakers'),
-                        talk.room.name,
+                    '* \033[33m{:%H:%M}\033[0m '.format(talk.start) + (
+                        '{} ({}), {}; in {}\n'.format(
+                            talk.start, talk.submission.title,
+                            talk.submission.content_locale,
+                            talk.submission.display_speaker_names or _('No speakers'),
+                            talk.room.name,
+                        ) if talk.submission else '{} in {}'.format(talk.description, talk.room.name)
                     )
                     for talk in talk_list
                 )
@@ -232,7 +234,7 @@ class ScheduleView(ScheduleDataView):
     def _card(talk, col_width):
         empty_line = ' ' * col_width
         text_width = col_width - 4
-        titlelines = textwrap.wrap(talk.submission.title, text_width)
+        titlelines = textwrap.wrap(talk.submission.title if talk.submission else talk.description, text_width)
         height = talk.duration // 5 - 1
         yielded_lines = 0
 
@@ -243,11 +245,10 @@ class ScheduleView(ScheduleDataView):
             titlelines[-1] = last_line[:text_width - 1] + '…'
 
         height_after_title = height - len(titlelines)
-        join_speaker_and_locale = height_after_title <= 3
-        speaker_str = talk.submission.display_speaker_names
+        join_speaker_and_locale = height_after_title <= 3 and talk.submission
+        speaker_str = talk.submission.display_speaker_names if talk.submission else ''
         cutoff = (text_width - 4) if join_speaker_and_locale else text_width
-        if len(speaker_str) > cutoff:
-            speaker_str = speaker_str[:cutoff-1] + '…'
+        speaker_str = speaker_str[:cutoff-1] + '…' if len(speaker_str) > cutoff else speaker_str
 
         if height > 4:
             yield empty_line
@@ -271,7 +272,7 @@ class ScheduleView(ScheduleDataView):
                     yielded_lines += 1
                 yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
                 yielded_lines += 1
-        else:
+        elif talk.submission:
             yield ' ' * (text_width - 2) + f'  \033[38;5;246m{talk.submission.content_locale}\033[0m  '
             yielded_lines += 1
         for __ in repeat(None, height - yielded_lines + 1):
