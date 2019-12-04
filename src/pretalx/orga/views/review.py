@@ -127,7 +127,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
 
     @context
     def submissions_reviewed(self):
-        return Review.objects.filter(user=self.request.user, submission__event=self.request.event).values_list('pk', flat=True)
+        return Review.objects.filter(user=self.request.user, submission__event=self.request.event).values_list('submission_id', flat=True)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
