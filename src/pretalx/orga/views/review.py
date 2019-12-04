@@ -134,7 +134,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         missing_reviews = Review.find_missing_reviews(
             self.request.event, self.request.user
         )
-        result['missing_reviews'] = len(missing_reviews)
+        result['missing_reviews'] = missing_reviews.count()
         result['next_submission'] = missing_reviews[0] if missing_reviews else None
         return result
 
