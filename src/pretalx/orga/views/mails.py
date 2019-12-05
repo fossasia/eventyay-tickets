@@ -274,6 +274,9 @@ class ComposeMail(EventPermissionRequired, FormView):
                     )
                     .distinct()
                 )
+            elif recipient == 'no_slides':
+                users = User.objects.filter(submissions__in=self.request.event.submissions.filter(
+                    resources__isnull=True, state='confirmed'))
             else:
                 submission_filter = {'state': recipient}  # e.g. "submitted"
 

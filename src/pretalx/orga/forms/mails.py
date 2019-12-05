@@ -92,6 +92,7 @@ class WriteMailForm(forms.ModelForm):
             ('confirmed', _('All confirmed speakers')),
             ('rejected', _('All rejected speakers')),
             ('reviewers', _('All reviewers in your team')),
+            ('no_slides', _('All confirmed speakers who have not uploaded slides')),
         ),
         widget=forms.CheckboxSelectMultiple,
         required=False,
