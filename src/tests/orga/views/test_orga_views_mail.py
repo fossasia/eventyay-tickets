@@ -360,6 +360,25 @@ def test_orga_can_compose_single_mail_reviewers(orga_client, event, orga_user, r
 
 
 @pytest.mark.django_db
+def test_orga_can_compose_mail_to_speakers_with_no_slides(orga_client, event, orga_user, slot, confirmed_submission):
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
+    response = orga_client.post(
+        event.orga_urls.compose_mails, follow=True,
+        data={
+            'recipients': 'no_slides',
+            'bcc': '', 'cc': '', 'reply_to': '', 'subject': 'foo', 'text': 'bar',
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        mails = list(QueuedMail.objects.filter(sent__isnull=True))
+        assert len(mails) == 2
+        assert not mails[-1].to
+        assert list(mails[-1].to_users.all()) == [confirmed_submission.speakers.first()]
+
+
+@pytest.mark.django_db
 def test_orga_can_compose_single_mail_from_template(orga_client, event, submission):
     response = orga_client.get(
         event.orga_urls.compose_mails + f'?template={event.ack_template.pk}&submission={submission.code}', follow=True,
