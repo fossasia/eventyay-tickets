@@ -234,7 +234,7 @@ class ScheduleView(ScheduleDataView):
     def _card(talk, col_width):
         empty_line = ' ' * col_width
         text_width = col_width - 4
-        titlelines = textwrap.wrap(talk.submission.title if talk.submission else talk.description, text_width)
+        titlelines = textwrap.wrap(talk.submission.title if talk.submission else str(talk.description), text_width)
         height = talk.duration // 5 - 1
         yielded_lines = 0
 
