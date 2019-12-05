@@ -368,3 +368,11 @@ def test_orga_can_toggle_submission_featured(orga_client, event, submission):
     with scope(event=event):
         sub = event.submissions.first()
         assert sub.is_featured
+
+
+@pytest.mark.django_db
+def test_orga_can_see_all_feedback(orga_client, event, feedback):
+    response = orga_client.get(event.orga_urls.feedback, follow=True)
+    assert response.status_code == 200
+    assert feedback.talk.title in response.content.decode()
+    assert feedback.review in response.content.decode()

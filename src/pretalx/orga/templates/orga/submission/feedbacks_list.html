@@ -18,10 +18,10 @@
                 {{ entry.review|rich_text }}
             </div>
         </div>
-        {% empty %}
-            {% trans "There has been no feedback for this event yet." %}
         {% endfor %}
         <br><br>
+    {% empty %}
+        {% trans "There has been no feedback for talks in this event yet." %}
     {% endfor %}
     {% include "orga/pagination.html" %}
 {% endblock %}
