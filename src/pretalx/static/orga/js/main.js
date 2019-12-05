@@ -74,6 +74,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   })
 
+  $(".keep-scroll-position").click(ev => {
+    sessionStorage.setItem('scroll-position', window.scrollY);
+  });
+
+  restore_scroll_position();
+
   document.querySelectorAll(".checkbox-multi-select").forEach(element => {
     update_multi_select_caption(element)
   })
@@ -82,6 +88,15 @@ document.addEventListener("DOMContentLoaded", function() {
   })
   update_review_override_votes()
 })
+
+function restore_scroll_position() {
+    var oldScrollY = sessionStorage.getItem('scroll-position');
+
+    if (oldScrollY) {
+        window.scroll(window.scrollX, Math.max(oldScrollY, window.innerHeight));
+        sessionStorage.removeItem('scroll-position');
+    }
+}
 
 function update_review_override_votes() {
   const review = document.querySelector("#id_is_reviewer")

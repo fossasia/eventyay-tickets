@@ -57,24 +57,24 @@
                         {% if action != 'view' %}
                         {% if not form.instance.is_active %}
                             <a href="{{ form.instance.urls.activate }}"
-                               class="btn btn-outline-warning ml-auto mr-2"
+                               class="btn btn-outline-warning ml-auto mr-2 keep-scroll-position"
                                title="{% trans "Activate phase" %}">
                                 <i class="fa fa-star"></i>
                             </a>
                         {% else %}
                             <a href=""
-                               class="btn btn-warning ml-auto mr-2"
+                               class="btn btn-warning ml-auto mr-2 keep-scroll-position"
                                title="{% trans "Phase is active" %}">
                                 <i class="fa fa-star"></i>
                             </a>
                         {% endif %}
                         <a href="{{ form.instance.urls.down }}"
-                           class="btn btn-outline-info mr-2"
+                           class="btn btn-outline-info mr-2 keep-scroll-position"
                            title="{% trans "Move phase down" %}">
                             <i class="fa fa-arrow-down"></i>
                         </a>
                         <a href="{{ form.instance.urls.up }}"
-                           class="btn btn-outline-info mr-2"
+                           class="btn btn-outline-info mr-2 keep-scroll-position"
                            title="{% trans "Move phase up" %}">
                             <i class="fa fa-arrow-up"></i>
                         </a>
