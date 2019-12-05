@@ -31,7 +31,7 @@ from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
 from pretalx.submission.models import (
-    Resource, Submission, SubmissionError, SubmissionStates,
+    Feedback, Resource, Submission, SubmissionError, SubmissionStates,
 )
 
 
@@ -587,3 +587,21 @@ class SubmissionStats(PermissionRequired, TemplateView):
             counter = Counter(str(submission.track) for submission in self.request.event.submissions.filter(state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]))
             return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
         return ''
+
+
+class AllFeedbacksList(EventPermissionRequired, ListView):
+    model = Feedback
+    context_object_name = 'feedback'
+    template_name = 'orga/submission/feedbacks_list.html'
+
+    permission_required = 'submission.view_feedback'
+    paginate_by = 25
+
+    def get_queryset(self):
+        qs = (
+            Feedback.objects
+            .order_by('-pk')
+            .select_related('talk')
+            .filter(talk__event=self.request.event)
+        )
+        return qs

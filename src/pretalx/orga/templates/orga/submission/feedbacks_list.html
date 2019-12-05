@@ -1,0 +1,27 @@
+{% extends "orga/cfp/base.html" %}
+{% load i18n %}
+{% load rich_text %}
+
+{% block content %}
+    <h2 class="d-flex w-100 justify-content-between align-items-start">
+        {% trans "Attendee feedback" %}
+    </h2>
+
+    {% regroup feedback|dictsort:"talk.title" by talk.title as feedbacks_list %}
+
+    {% for submission in feedbacks_list %}
+        <h4>{% trans "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
+        
+        {% for entry in submission.list %}
+        <div class="card feedback-card">
+            <div class="card-body">
+                {{ entry.review|rich_text }}
+            </div>
+        </div>
+        {% empty %}
+            {% trans "There has been no feedback for this event yet." %}
+        {% endfor %}
+        <br><br>
+    {% endfor %}
+    {% include "orga/pagination.html" %}
+{% endblock %}

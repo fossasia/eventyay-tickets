@@ -99,6 +99,7 @@ urlpatterns = [
         url('^submissions/cards/$', cards.SubmissionCards.as_view(), name='submissions.cards'),
         url('^submissions/feed/$', submission.SubmissionFeed(), name='submissions.feed'),
         url('^submissions/statistics/$', submission.SubmissionStats.as_view(), name='submissions.statistics'),
+        url('^submissions/feedback/$', submission.AllFeedbacksList.as_view(), name='submissions.feedback'),
         url(r'^submissions/(?P<code>[\w-]+)/', include([
             url('^$', submission.SubmissionContent.as_view(), name='submissions.content.view'),
             url('^submit$', submission.SubmissionStateChange.as_view(), name='submissions.submit'),

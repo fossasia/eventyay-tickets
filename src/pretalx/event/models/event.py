@@ -277,6 +277,7 @@ class Event(LogMixin, models.Model):
         stats = '{base}submissions/statistics/'
         submission_feed = '{base}submissions/feed/'
         new_submission = '{submissions}new'
+        feedback = '{submissions}feedback/'
         speakers = '{base}speakers/'
         settings = edit_settings = '{base}settings/'
         review_settings = '{settings}review/'
