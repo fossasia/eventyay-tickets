@@ -5064,7 +5064,7 @@ msgid ""
 "in until they set a new password. The email will go to: "
 msgstr ""
 "Soll das Passwort dieser Person wirklich zurückgesetzt werden? Eine "
-"Anmeldung wird nicht mehr nötig sein, ohne ein neues Passwort zu vergeben. "
+"Anmeldung wird nicht mehr möglich sein, ohne ein neues Passwort zu vergeben. "
 "Die E-Mail wird an diese Adresse gehen: "
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:11
