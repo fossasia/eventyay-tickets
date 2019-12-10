@@ -116,7 +116,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()
-        return super().save(args, kwargs)
+        return super().save(*args, **kwargs)
 
     def event_profile(self, event):
         """Retrieve (and/or create) the event.
