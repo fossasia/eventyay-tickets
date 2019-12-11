@@ -107,7 +107,7 @@ list (or tell us about it, and we'll add it)!
 .. _issues: https://github.com/pretalx/pretalx/issues/
 .. _feature list: https://pretalx.com/p/features
 .. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
-.. _administrator documentation: https://pretalx.readthedocs.io/en/latest/administrator/index.html
+.. _administrator documentation: https://docs.pretalx.org/administrator/index.html
 .. _pretalx.com: https://pretalx.com/
 .. _active development: https://github.com/pretalx/pretalx/pulse
 .. _changelog: https://docs.pretalx.org/en/latest/changelog.html
