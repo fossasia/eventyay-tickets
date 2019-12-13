@@ -523,6 +523,10 @@ form #id_display-display_header_pattern {
   display: flex;
   padding: 0;
 
+  .form-check {
+    padding-left: 0;
+  }
+
   label {
     width: 100px;
     position: relative;
@@ -697,10 +701,13 @@ legend .submission-state-dropdown {
     line-height: 2.5;
   }
 }
-#id_locales .checkbox,
-#id_initial-locales .checkbox {
-  display: flex;
-  margin-left: 8px;
+#id_locales.checkbox,
+#id_initial-locales.checkbox {
+  padding: 0;
+  label {
+    display: inline-block !important;
+    margin-bottom: 8px;
+  }
 }
 .colorpicker-element .colorpicker-input-addon {
   display: flex;
