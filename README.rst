@@ -1,6 +1,6 @@
 |logo|
 
-.. image:: https://img.shields.io/travis/pretalx/pretalx.svg
+.. image:: https://img.shields.io/travis/pretalx/pretalx/master.svg
    :target: https://travis-ci.org/pretalx/pretalx
    :alt: Continuous integration
 
