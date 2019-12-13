@@ -24,14 +24,14 @@
    :target: https://twitter.com/pretalx
    :alt: Twitter account
 
-`pretalx` is a conference planning tool focused on providing the best
+``pretalx`` is a conference planning tool focused on providing the best
 experience for organisers, speakers, reviewers, and attendees alike.  It
 handles the submission process with a configurable Call for Participation, the
 reviewing and selection of submissions, and the scheduling and release
-handling. After the event, `pretalx` allows speakers to receive feedback,
+handling. After the event, ``pretalx`` allows speakers to receive feedback,
 upload their slides, and organisers to embed recordings.
 
-Read our `feature page`_ on our main site to get a better idea of what
+Read our `feature list`_ on our main site to get a better idea of what
 `pretalx` can do for you, but it typically involves everything you'll need to
 curate submissions and contents for a conference with several tracks and
 conference days.
@@ -46,7 +46,7 @@ versions and upcoming features.
 
 |screenshots|
 
-Check out our `feature page` for more screenshots – or check the `list of
+Check out our `feature list`_ for more screenshots – or check the `list of
 events`_ to see how pretalx looks in the wild.
 
 pretalx is highly configurable, so you can change its appearance and behaviour
