@@ -175,7 +175,6 @@ class SubmissionSpeakersAdd(SubmissionViewMixin, View):
         else:
             if submission not in speaker.submissions.all():
                 speaker.submissions.add(submission)
-                speaker.save(update_fields=['submissions'])
                 submission.log_action(
                     'pretalx.submission.speakers.add', person=request.user, orga=True
                 )
@@ -201,7 +200,6 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
         if submission in speaker.submissions.all():
             speaker.submissions.remove(submission)
-            speaker.save(update_fields=['submissions'])
             submission.log_action(
                 'pretalx.submission.speakers.remove', person=request.user, orga=True
             )
