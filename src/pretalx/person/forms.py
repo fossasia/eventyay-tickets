@@ -141,6 +141,7 @@ class SpeakerProfileForm(
             self.fields[field] = User._meta.get_field(field).formfield(
                 initial=initial.get(field), disabled=read_only
             )
+            self._update_cfp_help_text(field)
 
     @cached_property
     def user_fields(self):

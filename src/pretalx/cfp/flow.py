@@ -550,10 +550,14 @@ class CfPFlow:
                             getattr(field, "original_help_text", field.help_text),
                             locales,
                         ),
+                        "added_help_text": i18n_string(
+                            getattr(field, "added_help_text", ""),
+                            locales,
+                        ),
                         "full_help_text": field.help_text,
                         "required": field.required,
                     }
-                    for key, field in step.form_class(event=self.event).fields.items()
+                    for key, field in step.form_class(event=self.event, field_configuration=step_config.get("fields")).fields.items()
                 ]
             })
         if json_compat:

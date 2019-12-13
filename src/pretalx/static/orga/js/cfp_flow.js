@@ -174,7 +174,8 @@ Vue.component("field", {
   `,
   data() {
     return {
-      editRequirement: false
+      editRequirement: false,
+      fixed_help_text: "",
     }
   },
   props: {
@@ -191,10 +192,6 @@ Vue.component("field", {
     },
     editable () {
       return !currentModal.data
-    },
-    fixed_help_text () {
-      return this.field.full_help_text.replace(this.field.help_text[currentLanguage], "")
-
     },
     display_help_text () {
       if (this.isQuestion) return marked(this.fixed_help_text)
@@ -221,6 +218,10 @@ Vue.component("field", {
       }
     },
   },
+  created() {
+    this.fixed_help_text = this.field.full_help_text.replace(this.field.help_text[currentLanguage], "")
+
+  }
 })
 
 Vue.component("step", {
