@@ -18,7 +18,8 @@ class AvailabilitiesFormMixin(forms.Form):
     availabilities = forms.CharField(
         label=_('Availability'),
         help_text=_(
-            'Please click and drag to mark the availability during the conference.'
+            "Please click and drag to mark your availability during the conference with green blocks. "
+            "We will try to schedule your slot during these times. You can click a block twice to remove it."
         ),
         widget=forms.TextInput(attrs={'class': 'availabilities-editor-data'}),
         required=False,
