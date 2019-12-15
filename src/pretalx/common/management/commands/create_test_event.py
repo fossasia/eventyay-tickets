@@ -20,6 +20,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--stage', type=str, default='schedule', help='Up to which stage should this event be created? Choices, in logical order, are "cfp", "review", "schedule", "over". The default is "schedule".')
+        parser.add_argument('--seed', type=str, default='', help='Seed the random generator with a number for stable results')
 
     def build_event(self, end_stage):
         administrators = User.objects.filter(is_administrator=True)
@@ -290,6 +291,9 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             self.stdout.write(self.style.ERROR('Please run "pip install freezegun" to use this command.'))
             return
 
+        seed = options.get('seed')
+        if seed:
+            self.fake.seed(int(seed))
         end_stage = options.get('stage')
         event = self.build_event(end_stage)
         if not event:
