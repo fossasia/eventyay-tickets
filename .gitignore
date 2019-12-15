@@ -133,3 +133,6 @@ src/tests/**/*.yml
 # Python packaging
 src/LICENSE
 src/README.rst
+
+# Screenshots
+screens/
