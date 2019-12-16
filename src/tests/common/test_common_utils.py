@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from django.utils import translation
 
-from pretalx.common.utils import daterange
+from pretalx.common.utils import daterange, safe_filename
 
 
 def test_same_day_german():
@@ -95,3 +95,13 @@ def test_path_with_hash(path, expected, monkeypatch):
     monkeypatch.setattr('pretalx.common.utils.get_random_string', lambda x: 'aaaaaaa')
     from pretalx.common.utils import path_with_hash
     assert path_with_hash(path) == expected
+
+
+@pytest.mark.parametrize('filename,expected', (
+    ('ö', 'o'),
+    ('å', 'a'),
+    ('ø', ''),
+    ('α', ''),
+))
+def test_safe_filename(filename, expected):
+    assert safe_filename(filename) == expected

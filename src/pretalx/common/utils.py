@@ -1,5 +1,6 @@
 import contextlib
 import os
+import unicodedata
 
 from django.conf import settings
 from django.db import transaction
@@ -127,3 +128,7 @@ def language(language_code):
         yield
     finally:
         activate(previous_language)
+
+
+def safe_filename(filename):
+    return unicodedata.normalize("NFD", filename).encode("ASCII", "ignore").decode()

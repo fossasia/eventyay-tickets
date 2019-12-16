@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`841` File attachments generated from user data are now generated to be in safe ASCII range, to avoid trouble with unicode-sensitive gunicorn versions.
 - :feature:`794` There is now a page that shows all feedback by attendees for any talk in the conference.
 - :feature:`432` Organisers can now send emails to all speakers who have not uploaded slides/files for their talk yet.
 - :feature:`-` pretalx now has pretty error pages for CSRF fails and 400 errors. Test error pages are located at ``/400``, ``/403``, ``/404``, ``/500``, and ``/403/csrf``.

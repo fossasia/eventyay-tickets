@@ -1,17 +1,15 @@
 import random
-from datetime import date, timedelta, time, datetime
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
 import pytest
 import pytz
-
 from django.core.management import call_command
 from django.utils import translation
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django_scopes import scope, scopes_disabled
 from i18nfield.strings import LazyI18nString
-
 
 SEED = random.randint(0, 100000)
 

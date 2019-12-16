@@ -24,6 +24,7 @@ from pretalx.common.mixins.views import (
     ActionFromUrl, EventPermissionRequired, PermissionRequired,
 )
 from pretalx.common.signals import register_data_exporters
+from pretalx.common.utils import safe_filename
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms.schedule import ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
@@ -95,7 +96,7 @@ class ScheduleExportDownloadView(EventPermissionRequired, View):
                 ).format(error=str(e)),
             )
             return redirect(self.request.event.orga_urls.schedule_export)
-        response['Content-Disposition'] = 'attachment; filename=' + zip_path.name
+        response['Content-Disposition'] = 'attachment; filename=' + safe_filename(zip_path.name)
         return response
 
 

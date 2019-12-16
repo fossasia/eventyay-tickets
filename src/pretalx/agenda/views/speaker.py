@@ -12,6 +12,7 @@ from django.views.generic import DetailView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.utils import safe_filename
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 
@@ -85,5 +86,5 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         speaker_name = Storage().get_valid_name(name=speaker.user.name)
         resp[
             'Content-Disposition'
-        ] = f'attachment; filename="{request.event.slug}-{speaker_name}.ics"'
+        ] = f'attachment; filename="{request.event.slug}-{safe_filename(speaker_name)}.ics"'
         return resp

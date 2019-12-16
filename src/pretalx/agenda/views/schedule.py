@@ -21,6 +21,7 @@ from django_context_decorator import context
 from pretalx.common.console import LR, UD, get_seperator
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
+from pretalx.common.utils import safe_filename
 
 
 class ScheduleDataView(EventPermissionRequired, TemplateView):
@@ -111,7 +112,7 @@ class ExporterView(ScheduleDataView):
             resp = HttpResponse(data, content_type=file_type)
             resp['ETag'] = etag
             if file_type not in ['application/json', 'text/xml']:
-                resp['Content-Disposition'] = f'attachment; filename="{file_name}"'
+                resp['Content-Disposition'] = f'attachment; filename="{safe_filename(file_name)}"'
             return resp
         except Exception:
             raise Http404()
