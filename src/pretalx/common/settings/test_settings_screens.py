@@ -1,3 +1,3 @@
-from pretalx.common.settings.test_settings import *
+from pretalx.common.settings.test_settings import *  # noqa
 
-COMPRESS_PRECOMPILERS = COMPRESS_PRECOMPILERS_ORIGINAL
+COMPRESS_PRECOMPILERS = COMPRESS_PRECOMPILERS_ORIGINAL  # noqa

@@ -1,8 +1,5 @@
-from datetime import datetime, time
-
 import pytest
-from django.conf import settings
-from django_scopes import scope, scopes_disabled
+from django_scopes import scope
 
 from .utils import screenshot
 

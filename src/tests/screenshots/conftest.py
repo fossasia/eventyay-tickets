@@ -1,15 +1,10 @@
 import random
-from datetime import date, datetime, time, timedelta
-from decimal import Decimal
+from datetime import date, timedelta
 
 import pytest
-import pytz
 from django.core.management import call_command
-from django.utils import translation
-from django.utils.timezone import now
 from django.utils.translation import ugettext as _
-from django_scopes import scope, scopes_disabled
-from i18nfield.strings import LazyI18nString
+from django_scopes import scope
 
 SEED = random.randint(0, 100000)
 
@@ -23,7 +18,7 @@ def chrome_options(chrome_options):
 
 @pytest.fixture(autouse=True)
 def event():
-    from pretalx.event.models import Event, Team
+    from pretalx.event.models import Event
     from pretalx.submission.models import Question, AnswerOption, QuestionVariant
     from pretalx.person.models import User
     User.objects.create_superuser(email='jane@example.org', name=_('Jane Doe'), locale='en', password='jane')
