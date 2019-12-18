@@ -175,7 +175,7 @@ class FormFlowStep(TemplateFlowStep):
 
     def get_form(self, from_storage=False):
         if from_storage:
-            return self.form_class(data=self.cfp_session["data"][self.identifier], files=self.get_files(), **self.get_form_kwargs())
+            return self.form_class(data=self.cfp_session.get("data", {}).get(self.identifier, {}), files=self.get_files(), **self.get_form_kwargs())
         if self.request.method == 'GET':
             return self.form_class(initial=self.get_form_initial(), files=self.get_files(), **self.get_form_kwargs())
         return self.form_class(data=self.request.POST, files=self.request.FILES, **self.get_form_kwargs())
