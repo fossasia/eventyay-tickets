@@ -14,8 +14,19 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 
 
 class TeamMixin:
-    def get_queryset(self):
-        return Team.objects.filter(organiser=self.request.organiser)
+    def get_permission_object(self):
+        return self.request.organiser
+
+    def _get_team(self):
+        return get_object_or_404(self.request.organiser.teams.all(), pk=self.kwargs["pk"])
+
+    def get_object(self):
+        return self._get_team()
+
+    @context
+    @cached_property
+    def team(self):
+        return self._get_team()
 
 
 class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
@@ -23,9 +34,6 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     template_name = 'orga/settings/team_detail.html'
     form_class = TeamForm
     model = Team
-
-    def get_permission_object(self):
-        return self.request.organiser
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -35,7 +43,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
     def get_object(self):
         if 'pk' not in self.kwargs:
             return None
-        return self.get_queryset().filter(pk=self.kwargs.get('pk')).first()
+        return super().get_object()
 
     @context
     @cached_property
@@ -75,9 +83,6 @@ class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
     model = Team
     context_object_name = 'team'
 
-    def get_permission_object(self):
-        return self.request.organiser
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['organiser'] = self.request.organiser
@@ -92,22 +97,19 @@ class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     permission_required = 'orga.change_teams'
     template_name = 'orga/settings/team_delete.html'
-
+    
     def get_permission_object(self):
-        return self.request.organiser
+        return self._get_team()
+
+    def get_object(self):
+        team = super().get_object()
+        if 'user_pk' in self.kwargs:
+            return team.members.filter(pk=self.kwargs.get('user_pk')).first()
+        return team
 
     @context
     @cached_property
-    def team(self):
-        return get_object_or_404(Team, pk=self.kwargs['pk'])
-
-    def get_object(self):
-        if 'user_pk' in self.kwargs:
-            return self.team.members.filter(pk=self.kwargs.get('user_pk')).first()
-        return self.team
-
-    @context
-    def member(self, **kwargs):
+    def member(self):
         member = self.get_object()
         return member if member != self.team else None
 
@@ -131,7 +133,7 @@ class TeamUninvite(PermissionRequired, DetailView):
 
     @context
     def team(self):
-        return self.object.team
+        return get_object_or_404(self.request.organiser.teams.all(), pk=self.object.team.pk)
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
@@ -150,12 +152,12 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     @context
     @cached_property
     def team(self):
-        return get_object_or_404(Team, pk=self.kwargs['pk'])
+        return get_object_or_404(self.request.organiser.teams.all(), pk=self.kwargs['pk'])
 
     @context
     @cached_property
     def user(self):
-        return get_object_or_404(self.team.members, pk=self.kwargs['user_pk'])
+        return get_object_or_404(self.team.members.all(), pk=self.kwargs['user_pk'])
 
     def post(self, request, *args, **kwargs):
         try:
