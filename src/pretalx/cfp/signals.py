@@ -19,3 +19,25 @@ list of ``pretalx.cfp.flow.BaseCfPStep`` objects. The integration of CfP steps
 in the CfP workflow is currently considered **unstable** and may change without
 notice between versions.
 """
+
+html_above_submission_list = EventPluginSignal(
+    providing_args=["request"]
+)
+"""
+This signal is sent out to display additional information on the personal user
+submission list page, above the submission list.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event. The
+receivers are expected to return HTML.
+"""
+
+html_above_profile_page = EventPluginSignal(
+    providing_args=["request"]
+)
+"""
+This signal is sent out to display additional information on the personal user
+profile page, above the submission list.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event. The
+receivers are expected to return HTML.
+"""

@@ -35,7 +35,7 @@ Display
 -------
 
 .. automodule:: pretalx.cfp.signals
-   :members: cfp_steps, footer_link
+   :members: cfp_steps, footer_link, html_above_submission_list, html_above_profile_page
 
 .. automodule:: pretalx.agenda.signals
    :members: register_recording_providers

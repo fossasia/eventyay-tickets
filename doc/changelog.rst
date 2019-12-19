@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugins can now add content to the top of the user profile pages and the user-private submission lists.
 - :feature:`841` File attachments generated from user data are now generated to be in safe ASCII range, to avoid trouble with unicode-sensitive gunicorn versions.
 - :feature:`794` There is now a page that shows all feedback by attendees for any talk in the conference.
 - :feature:`432` Organisers can now send emails to all speakers who have not uploaded slides/files for their talk yet.

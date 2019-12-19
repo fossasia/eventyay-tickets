@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
+{% load html_signal %}
 {% load i18n %}
 {% load static %}
 
@@ -11,6 +12,8 @@
        <script src="{% static "vendored/marked.min.js" %}" defer></script>
        <script src="{% static "common/js/markdown.js" %}" defer></script>
     {% endif %}
+
+    {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
 
     <h2>{% trans "Your Profile" %}</h2>
     <p>

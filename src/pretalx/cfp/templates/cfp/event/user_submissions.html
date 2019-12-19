@@ -1,5 +1,6 @@
 {% extends "cfp/event/base.html" %}
 {% load compress %}
+{% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
@@ -19,6 +20,7 @@
         {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     {% endif %}
+    {% html_signal "pretalx.cfp.signals.html_above_submission_list" sender=request.event request=request %}
     <h2>{% trans "Your submissions" %}</h2>
     {% if submissions %}
         <table class="table table-sm table-responsive table-responsive-md">
