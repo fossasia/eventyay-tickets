@@ -18,7 +18,8 @@ class TeamMixin:
         return self.request.organiser
 
     def _get_team(self):
-        return get_object_or_404(self.request.organiser.teams.all(), pk=self.kwargs["pk"])
+        if "pk" in self.kwargs:
+            return get_object_or_404(self.request.organiser.teams.all(), pk=self.kwargs["pk"])
 
     def get_object(self):
         return self._get_team()
@@ -44,6 +45,11 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if 'pk' not in self.kwargs:
             return None
         return super().get_object()
+
+    def get_permission_object(self):
+        if 'pk' not in self.kwargs:
+            return self.request.organiser
+        return self.get_object()
 
     @context
     @cached_property
@@ -97,7 +103,7 @@ class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     permission_required = 'orga.change_teams'
     template_name = 'orga/settings/team_delete.html'
-    
+
     def get_permission_object(self):
         return self._get_team()
 
