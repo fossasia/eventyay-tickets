@@ -423,7 +423,7 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
 
     def get_queryset(self):
         qs = (
-            self.request.event.submissions(manager='all_objects')
+            Submission.all_objects.filter(event=self.request.event)
             .select_related('submission_type')
             .order_by('-id')
             .all()
@@ -529,18 +529,18 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     @cached_property
     def submission_state_data(self):
-        counter = Counter(submission.get_state_display() for submission in self.request.event.submissions(manager='all_objects').all())
+        counter = Counter(submission.get_state_display() for submission in Submission.all_objects.filter(event=self.request.event))
         return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
     def submission_type_data(self):
-        counter = Counter(str(submission.submission_type) for submission in self.request.event.submissions(manager='all_objects').all())
+        counter = Counter(str(submission.submission_type) for submission in Submission.all_objects.filter(event=self.request.event))
         return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
 
     @context
     def submission_track_data(self):
         if self.request.event.settings.use_tracks:
-            counter = Counter(str(submission.track) for submission in self.request.event.submissions(manager='all_objects').all())
+            counter = Counter(str(submission.track) for submission in Submission.all_objects.filter(event=self.request.event))
             return json.dumps(sorted(list({'label': label, 'value': value} for label, value in counter.items()), key=itemgetter('label')))
         return ''
 

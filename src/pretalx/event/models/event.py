@@ -786,6 +786,7 @@ class Event(LogMixin, models.Model):
             Feedback,
             Question,
             Resource,
+            Submission,
         )
 
         deletion_order = [
@@ -800,7 +801,7 @@ class Event(LogMixin, models.Model):
             Answer.objects.filter(question__event=self),
             AnswerOption.objects.filter(question__event=self),
             Question.all_objects.filter(event=self),
-            self.submissions(manager='all_objects').all(),
+            Submission.all_objects.filter(event=self),
             self.tracks.all(),
             self.submission_types.all(),
             self.schedules.all(),

@@ -200,8 +200,9 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     @transaction.atomic
     def shred(self):
         """Actually remove the user account."""
+        from pretalx.submission.models import Submission
         with scopes_disabled():
-            if self.submissions(manager='all_objects').count() or self.teams.count() or self.answers.count():
+            if Submission.all_objects.filter(speakers__in=[self]).count() or self.teams.count() or self.answers.count():
                 raise Exception(f'Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead.')
             self.logged_actions().delete()
             self.own_actions().update(person=None)

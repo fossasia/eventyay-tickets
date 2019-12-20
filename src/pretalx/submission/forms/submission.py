@@ -185,7 +185,7 @@ class SubmissionFilterForm(forms.Form):
         usable_states = kwargs.pop('usable_states', None)
         super().__init__(*args, **kwargs)
         qs = event.submissions
-        state_qs = event.submissions(manager='all_objects')
+        state_qs = Submission.all_objects.filter(event=event)
         if usable_states:
             qs = qs.filter(state__in=usable_states)
             state_qs = state_qs.filter(state__in=usable_states)
