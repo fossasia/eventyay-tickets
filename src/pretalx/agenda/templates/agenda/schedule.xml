@@ -1,6 +1,7 @@
 {% load xmlescape %}<?xml version='1.0' encoding='utf-8' ?>
 <!-- Made with love by pretalx v{{ version }}. -->
 <schedule>
+    <generator name="pretalx" version="{{ version }}" />
     <version>{{ schedule.version|xmlescape }}</version>
     <conference>
         <acronym>{{ event.slug }}</acronym>

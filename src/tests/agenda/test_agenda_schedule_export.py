@@ -20,7 +20,16 @@ from pretalx.event.models import Event
     "TRAVIS" not in os.environ or "CI" not in os.environ and os.environ["CI"],
     reason="No need to bother with this outside of CI."
 )
+@pytest.mark.xfail
 def test_schedule_xsd_is_up_to_date():
+    """
+    This test is currently meant to fail. Ever since the frab commit in January 2019
+    <https://github.com/frab/frab/commit/7b34e8c3f1200bae4ec0855133ceb86bc5060c97>,
+    the VOC schedule.xsd would actually fail on frab generated input. Since the pretalx
+    frab export is primarily meant to be compatible with frab, not with the VOC
+    validator, the pretalx xsd now matches the frab output, and pretalx also
+    produces a "generator" element.
+    """
     http = urllib3.PoolManager()
     response = http.request('GET', 'https://raw.githubusercontent.com/voc/schedule/master/validator/xsd/schedule.xml.xsd')
     assert response.status == 200
