@@ -22,8 +22,9 @@ from pretalx.event.models import Event
 )
 @pytest.mark.xfail
 def test_schedule_xsd_is_up_to_date():
-    """
-    This test is currently meant to fail. Ever since the frab commit in January 2019
+    """This test is currently meant to fail.
+
+    Ever since the frab commit in January 2019
     <https://github.com/frab/frab/commit/7b34e8c3f1200bae4ec0855133ceb86bc5060c97>,
     the VOC schedule.xsd would actually fail on frab generated input. Since the pretalx
     frab export is primarily meant to be compatible with frab, not with the VOC
