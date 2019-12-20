@@ -360,9 +360,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
             talks_to_delete = TalkSlot.objects.filter(
                 submission=self,
                 schedule=self.event.wip_schedule,
-                room__isnull=True,
-                start__isnull=True,
-            ).order_by('start', 'is_visible')[:diff].values_list("id", flat=True)
+            ).order_by('start', 'room', 'is_visible')[:diff].values_list("id", flat=True)
             TalkSlot.objects.filter(pk__in=list(talks_to_delete)).delete()
         elif diff < 0:
             for __ in repeat(None, abs(diff)):

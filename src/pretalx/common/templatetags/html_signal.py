@@ -8,8 +8,8 @@ register = template.Library()
 
 @register.simple_tag
 def html_signal(signame: str, **kwargs):
-    """
-    Send a signal and return the concatenated return values of all responses.
+    """Send a signal and return the concatenated return values of all
+    responses.
 
     Usage::
 
