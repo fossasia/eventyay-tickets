@@ -539,6 +539,37 @@ class TestWizard:
         response = client.get(current_url.replace('info', 'wrooooong'))
         assert response.status_code == 404
 
+    @pytest.mark.django_db
+    def test_wizard_existing_user_twice(
+        self,
+        event,
+        client,
+        user,
+        speaker_question,
+    ):
+        with scope(event=event):
+            assert event.submissions.count() == 0
+            assert speaker_question.answers.count() == 0
+            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            answer_data = {f'question_{speaker_question.pk}': 'green'}
+
+        client.force_login(user)
+        for _ in range(2):
+            response, current_url = self.perform_init_wizard(client, event=event)
+            response, current_url = self.perform_info_wizard(
+                client, response, current_url, submission_type=submission_type,
+                event=event,
+            )
+            response, current_url = self.perform_question_wizard(
+                client, response, current_url, answer_data, event=event,
+            )
+            response, current_url = self.perform_profile_form(client, response, current_url, event=event)
+            submission = self.assert_submission(event)
+            self.assert_user(submission, question=speaker_question, answer='green')
+        with scope(event=event):
+            assert event.submissions.count() == 2
+            assert speaker_question.answers.count() == 1
+
 
 @pytest.mark.django_db
 def test_infoform_set_submission_type(event, other_event):
