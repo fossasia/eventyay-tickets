@@ -41,6 +41,7 @@ class ScheduleData(BaseExporter):
             .select_related('submission', 'submission__event', 'submission__submission_type', 'submission__track', 'room')
             .prefetch_related('submission__speakers')
             .order_by('start')
+            .exclude(submission__state='deleted')
         )
         data = {
             current_date.date(): {
