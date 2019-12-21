@@ -15,5 +15,7 @@ def submission_deadline_open(user, submission):
     return (not deadline) or now() <= deadline
 
 
-rules.add_perm('cfp.view_event', is_event_visible | (can_change_submissions | is_reviewer))
-rules.add_perm('cfp.add_speakers', submission_deadline_open)
+rules.add_perm(
+    "cfp.view_event", is_event_visible | (can_change_submissions | is_reviewer)
+)
+rules.add_perm("cfp.add_speakers", submission_deadline_open)
