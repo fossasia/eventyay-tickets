@@ -82,7 +82,7 @@ LOG_NAMES = {
     "pretalx.access_code.create": _("An access code was added."),
     "pretalx.access_code.send": _("An access code was sent."),
     "pretalx.access_code.update": _("An access code was modified."),
-    "pretalx.access_code.delete": _("An access code was delete."),
+    "pretalx.access_code.delete": _("An access code was deleted."),
     "pretalx.track.create": _("A track was added."),
     "pretalx.track.delete": _("A track was deleted."),
     "pretalx.track.update": _("A track was modified."),
