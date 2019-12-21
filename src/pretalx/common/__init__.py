@@ -8,6 +8,7 @@ class CommonConfig(AppConfig):
 
     def ready(self):
         from . import signals  # noqa
+        from . import update_check  # noqa
 
 
 with suppress(ImportError):

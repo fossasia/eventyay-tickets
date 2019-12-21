@@ -103,14 +103,21 @@ h3 {
 }
 
 .superuser-warning {
+  position: absolute;
   background: $brand-danger;
-  padding: 5px 20px;
+  padding: 8px 20px;
   color: white;
   text-align: center;
+  margin-top: 50px;
+  position: absolute;
+  z-index: 1000;
 
   a {
     color: white;
     font-weight: bold;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 

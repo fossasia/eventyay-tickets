@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 import uuid
 
@@ -46,6 +47,14 @@ hierarkey.add_default('present_multiple_times', 'False', bool)
 hierarkey.add_default('display_header_pattern', '', str)
 
 hierarkey.add_default('cfp_flow', '', str)
+
+hierarkey.add_default('update_check_ack', 'False', bool)
+hierarkey.add_default('update_check_email', '', str)
+hierarkey.add_default('update_check_enabled', 'True', bool)
+hierarkey.add_default('update_check_result', None, dict)
+hierarkey.add_default('update_check_result_warning', 'False', bool)
+hierarkey.add_default('update_check_last', None, dt.datetime)
+hierarkey.add_default('update_check_id', None, str)
 
 hierarkey.add_default('cfp_request_title', 'True', bool)
 hierarkey.add_default('cfp_request_abstract', 'True', bool)

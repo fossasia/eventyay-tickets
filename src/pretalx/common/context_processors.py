@@ -1,9 +1,12 @@
+import sys
+
 from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.cfp.signals import footer_link
+from pretalx.common.models.settings import GlobalSettings
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
 
@@ -55,4 +58,13 @@ def system_information(request):
     if settings.DEBUG:
         context['development_warning'] = True
         context['pretalx_version'] = settings.PRETALX_VERSION
+
+    context['warning_update_available'] = False
+    context['warning_update_check_active'] = False
+    gs = GlobalSettings()
+    if not request.user.is_anonymous and request.user.is_administrator:
+        if gs.settings.update_check_result_warning:
+            context['warning_update_available'] = True
+        if not gs.settings.update_check_ack and 'runserver' not in sys.argv:
+            context['warning_update_check_active'] = True
     return context

@@ -120,6 +120,12 @@
             </ul>
         </div>
         <ul class="navbar-nav">
+            {% if warning_update_available %}
+                <li class="nav-item">
+                    <a href="{% url 'orga:admin.update' %}" class="text-danger nav-link">
+                        <i class="fa fa-bell"></i>
+                    </a>
+                </li>
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:user.view" %}">
@@ -142,6 +148,19 @@
             {% endblocktrans %}
             <a href="{% url "orga:user.subuser" %}?next={{ request.path|urlencode }}">
                 {% trans "Please click here to switch to an administrator account." %}
+            </a>
+        </div>
+    {% endif %}
+    {% if warning_update_check_active %}
+        <div class="superuser-warning">
+            <a href="{% url "orga:admin.update" %}">
+                {% blocktrans trimmed %}
+                    Starting with version 1.1.0, pretalx automatically checks for updates in the background.
+                    During this check, anonymous data is transmitted to servers operated by the pretalx
+                    developers. Click on this message to find out more, disable this feature or enter your
+                    email address to get notified via email if a new update arrives. This message will
+                    disappear once you clicked it.
+                {% endblocktrans %}
             </a>
         </div>
     {% endif %}

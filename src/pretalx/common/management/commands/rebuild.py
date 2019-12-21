@@ -1,5 +1,9 @@
+from contextlib import suppress
+
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+
+from pretalx.common.models.settings import GlobalSettings
 
 
 class Command(BaseCommand):
@@ -28,3 +32,8 @@ class Command(BaseCommand):
             'collectstatic', verbosity=silent, interactive=False, clear=options['clear']
         )
         call_command('compress', verbosity=silent)
+        with suppress(Exception):  # This fails if we don't have db access, which is fine
+            gs = GlobalSettings()
+            del gs.settings.update_check_last
+            del gs.settings.update_check_result
+            del gs.settings.update_check_result_warning

@@ -17,7 +17,8 @@ urlpatterns = [
     url(r'^reset/(?P<token>\w+)$', auth.RecoverView.as_view(), name='auth.recover'),
 
     url('^$', RedirectView.as_view(url='event', permanent=False)),
-    url('^admin/', admin.AdminDashboard.as_view(), name='admin.dashboard'),
+    url('^admin/$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
+    url('^admin/update/$', admin.UpdateCheckView.as_view(), name='admin.update'),
     url('^me$', event.UserSettings.as_view(), name='user.view'),
     url('^me/subuser$', person.SubuserView.as_view(), name='user.subuser'),
     url(r'^invitation/(?P<code>\w+)$', event.InvitationView.as_view(), name='invitation.view'),
