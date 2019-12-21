@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.template.defaultfilters import timeuntil
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
@@ -183,35 +182,3 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         )
         result['tiles'] += self.get_review_tiles()
         return result
-
-
-def url_list(request, event=None):
-    event = request.event
-    permissions = request.user.get_permissions_for_event(event)
-    urls = [
-        {'name': _('Dashboard'), 'url': event.orga_urls.base},
-        {'name': _('Submissions'), 'url': event.orga_urls.submissions},
-        {'name': _('Talks'), 'url': event.orga_urls.submissions},
-        {'name': _('Submitters'), 'url': event.orga_urls.speakers},
-        {'name': _('Speakers'), 'url': event.orga_urls.speakers + '?role=true'},
-    ]
-    if 'can_change_event_settings' in permissions:
-        urls += [
-            {'name': _('Settings'), 'url': event.orga_urls.settings},
-            {'name': _('Mail settings'), 'url': event.orga_urls.mail_settings},
-            {'name': _('Room settings'), 'url': event.orga_urls.room_settings},
-            {'name': _('CfP'), 'url': event.orga_urls.cfp},
-        ]
-    if 'can_change_submissions' in permissions:
-        urls += [
-            {'name': _('Mail outbox'), 'url': event.orga_urls.outbox},
-            {'name': _('Compose mail'), 'url': event.orga_urls.compose_mails},
-            {'name': _('Mail templates'), 'url': event.orga_urls.mail_templates},
-            {'name': _('Sent mails'), 'url': event.orga_urls.sent_mails},
-            {'name': _('Schedule'), 'url': event.orga_urls.schedule},
-            {'name': _('Schedule exports'), 'url': event.orga_urls.schedule_export},
-            {'name': _('Speaker information'), 'url': event.orga_urls.information},
-        ]
-    if 'is_reviewer' in permissions:
-        urls += [{'name': _('Review dashboard'), 'url': event.orga_urls.reviews}]
-    return JsonResponse({'results': urls})

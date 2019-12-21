@@ -263,7 +263,6 @@ class Event(LogMixin, models.Model):
         delete = '{base}delete'
         cfp = '{base}cfp/'
         users = '{base}api/users'
-        url_list = '{base}api/urls/'
         mail = '{base}mails/'
         compose_mails = '{mail}compose'
         mail_templates = '{mail}templates/'

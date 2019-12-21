@@ -120,10 +120,6 @@
             </ul>
         </div>
         <ul class="navbar-nav">
-            {% if request.event %}
-            <li class="nav-item">
-                <input type="text" class="form-control mr-sm-2 mt-auto mb-auto" id="navigate" title="{% trans 'Navigate' %}" placeholder="{% trans 'Navigate' %}" />
-            </li>
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "orga:user.view" %}">
@@ -416,15 +412,9 @@
             </footer>
         </div>
     </div>
-    <span id="navigateUrl" data-remoteUrl="{{ request.event.orga_urls.url_list }}?search=%QUERY"></span>
     {% compress js %}
         <script defer src="{% static "orga/js/load_late.js" %}"></script>
         <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
     {% endcompress %}
-    {% if request.event %}
-        {% compress js %}
-            <script defer src="{% static "orga/js/navigate.js" %}"></script>
-        {% endcompress %}
-    {% endif %}
 </body>
 </html>

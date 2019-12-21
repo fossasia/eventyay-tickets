@@ -49,7 +49,6 @@ urlpatterns = [
         url('^delete$', event.EventDelete.as_view(), name='event.delete'),
         url('^live$', event.EventLive.as_view(), name='event.live'),
         url('^api/users$', person.UserList.as_view(), name='event.user_list'),
-        url('^api/urls/$', dashboard.url_list, name='url_list'),
 
         url('^cfp/$', RedirectView.as_view(pattern_name='orga:cfp.text.view'), name='cfp'),
         url('^cfp/flow/$', cfp.CfPFlowEditor.as_view(), name='cfp.flow'),
