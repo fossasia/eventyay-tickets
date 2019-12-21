@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.core import mail as djmail
@@ -200,8 +200,8 @@ def test_schedule_changes(event, slot, room, accepted_submission):
         assert event.wip_schedule.talks.all().count() == 3
         second_slot = slot.submission.slots.exclude(pk=current_slot.pk).filter(schedule=slot.submission.event.wip_schedule).get()
         second_slot.room = room
-        second_slot.start = current_slot.start + timedelta(hours=2)
-        second_slot.end = current_slot.end + timedelta(hours=2)
+        second_slot.start = current_slot.start + dt.timedelta(hours=2)
+        second_slot.end = current_slot.end + dt.timedelta(hours=2)
         second_slot.save()
         schedule, _ = event.wip_schedule.freeze('test2')
         assert schedule.changes == {
@@ -215,7 +215,7 @@ def test_schedule_changes(event, slot, room, accepted_submission):
         assert mail_count == slot.submission.speakers.count() * 2
 
         for wip_slot in event.wip_schedule.talks.filter(start__isnull=False).order_by('-pk'):
-            wip_slot.start += timedelta(hours=1)
+            wip_slot.start += dt.timedelta(hours=1)
             wip_slot.save()
         schedule, _ = event.wip_schedule.freeze('test3')
         assert schedule.changes['count'] == 2

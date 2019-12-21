@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import rules
 from django.utils.timezone import now
@@ -72,7 +72,7 @@ def can_edit_mail(user, obj):
 @rules.predicate
 def can_mark_speakers_arrived(user, obj):
     event = obj.event
-    return (event.date_from - timedelta(days=1)) <= now().date() <= event.date_to
+    return (event.date_from - dt.timedelta(days=1)) <= now().date() <= event.date_to
 
 
 @rules.predicate

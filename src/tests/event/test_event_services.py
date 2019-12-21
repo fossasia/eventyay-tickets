@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.core import mail as djmail
@@ -30,8 +30,8 @@ def test_task_periodic_event_created_long_ago(event):
     djmail.outbox = []
     with scopes_disabled():
         ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-        ActivityLog.objects.filter(event=event).update(timestamp=now() - timedelta(days=11))
-        event.cfp.deadline = now() - timedelta(days=10)
+        ActivityLog.objects.filter(event=event).update(timestamp=now() - dt.timedelta(days=11))
+        event.cfp.deadline = now() - dt.timedelta(days=10)
         event.cfp.save()
     assert not event.settings.sent_mail_event_created
     task_periodic_event_services(event.slug)
@@ -44,7 +44,7 @@ def test_task_periodic_event_created_long_ago(event):
 def test_task_periodic_cfp_closed(event):
     djmail.outbox = []
     ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-    event.cfp.deadline = now() - timedelta(hours=1)
+    event.cfp.deadline = now() - dt.timedelta(hours=1)
     event.cfp.save()
     assert not event.settings.sent_mail_cfp_closed
     task_periodic_event_services(event.slug)
@@ -60,7 +60,7 @@ def test_task_periodic_cfp_closed(event):
 def test_task_periodic_event_over(event, slot):
     djmail.outbox = []
     ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-    event.date_to = now() - timedelta(days=1)
+    event.date_to = now() - dt.timedelta(days=1)
     event.save()
     assert not event.settings.sent_mail_cfp_closed
     task_periodic_event_services(event.slug)
@@ -76,7 +76,7 @@ def test_task_periodic_event_over(event, slot):
 def test_task_periodic_event_over_no_talks(event):
     djmail.outbox = []
     ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-    event.date_to = now() - timedelta(days=1)
+    event.date_to = now() - dt.timedelta(days=1)
     event.save()
     assert not event.settings.sent_mail_cfp_closed
     task_periodic_event_services(event.slug)

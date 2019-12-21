@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.utils.timezone import now
@@ -329,7 +329,7 @@ def test_orga_can_edit_submission_duration(orga_client, event, accepted_submissi
     with scope(event=event):
         slot = accepted_submission.slots.filter(schedule=event.wip_schedule).first()
         slot.start = now()
-        slot.end = slot.start + timedelta(minutes=accepted_submission.get_duration())
+        slot.end = slot.start + dt.timedelta(minutes=accepted_submission.get_duration())
         slot.save()
         assert slot.duration == accepted_submission.get_duration()
 

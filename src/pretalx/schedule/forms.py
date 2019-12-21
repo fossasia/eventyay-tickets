@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 
 import pytz
@@ -100,14 +100,14 @@ class AvailabilitiesFormMixin(forms.Form):
         tz = pytz.timezone(self.event.timezone)
 
         timeframe_start = tz.localize(
-            datetime.datetime.combine(self.event.date_from, datetime.time())
+            dt.datetime.combine(self.event.date_from, dt.time())
         )
         if rawavail['start'] < timeframe_start:
             rawavail['start'] = timeframe_start
 
         # add 1 day, not 24 hours, https://stackoverflow.com/a/25427822/2486196
-        timeframe_end = datetime.datetime.combine(self.event.date_to, datetime.time())
-        timeframe_end = timeframe_end + datetime.timedelta(days=1)
+        timeframe_end = dt.datetime.combine(self.event.date_to, dt.time())
+        timeframe_end = timeframe_end + dt.timedelta(days=1)
         timeframe_end = tz.localize(timeframe_end, is_dst=None)
         if rawavail['end'] > timeframe_end:
             # If the submitted availability ended outside the event timeframe, fix it silently
@@ -198,11 +198,11 @@ class QuickScheduleForm(forms.ModelForm):
         talk = self.instance
         tz = pytz.timezone(self.event.timezone)
         talk.start = tz.localize(
-            datetime.datetime.combine(
+            dt.datetime.combine(
                 self.cleaned_data['start_date'], self.cleaned_data['start_time']
             )
         )
-        talk.end = talk.start + datetime.timedelta(
+        talk.end = talk.start + dt.timedelta(
             minutes=talk.submission.get_duration()
         )
         return super().save()

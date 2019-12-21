@@ -1,5 +1,5 @@
+import datetime as dt
 import json
-from datetime import datetime, timedelta
 
 import pytest
 import pytz
@@ -116,7 +116,7 @@ def test_talk_schedule_api_update_break_slot_explicit_end(orga_client, event, sc
         reverse(
             f'orga:schedule.api.update', kwargs={'event': event.slug, 'pk': slot.pk}
         ),
-        data=json.dumps({'room': room.pk, 'start': start.isoformat(), 'end': (start + timedelta(minutes=90)).isoformat(), 'description': 'New break'}),
+        data=json.dumps({'room': room.pk, 'start': start.isoformat(), 'end': (start + dt.timedelta(minutes=90)).isoformat(), 'description': 'New break'}),
         follow=True,
     )
     assert response.status_code == 200
@@ -224,14 +224,14 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
         Availability.objects.create(
             event=event,
             room=room,
-            start=datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
-            end=datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
+            start=dt.datetime(2017, 1, 1, 1, tzinfo=pytz.utc),
+            end=dt.datetime(2017, 1, 1, 5, tzinfo=pytz.utc),
         )
         Availability.objects.create(
             event=event,
             person=speaker.profiles.first(),
-            start=datetime(2017, 1, 1, 3, tzinfo=pytz.utc),
-            end=datetime(2017, 1, 1, 6, tzinfo=pytz.utc),
+            start=dt.datetime(2017, 1, 1, 3, tzinfo=pytz.utc),
+            end=dt.datetime(2017, 1, 1, 6, tzinfo=pytz.utc),
         )
 
     response = orga_client.get(

@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.utils.timezone import now
@@ -49,8 +49,8 @@ def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, cli
     _now = now()
     with scope(event=event):
         TalkSlot.objects.filter(submission__event=slot.event).update(
-            start=_now + timedelta(minutes=30),
-            end=_now + timedelta(minutes=60),
+            start=_now + dt.timedelta(minutes=30),
+            end=_now + dt.timedelta(minutes=60),
         )
     with django_assert_num_queries(23):
         response = client.post(

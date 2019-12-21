@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -64,7 +64,7 @@ class RecoverView(FormView):
         try:
             self.user = User.objects.get(
                 pw_reset_token=kwargs.get('token'),
-                pw_reset_time__gte=now() - timedelta(days=1),
+                pw_reset_time__gte=now() - dt.timedelta(days=1),
             )
         except User.DoesNotExist:
             messages.error(self.request, phrases.cfp.auth_reset_fail)

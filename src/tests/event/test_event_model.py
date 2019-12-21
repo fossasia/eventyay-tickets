@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -14,7 +14,7 @@ def event():
         return Event.objects.create(
             name='Event', slug='event', is_public=True,
             email='orga@orga.org', locale_array='en,de', locale='en',
-            date_from=datetime.date.today(), date_to=datetime.date.today()
+            date_from=dt.date.today(), date_to=dt.date.today()
         )
 
 
@@ -64,7 +64,7 @@ def test_event_model_slug_permitted_validation(slug):
         Event(
             name='Event', slug=slug, is_public=True,
             email='orga@orga.org', locale_array='en,de', locale='en',
-            date_from=datetime.date.today(), date_to=datetime.date.today()
+            date_from=dt.date.today(), date_to=dt.date.today()
         ).clean_fields()
 
 
@@ -74,14 +74,14 @@ def test_event_model_slug_uniqueness():
         Event.objects.create(
             name='Event', slug='slog', is_public=True,
             email='orga@orga.org', locale_array='en,de', locale='en',
-            date_from=datetime.date.today(), date_to=datetime.date.today()
+            date_from=dt.date.today(), date_to=dt.date.today()
         )
         assert Event.objects.count() == 1
         with pytest.raises(IntegrityError):
             Event.objects.create(
                 name='Event', slug='slog', is_public=True,
                 email='orga@orga.org', locale_array='en,de', locale='en',
-                date_from=datetime.date.today(), date_to=datetime.date.today()
+                date_from=dt.date.today(), date_to=dt.date.today()
             ).clean_fields()
 
 
@@ -99,7 +99,7 @@ def test_event_copy_settings(event, submission_type, with_url):
             organiser=event.organiser, locale_array='de,en',
             name='Teh Name', slug='tn', timezone='Europe/Berlin',
             email='tehname@example.org', locale='de',
-            date_from=datetime.date.today(), date_to=datetime.date.today()
+            date_from=dt.date.today(), date_to=dt.date.today()
         )
     with scope(event=new_event):
         assert new_event.accept_template

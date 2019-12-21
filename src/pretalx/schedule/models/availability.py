@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import List
 
 from django.db import models
@@ -7,7 +7,7 @@ from django_scopes import ScopedManager
 
 from pretalx.common.mixins import LogMixin
 
-zerotime = datetime.time(0, 0)
+zerotime = dt.time(0, 0)
 
 
 class Availability(LogMixin, models.Model):

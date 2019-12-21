@@ -1,5 +1,5 @@
+import datetime as dt
 from contextlib import suppress
-from datetime import datetime, time
 
 import pytz
 from dateutil.relativedelta import relativedelta
@@ -594,24 +594,24 @@ class Event(LogMixin, models.Model):
         )
 
     @cached_property
-    def datetime_from(self) -> datetime:
+    def datetime_from(self) -> dt.datetime:
         """The localised datetime of the event start date.
 
         :rtype: datetime
         """
         return make_aware(
-            datetime.combine(self.date_from, time(hour=0, minute=0, second=0)),
+            dt.datetime.combine(self.date_from, dt.time(hour=0, minute=0, second=0)),
             self.tz,
         )
 
     @cached_property
-    def datetime_to(self) -> datetime:
+    def datetime_to(self) -> dt.datetime:
         """The localised datetime of the event end date.
 
         :rtype: datetime
         """
         return make_aware(
-            datetime.combine(self.date_to, time(hour=23, minute=59, second=59)),
+            dt.datetime.combine(self.date_to, dt.time(hour=23, minute=59, second=59)),
             self.tz,
         )
 

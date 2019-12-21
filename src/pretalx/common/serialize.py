@@ -1,8 +1,8 @@
-from datetime import timedelta
+import datetime as dt
 
 
 def serialize_duration(minutes):
-    duration = timedelta(minutes=minutes)
+    duration = dt.timedelta(minutes=minutes)
     days = duration.days
     hours = int(duration.total_seconds() // 3600 - days * 24)
     minutes = int(duration.seconds // 60 % 60)

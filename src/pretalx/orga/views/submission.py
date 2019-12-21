@@ -1,7 +1,7 @@
+import datetime as dt
 import json
 from collections import Counter
 from contextlib import suppress
-from datetime import timedelta
 from operator import itemgetter
 
 from dateutil import rrule
@@ -44,7 +44,7 @@ def create_user_as_orga(email, submission=None, name=None):
         email=form.cleaned_data['email'].lower().strip(),
         name=form.cleaned_data['name'].strip(),
         pw_reset_token=get_random_string(32),
-        pw_reset_time=now() + timedelta(days=7),
+        pw_reset_time=now() + dt.timedelta(days=7),
     )
     SpeakerProfile.objects.get_or_create(user=user, event=submission.event)
     with override(submission.content_locale):

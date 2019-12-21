@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import pytest
 import pytz
@@ -87,7 +87,7 @@ def other_organiser():
 
 @pytest.fixture
 def event(organiser):
-    today = datetime.date.today()
+    today = dt.date.today()
     with scopes_disabled():
         event = Event.objects.create(
             name='Fancy testevent',
@@ -95,7 +95,7 @@ def event(organiser):
             slug='test',
             email='orga@orga.org',
             date_from=today,
-            date_to=today + datetime.timedelta(days=3),
+            date_to=today + dt.timedelta(days=3),
             organiser=organiser,
         )
         # exporting takes quite some time, so this speeds up our tests
@@ -113,8 +113,8 @@ def other_event(other_organiser):
             is_public=True,
             slug='other',
             email='orga2@orga.org',
-            date_from=datetime.date.today() + datetime.timedelta(days=1),
-            date_to=datetime.date.today() + datetime.timedelta(days=1),
+            date_from=dt.date.today() + dt.timedelta(days=1),
+            date_to=dt.date.today() + dt.timedelta(days=1),
             organiser=other_organiser,
         )
         event.settings.export_html_on_schedule_release = False
@@ -126,14 +126,14 @@ def other_event(other_organiser):
 @pytest.fixture
 def multilingual_event(organiser):
     with scopes_disabled():
-        today = datetime.date.today()
+        today = dt.date.today()
         event = Event.objects.create(
             name='Fancy testevent',
             is_public=True,
             slug='test2',
             email='orga@orga.org',
             date_from=today,
-            date_to=today + datetime.timedelta(days=3),
+            date_to=today + dt.timedelta(days=3),
             locale_array='en,de',
             organiser=organiser,
         )
@@ -692,11 +692,11 @@ def availability(event):
     with scope(event=event):
         return Availability(
             event=event,
-            start=datetime.datetime.combine(
-                event.date_from, datetime.time.min, tzinfo=pytz.utc
+            start=dt.datetime.combine(
+                event.date_from, dt.time.min, tzinfo=pytz.utc
             ),
-            end=datetime.datetime.combine(
-                event.date_to, datetime.time.max, tzinfo=pytz.utc
+            end=dt.datetime.combine(
+                event.date_to, dt.time.max, tzinfo=pytz.utc
             ),
         )
 
@@ -722,7 +722,7 @@ def slot(confirmed_submission, room, schedule):
             defaults={'is_visible': True},
         )
         slots = TalkSlot.objects.filter(submission=confirmed_submission)
-        slots.update(start=room.event.datetime_from, end=room.event.datetime_from + datetime.timedelta(minutes=60), room=room)
+        slots.update(start=room.event.datetime_from, end=room.event.datetime_from + dt.timedelta(minutes=60), room=room)
         return slots.get(schedule=schedule)
 
 
@@ -733,7 +733,7 @@ def unreleased_slot(confirmed_submission, room):
         slot = schedule.talks.filter(submission=confirmed_submission)
         slot.update(
             start=room.event.datetime_from,
-            end=room.event.datetime_from + datetime.timedelta(minutes=30),
+            end=room.event.datetime_from + dt.timedelta(minutes=30),
             room=room,
             schedule=schedule,
             is_visible=True,
@@ -749,8 +749,8 @@ def past_slot(other_confirmed_submission, room, schedule, speaker):
             other_confirmed_submission.slots.filter(schedule=schedule).first()
             or other_confirmed_submission.slots.first()
         )
-        slot.start = now() - datetime.timedelta(minutes=60)
-        slot.end = now() - datetime.timedelta(minutes=30)
+        slot.start = now() - dt.timedelta(minutes=60)
+        slot.end = now() - dt.timedelta(minutes=30)
         slot.room = room
         slot.schedule = schedule
         slot.is_visible = True
@@ -771,7 +771,7 @@ def break_slot(room, schedule):
             is_visible=True,
         )
         slots = TalkSlot.objects.filter(submission__isnull=True)
-        slots.update(start=room.event.datetime_from + datetime.timedelta(minutes=90), end=room.event.datetime_from + datetime.timedelta(minutes=120), room=room)
+        slots.update(start=room.event.datetime_from + dt.timedelta(minutes=90), end=room.event.datetime_from + dt.timedelta(minutes=120), room=room)
         return slot
 
 
@@ -793,8 +793,8 @@ def feedback(past_slot):
 def other_slot(other_confirmed_submission, room, schedule):
     with scope(event=room.event):
         return TalkSlot.objects.create(
-            start=room.event.datetime_from + datetime.timedelta(minutes=60),
-            end=room.event.datetime_from + datetime.timedelta(minutes=90),
+            start=room.event.datetime_from + dt.timedelta(minutes=60),
+            end=room.event.datetime_from + dt.timedelta(minutes=90),
             submission=other_confirmed_submission,
             room=room,
             schedule=schedule,

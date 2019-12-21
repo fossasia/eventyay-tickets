@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.utils.timezone import now
@@ -38,9 +38,9 @@ def test_event_stages(
     with scope(event=event):
         _now = now()
         event.is_public = is_public
-        event.date_from = (_now + timedelta(days=from_delta)).date()
-        event.date_to = (_now + timedelta(days=to_delta)).date()
-        event.cfp.deadline = _now + timedelta(days=deadline_delta)
+        event.date_from = (_now + dt.timedelta(days=from_delta)).date()
+        event.date_to = (_now + dt.timedelta(days=to_delta)).date()
+        event.cfp.deadline = _now + dt.timedelta(days=deadline_delta)
         event.save()
         event.cfp.save()
         event = event.__class__.objects.get(pk=event.pk)

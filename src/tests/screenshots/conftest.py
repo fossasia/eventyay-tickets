@@ -1,5 +1,5 @@
+import datetime as dt
 import random
-from datetime import date, timedelta
 
 import pytest
 from django.core.management import call_command
@@ -29,8 +29,8 @@ def event():
         event.name = 'Meta Event Tech Alternative'
         event.is_public = True
         event.email = 'orga@orga.org'
-        event.date_from = date.today()
-        event.date_to = date.today() + timedelta(days=1)
+        event.date_from = dt.date.today()
+        event.date_to = dt.date.today() + dt.timedelta(days=1)
         event.settings.export_html_on_schedule_release = False
         event.settings.display_header_pattern = 'topo'
         event.save()

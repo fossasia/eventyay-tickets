@@ -1,5 +1,5 @@
+import datetime as dt
 import json
-from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import pytz
@@ -47,13 +47,13 @@ class ScheduleData(BaseExporter):
             current_date.date(): {
                 'index': index + 1,
                 'start': current_date.replace(hour=4, minute=0).astimezone(tz),
-                'end': current_date.replace(hour=3, minute=59).astimezone(tz) + timedelta(days=1),
+                'end': current_date.replace(hour=3, minute=59).astimezone(tz) + dt.timedelta(days=1),
                 'first_start': None,
                 'last_end': None,
                 'rooms': {},
             }
             for index, current_date in enumerate(
-                event.datetime_from + timedelta(days=i)
+                event.datetime_from + dt.timedelta(days=i)
                 for i in range((event.date_to - event.date_from).days + 1)
             )
         }
@@ -63,7 +63,7 @@ class ScheduleData(BaseExporter):
                 continue
             talk_date = talk.start.astimezone(tz).date()
             if talk.start.astimezone(tz).hour < 3 and talk_date != event.date_from:
-                talk_date -= timedelta(days=1)
+                talk_date -= dt.timedelta(days=1)
             day_data = data.get(talk_date)
             if not day_data:
                 continue
@@ -249,7 +249,7 @@ class ICalExporter(BaseExporter):
         netloc = urlparse(get_base_url(self.event)).netloc
         cal = vobject.iCalendar()
         cal.add('prodid').value = '-//pretalx//{}//'.format(netloc)
-        creation_time = datetime.now(pytz.utc)
+        creation_time = dt.datetime.now(pytz.utc)
 
         talks = (
             self.schedule.talks.filter(is_visible=True)

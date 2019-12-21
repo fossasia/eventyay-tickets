@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 from urllib.parse import urlparse
 
 import bs4
@@ -405,7 +405,7 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_cfp_closed(self, event, client, user):
-        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.deadline = now() - dt.timedelta(days=1)
         event.cfp.save()
         client.force_login(user)
         self.perform_init_wizard(client, success=False, event=event)
@@ -414,7 +414,7 @@ class TestWizard:
     def test_wizard_cfp_closed_access_code(self, event, client, access_code):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
-        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.deadline = now() - dt.timedelta(days=1)
         event.cfp.save()
         response, current_url = self.perform_init_wizard(client, event=event, access_code=access_code)
         response, current_url = self.perform_info_wizard(
@@ -437,9 +437,9 @@ class TestWizard:
 
     @pytest.mark.django_db
     def test_wizard_cfp_closed_expired_access_code(self, event, client, access_code):
-        event.cfp.deadline = now() - timedelta(days=1)
+        event.cfp.deadline = now() - dt.timedelta(days=1)
         event.cfp.save()
-        access_code.valid_until = now() - timedelta(hours=1)
+        access_code.valid_until = now() - dt.timedelta(hours=1)
         access_code.save()
         response, current_url = self.perform_init_wizard(client, event=event, access_code=access_code, success=False)
 

@@ -1,6 +1,6 @@
+import datetime as dt
 import json
 from contextlib import suppress
-from datetime import timedelta
 
 import dateutil.parser
 from csp.decorators import csp_update
@@ -265,7 +265,7 @@ class TalkList(EventPermissionRequired, View):
     def post(self, request, event):
         data = json.loads(request.body.decode())
         start = dateutil.parser.parse(data.get('start')) if data.get('start') else request.event.datetime_from
-        end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + timedelta(minutes=int(data.get('duration', 30) or 30))
+        end = dateutil.parser.parse(data.get('end')) if data.get('end') else start + dt.timedelta(minutes=int(data.get('duration', 30) or 30))
         room = data.get('room')
         room = room.get('id') if isinstance(room, dict) else room
         slot = TalkSlot.objects.create(
@@ -300,11 +300,11 @@ class TalkUpdate(PermissionRequired, View):
             if data.get('end'):
                 talk.end = dateutil.parser.parse(data['end'])
             elif data.get('duration'):
-                talk.end = talk.start + timedelta(minutes=int(data['duration']))
+                talk.end = talk.start + dt.timedelta(minutes=int(data['duration']))
             elif not talk.submission:
-                talk.end = talk.start + timedelta(minutes=duration or 30)
+                talk.end = talk.start + dt.timedelta(minutes=duration or 30)
             else:
-                talk.end = talk.start + timedelta(minutes=talk.submission.get_duration())
+                talk.end = talk.start + dt.timedelta(minutes=talk.submission.get_duration())
             if 'room' in data:
                 room = data['room']
                 talk.room = request.event.rooms.get(pk=room) if room else None

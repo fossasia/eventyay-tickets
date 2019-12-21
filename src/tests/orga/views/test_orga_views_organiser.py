@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.core import mail as djmail
@@ -176,7 +176,7 @@ class TestEventCreation:
 
     def submit_timeline(self, deadline, client):
         _now = now()
-        tomorrow = _now + timedelta(days=1)
+        tomorrow = _now + dt.timedelta(days=1)
         date = '%Y-%m-%d'
         datetime = '%Y-%m-%d %H:%M:%S'
         return self.post(

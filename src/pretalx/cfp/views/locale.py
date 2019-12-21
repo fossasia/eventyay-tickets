@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+import datetime as dt
 
 from django.conf import settings
 from django.contrib import messages
@@ -25,7 +25,7 @@ class LocaleSet(View):
 
             max_age = 10 * 365 * 24 * 60 * 60
             resp.set_cookie(settings.LANGUAGE_COOKIE_NAME, locale, max_age=max_age,
-                            expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime(
+                            expires=(dt.datetime.utcnow() + dt.timedelta(seconds=max_age)).strftime(
                                 '%a, %d-%b-%Y %H:%M:%S GMT'),
                             domain=settings.SESSION_COOKIE_DOMAIN)
             with override(locale):

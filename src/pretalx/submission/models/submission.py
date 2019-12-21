@@ -1,9 +1,9 @@
+import datetime as dt
 import re
 import statistics
 import string
 import uuid
 from contextlib import suppress
-from datetime import timedelta
 from itertools import repeat
 
 from django.conf import settings
@@ -283,7 +283,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         for slot in self.event.wip_schedule.talks.filter(
             submission=self, start__isnull=False
         ):
-            slot.end = slot.start + timedelta(minutes=self.get_duration())
+            slot.end = slot.start + dt.timedelta(minutes=self.get_duration())
             slot.save()
     update_duration.alters_data = True
 

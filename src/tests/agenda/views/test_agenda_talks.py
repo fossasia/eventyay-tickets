@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import pytest
 import pytz
@@ -109,8 +109,8 @@ def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, sl
 def test_can_see_talk_does_accept_feedback(
     client, django_assert_num_queries, event, slot
 ):
-    slot.start = datetime.datetime.now() - datetime.timedelta(days=1)
-    slot.end = slot.start + datetime.timedelta(hours=1)
+    slot.start = dt.datetime.now() - dt.timedelta(days=1)
+    slot.end = slot.start + dt.timedelta(hours=1)
     slot.save()
     with django_assert_num_queries(31):
         response = client.get(slot.submission.urls.public, follow=True)

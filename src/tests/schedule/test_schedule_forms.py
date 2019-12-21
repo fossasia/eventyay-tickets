@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 
 import pytest
@@ -22,8 +22,8 @@ class AvailabilitiesForm(AvailabilitiesFormMixin, ModelForm):
 
 @pytest.fixture
 def availabilitiesform(event):
-    event.date_from = datetime.date(2017, 1, 1)
-    event.date_to = datetime.date(2017, 1, 2)
+    event.date_from = dt.date(2017, 1, 1)
+    event.date_to = dt.date(2017, 1, 2)
 
     return AvailabilitiesForm(
         event=event,
@@ -115,17 +115,17 @@ def test_validate_availability_tz_success(availabilitiesform, avail):
 def test_validate_availability_daylightsaving(availabilitiesform):
     # https://github.com/pretalx/pretalx/issues/460
     availabilitiesform.event.timezone = 'Europe/Berlin'
-    availabilitiesform.event.date_from = datetime.date(2018, 10, 22)
-    availabilitiesform.event.date_to = datetime.date(2018, 10, 28)
+    availabilitiesform.event.date_from = dt.date(2018, 10, 22)
+    availabilitiesform.event.date_to = dt.date(2018, 10, 28)
     availabilitiesform.event.save()
     availabilitiesform._validate_availability(({'start': '2018-10-22 00:00:00', 'end': '2018-10-29 00:00:00'}))
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('strdate,expected', (
-    ('2017-01-01 10:00:00', datetime.datetime(2017, 1, 1, 10)),
-    ('2017-01-01 10:00:00-05:00', datetime.datetime(2017, 1, 1, 10)),
-    ('2017-01-01 10:00:00-04:00', datetime.datetime(2017, 1, 1, 9)),
+    ('2017-01-01 10:00:00', dt.datetime(2017, 1, 1, 10)),
+    ('2017-01-01 10:00:00-05:00', dt.datetime(2017, 1, 1, 10)),
+    ('2017-01-01 10:00:00-04:00', dt.datetime(2017, 1, 1, 9)),
 ))
 def test_parse_datetime(availabilitiesform, strdate, expected):
     availabilitiesform.event.timezone = 'America/New_York'
@@ -157,8 +157,8 @@ def test_clean_availabilities_fail(availabilitiesform, json, error):
         '{"availabilities": [{"start": "2017-01-01 10:00:00", "end": "2017-01-01 12:00:00"},'
         '{"start": "2017-01-02 11:00:00", "end": "2017-01-02 13:00:00"}]}',
         [
-            Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)),
-            Availability(start=datetime.datetime(2017, 1, 2, 11), end=datetime.datetime(2017, 1, 2, 13)),
+            Availability(start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 1, 12)),
+            Availability(start=dt.datetime(2017, 1, 2, 11), end=dt.datetime(2017, 1, 2, 13)),
         ]
     ),
 ))
@@ -182,8 +182,8 @@ def test_clean_availabilities_success(availabilitiesform, json, expected):
 ))
 def test_set_foreignkeys(availabilitiesform, instancegen, fk_name):
     availabilities = [
-        Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)),
-        Availability(start=datetime.datetime(2017, 1, 2, 10), end=datetime.datetime(2017, 1, 2, 15)),
+        Availability(start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 1, 12)),
+        Availability(start=dt.datetime(2017, 1, 2, 10), end=dt.datetime(2017, 1, 2, 15)),
     ]
     instance = instancegen(availabilitiesform.event.id)
     availabilitiesform._set_foreignkeys(instance, availabilities)
@@ -199,22 +199,22 @@ def test_replace_availabilities(availabilitiesform):
         Availability.objects.bulk_create([
             Availability(
                 room_id=instance.id, event_id=availabilitiesform.event.id,
-                start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)
+                start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 1, 12)
             ),
             Availability(
                 room_id=instance.id, event_id=availabilitiesform.event.id,
-                start=datetime.datetime(2017, 1, 2, 10), end=datetime.datetime(2017, 1, 2, 15)
+                start=dt.datetime(2017, 1, 2, 10), end=dt.datetime(2017, 1, 2, 15)
             ),
         ])
 
         expected = [
             Availability(
                 room_id=instance.id, event_id=availabilitiesform.event.id,
-                start=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12)
+                start=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc), end=dt.datetime(2017, 1, 1, 12)
             ),
             Availability(
                 room_id=instance.id, event_id=availabilitiesform.event.id,
-                start=datetime.datetime(2017, 1, 2, 12, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 2, 15)
+                start=dt.datetime(2017, 1, 2, 12, tzinfo=pytz.utc), end=dt.datetime(2017, 1, 2, 15)
             ),
         ]
 
@@ -228,23 +228,23 @@ def test_replace_availabilities(availabilitiesform):
 @pytest.mark.django_db
 @pytest.mark.parametrize('avail,expected', (
     (
-        Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 1, 12)),
+        Availability(start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 1, 12)),
         {'start': '2017-01-01T10:00:00Z', 'end': '2017-01-01T12:00:00Z', 'allDay': False}
     ),
     (
-        Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 2)),
+        Availability(start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 2)),
         {'start': '2017-01-01T10:00:00Z', 'end': '2017-01-02T00:00:00Z', 'allDay': False}
     ),
     (
-        Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 1, 10)),
+        Availability(start=dt.datetime(2017, 1, 1), end=dt.datetime(2017, 1, 1, 10)),
         {'start': '2017-01-01T00:00:00Z', 'end': '2017-01-01T10:00:00Z', 'allDay': False}
     ),
     (
-        Availability(start=datetime.datetime(2017, 1, 1, 10), end=datetime.datetime(2017, 1, 2)),
+        Availability(start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 2)),
         {'start': '2017-01-01T10:00:00Z', 'end': '2017-01-02T00:00:00Z', 'allDay': False}
     ),
     (
-        Availability(start=datetime.datetime(2017, 1, 1), end=datetime.datetime(2017, 1, 2)),
+        Availability(start=dt.datetime(2017, 1, 1), end=dt.datetime(2017, 1, 2)),
         {'start': '2017-01-01T00:00:00Z', 'end': '2017-01-02T00:00:00Z', 'allDay': True}
     ),
 ))
@@ -257,7 +257,7 @@ def test_serialize_availability(availabilitiesform, avail, expected):
 @pytest.mark.django_db
 @pytest.mark.parametrize('avails,expected,tzname', (
     (
-        [Availability(start=datetime.datetime(2017, 1, 1, 10, tzinfo=pytz.utc), end=datetime.datetime(2017, 1, 1, 12, tzinfo=pytz.utc))],
+        [Availability(start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc), end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc))],
         '{"availabilities": [{"id": 1, "start": "2017-01-01T10:00:00Z", "end": "2017-01-01T12:00:00Z", "allDay": false}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
         'UTC',
     ),
@@ -312,14 +312,14 @@ def test_chained(availabilitiesform, room):
         # normal
         Availability.objects.create(
             event=availabilitiesform.event, room=room,
-            start=tz.localize(datetime.datetime(2017, 1, 1, 10)),
-            end=tz.localize(datetime.datetime(2017, 1, 1, 12)),
+            start=tz.localize(dt.datetime(2017, 1, 1, 10)),
+            end=tz.localize(dt.datetime(2017, 1, 1, 12)),
         )
         # all day
         Availability.objects.create(
             event=availabilitiesform.event, room=room,
-            start=tz.localize(datetime.datetime(2017, 1, 1)),
-            end=tz.localize(datetime.datetime(2017, 1, 3)),
+            start=tz.localize(dt.datetime(2017, 1, 1)),
+            end=tz.localize(dt.datetime(2017, 1, 3)),
         )
 
         form = AvailabilitiesForm(
@@ -333,7 +333,7 @@ def test_chained(availabilitiesform, room):
 
         avails = Room.objects.first().availabilities.order_by('-start')
         assert len(avails) == 2
-        assert avails[0].start == datetime.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
-        assert avails[0].end == datetime.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
-        assert avails[1].start == datetime.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
-        assert avails[1].end == datetime.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)
+        assert avails[0].start == dt.datetime(2017, 1, 1, 15, tzinfo=pytz.utc)
+        assert avails[0].end == dt.datetime(2017, 1, 1, 17, tzinfo=pytz.utc)
+        assert avails[1].start == dt.datetime(2017, 1, 1, 5, tzinfo=pytz.utc)
+        assert avails[1].end == dt.datetime(2017, 1, 3, 5, tzinfo=pytz.utc)

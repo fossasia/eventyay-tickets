@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime as dt
 
 import pytest
 from django.core import mail as djmail
@@ -33,7 +33,7 @@ def test_edit_cfp_timezones(orga_client, event):
     event = Event.objects.get(slug=event.slug)
     event.timezone = 'Europe/Berlin'
     event.save()
-    event.cfp.deadline = datetime(2018, 3, 5, 17, 39, 15, tzinfo=UTC)
+    event.cfp.deadline = dt.datetime(2018, 3, 5, 17, 39, 15, tzinfo=UTC)
     event.cfp.save()
     response = orga_client.get(event.cfp.urls.edit_text)
     assert response.status_code == 200

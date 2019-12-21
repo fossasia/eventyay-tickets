@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime as dt
 
 from django.db import models
 from django.utils.functional import cached_property
@@ -74,7 +74,7 @@ class CfP(LogMixin, models.Model):
         return self.max_deadline >= now() if self.max_deadline else True
 
     @cached_property
-    def max_deadline(self) -> datetime:
+    def max_deadline(self) -> dt.datetime:
         """Returns the latest date any submission is possible.
 
         This includes the deadlines set on any submission type for this

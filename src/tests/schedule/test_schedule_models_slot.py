@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 import pytest
 from django.utils.timezone import now
@@ -22,9 +22,9 @@ from pretalx.schedule.models import TalkSlot
 def test_slot_duration(submission, start, end, duration, has_submission):
     _now = now()
     if start is not None:
-        start = _now + timedelta(minutes=start)
+        start = _now + dt.timedelta(minutes=start)
     if end is not None:
-        end = _now + timedelta(minutes=end)
+        end = _now + dt.timedelta(minutes=end)
     slot = TalkSlot(start=start, end=end, submission=submission if has_submission else None)
     if duration == 'sub':
         assert slot.duration == submission.get_duration()

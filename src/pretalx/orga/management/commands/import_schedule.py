@@ -1,5 +1,5 @@
+import datetime as dt
 import xml.etree.ElementTree as ET
-from datetime import datetime
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -50,8 +50,8 @@ class Command(BaseCommand):
         event = Event(
             name=name, organiser=organiser,
             slug=event_data.find('acronym').text,
-            date_from=datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
-            date_to=datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
+            date_from=dt.datetime.strptime(event_data.find('start').text, '%Y-%m-%d').date(),
+            date_to=dt.datetime.strptime(event_data.find('end').text, '%Y-%m-%d').date(),
         )
         event.save()
         Team.objects.create(

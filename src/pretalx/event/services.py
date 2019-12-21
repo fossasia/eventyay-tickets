@@ -1,4 +1,4 @@
-from datetime import timedelta
+import datetime as dt
 
 from django.dispatch import receiver
 from django.utils.timezone import now
@@ -27,23 +27,23 @@ def task_periodic_event_services(event_slug):
         event.build_initial_data()  # Make sure the required mail templates are there
         if not event.settings.sent_mail_event_created:
             if (
-                timedelta(0)
+                dt.timedelta(0)
                 <= (_now - event.log_entries.last().timestamp)
-                <= timedelta(days=1)
+                <= dt.timedelta(days=1)
             ):
                 event.send_orga_mail(event.settings.mail_text_event_created)
                 event.settings.sent_mail_event_created = True
 
         if not event.settings.sent_mail_cfp_closed and event.cfp.deadline:
-            if timedelta(0) <= (_now - event.cfp.deadline) <= timedelta(days=1):
+            if dt.timedelta(0) <= (_now - event.cfp.deadline) <= dt.timedelta(days=1):
                 event.send_orga_mail(event.settings.mail_text_cfp_closed)
                 event.settings.sent_mail_cfp_closed = True
 
         if not event.settings.sent_mail_event_over:
             if (
-                (_now.date() - timedelta(days=3))
+                (_now.date() - dt.timedelta(days=3))
                 <= event.date_to
-                <= (_now.date() - timedelta(days=1))
+                <= (_now.date() - dt.timedelta(days=1))
             ):
                 if (
                     event.current_schedule
@@ -68,7 +68,7 @@ def task_periodic_schedule_export(event_slug):
         if not event.settings.export_html_on_schedule_release:
             event.cache.delete('rebuild_schedule_export')
             return
-        if last_time and _now - last_time < timedelta(hours=1):
+        if last_time and _now - last_time < dt.timedelta(hours=1):
             return
         should_rebuild_schedule = event.cache.get('rebuild_schedule_export') or not zip_path.exists()
         if should_rebuild_schedule:

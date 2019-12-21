@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+import datetime as dt
 from urllib.parse import urlparse
 
 import pytz
@@ -68,7 +68,7 @@ class TalkSlot(LogMixin, models.Model):
 
     @cached_property
     def pentabarf_export_duration(self):
-        duration = timedelta(minutes=self.duration)
+        duration = dt.timedelta(minutes=self.duration)
         days = duration.days
         hours = duration.total_seconds() // 3600 - days * 24
         minutes = duration.seconds // 60 % 60
@@ -79,7 +79,7 @@ class TalkSlot(LogMixin, models.Model):
         """Guaranteed to provide a useful end datetime if ``start`` is set,
         even if ``end`` is empty."""
         return self.end or (
-            self.start + timedelta(minutes=self.duration) if self.start else None
+            self.start + dt.timedelta(minutes=self.duration) if self.start else None
         )
 
     @cached_property
@@ -183,7 +183,7 @@ class TalkSlot(LogMixin, models.Model):
     def build_ical(self, calendar, creation_time=None, netloc=None):
         if not self.start or not self.end or not self.room:
             return
-        creation_time = creation_time or datetime.now(pytz.utc)
+        creation_time = creation_time or dt.datetime.now(pytz.utc)
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
         tz = pytz.timezone(self.submission.event.timezone)
 

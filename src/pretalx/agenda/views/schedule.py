@@ -1,6 +1,6 @@
+import datetime as dt
 import hashlib
 import textwrap
-from datetime import timedelta
 from itertools import repeat
 from urllib.parse import unquote
 
@@ -185,12 +185,12 @@ class ScheduleView(ScheduleDataView):
             until=global_end,
         )
 
-        for dt in rrule.rrule(rrule.HOURLY, byminute=range(0, 60, 5), dtstart=global_start, until=global_end):
-            starting_events = {room: next((e for e in talks_by_room[room] if e.start == dt), None) for room in rooms}
-            running_events = {room: next((e for e in talks_by_room[room] if e.start < dt < e.real_end), None) for room in rooms}
-            ending_events = {room: next((e for e in talks_by_room[room] if e.real_end == dt), None) for room in rooms}
+        for hour in rrule.rrule(rrule.HOURLY, byminute=range(0, 60, 5), dtstart=global_start, until=global_end):
+            starting_events = {room: next((e for e in talks_by_room[room] if e.start == hour), None) for room in rooms}
+            running_events = {room: next((e for e in talks_by_room[room] if e.start < hour < e.real_end), None) for room in rooms}
+            ending_events = {room: next((e for e in talks_by_room[room] if e.real_end == hour), None) for room in rooms}
             lines.append(self._get_dt_line(
-                dt, dt in tick_times, starting_events, running_events,
+                hour, hour in tick_times, starting_events, running_events,
                 ending_events, rooms, col_width, cards_by_id,
             ))
         return '\n'.join(lines)
@@ -405,7 +405,7 @@ class ScheduleView(ScheduleDataView):
                 step = start
                 while step < end:
                     date['hours'].append(step.strftime('%H:%M'))
-                    step += timedelta(hours=1)
+                    step += dt.timedelta(hours=1)
                 max_rooms = max(max_rooms, len(date['rooms']))
                 for room in date['rooms']:
                     for talk in room.get('talks', []):
