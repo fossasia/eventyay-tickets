@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` One broken task among the periodically executed task would prevent others from being executed.
 - :bug:`828` Deleted talks could still be shown with their previous title and speaker. Now they are always replaced with a box saying "[deleted]" with no further information.
 - :bug:`816` Reducing the slot count of a submission where all slots had been scheduled would not remove spare slots.
 - :feature:`-` Plugins can now add content to the top of the user profile pages and the user-private submission lists.

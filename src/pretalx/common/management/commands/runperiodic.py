@@ -7,4 +7,4 @@ class Command(BaseCommand):
     help = 'Run periodic tasks'
 
     def handle(self, *args, **options):
-        periodic_task.send(self)
+        periodic_task.send_robust(self)
