@@ -34,7 +34,9 @@ def is_submission_visible(user, submission):
     return bool(
         submission
         and is_agenda_visible(user, submission.event)
-        and submission.slots.filter(schedule=submission.event.current_schedule, is_visible=True).exists()
+        and submission.slots.filter(
+            schedule=submission.event.current_schedule, is_visible=True
+        ).exists()
     )
 
 
@@ -58,14 +60,14 @@ def is_speaker_viewable(user, profile):
 
 
 rules.add_perm(
-    'agenda.view_schedule', (has_agenda & is_agenda_visible) | can_change_submissions
+    "agenda.view_schedule", (has_agenda & is_agenda_visible) | can_change_submissions
 )
 rules.add_perm(
-    'agenda.view_sneak_peek',
+    "agenda.view_sneak_peek",
     ((~is_agenda_visible | ~has_agenda) & is_sneak_peek_visible)
     | can_change_submissions,
 )
-rules.add_perm('agenda.view_slot', is_submission_visible | can_change_submissions)
-rules.add_perm('agenda.view_speaker', is_speaker_viewable | can_change_submissions)
-rules.add_perm('agenda.give_feedback', is_feedback_ready)
-rules.add_perm('agenda.view_widget', is_agenda_visible | is_widget_always_visible)
+rules.add_perm("agenda.view_slot", is_submission_visible | can_change_submissions)
+rules.add_perm("agenda.view_speaker", is_speaker_viewable | can_change_submissions)
+rules.add_perm("agenda.give_feedback", is_feedback_ready)
+rules.add_perm("agenda.view_widget", is_agenda_visible | is_widget_always_visible)
