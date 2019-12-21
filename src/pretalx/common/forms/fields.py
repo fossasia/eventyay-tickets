@@ -5,7 +5,9 @@ from django.forms import CharField, FileField, ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.widgets import (
-    ClearableBasenameFileInput, PasswordConfirmationInput, PasswordStrengthInput,
+    ClearableBasenameFileInput,
+    PasswordConfirmationInput,
+    PasswordStrengthInput,
 )
 
 """
@@ -29,17 +31,17 @@ class PasswordField(CharField):
     default_validators = [GlobalValidator()]
 
     def __init__(self, *args, **kwargs):
-        kwargs['widget'] = kwargs.get(
-            'widget', PasswordStrengthInput(render_value=False)
+        kwargs["widget"] = kwargs.get(
+            "widget", PasswordStrengthInput(render_value=False)
         )
         super().__init__(*args, **kwargs)
 
 
 class PasswordConfirmationField(CharField):
     def __init__(self, *args, **kwargs):
-        kwargs['widget'] = kwargs.get(
-            'widget',
-            PasswordConfirmationInput(confirm_with=kwargs.pop('confirm_with', None)),
+        kwargs["widget"] = kwargs.get(
+            "widget",
+            PasswordConfirmationInput(confirm_with=kwargs.pop("confirm_with", None)),
         )
         super().__init__(*args, **kwargs)
 
@@ -62,6 +64,6 @@ class ExtensionFileField(FileField):
                     _(
                         "This filetype ({extension}) is not allowed, it has to be one of the following: "
                     ).format(extension=extension)
-                    + ', '.join(self.extensions)
+                    + ", ".join(self.extensions)
                 )
         return data

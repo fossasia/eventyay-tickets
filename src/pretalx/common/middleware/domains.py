@@ -15,8 +15,8 @@ from django.utils.http import http_date
 
 from pretalx.event.models import Event
 
-LOCAL_HOST_NAMES = ('testserver', 'localhost')
-ANY_DOMAIN_ALLOWED = ('robots.txt', 'root.main')
+LOCAL_HOST_NAMES = ("testserver", "localhost")
+ANY_DOMAIN_ALLOWED = ("robots.txt", "root.main")
 
 
 class MultiDomainMiddleware:
@@ -26,16 +26,16 @@ class MultiDomainMiddleware:
     @staticmethod
     def get_host(request):
         # We try three options, in order of decreasing preference.
-        if settings.USE_X_FORWARDED_HOST and ('X-Forwarded-Host' in request.headers):
-            host = request.headers['X-Forwarded-Host']
-        elif 'Host' in request.headers:
-            host = request.headers['Host']
+        if settings.USE_X_FORWARDED_HOST and ("X-Forwarded-Host" in request.headers):
+            host = request.headers["X-Forwarded-Host"]
+        elif "Host" in request.headers:
+            host = request.headers["Host"]
         else:
             # Reconstruct the host using the algorithm from PEP 333.
-            host = request.META['SERVER_NAME']
-            server_port = str(request.META['SERVER_PORT'])
-            if server_port != ('443' if request.is_secure() else '80'):
-                host = f'{host}:{server_port}'
+            host = request.META["SERVER_NAME"]
+            server_port = str(request.META["SERVER_PORT"])
+            if server_port != ("443" if request.is_secure() else "80"):
+                host = f"{host}:{server_port}"
         return host
 
     def process_request(self, request):
@@ -46,9 +46,9 @@ class MultiDomainMiddleware:
         request.uses_custom_domain = False
 
         resolved = resolve(request.path)
-        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path.startswith('/api/'):
+        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path.startswith("/api/"):
             return None
-        event_slug = resolved.kwargs.get('event')
+        event_slug = resolved.kwargs.get("event")
         if event_slug:
             event = get_object_or_404(Event, slug__iexact=event_slug)
             request.event = event
@@ -66,11 +66,11 @@ class MultiDomainMiddleware:
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return None
 
-        if request.path.startswith('/orga'):
+        if request.path.startswith("/orga"):
             if default_port not in (80, 443):
-                default_domain = f'{default_domain}:{default_port}'
+                default_domain = f"{default_domain}:{default_port}"
             return redirect(urljoin(default_domain, request.get_full_path()))
-        raise DisallowedHost(f'Unknown host: {host}')
+        raise DisallowedHost(f"Unknown host: {host}")
 
     def __call__(self, request):
         response = self.process_request(request)
@@ -110,7 +110,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                 response.delete_cookie(settings.SESSION_COOKIE_NAME)
                 return response
             if accessed:
-                patch_vary_headers(response, ('Cookie',))
+                patch_vary_headers(response, ("Cookie",))
             if modified or settings.SESSION_SAVE_EVERY_REQUEST:
                 max_age = None
                 expires = None
@@ -129,7 +129,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                         expires=expires,
                         domain=get_cookie_domain(request),
                         path=settings.SESSION_COOKIE_PATH,
-                        secure=request.scheme == 'https',
+                        secure=request.scheme == "https",
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                     )
         return response
@@ -152,31 +152,31 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
         self.get_response = get_response
 
     def process_response(self, request, response):
-        if getattr(response, 'csrf_processing_done', False):
+        if getattr(response, "csrf_processing_done", False):
             return response
 
         # If CSRF_COOKIE is unset, then CsrfViewMiddleware.process_view was
         # never called, probably because a request middleware returned a response
         # (for example, contrib.auth redirecting to a login page).
-        if request.META.get('CSRF_COOKIE') is None:
+        if request.META.get("CSRF_COOKIE") is None:
             return response
 
-        if not request.META.get('CSRF_COOKIE_USED', False):
+        if not request.META.get("CSRF_COOKIE_USED", False):
             return response
 
         # Set the CSRF cookie even if it's already set, so we renew
         # the expiry timer.
         response.set_cookie(
             settings.CSRF_COOKIE_NAME,
-            request.META['CSRF_COOKIE'],
+            request.META["CSRF_COOKIE"],
             max_age=settings.CSRF_COOKIE_AGE,
             domain=get_cookie_domain(request),
             path=settings.CSRF_COOKIE_PATH,
-            secure=request.scheme == 'https',
+            secure=request.scheme == "https",
             httponly=settings.CSRF_COOKIE_HTTPONLY,
         )
         # Content varies with the CSRF cookie, so set the Vary header.
-        patch_vary_headers(response, ('Cookie',))
+        patch_vary_headers(response, ("Cookie",))
         response.csrf_processing_done = True
         return response
 
@@ -187,7 +187,7 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
 
 
 def get_cookie_domain(request):
-    if '.' not in request.host:
+    if "." not in request.host:
         # As per spec, browsers do not accept cookie domains without dots in it,
         # e.g. "localhost", see http://curl.haxx.se/rfc/cookie_spec.html
         return None

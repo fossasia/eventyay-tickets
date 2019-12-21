@@ -1,8 +1,8 @@
 from django.core.management.commands.makemigrations import Command  # noqa
 from django.db import models
 
-IGNORED_ATTRS = ['verbose_name', 'help_text', 'choices']
-EXEMPT_FIELDS = ['CountryField']
+IGNORED_ATTRS = ["verbose_name", "help_text", "choices"]
+EXEMPT_FIELDS = ["CountryField"]
 
 original_deconstruct = models.Field.deconstruct
 

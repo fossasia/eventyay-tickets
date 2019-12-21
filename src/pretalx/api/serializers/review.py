@@ -1,5 +1,7 @@
 from rest_framework.serializers import (
-    ModelSerializer, SerializerMethodField, SlugRelatedField,
+    ModelSerializer,
+    SerializerMethodField,
+    SlugRelatedField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
@@ -7,8 +9,8 @@ from pretalx.submission.models import Answer, Review
 
 
 class ReviewSerializer(ModelSerializer):
-    submission = SlugRelatedField(slug_field='code', read_only=True)
-    user = SlugRelatedField(slug_field='name', read_only=True)
+    submission = SlugRelatedField(slug_field="code", read_only=True)
+    user = SlugRelatedField(slug_field="name", read_only=True)
     answers = SerializerMethodField()
 
     def get_answers(self, obj):
@@ -17,13 +19,13 @@ class ReviewSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = (
-            'id',
-            'answers',
-            'submission',
-            'user',
-            'text',
-            'score',
-            'override_vote',
-            'created',
-            'updated',
+            "id",
+            "answers",
+            "submission",
+            "user",
+            "text",
+            "score",
+            "override_vote",
+            "created",
+            "updated",
         )

@@ -7,8 +7,7 @@ from django.db.models import Model
 
 
 class NamespacedCache:
-
-    def __init__(self, prefixkey: str, cache: str='default'):
+    def __init__(self, prefixkey: str, cache: str = "default"):
         self.cache = caches[cache]
         self.prefixkey = prefixkey
         self._last_prefix = None
@@ -24,7 +23,7 @@ class NamespacedCache:
             prefix = int(time.time())
             self.cache.set(self.prefixkey, prefix)
         self._last_prefix = prefix
-        key = '%s:%d:%s' % (self.prefixkey, prefix, original_key)
+        key = "%s:%d:%s" % (self.prefixkey, prefix, original_key)
         if len(key) > 200:  # Hash long keys, as memcached has a length limit
             # TODO: Use a more efficient, non-cryptographic hash algorithm
             key = hashlib.sha256(key.encode("UTF-8")).hexdigest()
@@ -41,7 +40,7 @@ class NamespacedCache:
             prefix = int(time.time())
             self.cache.set(self.prefixkey, prefix)
 
-    def set(self, key: str, value: str, timeout: int=300):
+    def set(self, key: str, value: str, timeout: int = 300):
         return self.cache.set(self._prefix_key(key), value, timeout)
 
     def get(self, key: str) -> str:
@@ -51,7 +50,7 @@ class NamespacedCache:
         return self.cache.get_or_set(
             self._prefix_key(key, known_prefix=self._last_prefix),
             default=default,
-            timeout=timeout
+            timeout=timeout,
         )
 
     def get_many(self, keys: List[str]) -> Dict[str, str]:
@@ -73,10 +72,10 @@ class NamespacedCache:
     def delete_many(self, keys: List[str]):  # NOQA
         return self.cache.delete_many([self._prefix_key(key) for key in keys])
 
-    def incr(self, key: str, by: int=1):  # NOQA
+    def incr(self, key: str, by: int = 1):  # NOQA
         return self.cache.incr(self._prefix_key(key), by)
 
-    def decr(self, key: str, by: int=1):  # NOQA
+    def decr(self, key: str, by: int = 1):  # NOQA
         return self.cache.decr(self._prefix_key(key), by)
 
     def close(self):  # NOQA
@@ -95,7 +94,9 @@ class ObjectRelatedCache(NamespacedCache):
     many times as you want.
     """
 
-    def __init__(self, obj: Model, cache: str='default', field: str='pk'):
+    def __init__(self, obj: Model, cache: str = "default", field: str = "pk"):
         if not isinstance(obj, Model):
-            raise Exception(f'{obj} is not a Model, cannot use ObjectRelatedCache!')
-        super().__init__(prefixkey=f'{obj._meta.object_name}:{getattr(obj, field)}', cache=cache)
+            raise Exception(f"{obj} is not a Model, cannot use ObjectRelatedCache!")
+        super().__init__(
+            prefixkey=f"{obj._meta.object_name}:{getattr(obj, field)}", cache=cache
+        )

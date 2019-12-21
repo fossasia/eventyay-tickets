@@ -16,37 +16,47 @@ from django_context_decorator import context
 from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.mixins.views import (
-    ActionFromUrl, EventPermissionRequired, PermissionRequired,
+    ActionFromUrl,
+    EventPermissionRequired,
+    PermissionRequired,
 )
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
-    AccessCodeSendForm, AnswerOptionForm, CfPSettingsForm, SubmitterAccessCodeForm,
+    AccessCodeSendForm,
+    AnswerOptionForm,
+    CfPSettingsForm,
+    SubmitterAccessCodeForm,
 )
 from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
-    AnswerOption, CfP, Question, QuestionTarget,
-    SubmissionType, SubmitterAccessCode, Track,
+    AnswerOption,
+    CfP,
+    Question,
+    QuestionTarget,
+    SubmissionType,
+    SubmitterAccessCode,
+    Track,
 )
 
 
 class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     form_class = CfPForm
     model = CfP
-    template_name = 'orga/cfp/text.html'
-    permission_required = 'orga.edit_cfp'
-    write_permission_required = 'orga.edit_cfp'
+    template_name = "orga/cfp/text.html"
+    permission_required = "orga.edit_cfp"
+    write_permission_required = "orga.edit_cfp"
 
     @context
     @cached_property
     def sform(self):
         return CfPSettingsForm(
-            read_only=(self.action == 'view'),
+            read_only=(self.action == "view"),
             locales=self.request.event.locales,
             obj=self.request.event,
-            attribute_name='settings',
-            data=self.request.POST if self.request.method == 'POST' else None,
-            prefix='settings',
+            attribute_name="settings",
+            data=self.request.POST if self.request.method == "POST" else None,
+            prefix="settings",
         )
 
     def get_object(self):
@@ -58,22 +68,22 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
-            messages.error(self.request, _('We had trouble saving your input.'))
+            messages.error(self.request, _("We had trouble saving your input."))
             return self.form_invalid(form)
-        messages.success(self.request, 'The CfP update has been saved.')
+        messages.success(self.request, "The CfP update has been saved.")
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
             form.instance.log_action(
-                'pretalx.cfp.update', person=self.request.user, orga=True
+                "pretalx.cfp.update", person=self.request.user, orga=True
             )
         self.sform.save()
         return result
 
 
 class CfPQuestionList(EventPermissionRequired, TemplateView):
-    template_name = 'orga/cfp/question_view.html'
-    permission_required = 'orga.view_question'
+    template_name = "orga/cfp/question_view.html"
+    permission_required = "orga.view_question"
 
     @context
     def questions(self):
@@ -83,21 +93,21 @@ class CfPQuestionList(EventPermissionRequired, TemplateView):
 class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Question
     form_class = QuestionForm
-    permission_required = 'orga.edit_question'
-    write_permission_required = 'orga.edit_question'
+    permission_required = "orga.edit_question"
+    write_permission_required = "orga.edit_question"
 
     def get_template_names(self):
-        action = self.request.path.lstrip('/').rpartition('/')[2]
-        if action in ('edit', 'new'):
-            return 'orga/cfp/question_form.html'
-        return 'orga/cfp/question_detail.html'
+        action = self.request.path.lstrip("/").rpartition("/")[2]
+        if action in ("edit", "new"):
+            return "orga/cfp/question_form.html"
+        return "orga/cfp/question_detail.html"
 
     def get_permission_object(self):
         return self.object or self.request.event
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(
-            event=self.request.event, pk=self.kwargs.get('pk')
+            event=self.request.event, pk=self.kwargs.get("pk")
         ).first()
 
     @cached_property
@@ -121,7 +131,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             extra=0,
         )
         return formset_class(
-            self.request.POST if self.request.method == 'POST' else None,
+            self.request.POST if self.request.method == "POST" else None,
             queryset=AnswerOption.objects.filter(question=self.object)
             if self.object
             else AnswerOption.objects.none(),
@@ -136,10 +146,10 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 if not form.instance.pk:
                     continue
                 obj.log_action(
-                    'pretalx.question.option.delete',
+                    "pretalx.question.option.delete",
                     person=self.request.user,
                     orga=True,
-                    data={'id': form.instance.pk},
+                    data={"id": form.instance.pk},
                 )
                 form.instance.delete()
                 form.instance.pk = None
@@ -147,9 +157,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 form.instance.question = obj
                 form.save()
                 change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-                change_data['id'] = form.instance.pk
+                change_data["id"] = form.instance.pk
                 obj.log_action(
-                    'pretalx.question.option.update',
+                    "pretalx.question.option.update",
                     person=self.request.user,
                     orga=True,
                     data=change_data,
@@ -164,9 +174,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             form.instance.question = obj
             form.save()
             change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-            change_data['id'] = form.instance.pk
+            change_data["id"] = form.instance.pk
             obj.log_action(
-                'pretalx.question.option.create',
+                "pretalx.question.option.create",
                 person=self.request.user,
                 orga=True,
                 data=change_data,
@@ -182,20 +192,20 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         result = super().get_context_data(**kwargs)
         question = self.object
         if question:
-            role = self.request.GET.get('role')
-            if role == 'true':
+            role = self.request.GET.get("role")
+            if role == "true":
                 talks = self.request.event.talks.all()
                 speakers = self.request.event.speakers.all()
                 answers = question.answers.filter(
                     models.Q(person__in=speakers) | models.Q(submission__in=talks)
                 )
-            elif role == 'false':
+            elif role == "false":
                 talks = self.request.event.submissions.exclude(
-                    code__in=self.request.event.talks.values_list('code', flat=True)
+                    code__in=self.request.event.talks.values_list("code", flat=True)
                 )
                 speakers = self.request.event.submitters.exclude(
                     code__in=self.request.event.speakers.all().values_list(
-                        'code', flat=True
+                        "code", flat=True
                     )
                 )
                 answers = question.answers.filter(
@@ -203,8 +213,8 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 )
             else:
                 answers = question.answers.all()
-            result['answer_count'] = answers.count()
-            result['missing_answers'] = (
+            result["answer_count"] = answers.count()
+            result["missing_answers"] = (
                 question.missing_answers()
                 if not role
                 else question.missing_answers(
@@ -215,15 +225,15 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['event'] = self.request.event
+        kwargs["event"] = self.request.event
         if not self.object:
-            initial = kwargs['initial'] or {}
-            initial['target'] = self.request.GET.get('type')
-            kwargs['initial'] = initial
+            initial = kwargs["initial"] or {}
+            initial["target"] = self.request.GET.get("type")
+            kwargs["initial"] = initial
         return kwargs
 
     def get_success_url(self) -> str:
-        if 'pk' in self.kwargs and self.object:
+        if "pk" in self.kwargs and self.object:
             return self.object.urls.base
         return self.request.event.cfp.urls.questions
 
@@ -232,24 +242,26 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         form.instance.event = self.request.event
         self.instance = form.instance
         result = super().form_valid(form)
-        if form.cleaned_data.get('variant') in ('choices', 'multiple_choice'):
+        if form.cleaned_data.get("variant") in ("choices", "multiple_choice"):
             formset = self.save_formset(self.instance)
             if not formset:
                 return self.get(self.request, *self.args, **self.kwargs)
         if form.has_changed():
-            action = 'pretalx.question.' + ('update' if 'pk' in self.kwargs else 'create')
+            action = "pretalx.question." + (
+                "update" if "pk" in self.kwargs else "create"
+            )
             form.instance.log_action(action, person=self.request.user, orga=True)
-        messages.success(self.request, 'The question has been saved.')
+        messages.success(self.request, "The question has been saved.")
         return result
 
 
 class CfPQuestionDelete(PermissionRequired, DetailView):
-    permission_required = 'orga.remove_question'
-    template_name = 'orga/cfp/question_delete.html'
+    permission_required = "orga.remove_question"
+    template_name = "orga/cfp/question_delete.html"
 
     def get_object(self) -> Question:
         return get_object_or_404(
-            Question.all_objects, event=self.request.event, pk=self.kwargs.get('pk')
+            Question.all_objects, event=self.request.event, pk=self.kwargs.get("pk")
         )
 
     def post(self, request, *args, **kwargs):
@@ -261,16 +273,16 @@ class CfPQuestionDelete(PermissionRequired, DetailView):
                 question.logged_actions().delete()
                 question.delete()
                 request.event.log_action(
-                    'pretalx.question.delete', person=self.request.user, orga=True
+                    "pretalx.question.delete", person=self.request.user, orga=True
                 )
-                messages.success(request, _('The question has been deleted.'))
+                messages.success(request, _("The question has been deleted."))
         except ProtectedError:
             question.active = False
             question.save()
             messages.error(
                 request,
                 _(
-                    'You cannot delete a question that has already been answered. We have deactivated the question instead.'
+                    "You cannot delete a question that has already been answered. We have deactivated the question instead."
                 ),
             )
         return redirect(self.request.event.cfp.urls.questions)
@@ -286,11 +298,11 @@ def question_move(request, pk, up=True):
     try:
         question = request.event.questions.get(pk=pk)
     except Question.DoesNotExist:
-        raise Http404(_('The selected question does not exist.'))
-    if not request.user.has_perm('orga.edit_question', question):
-        messages.error(request, _('Sorry, you are not allowed to reorder questions.'))
+        raise Http404(_("The selected question does not exist."))
+    if not request.user.has_perm("orga.edit_question", question):
+        messages.error(request, _("Sorry, you are not allowed to reorder questions."))
         return
-    questions = list(request.event.questions.order_by('position'))
+    questions = list(request.event.questions.order_by("position"))
 
     index = questions.index(question)
     if index != 0 and up:
@@ -302,7 +314,7 @@ def question_move(request, pk, up=True):
         if qt.position != i:
             qt.position = i
             qt.save()
-    messages.success(request, _('The order of questions has been updated.'))
+    messages.success(request, _("The order of questions has been updated."))
 
 
 def question_move_up(request, event, pk):
@@ -316,11 +328,11 @@ def question_move_down(request, event, pk):
 
 
 class CfPQuestionToggle(PermissionRequired, View):
-    permission_required = 'orga.edit_question'
+    permission_required = "orga.edit_question"
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(
-            event=self.request.event, pk=self.kwargs.get('pk')
+            event=self.request.event, pk=self.kwargs.get("pk")
         ).first()
 
     def dispatch(self, request, *args, **kwargs):
@@ -328,18 +340,18 @@ class CfPQuestionToggle(PermissionRequired, View):
         question = self.get_object()
 
         question.active = not question.active
-        question.save(update_fields=['active'])
+        question.save(update_fields=["active"])
         return redirect(question.urls.base)
 
 
 class CfPQuestionRemind(EventPermissionRequired, TemplateView):
-    template_name = 'orga/cfp/question_remind.html'
-    permission_required = 'orga.view_question'
+    template_name = "orga/cfp/question_remind.html"
+    permission_required = "orga.view_question"
 
     @context
     @cached_property
     def filter_form(self):
-        data = self.request.GET if self.request.method == 'GET' else self.request.POST
+        data = self.request.GET if self.request.method == "GET" else self.request.POST
         return SpeakerFilterForm(data)
 
     @staticmethod
@@ -359,17 +371,17 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
 
     def post(self, request, *args, **kwargs):
         if not self.filter_form.is_valid():
-            messages.error(request, _('Could not send mails, error in configuration.'))
+            messages.error(request, _("Could not send mails, error in configuration."))
             return redirect(request.path)
-        if not getattr(request.event, 'question_template', None):
+        if not getattr(request.event, "question_template", None):
             request.event.build_initial_data()
-        if self.filter_form.cleaned_data['role'] == 'true':
+        if self.filter_form.cleaned_data["role"] == "true":
             people = set(request.event.speakers)
             submissions = request.event.talks
-        elif self.filter_form.cleaned_data['role'] == 'false':
+        elif self.filter_form.cleaned_data["role"] == "false":
             people = set(request.event.submitters) - set(request.event.speakers)
             submissions = request.event.submissions.exclude(
-                code__in=request.event.talks.values_list('code', flat=True)
+                code__in=request.event.talks.values_list("code", flat=True)
             )
         else:
             people = set(request.event.submitters)
@@ -377,16 +389,16 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
 
         mandatory_questions = request.event.questions.filter(required=True)
         data = {
-            'url': request.event.urls.user_submissions.full(),
-            'event_name': request.event.name,
+            "url": request.event.urls.user_submissions.full(),
+            "event_name": request.event.name,
         }
         for person in people:
             missing = self.get_missing_answers(
                 questions=mandatory_questions, person=person, submissions=submissions
             )
             if missing:
-                data['questions'] = '\n'.join(
-                    f'- {question.question}' for question in missing
+                data["questions"] = "\n".join(
+                    f"- {question.question}" for question in missing
                 )
                 request.event.question_template.to_mail(
                     person, event=request.event, context=data
@@ -395,71 +407,73 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
 
 
 class SubmissionTypeList(EventPermissionRequired, ListView):
-    template_name = 'orga/cfp/submission_type_view.html'
-    context_object_name = 'types'
-    permission_required = 'orga.view_submission_type'
+    template_name = "orga/cfp/submission_type_view.html"
+    context_object_name = "types"
+    permission_required = "orga.view_submission_type"
 
     def get_queryset(self):
-        return self.request.event.submission_types.all().annotate(submission_count=models.Count('submissions'))
+        return self.request.event.submission_types.all().annotate(
+            submission_count=models.Count("submissions")
+        )
 
 
 class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = SubmissionType
     form_class = SubmissionTypeForm
-    template_name = 'orga/cfp/submission_type_form.html'
-    permission_required = 'orga.edit_submission_type'
-    write_permission_required = 'orga.edit_submission_type'
+    template_name = "orga/cfp/submission_type_form.html"
+    permission_required = "orga.edit_submission_type"
+    write_permission_required = "orga.edit_submission_type"
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types
 
     def get_object(self):
         return self.request.event.submission_types.filter(
-            pk=self.kwargs.get('pk')
+            pk=self.kwargs.get("pk")
         ).first()
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
 
     def form_valid(self, form):
-        messages.success(self.request, 'The Submission Type has been saved.')
+        messages.success(self.request, "The Submission Type has been saved.")
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = 'pretalx.submission_type.' + (
-                'update' if self.object else 'create'
+            action = "pretalx.submission_type." + (
+                "update" if self.object else "create"
             )
             form.instance.log_action(action, person=self.request.user, orga=True)
         return result
 
 
 class SubmissionTypeDefault(PermissionRequired, View):
-    permission_required = 'orga.edit_submission_type'
+    permission_required = "orga.edit_submission_type"
 
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submission_types, pk=self.kwargs.get('pk')
+            self.request.event.submission_types, pk=self.kwargs.get("pk")
         )
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
         submission_type = self.get_object()
         self.request.event.cfp.default_type = submission_type
-        self.request.event.cfp.save(update_fields=['default_type'])
+        self.request.event.cfp.save(update_fields=["default_type"])
         submission_type.log_action(
-            'pretalx.submission_type.make_default', person=self.request.user, orga=True
+            "pretalx.submission_type.make_default", person=self.request.user, orga=True
         )
-        messages.success(request, _('The Submission Type has been made default.'))
+        messages.success(request, _("The Submission Type has been made default."))
         return redirect(self.request.event.cfp.urls.types)
 
 
 class SubmissionTypeDelete(PermissionRequired, DetailView):
-    permission_required = 'orga.remove_submission_type'
-    template_name = 'orga/cfp/submission_type_delete.html'
+    permission_required = "orga.remove_submission_type"
+    template_name = "orga/cfp/submission_type_delete.html"
 
     def get_object(self):
         return get_object_or_404(
-            self.request.event.submission_types, pk=self.kwargs.get('pk')
+            self.request.event.submission_types, pk=self.kwargs.get("pk")
         )
 
     def post(self, request, *args, **kwargs):
@@ -469,76 +483,78 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
             messages.error(
                 request,
                 _(
-                    'You cannot delete the only submission type. Try creating another one first!'
+                    "You cannot delete the only submission type. Try creating another one first!"
                 ),
             )
         elif request.event.cfp.default_type == submission_type:
             messages.error(
                 request,
                 _(
-                    'You cannot delete the default submission type. Make another type default first!'
+                    "You cannot delete the default submission type. Make another type default first!"
                 ),
             )
         else:
             try:
                 submission_type.delete()
                 request.event.log_action(
-                    'pretalx.submission_type.delete',
+                    "pretalx.submission_type.delete",
                     person=self.request.user,
                     orga=True,
                 )
-                messages.success(request, _('The Submission Type has been deleted.'))
+                messages.success(request, _("The Submission Type has been deleted."))
             except ProtectedError:  # TODO: show which/how many submissions are concerned
                 messages.error(
                     request,
                     _(
-                        'This Submission Type is in use in a submission and cannot be deleted.'
+                        "This Submission Type is in use in a submission and cannot be deleted."
                     ),
                 )
         return redirect(self.request.event.cfp.urls.types)
 
 
 class TrackList(EventPermissionRequired, ListView):
-    template_name = 'orga/cfp/track_view.html'
-    context_object_name = 'tracks'
-    permission_required = 'orga.view_tracks'
+    template_name = "orga/cfp/track_view.html"
+    context_object_name = "tracks"
+    permission_required = "orga.view_tracks"
 
     def get_queryset(self):
-        return self.request.event.tracks.all().annotate(submission_count=models.Count('submissions'))
+        return self.request.event.tracks.all().annotate(
+            submission_count=models.Count("submissions")
+        )
 
 
 class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = Track
     form_class = TrackForm
-    template_name = 'orga/cfp/track_form.html'
-    permission_required = 'orga.view_track'
-    write_permission_required = 'orga.edit_track'
+    template_name = "orga/cfp/track_form.html"
+    permission_required = "orga.view_track"
+    write_permission_required = "orga.edit_track"
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.tracks
 
     def get_object(self):
-        return self.request.event.tracks.filter(pk=self.kwargs.get('pk')).first()
+        return self.request.event.tracks.filter(pk=self.kwargs.get("pk")).first()
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
 
     def form_valid(self, form):
-        messages.success(self.request, _('The track has been saved.'))
+        messages.success(self.request, _("The track has been saved."))
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = 'pretalx.track.' + ('update' if self.object else 'create')
+            action = "pretalx.track." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
         return result
 
 
 class TrackDelete(PermissionRequired, DetailView):
-    permission_required = 'orga.remove_track'
-    template_name = 'orga/cfp/track_delete.html'
+    permission_required = "orga.remove_track"
+    template_name = "orga/cfp/track_delete.html"
 
     def get_object(self):
-        return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get('pk'))
+        return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get("pk"))
 
     def post(self, request, *args, **kwargs):
         track = self.get_object()
@@ -546,21 +562,21 @@ class TrackDelete(PermissionRequired, DetailView):
         try:
             track.delete()
             request.event.log_action(
-                'pretalx.track.delete', person=self.request.user, orga=True
+                "pretalx.track.delete", person=self.request.user, orga=True
             )
-            messages.success(request, _('The track has been deleted.'))
+            messages.success(request, _("The track has been deleted."))
         except ProtectedError:  # TODO: show which/how many submissions are concerned
             messages.error(
                 request,
-                _('This track is in use in a submission and cannot be deleted.'),
+                _("This track is in use in a submission and cannot be deleted."),
             )
         return redirect(self.request.event.cfp.urls.tracks)
 
 
 class AccessCodeList(EventPermissionRequired, ListView):
-    template_name = 'orga/cfp/access_code_view.html'
-    context_object_name = 'access_codes'
-    permission_required = 'orga.view_access_codes'
+    template_name = "orga/cfp/access_code_view.html"
+    context_object_name = "access_codes"
+    permission_required = "orga.view_access_codes"
 
     def get_queryset(self):
         return self.request.event.submitter_access_codes.all()
@@ -569,30 +585,32 @@ class AccessCodeList(EventPermissionRequired, ListView):
 class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
     model = SubmitterAccessCode
     form_class = SubmitterAccessCodeForm
-    template_name = 'orga/cfp/access_code_form.html'
-    permission_required = 'orga.view_access_code'
-    write_permission_required = 'orga.edit_access_code'
+    template_name = "orga/cfp/access_code_form.html"
+    permission_required = "orga.view_access_code"
+    write_permission_required = "orga.edit_access_code"
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.access_codes
 
     def get_object(self):
-        return self.request.event.submitter_access_codes.filter(code__iexact=self.kwargs.get('code')).first()
+        return self.request.event.submitter_access_codes.filter(
+            code__iexact=self.kwargs.get("code")
+        ).first()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        result['event'] = self.request.event
+        result["event"] = self.request.event
         return result
 
     def get_permission_object(self):
         return self.get_object() or self.request.event
 
     def form_valid(self, form):
-        messages.success(self.request, _('The access code has been saved.'))
+        messages.success(self.request, _("The access code has been saved."))
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = 'pretalx.access_code.' + ('update' if self.object else 'create')
+            action = "pretalx.access_code." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
         return result
 
@@ -600,38 +618,48 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
 class AccessCodeSend(PermissionRequired, UpdateView):
     model = SubmitterAccessCode
     form_class = AccessCodeSendForm
-    context_object_name = 'access_code'
-    template_name = 'orga/cfp/access_code_send.html'
-    permission_required = 'orga.view_access_code'
+    context_object_name = "access_code"
+    template_name = "orga/cfp/access_code_send.html"
+    permission_required = "orga.view_access_code"
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.access_codes
 
     def get_object(self):
-        return self.request.event.submitter_access_codes.filter(code__iexact=self.kwargs.get('code')).first()
+        return self.request.event.submitter_access_codes.filter(
+            code__iexact=self.kwargs.get("code")
+        ).first()
 
     def get_permission_object(self):
         return self.get_object()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        result['user'] = self.request.user
+        result["user"] = self.request.user
         return result
 
     def form_valid(self, form):
         result = super().form_valid(form)
-        messages.success(self.request, _('The access code has been sent.'))
+        messages.success(self.request, _("The access code has been sent."))
         code = self.get_object()
-        code.log_action('pretalx.access_code.send', person=self.request.user, orga=True, data={'email': form.cleaned_data['to']})
+        code.log_action(
+            "pretalx.access_code.send",
+            person=self.request.user,
+            orga=True,
+            data={"email": form.cleaned_data["to"]},
+        )
         return result
 
 
 class AccessCodeDelete(PermissionRequired, DetailView):
-    permission_required = 'orga.remove_access_code'
-    template_name = 'orga/cfp/access_code_delete.html'
+    permission_required = "orga.remove_access_code"
+    template_name = "orga/cfp/access_code_delete.html"
 
     def get_object(self):
-        return get_object_or_404(self.request.event.submitter_access_codes, code__iexact=self.kwargs.get('code'))
+        return get_object_or_404(
+            self.request.event.submitter_access_codes,
+            code__iexact=self.kwargs.get("code"),
+        )
 
     def post(self, request, *args, **kwargs):
         access_code = self.get_object()
@@ -639,29 +667,38 @@ class AccessCodeDelete(PermissionRequired, DetailView):
         try:
             access_code.delete()
             request.event.log_action(
-                'pretalx.access_code.delete', person=self.request.user, orga=True
+                "pretalx.access_code.delete", person=self.request.user, orga=True
             )
-            messages.success(request, _('The access code has been deleted.'))
+            messages.success(request, _("The access code has been deleted."))
         except ProtectedError:
             messages.error(
                 request,
-                _('This access code has been used for a submission and cannot be deleted. To disable it, you can set its validity date to the past.'),
+                _(
+                    "This access code has been used for a submission and cannot be deleted. To disable it, you can set its validity date to the past."
+                ),
             )
         return redirect(self.request.event.cfp.urls.access_codes)
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name='dispatch')
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")
 class CfPFlowEditor(EventPermissionRequired, TemplateView):
-    template_name = 'orga/cfp/flow.html'
-    permission_required = 'orga.edit_cfp'
+    template_name = "orga/cfp/flow.html"
+    permission_required = "orga.edit_cfp"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['current_configuration'] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
-        context['event_configuration'] = {
-            "header_pattern": self.request.event.settings.display_header_pattern or 'bg-primary',
-            "header_image": self.request.event.header_image.url if self.request.event.header_image else None,
-            "logo_image": self.request.event.logo.url if self.request.event.logo else None,
+        context[
+            "current_configuration"
+        ] = self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        context["event_configuration"] = {
+            "header_pattern": self.request.event.settings.display_header_pattern
+            or "bg-primary",
+            "header_image": self.request.event.header_image.url
+            if self.request.event.header_image
+            else None,
+            "logo_image": self.request.event.logo.url
+            if self.request.event.logo
+            else None,
             "primary_color": self.request.event.primary_color,
             "locales": self.request.event.locales,
         }
@@ -671,11 +708,11 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         try:
             data = json.loads(request.body.decode())
         except Exception:
-            return JsonResponse({'error': 'Invalid data'}, status=400)
+            return JsonResponse({"error": "Invalid data"}, status=400)
 
         flow = CfPFlow(self.request.event)
-        if 'action' in data and data['action'] == 'reset':
+        if "action" in data and data["action"] == "reset":
             flow.reset()
         else:
             flow.save_config(data)
-        return JsonResponse({'success': True})
+        return JsonResponse({"success": True})

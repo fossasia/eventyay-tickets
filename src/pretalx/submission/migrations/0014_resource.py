@@ -10,17 +10,32 @@ import pretalx.common.mixins
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0013_auto_20171104_1040'),
+        ("submission", "0013_auto_20171104_1040"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Resource',
+            name="Resource",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('resource', models.FileField(upload_to='')),
-                ('description', models.CharField(blank=True, max_length=1000, null=True)),
-                ('submission', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='resources', to='submission.Submission')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("resource", models.FileField(upload_to="")),
+                (
+                    "description",
+                    models.CharField(blank=True, max_length=1000, null=True),
+                ),
+                (
+                    "submission",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="resources",
+                        to="submission.Submission",
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),

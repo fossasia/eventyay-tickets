@@ -10,37 +10,37 @@ from pretalx.common.views import error_view
 
 plugin_patterns = []
 for app in apps.get_app_configs():
-    if getattr(app, 'PretalxPluginMeta', None):
-        if importlib.util.find_spec(app.name + '.urls'):
-            urlmod = importlib.import_module(app.name + '.urls')
+    if getattr(app, "PretalxPluginMeta", None):
+        if importlib.util.find_spec(app.name + ".urls"):
+            urlmod = importlib.import_module(app.name + ".urls")
             single_plugin_patterns = []
             urlpatterns = getattr(urlmod, "urlpatterns", None)
             if urlpatterns:
                 single_plugin_patterns += urlpatterns
             plugin_patterns.append(
-                url(r'', include((single_plugin_patterns, app.label)))
+                url(r"", include((single_plugin_patterns, app.label)))
             )
 
 urlpatterns = [
-    url(r'^400$', error_view(400)),
-    url(r'^403$', error_view(403)),
-    url(r'^403/csrf$', error_view(4031)),
-    url(r'^404$', error_view(404)),
-    url(r'^500$', error_view(500)),
-
-    url(r'^orga/', include('pretalx.orga.urls', namespace='orga')),
-    url(r'^api/', include('pretalx.api.urls', namespace='api')),
-    url(r'', include('pretalx.agenda.urls', namespace='agenda')),
-    url(r'', include('pretalx.cfp.urls', namespace='cfp')),
-    url(r'', include((plugin_patterns, 'plugins'))),
+    url(r"^400$", error_view(400)),
+    url(r"^403$", error_view(403)),
+    url(r"^403/csrf$", error_view(4031)),
+    url(r"^404$", error_view(404)),
+    url(r"^500$", error_view(500)),
+    url(r"^orga/", include("pretalx.orga.urls", namespace="orga")),
+    url(r"^api/", include("pretalx.api.urls", namespace="api")),
+    url(r"", include("pretalx.agenda.urls", namespace="agenda")),
+    url(r"", include("pretalx.cfp.urls", namespace="cfp")),
+    url(r"", include((plugin_patterns, "plugins"))),
 ]
 
-handler500 = 'pretalx.common.views.handle_500'
+handler500 = "pretalx.common.views.handle_500"
 
 if settings.DEBUG:
     with suppress(ImportError):
         import debug_toolbar
+
         urlpatterns += [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
+            url(r"^__debug__/", include(debug_toolbar.urls)),
         ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

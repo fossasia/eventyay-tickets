@@ -7,18 +7,22 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0010_auto_20171001_0439'),
+        ("schedule", "0010_auto_20171001_0439"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='room',
-            name='speaker_info',
-            field=i18nfield.fields.I18nCharField(blank=True, max_length=1000, null=True),
+            model_name="room",
+            name="speaker_info",
+            field=i18nfield.fields.I18nCharField(
+                blank=True, max_length=1000, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='room',
-            name='description',
-            field=i18nfield.fields.I18nCharField(blank=True, max_length=1000, null=True),
+            model_name="room",
+            name="description",
+            field=i18nfield.fields.I18nCharField(
+                blank=True, max_length=1000, null=True
+            ),
         ),
     ]

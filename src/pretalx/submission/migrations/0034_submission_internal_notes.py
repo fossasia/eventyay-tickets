@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0033_submission_slot_count'),
+        ("submission", "0033_submission_slot_count"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='internal_notes',
+            model_name="submission",
+            name="internal_notes",
             field=models.TextField(blank=True, null=True),
         ),
     ]

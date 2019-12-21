@@ -11,7 +11,8 @@ def copyable(value):
     if '"' in value:
         return value
     title = str(_("Copy"))
-    return django.utils.safestring.mark_safe(f"""
+    return django.utils.safestring.mark_safe(
+        f"""
     <span data-destination="{value}"
             class="copyable-text"
             data-toggle="tooltip"
@@ -19,4 +20,5 @@ def copyable(value):
             title="{title}"
     >
         {value}
-    </span>""")
+    </span>"""
+    )

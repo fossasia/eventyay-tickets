@@ -7,28 +7,41 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0019_auto_20190224_0856'),
-        ('submission', '0034_submission_internal_notes'),
+        ("event", "0019_auto_20190224_0856"),
+        ("submission", "0034_submission_internal_notes"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReviewPhase',
+            name="ReviewPhase",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=100)),
-                ('start', models.DateTimeField(blank=True, null=True)),
-                ('end', models.DateTimeField(blank=True, null=True)),
-                ('position', models.PositiveIntegerField(default=0)),
-                ('is_active', models.BooleanField(default=False)),
-                ('can_review', models.BooleanField(default=True)),
-                ('can_see_other_reviews', models.CharField(default='after_review', max_length=12)),
-                ('can_see_speaker_names', models.BooleanField(default=True)),
-                ('can_change_submission_state', models.BooleanField(default=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='review_phases', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("start", models.DateTimeField(blank=True, null=True)),
+                ("end", models.DateTimeField(blank=True, null=True)),
+                ("position", models.PositiveIntegerField(default=0)),
+                ("is_active", models.BooleanField(default=False)),
+                ("can_review", models.BooleanField(default=True)),
+                (
+                    "can_see_other_reviews",
+                    models.CharField(default="after_review", max_length=12),
+                ),
+                ("can_see_speaker_names", models.BooleanField(default=True)),
+                ("can_change_submission_state", models.BooleanField(default=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="review_phases",
+                        to="event.Event",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('position',),
-            },
+            options={"ordering": ("position",),},
         ),
     ]

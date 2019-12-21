@@ -14,51 +14,102 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('event', '0001_initial'),
+        ("event", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('password', models.CharField(max_length=128)),
-                ('last_login', models.DateTimeField(blank=True, null=True)),
-                ('nick', models.CharField(max_length=60, unique=True)),
-                ('name', models.CharField(blank=True, max_length=120, null=True)),
-                ('email', models.EmailField(max_length=254)),
-                ('is_active', models.BooleanField(default=True)),
-                ('is_staff', models.BooleanField(default=False)),
-                ('is_superuser', models.BooleanField(default=False)),
-                ('locale', models.CharField(default='en', max_length=32)),
-                ('timezone', models.CharField(default='UTC', max_length=30)),
-                ('send_mail', models.BooleanField(default=False)),
-                ('pw_reset_token', models.CharField(max_length=160, null=True)),
-                ('pw_reset_time', models.DateTimeField(null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("password", models.CharField(max_length=128)),
+                ("last_login", models.DateTimeField(blank=True, null=True)),
+                ("nick", models.CharField(max_length=60, unique=True)),
+                ("name", models.CharField(blank=True, max_length=120, null=True)),
+                ("email", models.EmailField(max_length=254)),
+                ("is_active", models.BooleanField(default=True)),
+                ("is_staff", models.BooleanField(default=False)),
+                ("is_superuser", models.BooleanField(default=False)),
+                ("locale", models.CharField(default="en", max_length=32)),
+                ("timezone", models.CharField(default="UTC", max_length=30)),
+                ("send_mail", models.BooleanField(default=False)),
+                ("pw_reset_token", models.CharField(max_length=160, null=True)),
+                ("pw_reset_time", models.DateTimeField(null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='EventPermission',
+            name="EventPermission",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('is_orga', models.BooleanField(default=True)),
-                ('invitation_token', models.CharField(blank=True, max_length=255, null=True)),
-                ('invitation_email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='permissions', to='event.Event')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='permissions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("is_orga", models.BooleanField(default=True)),
+                (
+                    "invitation_token",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                (
+                    "invitation_email",
+                    models.EmailField(blank=True, max_length=254, null=True),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="permissions",
+                        to="event.Event",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="permissions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='SpeakerProfile',
+            name="SpeakerProfile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('biography', models.TextField(blank=True, null=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='event.Event')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='profiles', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("biography", models.TextField(blank=True, null=True)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="event.Event",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="profiles",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),

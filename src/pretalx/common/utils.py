@@ -6,7 +6,8 @@ from django.conf import settings
 from django.db import transaction
 from django.template.defaultfilters import date as _date
 from django.utils.crypto import get_random_string
-from django.utils.translation import activate, get_language, gettext_lazy as _
+from django.utils.translation import activate, get_language
+from django.utils.translation import gettext_lazy as _
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
@@ -117,7 +118,7 @@ def rolledback_transaction():
     except DummyRollbackException:
         pass
     else:
-        raise Exception('Invalid state, should have rolled back.')
+        raise Exception("Invalid state, should have rolled back.")
 
 
 @contextlib.contextmanager

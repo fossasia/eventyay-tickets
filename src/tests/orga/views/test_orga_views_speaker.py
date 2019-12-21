@@ -59,7 +59,7 @@ def test_reviewer_can_access_speaker_page_with_deleted_submission(
 ):
     with scope(event=event):
         assert event.submissions.all().count() == 0
-        assert event.submissions(manager='all_objects').count() == 1
+        assert event.submissions(manager="all_objects").count() == 1
         url = other_speaker.event_profile(event).orga_urls.base
     response = review_client.get(url, follow=True)
     assert response.status_code == 200
@@ -73,17 +73,17 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
     response = orga_client.post(
         url,
         data={
-            'name': 'BESTSPEAKAR',
-            'biography': 'I rule!',
-            'email': 'foo@foooobar.de',
+            "name": "BESTSPEAKAR",
+            "biography": "I rule!",
+            "email": "foo@foooobar.de",
         },
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name == 'BESTSPEAKAR', response.content.decode()
-    assert speaker.email == 'foo@foooobar.de'
+    assert speaker.name == "BESTSPEAKAR", response.content.decode()
+    assert speaker.email == "foo@foooobar.de"
 
 
 @pytest.mark.django_db
@@ -96,16 +96,16 @@ def test_orga_cant_assign_duplicate_address(
     response = orga_client.post(
         url,
         data={
-            'name': 'BESTSPEAKAR',
-            'biography': 'I rule!',
-            'email': other_speaker.email,
+            "name": "BESTSPEAKAR",
+            "biography": "I rule!",
+            "email": other_speaker.email,
         },
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name != 'BESTSPEAKAR', response.content.decode()
+    assert speaker.name != "BESTSPEAKAR", response.content.decode()
     assert speaker.email != other_speaker.email
 
 
@@ -123,7 +123,7 @@ def test_orga_can_edit_speaker_status(orga_client, speaker, event, submission):
         assert speaker.profiles.first().has_arrived is True
     with scopes_disabled():
         assert speaker.logged_actions().count() == logs + 1
-    response = orga_client.get(url + '?from=list', follow=True)
+    response = orga_client.get(url + "?from=list", follow=True)
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
@@ -137,14 +137,12 @@ def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission)
     with scope(event=event):
         url = speaker.event_profile(event).orga_urls.base
     response = review_client.post(
-        url,
-        data={'name': 'BESTSPEAKAR', 'biography': 'I rule!'},
-        follow=True,
+        url, data={"name": "BESTSPEAKAR", "biography": "I rule!"}, follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name != 'BESTSPEAKAR', response.content.decode()
+    assert speaker.name != "BESTSPEAKAR", response.content.decode()
 
 
 @pytest.mark.django_db
@@ -154,9 +152,9 @@ def test_orga_can_create_speaker_information(orga_client, event):
     orga_client.post(
         event.orga_urls.new_information,
         data={
-            'title_0': 'Test Information',
-            'text_0': 'Very Important!!!',
-            'include_submitters': 'on',
+            "title_0": "Test Information",
+            "text_0": "Very Important!!!",
+            "include_submitters": "on",
         },
         follow=True,
     )
@@ -171,10 +169,10 @@ def test_orga_cant_create_illogical_speaker_information(orga_client, event):
     orga_client.post(
         event.orga_urls.new_information,
         data={
-            'title_0': 'Test Information',
-            'text_0': 'Very Important!!!',
-            'include_submitters': 'on',
-            'exclude_unconfirmed': 'on',
+            "title_0": "Test Information",
+            "text_0": "Very Important!!!",
+            "include_submitters": "on",
+            "exclude_unconfirmed": "on",
         },
         follow=True,
     )
@@ -187,15 +185,15 @@ def test_orga_can_edit_speaker_information(orga_client, event, information):
     orga_client.post(
         information.orga_urls.edit,
         data={
-            'title_0': 'Banana banana',
-            'text_0': 'Very Important!!!',
-            'include_submitters': 'on',
+            "title_0": "Banana banana",
+            "text_0": "Very Important!!!",
+            "include_submitters": "on",
         },
         follow=True,
     )
     with scope(event=event):
         information.refresh_from_db()
-        assert str(information.title) == 'Banana banana'
+        assert str(information.title) == "Banana banana"
 
 
 @pytest.mark.django_db
@@ -203,16 +201,16 @@ def test_reviewer_cant_edit_speaker_information(review_client, event, informatio
     review_client.post(
         information.orga_urls.edit,
         data={
-            'title_0': 'Banana banana',
-            'text_0': 'Very Important!!!',
-            'include_submitters': 'on',
-            'exclude_unconfirmed': 'on',
+            "title_0": "Banana banana",
+            "text_0": "Very Important!!!",
+            "include_submitters": "on",
+            "exclude_unconfirmed": "on",
         },
         follow=True,
     )
     with scope(event=event):
         information.refresh_from_db()
-        assert str(information.title) != 'Banana banana'
+        assert str(information.title) != "Banana banana"
 
 
 @pytest.mark.django_db

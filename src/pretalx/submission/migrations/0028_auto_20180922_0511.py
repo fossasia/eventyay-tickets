@@ -7,28 +7,26 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0027_auto_20180812_1647'),
+        ("submission", "0027_auto_20180812_1647"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='cfp',
-            name='text',
+            model_name="cfp",
+            name="text",
             field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='feedback',
-            name='review',
-            field=models.TextField(),
+            model_name="feedback", name="review", field=models.TextField(),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='abstract',
+            model_name="submission",
+            name="abstract",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='description',
+            model_name="submission",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
     ]

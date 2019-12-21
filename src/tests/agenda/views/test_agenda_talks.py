@@ -28,17 +28,19 @@ def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot
         assert slot.submission.description in content
         assert (
             formats.date_format(
-                slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+                slot.start.astimezone(pytz.timezone(event.timezone)), "Y-m-d, H:i"
             )
             in content
         )
         assert (
-            formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
+            formats.date_format(
+                slot.end.astimezone(pytz.timezone(event.timezone)), "H:i"
+            )
             in content
         )
         assert str(slot.room.name) in content
-        assert 'fa-edit' not in content  # edit btn
-        assert 'fa-video' not in content  # do not record
+        assert "fa-edit" not in content  # edit btn
+        assert "fa-video" not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -67,17 +69,19 @@ def test_orga_can_see_new_talk(
         assert slot.submission.description in content
         assert (
             formats.date_format(
-                slot.start.astimezone(pytz.timezone(event.timezone)), 'Y-m-d, H:i'
+                slot.start.astimezone(pytz.timezone(event.timezone)), "Y-m-d, H:i"
             )
             in content
         )
         assert (
-            formats.date_format(slot.end.astimezone(pytz.timezone(event.timezone)), 'H:i')
+            formats.date_format(
+                slot.end.astimezone(pytz.timezone(event.timezone)), "H:i"
+            )
             in content
         )
         assert str(slot.room.name) in content
-        assert 'fa-edit' not in content  # edit btn
-        assert 'fa-video' not in content  # do not record
+        assert "fa-edit" not in content  # edit btn
+        assert "fa-video" not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -89,8 +93,8 @@ def test_can_see_talk_edit_btn(
         response = orga_client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-edit' in content  # edit btn
-    assert 'fa-video' not in content
+    assert "fa-edit" in content  # edit btn
+    assert "fa-video" not in content
 
 
 @pytest.mark.django_db
@@ -101,8 +105,8 @@ def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, sl
         response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-edit' not in content  # edit btn
-    assert 'fa-video' in content
+    assert "fa-edit" not in content  # edit btn
+    assert "fa-video" in content
 
 
 @pytest.mark.django_db
@@ -116,9 +120,9 @@ def test_can_see_talk_does_accept_feedback(
         response = client.get(slot.submission.urls.public, follow=True)
     assert response.status_code == 200
     content = response.content.decode()
-    assert 'fa-edit' not in content  # edit btn
-    assert 'fa-comments' in content
-    assert 'fa-video' not in content
+    assert "fa-edit" not in content  # edit btn
+    assert "fa-comments" in content
+    assert "fa-video" not in content
 
 
 @pytest.mark.django_db
@@ -203,13 +207,13 @@ def test_talk_speaker_other_submissions(
         response = client.get(other_submission.urls.public, follow=True)
 
     assert response.status_code == 200
-    assert response.context['speakers']
-    assert len(response.context['speakers']) == 2, response.context['speakers']
+    assert response.context["speakers"]
+    assert len(response.context["speakers"]) == 2, response.context["speakers"]
     speaker_response = [
-        s for s in response.context['speakers'] if s.name == speaker.name
+        s for s in response.context["speakers"] if s.name == speaker.name
     ][0]
     other_response = [
-        s for s in response.context['speakers'] if s.name != speaker.name
+        s for s in response.context["speakers"] if s.name != speaker.name
     ][0]
     assert len(speaker_response.other_submissions) == 1
     assert len(other_response.other_submissions) == 0
@@ -241,13 +245,13 @@ def test_talk_speaker_other_submissions_only_if_visible(
         slot.submission.save()
 
     assert response.status_code == 200
-    assert response.context['speakers']
-    assert len(response.context['speakers']) == 2, response.context['speakers']
+    assert response.context["speakers"]
+    assert len(response.context["speakers"]) == 2, response.context["speakers"]
     speaker_response = [
-        s for s in response.context['speakers'] if s.name == speaker.name
+        s for s in response.context["speakers"] if s.name == speaker.name
     ][0]
     other_response = [
-        s for s in response.context['speakers'] if s.name != speaker.name
+        s for s in response.context["speakers"] if s.name != speaker.name
     ][0]
     assert len(speaker_response.other_submissions) == 0
     assert len(other_response.other_submissions) == 0

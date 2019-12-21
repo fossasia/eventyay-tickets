@@ -5,22 +5,26 @@ from pretalx.event.models.event import Event
 
 
 class Command(BaseCommand):
-    help = 'Rebuild static files and language files'
+    help = "Rebuild static files and language files"
 
     def add_arguments(self, parser):
-        parser.add_argument('--event', type=str)
+        parser.add_argument("--event", type=str)
 
     def handle_regeneration(self, event):
-        regenerate_css.apply_async(args=(event.pk, ))
-        self.stdout.write(self.style.SUCCESS(f'[{event.slug}] Event style was successfully regenerated.'))
+        regenerate_css.apply_async(args=(event.pk,))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"[{event.slug}] Event style was successfully regenerated."
+            )
+        )
 
     def handle(self, *args, **options):
-        event = options.get('event')
+        event = options.get("event")
         if event:
             try:
                 event = Event.objects.get(slug__iexact=event)
             except Event.DoesNotExist:
-                self.stdout.write(self.style.ERROR('This event does not exist.'))
+                self.stdout.write(self.style.ERROR("This event does not exist."))
                 return
             self.handle_regeneration(event)
         else:

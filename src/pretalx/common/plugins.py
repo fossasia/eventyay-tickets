@@ -6,12 +6,12 @@ def get_all_plugins(event=None):
     installed Django apps."""
     plugins = []
     for app in apps.get_app_configs():
-        if getattr(app, 'PretalxPluginMeta', None):
+        if getattr(app, "PretalxPluginMeta", None):
             meta = app.PretalxPluginMeta
             meta.module = app.name
             meta.app = app
 
-            if event and hasattr(app, 'is_available'):
+            if event and hasattr(app, "is_available"):
                 if not app.is_available(event):
                     continue
 
@@ -19,7 +19,7 @@ def get_all_plugins(event=None):
     return sorted(
         plugins,
         key=lambda m: (
-            0 if m.module.startswith('pretalx.') else 1,
-            str(m.name).lower().replace('pretalx ', ''),
+            0 if m.module.startswith("pretalx.") else 1,
+            str(m.name).lower().replace("pretalx ", ""),
         ),
     )

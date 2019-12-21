@@ -9,16 +9,16 @@ from pretalx.submission.models import Question, QuestionTarget, QuestionVariant
 
 class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop('event', None)
-        self.submission = kwargs.pop('submission', None)
-        self.speaker = kwargs.pop('speaker', None)
-        self.review = kwargs.pop('review', None)
-        self.track = kwargs.pop('track', None) or getattr(
-            self.submission, 'track', None
+        self.event = kwargs.pop("event", None)
+        self.submission = kwargs.pop("submission", None)
+        self.speaker = kwargs.pop("speaker", None)
+        self.review = kwargs.pop("review", None)
+        self.track = kwargs.pop("track", None) or getattr(
+            self.submission, "track", None
         )
-        self.request_user = kwargs.pop('request_user', None)
-        self.target_type = kwargs.pop('target', QuestionTarget.SUBMISSION)
-        self.for_reviewers = kwargs.pop('for_reviewers', False)
+        self.request_user = kwargs.pop("request_user", None)
+        self.target_type = kwargs.pop("target", QuestionTarget.SUBMISSION)
+        self.for_reviewers = kwargs.pop("for_reviewers", False)
         if self.target_type == QuestionTarget.SUBMISSION:
             target_object = self.submission
         elif self.target_type == QuestionTarget.SPEAKER:
@@ -27,7 +27,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             target_object = self.review
         else:
             target_object = self.speaker
-        readonly = kwargs.pop('readonly', False)
+        readonly = kwargs.pop("readonly", False)
 
         super().__init__(*args, **kwargs)
 
@@ -42,7 +42,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             )
         if self.for_reviewers:
             self.queryset = self.queryset.filter(is_visible_to_reviewers=True)
-        for question in self.queryset.prefetch_related('options'):
+        for question in self.queryset.prefetch_related("options"):
             initial_object = None
             initial = question.default_answer
             if target_object:
@@ -67,7 +67,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             )
             field.question = question
             field.answer = initial_object
-            self.fields[f'question_{question.pk}'] = field
+            self.fields[f"question_{question.pk}"] = field
 
     @cached_property
     def speaker_fields(self):

@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0036_auto_20190307_2323'),
+        ("submission", "0036_auto_20190307_2323"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reviewphase',
-            name='speakers_can_change_submissions',
+            model_name="reviewphase",
+            name="speakers_can_change_submissions",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='abstract',
+            model_name="submission",
+            name="abstract",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='description',
+            model_name="submission",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
     ]

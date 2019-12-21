@@ -21,45 +21,45 @@ from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
-SLUG_CHARS = 'a-zA-Z0-9.-'
+SLUG_CHARS = "a-zA-Z0-9.-"
 
 
 def validate_event_slug_permitted(value):
     forbidden = [
-        '_global',
-        '__debug__',
-        'api',
-        'csp_report',
-        'events',
-        'download',
-        'healthcheck',
-        'jsi18n',
-        'locale',
-        'metrics',
-        'orga',
-        'redirect',
-        'widget',
-        '400',
-        '403',
-        '404',
-        '500',
+        "_global",
+        "__debug__",
+        "api",
+        "csp_report",
+        "events",
+        "download",
+        "healthcheck",
+        "jsi18n",
+        "locale",
+        "metrics",
+        "orga",
+        "redirect",
+        "widget",
+        "400",
+        "403",
+        "404",
+        "500",
     ]
     if value.lower() in forbidden:
         raise ValidationError(
-            _('Invalid event slug – this slug is reserved: {value}.').format(
+            _("Invalid event slug – this slug is reserved: {value}.").format(
                 value=value
             ),
-            code='invalid',
-            params={'value': value},
+            code="invalid",
+            params={"value": value},
         )
 
 
 def event_css_path(instance, filename):
-    return f'{instance.slug}/css/{path_with_hash(filename)}'
+    return f"{instance.slug}/css/{path_with_hash(filename)}"
 
 
 def event_logo_path(instance, filename):
-    return f'{instance.slug}/img/{path_with_hash(filename)}'
+    return f"{instance.slug}/img/{path_with_hash(filename)}"
 
 
 @hierarkey.add()
@@ -96,7 +96,8 @@ class Event(LogMixin, models.Model):
     :param plugins: A list of active plugins as a comma-separated string.
         Please use the ``plugin_list`` property for interaction.
     """
-    name = I18nCharField(max_length=200, verbose_name=_('Name'))
+
+    name = I18nCharField(max_length=200, verbose_name=_("Name"))
     slug = models.SlugField(
         max_length=50,
         db_index=True,
@@ -105,72 +106,74 @@ class Event(LogMixin, models.Model):
             RegexValidator(
                 regex=f"^[{SLUG_CHARS}]+$",
                 message=_(
-                    'The slug may only contain letters, numbers, dots and dashes.'
+                    "The slug may only contain letters, numbers, dots and dashes."
                 ),
             ),
             validate_event_slug_permitted,
         ],
         verbose_name=_("Short form"),
-        help_text=_('The slug may only contain letters, numbers, dots and dashes.'),
+        help_text=_("The slug may only contain letters, numbers, dots and dashes."),
     )
     organiser = models.ForeignKey(
-        to='Organiser',
+        to="Organiser",
         null=True,  # backwards compatibility, won't ever be empty
-        related_name='events',
+        related_name="events",
         on_delete=models.PROTECT,
     )
-    is_public = models.BooleanField(default=False, verbose_name=_('Event is public'))
-    date_from = models.DateField(verbose_name=_('Event start date'))
-    date_to = models.DateField(verbose_name=_('Event end date'))
+    is_public = models.BooleanField(default=False, verbose_name=_("Event is public"))
+    date_from = models.DateField(verbose_name=_("Event start date"))
+    date_to = models.DateField(verbose_name=_("Event end date"))
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default='UTC',
-        help_text=_('All event dates will be localized and interpreted to be in this timezone.'),
+        choices=[(tz, tz) for tz in pytz.common_timezones],
+        max_length=30,
+        default="UTC",
+        help_text=_(
+            "All event dates will be localized and interpreted to be in this timezone."
+        ),
     )
     email = models.EmailField(
-        verbose_name=_('Organiser email address'),
-        help_text=_('Will be used as Reply-To in emails.'),
+        verbose_name=_("Organiser email address"),
+        help_text=_("Will be used as Reply-To in emails."),
     )
     primary_color = models.CharField(
         max_length=7,
         null=True,
         blank=True,
-        validators=[
-            RegexValidator(r'#([0-9A-Fa-f]{3}){1,2}'),
-        ],
-        verbose_name=_('Main event colour'),
+        validators=[RegexValidator(r"#([0-9A-Fa-f]{3}){1,2}"),],
+        verbose_name=_("Main event colour"),
         help_text=_(
-            'Provide a hex value like #00ff00 if you want to style pretalx in your event\'s colour scheme.'
+            "Provide a hex value like #00ff00 if you want to style pretalx in your event's colour scheme."
         ),
     )
     custom_css = models.FileField(
         upload_to=event_css_path,
         null=True,
         blank=True,
-        verbose_name=_('Custom Event CSS'),
+        verbose_name=_("Custom Event CSS"),
         help_text=_(
-            'Upload a custom CSS file if changing the primary colour is not sufficient for you.'
+            "Upload a custom CSS file if changing the primary colour is not sufficient for you."
         ),
     )
     logo = models.FileField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
-        verbose_name=_('Logo'),
+        verbose_name=_("Logo"),
         help_text=_(
-            'If you provide a logo image, your event\'s name will not be shown in the event header. '
-            'The logo will be displayed left-aligned, and be allowed to grow up to the width of the'
-            'event content, if it is larger than that.'
+            "If you provide a logo image, your event's name will not be shown in the event header. "
+            "The logo will be displayed left-aligned, and be allowed to grow up to the width of the"
+            "event content, if it is larger than that."
         ),
     )
     header_image = models.FileField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
-        verbose_name=_('Header image'),
+        verbose_name=_("Header image"),
         help_text=_(
-            'If you provide a header image, it will be displayed instead of your event\'s color and/or header pattern '
-            'at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
-            'continue to be displayed, and not stretched.'
+            "If you provide a header image, it will be displayed instead of your event's color and/or header pattern "
+            "at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will "
+            "continue to be displayed, and not stretched."
         ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
@@ -178,139 +181,139 @@ class Event(LogMixin, models.Model):
         max_length=32,
         default=settings.LANGUAGE_CODE,
         choices=settings.LANGUAGES,
-        verbose_name=_('Default language'),
+        verbose_name=_("Default language"),
     )
     accept_template = models.ForeignKey(
-        to='mail.MailTemplate',
+        to="mail.MailTemplate",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
         null=True,
         blank=True,
     )
     ack_template = models.ForeignKey(
-        to='mail.MailTemplate',
+        to="mail.MailTemplate",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
         null=True,
         blank=True,
     )
     reject_template = models.ForeignKey(
-        to='mail.MailTemplate',
+        to="mail.MailTemplate",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
         null=True,
         blank=True,
     )
     update_template = models.ForeignKey(
-        to='mail.MailTemplate',
+        to="mail.MailTemplate",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
         null=True,
         blank=True,
     )
     question_template = models.ForeignKey(
-        to='mail.MailTemplate',
+        to="mail.MailTemplate",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
         null=True,
         blank=True,
     )
     landing_page_text = I18nTextField(
-        verbose_name=_('Landing page text'),
+        verbose_name=_("Landing page text"),
         help_text=_(
-            'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate.'
+            "This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate."
         )
-        + ' '
+        + " "
         + phrases.base.use_markdown,
         null=True,
         blank=True,
     )
-    plugins = models.TextField(null=True, blank=True, verbose_name=_('Plugins'))
+    plugins = models.TextField(null=True, blank=True, verbose_name=_("Plugins"))
 
     template_names = [
-        f'{t}_template' for t in ('accept', 'ack', 'reject', 'update', 'question')
+        f"{t}_template" for t in ("accept", "ack", "reject", "update", "question")
     ]
 
     class urls(EventUrls):
-        base = '/{self.slug}/'
-        login = '{base}login/'
-        logout = '{base}logout'
-        auth = '{base}auth/'
-        logo = '{self.logo.url}'
-        reset = '{base}reset'
-        submit = '{base}submit/'
-        user = '{base}me/'
-        user_delete = '{base}me/delete'
-        user_submissions = '{user}submissions/'
-        user_mails = '{user}mails/'
-        schedule = '{base}schedule/'
-        sneakpeek = '{base}sneak/'
-        talks = '{base}talk/'
-        speakers = '{base}speaker/'
-        changelog = '{schedule}changelog/'
-        feed = '{schedule}feed.xml'
-        export = '{schedule}export/'
-        frab_xml = '{export}schedule.xml'
-        frab_json = '{export}schedule.json'
-        frab_xcal = '{export}schedule.xcal'
-        ical = '{export}schedule.ics'
-        widget_data_source = '{schedule}widget/v1.json'
+        base = "/{self.slug}/"
+        login = "{base}login/"
+        logout = "{base}logout"
+        auth = "{base}auth/"
+        logo = "{self.logo.url}"
+        reset = "{base}reset"
+        submit = "{base}submit/"
+        user = "{base}me/"
+        user_delete = "{base}me/delete"
+        user_submissions = "{user}submissions/"
+        user_mails = "{user}mails/"
+        schedule = "{base}schedule/"
+        sneakpeek = "{base}sneak/"
+        talks = "{base}talk/"
+        speakers = "{base}speaker/"
+        changelog = "{schedule}changelog/"
+        feed = "{schedule}feed.xml"
+        export = "{schedule}export/"
+        frab_xml = "{export}schedule.xml"
+        frab_json = "{export}schedule.json"
+        frab_xcal = "{export}schedule.xcal"
+        ical = "{export}schedule.ics"
+        widget_data_source = "{schedule}widget/v1.json"
 
     class orga_urls(EventUrls):
-        create = '/orga/event/new'
-        base = '/orga/event/{self.slug}/'
-        live = '{base}live'
-        delete = '{base}delete'
-        cfp = '{base}cfp/'
-        users = '{base}api/users'
-        mail = '{base}mails/'
-        compose_mails = '{mail}compose'
-        mail_templates = '{mail}templates/'
-        new_template = '{mail_templates}new'
-        outbox = '{mail}outbox/'
-        sent_mails = '{mail}sent'
-        send_outbox = '{outbox}send'
-        purge_outbox = '{outbox}purge'
-        submissions = '{base}submissions/'
-        submission_cards = '{base}submissions/cards/'
-        stats = '{base}submissions/statistics/'
-        submission_feed = '{base}submissions/feed/'
-        new_submission = '{submissions}new'
-        feedback = '{submissions}feedback/'
-        speakers = '{base}speakers/'
-        settings = edit_settings = '{base}settings/'
-        review_settings = '{settings}review/'
-        mail_settings = edit_mail_settings = '{settings}mail'
-        widget_settings = '{settings}widget'
-        team_settings = '{settings}team/'
-        new_team = '{settings}team/new'
-        room_settings = '{schedule}rooms/'
-        new_room = '{room_settings}new'
-        schedule = '{base}schedule/'
-        schedule_export = '{schedule}export/'
-        schedule_export_trigger = '{schedule_export}trigger'
-        schedule_export_download = '{schedule_export}download'
-        release_schedule = '{schedule}release'
-        reset_schedule = '{schedule}reset'
-        toggle_schedule = '{schedule}toggle'
-        reviews = '{base}reviews/'
-        schedule_api = '{base}schedule/api/'
-        talks_api = '{schedule_api}talks/'
-        plugins = '{settings}plugins'
-        information = '{base}info/'
-        new_information = '{base}info/new'
+        create = "/orga/event/new"
+        base = "/orga/event/{self.slug}/"
+        live = "{base}live"
+        delete = "{base}delete"
+        cfp = "{base}cfp/"
+        users = "{base}api/users"
+        mail = "{base}mails/"
+        compose_mails = "{mail}compose"
+        mail_templates = "{mail}templates/"
+        new_template = "{mail_templates}new"
+        outbox = "{mail}outbox/"
+        sent_mails = "{mail}sent"
+        send_outbox = "{outbox}send"
+        purge_outbox = "{outbox}purge"
+        submissions = "{base}submissions/"
+        submission_cards = "{base}submissions/cards/"
+        stats = "{base}submissions/statistics/"
+        submission_feed = "{base}submissions/feed/"
+        new_submission = "{submissions}new"
+        feedback = "{submissions}feedback/"
+        speakers = "{base}speakers/"
+        settings = edit_settings = "{base}settings/"
+        review_settings = "{settings}review/"
+        mail_settings = edit_mail_settings = "{settings}mail"
+        widget_settings = "{settings}widget"
+        team_settings = "{settings}team/"
+        new_team = "{settings}team/new"
+        room_settings = "{schedule}rooms/"
+        new_room = "{room_settings}new"
+        schedule = "{base}schedule/"
+        schedule_export = "{schedule}export/"
+        schedule_export_trigger = "{schedule_export}trigger"
+        schedule_export_download = "{schedule_export}download"
+        release_schedule = "{schedule}release"
+        reset_schedule = "{schedule}reset"
+        toggle_schedule = "{schedule}toggle"
+        reviews = "{base}reviews/"
+        schedule_api = "{base}schedule/api/"
+        talks_api = "{schedule_api}talks/"
+        plugins = "{settings}plugins"
+        information = "{base}info/"
+        new_information = "{base}info/new"
 
     class api_urls(EventUrls):
-        base = '/api/events/{self.slug}/'
-        submissions = '{base}submissions/'
-        talks = '{base}talks/'
-        schedules = '{base}schedules/'
-        speakers = '{base}speakers/'
-        reviews = '{base}reviews/'
-        rooms = '{base}rooms/'
+        base = "/api/events/{self.slug}/"
+        submissions = "{base}submissions/"
+        talks = "{base}talks/"
+        schedules = "{base}schedules/"
+        speakers = "{base}speakers/"
+        reviews = "{base}reviews/"
+        rooms = "{base}rooms/"
 
     class Meta:
-        ordering = ('date_from',)
+        ordering = ("date_from",)
 
     def __str__(self) -> str:
         return str(self.name)
@@ -340,7 +343,7 @@ class Event(LogMixin, models.Model):
         puts you into an isolated environment for this event, so you
         don't have to prefix your cache keys.
         """
-        return ObjectRelatedCache(self, field='slug')
+        return ObjectRelatedCache(self, field="slug")
 
     def save(self, *args, **kwargs):
         was_created = not bool(self.pk)
@@ -355,7 +358,7 @@ class Event(LogMixin, models.Model):
         attribute setter."""
         if not self.plugins:
             return []
-        return self.plugins.split(',')
+        return self.plugins.split(",")
 
     @plugin_list.setter
     def plugin_list(self, modules: list) -> None:
@@ -365,7 +368,7 @@ class Event(LogMixin, models.Model):
         plugins_available = {
             p.module: p
             for p in get_all_plugins(self)
-            if not p.name.startswith('.') and getattr(p, 'visible', True)
+            if not p.name.startswith(".") and getattr(p, "visible", True)
         }
 
         enable = set(modules) & (set(plugins_available) - plugins_active)
@@ -414,7 +417,7 @@ class Event(LogMixin, models.Model):
 
         sub_type = SubmissionType.objects.filter(event=self).first()
         if not sub_type:
-            sub_type = SubmissionType.objects.create(event=self, name='Talk')
+            sub_type = SubmissionType.objects.create(event=self, name="Talk")
         return sub_type
 
     @cached_property
@@ -471,22 +474,25 @@ class Event(LogMixin, models.Model):
 
             cfp_deadline = self.cfp.deadline
             r = ReviewPhase.objects.create(
-                event=self, name=_('Review'),
+                event=self,
+                name=_("Review"),
                 start=cfp_deadline,
                 end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(not cfp_deadline or cfp_deadline < now()),
                 position=0,
             )
             ReviewPhase.objects.create(
-                event=self, name=_('Selection'),
+                event=self,
+                name=_("Selection"),
                 start=r.end,
                 is_active=False,
                 position=1,
                 can_review=False,
-                can_see_other_reviews='always',
+                can_see_other_reviews="always",
                 can_change_submission_state=True,
             )
         self.save()
+
     build_initial_data.alters_data = True
 
     def _delete_mail_templates(self):
@@ -494,10 +500,11 @@ class Event(LogMixin, models.Model):
             setattr(self, template, None)
         self.save()
         self.mail_templates.all().delete()
+
     _delete_mail_templates.alters_data = True
 
     def copy_data_from(self, other_event):
-        protected_settings = ['custom_domain', 'display_header_data']
+        protected_settings = ["custom_domain", "display_header_data"]
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         for template in self.template_names:
@@ -518,12 +525,13 @@ class Event(LogMixin, models.Model):
                 old_default.delete()
 
         for s in other_event.settings._objects.all():
-            if s.value.startswith('file://') or s.key in protected_settings:
+            if s.value.startswith("file://") or s.key in protected_settings:
                 continue
             s.object = self
             s.pk = None
             s.save()
         self.build_initial_data()  # make sure we get a functioning event
+
     copy_data_from.alters_data = True
 
     @cached_property
@@ -553,7 +561,7 @@ class Event(LogMixin, models.Model):
         the first release.
         """
         return (
-            self.schedules.order_by('-published')
+            self.schedules.order_by("-published")
             .filter(published__isnull=False)
             .first()
         )
@@ -632,11 +640,12 @@ class Event(LogMixin, models.Model):
 
             cfp_deadline = self.cfp.deadline
             phase = ReviewPhase.objects.create(
-                event=self, name=_('Review'),
+                event=self,
+                name=_("Review"),
                 start=cfp_deadline,
                 end=self.date_from - relativedelta(months=-3),
                 is_active=bool(cfp_deadline),
-                can_see_other_reviews='after_review',
+                can_see_other_reviews="after_review",
                 can_see_speaker_names=True,
             )
         return phase
@@ -653,7 +662,7 @@ class Event(LogMixin, models.Model):
         old_phase = self.active_review_phase
         if old_phase:
             future_phases = future_phases.filter(position__gt=old_phase.position)
-        next_phase = future_phases.order_by('position').first()
+        next_phase = future_phases.order_by("position").first()
         if old_phase:
             if old_phase.end:
                 if old_phase.end > _now:
@@ -666,11 +675,12 @@ class Event(LogMixin, models.Model):
             next_phase.activate()
             return next_phase
         return None
+
     update_review_phase.alters_data = True
 
     @cached_property
     def submission_questions(self):
-        return self.questions.filter(target='submission')
+        return self.questions.filter(target="submission")
 
     @cached_property
     def talks(self):
@@ -686,8 +696,8 @@ class Event(LogMixin, models.Model):
                 self.submissions.filter(
                     slots__in=self.current_schedule.talks.filter(is_visible=True)
                 )
-                .select_related('submission_type')
-                .prefetch_related('speakers')
+                .select_related("submission_type")
+                .prefetch_related("speakers")
             )
         return Submission.objects.none()
 
@@ -700,7 +710,7 @@ class Event(LogMixin, models.Model):
         """
         from pretalx.person.models import User
 
-        return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()
+        return User.objects.filter(submissions__in=self.talks).order_by("id").distinct()
 
     @cached_property
     def submitters(self):
@@ -713,14 +723,15 @@ class Event(LogMixin, models.Model):
 
         return (
             User.objects.filter(submissions__in=self.submissions.all())
-            .prefetch_related('submissions')
-            .order_by('id')
+            .prefetch_related("submissions")
+            .order_by("id")
             .distinct()
         )
 
     @cached_property
     def cfp_flow(self):
         from pretalx.cfp.flow import CfPFlow
+
         return CfPFlow(self)
 
     def get_date_range_display(self) -> str:
@@ -731,7 +742,7 @@ class Event(LogMixin, models.Model):
         """
         return daterange(self.date_from, self.date_to)
 
-    def release_schedule(self, name: str, user=None, notify_speakers: bool=False):
+    def release_schedule(self, name: str, user=None, notify_speakers: bool = False):
         """Releases a new :class:`~pretalx.schedule.models.schedule.Schedule`
         by finalizing the current WIP schedule.
 
@@ -741,6 +752,7 @@ class Event(LogMixin, models.Model):
         :type user: :class:`~pretalx.person.models.user.User`
         """
         self.wip_schedule.freeze(name=name, user=user, notify_speakers=notify_speakers)
+
     release_schedule.alters_data = True
 
     def send_orga_mail(self, text, stats=False):
@@ -748,27 +760,27 @@ class Event(LogMixin, models.Model):
         from pretalx.mail.models import QueuedMail
 
         context = {
-            'event_dashboard': self.orga_urls.base.full(),
-            'event_review': self.orga_urls.reviews.full(),
-            'event_schedule': self.orga_urls.schedule.full(),
-            'event_submissions': self.orga_urls.submissions.full(),
-            'event_team': self.orga_urls.team_settings.full(),
-            'submission_count': self.submissions.all().count(),
+            "event_dashboard": self.orga_urls.base.full(),
+            "event_review": self.orga_urls.reviews.full(),
+            "event_schedule": self.orga_urls.schedule.full(),
+            "event_submissions": self.orga_urls.submissions.full(),
+            "event_team": self.orga_urls.team_settings.full(),
+            "submission_count": self.submissions.all().count(),
         }
         if stats:
             context.update(
                 {
-                    'talk_count': self.current_schedule.talks.filter(
+                    "talk_count": self.current_schedule.talks.filter(
                         is_visible=True
                     ).count(),
-                    'review_count': self.reviews.count(),
-                    'schedule_count': self.schedules.count() - 1,
-                    'mail_count': self.queued_mails.filter(sent__isnull=False).count(),
+                    "review_count": self.reviews.count(),
+                    "schedule_count": self.schedules.count() - 1,
+                    "mail_count": self.queued_mails.filter(sent__isnull=False).count(),
                 }
             )
         with override(self.locale):
             QueuedMail(
-                subject=_('News from your content system'),
+                subject=_("News from your content system"),
                 text=str(text).format(**context),
                 to=self.email,
             ).send()
@@ -813,4 +825,5 @@ class Event(LogMixin, models.Model):
         self._delete_mail_templates()
         for entry in deletion_order:
             entry.delete()
+
     shred.alters_data = True

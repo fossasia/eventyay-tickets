@@ -8,19 +8,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0008_alter_user_username_max_length'),
-        ('person', '0008_data_populate_user_code'),
+        ("auth", "0008_alter_user_username_max_length"),
+        ("person", "0008_data_populate_user_code"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='groups',
-            field=models.ManyToManyField(blank=True, related_name='user_set', related_query_name='user', to='auth.Group'),
+            model_name="user",
+            name="groups",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Group",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, related_name='user_set', related_query_name='user', to='auth.Permission'),
+            model_name="user",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Permission",
+            ),
         ),
     ]

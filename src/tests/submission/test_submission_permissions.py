@@ -2,7 +2,11 @@ import pytest
 from django_scopes import scope
 
 from pretalx.submission.permissions import (
-    can_be_canceled, can_be_removed, can_be_reviewed, has_submissions, is_speaker,
+    can_be_canceled,
+    can_be_removed,
+    can_be_reviewed,
+    has_submissions,
+    is_speaker,
 )
 
 

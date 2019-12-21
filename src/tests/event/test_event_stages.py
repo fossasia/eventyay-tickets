@@ -9,20 +9,20 @@ from pretalx.event.stages import STAGE_ORDER, in_stage
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    'target,is_public,from_delta,to_delta,deadline_delta,has_submissions',
+    "target,is_public,from_delta,to_delta,deadline_delta,has_submissions",
     (
-        ('PREPARATION', False, 2, 3, 1, False),
-        ('PREPARATION', False, 2, 3, 1, True),
-        ('CFP_OPEN', True, 2, 3, 1, False),
-        ('CFP_OPEN', True, 2, 3, 1, True),
-        ('REVIEW', True, 2, 3, -1, True),
-        ('SCHEDULE', True, 2, 3, -1, False),
-        ('EVENT', True, -2, 3, -1, False),
-        ('EVENT', True, -2, 3, -1, True),
-        ('EVENT', True, 0, 0, -1, False),
-        ('EVENT', True, 0, 0, -1, True),
-        ('WRAPUP', True, -2, -1, -1, True),
-        ('WRAPUP', True, -2, -1, -1, False),
+        ("PREPARATION", False, 2, 3, 1, False),
+        ("PREPARATION", False, 2, 3, 1, True),
+        ("CFP_OPEN", True, 2, 3, 1, False),
+        ("CFP_OPEN", True, 2, 3, 1, True),
+        ("REVIEW", True, 2, 3, -1, True),
+        ("SCHEDULE", True, 2, 3, -1, False),
+        ("EVENT", True, -2, 3, -1, False),
+        ("EVENT", True, -2, 3, -1, True),
+        ("EVENT", True, 0, 0, -1, False),
+        ("EVENT", True, 0, 0, -1, True),
+        ("WRAPUP", True, -2, -1, -1, True),
+        ("WRAPUP", True, -2, -1, -1, False),
     ),
 )
 def test_event_stages(
@@ -45,7 +45,7 @@ def test_event_stages(
         event.cfp.save()
         event = event.__class__.objects.get(pk=event.pk)
         if not has_submissions:
-            submission.state = 'DELETED'
+            submission.state = "DELETED"
             submission.save()
         for stage in STAGE_ORDER:
             assert in_stage(event, stage) == (

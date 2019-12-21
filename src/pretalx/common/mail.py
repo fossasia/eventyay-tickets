@@ -21,13 +21,13 @@ class CustomSMTPBackend(EmailBackend):
             (code, resp) = self.connection.mail(from_addr, [])
             if code != 250:
                 logger.warning(
-                    f'Error testing mail settings, code {code}, resp: {resp}'
+                    f"Error testing mail settings, code {code}, resp: {resp}"
                 )
                 raise SMTPSenderRefused(code, resp, sender=from_addr)
-            (code, resp) = self.connection.rcpt('test@example.com')
+            (code, resp) = self.connection.rcpt("test@example.com")
             if code not in (250, 251):
                 logger.warning(
-                    f'Error testing mail settings, code {code}, resp: {resp}'
+                    f"Error testing mail settings, code {code}, resp: {resp}"
                 )
                 raise SMTPSenderRefused(code, resp, sender=from_addr)
         finally:
@@ -57,26 +57,37 @@ def mail_send_task(
     bcc: list = None,
     headers: dict = None,
 ):
-    reply_to = [] if not reply_to or (len(reply_to) == 1 and reply_to[0] == '') else reply_to
-    reply_to = reply_to.split(',') if isinstance(reply_to, str) else reply_to
+    reply_to = (
+        [] if not reply_to or (len(reply_to) == 1 and reply_to[0] == "") else reply_to
+    )
+    reply_to = reply_to.split(",") if isinstance(reply_to, str) else reply_to
     if event:
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()
-        sender = event.settings.get('mail_from')
-        if not reply_to and event.settings.get('mail_reply_to'):
-            reply_to = [formataddr((str(event.name), event.settings.get('mail_reply_to')))]
-        if not sender or sender == 'noreply@example.org':
+        sender = event.settings.get("mail_from")
+        if not reply_to and event.settings.get("mail_reply_to"):
+            reply_to = [
+                formataddr((str(event.name), event.settings.get("mail_reply_to")))
+            ]
+        if not sender or sender == "noreply@example.org":
             reply_to = reply_to or [formataddr((str(event.name), event.email))]
         sender = formataddr((str(event.name), sender or settings.MAIL_FROM))
     else:
-        sender = formataddr(('pretalx', settings.MAIL_FROM))
+        sender = formataddr(("pretalx", settings.MAIL_FROM))
         backend = get_connection(fail_silently=False)
 
     email = EmailMultiAlternatives(
-        subject, body, sender, to=to, cc=cc, bcc=bcc, headers=headers or {}, reply_to=reply_to
+        subject,
+        body,
+        sender,
+        to=to,
+        cc=cc,
+        bcc=bcc,
+        headers=headers or {},
+        reply_to=reply_to,
     )
     if html is not None:
-        email.attach_alternative(inline_css(html), 'text/html')
+        email.attach_alternative(inline_css(html), "text/html")
 
     try:
         backend.send_messages([email])
@@ -85,8 +96,12 @@ def mail_send_task(
         # out of memory (431), network issues (442), another timeout (447), or too many mails sent (452)
         if exception.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
             self.retry(max_retries=5, countdown=2 ** (self.request.retries * 2))
-        logger.exception('Error sending email')
-        raise SendMailException('Failed to send an email to {}: {}'.format(to, exception))
+        logger.exception("Error sending email")
+        raise SendMailException(
+            "Failed to send an email to {}: {}".format(to, exception)
+        )
     except Exception as exception:
-        logger.exception('Error sending email')
-        raise SendMailException('Failed to send an email to {}: {}'.format(to, exception))
+        logger.exception("Error sending email")
+        raise SendMailException(
+            "Failed to send an email to {}: {}".format(to, exception)
+        )

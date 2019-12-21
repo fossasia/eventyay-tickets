@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0025_auto_20180619_1522'),
+        ("submission", "0025_auto_20180619_1522"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='max_length',
+            model_name="question",
+            name="max_length",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='question',
-            name='min_length',
+            model_name="question",
+            name="min_length",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='content_locale',
-            field=models.CharField(default='en', max_length=32),
+            model_name="submission",
+            name="content_locale",
+            field=models.CharField(default="en", max_length=32),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='state',
-            field=models.CharField(default='submitted', max_length=9),
+            model_name="submission",
+            name="state",
+            field=models.CharField(default="submitted", max_length=9),
         ),
     ]

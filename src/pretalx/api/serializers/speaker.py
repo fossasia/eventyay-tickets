@@ -1,5 +1,8 @@
 from rest_framework.serializers import (
-    CharField, ImageField, ModelSerializer, SerializerMethodField,
+    CharField,
+    ImageField,
+    ModelSerializer,
+    SerializerMethodField,
 )
 
 from pretalx.api.serializers.question import AnswerSerializer
@@ -13,23 +16,23 @@ class SubmitterSerializer(ModelSerializer):
     biography = SerializerMethodField()
 
     def get_biography(self, obj):
-        if self.context.get('request') and self.context['request'].event:
+        if self.context.get("request") and self.context["request"].event:
             return getattr(
-                obj.profiles.filter(event=self.context['request'].event).first(),
-                'biography',
-                '',
+                obj.profiles.filter(event=self.context["request"].event).first(),
+                "biography",
+                "",
             )
-        return ''
+        return ""
 
     class Meta:
         model = User
-        fields = ('code', 'name', 'biography', 'avatar')
+        fields = ("code", "name", "biography", "avatar")
 
 
 class SpeakerSerializer(ModelSerializer):
-    code = CharField(source='user.code')
-    name = CharField(source='user.name')
-    avatar = ImageField(source='user.avatar')
+    code = CharField(source="user.code")
+    name = CharField(source="user.name")
+    avatar = ImageField(source="user.avatar")
     submissions = SerializerMethodField()
 
     @staticmethod
@@ -39,22 +42,24 @@ class SpeakerSerializer(ModelSerializer):
         )
         return obj.user.submissions.filter(
             event=obj.event, slots__in=talks
-        ).values_list('code', flat=True)
+        ).values_list("code", flat=True)
 
     class Meta:
         model = SpeakerProfile
-        fields = ('code', 'name', 'biography', 'submissions', 'avatar')
+        fields = ("code", "name", "biography", "submissions", "avatar")
 
 
 class SpeakerOrgaSerializer(SpeakerSerializer):
-    email = CharField(source='user.email')
+    email = CharField(source="user.email")
     answers = AnswerSerializer(Answer.objects.none(), many=True, read_only=True)
-    availabilities = AvailabilitySerializer(Availability.objects.none(), many=True, read_only=True)
+    availabilities = AvailabilitySerializer(
+        Availability.objects.none(), many=True, read_only=True
+    )
 
     def get_submissions(self, obj):
         return obj.user.submissions.filter(event=obj.event).values_list(
-            'code', flat=True
+            "code", flat=True
         )
 
     class Meta(SpeakerSerializer.Meta):
-        fields = SpeakerSerializer.Meta.fields + ('answers', 'email', 'availabilities')
+        fields = SpeakerSerializer.Meta.fields + ("answers", "email", "availabilities")

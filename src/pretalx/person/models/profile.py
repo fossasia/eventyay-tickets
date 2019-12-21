@@ -17,41 +17,42 @@ class SpeakerProfile(LogMixin, models.Model):
     :param has_arrived: Can be set to track speaker arrival. Will be used in
         warnings about missing speakers.
     """
+
     user = models.ForeignKey(
-        to='person.User',
-        related_name='profiles',
+        to="person.User",
+        related_name="profiles",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     event = models.ForeignKey(
-        to='event.Event', related_name='+', on_delete=models.CASCADE
+        to="event.Event", related_name="+", on_delete=models.CASCADE
     )
     biography = models.TextField(
-        verbose_name=_('Biography'),
+        verbose_name=_("Biography"),
         help_text=phrases.base.use_markdown,
         null=True,
         blank=True,
     )
     has_arrived = models.BooleanField(
-        default=False, verbose_name=_('The speaker has arrived')
+        default=False, verbose_name=_("The speaker has arrived")
     )
 
-    objects = ScopedManager(event='event')
+    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
-        public = '{self.event.urls.base}speaker/{self.user.code}/'
-        talks_ical = '{self.urls.public}talks.ics'
+        public = "{self.event.urls.base}speaker/{self.user.code}/"
+        talks_ical = "{self.urls.public}talks.ics"
 
     class orga_urls(EventUrls):
-        base = '{self.event.orga_urls.speakers}{self.user.id}/'
-        password_reset = '{self.event.orga_urls.speakers}{self.user.id}/reset'
-        toggle_arrived = '{self.event.orga_urls.speakers}{self.user.id}/toggle-arrived'
+        base = "{self.event.orga_urls.speakers}{self.user.id}/"
+        password_reset = "{self.event.orga_urls.speakers}{self.user.id}/reset"
+        toggle_arrived = "{self.event.orga_urls.speakers}{self.user.id}/toggle-arrived"
 
     def __str__(self):
         """Help when debugging."""
         user = self.user.get_display_name() if self.user else None
-        return f'SpeakerProfile(event={self.event.slug}, user={user})'
+        return f"SpeakerProfile(event={self.event.slug}, user={user})"
 
     @cached_property
     def code(self):
@@ -74,6 +75,7 @@ class SpeakerProfile(LogMixin, models.Model):
         this user that have been accepted or confirmed on this event.
         """
         from pretalx.submission.models.submission import SubmissionStates
+
         return self.submissions.filter(
             state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
         )

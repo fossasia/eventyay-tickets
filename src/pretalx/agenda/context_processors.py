@@ -6,5 +6,5 @@ def is_html_export(request):
     the form HTTP_ORIGINAL_NAME, so that 'is_html_export' cannot be
     faked from the outside.
     """
-    context = {'is_html_export': request.META.get('is_html_export') is True}
+    context = {"is_html_export": request.META.get("is_html_export") is True}
     return context

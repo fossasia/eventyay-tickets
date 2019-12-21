@@ -9,13 +9,17 @@ import pretalx.event.models.event
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0004_event_update_template'),
+        ("event", "0004_event_update_template"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='custom_css',
-            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_css_path),
+            model_name="event",
+            name="custom_css",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=pretalx.event.models.event.event_css_path,
+            ),
         ),
     ]

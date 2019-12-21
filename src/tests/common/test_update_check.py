@@ -9,36 +9,38 @@ from django.utils.timezone import now
 from pretalx import __version__
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.update_check import (
-    check_result_table, run_update_check, update_check,
+    check_result_table,
+    run_update_check,
+    update_check,
 )
 
 
 def request_callback_updatable(request):
     json_data = json.loads(request.body.decode())
     resp_body = {
-        'status': 'ok',
-        'version': {
-            'latest': '1000.0.0',
-            'yours': json_data.get('version'),
-            'updatable': True
+        "status": "ok",
+        "version": {
+            "latest": "1000.0.0",
+            "yours": json_data.get("version"),
+            "updatable": True,
         },
-        'plugins': {}
+        "plugins": {},
     }
-    return 200, {'Content-Type': 'text/json'}, json.dumps(resp_body)
+    return 200, {"Content-Type": "text/json"}, json.dumps(resp_body)
 
 
 def request_callback_not_updatable(request):
     json_data = json.loads(request.body.decode())
     resp_body = {
-        'status': 'ok',
-        'version': {
-            'latest': '1.0.0',
-            'yours': json_data.get('version'),
-            'updatable': False
+        "status": "ok",
+        "version": {
+            "latest": "1.0.0",
+            "yours": json_data.get("version"),
+            "updatable": False,
         },
-        'plugins': {}
+        "plugins": {},
     }
-    return 200, {'Content-Type': 'text/json'}, json.dumps(resp_body)
+    return 200, {"Content-Type": "text/json"}, json.dumps(resp_body)
 
 
 def request_callback_disallowed(request):
@@ -52,9 +54,10 @@ def test_update_check_disabled():
     gs.settings.update_check_enabled = False
 
     responses.add_callback(
-        responses.POST, 'https://pretalx.com/.update_check/',
+        responses.POST,
+        "https://pretalx.com/.update_check/",
         callback=request_callback_disallowed,
-        content_type='application/json',
+        content_type="application/json",
     )
     update_check.apply(throw=True)
 
@@ -63,61 +66,65 @@ def test_update_check_disabled():
 @responses.activate
 def test_update_check_sent_no_updates():
     responses.add_callback(
-        responses.POST, 'https://pretalx.com/.update_check/',
+        responses.POST,
+        "https://pretalx.com/.update_check/",
         callback=request_callback_not_updatable,
-        content_type='application/json',
+        content_type="application/json",
     )
     update_check.apply(throw=True)
     gs = GlobalSettings()
     assert not gs.settings.update_check_result_warning
     storeddata = gs.settings.update_check_result
-    assert not storeddata['version']['updatable']
+    assert not storeddata["version"]["updatable"]
 
 
 @pytest.mark.django_db
 @responses.activate
 def test_update_check_sent_updates():
     responses.add_callback(
-        responses.POST, 'https://pretalx.com/.update_check/',
+        responses.POST,
+        "https://pretalx.com/.update_check/",
         callback=request_callback_updatable,
-        content_type='application/json',
+        content_type="application/json",
     )
     update_check.apply(throw=True)
     gs = GlobalSettings()
     assert gs.settings.update_check_result_warning
     storeddata = gs.settings.update_check_result
-    assert storeddata['version']['updatable']
+    assert storeddata["version"]["updatable"]
 
 
 @pytest.mark.django_db
 @responses.activate
 def test_update_check_mail_sent():
     gs = GlobalSettings()
-    gs.settings.update_check_email = 'test@example.org'
+    gs.settings.update_check_email = "test@example.org"
 
     responses.add_callback(
-        responses.POST, 'https://pretalx.com/.update_check/',
+        responses.POST,
+        "https://pretalx.com/.update_check/",
         callback=request_callback_updatable,
-        content_type='application/json',
+        content_type="application/json",
     )
     update_check.apply(throw=True)
 
     assert len(djmail.outbox) == 1
-    assert djmail.outbox[0].to == ['test@example.org']
-    assert 'update' in djmail.outbox[0].subject
+    assert djmail.outbox[0].to == ["test@example.org"]
+    assert "update" in djmail.outbox[0].subject
 
 
 @pytest.mark.django_db
 @responses.activate
 def test_update_check_mail_sent_only_after_change():
     gs = GlobalSettings()
-    gs.settings.update_check_email = 'test@example.org'
+    gs.settings.update_check_email = "test@example.org"
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretalx.com/.update_check/',
+            responses.POST,
+            "https://pretalx.com/.update_check/",
             callback=request_callback_updatable,
-            content_type='application/json',
+            content_type="application/json",
         )
 
         update_check.apply(throw=True)
@@ -128,9 +135,10 @@ def test_update_check_mail_sent_only_after_change():
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretalx.com/.update_check/',
+            responses.POST,
+            "https://pretalx.com/.update_check/",
             callback=request_callback_not_updatable,
-            content_type='application/json',
+            content_type="application/json",
         )
 
         update_check.apply(throw=True)
@@ -138,9 +146,10 @@ def test_update_check_mail_sent_only_after_change():
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretalx.com/.update_check/',
+            responses.POST,
+            "https://pretalx.com/.update_check/",
             callback=request_callback_updatable,
-            content_type='application/json',
+            content_type="application/json",
         )
 
         update_check.apply(throw=True)
@@ -155,10 +164,10 @@ def test_update_cron_interval(monkeypatch):
         nonlocal called
         called = True
 
-    monkeypatch.setattr(update_check, 'apply_async', callee)
+    monkeypatch.setattr(update_check, "apply_async", callee)
 
     gs = GlobalSettings()
-    gs.settings.update_check_email = 'test@example.org'
+    gs.settings.update_check_email = "test@example.org"
 
     gs.settings.update_check_last = now() - timedelta(hours=14)
     run_update_check(None)
@@ -171,21 +180,20 @@ def test_update_cron_interval(monkeypatch):
 
 @pytest.mark.django_db
 def test_result_table_empty():
-    assert check_result_table() == {
-        'error': 'no_result'
-    }
+    assert check_result_table() == {"error": "no_result"}
 
 
 @responses.activate
 @pytest.mark.django_db
 def test_result_table_up2date():
     responses.add_callback(
-        responses.POST, 'https://pretalx.com/.update_check/',
+        responses.POST,
+        "https://pretalx.com/.update_check/",
         callback=request_callback_not_updatable,
-        content_type='application/json',
+        content_type="application/json",
     )
     update_check.apply(throw=True)
     tbl = check_result_table()
-    assert tbl[0] == ('pretalx', __version__, '1.0.0', False)
-    assert tbl[1][0].startswith('Plugin: ')
-    assert tbl[1][2] == '?'
+    assert tbl[0] == ("pretalx", __version__, "1.0.0", False)
+    assert tbl[1][0].startswith("Plugin: ")
+    assert tbl[1][2] == "?"

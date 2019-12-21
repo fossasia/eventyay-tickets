@@ -9,13 +9,16 @@ import pretalx.submission.models.submission
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0010_auto_20171006_1118'),
+        ("submission", "0010_auto_20171006_1118"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='invitation_token',
-            field=models.CharField(default=pretalx.submission.models.submission.generate_invite_code, max_length=32),
+            model_name="submission",
+            name="invitation_token",
+            field=models.CharField(
+                default=pretalx.submission.models.submission.generate_invite_code,
+                max_length=32,
+            ),
         ),
     ]

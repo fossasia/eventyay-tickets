@@ -12,74 +12,97 @@ def get_schedule_urls(regex_prefix, name_prefix=""):
     /schedule.json, /schedule/feed.xml, ...)
     """
 
-    regex_prefix = regex_prefix.rstrip('/')
+    regex_prefix = regex_prefix.rstrip("/")
 
     return [
-        url(f'{regex_prefix}{regex}', view, name=f'{name_prefix}{name}')
+        url(f"{regex_prefix}{regex}", view, name=f"{name_prefix}{name}")
         for regex, view, name in [
-            ('/$', schedule.ScheduleView.as_view(), 'schedule'),
-            ('.xml$', schedule.ExporterView.as_view(), 'export.schedule.xml'),
-            ('.xcal$', schedule.ExporterView.as_view(), 'export.schedule.xcal'),
-            ('.json$', schedule.ExporterView.as_view(), 'export.schedule.json'),
-            ('.ics$', schedule.ExporterView.as_view(), 'export.schedule.ics'),
-            ('/export/(?P<name>[A-Za-z.-]+)$', schedule.ExporterView.as_view(), 'export'),
+            ("/$", schedule.ScheduleView.as_view(), "schedule"),
+            (".xml$", schedule.ExporterView.as_view(), "export.schedule.xml"),
+            (".xcal$", schedule.ExporterView.as_view(), "export.schedule.xcal"),
+            (".json$", schedule.ExporterView.as_view(), "export.schedule.json"),
+            (".ics$", schedule.ExporterView.as_view(), "export.schedule.ics"),
+            (
+                "/export/(?P<name>[A-Za-z.-]+)$",
+                schedule.ExporterView.as_view(),
+                "export",
+            ),
         ]
     ]
 
 
-app_name = 'agenda'
+app_name = "agenda"
 urlpatterns = [
     url(
-        fr'^(?P<event>[{SLUG_CHARS}]+)/',
+        fr"^(?P<event>[{SLUG_CHARS}]+)/",
         include(
             [
-                url(r'^schedule/changelog/$', schedule.ChangelogView.as_view(), name='schedule.changelog'),
-                url(r'^schedule/feed.xml$', feed.ScheduleFeed(), name='feed'),
-                url(r'^schedule/widget/v1.(?P<locale>[a-z]{2}).js$', widget.widget_script, name='widget.script'),
-                url(r'^schedule/widget/v1.css$', widget.widget_style, name='widget.style'),
-                url(r'^schedule/widget/v1.json$', widget.WidgetData.as_view(), name='widget.data'),
-
-                *get_schedule_urls('^schedule'),
-                *get_schedule_urls('^schedule/v/(?P<version>.+)', 'versioned-'),
-                url(r'^sneak/$', sneakpeek.SneakpeekView.as_view(), name='sneak'),
-                url(r'^speaker/$', talk.SpeakerList.as_view(), name='speakers'),
-                url(r'^speaker/by-id/(?P<pk>\d+)/$', speaker.SpeakerRedirect.as_view(), name='speaker.redirect'),
-                url(r'^talk/$', talk.TalkList.as_view(), name='talks'),
-                url(r'^talk/(?P<slug>\w+)/$', talk.TalkView.as_view(), name='talk'),
                 url(
-                    r'^talk/(?P<slug>\w+)/feedback/$',
+                    r"^schedule/changelog/$",
+                    schedule.ChangelogView.as_view(),
+                    name="schedule.changelog",
+                ),
+                url(r"^schedule/feed.xml$", feed.ScheduleFeed(), name="feed"),
+                url(
+                    r"^schedule/widget/v1.(?P<locale>[a-z]{2}).js$",
+                    widget.widget_script,
+                    name="widget.script",
+                ),
+                url(
+                    r"^schedule/widget/v1.css$",
+                    widget.widget_style,
+                    name="widget.style",
+                ),
+                url(
+                    r"^schedule/widget/v1.json$",
+                    widget.WidgetData.as_view(),
+                    name="widget.data",
+                ),
+                *get_schedule_urls("^schedule"),
+                *get_schedule_urls("^schedule/v/(?P<version>.+)", "versioned-"),
+                url(r"^sneak/$", sneakpeek.SneakpeekView.as_view(), name="sneak"),
+                url(r"^speaker/$", talk.SpeakerList.as_view(), name="speakers"),
+                url(
+                    r"^speaker/by-id/(?P<pk>\d+)/$",
+                    speaker.SpeakerRedirect.as_view(),
+                    name="speaker.redirect",
+                ),
+                url(r"^talk/$", talk.TalkList.as_view(), name="talks"),
+                url(r"^talk/(?P<slug>\w+)/$", talk.TalkView.as_view(), name="talk"),
+                url(
+                    r"^talk/(?P<slug>\w+)/feedback/$",
                     talk.FeedbackView.as_view(),
-                    name='feedback',
+                    name="feedback",
                 ),
                 url(
-                    r'^talk/(?P<slug>\w+).ics$',
+                    r"^talk/(?P<slug>\w+).ics$",
                     talk.SingleICalView.as_view(),
-                    name='ical',
+                    name="ical",
                 ),
                 url(
-                    r'^talk/review/(?P<slug>\w+)$',
+                    r"^talk/review/(?P<slug>\w+)$",
                     talk.TalkReviewView.as_view(),
-                    name='review',
+                    name="review",
                 ),
                 url(
-                    r'^speaker/(?P<code>\w+)/$',
+                    r"^speaker/(?P<code>\w+)/$",
                     speaker.SpeakerView.as_view(),
-                    name='speaker',
+                    name="speaker",
                 ),
                 url(
-                    r'^speaker/(?P<code>\w+)/talks.ics$',
+                    r"^speaker/(?P<code>\w+)/talks.ics$",
                     speaker.SpeakerTalksIcalView.as_view(),
-                    name='speaker.talks.ical',
+                    name="speaker.talks.ical",
                 ),
             ]
         ),
     ),
     url(
-        r'^sw.js',
+        r"^sw.js",
         get_static,
         {
-            'path': 'agenda/js/serviceworker.js',
-            'content_type': 'application/javascript',
+            "path": "agenda/js/serviceworker.js",
+            "content_type": "application/javascript",
         },
     ),
 ]

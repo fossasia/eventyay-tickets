@@ -8,12 +8,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0003_auto_20170523_1144'),
+        ("schedule", "0003_auto_20170523_1144"),
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='room',
-            options={'ordering': ('position',)},
-        ),
+        migrations.AlterModelOptions(name="room", options={"ordering": ("position",)},),
     ]

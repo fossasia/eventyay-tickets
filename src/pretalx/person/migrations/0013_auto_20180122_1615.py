@@ -5,13 +5,15 @@ from django.db import migrations
 
 def create_administrators(apps, schema_editor):
     User = apps.get_model("person", "User")
-    User.objects.filter(is_superuser=True).update(is_superuser=False, is_administrator=True)
+    User.objects.filter(is_superuser=True).update(
+        is_superuser=False, is_administrator=True
+    )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('person', '0012_user_is_administrator'),
+        ("person", "0012_user_is_administrator"),
     ]
 
     operations = [

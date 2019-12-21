@@ -2,7 +2,9 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 
 from pretalx.orga.permissions import (
-    can_change_event_settings, can_change_organiser_settings, can_change_teams,
+    can_change_event_settings,
+    can_change_organiser_settings,
+    can_change_teams,
 )
 
 

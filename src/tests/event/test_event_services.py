@@ -13,7 +13,9 @@ from pretalx.event.services import periodic_event_services, task_periodic_event_
 @pytest.mark.django_db
 def test_task_periodic_event_created(event):
     djmail.outbox = []
-    log = ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    log = ActivityLog.objects.create(
+        event=event, content_object=event, action_type="test"
+    )
     assert str(event) in str(log)
     assert not event.settings.sent_mail_event_created
     task_periodic_event_services(event.slug)
@@ -29,8 +31,12 @@ def test_task_periodic_event_created(event):
 def test_task_periodic_event_created_long_ago(event):
     djmail.outbox = []
     with scopes_disabled():
-        ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-        ActivityLog.objects.filter(event=event).update(timestamp=now() - dt.timedelta(days=11))
+        ActivityLog.objects.create(
+            event=event, content_object=event, action_type="test"
+        )
+        ActivityLog.objects.filter(event=event).update(
+            timestamp=now() - dt.timedelta(days=11)
+        )
         event.cfp.deadline = now() - dt.timedelta(days=10)
         event.cfp.save()
     assert not event.settings.sent_mail_event_created
@@ -43,7 +49,7 @@ def test_task_periodic_event_created_long_ago(event):
 @pytest.mark.django_db
 def test_task_periodic_cfp_closed(event):
     djmail.outbox = []
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    ActivityLog.objects.create(event=event, content_object=event, action_type="test")
     event.cfp.deadline = now() - dt.timedelta(hours=1)
     event.cfp.save()
     assert not event.settings.sent_mail_cfp_closed
@@ -59,7 +65,7 @@ def test_task_periodic_cfp_closed(event):
 @pytest.mark.django_db
 def test_task_periodic_event_over(event, slot):
     djmail.outbox = []
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    ActivityLog.objects.create(event=event, content_object=event, action_type="test")
     event.date_to = now() - dt.timedelta(days=1)
     event.save()
     assert not event.settings.sent_mail_cfp_closed
@@ -75,7 +81,7 @@ def test_task_periodic_event_over(event, slot):
 @pytest.mark.django_db
 def test_task_periodic_event_over_no_talks(event):
     djmail.outbox = []
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    ActivityLog.objects.create(event=event, content_object=event, action_type="test")
     event.date_to = now() - dt.timedelta(days=1)
     event.save()
     assert not event.settings.sent_mail_cfp_closed
@@ -91,7 +97,7 @@ def test_task_periodic_event_over_no_talks(event):
 @pytest.mark.django_db
 def test_periodic_event_services(event):
     djmail.outbox = []
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
+    ActivityLog.objects.create(event=event, content_object=event, action_type="test")
     assert not event.settings.sent_mail_event_created
     periodic_event_services(event.slug)
     event = event.__class__.objects.get(slug=event.slug)
@@ -100,22 +106,26 @@ def test_periodic_event_services(event):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'lalala',
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "lalala",
+        }
     }
-})
-@pytest.mark.parametrize('should_rebuild_schedule', (True, False))
-def test_periodic_event_services_schedule_export(event, schedule, should_rebuild_schedule):
-    ActivityLog.objects.create(event=event, content_object=event, action_type='test')
-    event.cache.set('rebuild_schedule_export', should_rebuild_schedule)
-    assert event.cache.get('rebuild_schedule_export') is should_rebuild_schedule
+)
+@pytest.mark.parametrize("should_rebuild_schedule", (True, False))
+def test_periodic_event_services_schedule_export(
+    event, schedule, should_rebuild_schedule
+):
+    ActivityLog.objects.create(event=event, content_object=event, action_type="test")
+    event.cache.set("rebuild_schedule_export", should_rebuild_schedule)
+    assert event.cache.get("rebuild_schedule_export") is should_rebuild_schedule
     periodic_event_services(event.slug)
     event = event.__class__.objects.get(slug=event.slug)
-    assert not event.cache.get('rebuild_schedule_export')
+    assert not event.cache.get("rebuild_schedule_export")
 
 
 @pytest.mark.django_db
 def test_periodic_event_fail():
-    task_periodic_event_services('lololol')
+    task_periodic_event_services("lololol")

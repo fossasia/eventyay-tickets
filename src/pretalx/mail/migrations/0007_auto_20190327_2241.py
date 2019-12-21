@@ -7,13 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mail', '0006_populate_mail_users'),
+        ("mail", "0006_populate_mail_users"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='queuedmail',
-            name='event',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='queued_mails', to='event.Event'),
+            model_name="queuedmail",
+            name="event",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="queued_mails",
+                to="event.Event",
+            ),
         ),
     ]

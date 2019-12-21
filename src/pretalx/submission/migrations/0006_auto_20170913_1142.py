@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0005_auto_20170902_0800'),
+        ("submission", "0005_auto_20170902_0800"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='abstract',
+            model_name="submission",
+            name="abstract",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='description',
+            model_name="submission",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
     ]

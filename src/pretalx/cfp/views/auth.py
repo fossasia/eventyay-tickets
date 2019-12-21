@@ -27,12 +27,12 @@ class LogoutView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         logout(request)
         return redirect(
-            reverse('cfp:event.start', kwargs={'event': self.request.event.slug})
+            reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
         )
 
 
 class LoginView(GenericLoginView):
-    template_name = 'cfp/event/login.html'
+    template_name = "cfp/event/login.html"
 
     def get_error_url(self):
         return self.request.event.urls.base
@@ -45,14 +45,14 @@ class LoginView(GenericLoginView):
 
 
 class ResetView(EventPageMixin, GenericResetView):
-    template_name = 'cfp/event/reset.html'
+    template_name = "cfp/event/reset.html"
 
     def get_success_url(self):
-        return reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
+        return reverse("cfp:event.login", kwargs={"event": self.request.event.slug})
 
 
 class RecoverView(FormView):
-    template_name = 'cfp/event/recover.html'
+    template_name = "cfp/event/recover.html"
     form_class = RecoverForm
 
     def __init__(self, **kwargs):
@@ -62,25 +62,25 @@ class RecoverView(FormView):
     def dispatch(self, request, *args, **kwargs):
         try:
             self.user = User.objects.get(
-                pw_reset_token=kwargs.get('token'),
+                pw_reset_token=kwargs.get("token"),
                 pw_reset_time__gte=now() - dt.timedelta(days=1),
             )
         except User.DoesNotExist:
             messages.error(self.request, phrases.cfp.auth_reset_fail)
             return redirect(
-                reverse('cfp:event.reset', kwargs={'event': kwargs.get('event')})
+                reverse("cfp:event.reset", kwargs={"event": kwargs.get("event")})
             )
 
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.user.set_password(form.cleaned_data['password'])
+        self.user.set_password(form.cleaned_data["password"])
         self.user.pw_reset_token = None
         self.user.pw_reset_time = None
         self.user.save()
         messages.success(self.request, phrases.cfp.auth_reset_success)
         return redirect(
-            reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
+            reverse("cfp:event.login", kwargs={"event": self.request.event.slug})
         )
 
 
@@ -93,30 +93,30 @@ class EventAuth(View):
 
     @staticmethod
     def post(request, *args, **kwargs):
-        store = SessionStore(request.POST.get('session'))
+        store = SessionStore(request.POST.get("session"))
 
         try:
             data = store.load()
         except Exception:
-            raise PermissionDenied(_('Please go back and try again.'))
+            raise PermissionDenied(_("Please go back and try again."))
 
-        key = f'pretalx_event_access_{request.event.pk}'
+        key = f"pretalx_event_access_{request.event.pk}"
         parent = data.get(key)
         sparent = SessionStore(parent)
 
         try:
             parentdata = sparent.load()
         except Exception:
-            raise PermissionDenied(_('Please go back and try again.'))
+            raise PermissionDenied(_("Please go back and try again."))
         else:
-            if 'event_access' not in parentdata:
-                raise PermissionDenied(_('Please go back and try again.'))
+            if "event_access" not in parentdata:
+                raise PermissionDenied(_("Please go back and try again."))
 
         request.session[key] = parent
         url = request.event.urls.base
-        if 'target' in request.POST:
-            if request.POST['target'] == 'cfp':
+        if "target" in request.POST:
+            if request.POST["target"] == "cfp":
                 url = request.event.cfp.urls.public
-            elif request.POST['target'] == 'schedule':
+            elif request.POST["target"] == "schedule":
                 url = request.event.urls.schedule
         return redirect(url)

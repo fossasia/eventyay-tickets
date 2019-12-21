@@ -7,7 +7,9 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
 from django.utils import timezone, translation
 from django.utils.translation.trans_real import (
-    get_supported_language_variant, language_code_re, parse_accept_lang_header,
+    get_supported_language_variant,
+    language_code_re,
+    parse_accept_lang_header,
 )
 from django_scopes import scope, scopes_disabled
 
@@ -16,14 +18,14 @@ from pretalx.event.models import Event, Organiser, Team
 
 class EventPermissionMiddleware:
     UNAUTHENTICATED_ORGA_URLS = (
-        'invitation.view',
-        'auth',
-        'login',
-        'auth.reset',
-        'auth.recover',
-        'event.login',
-        'event.auth.reset',
-        'event.auth.recover',
+        "invitation.view",
+        "auth",
+        "login",
+        "auth.reset",
+        "auth.recover",
+        "event.login",
+        "event.auth.reset",
+        "event.auth.recover",
     )
 
     def __init__(self, get_response):
@@ -36,17 +38,19 @@ class EventPermissionMiddleware:
         request.orga_events = []
         if not request.user.is_anonymous:
             if request.user.is_administrator:
-                request.orga_events = Event.objects.order_by('date_from')
+                request.orga_events = Event.objects.order_by("date_from")
                 request.is_orga = True
                 request.is_reviewer = True
             else:
                 request.orga_events = request.user.get_events_for_permission().order_by(
-                    'date_from'
+                    "date_from"
                 )
                 event = getattr(request, "event", None)
                 if event:
                     request.is_orga = event in request.orga_events
-                    request.is_reviewer = event.teams.filter(members__in=[request.user], is_reviewer=True).exists()
+                    request.is_reviewer = event.teams.filter(
+                        members__in=[request.user], is_reviewer=True
+                    ).exists()
 
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
@@ -55,26 +59,26 @@ class EventPermissionMiddleware:
             request.user.is_anonymous
             and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
         ):
-            params = '&' + request.GET.urlencode() if request.GET else ''
-            event = getattr(request, 'event', None)
+            params = "&" + request.GET.urlencode() if request.GET else ""
+            event = getattr(request, "event", None)
             if event:
                 return (
-                    reverse('orga:event.login', kwargs={'event': event.slug})
-                    + f'?next={quote(request.path)}'
+                    reverse("orga:event.login", kwargs={"event": event.slug})
+                    + f"?next={quote(request.path)}"
                     + params
                 )
-            return reverse('orga:login') + f'?next={quote(request.path)}' + params
+            return reverse("orga:login") + f"?next={quote(request.path)}" + params
         return None
 
     def __call__(self, request):
         url = resolve(request.path_info)
 
-        organiser_slug = url.kwargs.get('organiser')
+        organiser_slug = url.kwargs.get("organiser")
         if organiser_slug:
             request.organiser = get_object_or_404(
                 Organiser, slug__iexact=organiser_slug
             )
-            if hasattr(request, 'organiser') and request.organiser:
+            if hasattr(request, "organiser") and request.organiser:
                 request.is_orga = False
                 if not request.user.is_anonymous:
                     has_perms = Team.objects.filter(
@@ -84,22 +88,25 @@ class EventPermissionMiddleware:
                     ).exists()
                     request.is_orga = request.user.is_administrator or has_perms
 
-        event_slug = url.kwargs.get('event')
+        event_slug = url.kwargs.get("event")
         if event_slug:
             with scopes_disabled():
-                request.event = get_object_or_404(Event.objects.prefetch_related('schedules', 'submissions'), slug__iexact=event_slug)
-        event = getattr(request, 'event', None)
+                request.event = get_object_or_404(
+                    Event.objects.prefetch_related("schedules", "submissions"),
+                    slug__iexact=event_slug,
+                )
+        event = getattr(request, "event", None)
 
         self._set_orga_events(request)
         self._select_locale(request)
         is_exempt = (
-            url.url_name == 'export'
-            if 'agenda' in url.namespaces
-            else request.path.startswith('/api/')
+            url.url_name == "export"
+            if "agenda" in url.namespaces
+            else request.path.startswith("/api/")
         )
 
-        if 'orga' in url.namespaces or (
-            'plugins' in url.namespaces and request.path.startswith('/orga')
+        if "orga" in url.namespaces or (
+            "plugins" in url.namespaces and request.path.startswith("/orga")
         ):
             url = self._handle_orga_url(request, url)
             if url:
@@ -121,7 +128,7 @@ class EventPermissionMiddleware:
     def _select_locale(self, request):
         supported = (
             request.event.locales
-            if (hasattr(request, 'event') and request.event)
+            if (hasattr(request, "event") and request.event)
             else settings.LANGUAGE_CODES
         )
         language = (
@@ -129,14 +136,14 @@ class EventPermissionMiddleware:
             or self._language_from_cookie(request, supported)
             or self._language_from_browser(request, supported)
         )
-        if hasattr(request, 'event') and request.event:
+        if hasattr(request, "event") and request.event:
             language = language or request.event.locale
 
         translation.activate(language)
         request.LANGUAGE_CODE = translation.get_language()
 
         with suppress(pytz.UnknownTimeZoneError):
-            if hasattr(request, 'event') and request.event:
+            if hasattr(request, "event") and request.event:
                 tzname = request.event.timezone
             elif request.user.is_authenticated:
                 tzname = request.user.timezone
@@ -147,9 +154,9 @@ class EventPermissionMiddleware:
 
     @staticmethod
     def _language_from_browser(request, supported):
-        accept_value = request.headers.get('Accept-Language', '')
+        accept_value = request.headers.get("Accept-Language", "")
         for accept_lang, _ in parse_accept_lang_header(accept_value):
-            if accept_lang == '*':
+            if accept_lang == "*":
                 break
 
             if not language_code_re.search(accept_lang):

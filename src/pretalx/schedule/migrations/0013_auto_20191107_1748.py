@@ -8,18 +8,24 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0012_auto_20190303_2358'),
+        ("schedule", "0012_auto_20190303_2358"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='talkslot',
-            name='description',
+            model_name="talkslot",
+            name="description",
             field=i18nfield.fields.I18nCharField(null=True),
         ),
         migrations.AlterField(
-            model_name='talkslot',
-            name='submission',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='slots', to='submission.Submission'),
+            model_name="talkslot",
+            name="submission",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="slots",
+                to="submission.Submission",
+            ),
         ),
     ]

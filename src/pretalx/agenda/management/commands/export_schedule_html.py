@@ -31,7 +31,7 @@ def fake_admin(event):
                 return get_mediastatic_content(url)
             except FileNotFoundError:
                 # … then fall back to asking the views.
-                response = client.get(url, is_html_export=True, HTTP_ACCEPT='text/html')
+                response = client.get(url, is_html_export=True, HTTP_ACCEPT="text/html")
                 content = get_content(response)
                 return content
 
@@ -42,15 +42,15 @@ def find_assets(html):
     """Find URLs of images, style sheets and scripts included in `html`."""
     soup = BeautifulSoup(html, "lxml")
 
-    for asset in soup.find_all(['script', 'img']):
-        yield asset.attrs['src']
-    for asset in soup.find_all(['link']):
-        if asset.attrs['rel'][0] in ['icon', 'stylesheet']:
-            yield asset.attrs['href']
+    for asset in soup.find_all(["script", "img"]):
+        yield asset.attrs["src"]
+    for asset in soup.find_all(["link"]):
+        if asset.attrs["rel"][0] in ["icon", "stylesheet"]:
+            yield asset.attrs["href"]
 
 
 def find_urls(css):
-    return re.findall(r'url\("?(/[^")]+)"?\)', css.decode('utf-8'), re.IGNORECASE)
+    return re.findall(r'url\("?(/[^")]+)"?\)', css.decode("utf-8"), re.IGNORECASE)
 
 
 def event_talk_urls(event):
@@ -100,38 +100,40 @@ def get_path(url):
 
 def get_content(response):
     if response.streaming:
-        return b''.join(response.streaming_content)
+        return b"".join(response.streaming_content)
     return response.content
 
 
 def dump_content(destination, path, getter):
     logging.debug(path)
     content = getter(path)
-    if path.endswith('/'):
-        path = path + 'index.html'
+    if path.endswith("/"):
+        path = path + "index.html"
 
-    path = Path(destination) / path.lstrip('/')
+    path = Path(destination) / path.lstrip("/")
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, 'wb') as f:
+    with open(path, "wb") as f:
         f.write(content)
     return content
 
 
 def get_mediastatic_content(url):
     if url.startswith(settings.STATIC_URL):
-        local_path = settings.STATIC_ROOT / url[len(settings.STATIC_URL):]
+        local_path = settings.STATIC_ROOT / url[len(settings.STATIC_URL) :]
     elif url.startswith(settings.MEDIA_URL):
-        local_path = settings.MEDIA_ROOT / url[len(settings.MEDIA_URL):]
+        local_path = settings.MEDIA_ROOT / url[len(settings.MEDIA_URL) :]
     else:
         raise FileNotFoundError()
 
-    with open(local_path, 'rb') as f:
+    with open(local_path, "rb") as f:
         return f.read()
 
 
 def export_event(event, destination):
-    with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True), override_timezone(event.timezone):
+    with override_settings(
+        COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True
+    ), override_timezone(event.timezone):
         with fake_admin(event) as get:
             logging.info("Collecting URLs for export")
             urls = [*event_urls(event)]
@@ -148,7 +150,7 @@ def export_event(event, destination):
             for url in assets:
                 content = dump_content(destination, url, get)
 
-                if url.endswith('.css'):
+                if url.endswith(".css"):
                     css_assets |= set(find_urls(content))
 
             logging.info(f"Exporting {len(css_assets)} files from CSS links")
@@ -166,18 +168,17 @@ def get_export_path(event):
 
 
 def get_export_zip_path(event):
-    return get_export_path(event).with_suffix('.zip')
+    return get_export_path(event).with_suffix(".zip")
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         super().add_arguments(parser)
-        parser.add_argument('event', type=str)
-        parser.add_argument('--zip', action='store_true')
+        parser.add_argument("event", type=str)
+        parser.add_argument("--zip", action="store_true")
 
     def handle(self, *args, **options):
-        event_slug = options.get('event')
+        event_slug = options.get("event")
 
         with scopes_disabled():
             try:
@@ -186,10 +187,10 @@ class Command(BaseCommand):
                 raise CommandError(f'Could not find event with slug "{event_slug}".')
 
         with scope(event=event):
-            logging.info(f'Exporting {event.name}')
+            logging.info(f"Exporting {event.name}")
             export_dir = get_export_path(event)
             zip_path = get_export_zip_path(event)
-            tmp_dir = export_dir.with_name(export_dir.name + '-new')
+            tmp_dir = export_dir.with_name(export_dir.name + "-new")
 
             delete_directory(tmp_dir)
             tmp_dir.mkdir()
@@ -201,14 +202,14 @@ class Command(BaseCommand):
             finally:
                 delete_directory(tmp_dir)
 
-            logging.info(f'Exported to {export_dir}')
+            logging.info(f"Exported to {export_dir}")
 
-            if options.get('zip'):
+            if options.get("zip"):
                 make_archive(
                     root_dir=settings.HTMLEXPORT_ROOT,
                     base_dir=event.slug,
                     base_name=zip_path.parent / zip_path.stem,
-                    format='zip',
+                    format="zip",
                 )
 
-                logging.info(f'Exported to {zip_path}')
+                logging.info(f"Exported to {zip_path}")

@@ -19,13 +19,13 @@ class AuthenticationTokenMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if not request.user.is_authenticated and 'Authorization' in request.headers:
-            token = request.headers['Authorization'].lower()
-            token = token[len('token '):] if token.startswith('token ') else token
+        if not request.user.is_authenticated and "Authorization" in request.headers:
+            token = request.headers["Authorization"].lower()
+            token = token[len("token ") :] if token.startswith("token ") else token
             user = authenticate(
                 request,
                 token=token,
-                backend='pretalx.common.auth.AuthenticationTokenBackend',
+                backend="pretalx.common.auth.AuthenticationTokenBackend",
             )
             if user:
                 request.user = user

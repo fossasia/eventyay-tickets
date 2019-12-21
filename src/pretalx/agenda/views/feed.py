@@ -8,15 +8,15 @@ from django.utils import feedgenerator
 class ScheduleFeed(Feed):
 
     feed_type = feedgenerator.Atom1Feed
-    description_template = 'agenda/feed/description.html'
+    description_template = "agenda/feed/description.html"
 
     def get_object(self, request, *args, **kwargs):
-        if not request.user.has_perm('agenda.view_schedule', request.event):
+        if not request.user.has_perm("agenda.view_schedule", request.event):
             raise Http404()
         return request.event
 
     def title(self, obj):
-        return f'{obj.name} schedule updates'
+        return f"{obj.name} schedule updates"
 
     def link(self, obj):
         return obj.urls.schedule.full()
@@ -28,18 +28,18 @@ class ScheduleFeed(Feed):
         return obj.urls.feed.full()
 
     def description(self, obj):
-        return f'Updates to the {obj.name} schedule.'
+        return f"Updates to the {obj.name} schedule."
 
     def items(self, obj):
-        return obj.schedules.filter(version__isnull=False).order_by('-published')
+        return obj.schedules.filter(version__isnull=False).order_by("-published")
 
     def item_title(self, item):
-        return f'New {item.event.name} schedule released ({item.version})'
+        return f"New {item.event.name} schedule released ({item.version})"
 
     def item_link(self, item):
         url = item.event.urls.schedule.full()
-        version = {'version': item.version}
-        return f'{url}={urlencode(version)}'
+        version = {"version": item.version}
+        return f"{url}={urlencode(version)}"
 
     def item_pubdate(self, item):
         return item.published

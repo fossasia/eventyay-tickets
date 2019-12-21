@@ -14,7 +14,7 @@ from pretalx.common.utils import I18nStrJSONEncoder, path_with_hash
 
 
 def answer_file_path(instance, filename):
-    return f'{instance.question.event.slug}/question_uploads/{path_with_hash(filename)}'
+    return f"{instance.question.event.slug}/question_uploads/{path_with_hash(filename)}"
 
 
 class QuestionManager(models.Manager):
@@ -32,34 +32,34 @@ class AllQuestionManager(models.Manager):
 
 
 class QuestionVariant(Choices):
-    NUMBER = 'number'
-    STRING = 'string'
-    TEXT = 'text'
-    BOOLEAN = 'boolean'
-    FILE = 'file'
-    CHOICES = 'choices'
-    MULTIPLE = 'multiple_choice'
+    NUMBER = "number"
+    STRING = "string"
+    TEXT = "text"
+    BOOLEAN = "boolean"
+    FILE = "file"
+    CHOICES = "choices"
+    MULTIPLE = "multiple_choice"
 
     valid_choices = [
-        (NUMBER, _('Number')),
-        (STRING, _('Text (one-line)')),
-        (TEXT, _('Multi-line text')),
-        (BOOLEAN, _('Yes/No')),
-        (FILE, _('File upload')),
-        (CHOICES, _('Choose one from a list')),
-        (MULTIPLE, _('Choose multiple from a list')),
+        (NUMBER, _("Number")),
+        (STRING, _("Text (one-line)")),
+        (TEXT, _("Multi-line text")),
+        (BOOLEAN, _("Yes/No")),
+        (FILE, _("File upload")),
+        (CHOICES, _("Choose one from a list")),
+        (MULTIPLE, _("Choose multiple from a list")),
     ]
 
 
 class QuestionTarget(Choices):
-    SUBMISSION = 'submission'
-    SPEAKER = 'speaker'
-    REVIEWER = 'reviewer'
+    SUBMISSION = "submission"
+    SPEAKER = "speaker"
+    REVIEWER = "reviewer"
 
     valid_choices = [
-        (SUBMISSION, _('per submission')),
-        (SPEAKER, _('per speaker')),
-        (REVIEWER, _('for reviewers')),
+        (SUBMISSION, _("per submission")),
+        (SPEAKER, _("per speaker")),
+        (REVIEWER, _("for reviewers")),
     ]
 
 
@@ -81,8 +81,9 @@ class Question(LogMixin, models.Model):
         submission time. On boolean questions: must check box.
     :param position: Position in the question order in this event.
     """
+
     event = models.ForeignKey(
-        to='event.Event', on_delete=models.PROTECT, related_name='questions'
+        to="event.Event", on_delete=models.PROTECT, related_name="questions"
     )
     variant = models.CharField(
         max_length=QuestionVariant.get_max_length(),
@@ -93,103 +94,115 @@ class Question(LogMixin, models.Model):
         max_length=QuestionTarget.get_max_length(),
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
-        verbose_name=_('question type'),
-        help_text=_('Do you require an answer from every speaker or for every talk?'),
+        verbose_name=_("question type"),
+        help_text=_("Do you require an answer from every speaker or for every talk?"),
     )
     tracks = models.ManyToManyField(
-        to='submission.Track',
-        related_name='questions',
-        help_text=_('You can limit this question to some tracks. Leave this field empty to apply to all tracks.'),
-        verbose_name=_('Tracks'),
+        to="submission.Track",
+        related_name="questions",
+        help_text=_(
+            "You can limit this question to some tracks. Leave this field empty to apply to all tracks."
+        ),
+        verbose_name=_("Tracks"),
         blank=True,
     )
-    question = I18nCharField(max_length=800, verbose_name=_('question'))
+    question = I18nCharField(max_length=800, verbose_name=_("question"))
     help_text = I18nCharField(
         null=True,
         blank=True,
         max_length=200,
-        verbose_name=_('help text'),
-        help_text=_('Will appear just like this text below the question input field.')
-        + ' '
+        verbose_name=_("help text"),
+        help_text=_("Will appear just like this text below the question input field.")
+        + " "
         + phrases.base.use_markdown,
     )
     default_answer = models.TextField(
-        null=True, blank=True, verbose_name=_('default answer')
+        null=True, blank=True, verbose_name=_("default answer")
     )
-    required = models.BooleanField(default=False, verbose_name=_('required'))
-    position = models.IntegerField(default=0, verbose_name=_('position'))
+    required = models.BooleanField(default=False, verbose_name=_("required"))
+    position = models.IntegerField(default=0, verbose_name=_("position"))
     active = models.BooleanField(
         default=True,
-        verbose_name=_('active'),
-        help_text=_('Inactive questions will no longer be asked.'),
+        verbose_name=_("active"),
+        help_text=_("Inactive questions will no longer be asked."),
     )
     contains_personal_data = models.BooleanField(
         default=True,
-        verbose_name=_('Answers contain personal data'),
+        verbose_name=_("Answers contain personal data"),
         help_text=_(
-            'If a user deletes their account, answers of questions for personal data will be removed, too.'
+            "If a user deletes their account, answers of questions for personal data will be removed, too."
         ),
     )
     min_length = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Minimum text length'),
-        help_text=_('Minimum allowed text in characters or words (set in CfP settings).'),
+        verbose_name=_("Minimum text length"),
+        help_text=_(
+            "Minimum allowed text in characters or words (set in CfP settings)."
+        ),
     )
     max_length = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Maximum text length'),
-        help_text=_('Maximum allowed text lenght in characters or words (set in CfP settings).'),
+        verbose_name=_("Maximum text length"),
+        help_text=_(
+            "Maximum allowed text lenght in characters or words (set in CfP settings)."
+        ),
     )
     is_public = models.BooleanField(
         default=False,
-        verbose_name=_('Publish answers'),
-        help_text=_('Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information.'),
+        verbose_name=_("Publish answers"),
+        help_text=_(
+            "Answers will be shown on talk or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information."
+        ),
     )
     is_visible_to_reviewers = models.BooleanField(
         default=True,
-        verbose_name=_('Show answers to reviewers'),
-        help_text=_('Should answers to this question be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews.'),
+        verbose_name=_("Show answers to reviewers"),
+        help_text=_(
+            "Should answers to this question be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews."
+        ),
     )
-    objects = ScopedManager(event='event', _manager_class=QuestionManager)
-    all_objects = ScopedManager(event='event', _manager_class=AllQuestionManager)
+    objects = ScopedManager(event="event", _manager_class=QuestionManager)
+    all_objects = ScopedManager(event="event", _manager_class=AllQuestionManager)
 
     class urls(EventUrls):
-        base = '{self.event.cfp.urls.questions}{self.pk}/'
-        edit = '{base}edit'
-        up = '{base}up'
-        down = '{base}down'
-        delete = '{base}delete'
-        toggle = '{base}toggle'
+        base = "{self.event.cfp.urls.questions}{self.pk}/"
+        edit = "{base}edit"
+        up = "{base}up"
+        down = "{base}down"
+        delete = "{base}delete"
+        toggle = "{base}toggle"
 
     def __str__(self):
         """Help when debugging."""
-        return f'Question(event={self.event.slug}, variant={self.variant}, target={self.target}, question={self.question})'
+        return f"Question(event={self.event.slug}, variant={self.variant}, target={self.target}, question={self.question})"
 
     @cached_property
     def grouped_answers(self):
         if self.variant == QuestionVariant.FILE:
-            return [{'answer': answer, 'count': 1} for answer in self.answers.all()]
+            return [{"answer": answer, "count": 1} for answer in self.answers.all()]
         if self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
             return (
-                self.answers.order_by('options')
-                .values('options', 'options__answer')
-                .annotate(count=models.Count('id'))
-                .order_by('-count')
+                self.answers.order_by("options")
+                .values("options", "options__answer")
+                .annotate(count=models.Count("id"))
+                .order_by("-count")
             )
         return list(
-            self.answers.order_by('answer')
-            .values('answer')
-            .annotate(count=models.Count('id'))
-            .order_by('-count')
+            self.answers.order_by("answer")
+            .values("answer")
+            .annotate(count=models.Count("id"))
+            .order_by("-count")
         )
 
     @cached_property
     def grouped_answers_json(self):
         return json.dumps(list(self.grouped_answers), cls=I18nStrJSONEncoder)
 
-    def missing_answers(self, filter_speakers: list=False, filter_talks: list=False) -> int:
+    def missing_answers(
+        self, filter_speakers: list = False, filter_talks: list = False
+    ) -> int:
         """Returns how many answers are still missing or this question.
 
         This method only supports submission questions and speaker questions.
@@ -218,7 +231,7 @@ class Question(LogMixin, models.Model):
         return 0
 
     class Meta:
-        ordering = ['position']
+        ordering = ["position"]
 
 
 class AnswerOption(LogMixin, models.Model):
@@ -227,12 +240,13 @@ class AnswerOption(LogMixin, models.Model):
     :class:`~pretalx.submission.models.question.Question` objects of variant
     'choice' or 'multiple_choice'.
     """
+
     question = models.ForeignKey(
-        to='submission.Question', on_delete=models.PROTECT, related_name='options'
+        to="submission.Question", on_delete=models.PROTECT, related_name="options"
     )
     answer = I18nCharField(max_length=200)
 
-    objects = ScopedManager(event='question__event')
+    objects = ScopedManager(event="question__event")
 
     @cached_property
     def event(self):
@@ -251,37 +265,38 @@ class Answer(LogMixin, models.Model):
     :class:`~pretalx.submission.models.submission.Submission`, or a
     :class:`~pretalx.submission.models.review.Review`.
     """
+
     question = models.ForeignKey(
-        to='submission.Question', on_delete=models.PROTECT, related_name='answers'
+        to="submission.Question", on_delete=models.PROTECT, related_name="answers"
     )
     submission = models.ForeignKey(
-        to='submission.Submission',
+        to="submission.Submission",
         on_delete=models.PROTECT,
-        related_name='answers',
+        related_name="answers",
         null=True,
         blank=True,
     )
     person = models.ForeignKey(
-        to='person.User',
+        to="person.User",
         on_delete=models.PROTECT,
-        related_name='answers',
+        related_name="answers",
         null=True,
         blank=True,
     )
     review = models.ForeignKey(
-        to='submission.Review',
+        to="submission.Review",
         on_delete=models.PROTECT,
-        related_name='answers',
+        related_name="answers",
         null=True,
         blank=True,
     )
     answer = models.TextField()
     answer_file = models.FileField(upload_to=answer_file_path, null=True, blank=True)
     options = models.ManyToManyField(
-        to='submission.AnswerOption', related_name='answers'
+        to="submission.AnswerOption", related_name="answers"
     )
 
-    objects = ScopedManager(event='question__event')
+    objects = ScopedManager(event="question__event")
 
     @cached_property
     def event(self):
@@ -289,33 +304,34 @@ class Answer(LogMixin, models.Model):
 
     def __str__(self):
         """Help when debugging."""
-        return f'Answer(question={self.question.question}, answer={self.answer})'
+        return f"Answer(question={self.question.question}, answer={self.answer})"
 
     def remove(self, person=None, force=False):
         """Deletes an answer."""
         for option in self.options.all():
             option.answers.remove(self)
         self.delete()
+
     remove.alters_data = True
 
     @cached_property
     def boolean_answer(self):
-        if self.answer == 'True':
+        if self.answer == "True":
             return True
-        if self.answer == 'False':
+        if self.answer == "False":
             return False
 
     @property
     def answer_string(self):
-        if self.question.variant in ('number', 'string', 'text'):
-            return self.answer or ''
-        if self.question.variant == 'boolean':
+        if self.question.variant in ("number", "string", "text"):
+            return self.answer or ""
+        if self.question.variant == "boolean":
             if self.boolean_answer is True:
-                return _('Yes')
+                return _("Yes")
             if self.boolean_answer is False:
-                return _('No')
-            return ''
-        if self.question.variant == 'file':
-            return self.answer_file.url if self.answer_file else ''
-        if self.question.variant in ('choices', 'multiple_choice'):
-            return ', '.join(str(option.answer) for option in self.options.all())
+                return _("No")
+            return ""
+        if self.question.variant == "file":
+            return self.answer_file.url if self.answer_file else ""
+        if self.question.variant in ("choices", "multiple_choice"):
+            return ", ".join(str(option.answer) for option in self.options.all())

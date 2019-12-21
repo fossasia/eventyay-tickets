@@ -16,7 +16,7 @@ def task_periodic_event_services(event_slug):
     with scopes_disabled():
         event = (
             Event.objects.filter(slug=event_slug)
-            .prefetch_related('_settings_objects', 'submissions__slots')
+            .prefetch_related("_settings_objects", "submissions__slots")
             .first()
         )
     if not event:
@@ -49,7 +49,9 @@ def task_periodic_event_services(event_slug):
                     event.current_schedule
                     and event.current_schedule.talks.filter(is_visible=True).count()
                 ):
-                    event.send_orga_mail(event.settings.mail_text_event_over, stats=True)
+                    event.send_orga_mail(
+                        event.settings.mail_text_event_over, stats=True
+                    )
                     event.settings.sent_mail_event_over = True
 
 
@@ -58,23 +60,25 @@ def task_periodic_schedule_export(event_slug):
     with scopes_disabled():
         event = (
             Event.objects.filter(slug=event_slug)
-            .prefetch_related('_settings_objects', 'submissions__slots')
+            .prefetch_related("_settings_objects", "submissions__slots")
             .first()
         )
     with scope(event=event):
         zip_path = get_export_zip_path(event)
-        last_time = event.cache.get('last_schedule_rebuild')
+        last_time = event.cache.get("last_schedule_rebuild")
         _now = now()
         if not event.settings.export_html_on_schedule_release:
-            event.cache.delete('rebuild_schedule_export')
+            event.cache.delete("rebuild_schedule_export")
             return
         if last_time and _now - last_time < dt.timedelta(hours=1):
             return
-        should_rebuild_schedule = event.cache.get('rebuild_schedule_export') or not zip_path.exists()
+        should_rebuild_schedule = (
+            event.cache.get("rebuild_schedule_export") or not zip_path.exists()
+        )
         if should_rebuild_schedule:
-            event.cache.delete('rebuild_schedule_export')
-            event.cache.set('last_schedule_rebuild', _now, None)
-            export_schedule_html.apply_async(kwargs={'event_id': event.id})
+            event.cache.delete("rebuild_schedule_export")
+            event.cache.set("last_schedule_rebuild", _now, None)
+            export_schedule_html.apply_async(kwargs={"event_id": event.id})
 
 
 @receiver(periodic_task)

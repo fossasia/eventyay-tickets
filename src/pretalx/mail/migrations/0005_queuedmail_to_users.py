@@ -8,18 +8,20 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('mail', '0004_auto_20190222_2215'),
+        ("mail", "0004_auto_20190222_2215"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='queuedmail',
-            name='to_users',
-            field=models.ManyToManyField(related_name='mails', to=settings.AUTH_USER_MODEL),
+            model_name="queuedmail",
+            name="to_users",
+            field=models.ManyToManyField(
+                related_name="mails", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='queuedmail',
-            name='to',
+            model_name="queuedmail",
+            name="to",
             field=models.CharField(blank=True, max_length=1000, null=True),
         ),
     ]

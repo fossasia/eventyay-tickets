@@ -4,7 +4,7 @@ from django.apps import AppConfig
 
 
 class CommonConfig(AppConfig):
-    name = 'pretalx.common'
+    name = "pretalx.common"
 
     def ready(self):
         from . import signals  # noqa
@@ -14,4 +14,4 @@ class CommonConfig(AppConfig):
 with suppress(ImportError):
     import pretalx.celery_app as celery  # NOQA
 
-default_app_config = 'pretalx.common.CommonConfig'
+default_app_config = "pretalx.common.CommonConfig"

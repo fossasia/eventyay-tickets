@@ -2,12 +2,12 @@ from django.apps import AppConfig
 
 
 class SubmissionConfig(AppConfig):
-    name = 'pretalx.submission'
+    name = "pretalx.submission"
 
     def ready(self):
-        from . import exporters # noqa
+        from . import exporters  # noqa
         from . import permissions  # noqa
         from . import signals  # noqa
 
 
-default_app_config = 'pretalx.submission.SubmissionConfig'
+default_app_config = "pretalx.submission.SubmissionConfig"

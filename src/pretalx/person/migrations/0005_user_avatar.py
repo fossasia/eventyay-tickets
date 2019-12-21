@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('person', '0004_auto_20171001_1358'),
+        ("person", "0004_auto_20171001_1358"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to=''),
+            model_name="user",
+            name="avatar",
+            field=models.ImageField(blank=True, null=True, upload_to=""),
         ),
     ]

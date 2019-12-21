@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0022_submission_review_code'),
+        ("submission", "0022_submission_review_code"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='is_featured',
+            model_name="submission",
+            name="is_featured",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -10,21 +10,27 @@ from pretalx.common.cache import ObjectRelatedCache
 from pretalx.event.models import Event, Organiser
 
 
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'tralala',
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "tralala",
+        }
     }
-})
+)
 class CacheTest(TestCase):
     """This test case tests the invalidation of the event related cache."""
+
     @classmethod
     def setUpTestData(cls):
         with scopes_disabled():
-            o = Organiser.objects.create(name='Dummy', slug='dummy')
+            o = Organiser.objects.create(name="Dummy", slug="dummy")
             cls.event = Event.objects.create(
-                organiser=o, name='Dummy', slug='dummy',
-                date_from=now().date(), date_to=now().date(),
+                organiser=o,
+                name="Dummy",
+                slug="dummy",
+                date_from=now().date(),
+                date_to=now().date(),
             )
 
     def setUp(self):
@@ -53,8 +59,8 @@ class CacheTest(TestCase):
 
     def test_many(self):
         inp = {
-            'a': 'foo',
-            'b': 'bar',
+            "a": "foo",
+            "b": "bar",
         }
         self.cache.set_many(inp)
         self.assertEqual(inp, self.cache.get_many(inp.keys()))

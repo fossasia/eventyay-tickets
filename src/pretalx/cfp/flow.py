@@ -16,7 +16,8 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.utils.translation import gettext, ugettext_lazy as _
+from django.utils.translation import gettext
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import TemplateResponseMixin
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
@@ -45,7 +46,7 @@ def i18n_string(data, locales):
         english = data.get("en", "")
 
     for locale in locales:
-        if locale != 'en' and not data.get(locale):
+        if locale != "en" and not data.get(locale):
             with language(locale):
                 data[locale] = gettext(english)
     return LazyI18nString(data)
@@ -66,7 +67,7 @@ def cfp_session(request):
 
 
 class BaseCfPStep:
-    icon = 'pencil'
+    icon = "pencil"
 
     def __init__(self, event):
         self.event = event
@@ -121,9 +122,9 @@ class BaseCfPStep:
     def get_step_url(self, request):
         kwargs = request.resolver_match.kwargs
         kwargs["step"] = self.identifier
-        url = reverse('cfp:event.submit', kwargs=kwargs)
+        url = reverse("cfp:event.submit", kwargs=kwargs)
         if request.GET:
-            url += f'?{request.GET.urlencode()}'
+            url += f"?{request.GET.urlencode()}"
         return url
 
     def get(self, request):
@@ -137,18 +138,21 @@ class BaseCfPStep:
 
 
 class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
-    template_name = 'cfp/event/submission_step.html'
+    template_name = "cfp/event/submission_step.html"
 
     def get_context_data(self, **kwargs):
-        kwargs.setdefault('step', self)
-        kwargs.setdefault('event', self.event)
-        kwargs.setdefault('prev_url', self.get_prev_url(self.request))
-        kwargs.setdefault('next_url', self.get_next_url(self.request))
-        kwargs.setdefault('cfp_flow', [
-            step
-            for step in self.event.cfp_flow.steps
-            if step.is_applicable(self.request)
-        ])
+        kwargs.setdefault("step", self)
+        kwargs.setdefault("event", self.event)
+        kwargs.setdefault("prev_url", self.get_prev_url(self.request))
+        kwargs.setdefault("next_url", self.get_next_url(self.request))
+        kwargs.setdefault(
+            "cfp_flow",
+            [
+                step
+                for step in self.event.cfp_flow.steps
+                if step.is_applicable(self.request)
+            ],
+        )
         return kwargs
 
     def render(self, **kwargs):
@@ -166,7 +170,7 @@ class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
 
 class FormFlowStep(TemplateFlowStep):
     form_class = None
-    file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / 'cfp_uploads'))
+    file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / "cfp_uploads"))
 
     def get_form_initial(self):
         initial_data = self.cfp_session.get("initial", {}).get(self.identifier, {})
@@ -175,10 +179,20 @@ class FormFlowStep(TemplateFlowStep):
 
     def get_form(self, from_storage=False):
         if from_storage:
-            return self.form_class(data=self.cfp_session.get("data", {}).get(self.identifier, {}), files=self.get_files(), **self.get_form_kwargs())
-        if self.request.method == 'GET':
-            return self.form_class(initial=self.get_form_initial(), files=self.get_files(), **self.get_form_kwargs())
-        return self.form_class(data=self.request.POST, files=self.request.FILES, **self.get_form_kwargs())
+            return self.form_class(
+                data=self.cfp_session.get("data", {}).get(self.identifier, {}),
+                files=self.get_files(),
+                **self.get_form_kwargs(),
+            )
+        if self.request.method == "GET":
+            return self.form_class(
+                initial=self.get_form_initial(),
+                files=self.get_files(),
+                **self.get_form_kwargs(),
+            )
+        return self.form_class(
+            data=self.request.POST, files=self.request.FILES, **self.get_form_kwargs()
+        )
 
     def is_completed(self, request):
         self.request = request
@@ -201,31 +215,36 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_data(self, data):
         def serialize_value(value):
-            if getattr(value, 'pk', None):
+            if getattr(value, "pk", None):
                 return value.pk
-            if getattr(value, '__iter__', None):
+            if getattr(value, "__iter__", None):
                 return [serialize_value(v) for v in value]
             return str(value)
-        self.cfp_session["data"][self.identifier] = json.loads(json.dumps(data, default=serialize_value))
+
+        self.cfp_session["data"][self.identifier] = json.loads(
+            json.dumps(data, default=serialize_value)
+        )
 
     def get_files(self):
         saved_files = self.cfp_session["files"].get(self.identifier, {})
         files = {}
         for field, field_dict in saved_files.items():
             field_dict = field_dict.copy()
-            tmp_name = field_dict.pop('tmp_name')
-            files[field] = UploadedFile(file=self.file_storage.open(tmp_name), **field_dict)
+            tmp_name = field_dict.pop("tmp_name")
+            files[field] = UploadedFile(
+                file=self.file_storage.open(tmp_name), **field_dict
+            )
         return files or None
 
     def set_files(self, files):
         for field, field_file in files.items():
             tmp_filename = self.file_storage.save(field_file.name, field_file)
             file_dict = {
-                'tmp_name': tmp_filename,
-                'name': field_file.name,
-                'content_type': field_file.content_type,
-                'size': field_file.size,
-                'charset': field_file.charset
+                "tmp_name": tmp_filename,
+                "name": field_file.name,
+                "content_type": field_file.content_type,
+                "size": field_file.size,
+                "charset": field_file.charset,
             }
             data = self.cfp_session["files"].get(self.identifier, {})
             data[field] = file_dict
@@ -233,22 +252,17 @@ class FormFlowStep(TemplateFlowStep):
 
 
 class GenericFlowStep:
-
     @cached_property
     def config(self):
         return self.event.cfp_flow.config.get("steps", {}).get(self.identifier, {})
 
     @property
     def title(self):
-        return i18n_string(
-            self.config.get("title", self._title), self.event.locales
-        )
+        return i18n_string(self.config.get("title", self._title), self.event.locales)
 
     @property
     def text(self):
-        return i18n_string(
-            self.config.get("text", self._text), self.event.locales
-        )
+        return i18n_string(self.config.get("text", self._text), self.event.locales)
 
     def get_form_kwargs(self):
         return {
@@ -279,7 +293,9 @@ class InfoStep(GenericFlowStep, FormFlowStep):
 
     @property
     def _text(self):
-        return _("We're glad that you want to contribute to our event with your submission. Let's get started, this won't take long.")
+        return _(
+            "We're glad that you want to contribute to our event with your submission. Let's get started, this won't take long."
+        )
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -288,11 +304,11 @@ class InfoStep(GenericFlowStep, FormFlowStep):
 
     def get_form_initial(self):
         result = super().get_form_initial()
-        for field, model in (('submission_type', SubmissionType), ('track', Track)):
+        for field, model in (("submission_type", SubmissionType), ("track", Track)):
             request_value = self.request.GET.get(field)
             if request_value:
                 with suppress(AttributeError, TypeError):
-                    pk = int(request_value.split('-')[0])
+                    pk = int(request_value.split("-")[0])
                     obj = model.objects.filter(event=self.request.event, pk=pk).first()
                     if obj:
                         result[field] = obj
@@ -305,15 +321,15 @@ class InfoStep(GenericFlowStep, FormFlowStep):
         form.save()
         submission = form.instance
         submission.speakers.add(request.user)
-        submission.log_action('pretalx.submission.create', person=request.user)
+        submission.log_action("pretalx.submission.create", person=request.user)
         messages.success(request, phrases.cfp.submission_success)
 
-        additional_speaker = form.cleaned_data.get('additional_speaker').strip()
+        additional_speaker = form.cleaned_data.get("additional_speaker").strip()
         if additional_speaker:
             try:
                 submission.send_invite(to=[additional_speaker], _from=request.user)
             except SendMailException as exception:
-                logging.getLogger('').warning(str(exception))
+                logging.getLogger("").warning(str(exception))
                 messages.warning(self.request, phrases.cfp.submission_email_fail)
 
         access_code = getattr(request, "access_code", None)
@@ -330,7 +346,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
     identifier = "questions"
     icon = "question-circle-o"
     form_class = QuestionsForm
-    template_name = 'cfp/event/submission_questions.html'
+    template_name = "cfp/event/submission_questions.html"
     priority = 25
 
     @property
@@ -343,25 +359,24 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
 
     @property
     def _text(self):
-        return _("Before we can save your submission, we have some more questions for you.")
+        return _(
+            "Before we can save your submission, we have some more questions for you."
+        )
 
     def is_applicable(self, request):
         self.request = request
         info_data = self.cfp_session.get("data", {}).get("info", {})
-        if not info_data or not info_data.get('track'):
+        if not info_data or not info_data.get("track"):
             return self.event.questions.all().exists()
         return self.event.questions.exclude(
             Q(target=QuestionTarget.SUBMISSION)
-            & (
-                ~Q(tracks__in=[info_data.get('track')])
-                & Q(tracks__isnull=False)
-            )
+            & (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
         ).exists()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        result['target'] = ''
-        result['track'] = self.cfp_session.get("data", {}).get("track")
+        result["target"] = ""
+        result["track"] = self.cfp_session.get("data", {}).get("track")
         if not self.request.user.is_anonymous:
             result["speaker"] = self.request.user
         return result
@@ -378,7 +393,7 @@ class UserStep(GenericFlowStep, FormFlowStep):
     identifier = "user"
     icon = "user-circle-o"
     form_class = UserForm
-    template_name = 'cfp/event/submission_user.html'
+    template_name = "cfp/event/submission_user.html"
     priority = 49
 
     @property
@@ -387,17 +402,21 @@ class UserStep(GenericFlowStep, FormFlowStep):
 
     @property
     def _title(self):
-        return _("That's it about your submission! We now just need a way to contact you.")
+        return _(
+            "That's it about your submission! We now just need a way to contact you."
+        )
 
     @property
     def _text(self):
-        return _("To create your submission, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your submission or to view its current state.")
+        return _(
+            "To create your submission, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your submission or to view its current state."
+        )
 
     def is_applicable(self, request):
         return not request.user.is_authenticated
 
     def done(self, request):
-        if not getattr(request.user, 'is_authenticated', False):
+        if not getattr(request.user, "is_authenticated", False):
             form = self.get_form(from_storage=True)
             form.is_valid()
             uid = form.save()
@@ -405,17 +424,19 @@ class UserStep(GenericFlowStep, FormFlowStep):
         if not request.user or not request.user.is_active:
             raise ValidationError(
                 _(
-                    'There was an error when logging in. Please contact the organiser for further help.'
+                    "There was an error when logging in. Please contact the organiser for further help."
                 ),
             )
-        login(request, request.user, backend='django.contrib.auth.backends.ModelBackend')
+        login(
+            request, request.user, backend="django.contrib.auth.backends.ModelBackend"
+        )
 
 
 class ProfileStep(GenericFlowStep, FormFlowStep):
     identifier = "profile"
     icon = "address-card-o"
     form_class = SpeakerProfileForm
-    template_name = 'cfp/event/submission_profile.html'
+    template_name = "cfp/event/submission_profile.html"
     priority = 75
 
     @property
@@ -428,29 +449,31 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
     @property
     def _text(self):
-        return _("This information will be publicly displayed next to your talk - you can always edit for as long as submissions are still open.")
+        return _(
+            "This information will be publicly displayed next to your talk - you can always edit for as long as submissions are still open."
+        )
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        user_data = self.cfp_session.get("data", {}).get('user', {})
-        if user_data and user_data.get('user_id'):
-            result['user'] = User.objects.filter(pk=user_data['user_id']).first()
-        if not result.get('user') and self.request.user.is_authenticated:
-            result['user'] = self.request.user
-        user = result.get('user')
-        result['name'] = user.name if user else user_data.get('register_name')
-        result['read_only'] = False
-        result['essential_only'] = True
+        user_data = self.cfp_session.get("data", {}).get("user", {})
+        if user_data and user_data.get("user_id"):
+            result["user"] = User.objects.filter(pk=user_data["user_id"]).first()
+        if not result.get("user") and self.request.user.is_authenticated:
+            result["user"] = self.request.user
+        user = result.get("user")
+        result["name"] = user.name if user else user_data.get("register_name")
+        result["read_only"] = False
+        result["essential_only"] = True
         return result
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         email = getattr(self.request.user, "email", None)
         if email is None:
-            data = self.cfp_session.get("data", {}).get('user', {})
-            email = data.get('register_email', '')
+            data = self.cfp_session.get("data", {}).get("user", {})
+            email = data.get("register_email", "")
         if email:
-            result['gravatar_parameter'] = User(email=email).gravatar_parameter
+            result["gravatar_parameter"] = User(email=email).gravatar_parameter
         return result
 
     def done(self, request):
@@ -519,7 +542,9 @@ class CfPFlow:
         steps = data.get("steps", {})
         if isinstance(steps, list):  # This is what we get from the editor
             for entry in steps:
-                config["steps"][entry["identifier"]] = self._get_step_config_from_data(entry)
+                config["steps"][entry["identifier"]] = self._get_step_config_from_data(
+                    entry
+                )
         else:
             for key, value in steps.items():
                 config["steps"][key] = self._get_step_config_from_data(value)
@@ -535,31 +560,35 @@ class CfPFlow:
             step_config = config.get("steps", {}).get(step.identifier, {})
             if not isinstance(step, GenericFlowStep) or step.identifier == "user":
                 continue
-            steps.append({
-                "icon": step.icon,
-                "icon_label": step.label,
-                "title": step_config.get("title", step.title),
-                "text": step_config.get("text", step.text),
-                "identifier": step.identifier,
-                "fields": [
-                    {
-                        "widget": field.widget.__class__.__name__,
-                        "key": key,
-                        "label": i18n_string(field.label, locales),
-                        "help_text": i18n_string(
-                            getattr(field, "original_help_text", field.help_text),
-                            locales,
-                        ),
-                        "added_help_text": i18n_string(
-                            getattr(field, "added_help_text", ""),
-                            locales,
-                        ),
-                        "full_help_text": field.help_text,
-                        "required": field.required,
-                    }
-                    for key, field in step.form_class(event=self.event, field_configuration=step_config.get("fields")).fields.items()
-                ]
-            })
+            steps.append(
+                {
+                    "icon": step.icon,
+                    "icon_label": step.label,
+                    "title": step_config.get("title", step.title),
+                    "text": step_config.get("text", step.text),
+                    "identifier": step.identifier,
+                    "fields": [
+                        {
+                            "widget": field.widget.__class__.__name__,
+                            "key": key,
+                            "label": i18n_string(field.label, locales),
+                            "help_text": i18n_string(
+                                getattr(field, "original_help_text", field.help_text),
+                                locales,
+                            ),
+                            "added_help_text": i18n_string(
+                                getattr(field, "added_help_text", ""), locales,
+                            ),
+                            "full_help_text": field.help_text,
+                            "required": field.required,
+                        }
+                        for key, field in step.form_class(
+                            event=self.event,
+                            field_configuration=step_config.get("fields"),
+                        ).fields.items()
+                    ],
+                }
+            )
         if json_compat:
             steps = json.loads(json.dumps(steps, cls=I18nJSONEncoder))
         return steps
@@ -569,8 +598,10 @@ class CfPFlow:
         locales = self.event.locales
         for i18n_configurable in ("title", "text", "label"):
             if i18n_configurable in data:
-                step_config[i18n_configurable] = i18n_string(data[i18n_configurable], locales)
-        for configurable in ("icon", ):
+                step_config[i18n_configurable] = i18n_string(
+                    data[i18n_configurable], locales
+                )
+        for configurable in ("icon",):
             if configurable in data:
                 step_config[configurable] = data[configurable]
 
@@ -579,7 +610,11 @@ class CfPFlow:
             field = {}
             for key in ("help_text", "request", "required", "key"):
                 if key in config_field:
-                    field[key] = i18n_string(config_field[key], locales) if key == "help_text" else config_field[key]
+                    field[key] = (
+                        i18n_string(config_field[key], locales)
+                        if key == "help_text"
+                        else config_field[key]
+                    )
             step_config["fields"].append(field)
         return step_config
 

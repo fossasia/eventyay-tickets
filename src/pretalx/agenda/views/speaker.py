@@ -17,20 +17,20 @@ from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class SpeakerView(PermissionRequired, TemplateView):
-    template_name = 'agenda/speaker.html'
-    permission_required = 'agenda.view_speaker'
-    slug_field = 'code'
+    template_name = "agenda/speaker.html"
+    permission_required = "agenda.view_speaker"
+    slug_field = "code"
 
     @context
     @cached_property
     def profile(self):
         return (
             SpeakerProfile.objects.filter(
-                event=self.request.event, user__code__iexact=self.kwargs['code']
+                event=self.request.event, user__code__iexact=self.kwargs["code"]
             )
-            .select_related('user')
+            .select_related("user")
             .first()
         )
 
@@ -43,7 +43,7 @@ class SpeakerView(PermissionRequired, TemplateView):
             question__is_public=True,
             question__event=self.request.event,
             question__target=QuestionTarget.SPEAKER,
-        ).select_related('question')
+        ).select_related("question")
 
 
 class SpeakerRedirect(DetailView):
@@ -52,19 +52,19 @@ class SpeakerRedirect(DetailView):
     def dispatch(self, request, **kwargs):
         speaker = self.get_object()
         profile = speaker.profiles.filter(event=self.request.event).first()
-        if profile and self.request.user.has_perm('agenda.view_speaker', profile):
+        if profile and self.request.user.has_perm("agenda.view_speaker", profile):
             return redirect(profile.urls.public.full())
         raise Http404()
 
 
 class SpeakerTalksIcalView(PermissionRequired, DetailView):
-    context_object_name = 'profile'
-    permission_required = 'agenda.view_speaker'
-    slug_field = 'code'
+    context_object_name = "profile"
+    permission_required = "agenda.view_speaker"
+    slug_field = "code"
 
     def get_object(self, queryset=None):
         return SpeakerProfile.objects.filter(
-            event=self.request.event, user__code__iexact=self.kwargs['code']
+            event=self.request.event, user__code__iexact=self.kwargs["code"]
         ).first()
 
     def get(self, request, event, *args, **kwargs):
@@ -72,19 +72,19 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(
             submission__speakers=speaker.user, is_visible=True
-        ).select_related('room', 'submission')
+        ).select_related("room", "submission")
 
         cal = vobject.iCalendar()
         cal.add(
-            'prodid'
-        ).value = f'-//pretalx//{netloc}//{request.event.slug}//{speaker.code}'
+            "prodid"
+        ).value = f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
 
         for slot in slots:
             slot.build_ical(cal)
 
-        resp = HttpResponse(cal.serialize(), content_type='text/calendar')
+        resp = HttpResponse(cal.serialize(), content_type="text/calendar")
         speaker_name = Storage().get_valid_name(name=speaker.user.name)
         resp[
-            'Content-Disposition'
+            "Content-Disposition"
         ] = f'attachment; filename="{request.event.slug}-{safe_filename(speaker_name)}.ics"'
         return resp

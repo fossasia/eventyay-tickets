@@ -23,48 +23,53 @@ class SubmissionType(LogMixin, models.Model):
     different deadlines for some parts of the
     :class:`~pretalx.event.models.event.Event`.
     """
+
     event = models.ForeignKey(
-        to='event.Event', related_name='submission_types', on_delete=models.CASCADE
+        to="event.Event", related_name="submission_types", on_delete=models.CASCADE
     )
-    name = I18nCharField(max_length=100, verbose_name=_('name'))
+    name = I18nCharField(max_length=100, verbose_name=_("name"))
     default_duration = models.PositiveIntegerField(
         default=30,
-        verbose_name=_('default duration'),
-        help_text=_('Default duration in minutes'),
+        verbose_name=_("default duration"),
+        help_text=_("Default duration in minutes"),
     )
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('deadline'),
-        help_text=_('If you want a different deadline than the global deadline for this submission type, enter it here.'),
+        verbose_name=_("deadline"),
+        help_text=_(
+            "If you want a different deadline than the global deadline for this submission type, enter it here."
+        ),
     )
     requires_access_code = models.BooleanField(
-        verbose_name=_('Requires access code'),
-        help_text=_('This submission type will only be shown to submitters with a matching access code.'),
+        verbose_name=_("Requires access code"),
+        help_text=_(
+            "This submission type will only be shown to submitters with a matching access code."
+        ),
         default=False,
     )
 
-    objects = ScopedManager(event='event')
+    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
-        base = edit = '{self.event.cfp.urls.types}{self.pk}/'
-        default = '{base}default'
-        delete = '{base}delete'
-        prefilled_cfp = '{self.event.cfp.urls.public}?submission_type={self.slug}'
+        base = edit = "{self.event.cfp.urls.types}{self.pk}/"
+        default = "{base}default"
+        delete = "{base}delete"
+        prefilled_cfp = "{self.event.cfp.urls.public}?submission_type={self.slug}"
 
     def __str__(self) -> str:
         """Used in choice drop downs."""
         if self.default_duration > 60 * 24:
-            return _('{name} ({duration} days)').format(
+            return _("{name} ({duration} days)").format(
                 name=self.name,
                 duration=pleasing_number(round(self.default_duration / 60 / 24, 1)),
             )
         if self.default_duration > 90:
-            return _('{name} ({duration} hours)').format(
+            return _("{name} ({duration} hours)").format(
                 name=self.name,
                 duration=pleasing_number(round(self.default_duration / 60, 1)),
             )
-        return _('{name} ({duration} minutes)').format(
+        return _("{name} ({duration} minutes)").format(
             name=self.name, duration=self.default_duration
         )
 
@@ -75,7 +80,7 @@ class SubmissionType(LogMixin, models.Model):
         It consists of the ID, followed by a slugified (and, in lookups,
         optional) form of the submission type name.
         """
-        return f'{self.id}-{slugify(self.name)}'
+        return f"{self.id}-{slugify(self.name)}"
 
     def update_duration(self):
         """Updates the duration of all.
@@ -89,4 +94,5 @@ class SubmissionType(LogMixin, models.Model):
         """
         for submission in self.submissions.filter(duration__isnull=True):
             submission.update_duration()
+
     update_duration.alters_data = True

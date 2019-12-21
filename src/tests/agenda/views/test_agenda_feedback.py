@@ -13,11 +13,11 @@ def test_can_create_feedback(django_assert_num_queries, past_slot, client, event
         assert past_slot.submission.speakers.count() == 1
     with django_assert_num_queries(53):
         response = client.post(
-            past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
+            past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
         )
     assert response.status_code == 200
     with scope(event=event):
-        assert past_slot.submission.feedback.first().review == 'cool!'
+        assert past_slot.submission.feedback.first().review == "cool!"
         assert (
             past_slot.submission.feedback.first().speaker
             == past_slot.submission.speakers.first()
@@ -35,26 +35,27 @@ def test_can_create_feedback_for_multiple_speakers(
         assert past_slot.submission.speakers.count() == 2
     with django_assert_num_queries(55):
         response = client.post(
-            past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
+            past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
         )
     assert response.status_code == 200
     with scope(event=event):
-        assert past_slot.submission.feedback.first().review == 'cool!'
+        assert past_slot.submission.feedback.first().review == "cool!"
         assert not past_slot.submission.feedback.first().speaker
         assert past_slot.submission.title in str(past_slot.submission.feedback.first())
 
 
 @pytest.mark.django_db()
-def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, client, event):
+def test_cannot_create_feedback_before_talk(
+    django_assert_num_queries, slot, client, event
+):
     _now = now()
     with scope(event=event):
         TalkSlot.objects.filter(submission__event=slot.event).update(
-            start=_now + dt.timedelta(minutes=30),
-            end=_now + dt.timedelta(minutes=60),
+            start=_now + dt.timedelta(minutes=30), end=_now + dt.timedelta(minutes=60),
         )
     with django_assert_num_queries(23):
         response = client.post(
-            slot.submission.urls.feedback, {'review': 'cool!'}, follow=True
+            slot.submission.urls.feedback, {"review": "cool!"}, follow=True
         )
     assert response.status_code == 200
     with scope(event=event):

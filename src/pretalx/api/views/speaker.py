@@ -7,18 +7,20 @@ from pretalx.person.models import SpeakerProfile
 class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SpeakerSerializer
     queryset = SpeakerProfile.objects.none()
-    lookup_field = 'user__code__iexact'
-    filterset_fields = ('user__name', 'user__email')
-    search_fields = ('user__name', 'user__email')
+    lookup_field = "user__code__iexact"
+    filterset_fields = ("user__name", "user__email")
+    search_fields = ("user__name", "user__email")
 
     def get_serializer_class(self):
-        if self.request.user.has_perm('orga.view_speakers', self.request.event):
+        if self.request.user.has_perm("orga.view_speakers", self.request.event):
             return SpeakerOrgaSerializer
         return SpeakerSerializer
 
     def get_base_queryset(self):
-        if self.request.user.has_perm('orga.view_speakers', self.request.event):
-            return SpeakerProfile.objects.filter(event=self.request.event, user__isnull=False)
+        if self.request.user.has_perm("orga.view_speakers", self.request.event):
+            return SpeakerProfile.objects.filter(
+                event=self.request.event, user__isnull=False
+            )
         if (
             self.request.event.current_schedule
             and self.request.event.settings.show_schedule

@@ -7,13 +7,19 @@ import pretalx.submission.models.submission
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0024_auto_20180619_1519'),
+        ("submission", "0024_auto_20180619_1519"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='review_code',
-            field=models.CharField(blank=True, default=pretalx.submission.models.submission.generate_invite_code, max_length=32, null=True, unique=True),
+            model_name="submission",
+            name="review_code",
+            field=models.CharField(
+                blank=True,
+                default=pretalx.submission.models.submission.generate_invite_code,
+                max_length=32,
+                null=True,
+                unique=True,
+            ),
         ),
     ]

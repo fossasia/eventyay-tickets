@@ -6,17 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0011_auto_20180205_1127'),
+        ("schedule", "0011_auto_20180205_1127"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='talkslot',
-            name='is_visible',
+            model_name="talkslot",
+            name="is_visible",
             field=models.BooleanField(default=False),
         ),
-        migrations.AlterUniqueTogether(
-            name='talkslot',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="talkslot", unique_together=set(),),
     ]

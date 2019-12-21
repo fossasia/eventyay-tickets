@@ -8,12 +8,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0006_talkslot_is_visible'),
+        ("schedule", "0006_talkslot_is_visible"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='schedule',
-            options={'ordering': ('-published',)},
+            name="schedule", options={"ordering": ("-published",)},
         ),
     ]

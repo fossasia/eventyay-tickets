@@ -5,7 +5,7 @@ from django.utils.crypto import get_random_string
 from django_scopes import scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
 
-SENSITIVE_KEYS = ['password', 'secret', 'api_key']
+SENSITIVE_KEYS = ["password", "secret", "api_key"]
 
 
 class LogMixin:
@@ -19,13 +19,15 @@ class LogMixin:
             for key, value in data.items():
                 if any(sensitive_key in key for sensitive_key in SENSITIVE_KEYS):
                     value = data[key]
-                    data[key] = '********' if value else value
+                    data[key] = "********" if value else value
             data = json.dumps(data, cls=I18nJSONEncoder)
         elif data:
-            raise TypeError(f'Logged data should always be a dictionary, not {type(data)}.')
+            raise TypeError(
+                f"Logged data should always be a dictionary, not {type(data)}."
+            )
 
         ActivityLog.objects.create(
-            event=getattr(self, 'event', None),
+            event=getattr(self, "event", None),
             person=person,
             content_object=self,
             action_type=action,
@@ -39,7 +41,7 @@ class LogMixin:
         return ActivityLog.objects.filter(
             content_type=ContentType.objects.get_for_model(type(self)),
             object_id=self.pk,
-        ).select_related('event', 'person')
+        ).select_related("event", "person")
 
 
 class GenerateCode:
@@ -50,8 +52,8 @@ class GenerateCode:
     """
 
     _code_length = 6
-    _code_charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
-    _code_property = 'code'
+    _code_charset = list("ABCDEFGHJKLMNPQRSTUVWXYZ3789")
+    _code_property = "code"
 
     def generate_code(self, length=None):
         length = length or self._code_length
@@ -62,7 +64,9 @@ class GenerateCode:
         while True:
             code = self.generate_code(length=length)
             with scopes_disabled():
-                if not self.__class__.objects.filter(**{f'{self._code_property}__iexact': code}).exists():
+                if not self.__class__.objects.filter(
+                    **{f"{self._code_property}__iexact": code}
+                ).exists():
                     setattr(self, self._code_property, code)
                     return
 

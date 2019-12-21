@@ -15,7 +15,7 @@ def html_signal(signame: str, **kwargs):
 
         {% html_signal event "path.to.signal" argument="value" ... %}
     """
-    sigstr = signame.rsplit('.', 1)
+    sigstr = signame.rsplit(".", 1)
     sigmod = importlib.import_module(sigstr[0])
     signal = getattr(sigmod, sigstr[1])
     _html = []

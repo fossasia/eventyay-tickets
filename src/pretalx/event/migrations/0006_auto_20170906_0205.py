@@ -8,13 +8,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0005_event_custom_css'),
+        ("event", "0005_event_custom_css"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='event',
-            old_name='color',
-            new_name='primary_color',
+            model_name="event", old_name="color", new_name="primary_color",
         ),
     ]

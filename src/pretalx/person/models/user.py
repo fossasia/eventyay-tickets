@@ -5,7 +5,9 @@ from hashlib import md5
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin,
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
 )
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
@@ -13,7 +15,9 @@ from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import get_language, gettext_lazy as _, override
+from django.utils.translation import get_language
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
@@ -35,7 +39,7 @@ class UserManager(BaseUserManager):
         user.is_staff = True
         user.is_administrator = True
         user.is_superuser = False
-        user.save(update_fields=['is_staff', 'is_administrator', 'is_superuser'])
+        user.save(update_fields=["is_staff", "is_administrator", "is_superuser"])
         return user
 
 
@@ -57,8 +61,8 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     :param user_permissions: Django internals, not used in pretalx.
     """
 
-    EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = "email"
+    USERNAME_FIELD = "email"
 
     objects = UserManager()
 
@@ -66,53 +70,67 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     nick = models.CharField(max_length=60, null=True, blank=True)
     name = models.CharField(
         max_length=120,
-        verbose_name=_('Name'),
-        help_text=_('Please enter the name you wish to be displayed publicly. This name will be used for all events you are participating in on this server.'),
+        verbose_name=_("Name"),
+        help_text=_(
+            "Please enter the name you wish to be displayed publicly. This name will be used for all events you are participating in on this server."
+        ),
     )
     email = models.EmailField(
         unique=True,
-        verbose_name=_('E-Mail'),
+        verbose_name=_("E-Mail"),
         help_text=_(
-            'Your email address will be used for password resets and notification about your event/submissions.'
+            "Your email address will be used for password resets and notification about your event/submissions."
         ),
     )
-    is_active = models.BooleanField(default=True, help_text='Inactive users are not allowed to log in.')
-    is_staff = models.BooleanField(default=False, help_text='A default Django flag. Not in use in pretalx.')
-    is_administrator = models.BooleanField(default=False, help_text='Should only be ``True`` for people with administrative access to the server pretalx runs on.')
-    is_superuser = models.BooleanField(default=False, help_text='Never set this flag to ``True``, since it short-circuits all authorization mechanisms.')
+    is_active = models.BooleanField(
+        default=True, help_text="Inactive users are not allowed to log in."
+    )
+    is_staff = models.BooleanField(
+        default=False, help_text="A default Django flag. Not in use in pretalx."
+    )
+    is_administrator = models.BooleanField(
+        default=False,
+        help_text="Should only be ``True`` for people with administrative access to the server pretalx runs on.",
+    )
+    is_superuser = models.BooleanField(
+        default=False,
+        help_text="Never set this flag to ``True``, since it short-circuits all authorization mechanisms.",
+    )
     locale = models.CharField(
         max_length=32,
         default=settings.LANGUAGE_CODE,
         choices=settings.LANGUAGES,
-        verbose_name=_('Preferred language'),
+        verbose_name=_("Preferred language"),
     )
     timezone = models.CharField(
-        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default='UTC'
+        choices=[(tz, tz) for tz in pytz.common_timezones], max_length=30, default="UTC"
     )
     avatar = models.ImageField(
         null=True,
         blank=True,
-        verbose_name=_('Profile picture'),
-        help_text=_('If possible, upload an image that is least 120 pixels wide.'),
+        verbose_name=_("Profile picture"),
+        help_text=_("If possible, upload an image that is least 120 pixels wide."),
     )
     get_gravatar = models.BooleanField(
         default=False,
-        verbose_name=_('Retrieve profile picture via gravatar'),
+        verbose_name=_("Retrieve profile picture via gravatar"),
         help_text=_(
-            'If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'
+            "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
         ),
     )
-    pw_reset_token = models.CharField(null=True, max_length=160, verbose_name='Password reset token')
-    pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
+    pw_reset_token = models.CharField(
+        null=True, max_length=160, verbose_name="Password reset token"
+    )
+    pw_reset_time = models.DateTimeField(null=True, verbose_name="Password reset time")
 
     def __str__(self) -> str:
         """For public consumption as it is used for Select widgets, e.g. on the
         feedback form."""
-        return self.name or str(_('Unnamed user'))
+        return self.name or str(_("Unnamed user"))
 
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""
-        return self.name if self.name else str(_('Unnamed user'))
+        return self.name if self.name else str(_("Unnamed user"))
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()
@@ -127,7 +145,8 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         :retval: :class:`pretalx.person.models.profile.EventProfile`
         """
         from pretalx.person.models.profile import SpeakerProfile
-        profile = self.profiles.select_related('event').filter(event=event).first()
+
+        profile = self.profiles.select_related("event").filter(event=event).first()
         if profile:
             return profile
         profile = SpeakerProfile(event=event, user=self)
@@ -135,7 +154,9 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
             profile.save()
         return profile
 
-    def log_action(self, action: str, data: dict=None, person=None, orga: bool=False):
+    def log_action(
+        self, action: str, data: dict = None, person=None, orga: bool = False
+    ):
         """Create a log entry for this user.
 
         :param action: The log action that took place.
@@ -177,36 +198,45 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         """Delete the user by unsetting all of their information."""
         from pretalx.submission.models import Answer
 
-        self.email = f'deleted_user_{random.randint(0, 999)}@localhost'
+        self.email = f"deleted_user_{random.randint(0, 999)}@localhost"
         while self.__class__.objects.filter(email__iexact=self.email).exists():
-            self.email = f'deleted_user_{random.randint(0, 999)}'
-        self.name = 'Deleted User'
+            self.email = f"deleted_user_{random.randint(0, 999)}"
+        self.name = "Deleted User"
         self.is_active = False
         self.is_superuser = False
         self.is_administrator = False
-        self.locale = 'en'
-        self.timezone = 'UTC'
+        self.locale = "en"
+        self.timezone = "UTC"
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.save()
-        self.profiles.all().update(biography='')
+        self.profiles.all().update(biography="")
         Answer.objects.filter(
             person=self, question__contains_personal_data=True
         ).delete()
         for team in self.teams.all():
             team.members.remove(self)
+
     deactivate.alters_data = True
 
     @transaction.atomic
     def shred(self):
         """Actually remove the user account."""
         from pretalx.submission.models import Submission
+
         with scopes_disabled():
-            if Submission.all_objects.filter(speakers__in=[self]).count() or self.teams.count() or self.answers.count():
-                raise Exception(f'Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead.')
+            if (
+                Submission.all_objects.filter(speakers__in=[self]).count()
+                or self.teams.count()
+                or self.answers.count()
+            ):
+                raise Exception(
+                    f"Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead."
+                )
             self.logged_actions().delete()
             self.own_actions().update(person=None)
             self.delete()
+
     shred.alters_data = True
 
     @cached_property
@@ -219,7 +249,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
 
     @cached_property
     def has_local_avatar(self) -> bool:
-        return self.avatar and self.avatar != 'False'
+        return self.avatar and self.avatar != "False"
 
     def get_events_with_any_permission(self):
         """Returns a queryset of events for which this user has any type of
@@ -232,10 +262,10 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         return Event.objects.filter(
             Q(
                 organiser_id__in=self.teams.filter(all_events=True).values_list(
-                    'organiser', flat=True
+                    "organiser", flat=True
                 )
             )
-            | Q(id__in=self.teams.values_list('limit_events__id', flat=True))
+            | Q(id__in=self.teams.values_list("limit_events__id", flat=True))
         )
 
     def get_events_for_permission(self, **kwargs):
@@ -252,10 +282,10 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
 
         orga_teams = self.teams.filter(**kwargs)
         absolute = orga_teams.filter(all_events=True).values_list(
-            'organiser', flat=True
+            "organiser", flat=True
         )
         relative = orga_teams.filter(all_events=False).values_list(
-            'limit_events', flat=True
+            "limit_events", flat=True
         )
         return Event.objects.filter(
             models.Q(organiser__in=absolute) | models.Q(pk__in=relative)
@@ -268,12 +298,12 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         """
         if self.is_administrator:
             return {
-                'can_create_events',
-                'can_change_teams',
-                'can_change_organiser_settings',
-                'can_change_event_settings',
-                'can_change_submissions',
-                'is_reviewer',
+                "can_create_events",
+                "can_change_teams",
+                "can_change_organiser_settings",
+                "can_change_event_settings",
+                "can_change_submissions",
+                "is_reviewer",
             }
         teams = event.teams.filter(members__in=[self])
         if not teams:
@@ -288,7 +318,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         """
         allowed = max(
             event.teams.filter(members__in=[self], is_reviewer=True).values_list(
-                'review_override_votes', flat=True
+                "review_override_votes", flat=True
             )
             or [0]
         )
@@ -299,9 +329,10 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
 
     def regenerate_token(self) -> Token:
         """Generates a new API access token, deleting the old one."""
-        self.log_action(action='pretalx.user.token.reset')
+        self.log_action(action="pretalx.user.token.reset")
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
+
     regenerate_token.alters_data = True
 
     @transaction.atomic
@@ -313,13 +344,13 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         self.save()
 
         context = {
-            'name': self.name or '',
-            'url': build_absolute_uri(
-                'orga:auth.recover', kwargs={'token': self.pw_reset_token}
+            "name": self.name or "",
+            "url": build_absolute_uri(
+                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
             ),
         }
         mail_text = _(
-            '''Hi {name},
+            """Hi {name},
 
 you have requested a new password for your pretalx account.
 To reset your password, click on the following link:
@@ -329,17 +360,17 @@ To reset your password, click on the following link:
 If this wasn\'t you, you can just ignore this email.
 
 All the best,
-the pretalx robot'''
+the pretalx robot"""
         )
 
         with override(get_language()):
             mail = QueuedMail.objects.create(
-                subject=_('Password recovery'),
-                text=str(mail_text).format(**context),
+                subject=_("Password recovery"), text=str(mail_text).format(**context),
             )
             mail.to_users.add(self)
             mail.send()
         self.log_action(
-            action='pretalx.user.password.reset', person=user, orga=bool(user)
+            action="pretalx.user.password.reset", person=user, orga=bool(user)
         )
+
     reset_password.alters_data = True

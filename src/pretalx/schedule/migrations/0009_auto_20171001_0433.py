@@ -10,23 +10,39 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0008_auto_20170916_0421'),
+        ("schedule", "0008_auto_20170916_0421"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='availability',
-            name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='availabilities', to='event.Event'),
+            model_name="availability",
+            name="event",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="availabilities",
+                to="event.Event",
+            ),
         ),
         migrations.AlterField(
-            model_name='availability',
-            name='person',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='availabilities', to=settings.AUTH_USER_MODEL),
+            model_name="availability",
+            name="person",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="availabilities",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='availability',
-            name='room',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='availabilities', to='schedule.Room'),
+            model_name="availability",
+            name="room",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="availabilities",
+                to="schedule.Room",
+            ),
         ),
     ]

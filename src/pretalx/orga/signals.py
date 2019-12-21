@@ -34,7 +34,7 @@ in pretalx.
 This is no ``EventPluginSignal``, so you do not get the event in the ``sender`` argument
 and you may get the signal regardless of whether your plugin is active.
 """
-activate_event = EventPluginSignal(providing_args=['request'])
+activate_event = EventPluginSignal(providing_args=["request"])
 """
 This signal is sent out before an event goes live. It allows any installed
 plugin to raise an Exception to prevent the event from going live. The
@@ -44,7 +44,7 @@ Receivers are not expected to return a response.
 
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 """
-nav_event_settings = EventPluginSignal(providing_args=['request'])
+nav_event_settings = EventPluginSignal(providing_args=["request"])
 """
 This signal is sent out to collect additiona settings sub-pages of an event.
 Receivers are expected to return a list of dictionaries. The dictionaries

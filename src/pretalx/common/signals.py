@@ -107,7 +107,9 @@ class EventPluginSignal(django.dispatch.Signal):
             key=lambda response: (response[0].__module__, response[0].__name__),
         )
 
-    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
+    def send_chained(
+        self, sender: Event, chain_kwarg_name, **named
+    ) -> List[Tuple[Callable, Any]]:
         """Send signal from sender to all connected receivers. The return value
         of the first receiver will be used as the keyword argument specified by
         ``chain_kwarg_name`` in the input to the second receiver and so on. The

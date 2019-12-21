@@ -7,18 +7,18 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('person', '0019_auto_20180821_1346'),
+        ("person", "0019_auto_20180821_1346"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='speakerinformation',
-            name='text',
+            model_name="speakerinformation",
+            name="text",
             field=i18nfield.fields.I18nTextField(),
         ),
         migrations.AlterField(
-            model_name='speakerprofile',
-            name='biography',
+            model_name="speakerprofile",
+            name="biography",
             field=models.TextField(blank=True, null=True),
         ),
     ]

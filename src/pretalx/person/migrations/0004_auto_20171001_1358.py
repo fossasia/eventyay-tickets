@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('person', '0003_auto_20170908_0548'),
+        ("person", "0003_auto_20170908_0548"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='eventpermission',
-            name='is_reviewer',
+            model_name="eventpermission",
+            name="is_reviewer",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='speakerprofile',
-            name='biography',
+            model_name="speakerprofile",
+            name="biography",
             field=models.TextField(blank=True, null=True),
         ),
     ]

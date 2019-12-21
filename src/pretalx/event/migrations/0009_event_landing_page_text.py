@@ -9,13 +9,13 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0008_event_logo'),
+        ("event", "0008_event_logo"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='landing_page_text',
+            model_name="event",
+            name="landing_page_text",
             field=i18nfield.fields.I18nTextField(blank=True, null=True),
         ),
     ]

@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def fill_names(apps, schema_editor):
-    User = apps.get_model('person', 'User')
+    User = apps.get_model("person", "User")
     for user in User.objects.all():
         if not user.name:
             user.nick = user.name
@@ -14,7 +14,7 @@ def fill_names(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('person', '0018_auto_20180812_1523'),
+        ("person", "0018_auto_20180812_1523"),
     ]
 
     operations = [

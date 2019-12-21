@@ -16,8 +16,8 @@ from pretalx.orga.forms.admin import UpdateSettingsForm
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
-    template_name = 'orga/admin.html'
-    permission_required = 'person.is_administrator'
+    template_name = "orga/admin.html"
+    permission_required = "person.is_administrator"
 
     @context
     def queue_length(self):
@@ -25,7 +25,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
             return None
         try:
             client = app.broker_connection().channel().client
-            return client.llen('celery')
+            return client.llen("celery")
         except Exception as e:
             return str(e)
 
@@ -35,29 +35,31 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
 
 class UpdateCheckView(PermissionRequired, FormView):
-    template_name = 'orga/update.html'
-    permission_required = 'person.is_administrator'
+    template_name = "orga/update.html"
+    permission_required = "person.is_administrator"
     form_class = UpdateSettingsForm
 
     def post(self, request, *args, **kwargs):
-        if 'trigger' in request.POST:
+        if "trigger" in request.POST:
             update_check.apply()
             return redirect(self.get_success_url())
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
+        messages.success(self.request, _("Your changes have been saved."))
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        messages.error(
+            self.request, _("Your changes have not been saved, see below for errors.")
+        )
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data()
-        result['gs'] = GlobalSettings()
-        result['gs'].settings.set('update_check_ack', True)
+        result["gs"] = GlobalSettings()
+        result["gs"].settings.set("update_check_ack", True)
         return result
 
     @context
@@ -65,4 +67,4 @@ class UpdateCheckView(PermissionRequired, FormView):
         return check_result_table()
 
     def get_success_url(self):
-        return reverse('orga:admin.update')
+        return reverse("orga:admin.update")

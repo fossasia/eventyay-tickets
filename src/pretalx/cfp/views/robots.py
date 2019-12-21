@@ -12,5 +12,6 @@ Disallow: /orga/
 Disallow: /download/
 Disallow: /redirect/
 Disallow: /api/
-""", content_type='text/plain'
+""",
+        content_type="text/plain",
     )

@@ -9,13 +9,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('common', '0003_activitylog_is_orga_action'),
+        ("common", "0003_activitylog_is_orga_action"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='activitylog',
-            name='event',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='log_entries', to='event.Event'),
+            model_name="activitylog",
+            name="event",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="log_entries",
+                to="event.Event",
+            ),
         ),
     ]

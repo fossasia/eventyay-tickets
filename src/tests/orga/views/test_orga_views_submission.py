@@ -17,7 +17,7 @@ def test_orga_can_see_submissions(orga_client, event, submission):
 @pytest.mark.django_db
 def test_orga_can_search_submissions(orga_client, event, submission):
     response = orga_client.get(
-        event.orga_urls.submissions + f'?q={submission.title[:5]}', follow=True
+        event.orga_urls.submissions + f"?q={submission.title[:5]}", follow=True
     )
     assert response.status_code == 200
     assert submission.title in response.content.decode()
@@ -26,7 +26,7 @@ def test_orga_can_search_submissions(orga_client, event, submission):
 @pytest.mark.django_db
 def test_orga_can_miss_search_submissions(orga_client, event, submission):
     response = orga_client.get(
-        event.orga_urls.submissions + f'?q={submission.title[:5]}xxy', follow=True
+        event.orga_urls.submissions + f"?q={submission.title[:5]}xxy", follow=True
     )
     assert response.status_code == 200
     assert submission.title not in response.content.decode()
@@ -50,7 +50,9 @@ def test_reviewer_can_see_single_submission(review_client, event, submission, an
 
 
 @pytest.mark.django_db
-def test_reviewer_can_see_single_submission_but_hide_question(review_client, event, submission, answer):
+def test_reviewer_can_see_single_submission_but_hide_question(
+    review_client, event, submission, answer
+):
     with scope(event=event):
         answer.question.is_visible_to_reviewers = False
         answer.question.save()
@@ -83,7 +85,9 @@ def test_orga_can_see_single_submission_in_feed(orga_client, event, submission):
 
 
 @pytest.mark.django_db
-def test_wrong_user_cannot_see_single_submission_in_feed(client, user, event, submission):
+def test_wrong_user_cannot_see_single_submission_in_feed(
+    client, user, event, submission
+):
     user.teams.remove(user.teams.first())
     response = client.get(submission.event.orga_urls.submission_feed, follow=True)
     assert submission.title not in response.content.decode()
@@ -111,9 +115,9 @@ def test_accept_submission_redirects_to_review_list(orga_client, submission):
     assert submission.state == SubmissionStates.SUBMITTED
 
     response = orga_client.post(
-        submission.orga_urls.accept + f'?next={submission.event.orga_urls.reviews}'
+        submission.orga_urls.accept + f"?next={submission.event.orga_urls.reviews}"
     )
-    _, redirected_page_url = response._headers['location']
+    _, redirected_page_url = response._headers["location"]
 
     assert response.status_code == 302
     assert redirected_page_url == submission.event.orga_urls.reviews
@@ -127,7 +131,7 @@ def test_accept_accepted_submission(orga_client, submission):
     assert response.status_code == 200
     with scope(event=submission.event):
         submission.refresh_from_db()
-    assert submission.state == 'accepted'
+    assert submission.state == "accepted"
 
 
 @pytest.mark.django_db
@@ -190,18 +194,18 @@ def test_orga_can_delete_submission(orga_client, submission, answered_choice_que
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('user', ('EMAIL', 'NEW_EMAIL'))
+@pytest.mark.parametrize("user", ("EMAIL", "NEW_EMAIL"))
 def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
     assert submission.speakers.count() == 1
 
-    if user == 'EMAIL':
+    if user == "EMAIL":
         user = other_orga_user.email
     else:
-        user = 'some_unused@mail.org'
+        user = "some_unused@mail.org"
 
     response = orga_client.post(
         submission.orga_urls.new_speaker,
-        data={'speaker': user, 'name': 'Name'},
+        data={"speaker": user, "name": "Name"},
         follow=True,
     )
     submission.refresh_from_db()
@@ -215,7 +219,7 @@ def test_orga_can_add_speakers_with_incorrect_address(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.post(
         submission.orga_urls.new_speaker,
-        data={'speaker': 'foooobaaaaar', 'name': 'Name'},
+        data={"speaker": "foooobaaaaar", "name": "Name"},
         follow=True,
     )
     submission.refresh_from_db()
@@ -228,7 +232,7 @@ def test_orga_can_readd_speaker(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.post(
         submission.orga_urls.new_speaker,
-        data={'speaker': submission.speakers.first().email, 'name': 'Name'},
+        data={"speaker": submission.speakers.first().email, "name": "Name"},
         follow=True,
     )
     submission.refresh_from_db()
@@ -240,7 +244,9 @@ def test_orga_can_readd_speaker(orga_client, submission):
 def test_orga_can_remove_speaker(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.get(
-        submission.orga_urls.delete_speaker + '?id=' + str(submission.speakers.first().pk),
+        submission.orga_urls.delete_speaker
+        + "?id="
+        + str(submission.speakers.first().pk),
         follow=True,
     )
     submission.refresh_from_db()
@@ -252,7 +258,10 @@ def test_orga_can_remove_speaker(orga_client, submission):
 def test_orga_can_remove_wrong_speaker(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.get(
-        submission.orga_urls.delete_speaker + '?id=' + str(submission.speakers.first().pk) + '12',
+        submission.orga_urls.delete_speaker
+        + "?id="
+        + str(submission.speakers.first().pk)
+        + "12",
         follow=True,
     )
     submission.refresh_from_db()
@@ -269,17 +278,17 @@ def test_orga_can_create_submission(orga_client, event):
     response = orga_client.post(
         event.orga_urls.new_submission,
         data={
-            'abstract': 'abstract',
-            'content_locale': 'en',
-            'description': 'description',
-            'duration': '',
-            'slot_count': 1,
-            'notes': 'notes',
-            'internal_notes': 'internal_notes',
-            'speaker': 'foo@bar.com',
-            'speaker_name': 'Foo Speaker',
-            'title': 'title',
-            'submission_type': type_pk,
+            "abstract": "abstract",
+            "content_locale": "en",
+            "description": "description",
+            "duration": "",
+            "slot_count": 1,
+            "notes": "notes",
+            "internal_notes": "internal_notes",
+            "speaker": "foo@bar.com",
+            "speaker_name": "Foo Speaker",
+            "title": "title",
+            "submission_type": type_pk,
         },
         follow=True,
     )
@@ -287,7 +296,7 @@ def test_orga_can_create_submission(orga_client, event):
     with scope(event=event):
         assert event.submissions.count() == 1
         sub = event.submissions.first()
-        assert sub.title == 'title'
+        assert sub.title == "title"
         assert sub.speakers.count() == 1
 
 
@@ -301,18 +310,18 @@ def test_orga_can_edit_submission(orga_client, event, accepted_submission):
     response = orga_client.post(
         accepted_submission.orga_urls.base,
         data={
-            'abstract': 'abstract',
-            'content_locale': 'en',
-            'description': 'description',
-            'duration': '',
-            'slot_count': 2,
-            'notes': 'notes',
-            'speaker': 'foo@bar.com',
-            'speaker_name': 'Foo Speaker',
-            'title': 'title',
-            'submission_type': accepted_submission.submission_type.pk,
-            'resource-TOTAL_FORMS': 0,
-            'resource-INITIAL_FORMS': 0,
+            "abstract": "abstract",
+            "content_locale": "en",
+            "description": "description",
+            "duration": "",
+            "slot_count": 2,
+            "notes": "notes",
+            "speaker": "foo@bar.com",
+            "speaker_name": "Foo Speaker",
+            "title": "title",
+            "submission_type": accepted_submission.submission_type.pk,
+            "resource-TOTAL_FORMS": 0,
+            "resource-INITIAL_FORMS": 0,
         },
         follow=True,
     )
@@ -336,18 +345,18 @@ def test_orga_can_edit_submission_duration(orga_client, event, accepted_submissi
     response = orga_client.post(
         accepted_submission.orga_urls.base,
         data={
-            'abstract': 'abstract',
-            'content_locale': 'en',
-            'description': 'description',
-            'slot_count': 2,
-            'notes': 'notes',
-            'speaker': 'foo@bar.com',
-            'speaker_name': 'Foo Speaker',
-            'duration': 123,
-            'title': 'title',
-            'submission_type': accepted_submission.submission_type.pk,
-            'resource-TOTAL_FORMS': 0,
-            'resource-INITIAL_FORMS': 0,
+            "abstract": "abstract",
+            "content_locale": "en",
+            "description": "description",
+            "slot_count": 2,
+            "notes": "notes",
+            "speaker": "foo@bar.com",
+            "speaker_name": "Foo Speaker",
+            "duration": 123,
+            "title": "title",
+            "submission_type": accepted_submission.submission_type.pk,
+            "resource-TOTAL_FORMS": 0,
+            "resource-INITIAL_FORMS": 0,
         },
         follow=True,
     )

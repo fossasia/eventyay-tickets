@@ -14,125 +14,222 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('event', '0001_initial'),
+        ("event", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('answer', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("answer", models.TextField()),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='AnswerOption',
+            name="AnswerOption",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('answer', i18nfield.fields.I18nCharField(max_length=200)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("answer", i18nfield.fields.I18nCharField(max_length=200)),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='CfP',
+            name="CfP",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('headline', i18nfield.fields.I18nCharField(blank=True, max_length=300, null=True)),
-                ('text', i18nfield.fields.I18nTextField(blank=True, null=True)),
-                ('deadline', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "headline",
+                    i18nfield.fields.I18nCharField(
+                        blank=True, max_length=300, null=True
+                    ),
+                ),
+                ("text", i18nfield.fields.I18nTextField(blank=True, null=True)),
+                ("deadline", models.DateTimeField(blank=True, null=True)),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('variant', models.CharField(default='string', max_length=14)),
-                ('question', i18nfield.fields.I18nCharField(max_length=200)),
-                ('default_answer', models.TextField(blank=True, null=True)),
-                ('required', models.BooleanField(default=False)),
-                ('position', models.IntegerField(default=0)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='questions', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("variant", models.CharField(default="string", max_length=14)),
+                ("question", i18nfield.fields.I18nCharField(max_length=200)),
+                ("default_answer", models.TextField(blank=True, null=True)),
+                ("required", models.BooleanField(default=False)),
+                ("position", models.IntegerField(default=0)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="questions",
+                        to="event.Event",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ['position'],
-            },
+            options={"ordering": ["position"],},
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='Submission',
+            name="Submission",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('code', models.CharField(db_index=True, max_length=16)),
-                ('title', models.CharField(max_length=200)),
-                ('state', models.CharField(default='submitted', max_length=9)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('abstract', models.TextField(blank=True, null=True)),
-                ('notes', models.TextField(blank=True, null=True)),
-                ('duration', models.PositiveIntegerField(blank=True, null=True)),
-                ('content_locale', models.CharField(default='en', max_length=32)),
-                ('do_not_record', models.BooleanField(default=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='event.Event')),
-                ('speakers', models.ManyToManyField(blank=True, related_name='submissions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("code", models.CharField(db_index=True, max_length=16)),
+                ("title", models.CharField(max_length=200)),
+                ("state", models.CharField(default="submitted", max_length=9)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("abstract", models.TextField(blank=True, null=True)),
+                ("notes", models.TextField(blank=True, null=True)),
+                ("duration", models.PositiveIntegerField(blank=True, null=True)),
+                ("content_locale", models.CharField(default="en", max_length=32)),
+                ("do_not_record", models.BooleanField(default=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="submissions",
+                        to="event.Event",
+                    ),
+                ),
+                (
+                    "speakers",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="submissions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='SubmissionType',
+            name="SubmissionType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('name', i18nfield.fields.I18nCharField(max_length=100)),
-                ('default_duration', models.PositiveIntegerField(default=30)),
-                ('max_duration', models.PositiveIntegerField(default=60)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='submission_types', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", i18nfield.fields.I18nCharField(max_length=100)),
+                ("default_duration", models.PositiveIntegerField(default=30)),
+                ("max_duration", models.PositiveIntegerField(default=60)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="submission_types",
+                        to="event.Event",
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='Track',
+            name="Track",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('name', i18nfield.fields.I18nCharField(max_length=200)),
-                ('color', models.CharField(max_length=7)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='tracks', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", i18nfield.fields.I18nCharField(max_length=200)),
+                ("color", models.CharField(max_length=7)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="tracks",
+                        to="event.Event",
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.AddField(
-            model_name='submission',
-            name='submission_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.SubmissionType'),
+            model_name="submission",
+            name="submission_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="submissions",
+                to="submission.SubmissionType",
+            ),
         ),
         migrations.AddField(
-            model_name='cfp',
-            name='default_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='+', to='submission.SubmissionType'),
+            model_name="cfp",
+            name="default_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="submission.SubmissionType",
+            ),
         ),
         migrations.AddField(
-            model_name='cfp',
-            name='event',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='event.Event'),
+            model_name="cfp",
+            name="event",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.PROTECT, to="event.Event"
+            ),
         ),
         migrations.AddField(
-            model_name='answeroption',
-            name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='options', to='submission.Question'),
+            model_name="answeroption",
+            name="question",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="options",
+                to="submission.Question",
+            ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='options',
-            field=models.ManyToManyField(related_name='answers', to='submission.AnswerOption'),
+            model_name="answer",
+            name="options",
+            field=models.ManyToManyField(
+                related_name="answers", to="submission.AnswerOption"
+            ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='answers', to='submission.Question'),
+            model_name="answer",
+            name="question",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="answers",
+                to="submission.Question",
+            ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='submission',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='answers', to='submission.Submission'),
+            model_name="answer",
+            name="submission",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="answers",
+                to="submission.Submission",
+            ),
         ),
     ]

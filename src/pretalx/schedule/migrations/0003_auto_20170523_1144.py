@@ -9,13 +9,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0002_auto_20170523_0134'),
+        ("schedule", "0002_auto_20170523_0134"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='talkslot',
-            name='room',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='talks', to='schedule.Room'),
+            model_name="talkslot",
+            name="room",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="talks",
+                to="schedule.Room",
+            ),
         ),
     ]

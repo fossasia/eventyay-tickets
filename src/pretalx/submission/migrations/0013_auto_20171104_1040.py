@@ -9,18 +9,22 @@ import pretalx.submission.models.question
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0012_question_active'),
+        ("submission", "0012_question_active"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='answer_file',
-            field=models.FileField(blank=True, null=True, upload_to=pretalx.submission.models.question.answer_file_path),
+            model_name="answer",
+            name="answer_file",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=pretalx.submission.models.question.answer_file_path,
+            ),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='variant',
-            field=models.CharField(default='string', max_length=15),
+            model_name="question",
+            name="variant",
+            field=models.CharField(default="string", max_length=15),
         ),
     ]

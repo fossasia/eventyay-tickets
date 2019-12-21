@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0014_resource'),
+        ("submission", "0014_resource"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='contains_personal_data',
+            model_name="question",
+            name="contains_personal_data",
             field=models.BooleanField(default=True),
         ),
     ]

@@ -13,33 +13,57 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('event', '0001_initial'),
+        ("event", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MailTemplate',
+            name="MailTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('subject', i18nfield.fields.I18nCharField(max_length=200)),
-                ('text', i18nfield.fields.I18nTextField()),
-                ('reply_to', models.EmailField(blank=True, max_length=200, null=True)),
-                ('bcc', models.CharField(blank=True, max_length=1000, null=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='mail_templates', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("subject", i18nfield.fields.I18nCharField(max_length=200)),
+                ("text", i18nfield.fields.I18nTextField()),
+                ("reply_to", models.EmailField(blank=True, max_length=200, null=True)),
+                ("bcc", models.CharField(blank=True, max_length=1000, null=True)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="mail_templates",
+                        to="event.Event",
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='QueuedMail',
+            name="QueuedMail",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('to', models.CharField(max_length=1000)),
-                ('reply_to', models.CharField(max_length=1000)),
-                ('cc', models.CharField(blank=True, max_length=1000, null=True)),
-                ('bcc', models.CharField(blank=True, max_length=1000, null=True)),
-                ('subject', models.CharField(max_length=200)),
-                ('text', models.TextField()),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='queued_mails', to='event.Event')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
+                ),
+                ("to", models.CharField(max_length=1000)),
+                ("reply_to", models.CharField(max_length=1000)),
+                ("cc", models.CharField(blank=True, max_length=1000, null=True)),
+                ("bcc", models.CharField(blank=True, max_length=1000, null=True)),
+                ("subject", models.CharField(max_length=200)),
+                ("text", models.TextField()),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="queued_mails",
+                        to="event.Event",
+                    ),
+                ),
             ],
             bases=(pretalx.common.mixins.LogMixin, models.Model),
         ),

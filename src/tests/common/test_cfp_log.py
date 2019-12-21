@@ -7,7 +7,7 @@ from pretalx.common.models.log import LOG_NAMES, ActivityLog
 @pytest.fixture
 def activity_log(event, submission):
     return ActivityLog(
-        event=event, content_object=submission, action_type='pretalx.submission.create'
+        event=event, content_object=submission, action_type="pretalx.submission.create"
     )
 
 
@@ -18,8 +18,8 @@ def test_activity_log_display(activity_log):
 
 @pytest.mark.django_db
 def test_activity_log_display_incorrect(activity_log):
-    activity_log.action_type = 'foo'
-    assert activity_log.display() == 'foo'
+    activity_log.action_type = "foo"
+    assert activity_log.display() == "foo"
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_log_urls(activity_log, submission, choice_question, answer, mail_templa
         assert activity_log.get_orga_url() == submission.event.cfp.urls.text
 
         activity_log.content_object = choice_question
-        assert activity_log.get_public_url() == ''
+        assert activity_log.get_public_url() == ""
         assert activity_log.get_orga_url() == choice_question.urls.base
 
         activity_log.content_object = choice_question.options.first()

@@ -8,28 +8,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0002_auto_20170429_1018'),
-        ('submission', '0001_initial'),
-        ('schedule', '0001_initial'),
+        ("event", "0002_auto_20170429_1018"),
+        ("submission", "0001_initial"),
+        ("schedule", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='talkslot',
-            name='end',
-            field=models.DateTimeField(null=True),
+            model_name="talkslot", name="end", field=models.DateTimeField(null=True),
         ),
         migrations.AlterField(
-            model_name='talkslot',
-            name='start',
-            field=models.DateTimeField(null=True),
+            model_name="talkslot", name="start", field=models.DateTimeField(null=True),
         ),
         migrations.AlterUniqueTogether(
-            name='schedule',
-            unique_together=set([('event', 'version')]),
+            name="schedule", unique_together=set([("event", "version")]),
         ),
         migrations.AlterUniqueTogether(
-            name='talkslot',
-            unique_together=set([('submission', 'schedule')]),
+            name="talkslot", unique_together=set([("submission", "schedule")]),
         ),
     ]

@@ -12,7 +12,7 @@ class AvailabilitySerializer(ModelSerializer):
 
     class Meta:
         model = Availability
-        fields = ('id', 'start', 'end', 'allDay')
+        fields = ("id", "start", "end", "allDay")
 
 
 class RoomSerializer(I18nAwareModelSerializer):
@@ -23,7 +23,7 @@ class RoomSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('id', 'name', 'description', 'capacity', 'position', 'url')
+        fields = ("id", "name", "description", "capacity", "position", "url")
 
 
 class RoomOrgaSerializer(RoomSerializer):
@@ -31,4 +31,4 @@ class RoomOrgaSerializer(RoomSerializer):
 
     class Meta:
         model = Room
-        fields = RoomSerializer.Meta.fields + ('speaker_info', 'availabilities')
+        fields = RoomSerializer.Meta.fields + ("speaker_info", "availabilities")

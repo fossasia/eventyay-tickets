@@ -68,15 +68,13 @@ class SubmissionCard(Flowable):
         )
         self.render_paragraph(
             Paragraph(
-                ", ".join(
-                    s.get_display_name() for s in self.submission.speakers.all()
-                ),
+                ", ".join(s.get_display_name() for s in self.submission.speakers.all()),
                 style=self.styles["Speaker"],
             )
         )
         self.render_paragraph(
             Paragraph(
-                _('{} minutes, #{}, {}, {}').format(
+                _("{} minutes, #{}, {}, {}").format(
                     self.submission.get_duration(),
                     self.submission.code,
                     self.submission.content_locale,
@@ -102,12 +100,12 @@ class SubmissionCard(Flowable):
 
 
 class SubmissionCards(EventPermissionRequired, View):
-    permission_required = 'orga.view_submission_cards'
+    permission_required = "orga.view_submission_cards"
 
     def get_queryset(self):
         return (
-            self.request.event.submissions.select_related('submission_type')
-            .prefetch_related('speakers')
+            self.request.event.submissions.select_related("submission_type")
+            .prefetch_related("speakers")
             .filter(
                 state__in=[
                     SubmissionStates.ACCEPTED,
@@ -119,7 +117,7 @@ class SubmissionCards(EventPermissionRequired, View):
 
     def get(self, request, *args, **kwargs):
         if not self.get_queryset().exists():
-            messages.warning(request, _('You don\'t have any submissions yet.'))
+            messages.warning(request, _("You don't have any submissions yet."))
             return redirect(request.event.orga_urls.submissions)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
             doc = BaseDocTemplate(
@@ -133,7 +131,7 @@ class SubmissionCards(EventPermissionRequired, View):
             doc.addPageTemplates(
                 [
                     PageTemplate(
-                        id='All',
+                        id="All",
                         frames=[
                             Frame(
                                 0,
@@ -144,7 +142,7 @@ class SubmissionCards(EventPermissionRequired, View):
                                 rightPadding=0,
                                 topPadding=0,
                                 bottomPadding=0,
-                                id='left',
+                                id="left",
                             ),
                             Frame(
                                 doc.width / 2,
@@ -155,7 +153,7 @@ class SubmissionCards(EventPermissionRequired, View):
                                 rightPadding=0,
                                 topPadding=0,
                                 bottomPadding=0,
-                                id='right',
+                                id="right",
                             ),
                         ],
                         pagesize=A4,
@@ -164,10 +162,10 @@ class SubmissionCards(EventPermissionRequired, View):
             )
             doc.build(self.get_story(doc))
             f.seek(0)
-            r = HttpResponse(content_type='application/pdf')
-            timestamp = now().strftime('%Y-%m-%d-%H%M')
+            r = HttpResponse(content_type="application/pdf")
+            timestamp = now().strftime("%Y-%m-%d-%H%M")
             r[
-                'Content-Disposition'
+                "Content-Disposition"
             ] = f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
             r.write(f.read())
             return r
@@ -175,20 +173,20 @@ class SubmissionCards(EventPermissionRequired, View):
     def get_style(self):
         stylesheet = StyleSheet1()
         stylesheet.add(
-            ParagraphStyle(name='Normal', fontName='Helvetica', fontSize=12, leading=14)
+            ParagraphStyle(name="Normal", fontName="Helvetica", fontSize=12, leading=14)
         )
         stylesheet.add(
             ParagraphStyle(
-                name='Title', fontName='Helvetica-Bold', fontSize=14, leading=16
+                name="Title", fontName="Helvetica-Bold", fontSize=14, leading=16
             )
         )
         stylesheet.add(
             ParagraphStyle(
-                name='Speaker', fontName='Helvetica-Oblique', fontSize=12, leading=14
+                name="Speaker", fontName="Helvetica-Oblique", fontSize=12, leading=14
             )
         )
         stylesheet.add(
-            ParagraphStyle(name='Meta', fontName='Helvetica', fontSize=10, leading=12)
+            ParagraphStyle(name="Meta", fontName="Helvetica", fontSize=10, leading=12)
         )
         return stylesheet
 

@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mail', '0001_initial'),
+        ("mail", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='queuedmail',
-            name='sent',
+            model_name="queuedmail",
+            name="sent",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

@@ -8,23 +8,29 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0029_auto_20181009_0353'),
+        ("submission", "0029_auto_20181009_0353"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='track',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='submission.Track'),
+            model_name="submission",
+            name="track",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="submissions",
+                to="submission.Track",
+            ),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='help_text',
+            model_name="question",
+            name="help_text",
             field=i18nfield.fields.I18nCharField(blank=True, max_length=200, null=True),
         ),
         migrations.AlterField(
-            model_name='submission',
-            name='is_featured',
+            model_name="submission",
+            name="is_featured",
             field=models.BooleanField(default=False),
         ),
     ]

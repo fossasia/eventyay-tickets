@@ -7,13 +7,17 @@ import pretalx.event.models.event
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0019_auto_20190224_0856'),
+        ("event", "0019_auto_20190224_0856"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='header_image',
-            field=models.FileField(blank=True, null=True, upload_to=pretalx.event.models.event.event_logo_path),
+            model_name="event",
+            name="header_image",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=pretalx.event.models.event.event_logo_path,
+            ),
         ),
     ]

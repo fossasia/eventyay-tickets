@@ -6,23 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0030_auto_20181209_2229'),
+        ("submission", "0030_auto_20181209_2229"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='tracks',
-            field=models.ManyToManyField(blank=True, related_name='questions', to='submission.Track'),
+            model_name="question",
+            name="tracks",
+            field=models.ManyToManyField(
+                blank=True, related_name="questions", to="submission.Track"
+            ),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='max_length',
+            model_name="question",
+            name="max_length",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='min_length',
+            model_name="question",
+            name="min_length",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0015_question_contains_personal_data'),
+        ("submission", "0015_question_contains_personal_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='review',
-            name='override_vote',
+            model_name="review",
+            name="override_vote",
             field=models.NullBooleanField(default=None),
         ),
         migrations.AlterField(
-            model_name='review',
-            name='score',
+            model_name="review",
+            name="score",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

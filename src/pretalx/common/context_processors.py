@@ -13,7 +13,7 @@ from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 def add_events(request):
     if (
         request.resolver_match
-        and set(request.resolver_match.namespaces) & {'orga', 'plugins'}
+        and set(request.resolver_match.namespaces) & {"orga", "plugins"}
         and not request.user.is_anonymous
     ):
         try:
@@ -21,50 +21,50 @@ def add_events(request):
             url_name = url.url_name
             url_namespace = url.namespace
         except Http404:
-            url_name = ''
-            url_namespace = ''
-        return {'url_name': url_name, 'url_namespace': url_namespace}
+            url_name = ""
+            url_namespace = ""
+        return {"url_name": url_name, "url_namespace": url_namespace}
     return {}
 
 
 def locale_context(request):
     context = {}
-    context['js_datetime_format'] = get_javascript_format('DATETIME_INPUT_FORMATS')
-    context['js_date_format'] = get_javascript_format('DATE_INPUT_FORMATS')
-    context['js_locale'] = get_moment_locale()
-    context['quotation_open'] = _('“')
-    context['quotation_close'] = _('”')
+    context["js_datetime_format"] = get_javascript_format("DATETIME_INPUT_FORMATS")
+    context["js_date_format"] = get_javascript_format("DATE_INPUT_FORMATS")
+    context["js_locale"] = get_moment_locale()
+    context["quotation_open"] = _("“")
+    context["quotation_close"] = _("”")
     return context
 
 
 def messages(request):
     from pretalx.common.phrases import phrases
 
-    return {'phrases': phrases}
+    return {"phrases": phrases}
 
 
 def system_information(request):
     context = {}
     _footer = []
     for __, response in footer_link.send(
-        getattr(request, 'event', None), request=request
+        getattr(request, "event", None), request=request
     ):
         if isinstance(response, list):
             _footer += response
         else:
             _footer.append(response)
-    context['footer_links'] = _footer
+    context["footer_links"] = _footer
 
     if settings.DEBUG:
-        context['development_warning'] = True
-        context['pretalx_version'] = settings.PRETALX_VERSION
+        context["development_warning"] = True
+        context["pretalx_version"] = settings.PRETALX_VERSION
 
-    context['warning_update_available'] = False
-    context['warning_update_check_active'] = False
+    context["warning_update_available"] = False
+    context["warning_update_check_active"] = False
     gs = GlobalSettings()
     if not request.user.is_anonymous and request.user.is_administrator:
         if gs.settings.update_check_result_warning:
-            context['warning_update_available'] = True
-        if not gs.settings.update_check_ack and 'runserver' not in sys.argv:
-            context['warning_update_check_active'] = True
+            context["warning_update_available"] = True
+        if not gs.settings.update_check_ack and "runserver" not in sys.argv:
+            context["warning_update_check_active"] = True
     return context

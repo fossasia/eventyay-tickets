@@ -19,39 +19,37 @@ from pretalx.mail.models import MailTemplate
 
 
 class SubmitStartView(EventPageMixin, View):
-
     @staticmethod
     def get(request, *args, **kwargs):
         url = reverse(
-            'cfp:event.submit',
+            "cfp:event.submit",
             kwargs={
-                'event': request.event.slug,
-                'step': list(request.event.cfp_flow.steps_dict.keys())[0],
-                'tmpid': get_random_string(length=6),
+                "event": request.event.slug,
+                "step": list(request.event.cfp_flow.steps_dict.keys())[0],
+                "tmpid": get_random_string(length=6),
             },
         )
         if request.GET:
-            url += f'?{request.GET.urlencode()}'
+            url += f"?{request.GET.urlencode()}"
         return redirect(url)
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name='dispatch')
+@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class SubmitWizard(EventPageMixin, View):
-
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):
         self.event = self.request.event
         request.access_code = None
-        if 'access_code' in request.GET:
+        if "access_code" in request.GET:
             access_code = request.event.submitter_access_codes.filter(
-                code__iexact=request.GET['access_code']
+                code__iexact=request.GET["access_code"]
             ).first()
             if access_code and access_code.is_valid:
                 request.access_code = access_code
         if not request.event.cfp.is_open and not request.access_code:
             messages.error(request, phrases.cfp.submissions_closed)
             return redirect(
-                reverse('cfp:event.start', kwargs={'event': request.event.slug})
+                reverse("cfp:event.start", kwargs={"event": request.event.slug})
             )
         for step in request.event.cfp_flow.steps:
             if not step.is_applicable(request):
@@ -60,11 +58,11 @@ class SubmitWizard(EventPageMixin, View):
                 break
             step.is_before = True
             step.resolved_url = step.get_step_url(request)
-        if getattr(step, 'is_before', False):  # The current step URL is incorrect
+        if getattr(step, "is_before", False):  # The current step URL is incorrect
             raise Http404()
         handler = getattr(step, request.method.lower(), self.http_method_not_allowed)
         result = handler(request)
-        if request.method == 'GET' or step.get_next_applicable(request):
+        if request.method == "GET" or step.get_next_applicable(request):
             return result
         return self.done(request)
 
@@ -96,7 +94,7 @@ class SubmitWizard(EventPageMixin, View):
             if request.event.settings.mail_on_new_submission:
                 MailTemplate(
                     event=request.event,
-                    subject=_('New submission!').format(event=request.event.slug),
+                    subject=_("New submission!").format(event=request.event.slug),
                     text=request.event.settings.mail_text_new_submission,
                 ).to_mail(
                     user=request.event.email,
@@ -106,11 +104,9 @@ class SubmitWizard(EventPageMixin, View):
                     locale=request.event.locale,
                 )
         except SendMailException as exception:
-            logging.getLogger('').warning(str(exception))
+            logging.getLogger("").warning(str(exception))
             messages.warning(request, phrases.cfp.submission_email_fail)
 
         return redirect(
-            reverse(
-                'cfp:event.user.submissions', kwargs={'event': request.event.slug}
-            )
+            reverse("cfp:event.user.submissions", kwargs={"event": request.event.slug})
         )

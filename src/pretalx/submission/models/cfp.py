@@ -18,52 +18,53 @@ class CfP(LogMixin, models.Model):
 
     :param deadline: The regular deadline. Please note that submissions can be available for longer than this if different deadlines are configured on single submission types.
     """
-    event = models.OneToOneField(to='event.Event', on_delete=models.PROTECT)
+
+    event = models.OneToOneField(to="event.Event", on_delete=models.PROTECT)
     headline = I18nCharField(
-        max_length=300, null=True, blank=True, verbose_name=_('headline')
+        max_length=300, null=True, blank=True, verbose_name=_("headline")
     )
     text = I18nTextField(
         null=True,
         blank=True,
-        verbose_name=_('text'),
+        verbose_name=_("text"),
         help_text=phrases.base.use_markdown,
     )
     default_type = models.ForeignKey(
-        to='submission.SubmissionType',
+        to="submission.SubmissionType",
         on_delete=models.PROTECT,
-        related_name='+',
-        verbose_name=_('Default submission type'),
+        related_name="+",
+        verbose_name=_("Default submission type"),
     )
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('deadline'),
+        verbose_name=_("deadline"),
         help_text=_(
-            'Please put in the last date you want to accept submissions from users.'
+            "Please put in the last date you want to accept submissions from users."
         ),
     )
 
-    objects = ScopedManager(event='event')
+    objects = ScopedManager(event="event")
 
     class urls(EventUrls):
-        base = '{self.event.orga_urls.cfp}'
-        editor = '{base}flow/'
-        questions = '{base}questions/'
-        new_question = '{questions}new'
-        remind_questions = '{questions}remind'
-        text = edit_text = '{base}text'
-        types = '{base}types/'
-        new_type = '{types}new'
-        tracks = '{base}tracks/'
-        new_track = '{tracks}new'
-        access_codes = '{base}access-codes/'
-        new_access_code = '{access_codes}new'
-        public = '{self.event.urls.base}cfp'
-        submit = '{self.event.urls.base}submit/'
+        base = "{self.event.orga_urls.cfp}"
+        editor = "{base}flow/"
+        questions = "{base}questions/"
+        new_question = "{questions}new"
+        remind_questions = "{questions}remind"
+        text = edit_text = "{base}text"
+        types = "{base}types/"
+        new_type = "{types}new"
+        tracks = "{base}tracks/"
+        new_track = "{tracks}new"
+        access_codes = "{base}access-codes/"
+        new_access_code = "{access_codes}new"
+        public = "{self.event.urls.base}cfp"
+        submit = "{self.event.urls.base}submit/"
 
     def __str__(self) -> str:
         """Help with debugging."""
-        return f'CfP(event={self.event.slug})'
+        return f"CfP(event={self.event.slug})"
 
     @cached_property
     def is_open(self) -> bool:
@@ -82,7 +83,7 @@ class CfP(LogMixin, models.Model):
         """
         deadlines = list(
             self.event.submission_types.filter(deadline__isnull=False).values_list(
-                'deadline', flat=True
+                "deadline", flat=True
             )
         )
         if self.deadline:

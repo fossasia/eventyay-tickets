@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0005_schedule_published'),
+        ("schedule", "0005_schedule_published"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='talkslot',
-            name='is_visible',
+            model_name="talkslot",
+            name="is_visible",
             field=models.BooleanField(default=True),
             preserve_default=False,
         ),

@@ -7,13 +7,13 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0026_auto_20180811_1827'),
+        ("submission", "0026_auto_20180811_1827"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='question',
+            model_name="question",
+            name="question",
             field=i18nfield.fields.I18nCharField(max_length=800),
         ),
     ]

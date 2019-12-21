@@ -28,10 +28,10 @@ class CreateOrUpdateView(
     SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView
 ):
     def set_object(self):
-        if getattr(self, 'object', None) is None:
-            setattr(self, 'object', None)
+        if getattr(self, "object", None) is None:
+            setattr(self, "object", None)
         with suppress(self.model.DoesNotExist, AttributeError):
-            setattr(self, 'object', self.get_object())
+            setattr(self, "object", self.get_object())
 
     def get(self, request, *args, **kwargs):
         self.set_object()
@@ -42,17 +42,19 @@ class CreateOrUpdateView(
         return super().post(request, *args, **kwargs)
 
 
-def is_form_bound(request, form_name, form_param='form'):
-    return request.method == 'POST' and request.POST.get(form_param) == form_name
+def is_form_bound(request, form_name, form_param="form"):
+    return request.method == "POST" and request.POST.get(form_param) == form_name
 
 
 def get_static(request, path, content_type):
     """TODO: move to staticfiles usage as per https://gist.github.com/SmileyChris/8d472f2a67526e36f39f3c33520182bc
     This would avoid potential directory traversal by … a malicious urlconfig, so not a huge attack vector."""
-    path = settings.BASE_DIR / 'pretalx/static' / path
+    path = settings.BASE_DIR / "pretalx/static" / path
     if not path.exists():
         raise Http404()
-    return FileResponse(open(path, 'rb'), content_type=content_type, as_attachment=False)
+    return FileResponse(
+        open(path, "rb"), content_type=content_type, as_attachment=False
+    )
 
 
 class GenericLoginView(FormView):
@@ -69,20 +71,20 @@ class GenericLoginView(FormView):
             messages.error(
                 self.request,
                 _(
-                    'There was an error when logging in. Please contact the organiser for further help.'
+                    "There was an error when logging in. Please contact the organiser for further help."
                 ),
             )
             return redirect(self.get_error_url())
         if not user.is_active:
-            messages.error(self.request, _('User account is deactivated.'))
+            messages.error(self.request, _("User account is deactivated."))
             return redirect(self.get_error_redirect())
 
-        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
 
         params = self.request.GET.copy()
-        url = urllib.parse.unquote(params.pop('next', [''])[0])
+        url = urllib.parse.unquote(params.pop("next", [""])[0])
         if url and is_safe_url(url, allowed_hosts=None):
-            return redirect(url + ('?' + params.urlencode() if params else ''))
+            return redirect(url + ("?" + params.urlencode() if params else ""))
 
         return redirect(self.get_success_url())
 
@@ -91,7 +93,7 @@ class GenericResetView(FormView):
     form_class = ResetForm
 
     def form_valid(self, form):
-        user = form.cleaned_data['user']
+        user = form.cleaned_data["user"]
 
         if not user or (
             user.pw_reset_time
@@ -101,28 +103,28 @@ class GenericResetView(FormView):
             return redirect(self.get_success_url())
 
         try:
-            user.reset_password(event=getattr(self.request, 'event', None))
+            user.reset_password(event=getattr(self.request, "event", None))
         except SendMailException:
             messages.error(self.request, phrases.base.error_sending_mail)
             return self.get(self.request, *self.args, **self.kwargs)
 
         messages.success(self.request, phrases.cfp.auth_password_reset)
-        user.log_action('pretalx.user.password.reset')
+        user.log_action("pretalx.user.password.reset")
 
         return redirect(self.get_success_url())
 
 
 def handle_500(request):
     try:
-        template = loader.get_template('500.html')
+        template = loader.get_template("500.html")
     except TemplateDoesNotExist:
         return HttpResponseServerError(
-            'Internal server error. Please contact the administrator for details.',
-            content_type='text/html',
+            "Internal server error. Please contact the administrator for details.",
+            content_type="text/html",
         )
     context = {}
     try:  # This should never fail, but can't be too cautious in error views
-        context['request_path'] = urllib.parse.quote(request.path)
+        context["request_path"] = urllib.parse.quote(request.path)
     except Exception:
         pass
     return HttpResponseServerError(template.render(context))

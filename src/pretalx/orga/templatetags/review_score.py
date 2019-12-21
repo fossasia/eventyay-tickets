@@ -6,30 +6,34 @@ register = template.Library()
 
 def _review_score_number(context, score):
     if score is None:
-        return '×'
+        return "×"
 
-    max_score = context['request'].event.settings.get('review_max_score') if context else None
+    max_score = (
+        context["request"].event.settings.get("review_max_score") if context else None
+    )
     if isinstance(score, int) or (isinstance(score, float) and score.is_integer()):
         score = int(score)
-        name = context and context['request'].event.settings.get(f'review_score_name_{score}')
+        name = context and context["request"].event.settings.get(
+            f"review_score_name_{score}"
+        )
         if name:
-            return f'{score}/{max_score} (“{name}”)'
+            return f"{score}/{max_score} (“{name}”)"
     else:
         score = round(score, 1)
 
-    return f'{score}/{max_score}'
+    return f"{score}/{max_score}"
 
 
 def _review_score_override(positive_overrides, negative_overrides):
-    result = ''
+    result = ""
     if positive_overrides:
         result += f'<i class="fa fa-arrow-circle-up override text-success"></i>'
         if positive_overrides > 1 or negative_overrides:
-            result += f' {positive_overrides}'
+            result += f" {positive_overrides}"
     if negative_overrides:
         result += f'<i class="fa fa-arrow-circle-down override text-danger"></i>'
         if negative_overrides > 1 or positive_overrides:
-            result += f' {negative_overrides}'
+            result += f" {negative_overrides}"
     return result
 
 
@@ -37,8 +41,8 @@ def _review_score_override(positive_overrides, negative_overrides):
 def review_score(context, submission):
     score = submission.current_score
     if score is None:
-        return '-'
-    if hasattr(submission, 'has_override') and not submission.has_override:
+        return "-"
+    if hasattr(submission, "has_override") and not submission.has_override:
         return _review_score_number(context, score)
     positive_overrides = submission.reviews.filter(override_vote=True).count()
     negative_overrides = submission.reviews.filter(override_vote=False).count()

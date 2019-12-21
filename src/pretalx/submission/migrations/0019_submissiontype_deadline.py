@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0018_remove_submissiontype_max_duration'),
+        ("submission", "0018_remove_submissiontype_max_duration"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submissiontype',
-            name='deadline',
+            model_name="submissiontype",
+            name="deadline",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

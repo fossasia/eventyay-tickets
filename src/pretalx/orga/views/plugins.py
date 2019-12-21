@@ -10,15 +10,15 @@ from pretalx.common.plugins import get_all_plugins
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
-    template_name = 'orga/plugins.html'
-    permission_required = 'orga.change_plugins'
+    template_name = "orga/plugins.html"
+    permission_required = "orga.change_plugins"
 
     @context
     def plugins(self):
         return [
             p
             for p in get_all_plugins(self.request.event)
-            if not p.name.startswith('.') and getattr(p, 'visible', True)
+            if not p.name.startswith(".") and getattr(p, "visible", True)
         ]
 
     @context
@@ -29,7 +29,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
         plugins_available = {
             p.module
             for p in get_all_plugins(self.request.event)
-            if not p.name.startswith('.') and getattr(p, 'visible', True)
+            if not p.name.startswith(".") and getattr(p, "visible", True)
         }
 
         with transaction.atomic():
@@ -39,19 +39,19 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                     if value == "enable" and module in plugins_available:
                         self.request.event.enable_plugin(module)
                         self.request.event.log_action(
-                            'pretalx.event.plugins.enabled',
+                            "pretalx.event.plugins.enabled",
                             person=self.request.user,
-                            data={'plugin': module},
+                            data={"plugin": module},
                             orga=True,
                         )
                     else:
                         self.request.event.disable_plugin(module)
                         self.request.event.log_action(
-                            'pretalx.event.plugins.disabled',
+                            "pretalx.event.plugins.disabled",
                             person=self.request.user,
-                            data={'plugin': module},
+                            data={"plugin": module},
                             orga=True,
                         )
             self.request.event.save()
-            messages.success(self.request, _('Your changes have been saved.'))
+            messages.success(self.request, _("Your changes have been saved."))
         return redirect(self.request.event.orga_urls.plugins)

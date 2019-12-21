@@ -8,12 +8,15 @@ def can_change_submissions(user, obj):
     event = getattr(obj, "event", None)
     if not user or user.is_anonymous or not obj or not event:
         return False
-    return user.is_administrator or event.teams.filter(members__in=[user], can_change_submissions=True).exists()
+    return (
+        user.is_administrator
+        or event.teams.filter(members__in=[user], can_change_submissions=True).exists()
+    )
 
 
 @rules.predicate
 def is_reviewer(user, obj):
-    event = getattr(obj, 'event', None)
+    event = getattr(obj, "event", None)
     if not user or user.is_anonymous or not obj or not event:
         return False
     return event.teams.filter(members__in=[user], is_reviewer=True).exists()
@@ -21,7 +24,7 @@ def is_reviewer(user, obj):
 
 @rules.predicate
 def is_administrator(user, obj):
-    return getattr(user, 'is_administrator', False)
+    return getattr(user, "is_administrator", False)
 
 
 @rules.predicate
@@ -37,8 +40,8 @@ def person_can_view_information(user, obj):
     ).exists()
 
 
-rules.add_perm('person.is_administrator', is_administrator)
+rules.add_perm("person.is_administrator", is_administrator)
 rules.add_perm(
-    'person.view_information', can_change_submissions | person_can_view_information
+    "person.view_information", can_change_submissions | person_can_view_information
 )
-rules.add_perm('person.change_information', can_change_submissions)
+rules.add_perm("person.change_information", can_change_submissions)

@@ -75,15 +75,17 @@ class BaseExporter:
         exporter's data will be found, e.g. /event/schedule/export/myexport.ext
         Use ``exporter.urls.base.full()`` for the complete URL, taking into
         account the configured event URL, or HTML export URL."""
-        base = '{self.event.urls.export}{self.quoted_identifier}'
+
+        base = "{self.event.urls.export}{self.quoted_identifier}"
 
     def get_qrcode(self):
-        image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage)
+        image = qrcode.make(
+            self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage
+        )
         return mark_safe(ET.tostring(image.get_image()).decode())
 
 
 class CSVExporterMixin:
-
     def render(self, **kwargs):
         fieldnames, data = self.get_data()
         output = StringIO()
@@ -91,4 +93,4 @@ class CSVExporterMixin:
         writer.writeheader()
         writer.writerows(data)
         content = output.getvalue()
-        return self.filename, 'text/plain', content
+        return self.filename, "text/plain", content

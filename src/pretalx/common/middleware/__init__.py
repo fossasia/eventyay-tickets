@@ -2,8 +2,8 @@ from .domains import CsrfViewMiddleware, MultiDomainMiddleware, SessionMiddlewar
 from .event import EventPermissionMiddleware
 
 __all__ = [
-    'CsrfViewMiddleware',
-    'EventPermissionMiddleware',
-    'MultiDomainMiddleware',
-    'SessionMiddleware',
+    "CsrfViewMiddleware",
+    "EventPermissionMiddleware",
+    "MultiDomainMiddleware",
+    "SessionMiddleware",
 ]

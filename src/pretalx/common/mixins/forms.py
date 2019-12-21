@@ -20,7 +20,7 @@ class ReadOnlyFlag:
 
     def clean(self):
         if self.read_only:
-            raise forms.ValidationError(_('You are trying to change read-only data.'))
+            raise forms.ValidationError(_("You are trying to change read-only data."))
         return super().clean()
 
 
@@ -33,31 +33,32 @@ class PublicContent:
         for field_name in self.Meta.public_fields:
             field = self.fields.get(field_name)
             if field:
-                field.original_help_text = getattr(field, 'original_help_text', '')
-                field.added_help_text = getattr(field, 'added_help_text', '') + str(phrases.base.public_content)
-                field.help_text = field.original_help_text + ' ' + field.added_help_text
+                field.original_help_text = getattr(field, "original_help_text", "")
+                field.added_help_text = getattr(field, "added_help_text", "") + str(
+                    phrases.base.public_content
+                )
+                field.help_text = field.original_help_text + " " + field.added_help_text
 
 
 class RequestRequire:
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        count_chars = self.event.settings.cfp_count_length_in == 'chars'
+        count_chars = self.event.settings.cfp_count_length_in == "chars"
         for key in self.Meta.request_require:
-            request = self.event.settings.get(f'cfp_request_{key}')
-            require = self.event.settings.get(f'cfp_require_{key}')
+            request = self.event.settings.get(f"cfp_request_{key}")
+            require = self.event.settings.get(f"cfp_require_{key}")
             if not request:
                 self.fields.pop(key)
             else:
                 field = self.fields[key]
                 field.required = require
-                min_value = self.event.settings.get(f'cfp_{key}_min_length')
-                max_value = self.event.settings.get(f'cfp_{key}_max_length')
+                min_value = self.event.settings.get(f"cfp_{key}_min_length")
+                max_value = self.event.settings.get(f"cfp_{key}_max_length")
                 if min_value or max_value:
                     if min_value and count_chars:
-                        field.widget.attrs[f'minlength'] = min_value
+                        field.widget.attrs[f"minlength"] = min_value
                     if max_value and count_chars:
-                        field.widget.attrs[f'maxlength'] = max_value
+                        field.widget.attrs[f"maxlength"] = max_value
                     field.validators.append(
                         partial(
                             validate_field_length,
@@ -66,29 +67,32 @@ class RequestRequire:
                             count_in=self.event.settings.cfp_count_length_in,
                         )
                     )
-                    field.original_help_text = getattr(field, 'original_help_text', '')
+                    field.original_help_text = getattr(field, "original_help_text", "")
                     field.added_help_text = get_help_text(
-                        '',
+                        "",
                         min_value,
                         max_value,
                         self.event.settings.cfp_count_length_in,
                     )
-                    field.help_text = field.original_help_text + ' ' + field.added_help_text
+                    field.help_text = (
+                        field.original_help_text + " " + field.added_help_text
+                    )
 
 
 class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
+
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)
         if question.is_public:
-            help_text += ' ' + str(phrases.base.public_content)
-        count_chars = self.event.settings.cfp_count_length_in == 'chars'
+            help_text += " " + str(phrases.base.public_content)
+        count_chars = self.event.settings.cfp_count_length_in == "chars"
         if question.variant == QuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
             widget = (
-                forms.CheckboxInput(attrs={'required': 'required', 'placeholder': ''})
+                forms.CheckboxInput(attrs={"required": "required", "placeholder": ""})
                 if question.required
                 else forms.CheckboxInput()
             )
@@ -99,7 +103,7 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=question.required,
                 widget=widget,
-                initial=(initial == 'True')
+                initial=(initial == "True")
                 if initial
                 else bool(question.default_answer),
             )
@@ -111,11 +115,11 @@ class QuestionFieldsMixin:
                 help_text=help_text,
                 label=question.question,
                 required=question.required,
-                min_value=Decimal('0.00'),
+                min_value=Decimal("0.00"),
                 initial=initial,
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
@@ -133,7 +137,7 @@ class QuestionFieldsMixin:
                 max_length=question.max_length if count_chars else None,
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             field.validators.append(
                 partial(
                     validate_field_length,
@@ -168,7 +172,7 @@ class QuestionFieldsMixin:
                 )
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.FILE:
             field = forms.FileField(
@@ -179,7 +183,7 @@ class QuestionFieldsMixin:
                 initial=initial,
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.CHOICES:
             choices = question.options.all()
@@ -196,7 +200,7 @@ class QuestionFieldsMixin:
                 widget=forms.RadioSelect if len(choices) < 4 else None,
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.MULTIPLE:
             field = forms.ModelMultipleChoiceField(
@@ -211,36 +215,43 @@ class QuestionFieldsMixin:
                 help_text=help_text,
             )
             field.original_help_text = original_help_text
-            field.widget.attrs['placeholder'] = ''  # XSS
+            field.widget.attrs["placeholder"] = ""  # XSS
             return field
         return None
 
     def save_questions(self, k, v):
         """Receives a key and value from cleaned_data."""
         from pretalx.submission.models import Answer, QuestionTarget
+
         field = self.fields[k]
         if field.answer:
             # We already have a cached answer object, so we don't
             # have to create a new one
-            if v == '' or v is None:
+            if v == "" or v is None:
                 field.answer.delete()
             else:
                 self._save_to_answer(field, field.answer, v)
                 field.answer.save()
-        elif v != '' and v is not None:
+        elif v != "" and v is not None:
             answer = Answer(
-                review=self.review if field.question.target == QuestionTarget.REVIEWER else None,
-                submission=self.submission if field.question.target == QuestionTarget.SUBMISSION else None,
-                person=self.speaker if field.question.target == QuestionTarget.SPEAKER else None,
+                review=self.review
+                if field.question.target == QuestionTarget.REVIEWER
+                else None,
+                submission=self.submission
+                if field.question.target == QuestionTarget.SUBMISSION
+                else None,
+                person=self.speaker
+                if field.question.target == QuestionTarget.SPEAKER
+                else None,
                 question=field.question,
             )
             self._save_to_answer(field, answer, v)
             answer.save()
 
     def _save_to_answer(self, field, answer, value):
-        action = 'pretalx.submission.answer.' + ('update' if answer.pk else 'create')
+        action = "pretalx.submission.answer." + ("update" if answer.pk else "create")
         if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ', '.join([str(o) for o in value])
+            answstr = ", ".join([str(o) for o in value])
             if not answer.pk:
                 answer.save()
             else:
@@ -257,14 +268,14 @@ class QuestionFieldsMixin:
                 answer.options.add(value)
                 answer.answer = value.answer
             else:
-                answer.answer = ''
+                answer.answer = ""
         elif isinstance(field, forms.FileField):
             if isinstance(value, UploadedFile):
                 answer.answer_file.save(value.name, value)
-                answer.answer = 'file://' + value.name
+                answer.answer = "file://" + value.name
             value = answer.answer
         else:
             answer.answer = value
         answer.log_action(
-            action, person=self.request_user or self.speaker, data={'answer': value}
+            action, person=self.request_user or self.speaker, data={"answer": value}
         )
