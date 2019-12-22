@@ -1,11 +1,20 @@
 import pytest
+import responses
 from django.core.management import call_command
 
 from pretalx.event.models import Event
 
 
 @pytest.mark.django_db
+@responses.activate
 def test_common_runperiodic():
+    responses.add(
+        responses.POST,
+        "https://pretalx.com/.update_check/",
+        json="{}",
+        status=404,
+        content_type="application/json",
+    )
     call_command("runperiodic")
 
 
