@@ -1,7 +1,7 @@
 # pretalx translation files
 # Copyright (C) Tobias 'rixx' Kunze 2017
 # This file is distributed under the same license as the pretalx package.
-# Tobias Kunze <rixx@cutebit.de>, 2017.
+# Tobias Kunze <r@rixx.de>, 2017.
 #
 msgid ""
 msgstr ""
@@ -1640,7 +1640,7 @@ msgid ""
 "\n"
 "If there is anything you're missing, come tell us about it\n"
 "at https://github.com/pretalx/pretalx/issues/new or via an\n"
-"email to mailto:rixx@cutebit.de!\n"
+"email to support@pretalx.com!\n"
 msgstr ""
 "Hi,\n"
 "\n"
@@ -1653,7 +1653,7 @@ msgstr ""
 "\n"
 "Wenn dir in pretalx noch etwas fehlt, schreib es uns gerne\n"
 "unter https://github.com/pretalx/pretalx/issues/new oder via\n"
-"Mail an mailto:rixx@cutebit.de!\n"
+"Mail an support@pretalx.com!\n"
 
 #: pretalx/common/models/settings.py:169
 #, python-brace-format
@@ -1696,7 +1696,7 @@ msgid ""
 "\n"
 "If there is anything you're missing, come tell us about it\n"
 "at https://github.com/pretalx/pretalx/issues/new or via an\n"
-"email to mailto:rixx@cutebit.de!\n"
+"email to support@pretalx.com!\n"
 msgstr ""
 "Hi,\n"
 "\n"
@@ -1712,7 +1712,7 @@ msgstr ""
 "\n"
 "Wenn dir in pretalx noch etwas fehlt, schreib es uns gerne\n"
 "unter https://github.com/pretalx/pretalx/issues/new oder via\n"
-"Mail an mailto:rixx@cutebit.de!\n"
+"Mail an support@pretalx.com!\n"
 
 #: pretalx/common/phrases.py:46
 #: pretalx/orga/templates/orga/cfp/question_view.html:74

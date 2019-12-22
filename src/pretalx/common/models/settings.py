@@ -156,7 +156,7 @@ These links may be helpful in the coming days and weeks:
 
 If there is anything you're missing, come tell us about it
 at https://github.com/pretalx/pretalx/issues/new or via an
-email to mailto:rixx@cutebit.de!
+email to support@pretalx.com!
 """
         )
     ),
@@ -197,7 +197,7 @@ statistics you might find interesting:
 
 If there is anything you're missing, come tell us about it
 at https://github.com/pretalx/pretalx/issues/new or via an
-email to mailto:rixx@cutebit.de!
+email to support@pretalx.com!
 """
         )
     ),
