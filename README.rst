@@ -120,4 +120,3 @@ list (or tell us about it, and we'll add it)!
 .. _GitHub: https://github.com/pretalx/pretalx
 .. _docs.pretalx.org: https://docs.pretalx.org
 .. _Twitter: https://twitter.com/pretalx
-.. _PyPI: https://pypi.org/project/pretalx/
