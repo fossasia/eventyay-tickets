@@ -17,8 +17,9 @@ addons:
 matrix:
   include:
     - env: TOXENV=tests-sqlite-codecov
-    - env: TOXENV=tests-mysql  # not testing mysql until we figure out what's wrong with our setup
+    - env: TOXENV=tests-mysql
     - env: TOXENV=tests-postgres
+    - env: TOXENV=release
     - env: TOXENV=installation
     - env: TOXENV=lint
     - env: TOXENV=docs
