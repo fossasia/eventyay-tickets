@@ -106,7 +106,7 @@ list (or tell us about it, and we'll add it)!
    :alt: Screenshots of pretalx pages
 .. _issues: https://github.com/pretalx/pretalx/issues/
 .. _feature list: https://pretalx.com/p/features
-.. _developer documentation: https://pretalx.readthedocs.io/en/latest/developer/index.html
+.. _developer documentation: https://docs.pretalx.org/developer/index.html
 .. _administrator documentation: https://docs.pretalx.org/administrator/index.html
 .. _pretalx.com: https://pretalx.com/
 .. _active development: https://github.com/pretalx/pretalx/pulse
