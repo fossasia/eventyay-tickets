@@ -1,6 +1,7 @@
 {% extends "orga/mails/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load rich_text %}
 
 {% block mail_content %}
     {% if form.instance.sent %}
@@ -14,13 +15,92 @@
         {% csrf_token %}
         <h2>{% trans "Mail Editor" %}</h2>
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.to layout='event' %}
-        {% if form.to_users %}{% bootstrap_field form.to_users layout='event' %}{% endif %}
-        {% bootstrap_field form.reply_to layout='event' %}
-        {% bootstrap_field form.cc layout='event' %}
-        {% bootstrap_field form.bcc layout='event' %}
-        {% bootstrap_field form.subject layout='event' %}
-        {% bootstrap_field form.text layout='event' %}
+
+        {% if not form.read_only %}
+          {% bootstrap_field form.to layout='event' %}
+          {% if form.to_users %}{% bootstrap_field form.to_users layout='event' %}{% endif %}
+          {% bootstrap_field form.reply_to layout='event' %}
+          {% bootstrap_field form.cc layout='event' %}
+          {% bootstrap_field form.bcc layout='event' %}
+          {% bootstrap_field form.subject layout='event' %}
+          {% bootstrap_field form.text layout='event' %}
+        {% else %}
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>To</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.to|default:"-" }}
+              </div>
+            </div>
+
+            {% if form.to_users %}
+              <div class="row mb-3">
+                <div class="col col-md-3 text-right font-weight-bold">
+                  <label>To Users</label>
+                </div>
+                <div class="col col-md-9">
+                  {% for user in form.instance.to_users.all %}
+                    {% if user in request.event.submitters %}
+                        <a href="{% url "orga:speakers.view" event=request.event.slug pk=user.pk %}">
+                            {{ user }}
+                        </a>
+                    {% else %}
+                      {{ user }}{% endif %}{% if not forloop.last %},
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>Reply-To</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.reply_to|default:"-" }}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>CC</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.cc|default:"-" }}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>BCC</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.bcc|default:"-" }}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>Subject</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.subject }}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col col-md-3 text-right font-weight-bold">
+                <label>Text</label>
+              </div>
+              <div class="col col-md-9">
+                {{ form.instance.text|rich_text }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
         <div class="submit-group">
             <span></span>
             <span>
