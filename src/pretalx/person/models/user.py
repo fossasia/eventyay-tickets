@@ -343,11 +343,18 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         self.pw_reset_time = now()
         self.save()
 
+        if event:
+            url = build_absolute_uri(
+                "cfp:event.recover",
+                kwargs={"token": self.pw_reset_token, "event": event.slug},
+            )
+        else:
+            url = build_absolute_uri(
+                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
+            )
         context = {
             "name": self.name or "",
-            "url": build_absolute_uri(
-                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
-            ),
+            "url": url,
         }
         mail_text = _(
             """Hi {name},
