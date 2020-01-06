@@ -255,7 +255,7 @@ class QueuedMail(LogMixin, models.Model):
 
         from pretalx.common.mail import mail_send_task
 
-        to = (self.to or "").split(",")
+        to = self.to.split(",") if self.to else []
         if self.id:
             to += [user.email for user in self.to_users.all()]
         mail_send_task.apply_async(
