@@ -67,9 +67,12 @@ form .form-control:disabled,
 }
 
 .labelless-password-input-form {
-  flex-direction: column;
   margin-left: auto;
   margin-right: auto;
+
+  .form-group {
+    flex-direction: column;
+  }
 
   input.password_strength,
   input.password_confirmation {
