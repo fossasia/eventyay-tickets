@@ -336,7 +336,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
     regenerate_token.alters_data = True
 
     @transaction.atomic
-    def reset_password(self, event, user=None):
+    def reset_password(self, event, user=None, mail_text=None):
         from pretalx.mail.models import QueuedMail
 
         self.pw_reset_token = get_random_string(32)
@@ -356,8 +356,9 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
             "name": self.name or "",
             "url": url,
         }
-        mail_text = _(
-            """Hi {name},
+        if not mail_text:
+            mail_text = _(
+                """Hi {name},
 
 you have requested a new password for your pretalx account.
 To reset your password, click on the following link:
@@ -368,7 +369,7 @@ If this wasn\'t you, you can just ignore this email.
 
 All the best,
 the pretalx robot"""
-        )
+            )
 
         with override(get_language()):
             mail = QueuedMail.objects.create(
