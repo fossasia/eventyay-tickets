@@ -171,7 +171,9 @@ class SpeakerPasswordReset(EventPermissionRequired, DetailView):
         user = self.get_object()
         try:
             user.reset_password(
-                event=getattr(self.request, "event", None), user=self.request.user
+                event=getattr(self.request, "event", None),
+                user=self.request.user,
+                orga=False,
             )
             messages.success(
                 self.request, _("The password was reset and the user was notified.")
