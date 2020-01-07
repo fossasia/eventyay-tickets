@@ -1,6 +1,7 @@
 {% extends "orga/cfp/base.html" %}
 {% load i18n %}
 {% load rich_text %}
+{% load rules %}
 
 {% block content %}
     <h2 class="d-flex w-100 justify-content-between align-items-start">
@@ -13,11 +14,14 @@
         <h4>{% trans "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
         
         {% for entry in submission.list %}
+        {% has_perm 'submission.view_feedback' request.user entry.talk as can_see_feedback %}
+        {% if can_see_feedback %}
         <div class="card feedback-card">
             <div class="card-body">
                 {{ entry.review|rich_text }}
             </div>
         </div>
+        {% endif %}
         {% endfor %}
         <br><br>
     {% empty %}

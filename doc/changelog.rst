@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` The list of all submission feedback given in a single event was only usable for people with administrator permissions.
 - :bug:`-` Not all CfP form help text parts were translated.
 - :release:`1.1.0 <2019-12-21>`
 - :feature:`-` pretalx now comes with an update check, which will notify you when new pretalx or plugin versions are available. This check sends anonymous data to the pretalx.com server, which is run by the pretalx developer. The data consist of a random but stable ID, the number of total and public events, and the version of pretalx and all installed plugins. No identifying information will be retained, and there is a visible and persistent opt-out warning until acknowledged by an administrator.

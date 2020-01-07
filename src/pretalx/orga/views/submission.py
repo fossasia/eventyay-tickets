@@ -678,7 +678,7 @@ class AllFeedbacksList(EventPermissionRequired, ListView):
     context_object_name = "feedback"
     template_name = "orga/submission/feedbacks_list.html"
 
-    permission_required = "submission.view_feedback"
+    permission_required = "orga.view_submissions"
     paginate_by = 25
 
     def get_queryset(self):
