@@ -23,6 +23,7 @@ System checks
 3. Have you deployed the release-ready commit to an instance? Did the upgrade work?
 4. Have you written (and not pushed) a blog post? It should contain at least major features and all contributors involved in the release. ``git shortlog -ns vx.y.z..master``.
 5. Have you communicated your intentions and release time line to the team?
+6. Is your virtualenv active?
 
 Take-off and landing
 --------------------
@@ -40,3 +41,6 @@ Take-off and landing
 11. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the tar.gz you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
 12. Push the blog post.
 13. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_
+14. Switch to master branch
+15. Copy release note to changelog and increment version number.
+16. Update version numbers in update checker and deploy.
