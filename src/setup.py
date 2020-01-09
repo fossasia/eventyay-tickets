@@ -151,7 +151,6 @@ setup(
     },
     packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
-    data_files=[(".", ["../LICENSE", "../README.rst"])],
     zip_safe=False,
     cmdclass={"build": CustomBuild},
 )

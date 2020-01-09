@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`844` The 1.1.0 release was only installable via git (either by way of pip URLs or a full checkout), not by pip on its own.
 - :bug:`-` The list of all submission feedback given in a single event was only usable for people with administrator permissions.
 - :bug:`-` Not all CfP form help text parts were translated.
 - :release:`1.1.0 <2019-12-21>`
