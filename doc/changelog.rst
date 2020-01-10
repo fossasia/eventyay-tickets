@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`1.1.2 <2020-01-10>`
 - :bug:`-` If a CfP requested the submitters' availability at submission time, only logged-in users could successfully finish the submission workflow.
 - :release:`1.1.1 <2020-01-10>`
 - :bug:`844` The 1.1.0 release was only installable via git (either by way of pip URLs or a full checkout), not by pip on its own.
