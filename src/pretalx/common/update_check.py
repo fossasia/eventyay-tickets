@@ -97,10 +97,12 @@ def send_update_notification_email():
                 LazyI18nString.from_gettext(
                     ugettext_noop(
                         "Hi!\n\nAn update is available for pretalx or for one of the plugins you installed in your "
-                        "pretalx installation at {base_url}.\nPlease click on the following link for more information:\n\n {url} \n\n"
-                        "You can always find information on the latest updates on the pretalx.com blog:\n\n"
-                        "  https://pretalx.com/p/news/"
-                        "\n\nBest,\n\nyour pretalx developers"
+                        "pretalx installation at {base_url}.\nPlease follow this link for more information:\n\n {url} \n\n"
+                        "You can always find information on the latest updates in the changelog:\n\n"
+                        "  https://docs.pretalx.org/changelog.html\n\n"
+                        "Larger updates are also announced with upgrade notes on the pretalx.com blog:\n\n"
+                        "  https://pretalx.com/p/news"
+                        "\n\nBest regards,\nyour pretalx developers"
                     ),
                 )
             ).format(
