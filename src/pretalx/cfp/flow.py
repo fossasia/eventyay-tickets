@@ -180,7 +180,9 @@ class FormFlowStep(TemplateFlowStep):
     def get_form(self, from_storage=False):
         if from_storage:
             return self.form_class(
-                data=self.cfp_session.get("data", {}).get(self.identifier, {}),
+                data=copy.deepcopy(
+                    self.cfp_session.get("data", {}).get(self.identifier, {})
+                ),
                 files=self.get_files(),
                 **self.get_form_kwargs(),
             )
@@ -219,6 +221,8 @@ class FormFlowStep(TemplateFlowStep):
                 return value.pk
             if getattr(value, "__iter__", None):
                 return [serialize_value(v) for v in value]
+            if getattr(value, "serialize", None):
+                return value.serialize()
             return str(value)
 
         self.cfp_session["data"][self.identifier] = json.loads(

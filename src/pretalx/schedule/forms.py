@@ -127,7 +127,10 @@ class AvailabilitiesFormMixin(forms.Form):
                 raise forms.ValidationError(_("Please fill in your availability!"))
             return None
 
-        rawavailabilities = self._parse_availabilities_json(data)
+        if isinstance(self.data.get("availabilities"), list):
+            rawavailabilities = self.data["availabilities"]
+        else:
+            rawavailabilities = self._parse_availabilities_json(data)
         availabilities = []
 
         for rawavail in rawavailabilities:
