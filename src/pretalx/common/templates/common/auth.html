@@ -5,9 +5,9 @@
 
 {% bootstrap_form_errors form %}
 {% if no_form %}
-<div id="auth-form" class="password-input-form">
+<div id="auth-form" class="password-input-form d-md-flex flex-row">
 {% else %}
-<form id="auth-form" class="password-input-form" method="post" autocomplete="off">
+<form id="auth-form" class="password-input-form d-md-flex flex-row" method="post" autocomplete="off">
 {% endif %}
     {% csrf_token %}
     {% compress js %}

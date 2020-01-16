@@ -57,9 +57,6 @@ form .form-control:disabled,
 }
 
 #auth-form {
-  display: flex;
-  flex-direction: row;
-
   .auth-form-block {
     flex-grow: 1;
     margin: 12px;
