@@ -1,0 +1,47 @@
+.avatar-form {
+  display: flex;
+  align-items: flex-start;
+
+  img.avatar {
+    width: 100px;
+    height: auto;
+
+    position: absolute;
+    right: 10px;
+  }
+
+  .avatar-form-fields {
+    display: flex;
+    flex-direction: column;
+
+    .bootstrap4-multi-input,
+    .bootstrap4-multi-input > .col-12 {
+      margin: 0;
+      padding: 0;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-right: 110px;
+    }
+
+    .user-avatar-display .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  .avatar-upload .form-group {
+    display: block;
+
+    input[type=checkbox] {
+      margin: 0 2px 0 12px;
+    }
+
+    input[type=file] {
+      display: inline-block;
+      width: auto;
+      margin-left: 2px;
+    }
+  }
+}

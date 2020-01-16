@@ -48,34 +48,8 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <div class="speaker-info avatar-form form-group row">
-            <div class="col-md-3 col-form-label">
-                {% if form.instance.user.has_avatar %}
-                    <img
-                      class="avatar float-right"
-                      data-gravatar="{{ form.instance.user.gravatar_parameter }}"
-                      data-avatar="{% if form.instance.user.avatar %}{{ form.instance.user.avatar.url }}{% endif %}"
-                      alt="{% trans "The speaker's profile picture" %}"
-                      {% if form.instance.user.get_gravatar %}
-                      src="https://www.gravatar.com/avatar/{{ form.instance.user.gravatar_parameter }}"
-                      {% elif form.instance.user.has_local_avatar %}
-                      src="{{ form.instance.user.avatar.url }}"
-                      {% endif %}
-                    />
-                {% endif %}
-            </div>
-            {% if request.event.settings.cfp_request_avatar or form.instance.user.has_avatar %}
-            <div class="avatar-form-fields col-md-9">
-                {% if form.get_gravatar %}{% bootstrap_field form.get_gravatar layout='event-inline' %}{% endif %}
-                {% if form.avatar %}
-                <div class="user-avatar-display">
-                    {% bootstrap_field form.avatar layout='inline' %}
-                    <small class="form-text text-muted d-block">{{ form.avatar.help_text }}</small>
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
+
+        {% include "common/avatar.html" with user=form.instance.user form=form %}
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.email layout='event' %}
         <div class="d-flex mb-4">

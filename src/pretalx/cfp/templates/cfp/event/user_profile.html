@@ -23,30 +23,7 @@
         {% csrf_token %}
         {% bootstrap_form_errors profile_form %}
         {% if request.event.settings.cfp_request_avatar %}
-        <div class="avatar-form form-group row">
-            <label class="col-md-3 col-form-label">
-            {% trans "Profile picture" %}
-            <br>
-            <img
-              class="avatar float-right"
-              data-gravatar="{{ request.user.gravatar_parameter }}"
-              data-avatar="{% if request.user.avatar %}{{ request.user.avatar.url }}{% endif %}"
-              alt="{% trans "Your avatar" %}"
-              {% if request.user.get_gravatar %}
-              src="https://www.gravatar.com/avatar/{{ request.user.gravatar_parameter }}"
-              {% elif request.user.avatar and request.user.avatar != 'False' %}
-              src="{{ request.user.avatar.url }}"
-              {% endif %}
-            />
-            </label>
-            <div class="avatar-form-fields col-md-9">
-                {% bootstrap_field profile_form.get_gravatar layout='event-inline' %}
-                <div class="user-avatar-display">
-                    {% bootstrap_field profile_form.avatar layout='inline' %}
-                    <small class="form-text text-muted d-block">{{ profile_form.avatar.help_text }}</small>
-                </div>
-            </div>
-        </div>
+            {% include "common/avatar.html" with user=request.user form=profile_form %}
         {% endif %}
         {% bootstrap_field profile_form.name layout='event' %}
         {% if profile_form.biography %}{% bootstrap_field profile_form.biography layout='event' %}{% endif %}

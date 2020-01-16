@@ -347,37 +347,6 @@ footer {
   padding: 0 0.75rem;
 }
 
-.avatar-form {
-  display: flex;
-  align-items: flex-start;
-  padding-bottom: 8px;
-
-  img.avatar {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .avatar-form-fields {
-    display: flex;
-    flex-direction: column;
-
-    .bootstrap4-multi-input,
-    .bootstrap4-multi-input > .col-12 {
-      margin: 0;
-      padding: 0;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-avatar-display .form-group {
-      margin-bottom: 0;
-    }
-  }
-}
-
 .event-logo-field {
   .event-logo-form-fields .form-group {
     display: inline-block;
