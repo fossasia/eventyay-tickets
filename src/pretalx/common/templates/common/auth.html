@@ -15,7 +15,7 @@
         <script defer src="{% static 'common/js/password_strength.js' %}"></script>
     {% endcompress %}
 {% if not hide_login %}
-    <div class="auth-form-block">
+    <div class="auth-form-block flex-grow-1">
         {% if not hide_login and not hide_register %}
         <h4 class="text-center">{% trans "I already have an account" %}</h4>
         {% endif %}
@@ -34,8 +34,7 @@
     </div>
 {% endif %}
 {% if not hide_register %}
-
-    <div class="auth-form-block">
+    <div class="auth-form-block flex-grow-1">
         {% if not hide_login and not hide_register %}
         <h4 class="text-center">{% trans "I need a new account" %}</h4>
         {% endif %}
