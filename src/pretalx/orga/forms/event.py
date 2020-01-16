@@ -216,9 +216,9 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         known_domains = [
             domain.lower()
             for domain in set(
-                Event_SettingsStore.objects.filter(key="custom_domain").values_list(
-                    "value", flat=True
-                )
+                Event_SettingsStore.objects.filter(key="custom_domain")
+                .exclude(object=self.obj)
+                .values_list("value", flat=True)
             )
             if domain
         ]
