@@ -169,6 +169,10 @@ class SpeakerProfileForm(
 
     def clean_avatar(self):
         avatar = self.cleaned_data.get("avatar")
+
+        if not avatar:
+            avatar = None
+
         if avatar:
             size = getattr(avatar, "_size", None)
             if avatar.file and size and size > 10 * 1024 * 1024:
