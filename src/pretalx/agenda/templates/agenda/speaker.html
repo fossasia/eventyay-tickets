@@ -27,10 +27,15 @@
             {{ profile.biography|rich_text }}
         </div>
         <div class="speaker-avatar">
-            {% if profile.user.get_gravatar %}
-            <img width="100%" src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}" alt="{% trans "The speaker's profile picture" %}"/>
-            {% elif profile.user.avatar %}
-            <img width="100%" src="{{ profile.user.avatar.url }}" alt="{% trans "The speaker's profile picture" %}">
+            {% if profile.user.get_gravatar or profile.user.avatar %}
+            <img width="100%"
+                 {% if profile.user.get_gravatar %}
+                 src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}"
+                 {% elif profile.user.avatar %}
+                 src="{{ profile.user.avatar.url }}"
+                 {% endif %}
+                 alt="{% trans "The speaker's profile picture" %}"
+            >
             {% endif %}
         </div>
     </section>
