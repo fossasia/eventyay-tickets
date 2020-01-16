@@ -5,9 +5,6 @@
   img.avatar {
     width: 100px;
     height: auto;
-
-    position: absolute;
-    right: 10px;
   }
 
   .avatar-form-fields {
@@ -23,7 +20,6 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      margin-right: 110px;
     }
 
     .user-avatar-display .form-group {
