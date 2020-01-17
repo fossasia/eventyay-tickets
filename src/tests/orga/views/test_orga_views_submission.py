@@ -194,6 +194,30 @@ def test_orga_can_delete_submission(orga_client, submission, answered_choice_que
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_delete_submission(
+    review_client, submission, answered_choice_question
+):
+    with scope(event=submission.event):
+        assert submission.state == SubmissionStates.SUBMITTED
+        assert submission.answers.count() == 1
+        assert Submission.objects.count() == 1
+        option_count = answered_choice_question.options.count()
+
+    response = review_client.get(submission.orga_urls.delete, follow=True)
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert response.status_code == 404
+        assert submission.state == SubmissionStates.SUBMITTED
+        assert Submission.objects.count() == 1
+
+    response = review_client.post(submission.orga_urls.delete, follow=True)
+    assert response.status_code == 404
+    with scope(event=submission.event):
+        assert Submission.objects.count() == 1
+        assert Submission.deleted_objects.count() == 0
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize("user", ("EMAIL", "NEW_EMAIL"))
 def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
     assert submission.speakers.count() == 1

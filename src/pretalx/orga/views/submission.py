@@ -99,6 +99,9 @@ class SubmissionViewMixin(PermissionRequired):
             code__iexact=self.kwargs.get("code"),
         )
 
+    def get_permission_object(self):
+        return self.object
+
     @cached_property
     def object(self):
         return self.get_object()

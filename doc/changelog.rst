@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` People without edit or delete permissions are not shown the edit or delete buttons on submissions anymore.
 - :bug:`-` When updating the settings for an event with a custom domain, pretalx would mistakenly show an error message that this domain was already in use for another event.
 - :release:`1.1.2 <2020-01-10>`
 - :bug:`-` If a CfP requested the submitters' availability at submission time, only logged-in users could successfully finish the submission workflow.
