@@ -60,6 +60,7 @@
 <form method="post">{% csrf_token %}
 <table class="table review-table table-hover table-responsive-md">
     <colgroup>
+        {% if can_see_all_reviews %}<col class="nowrap">{% endif %}
         <col class="nowrap">
         <col class="nowrap">
         <col class="w-75">
@@ -70,15 +71,20 @@
     </colgroup>
     <thead>
         <tr>
+            {% if can_see_all_reviews %}
+                <th>
+                    {% trans "Median" %}
+                    <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down" title="{% trans "Sort by score (highest first)" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% trans "Sort by score (lowest first)" %}"></i></a>
+                </th>
+            {% endif %}
+            {% if can_review or submissions_reviewed %}
             <th>
-                {% if can_see_all_reviews %}
-                    {% trans "Median score" %}
-                {% else %}
-                    {% trans "Score" %}
-                {% endif %}
-                <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down" title="{% trans "Sort by score (highest first)" %}"></i></a>
-                <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% trans "Sort by score (lowest first)" %}"></i></a>
+                {% trans "Your Score" %}
+                <a href="?{% url_replace request 'sort' 'my_score' %}"><i class="fa fa-caret-down" title="{% trans "Sort by score (highest first)" %}"></i></a>
+                <a href="?{% url_replace request 'sort' '-my_score' %}"><i class="fa fa-caret-up" title="{% trans "Sort by score (lowest first)" %}"></i></a>
             </th>
+            {% endif %}
             <th>
                 {% trans "Reviews" %}
                 <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down" title="{% trans "Sort by review count (highest first)" %}"></i></a>
@@ -106,9 +112,16 @@
     <tbody>
     {% for submission in submissions %}
         <tr class="{{ submission.state }}">
+            {% if can_see_all_reviews %}
+                <td>
+                    {% review_score submission %}
+                </td>
+            {% endif %}
+            {% if can_review or submissions_reviewed %}
             <td>
-                {% review_score submission %}
+                    {% review_score submission True %}
             </td>
+            {% endif %}
             <td>
                 {{ submission.reviews.all|length|default:'-' }}
                 {% if submission.pk in submissions_reviewed %}

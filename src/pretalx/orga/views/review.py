@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, Exists, OuterRef, Q
+from django.db.models import Count, Exists, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -69,11 +69,15 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         overridden_reviews = Review.objects.filter(
             override_vote__isnull=False, submission_id=OuterRef("pk")
         )
+        user_reviews = Review.objects.filter(
+            user=self.request.user, submission_id=OuterRef("pk")
+        ).values("score")
         if not self.can_see_all_reviews:
             overridden_reviews = overridden_reviews.filter(user=self.request.user)
 
         queryset = (
             queryset.annotate(has_override=Exists(overridden_reviews))
+            .annotate(user_score=Subquery(user_reviews))
             .select_related("track", "submission_type")
             .prefetch_related("speakers", "reviews", "reviews__user")
         )
@@ -97,6 +101,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         order_prevalence = {
             "default": ("state", "current_score", "code"),
             "score": ("current_score", "state", "code"),
+            "my_score": ("user_score", "current_score", "state", "code"),
             "count": ("review_count", "code"),
         }
         ordering = self.request.GET.get("sort", "default")
@@ -108,12 +113,13 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         order = order_prevalence.get(ordering, order_prevalence["default"])
 
         def get_order_tuple(obj):
-            return tuple(
-                getattr(obj, key)
-                if not (key == "current_score" and obj.current_score is None)
-                else 100 * -int(reverse)
-                for key in order
-            )
+            result = []
+            for key in order:
+                value = getattr(obj, key)
+                if value is None:
+                    value = 100 * -int(reverse or -1)
+                result.append(value)
+            return tuple(result)
 
         return sorted(queryset, key=get_order_tuple, reverse=reverse,)
 

@@ -38,8 +38,8 @@ def _review_score_override(positive_overrides, negative_overrides):
 
 
 @register.simple_tag(takes_context=True)
-def review_score(context, submission):
-    score = submission.current_score
+def review_score(context, submission, user_score=False):
+    score = submission.current_score if not user_score else submission.user_score
     if score is None:
         return "-"
     if hasattr(submission, "has_override") and not submission.has_override:

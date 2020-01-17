@@ -71,7 +71,9 @@ LOG_NAMES = {
     "pretalx.submission.unconfirm": _("The submission was unconfirmed."),
     "pretalx.submission.update": _("The submission was modified."),
     "pretalx.submission.withdraw": _("The submission was withdrawn."),
-    "pretalx.submission.answer.update": _("A submission answer was modified."),  # Legacy
+    "pretalx.submission.answer.update": _(
+        "A submission answer was modified."
+    ),  # Legacy
     "pretalx.submission.answerupdate": _("A submission answer was modified."),  # Legacy
     "pretalx.submission.answer.create": _("A submission answer was added."),  # Legacy
     "pretalx.submission.answercreate": _("A submission answer was added."),  # Legacy
