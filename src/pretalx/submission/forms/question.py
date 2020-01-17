@@ -16,7 +16,6 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         self.track = kwargs.pop("track", None) or getattr(
             self.submission, "track", None
         )
-        self.request_user = kwargs.pop("request_user", None)
         self.target_type = kwargs.pop("target", QuestionTarget.SUBMISSION)
         self.for_reviewers = kwargs.pop("for_reviewers", False)
         if self.target_type == QuestionTarget.SUBMISSION:

@@ -77,7 +77,6 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
             speaker=self.request.user,
             event=self.request.event,
             target="speaker",
-            request_user=self.request.user,
         )
 
     @context

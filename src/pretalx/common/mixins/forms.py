@@ -249,7 +249,6 @@ class QuestionFieldsMixin:
             answer.save()
 
     def _save_to_answer(self, field, answer, value):
-        action = "pretalx.submission.answer." + ("update" if answer.pk else "create")
         if isinstance(field, forms.ModelMultipleChoiceField):
             answstr = ", ".join([str(o) for o in value])
             if not answer.pk:
@@ -276,6 +275,3 @@ class QuestionFieldsMixin:
             value = answer.answer
         else:
             answer.answer = value
-        answer.log_action(
-            action, person=self.request_user or self.speaker, data={"answer": value}
-        )
