@@ -61,7 +61,7 @@
 <table class="table review-table table-hover table-responsive-md">
     <colgroup>
         {% if can_see_all_reviews %}<col class="nowrap">{% endif %}
-        <col class="nowrap">
+        {% if can_review or submissions_reviewed %}<col class="nowrap">{% endif %}
         <col class="nowrap">
         <col class="w-75">
         {% if can_view_speakers %}<col class="w-25">{% endif %}
@@ -133,7 +133,11 @@
                     {{ submission.title }}
                 </a>
             </td>
-            {% if can_view_speakers %}<td>{{ submission.display_speaker_names }}</td>{% endif %}
+            {% if can_view_speakers %}<td>
+                {% for speaker in submission.speakers.all %}
+                {{ speaker.get_display_name }}{% if not forloop.last %},{% endif %}<br>
+                {% endfor %}
+            </td>{% endif %}
             <td>{{ submission.submission_type.name }}</td>
             <td class="nowrap">
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
