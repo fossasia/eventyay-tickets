@@ -134,7 +134,7 @@ setup(
             "freezegun",
             "isort",
             "lxml",
-            "pytest",
+            "pytest==5.3.2",  # Also change in tox.ini, tracking issue at https://github.com/pytest-dev/pytest/issues/6492
             "pytest-cov",
             "pytest-django",
             "pytest-mock",
