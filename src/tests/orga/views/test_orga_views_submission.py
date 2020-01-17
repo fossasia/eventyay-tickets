@@ -201,7 +201,6 @@ def test_reviewer_cannot_delete_submission(
         assert submission.state == SubmissionStates.SUBMITTED
         assert submission.answers.count() == 1
         assert Submission.objects.count() == 1
-        option_count = answered_choice_question.options.count()
 
     response = review_client.get(submission.orga_urls.delete, follow=True)
     with scope(event=submission.event):

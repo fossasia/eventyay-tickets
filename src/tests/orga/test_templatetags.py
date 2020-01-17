@@ -29,11 +29,14 @@ def event_with_score_context(event):
 @pytest.mark.parametrize(
     "score,expected",
     (
-        (3, "3/3 (“great”)"),
-        (2, "2/3 (“good”)"),
-        (1, "1/3 (“okay”)"),
-        (0, "0/3 (“meh.”)"),
-        (1.5, "1.5/3"),
+        (3, '<span data-toggle="tooltip" title="&#39;great&#39;">3/3</span>'),
+        (2, '<span data-toggle="tooltip" title="&#39;good&#39;">2/3</span>'),
+        (1, '<span data-toggle="tooltip" title="&#39;okay&#39;">1/3</span>'),
+        (0, '<span data-toggle="tooltip" title="&#39;meh.&#39;">0/3</span>'),
+        (
+            1.5,
+            '<span data-toggle="tooltip" title="Between &#39;okay&#39; and &#39;good&#39;.">1.5/3</span>',
+        ),
         (None, "×"),
     ),
 )

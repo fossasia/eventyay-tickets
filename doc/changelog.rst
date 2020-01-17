@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Review scores are now consistently shown as numbers, and the text representation/meaning of those numbers is shown on hover.
 - :feature:`-` Reviewers can now see both their own score and the median score in the review dashboard.
 - :feature:`-` People without edit or delete permissions are not shown the edit or delete buttons on submissions anymore.
 - :bug:`-` When updating the settings for an event with a custom domain, pretalx would mistakenly show an error message that this domain was already in use for another event.

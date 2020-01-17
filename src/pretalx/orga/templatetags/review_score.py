@@ -1,5 +1,9 @@
+import math
+
 from django import template
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 register = template.Library()
 
@@ -8,20 +12,32 @@ def _review_score_number(context, score):
     if score is None:
         return "×"
 
-    max_score = (
-        context["request"].event.settings.get("review_max_score") if context else None
-    )
+    score = round(score, 1)
+    if not context:
+        return str(score)
+    max_score = context["request"].event.settings.get("review_max_score")
+    result = f"{score}/{max_score}"
     if isinstance(score, int) or (isinstance(score, float) and score.is_integer()):
         score = int(score)
-        name = context and context["request"].event.settings.get(
-            f"review_score_name_{score}"
+        tooltip = (
+            context["request"].event.settings.get(f"review_score_name_{score}") or ""
         )
-        if name:
-            return f"{score}/{max_score} (“{name}”)"
+        if tooltip:
+            tooltip = f"'{tooltip}'"
     else:
-        score = round(score, 1)
-
-    return f"{score}/{max_score}"
+        lower_bound = math.floor(score)
+        lower = context["request"].event.settings.get(
+            f"review_score_name_{lower_bound}"
+        )
+        upper = context["request"].event.settings.get(
+            f"review_score_name_{lower_bound + 1}"
+        )
+        tooltip = _("Between '{lower}' and '{upper}'.").format(lower=lower, upper=upper)
+    if not tooltip:
+        return result
+    return format_html(
+        '<span data-toggle="tooltip" title="{}">{}</span>', tooltip, result
+    )
 
 
 def _review_score_override(positive_overrides, negative_overrides):
