@@ -9,7 +9,7 @@ from django.http import FileResponse, Http404, HttpResponseServerError
 from django.shortcuts import redirect
 from django.template import TemplateDoesNotExist, loader
 from django.urls import get_callable
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
@@ -83,7 +83,7 @@ class GenericLoginView(FormView):
 
         params = self.request.GET.copy()
         url = urllib.parse.unquote(params.pop("next", [""])[0])
-        if url and is_safe_url(url, allowed_hosts=None):
+        if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url + ("?" + params.urlencode() if params else ""))
 
         return redirect(self.get_success_url())

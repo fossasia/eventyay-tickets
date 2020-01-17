@@ -1,5 +1,5 @@
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.exporter import BaseExporter, CSVExporterMixin
 from pretalx.common.signals import register_data_exporters

@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils import feedgenerator
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.utils.translation import override
@@ -159,7 +159,7 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
         else:
             self.do(force=True)
         url = self.request.GET.get("next")
-        if url and is_safe_url(url, allowed_hosts=None):
+        if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url)
         return redirect(self.object.orga_urls.base)
 

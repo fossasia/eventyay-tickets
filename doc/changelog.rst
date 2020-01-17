@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` This version of pretalx has higher database version requirements. We now support PostgreSQL 9.6+, MariaDB 10.1+, MySQL 5.6+, and SQLite 3.8.3+.
 - :bug:`877` The frontend markdown preview would not render all line breaks as line breaks (only two line breaks in a row), but the server rendered version did.
 - :feature:`873` If you create a new event and copy an old event's configuration, pretalx will now also copy tracks and questions.
 - :feature:`-` Organisers can now choose how to display their schedule. Currently, the only two options are the previous grid display, or a list with talks and times.

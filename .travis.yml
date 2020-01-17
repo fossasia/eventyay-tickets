@@ -10,7 +10,7 @@ services:
   - mysql
   - postgresql
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
   mariadb: "10.3"
 
 # We spell out the text matrix tox generates explicitly here to get the most use out of both.

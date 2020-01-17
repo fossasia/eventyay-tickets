@@ -97,7 +97,7 @@ setup(
         "csscompressor==0.9.*",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils==1.0.*",  # https://pythonhosted.org/cssutils/CHANGELOG.html
         "defusedcsv==1.1.*",  # https://github.com/raphaelm/defusedcsv
-        "Django>=2.2.1,<2.3.0",  # https://docs.djangoproject.com/en/2.0/releases/
+        "Django==3.0.*",  # https://docs.djangoproject.com/en/2.0/releases/
         "django-bootstrap4==1.1.1",  # http://django-bootstrap4.readthedocs.io/en/latest/history.html
         "django-compressor==2.4.*",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",

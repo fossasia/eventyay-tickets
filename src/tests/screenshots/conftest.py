@@ -3,7 +3,7 @@ import random
 
 import pytest
 from django.core.management import call_command
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django_scopes import scope
 
 SEED = random.randint(0, 100000)

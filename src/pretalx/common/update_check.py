@@ -7,8 +7,8 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext_noop
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 from django_scopes import scopes_disabled
 from i18nfield.strings import LazyI18nString
 
@@ -95,7 +95,7 @@ def send_update_notification_email():
             "subject": _("pretalx update available"),
             "body": str(
                 LazyI18nString.from_gettext(
-                    ugettext_noop(
+                    gettext_noop(
                         "Hi!\n\nAn update is available for pretalx or for one of the plugins you installed in your "
                         "pretalx installation at {base_url}.\nPlease follow this link for more information:\n\n {url} \n\n"
                         "You can always find information on the latest updates in the changelog:\n\n"

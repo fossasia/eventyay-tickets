@@ -3,7 +3,7 @@ import datetime as dt
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import override
 from django.views.generic import View
 
@@ -13,7 +13,7 @@ from pretalx.common.phrases import phrases
 class LocaleSet(View):
     def get(self, request, *args, **kwargs):
         url = request.GET.get("next", request.headers.get("Referer", "/"))
-        url = url if is_safe_url(url, allowed_hosts=None) else "/"
+        url = url if url_has_allowed_host_and_scheme(url, allowed_hosts=None) else "/"
         resp = HttpResponseRedirect(url)
 
         locale = request.GET.get("locale")

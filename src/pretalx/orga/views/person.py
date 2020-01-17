@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.views.generic import View
 
@@ -48,6 +48,6 @@ class SubuserView(View):
         )
         params = request.GET.copy()
         url = urllib.parse.unquote(params.pop("next", [""])[0])
-        if url and is_safe_url(url, allowed_hosts=None):
+        if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url + ("?" + params.urlencode() if params else ""))
         return redirect(reverse("orga:event.list"))
