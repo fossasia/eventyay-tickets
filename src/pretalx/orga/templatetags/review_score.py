@@ -16,7 +16,6 @@ def _review_score_number(context, score):
     if not context:
         return str(score)
     max_score = context["request"].event.settings.get("review_max_score")
-    result = f"{score}/{max_score}"
     if isinstance(score, int) or (isinstance(score, float) and score.is_integer()):
         score = int(score)
         tooltip = (
@@ -33,6 +32,7 @@ def _review_score_number(context, score):
             f"review_score_name_{lower_bound + 1}"
         )
         tooltip = _("Between '{lower}' and '{upper}'.").format(lower=lower, upper=upper)
+    result = f"{score}/{max_score}"
     if not tooltip:
         return result
     return format_html(
