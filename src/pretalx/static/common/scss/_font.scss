@@ -1,51 +1,84 @@
 @font-face {
-    font-family: 'Open Sans';
-    src: url(static('fonts/opensans_bold_macroman/OpenSans-Bold-webfont.eot'));
-    src: url(static('fonts/opensans_bold_macroman/OpenSans-Bold-webfont.eot?#iefix')) format('embedded-opentype'),
-         url(static('fonts/opensans_bold_macroman/OpenSans-Bold-webfont.woff')) format('woff'),
-         url(static('fonts/opensans_bold_macroman/OpenSans-Bold-webfont.ttf')) format('truetype'),
-         url(static('fonts/opensans_bold_macroman/OpenSans-Bold-webfont.svg#open_sansbold')) format('svg');
-    font-weight: 700;
-    font-style: normal;
-
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Titillium Web SemiBold'), local('TitilliumWeb-SemiBold'),
+       url(static('fonts/titillium-web-v8-latin-600.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v8-latin-600.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
 @font-face {
-    font-family: 'Open Sans';
-    src: url(static('fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.eot'));
-    src: url(static('fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.eot?#iefix')) format('embedded-opentype'),
-         url(static('fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.woff')) format('woff'),
-         url(static('fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.ttf')) format('truetype'),
-         url(static('fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.svg#open_sansbold_italic')) format('svg');
-    font-weight: 700;
-    font-style: italic;
-
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Titillium Web Bold'), local('TitilliumWeb-Bold'),
+       url(static('fonts/titillium-web-v8-latin-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v8-latin-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
 @font-face {
-    font-family: 'Open Sans';
-    src: url(static('fonts/opensans_italic_macroman/OpenSans-Italic-webfont.eot'));
-    src: url(static('fonts/opensans_italic_macroman/OpenSans-Italic-webfont.eot?#iefix')) format('embedded-opentype'),
-         url(static('fonts/opensans_italic_macroman/OpenSans-Italic-webfont.woff')) format('woff'),
-         url(static('fonts/opensans_italic_macroman/OpenSans-Italic-webfont.ttf')) format('truetype'),
-         url(static('fonts/opensans_italic_macroman/OpenSans-Italic-webfont.svg#open_sansitalic')) format('svg');
-    font-weight: normal;
-    font-style: italic;
-
+  font-family: 'Titillium Web';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Titillium Web SemiBold Italic'), local('TitilliumWeb-SemiBoldItalic'),
+       url(static('fonts/titillium-web-v8-latin-600italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v8-latin-600italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
 @font-face {
-    font-family: 'Open Sans';
-    src: url(static('fonts/opensans_regular_macroman/OpenSans-Regular-webfont.eot'));
-    src: url(static('fonts/opensans_regular_macroman/OpenSans-Regular-webfont.eot?#iefix')) format('embedded-opentype'),
-         url(static('fonts/opensans_regular_macroman/OpenSans-Regular-webfont.woff')) format('woff'),
-         url(static('fonts/opensans_regular_macroman/OpenSans-Regular-webfont.ttf')) format('truetype'),
-         url(static('fonts/opensans_regular_macroman/OpenSans-Regular-webfont.svg#open_sansregular')) format('svg');
-    font-weight: 400;
-    font-style: normal;
-
+  font-family: 'Titillium Web';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Titillium Web Bold Italic'), local('TitilliumWeb-BoldItalic'),
+       url(static('fonts/titillium-web-v8-latin-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/titillium-web-v8-latin-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local(''),
+       url(static('fonts/muli-v19-latin-regular.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/muli-v19-latin-regular.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local(''),
+       url(static('fonts/muli-v19-latin-700.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/muli-v19-latin-700.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Muli';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local(''),
+       url(static('fonts/muli-v19-latin-italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/muli-v19-latin-italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Muli';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(static('fonts/muli-v19-latin-700italic.woff2')) format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url(static('fonts/muli-v19-latin-700italic.woff')) format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 body {
-    font-family: "Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
+    font-family: "Muli","Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    h1, h2, h3, h4, legend {
+      font-family: "Titillium Web";
+    }
+    h2, legend {
+      font-size: 28px;
+    }
+    h3 {
+      font-size: 24px;
+    }
 }
