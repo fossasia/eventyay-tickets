@@ -12,15 +12,26 @@
   min-height: 160px;
   width: 340px;
   color: $brand-primary;
-  background: lighten($gray-100, 2);
+  background: $gray-100;
   text-align: center;
   max-width: calc(100% - 16px);
   overflow-wrap: break-word;
+  position: relative;
 
   &:hover {
     background: $gray-100;
     color: $brand-primary;
     text-decoration: none;
+  }
+
+  &.symbol {
+    display: flex;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    i {
+      font-size: 56px;
+    }
   }
 
   h1 {
@@ -38,6 +49,40 @@
 
     ul {
       text-align: left;
+    }
+  }
+  &.event-block {
+    padding-bottom: 48px;
+    .stats {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      > * {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.state.inactive {
+          background-color: $gray;
+          color: $white;
+          font-weight: bold;
+        }
+        &.state.active {
+          background-color: $brand-success;
+          color: $white;
+          font-weight: bold;
+        }
+        &.submissions {
+          background-color: $gray-light;
+          color: $body-color;
+        }
+      }
     }
   }
 }
