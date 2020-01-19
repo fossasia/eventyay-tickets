@@ -9,25 +9,25 @@ body .pun, body .opn, body .clo {
     color: #7a899a;
 }
 body a {
-    color: #1a4c3b;
+    color: #3aa57c;
 }
 .navbar {
  height: 50px;
- color: #1a4c3b;
+ color: #3aa57c;
  background-color: #f8f9fa;
- border-bottom: 4px #1a4c3b solid;
+ border-bottom: 4px #3aa57c solid;
  border-top: none;
  padding: .25rem;
  box-shadow: 1px 1px 3px rgba(0,0,0,0.12),1px 1px 2px rgba(0,0,0,0.24);
  z-index: 200
 }
 .navbar .nav li.navbar-text, .navbar .navbar-brand, .navbar .navbar-brand:hover {
-  color: #1a4c3b
+  color: #3aa57c
 }
 .navbar .navbar-brand {
   display: flex;
   align-items: center;
-  color: #1a4c3b;
+  color: #3aa57c;
   padding: 0 !important;
   font-size: 20px;
   line-height: 30px;

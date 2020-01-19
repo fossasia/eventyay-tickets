@@ -15,7 +15,7 @@
     <meta name="referrer" content="origin-when-crossorigin">
     {% if request.event and request.event.settings.meta_noindex %}<meta name="robots" content="noindex, nofollow">{% else %}<meta name="robots" content="index, follow">{% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#1C4A3B{% endif %}">
+    <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#3aa57c{% endif %}">
     <meta name="HandheldFriendly" content="True"/>
     {% block meta_image %}{% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">
     <meta property="og:image" content="{{ request.event.urls.logo.full }}">{% endif %}{% endblock %}

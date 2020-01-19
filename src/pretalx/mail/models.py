@@ -214,7 +214,7 @@ class QueuedMail(LogMixin, models.Model):
         html_context = {
             "body": body_md,
             "event": event,
-            "color": (event.primary_color if event else "") or "#1c4a3b",
+            "color": (event.primary_color if event else "") or "#3aa57c",
         }
         return get_template("mail/mailwrapper.html").render(html_context)
 
