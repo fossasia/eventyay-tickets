@@ -27,7 +27,7 @@ class DashboardEventListView(TemplateView):
         query = self.request.GET.get("q")
         if not query:
             return True
-        query = query.lower()
+        query = query.lower().strip()
         name = {"en": event.name} if isinstance(event.name, str) else event.name.data
         name = {"en": name} if isinstance(name, str) else name
         return query in event.slug or any(query in value for value in name.values())
@@ -53,16 +53,31 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
     template_name = "orga/organiser/list.html"
     permission_required = "orga.view_organisers"
 
+    def filter_organiser(self, organiser, query):
+        name = (
+            {"en": organiser.name}
+            if isinstance(organiser.name, str)
+            else organiser.name.data
+        )
+        name = {"en": name} if isinstance(name, str) else name
+        return query in organiser.slug or any(query in value for value in name.values())
+
     @context
     def organisers(self):
         if self.request.user.is_administrator:
-            return Organiser.objects.all()
-        return set(
-            team.organiser
-            for team in self.request.user.teams.filter(
-                can_change_organiser_settings=True
+            orgs = Organiser.objects.all()
+        else:
+            orgs = set(
+                team.organiser
+                for team in self.request.user.teams.filter(
+                    can_change_organiser_settings=True
+                )
             )
-        )
+        query = self.request.GET.get("q")
+        if not query:
+            return orgs
+        query = query.lower().strip()
+        return [org for org in orgs if self.filter_organiser(org, query)]
 
 
 class EventDashboardView(EventPermissionRequired, TemplateView):

@@ -40,9 +40,11 @@
                 </div>
             </a>
         {% endfor %}
-        <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
-            <i class="fa fa-plus-circle" title="{% trans "Create a new event" %}"></i>
-        </a>
+        {% if can_create_event %}
+            <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
+                <i class="fa fa-plus-circle" title="{% trans "Create a new event" %}"></i>
+            </a>
+        {% endif %}
     </div>
     {% if past_orga_events %}
     <h2>{% trans "Your most recent events" %}</h2>
