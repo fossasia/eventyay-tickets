@@ -7,12 +7,14 @@ $(function() {
     $temp.val(currentTarget.data("destination")).select()
     document.execCommand("copy")
     $temp.remove()
-    const previousTitle = currentTarget.title
-    currentTarget.title = "Copied!"
+    const previousTitle = e.currentTarget.dataset["originalTitle"]
+    e.currentTarget.title = "Copied!"
+    e.currentTarget.dataset["originalTitle"] = "Copied!"
     currentTarget.tooltip('show')
-    window.setTimeout(400, () => {
-      currentTarget.title = previousTitle;
+    window.setTimeout(() => {
+      e.currentTarget.title = previousTitle
+      e.currentTarget.dataset["originalTitle"] = previousTitle
       currentTarget.tooltip('hide')
-    })
+    }, 400)
   })
 })
