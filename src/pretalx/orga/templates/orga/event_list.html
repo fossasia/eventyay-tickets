@@ -6,11 +6,9 @@
 
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
-    {% if can_create_event %}
-    <form class="mb-4 mt-2">
+    <form class="mb-4 m-2">
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% trans "Search" %}">
     </form>
-    {% endif %}
     <h2>{% trans "Your upcoming events" %}</h2>
     <div class="event-blocks dashboard-list">
         {% for event in current_orga_events %}

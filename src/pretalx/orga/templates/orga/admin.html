@@ -60,7 +60,7 @@
 <h2>{% trans "System" %}</h2>
 <ul>
     <li>{% trans "Executable" %}: <code>{{ executable|copyable }}</code></li>
-    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}{% else %}–{% endif %}</ul></li>
+    <li>{% trans "Plugins" %}: {% if settings.PLUGINS %}<ul>{% for plugin in settings.PLUGINS %}<li>{{ plugin|copyable }}</li>{% endfor %}</ul>{% else %}–{% endif %}</li>
     <li>{% if settings.ADMINS %}{% trans "On errors, emails will be sent to:" %}
             {% for admin in settings.ADMINS %}
             <code>{{ admin.0|copyable }}</code>{% if not forloop.last %},{% endif %}
@@ -69,14 +69,14 @@
     </li>
 </ul>
 
-<h3>redis</h3>
+<h3 class="mt-4">redis</h3>
 {% if not settings.HAS_REDIS %}
     {% trans "No redis server has been configured." %}
 {% else %}
     {% trans "Redis is used as cache backend:" %} <code>{{ settings.CACHES.redis.LOCATION|copyable }}</code>
 {% endif %}
 
-<h3>Celery</h3>
+<h3 class="mt-4">Celery</h3>
 {% if not settings.HAS_CELERY %}
     {% trans "No celery workers have been configured." %}
 {% else %}
@@ -87,7 +87,7 @@
     </ul>
 {% endif %}
 
-<h2>{% trans "Links" %}</h2>
+<h2 class="mt-4">{% trans "Links" %}</h2>
 <ul>
     <li><a target="_blank" rel="noopener" href="https://pretalx.com">{% trans "pretalx website" %}</a></li>
     <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org">{% trans "pretalx documentation" %}</a>

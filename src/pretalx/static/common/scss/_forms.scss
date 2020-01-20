@@ -12,6 +12,10 @@
 
 .form-control {
   font-size: 14px;
+  &:focus {
+    box-shadow: none;
+    border-width: 2px;
+  }
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -40,7 +44,7 @@ form label.col-form-label {
 }
 
 form small.form-text.text-muted {
-  color: $gray !important;
+  color: $body-color-light;
   font-size: inherit;
   a {
     text-decoration: underline;
@@ -93,6 +97,7 @@ form .form-control:disabled,
     padding-top: 2px;
     padding: 0;
     margin-bottom: 0;
+    color: $body-color-light;
   }
 
   .password-progress {
@@ -184,6 +189,7 @@ table .form-check {
       background: $offwhite;
       box-shadow: 0 0 1px $gray-500;
       margin-left: -34px;
+      border-radius: 4px;
     }
 
     &:after {
@@ -195,6 +201,7 @@ table .form-check {
       opacity: 0;
       background: $brand-success;
       margin-left: -34px;
+      border-radius: 2px;
     }
   }
 
@@ -210,6 +217,10 @@ table .form-check {
       &:after {
         opacity: 1;
       }
+    }
+    &:focus + label:before {
+      border: #89d6b8 solid 2px;
+      box-shadow: none;
     }
   }
 }

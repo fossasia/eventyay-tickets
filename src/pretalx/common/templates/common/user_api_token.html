@@ -13,10 +13,12 @@
             API documentation</a>.
         {% endblocktrans %}
     </p></div>
-    <div class="form-group row">
+    <div class="form-group row ml-0 mr-0">
         <label class="col-md-3 col-form-label">{% trans "API Token" %}</label>
         <div class="col-md-9">
+            <code>
             {{ token|copyable }}
+            </code>
             <div class="help-block">
                 {% trans "Use for authentication when accessing the API." %}
             </div>

@@ -26,15 +26,14 @@ aside.sidebar {
   flex-grow: 0;
   flex-shrink: 0;
   flex-wrap: nowrap;
-  border-right: 1px solid $gray-lighter;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   z-index: 100;
   position: fixed;
   margin-top: 50px;
   overflow-y: auto;
 
   a {
-    color: $brand-primary;
+    color: $body-color-light;
+    font-weight: bold;
   }
 
   .nav-fold span.has-children {
@@ -88,11 +87,14 @@ aside.sidebar {
   }
 
   .nav-link.active,
-  .nav-link:hover,
+  .nav-link.active:hover,
   .nav-link.nav-link-second-level.active,
+  .nav-link.nav-link-second-level.active:hover {
+    background-color: fade-out($brand-primary, 0.8);
+  }
+  .nav-link:hover,
   .nav-link.nav-link-second-level:hover {
     background-color: $gray-lighter;
-    color: $brand-primary;
   }
 }
 
@@ -169,7 +171,7 @@ aside.sidebar {
     .event-date,
     .event-organiser {
       font-size: 11px;
-      color: $gray;
+      color: $body-color-light;
     }
   }
   a {
@@ -177,10 +179,14 @@ aside.sidebar {
   }
 }
 
-.navbar-brand img {
-  height: 30px;
-  width: auto;
-  margin: auto;
+.navbar-brand {
+  font-family: "Titillium Web";
+  font-weight: 600;
+  img {
+    height: 30px;
+    width: auto;
+    margin: auto;
+  }
 }
 
 .speaker-info {
@@ -462,6 +468,7 @@ footer {
       .fa {
         padding-left: 12px;
         padding-right: 12px;
+        margin-top: 0;
       }
     }
   }
@@ -514,6 +521,17 @@ footer {
 
     span {
       padding-left: 4px;
+    }
+  }
+  .dashboard-history .list-group .logentry {
+    flex-direction: column;
+    border-bottom: 1px solid $gray-light;
+    padding-top: 16px;
+    .meta {
+      flex-direction: column;
+      .time {
+        padding-bottom: 16px;
+      }
     }
   }
 }

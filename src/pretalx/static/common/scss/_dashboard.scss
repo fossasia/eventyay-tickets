@@ -6,6 +6,9 @@
 }
 
 .dashboard-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   flex: 1 0 auto;
   margin: 8px;
   padding: 12px 4px;
@@ -17,6 +20,7 @@
   max-width: calc(100% - 16px);
   overflow-wrap: break-word;
   position: relative;
+  border-radius: 4px;
 
   &:hover {
     background: $gray-100;
@@ -80,7 +84,7 @@
         }
         &.submissions {
           background-color: $gray-light;
-          color: $body-color;
+          color: $body-color-light;
         }
       }
     }
@@ -239,10 +243,6 @@
         width: 0;
       }
     }
-  }
-
-  .dashboard-block {
-    width: inherit;
   }
 
   .event-dropdown {

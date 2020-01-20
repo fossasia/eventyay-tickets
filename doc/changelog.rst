@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` A lot of minor UI improvements, a re-work of the colours and fonts in use, as well as improvements of mobile and responsive pages.
 - :feature:`-` Review scores are now consistently shown as numbers, and the text representation/meaning of those numbers is shown on hover.
 - :feature:`-` Reviewers can now see both their own score and the median score in the review dashboard.
 - :feature:`-` People without edit or delete permissions are not shown the edit or delete buttons on submissions anymore.

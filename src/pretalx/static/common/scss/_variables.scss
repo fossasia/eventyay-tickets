@@ -6,6 +6,10 @@ $brand-warning: #f9a557 !default;
 $brand-danger: #b23e65 !default;
 $link-color: $brand-success !default;
 
+$body-color: rgba(0,0,0,.87) !default;
+$body-color-light: rgba(0,0,0,.60) !default;
+$body-color-muted: rgba(0,0,0,.38) !default;
+
 $brand-light: fade-out($brand-primary, 0.2) !default;
 
 $white: #fff !default;
@@ -40,9 +44,3 @@ $theme-colors: (
   light: $gray-100,
   dark: $gray-800,
 );
-
-.btn:focus {
-  box-shadow: none !important;
-}
-
-$enable-rounded: false;
