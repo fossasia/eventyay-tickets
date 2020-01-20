@@ -4,18 +4,11 @@
 
 .form-group {
   display: flex;
-
-  input {
-    line-height: normal;
-  }
 }
 
-.form-control {
-  font-size: 14px;
-  &:focus {
-    box-shadow: none;
-    border-width: 2px;
-  }
+.form-control:focus {
+  box-shadow: none;
+  border-width: 2px;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

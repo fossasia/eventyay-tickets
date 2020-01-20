@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
           },
         },
       })
+      .on("colorpickerCreate", function (e) {
+        $(".colorpickerfield").focus(function(ev) { e.colorpicker.show() })
+      })
       .on("colorpickerChange", function(e) {
         var rgb = $(this)
           .colorpicker("color")
