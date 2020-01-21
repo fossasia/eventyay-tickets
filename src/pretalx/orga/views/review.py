@@ -146,6 +146,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
     def show_submission_types(self):
         return self.request.event.submission_types.all().count() > 1
 
+    @context
+    def show_tracks(self):
+        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(
