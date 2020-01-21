@@ -323,7 +323,7 @@ Vue.component("step", {
       return !currentModal.data
     },
     stepPosition () {
-      return this.steps.findIndex((element) => { return element.fields === this.fields })
+      return this.steps.findIndex((element) => { return element.identifier === this.step.identifier })
     },
     headerSteps () {
       let result = this.steps.map((element, index) => {
@@ -338,10 +338,11 @@ Vue.component("step", {
         }
       })
       result.push({
-        "icon": "done",
-        "label": "Done!",
+        "icon": "check",
+        "label": "",
         "phase": "todo"
       })
+      return result
     }
   },
 })
@@ -349,7 +350,7 @@ Vue.component("step", {
 var app = new Vue({
   el: "#flow",
   template: `
-    <div :class="currentModal.data ? 'defocused' : 'focused'">
+    <div :class="currentModal.data ? 'defocused' : 'focused'" :style="{'--color': eventConfiguration.primary_color || '#3aa57c'}">
       <div id="flow-modal" v-if="currentModal.data">
         <form>
           <field :field="currentModal.data" :isModal="true" key="modal" :locales="locales"></field>

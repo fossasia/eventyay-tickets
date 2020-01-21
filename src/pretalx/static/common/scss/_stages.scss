@@ -33,15 +33,15 @@
     &.step-current,
     &.step-done {
       &:before {
-        background: $brand-success;
+        background: var(--color, $brand-primary);
       }
       .step-icon {
-        border: 1px solid $brand-success;
-        background: $brand-success;
+        border: 1px solid var(--color, $brand-primary);
+        background: var(--color, $brand-primary);
         color: white;
       }
       .step-label {
-        color: $brand-success;
+        color: var(--color, $brand-primary);
         font-weight: bold;
       }
     }
@@ -50,7 +50,7 @@
         font-weight: normal;
       }
       &:after {
-        background: $brand-success;
+        background: var(--color, $brand-primary);
       }
     }
     &:hover,

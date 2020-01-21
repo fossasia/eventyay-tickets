@@ -11,7 +11,7 @@
 
     <div id="submission-steps" class="stages">
         {% for stp in cfp_flow %}
-        <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}{% endif %}">
+        <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}tbd{% endif %}">
             <div class="step-icon">
                 <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
             </div>
@@ -20,6 +20,10 @@
             </div>
         </a>
         {% endfor %}
+        <div class="step step-tbd">
+            <div class="step-icon"><span class="fa fa-check"></span></div>
+            <div class="step-label">{% trans "Done!" %}</div>
+        </div>
     </div>
     {% block cfp_form %}
     <form method="post" enctype="multipart/form-data">
