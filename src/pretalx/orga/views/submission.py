@@ -445,7 +445,10 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
 
     @context
     def show_tracks(self):
-        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
+        return (
+            self.request.event.settings.use_tracks
+            and self.request.event.tracks.all().count() > 1
+        )
 
     def get_queryset(self):
         qs = (
@@ -534,7 +537,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def show_tracks(self):
-        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
+        return (
+            self.request.event.settings.use_tracks
+            and self.request.event.tracks.all().count() > 1
+        )
 
     @context
     def submission_timeline_data(self):

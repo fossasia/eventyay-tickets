@@ -148,7 +148,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
 
     @context
     def show_tracks(self):
-        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
+        return (
+            self.request.event.settings.use_tracks
+            and self.request.event.tracks.all().count() > 1
+        )
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)

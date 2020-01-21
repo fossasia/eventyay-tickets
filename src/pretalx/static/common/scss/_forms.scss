@@ -295,6 +295,8 @@ table .action-column {
   textarea {
     max-height: 160px;
     border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
   .preview {
     border: 1px solid #ced4da;

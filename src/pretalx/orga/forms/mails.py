@@ -20,7 +20,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
         if self.instance and self.instance.id:
             context = None
             if self.instance == self.event.update_template:
-                context = {'notifications': 'test', 'event_name': 'test'}
+                context = {"notifications": "test", "event_name": "test"}
             elif self.instance in [
                 t
                 for t in self.instance.event.fixed_templates
