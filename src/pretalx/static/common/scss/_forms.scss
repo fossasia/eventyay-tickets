@@ -7,8 +7,7 @@
 }
 
 .form-control:focus {
-  box-shadow: none;
-  border-width: 2px;
+  box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -227,8 +226,7 @@ table .form-check {
       }
     }
     &:focus + label:before {
-      border: #89d6b8 solid 2px;
-      box-shadow: none;
+      box-shadow: 0 0 0 2px rgba(58, 165, 124, 0.4);
     }
   }
 }
@@ -241,6 +239,14 @@ table .form-check {
     }
   }
 }
+.inline-group {
+  .radio, .form-check, .checkbox {
+    display: flex;
+    padding: 0 16px;
+    margin-right: 18px;
+  }
+}
+
 
 table .form-check label,
 table .checkbox label,

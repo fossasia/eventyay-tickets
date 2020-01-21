@@ -144,7 +144,9 @@
                     </tr>
                 </tbody>
             </table></div>
-            {% bootstrap_field sform.cfp_count_length_in layout='event' %}
+            <div class="inline-group">
+                {% bootstrap_field sform.cfp_count_length_in layout='event' %}
+            </div>
             </fieldset>
 
             {% include "orga/submit_row.html" %}

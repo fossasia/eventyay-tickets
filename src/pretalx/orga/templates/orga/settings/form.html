@@ -91,7 +91,9 @@
                 {% bootstrap_field form.header_image layout='inline' %}
             </div>
         </div>
+        <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
         {% bootstrap_field sform.display_header_pattern layout='event' %}
+        </div>
         <fieldset>
         <div class="submit-group panel">
             <span>

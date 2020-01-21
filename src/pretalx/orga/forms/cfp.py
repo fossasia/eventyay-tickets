@@ -73,6 +73,7 @@ class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     cfp_count_length_in = forms.ChoiceField(
         label=_("Count text length in"),
         choices=(("chars", _("Characters")), ("words", _("Words"))),
+        widget=forms.RadioSelect(),
     )
     mail_on_new_submission = forms.BooleanField(
         label=_("Send mail on new submission"),

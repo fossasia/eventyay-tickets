@@ -574,7 +574,7 @@ form #id_display-display_header_pattern {
   .mini-header {
     width: 100px;
     height: 100px;
-    background-color: $brand-primary;
+    background-color: var(--color, $brand-primary);
   }
 }
 
@@ -739,11 +739,18 @@ legend .submission-state-dropdown {
 }
 .colorpicker-element .colorpicker-input-addon {
   display: flex;
-  width: 32px;
+  width: 36px;
   align-items: center;
   justify-content: space-around;
   background: #dfe4e6;
   border: 1px solid #ced4da;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  i {
+    border-radius: 2px;
+    width: 18px;
+    height: 18px;
+  }
 }
 .colorpicker-2x {
   width: auto !important;

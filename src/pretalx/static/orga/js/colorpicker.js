@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var rgb = $(this)
           .colorpicker("color")
           ._color.rgb()
+        $(".colorpicker-update").attr("style", "--color: " + rgb.hex())
         var c = contrast([255, 255, 255], [rgb.red(), rgb.green(), rgb.blue()])
         var mark = "times"
         if (
