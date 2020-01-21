@@ -51,7 +51,7 @@
         <div data-formset-body class="card"><div class="list-group">
             {% for form in formset %}
                 <div data-formset-form class="list-group-item">
-                    <h3 class="d-flex offset-md-3">
+                    <h3 class="d-flex offset-md-3 flex-wrap">
                         <span class="mr-2 ml-2">{% trans "Review Phase" %}</span>
                         {% bootstrap_field form.name form_group_class="" layout="inline" %}
                         {% if action != 'view' %}

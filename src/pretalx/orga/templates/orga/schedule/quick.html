@@ -15,6 +15,6 @@
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form layout='event' %}
-    <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-3"><i class="fa fa-tick"></i> {% trans "Save" %}</button>
+    <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% trans "Save" %}</button>
 </form>
 {% endblock %}

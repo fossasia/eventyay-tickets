@@ -37,7 +37,7 @@
 <div class="submit-group">
     <form class="search-form">
         {% bootstrap_form search_form %}
-        {% bootstrap_field filter_form.submission_type %}
+        {% if show_submission_types %}{% bootstrap_field filter_form.submission_type %}{% endif %}
         {% bootstrap_field filter_form.state layout='inline' %}
         {% if request.event.settings.use_tracks %}
             {% bootstrap_field filter_form.track %}
@@ -65,7 +65,7 @@
         <col class="nowrap">
         <col class="w-75">
         {% if can_view_speakers %}<col class="w-25">{% endif %}
-        <col class="nowrap">
+        {% if show_submission_types %}<col class="nowrap">{% endif %}
         <col class="nowrap">
         <col class="nowrap">
     </colgroup>
@@ -92,7 +92,7 @@
             </th>
             <th>{% trans "Title" %}</th>
             {% if can_view_speakers %}<th>{% trans "Speakers" %}</th>{% endif %}
-            <th>{% trans "Type" %}</th>
+            {% if show_submission_types %}<th>{% trans "Type" %}</th>{% endif %}
             <th>{% trans "State" %}</th>
             <th><span class="action-row d-flex justify-space-around">
                 {% if can_accept_submissions %}
@@ -113,16 +113,16 @@
     {% for submission in submissions %}
         <tr class="{{ submission.state }}">
             {% if can_see_all_reviews %}
-                <td>
+                <td class="text-center">
                     {% review_score submission %}
                 </td>
             {% endif %}
             {% if can_review or submissions_reviewed %}
-            <td>
+            <td class="text-center">
                     {% review_score submission True %}
             </td>
             {% endif %}
-            <td>
+            <td class="text-center">
                 {{ submission.reviews.all|length|default:'-' }}
                 {% if submission.pk in submissions_reviewed %}
                     <i class="fa fa-check text-success" title="{% trans "You have reviewed this submission" %}"></i>
@@ -138,7 +138,7 @@
                 {{ speaker.get_display_name }}{% if not forloop.last %},{% endif %}<br>
                 {% endfor %}
             </td>{% endif %}
-            <td>{{ submission.submission_type.name }}</td>
+            {% if show_submission_types %}<td>{{ submission.submission_type.name }}</td>{% endif %}
             <td class="nowrap">
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
             </td>

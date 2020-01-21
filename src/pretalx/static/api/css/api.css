@@ -1,6 +1,9 @@
 body {
-    font-family: "Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
-    font-size: 14px;
+    font-family: "Muli","Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+}
+h1, h2, h3, h4, legend {
+  font-family: "Titillium Web","Open Sans","OpenSans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 body pre {
     font-size: 14px;

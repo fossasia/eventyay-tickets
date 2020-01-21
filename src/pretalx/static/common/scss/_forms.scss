@@ -316,3 +316,12 @@ table .action-column {
     border: 1px solid #ced4da;
   }
 }
+@include media-breakpoint-down(md) {
+  .submit-group {
+    flex-direction: column;
+    button, .btn {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+}

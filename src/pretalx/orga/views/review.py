@@ -142,6 +142,10 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
             user=self.request.user, submission__event=self.request.event
         ).values_list("submission_id", flat=True)
 
+    @context
+    def show_submission_types(self):
+        return self.request.event.submission_types.all().count() > 1
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         missing_reviews = Review.find_missing_reviews(

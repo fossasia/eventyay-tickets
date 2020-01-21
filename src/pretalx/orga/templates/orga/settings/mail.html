@@ -6,7 +6,7 @@
     <form method="post">
         {% csrf_token %}
         <h2>{% trans "E-mail settings" %}</h2>
-        <div class="alert alert-info offset-3">
+        <div class="alert alert-info offset-md-3">
             {% blocktrans trimmed %}
                 If you don't configure custom email settings, the global configuration
                 for this server will be used (ask your administrator for details).<br>

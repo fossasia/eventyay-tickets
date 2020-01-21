@@ -315,7 +315,6 @@ footer {
     margin-left: 8px;
   }
 }
-
 .resource-option-row,
 .resource-option-input {
   display: flex;
@@ -380,9 +379,14 @@ footer {
 }
 
 .event-logo-field {
+  .event-logo-form-fields .form-group {
+    display: inline-block;
+    max-width: 100%;
+    a {
+      word-wrap: break-word;
+    }
+  }
   img.event-logo-display {
-    margin-left: 12px;
-    margin-right: 16px;
     padding: 2px;
     border: 1px solid $gray-light;
     max-width: 180px;
@@ -489,7 +493,7 @@ footer {
     /* display above timeline in dashboard */
   }
 
-  fieldset .alert.col-md-9.offset-3 {
+  fieldset .alert.col-md-9.offset-md-3 {
     margin: 0;
   }
 
@@ -545,6 +549,7 @@ form #id_settings-display_header_pattern,
 form #id_display-display_header_pattern {
   display: flex;
   padding: 0;
+  overflow-x: auto;
 
   .form-check {
     padding-left: 0;

@@ -24,6 +24,11 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         label=_("Active languages"),
         choices=settings.LANGUAGES,
         widget=MultipleLanguagesWidget,
+        help_text=_(
+            "Users will be able to use pretalx in these languages, and you will be able to provide all texts in these"
+            " languages. If you don't provide a text in the language a user selects, it will be shown in your event's"
+            " default language instead."
+        ),
     )
     logo = ExtensionFileField(
         required=False,
@@ -59,8 +64,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         self.fields["name"].widget.attrs["placeholder"] = (
             _("The name of your conference, e.g. My Conference") + " " + year
         )
-        self.fields["slug"].widget.attrs["placeholder"] = (
-            _("A short version of your conference name, e.g. mycon") + year[2:]
+        self.fields["slug"].help_text = _(
+            "Please contact your administrator if you need to change the short name of your event."
         )
         self.fields["primary_color"].widget.attrs["placeholder"] = _(
             "A color hex value, e.g. #ab01de"
@@ -165,7 +170,7 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     show_sneak_peek = forms.BooleanField(
         label=_("Show a sneak peek before schedule release"),
         help_text=_(
-            'Set to publicly display a list of talks, which have the "is featured" flag enabled.'
+            "Set to publicly display a selected list of talks which you have marked to be featured."
         ),
         required=False,
     )
@@ -187,7 +192,8 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     display_header_pattern = forms.ChoiceField(
         label=_("Frontpage header pattern"),
         help_text=_(
-            'Choose how the frontpage header banner will be styled. Pattern source: <a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
+            "Choose how the frontpage header banner will be styled if you don't upload an image. Pattern source: "
+            '<a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
         ),
         choices=(
             ("", _("Plain")),
