@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`863` If incorrect variables were used in the schedule update email template, pretalx did not catch this mistake ahead of time, and instead just refused to release a new schedule.
 - :feature:`-` A lot of minor UI improvements, a re-work of the colours and fonts in use, as well as improvements of mobile and responsive pages.
 - :feature:`-` Review scores are now consistently shown as numbers, and the text representation/meaning of those numbers is shown on hover.
 - :feature:`-` Reviewers can now see both their own score and the median score in the review dashboard.

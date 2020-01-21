@@ -394,12 +394,11 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         if template and template in template.event.fixed_templates:
             result = get_context_explanation()
             if template == template.event.update_template:
-                result.append(
-                    {
-                        "name": "notifications",
-                        "explanation": _("A list of notifications for this speaker"),
-                    }
-                )
+                result = [item for item in result if item["name"] == "event_name"]
+                result.append({
+                    "name": "notifications",
+                    "explanation": _("A list of notifications for this speaker"),
+                })
             return result
         return None
 

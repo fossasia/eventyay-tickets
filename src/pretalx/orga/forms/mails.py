@@ -18,13 +18,16 @@ class MailTemplateForm(ReadOnlyFlag, I18nModelForm):
     def clean_text(self):
         text = self.cleaned_data["text"]
         if self.instance and self.instance.id:
-            _is_template_with_submission_context = self.instance in [
+            context = None
+            if self.instance == self.event.update_template:
+                context = {'notifications': 'test', 'event_name': 'test'}
+            elif self.instance in [
                 t
                 for t in self.instance.event.fixed_templates
                 if t != self.event.update_template
-            ]
-            if _is_template_with_submission_context:
+            ]:
                 context = {item["name"]: "test" for item in get_context_explanation()}
+            if context:
                 try:
                     for language, local_text in text.data.items():
                         local_text.format(**context)
