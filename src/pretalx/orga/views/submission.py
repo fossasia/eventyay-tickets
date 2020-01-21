@@ -439,6 +439,14 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
             self.default_filters.add("speakers__name__icontains")
         return super().dispatch(*args, **kwargs)
 
+    @context
+    def show_submission_types(self):
+        return self.request.event.submission_types.all().count() > 1
+
+    @context
+    def show_tracks(self):
+        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
+
     def get_queryset(self):
         qs = (
             Submission.all_objects.filter(event=self.request.event)
@@ -519,6 +527,14 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     def get_permission_object(self):
         return self.request.event
+
+    @context
+    def show_submission_types(self):
+        return self.request.event.submission_types.all().count() > 1
+
+    @context
+    def show_tracks(self):
+        return self.request.event.settings.use_tracks and self.request.event.tracks.all().count() > 1
 
     @context
     def submission_timeline_data(self):

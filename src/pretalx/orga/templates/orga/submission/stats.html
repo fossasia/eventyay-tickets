@@ -35,7 +35,7 @@
     </div>
     {% endif %}
 
-    {% if submission_type_data %}
+    {% if submission_type_data and show_submission_types %}
     <div class="card">
         <div class="card-header submissions">{% trans "Submissions by submission type" %}</div>
         <div class="card-header talks d-none">{% trans "Talks by submission type" %}</div>
@@ -46,7 +46,7 @@
     </div>
     {% endif %}
 
-    {% if submission_track_data %}
+    {% if submission_track_data and show_tracks %}
     <div class="card">
         <div class="card-header submissions">{% trans "Submissions by track" %}</div>
         <div class="card-header talks d-none">{% trans "Talks by track" %}</div>
