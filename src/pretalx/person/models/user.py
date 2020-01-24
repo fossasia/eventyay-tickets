@@ -23,6 +23,11 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.mixins.models import GenerateCode
 from pretalx.common.urls import build_absolute_uri
+from pretalx.common.utils import path_with_hash
+
+
+def avatar_path(instance, filename):
+    return f"avatars/{path_with_hash(filename)}"
 
 
 class UserManager(BaseUserManager):
@@ -110,6 +115,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         blank=True,
         verbose_name=_("Profile picture"),
         help_text=_("If possible, upload an image that is least 120 pixels wide."),
+        upload_to=avatar_path,
     )
     get_gravatar = models.BooleanField(
         default=False,

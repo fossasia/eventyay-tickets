@@ -42,7 +42,9 @@ class SubmissionError(Exception):
 
 
 def submission_image_path(instance, filename):
-    return f"{instance.event.slug}/images/{instance.code}/{path_with_hash(filename)}"
+    return (
+        f"{instance.event.slug}/submissions/{instance.code}/{path_with_hash(filename)}"
+    )
 
 
 class SubmissionStates(Choices):
