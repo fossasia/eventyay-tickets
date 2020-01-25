@@ -12,7 +12,7 @@ from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls, build_absolute_uri
 from pretalx.person.models import User
 
-SLUG_CHARS = "a-zA-Z0-9.-"
+SLUG_CHARS = "a-zA-Z0-9-"
 
 
 class Organiser(LogMixin, models.Model):
