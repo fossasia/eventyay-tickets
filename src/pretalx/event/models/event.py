@@ -333,7 +333,11 @@ class Event(LogMixin, models.Model):
         """Is a list of tuples of locale codes and natural names for this
         event."""
         enabled = set(self.locale_array.split(","))
-        return [a for a in settings.LANGUAGES_NATURAL_NAMES if a[0] in enabled]
+        return [
+            (language["code"], language["natural_name"])
+            for language in settings.LANGUAGES_INFORMATION.values()
+            if language["code"] in enabled
+        ]
 
     @cached_property
     def cache(self):

@@ -13,7 +13,7 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
         self.choices = sorted(
             self.choices,
             key=lambda l: (
-                (0 if l[0] in settings.LANGUAGES_OFFICIAL else 1),
+                not settings.LANGUAGES_INFORMATION[l[0]].get("official"),
                 str(l[1]),
             ),
         )
@@ -33,5 +33,7 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
         opt = super().create_option(
             name, value, label, selected, index, subindex, attrs
         )
-        opt["official"] = value in settings.LANGUAGES_OFFICIAL
+        language = settings.LANGUAGES_INFORMATION[value]
+        opt["official"] = bool(language.get("official"))
+        opt["percentage"] = language["percentage"]
         return opt

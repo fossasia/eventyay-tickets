@@ -129,7 +129,7 @@ class EventPermissionMiddleware:
         supported = (
             request.event.locales
             if (hasattr(request, "event") and request.event)
-            else settings.LANGUAGE_CODES
+            else list(settings.LANGUAGES_INFORMATION)
         )
         language = (
             self._language_from_user(request, supported)

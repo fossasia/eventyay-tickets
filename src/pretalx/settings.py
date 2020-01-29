@@ -310,13 +310,36 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 TIME_ZONE = config.get("locale", "time_zone")
-LANGUAGES = [("en", _("English")), ("de", _("German")), ("fr", _("French"))]
-LANGUAGES_NATURAL_NAMES = [("en", "English"), ("de", "Deutsch"), ("fr", "Français")]
-LANGUAGES_OFFICIAL = {"en", "de"}
-LANGUAGE_CODE = config.get("locale", "language_code")
-LANGUAGE_CODES = [language[0] for language in LANGUAGES]
 LOCALE_PATHS = (Path(__file__).resolve().parent / "locale",)
 FORMAT_MODULE_PATH = ["pretalx.common.formats"]
+
+LANGUAGE_CODE = config.get("locale", "language_code")
+LANGUAGES_INFORMATION = {
+    "en": {
+        "name": _("English"),
+        "natural_name": "English",
+        "official": True,
+        "percentage": 100,
+    },
+    "de": {
+        "name": _("German"),
+        "natural_name": "Deutsch",
+        "official": True,
+        "percentage": 100,
+    },
+    "fr": {
+        "name": _("French"),
+        "natural_name": "Français",
+        "official": False,
+        "percentage": 98,
+    },
+}
+for code, language in LANGUAGES_INFORMATION.items():
+    language["code"] = code
+
+LANGUAGES = [
+    (language["code"], language["name"]) for language in LANGUAGES_INFORMATION.values()
+]
 
 
 ## AUTHENTICATION SETTINGS
