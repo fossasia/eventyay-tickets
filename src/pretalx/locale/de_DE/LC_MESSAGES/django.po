@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 12:40+0000\n"
-"PO-Revision-Date: 2020-01-28 23:58+0000\n"
+"PO-Revision-Date: 2020-01-29 13:46+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2211,7 +2211,7 @@ msgstr "Das Ende dieser Phase muss nach ihrem Beginn liegen."
 #: pretalx/event/models/event.py:49
 #, python-brace-format
 msgid "Invalid event slug – this slug is reserved: {value}."
-msgstr "Kurzform nicht zulässig – diese Kurzform ist reserviert: {value}"
+msgstr "Kurzform nicht zulässig – diese Kurzform ist reserviert: {value}."
 
 #: pretalx/event/models/event.py:100 pretalx/event/models/organiser.py:24
 #: pretalx/orga/templates/orga/admin.html:41
@@ -5675,7 +5675,7 @@ msgstr "Login-Einstellungen"
 #: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:7
 #, python-format
 msgid "%(percentage)s %% translated"
-msgstr ""
+msgstr "%(percentage)s %% übersetzt"
 
 #: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:9
 msgid ""
@@ -6604,7 +6604,7 @@ msgstr "Französisch"
 
 #: pretalx/settings.py:337
 msgid "Traditional Chinese (Taiwan)"
-msgstr ""
+msgstr "Chinesisch (Taiwan)"
 
 #: pretalx/submission/exporters.py:16
 msgid "Answered speaker questions"
