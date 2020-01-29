@@ -79,6 +79,6 @@ class Command(BaseCommand):
         )
         self.stdout.write(
             _(
-                ' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event."'
+                ' - Use the command "import_schedule /path/to/schedule.xml" if you want to import an event.'
             )
         )
