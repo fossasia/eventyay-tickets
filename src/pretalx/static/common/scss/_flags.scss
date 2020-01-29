@@ -230,7 +230,8 @@ input[lang=cz], textarea[lang=cz] {
   background-image: url(static("vendored/flags/cz.png"));
 }
 
-input[lang=de], textarea[lang=de], .checkbox > input[lang=de] + label {
+input[lang=de], textarea[lang=de], .checkbox > input[lang=de] + label,
+input[lang=de-formal], textarea[lang=de-formal], .checkbox > input[lang=de-formal] + label {
   background-image: url(static("vendored/flags/de.png"));
 }
 
@@ -890,7 +891,8 @@ input[lang=tv], textarea[lang=tv] {
   background-image: url(static("vendored/flags/tv.png"));
 }
 
-input[lang=tw], textarea[lang=tw], input[lang=zh-tw], textarea[lang=zh-tw] {
+input[lang=tw], textarea[lang=tw], .checkbox > input[lang=tw] + label,
+input[lang=zh-tw], textarea[lang=zh-tw], .checkbox > input[lang=zh-tw] + label {
   background-image: url(static("vendored/flags/tw.png"));
 }
 

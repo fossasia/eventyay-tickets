@@ -327,6 +327,12 @@ LANGUAGES_INFORMATION = {
         "official": True,
         "percentage": 100,
     },
+    "de-formal": {
+        "name": _("German (formal)"),
+        "natural_name": "Deutsch",
+        "official": True,
+        "percentage": 100,
+    },
     "fr": {
         "name": _("French"),
         "natural_name": "Français",
