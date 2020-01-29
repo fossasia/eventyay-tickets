@@ -109,7 +109,7 @@
                         {% if can_see_orga_area %}
                         <a href="{{ request.event.orga_urls.base }}">
                             <i class="fa fa-gears mr-2"></i>
-                            {% trans "Orga area" %}
+                            {% trans "Organiser area" %}
                         </a>
                         {% endif %}
                         <a href="{% url "cfp:event.logout" event=request.event.slug %}">
