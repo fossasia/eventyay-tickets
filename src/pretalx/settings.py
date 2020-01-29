@@ -333,6 +333,12 @@ LANGUAGES_INFORMATION = {
         "official": False,
         "percentage": 98,
     },
+    "zh-tw": {
+        "name": _("Traditional Chinese (Taiwan)"),
+        "natural_name": "Traditional Chinese (Taiwan)",
+        "official": False,
+        "percentage": 81,
+    },
 }
 for code, language in LANGUAGES_INFORMATION.items():
     language["code"] = code
