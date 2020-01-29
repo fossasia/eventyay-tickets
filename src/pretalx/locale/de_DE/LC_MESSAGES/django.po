@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 23:37+0000\n"
+"POT-Creation-Date: 2020-01-29 12:40+0000\n"
 "PO-Revision-Date: 2020-01-28 23:58+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
@@ -2321,7 +2321,7 @@ msgstr ""
 msgid "Plugins"
 msgstr "Plugins"
 
-#: pretalx/event/models/event.py:478 pretalx/event/models/event.py:644
+#: pretalx/event/models/event.py:482 pretalx/event/models/event.py:648
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:204
 #: pretalx/orga/templates/orga/base.html:284
 #: pretalx/orga/templates/orga/submission/review.html:115
@@ -2329,11 +2329,11 @@ msgstr "Plugins"
 msgid "Review"
 msgstr "Review"
 
-#: pretalx/event/models/event.py:486
+#: pretalx/event/models/event.py:490
 msgid "Selection"
 msgstr "Auswahl"
 
-#: pretalx/event/models/event.py:783
+#: pretalx/event/models/event.py:787
 msgid "News from your content system"
 msgstr "Nachricht von deinem Vortrags-System"
 
@@ -3062,8 +3062,8 @@ msgid ""
 "com</a>, CC BY 4.0."
 msgstr ""
 "Wähle ein Muster für den farbigen Streifen auf der Startseite. Es wird "
-"angezeigt, wenn kein Header-Bild zur Verfügung steht. Quelle: <a href=\""
-"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
+"angezeigt, wenn kein Header-Bild zur Verfügung steht. Quelle: <a href="
+"\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
 
 #: pretalx/orga/forms/event.py:210
 msgid "Ask search engines not to index the event pages"
@@ -5672,7 +5672,12 @@ msgstr "Nutzereinstellungen"
 msgid "Login settings"
 msgstr "Login-Einstellungen"
 
-#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:4
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:7
+#, python-format
+msgid "%(percentage)s %% translated"
+msgstr ""
+
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:9
 msgid ""
 "This translation is not maintained by the pretalx team. We cannot vouch for "
 "its correctness and new or recently changed features might not be translated "
@@ -5684,7 +5689,7 @@ msgstr ""
 "möglicherweise nicht übersetzt und tauchen auf Englisch auf. Du kannst unter "
 "https://github.com/pretalx/pretalx helfen."
 
-#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:5
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:10
 msgid "Unofficial translation"
 msgstr "Inoffizielle Übersetzung"
 
@@ -6585,17 +6590,21 @@ msgstr ""
 "\n"
 "- Dein Vortrag „%(title)s“ wurde auf %(start)s in %(location)s verschoben"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:319
 msgid "English"
 msgstr "Englisch"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:325
 msgid "German"
 msgstr "Deutsch"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:331
 msgid "French"
 msgstr "Französisch"
+
+#: pretalx/settings.py:337
+msgid "Traditional Chinese (Taiwan)"
+msgstr ""
 
 #: pretalx/submission/exporters.py:16
 msgid "Answered speaker questions"

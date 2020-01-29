@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 12:22+0000\n"
+"POT-Creation-Date: 2020-01-29 12:40+0000\n"
 "PO-Revision-Date: 2020-01-29 12:01+0000\n"
 "Last-Translator: Franklin Weng <franklin@goodhorse.idv.tw>\n"
 "Language-Team: none\n"
@@ -6114,11 +6114,11 @@ msgstr "英文"
 msgid "German"
 msgstr "德文"
 
-#: pretalx/settings.py:331 pretalx/settings.py:337
+#: pretalx/settings.py:331
 msgid "French"
 msgstr "法文"
 
-#: pretalx/settings.py:343
+#: pretalx/settings.py:337
 msgid "Traditional Chinese (Taiwan)"
 msgstr ""
 

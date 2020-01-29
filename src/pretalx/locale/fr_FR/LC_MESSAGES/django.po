@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 23:37+0000\n"
+"POT-Creation-Date: 2020-01-29 12:40+0000\n"
 "PO-Revision-Date: 2020-01-07 23:13+0100\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -2355,7 +2355,7 @@ msgstr ""
 msgid "Plugins"
 msgstr "Plugins"
 
-#: pretalx/event/models/event.py:478 pretalx/event/models/event.py:644
+#: pretalx/event/models/event.py:482 pretalx/event/models/event.py:648
 #: pretalx/event/stages.py:68 pretalx/orga/templates/orga/base.html:204
 #: pretalx/orga/templates/orga/base.html:284
 #: pretalx/orga/templates/orga/submission/review.html:115
@@ -2363,11 +2363,11 @@ msgstr "Plugins"
 msgid "Review"
 msgstr "Évaluation"
 
-#: pretalx/event/models/event.py:486
+#: pretalx/event/models/event.py:490
 msgid "Selection"
 msgstr "Sélection"
 
-#: pretalx/event/models/event.py:783
+#: pretalx/event/models/event.py:787
 msgid "News from your content system"
 msgstr "Actualité de votre gestionnaire de contenus"
 
@@ -5776,7 +5776,12 @@ msgstr "Paramètres utilisateur"
 msgid "Login settings"
 msgstr "Paramètres de connexion"
 
-#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:4
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:7
+#, python-format
+msgid "%(percentage)s %% translated"
+msgstr ""
+
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:9
 msgid ""
 "This translation is not maintained by the pretalx team. We cannot vouch for "
 "its correctness and new or recently changed features might not be translated "
@@ -5789,7 +5794,7 @@ msgstr ""
 "affichées en anglais à la place. Vous pouvez participer à la traduction sur "
 "github.com/pretalx/pretalx."
 
-#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:5
+#: pretalx/orga/templates/orga/widgets/multi_languages_widget.html:10
 msgid "Unofficial translation"
 msgstr "Traduction non officielle"
 
@@ -6701,17 +6706,21 @@ msgstr ""
 "- Votre intervention \"%(title)s\" a été déplacée à %(start)s dans "
 "%(location)s"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:319
 msgid "English"
 msgstr "Anglais"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:325
 msgid "German"
 msgstr "Allemand"
 
-#: pretalx/settings.py:313
+#: pretalx/settings.py:331
 msgid "French"
 msgstr "Français"
+
+#: pretalx/settings.py:337
+msgid "Traditional Chinese (Taiwan)"
+msgstr ""
 
 #: pretalx/submission/exporters.py:16
 msgid "Answered speaker questions"
