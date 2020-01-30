@@ -3,6 +3,9 @@
 Release Notes
 =============
 
+- :feature:`-` If your event has only a single language configured, pretalx won't show the language flag in the input fields anymore.
+- :support:`-` To make translation contributions more accessible, you can now improve translations (or add new ones!) at `translate.pretalx.com <https://translate.pretalx.com>`_
+- :feature:`-` pretalx now comes with an updated French translation, and a brand new Chinese community translation!
 - :bug:`863` If incorrect variables were used in the schedule update email template, pretalx did not catch this mistake ahead of time, and instead just refused to release a new schedule.
 - :feature:`-` A lot of minor UI improvements, a re-work of the colours and fonts in use, as well as improvements of mobile and responsive pages.
 - :feature:`-` Review scores are now consistently shown as numbers, and the text representation/meaning of those numbers is shown on hover.
