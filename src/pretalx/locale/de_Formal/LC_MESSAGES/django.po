@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 12:40+0000\n"
-"PO-Revision-Date: 2020-01-29 16:36+0100\n"
+"PO-Revision-Date: 2020-01-30 14:05+0100\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2057,7 +2057,7 @@ msgstr ""
 "https://pretalx.com/p/news/\n"
 "\n"
 "Viele Grüße\n"
-"Deine pretalx-Entwickler"
+"Ihre pretalx-Entwickler"
 
 #: pretalx/common/update_check.py:140 pretalx/common/update_check.py:147
 msgid "Plugin: {}"
@@ -2803,7 +2803,7 @@ msgstr ""
 "aktuelle pretalx-Version und die Versionen der installierten Plugins, sowie "
 "die Anzahl der aktiven und inaktiven Veranstaltungen an die Server, die von "
 "den Entwicklern betrieben werden. Wir speichern nur anonyme Daten, nie IP-"
-"Adressen, und wir werden nicht wissen, wer du bist, oder wo diese pretalx-"
+"Adressen, und wir werden nicht wissen, wer Sie sind, oder wo diese pretalx-"
 "Instanz zu finden ist. Sie können diese Prüfung hier jederzeit abschalten."
 
 #: pretalx/orga/forms/admin.py:28
@@ -4757,7 +4757,7 @@ msgstr "Hier sind derzeit keine Plugins installiert."
 msgid "submission is waiting for your review."
 msgid_plural "submissions are waiting for your review."
 msgstr[0] "Einreichung wartet auf Ihre Bewertung."
-msgstr[1] "Einreichungen warten auf deine Reviews."
+msgstr[1] "Einreichungen warten auf Ihre Reviews."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:28
 msgid "Click here to get started!"
@@ -5885,7 +5885,7 @@ msgstr[1] "Verschickte E-Mails"
 
 #: pretalx/orga/views/event.py:108
 msgid "The event settings have been saved."
-msgstr "Deine Änderungen an der Veranstaltung wurden gespeichert."
+msgstr "Ihre Änderungen an der Veranstaltung wurden gespeichert."
 
 #: pretalx/orga/views/event.py:128
 msgid "The CfP doesn't have a full text yet."
@@ -6257,7 +6257,7 @@ msgstr ""
 "\n"
 "    {invitation_link}\n"
 "\n"
-"Danach können Sie Ihr Profil editieren und deine Einreichungen ansehen.\n"
+"Danach können Sie Ihr Profil editieren und Ihre Einreichungen ansehen.\n"
 "\n"
 "Das {event}-Team"
 
@@ -6455,7 +6455,7 @@ msgid ""
 "your event/submissions."
 msgstr ""
 "Ihre Adresse wird nur fürs Zurücksetzen von Passwörtern und "
-"Benachrichtigungen über deine Einreichungen/Veranstaltungen verwendet."
+"Benachrichtigungen über Ihre Einreichungen/Veranstaltungen verwendet."
 
 #: pretalx/person/models/user.py:108
 msgid "Preferred language"
