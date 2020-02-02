@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` In the API, the event list is now sorted so that the oldest event comes last, not first as it was before.
 - :feature:`-` If your event has only a single language configured, pretalx won't show the language flag in the input fields anymore.
 - :support:`-` To make translation contributions more accessible, you can now improve translations (or add new ones!) at `translate.pretalx.com <https://translate.pretalx.com>`_
 - :feature:`-` pretalx now comes with an updated French translation, and a brand new Chinese community translation!

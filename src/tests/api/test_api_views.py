@@ -56,7 +56,7 @@ def test_orga_can_see_nonpublic_events(orga_client, event, other_event):
 
     assert response.status_code == 200
     assert len(content) == 2, content
-    assert content[0]["name"]["en"] == event.name
+    assert content[-1]["name"]["en"] == event.name
 
 
 @pytest.mark.django_db
