@@ -167,6 +167,15 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         ),
         required=False,
     )
+    schedule_display = forms.ChoiceField(
+        label=_("Schedule display format"),
+        help_text=_(
+            "The proportional schedule display will size each talk so that it is clear when it starts and when it ends. "
+            "The list display will show the talks with their times in a single column, even if you have multiple rooms."
+        ),
+        choices=(("proportional", _("Proportional")), ("list", _("List")),),
+        required=True,
+    )
     show_sneak_peek = forms.BooleanField(
         label=_("Show a sneak peek before schedule release"),
         help_text=_(

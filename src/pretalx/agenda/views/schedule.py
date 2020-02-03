@@ -453,7 +453,19 @@ class ScheduleView(ScheduleDataView):
         if "schedule" not in result:
             return result
 
-        result["data"], result["max_rooms"] = self.get_schedule_data()
+        from pretalx.schedule.exporters import ScheduleData
+
+        data = ScheduleData(
+            event=self.request.event,
+            schedule=self.schedule,
+            with_accepted=self.answer_type == "html"
+            and self.schedule == self.request.event.wip_schedule,
+            with_breaks=True,
+        ).data
+        method = getattr(
+            self, f"get_schedule_data_{self.request.event.settings.schedule_display}"
+        )
+        result.update(**method(data))
         result["day_count"] = len(result["data"])
         if result["day_count"]:
             today = now().date()
@@ -466,17 +478,8 @@ class ScheduleView(ScheduleDataView):
             )
         return result
 
-    def get_schedule_data(self):
-        from pretalx.schedule.exporters import ScheduleData
-
+    def get_schedule_data_proportional(self, data):
         timezone = pytz.timezone(self.request.event.timezone)
-        data = ScheduleData(
-            event=self.request.event,
-            schedule=self.schedule,
-            with_accepted=self.answer_type == "html"
-            and self.schedule == self.request.event.wip_schedule,
-            with_breaks=True,
-        ).data
         max_rooms = 0
         for date in data:
             if date.get("first_start") and date.get("last_end"):
@@ -504,7 +507,15 @@ class ScheduleView(ScheduleDataView):
                         )
                         talk.height = int(talk.duration * 2)
                         talk.is_active = talk.start <= now() <= talk.real_end
-        return list(data), max_rooms
+        return {"data": list(data), "max_rooms": max_rooms}
+
+    def get_schedule_data_list(self, data):
+        for date in data:
+            rooms = date.pop("rooms")
+            talks = [talk for room in rooms for talk in room.get("talks", [])]
+            talks.sort(key=lambda x: (x.start, x.submission.title))
+            date["talks"] = talks
+        return {"data": list(data)}
 
 
 class ChangelogView(EventPermissionRequired, TemplateView):

@@ -135,7 +135,7 @@ header {
   }
 }
 
-#fahrplan, .pretalx-schedule-wrapper {
+#fahrplan.proportional, .pretalx-schedule-wrapper {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -413,7 +413,7 @@ header {
         }
       }
     }
-    .pretalx-schedule-day {
+    &.proportional .pretalx-schedule-day {
       .pretalx-schedule-rooms .pretalx-schedule-room,
       .pretalx-schedule-day-header-row .pretalx-schedule-day-room-header {
         min-width: 200px;
@@ -455,7 +455,7 @@ header {
   .container {
     max-width: 100%;
   }
-  #fahrplan, .pretalx-schedule-wrapper,
+  #fahrplan.proportional, .pretalx-schedule-wrapper,
   .card {
     display: block;
     overflow: visible !important;
@@ -500,6 +500,36 @@ header {
         margin-top: 0;
         text-align: center;
         padding: 10px;
+      }
+    }
+  }
+}
+#fahrplan.list {
+  .pretalx-tab-content {
+    margin : 20px;
+    margin-top: 8px;
+  }
+  .pretalx-schedule-day {
+    .talk-row {
+      display: flex;
+      border-bottom: 1px solid $gray-lighter;
+      vertical-align: middle;
+      & > * {
+        vertical-align: top;
+        padding: 0.7rem;
+        a, a:hover {
+          text-decoration: none;
+        }
+        .search-fail {
+          color: $gray-light !important;
+        }
+        .talk-active {
+          font-weight: bold;
+        }
+      }
+      .talk-time {
+        font-weight: bold;
+        width: 5rem;
       }
     }
   }

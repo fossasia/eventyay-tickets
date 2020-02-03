@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Organisers can now choose how to display their schedule. Currently, the only two options are the previous grid display, or a list with talks and times.
 - :feature:`-` In the API, the event list is now sorted so that the oldest event comes last, not first as it was before.
 - :feature:`-` If your event has only a single language configured, pretalx won't show the language flag in the input fields anymore.
 - :support:`-` To make translation contributions more accessible, you can now improve translations (or add new ones!) at `translate.pretalx.com <https://translate.pretalx.com>`_
