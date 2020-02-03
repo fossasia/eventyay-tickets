@@ -517,7 +517,7 @@ class ScheduleView(ScheduleDataView):
         for date in data:
             rooms = date.pop("rooms")
             talks = [talk for room in rooms for talk in room.get("talks", [])]
-            talks.sort(key=lambda x: (x.start, x.submission.title))
+            talks.sort(key=lambda x: (x.start, x.submission.title if x.submission else ""))
             date["talks"] = talks
         return {"data": list(data)}
 
