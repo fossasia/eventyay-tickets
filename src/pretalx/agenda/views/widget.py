@@ -7,6 +7,7 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.agenda.views.schedule import ScheduleView
 from pretalx.common.tasks import generate_widget_css, generate_widget_js
 from pretalx.common.utils import language
+from pretalx.schedule.exporters import ScheduleData
 
 
 def widget_css_etag(request, **kwargs):
@@ -26,7 +27,14 @@ class WidgetData(ScheduleView):
     def get(self, request, *args, **kwargs):
         locale = request.GET.get("locale", "en")
         with language(locale):
-            schedule = list(self.get_schedule_data()[0])
+            data = ScheduleData(
+                event=self.request.event,
+                schedule=self.schedule,
+                with_accepted=self.answer_type == "html"
+                and self.schedule == self.request.event.wip_schedule,
+                with_breaks=True,
+            ).data
+            schedule = self.get_schedule_data_proportional(data)["data"]
             for day in schedule:
                 for room in day["rooms"]:
                     room["name"] = str(room["name"])

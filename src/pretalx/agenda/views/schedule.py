@@ -25,6 +25,7 @@ from pretalx.common.console import LR, UD, get_seperator
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
+from pretalx.schedule.exporters import ScheduleData
 
 
 class ScheduleDataView(EventPermissionRequired, TemplateView):
@@ -142,11 +143,10 @@ class ScheduleView(ScheduleDataView):
                 result += "".join(
                     "* \033[33m{:%H:%M}\033[0m ".format(talk.start)
                     + (
-                        "{} ({}), {}; in {}\n".format(
-                            talk.start,
+                        "{}, {} ({}); in {}\n".format(
                             talk.submission.title,
-                            talk.submission.content_locale,
                             talk.submission.display_speaker_names or _("No speakers"),
+                            talk.submission.content_locale,
                             talk.room.name,
                         )
                         if talk.submission
@@ -367,7 +367,13 @@ class ScheduleView(ScheduleDataView):
         return result
 
     def get_text(self, request, **kwargs):
-        data, _ = self.get_schedule_data()
+        data = ScheduleData(
+            event=self.request.event,
+            schedule=self.schedule,
+            with_accepted=self.answer_type == "html"
+            and self.schedule == self.request.event.wip_schedule,
+            with_breaks=True,
+        ).data
         response_start = textwrap.dedent(
             f"""
         \033[1m{request.event.name}\033[0m
@@ -452,8 +458,6 @@ class ScheduleView(ScheduleDataView):
         result = super().get_context_data(**kwargs)
         if "schedule" not in result:
             return result
-
-        from pretalx.schedule.exporters import ScheduleData
 
         data = ScheduleData(
             event=self.request.event,
