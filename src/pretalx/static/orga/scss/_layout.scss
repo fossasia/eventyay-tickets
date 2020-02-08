@@ -970,3 +970,45 @@ main .progress {
     width: 100%;
   }
 }
+#anonymise {
+  display: flex;
+  flex-direction: column;
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    > div {
+      flex-grow: 1;
+      min-width: 300px;
+      width: 48%;
+    }
+  }
+}
+#anon-menu {
+  position: absolute;
+  margin-top: -48px;
+  margin-right: 42px;
+  right: 0;
+
+  button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.72);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    position: relative;
+    &:after {
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      content: " ";
+      border-top: 12px solid rgba(0, 0, 0, 0.72);
+      position: absolute;
+      right: 70%;
+      bottom: -12px;
+    }
+  }
+}

@@ -59,9 +59,10 @@ def process_frab(root, event):
         schedule.talks.update(is_visible=True)
         start = schedule.talks.order_by("start").first().start
         end = schedule.talks.order_by("-end").first().end
-        event.date_from = start.date()
-        event.date_to = end.date()
-        event.save()
+        if start:
+            event.date_from = start.date()
+            event.date_to = end.date()
+            event.save()
     return (
         f'Successfully imported "{event.name}" schedule version "{schedule_version}".'
     )

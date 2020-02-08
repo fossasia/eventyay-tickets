@@ -40,6 +40,16 @@
           </a>
       </li>
       {% endif %}
+      {% if can_edit_submission and has_anonymised_review %}
+      <li class="nav-item">
+          <a
+            class="nav-link {% if "submissions.anonymise" in url_name %}active{% endif %}"
+            href="{{ submission.orga_urls.anonymise }}"
+          >
+            {% trans "Anonymisation" %}
+          </a>
+      </li>
+      {% endif %}
       {% if submission.feedback.count %}
           <li class="nav-item">
               <a

@@ -8,6 +8,7 @@ from dateutil import rrule
 from django.contrib import messages
 from django.contrib.syndication.views import Feed
 from django.db import transaction
+from django.db.models import Q
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -18,7 +19,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.utils.translation import override
-from django.views.generic import ListView, TemplateView, View
+from django.views.generic import ListView, TemplateView, UpdateView, View
 
 from pretalx.common.mixins.views import (
     ActionFromUrl,
@@ -31,7 +32,7 @@ from pretalx.common.models import ActivityLog
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView, context
 from pretalx.mail.models import QueuedMail
-from pretalx.orga.forms import SubmissionForm
+from pretalx.orga.forms import AnonymiseForm, SubmissionForm
 from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
@@ -109,6 +110,13 @@ class SubmissionViewMixin(PermissionRequired):
     @context
     def submission(self):
         return self.object
+
+    @context
+    @cached_property
+    def has_anonymised_review(self):
+        return self.request.event.review_phases.filter(
+            can_see_speaker_names=False
+        ).exists()
 
 
 class SubmissionStateChange(SubmissionViewMixin, TemplateView):
@@ -483,6 +491,33 @@ class ToggleFeatured(SubmissionViewMixin, View):
         self.object.is_featured = not self.object.is_featured
         self.object.save(update_fields=["is_featured"])
         return HttpResponse()
+
+
+class Anonymise(SubmissionViewMixin, UpdateView):
+    permission_required = "orga.change_submissions"
+    template_name = "orga/submission/anonymise.html"
+    form_class = AnonymiseForm
+
+    def get_permission_object(self):
+        return self.object or self.request.event
+
+    @context
+    @cached_property
+    def next_unanonymised(self):
+        return self.request.event.submissions.filter(
+            Q(anonymised_data="{}") | Q(anonymised_data__isnull=True)
+        ).first()
+
+    def form_valid(self, form):
+        if self.object.is_anonymised:
+            message = _("The anonymisation has been updated.")
+        else:
+            message = _("This submission is now marked as anonymised.")
+        form.save()
+        messages.success(self.request, message)
+        if self.request.POST.get("action", "save") == "next" and self.next_unanonymised:
+            return redirect(self.next_unanonymised.orga_urls.anonymise)
+        return redirect(self.object.orga_urls.anonymise)
 
 
 class SubmissionFeed(PermissionRequired, Feed):

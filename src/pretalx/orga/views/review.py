@@ -233,6 +233,13 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             .first()
         )
 
+    @context
+    @cached_property
+    def has_anonymised_review(self):
+        return self.request.event.review_phases.filter(
+            can_see_speaker_names=False
+        ).exists()
+
     def get_object(self):
         return self.object
 

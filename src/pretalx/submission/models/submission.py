@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 import re
 import statistics
 import string
@@ -225,6 +226,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
     review_code = models.CharField(
         max_length=32, unique=True, null=True, blank=True, default=generate_invite_code
     )
+    anonymised_data = models.TextField(null=True, blank=True, default="{}")
 
     objects = ScopedManager(event="event", _manager_class=SubmissionManager)
     deleted_objects = ScopedManager(
@@ -262,6 +264,7 @@ class Submission(LogMixin, GenerateCode, models.Model):
         reviews = "{base}reviews/"
         feedback = "{base}feedback/"
         toggle_featured = "{base}toggle_featured"
+        anonymise = "{base}anonymise/"
         quick_schedule = "{self.event.orga_urls.schedule}quick/{self.code}/"
 
     @property
@@ -276,6 +279,19 @@ class Submission(LogMixin, GenerateCode, models.Model):
                 and self.event.active_review_phase.speakers_can_change_submissions
             )
         return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
+
+    @property
+    def anonymised(self):
+        try:
+            return json.loads(self.anonymised_data)
+        except Exception as e:  # noqa
+            return {}
+
+    @property
+    def is_anonymised(self):
+        if self.anonymised:
+            return self.anonymised.get("_anonymised", False)
+        return False
 
     def get_duration(self) -> int:
         """Returns this submission's duration in minutes.

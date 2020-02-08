@@ -62,7 +62,11 @@
     <div class="form-group row">
         <label class="col-md-3 col-form-label">{% trans "Abstract" %}</label>
         <div class="col-md-9 mt-1">
-            {{ submission.abstract|rich_text|default:'-' }}
+            {% if can_view_speakers %}
+                {{ submission.abstract|rich_text|default:'-' }}
+            {% else %}
+                {{ submission.anonymised.abstract|default:submission.abstract|rich_text|default:'-' }}
+            {% endif %}
         </div>
     </div>
     {% endif %}
@@ -70,7 +74,11 @@
     <div class="form-group row">
         <label class="col-md-3 col-form-label">{% trans "Description" %}</label>
         <div class="col-md-9 mt-1">
-            {{ submission.description|rich_text|default:'-' }}
+            {% if can_view_speakers %}
+                {{ submission.description|rich_text|default:'-' }}
+            {% else %}
+                {{ submission.anonymised.description|default:submission.description|rich_text|default:'-' }}
+            {% endif %}
         </div>
     </div>
     {% endif %}
@@ -78,7 +86,11 @@
     <div class="form-group row">
         <label class="col-md-3 col-form-label">{% trans "Notes" %}</label>
         <div class="col-md-9 mt-1">
-            {{ submission.notes|rich_text|default:'-' }}
+            {% if can_view_speakers %}
+                {{ submission.notes|rich_text|default:'-' }}
+            {% else %}
+                {{ submission.anonymised.notes|default:submission.notes|rich_text|default:'-' }}
+            {% endif %}
         </div>
     </div>
     {% endif %}

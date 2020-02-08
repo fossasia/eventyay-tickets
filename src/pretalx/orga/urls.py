@@ -408,6 +408,11 @@ urlpatterns = [
                                 submission.ToggleFeatured.as_view(),
                                 name="submissions.toggle_featured",
                             ),
+                            url(
+                                "^anonymise/$",
+                                submission.Anonymise.as_view(),
+                                name="submissions.anonymise",
+                            ),
                         ]
                     ),
                 ),
