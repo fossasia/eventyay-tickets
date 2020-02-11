@@ -4,6 +4,7 @@ import pytest
 from django.core import mail as djmail
 from django.urls import reverse
 from django.utils.timezone import now
+from django_scopes import scopes_disabled
 
 from pretalx.event.models import Event, Organiser
 
@@ -218,9 +219,12 @@ class TestEventCreation:
         assert str(event.name) == "New event!"
         assert event.locales == ["en", "de"]
 
-    def test_orga_create_event_with_copy(self, orga_client, organiser, event, deadline):
+    def test_orga_create_event_with_copy(
+        self, orga_client, organiser, event, deadline, question, track
+    ):
         organiser.teams.all().update(can_create_events=True)
         count = Event.objects.count()
+        event.settings.cfp_title_min_length = 50
         team_count = organiser.teams.count()
         self.submit_initial(organiser, client=orga_client)
         self.submit_basics(client=orga_client)
@@ -232,6 +236,14 @@ class TestEventCreation:
         assert organiser.teams.filter(
             name__icontains="new"
         ).exists(), organiser.teams.all()
+        new_event = Event.objects.exclude(pk=event.pk).first()
+        with scopes_disabled():
+            assert (
+                new_event.settings.cfp_title_min_length
+                == event.settings.cfp_title_min_length
+            )
+            assert new_event.questions.all().count()
+            assert new_event.tracks.all().count()
 
     def test_orga_create_event_no_new_team(
         self, orga_client, organiser, event, deadline

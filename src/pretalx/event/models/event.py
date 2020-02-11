@@ -12,6 +12,7 @@ from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext_lazy as _
+from django_scopes import scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
@@ -507,6 +508,7 @@ class Event(LogMixin, models.Model):
 
     _delete_mail_templates.alters_data = True
 
+    @scopes_disabled()
     def copy_data_from(self, other_event):
         protected_settings = ["custom_domain", "display_header_data"]
         self._delete_mail_templates()
@@ -527,6 +529,26 @@ class Event(LogMixin, models.Model):
                 self.cfp.default_type = submission_type
                 self.cfp.save()
                 old_default.delete()
+        track_mapping = {}
+        for track in other_event.tracks.all():
+            track_pk = track.pk
+            track.pk = None
+            track.event = self
+            track.save()
+            track_mapping[track_pk] = track
+        for question in other_event.questions.all():
+            options = question.options.all()
+            tracks = question.tracks.all().values_list("pk", flat=True)
+            question.pk = None
+            question.event = self
+            question.save()
+            question.tracks.set([])
+            for option in options:
+                option.pk = None
+                option.question = question
+                option.save()
+            for track in tracks:
+                question.tracks.add(track_mapping.get(track))
 
         for s in other_event.settings._objects.all():
             if s.value.startswith("file://") or s.key in protected_settings:

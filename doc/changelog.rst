@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`873` If you create a new event and copy an old event's configuration, pretalx will now also copy tracks and questions.
 - :feature:`-` Organisers can now choose how to display their schedule. Currently, the only two options are the previous grid display, or a list with talks and times.
 - :feature:`-` In the API, the event list is now sorted so that the oldest event comes last, not first as it was before.
 - :feature:`-` If your event has only a single language configured, pretalx won't show the language flag in the input fields anymore.
