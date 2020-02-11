@@ -368,7 +368,6 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
         return self.object or self.request.event
 
     def get_success_url(self) -> str:
-        self.kwargs.update({"code": self.object.code})
         return self.object.orga_urls.base
 
     @transaction.atomic()

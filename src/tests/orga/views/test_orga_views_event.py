@@ -101,6 +101,7 @@ def test_add_custom_css(event, orga_client, path, allowed):
                 "email": event.email or "",
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
+                "settings-schedule_display": event.settings.schedule_display,
             },
             follow=True,
         )
@@ -130,6 +131,7 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
                 "email": event.email,
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
+                "settings-schedule_display": event.settings.schedule_display,
             },
             follow=True,
         )
@@ -158,6 +160,7 @@ def test_add_logo(event, orga_client):
                 "primary_color": "#00ff00",
                 "custom_css": "",
                 "logo": logo,
+                "settings-schedule_display": event.settings.schedule_display,
             },
             follow=True,
         )
@@ -189,6 +192,7 @@ def test_add_logo_no_svg(event, orga_client):
                 "primary_color": "#00ff00",
                 "custom_css": "",
                 "logo": logo,
+                "settings-schedule_display": event.settings.schedule_display,
             },
             follow=True,
         )
@@ -224,6 +228,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "custom_css": "",
             "logo": "",
             "settings-custom_domain": "https://myevent.com",
+            "settings-schedule_display": event.settings.schedule_display,
         },
         follow=True,
     )
@@ -250,6 +255,7 @@ def test_change_custom_domain_to_site_url(event, orga_client):
             "custom_css": "",
             "logo": "",
             "settings-custom_domain": settings.SITE_URL,
+            "settings-schedule_display": event.settings.schedule_display,
         },
         follow=True,
     )
@@ -277,6 +283,7 @@ def test_change_custom_domain_to_other_event_domain(event, orga_client, other_ev
             "custom_css": "",
             "logo": "",
             "settings-custom_domain": other_event.settings.custom_domain,
+            "settings-schedule_display": event.settings.schedule_display,
         },
         follow=True,
     )
@@ -311,6 +318,7 @@ def test_change_custom_domain_to_unavailable_domain(
             "custom_css": "",
             "logo": "",
             "settings-custom_domain": "https://example.org",
+            "settings-schedule_display": event.settings.schedule_display,
         },
         follow=True,
     )
