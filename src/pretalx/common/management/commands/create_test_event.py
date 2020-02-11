@@ -2,6 +2,7 @@ import datetime as dt
 import random
 import re
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.timezone import now
@@ -67,7 +68,7 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                 date_to=event_start.date() + dt.timedelta(days=2),
                 timezone="Europe/Berlin",
                 email=self.fake.user_name() + "@example.org",
-                primary_color=self.fake.hex_color(),
+                primary_color=None if settings.DEBUG else self.fake.hex_color(),
                 locale_array="en",
                 locale="en",
                 landing_page_text=f"# Welcome to DemoCon!\n\n{intro}\n\n{disclaimer}",
