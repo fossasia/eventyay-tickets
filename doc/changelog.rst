@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`877` The frontend markdown preview would not render all line breaks as line breaks (only two line breaks in a row), but the server rendered version did.
 - :feature:`873` If you create a new event and copy an old event's configuration, pretalx will now also copy tracks and questions.
 - :feature:`-` Organisers can now choose how to display their schedule. Currently, the only two options are the previous grid display, or a list with talks and times.
 - :feature:`-` In the API, the event list is now sorted so that the oldest event comes last, not first as it was before.

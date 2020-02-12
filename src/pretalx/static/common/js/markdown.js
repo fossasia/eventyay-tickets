@@ -1,7 +1,7 @@
 let dirtyInputs = []
 const options = {
   baseUrl: null,
-  breaks: false,
+  breaks: true,
   gfm: true,
   headerIds: true,
   headerPrefix: "",
