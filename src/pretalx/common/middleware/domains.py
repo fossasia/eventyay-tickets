@@ -2,6 +2,7 @@ import time
 from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
+from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.middleware import (
     SessionMiddleware as BaseSessionMiddleware,
 )
@@ -121,7 +122,10 @@ class SessionMiddleware(BaseSessionMiddleware):
                 # Save the session data and refresh the client cookie.
                 # Skip session save for 500 responses, refs #3881.
                 if response.status_code != 500:
-                    request.session.save()
+                    try:
+                        request.session.save()
+                    except UpdateError:
+                        request.session.create()
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
                         request.session.session_key,
