@@ -128,7 +128,7 @@ def handle_500(request):
     context = {}
     try:  # This should never fail, but can't be too cautious in error views
         context["request_path"] = urllib.parse.quote(request.path)
-    except Exception:
+    except Exception:  # noqa
         pass
     return HttpResponseServerError(template.render(context))
 
