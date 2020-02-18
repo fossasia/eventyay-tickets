@@ -496,7 +496,9 @@ if DEBUG:
         import subprocess
 
         PRETALX_VERSION = (
-            subprocess.check_output(["/usr/bin/git", "describe", "--always"]).decode().strip()
+            subprocess.check_output(["/usr/bin/git", "describe", "--always"])
+            .decode()
+            .strip()
         )
 
 log_initial(
