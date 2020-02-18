@@ -30,10 +30,10 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         instance = kwargs.get("instance")
         initial = kwargs.pop("initial", {}) or {}
         if not instance or not instance.submission_type:
-            initial["submission_type"] = getattr(
-                self.access_code,
-                "submission_type",
-                initial.get("submission_type") or self.event.cfp.default_type,
+            initial["submission_type"] = (
+                getattr(self.access_code, "submission_type", None)
+                or initial.get("submission_type")
+                or self.event.cfp.default_type
             )
         if not instance and self.access_code:
             initial["track"] = self.access_code.track
