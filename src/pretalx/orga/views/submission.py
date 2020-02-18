@@ -544,10 +544,11 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @context
     def submission_timeline_data(self):
         data = Counter(
-            timestamp.astimezone(self.request.event.tz).date()
-            for timestamp in ActivityLog.objects.filter(
+            log.timestamp.astimezone(self.request.event.tz).date()
+            for log in ActivityLog.objects.filter(
                 event=self.request.event, action_type="pretalx.submission.create"
-            ).values_list("timestamp", flat=True)
+            )
+            if getattr(log.content_object, "state", None) != SubmissionStates.DELETED
         )
         dates = data.keys()
         if len(dates) > 1:
@@ -585,7 +586,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     def submission_type_data(self):
         counter = Counter(
             str(submission.submission_type)
-            for submission in Submission.all_objects.filter(event=self.request.event)
+            for submission in Submission.objects.filter(event=self.request.event)
         )
         return json.dumps(
             sorted(
@@ -601,9 +602,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         if self.request.event.settings.use_tracks:
             counter = Counter(
                 str(submission.track)
-                for submission in Submission.all_objects.filter(
-                    event=self.request.event
-                )
+                for submission in Submission.objects.filter(event=self.request.event)
             )
             return json.dumps(
                 sorted(
