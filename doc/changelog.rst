@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` It wasn't possible to hide a submission type unless accessed with an access token. (Or, well, it was possible, but the possibility was hidden.)
 - :feature:`880` The submission statistics now ignore deleted submissions.
 - :support:`-` This version of pretalx has higher database version requirements. We now support PostgreSQL 9.6+, MariaDB 10.1+, MySQL 5.6+, and SQLite 3.8.3+.
 - :bug:`877` The frontend markdown preview would not render all line breaks as line breaks (only two line breaks in a row), but the server rendered version did.

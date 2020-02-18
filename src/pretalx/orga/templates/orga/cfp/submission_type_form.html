@@ -27,6 +27,7 @@
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.default_duration addon_after="minutes" layout='event' addon_after_class="input-group-append input-group-text" %}
         {% bootstrap_field form.deadline layout='event' %}
+        {% bootstrap_field form.requires_access_code layout='event' %}
         {% include "orga/submit_row.html" %}
     </form>
 
