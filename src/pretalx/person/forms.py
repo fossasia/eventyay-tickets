@@ -199,7 +199,7 @@ class SpeakerProfileForm(
     def clean(self):
         data = super().clean()
         if self.event.settings.cfp_require_avatar:
-            if not data["avatar"] and not data["get_gravatar"]:
+            if not data.get("avatar") and not data.get("get_gravatar"):
                 raise ValidationError(
                     _(
                         "Please provide a profile picture or allow us to load your picture from gravatar!"
