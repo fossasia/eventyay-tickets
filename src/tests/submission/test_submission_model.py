@@ -1,7 +1,12 @@
 import pytest
 from django_scopes import scope
 
-from pretalx.submission.models import Answer, SubmissionError, SubmissionStates
+from pretalx.submission.models import (
+    Answer,
+    Submission,
+    SubmissionError,
+    SubmissionStates,
+)
 from pretalx.submission.models.submission import submission_image_path
 
 
@@ -298,3 +303,22 @@ def test_submission_assign_code(submission, monkeypatch):
     new_submission.assign_code()
     assert new_submission.code == "abcdef"
     assert new_submission.code != submission.code
+
+
+@pytest.mark.parametrize(
+    "data,loaded",
+    (
+        ("", {}),
+        (None, {}),
+        ("{}", {}),
+        ("[]", {}),
+        ("[1,2,3]", {}),
+        ('{"a": "b"}', {"a": "b"}),
+        ("1saser;", {}),
+    ),
+)
+def test_submission_anonymise(data, loaded):
+    s = Submission()
+    s.anonymised_data = data
+    assert s.anonymised == loaded
+    assert not s.is_anonymised

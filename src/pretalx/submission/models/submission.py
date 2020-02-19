@@ -283,9 +283,12 @@ class Submission(LogMixin, GenerateCode, models.Model):
     @property
     def anonymised(self):
         try:
-            return json.loads(self.anonymised_data)
-        except Exception as e:  # noqa
+            result = json.loads(self.anonymised_data)
+        except Exception:
+            result = None
+        if not result or not isinstance(result, dict):
             return {}
+        return result
 
     @property
     def is_anonymised(self):
