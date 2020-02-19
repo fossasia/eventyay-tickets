@@ -1,3 +1,6 @@
+from functools import partial
+
+from django.utils.functional import cached_property
 from i18nfield.rest_framework import I18nAwareModelSerializer
 from rest_framework.serializers import (
     Field,
@@ -49,25 +52,39 @@ class SubmissionSerializer(I18nAwareModelSerializer):
     duration = SerializerMethodField()
     speakers = SerializerMethodField()
     resources = ResourceSerializer(Resource.objects.none(), read_only=True, many=True)
+    title = SerializerMethodField()
+    abstract = SerializerMethodField()
+    description = SerializerMethodField()
 
     @staticmethod
     def get_duration(obj):
         return obj.export_duration
 
-    def get_speakers(self, obj):
+    @cached_property
+    def can_view_speakers(self):
         request = self.context.get("request")
+        return request and request.user.has_perm("orga.view_speakers", request.event)
+
+    def get_speakers(self, obj):
         has_slots = (
             obj.slots.filter(is_visible=True)
             and obj.state == SubmissionStates.CONFIRMED
         )
-        has_permission = request and request.user.has_perm(
-            "orga.view_speakers", request.event
-        )
-        if has_slots or has_permission:
+        if has_slots or self.can_view_speakers:
             return SubmitterSerializer(
-                obj.speakers.all(), many=True, context={"request": request}
+                obj.speakers.all(), many=True, context=self.context,
             ).data
         return []
+
+    def get_attribute(self, obj, attribute=None):
+        if self.can_view_speakers:
+            return getattr(obj, attribute, None)
+        return obj.anonymised.get(attribute) or getattr(obj, attribute, None)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in ("title", "abstract", "description"):
+            setattr(self, f"get_{field}", partial(self.get_attribute, attribute=field))
 
     class Meta:
         model = Submission

@@ -375,6 +375,34 @@ def test_reviewer_cannot_see_speakers(
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_see_speakers_and_anonymised_content(
+    orga_client, review_user, submission, event,
+):
+    with scope(event=event):
+        submission.event.active_review_phase.can_see_speaker_names = False
+        submission.event.active_review_phase.save()
+        submission.anonymised_data = json.dumps({"description": "CENSORED!"})
+        submission.save()
+    response = orga_client.get(submission.event.api_urls.submissions, follow=True)
+    assert response.status_code == 200
+    content = json.loads(response.content.decode())
+    content = content["results"][0]
+    assert len(content["speakers"]) == 1
+    assert content["description"] != "CENSORED!"
+    assert content["abstract"] == submission.abstract
+
+    orga_client.force_login(review_user)
+
+    response = orga_client.get(submission.event.api_urls.submissions, follow=True)
+    assert response.status_code == 200
+    content = json.loads(response.content.decode())
+    content = content["results"][0]
+    assert content["speakers"] == []
+    assert content["description"] == "CENSORED!"
+    assert content["abstract"] == submission.abstract
+
+
+@pytest.mark.django_db
 def test_orga_can_see_all_speakers_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):
