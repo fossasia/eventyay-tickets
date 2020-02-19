@@ -408,3 +408,71 @@ def test_orga_can_see_all_feedback(orga_client, event, feedback):
     assert response.status_code == 200
     assert feedback.talk.title in response.content.decode()
     assert feedback.review in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_can_see_anonymisation_interface(orga_client, submission):
+    response = orga_client.get(submission.orga_urls.anonymise, follow=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_orga_can_anonymise_submission(
+    orga_client, review_user, submission, other_submission
+):
+    with scope(event=submission.event):
+        submission.event.active_review_phase.can_see_speaker_names = False
+        submission.event.active_review_phase.save()
+        assert not review_user.has_perm("orga.view_speakers", submission)
+    response = orga_client.post(
+        submission.orga_urls.anonymise, follow=True, data={"description": "CENSORED!"}
+    )
+    assert response.status_code == 200
+    submission.refresh_from_db()
+    assert submission.is_anonymised
+    assert submission.anonymised == {
+        "_anonymised": True,
+        "abstract": "",
+        "notes": "",
+        "description": "CENSORED!",
+        "title": "",
+    }
+    assert "CENSORED" in submission.anonymised_data
+    response = orga_client.post(
+        submission.orga_urls.anonymise,
+        data={"title": submission.title, "description": "CENSORED!", "action": "next"},
+    )
+    _, redirected_page_url = response._headers["location"]
+    assert response.status_code == 302
+    assert redirected_page_url == other_submission.orga_urls.anonymise
+    assert not other_submission.is_anonymised
+
+    submission.refresh_from_db()
+    assert submission.is_anonymised
+    assert submission.anonymised == {
+        "_anonymised": True,
+        "abstract": "",
+        "notes": "",
+        "description": "CENSORED!",
+    }
+
+    response = orga_client.get(submission.orga_urls.reviews)
+    assert response.status_code == 200
+    assert "CENSORED" not in response.content.decode()
+    response = orga_client.get(submission.orga_urls.base)
+    assert response.status_code == 200
+    assert "CENSORED" not in response.content.decode()
+
+    orga_client.force_login(review_user)
+    response = orga_client.get(submission.orga_urls.reviews)
+    assert response.status_code == 200
+    assert "CENSORED" in response.content.decode()
+    response = orga_client.get(submission.orga_urls.base)
+    assert response.status_code == 200
+    assert "CENSORED" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_see_anonymisation_interface(review_client, submission):
+    response = review_client.get(submission.orga_urls.anonymise, follow=True)
+    assert response.status_code == 404

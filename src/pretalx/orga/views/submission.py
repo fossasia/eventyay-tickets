@@ -427,6 +427,11 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
+        instance = kwargs.get("instance")
+        kwargs["anonymise"] = getattr(
+            instance, "pk", None
+        ) and not self.request.user.has_perm("orga.view_speakers", instance)
+        kwargs["read_only"] = kwargs["read_only"] or kwargs["anonymise"]
         return kwargs
 
 

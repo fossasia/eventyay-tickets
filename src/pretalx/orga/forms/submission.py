@@ -9,8 +9,18 @@ from pretalx.submission.models import Submission, SubmissionType
 
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
-    def __init__(self, event, **kwargs):
+    def __init__(self, event, anonymise=False, **kwargs):
         self.event = event
+        if anonymise:
+            kwargs.pop("initial", None)
+            initial = {}
+            instance = kwargs.pop("instance", None)
+            previous_data = instance.anonymised
+            for key in self._meta.fields:
+                initial[key] = (
+                    previous_data.get(key) or getattr(instance, key, None) or ""
+                )
+            kwargs["initial"] = initial
         super().__init__(**kwargs)
         if "submission_type" in self.fields:
             self.fields["submission_type"].queryset = SubmissionType.objects.filter(
@@ -80,21 +90,16 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
 class AnonymiseForm(SubmissionForm):
     def __init__(self, *args, **kwargs):
-        kwargs.pop("initial", None)
-        instance = kwargs.pop("instance")
+        instance = kwargs.get("instance")
         if not instance or not instance.pk:
             raise Exception("Cannot anonymise unsaved submission.")
-        initial = {}
-        previous_data = instance.anonymised
-        for key in self._meta.fields:
-            initial[key] = previous_data.get(key) or getattr(instance, key) or ""
-        kwargs["initial"] = initial
         kwargs["event"] = instance.event
+        kwargs["anonymise"] = True
         super().__init__(*args, **kwargs)
         self._instance = instance
         to_be_removed = []
         for key, field in self.fields.items():
-            if not getattr(instance, key):
+            if not getattr(instance, key, None):
                 to_be_removed.append(key)
             else:
                 field.plaintext = getattr(self._instance, key)
