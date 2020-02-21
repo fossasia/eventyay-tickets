@@ -75,7 +75,7 @@ Endpoints
 
 .. http:get:: /api/events/(event)/speakers/{code}/
 
-   Returns information on one event, identified by its slug.
+   Returns information on one speaker, identified by their slug.
 
    **Example request**:
 
