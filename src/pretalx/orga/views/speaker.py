@@ -40,7 +40,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
 
     @context
     def filter_form(self):
-        return SpeakerFilterForm()
+        return SpeakerFilterForm(self.request.GET)
 
     def get_queryset(self):
         qs = SpeakerProfile.objects.filter(
@@ -51,17 +51,21 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, ListView):
         if "role" in self.request.GET:
             if self.request.GET["role"] == "true":
                 qs = qs.filter(
-                    user__submissions__state__in=[
-                        SubmissionStates.ACCEPTED,
-                        SubmissionStates.CONFIRMED,
-                    ]
+                    user__submissions__in=self.request.event.submissions.filter(
+                        state__in=[
+                            SubmissionStates.ACCEPTED,
+                            SubmissionStates.CONFIRMED,
+                        ]
+                    )
                 )
             elif self.request.GET["role"] == "false":
                 qs = qs.exclude(
-                    user__submissions__state__in=[
-                        SubmissionStates.ACCEPTED,
-                        SubmissionStates.CONFIRMED,
-                    ]
+                    user__submissions__in=self.request.event.submissions.filter(
+                        state__in=[
+                            SubmissionStates.ACCEPTED,
+                            SubmissionStates.CONFIRMED,
+                        ]
+                    )
                 )
 
         qs = qs.order_by("id").distinct()
