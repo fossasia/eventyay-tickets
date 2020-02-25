@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Under specific circumstances, the ``django_sessions`` table could bloat a lot. This is fixed with the next release and the table will shrink over time as long as you regularly run the ``clearsessions`` command.
 - :feature:`855` The filtered list of speakers in the organiser area now contains only people with confirmed *or accepted* talks, and is also better at showing the filter currently applied.
 - :feature:`-` Organisers can now anonymise submission content for reviewers, if they choose to do anonymised reviews. They can redact or edit any part of the submission for the reviewers' view of it to remove identifying information.
 - :bug:`-` It wasn't possible to hide a submission type unless accessed with an access token. (Or, well, it was possible, but the possibility was hidden.)

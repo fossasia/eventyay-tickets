@@ -175,19 +175,12 @@ class FormFlowStep(TemplateFlowStep):
     def get_form_initial(self):
         initial_data = self.cfp_session.get("initial", {}).get(self.identifier, {})
         previous_data = self.cfp_session.get("data", {}).get(self.identifier, {})
-        return {**initial_data, **previous_data}
+        return copy.deepcopy({**initial_data, **previous_data})
 
     def get_form(self, from_storage=False):
-        if from_storage:
+        if self.request.method == "GET" or from_storage:
             return self.form_class(
-                data=copy.deepcopy(
-                    self.cfp_session.get("data", {}).get(self.identifier, {})
-                ),
-                files=self.get_files(),
-                **self.get_form_kwargs(),
-            )
-        if self.request.method == "GET":
-            return self.form_class(
+                data=self.get_form_initial() or None,
                 initial=self.get_form_initial(),
                 files=self.get_files(),
                 **self.get_form_kwargs(),
@@ -217,6 +210,8 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_data(self, data):
         def serialize_value(value):
+            if getattr(value, "file", None):
+                return None
             if getattr(value, "pk", None):
                 return value.pk
             if getattr(value, "__iter__", None):
@@ -459,7 +454,7 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        user_data = self.cfp_session.get("data", {}).get("user", {})
+        user_data = copy.deepcopy(self.cfp_session.get("data", {}).get("user", {}))
         if user_data and user_data.get("user_id"):
             result["user"] = User.objects.filter(pk=user_data["user_id"]).first()
         if not result.get("user") and self.request.user.is_authenticated:
@@ -482,8 +477,8 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
     def done(self, request):
         form = self.get_form(from_storage=True)
-        form.user = request.user
         form.is_valid()
+        form.user = request.user
         form.save()
 
 

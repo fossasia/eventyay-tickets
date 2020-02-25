@@ -94,9 +94,11 @@ class AvailabilitiesFormMixin(forms.Form):
             raise forms.ValidationError(message)
 
         try:
-            rawavail["start"] = self._parse_datetime(rawavail["start"])
-            rawavail["end"] = self._parse_datetime(rawavail["end"])
-        except (TypeError, ValueError):
+            for key in ("start", "end"):
+                raw_value = rawavail[key]
+                if not isinstance(raw_value, dt.datetime):
+                    rawavail[key] = self._parse_datetime(raw_value)
+        except (TypeError, ValueError) as e:
             raise forms.ValidationError(
                 _("The submitted availability contains an invalid date.")
             )
