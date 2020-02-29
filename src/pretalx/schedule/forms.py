@@ -98,7 +98,7 @@ class AvailabilitiesFormMixin(forms.Form):
                 raw_value = rawavail[key]
                 if not isinstance(raw_value, dt.datetime):
                     rawavail[key] = self._parse_datetime(raw_value)
-        except (TypeError, ValueError) as e:
+        except (TypeError, ValueError):
             raise forms.ValidationError(
                 _("The submitted availability contains an invalid date.")
             )
