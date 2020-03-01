@@ -55,3 +55,20 @@ as active.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 A second keyword argument ``request`` will contain the request object.
 """
+event_copy_data = EventPluginSignal(
+    providing_args=["other", "question_map", "track_map", "submission_type_map"]
+)
+"""
+This signal is sent out when a new event is created as a clone of an existing event, i.e.
+the settings from the older event are copied to the newer one. You can listen to this
+signal to copy data or configuration stored within your plugin's models as well.
+
+You don't need to copy data inside the general settings storage which is cloned automatically,
+but you might need to modify that data.
+
+The ``sender`` keyword argument will contain the event of the **new** event. The ``other``
+keyword argument will contain the event slug to **copy from**. The keyword arguments
+``submission_type_map``, ``question_map``, and ``track_map`` contain
+mappings from object IDs in the original event to objects in the new event of the respective
+types.
+"""

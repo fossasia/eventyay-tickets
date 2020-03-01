@@ -510,6 +510,8 @@ class Event(LogMixin, models.Model):
 
     @scopes_disabled()
     def copy_data_from(self, other_event):
+        from pretalx.orga.signals import event_copy_data
+
         protected_settings = ["custom_domain", "display_header_data"]
         self._delete_mail_templates()
         self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
@@ -519,7 +521,9 @@ class Event(LogMixin, models.Model):
             new_template.event = self
             new_template.save()
             setattr(self, template, new_template)
+        submission_type_map = {}
         for submission_type in other_event.submission_types.all():
+            submission_type_map[submission_type.pk] = submission_type
             is_default = submission_type == other_event.cfp.default_type
             submission_type.pk = None
             submission_type.event = self
@@ -529,14 +533,15 @@ class Event(LogMixin, models.Model):
                 self.cfp.default_type = submission_type
                 self.cfp.save()
                 old_default.delete()
-        track_mapping = {}
+        track_map = {}
         for track in other_event.tracks.all():
-            track_pk = track.pk
+            track_map[track.pk] = track
             track.pk = None
             track.event = self
             track.save()
-            track_mapping[track_pk] = track
+        question_map = {}
         for question in other_event.questions.all():
+            question_map[question.pk] = question
             options = question.options.all()
             tracks = question.tracks.all().values_list("pk", flat=True)
             question.pk = None
@@ -548,7 +553,7 @@ class Event(LogMixin, models.Model):
                 option.question = question
                 option.save()
             for track in tracks:
-                question.tracks.add(track_mapping.get(track))
+                question.tracks.add(track_map.get(track))
 
         for s in other_event.settings._objects.all():
             if s.value.startswith("file://") or s.key in protected_settings:
@@ -556,6 +561,14 @@ class Event(LogMixin, models.Model):
             s.object = self
             s.pk = None
             s.save()
+        self.settings.flush()
+        event_copy_data.send(
+            sender=self,
+            other=other_event.slug,
+            question_map=question_map,
+            track_map=track_map,
+            submission_type_map=submission_type_map,
+        )
         self.build_initial_data()  # make sure we get a functioning event
 
     copy_data_from.alters_data = True

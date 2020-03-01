@@ -7,13 +7,13 @@ import i18nfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0044_submission_anonymised_data'),
+        ("submission", "0044_submission_anonymised_data"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='help_text',
+            model_name="question",
+            name="help_text",
             field=i18nfield.fields.I18nCharField(blank=True, max_length=800, null=True),
         ),
     ]

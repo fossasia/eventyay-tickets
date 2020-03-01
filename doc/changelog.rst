@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The new signal ``pretalx.orga.signals.event_copy_data`` allows plugins to transfer data from one event to the next at event creation time.
 - :feature:`-` The help text for questions can now be 800 characters long instead of 200.
 - :bug:`-` Under specific circumstances, the ``django_sessions`` table could bloat a lot. This is fixed with the next release and the table will shrink over time as long as you regularly run the ``clearsessions`` command.
 - :feature:`855` The filtered list of speakers in the organiser area now contains only people with confirmed *or accepted* talks, and is also better at showing the filter currently applied.
