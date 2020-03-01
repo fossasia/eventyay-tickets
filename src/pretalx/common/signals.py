@@ -154,3 +154,14 @@ subclass of pretalx.common.exporter.BaseExporter
 
 As with all event plugin signals, the ``sender`` keyword argument will contain the event.
 """
+activitylog_display = EventPluginSignal(providing_args=["activitylog"])
+"""
+To display an instance of the ``ActivityLog`` model to a human user,
+``pretalx.common.signals.activitylog_display`` will be sent out with a ``activitylog``
+argument.
+
+The first received response that is not ``None`` will be used to display the log entry
+to the user. The receivers are expected to return plain (lazy) text.
+
+As with all event plugin signals, the ``sender`` keyword argument will contain the event.
+"""
