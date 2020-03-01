@@ -110,7 +110,7 @@ class Question(LogMixin, models.Model):
     help_text = I18nCharField(
         null=True,
         blank=True,
-        max_length=200,
+        max_length=800,
         verbose_name=_("help text"),
         help_text=_("Will appear just like this text below the question input field.")
         + " "
