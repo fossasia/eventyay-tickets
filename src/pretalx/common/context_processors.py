@@ -1,4 +1,5 @@
 import sys
+import warnings
 
 from django.conf import settings
 from django.http import Http404
@@ -53,6 +54,10 @@ def system_information(request):
             _footer += response
         else:
             _footer.append(response)
+            warnings.warn(
+                "Please return a list in your footer_link signal receiver, not a dictionary.",
+                DeprecationWarning,
+            )
     context["footer_links"] = _footer
 
     if settings.DEBUG:

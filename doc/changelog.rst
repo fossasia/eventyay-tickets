@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :support:`-` If you have a plugin that listens to the ``footer_link`` signal, please change it so that it returns a list of dictionaries instead of a single dictionary. The dictionary-only return value is deprecated and support will be removed in a future pretalx version.
 - :feature:`-` The new signal ``pretalx.common.signals.activitylog_display`` allows plugins to change how entries in the pretalx activity log are displayed.
 - :feature:`-` The new signal ``pretalx.orga.signals.event_copy_data`` allows plugins to transfer data from one event to the next at event creation time.
 - :feature:`-` The help text for questions can now be 800 characters long instead of 200.
