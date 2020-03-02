@@ -163,7 +163,7 @@ rules.add_perm(
 rules.add_perm("orga.view_information", can_change_submissions)
 rules.add_perm("orga.change_information", can_change_event_settings)
 rules.add_perm("orga.create_events", can_create_events)
-rules.add_perm("orga.change_plugins", is_administrator)
+rules.add_perm("orga.change_plugins", can_change_event_settings)
 rules.add_perm(
     "orga.mark_speakers_arrived", can_change_submissions & can_mark_speakers_arrived
 )

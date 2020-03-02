@@ -136,7 +136,7 @@ Vue.component('pretalx-schedule-widget', {
         <div v-else>
             <i class="fa fa-spinner fa-pulse fa-4x fa-fw text-primary mb-4 mt-4"></i>
         </div>
-        <div class="pretix-widget-attribution" style="text-align: center">
+        <div class="pretalx-widget-attribution" style="text-align: center">
             · powered by <a href="https://pretalx.com" rel="noopener" target="_blank">pretalx</a> ·
         </div>
     </div>`,
