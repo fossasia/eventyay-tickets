@@ -18,7 +18,7 @@
     </p>
 
     {% bootstrap_form_errors form %}
-    {% if request.event.settings.cfp_request_avatar %}
+    {% if form.avatar or form.get_gravatar %}
         {% include "common/avatar.html" with user=user form=form %}
     {% endif %}
 
