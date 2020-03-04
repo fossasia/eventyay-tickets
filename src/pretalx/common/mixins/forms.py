@@ -47,7 +47,7 @@ class RequestRequire:
         for key in self.Meta.request_require:
             request = self.event.settings.get(f"cfp_request_{key}")
             require = self.event.settings.get(f"cfp_require_{key}")
-            if not request:
+            if not request and not require:
                 self.fields.pop(key)
             else:
                 field = self.fields[key]
