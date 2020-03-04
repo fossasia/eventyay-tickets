@@ -2,7 +2,7 @@ from pathlib import Path
 
 from django import forms
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
@@ -73,7 +73,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 )
             else:
                 self.fields["track"].queryset = self.event.tracks.filter(
-                    Q(requires_access_code=False) | Q(pk=access_code.track.pk)
+                    pk=access_code.track.pk
                 )
             if len(self.fields["track"].queryset) == 1:
                 self.fields["track"].initial = self.fields["track"].queryset.first()
@@ -99,6 +99,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         access_code = self.access_code or getattr(instance, "access_code", None)
         if access_code and not access_code.submission_type:
             pks = set(self.event.submission_types.values_list("pk", flat=True))
+        elif access_code:
+            pks = {access_code.submission_type.pk}
         else:
             queryset = self.event.submission_types.filter(requires_access_code=False)
             if (
@@ -108,10 +110,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             else:
                 types = queryset.filter(deadline__gte=_now)
             pks = set(types.values_list("pk", flat=True))
-            if access_code:
-                pks = pks | {access_code.submission_type.pk}
-            if instance and instance.pk:
-                pks |= {instance.submission_type.pk}
+        if instance and instance.pk:
+            pks |= {instance.submission_type.pk}
         self.fields["submission_type"].queryset = self.event.submission_types.filter(
             pk__in=pks
         )
