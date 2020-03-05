@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-11 16:24+0000\n"
-"PO-Revision-Date: 2020-01-29 16:36+0100\n"
+"PO-Revision-Date: 2020-03-05 14:46+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Weblate 3.10.3\n"
 
 #: tests/screenshots/conftest.py:26
 msgid "Jane Doe"
@@ -1326,10 +1326,6 @@ msgstr ""
 "erstellen lassen"
 
 #: pretalx/common/management/commands/init.py:82
-#, fuzzy
-#| msgid ""
-#| " - Use the command \"import_schedule /path/to/schedule.xml\" if you want "
-#| "to import an event.\""
 msgid ""
 " - Use the command \"import_schedule /path/to/schedule.xml\" if you want to "
 "import an event."
@@ -1919,10 +1915,8 @@ msgid "My profile"
 msgstr "Mein Profil"
 
 #: pretalx/common/templates/common/base.html:112
-#, fuzzy
-#| msgid "Organiser"
 msgid "Organiser area"
-msgstr "Veranstalter"
+msgstr "Organisations-Bereich"
 
 #: pretalx/common/templates/common/base.html:117
 msgid "Logout"
@@ -3024,10 +3018,8 @@ msgstr ""
 "weil du den HTML-Export nutzt."
 
 #: pretalx/orga/forms/event.py:171
-#, fuzzy
-#| msgid "Schedule exports"
 msgid "Schedule display format"
-msgstr "Programmexporte"
+msgstr "Programmformat"
 
 #: pretalx/orga/forms/event.py:173
 msgid ""
@@ -3036,16 +3028,18 @@ msgid ""
 "their times in a single column, even if you have multiple rooms. Please note "
 "that the schedule widget will always be in the proportional schedule mode."
 msgstr ""
+"Die proportionale Darstellung des Programms zeigt jeden Eintrag so an, dass "
+"sichtbar ist, wann er anfängt und endet. Die Darstellung als Liste zeigt "
+"alle Programmpunkte untereinander, selbst wenn sie in verschiedenen Räumen "
+"stattfinden. Das Programm-Widget nutzt immer den proportionalen Modus."
 
 #: pretalx/orga/forms/event.py:177
-#, fuzzy
-#| msgid "Optional"
 msgid "Proportional"
-msgstr "Optional"
+msgstr "Proportional"
 
 #: pretalx/orga/forms/event.py:177
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #: pretalx/orga/forms/event.py:181
 msgid "Show a sneak peek before schedule release"
@@ -6631,7 +6625,7 @@ msgstr "Deutsch"
 
 #: pretalx/settings.py:331
 msgid "German (formal)"
-msgstr ""
+msgstr "Deutsch (Sie)"
 
 #: pretalx/settings.py:337
 msgid "French"
