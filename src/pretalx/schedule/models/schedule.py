@@ -91,7 +91,7 @@ class Schedule(LogMixin, models.Model):
         TalkSlot.objects.bulk_create(talks)
 
         if notify_speakers:
-            self.notify_speakers()
+            self.generate_notifications(save=True)
 
         with suppress(AttributeError):
             del wip_schedule.event.wip_schedule
@@ -350,8 +350,7 @@ class Schedule(LogMixin, models.Model):
                 speakers[speaker]["update"].append(moved_talk)
         return speakers
 
-    @cached_property
-    def notifications(self):
+    def generate_notifications(self, save=False):
         """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
         to be sent on schedule release."""
         mails = []
@@ -364,18 +363,12 @@ class Schedule(LogMixin, models.Model):
             context["notifications"] = notifications
             mails.append(
                 self.event.update_template.to_mail(
-                    user=speaker, event=self.event, context=context, commit=False
+                    user=speaker, event=self.event, context=context, commit=save
                 )
             )
         return mails
 
-    def notify_speakers(self):
-        """Save the ``notifications`` :class:`~pretalx.mail.models.QueuedMail`
-        objects to the outbox."""
-        for notification in self.notifications:
-            notification.save()
-
-    notify_speakers.alters_data = True
+    generate_notifications.alters_data = True
 
     @cached_property
     def url_version(self):

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Schedule notifications for speakers are now properly connected to the speaker accounts, instead of just referencing them by email addresses.
 - :feature:`-` Now, event organisers can activate and deactivate plugins for their events. Previously this was restricted to administrators.
 - :support:`-` If you have a plugin that listens to the ``footer_link`` signal, please change it so that it returns a list of dictionaries instead of a single dictionary. The dictionary-only return value is deprecated and support will be removed in a future pretalx version.
 - :feature:`-` The new signal ``pretalx.common.signals.activitylog_display`` allows plugins to change how entries in the pretalx activity log are displayed.

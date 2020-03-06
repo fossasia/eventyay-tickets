@@ -126,7 +126,7 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
 
     @context
     def notifications(self):
-        return len(self.request.event.wip_schedule.notifications)
+        return len(self.request.event.wip_schedule.generate_notifications(save=False))
 
     @context
     def suggested_version(self):
@@ -187,12 +187,14 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
     def dispatch(self, request, event):
         super().dispatch(request, event)
         if self.request.event.current_schedule:
-            self.request.event.current_schedule.notify_speakers()
+            mails = self.request.event.current_schedule.generate_notifications(
+                save=True
+            )
             messages.success(
                 self.request,
                 _(
                     "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-                ).format(count=len(self.request.event.current_schedule.notifications)),
+                ).format(count=len(mails)),
             )
         else:
             messages.warning(
