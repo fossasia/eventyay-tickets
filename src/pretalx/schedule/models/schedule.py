@@ -330,17 +330,16 @@ class Schedule(LogMixin, models.Model):
         ``update`` fields, each containing a list of submissions.
         """
         if self.changes["action"] == "create":
-            return {
-                speaker: {
-                    "create": self.talks.filter(
-                        submission__speakers=speaker,
-                        room__isnull=False,
-                        start__isnull=False,
-                    ),
-                    "update": [],
-                }
-                for speaker in User.objects.filter(submissions__slots__schedule=self)
-            }
+            result = {}
+            for speaker in User.objects.filter(submissions__slots__schedule=self):
+                talks = self.talks.filter(
+                    submission__speakers=speaker,
+                    room__isnull=False,
+                    start__isnull=False,
+                )
+                if talks:
+                    result[speaker] = {"create": talks, "update": []}
+            return result
 
         if self.changes["count"] == len(self.changes["canceled_talks"]):
             return []
