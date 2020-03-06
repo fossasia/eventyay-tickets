@@ -332,7 +332,11 @@ class Schedule(LogMixin, models.Model):
         if self.changes["action"] == "create":
             return {
                 speaker: {
-                    "create": self.talks.filter(submission__speakers=speaker),
+                    "create": self.talks.filter(
+                        submission__speakers=speaker,
+                        room__isnull=False,
+                        start__isnull=False,
+                    ),
                     "update": [],
                 }
                 for speaker in User.objects.filter(submissions__slots__schedule=self)
