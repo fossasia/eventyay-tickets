@@ -27,13 +27,19 @@ class Command(BaseCommand):
             help='Up to which stage should this event be created? Choices, in logical order, are "cfp", "review", "schedule", "over". The default is "schedule".',
         )
         parser.add_argument(
+            "--slug",
+            type=str,
+            default="democon",
+            help="The slug to use for the demo event. Default: democon",
+        )
+        parser.add_argument(
             "--seed",
             type=str,
             default="",
             help="Seed the random generator with a number for stable results",
         )
 
-    def build_event(self, end_stage):
+    def build_event(self, end_stage, slug):
         administrators = User.objects.filter(is_administrator=True)
         if not administrators:
             self.stdout.write(
@@ -43,7 +49,7 @@ class Command(BaseCommand):
             )
             return
         organiser, team = create_organiser_with_team(
-            name="DemoCon Org", slug="democonorg", users=administrators,
+            name="DemoCon Org", slug=f"{slug}org", users=administrators,
         )
         if end_stage == "cfp":
             event_start = now() + dt.timedelta(days=35)
@@ -61,7 +67,7 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
         with scopes_disabled():
             event = Event.objects.create(
                 name="DemoCon",
-                slug="democon",
+                slug=slug,
                 organiser=organiser,
                 is_public=True,
                 date_from=event_start.date(),
@@ -354,7 +360,7 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
         if seed:
             self.fake.seed(int(seed))
         end_stage = options.get("stage")
-        event = self.build_event(end_stage)
+        event = self.build_event(end_stage, slug=options.get("slug"))
         if not event:
             return
         with scope(event=event):

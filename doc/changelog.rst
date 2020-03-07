@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` The test event creation command now allows you to specify the event slug. This allows you to generate multiple test events in various event stages.
 - :bug:`-` A bug in our permission checks made pretalx unable to run on Windows.
 - :feature:`-` Schedule notifications for speakers are now properly connected to the speaker accounts, instead of just referencing them by email addresses.
 - :feature:`-` Now, event organisers can activate and deactivate plugins for their events. Previously this was restricted to administrators.

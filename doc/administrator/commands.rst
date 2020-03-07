@@ -147,3 +147,7 @@ should be in. The available choices are ``cfp`` (CfP still open, plenty of
 submissions, but no reviews), ``review`` (submissions have been reviewed and
 accepted/rejected), ``schedule`` (there is a schedule and the event is
 currently running), and ``over``. ``schedule`` is the default value.
+
+The ``--slug`` flag allows you to specify the slug of the event to be created.
+It defaults to ``democon``. Please only use alphanumerical characters and ``-``
+in the slug, otherwise you won't be able to see the event in the web interface.
