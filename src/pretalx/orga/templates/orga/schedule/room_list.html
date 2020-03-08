@@ -5,7 +5,7 @@
 <div>
     <h2>
         {{ request.event.rooms.count }}
-        {% blocktrans trimmed count count=request.event.rooms.count %}
+        {% blocktrans trimmed count count=request.event.rooms.count context "Number of rooms" %}
         Room
         {% plural %}
         Rooms
