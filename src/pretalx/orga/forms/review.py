@@ -50,6 +50,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
             if remaining_votes
             else "",
         )
+        self.fields["score"].widget.attrs["autocomplete"] = "off"
         self.fields["text"].widget.attrs["rows"] = 2
         self.fields["text"].widget.attrs["placeholder"] = phrases.orga.example_review
         self.fields["text"].required = event.settings.review_text_mandatory

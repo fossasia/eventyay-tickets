@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`-` Firefox has a bug in their form caching. If you reviewed a submission, clicked "Save and next", then *went back and reloaded the page*, Firefox would incorrectly pre-fill your review form with the choice *one point worse* than your original selection. If you then chose "Save and next" again, this value would be saved.
 - :feature:`-` The test event creation command now allows you to specify the event slug. This allows you to generate multiple test events in various event stages.
 - :bug:`-` A bug in our permission checks made pretalx unable to run on Windows.
 - :feature:`-` Schedule notifications for speakers are now properly connected to the speaker accounts, instead of just referencing them by email addresses.
