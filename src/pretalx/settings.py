@@ -148,7 +148,8 @@ else:
         SECRET_KEY = get_random_string(50, chars)
         with SECRET_FILE.open(mode="w") as f:
             SECRET_FILE.chmod(0o600)
-            os.chown(SECRET_FILE, os.getuid(), os.getgid())
+            with suppress(Exception):  # chown is not available on all platforms
+                os.chown(SECRET_FILE, os.getuid(), os.getgid())
             f.write(SECRET_KEY)
 
 ## TASK RUNNER SETTINGS
