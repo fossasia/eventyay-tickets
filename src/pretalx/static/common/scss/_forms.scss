@@ -140,8 +140,13 @@ input.password_strength {
 }
 
 table .form-radio,
-table .form-check {
-  margin-top: -8px;
+table .form-check,
+table .radio .form-check {
+  line-height: 1.4;
+  margin-top: 2px;
+  label:before, label:after {
+    margin-left: -35px;
+  }
 }
 
 .checkbox-multi-select {
