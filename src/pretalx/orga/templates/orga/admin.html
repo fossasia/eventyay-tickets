@@ -52,8 +52,8 @@
         <ul>
             <li>{% trans "Host" %}: <code>{{ settings.EMAIL_HOST|copyable }}</code></li>
             <li>{% trans "Port" %}: <code>{{ settings.EMAIL_PORT|copyable }}</code></li>
-            <li>{% trans "User" %}: <code>{{ settings.EMAIL_USER|copyable }}</code></li>
-            <li>{% trans "Password" %}: {% if settings.EMAIL_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
+            <li>{% trans "User" %}: <code>{{ settings.EMAIL_HOST_USER|copyable }}</code></li>
+            <li>{% trans "Password" %}: {% if settings.EMAIL_HOST_PASSWORD %}{% trans "An email password has been set." %}{% else %}{% trans "No email password has been set." %}{% endif %}</li>
         </ul>
     </li>
 </ul>
