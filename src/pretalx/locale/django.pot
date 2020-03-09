@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-08 15:31+0000\n"
+"POT-Creation-Date: 2020-03-09 10:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2955,7 +2955,7 @@ msgid_plural "You have {count} override votes left."
 msgstr[0] ""
 msgstr[1] ""
 
-#: pretalx/orga/forms/review.py:67
+#: pretalx/orga/forms/review.py:68
 #, python-brace-format
 msgid "Please assign a score between {self.min_value} and {self.max_value}!"
 msgstr ""
@@ -4103,7 +4103,7 @@ msgid "Rejection Mail"
 msgstr ""
 
 #: pretalx/orga/templates/orga/mails/template_list.html:51
-msgid "Update Mail"
+msgid "New schedule version"
 msgstr ""
 
 #: pretalx/orga/templates/orga/mails/template_list.html:62

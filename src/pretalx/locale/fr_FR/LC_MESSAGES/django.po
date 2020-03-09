@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-08 15:31+0000\n"
+"POT-Creation-Date: 2020-03-09 10:20+0000\n"
 "PO-Revision-Date: 2020-01-07 23:13+0100\n"
 "Last-Translator: Stéphane Parunakian\n"
 "Language-Team: \n"
@@ -3463,7 +3463,7 @@ msgid_plural "You have {count} override votes left."
 msgstr[0] "Il vous reste <strong>{count}</strong> veto."
 msgstr[1] "Il vous reste <strong>{count}</strong> veto."
 
-#: pretalx/orga/forms/review.py:67
+#: pretalx/orga/forms/review.py:68
 #, python-brace-format
 msgid "Please assign a score between {self.min_value} and {self.max_value}!"
 msgstr "Veuillez mettre un score entre {self.min_value} et {self.max_value} !"
@@ -4742,8 +4742,10 @@ msgid "Rejection Mail"
 msgstr "Courriel de rejet"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:51
-msgid "Update Mail"
-msgstr "Courriel de mise à jour"
+#, fuzzy
+#| msgid "New schedule!"
+msgid "New schedule version"
+msgstr "Nouveau planning"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:62
 msgid "Custom Mail"
@@ -7242,6 +7244,9 @@ msgstr "{name} ({duration} heures)"
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr "{name} ({duration} minutes)"
+
+#~ msgid "Update Mail"
+#~ msgstr "Courriel de mise à jour"
 
 #~ msgid "Orga area"
 #~ msgstr "Zone d'organisation"

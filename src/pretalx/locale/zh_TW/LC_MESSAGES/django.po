@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-08 15:31+0000\n"
+"POT-Creation-Date: 2020-03-09 10:20+0000\n"
 "PO-Revision-Date: 2020-01-29 12:01+0000\n"
 "Last-Translator: Franklin Weng <franklin@goodhorse.idv.tw>\n"
 "Language-Team: none\n"
@@ -3210,7 +3210,7 @@ msgid "You have {count} override vote left."
 msgid_plural "You have {count} override votes left."
 msgstr[0] "您還有 {count} 張覆寫票。"
 
-#: pretalx/orga/forms/review.py:67
+#: pretalx/orga/forms/review.py:68
 #, python-brace-format
 msgid "Please assign a score between {self.min_value} and {self.max_value}!"
 msgstr "請給在 {self.min_value} 與 {self.max_value} 間的分數。"
@@ -4367,8 +4367,10 @@ msgid "Rejection Mail"
 msgstr "拒絕郵件"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:51
-msgid "Update Mail"
-msgstr "更新郵件"
+#, fuzzy
+#| msgid "New schedule!"
+msgid "New schedule version"
+msgstr "新的議程表發布了"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:62
 msgid "Custom Mail"
@@ -6587,6 +6589,9 @@ msgstr ""
 #, python-brace-format
 msgid "{name} ({duration} minutes)"
 msgstr ""
+
+#~ msgid "Update Mail"
+#~ msgstr "更新郵件"
 
 #~ msgid "Orga area"
 #~ msgstr "主辦團隊區"

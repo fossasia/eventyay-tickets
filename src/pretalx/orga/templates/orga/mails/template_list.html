@@ -48,7 +48,7 @@
     </div>
     <div>
         {% csrf_token %}
-        <h3>{% trans "Update Mail" %}</h3>
+        <h3>{% trans "New schedule version" %}</h3>
         {% bootstrap_form update layout='event' %}
         <div class="clearfix"><a href="{{ update.instance.urls.edit }}">
             <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
