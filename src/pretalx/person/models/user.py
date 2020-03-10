@@ -215,6 +215,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         self.timezone = "UTC"
         self.pw_reset_token = None
         self.pw_reset_time = None
+        self.set_unusable_password()
         self.save()
         self.profiles.all().update(biography="")
         Answer.objects.filter(
