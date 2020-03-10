@@ -124,6 +124,8 @@ CSP_DEFAULT_SRC = "'self'"
 CSP_SCRIPT_SRC = ("'self'",)
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'", "data:")
+CSP_BASE_URI = "'none'"
+CSP_FORM_ACTION = "'self'"
 
 CSRF_COOKIE_NAME = "pretalx_csrftoken"
 CSRF_TRUSTED_ORIGINS = [urlparse(SITE_URL).hostname]
