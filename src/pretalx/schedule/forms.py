@@ -26,6 +26,9 @@ class AvailabilitiesFormMixin(forms.Form):
     )
 
     def _serialize(self, event, instance):
+        def is_valid(availability):
+            return availability["end"] > availability["start"]
+
         if instance:
             availabilities = AvailabilitySerializer(
                 instance.availabilities.all(), many=True
@@ -35,7 +38,7 @@ class AvailabilitiesFormMixin(forms.Form):
 
         return json.dumps(
             {
-                "availabilities": availabilities,
+                "availabilities": [a for a in availabilities if is_valid(a)],
                 "event": {
                     "timezone": event.timezone,
                     "date_from": str(event.date_from),

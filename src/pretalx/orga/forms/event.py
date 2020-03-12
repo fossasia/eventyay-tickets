@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
+from django.db.models import F, Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from hierarkey.forms import HierarkeyForm
@@ -72,6 +73,9 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         )
         self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
         self.fields["slug"].disabled = True
+        self.fields["date_to"].help_text = _(
+            "Any talks you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
+        )
 
     def clean_custom_css(self):
         if self.cleaned_data.get("custom_css") or self.files.get("custom_css"):
@@ -107,6 +111,8 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
 
     def save(self, *args, **kwargs):
         self.instance.locale_array = ",".join(self.cleaned_data["locales"])
+        if any(key in self.changed_data for key in ("date_from", "date_to")):
+            self.change_dates()
         result = super().save(*args, **kwargs)
         css_text = self.cleaned_data["custom_css_text"]
         if css_text:
@@ -114,6 +120,45 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
                 self.instance.slug + ".css", ContentFile(css_text)
             )
         return result
+
+    def change_dates(self):
+        """Changes dates of current WIP slots, or deschedules them."""
+        from pretalx.schedule.models import Availability
+
+        old_instance = Event.objects.get(pk=self.instance.pk)
+        if not self.instance.wip_schedule.talks.filter(start__isnull=False).exists():
+            return
+        new_date_from = self.cleaned_data["date_from"]
+        new_date_to = self.cleaned_data["date_to"]
+        start_delta = new_date_from - old_instance.date_from
+        end_delta = new_date_to - old_instance.date_to
+        shortened = (new_date_to - new_date_from) < (
+            old_instance.date_to - old_instance.date_from
+        )
+
+        if start_delta and end_delta:
+            # The event was moved, and we will move all talks with it.
+            for key in ("start", "end"):
+                filt = {f"{key}__isnull": False, "event": self.instance.event}
+                update = {key: F(key) + start_delta}
+                self.instance.wip_schedule.talks.filter(**_filter).update(**update)
+                Availability.objects.filter(event=self.instance).filter(**filt).update(
+                    **update
+                )
+
+        # Otherwise, the event got longer, no need to do anything.
+        # We *could* move all talks towards the new start date, but I'm
+        # not convinced that this is the actual use case.
+        # I think it's more likely that people add a new day to the start.
+        if shortened:
+            # The event was shortened, de-schedule all talks outside the range
+            self.instance.wip_schedule.talks.filter(
+                Q(start__date__gt=new_date_to) | Q(start__date__lt=new_date_from),
+            ).update(start=None, end=None, room=None)
+            Availability.objects.filter(
+                Q(end__date__gt=new_date_to) | Q(start__date__lt=new_date_from),
+                event=self.instance.event,
+            ).delete()
 
     class Meta:
         model = Event

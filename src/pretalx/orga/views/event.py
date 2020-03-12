@@ -96,6 +96,7 @@ class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
 
+    @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
             return self.form_invalid(form)
