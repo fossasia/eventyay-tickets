@@ -141,7 +141,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
             for key in ("start", "end"):
                 filt = {f"{key}__isnull": False, "event": self.instance.event}
                 update = {key: F(key) + start_delta}
-                self.instance.wip_schedule.talks.filter(**_filter).update(**update)
+                self.instance.wip_schedule.talks.filter(**filt).update(**update)
                 Availability.objects.filter(event=self.instance).filter(**filt).update(
                     **update
                 )
