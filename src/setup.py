@@ -139,7 +139,6 @@ setup(
             "pytest-django",
             "pytest-mock",
             "pytest-rerunfailures",
-            "pytest-sugar",
             "pytest-tldr",
             "responses",
             "semantic-version==2.6.0",  # https://github.com/bitprophet/releases/issues/84
