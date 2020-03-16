@@ -33,3 +33,12 @@ profile page, above the submission list.
 As with all plugin signals, the ``sender`` keyword argument will contain the event. The
 receivers are expected to return HTML.
 """
+html_head = EventPluginSignal(providing_args=["request"])
+"""
+This signal allows you to put code inside the HTML ``<head>`` tag of every page
+in the frontend (i.e. paths not behind /orga). You will get the request as the
+keyword argument ``request`` and are expected to return plain HTML.
+
+As with all plugin signals, the ``sender`` keyword argument will contain the event. The
+receivers are expected to return HTML.
+"""

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Plugin developers can now add content to the HTML head area with the new ``pretalx.cfp.signals.html_head`` signal.
 - :feature:`-` If you move your event dates, the schedule is moved too, and you can send notifications to your speakers by releasing a new schedule version.
 - :bug:`-` Firefox has a bug in their form caching. If you reviewed a submission, clicked "Save and next", then *went back and reloaded the page*, Firefox would incorrectly pre-fill your review form with the choice *one point worse* than your original selection. If you then chose "Save and next" again, this value would be saved.
 - :feature:`-` The test event creation command now allows you to specify the event slug. This allows you to generate multiple test events in various event stages.

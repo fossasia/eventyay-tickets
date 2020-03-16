@@ -13,6 +13,7 @@
     <meta name="generator" content="pretalx">
     <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
     <meta name="referrer" content="strict-origin-when-crossorigin">
+    {{ html_head|safe }}
     {% if request.event and request.event.settings.meta_noindex %}<meta name="robots" content="noindex, nofollow">{% else %}<meta name="robots" content="index, follow">{% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="{% if request.event and request.event.primary_color %}{{ request.event.primary_color }}{% else %}#3aa57c{% endif %}">

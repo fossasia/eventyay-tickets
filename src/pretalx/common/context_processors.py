@@ -6,7 +6,7 @@ from django.http import Http404
 from django.urls import resolve
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.cfp.signals import footer_link
+from pretalx.cfp.signals import footer_link, html_head
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
 
@@ -47,9 +47,10 @@ def messages(request):
 def system_information(request):
     context = {}
     _footer = []
-    for __, response in footer_link.send(
-        getattr(request, "event", None), request=request
-    ):
+    _head = []
+    event = getattr(request, "event", None)
+
+    for __, response in footer_link.send(event, request=request):
         if isinstance(response, list):
             _footer += response
         else:
@@ -59,6 +60,11 @@ def system_information(request):
                 DeprecationWarning,
             )
     context["footer_links"] = _footer
+
+    if event:
+        for receiver, response in html_head.send(event, request=request):
+            _head.append(response)
+        context["html_head"] = "".join(_head)
 
     if settings.DEBUG:
         context["development_warning"] = True
