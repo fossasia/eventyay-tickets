@@ -24,7 +24,7 @@ class CustomSMTPBackend(EmailBackend):
                     f"Error testing mail settings, code {code}, resp: {resp}"
                 )
                 raise SMTPSenderRefused(code, resp, sender=from_addr)
-            (code, resp) = self.connection.rcpt("test@example.com")
+            (code, resp) = self.connection.rcpt("testdummy@pretalx.com")
             if code not in (250, 251):
                 logger.warning(
                     f"Error testing mail settings, code {code}, resp: {resp}"
