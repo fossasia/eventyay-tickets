@@ -99,11 +99,11 @@ class AnonymiseForm(SubmissionForm):
         self._instance = instance
         to_be_removed = []
         for key, field in self.fields.items():
-            if not getattr(instance, key, None):
-                to_be_removed.append(key)
-            else:
+            try:
                 field.plaintext = getattr(self._instance, key)
                 field.required = False
+            except AttributeError:
+                to_be_removed.append(key)
         for key in to_be_removed:
             self.fields.pop(key)
 
