@@ -128,7 +128,7 @@
             </td>
             <td>
                 <a href="{% if can_review %}{{ submission.orga_urls.reviews }}{% else %}{{ submission.orga_urls.base }}{% endif %}">
-                    {{ submission.title }}
+                    {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}
                 </a>
             </td>
             {% if can_view_speakers %}<td>

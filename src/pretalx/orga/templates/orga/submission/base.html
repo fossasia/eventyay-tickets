@@ -2,7 +2,11 @@
 {% load i18n %}
 {% load rules %}
 
-{% block title %}{{ submission.title }} :: {{ submission.event.name }}{% endblock %}
+{% block title %}
+{% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %} :: {{ submission.event.name }}
+{% endblock %}
+
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
 {% endblock %}
@@ -14,7 +18,7 @@
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
     <h2>
         <span>
-            {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
+            {{ quotation_open }}{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}{{ quotation_close }}
             {% if submission.speakers.exists and can_view_speakers %}
                 by {{ submission.display_speaker_names }}
             {% endif %}
