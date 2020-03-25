@@ -465,6 +465,23 @@ def test_reviewer_can_see_reviews(review_client, event, review, other_review):
 
 
 @pytest.mark.django_db
+def test_reviewer_can_see_reviews_by_track(
+    review_client, review_user, event, review, other_review, track, other_track
+):
+    review.submission.track = track
+    review.submission.save()
+    other_review.submission.track = other_track
+    other_review.submission.save()
+    review_user.teams.filter(is_reviewer=True).first().limit_tracks.add(track)
+
+    response = review_client.get(event.api_urls.reviews, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert len(content["results"]) == 1, content
+
+
+@pytest.mark.django_db
 def test_reviewer_can_filter_by_submission(review_client, event, review, other_review):
     response = review_client.get(
         event.api_urls.reviews + f"?submission__code={review.submission.code}",
