@@ -205,8 +205,6 @@ class QuickScheduleForm(forms.ModelForm):
             self.fields["start_date"].initial = event.date_from
 
     def save(self):
-        if not self.instance:
-            raise Exception
         talk = self.instance
         tz = pytz.timezone(self.event.timezone)
         talk.start = tz.localize(

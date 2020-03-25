@@ -39,3 +39,9 @@ def test_slot_duration(submission, start, end, duration, has_submission):
 def test_slot_string(slot, room):
     str(slot)
     str(room)
+
+
+@pytest.mark.django_db
+def test_slot_build_empty_ical(slot):
+    slot.room = None
+    assert not slot.build_ical(None)

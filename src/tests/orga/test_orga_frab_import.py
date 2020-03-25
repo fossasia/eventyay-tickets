@@ -67,3 +67,28 @@ def test_frab_import_minimal(administrator):
             "1.99c 🍕",
             None,
         }
+
+
+@pytest.mark.django_db
+def test_frab_import_empty(administrator):
+    assert Event.objects.count() == 0
+    assert administrator.teams.count() == 0
+
+    call_command("import_schedule", "tests/fixtures/frab_schedule_empty.xml")
+
+    assert Event.objects.count() == 1
+    event = Event.objects.first()
+
+    with scope(event=event):
+        assert Room.objects.count() == 1
+        assert Room.objects.all()[0].name == "Volkskundemuseum"
+
+        assert TalkSlot.objects.count() == 0
+
+        assert (
+            administrator.teams.filter(
+                Q(limit_events__in=[event]) | Q(all_events=True),
+                can_change_event_settings=True,
+            ).count()
+            == 1
+        )

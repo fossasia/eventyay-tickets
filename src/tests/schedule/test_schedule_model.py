@@ -161,7 +161,7 @@ def test_scheduled_talks(slot, break_slot, room):
 
 
 @pytest.mark.django_db
-def test_is_archived(event):
+def test_is_archived(event, break_slot):
     with scope(event=event):
         event.release_schedule(name="v1")
         event.release_schedule(name="v2")
