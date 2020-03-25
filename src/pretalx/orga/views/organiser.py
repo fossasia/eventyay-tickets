@@ -68,7 +68,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
                     team=self.get_object(),
                     email=self.invite_form.cleaned_data["email"].lower().strip(),
                 )
-                invite.send(event=None)
+                invite.send()
                 messages.success(self.request, _("The invitation has been sent."))
             else:
                 return self.form_invalid(*args, **kwargs)

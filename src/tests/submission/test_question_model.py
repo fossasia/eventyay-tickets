@@ -1,3 +1,4 @@
+import json
 from itertools import repeat
 
 import pytest
@@ -12,6 +13,10 @@ from pretalx.submission.models import Answer, AnswerOption, Question
 def test_missing_answers_submission_question(submission, target, question):
     with scope(event=submission.event):
         assert question.missing_answers() == 1
+        assert (
+            question.missing_answers(filter_talks=submission.event.submissions.all())
+            == 1
+        )
         question.target = target
         question.save()
         if target == "submission":
@@ -60,6 +65,10 @@ def test_question_grouped_answers_choice(submission, question):
             {"options": two.pk, "options__answer": two.answer, "count": 2},
             {"options": one.pk, "options__answer": one.answer, "count": 1},
         ]
+        assert json.loads(question.grouped_answers_json) == [
+            {"options": two.pk, "options__answer": str(two.answer), "count": 2},
+            {"options": one.pk, "options__answer": str(one.answer), "count": 1},
+        ]
 
 
 @pytest.mark.django_db
@@ -104,6 +113,7 @@ def test_question_grouped_answers_other(submission, question):
         ("boolean", "None", ""),
         ("file", "answer", ""),
         ("choices", "answer", ""),
+        ("lol", "lol", None),
     ),
 )
 @pytest.mark.django_db

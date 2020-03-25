@@ -36,7 +36,7 @@ class NamespacedCache:
         self._last_prefix = None
         try:
             prefix = self.cache.incr(self.prefixkey, 1)
-        except ValueError:
+        except ValueError:  # pragma: no cover
             prefix = int(time.time())
             self.cache.set(self.prefixkey, prefix)
 

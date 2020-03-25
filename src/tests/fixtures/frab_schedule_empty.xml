@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<schedule>
+  <version>1.99b 🍕</version>
+  <conference>
+    <acronym>pw16</acronym>
+    <title>PrivacyWeek 2016</title>
+    <start>2016-10-24</start>
+    <end>2016-10-30</end>
+    <days>7</days>
+    <timeslot_duration>00:30</timeslot_duration>
+  </conference>
+  <day date='2016-10-24' end='2016-10-24T23:00:00+02:00' index='1' start='2016-10-24T09:00:00+02:00'>
+    <room name='Volkskundemuseum'>
+    </room>
+  </day>
+</schedule>

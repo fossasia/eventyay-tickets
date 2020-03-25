@@ -212,8 +212,11 @@ class Question(LogMixin, models.Model):
         :param filter_talks: Apply only to these talks.
         """
         from pretalx.person.models import User
+        from pretalx.submission.models import Submission
 
         answers = self.answers.all()
+        filter_talks = filter_talks or Submission.objects.none()
+        filter_speakers = filter_speakers or User.objects.none()
         if filter_speakers or filter_talks:
             answers = answers.filter(
                 models.Q(person__in=filter_speakers)

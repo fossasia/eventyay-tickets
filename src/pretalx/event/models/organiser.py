@@ -163,7 +163,7 @@ class TeamInvite(models.Model):
     class urls(EventUrls):
         invitation = "/orga/invitation/{self.token}"
 
-    def send(self, event):
+    def send(self):
         from pretalx.mail.models import QueuedMail
 
         invitation_link = build_absolute_uri(
@@ -176,24 +176,18 @@ You have been invited to the {name} event organiser team - Please click here to 
 {invitation_link}
 
 See you there,
-The {event} team"""
+The {organiser} team"""
         ).format(
             name=str(self.team.name),
             invitation_link=invitation_link,
-            event=str(event.name) if event else str(self.team.organiser.name),
+            organiser=str(self.team.organiser.name),
         )
         invitation_subject = _("You have been invited to an organiser team")
 
         mail = QueuedMail.objects.create(
-            to=self.email,
-            event=event,
-            subject=str(invitation_subject),
-            text=str(invitation_text),
+            to=self.email, subject=str(invitation_subject), text=str(invitation_text),
         )
-        if event:
-            mail.save()
-        else:
-            mail.send()
+        mail.send()
         return mail
 
     send.alters_data = True
