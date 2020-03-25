@@ -11,11 +11,34 @@ def test_tolerant_dict(key, value):
 
 
 @pytest.mark.django_db
-def test_sent_mail_sending(mail_template, sent_mail):
-    assert mail_template.event.slug in str(mail_template)
+def test_sent_mail_sending(sent_mail):
     assert str(sent_mail)
     with pytest.raises(Exception):
         sent_mail.send()
+
+
+@pytest.mark.django_db
+def test_mail_template_model(mail_template):
+    assert mail_template.event.slug in str(mail_template)
+
+
+@pytest.mark.parametrize("commit", (True, False))
+@pytest.mark.django_db
+def test_mail_template_model_to_mail(mail_template, commit):
+    mail_template.to_mail("testdummy@example.org", None, commit=commit)
+
+
+@pytest.mark.django_db
+def test_mail_template_model_to_mail_fails_without_address(mail_template):
+    with pytest.raises(TypeError):
+        mail_template.to_mail(1, None)
+
+
+@pytest.mark.django_db
+def test_mail_template_model_to_mail_shortens_subject(mail_template):
+    mail_template.subject = "A" * 300
+    mail = mail_template.to_mail("testdummy@example.org", None, commit=False)
+    assert len(mail.subject) == 199
 
 
 @pytest.mark.django_db

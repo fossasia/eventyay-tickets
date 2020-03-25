@@ -96,7 +96,7 @@ class MailTemplate(LogMixin, models.Model):
             address = None
             users = [user]
         else:
-            raise Exception(
+            raise TypeError(
                 "First argument to to_mail must be a string or a User, not "
                 + str(type(user))
             )
@@ -134,7 +134,8 @@ class MailTemplate(LogMixin, models.Model):
                 mail.send()
             elif commit:
                 mail.save()
-                mail.to_users.set(users)
+                if users:
+                    mail.to_users.set(users)
         return mail
 
     to_mail.alters_data = True
