@@ -22,7 +22,7 @@ def generate_widget_css(event, save=True):
     custom_functions["static"] = static
     sassrules = []
     if event.primary_color:
-        sassrules.append("$brand-primary: {};".format(event.primary_color))
+        sassrules.append(f"$brand-primary: {event.primary_color};")
         sassrules.append("$link-color: $brand-primary;")
     sassrules.append(f'@import "{variables_path}";')
     sassrules.append(f'@import "{agenda_path}";')
@@ -35,7 +35,7 @@ def generate_widget_css(event, save=True):
         checksum = hashlib.sha1(css).hexdigest()
         if event.settings.widget_css_checksum != checksum:
             file_name = default_storage.save(
-                "widget/widget.{}.css".format(checksum), ContentFile(css)
+                f"widget/widget.{checksum}.css", ContentFile(css)
             )
             event.settings.set("widget_css", "file://" + file_name)
             event.settings.set("widget_css_checksum", checksum)
@@ -59,11 +59,12 @@ let dataSource = "{event.urls.widget_data_source}";
     data = code.encode()
     if save:
         checksum = hashlib.sha1(data).hexdigest()
-        file_name = default_storage.save(
-            "widget/widget.{}.{}.js".format(locale, checksum), ContentFile(data)
-        )
-        event.settings.set("widget_file_{}".format(locale), "file://" + file_name)
-        event.settings.set("widget_checksum_{}".format(locale), checksum)
+        if checksum != event.settings.get(f"widget_checksum_{locale}"):
+            file_name = default_storage.save(
+                f"widget/widget.{locale}.{checksum}.js", ContentFile(data)
+            )
+            event.settings.set(f"widget_file_{locale}", "file://" + file_name)
+            event.settings.set(f"widget_checksum_{locale}", checksum)
     return data
 
 
@@ -90,7 +91,7 @@ def regenerate_css(event_id: int):
     for local_app in local_apps:
         path = settings.STATIC_ROOT / local_app / "scss/main.scss"
         sassrules = []
-        sassrules.append("$brand-primary: {};".format(event.primary_color))
+        sassrules.append(f"$brand-primary: {event.primary_color};")
         sassrules.append("$link-color: $brand-primary;")
         sassrules.append(f'@import "{path}";')
 
