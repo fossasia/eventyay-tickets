@@ -209,6 +209,12 @@ Celery is not a requirement for pretalx. Celery runs as a separate process, and
 allows you to execute long-running tasks away from the usual request-response
 cycle.
 
+.. warning:: If this config section is present, pretalx will assume that Celery
+             workers exist and collect talks. If you include this section without
+             providing Celery workers, no asynchronous tasks (like email sending)
+             will be processed. If you do not use Celery, omit this section in
+             your configuration.
+
 ``backend``
 ~~~~~~~~~~~
 
