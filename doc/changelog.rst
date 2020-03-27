@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`830` Administrators can now configure static and media files to be under different URLs than ``static`` and ``media``.
 - :bug:`-` Using custom mailservers worked, but testing the connection in the settings page showed an error (incorrectly).
 - :feature:`-` Plugin developers can now add content to the HTML head area with the new ``pretalx.cfp.signals.html_head`` signal.
 - :feature:`-` If you move your event dates, the schedule is moved too, and you can send notifications to your speakers by releasing a new schedule version.

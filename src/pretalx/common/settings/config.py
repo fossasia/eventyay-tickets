@@ -21,6 +21,8 @@ CONFIG = {
         "https": {"env": os.getenv("PRETALX_HTTPS"),},
         "cookie_domain": {"default": "", "env": os.getenv("PRETALX_COOKIE_DOMAIN"),},
         "core_modules": {"default": "", "env": os.getenv("PRETALX_CORE_MODULES"),},
+        "media": {"default": "/media/", "env": os.getenv("PRETALX_SITE_MEDIA")},
+        "static": {"default": "/static/", "env": os.getenv("PRETALX_SITE_STATIC")},
     },
     "database": {
         "backend": {"default": "sqlite3", "env": os.getenv("PRETALX_DB_TYPE"),},
