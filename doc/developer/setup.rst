@@ -97,6 +97,12 @@ To run the local development server, execute::
 Now point your browser to http://localhost:8000/orga/ – You should be able to log in and play
 around!
 
+Please note that if you want to add more flags to the development server, you'll have to call
+the ``runserver`` command explicitly, which is otherwise the default. For example, this command
+would run the development server on port ``5000`` instead of ``8000``::
+
+    tox -e dev -- -m pretalx runserver localhost:5000
+
 .. _`checksandtests`:
 
 Code checks and unit tests
