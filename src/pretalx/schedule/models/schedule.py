@@ -12,9 +12,11 @@ from django.utils.timezone import override as tzoverride
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django_scopes import ScopedManager
+from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins import LogMixin
+from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import template_context_from_event
 from pretalx.person.models import User
@@ -37,6 +39,13 @@ class Schedule(LogMixin, models.Model):
         max_length=190, null=True, blank=True, verbose_name=_("version")
     )
     published = models.DateTimeField(null=True, blank=True)
+    comment = I18nTextField(
+        null=True,
+        blank=True,
+        help_text=_("This text will be shown in the public changelog and the RSS feed.")
+        + " "
+        + phrases.base.use_markdown,
+    )
 
     objects = ScopedManager(event="event")
 
@@ -48,7 +57,9 @@ class Schedule(LogMixin, models.Model):
         public = "{self.event.urls.schedule}v/{self.url_version}/"
 
     @transaction.atomic
-    def freeze(self, name: str, user=None, notify_speakers: bool = True):
+    def freeze(
+        self, name: str, user=None, notify_speakers: bool = True, comment: str = None
+    ):
         """Releases the current WIP schedule as a fixed schedule version.
 
         :param name: The new schedule name. May not be in use in this event,
@@ -57,6 +68,7 @@ class Schedule(LogMixin, models.Model):
             the freeze.
         :param notify_speakers: Should notification emails for speakers with
             changed slots be generated?
+        :param comment: Public comment for the release
         :rtype: Schedule
         """
         from pretalx.schedule.models import TalkSlot
@@ -71,8 +83,9 @@ class Schedule(LogMixin, models.Model):
             raise Exception("Cannot create schedule version without a version name.")
 
         self.version = name
+        self.comment = comment
         self.published = now()
-        self.save(update_fields=["published", "version"])
+        self.save(update_fields=["published", "version", "comment"])
         self.log_action("pretalx.schedule.release", person=user, orga=True)
 
         wip_schedule = Schedule.objects.create(event=self.event)

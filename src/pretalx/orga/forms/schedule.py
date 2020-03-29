@@ -1,10 +1,11 @@
 from django.forms import BooleanField, ModelForm, ValidationError
 from django.utils.translation import gettext_lazy as _
+from i18nfield.forms import I18nModelForm
 
 from pretalx.schedule.models import Schedule
 
 
-class ScheduleReleaseForm(ModelForm):
+class ScheduleReleaseForm(ModelForm, I18nModelForm):
     notify_speakers = BooleanField(
         label=_("Notify speakers of changes"), required=False, initial=True
     )
@@ -26,4 +27,7 @@ class ScheduleReleaseForm(ModelForm):
 
     class Meta:
         model = Schedule
-        fields = ("version",)
+        fields = (
+            "version",
+            "comment",
+        )

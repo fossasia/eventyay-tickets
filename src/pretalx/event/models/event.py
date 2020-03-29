@@ -781,16 +781,21 @@ class Event(LogMixin, models.Model):
         """
         return daterange(self.date_from, self.date_to)
 
-    def release_schedule(self, name: str, user=None, notify_speakers: bool = False):
+    def release_schedule(
+        self, name: str, user=None, notify_speakers: bool = False, comment: str = None
+    ):
         """Releases a new :class:`~pretalx.schedule.models.schedule.Schedule`
         by finalizing the current WIP schedule.
 
         :param name: The new version name
         :param user: The :class:`~pretalx.person.models.user.User` executing the release
         :param notify_speakers: Generate emails for all speakers with changed slots.
+        :param comment: Public comment for the release
         :type user: :class:`~pretalx.person.models.user.User`
         """
-        self.wip_schedule.freeze(name=name, user=user, notify_speakers=notify_speakers)
+        self.wip_schedule.freeze(
+            name=name, user=user, notify_speakers=notify_speakers, comment=comment
+        )
 
     release_schedule.alters_data = True
 

@@ -1,4 +1,8 @@
 {% load i18n %}
+{% load rich_text %}
+{% if schedule.comment %}
+  <p>{{ schedule.comment|rich_text }}</p>
+{% endif %}
 {% if not schedule.changes.count %}
     {% if schedule.changes.action == 'update' %}
         <p>{{ phrases.agenda.changelog_unchanged }}</p>

@@ -114,6 +114,7 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
+        kwargs["locales"] = self.request.event.locales
         return kwargs
 
     @context
@@ -143,6 +144,7 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
             form.cleaned_data["version"],
             user=self.request.user,
             notify_speakers=form.cleaned_data["notify_speakers"],
+            comment=form.cleaned_data["comment"],
         )
         messages.success(self.request, _("Nice, your schedule has been released!"))
         return redirect(self.request.event.orga_urls.schedule)

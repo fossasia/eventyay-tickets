@@ -69,18 +69,24 @@
 
 <div id="fake-changelog">
     <h4>{% trans "Version" %} …</h4>
+    <p>This is a public comment for the release</p>
     {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
 </div>
 
-<div class="submit-group" id="release">
-    <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% trans "Back" %}</a>
-    <form method="post" class="d-flex align-items-center">
-        {% csrf_token %}
-        {% bootstrap_field form.notify_speakers layout='event-inline' form_group_class='col-lg-6' %}
-        <div class="input-group">
-            <input id="id_version" class="form-control" name="version" maxlength="200" title="" type="text" placeholder="{% trans "Version" %}" value="{{ suggested_version }}" required>
-            <button type="submit" class="btn btn-success btn-lg">{% trans "Release" %}</button>
-        </div>
-    </form>
-</div>
+<form method="post">
+  {% bootstrap_field form.comment layout='event-inline' form_group_class='col-lg-6' %}
+
+  <div class="submit-group" id="release">
+      <a href="{{ request.event.orga_urls.schedule }}" class="btn btn-info btn-lg">{% trans "Back" %}</a>
+      <div class="d-flex align-items-center">
+          {% csrf_token %}
+          {% bootstrap_field form.notify_speakers layout='event-inline' form_group_class='col-lg-6' %}
+          <div class="input-group">
+              <input id="id_version" class="form-control" name="version" maxlength="200" title="" type="text" placeholder="{% trans "Version" %}" value="{{ suggested_version }}" required>
+              <button type="submit" class="btn btn-success btn-lg">{% trans "Release" %}</button>
+          </div>
+      </div>
+  </div>
+</form>
+
 {% endblock %}
