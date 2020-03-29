@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`772` Organisers can now leave a public comment when they release a new schedule. It will be visible in the changelog and the schedule RSS feed.
 - :feature:`830` Administrators can now configure static and media files to be under different URLs than ``static`` and ``media``.
 - :bug:`-` Using custom mailservers worked, but testing the connection in the settings page showed an error (incorrectly).
 - :feature:`-` Plugin developers can now add content to the HTML head area with the new ``pretalx.cfp.signals.html_head`` signal.

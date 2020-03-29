@@ -2,14 +2,12 @@
 {% load rich_text %}
 {% if schedule.comment %}
   <p>{{ schedule.comment|rich_text }}</p>
+{% elif schedule.changes.action == 'create' %}
+  <p>{% trans "We released our first schedule!" %}</p>
+{% elif not schedule.changes.count %}
+  <p>–</p>
 {% endif %}
-{% if not schedule.changes.count %}
-    {% if schedule.changes.action == 'update' %}
-        <p>{{ phrases.agenda.changelog_unchanged }}</p>
-    {% else %}
-        <p>{{ phrases.agenda.changelog_first }}</p>
-    {% endif %}
-{% else %}
+{% if schedule.changes.count %}
     {% if schedule.changes.new_talks|length > 0 %}
         {% if schedule.changes.new_talks|length > 1 %}
             <p>{{ phrases.agenda.changelog_new_talks }}</p>
