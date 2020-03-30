@@ -1,4 +1,4 @@
-from django.forms import BooleanField, ModelForm, ValidationError
+from django.forms import BooleanField, ValidationError
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 

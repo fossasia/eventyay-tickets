@@ -110,8 +110,8 @@ ALLOWED_HOSTS = [
 ]  # We have our own security middleware to allow for custom event URLs
 
 ROOT_URLCONF = "pretalx.urls"
-STATIC_URL = config.get("site", 'static')
-MEDIA_URL = config.get('site', 'media')
+STATIC_URL = config.get("site", "static")
+MEDIA_URL = config.get("site", "media")
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
 
 
