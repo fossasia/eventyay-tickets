@@ -78,7 +78,7 @@ else:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
-        + os.getenv(
+                  + os.getenv(
             "STAYSEATED_DB_TYPE", config.get("database", "backend", fallback="sqlite3")
         ),
         "NAME": os.getenv(
@@ -113,8 +113,8 @@ if os.getenv("STAYSEATED_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("STAYSEATED_COOKIE_DOMAIN", "")
 
 SESSION_COOKIE_SECURE = (
-    os.getenv("STAYSEATED_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
-    == "True"
+        os.getenv("STAYSEATED_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
+        == "True"
 )
 
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
@@ -124,9 +124,6 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.admin.apps.SimpleAdminConfig",
     "channels",
     "stayseated.core.CoreConfig",
 ]
@@ -145,7 +142,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -181,7 +177,6 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "stayseated.web.context.processor",
                 "django.template.context_processors.i18n",
             ],
             "loaders": template_loaders,
@@ -191,7 +186,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "stayseated.wsgi.application"
 ASGI_APPLICATION = "stayseated.routing.application"
-
 
 if not DEBUG:
     AUTH_PASSWORD_VALIDATORS = [
@@ -279,7 +273,6 @@ LOGGING = {
         },
     },
 }
-
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
