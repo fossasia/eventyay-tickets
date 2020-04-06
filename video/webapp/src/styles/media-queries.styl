@@ -1,0 +1,33 @@
+$mq = {}
+$mq.measures = {
+	xs: 480px,
+	s: 768px,
+	m: 992px,
+	l: 1200px,
+	xl: 1800px
+}
+
+-is-string(val)
+	if typeof(val) is not 'unit'
+		if val is a 'string' or val is a 'ident'
+			true
+		else
+			false
+	else
+		false
+
+-get-media-query(value, direction)
+	if -is-string(value)
+		value = $mq.measures[value]
+	condition = 'screen and (%s-width: %s)' % (direction value)
+	return condition
+
+above(value)
+	condition = -get-media-query(value, min)
+	@media condition
+		{block}
+
+below(value)
+	condition = -get-media-query(value, max)
+	@media condition
+		{block}
