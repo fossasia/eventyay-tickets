@@ -1,2 +1,2 @@
-# vicoro
+# stay seated!
 
