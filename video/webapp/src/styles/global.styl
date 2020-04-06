@@ -1,0 +1,27 @@
+@import 'variables'
+variables()
+normalize-css()
+base()
+typography()
+components()
+scrollbars()
+
+
+a
+	color $ax-primary
+	text-decoration: none
+
+html, body, #v-app
+	margin: 0
+	height: 100%
+	overflow: hidden
+
+body
+	background-color: $clr-grey-100
+
+::selection {
+	color: $clr-primary-text-dark
+}
+
+.bunt-scrollbar
+	min-height: 0 // firefox can fuck off into space
