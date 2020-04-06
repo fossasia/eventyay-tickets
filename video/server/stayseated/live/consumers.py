@@ -18,4 +18,5 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
     # Receive message from WebSocket
     async def receive_json(self, content, **kargs):
-        pass
+        if content[0] == 'ping':
+            await self.send_json(['pong', content[1]])
