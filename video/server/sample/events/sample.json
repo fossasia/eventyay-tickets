@@ -20,11 +20,9 @@
       "modules": [
         {
           "type": "livestream.native",
-          "title": "config"
-          :
-        {
-          "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
-        }
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
+          }
         },
         {
           "type": "chat.matrix",

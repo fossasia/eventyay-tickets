@@ -100,6 +100,20 @@ DATABASES = {
     }
 }
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [
+                (os.getenv("STAYSEATED_REDIS_HOST", config.get("redis", "host", fallback="127.0.0.1")),
+                 int(os.getenv("STAYSEATED_REDIS_PORT", config.get("redis", "port", fallback=6379))))
+            ],
+            "prefix": "stayseatet:asgi:"
+        },
+    },
+}
+
 SITE_URL = os.getenv(
     "STAYSEATED_SITE_URL", config.get("stayseated", "url", fallback="http://localhost")
 )
@@ -126,6 +140,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "channels",
     "stayseated.core.CoreConfig",
+    "stayseated.live.LiveConfig",
 ]
 
 try:

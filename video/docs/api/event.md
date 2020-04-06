@@ -23,7 +23,6 @@ Event configuration
                 "modules": [
                     {
                         "type": "livestream.native",
-                        "title": 
                         "config": {
                             "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
                         }
