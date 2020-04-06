@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from django.contrib import messages
 from django.utils.crypto import get_random_string
 
-AUTH_USER_MODEL = "core.User"
+# AUTH_USER_MODEL = "core.User"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("STAYSEATED_DATA_DIR", os.path.join(BASE_DIR, "data"))
