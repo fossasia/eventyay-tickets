@@ -31,5 +31,5 @@ where ``<-`` means the message is sent *only* to the original client, and
 
 Since WebSocket ping-pong is not exposed to JavaScript, we have to build our own on top::
 
-  ["ping", $TIMESTAMP]
-  ["pong", $SAME_TIMESTAMP]
+    ["ping", $TIMESTAMP]
+    ["pong", $SAME_TIMESTAMP]
