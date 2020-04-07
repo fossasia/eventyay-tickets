@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from 'lib/api'
+import chat from './chat'
 
 Vue.use(Vuex)
 
@@ -25,5 +26,8 @@ export default new Vuex.Store({
 				commit('SET_ROOMS', initialState.rooms)
 			})
 		}
+	},
+	modules: {
+		chat
 	}
 })
