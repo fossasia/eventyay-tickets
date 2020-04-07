@@ -33,7 +33,8 @@
         {
           "type": "agenda.pretalx",
           "config": {
-            "matrix_url": "https://pretalx.com/conf/online/schedule/export/schedule.json"
+            "api_url": "https://pretalx.com/conf/online/schedule/export/schedule.json",
+            "room_id": 3
           }
         }
       ]

@@ -1,6 +1,12 @@
 Event configuration
 ===================
 
+The event configuration is pushed directly after websocket connect with a message structured as
+
+    <= ["event.config", { … }]
+    
+The body of the configuration is strucured like this:
+
     {
         "event": {
             "title": "Unsere tolle Online-Konferenz",
@@ -36,7 +42,8 @@ Event configuration
                     {
                         "type": "agenda.pretalx",
                         "config": {
-                            "matrix_url": "https://pretalx.com/conf/online/schedule/export/schedule.json"
+                            "api_url": "https://pretalx.com/conf/online/schedule/export/schedule.json",
+                            "room_id": 3
                         }
                     }
                 ]
