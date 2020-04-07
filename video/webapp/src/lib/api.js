@@ -25,7 +25,10 @@ const api = {
 		api.client.on('message', (message) => {
 			let [name, ...data] = message
 			if (data.length === 1) data = data[0]
-			if (store._actions[`api::${name}`]) {
+			const module = name.split('.')[0]
+			if (store._actions[`${module}/api::${name}`]) {
+				store.dispatch(`${module}/api::${name}`, data)
+			} else if (store._actions[`api::${name}`]) {
 				store.dispatch(`api::${name}`, data)
 			}
 		})

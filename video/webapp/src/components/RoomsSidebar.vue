@@ -2,7 +2,8 @@
 .c-rooms-sidebar
 	.rooms
 		.room(v-for="room of rooms")
-			.name {{ room.name }}
+			router-link(:to="{name: 'room', params: {roomId: room.id}}")
+				.name {{ room.name }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -28,6 +29,7 @@ export default {
 .c-rooms-sidebar
 	background-color: $clr-white
 	box-shadow: 2px 2px 5px 0 rgba(0,0,0,0.16), 2px 12px 10px 0 rgba(0,0,0,0.12)
+	z-index: 100
 	.rooms
 		display: flex
 		flex-direction: column
