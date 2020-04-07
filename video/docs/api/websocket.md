@@ -17,11 +17,19 @@ Success case:
     => [$ACTION_NAME, $CORRELATION_ID, $PAYLOAD]
     <- ['success', $CORRELATION_ID, $UPDATE_OR_RESULT]
     <≈ [$ACTION_NAME, $UPDATE_OR_RESULT]
-    
+
 Error case:
 
     => [$ACTION_NAME, $CORRELATION_ID, $PAYLOAD]
     <- ['error', $CORRELATION_ID, $ERROR_PAYLOAD]
-    
+
 where ``<-`` means the message is sent *only* to the original client, and
 ``<≈`` denotes a broadcast to all other clients.
+
+=> ``ping`` and <= ``pong`` – Keepalive
+---------------------------------------
+
+Since WebSocket ping-pong is not exposed to JavaScript, we have to build our own on top::
+
+  ["ping", $TIMESTAMP]
+  ["pong", $SAME_TIMESTAMP]
