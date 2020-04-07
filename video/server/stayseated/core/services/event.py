@@ -18,3 +18,10 @@ async def get_event_config(event_name):
     # TODO: Remove any rooms the user should not see
 
     return data
+
+
+async def get_room_config(event_name, room_id):
+    event = await get_event_config(event_name)
+    for r in event['rooms']:
+        if r['id'] == room_id:
+            return r

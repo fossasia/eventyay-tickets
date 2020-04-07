@@ -3,7 +3,7 @@ Event configuration
 
 The event configuration is pushed directly after websocket connect with a message structured as
 
-    <= ["event.config", { … }]
+    <- ["event.config", { … }]
     
 The body of the configuration is strucured like this:
 
@@ -13,6 +13,7 @@ The body of the configuration is strucured like this:
         },
         "rooms": [
             {
+                "id": "room_1",
                 "name": "Plenum",
                 "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
                 "picture": "https://via.placeholder.com/150",
@@ -34,9 +35,8 @@ The body of the configuration is strucured like this:
                         }
                     },
                     {
-                        "type": "chat.matrix",
+                        "type": "chat.native",
                         "config": {
-                            "matrix_url": "https://matrix.stayseated.tld"
                         }
                     },
                     {
@@ -49,6 +49,7 @@ The body of the configuration is strucured like this:
                 ]
             },
             {
+                "id": "room_2",
                 "name": "Gruppenraum 1",
                 "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
                 "picture": "https://via.placeholder.com/150",

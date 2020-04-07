@@ -4,6 +4,7 @@
   },
   "rooms": [
     {
+      "id": "room_0",
       "name": "Plenum",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
@@ -25,9 +26,8 @@
           }
         },
         {
-          "type": "chat.matrix",
+          "type": "chat.native",
           "config": {
-            "matrix_url": "https://matrix.stayseated.tld"
           }
         },
         {
@@ -40,6 +40,7 @@
       ]
     },
     {
+      "id": "room_1",
       "name": "Gruppenraum 1",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
