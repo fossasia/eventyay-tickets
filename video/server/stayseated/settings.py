@@ -64,7 +64,9 @@ else:
         "STAYSEATED_MAIL_HOST", config.get("mail", "host", fallback="localhost")
     )
     EMAIL_PORT = int(
-        os.environ.get("STAYSEATED_MAIL_PORT", config.get("mail", "port", fallback="25"))
+        os.environ.get(
+            "STAYSEATED_MAIL_PORT", config.get("mail", "port", fallback="25")
+        )
     )
     EMAIL_HOST_USER = os.environ.get(
         "STAYSEATED_MAIL_USER", config.get("mail", "user", fallback="")
@@ -78,7 +80,7 @@ else:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
-                  + os.getenv(
+        + os.getenv(
             "STAYSEATED_DB_TYPE", config.get("database", "backend", fallback="sqlite3")
         ),
         "NAME": os.getenv(
@@ -102,14 +104,24 @@ DATABASES = {
 
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
             "hosts": [
-                (os.getenv("STAYSEATED_REDIS_HOST", config.get("redis", "host", fallback="127.0.0.1")),
-                 int(os.getenv("STAYSEATED_REDIS_PORT", config.get("redis", "port", fallback=6379))))
+                (
+                    os.getenv(
+                        "STAYSEATED_REDIS_HOST",
+                        config.get("redis", "host", fallback="127.0.0.1"),
+                    ),
+                    int(
+                        os.getenv(
+                            "STAYSEATED_REDIS_PORT",
+                            config.get("redis", "port", fallback=6379),
+                        )
+                    ),
+                )
             ],
-            "prefix": "stayseatet:asgi:"
+            "prefix": "stayseatet:asgi:",
         },
     },
 }
@@ -127,8 +139,8 @@ if os.getenv("STAYSEATED_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("STAYSEATED_COOKIE_DOMAIN", "")
 
 SESSION_COOKIE_SECURE = (
-        os.getenv("STAYSEATED_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
-        == "True"
+    os.getenv("STAYSEATED_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
+    == "True"
 )
 
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
