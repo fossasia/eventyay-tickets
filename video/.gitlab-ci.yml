@@ -1,0 +1,28 @@
+py_style:
+  stage: test
+  script:
+    - cd server
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -U pip wheel setuptools
+    - XDG_CACHE_HOME=/cache pip install black flake8 isort
+    - black --check stayseated tests
+    - flake8 stayseated tests
+    - isort -rc -c stayseated tests
+  interruptible: true
+  tags:
+    - python3
+py_test:
+  stage: test
+  services:
+    - redis:latest
+  script:
+    - cd server
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -U pip wheel setuptools
+    - XDG_CACHE_HOME=/cache pip install -Ur requirements.txt
+    - STAYSEATED_REDIS_HOST=redis py.test tests/
+  interruptible: true
+  tags:
+    - python3
