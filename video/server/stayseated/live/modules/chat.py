@@ -48,9 +48,8 @@ class ChatModule:
         await self.consumer.send_json(['success', self.content[1], {}])
 
     async def publish_event(self):
-        self.content.pop('type')
         # TODO: Filter if user is allowed to see
-        await self.consumer.send_json(['chat.event', self.content])
+        await self.consumer.send_json(['chat.event', {k: v for k, v in self.content.items() if k != 'type'}])
 
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer
