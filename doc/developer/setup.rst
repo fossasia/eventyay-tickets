@@ -58,7 +58,7 @@ First up, check that ``tox`` is installed and working as expected::
 Then, create the local database::
 
     tox -e dev manage.py migrate
-    tox -e dev manage.py collectstatic --noinput
+    tox -e dev -- manage.py collectstatic --noinput
 
 To be able to log in, you should also create an admin user, organiser and team by running::
 
