@@ -139,7 +139,7 @@ class EventForm(ReadOnlyFlag, I18nModelForm):
         if start_delta and end_delta:
             # The event was moved, and we will move all talks with it.
             for key in ("start", "end"):
-                filt = {f"{key}__isnull": False, "event": self.instance.event}
+                filt = {f"{key}__isnull": False}
                 update = {key: F(key) + start_delta}
                 self.instance.wip_schedule.talks.filter(**filt).update(**update)
                 Availability.objects.filter(event=self.instance).filter(**filt).update(
