@@ -1,15 +1,23 @@
 <template lang="pug">
 .c-room
+	.main
+		.room-info
+			img(:src="room.picture")
+			.room-info-text
+				h2 {{ room.name }}
+				.description {{ room.description }}
+		livestream(v-if="room.modules.some(module => module.type === 'livestream.native')", :room="room")
 	chat(v-if="room.modules.some(module => module.type === 'chat.native')", :room="room")
 </template>
 <script>
 import Chat from 'components/Chat'
+import Livestream from 'components/Livestream'
 
 export default {
 	props: {
 		roomId: String
 	},
-	components: { Chat },
+	components: { Chat, Livestream },
 	data () {
 		return {
 		}
@@ -31,4 +39,21 @@ export default {
 .c-room
 	flex: auto
 	display: flex
+	background-color: $clr-white
+	min-height: 0
+	.main
+		flex: auto
+		display: flex
+		flex-direction: column
+		min-height: 0
+	.room-info
+		flex: none
+		display: flex
+		padding: 16px 16px
+		.room-info-text
+			margin-left: 16px
+	.c-chat
+		border-left: border-separator()
+		flex: none
+		width: 480px
 </style>
