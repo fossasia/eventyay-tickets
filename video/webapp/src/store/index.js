@@ -10,20 +10,15 @@ export default new Vuex.Store({
 		event: null,
 		rooms: null
 	},
-	mutations: {
-		SET_EVENT (state, event) {
-			state.event = event
-		},
-		SET_ROOMS (state, rooms) {
-			state.rooms = rooms
-		}
-	},
 	actions: {
 		connect ({commit, dispatch, state}) {
 			api.connect()
 			api.client.on('joined', (initialState) => {
-				commit('SET_EVENT', initialState.event)
-				commit('SET_ROOMS', initialState.rooms)
+				state.event = initialState.event
+				state.rooms = initialState.rooms
+			})
+			api.client.on('closed', () => {
+				state.event = null
 			})
 		}
 	},
