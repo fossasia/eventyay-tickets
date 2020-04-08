@@ -22,7 +22,7 @@
         {
           "type": "livestream.native",
           "config": {
-            "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
+            "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
           }
         },
         {
