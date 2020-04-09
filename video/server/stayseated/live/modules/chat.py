@@ -65,6 +65,8 @@ class ChatModule:
             await self.leave()
         elif content[0] == "chat.send":
             await self.send()
+        else:
+            await self.error("chat.unsupported_command")
 
     async def dispatch_event(self, consumer, content):
         self.consumer = consumer
@@ -72,3 +74,8 @@ class ChatModule:
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
         if content["type"] == "chat.event":
             await self.publish_event()
+        else:
+            await self.error("chat.unsupported_event")
+
+    async def error(self, code):
+        await self.consumer.send_json(["error", self.content[1], {"code": code}])

@@ -45,6 +45,17 @@ async def test_join_leave():
 
 
 @pytest.mark.asyncio
+async def test_bogus_command():
+    async with event_communicator() as c:
+        await c.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
+        await c.send_json_to(["chat.lol", 123, ""])
+        response = await c.receive_json_from()
+        assert response == ["error", 123, {"code": "chat.unsupported_command"}]
+
+
+@pytest.mark.asyncio
 async def test_send_message_to_other_client():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"room": "room_0"}])
