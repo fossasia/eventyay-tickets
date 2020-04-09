@@ -19,3 +19,4 @@ flake8
 pytest
 pytest-django
 pytest-asyncio
+pytest-cov
