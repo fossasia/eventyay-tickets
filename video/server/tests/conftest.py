@@ -6,4 +6,4 @@ async def clear_redis():
     from stayseated.core.utils.redis import aioredis
 
     async with aioredis() as redis:
-        redis.flushall()
+        await redis.flushall()

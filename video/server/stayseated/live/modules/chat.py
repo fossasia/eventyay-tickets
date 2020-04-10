@@ -7,26 +7,24 @@ class ChatModule:
         room_id = self.content[2]["room"]
         room_config = await get_room_config(self.event, room_id)
         if not room_config:
-            await self.consumer.send_json(
-                ["error", self.content[1], {"message": "Unknown room ID."}]
-            )
+            await self.consumer.send_error("room.unknown", "Unknown room ID")
             return
         if "chat.native" not in [m["type"] for m in room_config["modules"]]:
-            await self.consumer.send_json(
-                ["error", self.content[1], {"message": "Room does not contain a chat."}]
+            await self.consumer.send_error(
+                "chat.unknown", "Room does not contain a chat."
             )
             return
         await self.consumer.channel_layer.group_add(
             "chat.{}".format(room_id), self.consumer.channel_name
         )
-        await self.consumer.send_json(["success", self.content[1], {}])
+        await self.consumer.send_success()
 
     async def leave(self):
         room_id = self.content[2]["room"]
         await self.consumer.channel_layer.group_discard(
             "chat.{}".format(room_id), self.consumer.channel_name
         )
-        await self.consumer.send_json(["success", self.content[1], {}])
+        await self.consumer.send_success()
 
     async def send(self):
         room_id = self.content[2]["room"]
@@ -47,7 +45,7 @@ class ChatModule:
             },
         )
         # TODO: Filter if user is allowed to send this type of message
-        await self.consumer.send_json(["success", self.content[1], {}])
+        await self.consumer.send_success()
 
     async def publish_event(self):
         # TODO: Filter if user is allowed to see
@@ -66,7 +64,7 @@ class ChatModule:
         elif content[0] == "chat.send":
             await self.send()
         else:
-            await self.error("chat.unsupported_command")
+            await self.consumer.send_error("chat.unsupported_command")
 
     async def dispatch_event(self, consumer, content):
         self.consumer = consumer
@@ -75,7 +73,4 @@ class ChatModule:
         if content["type"] == "chat.event":
             await self.publish_event()
         else:
-            await self.error("chat.unsupported_event")
-
-    async def error(self, code):
-        await self.consumer.send_json(["error", self.content[1], {"code": code}])
+            await self.consumer.send_error("chat.unsupported_event")
