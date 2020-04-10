@@ -44,3 +44,5 @@ class AuthModule:
             await self.login()
         elif content[0] == "user.update":
             await self.update()
+        else:
+            await self.consumer.send_error(code="user.unknown_command")

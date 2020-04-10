@@ -29,6 +29,8 @@ async def get_user(token=None, client_id=None):
             data["traits"] = token["traits"]
     elif client_id:
         data = await get_json(f"user:client_id:{client_id}", {"client_id": client_id})
+    else:
+        raise Exception("get_user was called without token or client_id")
     await update_user(data, data)
     return data
 

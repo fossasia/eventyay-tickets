@@ -24,16 +24,20 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.content = content
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
-        if "user" not in self.scope and "user_id" not in self.scope.get("session", {}):
+            return
+        if "user" not in self.scope and "user" not in self.scope.get("session", {}):
             if self.content[0] == "authenticate":
                 await AuthModule().dispatch_command(self, content)
             else:
                 await self.send_error("protocol.unauthenticated")
+            return
+        components = {"chat": ChatModule, "user": AuthModule}
+        namespace = content[0].split(".")[0]
+        component = components.get(namespace)
+        if component:
+            await component().dispatch_command(self, content)
         else:
-            if content[0].startswith("chat."):
-                await ChatModule().dispatch_command(self, content)
-            elif content[0].startswith("user."):
-                await AuthModule().dispatch_command(self, content)
+            await self.send_error("protocol.unknown_command")
 
     async def dispatch(self, message):
         if message["type"].startswith("chat."):
