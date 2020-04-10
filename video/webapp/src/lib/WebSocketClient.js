@@ -67,6 +67,7 @@ class WebSocketClient extends EventEmitter {
 		this._socket.addEventListener('open', () => {
 			this.emit('open')
 			this.socketState = 'open'
+			this._authenticate()
 			this._joinTimeout = setTimeout(() => {
 				this._handlePingTimeout()
 			}, this._config.joinTimeout)
@@ -85,7 +86,6 @@ class WebSocketClient extends EventEmitter {
 		this._socket.addEventListener('message', this._processMessage.bind(this))
 		this._openRequests = {} // save deferred promises from requests waiting for reponse
 		this._nextRequestIndex = 1 // autoincremented message id
-		this._authenticationTimeout = null
 		this._joinTimeout = null
 	}
 
@@ -95,6 +95,14 @@ class WebSocketClient extends EventEmitter {
 			direction: 'send',
 			data: payload
 		})
+	}
+
+	_authenticate () {
+		const payload = [
+			'authenticate',
+			{ token: this._config.token }
+		]
+		this._send(JSON.stringify(payload))
 	}
 
 	_ping (starterSocket) { // we need a ref to the socket to detect reconnects and stop the old ping loop
@@ -126,7 +134,7 @@ class WebSocketClient extends EventEmitter {
 			error: this._handleError.bind(this),
 			success: this._handleCallSuccess.bind(this),
 			pong: this._handlePong.bind(this),
-			'event.config': this._handleJoined.bind(this)
+			authenticated: this._handleJoined.bind(this)
 		}
 		if (actionHandlers[message[0]] === undefined) {
 			this.emit('message', message)

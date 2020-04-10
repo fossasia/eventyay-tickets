@@ -8,7 +8,7 @@ audience = "demo-event"
 
 def create_token(user_id, traits):
     iat = datetime.datetime.utcnow()
-    exp = iat + datetime.timedelta(days=2)
+    exp = iat + datetime.timedelta(days=999)
     payload = {
         "iss": issuer,
         "aud": audience,
