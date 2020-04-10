@@ -23,7 +23,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.content = content
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
-        if not "user" in self.scope and not "user_id" in self.scope.get("session", {}):
+        if "user" not in self.scope and "user_id" not in self.scope.get("session", {}):
             if self.content[0] == "authenticate":
                 await AuthModule().dispatch_command(self, content)
             else:

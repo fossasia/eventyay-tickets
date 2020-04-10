@@ -7,7 +7,7 @@ from stayseated.core.utils.jwt import decode_token
 
 class AuthModule:
     async def login(self):
-        if not self.content[1] or not "token" in self.content[1]:
+        if not self.content[1] or "token" not in self.content[1]:
             client_id = self.content[1].get("client_id")
             if not client_id:
                 await self.consumer.send_error(code="auth.missing_id_or_token")
@@ -33,7 +33,7 @@ class AuthModule:
         )
 
     async def update(self):
-        if not "user_id" in self.consumer.scope["session"]:
+        if "user_id" not in self.consumer.scope["session"]:
             raise
         await update_user(self.consumer.scope["session"]["user"], self.content[2])
         await self.consumer.send_json(["success", self.content[1], {}])

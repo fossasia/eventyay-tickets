@@ -20,7 +20,7 @@ async def event_communicator():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_with_client_id():
-    async with event_communicator() as c, event_communicator() as c2:
+    async with event_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
@@ -44,7 +44,7 @@ async def test_auth_with_jwt_token(index):
         "traits": ["chat.read", "foo.bar"],
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
-    async with event_communicator() as c, event_communicator() as c2:
+    async with event_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
@@ -69,7 +69,7 @@ async def test_auth_with_invalid_jwt_token():
     token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256").decode(
         "utf-8"
     )
-    async with event_communicator() as c, event_communicator() as c2:
+    async with event_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "error"
