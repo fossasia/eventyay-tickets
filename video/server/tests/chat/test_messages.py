@@ -20,6 +20,15 @@ async def event_communicator():
 
 
 @pytest.mark.asyncio
+async def test_join_unknown_event():
+    communicator = WebsocketCommunicator(application, "/ws/event/sampleeeeeeee/")
+    await communicator.connect()
+    await communicator.send_json_to(["authenticate", {"client_id": 4}])
+    response = await communicator.receive_json_from()
+    assert response == ["error", {"code": "event.unknown_event"}]
+
+
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_unknown_room():
     async with event_communicator() as c:

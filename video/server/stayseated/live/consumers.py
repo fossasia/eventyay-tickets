@@ -7,12 +7,13 @@ from .modules.chat import ChatModule
 
 class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
+        self.content = {}
         await self.accept()
         event_config = await get_event_config(
             self.scope["url_route"]["kwargs"]["event"]
         )
         if event_config is None:
-            await self.send_json(["error", None, "unknown event"], close=True)
+            await self.send_error("event.unknown_event", close=True)
             return
 
     async def disconnect(self, close_code):
@@ -49,11 +50,11 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         response.append(data)
         return response
 
-    async def send_error(self, code, message=None):
+    async def send_error(self, code, message=None, close=False):
         data = {"code": code}
         if message:
             data["message"] = message
-        await self.send_json(self.build_response("error", data))
+        await self.send_json(self.build_response("error", data), close=close)
 
-    async def send_success(self, data=None):
-        await self.send_json(self.build_response("success", data))
+    async def send_success(self, data=None, close=False):
+        await self.send_json(self.build_response("success", data), close=close)
