@@ -18,7 +18,8 @@ class WebSocketClient extends EventEmitter {
 			pingInterval: 5000,
 			joinTimeout: 60000,
 			reconnectDelay: 1000,
-			token: ''
+			token: null,
+			clientId: null
 		}
 		this._config = Object.assign(defaultConfig, config)
 		this._url = url
@@ -98,11 +99,14 @@ class WebSocketClient extends EventEmitter {
 	}
 
 	_authenticate () {
-		const payload = [
-			'authenticate',
-			{ token: this._config.token }
-		]
-		this._send(JSON.stringify(payload))
+		const payload = {}
+		if (this._config.token) {
+			payload.token = this._config.token
+		}
+		if (this._config.clientId) {
+			payload.client_id = this._config.clientId
+		}
+		this._send(JSON.stringify(['authenticate', payload]))
 	}
 
 	_ping (starterSocket) { // we need a ref to the socket to detect reconnects and stop the old ping loop

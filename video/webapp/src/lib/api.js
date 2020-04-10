@@ -5,11 +5,11 @@ import WebSocketClient from './WebSocketClient'
 
 const api = {
 	client: {},
-	connect (token) {
+	connect ({token, clientId}) {
 		if (api.client.close) {
 			api.client.close()
 		}
-		api.client = new WebSocketClient(`${config.api.socket}`, {token})
+		api.client = new WebSocketClient(`${config.api.socket}`, {token, clientId})
 		api.client.on('closed', () => {
 			console.warn('socket closed')
 		})
