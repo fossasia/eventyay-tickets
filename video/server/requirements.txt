@@ -8,6 +8,7 @@ django-extensions==2.2.5
 aiofile
 
 pytz
+pyjwt
 
 # deploy
 psycopg2-binary
