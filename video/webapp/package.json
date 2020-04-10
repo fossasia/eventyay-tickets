@@ -17,6 +17,7 @@
     "mux.js": "^5.5.3",
     "roboto-fontface": "^0.10.0",
     "shaka-player": "^2.5.10",
+    "uuid": "^7.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"

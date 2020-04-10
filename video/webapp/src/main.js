@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Buntpapier from 'buntpapier'
 import shaka from 'shaka-player'
 import muxjs from 'mux.js'
+import uuid from 'uuid/v4'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -28,12 +29,18 @@ new Vue({
 
 const token = new URLSearchParams(router.currentRoute.hash.substr(1)).get('token')
 if (token) {
-	localStorage.setItem('token', token)
+	localStorage.token = token
 	router.replace(router.currentRoute.path)
-	store.dispatch('login', token)
+	store.dispatch('login', {token})
 } else if (localStorage.token) {
 	store.dispatch('login', localStorage.token)
 } else {
-	console.error('NO TOKEN!')
+	console.warn('no token found, login in anonymously')
+	let clientId = localStorage.clientId
+	if (!clientId) {
+		clientId = uuid()
+		localStorage.clientId = clientId
+	}
+	store.dispatch('login', {clientId})
 }
 store.dispatch('connect')

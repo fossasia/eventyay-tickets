@@ -8,16 +8,18 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		token: null,
+		clientId: null,
 		user: null,
 		event: null,
 		rooms: null
 	},
 	actions: {
-		login ({state}, token) {
+		login ({state}, {token, clientId}) {
 			state.token = token
+			state.clientId = clientId
 		},
 		connect ({state}) {
-			api.connect(state.token)
+			api.connect({token: state.token, clientId: state.clientId})
 			api.client.on('joined', (serverState) => {
 				state.user = serverState['user.config']
 				state.event = serverState['event.config'].event
@@ -26,6 +28,10 @@ export default new Vuex.Store({
 			api.client.on('closed', () => {
 				state.event = null
 			})
+		},
+		async updateUser ({state}, update) {
+			await api.client.call('user.update', update)
+			Object.assign(state.user, update)
 		}
 	},
 	modules: {
