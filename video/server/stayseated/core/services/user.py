@@ -35,12 +35,12 @@ async def get_user(token=None, client_id=None):
 
 async def update_user(user, data=None):
     if user.get("user_id"):
-        key = f"user:user_id:{user['user_id']}"
+        redis_key = f"user:user_id:{user['user_id']}"
     elif user.get("client_id"):
-        key = f"user:client_id:{user['client_id']}"
+        redis_key = f"user:client_id:{user['client_id']}"
     else:
         raise Exception("Received user without user ID or client ID.")
-    stored_data = await get_json(key, {})
+    stored_data = await get_json(redis_key, {})
     for key, value in data.items():
         stored_data[key] = value
-    await set_json(key, stored_data)
+    await set_json(redis_key, stored_data)

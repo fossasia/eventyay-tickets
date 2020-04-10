@@ -70,7 +70,5 @@ class ChatModule:
         self.consumer = consumer
         self.content = content
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
-        if content["type"] == "chat.event":
-            await self.publish_event()
-        else:
-            await self.consumer.send_error("chat.unsupported_event")
+        # if content["type"] == "chat.event":
+        await self.publish_event()

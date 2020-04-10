@@ -73,3 +73,39 @@ async def test_auth_with_invalid_jwt_token():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "error"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_update_user():
+    async with event_communicator() as c, event_communicator() as c2:
+        await c.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert response[1]["user.config"] == {"client_id": 4}
+
+        await c.send_json_to(["user.update", 123, {"display_name": "Cool User"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}], response
+
+        await c2.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c2.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert response[1]["user.config"] == {
+            "client_id": 4,
+            "display_name": "Cool User",
+        }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_wrong_user_command():
+    async with event_communicator() as c, event_communicator() as c2:
+        await c.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        await c.send_json_to(["user.foobar", 123, {"display_name": "Cool User"}])
+        response = await c.receive_json_from()
+        assert response == ["error", 123, {"code": "user.unknown_command"}]

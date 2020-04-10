@@ -33,8 +33,6 @@ class AuthModule:
         )
 
     async def update(self):
-        if "user_id" not in self.consumer.scope["session"]:
-            raise
         await update_user(self.consumer.scope["session"]["user"], self.content[2])
         await self.consumer.send_json(["success", self.content[1], {}])
 
