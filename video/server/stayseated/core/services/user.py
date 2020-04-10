@@ -26,7 +26,7 @@ async def get_user(token=None, client_id=None):
         user_id = token["uid"]
         data = await get_json(f"user:user_id:{user_id}", {"user_id": user_id})
         if data.get("traits") != token["traits"]:
-            data["traits"] = data["traits"]
+            data["traits"] = token["traits"]
     elif client_id:
         data = await get_json(f"user:client_id:{client_id}", {"client_id": client_id})
     await update_user(data, data)

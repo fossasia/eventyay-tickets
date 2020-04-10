@@ -2,6 +2,7 @@ from channels.db import database_sync_to_async
 
 from stayseated.core.services.event import get_event_config_for_user
 from stayseated.core.services.user import get_user, update_user
+from stayseated.core.utils.jwt import decode_token
 
 
 class AuthModule:
@@ -13,7 +14,7 @@ class AuthModule:
                 return
             user = await get_user(client_id=client_id)
         else:
-            token = self.content[1]["token"]
+            token = await decode_token(self.content[1]["token"], self.event)
             if not token:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return

@@ -1,6 +1,18 @@
 {
   "event": {
-    "title": "Unsere tolle Online-Konferenz"
+    "title": "Unsere tolle Online-Konferenz",
+    "JWT_secrets": [
+      {
+        "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
+        "issuer": "https://pretix.eu/",
+        "audience": "demo-event"
+      },
+      {
+        "secret": "lol",
+        "issuer": "https://example.org/",
+        "audience": "demo-event"
+      }
+    ]
   },
   "rooms": [
     {
