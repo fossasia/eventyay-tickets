@@ -13,6 +13,7 @@
     "@mdi/font": "^5.0.45",
     "buntpapier": "^1.8.3",
     "core-js": "^3.6.4",
+    "jwt-decode": "^2.2.0",
     "mux.js": "^5.5.3",
     "roboto-fontface": "^0.10.0",
     "shaka-player": "^2.5.10",

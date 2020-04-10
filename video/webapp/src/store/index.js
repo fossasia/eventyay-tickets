@@ -7,12 +7,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
+		token: null,
 		event: null,
 		rooms: null
 	},
 	actions: {
-		connect ({commit, dispatch, state}) {
-			api.connect()
+		login ({state}, token) {
+			state.token = token
+		},
+		connect ({state}) {
+			api.connect(state.token)
 			api.client.on('joined', (initialState) => {
 				state.event = initialState.event
 				state.rooms = initialState.rooms
