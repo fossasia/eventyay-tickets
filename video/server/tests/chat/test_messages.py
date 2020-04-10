@@ -11,7 +11,7 @@ from stayseated.routing import application
 async def event_communicator():
     communicator = WebsocketCommunicator(application, "/ws/event/sample/")
     await communicator.connect()
-    await communicator.send_json_to(["authenticate", {}])
+    await communicator.send_json_to(["authenticate", {"client_id": 4}])
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
     assert "event.config" in response[1], response

@@ -21,14 +21,26 @@ async def set_json(key, value):
         redis.set(key, json.dumps(value))
 
 
-async def get_user(token):
-    data = await get_json("user:4", {})
-    data["id"] = 4
+async def get_user(token=None, client_id=None):
+    if token:
+        user_id = token["uid"]
+        data = await get_json(f"user:user_id:{user_id}", {"user_id": user_id})
+        if data.get("traits") != token["traits"]:
+            data["traits"] = data["traits"]
+    elif client_id:
+        data = await get_json(f"user:client_id:{client_id}", {"client_id": client_id})
+    await update_user(data, data)
     return data
 
 
-async def update_user(user_id, data):
-    stored_data = await get_json("user:4", {})
+async def update_user(user, data=None):
+    if user.get("user_id"):
+        key = f"user:user_id:{user['user_id']}"
+    elif user.get("client_id"):
+        key = f"user:client_id:{user['client_id']}"
+    else:
+        raise Exception("Received user without user ID or client ID.")
+    stored_data = await get_json(key, {})
     for key, value in data.items():
         stored_data[key] = value
-    await set_json("user:4", stored_data)
+    await set_json(key, stored_data)
