@@ -8,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		token: null,
+		user: null,
 		event: null,
 		rooms: null
 	},
@@ -17,9 +18,10 @@ export default new Vuex.Store({
 		},
 		connect ({state}) {
 			api.connect(state.token)
-			api.client.on('joined', (initialState) => {
-				state.event = initialState.event
-				state.rooms = initialState.rooms
+			api.client.on('joined', (serverState) => {
+				state.user = serverState['user.config']
+				state.event = serverState['event.config'].event
+				state.rooms = serverState['event.config'].rooms
 			})
 			api.client.on('closed', () => {
 				state.event = null
