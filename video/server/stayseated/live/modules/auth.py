@@ -26,7 +26,7 @@ class AuthModule:
                 "authenticated",
                 {
                     "user.config": user,
-                    "event.config": await get_event_config(self.event),
+                    "event.config": await get_event_config_for_user(self.event, user),
                 },
             ]
         )

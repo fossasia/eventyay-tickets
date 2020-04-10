@@ -1,15 +1,22 @@
 Event configuration
 ===================
 
-The event configuration is pushed directly after websocket connect with a message structured as
+The event configuration is pushed directly after authentication with a message structured as
 
     <- ["event.config", { … }]
     
-The body of the configuration is strucured like this:
+The body of the configuration is strucured like this, filtered to user visibility:
 
     {
         "event": {
             "title": "Unsere tolle Online-Konferenz",
+            "JWT_sources": [
+                {
+                    "issuer": "pretix.eu",
+                    "audience": "audience",
+                    "secret": "secret"
+                }
+            ]
         },
         "rooms": [
             {
