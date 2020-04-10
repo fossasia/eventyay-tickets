@@ -108,20 +108,20 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                (
-                    os.getenv(
+                {
+                    "address": "redis://"
+                    + os.getenv(
                         "STAYSEATED_REDIS_HOST",
                         config.get("redis", "host", fallback="127.0.0.1"),
-                    ),
-                    int(
-                        os.getenv(
-                            "STAYSEATED_REDIS_PORT",
-                            config.get("redis", "port", fallback=6379),
-                        )
-                    ),
-                )
+                    )
+                    + ":"
+                    + os.getenv(
+                        "STAYSEATED_REDIS_PORT",
+                        config.get("redis", "port", fallback="6379"),
+                    )
+                }
             ],
-            "prefix": "stayseatet:asgi:",
+            "prefix": "stayseated:asgi:",
         },
     },
 }
