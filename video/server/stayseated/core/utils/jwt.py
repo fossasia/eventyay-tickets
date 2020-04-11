@@ -13,5 +13,5 @@ async def decode_token(token, event):
         issuer = jwt_config["issuer"]
         with suppress(jwt.exceptions.InvalidSignatureError):
             return jwt.decode(
-                token, secret, algorithm="HS256", audience=audience, issuer=issuer
+                token, secret, algorithms=["HS256"], audience=audience, issuer=issuer
             )

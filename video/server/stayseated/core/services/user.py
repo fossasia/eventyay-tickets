@@ -18,7 +18,7 @@ async def get_json(key, default=None):
 
 async def set_json(key, value):
     async with aioredis() as redis:
-        redis.set(key, json.dumps(value))
+        await redis.set(key, json.dumps(value))
 
 
 async def get_user(token=None, client_id=None):
