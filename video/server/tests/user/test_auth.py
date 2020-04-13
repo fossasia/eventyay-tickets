@@ -101,7 +101,8 @@ async def test_update_user():
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"] == {"client_id": 4}
+        assert response[1]["user.config"]["client_id"] == 4
+        user_id = response[1]["user.config"]["user_id"]
 
         await c.send_json_to(["user.update", 123, {"display_name": "Cool User"}])
         response = await c.receive_json_from()
@@ -111,10 +112,9 @@ async def test_update_user():
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"] == {
-            "client_id": 4,
-            "display_name": "Cool User",
-        }
+        assert response[1]["user.config"]["client_id"] == 4
+        assert response[1]["user.config"]["display_name"] == "Cool User"
+        assert response[1]["user.config"]["user_id"] == user_id
 
 
 @pytest.mark.asyncio
