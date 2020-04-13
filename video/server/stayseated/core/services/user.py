@@ -46,3 +46,4 @@ async def update_user(user, data=None):
     for key, value in data.items():
         stored_data[key] = value
     await set_json(redis_key, stored_data)
+    return stored_data

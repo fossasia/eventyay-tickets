@@ -35,6 +35,8 @@ class ChatModule:
 
     async def join(self):
         # TODO: send notification
+        if not self.consumer.scope["session"]["user"].get("public_name"):
+            raise ConsumerException("channel.join.missing_name")
         room_id, _ = await self.get_room()
         await self._subscribe(room_id)
         await self.consumer.send_success()

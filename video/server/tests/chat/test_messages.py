@@ -8,13 +8,18 @@ from stayseated.routing import application
 
 
 @asynccontextmanager
-async def event_communicator():
+async def event_communicator(named=True):
     communicator = WebsocketCommunicator(application, "/ws/event/sample/")
     await communicator.connect()
     await communicator.send_json_to(["authenticate", {"client_id": 4}])
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
     assert "event.config" in response[1], response
+    if named:
+        await communicator.send_json_to(
+            ["user.update", 123, {"public_name": "Foo Fighter"}]
+        )
+        await communicator.receive_json_from()
     yield communicator
     await communicator.disconnect()
 
@@ -66,6 +71,15 @@ async def test_join_leave():
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_join_without_name():
+    async with event_communicator(named=False) as c:
+        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["error", 123, {"code": "channel.join.missing_name"}]
 
 
 @pytest.mark.asyncio

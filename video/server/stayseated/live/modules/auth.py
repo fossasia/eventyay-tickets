@@ -33,7 +33,10 @@ class AuthModule:
         )
 
     async def update(self):
-        await update_user(self.consumer.scope["session"]["user"], self.content[2])
+        new_data = await update_user(
+            self.consumer.scope["session"]["user"], self.content[2]
+        )
+        self.consumer.scope["session"]["user"] = new_data
         await self.consumer.send_json(["success", self.content[1], {}])
 
     async def dispatch_command(self, consumer, content):

@@ -63,7 +63,8 @@ Currently, the following types are defined:
 
 This message type is used:
 
-- When a user joins a channel
+- When a user joins a channel.
+  If the user has no ``public_name`` yet, an error with the code ``channel.join.missing_name`` is returned.
 - When a user leaves a channel
 - When a user is kicked/banned
 
