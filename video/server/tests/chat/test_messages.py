@@ -84,6 +84,15 @@ async def test_join_without_name():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_subscribe_without_name():
+    async with event_communicator(named=False) as c:
+        await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_subscribe_join_leave():
     async with event_communicator() as c:
         await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
