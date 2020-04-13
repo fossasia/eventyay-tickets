@@ -4,6 +4,7 @@ from stayseated.core.services.chat import (
     remove_channel_user,
 )
 from stayseated.core.services.event import get_room_config
+from stayseated.core.services.user import get_public_user
 from stayseated.core.utils.redis import aioredis
 from stayseated.live.exceptions import ConsumerException
 
@@ -35,24 +36,52 @@ class ChatModule:
         return {"state": None, "members": await get_channel_users(channel_id)}
 
     async def _leave(self, channel_id):
-        # TODO: send notification
         await remove_channel_user(
             channel_id, self.consumer.scope["session"]["user"]["user_id"]
         )
+        async with aioredis() as redis:
+            event_id = await redis.incr("chat.event_id")
+        await self.consumer.channel_layer.group_send(
+            "chat.{}".format(channel_id),
+            {
+                "type": "chat.event",
+                "channel": channel_id,
+                "event_type": "channel.member",
+                "membership": "leave",
+                "user": await get_public_user(
+                    self.consumer.scope["session"]["user"]["user_id"]
+                ),
+                "sender": self.consumer.scope["session"]["user"]["user_id"],
+                "event_id": event_id,
+            },
+        )
 
     async def subscribe(self):
-        print("subscribing")
         channel_id, _ = await self.get_room()
         reply = await self._subscribe(channel_id)
-        print(reply)
         await self.consumer.send_success(reply)
 
     async def join(self):
-        # TODO: send notification
         if not self.consumer.scope["session"]["user"].get("public_name"):
             raise ConsumerException("channel.join.missing_name")
         channel_id, _ = await self.get_room()
         reply = await self._subscribe(channel_id)
+        async with aioredis() as redis:
+            event_id = await redis.incr("chat.event_id")
+        await self.consumer.channel_layer.group_send(
+            "chat.{}".format(channel_id),
+            {
+                "type": "chat.event",
+                "channel": channel_id,
+                "event_type": "channel.member",
+                "membership": "join",
+                "user": await get_public_user(
+                    self.consumer.scope["session"]["user"]["user_id"]
+                ),
+                "sender": self.consumer.scope["session"]["user"]["user_id"],
+                "event_id": event_id,
+            },
+        )
         await add_channel_user(
             channel_id, self.consumer.scope["session"]["user"]["user_id"]
         )
@@ -111,5 +140,4 @@ class ChatModule:
         self.consumer = consumer
         self.content = content
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
-        # if content["type"] == "chat.event":
         await self.publish_event()

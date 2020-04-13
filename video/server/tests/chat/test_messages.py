@@ -69,6 +69,22 @@ async def test_join_leave():
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
+        response = await c.receive_json_from()
+        assert response == [
+            "chat.event",
+            {
+                "channel": "room_0",
+                "event_id": 1,
+                "event_type": "channel.member",
+                "membership": "join",
+                "sender": c.context["user.config"]["user_id"],
+                "user": {
+                    "public_name": "Foo Fighter",
+                    "user_id": c.context["user.config"]["user_id"],
+                },
+            },
+        ]
+
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
@@ -102,10 +118,40 @@ async def test_subscribe_join_leave():
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
+        response = await c.receive_json_from()
+        assert response == [
+            "chat.event",
+            {
+                "channel": "room_0",
+                "event_id": 1,
+                "event_type": "channel.member",
+                "membership": "join",
+                "sender": c.context["user.config"]["user_id"],
+                "user": {
+                    "public_name": "Foo Fighter",
+                    "user_id": c.context["user.config"]["user_id"],
+                },
+            },
+        ]
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
         await c.send_json_to(["chat.unsubscribe", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == [
+            "chat.event",
+            {
+                "channel": "room_0",
+                "event_id": 2,
+                "event_type": "channel.member",
+                "membership": "leave",
+                "sender": c.context["user.config"]["user_id"],
+                "user": {
+                    "public_name": "Foo Fighter",
+                    "user_id": c.context["user.config"]["user_id"],
+                },
+            },
+        ]
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
 
@@ -117,6 +163,7 @@ async def test_bogus_command():
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
+        await c.receive_json_from()  # join notification
         await c.send_json_to(["chat.lol", 123, ""])
         response = await c.receive_json_from()
         assert response == ["error", 123, {"code": "chat.unsupported_command"}]
@@ -129,12 +176,18 @@ async def test_send_message_to_other_client():
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
+        await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response[0] == "success"
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
         assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
+        response = await c1.receive_json_from()
+        assert response[0] == "chat.event"
+        assert response[1]["membership"] == "join"
+        assert response[1]["user"]["user_id"] == c2.context["user.config"]["user_id"]
+        await c2.receive_json_from()  # join notification c2
 
         await c1.send_json_to(
             [
@@ -184,15 +237,23 @@ async def test_still_messages_after_leave():
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
+        await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response[0] == "success"
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
         assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
+        await c1.receive_json_from()  # join notification c1
+        await c2.receive_json_from()  # join notification c2
+
         await c2.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
+        await c2.receive_json_from()  # leave notification c2
+        response = await c1.receive_json_from()  # leave notification c1
+        assert response[0] == "chat.event"
+        assert response[1]["membership"] == "leave"
 
         await c1.send_json_to(
             [
@@ -229,6 +290,7 @@ async def test_no_message_after_unsubscribe():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
+        await c1.receive_json_from()  # join notification c1
         assert response == ["success", 123, {"state": None, "members": []}]
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
@@ -236,9 +298,15 @@ async def test_no_message_after_unsubscribe():
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
         assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
+        await c1.receive_json_from()  # join notification c2
+        await c2.receive_json_from()  # join notification c2
+
         await c2.send_json_to(["chat.unsubscribe", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
+        response = await c1.receive_json_from()
+        assert response[0] == "chat.event"
+        assert response[1]["membership"] == "leave"
 
         await c1.send_json_to(
             [
