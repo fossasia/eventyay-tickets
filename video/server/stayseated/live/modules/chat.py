@@ -12,6 +12,7 @@ class ChatModule:
             "leave": self.leave,
             "send": self.send,
             "subscribe": self.subscribe,
+            "unsubscribe": self.unsubscribe,
         }
 
     async def get_room(self):
@@ -28,6 +29,10 @@ class ChatModule:
             "chat.{}".format(channel_id), self.consumer.channel_name
         )
 
+    async def _leave(self):
+        # TODO: send notifications
+        pass
+
     async def subscribe(self):
         channel_id, _ = await self.get_room()
         await self._subscribe(channel_id)
@@ -42,10 +47,15 @@ class ChatModule:
         await self.consumer.send_success()
 
     async def leave(self):
+        await self._leave()
+        await self.consumer.send_success()
+
+    async def unsubscribe(self):
         channel_id, _ = await self.get_room()
         await self.consumer.channel_layer.group_discard(
             "chat.{}".format(channel_id), self.consumer.channel_name
         )
+        await self._leave()
         await self.consumer.send_success()
 
     async def send(self):

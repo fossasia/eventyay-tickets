@@ -104,6 +104,9 @@ async def test_subscribe_join_leave():
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
+        await c.send_json_to(["chat.unsubscribe", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
 
 
 @pytest.mark.asyncio
@@ -172,7 +175,7 @@ async def test_send_message_to_other_client():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_no_message_after_leave():
+async def test_still_messages_after_leave():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
@@ -181,6 +184,49 @@ async def test_no_message_after_leave():
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
         await c2.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
+        response = await c2.receive_json_from()
+        assert response == ["success", 123, {}]
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": "room_0",
+                    "event_type": "message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == ["success", 123, {}]
+
+        response = await c1.receive_json_from()
+        response[1]["event_id"] = 0
+        assert response == [
+            "chat.event",
+            {
+                "channel": "room_0",
+                "event_type": "message",
+                "content": {"type": "text", "body": "Hello world"},
+                "sender": "user_todo",
+                "event_id": 0,
+            },
+        ]
+        response = await c2.receive_json_from()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_no_message_after_unsubscribe():
+    async with event_communicator() as c1, event_communicator() as c2:
+        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        response = await c1.receive_json_from()
+        assert response == ["success", 123, {}]
+        await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        response = await c2.receive_json_from()
+        assert response == ["success", 123, {}]
+        await c2.send_json_to(["chat.unsubscribe", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
 
