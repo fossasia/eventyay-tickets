@@ -1,7 +1,11 @@
+from stayseated.core.services.chat import (
+    add_channel_user,
+    get_channel_users,
+    remove_channel_user,
+)
+from stayseated.core.services.event import get_room_config
+from stayseated.core.utils.redis import aioredis
 from stayseated.live.exceptions import ConsumerException
-
-from ...core.services.event import get_room_config
-from ...core.utils.redis import aioredis
 
 
 class ChatModule:
@@ -28,26 +32,35 @@ class ChatModule:
         await self.consumer.channel_layer.group_add(
             "chat.{}".format(channel_id), self.consumer.channel_name
         )
+        return {"state": None, "members": await get_channel_users(channel_id)}
 
-    async def _leave(self):
-        # TODO: send notifications
-        pass
+    async def _leave(self, channel_id):
+        # TODO: send notification
+        await remove_channel_user(
+            channel_id, self.consumer.scope["session"]["user"]["user_id"]
+        )
 
     async def subscribe(self):
+        print("subscribing")
         channel_id, _ = await self.get_room()
-        await self._subscribe(channel_id)
-        await self.consumer.send_success()
+        reply = await self._subscribe(channel_id)
+        print(reply)
+        await self.consumer.send_success(reply)
 
     async def join(self):
         # TODO: send notification
         if not self.consumer.scope["session"]["user"].get("public_name"):
             raise ConsumerException("channel.join.missing_name")
         channel_id, _ = await self.get_room()
-        await self._subscribe(channel_id)
-        await self.consumer.send_success()
+        reply = await self._subscribe(channel_id)
+        await add_channel_user(
+            channel_id, self.consumer.scope["session"]["user"]["user_id"]
+        )
+        await self.consumer.send_success(reply)
 
     async def leave(self):
-        await self._leave()
+        channel_id, _ = await self.get_room()
+        await self._leave(channel_id)
         await self.consumer.send_success()
 
     async def unsubscribe(self):
@@ -55,7 +68,7 @@ class ChatModule:
         await self.consumer.channel_layer.group_discard(
             "chat.{}".format(channel_id), self.consumer.channel_name
         )
-        await self._leave()
+        await self._leave(channel_id)
         await self.consumer.send_success()
 
     async def send(self):

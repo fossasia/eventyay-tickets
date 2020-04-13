@@ -7,6 +7,16 @@ async def get_user_by_user_id(user_id):
     return await get_json(f"user:{user_id}")
 
 
+async def get_public_user(user_id):
+    data = await get_user_by_user_id(user_id)
+    result = {}
+    for key in ["user_id", "public_name", "avatar"]:
+        value = data.get(key)
+        if value:
+            result[key] = value
+    return result
+
+
 async def get_user(user_id=None, token=None, client_id=None):
     if user_id:
         return await get_user_by_user_id(user_id)

@@ -67,7 +67,7 @@ async def test_join_leave():
     async with event_communicator() as c:
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
@@ -88,7 +88,7 @@ async def test_subscribe_without_name():
     async with event_communicator(named=False) as c:
         await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
 
 
 @pytest.mark.asyncio
@@ -97,10 +97,10 @@ async def test_subscribe_join_leave():
     async with event_communicator() as c:
         await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
@@ -115,7 +115,7 @@ async def test_bogus_command():
     async with event_communicator() as c:
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c.send_json_to(["chat.lol", 123, ""])
         response = await c.receive_json_from()
         assert response == ["error", 123, {"code": "chat.unsupported_command"}]
@@ -127,10 +127,13 @@ async def test_send_message_to_other_client():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
+        assert response[2]["state"] is None
+        assert len(response[2]["members"]) == 1
+        assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
 
         await c1.send_json_to(
             [
@@ -179,10 +182,13 @@ async def test_still_messages_after_leave():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
+        assert response[2]["state"] is None
+        assert len(response[2]["members"]) == 1
+        assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
         await c2.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
@@ -222,10 +228,13 @@ async def test_no_message_after_unsubscribe():
     async with event_communicator() as c1, event_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response == ["success", 123, {"state": None, "members": []}]
         await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
+        assert response[2]["state"] is None
+        assert len(response[2]["members"]) == 1
+        assert list(response[2]["members"][0].keys()) == ["user_id", "public_name"]
         await c2.send_json_to(["chat.unsubscribe", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
