@@ -14,6 +14,7 @@ async def event_communicator(named=True):
     await communicator.send_json_to(["authenticate", {"client_id": 4}])
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
+    communicator.context = response[1]
     assert "event.config" in response[1], response
     if named:
         await communicator.send_json_to(
@@ -157,7 +158,7 @@ async def test_send_message_to_other_client():
                 "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
-                "sender": "user_todo",
+                "sender": c1.context["user.config"]["user_id"],
                 "event_id": 0,
             },
         ]
@@ -170,7 +171,7 @@ async def test_send_message_to_other_client():
                 "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
-                "sender": "user_todo",
+                "sender": c1.context["user.config"]["user_id"],
                 "event_id": 0,
             },
         ]
@@ -215,7 +216,7 @@ async def test_still_messages_after_leave():
                 "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
-                "sender": "user_todo",
+                "sender": c1.context["user.config"]["user_id"],
                 "event_id": 0,
             },
         ]
@@ -261,7 +262,7 @@ async def test_no_message_after_unsubscribe():
                 "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
-                "sender": "user_todo",
+                "sender": c1.context["user.config"]["user_id"],
                 "event_id": 0,
             },
         ]

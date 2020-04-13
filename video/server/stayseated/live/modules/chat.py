@@ -85,7 +85,7 @@ class ChatModule:
                 "channel": channel_id,
                 "event_type": event_type,
                 "content": content,
-                "sender": "user_todo",  # TODO
+                "sender": self.consumer.scope["session"]["user"]["user_id"],
                 "event_id": event_id,
             },
         )
