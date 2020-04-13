@@ -30,9 +30,10 @@ async def test_join_unknown_event():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_unknown_room():
+@pytest.mark.parametrize("action", ("join", "subscribe"))
+async def test_join_or_subscribe_unknown_room(action):
     async with event_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"room": "room_unk"}])
+        await c.send_json_to([f"chat.{action}", 123, {"channel": "room_unk"}])
         response = await c.receive_json_from()
         assert response == [
             "error",
@@ -43,9 +44,10 @@ async def test_join_unknown_room():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_room_without_chat():
+@pytest.mark.parametrize("action", ("join", "subscribe"))
+async def test_join_or_subscribe_room_without_chat(action):
     async with event_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"room": "room_1"}])
+        await c.send_json_to([f"chat.{action}", 123, {"channel": "room_1"}])
         response = await c.receive_json_from()
         assert response == [
             "error",
@@ -58,10 +60,25 @@ async def test_join_room_without_chat():
 @pytest.mark.django_db
 async def test_join_leave():
     async with event_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
-        await c.send_json_to(["chat.leave", 123, {"room": "room_0"}])
+        await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_subscribe_join_leave():
+    async with event_communicator() as c:
+        await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
+        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}]
+        await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
 
@@ -70,7 +87,7 @@ async def test_join_leave():
 @pytest.mark.django_db
 async def test_bogus_command():
     async with event_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
         await c.send_json_to(["chat.lol", 123, ""])
@@ -82,10 +99,10 @@ async def test_bogus_command():
 @pytest.mark.django_db
 async def test_send_message_to_other_client():
     async with event_communicator() as c1, event_communicator() as c2:
-        await c1.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {}]
-        await c2.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
 
@@ -94,7 +111,7 @@ async def test_send_message_to_other_client():
                 "chat.send",
                 123,
                 {
-                    "room": "room_0",
+                    "channel": "room_0",
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -108,7 +125,7 @@ async def test_send_message_to_other_client():
         assert response == [
             "chat.event",
             {
-                "room": "room_0",
+                "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": "user_todo",
@@ -121,7 +138,7 @@ async def test_send_message_to_other_client():
         assert response == [
             "chat.event",
             {
-                "room": "room_0",
+                "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": "user_todo",
@@ -134,13 +151,13 @@ async def test_send_message_to_other_client():
 @pytest.mark.django_db
 async def test_no_message_after_leave():
     async with event_communicator() as c1, event_communicator() as c2:
-        await c1.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {}]
-        await c2.send_json_to(["chat.join", 123, {"room": "room_0"}])
+        await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
-        await c2.send_json_to(["chat.leave", 123, {"room": "room_0"}])
+        await c2.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
 
@@ -149,7 +166,7 @@ async def test_no_message_after_leave():
                 "chat.send",
                 123,
                 {
-                    "room": "room_0",
+                    "channel": "room_0",
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -163,7 +180,7 @@ async def test_no_message_after_leave():
         assert response == [
             "chat.event",
             {
-                "room": "room_0",
+                "channel": "room_0",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": "user_todo",

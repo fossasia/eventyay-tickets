@@ -1,5 +1,7 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
+from stayseated.live.exceptions import ConsumerException
+
 from ..core.services.event import get_event_config
 from .modules.auth import AuthModule
 from .modules.chat import ChatModule
@@ -35,7 +37,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         namespace = content[0].split(".")[0]
         component = components.get(namespace)
         if component:
-            await component().dispatch_command(self, content)
+            try:
+                await component().dispatch_command(self, content)
+            except ConsumerException as e:
+                await self.send_error(e.code, e.message)
         else:
             await self.send_error("protocol.unknown_command")
 
