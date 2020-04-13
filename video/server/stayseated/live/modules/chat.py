@@ -15,51 +15,51 @@ class ChatModule:
         }
 
     async def get_room(self):
-        room_id = self.content[2]["channel"]
-        room_config = await get_room_config(self.event, room_id)
+        channel_id = self.content[2]["channel"]
+        room_config = await get_room_config(self.event, channel_id)
         if not room_config:
             raise ConsumerException("room.unknown", "Unknown room ID")
         if "chat.native" not in [m["type"] for m in room_config["modules"]]:
             raise ConsumerException("chat.unknown", "Room does not contain a chat.")
-        return room_id, room_config
+        return channel_id, room_config
 
-    async def _subscribe(self, room_id):
+    async def _subscribe(self, channel_id):
         await self.consumer.channel_layer.group_add(
-            "chat.{}".format(room_id), self.consumer.channel_name
+            "chat.{}".format(channel_id), self.consumer.channel_name
         )
 
     async def subscribe(self):
-        room_id, _ = await self.get_room()
-        await self._subscribe(room_id)
+        channel_id, _ = await self.get_room()
+        await self._subscribe(channel_id)
         await self.consumer.send_success()
 
     async def join(self):
         # TODO: send notification
         if not self.consumer.scope["session"]["user"].get("public_name"):
             raise ConsumerException("channel.join.missing_name")
-        room_id, _ = await self.get_room()
-        await self._subscribe(room_id)
+        channel_id, _ = await self.get_room()
+        await self._subscribe(channel_id)
         await self.consumer.send_success()
 
     async def leave(self):
-        room_id, _ = await self.get_room()
+        channel_id, _ = await self.get_room()
         await self.consumer.channel_layer.group_discard(
-            "chat.{}".format(room_id), self.consumer.channel_name
+            "chat.{}".format(channel_id), self.consumer.channel_name
         )
         await self.consumer.send_success()
 
     async def send(self):
-        room_id, _ = await self.get_room()
+        channel_id, _ = await self.get_room()
         content = self.content[2]["content"]
         event_type = self.content[2]["event_type"]
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
 
         await self.consumer.channel_layer.group_send(
-            "chat.{}".format(room_id),
+            "chat.{}".format(channel_id),
             {
                 "type": "chat.event",
-                "channel": room_id,
+                "channel": channel_id,
                 "event_type": event_type,
                 "content": content,
                 "sender": "user_todo",  # TODO
