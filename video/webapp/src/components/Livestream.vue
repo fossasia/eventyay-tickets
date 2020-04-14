@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-livestream
 	.video-container(ref="videoContainer")
-		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay)
+		video(ref="video", style="width:100%;height:100%", data-shaka-player)
 </template>
 <script>
 import shaka from 'shaka-player/dist/shaka-player.ui.js'
