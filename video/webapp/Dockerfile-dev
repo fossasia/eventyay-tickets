@@ -3,6 +3,6 @@ FROM node:10
 COPY package*.json /
 ENV PATH /node_modules/.bin:$PATH
 
-RUN cd / && npm install
+RUN cd / && npm ci
 WORKDIR /app
 ENV NODE_PATH=/node_modules
