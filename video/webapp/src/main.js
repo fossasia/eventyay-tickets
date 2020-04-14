@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Buntpapier from 'buntpapier'
+import Vuelidate from 'vuelidate'
 import shaka from 'shaka-player'
 import muxjs from 'mux.js'
 import { v4 as uuid } from 'uuid'
@@ -12,6 +13,7 @@ import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
+Vue.use(Vuelidate)
 
 // auth.
 // history.replaceState('', document.title, location.pathname + location.search)
@@ -21,7 +23,8 @@ window.muxjs = muxjs
 if (!shaka.Player.isBrowserSupported()) {
 	console.error('Browser not supporting shaka player!')
 }
-new Vue({
+
+window.vapp = new Vue({
 	router,
 	store,
 	render: h => h(App)

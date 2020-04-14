@@ -4,7 +4,8 @@
 		app-bar
 		rooms-sidebar
 		router-view
-		profile-prompt(v-if="!user.profile")
+		transition(name="profile-prompt")
+			profile-prompt(v-if="!user.profile")
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
@@ -36,4 +37,9 @@ export default {
 		top: 50%
 		left: 50%
 		transform: translate(-50%, -50%)
+
+	.profile-prompt-enter-active, .profile-prompt-leave-active
+		transition: opacity .5s
+	.profile-prompt-enter, .profile-prompt-leave-to
+		opacity: 0
 </style>

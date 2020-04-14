@@ -2,24 +2,25 @@
 .c-profile-prompt
 	.prompt-wrapper(v-scrollbar.y="")
 		.prompt-wrapper-inner
-			h1 Hi There!
+			h1 Hi there!
 			p Before you can join others in this awesome event, please tell us how you want to appear to other attendees.
 			.profile
 				.avatar
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
 					identicon(v-else, :id="identicon || user.user_id", @click.native="changeIdenticon")
-				bunt-input(name="displayName", label="Display name", v-model="displayName")
+				bunt-input.display-name(name="displayName", label="Display name", v-model="displayName", :validation="$v.displayName")
 			//- link here not strictly good UX
-			a(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") Change gravatar
+			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") Change gravatar
 			p.gravatar-hint(v-else-if="!showConnectGravatar") or connect to your #[a(href="#", @click="showConnectGravatar = true") gravatar].
 			form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
 				bunt-input(name="gravatar", label="Gravatar email address", hint="your address is not being sent to any server", v-model="email")
 				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") connect
-			bunt-button#btn-join-event Join
+			bunt-button#btn-join-event(@click="join") Join
 </template>
 <script>
 import { mapState } from 'vuex'
 import { v4 as uuid } from 'uuid'
+import { required } from 'buntpapier/src/vuelidate/validators'
 import Identicon from 'components/Identicon'
 import { getHash, getProfile, getAvatarUrl } from 'lib/gravatar'
 
@@ -35,7 +36,12 @@ export default {
 			connectedGravatar: false,
 			gravatarError: null,
 			gravatarAvatarUrl: null,
-			gravatarProfile: null
+			gravatarHash: null
+		}
+	},
+	validations: {
+		displayName: {
+			required: required('Display name cannot be empty')
 		}
 	},
 	computed: {
@@ -55,18 +61,21 @@ export default {
 			const hash = getHash(this.email)
 			const avatarUrl = getAvatarUrl(hash, 128)
 			try {
+				// gravatar docs say profile only works on primary email, which I think is a lie, but let's check for an image separately anyways
 				const avatarResponse = await fetch(avatarUrl)
 				if (avatarResponse.status !== 200) {
 					// no gravatar
 					this.searchingGravatar = false
+					this.gravatarError = true
 					return
 				}
 				const profile = await getProfile(hash)
 				if (profile?.entry?.length > 0) {
-					this.gravatarProfile = profile.entry[0]
-					this.gravatarAvatarUrl = getAvatarUrl(this.gravatarProfile.hash, 128)
-					this.displayName = this.gravatarProfile.displayName
+					this.gravatarHash = profile.entry[0].hash
+					this.gravatarAvatarUrl = getAvatarUrl(this.gravatarHash, 128)
+					this.displayName = this.profile.entry[0].displayName
 				} else {
+					this.gravatarHash = getHash(this.email)
 					this.gravatarAvatarUrl = avatarUrl
 				}
 				this.connectedGravatar = true
@@ -74,6 +83,19 @@ export default {
 				this.gravatarError = e
 			}
 			this.searchingGravatar = false
+		},
+		join () {
+			this.$v.$touch()
+			if (this.$v.$invalid) return
+			const profile = {
+				displayName: this.displayName,
+			}
+			if (this.gravatarHash) {
+				profile.gravatarHash = this.gravatarHash
+			} else if (this.identicon) {
+				profile.identicon = this.identicon
+			}
+			this.$store.dispatch('updateUser', {profile})
 		}
 	}
 }
@@ -106,7 +128,7 @@ export default {
 			p
 				max-width: 320px
 			.profile
-				margin: 16px 0
+				margin: 16px 0 0 0
 				display: flex
 				align-items: center
 			.avatar
@@ -120,12 +142,16 @@ export default {
 				cursor: pointer
 				canvas
 					height: 128px
+			.display-name
+				width: 240px
 			.gravatar-hint
 				color: $clr-secondary-text-light
+			.gravatar-hint, .gravatar-connected-hint
+				margin-bottom: 16px
 			.connect-gravatar
 				display: flex
 				align-items: flex-start
-				margin: 0 0 32px 0
+				margin: 16px 0 32px 0
 				.bunt-input
 					width: 286px
 				#btn-connect-gravatar
