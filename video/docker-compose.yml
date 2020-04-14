@@ -1,0 +1,44 @@
+version: '3'
+services:
+    server:
+        build:
+            context: ./server
+            dockerfile: Dockerfile-dev
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./server:/app:ro
+            - appdata:/data
+        environment:
+            - STAYSEATED_DB_TYPE=postgresql
+            - STAYSEATED_DB_NAME=stayseated
+            - STAYSEATED_DB_USER=stayseated
+            - STAYSEATED_DB_PASS=stayseated
+            - STAYSEATED_DB_HOST=db
+            - STAYSEATED_REDIS_HOST=redis
+            - STAYSEATED_DATA_DIR=/data
+        entrypoint: ["bash", "/app/docker-dev-entrypoint.sh"]
+        depends_on:
+            - db
+            - redis
+    webapp:
+        build:
+            context: ./webapp
+            dockerfile: Dockerfile-dev
+        ports:
+            - "8880:8880"
+        volumes:
+            - ./webapp:/app:ro
+        command: ["npm", "start", "--", "--host", "0.0.0.0"]
+    redis:
+        image: "redis:latest"
+    db:
+        image: "postgres:11"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=stayseated
+            - POSTGRES_PASSWORD=stayseated
+volumes:
+    postgres_data:
+    appdata:
