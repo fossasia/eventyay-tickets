@@ -9,7 +9,14 @@ import { mapState } from 'vuex'
 
 export default {
 	props: {
-		room: Object
+		room: {
+			type: Object,
+			required: true
+		},
+		module: {
+			type: Object,
+			required: true
+		}
 	},
 	components: {},
 	data () {
@@ -21,15 +28,18 @@ export default {
 		...mapState('chat', ['timeline'])
 	},
 	created () {
-		this.$store.dispatch('chat/join', this.room)
+		this.$store.dispatch('chat/subscribe', this.room.id)
 	},
 	mounted () {
 		this.$nextTick(() => {
 		})
 	},
+	destroyed () {
+		this.$store.dispatch('chat/unsubscribe', this.room.id)
+	},
 	methods: {
 		send () {
-			this.$store.dispatch('chat/sendMessage', {room: this.room, text: this.composingMessage})
+			this.$store.dispatch('chat/sendMessage', {channel: this.room.id, text: this.composingMessage})
 			this.composingMessage = ''
 		}
 	}

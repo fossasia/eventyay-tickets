@@ -8,14 +8,22 @@ export default {
 	getters: {},
 	mutations: {},
 	actions: {
-		join ({state}, room) {
-			api.client.call('chat.join', {room: room.id})
+		subscribe ({state}, channel) {
+			api.call('chat.subscribe', {channel})
 			// TODO wait for join confirmation
 		},
-		sendMessage ({state}, {room, text}) {
-			api.client.call('chat.send', {
-				room: room.id,
-				event_type: 'message',
+		unsubscribe ({state}, channel) {
+			api.call('chat.unsubscribe', {channel})
+			// TODO wait for join confirmation
+		},
+		join ({state}, channel) {
+			api.call('chat.join', {channel})
+			// TODO wait for join confirmation
+		},
+		sendMessage ({state}, {channel, text}) {
+			api.call('chat.send', {
+				channel: channel,
+				event_type: 'channel.message',
 				content: {
 					type: 'text',
 					body: text
