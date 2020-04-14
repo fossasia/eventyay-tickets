@@ -58,8 +58,8 @@ class ChatModule:
         await self.consumer.send_success(reply)
 
     async def join(self):
-        if not self.consumer.user.get("public_name"):
-            raise ConsumerException("channel.join.missing_name")
+        if not self.consumer.user.get("profile"):
+            raise ConsumerException("channel.join.missing_profile")
         await self.get_room()
         reply = await self._subscribe()
         async with aioredis() as redis:

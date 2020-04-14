@@ -10,7 +10,7 @@ async def get_user_by_user_id(user_id):
 async def get_public_user(user_id):
     data = await get_user_by_user_id(user_id)
     result = {}
-    for key in ["user_id", "public_name", "avatar"]:
+    for key in ["user_id", "profile"]:
         value = data.get(key)
         if value:
             result[key] = value
