@@ -35,7 +35,7 @@ export default new Vuex.Store({
 			})
 		},
 		async updateUser ({state}, update) {
-			// await api.call('user.update', update)
+			await api.call('user.update', update)
 			for (const [key, value] of Object.entries(update)) {
 				Vue.set(state.user, key, value)
 			}
