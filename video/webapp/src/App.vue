@@ -4,17 +4,19 @@
 		app-bar
 		rooms-sidebar
 		router-view
+		profile-prompt(v-if="!user.profile")
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
 import { mapState } from 'vuex'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
+import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
-	components: { AppBar, RoomsSidebar },
+	components: { AppBar, RoomsSidebar, ProfilePrompt },
 	computed: {
-		...mapState(['event'])
+		...mapState(['event', 'user'])
 	}
 }
 </script>
