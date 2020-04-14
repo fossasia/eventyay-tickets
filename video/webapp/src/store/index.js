@@ -26,7 +26,7 @@ export default new Vuex.Store({
 				state.event = serverState['event.config'].event
 				state.rooms = serverState['event.config'].rooms
 				if (!state.user.profile) {
-					router.push('/') // force new users to welcome page
+					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
 				}
 			})
@@ -35,8 +35,10 @@ export default new Vuex.Store({
 			})
 		},
 		async updateUser ({state}, update) {
-			await api.call('user.update', update)
-			Object.assign(state.user, update)
+			// await api.call('user.update', update)
+			for (const [key, value] of Object.entries(update)) {
+				Vue.set(state.user, key, value)
+			}
 		}
 	},
 	modules: {

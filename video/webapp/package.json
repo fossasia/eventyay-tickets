@@ -21,6 +21,7 @@
     "uuid": "^7.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
+    "vuelidate": "^0.7.5",
     "vuex": "^3.1.3"
   },
   "devDependencies": {
