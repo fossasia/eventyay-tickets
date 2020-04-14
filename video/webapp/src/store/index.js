@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from 'lib/api'
+import router from 'router'
 import chat from './chat'
 
 Vue.use(Vuex)
@@ -24,6 +25,10 @@ export default new Vuex.Store({
 				state.user = serverState['user.config']
 				state.event = serverState['event.config'].event
 				state.rooms = serverState['event.config'].rooms
+				if (!state.user.profile) {
+					router.push('/') // force new users to welcome page
+					// TODO return after profile update?
+				}
 			})
 			api.on('closed', () => {
 				state.event = null
