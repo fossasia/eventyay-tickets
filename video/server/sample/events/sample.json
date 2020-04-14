@@ -23,11 +23,11 @@
       "access": [
         {
           "level": "viewer",
-          "required_groups": "*"
+          "required_traits": []
         },
         {
           "level": "moderator",
-          "required_groups": "moderator_plenum"
+          "required_traits": ["moderator_plenum"]
         }
       ],
       "modules": [
@@ -59,11 +59,11 @@
       "access": [
         {
           "level": "viewer",
-          "required_groups": "*"
+          "required_traits": []
         },
         {
           "level": "moderator",
-          "required_groups": "moderator_plenum"
+          "required_traits": ["moderator_plenum"]
         }
       ],
       "modules": [

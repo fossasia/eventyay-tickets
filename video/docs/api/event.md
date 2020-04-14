@@ -10,7 +10,7 @@ The body of the configuration is strucured like this, filtered to user visibilit
     {
         "event": {
             "title": "Unsere tolle Online-Konferenz",
-            "JWT_sources": [
+            "JWT_secrets": [
                 {
                     "issuer": "pretix.eu",
                     "audience": "audience",
@@ -27,11 +27,11 @@ The body of the configuration is strucured like this, filtered to user visibilit
                 "access": [
                     {
                         "level": "viewer",
-                        "required_groups": "*"
+                        "required_traits": []
                     },
                     {
                         "level": "moderator",
-                        "required_groups": "moderator_plenum"
+                        "required_traits": ["moderator_plenum"]
                     }
                 ],
                 "modules": [
@@ -63,11 +63,11 @@ The body of the configuration is strucured like this, filtered to user visibilit
                 "access": [
                     {
                         "level": "viewer",
-                        "required_groups": "*"
+                        "required_traits": []
                     },
                     {
                         "level": "moderator",
-                        "required_groups": "moderator_plenum"
+                        "required_traits": ["moderator_plenum"]
                     }
                 ],
                 "modules": [
