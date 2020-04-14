@@ -2,7 +2,9 @@
 .c-chat
 	.timeline
 		.message(v-for="message of timeline") {{ message.content.body }}
-	bunt-input(name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
+	.chat-input
+		bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
+		bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -25,7 +27,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('chat', ['timeline'])
+		...mapState('chat', ['channel', 'hasJoined', 'members', 'timeline']),
 	},
 	created () {
 		this.$store.dispatch('chat/subscribe', this.room.id)
@@ -35,11 +37,14 @@ export default {
 		})
 	},
 	destroyed () {
-		this.$store.dispatch('chat/unsubscribe', this.room.id)
+		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
+		join () {
+			this.$store.dispatch('chat/join')
+		},
 		send () {
-			this.$store.dispatch('chat/sendMessage', {channel: this.room.id, text: this.composingMessage})
+			this.$store.dispatch('chat/sendMessage', {text: this.composingMessage})
 			this.composingMessage = ''
 		}
 	}
@@ -59,7 +64,18 @@ export default {
 		justify-content: flex-end
 		.message
 			padding-top: 8px
-	.bunt-input
-		flex: none
-		margin: 0 16px
+	.chat-input
+		border-top: border-separator()
+		height: 64px
+		display: flex
+		justify-content: center
+		align-items: center
+		.bunt-button
+			button-style(color: $clr-primary)
+			width: calc(100% - 32px)
+		.bunt-input
+			input-style(size: compact)
+			flex: none
+			padding: 0
+			margin: 0 16px
 </style>
