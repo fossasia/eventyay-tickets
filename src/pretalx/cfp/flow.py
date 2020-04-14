@@ -369,13 +369,21 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
             return self.event.questions.all().exists()
         return self.event.questions.exclude(
             Q(target=QuestionTarget.SUBMISSION)
-            & (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
+            & (
+                (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
+                | (
+                    ~Q(submission_types__in=[info_data.get("submission_type")])
+                    & Q(submission_types__isnull=False)
+                )
+            )
         ).exists()
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
+        info_data = self.cfp_session.get("data", {}).get("info", {})
         result["target"] = ""
-        result["track"] = self.cfp_session.get("data", {}).get("track")
+        result["track"] = info_data.get("track")
+        result["submission_type"] = info_data.get("submission_type")
         if not self.request.user.is_anonymous:
             result["speaker"] = self.request.user
         return result

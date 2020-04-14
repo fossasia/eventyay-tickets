@@ -136,9 +136,9 @@ function question_page_toggle_view() {
 }
 
 function question_page_toggle_target_view() {
-  if ($("#limit-submission").length) {
+  if ($(".limit-submission").length) {
     setVisibility(
-      "#limit-submission",
+      ".limit-submission",
       document.querySelector("#id_target").value === "submission"
     )
   }
@@ -166,9 +166,13 @@ function getCookie(name) {
 
 function setVisibility(element, value) {
   if (typeof element === "string") {
-    element = document.querySelector(element)
+    element = $(element);
   }
   if (element) {
-    element.style.display = value ? "" : "none"
+    if (value) {
+      element.show();
+    } else {
+      element.hide();
+    }
   }
 }

@@ -118,6 +118,10 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             self.fields.pop("tracks")
         else:
             self.fields["tracks"].queryset = event.tracks.all()
+        if not event.submission_types.count():
+            self.fields.pop("submission_types")
+        else:
+            self.fields["submission_types"].queryset = event.submission_types.all()
         if (
             instance
             and instance.pk
@@ -137,6 +141,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "is_visible_to_reviewers",
             "required",
             "tracks",
+            "submission_types",
             "contains_personal_data",
             "min_length",
             "max_length",
@@ -144,6 +149,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         field_classes = {
             "variant": SafeModelChoiceField,
             "tracks": SafeModelMultipleChoiceField,
+            "submission_types": SafeModelMultipleChoiceField,
         }
 
 

@@ -106,6 +106,15 @@ class Question(LogMixin, models.Model):
         verbose_name=_("Tracks"),
         blank=True,
     )
+    submission_types = models.ManyToManyField(
+        to="submission.SubmissionType",
+        related_name="questions",
+        help_text=_(
+            "You can limit this question to some submission types. Leave this field empty to apply to all submission types."
+        ),
+        verbose_name=_("Submission Types"),
+        blank=True,
+    )
     question = I18nCharField(max_length=800, verbose_name=_("question"))
     help_text = I18nCharField(
         null=True,

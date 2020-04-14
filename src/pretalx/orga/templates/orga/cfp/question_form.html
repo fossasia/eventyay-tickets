@@ -60,8 +60,13 @@
         {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
         </span>
         {% if form.tracks %}
-        <span id="limit-submission">
+        <span class="limit-submission">
             {% bootstrap_field form.tracks layout='event' %}
+        </span>
+        {% endif %}
+        {% if form.submission_types %}
+        <span class="limit-submission">
+            {% bootstrap_field form.submission_types layout='event' %}
         </span>
         {% endif %}
         <span id="limit-length">
