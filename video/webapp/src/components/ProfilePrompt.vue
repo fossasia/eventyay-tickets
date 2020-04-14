@@ -88,10 +88,10 @@ export default {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			const profile = {
-				displayName: this.displayName,
+				display_name: this.displayName,
 			}
 			if (this.gravatarHash) {
-				profile.gravatarHash = this.gravatarHash
+				profile.gravatar_hash = this.gravatarHash
 			} else if (this.identicon) {
 				profile.identicon = this.identicon
 			}
