@@ -19,8 +19,7 @@ class AuthModule:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
             user = await get_user(token=token)
-        self.consumer.scope["session"]["user"] = user
-        self.consumer.scope["user"] = user
+        self.consumer.user = user
         await database_sync_to_async(self.consumer.scope["session"].save)()
         await self.consumer.send_json(
             [
@@ -33,11 +32,9 @@ class AuthModule:
         )
 
     async def update(self):
-        new_data = await update_user(
-            self.consumer.scope["session"]["user"], self.content[2]
-        )
-        self.consumer.scope["session"]["user"] = new_data
-        await self.consumer.send_json(["success", self.content[1], {}])
+        new_data = await update_user(self.consumer.user, self.content[2])
+        self.consumer.user = new_data
+        await self.consumer.send_success()
 
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer

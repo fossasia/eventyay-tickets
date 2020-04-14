@@ -164,7 +164,7 @@ async def test_bogus_command():
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
         await c.receive_json_from()  # join notification
-        await c.send_json_to(["chat.lol", 123, ""])
+        await c.send_json_to(["chat.lol", 123, {}])
         response = await c.receive_json_from()
         assert response == ["error", 123, {"code": "chat.unsupported_command"}]
 

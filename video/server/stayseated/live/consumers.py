@@ -21,6 +21,14 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         pass
 
+    @property
+    def user(self):
+        return self.scope.get("session", {}).get("user", {})
+
+    @user.setter
+    def user(self, value):
+        self.scope["session"]["user"] = value
+
     # Receive message from WebSocket
     async def receive_json(self, content, **kargs):
         self.content = content

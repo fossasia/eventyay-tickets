@@ -12,6 +12,7 @@ from stayseated.live.exceptions import ConsumerException
 class ChatModule:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.channel_id = None
         self.actions = {
             "join": self.join,
             "leave": self.leave,
@@ -21,100 +22,91 @@ class ChatModule:
         }
 
     async def get_room(self):
-        channel_id = self.content[2]["channel"]
-        room_config = await get_room_config(self.event, channel_id)
+        room_config = await get_room_config(self.event, self.channel_id)
         if not room_config:
             raise ConsumerException("room.unknown", "Unknown room ID")
         if "chat.native" not in [m["type"] for m in room_config["modules"]]:
             raise ConsumerException("chat.unknown", "Room does not contain a chat.")
-        return channel_id, room_config
+        return room_config
 
-    async def _subscribe(self, channel_id):
+    async def _subscribe(self):
         await self.consumer.channel_layer.group_add(
-            "chat.{}".format(channel_id), self.consumer.channel_name
+            "chat.{}".format(self.channel_id), self.consumer.channel_name
         )
-        return {"state": None, "members": await get_channel_users(channel_id)}
+        return {"state": None, "members": await get_channel_users(self.channel_id)}
 
-    async def _leave(self, channel_id):
-        await remove_channel_user(
-            channel_id, self.consumer.scope["session"]["user"]["user_id"]
-        )
+    async def _leave(self):
+        await remove_channel_user(self.channel_id, self.consumer.user["user_id"])
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
         await self.consumer.channel_layer.group_send(
-            "chat.{}".format(channel_id),
+            "chat.{}".format(self.channel_id),
             {
                 "type": "chat.event",
-                "channel": channel_id,
+                "channel": self.channel_id,
                 "event_type": "channel.member",
                 "membership": "leave",
-                "user": await get_public_user(
-                    self.consumer.scope["session"]["user"]["user_id"]
-                ),
-                "sender": self.consumer.scope["session"]["user"]["user_id"],
+                "user": await get_public_user(self.consumer.user["user_id"]),
+                "sender": self.consumer.user["user_id"],
                 "event_id": event_id,
             },
         )
 
     async def subscribe(self):
-        channel_id, _ = await self.get_room()
-        reply = await self._subscribe(channel_id)
+        await self.get_room()
+        reply = await self._subscribe()
         await self.consumer.send_success(reply)
 
     async def join(self):
-        if not self.consumer.scope["session"]["user"].get("public_name"):
+        if not self.consumer.user.get("public_name"):
             raise ConsumerException("channel.join.missing_name")
-        channel_id, _ = await self.get_room()
-        reply = await self._subscribe(channel_id)
+        await self.get_room()
+        reply = await self._subscribe()
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
         await self.consumer.channel_layer.group_send(
-            "chat.{}".format(channel_id),
+            f"chat.{self.channel_id}",
             {
                 "type": "chat.event",
-                "channel": channel_id,
+                "channel": self.channel_id,
                 "event_type": "channel.member",
                 "membership": "join",
-                "user": await get_public_user(
-                    self.consumer.scope["session"]["user"]["user_id"]
-                ),
-                "sender": self.consumer.scope["session"]["user"]["user_id"],
+                "user": await get_public_user(self.consumer.user["user_id"]),
+                "sender": self.consumer.user["user_id"],
                 "event_id": event_id,
             },
         )
-        await add_channel_user(
-            channel_id, self.consumer.scope["session"]["user"]["user_id"]
-        )
+        await add_channel_user(self.channel_id, self.consumer.user["user_id"])
         await self.consumer.send_success(reply)
 
     async def leave(self):
-        channel_id, _ = await self.get_room()
-        await self._leave(channel_id)
+        await self.get_room()
+        await self._leave()
         await self.consumer.send_success()
 
     async def unsubscribe(self):
-        channel_id, _ = await self.get_room()
+        await self.get_room()
         await self.consumer.channel_layer.group_discard(
-            "chat.{}".format(channel_id), self.consumer.channel_name
+            f"chat.{self.channel_id}", self.consumer.channel_name
         )
-        await self._leave(channel_id)
+        await self._leave()
         await self.consumer.send_success()
 
     async def send(self):
-        channel_id, _ = await self.get_room()
+        await self.get_room()
         content = self.content[2]["content"]
         event_type = self.content[2]["event_type"]
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
 
         await self.consumer.channel_layer.group_send(
-            "chat.{}".format(channel_id),
+            f"chat.{self.channel_id}",
             {
                 "type": "chat.event",
-                "channel": channel_id,
+                "channel": self.channel_id,
                 "event_type": event_type,
                 "content": content,
-                "sender": self.consumer.scope["session"]["user"]["user_id"],
+                "sender": self.consumer.user["user_id"],
                 "event_id": event_id,
             },
         )
@@ -130,6 +122,7 @@ class ChatModule:
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer
         self.content = content
+        self.channel_id = self.content[2].get("channel")
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
         _, action = content[0].rsplit(".", maxsplit=1)
         if action not in self.actions:
