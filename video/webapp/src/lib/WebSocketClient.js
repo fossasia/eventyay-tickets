@@ -23,6 +23,9 @@ class WebSocketClient extends EventEmitter {
 		}
 		this._config = Object.assign(defaultConfig, config)
 		this._url = url
+	}
+
+	connect () {
 		this._createSocket()
 	}
 
@@ -30,7 +33,6 @@ class WebSocketClient extends EventEmitter {
 		this._normalClose = true
 		this._socket.close()
 		clearTimeout(this._joinTimeout)
-		this._sendSelectTimeout = null
 	}
 
 	call (name, data, opts) {
@@ -38,7 +40,6 @@ class WebSocketClient extends EventEmitter {
 			timeout: 5000
 		}
 		Object.assign(options, opts)
-
 		const { id, promise } = this._createRequest()
 		const payload = [
 			name,
