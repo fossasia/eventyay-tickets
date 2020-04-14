@@ -11,6 +11,10 @@ export default {
 		room: {
 			type: Object,
 			required: true
+		},
+		module: {
+			type: Object,
+			required: true
 		}
 	},
 	components: {},
@@ -19,9 +23,6 @@ export default {
 		}
 	},
 	computed: {
-		streamModule () {
-			return this.room.modules.find(module => module.type === 'livestream.native')
-		}
 	},
 	created () {},
 	async mounted () {
@@ -32,8 +33,8 @@ export default {
 		})
 		this.playerUI = new shaka.ui.Overlay(player, this.$refs.videoContainer, this.$refs.video)
 		try {
-			console.log('starting stream', this.streamModule.config.hls_url)
-			await player.load(this.streamModule.config.hls_url)
+			console.log('starting stream', this.module.config.hls_url)
+			await player.load(this.module.config.hls_url)
 		} catch (error) {
 			console.error('player failed to load', error)
 		}

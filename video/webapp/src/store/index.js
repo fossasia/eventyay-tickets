@@ -20,17 +20,17 @@ export default new Vuex.Store({
 		},
 		connect ({state}) {
 			api.connect({token: state.token, clientId: state.clientId})
-			api.client.on('joined', (serverState) => {
+			api.on('joined', (serverState) => {
 				state.user = serverState['user.config']
 				state.event = serverState['event.config'].event
 				state.rooms = serverState['event.config'].rooms
 			})
-			api.client.on('closed', () => {
+			api.on('closed', () => {
 				state.event = null
 			})
 		},
 		async updateUser ({state}, update) {
-			await api.client.call('user.update', update)
+			await api.call('user.update', update)
 			Object.assign(state.user, update)
 		}
 	},

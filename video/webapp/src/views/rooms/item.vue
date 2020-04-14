@@ -6,8 +6,8 @@
 			.room-info-text
 				h2 {{ room.name }}
 				.description {{ room.description }}
-		livestream(v-if="room.modules.some(module => module.type === 'livestream.native')", :room="room")
-	chat(v-if="room.modules.some(module => module.type === 'chat.native')", :room="room")
+		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
+	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']")
 </template>
 <script>
 import Chat from 'components/Chat'
@@ -25,6 +25,12 @@ export default {
 	computed: {
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
+		},
+		modules () {
+			return this.room.modules.reduce((acc, module) => {
+				acc[module.type] = module
+				return acc
+			}, {})
 		}
 	},
 	created () {},
