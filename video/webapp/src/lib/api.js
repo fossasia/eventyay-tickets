@@ -10,7 +10,6 @@ api.connect = function ({token, clientId}) {
 	}
 	const client = new WebSocketClient(`${config.api.socket}`, {token, clientId})
 	Object.assign(api, client)
-	console.log(api)
 	api.on('closed', () => {
 		console.warn('socket closed')
 	})
