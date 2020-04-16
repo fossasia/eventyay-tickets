@@ -182,6 +182,32 @@ async def test_bogus_command():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_autofix_numbers():
+    async with world_communicator() as c1, aioredis() as redis:
+        await redis.delete("chat.event_id")
+        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c1.receive_json_from()
+        response = await c1.receive_json_from()
+        assert response[1]["event_id"] == 1
+        await redis.delete("chat.event_id")
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": "room_0",
+                    "event_type": "message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        await c1.receive_json_from()
+        response = await c1.receive_json_from()
+        assert response[1]["event_id"] == 3
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_send_message_to_other_client():
     async with world_communicator() as c1, world_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])

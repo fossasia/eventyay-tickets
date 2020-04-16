@@ -64,7 +64,8 @@ class ChatService:
                 async with aioredis() as redis:
                     current_max = await self._get_highest_id()
                     await redis.set("chat.event_id", current_max + 1)
-                return self.create_event(
+                res = await self.create_event(
                     channel, event_type, content, sender, _retry=True
                 )
-            raise e
+                return res
+            raise e  # pragma: no cover
