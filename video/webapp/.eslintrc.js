@@ -10,6 +10,9 @@ module.exports = {
 	parserOptions: {
 		parser: 'babel-eslint'
 	},
+	plugins: [
+		'babel'
+	],
 	overrides: [
 		{
 			files: [
@@ -32,5 +35,10 @@ module.exports = {
 		'no-return-assign': 0,
 		'vue/require-default-prop': 0,
 		'object-curly-spacing': 0,
+		// replace with babel rules
+		'camelcase': 0,
+		'babel/camelcase': ['error', {properties: 'never', ignoreDestructuring: true}],
+		'no-unused-expressions': 0,
+		'babel/no-unused-expressions': 1
 	}
 }

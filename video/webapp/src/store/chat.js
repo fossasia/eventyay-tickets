@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import api from 'lib/api'
 
 export default {
@@ -6,6 +7,7 @@ export default {
 		channel: null,
 		hasJoined: false,
 		members: [],
+		membersLookup: {},
 		timeline: []
 	},
 	getters: {},
@@ -47,9 +49,27 @@ export default {
 		},
 		// INCOMING
 		'api::chat.event' ({state}, event) {
+			const handleMembership = (event) => {
+				switch (event.content.membership) {
+					case 'join': {
+						state.members.push(event.content.user)
+						Vue.set(state.membersLookup, event.content.user.id, event.content.user)
+						break
+					}
+					case 'leave':
+					case 'ban': {
+						const index = state.members.findIndex(user => user.id === event.content.user.id)
+						if (index >= 0) {
+							state.members.splice(index, 1)
+						}
+						Vue.remove(state.membersLookup, event.content.user.id)
+						break
+					}
+				}
+			}
 			switch (event.event_type) {
 				case 'channel.message': state.timeline.push(event); break
-				case 'channel.member': break
+				case 'channel.member': handleMembership(event); break
 			}
 		}
 	}
