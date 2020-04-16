@@ -1,13 +1,16 @@
 <template lang="pug">
 .c-chat
-	.timeline
-		.message(v-for="message of timeline") {{ message.content.body }}
-	.chat-input
-		bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
-		bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
+	template(v-if="channel")
+		.timeline
+			chat-message(v-for="message of timeline", :message="message")
+		.chat-input
+			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
+			bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
+	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import { mapState } from 'vuex'
+import ChatMessage from './ChatMessage'
 
 export default {
 	props: {
@@ -20,7 +23,7 @@ export default {
 			required: true
 		}
 	},
-	components: {},
+	components: { ChatMessage },
 	data () {
 		return {
 			composingMessage: ''
@@ -58,7 +61,7 @@ export default {
 	flex-direction: column
 	.timeline
 		flex: auto
-		margin: 8px 24px
+		margin: 8px 0
 		display: flex
 		flex-direction: column
 		justify-content: flex-end
@@ -77,5 +80,5 @@ export default {
 			input-style(size: compact)
 			flex: none
 			padding: 0
-			margin: 0 16px
+			width: calc(100% - 32px)
 </style>

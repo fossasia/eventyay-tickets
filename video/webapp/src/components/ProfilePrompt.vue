@@ -71,9 +71,10 @@ export default {
 				}
 				const profile = await getProfile(hash)
 				if (profile?.entry?.length > 0) {
+					console.log(profile.entry[0])
 					this.gravatarHash = profile.entry[0].hash
 					this.gravatarAvatarUrl = getAvatarUrl(this.gravatarHash, 128)
-					this.displayName = this.profile.entry[0].displayName
+					this.displayName = profile.entry[0].displayName
 				} else {
 					this.gravatarHash = getHash(this.email)
 					this.gravatarAvatarUrl = avatarUrl
