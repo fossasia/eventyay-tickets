@@ -7,7 +7,7 @@
 			.profile
 				.avatar
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
-					identicon(v-else, :id="identicon || user.user_id", @click.native="changeIdenticon")
+					identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
 				bunt-input.display-name(name="displayName", label="Display name", v-model="displayName", :validation="$v.displayName")
 			//- link here not strictly good UX
 			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") Change gravatar

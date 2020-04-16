@@ -12,13 +12,13 @@ class AuthModule:
             if not client_id:
                 await self.consumer.send_error(code="auth.missing_id_or_token")
                 return
-            user = await get_user(client_id=client_id)
+            user = await get_user(self.event, with_client_id=client_id)
         else:
             token = await decode_token(self.content[1]["token"], self.event)
             if not token:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
-            user = await get_user(token=token)
+            user = await get_user(self.event, with_token=token)
         self.consumer.user = user
         await database_sync_to_async(self.consumer.scope["session"].save)()
         await self.consumer.send_json(
@@ -32,7 +32,9 @@ class AuthModule:
         )
 
     async def update(self):
-        new_data = await update_user(self.consumer.user, self.content[2])
+        new_data = await update_user(
+            self.event, self.consumer.user["id"], public_data=self.content[2]
+        )
         self.consumer.user = new_data
         await self.consumer.send_success()
 

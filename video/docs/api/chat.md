@@ -40,6 +40,7 @@ server. All events have the following properties (plus additional ones depending
 * ``channel`` (string)
 * ``event_type`` (string)
 * ``sender`` (string, user ID, optional)
+* ``content`` (type and value depending on ``event_type``)
 
 Currently, the following types of events are defined:
 
@@ -69,7 +70,7 @@ This message type is used:
 - When a user is kicked/banned
 
 When a user joins or leaves a channel, an event is sent to all current subscribers of the channel. It contains the
-following properties:
+following properties inside the ``content`` property:
 
 - ``membership``: "join" or "leave" or "ban"
 - ``user``: A dictionary of user data of the user concerned (i.e. the user joining or leaving or being banned)
