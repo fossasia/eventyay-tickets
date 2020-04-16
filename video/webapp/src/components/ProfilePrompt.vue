@@ -15,7 +15,7 @@
 			form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
 				bunt-input(name="gravatar", label="Gravatar email address", hint="your address is not being sent to any server", v-model="email")
 				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") connect
-			bunt-button#btn-join-event(@click="join") Join
+			bunt-button#btn-join-world(@click="join") Join
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -159,7 +159,7 @@ export default {
 					margin: 16px 0 0 4px
 					.bunt-progress-circular svg circle
 						stroke: $clr-primary
-			#btn-join-event
+			#btn-join-world
 				margin-top: 16px
 				button-style(color: $clr-primary, size: large)
 </style>

@@ -1,6 +1,6 @@
 <template lang="pug">
 #app
-	template(v-if="event")
+	template(v-if="world")
 		app-bar
 		rooms-sidebar
 		router-view
@@ -17,7 +17,7 @@ import ProfilePrompt from 'components/ProfilePrompt'
 export default {
 	components: { AppBar, RoomsSidebar, ProfilePrompt },
 	computed: {
-		...mapState(['event', 'user'])
+		...mapState(['world', 'user'])
 	}
 }
 </script>
