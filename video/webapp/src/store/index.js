@@ -25,7 +25,7 @@ export default new Vuex.Store({
 				state.user = serverState['user.config']
 				state.event = serverState['event.config'].event
 				state.rooms = serverState['event.config'].rooms
-				if (!state.user.profile) {
+				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
 				}
