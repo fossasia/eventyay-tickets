@@ -61,5 +61,5 @@ export default {
 	.c-chat
 		border-left: border-separator()
 		flex: none
-		width: 480px
+		width: 380px
 </style>
