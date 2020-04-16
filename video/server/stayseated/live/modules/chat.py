@@ -1,11 +1,6 @@
-from stayseated.core.services.chat import (
-    add_channel_user,
-    get_channel_users,
-    remove_channel_user,
-)
+from stayseated.core.services.chat import ChatService
 from stayseated.core.services.event import get_room_config
 from stayseated.core.services.user import get_public_user
-from stayseated.core.utils.redis import aioredis
 from stayseated.live.exceptions import ConsumerException
 
 
@@ -33,23 +28,26 @@ class ChatModule:
         await self.consumer.channel_layer.group_add(
             "chat.{}".format(self.channel_id), self.consumer.channel_name
         )
-        return {"state": None, "members": await get_channel_users(self.channel_id)}
+        return {
+            "state": None,
+            "members": await self.service.get_channel_users(self.channel_id),
+        }
 
     async def _leave(self):
-        await remove_channel_user(self.channel_id, self.consumer.user["user_id"])
-        async with aioredis() as redis:
-            event_id = await redis.incr("chat.event_id")
+        await self.service.remove_channel_user(
+            self.channel_id, self.consumer.user["id"]
+        )
         await self.consumer.channel_layer.group_send(
-            "chat.{}".format(self.channel_id),
-            {
-                "type": "chat.event",
-                "channel": self.channel_id,
-                "event_type": "channel.member",
-                "membership": "leave",
-                "user": await get_public_user(self.consumer.user["user_id"]),
-                "sender": self.consumer.user["user_id"],
-                "event_id": event_id,
-            },
+            f"chat.{self.channel_id}",
+            await self.service.create_event(
+                channel=self.channel_id,
+                event_type="channel.member",
+                content={
+                    "membership": "leave",
+                    "user": await get_public_user(self.event, self.consumer.user["id"]),
+                },
+                sender=self.consumer.user["id"],
+            ),
         )
 
     async def subscribe(self):
@@ -58,25 +56,23 @@ class ChatModule:
         await self.consumer.send_success(reply)
 
     async def join(self):
-        if not self.consumer.user.get("profile"):
+        if not self.consumer.user.get("profile", {}).get("display_name"):
             raise ConsumerException("channel.join.missing_profile")
         await self.get_room()
         reply = await self._subscribe()
-        async with aioredis() as redis:
-            event_id = await redis.incr("chat.event_id")
         await self.consumer.channel_layer.group_send(
             f"chat.{self.channel_id}",
-            {
-                "type": "chat.event",
-                "channel": self.channel_id,
-                "event_type": "channel.member",
-                "membership": "join",
-                "user": await get_public_user(self.consumer.user["user_id"]),
-                "sender": self.consumer.user["user_id"],
-                "event_id": event_id,
-            },
+            await self.service.create_event(
+                channel=self.channel_id,
+                event_type="channel.member",
+                content={
+                    "membership": "join",
+                    "user": await get_public_user(self.event, self.consumer.user["id"]),
+                },
+                sender=self.consumer.user["id"],
+            ),
         )
-        await add_channel_user(self.channel_id, self.consumer.user["user_id"])
+        await self.service.add_channel_user(self.channel_id, self.consumer.user["id"])
         await self.consumer.send_success(reply)
 
     async def leave(self):
@@ -96,21 +92,16 @@ class ChatModule:
         await self.get_room()
         content = self.content[2]["content"]
         event_type = self.content[2]["event_type"]
-        async with aioredis() as redis:
-            event_id = await redis.incr("chat.event_id")
-
+        # TODO: Filter if user is allowed to send this type of message
         await self.consumer.channel_layer.group_send(
             f"chat.{self.channel_id}",
-            {
-                "type": "chat.event",
-                "channel": self.channel_id,
-                "event_type": event_type,
-                "content": content,
-                "sender": self.consumer.user["user_id"],
-                "event_id": event_id,
-            },
+            await self.service.create_event(
+                channel=self.channel_id,
+                event_type=event_type,
+                content=content,
+                sender=self.consumer.user["id"],
+            ),
         )
-        # TODO: Filter if user is allowed to send this type of message
         await self.consumer.send_success()
 
     async def publish_event(self):
@@ -124,6 +115,7 @@ class ChatModule:
         self.content = content
         self.channel_id = self.content[2].get("channel")
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
+        self.service = ChatService(self.event)
         _, action = content[0].rsplit(".", maxsplit=1)
         if action not in self.actions:
             raise ConsumerException("chat.unsupported_command")
@@ -133,4 +125,5 @@ class ChatModule:
         self.consumer = consumer
         self.content = content
         self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
+        self.service = ChatService(self.event)
         await self.publish_event()

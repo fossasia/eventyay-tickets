@@ -1,34 +1,68 @@
-from contextlib import suppress
+from channels.db import database_sync_to_async
+from django.db import IntegrityError
+from django.db.models import Max
 
-from ..utils.redis import get_json, set_json
-
-
-async def get_channel_uids(channel):
-    return await get_json(f"channel:{channel}:users", default=[])
-
-
-async def set_channel_uids(channel, uids):
-    return await set_json(f"channel:{channel}:users", uids)
+from .user import get_public_users, get_user_by_id
+from ..models import ChatEvent
+from ..serializers.chat import ChatEventSerializer
+from ..utils.redis import aioredis
 
 
-async def get_channel_users(channel):
-    from .user import get_public_user
+class ChatService:
+    def __init__(self, event_id):
+        self.event_id = event_id
 
-    uids = await get_channel_uids(channel)
-    users = [await get_public_user(user_id=uid) for uid in uids]
-    return users
+    async def get_channel_uids(self, channel):
+        async with aioredis() as redis:
+            return [u.decode() for u in await redis.smembers(f"channel:{channel}:userset")]
 
+    async def get_channel_users(self, channel):
+        uids = await self.get_channel_uids(channel)
+        users = await get_public_users(ids=uids, event_id=self.event_id)
+        return users
 
-async def add_channel_user(channel, uid):
-    uids = await get_channel_uids(channel)
-    uids = set(uids)
-    uids.add(uid)
-    return await set_channel_uids(channel, list(uids))
+    async def add_channel_user(self, channel, uid):
+        async with aioredis() as redis:
+            await redis.sadd(f"channel:{channel}:userset", uid)
 
+    async def remove_channel_user(self, channel, uid):
+        async with aioredis() as redis:
+            await redis.srem(f"channel:{channel}:userset", uid)
 
-async def remove_channel_user(channel, uid):
-    uids = await get_channel_uids(channel)
-    uids = set(uids)
-    with suppress(KeyError):
-        uids.remove(uid)
-    return await set_channel_uids(channel, list(uids))
+    @database_sync_to_async
+    def _store_event(self, channel, id, event_type, content, sender):
+        ce = ChatEvent.objects.create(
+            id=id,
+            event_id=self.event_id,
+            channel=channel,
+            event_type=event_type,
+            content=content,
+            sender=sender,
+        )
+        return ChatEventSerializer().to_representation(ce)
+
+    @database_sync_to_async
+    def _get_highest_id(self):
+        return ChatEvent.objects.aggregate(m=Max("id"))["m"] or 0
+
+    async def create_event(self, channel, event_type, content, sender, _retry=False):
+        async with aioredis() as redis:
+            event_id = await redis.incr("chat.event_id")
+        try:
+            return await self._store_event(
+                channel=channel,
+                id=event_id,
+                event_type=event_type,
+                content=content,
+                sender=await get_user_by_id(self.event_id, sender),
+            )
+        except IntegrityError as e:
+            if "already exists" in str(e) and not _retry:
+                # Ooops! Probably our redis cleared out / failed over. Let's try to self-heal
+                async with aioredis() as redis:
+                    current_max = await self._get_highest_id()
+                    await redis.set("chat.event_id", current_max + 1)
+                return self.create_event(
+                    channel, event_type, content, sender, _retry=True
+                )
+            raise e

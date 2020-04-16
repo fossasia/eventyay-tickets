@@ -6,8 +6,6 @@ from urllib.parse import urlparse
 from django.contrib import messages
 from django.utils.crypto import get_random_string
 
-# AUTH_USER_MODEL = "core.User"
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("STAYSEATED_DATA_DIR", os.path.join(BASE_DIR, "data"))
 LOG_DIR = os.path.join(DATA_DIR, "logs")
@@ -147,7 +145,6 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 INSTALLED_APPS = [
-    "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "channels",
@@ -168,7 +165,6 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -196,7 +192,6 @@ TEMPLATES = [
         ],
         "OPTIONS": {
             "context_processors": [
-                "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.media",
@@ -213,16 +208,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "stayseated.wsgi.application"
 ASGI_APPLICATION = "stayseated.routing.application"
-
-if not DEBUG:
-    AUTH_PASSWORD_VALIDATORS = [
-        {
-            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-        },
-        {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-        {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-        {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-    ]
 
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Berlin"

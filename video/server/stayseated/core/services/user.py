@@ -1,59 +1,110 @@
-import uuid
+from channels.db import database_sync_to_async
+from django.db.transaction import atomic
 
-from ..utils.redis import get_json, set_json
-
-
-async def get_user_by_user_id(user_id):
-    return await get_json(f"user:{user_id}")
+from ..models.auth import User
+from ..serializers.auth import PublicUserSerializer
 
 
-async def get_public_user(user_id):
-    data = await get_user_by_user_id(user_id)
-    result = {}
-    for key in ["user_id", "profile"]:
-        value = data.get(key)
-        if value:
-            result[key] = value
-    return result
+@database_sync_to_async
+def get_user_by_id(event_id, user_id):
+    try:
+        return User.objects.get(id=user_id, event_id=event_id)
+    except User.DoesNotExist:
+        return
 
 
-async def get_user(user_id=None, token=None, client_id=None):
-    if user_id:
-        return await get_user_by_user_id(user_id)
+@database_sync_to_async
+def get_user_by_token_id(event_id, token_id):
+    try:
+        return User.objects.get(token_id=token_id, event_id=event_id)
+    except User.DoesNotExist:
+        return
 
-    uid = None
-    if token:
-        uid = token["uid"]
-        data = await get_json(f"user:by_uid:{uid}")
-    elif client_id:
-        data = await get_json(f"user:by_client_id:{client_id}")
+
+@database_sync_to_async
+def get_user_by_client_id(event_id, client_id):
+    try:
+        return User.objects.get(client_id=client_id, event_id=event_id)
+    except User.DoesNotExist:
+        return
+
+
+async def get_public_user(event_id, id):
+    user = await get_user_by_id(event_id, id)
+    return PublicUserSerializer().to_representation(user)
+
+
+@database_sync_to_async
+def get_public_users(event_id, ids):
+    return [
+        PublicUserSerializer().to_representation(u)
+        for u in User.objects.filter(id__in=ids, event_id=event_id)
+    ]
+
+
+async def get_user(
+    event_id=None, *, with_id=None, with_token=None, with_client_id=None
+):
+    if with_id:
+        return await get_user_by_id(event_id, with_id)
+
+    token_id = None
+    if with_token:
+        token_id = with_token["uid"]
+        user = await get_user_by_token_id(event_id, token_id)
+    elif with_client_id:
+        user = await get_user_by_client_id(event_id, with_client_id)
     else:
-        raise Exception("get_user was called without valid user_id, token or client_id")
+        raise Exception(
+            "get_user was called without valid with_token, with_id or with_client_id"
+        )
 
-    if data:
-        data = await get_user_by_user_id(data)
-        if token and (data.get("traits") != token.get("traits")):
-            data["traits"] = token["traits"]
-        await update_user(data, data)
-        return data
+    if user:
+        traits = None
+        if with_token and (user.traits != with_token.get("traits")):
+            traits = with_token["traits"]
+        await update_user(event_id, id=user.id, traits=traits)
+        return PublicUserSerializer().to_representation(user)
 
-    data = {"user_id": str(uuid.uuid4())}
-    if uid:
-        data["uid"] = uid
-        data["traits"] = token.get("traits")
-        await set_json(f"user:by_uid:{uid}", data["user_id"])
+    if token_id:
+        user = await create_user(
+            event_id=event_id,
+            token_id=token_id,
+            traits=with_token.get("traits") if with_token else None,
+        )
     else:
-        data["client_id"] = client_id
-        await set_json(f"user:by_client_id:{client_id}", data["user_id"])
+        user = await create_user(
+            event_id=event_id,
+            client_id=with_client_id,
+            traits=with_token.get("traits") if with_token else None,
+        )
+    return PublicUserSerializer().to_representation(user)
 
-    await update_user(data, data)
-    return data
+
+@database_sync_to_async
+def create_user(event_id, *, token_id=None, client_id=None, traits=None, profile=None):
+    return User.objects.create(
+        event_id=event_id,
+        token_id=token_id,
+        client_id=client_id,
+        traits=traits or [],
+        profile=profile or {},
+    )
 
 
-async def update_user(user, data=None):
-    redis_key = f"user:{user['user_id']}"
-    stored_data = await get_json(redis_key, {})
-    for key, value in data.items():
-        stored_data[key] = value
-    await set_json(redis_key, stored_data)
-    return stored_data
+@database_sync_to_async
+@atomic
+def update_user(event_id, id, *, traits=None, public_data=None):
+    # TODO: Exception handling
+    user = User.objects.select_for_update().get(id=id, event_id=event_id)
+
+    if traits is not None:
+        user.traits = traits
+        user.save(update_fields=["traits"])
+
+    if public_data is not None:
+        serializer = PublicUserSerializer(instance=user, data=public_data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    return PublicUserSerializer().to_representation(user)

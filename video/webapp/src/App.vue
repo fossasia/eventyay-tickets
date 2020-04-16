@@ -5,7 +5,7 @@
 		rooms-sidebar
 		router-view
 		transition(name="profile-prompt")
-			profile-prompt(v-if="!user.profile")
+			profile-prompt(v-if="!user.profile.display_name")
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>

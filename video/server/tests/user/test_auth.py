@@ -6,6 +6,7 @@ import pytest
 from channels.testing import WebsocketCommunicator
 
 from stayseated.core.services.event import get_event_config
+from stayseated.core.services.user import get_user_by_token_id
 from stayseated.routing import application
 
 
@@ -97,24 +98,24 @@ async def test_auth_with_invalid_jwt_token():
 @pytest.mark.django_db
 async def test_update_user():
     async with event_communicator() as c, event_communicator() as c2:
-        await c.send_json_to(["authenticate", {"client_id": 4}])
+        await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["client_id"] == 4
-        user_id = response[1]["user.config"]["user_id"]
+        user_id = response[1]["user.config"]["id"]
 
-        await c.send_json_to(["user.update", 123, {"display_name": "Cool User"}])
+        await c.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": "Cool User"}}]
+        )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}], response
 
-        await c2.send_json_to(["authenticate", {"client_id": 4}])
+        await c2.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["client_id"] == 4
-        assert response[1]["user.config"]["display_name"] == "Cool User"
-        assert response[1]["user.config"]["user_id"] == user_id
+        assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
+        assert response[1]["user.config"]["id"] == user_id
 
 
 @pytest.mark.asyncio
@@ -152,13 +153,16 @@ async def test_auth_with_jwt_token_update_traits():
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["traits"] == ["chat.read", "foo.bar"]
+        assert (await get_user_by_token_id("sample", "123456")).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
 
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["traits"] == ["chat.read"]
+        assert (await get_user_by_token_id("sample", "123456")).traits == ["chat.read"]
 
 
 @pytest.mark.asyncio
@@ -182,10 +186,16 @@ async def test_auth_with_jwt_token_twice():
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["traits"] == ["chat.read", "foo.bar"]
+        assert (await get_user_by_token_id("sample", "123456")).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
 
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"event.config", "user.config"}
-        assert response[1]["user.config"]["traits"] == ["chat.read", "foo.bar"]
+        assert (await get_user_by_token_id("sample", "123456")).traits == [
+            "chat.read",
+            "foo.bar",
+        ]
