@@ -7,8 +7,8 @@ from stayseated.routing import application
 
 
 @asynccontextmanager
-async def event_communicator():
-    communicator = WebsocketCommunicator(application, "/ws/event/sample/")
+async def world_communicator():
+    communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     yield communicator
     await communicator.disconnect()
@@ -17,7 +17,7 @@ async def event_communicator():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_ping_without_authentication():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["ping", 1])
         response = await c.receive_json_from()
         assert response == ["pong", 1]
@@ -26,7 +26,7 @@ async def test_ping_without_authentication():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_ping_with_authentication():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
@@ -38,7 +38,7 @@ async def test_ping_with_authentication():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_unknown_component():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"

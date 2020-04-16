@@ -2,7 +2,7 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from stayseated.live.exceptions import ConsumerException
 
-from ..core.services.event import get_event_config
+from ..core.services.world import get_world_config
 from .modules.auth import AuthModule
 from .modules.chat import ChatModule
 
@@ -11,11 +11,11 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.content = {}
         await self.accept()
-        event_config = await get_event_config(
-            self.scope["url_route"]["kwargs"]["event"]
+        world_config = await get_world_config(
+            self.scope["url_route"]["kwargs"]["world"]
         )
-        if event_config is None:
-            await self.send_error("event.unknown_event", close=True)
+        if world_config is None:
+            await self.send_error("world.unknown_world", close=True)
             return
 
     async def disconnect(self, close_code):

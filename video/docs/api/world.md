@@ -1,14 +1,14 @@
-Event configuration
+World configuration
 ===================
 
-The event configuration is pushed directly after authentication with a message structured as
+The world configuration is pushed directly after authentication with a message structured as
 
-    <- ["event.config", { … }]
+    <- ["world.config", { … }]
     
 The body of the configuration is strucured like this, filtered to user visibility:
 
     {
-        "event": {
+        "world": {
             "title": "Unsere tolle Online-Konferenz",
             "JWT_secrets": [
                 {

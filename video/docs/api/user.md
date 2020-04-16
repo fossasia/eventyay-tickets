@@ -9,7 +9,7 @@ Send JWT token, receive everything that's already known about the user.
 
 ```
 => ["authenticate", {"token": "JWTTOKEN"}]
-<- ["authenticated", {"user.config": {}, "event.config": {}}]
+<- ["authenticated", {"user.config": {}, "world.config": {}}]
 ```
 
 ## Change user info

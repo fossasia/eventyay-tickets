@@ -5,18 +5,19 @@ from contextlib import asynccontextmanager
 import pytest
 from channels.testing import WebsocketCommunicator
 
+from stayseated.core.utils.redis import aioredis
 from stayseated.routing import application
 
 
 @asynccontextmanager
-async def event_communicator(named=True):
-    communicator = WebsocketCommunicator(application, "/ws/event/sample/")
+async def world_communicator(named=True):
+    communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     await communicator.send_json_to(["authenticate", {"client_id": str(uuid.uuid4())}])
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
     communicator.context = response[1]
-    assert "event.config" in response[1], response
+    assert "world.config" in response[1], response
     if named:
         await communicator.send_json_to(
             ["user.update", 123, {"profile": {"display_name": "Foo Fighter"}}]
@@ -28,18 +29,18 @@ async def event_communicator(named=True):
 
 @pytest.mark.asyncio
 async def test_join_unknown_event():
-    communicator = WebsocketCommunicator(application, "/ws/event/sampleeeeeeee/")
+    communicator = WebsocketCommunicator(application, "/ws/world/sampleeeeeeee/")
     await communicator.connect()
     await communicator.send_json_to(["authenticate", {"client_id": str(uuid.uuid4())}])
     response = await communicator.receive_json_from()
-    assert response == ["error", {"code": "event.unknown_event"}]
+    assert response == ["error", {"code": "world.unknown_world"}]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
 @pytest.mark.parametrize("action", ("join", "subscribe"))
 async def test_join_or_subscribe_unknown_room(action):
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to([f"chat.{action}", 123, {"channel": "room_unk"}])
         response = await c.receive_json_from()
         assert response == [
@@ -53,7 +54,7 @@ async def test_join_or_subscribe_unknown_room(action):
 @pytest.mark.django_db
 @pytest.mark.parametrize("action", ("join", "subscribe"))
 async def test_join_or_subscribe_room_without_chat(action):
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to([f"chat.{action}", 123, {"channel": "room_1"}])
         response = await c.receive_json_from()
         assert response == [
@@ -66,7 +67,7 @@ async def test_join_or_subscribe_room_without_chat(action):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_leave():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -97,7 +98,7 @@ async def test_join_leave():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_without_name():
-    async with event_communicator(named=False) as c:
+    async with world_communicator(named=False) as c:
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["error", 123, {"code": "channel.join.missing_profile"}]
@@ -106,7 +107,7 @@ async def test_join_without_name():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_subscribe_without_name():
-    async with event_communicator(named=False) as c:
+    async with world_communicator(named=False) as c:
         await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -115,7 +116,7 @@ async def test_subscribe_without_name():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_subscribe_join_leave():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -169,7 +170,7 @@ async def test_subscribe_join_leave():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_bogus_command():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -182,7 +183,7 @@ async def test_bogus_command():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_send_message_to_other_client():
-    async with event_communicator() as c1, event_communicator() as c2:
+    async with world_communicator() as c1, world_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -245,7 +246,7 @@ async def test_send_message_to_other_client():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_still_messages_after_leave():
-    async with event_communicator() as c1, event_communicator() as c2:
+    async with world_communicator() as c1, world_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         assert response == ["success", 123, {"state": None, "members": []}]
@@ -300,7 +301,7 @@ async def test_still_messages_after_leave():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_no_message_after_unsubscribe():
-    async with event_communicator() as c1, event_communicator() as c2:
+    async with world_communicator() as c1, world_communicator() as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
         response = await c1.receive_json_from()
         await c1.receive_json_from()  # join notification c1
