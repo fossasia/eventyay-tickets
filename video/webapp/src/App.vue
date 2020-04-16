@@ -1,7 +1,7 @@
 <template lang="pug">
 #app
 	template(v-if="world")
-		app-bar
+		//- app-bar
 		rooms-sidebar
 		router-view
 		transition(name="profile-prompt")
@@ -24,9 +24,9 @@ export default {
 <style lang="stylus">
 #app
 	display: grid
-	grid-template-columns: 280px auto
-	grid-template-rows: 48px auto
-	grid-template-areas: "app-bar app-bar" "rooms-sidebar main"
+	grid-template-columns: 380px auto
+	grid-template-rows: auto
+	grid-template-areas: "rooms-sidebar main"
 
 	.c-app-bar
 		grid-area: app-bar
