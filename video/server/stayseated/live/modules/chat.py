@@ -100,7 +100,7 @@ class ChatModule:
                 event_type=event_type,
                 content=content,
                 sender=self.consumer.user["id"],
-            )
+            ),
         )
         await self.consumer.send_success()
 
