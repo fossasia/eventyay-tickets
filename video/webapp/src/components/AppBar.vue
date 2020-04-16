@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-app-bar
-	.logo {{ event.title }}
+	.logo {{ world.title }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -12,7 +12,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['event'])
+		...mapState(['world'])
 	},
 	created () {},
 	mounted () {
