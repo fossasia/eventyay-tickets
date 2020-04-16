@@ -11,7 +11,7 @@ export default new Vuex.Store({
 		token: null,
 		clientId: null,
 		user: null,
-		event: null,
+		world: null,
 		rooms: null
 	},
 	actions: {
@@ -23,15 +23,15 @@ export default new Vuex.Store({
 			api.connect({token: state.token, clientId: state.clientId})
 			api.on('joined', (serverState) => {
 				state.user = serverState['user.config']
-				state.event = serverState['event.config'].event
-				state.rooms = serverState['event.config'].rooms
+				state.world = serverState['world.config'].world
+				state.rooms = serverState['world.config'].rooms
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
 				}
 			})
 			api.on('closed', () => {
-				state.event = null
+				state.world = null
 			})
 		},
 		async updateUser ({state}, update) {

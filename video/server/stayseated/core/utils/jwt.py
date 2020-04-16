@@ -2,12 +2,12 @@ from contextlib import suppress
 
 import jwt
 
-from stayseated.core.services.event import get_event_config
+from stayseated.core.services.world import get_world_config
 
 
-async def decode_token(token, event):
-    config = await get_event_config(event)
-    for jwt_config in config["event"]["JWT_secrets"]:
+async def decode_token(token, world):
+    config = await get_world_config(world)
+    for jwt_config in config["world"]["JWT_secrets"]:
         secret = jwt_config["secret"]
         audience = jwt_config["audience"]
         issuer = jwt_config["issuer"]

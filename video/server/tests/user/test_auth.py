@@ -5,14 +5,14 @@ import jwt
 import pytest
 from channels.testing import WebsocketCommunicator
 
-from stayseated.core.services.event import get_event_config
 from stayseated.core.services.user import get_user_by_token_id
+from stayseated.core.services.world import get_world_config
 from stayseated.routing import application
 
 
 @asynccontextmanager
-async def event_communicator():
-    communicator = WebsocketCommunicator(application, "/ws/event/sample/")
+async def world_communicator():
+    communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     yield communicator
     await communicator.disconnect()
@@ -21,17 +21,17 @@ async def event_communicator():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_with_client_id():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_action_before_auth():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["chat.join", 124, {"client_id": 4}])
         response = await c.receive_json_from()
         assert response == ["error", 124, {"code": "protocol.unauthenticated"}]
@@ -40,7 +40,7 @@ async def test_action_before_auth():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_without_client_id():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {}])
         response = await c.receive_json_from()
         assert response == ["error", {"code": "auth.missing_id_or_token"}]
@@ -50,8 +50,8 @@ async def test_auth_without_client_id():
 @pytest.mark.django_db
 @pytest.mark.parametrize("index", [0, 1])
 async def test_auth_with_jwt_token(index):
-    event_config = await get_event_config("sample")
-    config = event_config["event"]["JWT_secrets"][index]
+    world_config = await get_world_config("sample")
+    config = world_config["world"]["JWT_secrets"][index]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -63,18 +63,18 @@ async def test_auth_with_jwt_token(index):
         "traits": ["chat.read", "foo.bar"],
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_with_invalid_jwt_token():
-    event_config = await get_event_config("sample")
-    config = event_config["event"]["JWT_secrets"][0]
+    world_config = await get_world_config("sample")
+    config = world_config["world"]["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -88,7 +88,7 @@ async def test_auth_with_invalid_jwt_token():
     token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256").decode(
         "utf-8"
     )
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "error"
@@ -97,11 +97,11 @@ async def test_auth_with_invalid_jwt_token():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_update_user():
-    async with event_communicator() as c, event_communicator() as c2:
+    async with world_communicator() as c, world_communicator() as c2:
         await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         user_id = response[1]["user.config"]["id"]
 
         await c.send_json_to(
@@ -113,7 +113,7 @@ async def test_update_user():
         await c2.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
 
@@ -121,7 +121,7 @@ async def test_update_user():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_wrong_user_command():
-    async with event_communicator() as c:
+    async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
@@ -133,8 +133,8 @@ async def test_wrong_user_command():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_with_jwt_token_update_traits():
-    event_config = await get_event_config("sample")
-    config = event_config["event"]["JWT_secrets"][0]
+    world_config = await get_world_config("sample")
+    config = world_config["world"]["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -148,11 +148,11 @@ async def test_auth_with_jwt_token_update_traits():
     token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
     payload["traits"] = ["chat.read"]
     token2 = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
-    async with event_communicator() as c, event_communicator() as c2:
+    async with world_communicator() as c, world_communicator() as c2:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -161,15 +161,15 @@ async def test_auth_with_jwt_token_update_traits():
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert (await get_user_by_token_id("sample", "123456")).traits == ["chat.read"]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_auth_with_jwt_token_twice():
-    event_config = await get_event_config("sample")
-    config = event_config["event"]["JWT_secrets"][0]
+    world_config = await get_world_config("sample")
+    config = world_config["world"]["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -181,11 +181,11 @@ async def test_auth_with_jwt_token_twice():
         "traits": ["chat.read", "foo.bar"],
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
-    async with event_communicator() as c, event_communicator() as c2:
+    async with world_communicator() as c, world_communicator() as c2:
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -194,7 +194,7 @@ async def test_auth_with_jwt_token_twice():
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"event.config", "user.config"}
+        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",

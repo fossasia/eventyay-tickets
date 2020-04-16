@@ -1,6 +1,6 @@
 from stayseated.core.services.chat import ChatService
-from stayseated.core.services.event import get_room_config
 from stayseated.core.services.user import get_public_user
+from stayseated.core.services.world import get_room_config
 from stayseated.live.exceptions import ConsumerException
 
 
@@ -17,7 +17,7 @@ class ChatModule:
         }
 
     async def get_room(self):
-        room_config = await get_room_config(self.event, self.channel_id)
+        room_config = await get_room_config(self.world, self.channel_id)
         if not room_config:
             raise ConsumerException("room.unknown", "Unknown room ID")
         if "chat.native" not in [m["type"] for m in room_config["modules"]]:
@@ -44,7 +44,7 @@ class ChatModule:
                 event_type="channel.member",
                 content={
                     "membership": "leave",
-                    "user": await get_public_user(self.event, self.consumer.user["id"]),
+                    "user": await get_public_user(self.world, self.consumer.user["id"]),
                 },
                 sender=self.consumer.user["id"],
             ),
@@ -67,7 +67,7 @@ class ChatModule:
                 event_type="channel.member",
                 content={
                     "membership": "join",
-                    "user": await get_public_user(self.event, self.consumer.user["id"]),
+                    "user": await get_public_user(self.world, self.consumer.user["id"]),
                 },
                 sender=self.consumer.user["id"],
             ),
@@ -114,8 +114,8 @@ class ChatModule:
         self.consumer = consumer
         self.content = content
         self.channel_id = self.content[2].get("channel")
-        self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
-        self.service = ChatService(self.event)
+        self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
+        self.service = ChatService(self.world)
         _, action = content[0].rsplit(".", maxsplit=1)
         if action not in self.actions:
             raise ConsumerException("chat.unsupported_command")
@@ -124,6 +124,6 @@ class ChatModule:
     async def dispatch_event(self, consumer, content):
         self.consumer = consumer
         self.content = content
-        self.event = self.consumer.scope["url_route"]["kwargs"]["event"]
-        self.service = ChatService(self.event)
+        self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
+        self.service = ChatService(self.world)
         await self.publish_event()
