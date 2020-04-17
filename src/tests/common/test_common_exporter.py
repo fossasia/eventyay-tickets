@@ -17,3 +17,4 @@ def test_common_base_exporter_raises_proper_exceptions():
         exporter.render()
     with pytest.raises(NotImplementedError):
         str(exporter)
+    assert exporter.cors is None

@@ -3,6 +3,8 @@ import datetime as dt
 import pytest
 import pytz
 from django.utils import formats
+from django.utils.timezone import now
+
 from django_scopes import scope
 
 
@@ -113,7 +115,7 @@ def test_can_see_talk_do_not_record(client, django_assert_num_queries, event, sl
 def test_can_see_talk_does_accept_feedback(
     client, django_assert_num_queries, event, slot
 ):
-    slot.start = dt.datetime.now() - dt.timedelta(days=1)
+    slot.start = now() - dt.timedelta(days=1)
     slot.end = slot.start + dt.timedelta(hours=1)
     slot.save()
     with django_assert_num_queries(31):

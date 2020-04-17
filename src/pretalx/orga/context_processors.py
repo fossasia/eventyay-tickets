@@ -39,7 +39,7 @@ def orga_events(request):
         for _, response in nav_event.send_robust(request.event, request=request):
             if isinstance(response, list):
                 _nav_event += response
-            else:
+            elif response:
                 _nav_event.append(response)
                 warnings.warn(
                     "Please return a list in your nav_event signal receiver, not a dictionary.",

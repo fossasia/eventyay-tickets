@@ -247,14 +247,14 @@ def test_replace_availabilities(availabilitiesform):
                 Availability(
                     room_id=instance.id,
                     event_id=availabilitiesform.event.id,
-                    start=dt.datetime(2017, 1, 1, 10),
-                    end=dt.datetime(2017, 1, 1, 12),
+                    start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
+                    end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
                 ),
                 Availability(
                     room_id=instance.id,
                     event_id=availabilitiesform.event.id,
-                    start=dt.datetime(2017, 1, 2, 10),
-                    end=dt.datetime(2017, 1, 2, 15),
+                    start=dt.datetime(2017, 1, 2, 10, tzinfo=pytz.utc),
+                    end=dt.datetime(2017, 1, 2, 15, tzinfo=pytz.utc),
                 ),
             ]
         )
@@ -264,13 +264,13 @@ def test_replace_availabilities(availabilitiesform):
                 room_id=instance.id,
                 event_id=availabilitiesform.event.id,
                 start=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 1, 12),
+                end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
             ),
             Availability(
                 room_id=instance.id,
                 event_id=availabilitiesform.event.id,
                 start=dt.datetime(2017, 1, 2, 12, tzinfo=pytz.utc),
-                end=dt.datetime(2017, 1, 2, 15),
+                end=dt.datetime(2017, 1, 2, 15, tzinfo=pytz.utc),
             ),
         ]
 
