@@ -141,8 +141,7 @@ export default {
 				border-radius: 50%
 			.c-identicon
 				cursor: pointer
-				canvas
-					height: 128px
+				height: 128px
 			.display-name
 				width: 240px
 			.gravatar-hint
