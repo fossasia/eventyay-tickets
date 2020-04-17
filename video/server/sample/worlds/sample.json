@@ -1,6 +1,13 @@
 {
   "world": {
     "title": "Unsere tolle Online-Konferenz",
+    "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
+    "pretalx": {
+      "schedule_url": "https://pretalx.com/democon/schedule/export/schedule.json",
+      "room_mapping": {
+
+      }
+    },
     "JWT_secrets": [
       {
         "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
@@ -40,13 +47,6 @@
         {
           "type": "chat.native",
           "config": {
-          }
-        },
-        {
-          "type": "agenda.pretalx",
-          "config": {
-            "api_url": "https://pretalx.com/conf/online/schedule/export/schedule.json",
-            "room_id": 3
           }
         }
       ]

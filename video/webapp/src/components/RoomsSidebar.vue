@@ -1,6 +1,9 @@
 <template lang="pug">
 .c-rooms-sidebar
 	.logo {{ world.title }}
+	.global-links
+		router-link.room(:to="{name: 'home'}") About
+		router-link.room(:to="{name: 'schedule'}") Schedule
 	.group-title Rooms
 	.rooms
 		router-link.room(v-for="room of rooms", :to="{name: 'room', params: {roomId: room.id}}")
@@ -35,10 +38,25 @@ export default {
 	.logo
 		font-size: 24px
 		text-align: center
-		margin: 16px 0
+		margin: 16px 0 32px 0
+	.global-links
+		display: flex
+		flex-direction: column
+		> *
+			flex: none
+			height: 36px
+			line-height: 36px
+			padding: 0 24px
+			color: $clr-secondary-text-dark
+			&:hover
+				background-color: rgba(255, 255, 255, .3)
+				color: $clr-primary-text-dark
+			&.router-link-exact-active
+				background-color: rgba(255, 255, 255, .4)
+				color: $clr-primary-text-dark
 	.group-title
 		color: $clr-secondary-text-dark
-		margin: 32px 16px 8px 16px
+		margin: 16px 16px 8px 16px
 		font-weight: 600
 		font-size: 12px
 	.rooms
