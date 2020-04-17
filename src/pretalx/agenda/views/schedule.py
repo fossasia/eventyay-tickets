@@ -115,13 +115,15 @@ class ExporterView(ScheduleDataView):
             if "If-None-Match" in request.headers:
                 if request.headers["If-None-Match"] == etag:
                     return HttpResponseNotModified()
-            resp = HttpResponse(data, content_type=file_type)
-            resp["ETag"] = etag
+            response = HttpResponse(data, content_type=file_type)
+            response["ETag"] = etag
             if file_type not in ["application/json", "text/xml"]:
-                resp[
+                response[
                     "Content-Disposition"
                 ] = f'attachment; filename="{safe_filename(file_name)}"'
-            return resp
+            if exporter.cors:
+                response["Access-Control-Allow-Origin"] = exporter.cors
+            return response
         except Exception:
             raise Http404()
 

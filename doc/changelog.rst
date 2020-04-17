@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Exporters can now supply the CORS header they want to send. All exporters provided by pretalx directly now allow access from all origins by default.
 - :feature:`772` Organisers can now leave a public comment when they release a new schedule. It will be visible in the changelog and the schedule RSS feed.
 - :feature:`830` Administrators can now configure static and media files to be under different URLs than ``static`` and ``media``.
 - :bug:`-` Using custom mailservers worked, but testing the connection in the settings page showed an error (incorrectly).

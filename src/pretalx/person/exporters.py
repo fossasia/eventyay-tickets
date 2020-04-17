@@ -9,6 +9,7 @@ class CSVSpeakerExporter(CSVExporterMixin, BaseExporter):
     public = False
     icon = "fa-users"
     identifier = "speakers.csv"
+    cors = "*"
 
     @property
     def verbose_name(self):

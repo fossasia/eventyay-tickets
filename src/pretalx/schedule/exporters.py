@@ -111,6 +111,7 @@ class FrabXmlExporter(ScheduleData):
     public = True
     show_qrcode = True
     icon = "fa-code"
+    cors = "*"
 
     def render(self, **kwargs):
         context = {
@@ -130,6 +131,7 @@ class FrabXCalExporter(ScheduleData):
     verbose_name = "XCal (frab compatible)"
     public = True
     icon = "fa-calendar"
+    cors = "*"
 
     def render(self, **kwargs):
         url = get_base_url(self.event)
@@ -143,6 +145,7 @@ class FrabJsonExporter(ScheduleData):
     verbose_name = "JSON (frab compatible)"
     public = True
     icon = "{ }"
+    cors = "*"
 
     def get_data(self, **kwargs):
         tz = pytz.timezone(self.event.timezone)
@@ -257,6 +260,7 @@ class ICalExporter(BaseExporter):
     public = True
     show_qrcode = True
     icon = "fa-calendar"
+    cors = "*"
 
     def __init__(self, event, schedule=None):
         super().__init__(event)

@@ -10,6 +10,7 @@ class SpeakerQuestionData(CSVExporterMixin, BaseExporter):
     identifier = "speaker-questions.csv"
     public = False
     icon = "fa-question-circle"
+    cors = "*"
 
     @property
     def verbose_name(self):
@@ -49,6 +50,7 @@ class SubmissionQuestionData(CSVExporterMixin, BaseExporter):
     identifier = "submission-questions.csv"
     public = False
     icon = "fa-question-circle-o"
+    cors = "*"
 
     @property
     def verbose_name(self):

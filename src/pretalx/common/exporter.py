@@ -51,6 +51,12 @@ class BaseExporter:
         raise NotImplementedError()  # NOQA
 
     @property
+    def cors(self) -> str:
+        """If you want to let this exporter be accessed with JavaScript, set
+        cors = '*' for all accessing domains, or supply a specific domain."""
+        return None
+
+    @property
     def show_qrcode(self) -> bool:
         """Return True if the link to the exporter should be shown as QR code,
         False (default) otherwise.
