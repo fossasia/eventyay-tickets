@@ -40,11 +40,11 @@ export default {
 	display: flex
 	align-items: flex-start
 	padding: 4px 8px
-	.gravatar-avatar, .c-identicon canvas
+	.gravatar-avatar, .c-identicon
 		width: 28px
 		margin-right: 8px
 	.content-wrapper
-		padding-top: 5px // ???
+		padding-top: 6px // ???
 	.display-name
 		font-weight: 600
 		color: $clr-secondary-text-light
