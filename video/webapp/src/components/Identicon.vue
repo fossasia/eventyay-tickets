@@ -10,6 +10,7 @@
 				path.stroke(d="M 0 0 L 0 1 L 1 1 L 1 0z")
 </template>
 <script>
+// ported from https://github.com/Schlipak/IdentiHeart
 const PALETTE = [
 	'#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3',
 	'#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39',
