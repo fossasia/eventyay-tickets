@@ -1,14 +1,21 @@
 <template lang="pug">
-h1 Schedule
+.c-schedule
+	pretalx-schedule(v-if="schedule", :schedule="schedule")
+	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import { mapState } from 'vuex'
+import PretalxSchedule from 'components/pretalx/Schedule'
+
 export default {
-	components: {},
+	components: { PretalxSchedule },
 	data () {
 		return {
 		}
 	},
-	computed: {},
+	computed: {
+		...mapState(['schedule'])
+	},
 	created () {},
 	mounted () {
 		this.$nextTick(() => {
@@ -18,4 +25,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+.c-schedule
+	display: flex
+	flex-direction: column
+	min-height: 0
 </style>
