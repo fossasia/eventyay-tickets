@@ -1,0 +1,93 @@
+<template lang="pug">
+.pretalx-schedule(:class="{mobile}", ref="wrapper", :style="style")
+	.header
+		h2 Schedule
+		bunt-tabs(v-if="schedule.conference.days.length > 1", :active-tab="activeDay.day_start")
+			bunt-tab(v-for="day in schedule.conference.days", :id="day.day_start", :header="formatDate(day.day_start)", @selected="activeDay = day")
+		.pretalx-widget-attribution
+			| · powered by #[a(href="https://pretalx.com", rel="noopener", target="_blank") pretalx] ·
+	pretalx-schedule-day(:day="activeDay", :key="activeDay.day_start")
+</template>
+<script>
+import moment from 'moment'
+import PretalxScheduleDay from './ScheduleDay'
+
+export default {
+	name: 'pretalx-schedule',
+	components: { PretalxScheduleDay },
+	props: {
+		schedule: Object
+	},
+	data () {
+		return {
+			scheduleData: null,
+			mobile: false,
+			activeDay: null,
+		}
+	},
+	computed: {
+		style () {
+			/* if (this.widgetData.height) {
+				return {
+					'max-height': this.widgetData.height,
+					display: 'block',
+				}
+			} */
+			return {}
+		},
+	},
+	filters: {
+		dateDisplay (value) {
+			return moment(value).format('dddd, LL')
+		}
+	},
+	created () {
+		const lang = 'en'
+		moment.locale(lang)
+		moment.updateLocale(lang, {
+			longDateFormat: {
+				LL: moment.localeData()._longDateFormat.LL.replace(/Y/g, '').replace(/,? *$/, '')
+			}
+		})
+		this.activeDay = this.schedule.conference.days[0] // TODO use current day
+	},
+	mounted () {
+		// TODO replace with proper mq support
+		this.mobile = this.$refs && this.$refs.wrapper && this.$refs.wrapper.clientWidth <= 800
+	},
+	methods: {
+		formatDate (value) {
+			return moment(value).format('dddd, LL')
+		}
+	}
+}
+</script>
+<style lang="stylus">
+.pretalx-schedule
+	--pixels-per-minute: 2
+	display: flex
+	flex-direction: column
+	flex: auto
+	min-height: 0
+	> .header
+		display: flex
+		justify-content: space-between
+		align-items: center
+		height: 48px
+		padding: 0 16px
+		border-bottom: border-separator()
+		h2
+			margin: 0
+			font-weight: 400
+		> .bunt-tabs
+			tabs-style(
+				background-color: transparent,
+				color: $clr-secondary-text-light,
+				active-color: $clr-primary-text-light,
+				indicator-color: $clr-primary
+			)
+			width: auto
+			margin-bottom: 0
+			display: flex
+			flex-direction: column
+</style>
