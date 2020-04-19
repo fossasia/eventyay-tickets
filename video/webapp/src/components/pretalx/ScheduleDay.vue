@@ -39,6 +39,7 @@ export default {
 			for (const room of this.day.rooms) {
 				if (room.talks.length < 1) continue
 				const lastDate = moment(last(room.talks).end)
+				console.log(lastDate)
 				if (!endOfDay || endOfDay.diff(lastDate) < 0) {
 					endOfDay = lastDate
 				}
@@ -48,13 +49,13 @@ export default {
 		hours () {
 			// TODO handle days going over calendar day threshold
 			const firstHour = this.startOfDay.get('hour')
-			const lastHour = this.endOfDay.get('hour')
+			const lastHour = this.endOfDay.get('hour') + 1 // TODO properly check for partially scheduled hours
 			return range(firstHour, lastHour)
 		},
 		nowlineStyle () {
 			const now = moment()
 			const start = moment(this.day.display_start)
-			const end = moment(this.day.day_end)
+			const end = moment(this.day.end)
 			if ((now < end) && (now > start)) {
 				const diffSeconds = now.diff(start, 'seconds')
 				const diffPx = (diffSeconds / 60 / 60) * 120
