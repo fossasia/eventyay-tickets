@@ -190,6 +190,7 @@ def question(event):
             target="submission",
             required=False,
             contains_personal_data=False,
+            position=1,
         )
 
 
@@ -203,6 +204,7 @@ def inactive_question(event):
             target="submission",
             required=False,
             active=False,
+            position=2,
         )
 
 
@@ -223,6 +225,7 @@ def speaker_question(event):
             variant=QuestionVariant.STRING,
             target="speaker",
             required=False,
+            position=3,
         )
 
 
@@ -235,6 +238,7 @@ def review_question(event):
             variant=QuestionVariant.STRING,
             target="reviewer",
             required=True,
+            position=4,
         )
 
 
@@ -247,6 +251,7 @@ def speaker_boolean_question(event):
             variant=QuestionVariant.BOOLEAN,
             target="speaker",
             required=False,
+            position=5,
         )
 
 
@@ -259,6 +264,7 @@ def boolean_question(event):
             variant=QuestionVariant.BOOLEAN,
             target="submission",
             required=False,
+            position=6,
         )
 
 
@@ -271,6 +277,7 @@ def file_question(event):
             variant=QuestionVariant.FILE,
             target="submission",
             required=False,
+            position=7,
         )
 
 
@@ -283,6 +290,7 @@ def speaker_file_question(event):
             variant=QuestionVariant.FILE,
             target="speaker",
             required=False,
+            position=8,
         )
 
 
@@ -295,6 +303,7 @@ def choice_question(event):
             variant=QuestionVariant.CHOICES,
             target="speaker",
             required=False,
+            position=9,
         )
         for answer in ["very", "incredibly", "omggreen"]:
             AnswerOption.objects.create(question=question, answer=answer)
@@ -321,6 +330,7 @@ def multiple_choice_question(event):
             variant=QuestionVariant.MULTIPLE,
             target="speaker",
             required=False,
+            position=10,
         )
         for answer in ["yellow", "blue", "black"]:
             AnswerOption.objects.create(question=question, answer=answer)
@@ -336,6 +346,7 @@ def speaker_text_question(event):
             variant=QuestionVariant.TEXT,
             target="speaker",
             required=False,
+            position=11,
         )
 
 
@@ -348,6 +359,7 @@ def personal_question(submission):
             variant="boolean",
             question="Do you identify as a hacker?",
             contains_personal_data=True,
+            position=12,
         )
 
 
