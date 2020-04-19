@@ -15,6 +15,6 @@ def html_head_test(sender, request, **kwargs):
     return '<meta property="pretalx:foo" content="bar">'
 
 
-@receiver(html_head)
+@receiver(html_above_profile_page)
 def html_above_profile_page_test(sender, request, **kwargs):
     return "<p></p>"

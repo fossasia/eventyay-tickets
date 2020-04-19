@@ -645,11 +645,13 @@ class Submission(LogMixin, GenerateCode, models.Model):
                 data.append(
                     {"name": answer.question.question, "value": answer.boolean_answer}
                 )
-            elif answer.answer:
-                data.append({"name": answer.question.question, "value": answer.answer})
             elif answer.answer_file:
                 data.append(
                     {"name": answer.question.question, "value": answer.answer_file}
+                )
+            else:
+                data.append(
+                    {"name": answer.question.question, "value": answer.answer or "-"}
                 )
         for content in data:
             field_name = content["name"]

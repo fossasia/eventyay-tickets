@@ -266,6 +266,8 @@ class TestWizard:
         file_question,
     ):
         with scope(event=event):
+            event.cfp.deadline = now() + dt.timedelta(days=1)
+            event.save()
             submission_type = SubmissionType.objects.filter(event=event).first().pk
             answer_data = {
                 f"question_{question.pk}": "42",

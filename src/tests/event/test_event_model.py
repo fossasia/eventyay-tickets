@@ -3,6 +3,7 @@ import datetime as dt
 import pytest
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event
@@ -117,13 +118,14 @@ def test_event_model_slug_uniqueness():
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("with_url", (True, False))
-def test_event_copy_settings(event, submission_type, with_url):
+def test_event_copy_settings(event, submission_type, with_url, choice_question, track):
     with scope(event=event):
         if with_url:
             event.settings.custom_domain = "https://testeventcopysettings.example.org"
         event.settings.random_value = "testcopysettings"
         event.accept_template.text = "testtemplate"
         event.accept_template.save()
+        choice_question.tracks.add(track)
     with scopes_disabled():
         new_event = Event.objects.create(
             organiser=event.organiser,
@@ -204,3 +206,48 @@ def test_shred_used_event(
     assert Event.objects.count() == 2
     rejected_submission.event.organiser.shred()
     assert Event.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_enable_plugin_twice(event):
+    event.enable_plugin("test")
+    event.enable_plugin("test")
+    assert event.plugin_list == ["test"]
+
+
+@pytest.mark.django_db
+def test_disable_wrong_plugin(event):
+    event.disable_plugin("teeeeeeeeeeest")
+    assert event.plugin_list == []
+
+
+@pytest.mark.django_db
+def test_event_create_review_phase(event):
+    with scope(event=event):
+        event.review_phases.all().delete()
+        assert event.active_review_phase
+
+
+@pytest.mark.django_db
+def test_event_update_review_phase_keep_outdated_phase(event):
+    with scope(event=event):
+        event.review_phases.all().delete()
+        active_phase = event.active_review_phase
+        active_phase.end = now() - dt.timedelta(days=3)
+        active_phase.save()
+        assert event.update_review_phase() == active_phase
+
+
+@pytest.mark.django_db
+def test_event_update_review_phase_activate_next_phase(event):
+    from pretalx.submission.models.review import ReviewPhase
+
+    with scope(event=event):
+        event.review_phases.all().delete()
+        active_phase = event.active_review_phase
+        active_phase.end = now() - dt.timedelta(days=3)
+        active_phase.save()
+        new_phase = ReviewPhase.objects.create(
+            event=event, position=3, start=active_phase.end
+        )
+        assert event.update_review_phase() == new_phase

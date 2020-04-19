@@ -350,6 +350,9 @@ def test_send_state_mail(submission, state, expected):
 def test_public_slots_without_schedule(submission):
     with scope(event=submission.event):
         submission.event.schedules.all().delete()
+        submission.event.is_public = True
+        submission.event.settings.show_schedule = True
+        submission.event.save()
         assert submission.public_slots == []
 
 

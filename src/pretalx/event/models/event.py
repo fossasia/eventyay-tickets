@@ -699,27 +699,23 @@ class Event(LogMixin, models.Model):
         _now = now()
         future_phases = self.review_phases.all()
         old_phase = self.active_review_phase
-        if old_phase:
-            future_phases = future_phases.filter(position__gt=old_phase.position)
+        if old_phase and old_phase.end and old_phase.end > _now:
+            return old_phase
+        future_phases = future_phases.filter(position__gt=old_phase.position)
         next_phase = future_phases.order_by("position").first()
-        if old_phase:
-            if old_phase.end:
-                if old_phase.end > _now:
-                    return old_phase
-                old_phase.is_active = False
-                old_phase.save()
-            elif not (next_phase and next_phase.start and next_phase.start <= _now):
-                return old_phase
-        if next_phase and (not next_phase.start or next_phase.start <= _now):
-            next_phase.activate()
-            return next_phase
-        return None
+        if not (
+            next_phase
+            and (
+                (next_phase.start and next_phase.start <= _now) or not next_phase.start
+            )
+        ):
+            return old_phase
+        old_phase.is_active = False
+        old_phase.save()
+        next_phase.activate()
+        return next_phase
 
     update_review_phase.alters_data = True
-
-    @cached_property
-    def submission_questions(self):
-        return self.questions.filter(target="submission")
 
     @cached_property
     def talks(self):
