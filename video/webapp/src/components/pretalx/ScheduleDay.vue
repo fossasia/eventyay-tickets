@@ -3,17 +3,16 @@ section.pretalx-schedule-day-wrapper(v-scrollbar.y)
 	.pretalx-schedule-day(:data-start="day.display_start")
 		.pretalx-schedule-day-header-row
 			span.pretalx-schedule-time-column.pretalx-schedule-day-header
-			.pretalx-schedule-day-room-header(v-for="room in rooms", :key="room.name")
+			.pretalx-schedule-day-room-header(v-for="room in day.rooms", :key="room.name")
 				| {{ room.name }}
 		.pretalx-schedule-rooms
 			.pretalx-schedule-nowline(:style="nowlineStyle")
 			.pretalx-schedule-time-column
 				.pretalx-schedule-hour(v-for="hour in hours") {{ hour }}:00
-			pretalx-schedule-room(v-for="room in rooms", :room="room", :startOfDay="startOfDay", :key="room.name")
+			pretalx-schedule-room(v-for="room in day.rooms", :room="room", :startOfDay="startOfDay", :key="room.name")
 </template>
 <script>
 import moment from 'moment'
-import sortBy from 'lodash/sortBy'
 import range from 'lodash/range'
 import last from 'lodash/last'
 import PretalxScheduleRoom from './ScheduleRoom'
@@ -25,32 +24,26 @@ export default {
 		day: Object
 	},
 	computed: {
-		rooms () {
-			return Object.keys(this.day.rooms).map(roomName => ({
-				name: roomName,
-				talks: sortBy(this.day.rooms[roomName].slice(), 'date') // already sorted?
-			}))
-		},
 		startOfDay () {
 			let startOfDay
-			for (const room of this.rooms) {
+			for (const room of this.day.rooms) {
 				if (room.talks.length < 1) continue
-				if (!startOfDay || startOfDay.diff(room.talks[0].date) > 0) {
-					startOfDay = moment(room.talks[0].date)
+				if (!startOfDay || startOfDay.diff(room.talks[0].start) > 0) {
+					startOfDay = moment(room.talks[0].start)
 				}
 			}
-			return startOfDay || moment(this.day.day_start)
+			return startOfDay || moment(this.day.start)
 		},
 		endOfDay () {
 			let endOfDay
-			for (const room of this.rooms) {
+			for (const room of this.day.rooms) {
 				if (room.talks.length < 1) continue
-				const lastDate = moment(last(room.talks).date).add(moment.duration(last(room.talks).duration))
+				const lastDate = moment(last(room.talks).end)
 				if (!endOfDay || endOfDay.diff(lastDate) < 0) {
 					endOfDay = lastDate
 				}
 			}
-			return endOfDay || moment(this.day.day_end)
+			return endOfDay || moment(this.day.end)
 		},
 		hours () {
 			// TODO handle days going over calendar day threshold

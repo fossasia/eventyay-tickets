@@ -1,7 +1,7 @@
 <template lang="pug">
 a.pretalx-schedule-talk(
 	:class="{active: isActive, break: isBreak}"
-	:id="'pretalx-' + talk.slug || 'break'"
+	:id="'pretalx-' + talk.code || 'break'"
 	:style="style"
 	:data-time="timeDisplay"
 	:data-start="talk.start"
@@ -27,29 +27,28 @@ export default {
 	name: 'pretalx-schedule-talk',
 	props: {
 		talk: Object,
-		track: Object,
 		startOfDay: Object
 	},
 	computed: {
-		...mapState(['schedule']), // TODO leaky
+		...mapState(['world', 'schedule']), // TODO leaky
+		track () {
+			return this.schedule.event.tracks.find(track => track.name === this.talk.track)
+		},
 		talkUrl () {
-			const baseUrl = this.schedule.base_url.split('schedule/')[0]
-			return this.talk.slug ? (baseUrl + 'talk/' + this.talk.slug) : '#'
+			return this.talk.code ? (this.world.pretalx.base_url + 'talk/' + this.talk.code) : '#'
 		},
 		startMinutes () {
-			const date = moment(this.talk.date)
-			return date.diff(this.startOfDay, 'minutes')
+			return moment(this.talk.start).diff(this.startOfDay, 'minutes')
 		},
 		durationMinutes () {
-			const duration = moment.duration(this.talk.duration)
-			return duration.minutes()
+			return moment(this.talk.end).diff(this.talk.start, 'minutes')
 		},
 		style () {
 			return {
 				'--start-minutes': this.startMinutes,
 				'--duration-minutes': this.durationMinutes,
+				'--track-color': this.track?.color,
 				/* 'min-height': (this.talk.height >= 30 ? this.talk.height : 30) + 'px', */
-				'border-color': (this.talk.track && this.talk.track.color) ? this.talk.track.color : 'inherit',
 			}
 		},
 		isActive () {
@@ -57,7 +56,7 @@ export default {
 			return moment(this.talk.start) > now && moment(this.talk.end) < now
 		},
 		isBreak () {
-			return !this.talk.slug
+			return !this.talk.code
 		},
 		timeDisplay () {
 			return moment(this.talk.start).format('LT') + ' - ' + moment(this.talk.end).format('LT')
@@ -67,20 +66,18 @@ export default {
 </script>
 <style lang="stylus">
 .pretalx-schedule-talk
-	border: 1px solid lighten($clr-primary, 25%)
-	border-left: 4px solid lighten($clr-primary, 25%)
+	border: 2px solid lighten($clr-primary, 25%)
+	border-left: 12px solid lighten($clr-primary, 25%)
 	background-color: rgba(255, 255, 255, 0.76)
 	box-sizing: border-box
 	color: rgba(0, 0, 0, 0.87)
-	display: block
-	padding: 5px 10px
-	padding-top: 0
+	padding: 0 10px 5px 10px
 	position: absolute
-	margin: 0 8px
 	min-height: 30px
-	width: calc(100% - 16px)
+	width: calc(100% - 8px)
 	top: calc(var(--start-minutes) * var(--pixels-per-minute) * 1px)
 	height: calc(var(--duration-minutes) * var(--pixels-per-minute) * 1px)
+	border-color: var(--track-color)
 	&.break
 		cursor: default
 
@@ -100,15 +97,6 @@ export default {
 
 		.pretalx-schedule-talk-speakers
 			line-height: 26px
-
-	&.accepted
-		background-image: repeating-linear-gradient(
-			135deg,
-			$gray-lighter,
-			$gray-lighter 10px,
-			white 10px,
-			white 20px
-		)
 
 	&:hover
 		background-color: $gray-200
@@ -144,15 +132,11 @@ export default {
 .pretalx-schedule-talk.active
 	background-color: rgba(155, 255, 155, 0.76)
 
-.pretalx-schedule-talk.search-fail
-	color: $gray-light
-	border-color: $gray-light
-
 .pretalx-schedule-talk.break
 	margin: 0
 	width: 100%
-	background-color: $gray-lightest
-	color: $gray
+	background-color: $clr-grey-200
+	color: $clr-grey
 	border: 0
 	display: flex
 	align-items: center
@@ -170,6 +154,6 @@ export default {
 		font-size: 16px
 	&:hover
 		box-shadow: none
-		height: auto !important
+		// height: auto !important
 
 </style>

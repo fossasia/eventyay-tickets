@@ -43,9 +43,9 @@ export default new Vuex.Store({
 			}
 		},
 		async fetchSchedule ({state}) {
-			if (!state.world.pretalx?.schedule_url) return
-			const schedule = await (await fetch(state.world.pretalx.schedule_url)).json()
-			state.schedule = schedule.schedule
+			if (!state.world.pretalx?.base_url) return
+			const schedule = await (await fetch(state.world.pretalx.base_url + 'schedule/widget/v1.json')).json()
+			state.schedule = schedule
 		}
 	},
 	modules: {
