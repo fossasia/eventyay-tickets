@@ -28,9 +28,10 @@ export default {
 		},
 		async unsubscribe ({state}) {
 			if (!state.channel) return
+			const channel = state.channel
 			state.channel = null
 			if (api.socketState !== 'open') return
-			await api.call('chat.unsubscribe', {channel: state.channel})
+			await api.call('chat.unsubscribe', {channel})
 		},
 		async join ({state}) {
 			await api.call('chat.join', {channel: state.channel})
