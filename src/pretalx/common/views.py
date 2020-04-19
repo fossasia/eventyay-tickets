@@ -11,7 +11,6 @@ from django.template import TemplateDoesNotExist, loader
 from django.urls import get_callable
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
@@ -67,18 +66,6 @@ class GenericLoginView(FormView):
     def form_valid(self, form):
         pk = form.save()
         user = User.objects.filter(pk=pk).first()
-        if not user:
-            messages.error(
-                self.request,
-                _(
-                    "There was an error when logging in. Please contact the organiser for further help."
-                ),
-            )
-            return redirect(self.get_error_url())
-        if not user.is_active:
-            messages.error(self.request, _("User account is deactivated."))
-            return redirect(self.get_error_redirect())
-
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
 
         params = self.request.GET.copy()
@@ -107,7 +94,7 @@ class GenericResetView(FormView):
                 event=getattr(self.request, "event", None),
                 orga="orga" in self.request.resolver_match.namespaces,
             )
-        except SendMailException:
+        except SendMailException:  # pragma: no cover
             messages.error(self.request, phrases.base.error_sending_mail)
             return self.get(self.request, *self.args, **self.kwargs)
 
@@ -120,7 +107,7 @@ class GenericResetView(FormView):
 def handle_500(request):
     try:
         template = loader.get_template("500.html")
-    except TemplateDoesNotExist:
+    except TemplateDoesNotExist:  # pragma: no cover
         return HttpResponseServerError(
             "Internal server error. Please contact the administrator for details.",
             content_type="text/html",
@@ -128,7 +115,7 @@ def handle_500(request):
     context = {}
     try:  # This should never fail, but can't be too cautious in error views
         context["request_path"] = urllib.parse.quote(request.path)
-    except Exception:  # noqa
+    except Exception:  # pragma: no cover
         pass
     return HttpResponseServerError(template.render(context))
 

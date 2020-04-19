@@ -130,3 +130,16 @@ def test_update_check_warning(orga_user, orga_client, event, settings):
         reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
     )
     assert "fa-bell" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_can_access_event_with_custom_domain(orga_client, event):
+    event.settings.custom_domain = "http://example.com"
+    response = orga_client.get(
+        event.orga_urls.base
+    )  # First request creates child session
+    assert response.status_code == 200
+    response = orga_client.get(
+        event.orga_urls.base
+    )  # Second request does not re-create child session
+    assert response.status_code == 200

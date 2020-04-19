@@ -37,11 +37,12 @@ class ActionFromUrl:
     @context
     @cached_property
     def action(self):
-        if not any(_id in self.kwargs for _id in ["pk", "code"]):
-            return "create"
-        if self.request.user.has_perm(
+        can_write = self.request.user.has_perm(
             self.write_permission_required, self.permission_object
-        ):
+        )
+        if not any(_id in self.kwargs for _id in ["pk", "code"]) and can_write:
+            return "create"
+        elif can_write:
             return "edit"
         return "view"
 
@@ -165,8 +166,10 @@ class Filterable:
 class PermissionRequired(PermissionRequiredMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not hasattr(self, "get_permission_object") and hasattr(self, "object"):
-            self.get_permission_object = lambda self: self.object
+        if not hasattr(self, "get_permission_object"):
+            for key in ("permission_object", "object"):
+                if getattr(self, key, None):
+                    self.get_permission_object = lambda self: getattr(self, key)
 
     def has_permission(self):
         result = super().has_permission()

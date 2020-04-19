@@ -34,15 +34,17 @@ def test_user_typeahead(
 
 
 @pytest.mark.django_db
-def test_remove_superuser(orga_client, orga_user):
+@pytest.mark.parametrize(
+    "follow,expected", (("/orga/", "/orga/"), ("https://example.com", "/orga/event/"))
+)
+def test_remove_superuser(orga_client, orga_user, follow, expected):
     orga_user.is_superuser = True
     orga_user.save()
-    response = orga_client.get(
-        reverse("orga:user.subuser"), kwargs={"next": "/orga"}, follow=True
-    )
+    response = orga_client.get(reverse("orga:user.subuser"), data={"next": follow},)
 
     orga_user.refresh_from_db()
-    assert response.status_code == 200
+    assert response.status_code == 302
+    assert response.url == expected
     assert not orga_user.is_superuser
 
 

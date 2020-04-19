@@ -102,8 +102,12 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             return "orga/cfp/question_form.html"
         return "orga/cfp/question_detail.html"
 
-    def get_permission_object(self):
+    @property
+    def permission_object(self):
         return self.object or self.request.event
+
+    def get_permission_object(self):
+        return self.permission_object
 
     def get_object(self) -> Question:
         return Question.all_objects.filter(

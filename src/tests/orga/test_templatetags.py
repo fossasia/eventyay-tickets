@@ -66,7 +66,7 @@ def test_templatetag_review_score_override(positive, negative, expected):
 
 
 @pytest.mark.django_db
-def test_template_tag_review_score(review):
+def test_template_tag_review_score_override(review):
     with scope(event=review.submission.event):
         review.override_vote = True
         review.submission.current_score = 0
@@ -75,6 +75,14 @@ def test_template_tag_review_score(review):
             '<i class="fa fa-arrow-circle-up override text-success"></i>'
             == review_score(None, review.submission)
         )
+
+
+@pytest.mark.django_db
+def test_template_tag_review_score_numeric(review):
+    with scope(event=review.submission.event):
+        review.submission.current_score = 1
+        review.save()
+        assert review_score(None, review.submission) == "1"
 
 
 @pytest.mark.parametrize(

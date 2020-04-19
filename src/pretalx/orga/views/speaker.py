@@ -170,19 +170,19 @@ class SpeakerPasswordReset(EventPermissionRequired, DetailView):
     def profile(self):
         return self.get_object().event_profile(self.request.event)
 
-    @transaction.atomic()
     def post(self, request, *args, **kwargs):
         user = self.get_object()
         try:
-            user.reset_password(
-                event=getattr(self.request, "event", None),
-                user=self.request.user,
-                orga=False,
-            )
-            messages.success(
-                self.request, _("The password was reset and the user was notified.")
-            )
-        except SendMailException:
+            with transaction.atomic():
+                user.reset_password(
+                    event=getattr(self.request, "event", None),
+                    user=self.request.user,
+                    orga=False,
+                )
+                messages.success(
+                    self.request, _("The password was reset and the user was notified.")
+                )
+        except SendMailException:  # pragma: no cover
             messages.error(
                 self.request,
                 _(

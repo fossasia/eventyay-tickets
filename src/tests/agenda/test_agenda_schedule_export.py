@@ -418,7 +418,15 @@ def test_schedule_orga_download_export(
 
 
 @pytest.mark.django_db
-def test_html_export_full(event, other_event, slot, confirmed_resource, canceled_talk):
+def test_html_export_full(
+    event,
+    other_event,
+    slot,
+    confirmed_resource,
+    canceled_talk,
+    orga_client,
+    django_assert_max_num_queries,
+):
     from django.core.management import (
         call_command,
     )  # Import here to avoid overriding mocks
@@ -522,6 +530,15 @@ def test_html_export_full(event, other_event, slot, confirmed_resource, canceled
     )
     assert slot.submission.title in talk_ics
     assert event.is_public is False
+
+    with django_assert_max_num_queries(45):
+        response = orga_client.get(
+            event.orga_urls.schedule_export_download, follow=True
+        )
+    assert response.status_code == 200
+    streaming_content = getattr(response, "streaming_content", None)
+    if streaming_content:
+        assert len(b"".join(response.streaming_content)) > 100_000  # 100 KB
 
 
 @pytest.mark.django_db

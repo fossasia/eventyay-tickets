@@ -372,8 +372,12 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
             return ["orga.view_submissions"]
         return ["orga.create_submission"]
 
-    def get_permission_object(self):
+    @property
+    def permission_object(self):
         return self.object or self.request.event
+
+    def get_permission_object(self):
+        return self.permission_object
 
     def get_success_url(self) -> str:
         return self.object.orga_urls.base

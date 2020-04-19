@@ -22,11 +22,6 @@ class LoginView(GenericLoginView):
     def event(self):
         return getattr(self.request, "event", None)
 
-    def get_error_url(self):
-        if self.event:
-            return reverse("orga:event.login", kwargs={"event": self.event.slug})
-        return reverse("orga:login")
-
     def get_success_url(self):
         messages.success(self.request, phrases.orga.logged_in)
         if self.event:

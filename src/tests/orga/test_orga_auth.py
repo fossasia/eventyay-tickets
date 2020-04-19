@@ -40,6 +40,16 @@ def test_orga_redirect_login(client, orga_user, event):
 
 
 @pytest.mark.django_db
+def test_orga_redirect_login_to_event_page(client, orga_user, event):
+    response = client.post(
+        f"/orga/event/{event.slug}/login/",
+        data={"login_email": orga_user.email, "login_password": "orgapassw0rd"},
+    )
+    assert response.status_code == 302
+    assert response.url == f"/orga/event/{event.slug}/"
+
+
+@pytest.mark.django_db
 def test_orga_accept_invitation_once(client, event, invitation):
     team = invitation.team
     count = invitation.team.members.count()

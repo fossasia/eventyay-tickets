@@ -37,18 +37,9 @@ class Command(BaseCommand):
                 can_change_organiser_settings=True,
                 can_change_event_settings=True,
                 can_change_submissions=True,
-            ).first()
-            if not team:
-                team = Team.objects.create(
-                    name=str(event.name) + " Organisers",
-                    organiser=event.organiser,
-                    all_events=True,
-                    can_create_events=True,
-                    can_change_teams=True,
-                    can_change_organiser_settings=True,
-                    can_change_event_settings=True,
-                    can_change_submissions=True,
-                )
+            ).first() or self.create_team(
+                str(event.name) + " Organisers", event.organiser
+            )
             for user in User.objects.filter(is_administrator=True):
                 team.members.add(user)
             team.save()
@@ -72,8 +63,12 @@ class Command(BaseCommand):
             ).date(),
         )
         event.save()
-        Team.objects.create(
-            name=name + " Organisers",
+        self.create_team(name + " Organisers", organiser)
+        return event
+
+    def create_team(self, name, organiser):
+        return Team.objects.create(
+            name=name,
             organiser=organiser,
             all_events=True,
             can_create_events=True,
@@ -82,4 +77,3 @@ class Command(BaseCommand):
             can_change_event_settings=True,
             can_change_submissions=True,
         )
-        return event

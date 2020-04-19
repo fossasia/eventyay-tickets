@@ -342,9 +342,9 @@ class TalkUpdate(PermissionRequired, View):
                 talk.end = talk.start + dt.timedelta(
                     minutes=talk.submission.get_duration()
                 )
-            if "room" in data:
-                room = data["room"]
-                talk.room = request.event.rooms.get(pk=room) if room else None
+            talk.room = request.event.rooms.get(
+                pk=data["room"] or getattr(talk.room, "pk", None)
+            )
             if not talk.submission:
                 talk.description = LazyI18nString(data.get("description", ""))
             talk.save(update_fields=["start", "end", "room", "description"])
@@ -456,6 +456,10 @@ class RoomDetail(EventPermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_object(self):
         with suppress(Room.DoesNotExist, KeyError):
             return self.request.event.rooms.get(pk=self.kwargs["pk"])
+
+    @property
+    def permission_object(self):
+        return self.get_object() or self.request.event
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.room_settings

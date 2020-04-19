@@ -14,11 +14,8 @@ from pretalx.event.models import Organiser, Team, TeamInvite
 
 
 class TeamMixin:
-    def get_permission_object(self):
-        return self.request.organiser
-
     def _get_team(self):
-        if "pk" in self.kwargs:
+        if "pk" in getattr(self, "kwargs", {}):
             return get_object_or_404(
                 self.request.organiser.teams.all(), pk=self.kwargs["pk"]
             )
@@ -30,6 +27,10 @@ class TeamMixin:
     @cached_property
     def team(self):
         return self._get_team()
+
+    @cached_property
+    def object(self):
+        return self.get_object()
 
 
 class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
@@ -71,7 +72,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
                 invite.send()
                 messages.success(self.request, _("The invitation has been sent."))
             else:
-                return self.form_invalid(*args, **kwargs)
+                return self.form_invalid(self.invite_form)
             return redirect(self.request.path)
         return super().post(*args, **kwargs)
 
@@ -91,6 +92,9 @@ class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
     model = Team
     context_object_name = "team"
 
+    def get_permission_object(self):
+        return self.request.organiser
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["organiser"] = self.request.organiser
@@ -99,7 +103,7 @@ class TeamTracks(PermissionRequired, TeamMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         messages.success(self.request, _("The settings have been saved."))
-        return redirect(self.object.orga_urls.base)
+        return redirect(self.get_object().orga_urls.base)
 
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
@@ -177,7 +181,7 @@ class TeamResetPassword(PermissionRequired, TemplateView):
             messages.success(
                 self.request, _("The password was reset and the user was notified.")
             )
-        except SendMailException:
+        except SendMailException:  # pragma: no cover
             messages.error(
                 self.request,
                 _(

@@ -457,7 +457,7 @@ def test_activate_plugin(event, orga_client, orga_user, monkeypatch):
     event.refresh_from_db()
     assert event.plugins == "tests"
     response = orga_client.post(
-        event.orga_urls.plugins, follow=True, data={plugin_name: "disable"}
+        event.orga_urls.plugins, follow=True, data={plugin_name: "disable", "bogus": 1}
     )
     assert response.status_code == 200
     event.refresh_from_db()

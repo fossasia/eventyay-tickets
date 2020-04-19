@@ -47,6 +47,7 @@ def test_frab_import_minimal(administrator):
         assert Event.objects.count() == 1
         assert TalkSlot.objects.count() == 2
         assert Room.objects.count() == 1
+        event.organiser.teams.all().delete()
 
         call_command("import_schedule", "tests/fixtures/frab_schedule_minimal_2.xml")
 

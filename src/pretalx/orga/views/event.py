@@ -57,9 +57,14 @@ from pretalx.submission.models import ReviewPhase
 
 class EventSettingsPermission(EventPermissionRequired):
     permission_required = "orga.change_settings"
+    write_permission_required = "orga.change_settings"
+
+    @property
+    def permission_object(self):
+        return self.request.event
 
 
-class EventDetail(ActionFromUrl, EventSettingsPermission, UpdateView):
+class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
     model = Event
     form_class = EventForm
     permission_required = "orga.change_settings"

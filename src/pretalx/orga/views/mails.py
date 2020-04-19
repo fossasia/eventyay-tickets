@@ -426,8 +426,12 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def object(self):
         return self.get_object()
 
-    def get_permission_object(self):
+    @property
+    def permission_object(self):
         return self.object or self.request.event
+
+    def get_permission_object(self):
+        return self.permission_object
 
     def get_success_url(self):
         return self.request.event.orga_urls.mail_templates

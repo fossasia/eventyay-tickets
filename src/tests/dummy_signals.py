@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 
 from pretalx.cfp.signals import footer_link, html_above_profile_page, html_head
+from pretalx.orga.signals import nav_event, nav_event_settings, nav_global
 
 
 @receiver(footer_link)
@@ -18,3 +19,18 @@ def html_head_test(sender, request, **kwargs):
 @receiver(html_above_profile_page)
 def html_above_profile_page_test(sender, request, **kwargs):
     return "<p></p>"
+
+
+@receiver(nav_event_settings)
+def nav_event_settings_test(sender, request, **kwargs):
+    return []
+
+
+@receiver(nav_event)
+def nav_event_test(sender, request, **kwargs):
+    return []
+
+
+@receiver(nav_global)
+def nav_global_test(sender, request, **kwargs):
+    return {"label": "root", "url": "/"}
