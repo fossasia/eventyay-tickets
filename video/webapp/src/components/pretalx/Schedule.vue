@@ -2,11 +2,11 @@
 .pretalx-schedule(:class="{mobile}", ref="wrapper", :style="style")
 	.header
 		h2 Schedule
-		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.day_start")
-			bunt-tab(v-for="day in schedule.schedule", :id="day.day_start", :header="formatDate(day.day_start)", @selected="activeDay = day")
+		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.start")
+			bunt-tab(v-for="day in schedule.schedule", :id="day.start", :header="formatDate(day.start)", @selected="activeDay = day")
 		.pretalx-widget-attribution
 			| · powered by #[a(href="https://pretalx.com", rel="noopener", target="_blank") pretalx] ·
-	pretalx-schedule-day(:day="activeDay", :key="activeDay.day_start")
+	pretalx-schedule-day(:day="activeDay", :key="activeDay.start")
 </template>
 <script>
 import moment from 'moment'
