@@ -52,6 +52,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
+    "sinon": "^9.0.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "vue-template-compiler": "^2.6.11"

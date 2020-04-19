@@ -6,14 +6,19 @@
 			.room-info-text
 				h2 {{ room.name }}
 				.description {{ room.description }}
+			.talk-info(v-if="currentTalk")
+				h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']")
 </template>
 <script>
+import { mapState } from 'vuex'
+import moment from 'moment'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 
 export default {
+	name: 'room',
 	props: {
 		roomId: String
 	},
@@ -23,6 +28,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['world', 'schedule']),
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
@@ -31,6 +37,17 @@ export default {
 				acc[module.type] = module
 				return acc
 			}, {})
+		},
+		scheduleRoom () {
+			if (!this.schedule || !this.world.pretalx?.room_mapping) return
+			const scheduleDay = this.schedule.schedule.find(day => moment().isSame(day.start, 'day'))
+			if (!scheduleDay) return
+			const roomId = Number(Object.entries(this.world.pretalx.room_mapping).find(mapping => mapping[1] === this.room.id)?.[0])
+			return scheduleDay.rooms.find(room => room.id === roomId)
+		},
+		currentTalk () {
+			if (!this.scheduleRoom) return
+			return this.scheduleRoom.talks.find(talk => moment().isBetween(talk.start, talk.end))
 		}
 	},
 	created () {},
