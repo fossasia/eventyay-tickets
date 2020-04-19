@@ -5,7 +5,8 @@
     "pretalx": {
       "base_url": "https://pretalx.com/democon/",
       "room_mapping": {
-
+        "131": "room_0",
+        "130": "room_1"
       }
     },
     "JWT_secrets": [

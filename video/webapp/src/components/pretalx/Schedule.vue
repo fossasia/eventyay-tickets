@@ -42,6 +42,7 @@ export default {
 		}
 	},
 	created () {
+		// TODO properly set this globally
 		const lang = 'en'
 		moment.locale(lang)
 		moment.updateLocale(lang, {
