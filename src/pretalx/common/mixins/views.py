@@ -107,6 +107,9 @@ class Filterable:
     filter_fields = []
     default_filters = []
 
+    def get_default_filters(self):
+        return self.default_filters
+
     def filter_queryset(self, qs):
         if self.filter_fields:
             qs = self._handle_filter(qs)
@@ -129,7 +132,7 @@ class Filterable:
 
     def _handle_search(self, qs):
         query = urllib.parse.unquote(self.request.GET["q"])
-        _filters = [Q(**{field: query}) for field in self.default_filters]
+        _filters = [Q(**{field: query}) for field in self.get_default_filters()]
         if len(_filters) > 1:
             _filter = _filters[0]
             for additional_filter in _filters[1:]:

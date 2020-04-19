@@ -1,7 +1,12 @@
 from django.dispatch import receiver
 
 from pretalx.cfp.signals import footer_link, html_above_profile_page, html_head
-from pretalx.orga.signals import nav_event, nav_event_settings, nav_global
+from pretalx.orga.signals import (
+    activate_event,
+    nav_event,
+    nav_event_settings,
+    nav_global,
+)
 
 
 @receiver(footer_link)
@@ -34,3 +39,9 @@ def nav_event_test(sender, request, **kwargs):
 @receiver(nav_global)
 def nav_global_test(sender, request, **kwargs):
     return {"label": "root", "url": "/"}
+
+
+@receiver(activate_event)
+def activate_event_test(sender, request, **kwargs):
+    if sender.slug == "donottakelive":
+        raise Exception("It's not safe to go alone take this")

@@ -26,7 +26,7 @@ class LogMixin:
                 f"Logged data should always be a dictionary, not {type(data)}."
             )
 
-        ActivityLog.objects.create(
+        return ActivityLog.objects.create(
             event=getattr(self, "event", None),
             person=person,
             content_object=self,

@@ -198,21 +198,23 @@ class TestEventCreation:
             client=client,
         )
 
-    def submit_basics(self, client):
+    def submit_basics(self, client, slug="newevent"):
         return self.post(
             step="basics",
             data={
                 "email": "foo@bar.com",
                 "locale": "en",
                 "name_0": "New event!",
-                "slug": "newevent",
+                "slug": slug,
                 "timezone": "Europe/Amsterdam",
             },
             client=client,
         )
 
-    def submit_timeline(self, deadline, client):
+    def submit_timeline(self, deadline, client, past=False):
         _now = now()
+        if past:
+            _now = _now - dt.timedelta(days=7)
         tomorrow = _now + dt.timedelta(days=1)
         date = "%Y-%m-%d"
         datetime = "%Y-%m-%d %H:%M:%S"
@@ -227,7 +229,7 @@ class TestEventCreation:
         )
 
     def submit_display(self, client, **kwargs):
-        data = {"header_pattern": "", "logo": "", "primary_color": ""}
+        data = {"display_header_pattern": "", "logo": "", "primary_color": ""}
         data.update(kwargs)
         return self.post(step="display", data=data, client=client)
 
@@ -237,6 +239,24 @@ class TestEventCreation:
         )
 
     def test_orga_create_event(self, orga_client, organiser, deadline):
+        organiser.teams.all().update(can_create_events=True)
+        count = Event.objects.count()
+        team_count = organiser.teams.count()
+        self.submit_initial(organiser, client=orga_client)
+        self.submit_basics(client=orga_client, slug=f"newevent{now().year}")
+        self.submit_timeline(deadline=deadline, client=orga_client)
+        self.submit_display(client=orga_client, display_header_pattern="topo")
+        self.submit_copy(client=orga_client)
+        event = Event.objects.get(slug=f"newevent{now().year}")
+        assert Event.objects.count() == count + 1
+        assert organiser.teams.count() == team_count + 1
+        assert organiser.teams.filter(
+            name__icontains="new"
+        ).exists(), organiser.teams.all()
+        assert str(event.name) == "New event!"
+        assert event.locales == ["en", "de"]
+
+    def test_orga_create_event_in_the_past(self, orga_client, organiser, deadline):
         organiser.teams.all().update(can_create_events=True)
         count = Event.objects.count()
         team_count = organiser.teams.count()
@@ -253,6 +273,10 @@ class TestEventCreation:
         ).exists(), organiser.teams.all()
         assert str(event.name) == "New event!"
         assert event.locales == ["en", "de"]
+
+    def test_orga_create_wrong_order(self, orga_client, organiser, deadline):
+        organiser.teams.all().update(can_create_events=True)
+        self.submit_basics(client=orga_client)
 
     def test_orga_create_event_with_copy(
         self, orga_client, organiser, event, deadline, question, track

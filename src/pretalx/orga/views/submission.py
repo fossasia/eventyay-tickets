@@ -142,16 +142,9 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
     def target(self):
         return self._target
 
-    @cached_property
-    def is_allowed(self):
-        return self._target in SubmissionStates.valid_next_states[self.object.state]
-
     def do(self, force=False):
         method = getattr(self.object, SubmissionStates.method_names[self._target])
-        try:
-            method(person=self.request.user, force=force, orga=True)
-        except SubmissionError as e:
-            messages.error(self.request, e.message)
+        method(person=self.request.user, force=force, orga=True)
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -162,10 +155,11 @@ class SubmissionStateChange(SubmissionViewMixin, TemplateView):
                     "Somebody else was faster than you: this submission was already in the state you wanted to change it to."
                 ),
             )
-        elif self.is_allowed:
-            self.do()
         else:
-            self.do(force=True)
+            try:
+                self.do()
+            except SubmissionError:
+                self.do(force=True)
         url = self.request.GET.get("next")
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url)
@@ -443,17 +437,17 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
     model = Submission
     context_object_name = "submissions"
     template_name = "orga/submission/list.html"
-    default_filters = {"code__icontains", "title__icontains"}
     filter_fields = ("submission_type", "state", "track")
     filter_form_class = SubmissionFilterForm
     sortable_fields = ("code", "title", "state", "is_featured")
     permission_required = "orga.view_submissions"
     paginate_by = 25
 
-    def dispatch(self, *args, **kwargs):
+    def get_default_filters(self, *args, **kwargs):
+        default_filters = {"code__icontains", "title__icontains"}
         if self.request.user.has_perm("orga.view_speakers", self.request.event):
-            self.default_filters.add("speakers__name__icontains")
-        return super().dispatch(*args, **kwargs)
+            default_filters.add("speakers__name__icontains")
+        return default_filters
 
     @context
     def show_submission_types(self):
@@ -601,13 +595,12 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 count=(max(dates) - min(dates)).days + 1,
                 dtstart=min(dates),
             )
-            if len(data) > 1:
-                return json.dumps(
-                    [
-                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
-                        for date in date_range
-                    ]
-                )
+            return json.dumps(
+                [
+                    {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                    for date in date_range
+                ]
+            )
         return ""
 
     @context
@@ -676,13 +669,12 @@ class SubmissionStats(PermissionRequired, TemplateView):
                 count=(max(dates) - min(dates)).days + 1,
                 dtstart=min(dates),
             )
-            if len(data) > 1:
-                return json.dumps(
-                    [
-                        {"x": date.isoformat(), "y": data.get(date.date(), 0)}
-                        for date in date_range
-                    ]
-                )
+            return json.dumps(
+                [
+                    {"x": date.isoformat(), "y": data.get(date.date(), 0)}
+                    for date in date_range
+                ]
+            )
         return ""
 
     @context

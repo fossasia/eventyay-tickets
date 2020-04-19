@@ -77,6 +77,55 @@ def test_orga_accept_invitation_once(client, event, invitation):
 
 
 @pytest.mark.django_db
+def test_orga_accept_invitation_fail_without_using_up_invitation(
+    client, event, invitation
+):
+    team = invitation.team
+    count = invitation.team.members.count()
+    token = invitation.token
+    response = client.post(
+        reverse("orga:invitation.view", kwargs={"code": invitation.token}),
+        {
+            "register_name": "Invite Name",
+            "register_email": invitation.email,
+            "register_password": "f00baar!",
+            "register_password_repeat": "f00baar!wrong",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == count
+    assert not team.members.filter(name="Invite Name").exists()
+    assert team.invites.count() == 1
+    response = client.get(
+        reverse("orga:invitation.view", kwargs={"code": token}), follow=True
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_orga_accept_invitation_as_logged_in_user_once(
+    review_client, review_user, event, invitation
+):
+    team = invitation.team
+    count = invitation.team.members.count()
+    token = invitation.token
+    response = review_client.post(
+        reverse("orga:invitation.view", kwargs={"code": invitation.token}), follow=True,
+    )
+    assert response.status_code == 200
+    assert team.members.count() == count + 1
+    assert team.members.filter(pk=review_user.pk).exists()
+    assert team.invites.count() == 0
+    with pytest.raises(TeamInvite.DoesNotExist):
+        invitation.refresh_from_db()
+    response = review_client.get(
+        reverse("orga:invitation.view", kwargs={"code": token}), follow=True
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 def test_orga_registration_errors(client, event, invitation, user):
     team = invitation.team
     count = invitation.team.members.count()

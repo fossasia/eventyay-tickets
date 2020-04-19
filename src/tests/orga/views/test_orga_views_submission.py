@@ -1,9 +1,11 @@
 import datetime as dt
 
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.timezone import now
 from django_scopes import scope
 
+from pretalx.common.models.log import ActivityLog
 from pretalx.submission.models import Submission, SubmissionStates
 
 
@@ -24,6 +26,43 @@ def test_orga_can_search_submissions(orga_client, event, submission):
 
 
 @pytest.mark.django_db
+def test_orga_can_search_submissions_by_speaker(orga_client, event, submission):
+    response = orga_client.get(
+        event.orga_urls.submissions + f"?q={submission.speakers.first().name[:5]}",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_can_search_submissions_by_speaker(review_client, event, submission):
+    response = review_client.get(
+        event.orga_urls.submissions
+        + f"?q={submission.speakers.first().name[:5]}&state=submitted",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reviewer_cannot_search_submissions_by_speaker_when_anonymised(
+    review_client, event, submission, review_user
+):
+    with scope(event=event):
+        submission.event.active_review_phase.can_see_speaker_names = False
+        submission.event.active_review_phase.save()
+        assert not review_user.has_perm("orga.view_speakers", event)
+    response = review_client.get(
+        event.orga_urls.submissions + f"?q={submission.speakers.first().name[:5]}",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert submission.title not in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_orga_can_miss_search_submissions(orga_client, event, submission):
     response = orga_client.get(
         event.orga_urls.submissions + f"?q={submission.title[:5]}xxy", follow=True
@@ -37,6 +76,13 @@ def test_orga_can_see_single_submission(orga_client, event, submission):
     response = orga_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
     assert submission.title in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_can_see_submission_404(orga_client, event, submission):
+    response = orga_client.get(submission.orga_urls.base + "JJ", follow=True)
+    assert response.status_code == 404
+    assert submission.title not in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -278,22 +324,21 @@ def test_orga_can_remove_speaker(orga_client, submission):
 
 
 @pytest.mark.django_db
-def test_orga_can_remove_wrong_speaker(orga_client, submission):
+def test_orga_can_remove_wrong_speaker(orga_client, submission, other_speaker):
     assert submission.speakers.count() == 1
     response = orga_client.get(
-        submission.orga_urls.delete_speaker
-        + "?id="
-        + str(submission.speakers.first().pk)
-        + "12",
+        submission.orga_urls.delete_speaker + "?id=" + str(other_speaker.pk),
         follow=True,
     )
     submission.refresh_from_db()
-    assert response.status_code == 404
+    assert response.status_code == 200
     assert submission.speakers.count() == 1
+    assert "not part of this submission" in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_orga_can_create_submission(orga_client, event):
+@pytest.mark.parametrize("known_speaker", (True, False))
+def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user):
     with scope(event=event):
         assert event.submissions.count() == 0
         type_pk = event.submission_types.first().pk
@@ -308,7 +353,7 @@ def test_orga_can_create_submission(orga_client, event):
             "slot_count": 1,
             "notes": "notes",
             "internal_notes": "internal_notes",
-            "speaker": "foo@bar.com",
+            "speaker": "foo@bar.com" if not known_speaker else orga_user.email,
             "speaker_name": "Foo Speaker",
             "title": "title",
             "submission_type": type_pk,
@@ -354,6 +399,131 @@ def test_orga_can_edit_submission(orga_client, event, accepted_submission):
         assert event.submissions.count() == 1
         assert accepted_submission.slot_count == 2
         assert accepted_submission.slots.count() == 2
+
+
+@pytest.mark.django_db
+def test_orga_can_remove_and_add_resources(
+    orga_client, event, submission, resource, other_resource
+):
+    with scope(event=submission.event):
+        assert submission.resources.count() == 2
+        resource_one = submission.resources.first()
+        resource_two = submission.resources.last()
+
+    f = SimpleUploadedFile("testfile.txt", b"file_content")
+    response = orga_client.post(
+        submission.orga_urls.base,
+        data={
+            "abstract": submission.abstract,
+            "content_locale": submission.content_locale,
+            "title": "new title",
+            "submission_type": submission.submission_type.pk,
+            "resource-0-id": resource_one.id,
+            "resource-0-description": "new resource name",
+            "resource-0-resource": resource_one.resource,
+            "resource-1-id": resource_two.id,
+            "resource-1-DELETE": True,
+            "resource-1-description": resource_two.description,
+            "resource-1-resource": resource_two.resource,
+            "resource-2-id": "",
+            "resource-2-description": "new resource",
+            "resource-2-resource": f,
+            "resource-TOTAL_FORMS": 3,
+            "resource-INITIAL_FORMS": 2,
+            "resource-MIN_NUM_FORMS": 0,
+            "resource-MAX_NUM_FORMS": 1000,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        submission.refresh_from_db()
+        resource_one.refresh_from_db()
+        new_resource = submission.resources.exclude(pk=resource_one.pk).first()
+        assert submission.title == "new title"
+        assert submission.resources.count() == 2
+        assert new_resource.description == "new resource"
+        assert new_resource.resource.read() == b"file_content"
+        assert not submission.resources.filter(pk=resource_two.pk).exists()
+
+
+@pytest.mark.django_db
+def test_orga_edit_submission_with_wrong_resources(
+    orga_client, event, submission, resource, other_resource
+):
+    with scope(event=submission.event):
+        assert submission.resources.count() == 2
+        resource_one = submission.resources.first()
+        resource_two = submission.resources.last()
+
+    f = SimpleUploadedFile("testfile.txt", b"file_content")
+    response = orga_client.post(
+        submission.orga_urls.base,
+        data={
+            "abstract": submission.abstract,
+            "content_locale": submission.content_locale,
+            "title": "new title",
+            "submission_type": submission.submission_type.pk,
+            "resource-0-id": resource_one.id,
+            "resource-0-description": "new resource name",
+            "resource-0-resource": resource_one.resource,
+            "resource-1-id": resource_two.id,
+            "resource-1-DELETE": True,
+            "resource-1-description": resource_two.description,
+            "resource-1-resource": resource_two.resource,
+            "resource-2-id": "",
+            "resource-2-description": "",
+            "resource-2-resource": f,
+            "resource-TOTAL_FORMS": 3,
+            "resource-INITIAL_FORMS": 2,
+            "resource-MIN_NUM_FORMS": 0,
+            "resource-MAX_NUM_FORMS": 1000,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        submission.refresh_from_db()
+        resource_one.refresh_from_db()
+        new_resource = submission.resources.exclude(pk=resource_one.pk).first()
+        assert submission.resources.count() == 2
+        assert new_resource == other_resource
+
+
+@pytest.mark.django_db
+def test_orga_can_edit_submission_wrong_answer(
+    orga_client, event, accepted_submission, question
+):
+    event.settings.present_multiple_times = True
+    with scope(event=event):
+        question.required = True
+        question.save
+        assert event.submissions.count() == 1
+        assert accepted_submission.slots.count() == 1
+
+    response = orga_client.post(
+        accepted_submission.orga_urls.base,
+        data={
+            "abstract": "abstract",
+            "content_locale": "en",
+            "description": "description",
+            "duration": "",
+            "slot_count": 2,
+            "notes": "notes",
+            "speaker": "foo@bar.com",
+            "speaker_name": "Foo Speaker",
+            "title": "new title",
+            "submission_type": accepted_submission.submission_type.pk,
+            "resource-TOTAL_FORMS": 0,
+            "resource-INITIAL_FORMS": 0,
+            f"question_{question.pk}": "hahaha",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        accepted_submission.refresh_from_db()
+        assert accepted_submission.title != "new title"
 
 
 @pytest.mark.django_db
@@ -476,3 +646,19 @@ def test_orga_can_anonymise_submission(
 def test_reviewer_cannot_see_anonymisation_interface(review_client, submission):
     response = review_client.get(submission.orga_urls.anonymise, follow=True)
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("use_tracks", (True, False))
+def test_submission_statistics(use_tracks, slot, other_slot, orga_client):
+    with scope(event=slot.event):
+        slot.event.settings.use_tracks = use_tracks
+        logs = []
+        subs = [slot.submission, other_slot.submission]
+        for i in range(2):
+            logs.append(subs[i].log_action("pretalx.submission.create"))
+        ActivityLog.objects.filter(pk=logs[0].pk).update(
+            timestamp=logs[0].timestamp - dt.timedelta(days=2)
+        )
+    response = orga_client.get(slot.event.orga_urls.stats)
+    assert response.status_code == 200

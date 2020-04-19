@@ -143,12 +143,12 @@
             <td class="action-row d-flex justify-space-around">
                 {% if submission.state == 'submitted' and can_accept_submissions %}
                 <div class="radio form-radio accept">
-                    <input type="radio" id="a-{{ submission.pk }}" name="s-{{ submission.pk }}" value="accept" class="radio">
-                    <label for="a-{{ submission.pk }}" title="{% trans "Accept" %}"></label>
+                    <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept" class="radio">
+                    <label for="a-{{ submission.code }}" title="{% trans "Accept" %}"></label>
                 </div>
                 <div class="radio form-radio reject">
-                    <input type="radio" id="r-{{ submission.pk }}" name="s-{{ submission.pk }}" value="reject" class="radio">
-                    <label for="r-{{ submission.pk }}" title="{% trans "Reject" %}"></label>
+                    <input type="radio" id="r-{{ submission.code }}" name="s-{{ submission.code }}" value="reject" class="radio">
+                    <label for="r-{{ submission.code }}" title="{% trans "Reject" %}"></label>
                 </div>
                 <div class="unmark-radio" title="{% trans "Unset accept/reject vote" %}"><i class="fa fa-ban"></i></div>
                 {% endif %}

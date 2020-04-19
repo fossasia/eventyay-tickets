@@ -1,12 +1,16 @@
+import datetime as dt
+
 import pytest
 from django.urls import reverse
+from django.utils.timezone import now
 from django_scopes import scope
 
 
 @pytest.mark.parametrize("test_user", ("orga", "speaker", "superuser", "None"))
+@pytest.mark.parametrize("query", ("", "?q=e"))
 @pytest.mark.django_db
 def test_dashboard_event_list(
-    orga_user, orga_client, speaker, event, other_event, test_user, slot
+    orga_user, orga_client, speaker, event, other_event, test_user, slot, query
 ):
     if test_user == "speaker":
         orga_client.force_login(speaker)
@@ -16,7 +20,7 @@ def test_dashboard_event_list(
         orga_user.is_administrator = True
         orga_user.save()
 
-    response = orga_client.get(reverse("orga:event.list"), follow=True)
+    response = orga_client.get(reverse("orga:event.list") + query, follow=True)
 
     if test_user == "speaker":
         assert response.status_code == 200
@@ -37,9 +41,10 @@ def test_dashboard_event_list(
 @pytest.mark.parametrize(
     "test_user", ("orga", "speaker", "superuser", "reviewer", "None")
 )
+@pytest.mark.parametrize("query", ("", "?q=e"))
 @pytest.mark.django_db
 def test_event_dashboard(
-    orga_user, orga_client, review_user, speaker, event, test_user, slot
+    orga_user, orga_client, review_user, speaker, event, test_user, slot, query
 ):
     from pretalx.common.models.log import ActivityLog
 
@@ -62,7 +67,7 @@ def test_event_dashboard(
             event.active_review_phase.save()
         orga_client.force_login(review_user)
 
-    response = orga_client.get(event.orga_urls.base, follow=True)
+    response = orga_client.get(event.orga_urls.base + query, follow=True)
 
     if test_user == "speaker":
         assert response.status_code == 404
@@ -115,3 +120,35 @@ def test_dashboard_organiser_list(
     else:
         current_url = response.redirect_chain[-1][0]
         assert "login" in current_url
+
+
+@pytest.mark.django_db
+def test_event_dashboard_with_talks(event, orga_client, review_user, review, slot):
+    with scope(event=event):
+        event.cfp.deadline = now()
+        event.save()
+    response = orga_client.get(event.orga_urls.base)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_event_dashboard_with_accepted(
+    event, orga_client, review_user, review, slot, accepted_submission
+):
+    with scope(event=event):
+        event.cfp.deadline = now()
+        event.save()
+    response = orga_client.get(event.orga_urls.base)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("start_diff,end_diff", ((0, 0), (-3, -3), (3, 3),))
+def test_event_dashboard_different_times(event, orga_client, start_diff, end_diff):
+    with scope(event=event):
+        today = now().date()
+        event.date_from = today + dt.timedelta(days=start_diff)
+        event.date_end = today + dt.timedelta(days=end_diff)
+        event.save()
+    response = orga_client.get(event.orga_urls.base)
+    assert response.status_code == 200

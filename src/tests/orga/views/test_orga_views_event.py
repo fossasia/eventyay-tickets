@@ -361,6 +361,46 @@ def test_toggle_event_is_public(event, orga_client):
 
 
 @pytest.mark.django_db
+def test_toggle_event_is_public_without_warnings(
+    event, orga_client, default_submission_type, question, submission_type
+):
+    with scope(event=event):
+        event.cfp.text = "a" * 100
+        event.cfp.save()
+        event.landing_page_text = "a" * 100
+        event.is_public = False
+        event.save()
+        event.settings.use_tracks = True
+        event.settings.cfp_request_track = True
+    response = orga_client.get(event.orga_urls.live, follow=True)
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert not event.is_public
+    response = orga_client.post(
+        event.orga_urls.live, {"action": "activate"}, follow=True
+    )
+    assert response.status_code == 200
+    event.refresh_from_db()
+    assert event.is_public
+
+
+@pytest.mark.django_db
+def test_toggle_event_cannot_activate_due_to_plugin(event, orga_client):
+    with scope(event=event):
+        event.is_public = False
+        event.slug = "donottakelive"
+        event.plugins = "tests"
+        event.save()
+    response = orga_client.post(
+        event.orga_urls.live, {"action": "activate"}, follow=True
+    )
+    assert response.status_code == 200
+    assert "It's not safe to go alone take this" in response.content.decode()
+    event.refresh_from_db()
+    assert not event.is_public
+
+
+@pytest.mark.django_db
 def test_invite_orga_member(orga_client, event):
     team = event.organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     assert team.members.count() == 1
@@ -523,6 +563,30 @@ def test_edit_review_settings(orga_client, event):
 
 
 @pytest.mark.django_db
+def test_edit_review_settings_unchanged(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    with scope(event=event):
+        count = event.logged_actions().count()
+    response = orga_client.post(
+        event.orga_urls.review_settings,
+        {
+            "review_min_score": "0",
+            "review_max_score": "1",
+            "form-TOTAL_FORMS": 0,
+            "form-INITIAL_FORMS": 0,
+            "form-MIN_NUM_FORMS": 0,
+            "form-MAX_NUM_FORMS": 1000,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert count == event.logged_actions().count()
+
+
+@pytest.mark.django_db
 def test_edit_review_settings_invalid(orga_client, event):
     assert event.settings.review_min_score == 0
     assert event.settings.review_max_score == 1
@@ -669,7 +733,7 @@ def test_edit_review_settings_activate_review_phase(orga_client, event):
 
 
 @pytest.mark.django_db
-def test_edit_review_settings_move_review_phase(orga_client, event):
+def test_edit_review_settings_move_review_phase_down(orga_client, event):
     with scope(event=event):
         assert event.review_phases.count() == 2
         phase = event.review_phases.first()
@@ -679,8 +743,70 @@ def test_edit_review_settings_move_review_phase(orga_client, event):
     with scope(event=event):
         phase.refresh_from_db()
     assert phase.position == 1
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_move_review_phase_up(orga_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.last()
+    assert phase.position == 1
     response = orga_client.get(phase.urls.up, follow=True)
     assert response.status_code == 200
+    with scope(event=event):
+        phase.refresh_from_db()
+    assert phase.position == 0
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_move_review_phase_up_out_of_bounds(orga_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.first()
+    assert phase.position == 0
+    response = orga_client.get(phase.urls.up, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        phase.refresh_from_db()
+    assert phase.position == 0
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_move_review_phase_down_out_of_bounds(orga_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.last()
+    assert phase.position == 1
+    response = orga_client.get(phase.urls.down, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        phase.refresh_from_db()
+    assert phase.position == 1
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_move_wrong_review_phase(orga_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.last()
+    assert phase.position == 1
+    response = orga_client.get(
+        phase.urls.down.replace(str(phase.pk), str(phase.pk + 100)), follow=True
+    )
+    assert response.status_code == 404
+    with scope(event=event):
+        phase.refresh_from_db()
+    assert phase.position == 1
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_reviewer_cannot_move_review_phase(review_client, event):
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        phase = event.review_phases.first()
+    assert phase.position == 0
+    response = review_client.get(phase.urls.down, follow=True)
+    assert response.status_code == 404
     with scope(event=event):
         phase.refresh_from_db()
     assert phase.position == 0

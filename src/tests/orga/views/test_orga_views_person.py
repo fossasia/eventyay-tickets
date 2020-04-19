@@ -72,3 +72,41 @@ def test_orga_reset_auth_token(orga_client, orga_user):
     orga_user.refresh_from_db()
     assert orga_user.auth_token
     assert orga_user.auth_token.key != old_token
+
+
+@pytest.mark.django_db
+def test_orga_wrong_profile_page_update(orga_client, orga_user):
+    response = orga_client.post(
+        reverse("orga:user.view"), {"form": "tokennnnnn"}, follow=True
+    )
+    assert response.status_code == 200
+    assert "trouble saving your input" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_update_login_info(orga_client, orga_user):
+    response = orga_client.post(
+        reverse("orga:user.view"),
+        {
+            "form": "login",
+            "old_password": "orgapassw0rd",
+            "password": "tr4lalalala",
+            "password_repeat": "tr4lalalala",
+            "email": orga_user.email,
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_orga_update_profile_info(orga_client, orga_user):
+    response = orga_client.post(
+        reverse("orga:user.view"),
+        {"form": "profile", "name": "New name", "locale": "en"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert "have been saved" in response.content.decode()
+    orga_user.refresh_from_db()
+    assert orga_user.name == "New name"

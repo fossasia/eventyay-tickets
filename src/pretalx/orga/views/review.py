@@ -172,11 +172,11 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
         for key, value in request.POST.items():
             if not key.startswith("s-") or value not in ["accept", "reject"]:
                 continue
-            pk = key.strip("s-")
+            code = key.strip("s-")
             try:
                 submission = request.event.submissions.filter(
                     state=SubmissionStates.SUBMITTED
-                ).get(pk=pk)
+                ).get(code=code)
             except (Submission.DoesNotExist, ValueError):
                 total["error"] += 1
                 continue
@@ -187,9 +187,7 @@ class ReviewDashboard(EventPermissionRequired, Filterable, ListView):
                 continue
             getattr(submission, value)(person=request.user)
             total[value] += 1
-        if not total["accept"] and not total["reject"] and not total["error"]:
-            messages.success(request, _("There was nothing to do."))
-        elif total["accept"] or total["reject"]:
+        if total["accept"] or total["reject"]:
             msg = str(
                 _(
                     "Success! {accepted} submissions were accepted, {rejected} submissions were rejected."
@@ -249,6 +247,10 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def read_only(self):
+        if self.object and self.object.pk:
+            return not self.request.user.has_perm(
+                "submission.edit_review", self.get_object()
+            )
         return not self.request.user.has_perm(
             "submission.review_submission", self.get_object() or self.submission
         )
@@ -322,21 +324,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             return redirect(self.get_success_url())
         form.instance.submission = self.submission
         form.instance.user = self.request.user
-        if not form.instance.pk:
-            if not self.request.user.has_perm(
-                "submission.review_submission", self.submission
-            ):
-                messages.error(
-                    self.request, _("You cannot review this submission at this time.")
-                )
-                return redirect(self.get_success_url())
-        if form.instance.pk and not self.request.user.has_perm(
-            "submission.edit_review", form.instance
-        ):
-            messages.error(
-                self.request, _("You cannot review this submission at this time.")
-            )
-            return redirect(self.get_success_url())
         form.save()
         self.qform.review = form.instance
         self.qform.save()

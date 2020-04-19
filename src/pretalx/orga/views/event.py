@@ -374,7 +374,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                     % str(e),
                 )
                 return redirect(self.request.event.orga_urls.mail_settings)
-            else:
+            else:  # pragma: no cover
                 if form.cleaned_data.get("smtp_use_custom"):
                     messages.success(
                         self.request,
@@ -535,8 +535,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
     def render(self, form=None, **kwargs):
         if self.steps.current != "initial":
-            fdata = self.get_cleaned_data_for_step("initial")
-            if fdata is None:
+            if self.get_cleaned_data_for_step("initial") is None:
                 return self.render_goto_step("initial")
         if self.steps.current == "timeline":
             fdata = self.get_cleaned_data_for_step("basics")
@@ -554,7 +553,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                         )
                     ).format(number=year),
                 )
-        if self.steps.current == "display":
+        elif self.steps.current == "display":
             fdata = self.get_cleaned_data_for_step("timeline")
             if fdata and fdata.get("date_to") < now().date():
                 messages.warning(
@@ -645,12 +644,10 @@ class EventDelete(PermissionRequired, DeleteView):
     model = Event
 
     def get_object(self):
-        return getattr(self.request, "event", None)
+        return self.request.event
 
     def delete(self, request, *args, **kwargs):
-        event = self.get_object()
-        if event:
-            event.shred()
+        self.get_object().shred()
         return redirect("/orga/")
 
 

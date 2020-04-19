@@ -114,6 +114,23 @@ def test_reviewer_without_rights_use_override_score(review_client, submission):
 
 
 @pytest.mark.django_db
+def test_reviewer_cannot_ignore_required_question(
+    review_client, submission, review_question
+):
+    with scope(event=submission.event):
+        review_question.required = True
+        review_question.save()
+    response = review_client.post(
+        submission.orga_urls.reviews, follow=True, data={"score": 1, "text": "LGTM",}
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        assert submission.reviews.count() == 0
+    response = review_client.get(submission.orga_urls.reviews, follow=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_reviewer_cannot_review_own_submission(review_user, review_client, submission):
     with scope(event=submission.event):
         submission.speakers.add(review_user)
@@ -271,3 +288,59 @@ def test_orga_can_regenerate_emails(
         assert (
             event.queued_mails.filter(sent__isnull=True).count() == 2
         )  # One for the accepted, one for the rejected, none for the submitted
+
+
+@pytest.mark.django_db
+def test_orga_can_bulk_accept_and_reject(
+    orga_client, submission, other_submission, accepted_submission
+):
+    with scope(event=submission.event):
+        count = submission.event.queued_mails.count()
+    response = orga_client.post(
+        submission.event.orga_urls.reviews,
+        {
+            "foo": "bar",
+            f"s-{submission.code}": "accept",
+            f"s-{other_submission.code}": "reject",
+            f"s-{accepted_submission.code}": "reject",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        assert count + 2 == submission.event.queued_mails.count()
+        submission.refresh_from_db()
+        assert submission.state == "accepted"
+        other_submission.refresh_from_db()
+        assert other_submission.state == "rejected"
+        accepted_submission.refresh_from_db()
+        assert accepted_submission.state == "accepted"
+
+
+@pytest.mark.django_db
+def test_orga_can_bulk_accept_and_reject_only_failure(orga_client, accepted_submission):
+    with scope(event=accepted_submission.event):
+        count = accepted_submission.event.queued_mails.count()
+    response = orga_client.post(
+        accepted_submission.event.orga_urls.reviews,
+        {"foo": "bar", f"s-{accepted_submission.code}": "reject",},
+    )
+    assert response.status_code == 200
+    with scope(event=accepted_submission.event):
+        assert count == accepted_submission.event.queued_mails.count()
+        accepted_submission.refresh_from_db()
+        assert accepted_submission.state == "accepted"
+
+
+@pytest.mark.django_db
+def test_orga_can_bulk_accept_and_reject_only_success(orga_client, submission):
+    with scope(event=submission.event):
+        count = submission.event.queued_mails.count()
+    response = orga_client.post(
+        submission.event.orga_urls.reviews,
+        {"foo": "bar", f"s-{submission.code}": "reject",},
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        assert count + 1 == submission.event.queued_mails.count()
+        submission.refresh_from_db()
+        assert submission.state == "rejected"
