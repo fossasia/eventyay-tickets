@@ -28,6 +28,8 @@ def test_orga_can_view_pending_mail(orga_client, event, mail):
 
 @pytest.mark.django_db
 def test_orga_can_edit_pending_mail(orga_client, event, mail):
+    with scope(event=event):
+        count = mail.logged_actions().count()
     djmail.outbox = []
     response = orga_client.post(
         mail.urls.base,
@@ -46,6 +48,30 @@ def test_orga_can_edit_pending_mail(orga_client, event, mail):
     mail.refresh_from_db()
     assert mail.to == "testwin@gmail.com"
     assert len(djmail.outbox) == 0
+    with scope(event=event):
+        assert mail.logged_actions().count() == count + 1
+
+
+@pytest.mark.django_db
+def test_orga_can_edit_pending_mail_unchanged(orga_client, event, mail):
+    with scope(event=event):
+        count = mail.logged_actions().count()
+    djmail.outbox = []
+    response = orga_client.post(
+        mail.urls.base,
+        follow=True,
+        data={
+            "to": mail.to or "",
+            "bcc": mail.bcc or "",
+            "cc": mail.cc or "",
+            "reply_to": mail.reply_to or "",
+            "subject": mail.subject,
+            "text": mail.text or "",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert mail.logged_actions().count() == count
 
 
 @pytest.mark.django_db
@@ -131,6 +157,18 @@ def test_orga_can_send_single_mail(orga_client, event, mail, other_mail):
 
 
 @pytest.mark.django_db
+def test_orga_cannot_send_single_wrong_mail(orga_client, event, mail, other_mail):
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
+    response = orga_client.get(
+        mail.urls.send.replace(str(mail.pk), str(mail.pk + 100)), follow=True
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
+
+
+@pytest.mark.django_db
 def test_orga_can_discard_all_mails(orga_client, event, mail, other_mail, sent_mail):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
@@ -212,12 +250,15 @@ def test_orga_can_create_template(orga_client, event, mail_template):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("variant", ("custom", "fixed"))
+@pytest.mark.parametrize("variant", ("custom", "fixed", "update"))
 def test_orga_can_edit_template(orga_client, event, mail_template, variant):
     if variant == "fixed":
         mail_template = event.ack_template
+    elif variant == "update":
+        mail_template = event.update_template
     with scope(event=event):
         assert MailTemplate.objects.count() == 6
+        count = mail_template.logged_actions().count()
     response = orga_client.get(mail_template.urls.edit, follow=True)
     assert response.status_code == 200
     response = orga_client.post(
@@ -231,9 +272,30 @@ def test_orga_can_edit_template(orga_client, event, mail_template, variant):
     assert response.status_code == 200
     with scope(event=event):
         assert MailTemplate.objects.count() == 6
+        assert count + 1 == mail_template.logged_actions().count()
         assert MailTemplate.objects.get(
             event=event, subject__contains="COMPLETELY NEW AND UNHEARD OF"
         )
+
+
+@pytest.mark.django_db
+def test_orga_can_edit_template_without_change(orga_client, event, mail_template):
+    with scope(event=event):
+        count = mail_template.logged_actions().count()
+    response = orga_client.get(mail_template.urls.edit, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(
+        mail_template.urls.edit,
+        follow=True,
+        data={
+            "subject_0": str(mail_template.subject),
+            "text_0": mail_template.text,
+            "reply_to": mail_template.reply_to,
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert count == mail_template.logged_actions().count()
 
 
 @pytest.mark.django_db
@@ -394,6 +456,30 @@ def test_orga_can_compose_single_mail_selected_submissions(
 
 
 @pytest.mark.django_db
+def test_orga_can_compose_single_mail_to_additional_recipients(
+    orga_client, event, submission, other_submission, orga_user,
+):
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
+    response = orga_client.post(
+        event.orga_urls.compose_mails,
+        follow=True,
+        data={
+            "additional_recipients": f"foot@example.org,{orga_user.email}",
+            "bcc": "",
+            "cc": "",
+            "reply_to": "",
+            "subject": "foo",
+            "text": "bar",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        mails = list(QueuedMail.objects.filter(sent__isnull=True))
+        assert len(mails) == 2
+
+
+@pytest.mark.django_db
 def test_orga_can_compose_single_mail_reviewers(
     orga_client, event, orga_user, review_user
 ):
@@ -446,12 +532,28 @@ def test_orga_can_compose_mail_to_speakers_with_no_slides(
 
 
 @pytest.mark.django_db
-def test_orga_can_compose_single_mail_from_template(orga_client, event, submission):
+def test_orga_can_compose_single_mail_from_template(
+    orga_client, event, submission, orga_user
+):
     response = orga_client.get(
         event.orga_urls.compose_mails
-        + f"?template={event.ack_template.pk}&submission={submission.code}",
+        + f"?template={event.ack_template.pk}&submission={submission.code}&email={orga_user.email}",
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
         assert str(event.ack_template.subject) in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_orga_can_compose_single_mail_from_wrong_template(
+    orga_client, event, submission
+):
+    response = orga_client.get(
+        event.orga_urls.compose_mails
+        + f"?template={event.ack_template.pk}000&submission={submission.code}EEE&email=r",
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert str(event.ack_template.subject) not in response.content.decode()

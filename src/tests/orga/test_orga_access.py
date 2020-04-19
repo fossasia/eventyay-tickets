@@ -135,6 +135,8 @@ def test_update_check_warning(orga_user, orga_client, event, settings):
 @pytest.mark.django_db
 def test_can_access_event_with_custom_domain(orga_client, event):
     event.settings.custom_domain = "http://example.com"
+    event.is_public = False
+    event.save()
     response = orga_client.get(
         event.orga_urls.base
     )  # First request creates child session

@@ -102,8 +102,6 @@ class OutboxSend(EventPermissionRequired, TemplateView):
     @cached_property
     def queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=True)
-        if "pk" in self.kwargs:
-            qs = qs.filter(pk=self.kwargs["pk"])
         return qs
 
     def post(self, request, *args, **kwargs):
@@ -122,10 +120,6 @@ class OutboxPurge(PermissionRequired, TemplateView):
     template_name = "orga/mails/confirm.html"
 
     def get_permission_object(self):
-        if "pk" in self.kwargs:
-            return self.request.event.queued_mails.filter(
-                sent__isnull=True, pk=self.kwargs.get("pk")
-            ).first()
         return self.request.event
 
     @context
@@ -148,22 +142,15 @@ class OutboxPurge(PermissionRequired, TemplateView):
                     ),
                 )
                 return redirect(self.request.event.orga_urls.outbox)
-            if mail.sent:
-                messages.error(request, _("This mail had been sent already."))
-            else:
-                mail.log_action(
-                    "pretalx.mail.delete", person=self.request.user, orga=True
-                )
-                mail.delete()
-                messages.success(request, _("The mail has been deleted."))
+            mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
+            mail.delete()
+            messages.success(request, _("The mail has been deleted."))
             return redirect(request.event.orga_urls.outbox)
         return super().dispatch(request, *args, **kwargs)
 
     @cached_property
     def queryset(self):
         qs = self.request.event.queued_mails.filter(sent__isnull=True)
-        if "pk" in self.kwargs:
-            qs = qs.filter(pk=self.kwargs["pk"])
         return qs
 
     def post(self, request, *args, **kwargs):
@@ -191,28 +178,21 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     def form_valid(self, form):
         form.instance.event = self.request.event
-        if form.instance.sent is not None:
-            messages.error(
-                self.request,
-                _("The email has already been sent, you cannot edit it anymore."),
-            )
-            return redirect(self.get_success_url())
-
         result = super().form_valid(form)
         if form.has_changed():
             action = "pretalx.mail." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
         action = form.data.get("form", "save")
-        if action == "save":
+        if action == "send":
+            form.instance.send()
+            messages.success(self.request, _("The email has been sent."))
+        else:  # action == 'save'
             messages.success(
                 self.request,
                 _(
                     "The email has been saved. When you send it, the updated text will be used."
                 ),
             )
-        elif action == "send":
-            form.instance.send()
-            messages.success(self.request, _("The email has been sent."))
         return result
 
 

@@ -3,7 +3,7 @@ from django_scopes import scope, scopes_disabled
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("query", ("", "?role=true", "?role=false",))
+@pytest.mark.parametrize("query", ("", "?role=true", "?role=false", "?role=foobar"))
 def test_orga_can_access_speakers_list(orga_client, speaker, event, submission, query):
     response = orga_client.get(event.orga_urls.speakers + query, follow=True)
     assert response.status_code == 200

@@ -215,6 +215,5 @@ class OrganiserDelete(PermissionRequired, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         organiser = self.get_object()
-        if organiser:
-            organiser.shred()
+        organiser.shred()
         return HttpResponseRedirect("/orga/")
