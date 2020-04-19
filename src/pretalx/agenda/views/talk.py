@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, TemplateView
@@ -87,14 +87,12 @@ class TalkView(PermissionRequired, TemplateView):
         if talk:
             return talk
         if getattr(self.request, "is_orga", False):
-            talk = (
-                self.request.event.submissions.filter(code__iexact=self.kwargs["slug"],)
-                .prefetch_related("speakers", "slots", "answers", "resources")
-                .select_related("submission_type")
-                .first()
+            return get_object_or_404(
+                self.request.event.submissions.prefetch_related(
+                    "speakers", "slots", "answers", "resources"
+                ).select_related("submission_type"),
+                code__iexact=self.kwargs["slug"],
             )
-            if talk:
-                return talk
         raise Http404()
 
     @context
@@ -188,17 +186,15 @@ class TalkReviewView(TalkView):
         return True
 
     def get_object(self):
-        obj = self.request.event.submissions.filter(
+        return get_object_or_404(
+            self.request.event.submissions,
             review_code=self.kwargs["slug"],
             state__in=[
                 SubmissionStates.SUBMITTED,
                 SubmissionStates.ACCEPTED,
                 SubmissionStates.CONFIRMED,
             ],
-        ).first()
-        if obj:
-            return obj
-        raise Http404()
+        )
 
 
 class SingleICalView(EventPageMixin, DetailView):
@@ -206,13 +202,11 @@ class SingleICalView(EventPageMixin, DetailView):
     slug_field = "code"
 
     def get(self, request, event, **kwargs):
-        talk = (
-            self.get_object()
-            .slots.filter(schedule=self.request.event.current_schedule, is_visible=True)
-            .first()
+        talk = get_object_or_404(
+            self.get_object().slots,
+            schedule=self.request.event.current_schedule,
+            is_visible=True,
         )
-        if not talk:
-            raise Http404()
 
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()

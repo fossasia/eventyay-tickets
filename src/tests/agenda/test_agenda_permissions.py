@@ -63,3 +63,7 @@ def test_agenda_permission_is_speaker_viewable(
     )
     with scope(event=schedule.event):
         assert is_speaker_viewable(None, speaker.profiles.first()) is result
+
+
+def test_agenda_permission_is_speaker_viewable_with_wrong_params():
+    assert is_speaker_viewable("user", False) is False

@@ -149,6 +149,7 @@ class TalkSlot(LogMixin, models.Model):
                 .filter(
                     models.Q(start__lt=self.start, end__gt=self.start)
                     | models.Q(start__lt=self.end, end__gt=self.end)
+                    | models.Q(start__gt=self.start, end__lt=self.end)
                 )
                 .exists()
             )

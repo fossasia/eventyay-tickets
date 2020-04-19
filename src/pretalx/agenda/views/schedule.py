@@ -1,6 +1,7 @@
 import datetime as dt
 import hashlib
 import textwrap
+from contextlib import suppress
 from itertools import repeat
 from urllib.parse import unquote
 
@@ -54,9 +55,7 @@ class ScheduleDataView(EventPermissionRequired, TemplateView):
             return self.request.event.schedules.filter(
                 version__iexact=self.version
             ).first()
-        if self.request.event.current_schedule:
-            return self.request.event.current_schedule
-        return None
+        return self.request.event.current_schedule  # May be None
 
     @context
     @cached_property
@@ -101,13 +100,10 @@ class ExporterView(ScheduleDataView):
             if ex.identifier == exporter:
                 if ex.public or request.is_orga:
                     return ex
-        return None
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
-        if not exporter:
-            raise Http404()
-        try:
+        with suppress(Exception):
             exporter.schedule = self.schedule
             exporter.is_orga = getattr(self.request, "is_orga", False)
             file_name, file_type, data = exporter.render()
@@ -124,8 +120,7 @@ class ExporterView(ScheduleDataView):
             if exporter.cors:
                 response["Access-Control-Allow-Origin"] = exporter.cors
             return response
-        except Exception:
-            raise Http404()
+        raise Http404()
 
 
 class ScheduleView(ScheduleDataView):
@@ -473,15 +468,14 @@ class ScheduleView(ScheduleDataView):
         )
         result.update(**method(data))
         result["day_count"] = len(result["data"])
-        if result["day_count"]:
-            today = now().date()
-            result["initial_day"] = (
-                today
-                if result["data"][0]["start"].date()
-                <= today
-                <= result["data"][-1]["start"].date()
-                else result["data"][0]["start"]
-            )
+        today = now().date()
+        result["initial_day"] = (
+            today
+            if result["data"][0]["start"].date()
+            <= today
+            <= result["data"][-1]["start"].date()
+            else result["data"][0]["start"]
+        )
         return result
 
     def get_schedule_data_proportional(self, data):

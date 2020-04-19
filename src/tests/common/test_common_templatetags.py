@@ -1,6 +1,8 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.common.templatetags.copyable import copyable
+from pretalx.common.templatetags.html_signal import html_signal
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.templatetags.times import times
 from pretalx.common.templatetags.xmlescape import xmlescape
@@ -76,3 +78,19 @@ def test_common_templatetag_rich_text(text, richer_text):
 )
 def test_common_templatetag_copyable(value, copy):
     assert copyable(value) == copy
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("slug", (True, False))
+def test_html_signal(event, slug):
+    with scope(event=event):
+        if slug:
+            event.slug = "ignore_signal"
+        event.plugins = "tests"
+        event.save()
+        result = html_signal(
+            "pretalx.cfp.signals.html_above_profile_page", sender=event, request=None
+        )
+        assert result
+        if slug:
+            assert result == "<p></p>"

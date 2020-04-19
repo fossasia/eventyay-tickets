@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from django.utils import translation
 
-from pretalx.common.utils import daterange, safe_filename
+from pretalx.common.utils import I18nStrJSONEncoder, daterange, safe_filename
 
 
 @pytest.mark.parametrize(
@@ -59,3 +59,8 @@ def test_path_with_hash(path, expected, monkeypatch):
 )
 def test_safe_filename(filename, expected):
     assert safe_filename(filename) == expected
+
+
+@pytest.mark.django_db
+def test_json_encoder_inheritance(event):
+    assert I18nStrJSONEncoder().default(event) == {"id": event.pk, "type": "Event"}

@@ -205,7 +205,9 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         from pretalx.submission.models import Answer
 
         self.email = f"deleted_user_{random.randint(0, 999)}@localhost"
-        while self.__class__.objects.filter(email__iexact=self.email).exists():
+        while self.__class__.objects.filter(
+            email__iexact=self.email
+        ).exists():  # pragma: no cover
             self.email = f"deleted_user_{random.randint(0, 999)}"
         self.name = "Deleted User"
         self.is_active = False

@@ -8,7 +8,15 @@ import pytest
 )
 @pytest.mark.django_db
 def test_widget_pages(
-    event, schedule, client, url, show_schedule, show_widget_if_not_public, expected
+    event,
+    schedule,
+    client,
+    url,
+    show_schedule,
+    show_widget_if_not_public,
+    expected,
+    slot,
+    other_slot,
 ):
     event.settings.show_schedule = show_schedule
     event.settings.show_widget_if_not_public = show_widget_if_not_public

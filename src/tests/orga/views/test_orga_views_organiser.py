@@ -88,6 +88,28 @@ def test_orga_edit_team_tracks(orga_client, organiser, event, track, other_track
 
 
 @pytest.mark.django_db
+def test_orga_edit_team_tracks_limited_by_events(
+    orga_client, organiser, event, track, other_track
+):
+    team = organiser.teams.first()
+    with scopes_disabled():
+        team.all_events = False
+        team.limit_events.add(event)
+        team.save()
+        assert team.limit_tracks.all().count() == 0
+    url = reverse(
+        "orga:organiser.teams.tracks",
+        kwargs={"organiser": organiser.slug, "pk": team.pk},
+    )
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(url, follow=True, data={"limit_tracks": track.pk,},)
+    assert response.status_code == 200
+    with scopes_disabled():
+        assert team.limit_tracks.all().count() == 1
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize("is_administrator", [True, False])
 def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_user):
     orga_user.is_administrator = is_administrator
@@ -255,6 +277,18 @@ class TestEventCreation:
         ).exists(), organiser.teams.all()
         assert str(event.name) == "New event!"
         assert event.locales == ["en", "de"]
+
+    def test_orga_create_event_existing_slug(
+        self, orga_client, organiser, deadline, event
+    ):
+        organiser.teams.all().update(can_create_events=True)
+        count = Event.objects.count()
+        self.submit_initial(organiser, client=orga_client)
+        self.submit_basics(client=orga_client, slug=event.slug)
+        self.submit_timeline(deadline=deadline, client=orga_client)
+        self.submit_display(client=orga_client, display_header_pattern="topo")
+        self.submit_copy(client=orga_client)
+        assert Event.objects.count() == count
 
     def test_orga_create_event_in_the_past(self, orga_client, organiser, deadline):
         organiser.teams.all().update(can_create_events=True)

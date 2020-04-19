@@ -92,7 +92,7 @@ def widget_script(request, event, locale):
         raise Http404()
 
     existing_file = request.event.settings.get("widget_file_{}".format(locale))
-    if existing_file and not settings.DEBUG:
+    if existing_file and not settings.DEBUG:  # pragma: no cover
         return HttpResponse(existing_file.read(), content_type="text/javascript")
 
     data = generate_widget_js(request.event, locale, save=not settings.DEBUG)
@@ -105,7 +105,7 @@ def widget_style(request, event):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
     existing_file = request.event.settings.widget_css
-    if existing_file and not settings.DEBUG:
+    if existing_file and not settings.DEBUG:  # pragma: no cover
         return HttpResponse(existing_file.read(), content_type="text/css")
 
     data = generate_widget_css(request.event, save=not settings.DEBUG)

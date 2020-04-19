@@ -16,7 +16,7 @@ body {
 }
 .some-descriptor {
   /* Dotted borders are IN! */
-  border-style: dotted dashed solid double;
+  border-style: dotted dashed solid double;  /* more commenting */
   BORDER-color: red green blue yellow;
 }
 #best-descriptor {

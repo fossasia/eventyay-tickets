@@ -209,6 +209,22 @@ def test_schedule_export_nonpublic(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "exporter",
+    ("schedule.xml", "schedule.json", "schedule.xcal", "schedule.ics", "feed"),
+)
+def test_schedule_export_public(exporter, slot, client, django_assert_max_num_queries):
+    exporter = "feed" if exporter == "feed" else f"export.{exporter}"
+
+    with django_assert_max_num_queries(30):
+        response = client.get(
+            reverse(f"agenda:{exporter}", kwargs={"event": slot.submission.event.slug}),
+            follow=True,
+        )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_schedule_speaker_ical_export(
     slot, other_slot, client, django_assert_max_num_queries
 ):
@@ -556,6 +572,19 @@ def test_speaker_csv_export(slot, orga_client, django_assert_max_num_queries):
 
 
 @pytest.mark.django_db
+def test_empty_speaker_csv_export(orga_client, django_assert_max_num_queries, event):
+    with django_assert_max_num_queries(25):
+        response = orga_client.get(
+            reverse(
+                f"agenda:export", kwargs={"event": event.slug, "name": "speakers.csv"},
+            ),
+            follow=True,
+        )
+    assert response.status_code == 200, str(response.content.decode())
+    assert len(response.content.decode()) < 100
+
+
+@pytest.mark.django_db
 def test_submission_question_csv_export(
     slot,
     orga_client,
@@ -599,3 +628,17 @@ def test_speaker_question_csv_export(
     )
     assert response.status_code == 200, str(response.content.decode())
     assert slot.submission.speakers.first().name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_wrong_export(
+    slot, orga_client,
+):
+    response = orga_client.get(
+        reverse(
+            f"agenda:export",
+            kwargs={"event": slot.submission.event.slug, "name": "wrong",},
+        ),
+        follow=True,
+    )
+    assert response.status_code == 404

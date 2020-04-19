@@ -7,7 +7,11 @@ from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
 from pretalx.common.models.log import ActivityLog
-from pretalx.event.services import periodic_event_services, task_periodic_event_services
+from pretalx.event.services import (
+    periodic_event_services,
+    task_periodic_event_services,
+    task_periodic_schedule_export,
+)
 
 
 @pytest.mark.django_db
@@ -129,3 +133,18 @@ def test_periodic_event_services_schedule_export(
 @pytest.mark.django_db
 def test_periodic_event_fail():
     task_periodic_event_services("lololol")
+
+
+@pytest.mark.django_db
+def test_trigger_schedule_export_unnecessary(event):
+    event.settings.export_html_on_schedule_release = True
+    timestamp = now() - dt.timedelta(minutes=10)
+    event.cache.set("last_schedule_rebuild", timestamp)
+    task_periodic_schedule_export(event.slug)
+
+
+@pytest.mark.django_db
+def test_trigger_schedule_export_regularly(event):
+    event.settings.export_html_on_schedule_release = True
+    assert not event.cache.get("last_schedule_rebuild")
+    task_periodic_schedule_export(event.slug)

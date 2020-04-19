@@ -2,6 +2,7 @@ import datetime as dt
 
 import pytest
 from django.utils.timezone import now
+from django_scopes import scope
 
 from pretalx.schedule.models import TalkSlot
 
@@ -45,3 +46,62 @@ def test_slot_string(slot, room):
 def test_slot_build_empty_ical(slot):
     slot.room = None
     assert not slot.build_ical(None)
+
+
+@pytest.mark.django_db
+def test_slot_warnings_without_room(slot):
+    with scope(event=slot.event):
+        slot.room = None
+        slot.save()
+        assert slot.start
+        assert not slot.warnings
+
+
+@pytest.mark.django_db
+def test_slot_warnings_when_room_unavailable(slot):
+    with scope(event=slot.event):
+        assert len(slot.warnings) == 1
+        assert slot.warnings[0]["type"] == "room"
+
+
+@pytest.mark.django_db
+def test_slot_no_warnings_when_room_available(slot, room_availability):
+    with scope(event=slot.event):
+        assert not slot.warnings
+
+
+@pytest.mark.django_db
+def test_slot_warning_when_speaker_unavailable(slot, availability, room_availability):
+    with scope(event=slot.event):
+        availability.start -= dt.timedelta(days=7)
+        availability.end -= dt.timedelta(days=7)
+        availability.person = slot.submission.speakers.first().event_profile(slot.event)
+        availability.pk = None
+        availability.save()
+        assert len(slot.warnings) == 1
+        assert slot.warnings[0]["type"] == "speaker"
+        assert (
+            slot.warnings[0]["message"]
+            == "A speaker is not available at the scheduled time."
+        )
+
+
+@pytest.mark.django_db
+def test_slot_warning_when_speaker_overbooked(
+    slot, availability, other_slot, room_availability
+):
+    with scope(event=slot.event):
+        availability.person = slot.submission.speakers.first().event_profile(slot.event)
+        availability.pk = None
+        availability.save()
+        other_slot.start = slot.start + dt.timedelta(minutes=10)
+        other_slot.end = slot.end - dt.timedelta(minutes=10)
+        other_slot.submission.speakers.add(availability.person.user)
+        other_slot.save()
+        other_slot.submission.save()
+        assert len(slot.warnings) == 1
+        assert slot.warnings[0]["type"] == "speaker"
+        assert (
+            slot.warnings[0]["message"]
+            == "A speaker is giving another talk at the scheduled time."
+        )

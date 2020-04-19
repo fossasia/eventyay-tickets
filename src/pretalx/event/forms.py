@@ -122,8 +122,7 @@ class EventWizardInitialForm(forms.Form):
                 "The organiser running the event can copy settings from previous events and share team permissions across all or multiple events."
             ),
         )
-        if len(self.fields["organiser"].choices) == 1:
-            self.fields["organiser"].initial = self.fields["organiser"].queryset.first()
+        self.fields["organiser"].initial = self.fields["organiser"].queryset.first()
 
 
 class EventWizardBasicsForm(I18nModelForm):

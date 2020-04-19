@@ -1,8 +1,10 @@
+import datetime as dt
 import json
 
 import pytest
 from django.conf import settings
 from django.core import mail as djmail
+from django.utils.timezone import now
 from django_scopes import scope
 
 from pretalx.event.models import Event
@@ -705,6 +707,50 @@ def test_edit_review_settings_new_review_phase(orga_client, event):
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):
         assert event.review_phases.count() == 3
+
+
+@pytest.mark.django_db
+def test_edit_review_settings_new_review_phase_wrong_dates(orga_client, event):
+    assert event.settings.review_min_score == 0
+    assert event.settings.review_max_score == 1
+    assert event.settings.review_score_names is None
+    with scope(event=event):
+        assert event.review_phases.count() == 2
+        active_phase = event.active_review_phase
+    response = orga_client.post(
+        event.orga_urls.review_settings,
+        {
+            "review_min_score": "0",
+            "review_max_score": "2",
+            "review_score_name_0": "OK",
+            "review_score_name_1": "Want",
+            "review_score_name_2": "Super",
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 2,
+            "form-MIN_NUM_FORMS": 0,
+            "form-MAX_NUM_FORMS": 1000,
+            "form-0-name": active_phase.name + "xxx",
+            "form-0-id": active_phase.id,
+            "form-0-start": "",
+            "form-0-end": "",
+            "form-0-can_see_other_reviews": "after_review",
+            "form-1-name": active_phase.name + "xxxy",
+            "form-1-id": active_phase.id + 1,
+            "form-1-start": "",
+            "form-1-end": "",
+            "form-1-can_see_other_reviews": "after_review",
+            "form-2-name": "New Review Phase",
+            "form-2-start": now().strftime("%Y-%m-%d"),
+            "form-2-end": (now() - dt.timedelta(days=7)).strftime("%Y-%m-%d"),
+            "form-2-can_see_other_reviews": "always",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert "The end of a phase has to be after its start." in response.content.decode()
+    event = Event.objects.get(slug=event.slug)
+    with scope(event=event):
+        assert event.review_phases.count() == 2
 
 
 @pytest.mark.django_db

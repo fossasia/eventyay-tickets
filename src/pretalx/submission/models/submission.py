@@ -557,8 +557,6 @@ class Submission(LogMixin, GenerateCode, models.Model):
 
         if not is_agenda_visible(None, self.event):
             return []
-        if not self.event.current_schedule:
-            return []
         return self.event.current_schedule.talks.filter(
             submission=self, is_visible=True
         )

@@ -1,7 +1,7 @@
 import re
 
 from cssutils import CSSParser
-from cssutils.css import CSSComment, CSSMediaRule
+from cssutils.css import CSSMediaRule
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -127,8 +127,6 @@ def validate_key(*, key, style):
 
 def validate_rules(rules):
     for rule in rules:
-        if isinstance(rule, CSSComment):
-            continue
         if isinstance(rule, CSSMediaRule):
             validate_rules(rule.cssRules)
         else:
@@ -139,13 +137,9 @@ def validate_rules(rules):
 
 def validate_css(css):
     try:
-        parser = CSSParser(raiseExceptions=True)
+        parser = CSSParser(raiseExceptions=True, parseComments=False)
         stylesheet = parser.parseString(css)
     except Exception as exception:
         raise ValidationError(str(exception).split("\n")[0])
-
-    if not stylesheet.valid:
-        raise ValidationError(_("This stylesheet is not valid CSS."))
-
     validate_rules(stylesheet.cssRules)
     return css

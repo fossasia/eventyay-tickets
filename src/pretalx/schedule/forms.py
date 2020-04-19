@@ -118,9 +118,8 @@ class AvailabilitiesFormMixin(forms.Form):
         timeframe_end = dt.datetime.combine(self.event.date_to, dt.time())
         timeframe_end = timeframe_end + dt.timedelta(days=1)
         timeframe_end = tz.localize(timeframe_end, is_dst=None)
-        if rawavail["end"] > timeframe_end:
-            # If the submitted availability ended outside the event timeframe, fix it silently
-            rawavail["end"] = timeframe_end
+        # If the submitted availability ended outside the event timeframe, fix it silently
+        rawavail["end"] = min(rawavail["end"], timeframe_end)
 
     def clean_availabilities(self):
         data = self.cleaned_data.get("availabilities")
@@ -132,10 +131,11 @@ class AvailabilitiesFormMixin(forms.Form):
                 raise forms.ValidationError(_("Please fill in your availability!"))
             return None
 
-        if isinstance(self.data.get("availabilities"), list):
-            rawavailabilities = self.data["availabilities"]
-        else:
-            rawavailabilities = self._parse_availabilities_json(data)
+        rawavailabilities = (
+            self.data["availabilities"]
+            if isinstance(self.data.get("availabilities"), list)
+            else self._parse_availabilities_json(data)
+        )
         availabilities = []
 
         for rawavail in rawavailabilities:

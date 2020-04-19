@@ -1,7 +1,7 @@
 import pytest
-from django_scopes import scopes_disabled
+from django_scopes import scope, scopes_disabled
 
-from pretalx.person.models.user import User
+from pretalx.person.models.user import User, avatar_path
 from pretalx.submission.models.question import Answer
 
 
@@ -88,3 +88,28 @@ def test_shred_user(user):
     assert User.objects.count() == 1
     user.shred()
     assert User.objects.count() == 0
+
+
+def test_avatar_path():
+    assert avatar_path(None, "foo").startswith("avatars/foo")
+
+
+@pytest.mark.django_db
+def test_unsaved_event_profile(event):
+    with scope(event=event):
+        assert not User(email="foo@example.com").event_profile(event).pk
+
+
+@pytest.mark.django_db
+def test_user_attributes(orga_user):
+    assert not orga_user.has_avatar
+    assert not orga_user.has_local_avatar
+
+
+@pytest.mark.django_db
+def test_user_reset_password_without_text(orga_user, event):
+    with scope(event=event):
+        assert not orga_user.pw_reset_token
+        orga_user.reset_password(event)
+        orga_user.refresh_from_db()
+        assert orga_user.pw_reset_token

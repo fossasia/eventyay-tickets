@@ -18,7 +18,8 @@ def footer_link_test(sender, request, **kwargs):
 
 @receiver(html_head)
 def html_head_test(sender, request, **kwargs):
-    return '<meta property="pretalx:foo" content="bar">'
+    if sender.slug != "ignore_signal":
+        return '<meta property="pretalx:foo" content="bar">'
 
 
 @receiver(html_above_profile_page)

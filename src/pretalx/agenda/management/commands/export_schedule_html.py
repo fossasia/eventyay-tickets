@@ -99,9 +99,9 @@ def get_path(url):
 
 
 def get_content(response):
-    if response.streaming:
-        return b"".join(response.streaming_content)
-    return response.content
+    return (
+        b"".join(response.streaming_content) if response.streaming else response.content
+    )
 
 
 def dump_content(destination, path, getter):

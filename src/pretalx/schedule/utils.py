@@ -101,7 +101,10 @@ def _create_talk(*, talk, room, event):
         optout = talk.find("recording").find("optout").text == "true"
 
     code = None
-    for potential_code in (talk.attrib["id"], talk.attrib["guid"][:16]):
+    for potential_code in (
+        talk.attrib["id"],
+        talk.attrib["guid"][:16],
+    ):  # pragma: no cover
         if (
             Submission.objects.filter(code__iexact=potential_code, event=event).exists()
             or not Submission.objects.filter(code__iexact=potential_code).exists()
