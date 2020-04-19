@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
 
@@ -371,6 +372,8 @@ def test_content_for_mail(submission, file_question, boolean_question):
         fa = Answer.objects.create(
             question=file_question, answer_file=f, submission=submission
         )
+        host = submission.event.settings.custom_domain or settings.SITE_URL
+
         assert (
             submission.get_content_for_mail().strip()
             == f"""**Title**: {submission.title}
@@ -385,7 +388,7 @@ def test_content_for_mail(submission, file_question, boolean_question):
 
 **{boolean_question.question}**: Yes
 
-**{file_question.question}**: http://localhost{fa.answer_file.url}""".strip()
+**{file_question.question}**: {host}{fa.answer_file.url}""".strip()
         )
 
 

@@ -7,18 +7,23 @@ from django.core.management.base import BaseCommand
 from django_scopes import scope, scopes_disabled
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     help = "Run a Python REPL scoped to a specific event. Run with --event__slug=eventslug or with --override to access all events."
 
     def create_parser(self, *args, **kwargs):
         parser = super().create_parser(*args, **kwargs)
-        parser.parse_args = lambda x: parser.parse_known_args(x)[0]
+
+        def parse_args(args):
+            return parser.parse_known_args(args)[0]
+
+        parser.parse_args = parse_args
         return parser
 
     def handle(self, *args, **options):
         flags = self.create_parser(sys.argv[0], sys.argv[1]).parse_known_args(
             sys.argv[2:]
         )[1]
+        options.pop("skip_checks", None)
         if "--override" in flags:
             with scopes_disabled():
                 self.stdout.write(

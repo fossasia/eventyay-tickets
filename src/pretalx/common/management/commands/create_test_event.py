@@ -294,18 +294,12 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
 
     def build_schedule_stage(self):
         # Three days, two rooms, nine talks and three workshops and day == 3 * 12 = 36 slots
-        talks = (
-            _
-            for _ in self.event.submissions.filter(
-                state="confirmed", submission_type__name="Talk"
-            )
-        )
-        workshops = (
-            _
-            for _ in self.event.submissions.filter(
-                state="confirmed", submission_type__name="Workshop"
-            )
-        )
+        talks = self.event.submissions.filter(
+            state="confirmed", submission_type__name="Talk"
+        ).iterator()
+        workshops = self.event.submissions.filter(
+            state="confirmed", submission_type__name="Workshop"
+        ).iterator()
         talk_room, workshop_room = self.event.rooms.all()
         current_time = self.event.datetime_from + dt.timedelta(hours=9)
 
@@ -337,8 +331,12 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
         try:
             from faker import Faker
 
+            seed = options.get("seed")
+            if seed:
+                Faker.seed(int(seed))
+
             self.fake = Faker()
-        except ImportError:
+        except ImportError:  # pragma: no cover
             self.stdout.write(
                 self.style.ERROR('Please run "pip install Faker" to use this command.')
             )
@@ -348,7 +346,7 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             from freezegun import freeze_time
 
             self.freeze_time = freeze_time
-        except ImportError:
+        except ImportError:  # pragma: no cover
             self.stdout.write(
                 self.style.ERROR(
                     'Please run "pip install freezegun" to use this command.'
@@ -356,9 +354,6 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             )
             return
 
-        seed = options.get("seed")
-        if seed:
-            self.fake.seed(int(seed))
         end_stage = options.get("stage")
         event = self.build_event(end_stage, slug=options.get("slug"))
         if not event:

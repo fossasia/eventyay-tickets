@@ -29,6 +29,20 @@ def request_callback_updatable(request):
     return 200, {"Content-Type": "text/json"}, json.dumps(resp_body)
 
 
+def request_callback_with_plugin(request):
+    json_data = json.loads(request.body.decode())
+    resp_body = {
+        "status": "ok",
+        "version": {
+            "latest": "1.0.0",
+            "yours": json_data.get("version"),
+            "updatable": True,
+        },
+        "plugins": {"tests": {"latest": "1.1.1", "updatable": True}},
+    }
+    return 200, {"Content-Type": "text/json"}, json.dumps(resp_body)
+
+
 def request_callback_not_updatable(request):
     json_data = json.loads(request.body.decode())
     resp_body = {
@@ -60,6 +74,7 @@ def test_update_check_disabled():
         content_type="application/json",
     )
     update_check.apply(throw=True)
+    run_update_check(None)
 
 
 @pytest.mark.django_db
@@ -183,6 +198,13 @@ def test_result_table_empty():
     assert check_result_table() == {"error": "no_result"}
 
 
+@pytest.mark.django_db
+def test_result_table_with_error():
+    gs = GlobalSettings()
+    gs.settings.update_check_result = '{"error": "errororor"}'
+    assert check_result_table() == {"error": "errororor"}
+
+
 @responses.activate
 @pytest.mark.django_db
 def test_result_table_up2date():
@@ -195,5 +217,20 @@ def test_result_table_up2date():
     update_check.apply(throw=True)
     tbl = check_result_table()
     assert tbl[0] == ("pretalx", __version__, "1.0.0", False)
-    assert tbl[1][0].startswith("Plugin: ")
+    assert tbl[1][0] == "Plugin: test plugin for pretalx"
     assert tbl[1][2] == "?"
+
+
+@responses.activate
+@pytest.mark.django_db
+def test_result_table_up2date_with_plugins():
+    responses.add_callback(
+        responses.POST,
+        "https://pretalx.com/.update_check/",
+        callback=request_callback_with_plugin,
+        content_type="application/json",
+    )
+    update_check.apply(throw=True)
+    tbl = check_result_table()
+    assert tbl[0] == ("pretalx", __version__, "1.0.0", True)
+    assert tbl[1] == ("Plugin: test plugin for pretalx", "0.0.0", "1.1.1", True)

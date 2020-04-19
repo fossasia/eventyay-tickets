@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class CustomSMTPBackend(EmailBackend):
     def test(self, from_addr):
-        try:
+        try:  # pragma: no cover
             self.open()
             self.connection.ehlo_or_helo_if_needed()
             (code, resp) = self.connection.mail(from_addr, [])
@@ -47,7 +47,7 @@ class SendMailException(Exception):
 @app.task(bind=True)
 def mail_send_task(
     self,
-    to: str,
+    to: list,
     subject: str,
     body: str,
     html: str,
@@ -61,6 +61,8 @@ def mail_send_task(
         [] if not reply_to or (len(reply_to) == 1 and reply_to[0] == "") else reply_to
     )
     reply_to = reply_to.split(",") if isinstance(reply_to, str) else reply_to
+    if isinstance(to, str):
+        to = [to]
     if event:
         event = Event.objects.get(pk=event)
         backend = event.get_mail_backend()
@@ -91,7 +93,7 @@ def mail_send_task(
 
     try:
         backend.send_messages([email])
-    except SMTPResponseException as exception:
+    except SMTPResponseException as exception:  # pragma: no cover
         # Retry on external problems: Connection issues (101, 111), timeouts (421), filled-up mailboxes (422),
         # out of memory (431), network issues (442), another timeout (447), or too many mails sent (452)
         if exception.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
@@ -100,7 +102,7 @@ def mail_send_task(
         raise SendMailException(
             "Failed to send an email to {}: {}".format(to, exception)
         )
-    except Exception as exception:
+    except Exception as exception:  # pragma: no cover
         logger.exception("Error sending email")
         raise SendMailException(
             "Failed to send an email to {}: {}".format(to, exception)

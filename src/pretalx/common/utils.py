@@ -66,16 +66,14 @@ def daterange_es(date_from, date_to):
 
 
 def daterange(date_from, date_to):
-    result = None
-    language = get_language()
-
-    if language.startswith("de"):
-        result = daterange_de(date_from, date_to)
-    elif language.startswith("en"):
-        result = daterange_en(date_from, date_to)
-    elif language.startswith("es"):
-        result = daterange_es(date_from, date_to)
-
+    language = get_language()[:2]
+    lookup = {
+        "de": daterange_de,
+        "en": daterange_en,
+        "es": daterange_es,
+    }
+    function = lookup.get(language)
+    result = function(date_from, date_to) if function else None
     return result or _("{date_from} – {date_to}").format(
         date_from=_date(date_from, "DATE_FORMAT"), date_to=_date(date_to, "DATE_FORMAT")
     )
@@ -117,7 +115,7 @@ def rolledback_transaction():
             raise DummyRollbackException()
     except DummyRollbackException:
         pass
-    else:
+    else:  # pragma: no cover
         raise Exception("Invalid state, should have rolled back.")
 
 

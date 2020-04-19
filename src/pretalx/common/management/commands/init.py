@@ -11,7 +11,7 @@ from pretalx.event.utils import create_organiser_with_team
 from pretalx.person.models import User
 
 
-def get_nonempty(prompt):
+def get_nonempty(prompt):  # pragma: no cover
     result = input(prompt).strip()
     while not result:
         result = input(
@@ -20,7 +20,7 @@ def get_nonempty(prompt):
     return result
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     help = "Initializes your pretalx instance. Only to be used once."
 
     @transaction.atomic

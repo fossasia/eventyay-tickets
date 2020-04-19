@@ -12,8 +12,8 @@ SEPARATORS = {
 }
 
 
-def get_seperator(*args):
-    """(upright, downright, downleft, upleft): Tuple[bool] -> seperator:
+def get_separator(*args):
+    """(upright, downright, downleft, upleft): Tuple[bool] -> separator:
 
     str.
     """
@@ -27,14 +27,14 @@ def get_seperator(*args):
 def start_box(size):
     try:
         print("┏" + "━" * size + "┓")
-    except (UnicodeDecodeError, UnicodeEncodeError):
+    except (UnicodeDecodeError, UnicodeEncodeError):  # pragma: no cover
         print("-" * (size + 2))
 
 
 def end_box(size):
     try:
         print("┗" + "━" * size + "┛")
-    except (UnicodeDecodeError, UnicodeEncodeError):
+    except (UnicodeDecodeError, UnicodeEncodeError):  # pragma: no cover
         print("-" * (size + 2))
 
 
@@ -54,7 +54,7 @@ def print_line(string, box=False, bold=False, color=None, size=None):
         alt_string = f"| {string} |"
     try:
         print(string)
-    except (UnicodeDecodeError, UnicodeEncodeError):
+    except (UnicodeDecodeError, UnicodeEncodeError):  # pragma: no cover
         try:
             print(alt_string)
         except (UnicodeDecodeError, UnicodeEncodeError):

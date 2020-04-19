@@ -8,6 +8,9 @@ class PluginApp(AppConfig):
     def ready(self):
         from .dummy_signals import footer_link_test  # noqa
 
+    def is_available(self, event):
+        return event != "totally hidden"
+
     class PretalxPluginMeta:
         name = "test plugin for pretalx"
         author = "Tobias Kunze"

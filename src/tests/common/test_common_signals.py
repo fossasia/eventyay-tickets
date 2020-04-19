@@ -23,3 +23,13 @@ def test_cant_call_signal_without_event(event):
     with pytest.raises(Exception):
         footer_link.send("something", request="test")
     footer_link.send(event, request="test")
+
+
+@pytest.mark.django_db
+def test_send_robust(event):
+    footer_link.send_robust(event, request="test")
+
+
+@pytest.mark.django_db
+def test_send_chained(event):
+    footer_link.send_chained(event, request="test", chain_kwarg_name="test")

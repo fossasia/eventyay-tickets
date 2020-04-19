@@ -21,7 +21,7 @@ def add_events(request):
             url = resolve(request.path_info)
             url_name = url.url_name
             url_namespace = url.namespace
-        except Http404:
+        except Http404:  # pragma: no cover
             url_name = ""
             url_namespace = ""
         return {"url_name": url_name, "url_namespace": url_namespace}
@@ -53,7 +53,7 @@ def system_information(request):
     for __, response in footer_link.send(event, request=request):
         if isinstance(response, list):
             _footer += response
-        else:
+        else:  # pragma: no cover
             _footer.append(response)
             warnings.warn(
                 "Please return a list in your footer_link signal receiver, not a dictionary.",

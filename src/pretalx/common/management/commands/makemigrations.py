@@ -15,7 +15,7 @@ def new_deconstruct(self):
     facing string is changed.
     """
     name, path, args, kwargs = original_deconstruct(self)
-    if not any(field in path for field in EXEMPT_FIELDS):
+    if not any(field in path for field in EXEMPT_FIELDS):  # pragma: no cover
         for attr in IGNORED_ATTRS:
             kwargs.pop(attr, None)
     return name, path, args, kwargs

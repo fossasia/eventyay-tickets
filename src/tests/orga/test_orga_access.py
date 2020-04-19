@@ -115,3 +115,18 @@ def test_dev_settings_warning(orga_client, event, settings):
         reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
     )
     assert "running in development mode" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_update_check_warning(orga_user, orga_client, event, settings):
+    from pretalx.common.models.settings import GlobalSettings
+
+    orga_user.is_administrator = True
+    orga_user.save()
+    settings.DEBUG = True
+    gs = GlobalSettings()
+    gs.settings.update_check_result_warning = True
+    response = orga_client.get(
+        reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
+    )
+    assert "fa-bell" in response.content.decode()

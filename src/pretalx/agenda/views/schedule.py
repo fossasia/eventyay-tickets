@@ -21,7 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.console import LR, UD, get_seperator
+from pretalx.common.console import LR, UD, get_separator
 from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
@@ -245,7 +245,7 @@ class ScheduleView(ScheduleDataView):
 
         if start or end:
             line_parts.append(
-                get_seperator(bool(end), bool(start), False, False) + LR * col_width
+                get_separator(bool(end), bool(start), False, False) + LR * col_width
             )
         elif run:
             line_parts.append(UD + next(cards_by_id[run.pk]))
@@ -281,7 +281,7 @@ class ScheduleView(ScheduleDataView):
         )
 
         if start or end:
-            line_parts.append(get_seperator(False, False, bool(start), bool(end)))
+            line_parts.append(get_separator(False, False, bool(start), bool(end)))
         elif run:
             line_parts.append(UD)
         else:
@@ -361,7 +361,7 @@ class ScheduleView(ScheduleDataView):
         elif run2 and (start1 or end1):
             result.append("┤")
         elif any(start_end):
-            result.append(get_seperator(*map(bool, start_end)))
+            result.append(get_separator(*map(bool, start_end)))
         elif run1 or run2:
             result.append(UD)
         else:
