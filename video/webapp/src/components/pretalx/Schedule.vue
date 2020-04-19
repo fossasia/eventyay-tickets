@@ -2,8 +2,8 @@
 .pretalx-schedule(:class="{mobile}", ref="wrapper", :style="style")
 	.header
 		h2 Schedule
-		bunt-tabs(v-if="schedule.conference.days.length > 1", :active-tab="activeDay.day_start")
-			bunt-tab(v-for="day in schedule.conference.days", :id="day.day_start", :header="formatDate(day.day_start)", @selected="activeDay = day")
+		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.day_start")
+			bunt-tab(v-for="day in schedule.schedule", :id="day.day_start", :header="formatDate(day.day_start)", @selected="activeDay = day")
 		.pretalx-widget-attribution
 			| · powered by #[a(href="https://pretalx.com", rel="noopener", target="_blank") pretalx] ·
 	pretalx-schedule-day(:day="activeDay", :key="activeDay.day_start")
@@ -49,7 +49,7 @@ export default {
 				LL: moment.localeData()._longDateFormat.LL.replace(/Y/g, '').replace(/,? *$/, '')
 			}
 		})
-		this.activeDay = this.schedule.conference.days[0] // TODO use current day
+		this.activeDay = this.schedule.schedule[0] // TODO use current day
 	},
 	mounted () {
 		// TODO replace with proper mq support

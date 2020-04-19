@@ -3,7 +3,7 @@
     "title": "Unsere tolle Online-Konferenz",
     "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
     "pretalx": {
-      "schedule_url": "https://pretalx.com/democon/schedule/export/schedule.json",
+      "base_url": "https://pretalx.com/democon/",
       "room_mapping": {
 
       }
