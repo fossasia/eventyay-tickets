@@ -1,4 +1,5 @@
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
 
 from pretalx.submission.models import (
@@ -322,3 +323,74 @@ def test_submission_anonymise(data, loaded):
     s.anonymised_data = data
     assert s.anonymised == loaded
     assert not s.is_anonymised
+
+
+@pytest.mark.parametrize(
+    "state,expected",
+    (
+        (SubmissionStates.SUBMITTED, 0),
+        (SubmissionStates.ACCEPTED, 1),
+        (SubmissionStates.REJECTED, 1),
+        (SubmissionStates.CONFIRMED, 0),
+        (SubmissionStates.CANCELED, 0),
+    ),
+)
+@pytest.mark.django_db
+def test_send_state_mail(submission, state, expected):
+    with scope(event=submission.event):
+        submission.state = state
+        submission.save()
+        count = submission.event.queued_mails.all().count()
+        submission.send_state_mail()
+        assert submission.event.queued_mails.all().count() == count + expected
+
+
+@pytest.mark.django_db
+def test_public_slots_without_schedule(submission):
+    with scope(event=submission.event):
+        submission.event.schedules.all().delete()
+        assert submission.public_slots == []
+
+
+@pytest.mark.django_db
+def test_public_slots_with_visible_agenda(submission, slot):
+    with scope(event=submission.event):
+        submission.event.is_public = True
+        submission.event.settings.show_schedule = True
+        submission.event.save()
+        assert len(submission.public_slots) == 0
+
+
+@pytest.mark.django_db
+def test_content_for_mail(submission, file_question, boolean_question):
+    f = SimpleUploadedFile("testresource.txt", b"a resource")
+    with scope(event=submission.event):
+        Answer.objects.create(
+            question=boolean_question, answer=True, submission=submission
+        )
+        fa = Answer.objects.create(
+            question=file_question, answer_file=f, submission=submission
+        )
+        assert (
+            submission.get_content_for_mail().strip()
+            == f"""**Title**: {submission.title}
+
+**Abstract**: {submission.abstract}
+
+**Description**: {submission.description}
+
+**Notes**: {submission.notes}
+
+**Language**: {submission.content_locale}
+
+**{boolean_question.question}**: Yes
+
+**{file_question.question}**: http://localhost{fa.answer_file.url}""".strip()
+        )
+
+
+@pytest.mark.django_db
+def test_send_invite_requires_signature(submission):
+    with scope(event=submission.event):
+        with pytest.raises(Exception):
+            submission.send_invite(None)

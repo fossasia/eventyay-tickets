@@ -682,7 +682,7 @@ class Event(LogMixin, models.Model):
                 event=self,
                 name=_("Review"),
                 start=cfp_deadline,
-                end=self.date_from - relativedelta(months=-3),
+                end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(cfp_deadline),
                 can_see_other_reviews="after_review",
                 can_see_speaker_names=True,

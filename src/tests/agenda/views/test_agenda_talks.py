@@ -4,7 +4,6 @@ import pytest
 import pytz
 from django.utils import formats
 from django.utils.timezone import now
-
 from django_scopes import scope
 
 

@@ -251,6 +251,18 @@ def speaker_boolean_question(event):
 
 
 @pytest.fixture
+def boolean_question(event):
+    with scope(event=event):
+        return Question.objects.create(
+            event=event,
+            question="Do you like green?",
+            variant=QuestionVariant.BOOLEAN,
+            target="submission",
+            required=False,
+        )
+
+
+@pytest.fixture
 def file_question(event):
     with scope(event=event):
         return Question.objects.create(

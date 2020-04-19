@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from django import forms
 from django.conf import settings
 from django.db.models import Count
@@ -8,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.fields import IMAGE_EXTENSIONS
+from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.models import Submission, SubmissionStates
@@ -21,6 +19,12 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "If you have a co-speaker, please add their email address here, and we will invite them to create an account. If you have more than one co-speaker, you can add more speakers after finishing the submission process."
         ),
         required=False,
+    )
+    image = ExtensionFileField(
+        required=False,
+        extensions=IMAGE_EXTENSIONS,
+        label=_("Talk image"),
+        help_text=_("Use this if you want an illustration to go with your submission."),
     )
 
     def __init__(self, event, **kwargs):
@@ -146,19 +150,6 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                     "Please contact the organisers if you want to change how often you're presenting this submission."
                 )
             )
-
-    def clean_image(self):
-        image = self.cleaned_data.get("image")
-        if image:
-            extension = Path(image.name).suffix.lower()
-            if extension not in IMAGE_EXTENSIONS:
-                raise forms.ValidationError(
-                    _(
-                        "This filetype ({extension}) is not allowed, it has to be one of the following: "
-                    ).format(extension=extension)
-                    + ", ".join(IMAGE_EXTENSIONS)
-                )
-        return image
 
     class Meta:
         model = Submission

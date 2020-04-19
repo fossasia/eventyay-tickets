@@ -217,7 +217,13 @@ class TestWizard:
     def test_wizard_new_user(self, event, question, client):
         event.settings.set("mail_on_new_submission", True)
         with scope(event=event):
-            submission_type = SubmissionType.objects.filter(event=event).first().pk
+            submission_type = SubmissionType.objects.filter(event=event).first()
+            submission_type.deadline = event.cfp.deadline
+            submission_type.save()
+            event.deadline = now() - dt.timedelta(days=1)
+            event.locale_array = "de,en"
+            event.save()
+            submission_type = submission_type.pk
         answer_data = {f"question_{question.pk}": "42"}
 
         response, current_url = self.perform_init_wizard(client, event=event)
@@ -307,6 +313,7 @@ class TestWizard:
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
             answer_data = {f"question_{question.pk}": "42"}
+            event.use_tracks = False
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client, event=event)
@@ -482,18 +489,22 @@ class TestWizard:
         )
 
     @pytest.mark.django_db
-    def test_wizard_track_access_code(
-        self, event, client, access_code, track, other_track
+    def test_wizard_track_access_code_and_question(
+        self, event, client, access_code, track, other_track, question,
     ):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
             event.settings.cfp_request_track = True
             event.settings.cfp_require_track = True
+            event.settings.cfp_request_abstract = False
+            event.settings.cfp_require_abstract = False
             track.requires_access_code = True
             track.save()
+            question.tracks.add(track)
             other_track.requires_access_code = True
             other_track.save()
             access_code.track = track
+            access_code.submission_type = event.cfp.default_type
             access_code.save()
 
         response, current_url = self.perform_init_wizard(client, event=event)
@@ -523,9 +534,13 @@ class TestWizard:
             response,
             current_url + "?access_code=" + access_code.code,
             submission_type=submission_type,
-            next_step="user",
+            next_step="questions",
             event=event,
             track=track,
+        )
+        answer_data = {f"question_{question.pk}": 42}
+        response, current_url = self.perform_question_wizard(
+            client, response, current_url, answer_data, next_step="user", event=event
         )
         response, current_url = self.perform_user_wizard(
             client,
@@ -539,7 +554,7 @@ class TestWizard:
         response, current_url = self.perform_profile_form(
             client, response, current_url, event=event
         )
-        self.assert_submission(event, track=track)
+        self.assert_submission(event, track=track, question=question, abstract=None)
 
     @pytest.mark.django_db
     def test_wizard_submission_type_access_code(self, event, client, access_code):

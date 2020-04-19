@@ -641,7 +641,11 @@ class Submission(LogMixin, GenerateCode, models.Model):
                 field_name = _field.verbose_name or _field.name
                 data.append({"name": field_name, "value": field_content})
         for answer in self.answers.all():
-            if answer.answer:
+            if answer.question.variant == "boolean":
+                data.append(
+                    {"name": answer.question.question, "value": answer.boolean_answer}
+                )
+            elif answer.answer:
                 data.append({"name": answer.question.question, "value": answer.answer})
             elif answer.answer_file:
                 data.append(
