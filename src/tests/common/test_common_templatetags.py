@@ -89,8 +89,6 @@ def test_html_signal(event, slug):
         event.plugins = "tests"
         event.save()
         result = html_signal(
-            "pretalx.cfp.signals.html_above_profile_page", sender=event, request=None
+            "pretalx.cfp.signals.html_head", sender=event, request=None
         )
-        assert result
-        if slug:
-            assert result == "<p></p>"
+        assert bool(result) is not slug

@@ -67,7 +67,7 @@ class MultiDomainMiddleware:
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return None
 
-        if request.path.startswith("/orga"):
+        if request.path.startswith("/orga"):  # pragma: no cover
             if default_port not in (80, 443):
                 default_domain = f"{default_domain}:{default_port}"
             return redirect(urljoin(default_domain, request.get_full_path()))
@@ -102,7 +102,7 @@ class SessionMiddleware(BaseSessionMiddleware):
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             pass
         else:
             # First check if we need to delete this cookie.
@@ -124,7 +124,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                 if response.status_code != 500:
                     try:
                         request.session.save()
-                    except UpdateError:
+                    except UpdateError:  # pragma: no cover
                         request.session.create()
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
@@ -156,16 +156,14 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
         self.get_response = get_response
 
     def process_response(self, request, response):
-        if getattr(response, "csrf_processing_done", False):
-            return response
-
         # If CSRF_COOKIE is unset, then CsrfViewMiddleware.process_view was
         # never called, probably because a request middleware returned a response
         # (for example, contrib.auth redirecting to a login page).
-        if request.META.get("CSRF_COOKIE") is None:
-            return response
-
-        if not request.META.get("CSRF_COOKIE_USED", False):
+        if (
+            getattr(response, "csrf_processing_done", False)
+            or (request.META.get("CSRF_COOKIE") is None)
+            or not request.META.get("CSRF_COOKIE_USED", False)
+        ):
             return response
 
         # Set the CSRF cookie even if it's already set, so we renew
@@ -197,10 +195,8 @@ def get_cookie_domain(request):
         return None
 
     default_domain, _ = split_domain_port(settings.SITE_NETLOC)
-    if request.host == default_domain:
-        # We are on our main domain, set the cookie domain the user has chosen
-        return settings.SESSION_COOKIE_DOMAIN
-    # We are on an organiser's custom domain, set no cookie domain, as we do not want
+    # If we are on our main domain, set the cookie domain the user has chosen. Else
+    # we are on an organiser's custom domain, set no cookie domain, as we do not want
     # the cookies to be present on any other domain. Setting an explicit value can be
     # dangerous, see http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
-    return None
+    return settings.SESSION_COOKIE_DOMAIN if request.host == default_domain else None

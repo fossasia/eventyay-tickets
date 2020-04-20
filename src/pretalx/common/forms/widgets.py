@@ -1,12 +1,12 @@
 from pathlib import Path
 
+from django.core.files import File
 from django.forms import (
     CheckboxSelectMultiple,
     ClearableFileInput,
     PasswordInput,
     Textarea,
 )
-from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
@@ -66,8 +66,7 @@ class PasswordConfirmationInput(PasswordInput):
         self.confirm_with = confirm_with
 
     def render(self, name, value, attrs=None, renderer=None):
-        if self.confirm_with:
-            self.attrs["data-confirm-with"] = str(self.confirm_with)
+        self.attrs["data-confirm-with"] = str(self.confirm_with)
 
         markup = """
         <div class="hidden password_strength_info">
@@ -88,13 +87,25 @@ class PasswordConfirmationInput(PasswordInput):
 
 
 class ClearableBasenameFileInput(ClearableFileInput):
-    def get_template_substitution_values(self, value):
-        """Return value-related substitutions."""
-        bname = Path(value.name).name
-        return {
-            "initial": conditional_escape(bname),
-            "initial_url": conditional_escape(value.url),
-        }
+    class FakeFile(File):
+        def __init__(self, file):
+            self.file = file
+
+        @property
+        def name(self):
+            return self.file.name
+
+        def __str__(self):
+            return Path(self.name).stem
+
+        @property
+        def url(self):
+            return self.file.url
+
+    def get_context(self, name, value, attrs):
+        ctx = super().get_context(name, value, attrs)
+        ctx["widget"]["value"] = self.FakeFile(value)
+        return ctx
 
 
 class MarkdownWidget(Textarea):

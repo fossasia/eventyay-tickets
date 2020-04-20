@@ -78,15 +78,18 @@ class EventPermissionMiddleware:
             request.organiser = get_object_or_404(
                 Organiser, slug__iexact=organiser_slug
             )
-            if hasattr(request, "organiser") and request.organiser:
-                request.is_orga = False
-                if not request.user.is_anonymous:
-                    has_perms = Team.objects.filter(
-                        organiser=request.organiser,
-                        members__in=[request.user],
-                        can_change_organiser_settings=True,
-                    ).exists()
-                    request.is_orga = request.user.is_administrator or has_perms
+            has_perms = (
+                Team.objects.filter(
+                    organiser=request.organiser,
+                    members__in=[request.user],
+                    can_change_organiser_settings=True,
+                ).exists()
+                if not request.user.is_anonymous
+                else False
+            )
+            request.is_orga = (
+                getattr(request.user, "is_administrator", False) or has_perms
+            )
 
         event_slug = url.kwargs.get("event")
         if event_slug:
@@ -162,28 +165,21 @@ class EventPermissionMiddleware:
             if not language_code_re.search(accept_lang):
                 continue
 
-            try:
+            with suppress(LookupError):
                 val = get_supported_language_variant(accept_lang)
                 if val and val in supported:
                     return val
-            except LookupError:
-                continue
-        return None
 
     @staticmethod
     def _language_from_cookie(request, supported):
         cookie_value = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         with suppress(LookupError):
             cookie_value = get_supported_language_variant(cookie_value)
-            if cookie_value and cookie_value in supported:
-                return cookie_value
-        return None
+            return cookie_value if cookie_value in supported else None
 
     @staticmethod
     def _language_from_user(request, supported):
         if request.user.is_authenticated:
             with suppress(LookupError):
                 value = get_supported_language_variant(request.user.locale)
-                if value and value in supported:
-                    return value
-        return None
+                return value if value in supported else None

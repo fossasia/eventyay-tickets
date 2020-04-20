@@ -30,6 +30,23 @@ def test_send_robust(event):
     footer_link.send_robust(event, request="test")
 
 
+def test_send_robust_wrong_type():
+    with pytest.raises(ValueError):
+        footer_link.send_robust("tra", request="test")
+
+
 @pytest.mark.django_db
 def test_send_chained(event):
+    footer_link.send_chained(event, request="test", chain_kwarg_name="test")
+
+
+def send_chained_wrong_type():
+    with pytest.raises(ValueError):
+        footer_link.send_chained("tra", request="test", chain_kwarg_name="test")
+
+
+@pytest.mark.django_db
+def test_send_chained_with_results(event):
+    event.plugins = "tests"
+    event.save()
     footer_link.send_chained(event, request="test", chain_kwarg_name="test")

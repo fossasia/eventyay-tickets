@@ -195,7 +195,7 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
     def build_speaker(self):
         email = self.fake.user_name() + "@example.org"
         user = User.objects.filter(email__iexact=email).first()
-        if user:
+        if user:  # pragma: no cover
             return user
         user = User.objects.create_user(
             name=self.fake.name(),
