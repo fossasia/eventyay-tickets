@@ -23,8 +23,10 @@ async def world_communicator(named=True):
             ["user.update", 123, {"profile": {"display_name": "Foo Fighter"}}]
         )
         await communicator.receive_json_from()
-    yield communicator
-    await communicator.disconnect()
+    try:
+        yield communicator
+    finally:
+        await communicator.disconnect()
 
 
 @pytest.mark.asyncio

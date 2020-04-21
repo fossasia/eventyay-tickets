@@ -14,8 +14,10 @@ from stayseated.routing import application
 async def world_communicator():
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
-    yield communicator
-    await communicator.disconnect()
+    try:
+        yield communicator
+    finally:
+        await communicator.disconnect()
 
 
 @pytest.mark.asyncio
