@@ -4,6 +4,7 @@ from stayseated.live.exceptions import ConsumerException
 
 from ..core.services.world import get_world_config
 from .modules.auth import AuthModule
+from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
 
 
@@ -41,7 +42,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             else:
                 await self.send_error("protocol.unauthenticated")
             return
-        components = {"chat": ChatModule, "user": AuthModule}
+        components = {"chat": ChatModule, "user": AuthModule, "bbb": BBBModule}
         namespace = content[0].split(".")[0]
         component = components.get(namespace)
         if component:
