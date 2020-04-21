@@ -378,3 +378,26 @@ async def test_no_message_after_unsubscribe():
 
         with pytest.raises(asyncio.TimeoutError):
             await c2.receive_json_from()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_disconnect_is_leave():
+    async with world_communicator() as c1:
+        async with world_communicator() as c2:
+            await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+            response = await c1.receive_json_from()
+            await c1.receive_json_from()  # join notification c1
+            assert response == ["success", 123, {"state": None, "members": []}]
+            await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+            response = await c2.receive_json_from()
+            assert response[0] == "success"
+            assert response[2]["state"] is None
+            assert len(response[2]["members"]) == 1
+            assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+            await c1.receive_json_from()  # join notification c2
+            await c2.receive_json_from()  # join notification c2
+
+        response = await c1.receive_json_from()
+        assert response[0] == "chat.event"
+        assert response[1]["content"]["membership"] == "leave"

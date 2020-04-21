@@ -8,6 +8,8 @@ class ChatModule:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.channel_id = None
+        self.channels_subscribed = set()
+        self.channels_joined = set()
         self.actions = {
             "join": self.join,
             "leave": self.leave,
@@ -25,6 +27,7 @@ class ChatModule:
         return room_config
 
     async def _subscribe(self):
+        self.channels_subscribed.add(self.channel_id)
         await self.consumer.channel_layer.group_add(
             "chat.{}".format(self.channel_id), self.consumer.channel_name
         )
@@ -32,6 +35,41 @@ class ChatModule:
             "state": None,
             "members": await self.service.get_channel_users(self.channel_id),
         }
+
+    async def _unsubscribe(self):
+        try:
+            self.channels_subscribed.remove(self.channel_id)
+        except KeyError:  # pragma: no cover
+            pass
+        await self.consumer.channel_layer.group_discard(
+            f"chat.{self.channel_id}", self.consumer.channel_name
+        )
+
+    async def subscribe(self):
+        await self.get_room()
+        reply = await self._subscribe()
+        await self.consumer.send_success(reply)
+
+    async def join(self):
+        if not self.consumer.user.get("profile", {}).get("display_name"):
+            raise ConsumerException("channel.join.missing_profile")
+        await self.get_room()
+        reply = await self._subscribe()
+        self.channels_joined.add(self.channel_id)
+        await self.consumer.channel_layer.group_send(
+            f"chat.{self.channel_id}",
+            await self.service.create_event(
+                channel=self.channel_id,
+                event_type="channel.member",
+                content={
+                    "membership": "join",
+                    "user": await get_public_user(self.world, self.consumer.user["id"]),
+                },
+                sender=self.consumer.user["id"],
+            ),
+        )
+        await self.service.add_channel_user(self.channel_id, self.consumer.user["id"])
+        await self.consumer.send_success(reply)
 
     async def _leave(self):
         await self.service.remove_channel_user(
@@ -49,31 +87,10 @@ class ChatModule:
                 sender=self.consumer.user["id"],
             ),
         )
-
-    async def subscribe(self):
-        await self.get_room()
-        reply = await self._subscribe()
-        await self.consumer.send_success(reply)
-
-    async def join(self):
-        if not self.consumer.user.get("profile", {}).get("display_name"):
-            raise ConsumerException("channel.join.missing_profile")
-        await self.get_room()
-        reply = await self._subscribe()
-        await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
-            await self.service.create_event(
-                channel=self.channel_id,
-                event_type="channel.member",
-                content={
-                    "membership": "join",
-                    "user": await get_public_user(self.world, self.consumer.user["id"]),
-                },
-                sender=self.consumer.user["id"],
-            ),
-        )
-        await self.service.add_channel_user(self.channel_id, self.consumer.user["id"])
-        await self.consumer.send_success(reply)
+        try:
+            self.channels_joined.remove(self.channel_id)
+        except KeyError:  # pragma: no cover
+            pass
 
     async def leave(self):
         await self.get_room()
@@ -81,11 +98,11 @@ class ChatModule:
         await self.consumer.send_success()
 
     async def unsubscribe(self):
+        # unsubscribe is a leave if we're joined, and a simple unsubscribe otherwise
         await self.get_room()
-        await self.consumer.channel_layer.group_discard(
-            f"chat.{self.channel_id}", self.consumer.channel_name
-        )
-        await self._leave()
+        await self._unsubscribe()
+        if self.channel_id in self.channels_joined:
+            await self._leave()
         await self.consumer.send_success()
 
     async def send(self):
@@ -127,3 +144,17 @@ class ChatModule:
         self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
         self.service = ChatService(self.world)
         await self.publish_event()
+
+    async def dispatch_disconnect(self, consumer, close_code):
+        self.consumer = consumer
+        self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
+        self.service = ChatService(self.world)
+        print(self.channels_subscribed, self.channels_joined)
+
+        for channel_id in frozenset(self.channels_joined):
+            self.channel_id = channel_id
+            await self._leave()
+
+        for channel_id in frozenset(self.channels_subscribed):
+            self.channel_id = channel_id
+            await self._unsubscribe()
