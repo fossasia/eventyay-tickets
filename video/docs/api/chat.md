@@ -30,7 +30,7 @@ event announcing your join. If you want to fetch previous events, you can do so 
 a base point, you can use the ``next_event_id`` from the reply to ``chat.subscribe`` or ``chat.leave``. This is built
 in a way that if events happen *while* you join, you might see the same event *twice*, but you will not miss any events.
 
-    => ["chat.fetch", 1234, {"count": 30, "before_id": 54321}]
+    => ["chat.fetch", 1234, {"channel": "room_0", "count": 30, "before_id": 54321}]
     <- ["success", 1234, {"results": […]}]
 
 Messages can only be sent to chats that have been joined. A join action is implicitly also a subscribe action. An
