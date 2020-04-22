@@ -11,11 +11,13 @@
 					.current-talk Current talk
 					h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
+		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'")
 </template>
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
+import BigBlueButton from 'components/BigBlueButton'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 
@@ -24,7 +26,7 @@ export default {
 	props: {
 		roomId: String
 	},
-	components: { Chat, Livestream },
+	components: { BigBlueButton, Chat, Livestream },
 	data () {
 		return {
 		}
