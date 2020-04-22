@@ -10,6 +10,7 @@ from .modules.chat import ChatModule
 class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.content = {}
+        self.components = {"chat": ChatModule(), "user": AuthModule()}
         await self.accept()
         world_config = await get_world_config(
             self.scope["url_route"]["kwargs"]["world"]
@@ -19,7 +20,9 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             return
 
     async def disconnect(self, close_code):
-        pass
+        for c in self.components.values():
+            if hasattr(c, "dispatch_disconnect"):
+                await c.dispatch_disconnect(self, close_code)
 
     @property
     def user(self):
@@ -37,16 +40,15 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             return
         if "user" not in self.scope and "user" not in self.scope.get("session", {}):
             if self.content[0] == "authenticate":
-                await AuthModule().dispatch_command(self, content)
+                await self.components["user"].dispatch_command(self, content)
             else:
                 await self.send_error("protocol.unauthenticated")
             return
-        components = {"chat": ChatModule, "user": AuthModule}
         namespace = content[0].split(".")[0]
-        component = components.get(namespace)
+        component = self.components.get(namespace)
         if component:
             try:
-                await component().dispatch_command(self, content)
+                await component.dispatch_command(self, content)
             except ConsumerException as e:
                 await self.send_error(e.code, e.message)
         else:
@@ -54,7 +56,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
     async def dispatch(self, message):
         if message["type"].startswith("chat."):
-            await ChatModule().dispatch_event(self, message)
+            await self.components["chat"].dispatch_event(self, message)
         else:
             await super().dispatch(message)
 
