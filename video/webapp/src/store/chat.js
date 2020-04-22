@@ -23,6 +23,7 @@ export default {
 			state.channel = channel
 			state.hasJoined = Boolean(localStorage[`chat-channel-joined:${channel}`])
 			state.members = members
+			state.membersLookup = members.reduce((acc, member) => { acc[member.id] = member; return acc }, {})
 			state.timeline = []
 			state.beforeCursor = beforeCursor
 			dispatch('fetchMessages')
@@ -77,7 +78,7 @@ export default {
 						if (index >= 0) {
 							state.members.splice(index, 1)
 						}
-						Vue.remove(state.membersLookup, event.content.user.id)
+						Vue.delete(state.membersLookup, event.content.user.id)
 						break
 					}
 				}

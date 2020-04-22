@@ -77,6 +77,29 @@
           }
         }
       ]
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "description": "Standalone Chat",
+      "picture": "https://via.placeholder.com/150",
+      "access": [
+        {
+          "level": "viewer",
+          "required_traits": []
+        },
+        {
+          "level": "moderator",
+          "required_traits": ["moderator_plenum"]
+        }
+      ],
+      "modules": [
+        {
+          "type": "chat.native",
+          "config": {
+          }
+        }
+      ]
     }
   ]
 }

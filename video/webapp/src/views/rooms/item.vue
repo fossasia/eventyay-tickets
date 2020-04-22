@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-room
+.c-room(:class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
 	.main
 		.room-info
 			img(v-if="room.picture", :src="room.picture")
@@ -11,7 +11,7 @@
 					.current-talk Current talk
 					h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
-	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']")
+	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -100,8 +100,13 @@ export default {
 				font-weight: 500
 				line-height: 20px
 				margin: 0 0 0 4px
-	.c-chat
-		border-left: border-separator()
-		flex: none
-		width: 380px
+	&.standalone-chat
+		flex-direction: column
+		.main
+			flex: none
+	&:not(.standalone-chat)
+		.c-chat
+			border-left: border-separator()
+			flex: none
+			width: 380px
 </style>

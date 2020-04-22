@@ -1,18 +1,23 @@
 <template lang="pug">
-.c-chat
+.c-chat(:class="[mode]")
 	template(v-if="channel")
 		.timeline
-			chat-message(v-for="message of filteredTimeline", :message="message", :key="message.event_id")
+			chat-message(v-for="message of filteredTimeline", :message="message", :mode="mode", :key="message.event_id")
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
 			bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
+		.user-list
+			.user(v-for="user of members")
+				avatar(:user="user", :size="28")
+				span.display-name {{ user ? user.profile.display_name : this.message.sender }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import { mapState } from 'vuex'
 import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
+import Avatar from 'components/Avatar'
 
 export default {
 	props: {
@@ -23,9 +28,13 @@ export default {
 		module: {
 			type: Object,
 			required: true
+		},
+		mode: {
+			type: String, // 'standalone', 'compact'
+			default: 'compact'
 		}
 	},
-	components: { ChatMessage, InfiniteScroll },
+	components: { ChatMessage, Avatar, InfiniteScroll },
 	data () {
 		return {
 			composingMessage: ''
@@ -84,4 +93,25 @@ export default {
 			flex: none
 			padding: 0
 			width: calc(100% - 32px)
+	&.standalone
+		display: grid
+		grid-template-rows: auto 64px
+		grid-template-columns: auto 240px
+		grid-template-areas: "timeline sidebar" \
+			"input input"
+
+		.timeline
+			grid-area: timeline
+		.chat-input
+			grid-area: input
+		.user-list
+			grid-area: sidebar
+			padding: 0 16px
+			.user
+				display: flex
+				align-items: center
+				.display-name
+					font-weight: 600
+					color: $clr-secondary-text-light
+					margin-left: 8px
 </style>

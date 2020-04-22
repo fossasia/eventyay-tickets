@@ -1,21 +1,29 @@
 <template lang="pug">
-.c-chat-message
-	img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
-	identicon(v-else, :id="identicon")
-	.content-wrapper
-		span.display-name {{ user ? user.profile.display_name : this.message.sender }}
+.c-chat-message(:class="[mode]")
+	avatar(:user="user", :size="mode === 'standalone' ? 36 : 28")
+	.content-wrapper(v-if="mode === 'standalone'")
+		.message-header
+			.display-name {{ user.profile ? user.profile.display_name : this.message.sender }}
+			.timestamp {{ timestamp }}
+		.content {{ message.content.body }}
+	.content-wrapper(v-else)
+		span.display-name {{ user.profile ? user.profile.display_name : this.message.sender }}
 		span.content {{ message.content.body }}
 </template>
 <script>
+import moment from 'moment'
 import { mapState } from 'vuex'
-import Identicon from 'components/Identicon'
-import { getAvatarUrl } from 'lib/gravatar'
+import Avatar from 'components/Avatar'
+
+const DATETIME_FORMAT = 'dd.MM. HH:mm'
+const TIME_FORMAT = 'HH:mm'
 
 export default {
 	props: {
-		message: Object
+		message: Object,
+		mode: String
 	},
-	components: { Identicon },
+	components: { Avatar },
 	data () {
 		return {
 		}
@@ -23,14 +31,15 @@ export default {
 	computed: {
 		...mapState('chat', ['membersLookup']),
 		user () {
-			return this.membersLookup[this.message.sender]
+			return this.membersLookup[this.message.sender] || {id: this.message.sender}
 		},
-		gravatarAvatarUrl () {
-			if (!this.user?.profile?.gravatar_hash) return
-			return getAvatarUrl(this.user.profile.gravatar_hash, 28)
-		},
-		identicon () {
-			return this.user?.profile?.identicon ?? this.user?.id ?? this.message.sender
+		timestamp () {
+			const timestamp = moment(this.message.timestamp)
+			if (timestamp.isSame(moment(), 'day')) {
+				return timestamp.format(TIME_FORMAT)
+			} else {
+				return timestamp.format(DATETIME_FORMAT)
+			}
 		}
 	}
 }
@@ -40,13 +49,22 @@ export default {
 	display: flex
 	align-items: flex-start
 	padding: 4px 8px
-	.gravatar-avatar, .c-identicon
-		width: 28px
-		margin-right: 8px
 	.content-wrapper
+		margin-left: 8px
 		padding-top: 6px // ???
 	.display-name
 		font-weight: 600
-		color: $clr-secondary-text-light
+		// color: $clr-secondary-text-light
 		margin-right: 4px
+	&.standalone
+		.content-wrapper
+			padding-top: 4px
+			display: flex
+			flex-direction: column
+		.message-header
+			display: flex
+			align-items: baseline
+			.timestamp
+				font-size: 11px
+				color: $clr-secondary-text-light
 </style>
