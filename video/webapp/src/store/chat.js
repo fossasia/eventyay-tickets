@@ -8,7 +8,9 @@ export default {
 		hasJoined: false,
 		members: [],
 		membersLookup: {},
-		timeline: []
+		timeline: [],
+		beforeCursor: null,
+		fetchingMessages: false
 	},
 	getters: {},
 	mutations: {},
@@ -17,11 +19,13 @@ export default {
 			if (state.channel) {
 				dispatch('unsubscribe')
 			}
-			const {members} = await api.call('chat.subscribe', {channel})
+			const { next_event_id: beforeCursor, members } = await api.call('chat.subscribe', {channel})
 			state.channel = channel
 			state.hasJoined = Boolean(localStorage[`chat-channel-joined:${channel}`])
 			state.members = members
 			state.timeline = []
+			state.beforeCursor = beforeCursor
+			dispatch('fetchMessages')
 			if (state.hasJoined) {
 				dispatch('join')
 			}
@@ -38,6 +42,15 @@ export default {
 			state.hasJoined = true
 			localStorage[`chat-channel-joined:${state.channel}`] = true
 		},
+		async fetchMessages ({state}) {
+			if (!state.beforeCursor || state.fetchingMessages) return
+			state.fetchingMessages = true
+			const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+			state.timeline.unshift(...results)
+			// assume past events don't just appear and stop forever when results are smaller than count
+			state.beforeCursor = results.length < 25 ? null : results[0].event_id
+			state.fetchingMessages = false
+		},
 		sendMessage ({state}, {text}) {
 			api.call('chat.send', {
 				channel: state.channel,
@@ -52,6 +65,7 @@ export default {
 		'api::chat.event' ({state}, event) {
 			const handleMembership = (event) => {
 				switch (event.content.membership) {
+					// TODO push to timeline
 					case 'join': {
 						state.members.push(event.content.user)
 						Vue.set(state.membersLookup, event.content.user.id, event.content.user)

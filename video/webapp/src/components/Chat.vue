@@ -2,7 +2,8 @@
 .c-chat
 	template(v-if="channel")
 		.timeline
-			chat-message(v-for="message of timeline", :message="message")
+			chat-message(v-for="message of filteredTimeline", :message="message", :key="message.event_id")
+			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
 			bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
@@ -11,6 +12,7 @@
 <script>
 import { mapState } from 'vuex'
 import ChatMessage from './ChatMessage'
+import InfiniteScroll from './InfiniteScroll'
 
 export default {
 	props: {
@@ -23,21 +25,20 @@ export default {
 			required: true
 		}
 	},
-	components: { ChatMessage },
+	components: { ChatMessage, InfiniteScroll },
 	data () {
 		return {
 			composingMessage: ''
 		}
 	},
 	computed: {
-		...mapState('chat', ['channel', 'hasJoined', 'members', 'timeline']),
+		...mapState('chat', ['channel', 'hasJoined', 'members', 'timeline', 'fetchingMessages']),
+		filteredTimeline () {
+			return this.timeline.filter(message => message.event_type === 'channel.message').reverse()
+		}
 	},
 	created () {
 		this.$store.dispatch('chat/subscribe', this.room.id)
-	},
-	mounted () {
-		this.$nextTick(() => {
-		})
 	},
 	destroyed () {
 		this.$store.dispatch('chat/unsubscribe')
@@ -61,13 +62,15 @@ export default {
 	flex-direction: column
 	.timeline
 		flex: auto
-		margin: 8px 0
+		padding: 8px 0
 		display: flex
-		flex-direction: column
-		justify-content: flex-end
+		flex-direction: column-reverse
+		justify-content: flex-start
+		overflow-y: scroll
 		.message
 			padding-top: 8px
 	.chat-input
+		flex: none
 		border-top: border-separator()
 		height: 64px
 		display: flex
