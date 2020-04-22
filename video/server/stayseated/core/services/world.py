@@ -27,6 +27,10 @@ async def get_world_config_for_user(world_id, user):
     # TODO: Remove any rooms the user should not see
 
     world["world"].pop("JWT_secrets", None)
+    for r in world["rooms"]:
+        for m in r["modules"]:
+            if m["type"] == "call.bigbluebutton":
+                m["config"] = {}
     return world
 
 

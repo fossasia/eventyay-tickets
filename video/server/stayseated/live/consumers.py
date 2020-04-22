@@ -4,13 +4,14 @@ from stayseated.live.exceptions import ConsumerException
 
 from ..core.services.world import get_world_config
 from .modules.auth import AuthModule
+from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
 
 
 class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.content = {}
-        self.components = {"chat": ChatModule(), "user": AuthModule()}
+        self.components = {"chat": ChatModule, "user": AuthModule, "bbb": BBBModule}
         await self.accept()
         world_config = await get_world_config(
             self.scope["url_route"]["kwargs"]["world"]

@@ -71,7 +71,9 @@
         {
           "type": "call.bigbluebutton",
           "config": {
-            "bbb_join_url": "https://s1.live.pretix.eu/test/index.m3u8"
+            "url": "https://video1.pretix.eu/bigbluebutton/",
+            "record": false,
+            "secret": "bogussecret"
           }
         }
       ]
