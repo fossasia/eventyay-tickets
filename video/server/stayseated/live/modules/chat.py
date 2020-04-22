@@ -16,6 +16,7 @@ class ChatModule:
             "join": self.join,
             "leave": self.leave,
             "send": self.send,
+            "fetch": self.fetch,
             "subscribe": self.subscribe,
             "unsubscribe": self.unsubscribe,
         }
@@ -35,6 +36,7 @@ class ChatModule:
         )
         return {
             "state": None,
+            "next_event_id": (await self.service.get_last_id()) + 1,
             "members": await self.service.get_channel_users(self.channel_id),
         }
 
@@ -104,6 +106,16 @@ class ChatModule:
         if self.channel_id in self.channels_joined:
             await self._leave()
         await self.consumer.send_success()
+
+    async def fetch(self):
+        await self.get_room()
+        count = self.content[2]["count"]
+        before_id = self.content[2]["before_id"]
+        events = await self.service.get_events(
+            self.channel_id, before_id=before_id, count=count
+        )
+        # TODO: Filter if user is allowed to see
+        await self.consumer.send_success({"results": events})
 
     async def send(self):
         await self.get_room()

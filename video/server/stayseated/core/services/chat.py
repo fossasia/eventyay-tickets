@@ -32,6 +32,13 @@ class ChatService:
             await redis.srem(f"channel:{channel}:userset", uid)
 
     @database_sync_to_async
+    def get_events(self, channel, before_id, count=50):
+        events = ChatEvent.objects.filter(
+            id__lt=before_id, world_id=self.world_id, channel=channel,
+        ).order_by("-id")[: min(count, 1000)]
+        return ChatEventSerializer(reversed(list(events)), many=True).data
+
+    @database_sync_to_async
     def _store_event(self, channel, id, event_type, content, sender):
         ce = ChatEvent.objects.create(
             id=id,
@@ -46,6 +53,13 @@ class ChatService:
     @database_sync_to_async
     def _get_highest_id(self):
         return ChatEvent.objects.aggregate(m=Max("id"))["m"] or 0
+
+    async def get_last_id(self):
+        async with aioredis() as redis:
+            rval = await redis.get("chat.event_id", encoding="utf-8")
+            if rval:
+                return int(rval)
+            return 0
 
     async def create_event(self, channel, event_type, content, sender, _retry=False):
         async with aioredis() as redis:
