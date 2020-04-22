@@ -79,13 +79,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
         + os.getenv(
-            "STAYSEATED_DB_TYPE", config.get("database", "backend", fallback="sqlite3")
+            "STAYSEATED_DB_TYPE",
+            config.get("database", "backend", fallback="postgresql"),
         ),
         "NAME": os.getenv(
-            "STAYSEATED_DB_NAME", config.get("database", "name", fallback="db.sqlite3")
+            "STAYSEATED_DB_NAME", config.get("database", "name", fallback="stayseated")
         ),
         "USER": os.getenv(
-            "STAYSEATED_DB_USER", config.get("database", "user", fallback="")
+            "STAYSEATED_DB_USER", config.get("database", "user", fallback="stayseated")
         ),
         "PASSWORD": os.getenv(
             "STAYSEATED_DB_PASS", config.get("database", "password", fallback="")
