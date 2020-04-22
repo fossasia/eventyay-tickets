@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from stayseated.core.services.chat import ChatService
 from stayseated.core.services.user import get_public_user
 from stayseated.core.services.world import get_room_config
@@ -37,10 +39,8 @@ class ChatModule:
         }
 
     async def _unsubscribe(self):
-        try:
+        with suppress(KeyError):
             self.channels_subscribed.remove(self.channel_id)
-        except KeyError:  # pragma: no cover
-            pass
         await self.consumer.channel_layer.group_discard(
             f"chat.{self.channel_id}", self.consumer.channel_name
         )
@@ -149,7 +149,6 @@ class ChatModule:
         self.consumer = consumer
         self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
         self.service = ChatService(self.world)
-        print(self.channels_subscribed, self.channels_joined)
 
         for channel_id in frozenset(self.channels_joined):
             self.channel_id = channel_id
