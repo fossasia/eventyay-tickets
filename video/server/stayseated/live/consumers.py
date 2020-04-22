@@ -11,7 +11,11 @@ from .modules.chat import ChatModule
 class MainConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.content = {}
-        self.components = {"chat": ChatModule, "user": AuthModule, "bbb": BBBModule}
+        self.components = {
+            "chat": ChatModule(),
+            "user": AuthModule(),
+            "bbb": BBBModule(),
+        }
         await self.accept()
         world_config = await get_world_config(
             self.scope["url_route"]["kwargs"]["world"]

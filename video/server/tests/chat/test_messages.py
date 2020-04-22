@@ -500,7 +500,11 @@ async def test_disconnect_is_leave():
             await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
             response = await c1.receive_json_from()
             await c1.receive_json_from()  # join notification c1
-            assert response == ["success", 123, {"state": None, "members": []}]
+            assert response == [
+                "success",
+                123,
+                {"state": None, "members": [], "next_event_id": 1},
+            ]
             await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
             response = await c2.receive_json_from()
             assert response[0] == "success"
