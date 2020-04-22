@@ -2,12 +2,14 @@
 .c-room
 	.main
 		.room-info
-			img(:src="room.picture")
-			.room-info-text
-				h2 {{ room.name }}
-				.description {{ room.description }}
-			.talk-info(v-if="currentTalk")
-				h3 {{ currentTalk.title }}
+			img(v-if="room.picture", :src="room.picture")
+			.room-info-wrapper
+				.room-info-text
+					h2 {{ room.name }}
+					.description {{ room.description }}
+				.talk-info(v-if="currentTalk")
+					.current-talk Current talk
+					h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']")
 </template>
@@ -73,8 +75,31 @@ export default {
 		flex: none
 		display: flex
 		padding: 16px 16px
-		.room-info-text
+		img
+			height: 96px
+		.room-info-wrapper
+			display: flex
+			flex-direction: column
 			margin-left: 16px
+		.room-info-text
+			display: flex
+			align-items: center
+			h2
+				margin: 0 8px 0 0
+		.talk-info
+			display: flex
+			align-items: center
+			.current-talk
+				text-transform: uppercase
+				color: $clr-secondary-text-light
+				font-size: 18px
+				font-weight: 300
+				line-height: 20px
+			h3
+				font-size: 20px
+				font-weight: 500
+				line-height: 20px
+				margin: 0 0 0 4px
 	.c-chat
 		border-left: border-separator()
 		flex: none
