@@ -1,9 +1,9 @@
 <template lang="pug">
 .c-chat-message
 	img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
-	identicon(v-else, :id="identicon || user.id")
+	identicon(v-else, :id="identicon")
 	.content-wrapper
-		span.display-name {{ user.profile.display_name }}
+		span.display-name {{ user ? user.profile.display_name : this.message.sender }}
 		span.content {{ message.content.body }}
 </template>
 <script>
@@ -26,11 +26,11 @@ export default {
 			return this.membersLookup[this.message.sender]
 		},
 		gravatarAvatarUrl () {
-			if (!this.user.profile?.gravatar_hash) return
+			if (!this.user?.profile?.gravatar_hash) return
 			return getAvatarUrl(this.user.profile.gravatar_hash, 28)
 		},
 		identicon () {
-			return this.user.profile?.identicon || this.user.id
+			return this.user?.profile?.identicon ?? this.user?.id ?? this.message.sender
 		}
 	}
 }
