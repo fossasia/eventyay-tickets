@@ -58,6 +58,13 @@ ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TL
 )
 TLD_REGEX = bleach.linkifier.build_url_re(tlds=ALLOWED_TLDS)
 LINKIFIER = bleach.linkifier.Linker(url_re=TLD_REGEX, parse_email=True)
+md = markdown.Markdown(
+    extensions=[
+        "markdown.extensions.nl2br",
+        "markdown.extensions.sane_lists",
+        "markdown.extensions.tables",
+    ],
+)
 
 
 @register.filter
@@ -67,14 +74,7 @@ def rich_text(text: str):
         return ""
     body_md = LINKIFIER.linkify(
         bleach.clean(
-            markdown.markdown(
-                str(text),
-                extensions=[
-                    "markdown.extensions.nl2br",
-                    "markdown.extensions.sane_lists",
-                    "markdown.extensions.tables",
-                ],
-            ),
+            md.reset().convert(str(text)),
             tags=ALLOWED_TAGS,
             attributes=ALLOWED_ATTRIBUTES,
             protocols=ALLOWED_PROTOCOLS,
