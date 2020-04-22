@@ -7,7 +7,7 @@
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
 			bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
-		.user-list
+		.user-list(v-if="mode === 'standalone'")
 			.user(v-for="user of members")
 				avatar(:user="user", :size="28")
 				span.display-name {{ user ? user.profile.display_name : this.message.sender }}
@@ -99,7 +99,7 @@ export default {
 		grid-template-columns: auto 240px
 		grid-template-areas: "timeline sidebar" \
 			"input input"
-
+		min-height: 0
 		.timeline
 			grid-area: timeline
 		.chat-input
