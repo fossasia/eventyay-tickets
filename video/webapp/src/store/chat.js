@@ -66,7 +66,6 @@ export default {
 		'api::chat.event' ({state}, event) {
 			const handleMembership = (event) => {
 				switch (event.content.membership) {
-					// TODO push to timeline
 					case 'join': {
 						state.members.push(event.content.user)
 						Vue.set(state.membersLookup, event.content.user.id, event.content.user)
@@ -83,8 +82,9 @@ export default {
 					}
 				}
 			}
+			state.timeline.push(event)
 			switch (event.event_type) {
-				case 'channel.message': state.timeline.push(event); break
+				case 'channel.message': break
 				case 'channel.member': handleMembership(event); break
 			}
 		}

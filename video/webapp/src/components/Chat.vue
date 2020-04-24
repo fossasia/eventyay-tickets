@@ -2,7 +2,11 @@
 .c-chat(:class="[mode]")
 	template(v-if="channel")
 		.timeline
-			chat-message(v-for="message of filteredTimeline", :message="message", :mode="mode", :key="message.event_id")
+			template(v-for="message of filteredTimeline")
+				chat-message(v-if="message.event_type === 'channel.message'", :message="message", :mode="mode", :key="message.event_id")
+				.system-message(v-else)
+					template(v-if="message.event_type === 'channel.member'")
+						| {{ membersLookup[message.content.user.id] ? membersLookup[message.content.user.id].profile.display_name : message.content.user.profile.display_name }} {{ message.content.membership === 'join' ? 'joined' : 'left' }}
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
@@ -41,8 +45,9 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('chat', ['channel', 'hasJoined', 'members', 'timeline', 'fetchingMessages']),
+		...mapState('chat', ['channel', 'hasJoined', 'members', 'membersLookup', 'timeline', 'fetchingMessages']),
 		filteredTimeline () {
+			if (this.mode === 'standalone') return this.timeline.slice().reverse()
 			return this.timeline.filter(message => message.event_type === 'channel.message').reverse()
 		}
 	},
@@ -78,6 +83,9 @@ export default {
 		overflow-y: scroll
 		.message
 			padding-top: 8px
+		.system-message
+			color: $clr-secondary-text-light
+			padding: 4px 32px
 	.chat-input
 		flex: none
 		border-top: border-separator()
