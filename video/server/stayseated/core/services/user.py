@@ -31,6 +31,8 @@ def get_user_by_client_id(world_id, client_id):
 
 async def get_public_user(world_id, id):
     user = await get_user_by_id(world_id, id)
+    if not user:
+        return None
     return PublicUserSerializer().to_representation(user)
 
 

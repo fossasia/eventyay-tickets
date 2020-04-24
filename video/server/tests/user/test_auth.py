@@ -1,4 +1,5 @@
 import datetime
+import uuid
 from contextlib import asynccontextmanager
 
 import jwt
@@ -201,3 +202,35 @@ async def test_auth_with_jwt_token_twice():
             "chat.read",
             "foo.bar",
         ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_fetch_user():
+    async with world_communicator() as c, world_communicator() as c2:
+        await c.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(response[1].keys()) == {"world.config", "user.config"}
+        user_id = response[1]["user.config"]["id"]
+
+        await c.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": "Cool User"}}]
+        )
+        response = await c.receive_json_from()
+        assert response == ["success", 123, {}], response
+
+        await c2.send_json_to(["authenticate", {"client_id": "5"}])
+        await c2.receive_json_from()
+
+        await c2.send_json_to(["user.fetch", 14, {"id": user_id}])
+        response = await c2.receive_json_from()
+        assert response == [
+            "success",
+            14,
+            {"id": user_id, "profile": {"display_name": "Cool User"}},
+        ]
+
+        await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])
+        response = await c2.receive_json_from()
+        assert response == ["error", 14, {"code": "user.not_found"}]

@@ -18,3 +18,12 @@ Send JWT token, receive everything that's already known about the user.
 => ["user.update", 123, {whatever}]
 <- ["success", 123, {}]
 ```
+
+## Receiving info on another user
+
+```
+=> ["user.fetch", 123, {"id": "1234"}]
+<- ["success", 123, {"id": "1234", "profile": {…}}]
+```
+
+If the user is unknown, error code ``user.not_found`` is returned.

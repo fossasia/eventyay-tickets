@@ -1,6 +1,6 @@
 from channels.db import database_sync_to_async
 
-from stayseated.core.services.user import get_user, update_user
+from stayseated.core.services.user import get_public_user, get_user, update_user
 from stayseated.core.services.world import get_world_config_for_user
 from stayseated.core.utils.jwt import decode_token
 
@@ -46,5 +46,14 @@ class AuthModule:
             await self.login()
         elif content[0] == "user.update":
             await self.update()
+        elif content[0] == "user.fetch":
+            await self.fetch(content[2].get("id"))
         else:
             await self.consumer.send_error(code="user.unknown_command")
+
+    async def fetch(self, id):
+        user = await get_public_user(self.world, id,)
+        if user:
+            await self.consumer.send_success(user)
+        else:
+            await self.consumer.send_error(code="user.not_found")
