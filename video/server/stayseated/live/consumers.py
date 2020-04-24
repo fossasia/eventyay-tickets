@@ -1,3 +1,5 @@
+import uuid
+
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from stayseated.live.exceptions import ConsumerException
@@ -16,6 +18,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "user": AuthModule(),
             "bbb": BBBModule(),
         }
+        self.user = None
+        self.socket_id = str(uuid.uuid4())
         await self.accept()
         world_config = await get_world_config(
             self.scope["url_route"]["kwargs"]["world"]
@@ -29,13 +33,19 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             if hasattr(c, "dispatch_disconnect"):
                 await c.dispatch_disconnect(self, close_code)
 
-    @property
-    def user(self):
-        return self.scope.get("session", {}).get("user", {})
-
-    @user.setter
-    def user(self, value):
-        self.scope["session"]["user"] = value
+    async def user_broadcast(self, event_type, data):
+        """
+        Broadcast a message to other clients of the same user.
+        """
+        await self.channel_layer.group_send(
+            f"user.{self.user['id']}",
+            {
+                "type": "user.broadcast",
+                "event_type": event_type,
+                "data": data,
+                "socket": self.socket_id,
+            },
+        )
 
     # Receive message from WebSocket
     async def receive_json(self, content, **kargs):
@@ -43,7 +53,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
             return
-        if "user" not in self.scope and "user" not in self.scope.get("session", {}):
+        if not self.user:
             if self.content[0] == "authenticate":
                 await self.components["user"].dispatch_command(self, content)
             else:
@@ -60,7 +70,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_error("protocol.unknown_command")
 
     async def dispatch(self, message):
-        if message["type"].startswith("chat."):
+        if message["type"] == "user.broadcast":
+            if self.socket_id != message["socket"]:
+                await self.send_json([message["event_type"], message["data"]])
+        elif message["type"].startswith("chat."):
             await self.components["chat"].dispatch_event(self, message)
         else:
             await super().dispatch(message)

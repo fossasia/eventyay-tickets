@@ -28,7 +28,11 @@ async def test_auth_with_client_id():
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
 
 
 @pytest.mark.asyncio
@@ -70,10 +74,14 @@ async def test_auth_with_jwt_token(index):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert not response[1]["world.config"][
             "permissions"
         ]  # default users don't have permissions
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
 
 
 @pytest.mark.asyncio
@@ -103,12 +111,20 @@ async def test_auth_with_invalid_jwt_token():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_update_user():
-    async with world_communicator() as c, world_communicator() as c2:
+    async with world_communicator() as c, world_communicator() as c2, world_communicator() as c3:
         await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        await c2.send_json_to(["authenticate", {"client_id": "4"}])
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         user_id = response[1]["user.config"]["id"]
+
+        response = await c2.receive_json_from()
+        assert response[0] == "authenticated"
 
         await c.send_json_to(
             ["user.update", 123, {"profile": {"display_name": "Cool User"}}]
@@ -116,10 +132,20 @@ async def test_update_user():
         response = await c.receive_json_from()
         assert response == ["success", 123, {}], response
 
-        await c2.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c2.receive_json_from()
+        assert response == [
+            "user.updated",
+            {"profile": {"display_name": "Cool User"}, "id": user_id},
+        ]
+
+        await c3.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c3.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
 
@@ -158,7 +184,11 @@ async def test_auth_with_jwt_token_update_traits():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -167,7 +197,11 @@ async def test_auth_with_jwt_token_update_traits():
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == ["chat.read"]
 
 
@@ -191,7 +225,11 @@ async def test_auth_with_jwt_token_twice():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -200,7 +238,11 @@ async def test_auth_with_jwt_token_twice():
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -214,7 +256,11 @@ async def test_fetch_user():
         await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         user_id = response[1]["user.config"]["id"]
 
         await c.send_json_to(
@@ -259,7 +305,11 @@ async def test_auth_with_jwt_token_and_permission_traits():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert response[1]["world.config"]["permissions"] == [
             "world.update",
             "world.announce",

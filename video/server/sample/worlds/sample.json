@@ -57,6 +57,7 @@
         {
           "type": "chat.native",
           "config": {
+            "volatile": true
           }
         }
       ]
@@ -106,6 +107,7 @@
         {
           "type": "chat.native",
           "config": {
+            "volatile": false
           }
         }
       ]

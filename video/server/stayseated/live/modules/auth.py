@@ -1,9 +1,14 @@
+import logging
+
 from channels.db import database_sync_to_async
 
 from stayseated.core.serializers.auth import PublicUserSerializer
+from stayseated.core.services.chat import ChatService
 from stayseated.core.services.user import get_public_user, get_user, update_user
 from stayseated.core.services.world import get_world_config_for_user
 from stayseated.core.utils.jwt import decode_token
+
+logger = logging.getLogger(__name__)
 
 
 class AuthModule:
@@ -28,8 +33,16 @@ class AuthModule:
                 {
                     "user.config": self.consumer.user,
                     "world.config": await get_world_config_for_user(self.world, user),
+                    "chat.channels": await ChatService(
+                        self.world
+                    ).get_channels_for_user(
+                        self.consumer.user["id"], is_volatile=False
+                    ),
                 },
             ]
+        )
+        await self.consumer.channel_layer.group_add(
+            f"user.{self.consumer.user['id']}", self.consumer.channel_name
         )
 
     async def update(self):
@@ -38,6 +51,9 @@ class AuthModule:
         )
         self.consumer.user = new_data
         await self.consumer.send_success()
+        await self.consumer.user_broadcast(
+            "user.updated", await get_public_user(self.world, self.consumer.user["id"])
+        )
 
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer
@@ -58,3 +74,10 @@ class AuthModule:
             await self.consumer.send_success(user)
         else:
             await self.consumer.send_error(code="user.not_found")
+
+    async def dispatch_disconnect(self, consumer, close_code):
+        self.consumer = consumer
+        if self.consumer.user:
+            await self.consumer.channel_layer.group_discard(
+                f"user.{self.consumer.user['id']}", self.consumer.channel_name
+            )

@@ -1,24 +1,56 @@
 # Chat module
 
-## Message flow
+## Membership and subscription
 
-To join the chat for a room, a client can push a message like this:
+There's two concepts that need to be viewed separately:
+
+* **Membership** is an relationship between an **user** and a channel. Membership of a channel is publicly visible.
+
+* **Subscription** is an relationship between a **client** and a channel. Subscription is not publicly visible.
+
+You can be a member without being subscribed, for example when you joined a chat room and then closed your browser.
+You can also be subscribed without being a member, for example when reading a public chat without actively
+participating.
+
+In some channels, membership is **volatile**. This means that members automatically *leave* the channel if they no
+ longer have any subscribed clients.
+
+Every user can either be a member of a channel or not, while a user can have multiple subscriptions to a channel, e.g.
+if they use the application in multiple browser tabs.
+
+To become a member, a client can push a **join** message:
 
     => ["chat.join", 1234, {"channel": "room_0"}]
     <- ["success", 1234, {"state": {…}, "next_event_id": 54321, "members": []}]
 
 A join means that the user and their chosen `profile` will be visible to other users.
+Messages can only be sent to chats that have been joined. A join action is **implicitly also a subscribe** action.
+Joins are idempotent, joining a channel that the user is already part of will not return an error.
+
+After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients for
+ synchronization:
+
+    <= ["chat.channels", {"channels": ["room_0"]}]
+
 The room can be left the same way:
 
     => ["chat.leave", 1234, {"channel": "room_0"}]
     <- ["success", 1234, {}]
 
-Separate from joining, a chat can also be subscribed and unsubscribed.
+The leave action is **implicitly also an unsubscribe** action. 
+
+If you don't want to join or leave, you can explicitly subscribe and unsubscribe:
 
     => ["chat.subscribe", 1234, {"channel": "room_0"}]
     <- ["success", 1234, {"state": {…}, "next_event_id": 54321, "members": []}]
     => ["chat.unsubscribe", 1234, {"channel": "room_0"}]
     <- ["success", 1234, {}]
+
+If you close the websocket, an unsubscribe will be performed automatically.
+
+
+
+## Events
 
 Everything that happens within chat, is an *event*. For example, if a user sends a message, you will receive an event
 like this:
@@ -33,9 +65,6 @@ in a way that if events happen *while* you join, you might see the same event *t
     => ["chat.fetch", 1234, {"channel": "room_0", "count": 30, "before_id": 54321}]
     <- ["success", 1234, {"results": […]}]
 
-Messages can only be sent to chats that have been joined. A join action is implicitly also a subscribe action. An
-unsubscribe action is implicitly also a leave action.
-
 To send a simple text message:
 
     => ["chat.send", 1234, {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}}]
@@ -43,7 +72,7 @@ To send a simple text message:
 
 All clients in the room, including the client who sent the message itself, will get a broadcast (see above).
 
-## Event types
+### Event types
 
 The only relevant data structure in the chat are "events", that are being passed back and forth between client and
 server. All events have the following properties (plus additional ones depending on event type):
@@ -59,7 +88,7 @@ Currently, the following types of events are defined:
 - ``channel.member``
 
 
-### ``channel.message``
+#### ``channel.message``
 
 Event type ``channel.message`` represents a message sent from a user to the chat room. It has the following properties
 inside the ``content`` property:
@@ -71,7 +100,7 @@ Currently, the following types are defined:
 
 * ``text``: A plain text message. ``body`` is a string with the message.
 
-### ``channel.member``
+#### ``channel.member``
 
 This message type is used:
 

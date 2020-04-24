@@ -1,8 +1,9 @@
 from channels.db import database_sync_to_async
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import Max
 
-from ..models import ChatEvent
+from ..models import ChatEvent, User
+from ..models.chat import Membership
 from ..serializers.chat import ChatEventSerializer
 from ..utils.redis import aioredis
 from .user import get_public_users, get_user_by_id
@@ -12,24 +13,67 @@ class ChatService:
     def __init__(self, world_id):
         self.world_id = world_id
 
-    async def get_channel_uids(self, channel):
-        async with aioredis() as redis:
-            return [
-                u.decode() for u in await redis.smembers(f"channel:{channel}:userset")
-            ]
+    @database_sync_to_async
+    def get_channels_for_user(self, user_id, is_volatile=None):
+        qs = Membership.objects.filter(world_id=self.world_id, user_id=user_id,)
+        if is_volatile is not None:  # pragma: no cover
+            qs = qs.filter(volatile=is_volatile)
+        return list(qs.values_list("channel", flat=True))
 
     async def get_channel_users(self, channel):
-        uids = await self.get_channel_uids(channel)
-        users = await get_public_users(ids=uids, world_id=self.world_id)
+        users = await get_public_users(
+            # We're doing an ORM query in an async method, but it's okay, since it is not going to be evaluated but
+            # lazily passed to get_public_users which will use it as a subquery :)
+            ids=Membership.objects.filter(
+                world_id=self.world_id, channel=channel
+            ).values_list("user_id", flat=True),
+            world_id=self.world_id,
+        )
         return users
 
-    async def add_channel_user(self, channel, uid):
+    async def track_subscription(self, channel, uid, socket_id):
         async with aioredis() as redis:
-            await redis.sadd(f"channel:{channel}:userset", uid)
+            await redis.sadd(f"chat:subscriptions:{uid}:{channel}", socket_id)
 
-    async def remove_channel_user(self, channel, uid):
+    async def track_unsubscription(self, channel, uid, socket_id):
         async with aioredis() as redis:
-            await redis.srem(f"channel:{channel}:userset", uid)
+            await redis.srem(f"chat:subscriptions:{uid}:{channel}", socket_id)
+            return await redis.scard(f"chat:subscriptions:{uid}:{channel}")
+
+    @database_sync_to_async
+    def membership_is_volatile(self, channel, uid):
+        try:
+            m = Membership.objects.get(
+                world_id=self.world_id, channel=channel, user_id=uid,
+            )
+            return m.volatile
+        except Membership.DoesNotExist:  # pragma: no cover
+            return False
+
+    @database_sync_to_async
+    def add_channel_user(self, channel, uid, volatile):
+        try:
+            with transaction.atomic():
+                m, created = Membership.objects.get_or_create(
+                    world_id=self.world_id,
+                    channel=channel,
+                    user=User.objects.get(id=uid, world_id=self.world_id),
+                    defaults={"volatile": volatile},
+                )
+                if not created and m.volatile and not volatile:
+                    m.volatile = False
+                    m.save(update_fields=["volatile"])
+                return created
+        except User.DoesNotExist:  # pragma: no cover
+            # Currently, users are undeletable, so this should be a pretty impossible code path. Anyway, if it happens,
+            # there is probably no harm in ignoring it.
+            return False
+
+    @database_sync_to_async
+    def remove_channel_user(self, channel, uid):
+        Membership.objects.filter(
+            world_id=self.world_id, channel=channel, user_id=uid,
+        ).delete()
 
     @database_sync_to_async
     def get_events(self, channel, before_id, count=50):
