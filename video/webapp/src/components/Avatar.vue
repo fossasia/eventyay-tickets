@@ -16,7 +16,7 @@ export default {
 	computed: {
 		gravatarAvatarUrl () {
 			if (!this.user.profile?.gravatar_hash) return
-			return getAvatarUrl(this.user.profile.gravatar_hash, 28)
+			return getAvatarUrl(this.user.profile.gravatar_hash, this.size)
 		},
 		identicon () {
 			return this.user.profile?.identicon ?? this.user.id
@@ -32,6 +32,10 @@ export default {
 </script>
 <style lang="stylus">
 .c-avatar
+	display: flex
 	.gravatar-avatar, .c-identicon
 		width: var(--avatar-size)
+		height: var(--avatar-size)
+	.gravatar-avatar
+		border-radius: 50%
 </style>

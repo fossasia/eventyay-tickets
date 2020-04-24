@@ -2,8 +2,9 @@
 .c-profile-prompt
 	.prompt-wrapper(v-scrollbar.y="")
 		.prompt-wrapper-inner
-			h1 Hi there!
-			p Before you can join others in this awesome event, please tell us how you want to appear to other attendees.
+			template(v-if="!user.profile.display_name")
+				h1 Hi there!
+				p Before you can join others in this awesome event, please tell us how you want to appear to other attendees.
 			.profile
 				.avatar
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
@@ -15,7 +16,7 @@
 			form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
 				bunt-input(name="gravatar", label="Gravatar email address", hint="your address is not being sent to any server", v-model="email")
 				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") connect
-			bunt-button#btn-join-world(@click="join") Join
+			bunt-button#btn-join-world(@click="update", :loading="loading") {{ !user.profile.display_name ? 'join' : 'update' }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -36,7 +37,8 @@ export default {
 			connectedGravatar: false,
 			gravatarError: null,
 			gravatarAvatarUrl: null,
-			gravatarHash: null
+			gravatarHash: null,
+			loading: false
 		}
 	},
 	validations: {
@@ -47,7 +49,18 @@ export default {
 	computed: {
 		...mapState(['user'])
 	},
-	created () {},
+	created () {
+		if (this.user.profile.display_name) {
+			this.displayName = this.user.profile.display_name
+		}
+		if (this.user.profile.gravatar_hash) {
+			this.gravatarHash = this.user.profile.gravatar_hash
+			this.gravatarAvatarUrl = getAvatarUrl(this.gravatarHash, 128)
+		}
+		if (this.user.profile.identicon) {
+			this.identicon = this.user.profile.identicon
+		}
+	},
 	mounted () {
 		this.$nextTick(() => {
 		})
@@ -85,7 +98,7 @@ export default {
 			}
 			this.searchingGravatar = false
 		},
-		join () {
+		async update () {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			const profile = {
@@ -96,7 +109,10 @@ export default {
 			} else if (this.identicon) {
 				profile.identicon = this.identicon
 			}
-			this.$store.dispatch('updateUser', {profile})
+			this.loading = true
+			await this.$store.dispatch('updateUser', {profile})
+			// TODO error handling
+			this.$emit('close')
 		}
 	}
 }

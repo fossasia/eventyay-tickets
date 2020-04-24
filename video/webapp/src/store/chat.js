@@ -62,6 +62,12 @@ export default {
 				}
 			})
 		},
+		updateUser ({state}, {id, update}) {
+			if (!state.membersLookup[id]) return
+			for (const [key, value] of Object.entries(update)) {
+				Vue.set(state.membersLookup[id], key, value)
+			}
+		},
 		// INCOMING
 		'api::chat.event' ({state}, event) {
 			const handleMembership = (event) => {
