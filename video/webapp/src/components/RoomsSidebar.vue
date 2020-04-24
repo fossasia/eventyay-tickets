@@ -8,18 +8,23 @@
 	.rooms
 		router-link.room(v-for="room of rooms", :to="{name: 'room', params: {roomId: room.id}}")
 			.name {{ room.name }}
+	.buffer
+	.profile(@click="$emit('editProfile')")
+		avatar(:user="user", :size="36")
+		.display-name {{ user.profile.display_name }}
 </template>
 <script>
 import { mapState } from 'vuex'
+import Avatar from 'components/Avatar'
 
 export default {
-	components: {},
+	components: { Avatar },
 	data () {
 		return {
 		}
 	},
 	computed: {
-		...mapState(['world', 'rooms'])
+		...mapState(['user', 'world', 'rooms'])
 	},
 	created () {},
 	mounted () {
@@ -33,8 +38,8 @@ export default {
 .c-rooms-sidebar
 	background-color: #180044
 	color: $clr-primary-text-dark
-	// box-shadow: 2px 2px 5px 0 rgba(0,0,0,0.16), 2px 12px 10px 0 rgba(0,0,0,0.12)
-	// z-index: 100
+	display: flex
+	flex-direction: column
 	.logo
 		font-size: 24px
 		text-align: center
@@ -84,4 +89,21 @@ export default {
 				margin-right: 4px
 			&.router-link-active::before
 				color: $clr-secondary-text-dark
+	.buffer
+		flex: auto
+	.profile
+		display: flex
+		padding: 8px
+		align-items: center
+		cursor: pointer
+		&:hover
+			background-color: rgba(255, 255, 255, 0.3)
+		.c-avatar
+			background-color: $clr-white
+			border-radius: 50%
+			padding: 4px
+		.display-name
+			font-weight: 600
+			font-size: 18px
+			margin-left: 8px
 </style>

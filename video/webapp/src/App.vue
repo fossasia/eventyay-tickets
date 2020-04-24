@@ -2,10 +2,10 @@
 #app
 	template(v-if="world")
 		//- app-bar
-		rooms-sidebar
+		rooms-sidebar(@editProfile="showProfilePrompt = true")
 		router-view
 		transition(name="profile-prompt")
-			profile-prompt(v-if="!user.profile.display_name")
+			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
@@ -16,6 +16,11 @@ import ProfilePrompt from 'components/ProfilePrompt'
 
 export default {
 	components: { AppBar, RoomsSidebar, ProfilePrompt },
+	data () {
+		return {
+			showProfilePrompt: false
+		}
+	},
 	computed: {
 		...mapState(['world', 'user'])
 	}

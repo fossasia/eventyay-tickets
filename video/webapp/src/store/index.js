@@ -36,11 +36,12 @@ export default new Vuex.Store({
 				state.world = null
 			})
 		},
-		async updateUser ({state}, update) {
+		async updateUser ({state, dispatch}, update) {
 			await api.call('user.update', update)
 			for (const [key, value] of Object.entries(update)) {
 				Vue.set(state.user, key, value)
 			}
+			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
 		async fetchSchedule ({state}) {
 			if (!state.world.pretalx?.base_url) return
