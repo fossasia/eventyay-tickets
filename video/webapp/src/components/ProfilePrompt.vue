@@ -2,6 +2,7 @@
 .c-profile-prompt
 	.prompt-wrapper(v-scrollbar.y="")
 		.prompt-wrapper-inner
+			bunt-icon-button#btn-close(v-if="user.profile.display_name", @click="$emit('close')") close
 			template(v-if="!user.profile.display_name")
 				h1 Hi there!
 				p Before you can join others in this awesome event, please tell us how you want to appear to other attendees.
@@ -84,7 +85,6 @@ export default {
 				}
 				const profile = await getProfile(hash)
 				if (profile?.entry?.length > 0) {
-					console.log(profile.entry[0])
 					this.gravatarHash = profile.entry[0].hash
 					this.gravatarAvatarUrl = getAvatarUrl(this.gravatarHash, 128)
 					this.displayName = profile.entry[0].displayName
@@ -140,6 +140,12 @@ export default {
 			flex-direction: column
 			align-items: center
 			padding: 32px
+			position: relative
+			#btn-close
+				icon-button-style(style: clear)
+				position: absolute
+				top: 8px
+				right: 8px
 			h1
 				margin: 0
 			p
