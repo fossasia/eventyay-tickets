@@ -6,7 +6,11 @@
 		router-link.room(:to="{name: 'schedule'}") Schedule
 	.group-title Rooms
 	.rooms
-		router-link.room(v-for="room of rooms", :to="{name: 'room', params: {roomId: room.id}}")
+		router-link.room(v-for="room of roomsByType.generic", :to="{name: 'room', params: {roomId: room.id}}")
+			.name {{ room.name }}
+	.group-title Channels
+	.rooms
+		router-link.room(v-for="room of roomsByType.chat", :to="{name: 'room', params: {roomId: room.id}}")
 			.name {{ room.name }}
 	.buffer
 	.profile(@click="$emit('editProfile')")
@@ -24,7 +28,21 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['user', 'world', 'rooms'])
+		...mapState(['user', 'world', 'rooms']),
+		roomsByType () {
+			const rooms = {
+				generic: [],
+				chat: []
+			}
+			for (const room of this.rooms) {
+				if (room.modules.length === 1 & room.modules[0].type === 'chat.native') {
+					rooms.chat.push(room)
+				} else {
+					rooms.generic.push(room)
+				}
+			}
+			return rooms
+		}
 	},
 	created () {},
 	mounted () {
