@@ -27,8 +27,7 @@ A join means that the user and their chosen `profile` will be visible to other u
 Messages can only be sent to chats that have been joined. A join action is **implicitly also a subscribe** action.
 Joins are idempotent, joining a channel that the user is already part of will not return an error.
 
-After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients for
- synchronization:
+After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization:
 
     <= ["chat.channels", {"channels": ["room_0"]}]
 
