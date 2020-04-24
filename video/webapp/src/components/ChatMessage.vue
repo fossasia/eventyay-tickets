@@ -29,9 +29,9 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('chat', ['membersLookup']),
+		...mapState('chat', ['usersLookup']),
 		user () {
-			return this.membersLookup[this.message.sender] || {id: this.message.sender}
+			return this.usersLookup[this.message.sender] || {id: this.message.sender}
 		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
