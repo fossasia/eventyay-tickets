@@ -138,3 +138,4 @@ you do, please note that these are the meanings we ascribe to them:
 .. _small: https://github.com/pretalx/pretalx/issues?q=is%3Aissue+is%3Aopen+label%3Asize%3Asmall
 .. _PEP8: https://legacy.python.org/dev/peps/pep-0008/
 .. _Django project style guide: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
+.. _prettier: https://prettier.io/
