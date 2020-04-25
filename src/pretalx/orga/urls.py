@@ -90,6 +90,11 @@ urlpatterns = [
                     organiser.TeamUninvite.as_view(),
                     name="organiser.teams.uninvite",
                 ),
+                url(
+                    "^teams/(?P<pk>[0-9]+)/resend$",
+                    organiser.TeamResend.as_view(),
+                    name="organiser.teams.resend",
+                ),
             ]
         ),
     ),

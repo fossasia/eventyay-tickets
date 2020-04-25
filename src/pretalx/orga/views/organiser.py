@@ -155,6 +155,26 @@ class TeamUninvite(PermissionRequired, DetailView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
+class TeamResend(PermissionRequired, DetailView):
+    model = TeamInvite
+    template_name = "orga/settings/team_resend.html"
+    permission_required = "orga.change_teams"
+
+    def get_permission_object(self):
+        return self.request.organiser
+
+    @context
+    def team(self):
+        return get_object_or_404(
+            self.request.organiser.teams.all(), pk=self.object.team.pk
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.get_object().send()
+        messages.success(request, _("The team invitation was resend."))
+        return redirect(self.request.organiser.orga_urls.base)
+
+
 class TeamResetPassword(PermissionRequired, TemplateView):
     model = Team
     template_name = "orga/settings/team_reset_password.html"
