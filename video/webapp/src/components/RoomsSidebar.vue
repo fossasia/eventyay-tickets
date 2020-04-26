@@ -59,7 +59,7 @@ export default {
 	display: flex
 	flex-direction: column
 	.logo
-		font-size: 24px
+		font-size: 18px
 		text-align: center
 		margin: 16px 0 32px 0
 	.global-links
