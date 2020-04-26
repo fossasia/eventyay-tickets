@@ -2,9 +2,9 @@ import uuid
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
+from stayseated.core.services.world import get_world
 from stayseated.live.exceptions import ConsumerException
 
-from ..core.services.world import get_world_config
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -21,10 +21,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.user = None
         self.socket_id = str(uuid.uuid4())
         await self.accept()
-        world_config = await get_world_config(
-            self.scope["url_route"]["kwargs"]["world"]
-        )
-        if world_config is None:
+        world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+        if world is None:
             await self.send_error("world.unknown_world", close=True)
             return
 

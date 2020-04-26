@@ -40,21 +40,23 @@ class BBBService:
         self.world_id = world_id
 
     async def get_join_url(self, room, display_name, moderator=False):
-        m = [m for m in room["modules"] if m["type"] == "call.bigbluebutton"][0]
+        m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
         config = m["config"]
         create_params = {
-            "name": room["name"],
-            "meetingID": derive_meeting_id(self.world_id, room["id"], config["secret"]),
+            "name": room.name,
+            "meetingID": derive_meeting_id(
+                self.world_id, str(room.id), config["secret"]
+            ),
             "attendeePW": derive_attendee_pw(
-                self.world_id, room["id"], config["secret"]
+                self.world_id, str(room.id), config["secret"]
             ),
             "moderatorPW": derive_moderator_pw(
-                self.world_id, room["id"], config["secret"]
+                self.world_id, str(room.id), config["secret"]
             ),
             "record": "true" if config.get("record", False) else "false",
             "meta_Source": "stayseated",
             "meta_World": self.world_id,
-            "meta_Room": room["id"],
+            "meta_Room": str(room.id),
         }
         create_url = get_url("create", create_params, config["url"], config["secret"])
 

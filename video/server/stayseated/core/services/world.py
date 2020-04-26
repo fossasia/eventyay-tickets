@@ -1,23 +1,46 @@
-import json
-import os
+import copy
+from contextlib import suppress
 
-from aiofile import AIOFile
+from channels.db import database_sync_to_async
+from django.core.exceptions import ValidationError
 
-from ...settings import BASE_DIR
+from stayseated.core.models import Room, World
 
 
-async def get_world_config(world_id):
-    try:
-        async with AIOFile(
-            os.path.join(BASE_DIR, "sample", "worlds", world_id + ".json"),
-            "r",
-            encoding="utf-8",
-        ) as afp:
-            data = json.loads(await afp.read())
-    except OSError:
-        return None
+@database_sync_to_async
+def _get_world(world_id):
+    return World.objects.filter(id=world_id).first()
 
-    return data
+
+async def get_world(world_id):
+    world = await _get_world(world_id)
+    return world
+
+
+@database_sync_to_async
+def _get_rooms(world):
+    return list(world.rooms.all().prefetch_related("channel"))
+
+
+async def get_rooms(world):
+    rooms = await _get_rooms(world)
+    return rooms
+
+
+@database_sync_to_async
+def _get_room(**kwargs):
+    return Room.objects.all().prefetch_related("channel").get(**kwargs)
+
+
+async def get_room(**kwargs):
+    with suppress(Room.DoesNotExist, Room.MultipleObjectsReturned, ValidationError):
+        room = await _get_room(**kwargs)
+        return room
+
+
+@database_sync_to_async
+def get_world_for_user(user):
+    return user.world
 
 
 def get_permissions_for_traits(rules, traits, prefixes):
@@ -29,34 +52,43 @@ def get_permissions_for_traits(rules, traits, prefixes):
     ]
 
 
-async def get_world_config_for_user(world_id, user):
-    world = await get_world_config(world_id)
-
-    # TODO: Check if user has access to this world
+async def get_world_config_for_user(user):
     # TODO: Remove any rooms the user should not see
+    world = await get_world_for_user(user)
+    result = {
+        "world": {"id": str(world.id), "title": world.title, "about": world.about,},
+        "rooms": [],
+    }
 
-    world["world"].pop("JWT_secrets", None)
-    rules = world.pop("permissions", {})
+    rules = world.permission_config or {}
     traits = set(user.traits)
-    world["permissions"] = get_permissions_for_traits(rules, traits, prefixes=["world"])
-    for room in world["rooms"]:
-        room_rules = {**rules, **room.pop("permissions", {})}
-        room["permissions"] = get_permissions_for_traits(
-            room_rules, traits, prefixes=["room"]
-        )
-        for module in room["modules"]:
-            module["permissions"] = get_permissions_for_traits(
-                {**room_rules, **module.pop("permissions", {})},
+    result["permissions"] = get_permissions_for_traits(
+        rules, traits, prefixes=["world"]
+    )
+    rooms = await get_rooms(world)
+    for room in rooms:
+        room_rules = {**rules, **(room.permission_config or {})}
+        room_config = {
+            "id": str(room.id),
+            "name": room.name,
+            "picture": room.picture.url if room.picture else None,
+            "import_id": room.import_id,
+            "permissions": get_permissions_for_traits(
+                room_rules, traits, prefixes=["room"]
+            ),
+            "modules": [],
+        }
+        for module in room.module_config:
+            module_config = copy.deepcopy(module)
+            module_config["permissions"] = get_permissions_for_traits(
+                {**room_rules, **module_config.pop("permissions", {})},
                 traits,
                 prefixes=[module["type"], module["type"].split(".")[0]],
             )
             if module["type"] == "call.bigbluebutton":
-                module["config"] = {}
-    return world
-
-
-async def get_room_config(world_id, room_id):
-    world = await get_world_config(world_id)
-    for r in world["rooms"]:
-        if r["id"] == room_id:
-            return r
+                module_config["config"] = {}
+            elif module["type"] == "chat.native" and getattr(room, "channel", None):
+                module["channel_id"] = str(room.channel.id)
+            room_config["modules"].append(module_config)
+        result["rooms"].append(room_config)
+    return result
