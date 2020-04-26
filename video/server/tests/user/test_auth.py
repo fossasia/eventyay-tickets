@@ -71,6 +71,9 @@ async def test_auth_with_jwt_token(index):
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert not response[1]["world.config"][
+            "permissions"
+        ]  # default users don't have permissions
 
 
 @pytest.mark.asyncio
@@ -234,3 +237,36 @@ async def test_fetch_user():
         await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])
         response = await c2.receive_json_from()
         assert response == ["error", 14, {"code": "user.not_found"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_auth_with_jwt_token_and_permission_traits():
+    world_config = await get_world_config("sample")
+    config = world_config["world"]["JWT_secrets"][0]
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=999)
+    payload = {
+        "iss": config["issuer"],
+        "aud": config["audience"],
+        "exp": exp,
+        "iat": iat,
+        "uid": 123456,
+        "traits": ["chat.read", "foo.bar", "admin"],
+    }
+    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert response[1]["world.config"]["permissions"] == [
+            "world.update",
+            "world.announce",
+        ]
+        assert "world.update" in response[1]["world.config"]["permissions"]
+        assert "room.update" not in response[1]["world.config"]["permissions"]
+        assert "room.update" in response[1]["world.config"]["rooms"][0]["permissions"]
+        assert (
+            "world.update" not in response[1]["world.config"]["rooms"][0]["permissions"]
+        )

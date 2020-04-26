@@ -22,6 +22,15 @@
       }
     ]
   },
+  "permissions": {
+    "world.update": ["admin"],
+    "world.announce": ["admin"],
+    "room.create": ["admin"],
+    "room.announce": ["admin"],
+    "room.update": ["admin"],
+    "room.delete": ["admin"],
+    "chat.moderate": ["admin"]
+  },
   "rooms": [
     {
       "id": "room_0",

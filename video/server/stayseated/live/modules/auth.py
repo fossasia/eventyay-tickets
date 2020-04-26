@@ -1,5 +1,6 @@
 from channels.db import database_sync_to_async
 
+from stayseated.core.serializers.auth import PublicUserSerializer
 from stayseated.core.services.user import get_public_user, get_user, update_user
 from stayseated.core.services.world import get_world_config_for_user
 from stayseated.core.utils.jwt import decode_token
@@ -12,20 +13,20 @@ class AuthModule:
             if not client_id:
                 await self.consumer.send_error(code="auth.missing_id_or_token")
                 return
-            user = await get_user(self.world, with_client_id=client_id)
+            user = await get_user(self.world, with_client_id=client_id, serialize=False)
         else:
             token = await decode_token(self.content[1]["token"], self.world)
             if not token:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
-            user = await get_user(self.world, with_token=token)
-        self.consumer.user = user
+            user = await get_user(self.world, with_token=token, serialize=False)
+        self.consumer.user = PublicUserSerializer().to_representation(user)
         await database_sync_to_async(self.consumer.scope["session"].save)()
         await self.consumer.send_json(
             [
                 "authenticated",
                 {
-                    "user.config": user,
+                    "user.config": self.consumer.user,
                     "world.config": await get_world_config_for_user(self.world, user),
                 },
             ]

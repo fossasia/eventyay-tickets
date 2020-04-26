@@ -45,10 +45,20 @@ def get_public_users(world_id, ids):
 
 
 async def get_user(
-    world_id=None, *, with_id=None, with_token=None, with_client_id=None
+    world_id=None,
+    *,
+    with_id=None,
+    with_token=None,
+    with_client_id=None,
+    serialize=True,
 ):
     if with_id:
-        return await get_user_by_id(world_id, with_id)
+        user = await get_user_by_id(world_id, with_id)
+        return (
+            PublicUserSerializer().to_representation(user)
+            if serialize and user
+            else user
+        )
 
     token_id = None
     if with_token:
@@ -66,7 +76,7 @@ async def get_user(
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
         await update_user(world_id, id=user.id, traits=traits)
-        return PublicUserSerializer().to_representation(user)
+        return PublicUserSerializer().to_representation(user) if serialize else user
 
     if token_id:
         user = await create_user(
@@ -80,7 +90,9 @@ async def get_user(
             client_id=with_client_id,
             traits=with_token.get("traits") if with_token else None,
         )
-    return PublicUserSerializer().to_representation(user)
+    return (
+        PublicUserSerializer().to_representation(user) if serialize and user else user
+    )
 
 
 @database_sync_to_async
