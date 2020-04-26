@@ -4,7 +4,7 @@
 		//- app-bar
 		rooms-sidebar(@editProfile="showProfilePrompt = true")
 		router-view
-		livestream.global-stream(v-if="streamingRoom", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'")
+		livestream.global-stream(v-if="streamingRoom", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream")
 		transition(name="profile-prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 	bunt-progress-circular(v-else, size="huge")
@@ -37,6 +37,9 @@ export default {
 			if (this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
 				this.$store.dispatch('streamRoom', {room: this.room})
 			}
+		},
+		closeMiniStream () {
+			this.$store.dispatch('streamRoom', {room: null})
 		}
 	}
 }
