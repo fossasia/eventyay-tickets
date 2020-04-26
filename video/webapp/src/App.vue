@@ -29,7 +29,7 @@ export default {
 <style lang="stylus">
 #app
 	display: grid
-	grid-template-columns: 380px auto
+	grid-template-columns: 280px auto
 	grid-template-rows: auto
 	grid-template-areas: "rooms-sidebar main"
 
