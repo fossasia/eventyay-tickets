@@ -1,7 +1,7 @@
 <template lang="pug">
-.c-livestream
+.c-livestream(:class="[`size-${size}`]")
 	.video-container(ref="videoContainer")
-		video(ref="video", style="width:100%;height:100%", data-shaka-player)
+		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay)
 </template>
 <script>
 import shaka from 'shaka-player/dist/shaka-player.ui.js'
@@ -15,6 +15,10 @@ export default {
 		module: {
 			type: Object,
 			required: true
+		},
+		size: {
+			type: String, // 'normal', 'mini'
+			default: 'normal'
 		}
 	},
 	components: {},
@@ -35,6 +39,7 @@ export default {
 		try {
 			console.log('starting stream', this.module.config.hls_url)
 			await player.load(this.module.config.hls_url)
+			this.$store.dispatch('streamRoom', {room: this.room})
 		} catch (error) {
 			console.error('player failed to load', error)
 		}
@@ -53,4 +58,7 @@ export default {
 		min-height: 0
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
+	&.size-mini
+		height: 128px
+		width: 230px // TODO total guesstimate
 </style>

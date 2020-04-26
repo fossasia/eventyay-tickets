@@ -13,7 +13,8 @@ export default new Vuex.Store({
 		user: null,
 		world: null,
 		rooms: null,
-		schedule: null
+		schedule: null,
+		streamingRoom: null
 	},
 	actions: {
 		login ({state}, {token, clientId}) {
@@ -47,6 +48,11 @@ export default new Vuex.Store({
 			if (!state.world.pretalx?.base_url) return
 			const schedule = await (await fetch(state.world.pretalx.base_url + 'schedule/widget/v1.json')).json()
 			state.schedule = schedule
+		},
+		streamRoom ({state}, {room}) {
+			if (!state.streamingRoom) {
+				state.streamingRoom = room
+			}
 		}
 	},
 	modules: {
