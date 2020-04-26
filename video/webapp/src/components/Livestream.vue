@@ -39,7 +39,6 @@ export default {
 		try {
 			console.log('starting stream', this.module.config.hls_url)
 			await player.load(this.module.config.hls_url)
-			this.$store.dispatch('streamRoom', {room: this.room})
 		} catch (error) {
 			console.error('player failed to load', error)
 		}
@@ -53,6 +52,7 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
+	background-color: $clr-black
 	.video-container
 		flex: auto
 		min-height: 0

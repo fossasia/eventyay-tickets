@@ -99,11 +99,9 @@ export default {
 			childList: true
 		})
 	},
-	destroy () {
+	beforeDestroy () {
 		this.resizeObserver.disconnect()
 		this.mutationObserver.disconnect()
-		document.removeEventListener('mousemove', this.onDocumentMousemove)
-		document.removeEventListener('mouseup', this.onDocumentMouseup, {capture: true})
 	},
 	methods: {
 		onScroll (event) {
