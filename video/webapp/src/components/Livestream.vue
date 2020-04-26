@@ -1,9 +1,11 @@
 <template lang="pug">
 .c-livestream(:class="[`size-${size}`]")
+	.mdi.mdi-close(v-if="size === 'mini'", @click="$emit('close')")
 	.video-container(ref="videoContainer")
 		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay)
 </template>
 <script>
+import { mapState } from 'vuex'
 import shaka from 'shaka-player/dist/shaka-player.ui.js'
 import 'shaka-player/dist/controls.css'
 export default {
@@ -27,9 +29,13 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['streamingRoom'])
 	},
 	created () {},
 	async mounted () {
+		if (this.streamingRoom !== this.room) {
+			this.$refs.video.muted = true
+		}
 		const player = new shaka.Player(this.$refs.video)
 		this.player = player
 		player.addEventListener('error', (error) => {
@@ -53,6 +59,19 @@ export default {
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-black
+	position: relative
+	> .mdi
+		color: $clr-primary-text-dark
+		position: absolute
+		top: 4px
+		right: 4px
+		z-index: 100
+		cursor: pointer
+		font-size: 18px
+		opacity: 0
+		transition: opacity .6s ease
+	&:hover > .mdi
+		opacity: 1
 	.video-container
 		flex: auto
 		min-height: 0
