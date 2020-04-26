@@ -75,7 +75,6 @@ export default {
 	display: flex
 	flex-direction: column
 	flex: auto
-	justify-content: flex-end
 	.timeline .scroll-content
 		flex: auto
 		padding: 8px 0
@@ -102,6 +101,8 @@ export default {
 			flex: none
 			padding: 0
 			width: calc(100% - 32px)
+	&:not(.standalone)
+		justify-content: flex-end
 	&.standalone
 		display: grid
 		grid-template-rows: auto 64px
