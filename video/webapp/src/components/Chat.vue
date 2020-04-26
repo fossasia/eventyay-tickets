@@ -74,6 +74,8 @@ export default {
 	background-color: $clr-white
 	display: flex
 	flex-direction: column
+	flex: auto
+	justify-content: flex-end
 	.timeline .scroll-content
 		flex: auto
 		padding: 8px 0
@@ -114,6 +116,7 @@ export default {
 		.user-list
 			grid-area: sidebar
 			padding: 0 16px
+			border-left: border-separator()
 			.user
 				display: flex
 				align-items: center

@@ -50,9 +50,7 @@ export default new Vuex.Store({
 			state.schedule = schedule
 		},
 		streamRoom ({state}, {room}) {
-			if (!state.streamingRoom) {
-				state.streamingRoom = room
-			}
+			state.streamingRoom = room
 		}
 	},
 	modules: {

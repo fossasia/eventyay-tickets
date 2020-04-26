@@ -10,10 +10,10 @@
 				.talk-info(v-if="currentTalk")
 					.current-talk Current talk
 					h3 {{ currentTalk.title }}
-		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
+		livestream(v-if="modules['livestream.native'] && streamingRoom !== room", :room="room", :module="modules['livestream.native']")
 		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
-	livestream(v-if="streamingRoom && streamingRoom !== room", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", size="mini")
+	slot(v-if="streamingRoom && streamingRoom !== room")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -77,7 +77,7 @@ export default {
 	.room-info
 		flex: none
 		display: flex
-		padding: 16px 16px
+		padding: 8px
 		img
 			height: 96px
 		.room-info-wrapper
@@ -111,9 +111,5 @@ export default {
 		.c-chat
 			border-left: border-separator()
 			flex: none
-			width: 380px
-	.c-livestream.size-mini
-		position: fixed
-		top: 4px
-		right: 4px
+			width: var(--chatbar-width)
 </style>
