@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Scrollbars from 'components/Scrollbars'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
@@ -17,7 +18,7 @@ import '@mdi/font/css/materialdesignicons.css'
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
 Vue.use(Vuelidate)
-
+Vue.component('scrollbars', Scrollbars)
 // auth.
 // history.replaceState('', document.title, location.pathname + location.search)
 

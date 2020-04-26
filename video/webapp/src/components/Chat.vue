@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-chat(:class="[mode]")
 	template(v-if="channel")
-		.timeline
+		scrollbars.timeline(y)
 			template(v-for="message of filteredTimeline")
 				chat-message(v-if="message.event_type === 'channel.message'", :message="message", :mode="mode", :key="message.event_id")
 				.system-message(v-else)
@@ -74,13 +74,12 @@ export default {
 	background-color: $clr-white
 	display: flex
 	flex-direction: column
-	.timeline
+	.timeline .scroll-content
 		flex: auto
 		padding: 8px 0
 		display: flex
 		flex-direction: column-reverse
 		justify-content: flex-start
-		overflow-y: scroll
 		.message
 			padding-top: 8px
 		.system-message
