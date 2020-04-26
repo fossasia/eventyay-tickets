@@ -13,6 +13,7 @@
 		livestream(v-if="modules['livestream.native']", :room="room", :module="modules['livestream.native']")
 		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+	livestream(v-if="streamingRoom && streamingRoom !== room", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", size="mini")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -32,7 +33,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['world', 'schedule']),
+		...mapState(['world', 'schedule', 'streamingRoom']),
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
@@ -111,4 +112,8 @@ export default {
 			border-left: border-separator()
 			flex: none
 			width: 380px
+	.c-livestream.size-mini
+		position: fixed
+		top: 4px
+		right: 4px
 </style>
