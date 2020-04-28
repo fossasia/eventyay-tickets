@@ -32,6 +32,8 @@ class ActionFromUrl:
 
     @cached_property
     def permission_object(self):
+        if hasattr(self, "get_permission_object"):
+            return self.get_permission_object()
         return self.object
 
     @context
