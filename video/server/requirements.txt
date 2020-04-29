@@ -9,8 +9,8 @@ aiofile
 aiohttp
 lxml
 
-pytz
 pyjwt
+pytz
 
 # deploy
 psycopg2-binary
