@@ -1,5 +1,14 @@
-// load from index.html
 
 import cloneDeep from 'lodash/cloneDeep'
-const config = cloneDeep(window.venueless)
+let config
+if (ENV_DEVELOPMENT) {
+	config = {
+		api: {
+			socket: 'ws://localhost:8000/ws/world/sample/'
+		}
+	}
+} else {
+	// load from index.html as `window.venueless = {…}`
+	config = cloneDeep(window.venueless)
+}
 export default config
