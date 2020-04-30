@@ -12,6 +12,7 @@ py_style:
   interruptible: true
   tags:
     - python3
+
 py_test:
   stage: test
   services:
@@ -34,3 +35,41 @@ variables:
   POSTGRES_PASSWORD: venueless
   POSTGRES_HOST_AUTH_METHOD: trust
 
+build_container:
+  stage: build
+  script:
+    - echo $CI_COMMIT_SHA > release.txt
+    - docker build -t venueless .
+    - docker tag venueless docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
+  tags:
+    - docker
+    - venuelessbuild
+
+upload_container:
+  stage: upload
+  script:
+    - docker login -u ciuser -p $DOCKERPW docker.rami.io
+    - docker push docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
+  only:
+    - production
+    - master
+  tags:
+    - docker
+    - venuelessbuild
+
+deploy:
+  stage: deploy
+  script:
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa  deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME restart
+  only:
+    - production
+    - master
+  tags:
+    - venuelessdeploy
+
+stages:
+  - test
+  - build
+  - upload
+  - deploy
