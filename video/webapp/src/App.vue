@@ -4,7 +4,7 @@
 		//- app-bar
 		rooms-sidebar(@editProfile="showProfilePrompt = true")
 		router-view
-		livestream.global-stream(v-if="streamingRoom", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream")
+		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream")
 		transition(name="profile-prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 	bunt-progress-circular(v-else, size="huge")
@@ -37,6 +37,14 @@ export default {
 			if (this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
 				this.$store.dispatch('streamRoom', {room: this.room})
 			}
+			if (this.room && this.streamingRoom && !this.$refs.globalStream?.playing) {
+				if (this.room.modules.some(module => module.type === 'livestream.native')) {
+					this.$store.dispatch('streamRoom', {room: this.room})
+				} else {
+					// TODO don't close when mini player is paused and changing rooms
+					this.$store.dispatch('streamRoom', {room: null})
+				}
+			}
 		},
 		closeMiniStream () {
 			this.$store.dispatch('streamRoom', {room: null})
@@ -66,11 +74,11 @@ export default {
 		position: fixed
 		transition: all .2s ease
 		&.size-mini
-			top: 4px
+			bottom: calc(100vh - 128px - 4px)
 			right: 4px
 		&:not(.size-mini)
 			bottom: 0
-			left: var(--sidebar-width)
+			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 			height: calc(100vh - 112px)
 	.profile-prompt-enter-active, .profile-prompt-leave-active
