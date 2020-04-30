@@ -2,7 +2,7 @@
 .c-livestream(:class="[`size-${size}`]")
 	.mdi.mdi-close(v-if="size === 'mini'", @click="$emit('close')")
 	.video-container(ref="videoContainer")
-		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay)
+		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay, @playing="playingVideo", @pause="pausingVideo")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -26,6 +26,7 @@ export default {
 	components: {},
 	data () {
 		return {
+			playing: true
 		}
 	},
 	computed: {
@@ -49,7 +50,16 @@ export default {
 			console.error('player failed to load', error)
 		}
 	},
-	methods: {}
+	methods: {
+		playingVideo () {
+			console.log('START')
+			this.playing = true
+		},
+		pausingVideo () {
+			console.log('STOP')
+			this.playing = false
+		}
+	}
 }
 </script>
 <style lang="stylus">
