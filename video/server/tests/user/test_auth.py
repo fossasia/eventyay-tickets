@@ -7,7 +7,6 @@ import pytest
 from channels.testing import WebsocketCommunicator
 
 from stayseated.core.services.user import get_user_by_token_id
-from stayseated.core.services.world import get_world_config
 from stayseated.routing import application
 
 
@@ -23,7 +22,7 @@ async def world_communicator():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_client_id():
+async def test_auth_with_client_id(world):
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
@@ -56,9 +55,8 @@ async def test_auth_without_client_id():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 @pytest.mark.parametrize("index", [0, 1])
-async def test_auth_with_jwt_token(index):
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][index]
+async def test_auth_with_jwt_token(index, world):
+    config = world.config["JWT_secrets"][index]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -86,9 +84,8 @@ async def test_auth_with_jwt_token(index):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_invalid_jwt_token():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_invalid_jwt_token(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -164,9 +161,8 @@ async def test_wrong_user_command():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_update_traits():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_update_traits(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -207,9 +203,8 @@ async def test_auth_with_jwt_token_update_traits():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_twice():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_twice(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -287,9 +282,8 @@ async def test_fetch_user():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_and_permission_traits():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_and_permission_traits(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {

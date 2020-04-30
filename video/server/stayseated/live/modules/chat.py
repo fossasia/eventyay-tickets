@@ -3,7 +3,7 @@ from contextlib import suppress
 
 from stayseated.core.services.chat import ChatService
 from stayseated.core.services.user import get_public_user
-from stayseated.core.services.world import get_room_config
+from stayseated.core.services.world import get_room
 from stayseated.live.exceptions import ConsumerException
 
 logger = logging.getLogger(__name__)
@@ -24,16 +24,16 @@ class ChatModule:
         }
 
     async def get_room(self):
-        room_config = await get_room_config(self.world, self.channel_id)
-        if not room_config:
+        room = await get_room(world=self.world, channel__id=self.channel_id)
+        if not room:
             raise ConsumerException("room.unknown", "Unknown room ID")
-        if "chat.native" not in [m["type"] for m in room_config["modules"]]:
-            raise ConsumerException("chat.unknown", "Room does not contain a chat.")
-        return room_config
+        return room
 
     async def get_config(self):
         room = await self.get_room()
-        return [m["config"] for m in room["modules"] if m["type"] == "chat.native"][0]
+        return [m["config"] for m in room.module_config if m["type"] == "chat.native"][
+            0
+        ]
 
     async def _subscribe(self):
         self.channels_subscribed.add(self.channel_id)
@@ -82,19 +82,17 @@ class ChatModule:
             ),  # TODO: check if client is to override
         )
         if joined:
+            event = await self.service.create_event(
+                channel=str(self.channel_id),
+                event_type="channel.member",
+                content={
+                    "membership": "join",
+                    "user": await get_public_user(self.world, self.consumer.user["id"]),
+                },
+                sender=self.consumer.user["id"],
+            )
             await self.consumer.channel_layer.group_send(
-                f"chat.{self.channel_id}",
-                await self.service.create_event(
-                    channel=self.channel_id,
-                    event_type="channel.member",
-                    content={
-                        "membership": "join",
-                        "user": await get_public_user(
-                            self.world, self.consumer.user["id"]
-                        ),
-                    },
-                    sender=self.consumer.user["id"],
-                ),
+                f"chat.{str(self.channel_id)}", event,
             )
             await self._broadcast_channel_list()
         await self.consumer.send_success(reply)
@@ -104,7 +102,7 @@ class ChatModule:
             self.channel_id, self.consumer.user["id"]
         )
         await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
+            f"chat.{str(self.channel_id)}",
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type="channel.member",
@@ -154,7 +152,7 @@ class ChatModule:
         event_type = self.content[2]["event_type"]
         # TODO: Filter if user is allowed to send this type of message
         await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
+            f"chat.{str(self.channel_id)}",
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type=event_type,

@@ -32,7 +32,7 @@ class AuthModule:
                 "authenticated",
                 {
                     "user.config": self.consumer.user,
-                    "world.config": await get_world_config_for_user(self.world, user),
+                    "world.config": await get_world_config_for_user(user),
                     "chat.channels": await ChatService(
                         self.world
                     ).get_channels_for_user(

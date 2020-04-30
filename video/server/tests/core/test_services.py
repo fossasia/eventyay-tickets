@@ -4,6 +4,7 @@ from stayseated.core.services.user import get_user, update_user
 
 
 @pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_get_user_requires_parameters():
     with pytest.raises(Exception):
         await get_user("sample")

@@ -33,6 +33,7 @@ async def world_communicator(client_id=None, named=True):
 
 
 @pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_join_unknown_event():
     communicator = WebsocketCommunicator(application, "/ws/world/sampleeeeeeee/")
     await communicator.connect()
@@ -57,23 +58,9 @@ async def test_join_or_subscribe_unknown_room(action):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.parametrize("action", ("join", "subscribe"))
-async def test_join_or_subscribe_room_without_chat(action):
+async def test_join_leave(chat_room):
     async with world_communicator() as c:
-        await c.send_json_to([f"chat.{action}", 123, {"channel": "room_1"}])
-        response = await c.receive_json_from()
-        assert response == [
-            "error",
-            123,
-            {"message": "Room does not contain a chat.", "code": "chat.unknown"},
-        ]
-
-
-@pytest.mark.asyncio
-@pytest.mark.django_db
-async def test_join_leave():
-    async with world_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -86,7 +73,7 @@ async def test_join_leave():
         assert response == [
             "chat.event",
             {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_id": 1,
                 "event_type": "channel.member",
                 "sender": c.context["user.config"]["id"],
@@ -100,84 +87,99 @@ async def test_join_leave():
             },
         ]
 
-        await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.leave", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_volatile_based_on_room_config():
+async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room):
     cid = str(uuid.uuid4())
     async with world_communicator(client_id=cid) as c, world_communicator(
         client_id=cid, named=False
     ) as c2:
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
         assert await ChatService("sample").membership_is_volatile(
-            "room_0", c.context["user.config"]["id"]
+            str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
         response = await c2.receive_json_from()
         assert response == ["chat.channels", {"channels": []}]
 
-        await c.send_json_to(["chat.join", 123, {"channel": "chat"}])
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
         assert not await ChatService("sample").membership_is_volatile(
-            "chat", c.context["user.config"]["id"]
+            str(chat_room.channel.id), c.context["user.config"]["id"]
         )
 
         response = await c2.receive_json_from()
-        assert response == ["chat.channels", {"channels": ["chat"]}]
+        assert response == [
+            "chat.channels",
+            {"channels": [str(chat_room.channel.id)]},
+        ]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_convert_volatile_to_persistent():
+async def test_join_convert_volatile_to_persistent(volatile_chat_room):
     async with world_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
         assert await ChatService("sample").membership_is_volatile(
-            "room_0", c.context["user.config"]["id"]
+            str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
         await c.send_json_to(
-            ["chat.join", 123, {"channel": "room_0", "volatile": False}]
+            [
+                "chat.join",
+                123,
+                {"channel": str(volatile_chat_room.channel.id), "volatile": False},
+            ]
         )
         response = await c.receive_json_from()
         assert response[0] == "success"
 
         assert not await ChatService("sample").membership_is_volatile(
-            "room_0", c.context["user.config"]["id"]
+            str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_without_name():
+async def test_join_without_name(chat_room):
     async with world_communicator(named=False) as c:
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         assert response == ["error", 123, {"code": "channel.join.missing_profile"}]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_subscribe_without_name():
+async def test_subscribe_without_name(chat_room):
     async with world_communicator(named=False) as c:
-        await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.subscribe", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -189,9 +191,11 @@ async def test_subscribe_without_name():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_subscribe_join_leave():
+async def test_subscribe_join_leave(chat_room):
     async with world_communicator() as c:
-        await c.send_json_to(["chat.subscribe", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.subscribe", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -199,7 +203,7 @@ async def test_subscribe_join_leave():
             123,
             {"state": None, "next_event_id": -1, "members": []},
         ]
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -212,7 +216,7 @@ async def test_subscribe_join_leave():
         assert response == [
             "chat.event",
             {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_id": 1,
                 "event_type": "channel.member",
                 "content": {
@@ -225,16 +229,18 @@ async def test_subscribe_join_leave():
                 "sender": c.context["user.config"]["id"],
             },
         ]
-        await c.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
+        await c.send_json_to(
+            ["chat.leave", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_bogus_command():
+async def test_bogus_command(chat_room):
     async with world_communicator() as c:
-        await c.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -250,10 +256,12 @@ async def test_bogus_command():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_autofix_numbers():
+async def test_autofix_numbers(chat_room):
     async with world_communicator() as c1, aioredis() as redis:
         await redis.delete("chat.event_id")
-        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         await c1.receive_json_from()
         response = await c1.receive_json_from()
         assert response[1]["event_id"] == 1
@@ -263,7 +271,7 @@ async def test_autofix_numbers():
                 "chat.send",
                 123,
                 {
-                    "channel": "room_0",
+                    "channel": str(chat_room.channel.id),
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -276,9 +284,11 @@ async def test_autofix_numbers():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_fetch_messages_after_join():
+async def test_fetch_messages_after_join(chat_room):
     async with world_communicator() as c1:
-        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -293,7 +303,7 @@ async def test_fetch_messages_after_join():
                 "chat.send",
                 123,
                 {
-                    "channel": "room_0",
+                    "channel": str(chat_room.channel.id),
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -303,7 +313,9 @@ async def test_fetch_messages_after_join():
         assert response == ["success", 123, {}]
 
         async with world_communicator() as c2:
-            await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+            await c2.send_json_to(
+                ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+            )
             response = await c2.receive_json_from()
             assert response[0] == "success"
             next_id = response[2]["next_event_id"]
@@ -313,7 +325,11 @@ async def test_fetch_messages_after_join():
                 [
                     "chat.fetch",
                     123,
-                    {"channel": "room_0", "count": 20, "before_id": next_id},
+                    {
+                        "channel": str(chat_room.channel.id),
+                        "count": 20,
+                        "before_id": next_id,
+                    },
                 ]
             )
             response = await c2.receive_json_from()
@@ -321,7 +337,7 @@ async def test_fetch_messages_after_join():
             del response[2]["results"][0]["timestamp"]
             del response[2]["results"][0]["event_id"]
             assert response[2]["results"][0] == {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_type": "channel.member",
                 "type": "chat.event",
                 "content": {
@@ -336,7 +352,7 @@ async def test_fetch_messages_after_join():
             del response[2]["results"][1]["timestamp"]
             del response[2]["results"][1]["event_id"]
             assert response[2]["results"][1] == {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "type": "chat.event",
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
@@ -346,9 +362,11 @@ async def test_fetch_messages_after_join():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_send_message_to_other_client():
+async def test_send_message_to_other_client(chat_room):
     async with world_communicator() as c1, world_communicator() as c2:
-        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -357,7 +375,9 @@ async def test_send_message_to_other_client():
             {"state": None, "next_event_id": -1, "members": []},
         ]
         await c1.receive_json_from()  # join notification c1
-        await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c2.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c2.receive_json_from()
         assert response[0] == "success"
         assert response[2]["state"] is None
@@ -374,7 +394,7 @@ async def test_send_message_to_other_client():
                 "chat.send",
                 123,
                 {
-                    "channel": "room_0",
+                    "channel": str(chat_room.channel.id),
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -389,7 +409,7 @@ async def test_send_message_to_other_client():
         assert response == [
             "chat.event",
             {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
@@ -403,7 +423,7 @@ async def test_send_message_to_other_client():
         assert response == [
             "chat.event",
             {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
@@ -414,9 +434,11 @@ async def test_send_message_to_other_client():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_no_messages_after_leave():
+async def test_no_messages_after_leave(chat_room):
     async with world_communicator() as c1, world_communicator() as c2:
-        await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
         assert response == [
@@ -425,7 +447,9 @@ async def test_no_messages_after_leave():
             {"state": None, "next_event_id": -1, "members": []},
         ]
         await c1.receive_json_from()  # join notification c1
-        await c2.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+        await c2.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c2.receive_json_from()
         assert response[0] == "success"
         assert response[2]["state"] is None
@@ -434,7 +458,9 @@ async def test_no_messages_after_leave():
         await c1.receive_json_from()  # join notification c1
         await c2.receive_json_from()  # join notification c2
 
-        await c2.send_json_to(["chat.leave", 123, {"channel": "room_0"}])
+        await c2.send_json_to(
+            ["chat.leave", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
         with pytest.raises(asyncio.TimeoutError):
@@ -448,7 +474,7 @@ async def test_no_messages_after_leave():
                 "chat.send",
                 123,
                 {
-                    "channel": "room_0",
+                    "channel": str(chat_room.channel.id),
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -463,7 +489,7 @@ async def test_no_messages_after_leave():
         assert response == [
             "chat.event",
             {
-                "channel": "room_0",
+                "channel": str(chat_room.channel.id),
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
@@ -474,9 +500,11 @@ async def test_no_messages_after_leave():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_no_message_after_unsubscribe():
+async def test_no_message_after_unsubscribe(chat_room):
     async with world_communicator() as c1, world_communicator() as c2:
-        await c1.send_json_to(["chat.join", 123, {"channel": "chat"}])
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c1.receive_json_from()
         await c1.receive_json_from()  # join notification c1
         response[2]["next_event_id"] = -1
@@ -485,7 +513,9 @@ async def test_no_message_after_unsubscribe():
             123,
             {"state": None, "next_event_id": -1, "members": []},
         ]
-        await c2.send_json_to(["chat.join", 123, {"channel": "chat"}])
+        await c2.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c2.receive_json_from()
         assert response[0] == "success"
         assert response[2]["state"] is None
@@ -494,7 +524,9 @@ async def test_no_message_after_unsubscribe():
         await c1.receive_json_from()  # join notification c2
         await c2.receive_json_from()  # join notification c2
 
-        await c2.send_json_to(["chat.unsubscribe", 123, {"channel": "chat"}])
+        await c2.send_json_to(
+            ["chat.unsubscribe", 123, {"channel": str(chat_room.channel.id)}]
+        )
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
 
@@ -503,7 +535,7 @@ async def test_no_message_after_unsubscribe():
                 "chat.send",
                 123,
                 {
-                    "channel": "chat",
+                    "channel": str(chat_room.channel.id),
                     "event_type": "message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
@@ -518,7 +550,7 @@ async def test_no_message_after_unsubscribe():
         assert response == [
             "chat.event",
             {
-                "channel": "chat",
+                "channel": str(chat_room.channel.id),
                 "event_type": "message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
@@ -532,10 +564,12 @@ async def test_no_message_after_unsubscribe():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_disconnect_is_no_leave():
+async def test_disconnect_is_no_leave(chat_room):
     async with world_communicator(client_id=str(uuid.uuid4())) as c1:
         async with world_communicator(client_id=str(uuid.uuid4())) as c2:
-            await c1.send_json_to(["chat.join", 123, {"channel": "chat"}])
+            await c1.send_json_to(
+                ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+            )
             response = await c1.receive_json_from()
             await c1.receive_json_from()  # join notification c1
             assert response == [
@@ -543,7 +577,9 @@ async def test_disconnect_is_no_leave():
                 123,
                 {"state": None, "members": [], "next_event_id": 1},
             ]
-            await c2.send_json_to(["chat.join", 123, {"channel": "chat"}])
+            await c2.send_json_to(
+                ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+            )
             response = await c2.receive_json_from()
             assert response[0] == "success"
             assert response[2]["state"] is None
@@ -558,12 +594,14 @@ async def test_disconnect_is_no_leave():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_last_disconnect_is_leave_in_volatile_channel():
+async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
     client_id = str(uuid.uuid4())
     async with world_communicator() as c1:
         async with world_communicator(client_id=client_id) as c2:
             async with world_communicator(client_id=client_id, named=False) as c3:
-                await c1.send_json_to(["chat.join", 123, {"channel": "room_0"}])
+                await c1.send_json_to(
+                    ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+                )
                 response = await c1.receive_json_from()
                 await c1.receive_json_from()  # join notification c1
                 assert response == [
@@ -572,7 +610,9 @@ async def test_last_disconnect_is_leave_in_volatile_channel():
                     {"state": None, "members": [], "next_event_id": 1},
                 ]
 
-                await c2.send_json_to(["chat.join", 124, {"channel": "room_0"}])
+                await c2.send_json_to(
+                    ["chat.join", 124, {"channel": str(volatile_chat_room.channel.id)}]
+                )
                 response = await c2.receive_json_from()
                 assert response[0] == "success"
                 assert response[2]["state"] is None
@@ -584,17 +624,47 @@ async def test_last_disconnect_is_leave_in_volatile_channel():
                 response = await c3.receive_json_from()
                 assert response == ["chat.channels", {"channels": []}]
 
-                await c3.send_json_to(["chat.join", 125, {"channel": "room_0"}])
+                await c3.send_json_to(
+                    ["chat.join", 125, {"channel": str(volatile_chat_room.channel.id)}]
+                )
                 response = await c3.receive_json_from()
                 assert response[0] == "success"
                 # no join notification, was already in channel
 
-                assert len(await ChatService("sample").get_channel_users("room_0")) == 2
-            assert len(await ChatService("sample").get_channel_users("room_0")) == 2
-        assert len(await ChatService("sample").get_channel_users("room_0")) == 1
+                assert (
+                    len(
+                        await ChatService("sample").get_channel_users(
+                            str(volatile_chat_room.channel.id)
+                        )
+                    )
+                    == 2
+                )
+            assert (
+                len(
+                    await ChatService("sample").get_channel_users(
+                        str(volatile_chat_room.channel.id)
+                    )
+                )
+                == 2
+            )
+        assert (
+            len(
+                await ChatService("sample").get_channel_users(
+                    str(volatile_chat_room.channel.id)
+                )
+            )
+            == 1
+        )
 
         response = await c1.receive_json_from()
         assert response[0] == "chat.event"
         assert response[1]["content"]["membership"] == "leave"
 
-    assert len(await ChatService("sample").get_channel_users("room_0")) == 0
+    assert (
+        len(
+            await ChatService("sample").get_channel_users(
+                str(volatile_chat_room.channel.id)
+            )
+        )
+        == 0
+    )
