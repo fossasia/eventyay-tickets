@@ -1,3 +1,4 @@
+import re
 import uuid
 from contextlib import asynccontextmanager
 
@@ -89,18 +90,12 @@ async def test_unnamed(bbb_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.xfail
 async def test_bbb_down(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
 
-            m.get(
-                "https://video1.pretix.eu/bigbluebutton/api/create?attendeePW=311584b1c1e46e53&checksum"
-                "=b1e852b960e25b6ac2e2513fd3335c2e3b3b03f3&meetingID=2aa5179961ef81eb&meta_Room=room_1&meta_Source"
-                "=stayseated&meta_World=sample&moderatorPW=6887ebdc87b802d0&name=Gruppenraum+1&record=false",
-                status=500,
-            )
+            m.get(re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'), status=500)
 
             response = await c.receive_json_from()
             assert response[0] == "error"
@@ -109,18 +104,12 @@ async def test_bbb_down(bbb_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.xfail
 async def test_bbb_exception(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
 
-            m.get(
-                "https://video1.pretix.eu/bigbluebutton/api/create?attendeePW=311584b1c1e46e53&checksum"
-                "=b1e852b960e25b6ac2e2513fd3335c2e3b3b03f3&meetingID=2aa5179961ef81eb&meta_Room=room_1&meta_Source"
-                "=stayseated&meta_World=sample&moderatorPW=6887ebdc87b802d0&name=Gruppenraum+1&record=false",
-                exception=HttpProcessingError(),
-            )
+            m.get(re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'), exception=HttpProcessingError())
 
             response = await c.receive_json_from()
             assert response[0] == "error"
@@ -129,16 +118,13 @@ async def test_bbb_exception(bbb_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.xfail
 async def test_bbb_xml_error(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
-                "https://video1.pretix.eu/bigbluebutton/api/create?attendeePW=311584b1c1e46e53&checksum"
-                "=b1e852b960e25b6ac2e2513fd3335c2e3b3b03f3&meetingID=2aa5179961ef81eb&meta_Room=room_1&meta_Source"
-                "=stayseated&meta_World=sample&moderatorPW=6887ebdc87b802d0&name=Gruppenraum+1&record=false",
+                re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'),
                 body="""<response>
 <returncode>FAILED</returncode>
 <messageKey>checksumError</messageKey>
@@ -153,16 +139,13 @@ async def test_bbb_xml_error(bbb_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.xfail
-async def test_successful_url():
+async def test_successful_url(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
-            await c.send_json_to(["bbb.url", 123, {"room": "room_1"}])
+            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
-                "https://video1.pretix.eu/bigbluebutton/api/create?attendeePW=311584b1c1e46e53&checksum"
-                "=b1e852b960e25b6ac2e2513fd3335c2e3b3b03f3&meetingID=2aa5179961ef81eb&meta_Room=room_1&meta_Source"
-                "=stayseated&meta_World=sample&moderatorPW=6887ebdc87b802d0&name=Gruppenraum+1&record=false",
+                re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'),
                 body="""<response>
 <returncode>SUCCESS</returncode>
 <meetingID>6c58284d0c68af95</meetingID>
@@ -186,10 +169,4 @@ This conference was already in existence and may currently be in progress.
 
             response = await c.receive_json_from()
             assert response[0] == "success"
-            assert response[2] == {
-                "url": (
-                    "https://video1.pretix.eu/bigbluebutton/api/join?meetingID=2aa5179961ef81eb&fullName=Foo"
-                    "+Fighter&password=311584b1c1e46e53&joinViaHtml5=true&checksum"
-                    "=12288c016f7255aa75b7b9b280e8b3e00387eaba"
-                )
-            }
+            assert "/join?" in response[2]["url"]
