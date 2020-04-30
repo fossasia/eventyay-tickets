@@ -23,4 +23,3 @@ atlassian-ide-plugin.xml
 data/media
 static.dist/
 node_modules
-package-lock.json
