@@ -1,3 +1,4 @@
+import json
 import os
 
 from django.http import HttpResponse
@@ -32,6 +33,11 @@ class AppView(View):
     def get(self, request, *args, **kwargs):
         world = get_object_or_404(World, domain=request.headers["Host"])
         source = sh.source
-        # TODO: Properly parameterize websocket URL
-        source = "<!-- world-id: {} -->".format(world.pk) + source
+        source = source.replace("<body>", "<script>window.venueless={}</script><body>".format(
+            json.dumps({
+                'api': {
+                    'socket': '/ws/world/{}/'.format(world.pk)
+                }
+            })
+        ))
         return HttpResponse(source, content_type="text/html")
