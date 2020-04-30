@@ -25,7 +25,7 @@ def world_data():
 def _import_world(world_data):
     from stayseated.core.utils.config import import_config
 
-    import_config(world_data, "sample")
+    import_config(world_data)
     return World.objects.all().get()
 
 

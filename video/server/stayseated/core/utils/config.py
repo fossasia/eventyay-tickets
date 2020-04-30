@@ -6,10 +6,10 @@ from stayseated.core.models import Channel, Room, World
 
 
 @transaction.atomic
-def import_config(data, name):
+def import_config(data):
     data = copy.deepcopy(data)
-    world, _ = World.objects.get_or_create(id=name)
     world_config = data.pop("world")
+    world, _ = World.objects.get_or_create(id=world_config.pop("id"))
     world.title = world_config.pop("title")
     world.about = world_config.pop("about")
     world.config = world_config

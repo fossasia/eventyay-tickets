@@ -1,5 +1,6 @@
 {
   "world": {
+    "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
     "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
     "pretalx": {
