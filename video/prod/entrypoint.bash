@@ -11,14 +11,14 @@ if [ ! -d /data/media ]; then
     mkdir /data/media;
 fi
 
-python3 manage.py venueless --noinput
+python3 manage.py migrate --noinput
 
 if [ "$1" == "all" ]; then
     exec sudo /usr/bin/supervisord -n -c /etc/supervisord.conf
 fi
 
 if [ "$1" == "webworker" ]; then
-    exec daphne venueless.routing:application \
+    exec daphne venueless.asgi:application \
         -u /tmp/daphne.sock
 fi
 
