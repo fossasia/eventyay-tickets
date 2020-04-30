@@ -8,3 +8,4 @@ class World(models.Model):
     about = models.TextField(null=True, blank=True)
     config = JSONField(null=True, blank=True)
     permission_config = JSONField(null=True, blank=True)
+    domain = models.CharField(max_length=250, unique=True, null=True, blank=True)
