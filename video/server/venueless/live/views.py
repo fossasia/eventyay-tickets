@@ -36,7 +36,15 @@ class AppView(View):
         source = source.replace(
             "<body>",
             "<script>window.venueless={}</script><body>".format(
-                json.dumps({"api": {"socket": "/ws/world/{}/".format(world.pk)}})
+                json.dumps(
+                    {
+                        "api": {
+                            "socket": "wss://{}/ws/world/{}/".format(
+                                request.headers["Host"], world.pk
+                            )
+                        }
+                    }
+                )
             ),
         )
         return HttpResponse(source, content_type="text/html")
