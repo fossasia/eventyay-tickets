@@ -40,12 +40,8 @@ def get_create_params(room):
     config = m["config"]
     create_params = {
         "name": room.name,
-        "meetingID": derive_meeting_id(
-            room.world_id, str(room.id), config["secret"]
-        ),
-        "attendeePW": derive_attendee_pw(
-            room.world_id, str(room.id), config["secret"]
-        ),
+        "meetingID": derive_meeting_id(room.world_id, str(room.id), config["secret"]),
+        "attendeePW": derive_attendee_pw(room.world_id, str(room.id), config["secret"]),
         "moderatorPW": derive_moderator_pw(
             room.world_id, str(room.id), config["secret"]
         ),

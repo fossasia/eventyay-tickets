@@ -59,10 +59,9 @@ async def test_wrong_command():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-@pytest.mark.xfail
-async def test_wrong_room(room):
+async def test_wrong_room(chat_room):
     async with world_communicator() as c:
-        await c.send_json_to(["bbb.url", 123, {"room": str(room.pk)}])
+        await c.send_json_to(["bbb.url", 123, {"room": str(chat_room.pk)}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "bbb.unknown"
@@ -95,7 +94,7 @@ async def test_bbb_down(bbb_room):
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
 
-            m.get(re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'), status=500)
+            m.get(re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"), status=500)
 
             response = await c.receive_json_from()
             assert response[0] == "error"
@@ -109,7 +108,10 @@ async def test_bbb_exception(bbb_room):
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
 
-            m.get(re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'), exception=HttpProcessingError())
+            m.get(
+                re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
+                exception=HttpProcessingError(),
+            )
 
             response = await c.receive_json_from()
             assert response[0] == "error"
@@ -124,7 +126,7 @@ async def test_bbb_xml_error(bbb_room):
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
-                re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'),
+                re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
                 body="""<response>
 <returncode>FAILED</returncode>
 <messageKey>checksumError</messageKey>
@@ -145,7 +147,7 @@ async def test_successful_url(bbb_room):
             await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
-                re.compile(r'^https://video1.pretix.eu/bigbluebutton.*$'),
+                re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
                 body="""<response>
 <returncode>SUCCESS</returncode>
 <meetingID>6c58284d0c68af95</meetingID>

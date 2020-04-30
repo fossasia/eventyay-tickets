@@ -96,9 +96,7 @@ async def test_join_leave(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_volatile_based_on_room_config(
-    volatile_chat_room, non_volatile_chat_room
-):
+async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room):
     cid = str(uuid.uuid4())
     async with world_communicator(client_id=cid) as c, world_communicator(
         client_id=cid, named=False
@@ -118,22 +116,20 @@ async def test_join_volatile_based_on_room_config(
         response = await c2.receive_json_from()
         assert response == ["chat.channels", {"channels": []}]
 
-        await c.send_json_to(
-            ["chat.join", 123, {"channel": str(non_volatile_chat_room.channel.id)}]
-        )
+        await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
         assert not await ChatService("sample").membership_is_volatile(
-            str(non_volatile_chat_room.channel.id), c.context["user.config"]["id"]
+            str(chat_room.channel.id), c.context["user.config"]["id"]
         )
 
         response = await c2.receive_json_from()
         assert response == [
             "chat.channels",
-            {"channels": [str(non_volatile_chat_room.channel.id)]},
+            {"channels": [str(chat_room.channel.id)]},
         ]
 
 
@@ -534,8 +530,6 @@ async def test_no_message_after_unsubscribe(chat_room):
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
 
-        await c1.receive_json_from()  # c2 leave notification
-        await c2.receive_json_from()  # c2 leave notification
         await c1.send_json_to(
             [
                 "chat.send",
@@ -570,11 +564,11 @@ async def test_no_message_after_unsubscribe(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_disconnect_is_no_leave(non_volatile_chat_room):
+async def test_disconnect_is_no_leave(chat_room):
     async with world_communicator(client_id=str(uuid.uuid4())) as c1:
         async with world_communicator(client_id=str(uuid.uuid4())) as c2:
             await c1.send_json_to(
-                ["chat.join", 123, {"channel": str(non_volatile_chat_room.channel.id)}]
+                ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
             )
             response = await c1.receive_json_from()
             await c1.receive_json_from()  # join notification c1
@@ -584,7 +578,7 @@ async def test_disconnect_is_no_leave(non_volatile_chat_room):
                 {"state": None, "members": [], "next_event_id": 1},
             ]
             await c2.send_json_to(
-                ["chat.join", 123, {"channel": str(non_volatile_chat_room.channel.id)}]
+                ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
             )
             response = await c2.receive_json_from()
             assert response[0] == "success"
@@ -600,13 +594,13 @@ async def test_disconnect_is_no_leave(non_volatile_chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
+async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
     client_id = str(uuid.uuid4())
     async with world_communicator() as c1:
         async with world_communicator(client_id=client_id) as c2:
             async with world_communicator(client_id=client_id, named=False) as c3:
                 await c1.send_json_to(
-                    ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+                    ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
                 )
                 response = await c1.receive_json_from()
                 await c1.receive_json_from()  # join notification c1
@@ -617,7 +611,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
                 ]
 
                 await c2.send_json_to(
-                    ["chat.join", 124, {"channel": str(chat_room.channel.id)}]
+                    ["chat.join", 124, {"channel": str(volatile_chat_room.channel.id)}]
                 )
                 response = await c2.receive_json_from()
                 assert response[0] == "success"
@@ -631,7 +625,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
                 assert response == ["chat.channels", {"channels": []}]
 
                 await c3.send_json_to(
-                    ["chat.join", 125, {"channel": str(chat_room.channel.id)}]
+                    ["chat.join", 125, {"channel": str(volatile_chat_room.channel.id)}]
                 )
                 response = await c3.receive_json_from()
                 assert response[0] == "success"
@@ -640,7 +634,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
                 assert (
                     len(
                         await ChatService("sample").get_channel_users(
-                            str(chat_room.channel.id)
+                            str(volatile_chat_room.channel.id)
                         )
                     )
                     == 2
@@ -648,14 +642,16 @@ async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
             assert (
                 len(
                     await ChatService("sample").get_channel_users(
-                        str(chat_room.channel.id)
+                        str(volatile_chat_room.channel.id)
                     )
                 )
                 == 2
             )
         assert (
             len(
-                await ChatService("sample").get_channel_users(str(chat_room.channel.id))
+                await ChatService("sample").get_channel_users(
+                    str(volatile_chat_room.channel.id)
+                )
             )
             == 1
         )
@@ -665,6 +661,10 @@ async def test_last_disconnect_is_leave_in_volatile_channel(chat_room):
         assert response[1]["content"]["membership"] == "leave"
 
     assert (
-        len(await ChatService("sample").get_channel_users(str(chat_room.channel.id)))
+        len(
+            await ChatService("sample").get_channel_users(
+                str(volatile_chat_room.channel.id)
+            )
+        )
         == 0
     )

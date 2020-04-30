@@ -36,17 +36,6 @@ async def world(world_data):
 
 
 @database_sync_to_async
-def _get_room(world):
-    return world.rooms.all().prefetch_related("channel").first()
-
-
-@pytest.fixture
-async def room(world):
-    room = await _get_room(world)
-    return room
-
-
-@database_sync_to_async
 def _get_rooms(world):
     return list(world.rooms.all().prefetch_related("channel"))
 
@@ -65,13 +54,6 @@ def bbb_room(rooms):  # pragma: no cover
 
 
 @pytest.fixture
-def chat_room(rooms):  # pragma: no cover
-    for room in rooms:
-        if any("chat.native" == module["type"] for module in room.module_config):
-            return room
-
-
-@pytest.fixture
 def volatile_chat_room(rooms):
     for room in rooms:  # pragma: no cover
         if any(
@@ -82,7 +64,7 @@ def volatile_chat_room(rooms):
 
 
 @pytest.fixture
-def non_volatile_chat_room(rooms):
+def chat_room(rooms):
     for room in rooms:  # pragma: no cover
         if any(
             "chat.native" == module["type"] and module["config"]["volatile"] is False
