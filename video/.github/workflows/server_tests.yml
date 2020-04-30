@@ -1,0 +1,47 @@
+name: Server tests
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'server/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'server/**'
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    container: python:3.8
+    services:
+      redis:
+        image: redis:latest
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_PASSWORD: venueless
+          POSTGRES_DB: venueless
+          POSTGRES_USER: venueless
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Install Python dependencies
+        run: pip3 install -U pip wheel setuptools && pip3 install -Ur requirements.txt
+        working-directory: ./server
+      - name: Run checks
+        run: python manage.py check
+        working-directory: ./server
+      - name: Run tests
+        working-directory: ./server
+        run: STAYSEATED_REDIS_HOST=redis STAYSEATED_DB_TYPE=postgresql STAYSEATED_DB_NAME=venueless STAYSEATED_DB_USER=venueless STAYSEATED_DB_PASS=venueless STAYSEATED_DB_HOST=postgres py.test tests/ --reuse-db
