@@ -18,7 +18,7 @@ if [ "$1" == "all" ]; then
 fi
 
 if [ "$1" == "webworker" ]; then
-    exec daphne venueless.asgi:application \
+    exec daphne venueless.routing:application \
         -u /tmp/daphne.sock
 fi
 
