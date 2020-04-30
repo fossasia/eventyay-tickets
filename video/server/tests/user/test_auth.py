@@ -7,7 +7,6 @@ import pytest
 from channels.testing import WebsocketCommunicator
 
 from stayseated.core.services.user import get_user_by_token_id
-from stayseated.core.services.world import get_world_config
 from stayseated.routing import application
 
 
@@ -23,12 +22,16 @@ async def world_communicator():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_client_id():
+async def test_auth_with_client_id(world):
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
 
 
 @pytest.mark.asyncio
@@ -52,9 +55,8 @@ async def test_auth_without_client_id():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 @pytest.mark.parametrize("index", [0, 1])
-async def test_auth_with_jwt_token(index):
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][index]
+async def test_auth_with_jwt_token(index, world):
+    config = world.config["JWT_secrets"][index]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -70,17 +72,20 @@ async def test_auth_with_jwt_token(index):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
         assert not response[1]["world.config"][
             "permissions"
         ]  # default users don't have permissions
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_invalid_jwt_token():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_invalid_jwt_token(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -103,12 +108,20 @@ async def test_auth_with_invalid_jwt_token():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_update_user():
-    async with world_communicator() as c, world_communicator() as c2:
+    async with world_communicator() as c, world_communicator() as c2, world_communicator() as c3:
         await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        await c2.send_json_to(["authenticate", {"client_id": "4"}])
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         user_id = response[1]["user.config"]["id"]
+
+        response = await c2.receive_json_from()
+        assert response[0] == "authenticated"
 
         await c.send_json_to(
             ["user.update", 123, {"profile": {"display_name": "Cool User"}}]
@@ -116,10 +129,20 @@ async def test_update_user():
         response = await c.receive_json_from()
         assert response == ["success", 123, {}], response
 
-        await c2.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c2.receive_json_from()
+        assert response == [
+            "user.updated",
+            {"profile": {"display_name": "Cool User"}, "id": user_id},
+        ]
+
+        await c3.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c3.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert response[1]["user.config"]["profile"]["display_name"] == "Cool User"
         assert response[1]["user.config"]["id"] == user_id
 
@@ -138,9 +161,8 @@ async def test_wrong_user_command():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_update_traits():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_update_traits(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -158,7 +180,11 @@ async def test_auth_with_jwt_token_update_traits():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -167,15 +193,18 @@ async def test_auth_with_jwt_token_update_traits():
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == ["chat.read"]
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_twice():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_twice(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -191,7 +220,11 @@ async def test_auth_with_jwt_token_twice():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -200,7 +233,11 @@ async def test_auth_with_jwt_token_twice():
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert (await get_user_by_token_id("sample", "123456")).traits == [
             "chat.read",
             "foo.bar",
@@ -214,7 +251,11 @@ async def test_fetch_user():
         await c.send_json_to(["authenticate", {"client_id": "4"}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         user_id = response[1]["user.config"]["id"]
 
         await c.send_json_to(
@@ -241,9 +282,8 @@ async def test_fetch_user():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_auth_with_jwt_token_and_permission_traits():
-    world_config = await get_world_config("sample")
-    config = world_config["world"]["JWT_secrets"][0]
+async def test_auth_with_jwt_token_and_permission_traits(world):
+    config = world.config["JWT_secrets"][0]
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=999)
     payload = {
@@ -259,7 +299,11 @@ async def test_auth_with_jwt_token_and_permission_traits():
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert set(response[1].keys()) == {"world.config", "user.config"}
+        assert set(response[1].keys()) == {
+            "world.config",
+            "user.config",
+            "chat.channels",
+        }
         assert response[1]["world.config"]["permissions"] == [
             "world.update",
             "world.announce",

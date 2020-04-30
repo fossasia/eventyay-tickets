@@ -9,8 +9,11 @@ Send JWT token, receive everything that's already known about the user.
 
 ```
 => ["authenticate", {"token": "JWTTOKEN"}]
-<- ["authenticated", {"user.config": {}, "world.config": {}}]
+<- ["authenticated", {"user.config": {}, "world.config": {}, "chat.channels": []}]
 ```
+
+``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
+ documentation for membership semantics.
 
 ## Change user info
 
@@ -27,3 +30,12 @@ Send JWT token, receive everything that's already known about the user.
 ```
 
 If the user is unknown, error code ``user.not_found`` is returned.
+
+## Profile updates
+
+If your user data changes, you will receive a broadcast with your new profile. This is e.g. important if your profile
+ is changed from a different connection.
+
+```
+<= ["user.updated", {"id": "1234", "profile": {…}}]
+```

@@ -11,6 +11,7 @@ class StaticTypeField(Field):
 
 class ChatEventSerializer(ModelSerializer):
     event_id = IntegerField(source="id")
+    channel = UUIDField(source="channel_id")
     sender = UUIDField(source="sender_id")
     type = StaticTypeField(source="id")
 

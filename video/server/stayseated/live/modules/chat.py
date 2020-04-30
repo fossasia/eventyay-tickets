@@ -1,9 +1,12 @@
+import logging
 from contextlib import suppress
 
 from stayseated.core.services.chat import ChatService
 from stayseated.core.services.user import get_public_user
-from stayseated.core.services.world import get_room_config
+from stayseated.core.services.world import get_room
 from stayseated.live.exceptions import ConsumerException
+
+logger = logging.getLogger(__name__)
 
 
 class ChatModule:
@@ -11,7 +14,6 @@ class ChatModule:
         super().__init__(*args, **kwargs)
         self.channel_id = None
         self.channels_subscribed = set()
-        self.channels_joined = set()
         self.actions = {
             "join": self.join,
             "leave": self.leave,
@@ -22,17 +24,24 @@ class ChatModule:
         }
 
     async def get_room(self):
-        room_config = await get_room_config(self.world, self.channel_id)
-        if not room_config:
+        room = await get_room(world=self.world, channel__id=self.channel_id)
+        if not room:
             raise ConsumerException("room.unknown", "Unknown room ID")
-        if "chat.native" not in [m["type"] for m in room_config["modules"]]:
-            raise ConsumerException("chat.unknown", "Room does not contain a chat.")
-        return room_config
+        return room
+
+    async def get_config(self):
+        room = await self.get_room()
+        return [m["config"] for m in room.module_config if m["type"] == "chat.native"][
+            0
+        ]
 
     async def _subscribe(self):
         self.channels_subscribed.add(self.channel_id)
         await self.consumer.channel_layer.group_add(
             "chat.{}".format(self.channel_id), self.consumer.channel_name
+        )
+        await self.service.track_subscription(
+            self.channel_id, self.consumer.user["id"], self.consumer.socket_id
         )
         return {
             "state": None,
@@ -40,9 +49,17 @@ class ChatModule:
             "members": await self.service.get_channel_users(self.channel_id),
         }
 
-    async def _unsubscribe(self):
+    async def _unsubscribe(self, clean_volatile_membership=True):
         with suppress(KeyError):
             self.channels_subscribed.remove(self.channel_id)
+        if clean_volatile_membership:
+            remaining_sockets = await self.service.track_unsubscription(
+                self.channel_id, self.consumer.user["id"], self.consumer.socket_id
+            )
+            if remaining_sockets == 0 and await self.service.membership_is_volatile(
+                self.channel_id, self.consumer.user["id"]
+            ):
+                await self._leave()
         await self.consumer.channel_layer.group_discard(
             f"chat.{self.channel_id}", self.consumer.channel_name
         )
@@ -55,22 +72,29 @@ class ChatModule:
     async def join(self):
         if not self.consumer.user.get("profile", {}).get("display_name"):
             raise ConsumerException("channel.join.missing_profile")
-        await self.get_room()
+        config = await self.get_config()
         reply = await self._subscribe()
-        self.channels_joined.add(self.channel_id)
-        await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
-            await self.service.create_event(
-                channel=self.channel_id,
+        joined = await self.service.add_channel_user(
+            self.channel_id,
+            self.consumer.user["id"],
+            volatile=self.content[2].get(
+                "volatile", config.get("volatile", False)
+            ),  # TODO: check if client is to override
+        )
+        if joined:
+            event = await self.service.create_event(
+                channel=str(self.channel_id),
                 event_type="channel.member",
                 content={
                     "membership": "join",
                     "user": await get_public_user(self.world, self.consumer.user["id"]),
                 },
                 sender=self.consumer.user["id"],
-            ),
-        )
-        await self.service.add_channel_user(self.channel_id, self.consumer.user["id"])
+            )
+            await self.consumer.channel_layer.group_send(
+                f"chat.{str(self.channel_id)}", event,
+            )
+            await self._broadcast_channel_list()
         await self.consumer.send_success(reply)
 
     async def _leave(self):
@@ -78,7 +102,7 @@ class ChatModule:
             self.channel_id, self.consumer.user["id"]
         )
         await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
+            f"chat.{str(self.channel_id)}",
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type="channel.member",
@@ -89,22 +113,27 @@ class ChatModule:
                 sender=self.consumer.user["id"],
             ),
         )
-        try:
-            self.channels_joined.remove(self.channel_id)
-        except KeyError:  # pragma: no cover
-            pass
+        await self._broadcast_channel_list()
+
+    async def _broadcast_channel_list(self):
+        await self.consumer.user_broadcast(
+            "chat.channels",
+            {
+                "channels": await self.service.get_channels_for_user(
+                    self.consumer.user["id"], is_volatile=False
+                )
+            },
+        )
 
     async def leave(self):
         await self.get_room()
+        await self._unsubscribe(clean_volatile_membership=False)
         await self._leave()
         await self.consumer.send_success()
 
     async def unsubscribe(self):
-        # unsubscribe is a leave if we're joined, and a simple unsubscribe otherwise
         await self.get_room()
         await self._unsubscribe()
-        if self.channel_id in self.channels_joined:
-            await self._leave()
         await self.consumer.send_success()
 
     async def fetch(self):
@@ -123,7 +152,7 @@ class ChatModule:
         event_type = self.content[2]["event_type"]
         # TODO: Filter if user is allowed to send this type of message
         await self.consumer.channel_layer.group_send(
-            f"chat.{self.channel_id}",
+            f"chat.{str(self.channel_id)}",
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type=event_type,
@@ -155,16 +184,17 @@ class ChatModule:
         self.content = content
         self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
         self.service = ChatService(self.world)
-        await self.publish_event()
+        if self.content["type"] == "chat.event":
+            await self.publish_event()
+        else:  # pragma: no cover
+            logger.warning(
+                f'Ignored unknown event {content["type"]}'
+            )  # ignore unknown event
 
     async def dispatch_disconnect(self, consumer, close_code):
         self.consumer = consumer
         self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
         self.service = ChatService(self.world)
-
-        for channel_id in frozenset(self.channels_joined):
-            self.channel_id = channel_id
-            await self._leave()
 
         for channel_id in frozenset(self.channels_subscribed):
             self.channel_id = channel_id

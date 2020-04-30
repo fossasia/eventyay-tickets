@@ -1,5 +1,5 @@
 from stayseated.core.services.bbb import BBBService
-from stayseated.core.services.world import get_room_config
+from stayseated.core.services.world import get_room
 from stayseated.live.exceptions import ConsumerException
 
 
@@ -11,12 +11,12 @@ class BBBModule:
         }
 
     async def get_room(self):
-        room_config = await get_room_config(self.world, self.room_id)
-        if not room_config:
+        room = await get_room(world=self.world, id=self.room_id)
+        if not room:
             raise ConsumerException("room.unknown", "Unknown room ID")
-        if "call.bigbluebutton" not in [m["type"] for m in room_config["modules"]]:
+        if "call.bigbluebutton" not in [m["type"] for m in room.module_config]:
             raise ConsumerException("bbb.unknown", "Room does not contain a BBB room.")
-        return room_config
+        return room
 
     async def url(self):
         room = await self.get_room()

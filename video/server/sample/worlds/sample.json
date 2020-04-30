@@ -1,5 +1,6 @@
 {
   "world": {
+    "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
     "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
     "pretalx": {
@@ -37,16 +38,6 @@
       "name": "Plenum",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
-      "access": [
-        {
-          "level": "viewer",
-          "required_traits": []
-        },
-        {
-          "level": "moderator",
-          "required_traits": ["moderator_plenum"]
-        }
-      ],
       "modules": [
         {
           "type": "livestream.native",
@@ -57,6 +48,7 @@
         {
           "type": "chat.native",
           "config": {
+            "volatile": true
           }
         }
       ]
@@ -66,16 +58,6 @@
       "name": "Gruppenraum 1",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
-      "access": [
-        {
-          "level": "viewer",
-          "required_traits": []
-        },
-        {
-          "level": "moderator",
-          "required_traits": ["moderator_plenum"]
-        }
-      ],
       "modules": [
         {
           "type": "call.bigbluebutton",
@@ -92,20 +74,11 @@
       "name": "Chat",
       "description": "Standalone Chat",
       "picture": "https://via.placeholder.com/150",
-      "access": [
-        {
-          "level": "viewer",
-          "required_traits": []
-        },
-        {
-          "level": "moderator",
-          "required_traits": ["moderator_plenum"]
-        }
-      ],
       "modules": [
         {
           "type": "chat.native",
           "config": {
+            "volatile": false
           }
         }
       ]
