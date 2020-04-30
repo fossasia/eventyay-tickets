@@ -109,7 +109,7 @@ CHANNEL_LAYERS = {
             "hosts": [
                 {
                     "address": "redis://"
-                    + ((":" + redis_auth) if redis_auth else "")
+                    + ((":" + redis_auth + "@") if redis_auth else "")
                     + os.getenv(
                         "VENUELESS_REDIS_HOST",
                         config.get("redis", "host", fallback="127.0.0.1"),
