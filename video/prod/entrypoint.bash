@@ -23,7 +23,7 @@ if [ "$1" == "webworker" ]; then
 fi
 
 if [ "$1" == "shell" ]; then
-    exec python3 mange.py shell
+    exec python3 manage.py shell_plus
 fi
 
 echo "Specify argument: all|webworker|shell"
