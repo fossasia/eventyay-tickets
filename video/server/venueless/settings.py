@@ -119,6 +119,7 @@ CHANNEL_LAYERS = {
                 }
             ],
             "prefix": "venueless:asgi:",
+            "capacity": 10000,
         },
     },
 }

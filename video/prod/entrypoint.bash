@@ -19,7 +19,7 @@ fi
 
 if [ "$1" == "webworker" ]; then
     exec daphne venueless.asgi:application \
-        -u /tmp/daphne.sock
+        -p 8000
 fi
 
 if [ "$1" == "shell" ]; then
