@@ -1,5 +1,5 @@
-export default {
-	api: {
-		socket: 'ws://localhost:8000/ws/world/sample/'
-	}
-}
+// load from index.html
+
+import cloneDeep from 'lodash/cloneDeep'
+const config = cloneDeep(window.venueless)
+export default config
