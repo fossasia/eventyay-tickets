@@ -1,10 +1,10 @@
 import logging
 from contextlib import suppress
 
-from stayseated.core.services.chat import ChatService
-from stayseated.core.services.user import get_public_user
-from stayseated.core.services.world import get_room
-from stayseated.live.exceptions import ConsumerException
+from venueless.core.services.chat import ChatService
+from venueless.core.services.user import get_public_user
+from venueless.core.services.world import get_room
+from venueless.live.exceptions import ConsumerException
 
 logger = logging.getLogger(__name__)
 

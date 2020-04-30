@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.utils.crypto import get_random_string
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.environ.get("STAYSEATED_DATA_DIR", os.path.join(BASE_DIR, "data"))
+DATA_DIR = os.environ.get("VENUELESS_DATA_DIR", os.path.join(BASE_DIR, "data"))
 LOG_DIR = os.path.join(DATA_DIR, "logs")
 MEDIA_ROOT = os.path.join(DATA_DIR, "media")
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static.dist")
@@ -22,14 +22,14 @@ if not os.path.exists(MEDIA_ROOT):
     os.mkdir(MEDIA_ROOT)
 
 config = configparser.RawConfigParser()
-if "STAYSEATED_CONFIG_FILE" in os.environ:
-    config.read_file(open(os.environ.get("STAYSEATED_CONFIG_FILE"), encoding="utf-8"))
+if "VENUELESS_CONFIG_FILE" in os.environ:
+    config.read_file(open(os.environ.get("VENUELESS_CONFIG_FILE"), encoding="utf-8"))
 else:
     config.read(
         [
-            "/etc/stayseated/stayseated.cfg",
-            os.path.expanduser("~/.stayseated.cfg"),
-            "stayseated.cfg",
+            "/etc/venueless/venueless.cfg",
+            os.path.expanduser("~/.venueless.cfg"),
+            "venueless.cfg",
         ],
         encoding="utf-8",
     )
@@ -50,52 +50,50 @@ else:
         f.write(SECRET_KEY)
 
 debug_default = "runserver" in sys.argv
-DEBUG = os.environ.get("STAYSEATED_DEBUG", str(debug_default)) == "True"
+DEBUG = os.environ.get("VENUELESS_DEBUG", str(debug_default)) == "True"
 
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get(
-    "STAYSEATED_MAIL_FROM", config.get("mail", "from", fallback="admin@localhost")
+    "VENUELESS_MAIL_FROM", config.get("mail", "from", fallback="admin@localhost")
 )
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
     EMAIL_HOST = os.environ.get(
-        "STAYSEATED_MAIL_HOST", config.get("mail", "host", fallback="localhost")
+        "VENUELESS_MAIL_HOST", config.get("mail", "host", fallback="localhost")
     )
     EMAIL_PORT = int(
-        os.environ.get(
-            "STAYSEATED_MAIL_PORT", config.get("mail", "port", fallback="25")
-        )
+        os.environ.get("VENUELESS_MAIL_PORT", config.get("mail", "port", fallback="25"))
     )
     EMAIL_HOST_USER = os.environ.get(
-        "STAYSEATED_MAIL_USER", config.get("mail", "user", fallback="")
+        "VENUELESS_MAIL_USER", config.get("mail", "user", fallback="")
     )
     EMAIL_HOST_PASSWORD = os.environ.get(
-        "STAYSEATED_MAIL_PASSWORD", config.get("mail", "password", fallback="")
+        "VENUELESS_MAIL_PASSWORD", config.get("mail", "password", fallback="")
     )
-    EMAIL_USE_TLS = os.environ.get("STAYSEATED_MAIL_TLS", "False") == "True"
-    EMAIL_USE_SSL = os.environ.get("STAYSEATED_MAIL_SSL", "False") == "True"
+    EMAIL_USE_TLS = os.environ.get("VENUELESS_MAIL_TLS", "False") == "True"
+    EMAIL_USE_SSL = os.environ.get("VENUELESS_MAIL_SSL", "False") == "True"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
         + os.getenv(
-            "STAYSEATED_DB_TYPE",
+            "VENUELESS_DB_TYPE",
             config.get("database", "backend", fallback="postgresql"),
         ),
         "NAME": os.getenv(
-            "STAYSEATED_DB_NAME", config.get("database", "name", fallback="stayseated")
+            "VENUELESS_DB_NAME", config.get("database", "name", fallback="venueless")
         ),
         "USER": os.getenv(
-            "STAYSEATED_DB_USER", config.get("database", "user", fallback="stayseated")
+            "VENUELESS_DB_USER", config.get("database", "user", fallback="venueless")
         ),
         "PASSWORD": os.getenv(
-            "STAYSEATED_DB_PASS", config.get("database", "password", fallback="")
+            "VENUELESS_DB_PASS", config.get("database", "password", fallback="")
         ),
         "HOST": os.getenv(
-            "STAYSEATED_DB_HOST", config.get("database", "host", fallback="")
+            "VENUELESS_DB_HOST", config.get("database", "host", fallback="")
         ),
         "PORT": os.getenv(
-            "STAYSEATED_DB_PORT", config.get("database", "port", fallback="")
+            "VENUELESS_DB_PORT", config.get("database", "port", fallback="")
         ),
         "CONN_MAX_AGE": 0,
     }
@@ -110,35 +108,35 @@ CHANNEL_LAYERS = {
                 {
                     "address": "redis://"
                     + os.getenv(
-                        "STAYSEATED_REDIS_HOST",
+                        "VENUELESS_REDIS_HOST",
                         config.get("redis", "host", fallback="127.0.0.1"),
                     )
                     + ":"
                     + os.getenv(
-                        "STAYSEATED_REDIS_PORT",
+                        "VENUELESS_REDIS_PORT",
                         config.get("redis", "port", fallback="6379"),
                     )
                 }
             ],
-            "prefix": "stayseated:asgi:",
+            "prefix": "venueless:asgi:",
         },
     },
 }
 
 SITE_URL = os.getenv(
-    "STAYSEATED_SITE_URL", config.get("stayseated", "url", fallback="http://localhost")
+    "VENUELESS_SITE_URL", config.get("venueless", "url", fallback="http://localhost")
 )
 if SITE_URL == "http://localhost" or DEBUG:
     ALLOWED_HOSTS = ["*"]
 else:
     ALLOWED_HOSTS = [urlparse(SITE_URL).netloc]
 
-if os.getenv("STAYSEATED_COOKIE_DOMAIN", ""):
-    SESSION_COOKIE_DOMAIN = os.getenv("STAYSEATED_COOKIE_DOMAIN", "")
-    CSRF_COOKIE_DOMAIN = os.getenv("STAYSEATED_COOKIE_DOMAIN", "")
+if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
+    SESSION_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
+    CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
 
 SESSION_COOKIE_SECURE = (
-    os.getenv("STAYSEATED_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
+    os.getenv("VENUELESS_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
     == "True"
 )
 
@@ -149,8 +147,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "channels",
-    "stayseated.core.CoreConfig",
-    "stayseated.live.LiveConfig",
+    "venueless.core.CoreConfig",
+    "venueless.live.LiveConfig",
 ]
 
 try:
@@ -169,7 +167,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "stayseated.urls"
+ROOT_URLCONF = "venueless.urls"
 
 X_FRAME_OPTIONS = "DENY"
 SECURE_BROWSER_XSS_FILTER = True
@@ -189,7 +187,7 @@ TEMPLATES = [
         "DIRS": [
             os.path.join(DATA_DIR, "templates"),
             os.path.join(BASE_DIR, "templates"),
-            os.path.join(BASE_DIR, "stayseated/web/templates"),
+            os.path.join(BASE_DIR, "venueless/web/templates"),
         ],
         "OPTIONS": {
             "context_processors": [
@@ -207,8 +205,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "stayseated.wsgi.application"
-ASGI_APPLICATION = "stayseated.routing.application"
+WSGI_APPLICATION = "venueless.wsgi.application"
+ASGI_APPLICATION = "venueless.routing.application"
 
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Berlin"
@@ -223,8 +221,8 @@ LANGUAGES = [
 
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), "locale"),)
 
-SESSION_COOKIE_NAME = "stayseated_session"
-CSRF_COOKIE_NAME = "stayseated_csrftoken"
+SESSION_COOKIE_NAME = "venueless_session"
+CSRF_COOKIE_NAME = "venueless_csrftoken"
 SESSION_COOKIE_HTTPONLY = True
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
@@ -263,7 +261,7 @@ LOGGING = {
         "file": {
             "level": loglevel,
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "stayseated.log"),
+            "filename": os.path.join(LOG_DIR, "venueless.log"),
             "formatter": "default",
         },
     },
@@ -310,12 +308,12 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    [os.path.join(BASE_DIR, "stayseated/static")]
-    if os.path.exists(os.path.join(BASE_DIR, "stayseated/static"))
+    [os.path.join(BASE_DIR, "venueless/static")]
+    if os.path.exists(os.path.join(BASE_DIR, "venueless/static"))
     else []
 )
 
-STATICI18N_ROOT = os.path.join(BASE_DIR, "stayseated/static")
+STATICI18N_ROOT = os.path.join(BASE_DIR, "venueless/static")
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 

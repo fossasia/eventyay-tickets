@@ -1,6 +1,6 @@
-from stayseated.core.services.bbb import BBBService
-from stayseated.core.services.world import get_room
-from stayseated.live.exceptions import ConsumerException
+from venueless.core.services.bbb import BBBService
+from venueless.core.services.world import get_room
+from venueless.live.exceptions import ConsumerException
 
 
 class BBBModule:

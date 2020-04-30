@@ -4,7 +4,7 @@ from contextlib import suppress
 from channels.db import database_sync_to_async
 from django.core.exceptions import ValidationError
 
-from stayseated.core.models import Room, World
+from venueless.core.models import Room, World
 
 
 @database_sync_to_async

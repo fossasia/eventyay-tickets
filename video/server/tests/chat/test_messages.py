@@ -5,9 +5,9 @@ from contextlib import asynccontextmanager
 import pytest
 from channels.testing import WebsocketCommunicator
 
-from stayseated.core.services.chat import ChatService
-from stayseated.core.utils.redis import aioredis
-from stayseated.routing import application
+from venueless.core.services.chat import ChatService
+from venueless.core.utils.redis import aioredis
+from venueless.routing import application
 
 
 @asynccontextmanager

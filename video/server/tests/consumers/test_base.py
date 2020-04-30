@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 import pytest
 from channels.testing import WebsocketCommunicator
 
-from stayseated.routing import application
+from venueless.routing import application
 
 
 @asynccontextmanager

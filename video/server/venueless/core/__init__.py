@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class CoreConfig(AppConfig):
-    name = "stayseated.core"
+    name = "venueless.core"
     label = "core"

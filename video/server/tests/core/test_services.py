@@ -1,6 +1,6 @@
 import pytest
 
-from stayseated.core.services.user import get_user, update_user
+from venueless.core.services.user import get_user, update_user
 
 
 @pytest.mark.asyncio

@@ -14,6 +14,10 @@ Development setup
 To start a local development setup on your computer, you can run::
 
     docker-compose up --build
+
+Once it is running, import the sample configuration::
+
+    docker-compose exec server python manage.py import_config sample/worlds/sample.json
     
 Then, you can visit the following URL in your browser to access the event as a guest user:
 

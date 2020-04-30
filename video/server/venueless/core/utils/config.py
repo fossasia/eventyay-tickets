@@ -2,7 +2,7 @@ import copy
 
 from django.db import transaction
 
-from stayseated.core.models import Channel, Room, World
+from venueless.core.models import Channel, Room, World
 
 
 @transaction.atomic

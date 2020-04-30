@@ -3,12 +3,12 @@ import json
 import pytest
 from channels.db import database_sync_to_async
 
-from stayseated.core.models import Channel, ChatEvent, Room, User, World
+from venueless.core.models import Channel, ChatEvent, Room, User, World
 
 
 @pytest.fixture(autouse=True)
 async def clear_redis():
-    from stayseated.core.utils.redis import aioredis
+    from venueless.core.utils.redis import aioredis
 
     async with aioredis() as redis:
         await redis.flushall()
@@ -23,7 +23,7 @@ def world_data():
 
 @database_sync_to_async
 def _import_world(world_data):
-    from stayseated.core.utils.config import import_config
+    from venueless.core.utils.config import import_config
 
     import_config(world_data)
     return World.objects.all().get()

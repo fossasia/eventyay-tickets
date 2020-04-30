@@ -2,11 +2,11 @@ import logging
 
 from channels.db import database_sync_to_async
 
-from stayseated.core.serializers.auth import PublicUserSerializer
-from stayseated.core.services.chat import ChatService
-from stayseated.core.services.user import get_public_user, get_user, update_user
-from stayseated.core.services.world import get_world_config_for_user
-from stayseated.core.utils.jwt import decode_token
+from venueless.core.serializers.auth import PublicUserSerializer
+from venueless.core.services.chat import ChatService
+from venueless.core.services.user import get_public_user, get_user, update_user
+from venueless.core.services.world import get_world_config_for_user
+from venueless.core.utils.jwt import decode_token
 
 logger = logging.getLogger(__name__)
 

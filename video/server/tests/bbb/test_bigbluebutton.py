@@ -7,7 +7,7 @@ from aiohttp.http_exceptions import HttpProcessingError
 from aioresponses import aioresponses
 from channels.testing import WebsocketCommunicator
 
-from stayseated.routing import application
+from venueless.routing import application
 
 
 @asynccontextmanager

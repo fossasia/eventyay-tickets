@@ -6,8 +6,8 @@ import jwt
 import pytest
 from channels.testing import WebsocketCommunicator
 
-from stayseated.core.services.user import get_user_by_token_id
-from stayseated.routing import application
+from venueless.core.services.user import get_user_by_token_id
+from venueless.routing import application
 
 
 @asynccontextmanager

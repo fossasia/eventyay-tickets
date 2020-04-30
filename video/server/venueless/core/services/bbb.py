@@ -46,7 +46,7 @@ def get_create_params(room):
             room.world_id, str(room.id), config["secret"]
         ),
         "record": "true" if config.get("record", False) else "false",
-        "meta_Source": "stayseated",
+        "meta_Source": "venueless",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
     }

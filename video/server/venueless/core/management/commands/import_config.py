@@ -2,7 +2,7 @@ import json
 
 from django.core.management.base import BaseCommand
 
-from stayseated.core.utils.config import import_config
+from venueless.core.utils.config import import_config
 
 
 class Command(BaseCommand):

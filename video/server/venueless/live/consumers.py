@@ -2,8 +2,8 @@ import uuid
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from stayseated.core.services.world import get_world
-from stayseated.live.exceptions import ConsumerException
+from venueless.core.services.world import get_world
+from venueless.live.exceptions import ConsumerException
 
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
