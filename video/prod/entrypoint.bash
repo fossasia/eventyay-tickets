@@ -19,7 +19,7 @@ fi
 
 if [ "$1" == "webworker" ]; then
     exec daphne venueless.asgi:application \
-        -p 8000
+        -p 8000 --proxy-headers
 fi
 
 if [ "$1" == "shell" ]; then
