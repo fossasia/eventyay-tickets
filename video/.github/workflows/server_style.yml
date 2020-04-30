@@ -27,7 +27,7 @@ jobs:
         run: pip3 install -U pip wheel setuptools && pip3 install -U black
         working-directory: ./server
       - name: Run checks
-        run: black --check stayseated tests
+        run: black --check venueless tests
         working-directory: ./server
   flake8:
     name: flake8
@@ -46,7 +46,7 @@ jobs:
         run: pip3 install -U pip wheel setuptools && pip3 install -U flake8
         working-directory: ./server
       - name: Run checks
-        run: flake8 stayseated tests
+        run: flake8 venueless tests
         working-directory: ./server
   isort:
     name: isort
@@ -65,5 +65,5 @@ jobs:
         run: pip3 install -U pip wheel setuptools && pip3 install -U isort
         working-directory: ./server
       - name: Run checks
-        run: isort -rc -c stayseated tests
+        run: isort -rc -c venueless tests
         working-directory: ./server
