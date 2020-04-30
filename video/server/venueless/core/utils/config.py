@@ -16,7 +16,7 @@ def import_config(data):
     world.permission_config = data.pop("permissions")
     world.save()
 
-    for room_config in data.pop("rooms"):
+    for i, room_config in enumerate(data.pop("rooms")):
         room, _ = Room.objects.get_or_create(
             import_id=room_config.pop("id"),
             world=world,
@@ -27,6 +27,7 @@ def import_config(data):
         room_config.pop("picture")  # TODO import picure from path or http
         room.permission_config = room_config.pop("permissions", {})
         room.module_config = room_config.pop("modules")
+        room.sorting_priority = i
         room.save()
         assert not room_config, f"Unused config data: {room_config}"
 

@@ -14,5 +14,8 @@ class Room(models.Model):
     name = models.CharField(max_length=300)
     description = models.TextField(null=True, blank=True)
     picture = models.FileField(null=True, blank=True)
-
+    sorting_priority = models.IntegerField(default=0)
     import_id = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        ordering = ("import_id", "name")
