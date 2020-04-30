@@ -88,7 +88,7 @@ async def get_world_config_for_user(user):
             if module["type"] == "call.bigbluebutton":
                 module_config["config"] = {}
             elif module["type"] == "chat.native" and getattr(room, "channel", None):
-                module["channel_id"] = str(room.channel.id)
+                module_config["channel_id"] = str(room.channel.id)
             room_config["modules"].append(module_config)
         result["rooms"].append(room_config)
     return result

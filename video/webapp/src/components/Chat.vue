@@ -52,7 +52,7 @@ export default {
 		}
 	},
 	created () {
-		this.$store.dispatch('chat/subscribe', this.room.id)
+		this.$store.dispatch('chat/subscribe', this.module.channel_id)
 	},
 	destroyed () {
 		this.$store.dispatch('chat/unsubscribe')
