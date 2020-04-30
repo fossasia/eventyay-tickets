@@ -33,11 +33,10 @@ class AppView(View):
     def get(self, request, *args, **kwargs):
         world = get_object_or_404(World, domain=request.headers["Host"])
         source = sh.source
-        source = source.replace("<body>", "<script>window.venueless={}</script><body>".format(
-            json.dumps({
-                'api': {
-                    'socket': '/ws/world/{}/'.format(world.pk)
-                }
-            })
-        ))
+        source = source.replace(
+            "<body>",
+            "<script>window.venueless={}</script><body>".format(
+                json.dumps({"api": {"socket": "/ws/world/{}/".format(world.pk)}})
+            ),
+        )
         return HttpResponse(source, content_type="text/html")
