@@ -135,19 +135,26 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
-class TeamUninvite(PermissionRequired, DetailView):
-    model = TeamInvite
-    template_name = "orga/settings/team_delete.html"
-    permission_required = "orga.change_teams"
-
+class InviteMixin:
     def get_permission_object(self):
         return self.request.organiser
 
     @context
+    @cached_property
     def team(self):
         return get_object_or_404(
             self.request.organiser.teams.all(), pk=self.object.team.pk
         )
+
+    @cached_property
+    def object(self):
+        return get_object_or_404(self.team.invites.all(), pk=self.kwargs["pk"],)
+
+
+class TeamUninvite(InviteMixin, PermissionRequired, DetailView):
+    model = TeamInvite
+    template_name = "orga/settings/team_delete.html"
+    permission_required = "orga.change_teams"
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
@@ -155,23 +162,14 @@ class TeamUninvite(PermissionRequired, DetailView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
-class TeamResend(PermissionRequired, DetailView):
+class TeamResend(InviteMixin, PermissionRequired, DetailView):
     model = TeamInvite
     template_name = "orga/settings/team_resend.html"
     permission_required = "orga.change_teams"
 
-    def get_permission_object(self):
-        return self.request.organiser
-
-    @context
-    def team(self):
-        return get_object_or_404(
-            self.request.organiser.teams.all(), pk=self.object.team.pk
-        )
-
     def post(self, request, *args, **kwargs):
         self.get_object().send()
-        messages.success(request, _("The team invitation was resend."))
+        messages.success(request, _("The team invitation was sent again."))
         return redirect(self.request.organiser.orga_urls.base)
 
 

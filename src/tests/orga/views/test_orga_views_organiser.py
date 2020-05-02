@@ -158,6 +158,30 @@ def test_invite_orga_member_as_orga(orga_client, organiser):
 
 
 @pytest.mark.django_db
+def test_resend_invite(orga_client, organiser, invitation):
+    djmail.outbox = []
+    team = invitation.team
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    url = reverse(
+        "orga:organiser.teams.resend",
+        kwargs={"organiser": organiser.slug, "pk": invitation.pk},
+    )
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    assert len(djmail.outbox) == 0
+
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.count() == 1
+    assert team.invites.count() == 1
+    assert len(djmail.outbox) == 1
+    assert djmail.outbox[0].to == [invitation.email]
+
+
+@pytest.mark.django_db
 def test_invite_orga_member_wrong_email(orga_client, organiser):
     djmail.outbox = []
     team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)
