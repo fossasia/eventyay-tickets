@@ -63,7 +63,7 @@ async def get_world_config_for_user(user):
     rules = world.permission_config or {}
     traits = set(user.traits)
     result["permissions"] = get_permissions_for_traits(
-        rules, traits, prefixes=["world"]
+        rules, traits, prefixes=["world", "room.create"]
     )
     rooms = await get_rooms(world)
     for room in rooms:

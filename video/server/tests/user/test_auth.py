@@ -304,11 +304,11 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "user.config",
             "chat.channels",
         }
-        assert response[1]["world.config"]["permissions"] == [
+        assert set(response[1]["world.config"]["permissions"]) == {
             "world.update",
             "world.announce",
-        ]
-        assert "world.update" in response[1]["world.config"]["permissions"]
+            "room.create",
+        }
         assert "room.update" not in response[1]["world.config"]["permissions"]
         assert "room.update" in response[1]["world.config"]["rooms"][0]["permissions"]
         assert (
