@@ -34,6 +34,8 @@ services:
         image: "redis:latest"
     db:
         image: "postgres:11"
+        ports:
+            - "5438:5432"
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
