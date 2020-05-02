@@ -470,12 +470,16 @@ class ScheduleView(ScheduleDataView):
         result["day_count"] = len(result["data"])
         today = now().date()
         result["initial_day"] = (
-            today
-            if result["data"][0]["start"].date()
-            <= today
-            <= result["data"][-1]["start"].date()
-            else result["data"][0]["start"]
-        ) if result["day_count"] else None
+            (
+                today
+                if result["data"][0]["start"].date()
+                <= today
+                <= result["data"][-1]["start"].date()
+                else result["data"][0]["start"]
+            )
+            if result["day_count"]
+            else None
+        )
         return result
 
     def get_schedule_data_proportional(self, data):
