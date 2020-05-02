@@ -146,7 +146,7 @@ setup(
         ],
         "mysql": ["mysqlclient"],
         "postgres": ["psycopg2-binary"],
-        "redis": ["django_redis==4.11.*", "redis==3.4.*",],
+        "redis": ["django_redis==4.11.*", "redis==3.5.*",],
     },
     packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
