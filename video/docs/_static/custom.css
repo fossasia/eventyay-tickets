@@ -1,0 +1,18 @@
+.logo {
+    height: 50px;
+}
+.wy-side-nav-search {
+    background: #0058de;
+}
+a, a:visited, a:hover {
+    color: #e2007e;
+}
+a:hover {
+    text-decoration: underline;
+}
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #7baaf0;
+}
+.wy-menu-vertical a {
+    color: #d9d9d9;
+}

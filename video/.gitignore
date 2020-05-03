@@ -13,7 +13,6 @@ htmlcov/
 *~
 .ropeproject
 __pycache__/
-_static/
 .idea
 .secret
 atlassian-ide-plugin.xml
