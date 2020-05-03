@@ -26,5 +26,5 @@ if [ "$1" == "shell" ]; then
     exec python3 manage.py shell_plus
 fi
 
-echo "Specify argument: all|webworker|shell"
-exit 1
+exec python3 manage.py $*
+

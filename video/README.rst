@@ -7,14 +7,6 @@ venueless is brought to you by `pretix`_ and `pretalx`_.
 
 **This project is in a development stage and currently not intended for production use.**
 
-
-
-
-Production setup
-----------------
-
-A recommended production setup will be documented at a later stage.
-
 License
 -------
 

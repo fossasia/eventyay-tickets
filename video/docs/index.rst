@@ -7,4 +7,5 @@ Welcome to venueless' documentation!
    :maxdepth: 2
    :caption: Documentation
 
+   admin/index
    developer/index
