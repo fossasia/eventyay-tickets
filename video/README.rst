@@ -8,24 +8,6 @@ venueless is brought to you by `pretix`_ and `pretalx`_.
 **This project is in a development stage and currently not intended for production use.**
 
 
-Development setup
------------------
-
-To start a local development setup on your computer, you can run::
-
-    docker-compose up --build
-
-Once it is running, import the sample configuration::
-
-    docker-compose exec server python manage.py import_config sample/worlds/sample.json
-    
-Then, you can visit the following URL in your browser to access the event as a guest user:
-
-http://localhost:8880/#token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3ByZXRpeC5ldS8iLCJhdWQiOiJkZW1vLWV2ZW50IiwiZXhwIjoxNjcyODQ1NTI2LCJpYXQiOjE1ODY1MzE5MjYsInVpZCI6InNvbWUtdXNlci1pZCIsInRyYWl0cyI6WyJzcGVha2VyIiwiYWRkb24tMiJdfQ.d5ZrdZbRkpu9yuqK9fNRdu4VXnpkFU6rR8y0DjVToJM
-
-To run the test suite of the server component, you can execute::
-
-    docker-compose exec server pytest
 
 
 Production setup
