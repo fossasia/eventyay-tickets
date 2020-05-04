@@ -37,6 +37,9 @@ export default {
 			return this.schedule.event.tracks.find(track => track.name === this.talk.track)
 		},
 		talkUrl () {
+			if (this.isBreak) {
+				return null;
+			}
 			return this.talk.code ? (this.world.pretalx.base_url + 'talk/' + this.talk.code) : '#'
 		},
 		startMinutes () {
