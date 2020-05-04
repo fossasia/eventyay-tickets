@@ -1,6 +1,17 @@
 venueless
 =========
 
+.. image:: https://readthedocs.org/projects/venueless/badge/?version=latest
+   :target: https://venueless.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+.. image:: https://github.com/venueless/venueless/workflows/Server%20tests/badge.svg
+   :target: https://github.com/venueless/venueless/actions
+   :alt: Server tests
+
+.. image:: https://codecov.io/gh/venueless/venueless/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/venueless/venueless
+
 venueless allows you to run events fully online. You can make use of different modules including live video streams, interactive video calls, group chats and more.
 
 venueless is brought to you by `pretix`_ and `pretalx`_.
