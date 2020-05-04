@@ -112,7 +112,7 @@ export default {
 
 		&::before
 			position: absolute
-			background-color: $brand-primary
+			background-color: $clr-primary
 			border-radius: 2px
 			color: rgba(255, 255, 255, 0.87)
 			content: attr(data-time)
@@ -130,7 +130,7 @@ export default {
 			height: 0
 			border-left: 8px solid transparent
 			border-right: 8px solid transparent
-			border-top: 8px solid $brand-primary
+			border-top: 8px solid $clr-primary
 			top: -14px
 
 .pretalx-schedule-talk.talk-personal,

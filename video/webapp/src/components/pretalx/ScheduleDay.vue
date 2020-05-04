@@ -83,12 +83,12 @@ export default {
 		font-weight: 400
 
 		.pretalx-schedule-day-header
-			border-bottom: 4px solid $brand-primary
+			border-bottom: 4px solid $clr-primary
 			background: inherit
 
 		.pretalx-schedule-day-room-header
 			border-left: 2px solid lighten($clr-grey-800, 55%)
-			border-bottom: 4px solid $brand-primary
+			border-bottom: 4px solid $clr-primary
 			flex: 1 0
 			font-size: 20px
 			text-align: center
