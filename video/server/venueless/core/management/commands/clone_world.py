@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
-from django.utils.crypto import get_random_string
 
-from venueless.core.models import World, Channel
+from venueless.core.models import Channel, World
 
 
 class Command(BaseCommand):
