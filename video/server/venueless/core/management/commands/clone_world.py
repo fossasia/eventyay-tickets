@@ -33,6 +33,7 @@ class Command(BaseCommand):
             except:
                 has_channel = False
             r.pk = None
+            r.world = new
             r.save()
             if has_channel:
                 Channel.objects.create(room=r, world=new)
