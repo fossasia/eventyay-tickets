@@ -204,7 +204,7 @@ Users, settings, rooms, and so on.
 To create your first world, execute the following command and answer its questions.
 Right now, every world needs its own domain to run on::
 
-    $ docker exec -it venueless.service create_world
+    $ docker exec -it venueless.service venueless create_world
     Enter the internal ID for the new world (alphanumeric): myevent2020
     Enter the title for the new world: My Event 2020
     Enter the domain of the new world (e.g. myevent.example.org): venueless.mydomain.com
