@@ -16,7 +16,9 @@ a.pretalx-schedule-talk(
 			i.fa.fa-ban.do-not-record.fa-stack-2x(aria-hidden="true")
 		span.pretalx-schedule-talk-title(v-if="!isBreak") {{ talk.title }}
 		span.pretalx-schedule-break-title(v-else="") {{ talk.title }}
-		span.pretalx-schedule-talk-speakers(v-if="talk.display_speaker_names") ({{ talk.display_speaker_names }})
+		span.pretalx-schedule-talk-speakers(v-if="talk.display_speaker_names")
+			|
+			| ({{ talk.display_speaker_names }})
 		br
 </template>
 <script>
