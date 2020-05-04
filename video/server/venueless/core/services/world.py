@@ -56,7 +56,12 @@ async def get_world_config_for_user(user):
     # TODO: Remove any rooms the user should not see
     world = await get_world_for_user(user)
     result = {
-        "world": {"id": str(world.id), "title": world.title, "about": world.about,},
+        "world": {
+            "id": str(world.id),
+            "title": world.title,
+            "about": world.about,
+            "pretalx": world.config.get("pretalx", {}),
+        },
         "rooms": [],
     }
 

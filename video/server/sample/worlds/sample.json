@@ -4,7 +4,7 @@
     "title": "Unsere tolle Online-Konferenz",
     "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
     "pretalx": {
-      "base_url": "https://pretalx.com/democon/",
+      "base_url": "https://democon.pretalx.com/democon/",
       "room_mapping": {
         "131": "room_0",
         "130": "room_1"
