@@ -111,7 +111,7 @@ setup(
         "django-scopes==1.2.*",  # https://github.com/raphaelm/django-scopes/releases
         "djangorestframework==3.11.*",  # http://www.django-rest-framework.org/community/release-notes/
         "inlinestyler==0.2.*",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
-        "libsass==0.19.*",  # https://sass.github.io/libsass-python/changes.html
+        "libsass==0.20.*",  # https://sass.github.io/libsass-python/changes.html
         "Markdown==3.2.*",  # https://python-markdown.github.io/change_log/
         "publicsuffixlist==0.6.*",
         "python-dateutil==2.8.*",  # https://dateutil.readthedocs.io/en/stable/changelog.html
