@@ -23,7 +23,7 @@ a.pretalx-schedule-talk(
 </template>
 <script>
 import { mapState } from 'vuex'
-import moment from 'moment'
+import moment from 'lib/timetravelMoment'
 
 export default {
 	name: 'pretalx-schedule-talk',
@@ -37,9 +37,7 @@ export default {
 			return this.schedule.event.tracks.find(track => track.name === this.talk.track)
 		},
 		talkUrl () {
-			if (this.isBreak) {
-				return null;
-			}
+			if (this.isBreak) return
 			return this.talk.code ? (this.world.pretalx.base_url + 'talk/' + this.talk.code) : '#'
 		},
 		startMinutes () {

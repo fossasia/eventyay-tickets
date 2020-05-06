@@ -9,7 +9,7 @@
 	pretalx-schedule-day(:day="activeDay", :key="activeDay.start")
 </template>
 <script>
-import moment from 'moment'
+import moment from 'lib/timetravelMoment'
 import PretalxScheduleDay from './ScheduleDay'
 
 export default {
@@ -50,7 +50,7 @@ export default {
 				LL: moment.localeData()._longDateFormat.LL.replace(/Y/g, '').replace(/,? *$/, '')
 			}
 		})
-		this.activeDay = this.schedule.schedule[0] // TODO use current day
+		this.activeDay = this.schedule.schedule.find(day => moment().isSame(day.start, 'day')) ?? this.schedule.schedule[0]
 	},
 	mounted () {
 		// TODO replace with proper mq support

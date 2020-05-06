@@ -11,9 +11,6 @@ import Scrollbars from 'components/Scrollbars'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
-// import sinon from 'sinon'
-// TODO THIS SHOULD NOT BE IN PRODUCTION
-// sinon.useFakeTimers({ now: 1587201480000, shouldAdvanceTime: true })
 
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
