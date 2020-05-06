@@ -12,7 +12,7 @@ section.pretalx-schedule-day-wrapper(v-scrollbar.y)
 			pretalx-schedule-room(v-for="room in day.rooms", :room="room", :startOfDay="startOfDay", :key="room.name")
 </template>
 <script>
-import moment from 'moment'
+import moment from 'lib/timetravelMoment'
 import range from 'lodash/range'
 import last from 'lodash/last'
 import PretalxScheduleRoom from './ScheduleRoom'
@@ -39,7 +39,6 @@ export default {
 			for (const room of this.day.rooms) {
 				if (room.talks.length < 1) continue
 				const lastDate = moment(last(room.talks).end)
-				console.log(lastDate)
 				if (!endOfDay || endOfDay.diff(lastDate) < 0) {
 					endOfDay = lastDate
 				}
