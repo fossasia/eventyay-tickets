@@ -2,7 +2,6 @@
 .c-rooms-sidebar
 	.logo
 		span {{ world.title }}
-		bunt-icon-button(@click="$router.push({name: 'admin'})") wrench
 	.global-links
 		router-link.room(:to="{name: 'home'}") About
 		router-link.room(:to="{name: 'schedule'}") Schedule
@@ -21,6 +20,11 @@
 		router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
 			.name {{ chat.name }}
 	.buffer
+	.group-title
+		span Administration
+	.admin
+		router-link.room(:to="{name: 'admin'}") Event Config
+		router-link.room(:to="{name: 'admin'}") Users
 	.profile(@click="$emit('editProfile')")
 		avatar(:user="user", :size="36")
 		.display-name {{ user.profile.display_name }}
@@ -99,6 +103,7 @@ export default {
 	.group-title
 		color: $clr-secondary-text-dark
 		margin: 16px 8px 0 16px
+		height: 28px
 		font-weight: 600
 		font-size: 12px
 		display: flex
@@ -107,10 +112,10 @@ export default {
 		.bunt-icon-button
 			margin: -4px 0
 			icon-button-style(color: $clr-primary-text-dark, style: clear)
-	.stages, .chats
+	.stages, .chats, .admin
 		display: flex
 		flex-direction: column
-		.stage, .text-chat, .video-chat
+		> *
 			flex: none
 			height: 36px
 			line-height: 36px
