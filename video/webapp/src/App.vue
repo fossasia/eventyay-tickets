@@ -2,11 +2,13 @@
 #app
 	template(v-if="world")
 		//- app-bar
-		rooms-sidebar(@editProfile="showProfilePrompt = true")
+		rooms-sidebar(@editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true")
 		router-view
 		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream")
-		transition(name="profile-prompt")
+		transition(name="prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
+			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
+			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
@@ -14,13 +16,17 @@ import { mapState } from 'vuex'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import ProfilePrompt from 'components/ProfilePrompt'
+import CreateStagePrompt from 'components/CreateStagePrompt'
+import CreateChatPrompt from 'components/CreateChatPrompt'
 import Livestream from 'components/Livestream'
 
 export default {
-	components: { AppBar, RoomsSidebar, Livestream, ProfilePrompt },
+	components: { AppBar, RoomsSidebar, Livestream, ProfilePrompt, CreateStagePrompt, CreateChatPrompt },
 	data () {
 		return {
-			showProfilePrompt: false
+			showProfilePrompt: false,
+			showStageCreationPrompt: false,
+			showChatCreationPrompt: false
 		}
 	},
 	computed: {
@@ -81,8 +87,8 @@ export default {
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 			height: calc(100vh - 112px)
-	.profile-prompt-enter-active, .profile-prompt-leave-active
+	.prompt-enter-active, .prompt-leave-active
 		transition: opacity .5s
-	.profile-prompt-enter, .profile-prompt-leave-to
+	.prompt-enter, .prompt-leave-to
 		opacity: 0
 </style>
