@@ -11,5 +11,6 @@ recursive-include pretalx/cfp/templates *
 recursive-include pretalx/mail/templates *
 recursive-include pretalx/orga/templates *
 recursive-include pretalx/schedule/templates *
+recursive-exclude tests *
 global-exclude *.py[co]
 global-exclude __pycache__
