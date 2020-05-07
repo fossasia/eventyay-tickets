@@ -19,6 +19,10 @@ const routes = [{
 	name: 'room',
 	component: Room,
 	props: true
+}, {
+	path: '/admin',
+	name: 'admin',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin')
 }]
 
 const router = new VueRouter({
