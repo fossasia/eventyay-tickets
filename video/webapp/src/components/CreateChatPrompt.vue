@@ -3,7 +3,7 @@
 	.prompt-wrapper(v-scrollbar.y="", @click.stop="")
 		.prompt-wrapper-inner
 			bunt-icon-button#btn-close(@click="$emit('close')") close
-			h1 Create a new chat room
+			h1 Create a new channel
 			p Some explanation text
 			form(@submit.prevent="create")
 				bunt-select(name="type", label="Type", v-model="type", :options="types")
