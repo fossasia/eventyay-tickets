@@ -3,8 +3,8 @@ const blessed = require('blessed')
 const contrib = require('blessed-contrib')
 const Stats = require('fast-stats').Stats
 
-const MAX_CLIENTS = 1000
-const TOTAL_CHAT_MESSAGES_PER_SECOND = 25
+const MAX_CLIENTS = 300
+const TOTAL_CHAT_MESSAGES_PER_SECOND = 1
 const CLIENT_RAMP_UP_TIME = 150
 
 // Create a screen object.
@@ -48,8 +48,8 @@ screen.render()
 let clients = 0
 gauge.setPercent(0)
 
-let pings = new Stats()
-let timings = new Stats()
+let pings = new Stats({buckets: [25, 50, 95], store_data: false})
+let timings = new Stats({buckets: [25, 50, 95], store_data: false})
 
 const createClient = function () {
 	if (clients >= MAX_CLIENTS) return
@@ -59,9 +59,7 @@ const createClient = function () {
 		timings.push(timing)
 	})
 	clients++
-	gauge.setPercent(100 * clients / MAX_CLIENTS)
 	screen.render()
-
 }
 
 const pingAverages = []
@@ -74,11 +72,12 @@ const computePings = function () {
 Clients: ${clients}/${MAX_CLIENTS}\n
 msg/s (at max clients): ${TOTAL_CHAT_MESSAGES_PER_SECOND}\n
 Ramp Up: ${CLIENT_RAMP_UP_TIME}ms\n
-Ping (avg/med/25%/50%/95%/minMax):\n${pings.amean().toFixed(2)} / ${pings.median()} / ${pings.percentile(25)} / ${pings.percentile(50)} / ${pings.percentile(95)} / ${pings.range()}\n
-Chat message (avg/med/25%/50%/95%/minMax):\n${timings.amean().toFixed(2)} / ${timings.median()} / ${timings.percentile(25)} / ${timings.percentile(50)} / ${timings.percentile(95)} / ${timings.range()}\n
+Ping (avg/med/25%/50%/95%/minMax):\n${pings.amean().toFixed(2)} / ${pings.median().toFixed(2)} / ${pings.percentile(25).toFixed(2)} / ${pings.percentile(50).toFixed(2)} / ${pings.percentile(95).toFixed(2)} / ${pings.range()}\n
+Chat message (avg/med/25%/50%/95%/minMax):\n${timings.amean().toFixed(2)} / ${timings.median().toFixed(2)} / ${timings.percentile(25).toFixed(2)} / ${timings.percentile(50).toFixed(2)} / ${timings.percentile(95).toFixed(2)} / ${timings.range()}\n
 `)
+	gauge.setPercent(100 * clients / MAX_CLIENTS)
 	screen.render()
 }
 
 setInterval(createClient, CLIENT_RAMP_UP_TIME)
-setInterval(computePings, 500)
+setInterval(computePings, 1000)

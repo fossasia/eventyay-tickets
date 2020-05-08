@@ -17,15 +17,13 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 
 	incoming = function (data) {
 		// console.log(data)
-		const payload = JSON.parse(data)
-		if (payload[0] === 'authenticated') {
+		if (data.startsWith(`["authenticated"`)) {
+			const payload = JSON.parse(data)
 			world = payload[1]['world.config']
 			for (const room of world.rooms) {
 				chatModule = room.modules.find(m => m.type === 'chat.native')
 				if (chatModule) break
 			}
-			// we won't need anymore messages
-			// ws.off('message', incoming)
 			ws.send(JSON.stringify(['user.update', correlationId++, {
 				profile: {display_name: `client ${clientNumber}`},
 			}]))
@@ -34,10 +32,11 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 			}]))
 			spam()
 			ping()
-		} else if (payload[0] === 'pong') {
+		} else if (data.startsWith(`["pong"`)) {
 			pingCb(Date.now() - lastPing)
 			lastPing = null
-		} else if (payload[0] === 'chat.event') {
+		} else if (data.startsWith(`["chat.event"`)) {
+			const payload = JSON.parse(data)
 			if (payload[1].content.client === clientId) {
 				timingCb(Date.now() - payload[1].content.timestamp)
 			}
