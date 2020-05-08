@@ -1,3 +1,4 @@
+/* global RELEASE */
 import Vue from 'vue'
 import Buntpapier from 'buntpapier'
 import Vuelidate from 'vuelidate'
@@ -48,3 +49,5 @@ if (token) {
 	store.dispatch('login', {clientId})
 }
 store.dispatch('connect')
+
+window.__venueless__release = RELEASE
