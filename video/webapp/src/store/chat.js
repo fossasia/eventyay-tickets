@@ -67,7 +67,7 @@ export default {
 		},
 		async fetchUser ({state}, id) {
 			const user = await api.call('user.fetch', {id})
-			state.usersLookup[user.id] = user
+			Vue.set(state.usersLookup, user.id, user)
 		},
 		sendMessage ({state}, {text}) {
 			api.call('chat.send', {
