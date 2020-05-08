@@ -302,3 +302,6 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/accounts/login"
 LOGOUT_REDIRECT_URL = "/accounts/login"
+
+VENUELESS_COMMIT = os.environ.get("VENUELESS_COMMIT_SHA", "unknown")
+VENUELESS_ENVIRONMENT = os.environ.get("VENUELESS_ENVIRONMENT", "unknown")

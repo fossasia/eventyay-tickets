@@ -1,9 +1,15 @@
 import uuid
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.conf import settings
 
+from venueless.core.services.connections import (
+    ping_connection,
+    register_connection,
+    unregister_connection,
+)
 from venueless.core.services.world import get_world
-from venueless.live.channels import GROUP_USER
+from venueless.live.channels import GROUP_USER, GROUP_VERSION
 from venueless.live.exceptions import ConsumerException
 
 from .modules.auth import AuthModule
@@ -21,7 +27,17 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         }
         self.user = None
         self.socket_id = str(uuid.uuid4())
+
         await self.accept()
+
+        await self.channel_layer.group_add(
+            GROUP_VERSION.format(
+                label=settings.VENUELESS_COMMIT + "." + settings.VENUELESS_ENVIRONMENT
+            ),
+            self.channel_name,
+        )
+        await register_connection()
+
         world = await get_world(self.scope["url_route"]["kwargs"]["world"])
         if world is None:
             await self.send_error("world.unknown_world", close=True)
@@ -31,6 +47,14 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         for c in self.components.values():
             if hasattr(c, "dispatch_disconnect"):
                 await c.dispatch_disconnect(self, close_code)
+
+        await self.channel_layer.group_discard(
+            GROUP_VERSION.format(
+                label=settings.VENUELESS_COMMIT + "." + settings.VENUELESS_ENVIRONMENT
+            ),
+            self.channel_name,
+        )
+        await unregister_connection()
 
     async def user_broadcast(self, event_type, data):
         """
@@ -49,9 +73,12 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     # Receive message from WebSocket
     async def receive_json(self, content, **kargs):
         self.content = content
+
         if content[0] == "ping":
             await self.send_json(["pong", content[1]])
+            await ping_connection()
             return
+
         if not self.user:
             if self.content[0] == "authenticate":
                 await self.components["user"].dispatch_command(self, content)
@@ -69,7 +96,9 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_error("protocol.unknown_command")
 
     async def dispatch(self, message):
-        if message["type"] == "user.broadcast":
+        if message["type"] == "connection.drop":
+            await self.close()
+        elif message["type"] == "user.broadcast":
             if self.socket_id != message["socket"]:
                 await self.send_json([message["event_type"], message["data"]])
         elif message["type"] == "world.update":
