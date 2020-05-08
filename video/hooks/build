@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
-#  Convert the location "/Dockerfile" to "Dockerfile"
-FILE=$(echo -n $BUILD_PATH | tail -c +2)
-
-docker build --build-arg=COMMIT=$(git rev-parse --short HEAD) -t $IMAGE_NAME -f $FILE .
+docker build --build-arg=COMMIT=$(git rev-parse --short HEAD) -t $IMAGE_NAME .
 
