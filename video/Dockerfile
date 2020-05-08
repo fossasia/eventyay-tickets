@@ -41,7 +41,6 @@ COPY prod/nginx.conf /etc/nginx/nginx.conf
 
 RUN chmod +x /usr/local/bin/venueless
 
-COPY server /venueless/server
 COPY webapp/*.js /venueless/webapp/
 COPY webapp/*.json /venueless/webapp/
 COPY webapp/src/ /venueless/webapp/src/
@@ -53,6 +52,8 @@ RUN cd /venueless/webapp && \
 	mkdir -p data && \
 	cd .. && \
     chown -R venueless:venueless /venueless /data
+
+COPY server /venueless/server
 
 ARG COMMIT=""
 LABEL commit=${COMMIT}
