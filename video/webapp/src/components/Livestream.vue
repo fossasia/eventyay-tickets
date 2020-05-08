@@ -52,11 +52,9 @@ export default {
 	},
 	methods: {
 		playingVideo () {
-			console.log('START')
 			this.playing = true
 		},
 		pausingVideo () {
-			console.log('STOP')
 			this.playing = false
 		}
 	}
