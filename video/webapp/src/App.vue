@@ -4,7 +4,7 @@
 		//- app-bar
 		rooms-sidebar(@editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true")
 		router-view
-		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream")
+		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
 		transition(name="prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
