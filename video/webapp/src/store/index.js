@@ -10,6 +10,7 @@ export default new Vuex.Store({
 	state: {
 		token: null,
 		clientId: null,
+		connected: false,
 		user: null,
 		world: null,
 		rooms: null,
@@ -24,9 +25,31 @@ export default new Vuex.Store({
 		connect ({state, dispatch}) {
 			api.connect({token: state.token, clientId: state.clientId})
 			api.on('joined', (serverState) => {
+				state.connected = true
 				state.user = serverState['user.config']
 				state.world = serverState['world.config'].world
-				state.rooms = serverState['world.config'].rooms
+				if (!state.rooms) {
+					state.rooms = serverState['world.config'].rooms
+				} else {
+					const updatedRooms = []
+					for (const newRoom of serverState['world.config'].rooms) {
+						const oldRoom = state.rooms.find(r => r.id === newRoom.id)
+						if (oldRoom) {
+							Object.assign(oldRoom, newRoom) // good enough?
+							updatedRooms.push(oldRoom)
+						} else {
+							state.rooms.push(newRoom)
+						}
+					}
+					for (const oldRoom of state.rooms) {
+						if (!updatedRooms.includes(oldRoom)) {
+							const index = state.rooms.indexOf(oldRoom)
+							if (index >= 0) {
+								state.rooms.splice(index, 1)
+							}
+						}
+					}
+				}
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
@@ -34,7 +57,7 @@ export default new Vuex.Store({
 				dispatch('fetchSchedule')
 			})
 			api.on('closed', () => {
-				state.world = null
+				state.connected = false
 			})
 		},
 		async updateUser ({state, dispatch}, update) {

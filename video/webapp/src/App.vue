@@ -9,6 +9,8 @@
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
+		.disconnected-warning(v-if="!connected")
+			| Connection lost! Trying to reconnect…
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
@@ -30,7 +32,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['world', 'user', 'streamingRoom']),
+		...mapState(['connected', 'world', 'user', 'streamingRoom']),
 		room () {
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
@@ -91,4 +93,17 @@ export default {
 		transition: opacity .5s
 	.prompt-enter, .prompt-leave-to
 		opacity: 0
+	.disconnected-warning
+		position: fixed
+		top: 0
+		left: calc(50% - 240px)
+		width: 480px
+		background-color: $clr-danger
+		color: $clr-primary-text-dark
+		padding: 16px
+		box-sizing: border-box
+		text-align: center
+		font-weight: 600
+		font-size: 20px
+		border-radius: 0 0 4px 4px
 </style>
