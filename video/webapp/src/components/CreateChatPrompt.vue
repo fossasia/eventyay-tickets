@@ -11,6 +11,8 @@
 						.mdi(:class="`mdi-${option.icon}`")
 						.label {{ option.label }}
 				bunt-input(name="name", label="Name", :icon="selectedType.icon", placeholder="fancyawesomechannel")
+				bunt-input-outline-container(label="Description")
+					textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
 				bunt-button(type="submit") create
 </template>
 <script>
@@ -87,10 +89,19 @@ export default {
 				align-self: stretch
 				.bunt-button
 					button-style(color: $clr-primary)
+					margin-top: 16px
 				.bunt-select
 					select-style(size: compact)
 					ul li
 						display: flex
 						.mdi
 							margin-right: 8px
+				.bunt-input-outline-container
+					textarea
+						background-color: transparent
+						border: none
+						outline: none
+						resize: vertical
+						min-height: 64px
+						padding: 0 8px
 </style>
