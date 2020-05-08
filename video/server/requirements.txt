@@ -14,7 +14,8 @@ pytz
 
 # deploy
 psycopg2-binary
-daphne
+gunicorn
+uvicorn
 
 # dev
 black
