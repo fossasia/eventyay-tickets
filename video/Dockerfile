@@ -54,6 +54,10 @@ RUN cd /venueless/webapp && \
 	cd .. && \
     chown -R venueless:venueless /venueless /data
 
+ARG COMMIT=""
+LABEL commit=${COMMIT}
+ENV VENUELESS_COMMIT_SHA=${COMMIT}
+
 USER venueless
 VOLUME ["/etc/venueless", "/data"]
 EXPOSE 80

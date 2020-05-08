@@ -39,7 +39,7 @@ build_container:
   stage: build
   script:
     - echo $CI_COMMIT_SHA > release.txt
-    - docker build -t venueless .
+    - docker build --build-arg=COMMIT=$(git rev-parse --short HEAD) -t venueless . 
     - docker tag venueless docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
   tags:
     - docker
