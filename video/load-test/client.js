@@ -25,13 +25,13 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb)
 			}
 			// we won't need anymore messages
 			// ws.off('message', incoming)
-			// ws.send(JSON.stringify(['user.update', correlationId++, {
-			// 	profile: {display_name: `client ${clientNumber}`},
-			// }]))
-			// ws.send(JSON.stringify(['chat.subscribe', correlationId++, {
-			// 	channel: chatModule.channel_id,
-			// }]))
-			// spam()
+			ws.send(JSON.stringify(['user.update', correlationId++, {
+				profile: {display_name: `client ${clientNumber}`},
+			}]))
+			ws.send(JSON.stringify(['chat.subscribe', correlationId++, {
+				channel: chatModule.channel_id,
+			}]))
+			spam()
 			ping()
 		} else if (payload[0] === 'pong') {
 			pingCb(Date.now() - lastPing)
@@ -43,12 +43,13 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb)
 
 	const ping = function () {
 		if (lastPing) {
+			pingCb(Date.now() - lastPing)
 			console.error('ping timeout')
 			return
 		}
 		lastPing = Date.now()
 		ws.send(JSON.stringify(['ping', lastPing]))
-		setTimeout(ping, Math.random() * 5000)
+		setTimeout(ping, 5000)
 	}
 
 	const spam = function () {

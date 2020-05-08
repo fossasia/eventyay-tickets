@@ -1,6 +1,7 @@
 const client = require('./client')
 const blessed = require('blessed')
 const contrib = require('blessed-contrib')
+const Stats = require('fast-stats').Stats
 
 const MAX_CLIENTS = 1000
 const MESSAGES_PER_CLIENT_PER_SECOND = 0.01
@@ -21,16 +22,16 @@ const log = grid.set(0, 1, 4, 1, blessed.log, {
 	mouse: true
 })
 
-const text = grid.set(0, 0, 1, 1, blessed.text, {
+const text = grid.set(0, 0, 2, 1, blessed.text, {
 })
 
-const gauge = grid.set(1, 0, 1, 1, contrib.gauge, {
+const gauge = grid.set(2, 0, 1, 1, contrib.gauge, {
 	label: 'Connected Clients',
 	stroke: 'green',
 	fill: 'white'
 })
 
-const pingSpark = grid.set(2, 0, 1, 1, contrib.sparkline, {
+const pingSpark = grid.set(3, 0, 1, 1, contrib.sparkline, {
 	label: 'Ping'
 })
 
@@ -48,7 +49,7 @@ screen.render()
 let clients = 0
 gauge.setPercent(0)
 
-let pings = []
+let pings = new Stats()
 
 const createClient = function () {
 	if (clients >= MAX_CLIENTS) return
@@ -64,18 +65,19 @@ const createClient = function () {
 const pingAverages = []
 
 const computePings = function () {
-	let total = 0
-	for (const ping of pings) {
-		total += ping
-	}
-	pingAverages.push(total / pings.length)
+	pingAverages.push(pings.amean())
 	if (pingAverages.length > 25) pingAverages.shift()
 	pingSpark.setData([ 'Average'], [pingAverages])
-	if (pings.length > 5000) pings = []
 	text.setText(`
 		Clients: ${clients}/${MAX_CLIENTS}\n
 		Ramp Up: ${CLIENT_RAMP_UP_TIME}ms\n
-		Average Ping: ${pingAverages[pingAverages.length - 1]}`)
+		Average Ping: ${pings.amean()}\n
+		Median Ping: ${pings.median()}\n
+		Ping Percentile 95%: ${pings.percentile(95)}\n
+		Ping Percentile 50%: ${pings.percentile(50)}\n
+		Ping Percentile 25%: ${pings.percentile(25)}\n
+		Ping Range: ${pings.range()}\n
+		`)
 	screen.render()
 }
 
