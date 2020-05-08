@@ -1,5 +1,5 @@
 py_style:
-  stage: test
+  stage: build
   script:
     - cd server
     - python -m venv env
@@ -10,11 +10,12 @@ py_style:
     - flake8 venueless tests
     - isort -rc -c venueless tests
   interruptible: true
+  allow_failure: true  # We check this in Github, and if it's urgent, we don't want to skip deployments because of this
   tags:
     - python3
 
 py_test:
-  stage: test
+  stage: build
   services:
     - redis:latest
     - postgres:11
@@ -69,7 +70,6 @@ deploy:
     - venuelessdeploy
 
 stages:
-  - test
   - build
   - upload
   - deploy
