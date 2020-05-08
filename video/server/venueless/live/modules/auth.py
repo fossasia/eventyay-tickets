@@ -5,6 +5,7 @@ from venueless.core.services.chat import ChatService
 from venueless.core.services.user import get_public_user, get_user, update_user
 from venueless.core.services.world import get_world_config_for_user
 from venueless.core.utils.jwt import decode_token
+from venueless.live.channels import GROUP_USER, GROUP_WORLD
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +40,10 @@ class AuthModule:
             ]
         )
         await self.consumer.channel_layer.group_add(
-            f"user.{self.consumer.user['id']}", self.consumer.channel_name
+            GROUP_USER.format(id=self.consumer.user["id"]), self.consumer.channel_name
         )
         await self.consumer.channel_layer.group_add(
-            f"world.{self.world}", self.consumer.channel_name
+            GROUP_WORLD.format(id=self.world), self.consumer.channel_name
         )
 
     async def update(self):
@@ -99,8 +100,9 @@ class AuthModule:
         self.consumer = consumer
         if self.consumer.user:
             await self.consumer.channel_layer.group_discard(
-                f"user.{self.consumer.user['id']}", self.consumer.channel_name
+                GROUP_USER.format(id=self.consumer.user["id"]),
+                self.consumer.channel_name,
             )
             await self.consumer.channel_layer.group_discard(
-                f"world.{self.world}", self.consumer.channel_name
+                GROUP_WORLD.format(id=self.world), self.consumer.channel_name
             )

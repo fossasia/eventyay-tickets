@@ -4,6 +4,7 @@ from contextlib import suppress
 from venueless.core.services.chat import ChatService
 from venueless.core.services.user import get_public_user
 from venueless.core.services.world import get_room
+from venueless.live.channels import GROUP_CHAT
 from venueless.live.exceptions import ConsumerException
 
 logger = logging.getLogger(__name__)
@@ -38,7 +39,7 @@ class ChatModule:
     async def _subscribe(self):
         self.channels_subscribed.add(self.channel_id)
         await self.consumer.channel_layer.group_add(
-            "chat.{}".format(self.channel_id), self.consumer.channel_name
+            GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
         await self.service.track_subscription(
             self.channel_id, self.consumer.user["id"], self.consumer.socket_id
@@ -61,7 +62,7 @@ class ChatModule:
             ):
                 await self._leave()
         await self.consumer.channel_layer.group_discard(
-            f"chat.{self.channel_id}", self.consumer.channel_name
+            GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
 
     async def subscribe(self):
@@ -92,7 +93,7 @@ class ChatModule:
                 sender=self.consumer.user["id"],
             )
             await self.consumer.channel_layer.group_send(
-                f"chat.{str(self.channel_id)}", event,
+                GROUP_CHAT.format(channel=self.channel_id), event,
             )
             await self._broadcast_channel_list()
         await self.consumer.send_success(reply)
@@ -102,7 +103,7 @@ class ChatModule:
             self.channel_id, self.consumer.user["id"]
         )
         await self.consumer.channel_layer.group_send(
-            f"chat.{str(self.channel_id)}",
+            GROUP_CHAT.format(channel=self.channel_id),
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type="channel.member",
@@ -152,7 +153,7 @@ class ChatModule:
         event_type = self.content[2]["event_type"]
         # TODO: Filter if user is allowed to send this type of message
         await self.consumer.channel_layer.group_send(
-            f"chat.{str(self.channel_id)}",
+            GROUP_CHAT.format(channel=self.channel_id),
             await self.service.create_event(
                 channel=self.channel_id,
                 event_type=event_type,

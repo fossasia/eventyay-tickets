@@ -3,6 +3,7 @@ import uuid
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from venueless.core.services.world import get_world
+from venueless.live.channels import GROUP_USER
 from venueless.live.exceptions import ConsumerException
 
 from .modules.auth import AuthModule
@@ -36,7 +37,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         Broadcast a message to other clients of the same user.
         """
         await self.channel_layer.group_send(
-            f"user.{self.user['id']}",
+            GROUP_USER.format(id=self.user["id"]),
             {
                 "type": "user.broadcast",
                 "event_type": event_type,
