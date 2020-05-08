@@ -1,17 +1,18 @@
 const WebSocket = require('ws')
 const { v4: uuid } = require('uuid')
-module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb) {
+module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb, timingCb) {
 	const ws = new WebSocket('ws://localhost:8000/ws/world/sample/')
 	let worldConfig
 	let chatModule
 	let correlationId = 1
+	const clientId = uuid()
 	ws.on('open', function () {
-		ws.send(JSON.stringify(['authenticate', {client_id: uuid()}]))
+		ws.send(JSON.stringify(['authenticate', {client_id: clientId}]))
 	})
 	let lastPing
 
 	ws.on('error', function (error) {
-		console.error(error.toString())
+		console.log(error.toString())
 	})
 
 	incoming = function (data) {
@@ -36,6 +37,10 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb)
 		} else if (payload[0] === 'pong') {
 			pingCb(Date.now() - lastPing)
 			lastPing = null
+		} else if (payload[0] === 'chat.event') {
+			if (payload[1].content.client === clientId) {
+				timingCb(Date.now() - payload[1].content.timestamp)
+			}
 		}
 	}
 
@@ -44,7 +49,7 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb)
 	const ping = function () {
 		if (lastPing) {
 			pingCb(Date.now() - lastPing)
-			console.error('ping timeout')
+			console.log('ping timeout')
 			return
 		}
 		lastPing = Date.now()
@@ -56,9 +61,9 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb)
 		ws.send(JSON.stringify(['chat.send', correlationId++, {
 			channel: chatModule.channel_id,
 			event_type: 'channel.message',
-			content: {type: 'text', body: 'text'}
+			content: {type: 'text', client: clientId, timestamp: Date.now()}
 		}]))
 		console.log(`client ${clientNumber} sent message`)
-		setTimeout(spam, Math.random() * 1000 / MESSAGES_PER_CLIENT_PER_SECOND)
+		setTimeout(spam, 500 * MESSAGES_PER_CLIENT_PER_SECOND + Math.random() * 1000 / MESSAGES_PER_CLIENT_PER_SECOND)
 	}
 }

@@ -4,7 +4,7 @@ const contrib = require('blessed-contrib')
 const Stats = require('fast-stats').Stats
 
 const MAX_CLIENTS = 1000
-const MESSAGES_PER_CLIENT_PER_SECOND = 0.01
+const TOTAL_CHAT_MESSAGES_PER_SECOND = 25
 const CLIENT_RAMP_UP_TIME = 150
 
 // Create a screen object.
@@ -37,7 +37,6 @@ const pingSpark = grid.set(3, 0, 1, 1, contrib.sparkline, {
 
 console.log = log.log.bind(log)
 console.warn = log.log.bind(log)
-console.error = log.log.bind(log)
 
 // Quit on Escape, q, or Control-C.
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
@@ -50,11 +49,14 @@ let clients = 0
 gauge.setPercent(0)
 
 let pings = new Stats()
+let timings = new Stats()
 
 const createClient = function () {
 	if (clients >= MAX_CLIENTS) return
-	client(clients, MESSAGES_PER_CLIENT_PER_SECOND, (ping) => {
+	client(clients, TOTAL_CHAT_MESSAGES_PER_SECOND / MAX_CLIENTS, (ping) => {
 		pings.push(ping)
+	}, (timing) => {
+		timings.push(timing)
 	})
 	clients++
 	gauge.setPercent(100 * clients / MAX_CLIENTS)
@@ -69,21 +71,14 @@ const computePings = function () {
 	if (pingAverages.length > 25) pingAverages.shift()
 	pingSpark.setData([ 'Average'], [pingAverages])
 	text.setText(`
-		Clients: ${clients}/${MAX_CLIENTS}\n
-		Ramp Up: ${CLIENT_RAMP_UP_TIME}ms\n
-		Average Ping: ${pings.amean()}\n
-		Median Ping: ${pings.median()}\n
-		Ping Percentile 95%: ${pings.percentile(95)}\n
-		Ping Percentile 50%: ${pings.percentile(50)}\n
-		Ping Percentile 25%: ${pings.percentile(25)}\n
-		Ping Range: ${pings.range()}\n
-		`)
+Clients: ${clients}/${MAX_CLIENTS}\n
+msg/s (at max clients): ${TOTAL_CHAT_MESSAGES_PER_SECOND}\n
+Ramp Up: ${CLIENT_RAMP_UP_TIME}ms\n
+Ping (avg/med/25%/50%/95%/minMax):\n${pings.amean().toFixed(2)} / ${pings.median()} / ${pings.percentile(25)} / ${pings.percentile(50)} / ${pings.percentile(95)} / ${pings.range()}\n
+Chat message (avg/med/25%/50%/95%/minMax):\n${timings.amean().toFixed(2)} / ${timings.median()} / ${timings.percentile(25)} / ${timings.percentile(50)} / ${timings.percentile(95)} / ${timings.range()}\n
+`)
 	screen.render()
 }
 
 setInterval(createClient, CLIENT_RAMP_UP_TIME)
-
 setInterval(computePings, 500)
-
-
-// console.log(`starting ${MAX_CLIENTS} sending ${MESSAGES_PER_CLIENT_PER_SECOND} messages/s`)
