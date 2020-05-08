@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /venueless/server
+cd /venueless/server || exit
 export DJANGO_SETTINGS_MODULE=venueless.settings
 export VENUELESS_DATA_DIR=/data/
 export HOME=/venueless
@@ -19,12 +19,11 @@ if [ "$1" == "all" ]; then
 fi
 
 if [ "$1" == "webworker" ]; then
-    exec gunicorn -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --max-requests 1200 --max-requests-jitter 200  -w $NUM_WORKERS venueless.asgi:application
+    exec gunicorn -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --max-requests 1200 --max-requests-jitter 200  -w "$NUM_WORKERS" venueless.asgi:application
 fi
 
 if [ "$1" == "shell" ]; then
     exec python3 manage.py shell_plus
 fi
 
-exec python3 manage.py $*
-
+exec python3 manage.py "$@"
