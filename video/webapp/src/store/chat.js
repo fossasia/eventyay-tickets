@@ -15,7 +15,11 @@ export default {
 	getters: {},
 	mutations: {},
 	actions: {
-		async subscribe ({state, dispatch}, channel) {
+		disconnected ({state}) {
+			state.channel = null
+		},
+		async subscribe ({state, dispatch, rootState}, channel) {
+			if (!rootState.connected) return
 			if (state.channel) {
 				dispatch('unsubscribe')
 			}
