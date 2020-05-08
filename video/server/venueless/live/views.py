@@ -1,12 +1,14 @@
 import json
 import os
 
+from asgiref.sync import async_to_sync
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.views import View
 
 from venueless.core.models import World
+from venueless.core.utils.redis import aioredis
 
 
 class SourceCache:
@@ -48,3 +50,19 @@ class AppView(View):
             ),
         )
         return HttpResponse(source, content_type="text/html")
+
+
+class HealthcheckView(View):
+    """
+    This view renders the main HTML. It is not used during development but only during production usage.
+    """
+
+    @async_to_sync
+    async def _check_redis(self):
+        async with aioredis() as redis:
+            await redis.set("healthcheck", "1")
+
+    def get(self, request, *args, **kwargs):
+        self._check_redis()
+        World.objects.count()
+        return HttpResponse("OK")

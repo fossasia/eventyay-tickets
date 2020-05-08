@@ -5,5 +5,6 @@ from .live import views
 
 urlpatterns = [
     re_path(r"^api/v1/", include(api_patterns)),
+    re_path(r"^healthcheck/", views.HealthcheckView.as_view()),
     re_path(r"(.*)", views.AppView.as_view()),
 ]
