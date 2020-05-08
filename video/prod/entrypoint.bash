@@ -3,7 +3,7 @@ cd /venueless/server || exit
 export DJANGO_SETTINGS_MODULE=venueless.settings
 export VENUELESS_DATA_DIR=/data/
 export HOME=/venueless
-export NUM_WORKERS=${VENUELESS_WORKERS:$((2 * $(nproc --all)))}
+export NUM_WORKERS=${VENUELESS_WORKERS:-$((2 * $(nproc --all)))}
 
 if [ ! -d /data/logs ]; then
     mkdir /data/logs;
