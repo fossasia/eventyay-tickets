@@ -45,10 +45,19 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['connected']),
 		...mapState('chat', ['channel', 'hasJoined', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
 		filteredTimeline () {
 			if (this.mode === 'standalone') return this.timeline.slice().reverse()
 			return this.timeline.filter(message => message.event_type === 'channel.message').reverse()
+		}
+	},
+	watch: {
+		connected (value) {
+			if (value) {
+				// resubscribe
+				this.$store.dispatch('chat/subscribe', this.module.channel_id)
+			}
 		}
 	},
 	created () {

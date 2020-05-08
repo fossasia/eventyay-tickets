@@ -58,6 +58,7 @@ export default new Vuex.Store({
 			})
 			api.on('closed', () => {
 				state.connected = false
+				dispatch('chat/disconnected', {root: true})
 			})
 		},
 		async updateUser ({state, dispatch}, update) {
