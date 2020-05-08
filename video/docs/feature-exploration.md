@@ -7,6 +7,7 @@ This acts as a rough overview of all the features/usage patterns that COULD exis
 - moderate speakers
 - directly connect speakers to our servers
 - CC
+- let speakers upload slides beforehand for higher quality content
 
 # Watching Talks
 - live watching

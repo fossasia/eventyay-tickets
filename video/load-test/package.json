@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.20",
     "uuid": "^8.0.0",
     "ws": "^7.2.5"
   }
