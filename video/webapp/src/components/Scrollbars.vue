@@ -119,7 +119,7 @@ export default {
 			this.draggingDimension = dimension
 			this.draggingOffset = event[`offset${dimension.toUpperCase()}`]
 			el.addEventListener('pointermove', this.onPointermove)
-			document.addEventListener('pointerup', this.onPointerup)
+			el.addEventListener('pointerup', this.onPointerup)
 		},
 		onPointermove () {
 			if (this.draggingDimension === 'x') {
