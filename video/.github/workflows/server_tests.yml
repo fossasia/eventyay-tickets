@@ -44,10 +44,9 @@ jobs:
         working-directory: ./server
       - name: Run tests
         working-directory: ./server
-        run: VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --cov=./ --cov-report=xml --reuse-db
+        run: VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --cov=./ --cov-report=xml
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
           file: server/coverage.xml
           fail_ci_if_error: true
-

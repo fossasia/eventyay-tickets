@@ -24,6 +24,8 @@
     ]
   },
   "permissions": {
+    "world.api": ["admin", "api"],
+    "world.secrets": ["admin", "api"],
     "world.update": ["admin"],
     "world.announce": ["admin"],
     "room.create": ["admin"],

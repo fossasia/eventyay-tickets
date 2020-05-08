@@ -71,6 +71,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if message["type"] == "user.broadcast":
             if self.socket_id != message["socket"]:
                 await self.send_json([message["event_type"], message["data"]])
+        elif message["type"] == "world.update":
+            await self.components["user"].dispatch_event(self, message)
         elif message["type"].startswith("chat."):
             await self.components["chat"].dispatch_event(self, message)
         else:

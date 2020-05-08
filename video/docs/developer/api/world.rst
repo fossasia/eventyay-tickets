@@ -1,10 +1,11 @@
 World configuration
 ===================
 
-The world configuration is pushed directly after authentication with a message structured as::
+The world configuration is pushed to the client first as part of the successful authentication response.
+If the world config changes, you will get an update like this::
 
-    <- ["world.config", { … }]
-    
+    <= ["world.update", { … }]
+
 The body of the configuration is structured like this, filtered to user visibility:
 
 

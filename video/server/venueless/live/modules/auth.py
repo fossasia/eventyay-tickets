@@ -1,7 +1,5 @@
 import logging
 
-from channels.db import database_sync_to_async
-
 from venueless.core.serializers.auth import PublicUserSerializer
 from venueless.core.services.chat import ChatService
 from venueless.core.services.user import get_public_user, get_user, update_user
@@ -26,7 +24,6 @@ class AuthModule:
                 return
             user = await get_user(self.world, with_token=token, serialize=False)
         self.consumer.user = PublicUserSerializer().to_representation(user)
-        await database_sync_to_async(self.consumer.scope["session"].save)()
         await self.consumer.send_json(
             [
                 "authenticated",
@@ -44,6 +41,9 @@ class AuthModule:
         await self.consumer.channel_layer.group_add(
             f"user.{self.consumer.user['id']}", self.consumer.channel_name
         )
+        await self.consumer.channel_layer.group_add(
+            f"world.{self.world}", self.consumer.channel_name
+        )
 
     async def update(self):
         new_data = await update_user(
@@ -54,6 +54,14 @@ class AuthModule:
         await self.consumer.user_broadcast(
             "user.updated", await get_public_user(self.world, self.consumer.user["id"])
         )
+
+    async def push_world_update(self):
+        world_config = await get_world_config_for_user(
+            await get_user(
+                self.world, with_id=self.consumer.user["id"], serialize=False
+            )
+        )
+        await self.consumer.send_json(["world.updated", world_config])
 
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer
@@ -75,9 +83,24 @@ class AuthModule:
         else:
             await self.consumer.send_error(code="user.not_found")
 
+    async def dispatch_event(self, consumer, content):
+        self.consumer = consumer
+        self.content = content
+        self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
+        self.service = ChatService(self.world)
+        if self.content["type"] == "world.update":
+            await self.push_world_update()
+        else:  # pragma: no cover
+            logger.warning(
+                f'Ignored unknown event {content["type"]}'
+            )  # ignore unknown event
+
     async def dispatch_disconnect(self, consumer, close_code):
         self.consumer = consumer
         if self.consumer.user:
             await self.consumer.channel_layer.group_discard(
                 f"user.{self.consumer.user['id']}", self.consumer.channel_name
+            )
+            await self.consumer.channel_layer.group_discard(
+                f"world.{self.world}", self.consumer.channel_name
             )

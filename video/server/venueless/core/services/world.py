@@ -2,6 +2,7 @@ import copy
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
+from channels.layers import get_channel_layer
 from django.core.exceptions import ValidationError
 
 from venueless.core.models import Room, World
@@ -43,6 +44,10 @@ def get_world_for_user(user):
     return user.world
 
 
+def has_permission(required_traits, given_traits):
+    return all(trait in given_traits for trait in required_traits)
+
+
 def get_permissions_for_traits(rules, traits, prefixes):
     return [
         permission
@@ -50,6 +55,10 @@ def get_permissions_for_traits(rules, traits, prefixes):
         if any(permission.startswith(prefix) for prefix in prefixes)
         and all(trait in traits for trait in required_traits)
     ]
+
+
+async def notify_world_change(world_id):
+    await get_channel_layer().group_send(f"world.{world_id}", {"type": "world.update",})
 
 
 async def get_world_config_for_user(user):

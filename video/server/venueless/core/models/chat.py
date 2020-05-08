@@ -8,7 +8,7 @@ class Channel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=300, null=True)
     room = models.OneToOneField(
-        to="Room", related_name="channel", on_delete=models.PROTECT, null=True
+        to="Room", related_name="channel", on_delete=models.CASCADE, null=True
     )
     world = models.ForeignKey(
         to="World", related_name="channels", on_delete=models.CASCADE,

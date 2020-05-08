@@ -9,3 +9,4 @@ Welcome to venueless' documentation!
 
    admin/index
    developer/index
+   rest/index

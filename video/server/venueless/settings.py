@@ -3,7 +3,6 @@ import os
 import sys
 from urllib.parse import urlparse
 
-from django.contrib import messages
 from django.utils.crypto import get_random_string
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -136,22 +135,16 @@ else:
     ALLOWED_HOSTS = [urlparse(SITE_URL).netloc]
 
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
-    SESSION_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
     CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
 
-SESSION_COOKIE_SECURE = (
-    os.getenv("VENUELESS_HTTPS", "True" if SITE_URL.startswith("https:") else "False")
-    == "True"
-)
-
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "channels",
+    "rest_framework",
     "venueless.core.CoreConfig",
+    "venueless.api.ApiConfig",
     "venueless.live.LiveConfig",
 ]
 
@@ -165,7 +158,6 @@ except ImportError:
 MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -225,9 +217,7 @@ LANGUAGES = [
 
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), "locale"),)
 
-SESSION_COOKIE_NAME = "venueless_session"
 CSRF_COOKIE_NAME = "venueless_csrftoken"
-SESSION_COOKIE_HTTPONLY = True
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
@@ -236,15 +226,6 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 INTERNAL_IPS = ("127.0.0.1", "::1")
-
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
-
-MESSAGE_TAGS = {
-    messages.INFO: "alert-info",
-    messages.ERROR: "alert-danger",
-    messages.WARNING: "alert-warning",
-    messages.SUCCESS: "alert-success",
-}
 
 loglevel = "DEBUG" if DEBUG else "INFO"
 
@@ -290,15 +271,12 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        # TODO
-    ],
+    "DEFAULT_PERMISSION_CLASSES": ["venueless.api.auth.NoPermission",],
+    "UNAUTHENTICATED_USER": "venueless.api.auth.AnonymousUser",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "PAGE_SIZE": 50,
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("venueless.api.auth.WorldTokenAuthentication",),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "UNICODE_JSON": False,
 }
