@@ -37,8 +37,13 @@ async def get_public_user(world_id, id):
 
 @database_sync_to_async
 def get_public_users(world_id, ids):
+    # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
+    # For performance reasons, we therefore do not initialize model instances and use serialize_public()
     return [
-        u.serialize_public() for u in User.objects.filter(id__in=ids, world_id=world_id)
+        {"id": str(u["id"]), "profile": u["profile"]}
+        for u in User.objects.filter(id__in=ids, world_id=world_id).values(
+            "id", "profile"
+        )
     ]
 
 

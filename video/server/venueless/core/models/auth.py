@@ -16,4 +16,6 @@ class User(models.Model):
         unique_together = (("token_id", "world"), ("client_id", "world"))
 
     def serialize_public(self):
+        # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
+        # For performance reasons, it does not use this method directly.
         return {"id": str(self.id), "profile": self.profile}
