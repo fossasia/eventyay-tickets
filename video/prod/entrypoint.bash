@@ -12,9 +12,8 @@ if [ ! -d /data/media ]; then
     mkdir /data/media;
 fi
 
-python3 manage.py migrate --noinput
-
 if [ "$1" == "all" ]; then
+    python3 manage.py migrate --noinput
     exec sudo /usr/bin/supervisord -n -c /etc/supervisord.conf
 fi
 
