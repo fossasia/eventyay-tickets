@@ -152,16 +152,18 @@ class ChatModule:
         content = self.content[2]["content"]
         event_type = self.content[2]["event_type"]
         # TODO: Filter if user is allowed to send this type of message
-        await self.consumer.channel_layer.group_send(
-            GROUP_CHAT.format(channel=self.channel_id),
-            await self.service.create_event(
-                channel=self.channel_id,
-                event_type=event_type,
-                content=content,
-                sender=self.consumer.user["id"],
-            ),
+        event = await self.service.create_event(
+            channel=self.channel_id,
+            event_type=event_type,
+            content=content,
+            sender=self.consumer.user["id"],
         )
-        await self.consumer.send_success()
+        await self.consumer.channel_layer.group_send(
+            GROUP_CHAT.format(channel=self.channel_id), event
+        )
+        await self.consumer.send_success(
+            {"event": {k: v for k, v in event.items() if k != "type"}}
+        )
 
     async def publish_event(self):
         # TODO: Filter if user is allowed to see

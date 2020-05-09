@@ -310,7 +310,7 @@ async def test_fetch_messages_after_join(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
 
         async with world_communicator() as c2:
             await c2.send_json_to(
@@ -401,7 +401,9 @@ async def test_send_message_to_other_client(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
+        assert response[2]["event"]["event_type"] == "message"
+        assert response[2]["event"]["event_id"]
 
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0
@@ -481,7 +483,7 @@ async def test_no_messages_after_leave(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
 
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0
@@ -542,7 +544,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["success", 123, {}]
+        assert response[0] == "success"
 
         response = await c1.receive_json_from()
         response[1]["event_id"] = 0

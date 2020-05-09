@@ -68,9 +68,11 @@ in a way that if events happen *while* you join, you might see the same event *t
 To send a simple text message::
 
     => ["chat.send", 1234, {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}}]
-    <- ["success", 1234, {}]
+    <- ["success", 1234, {"event": {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "event_id": 4}}]
 
-All clients in the room, including the client who sent the message itself, will get a broadcast (see above).
+All clients in the room will get a broadcast (see above). Currently, you will get the broadcast as well, so you should
+not show the chat message twice, but you also shouldn't rely on getting the broadcast since it might be removed in
+the future as a performance optimization.
 
 Event types
 ^^^^^^^^^^^
