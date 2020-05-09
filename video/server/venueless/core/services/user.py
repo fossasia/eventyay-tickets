@@ -2,7 +2,6 @@ from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 
 from ..models.auth import User
-from ..serializers.auth import PublicUserSerializer
 
 
 @database_sync_to_async
@@ -33,14 +32,13 @@ async def get_public_user(world_id, id):
     user = await get_user_by_id(world_id, id)
     if not user:
         return None
-    return PublicUserSerializer().to_representation(user)
+    return user.serialize_public()
 
 
 @database_sync_to_async
 def get_public_users(world_id, ids):
     return [
-        PublicUserSerializer().to_representation(u)
-        for u in User.objects.filter(id__in=ids, world_id=world_id)
+        u.serialize_public() for u in User.objects.filter(id__in=ids, world_id=world_id)
     ]
 
 
@@ -54,11 +52,7 @@ async def get_user(
 ):
     if with_id:
         user = await get_user_by_id(world_id, with_id)
-        return (
-            PublicUserSerializer().to_representation(user)
-            if serialize and user
-            else user
-        )
+        return user.serialize_public() if serialize and user else user
 
     token_id = None
     if with_token:
@@ -76,7 +70,7 @@ async def get_user(
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
         await update_user(world_id, id=user.id, traits=traits)
-        return PublicUserSerializer().to_representation(user) if serialize else user
+        return user.serialize_public() if serialize else user
 
     if token_id:
         user = await create_user(
@@ -90,9 +84,7 @@ async def get_user(
             client_id=with_client_id,
             traits=with_token.get("traits") if with_token else None,
         )
-    return (
-        PublicUserSerializer().to_representation(user) if serialize and user else user
-    )
+    return user.serialize_public() if serialize and user else user
 
 
 @database_sync_to_async
@@ -117,8 +109,11 @@ def update_user(world_id, id, *, traits=None, public_data=None):
         user.save(update_fields=["traits"])
 
     if public_data is not None:
-        serializer = PublicUserSerializer(instance=user, data=public_data, partial=True)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-    return PublicUserSerializer().to_representation(user)
+        save_fields = []
+        if "profile" in public_data and public_data["profile"] != user.profile:
+            # TODO: Anything we want to validate here?
+            user.profile = public_data.get("profile")
+            save_fields.append("profile")
+        if save_fields:
+            user.save(update_fields=save_fields)
+    return user.serialize_public()

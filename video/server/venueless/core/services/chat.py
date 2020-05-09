@@ -5,7 +5,6 @@ from django.db import IntegrityError, transaction
 from django.db.models import Max
 
 from ..models import Channel, ChatEvent, Membership, User
-from ..serializers.chat import ChatEventSerializer
 from ..utils.redis import aioredis
 from .user import get_public_users, get_user_by_id
 
@@ -76,7 +75,7 @@ class ChatService:
         events = ChatEvent.objects.filter(id__lt=before_id, channel=channel,).order_by(
             "-id"
         )[: min(count, 1000)]
-        return ChatEventSerializer(reversed(list(events)), many=True).data
+        return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
     def _store_event(self, channel_id, id, event_type, content, sender):
@@ -87,7 +86,7 @@ class ChatService:
             content=content,
             sender=sender,
         )
-        return ChatEventSerializer().to_representation(ce)
+        return ce.serialize_public()
 
     @database_sync_to_async
     def _get_highest_id(self):

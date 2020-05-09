@@ -14,3 +14,6 @@ class User(models.Model):
 
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
+
+    def serialize_public(self):
+        return {"id": str(self.id), "profile": self.profile}

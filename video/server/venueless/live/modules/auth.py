@@ -1,6 +1,5 @@
 import logging
 
-from venueless.core.serializers.auth import PublicUserSerializer
 from venueless.core.services.chat import ChatService
 from venueless.core.services.user import get_public_user, get_user, update_user
 from venueless.core.services.world import get_world_config_for_user
@@ -24,7 +23,7 @@ class AuthModule:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
             user = await get_user(self.world, with_token=token, serialize=False)
-        self.consumer.user = PublicUserSerializer().to_representation(user)
+        self.consumer.user = user.serialize_public()
         await self.consumer.send_json(
             [
                 "authenticated",
