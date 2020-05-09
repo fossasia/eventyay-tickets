@@ -32,7 +32,7 @@ ENV LC_ALL=C.UTF-8 \
 # To copy only the requirements files needed to install from PIP
 COPY server/requirements.txt /requirements.txt
 RUN pip3 install -U pip wheel setuptools && \
-    pip3 install -Ur /requirements.txt && \
+    pip3 install -Ur /requirements.txt ipython && \
     rm -rf ~/.cache/pip
 
 COPY prod/entrypoint.bash /usr/local/bin/venueless
