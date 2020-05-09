@@ -3,11 +3,16 @@
 	.mdi.mdi-close(v-if="size === 'mini'", @click="$emit('close')")
 	.video-container(ref="videoContainer")
 		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay, @playing="playingVideo", @pause="pausingVideo")
+	.offline(v-if="offline")
+		.offline-message  Stream offline
 </template>
 <script>
 import { mapState } from 'vuex'
 import shaka from 'shaka-player/dist/shaka-player.ui.js'
 import 'shaka-player/dist/controls.css'
+
+const RETRY_INTERVAL = 5000
+
 export default {
 	props: {
 		room: {
@@ -26,7 +31,8 @@ export default {
 	components: {},
 	data () {
 		return {
-			playing: true
+			playing: true,
+			offline: false
 		}
 	},
 	computed: {
@@ -43,12 +49,24 @@ export default {
 			console.error(error.detail)
 		})
 		this.playerUI = new shaka.ui.Overlay(player, this.$refs.videoContainer, this.$refs.video)
-		try {
-			console.log('starting stream', this.module.config.hls_url)
-			await player.load(this.module.config.hls_url)
-		} catch (error) {
-			console.error('player failed to load', error)
+		const load = async () => {
+			if (this._isDestroyed) return
+			try {
+				console.log('starting stream', this.module.config.hls_url)
+				await player.load(this.module.config.hls_url)
+			} catch (error) {
+				console.error('player failed to load', error)
+				if (error.code < 2000) { // network errors
+					this.offline = true
+					setTimeout(load, RETRY_INTERVAL)
+				}
+				// TODO handle other errors https://shaka-player-demo.appspot.com/docs/api/shaka.util.Error.html
+			}
 		}
+		await load()
+	},
+	beforeDestroy () {
+		this.player.destroy()
 	},
 	methods: {
 		playingVideo () {
@@ -88,4 +106,17 @@ export default {
 	&.size-mini
 		height: 128px
 		width: 230px // TODO total guesstimate
+	.offline
+		position: absolute
+		left: 0
+		top: 0
+		width: 100%
+		height: 100%
+		display: flex
+		justify-content: center
+		align-items: center
+		background-color: $clr-blue-grey-200
+		z-index: 100
+		.offline-message
+			font-size: 36px
 </style>
