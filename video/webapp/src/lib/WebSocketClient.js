@@ -139,6 +139,7 @@ class WebSocketClient extends EventEmitter {
 			error: this._handleError.bind(this),
 			success: this._handleCallSuccess.bind(this),
 			pong: this._handlePong.bind(this),
+			'connection.reload': this._handleReload.bind(this),
 			authenticated: this._handleJoined.bind(this)
 		}
 		if (actionHandlers[message[0]] === undefined) {
@@ -186,6 +187,11 @@ class WebSocketClient extends EventEmitter {
 				req.deferred.resolve(message[2])
 			}
 		}
+	}
+
+	_handleReload (message) {
+		this.close()
+		location.reload()
 	}
 
 	_handlePong (message) {
