@@ -4,6 +4,7 @@ channels==2.4.*
 channels_redis==2.4.*
 djangorestframework==3.11.*
 django-extensions==2.2.5
+tqdm
 
 aiofile
 aiohttp

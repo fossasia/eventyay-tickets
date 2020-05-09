@@ -8,3 +8,4 @@ Welcome to our administrator documentation! Here, we document everything around 
    :caption: Contents:
 
    setup
+   management
