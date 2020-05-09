@@ -9,3 +9,4 @@ Welcome to our developer documentation! Here, we document everything around deve
 
    setup
    api/index
+   performance

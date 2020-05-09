@@ -26,3 +26,4 @@ pytest-django
 pytest-asyncio
 pytest-cov
 aioresponses
+yappi
