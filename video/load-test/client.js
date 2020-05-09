@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const { v4: uuid } = require('uuid')
-module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb, timingCb) {
-	const ws = new WebSocket('ws://localhost:8000/ws/world/sample/')
+module.exports = function (url, clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb, timingCb) {
+	const ws = new WebSocket(url)
 	let worldConfig
 	let chatModule
 	let correlationId = 1
@@ -30,7 +30,7 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 			ws.send(JSON.stringify(['chat.subscribe', correlationId++, {
 				channel: chatModule.channel_id,
 			}]))
-			setInterval(spam, 500 * MESSAGES_PER_CLIENT_PER_SECOND + Math.random() * 750 / MESSAGES_PER_CLIENT_PER_SECOND)
+			setTimeout(spam, Math.random() * 500 / MESSAGES_PER_CLIENT_PER_SECOND)
 			ping()
 		} else if (data.startsWith(`["pong"`)) {
 			pingCb(Date.now() - lastPing)
@@ -63,5 +63,6 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 			content: {type: 'text', client: clientId, timestamp: Date.now()}
 		}]))
 		console.log(`client ${clientNumber} sent message`)
+		setTimeout(spam, 1000 / MESSAGES_PER_CLIENT_PER_SECOND)
 	}
 }
