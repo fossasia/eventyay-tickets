@@ -23,7 +23,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash && \
     mkdir -p /venueless/webapp && \
     mkdir /data && \
     useradd -ms /bin/bash -d /venueless -u 15371 venueless && \
-    echo 'venueless ALL=(ALL) NOPASSWD: /usr/bin/supervisord' >> /etc/sudoers && \
+    echo 'venueless ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
     mkdir /static
 
 ENV LC_ALL=C.UTF-8 \
