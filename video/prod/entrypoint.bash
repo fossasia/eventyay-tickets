@@ -13,13 +13,13 @@ if [ ! -d /data/media ]; then
 fi
 
 python3 manage.py migrate --noinput
-sudo mkdir -p /tmp/venueless
 
 if [ "$1" == "all" ]; then
     exec sudo /usr/bin/supervisord -n -c /etc/supervisord.conf
 fi
 
 if [ "$1" == "webworker" ]; then
+    mkdir -p /tmp/venueless
     exec gunicorn -k uvicorn.workers.UvicornWorker --bind unix:/tmp/venueless/websocket.sock --max-requests 1200 --max-requests-jitter 200  -w "$NUM_WORKERS" venueless.asgi:application
 fi
 
