@@ -19,7 +19,7 @@ if [ "$1" == "all" ]; then
 fi
 
 if [ "$1" == "webworker" ]; then
-    exec gunicorn -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --max-requests 1200 --max-requests-jitter 200  -w "$NUM_WORKERS" venueless.asgi:application
+    exec gunicorn -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --bind unix:/run/venueless/websocket.sock --max-requests 1200 --max-requests-jitter 200  -w "$NUM_WORKERS" venueless.asgi:application
 fi
 
 if [ "$1" == "shell" ]; then
