@@ -92,6 +92,26 @@
       ]
     },
     {
+      "id": "room_3",
+      "name": "Not Streaming",
+      "description": "Non-Working Stream",
+      "picture": "https://via.placeholder.com/150",
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/broken.m3u8"
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
       "id": "chat",
       "name": "Chat",
       "description": "Standalone Chat",
