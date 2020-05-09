@@ -59,7 +59,6 @@ const createClient = function () {
 		timings.push(timing)
 	})
 	clients++
-	screen.render()
 }
 
 const pingAverages = []

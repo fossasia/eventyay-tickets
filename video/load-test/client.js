@@ -30,7 +30,7 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 			ws.send(JSON.stringify(['chat.subscribe', correlationId++, {
 				channel: chatModule.channel_id,
 			}]))
-			spam()
+			setInterval(spam, 500 * MESSAGES_PER_CLIENT_PER_SECOND + Math.random() * 750 / MESSAGES_PER_CLIENT_PER_SECOND)
 			ping()
 		} else if (data.startsWith(`["pong"`)) {
 			pingCb(Date.now() - lastPing)
@@ -63,6 +63,5 @@ module.exports = function (clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pingCb,
 			content: {type: 'text', client: clientId, timestamp: Date.now()}
 		}]))
 		console.log(`client ${clientNumber} sent message`)
-		setTimeout(spam, 500 * MESSAGES_PER_CLIENT_PER_SECOND + Math.random() * 1000 / MESSAGES_PER_CLIENT_PER_SECOND)
 	}
 }
