@@ -62,7 +62,7 @@ module.exports = function (url, clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pi
 			event_type: 'channel.message',
 			content: {type: 'text', client: clientId, timestamp: Date.now()}
 		}]))
-		console.log(`client ${clientNumber} sent message`)
+		// console.log(`client ${clientNumber} sent message`)
 		setTimeout(spam, 1000 / MESSAGES_PER_CLIENT_PER_SECOND)
 	}
 }
