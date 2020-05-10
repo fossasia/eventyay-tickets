@@ -66,6 +66,7 @@ export default {
 		await load()
 	},
 	beforeDestroy () {
+		this.player.unload()
 		this.player.destroy()
 	},
 	methods: {
