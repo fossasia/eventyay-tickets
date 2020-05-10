@@ -79,7 +79,7 @@ export default {
 .c-chat-input
 	position: relative
 	display: flex
-	width: calc(100% - 32px)
+	width: calc(100% - 27px) // width of emoji picker for sidebar mode
 	height: 36px
 	box-sizing: border-box
 	&.bunt-input-outline-container
