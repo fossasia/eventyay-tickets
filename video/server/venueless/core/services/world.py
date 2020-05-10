@@ -44,10 +44,6 @@ def get_world_for_user(user):
     return user.world
 
 
-def has_permission(required_traits, given_traits):
-    return all(trait in given_traits for trait in required_traits)
-
-
 def get_permissions_for_traits(rules, traits, prefixes):
     return [
         permission

@@ -1,3 +1,4 @@
+import copy
 from contextlib import suppress
 
 import jwt
@@ -42,3 +43,11 @@ class World(models.Model):
                     audience=audience,
                     issuer=issuer,
                 )
+
+    def has_permission(self, permission, traits, extra_config=None):
+        permission_config = copy.deepcopy(self.permission_config)
+        if extra_config:
+            permission_config.update(extra_config)
+        return permission in permission_config and all(
+            trait in traits for trait in permission_config[permission]
+        )

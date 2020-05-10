@@ -3,7 +3,6 @@ from rest_framework import authentication, exceptions, permissions
 from rest_framework.authentication import get_authorization_header
 
 from venueless.core.models import Room, World
-from venueless.core.services.world import has_permission
 
 
 class WorldTokenAuthentication(authentication.BaseAuthentication):
@@ -58,23 +57,16 @@ class ApiAccessRequiredPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if isinstance(request.user, AnonymousUser):
             return False
-        permset = request.world.permission_config
-        perm_key = "world.api"
-        return perm_key in permset and has_permission(
-            permset[perm_key], request.auth.get("traits")
-        )
+        return request.world.has_permission("world.api", request.auth.get("traits"))
 
 
 class WorldPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
-        permset = request.world.permission_config
-        if not has_permission(permset["world.secrets"], request.auth.get("traits")):
+        traits = request.auth.get("traits")
+        if not request.world.has_permission("world.secrets", traits):
             return False
         if request.method in ("PATCH", "PUT"):
-            perm_key = "world.update"
-            return perm_key in permset and has_permission(
-                permset[perm_key], request.auth.get("traits")
-            )
+            return request.world.has_permission("world.update", traits)
         elif request.method in ("HEAD", "GET", "OPTIONS"):
             return True
         return False
@@ -83,10 +75,8 @@ class WorldPermissions(permissions.BasePermission):
 class RoomPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == "POST":
-            permset = request.world.permission_config
-            perm_key = "room.create"
-            return perm_key in permset and has_permission(
-                permset[perm_key], request.auth.get("traits")
+            return request.world.has_permission(
+                "room.create", request.auth.get("traits")
             )
         else:
             return True
@@ -95,14 +85,16 @@ class RoomPermissions(permissions.BasePermission):
         permset = request.world.permission_config
         permset.update(obj.permission_config)
 
-        perm_key = None
+        permission = None
         if request.method in ("PATCH", "PUT"):
-            perm_key = "room.update"
+            permission = "room.update"
         elif request.method == "DELETE":
-            perm_key = "room.delete"
-        if perm_key:
-            return perm_key in permset and has_permission(
-                permset[perm_key], request.auth.get("traits")
+            permission = "room.delete"
+        if permission:
+            return request.world.has_permission(
+                permission,
+                request.auth.get("traits"),
+                extra_config=obj.permission_config,
             )
         else:
             return True
