@@ -13,6 +13,7 @@ without warning.
 
    websocket
    user
+   config
    world
    chat
    bbb
