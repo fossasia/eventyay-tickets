@@ -132,11 +132,7 @@ async def test_update_user():
         response = await c2.receive_json_from()
         assert response == [
             "user.updated",
-            {
-                "profile": {"display_name": "Cool User"},
-                "id": user_id,
-                "moderation_state": "",
-            },
+            {"profile": {"display_name": "Cool User"}, "id": user_id,},
         ]
 
         await c3.send_json_to(["authenticate", {"client_id": "4"}])
@@ -276,11 +272,7 @@ async def test_fetch_user():
         assert response == [
             "success",
             14,
-            {
-                "id": user_id,
-                "profile": {"display_name": "Cool User"},
-                "moderation_state": "",
-            },
+            {"id": user_id, "profile": {"display_name": "Cool User"},},
         ]
 
         await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])

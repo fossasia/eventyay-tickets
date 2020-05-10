@@ -24,9 +24,7 @@ class BBBModule:
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
         url = await self.service.get_join_url(
-            room,
-            self.consumer.user.profile.get("display_name"),
-            moderator=False,
+            room, self.consumer.user.profile.get("display_name"), moderator=False,
         )
         if not url:
             raise ConsumerException("bbb.failed")
