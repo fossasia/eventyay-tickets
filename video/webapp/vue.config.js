@@ -13,7 +13,10 @@ module.exports = {
 			symlinks: false, // don't flatten symlinks (for npm link)
 			modules: [path.resolve('src'), path.resolve('src/styles'), 'node_modules'],
 			alias: {
-				config: path.resolve(__dirname, 'config.js')
+				config: path.resolve(__dirname, 'config.js'),
+				react: 'preact/compat/dist/compat.js',
+				'react-dom': 'preact/compat/dist/compat.js',
+				'preact/hooks': 'preact/hooks/dist/hooks.js'
 			}
 		},
 		plugins: [
