@@ -48,7 +48,7 @@ export default {
 			}
 		},
 		content () {
-			return this.message.content.body.replace(emojiRegex, match => {
+			return this.message.content?.body?.replace(emojiRegex, match => {
 				const emoji = getEmojiDataFromNative(match, 'twitter', emojiData)
 				return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
 			})
