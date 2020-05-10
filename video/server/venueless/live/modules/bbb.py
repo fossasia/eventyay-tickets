@@ -21,11 +21,11 @@ class BBBModule:
     async def url(self):
         room = await self.get_room()
         # TODO: Check permissions, assign moderator permission
-        if not self.consumer.user.get("profile", {}).get("display_name"):
+        if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
         url = await self.service.get_join_url(
             room,
-            self.consumer.user.get("profile", {}).get("display_name"),
+            self.consumer.user.profile.get("display_name"),
             moderator=False,
         )
         if not url:

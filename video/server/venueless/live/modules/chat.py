@@ -42,7 +42,7 @@ class ChatModule:
             GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
         )
         await self.service.track_subscription(
-            self.channel_id, self.consumer.user["id"], self.consumer.socket_id
+            self.channel_id, self.consumer.user.id, self.consumer.socket_id
         )
         return {
             "state": None,
@@ -55,10 +55,10 @@ class ChatModule:
             self.channels_subscribed.remove(self.channel_id)
         if clean_volatile_membership:
             remaining_sockets = await self.service.track_unsubscription(
-                self.channel_id, self.consumer.user["id"], self.consumer.socket_id
+                self.channel_id, self.consumer.user.id, self.consumer.socket_id
             )
             if remaining_sockets == 0 and await self.service.membership_is_volatile(
-                self.channel_id, self.consumer.user["id"]
+                self.channel_id, self.consumer.user.id
             ):
                 await self._leave()
         await self.consumer.channel_layer.group_discard(
@@ -71,13 +71,13 @@ class ChatModule:
         await self.consumer.send_success(reply)
 
     async def join(self):
-        if not self.consumer.user.get("profile", {}).get("display_name"):
+        if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("channel.join.missing_profile")
         config = await self.get_config()
         reply = await self._subscribe()
         joined = await self.service.add_channel_user(
             self.channel_id,
-            self.consumer.user["id"],
+            self.consumer.user.id,
             volatile=self.content[2].get(
                 "volatile", config.get("volatile", False)
             ),  # TODO: check if client is to override
@@ -88,9 +88,9 @@ class ChatModule:
                 event_type="channel.member",
                 content={
                     "membership": "join",
-                    "user": await get_public_user(self.world, self.consumer.user["id"]),
+                    "user": await get_public_user(self.world, self.consumer.user.id),
                 },
-                sender=self.consumer.user["id"],
+                sender=self.consumer.user.id,
             )
             await self.consumer.channel_layer.group_send(
                 GROUP_CHAT.format(channel=self.channel_id), event,
@@ -99,9 +99,7 @@ class ChatModule:
         await self.consumer.send_success(reply)
 
     async def _leave(self):
-        await self.service.remove_channel_user(
-            self.channel_id, self.consumer.user["id"]
-        )
+        await self.service.remove_channel_user(self.channel_id, self.consumer.user.id)
         await self.consumer.channel_layer.group_send(
             GROUP_CHAT.format(channel=self.channel_id),
             await self.service.create_event(
@@ -109,9 +107,9 @@ class ChatModule:
                 event_type="channel.member",
                 content={
                     "membership": "leave",
-                    "user": await get_public_user(self.world, self.consumer.user["id"]),
+                    "user": await get_public_user(self.world, self.consumer.user.id),
                 },
-                sender=self.consumer.user["id"],
+                sender=self.consumer.user.id,
             ),
         )
         await self._broadcast_channel_list()
@@ -121,7 +119,7 @@ class ChatModule:
             "chat.channels",
             {
                 "channels": await self.service.get_channels_for_user(
-                    self.consumer.user["id"], is_volatile=False
+                    self.consumer.user.id, is_volatile=False
                 )
             },
         )
@@ -156,7 +154,7 @@ class ChatModule:
             channel=self.channel_id,
             event_type=event_type,
             content=content,
-            sender=self.consumer.user["id"],
+            sender=self.consumer.user.id,
         )
         await self.consumer.channel_layer.group_send(
             GROUP_CHAT.format(channel=self.channel_id), event

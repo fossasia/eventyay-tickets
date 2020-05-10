@@ -23,42 +23,41 @@ class AuthModule:
                 await self.consumer.send_error(code="auth.invalid_token")
                 return
             user = await get_user(self.world, with_token=token, serialize=False)
-        self.consumer.user = user.serialize_public()
+        self.consumer.user = user
         await self.consumer.send_json(
             [
                 "authenticated",
                 {
-                    "user.config": self.consumer.user,
+                    "user.config": self.consumer.user.serialize_public(),
                     "world.config": await get_world_config_for_user(user),
                     "chat.channels": await ChatService(
                         self.world
-                    ).get_channels_for_user(
-                        self.consumer.user["id"], is_volatile=False
-                    ),
+                    ).get_channels_for_user(self.consumer.user.id, is_volatile=False),
                 },
             ]
         )
         await self.consumer.channel_layer.group_add(
-            GROUP_USER.format(id=self.consumer.user["id"]), self.consumer.channel_name
+            GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name
         )
         await self.consumer.channel_layer.group_add(
             GROUP_WORLD.format(id=self.world), self.consumer.channel_name
         )
 
     async def update(self):
-        new_data = await update_user(
-            self.world, self.consumer.user["id"], public_data=self.content[2]
+        user = await update_user(
+            self.world,
+            self.consumer.user.id,
+            public_data=self.content[2],
+            serialize=False,
         )
-        self.consumer.user = new_data
+        self.consumer.user = user
         await self.consumer.send_success()
-        await self.consumer.user_broadcast(
-            "user.updated", await get_public_user(self.world, self.consumer.user["id"])
-        )
+        await self.consumer.user_broadcast("user.updated", user.serialize_public())
 
     async def push_world_update(self):
         world_config = await get_world_config_for_user(
             await get_user(
-                self.world, with_id=self.consumer.user["id"], serialize=False
+                self.world, with_id=self.consumer.user.id, serialize=False
             )
         )
         await self.consumer.send_json(["world.updated", world_config])
@@ -99,8 +98,7 @@ class AuthModule:
         self.consumer = consumer
         if self.consumer.user:
             await self.consumer.channel_layer.group_discard(
-                GROUP_USER.format(id=self.consumer.user["id"]),
-                self.consumer.channel_name,
+                GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name,
             )
             await self.consumer.channel_layer.group_discard(
                 GROUP_WORLD.format(id=self.world), self.consumer.channel_name

@@ -61,7 +61,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         Broadcast a message to other clients of the same user.
         """
         await self.channel_layer.group_send(
-            GROUP_USER.format(id=self.user["id"]),
+            GROUP_USER.format(id=self.user.id),
             {
                 "type": "user.broadcast",
                 "event_type": event_type,

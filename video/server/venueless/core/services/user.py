@@ -105,7 +105,7 @@ def create_user(world_id, *, token_id=None, client_id=None, traits=None, profile
 
 @database_sync_to_async
 @atomic
-def update_user(world_id, id, *, traits=None, public_data=None):
+def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     # TODO: Exception handling
     user = User.objects.select_for_update().get(id=id, world_id=world_id)
 
@@ -121,4 +121,4 @@ def update_user(world_id, id, *, traits=None, public_data=None):
             save_fields.append("profile")
         if save_fields:
             user.save(update_fields=save_fields)
-    return user.serialize_public()
+    return user.serialize_public() if serialize else user
