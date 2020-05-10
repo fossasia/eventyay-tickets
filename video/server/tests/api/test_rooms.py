@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import pytest
 from asgiref.sync import sync_to_async
 from channels.testing import WebsocketCommunicator
-from tests.api.utils import get_token_header
+from tests.utils import get_token_header
 
 from venueless.routing import application
 

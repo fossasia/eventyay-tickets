@@ -1,5 +1,5 @@
 import pytest
-from tests.api.utils import get_token_header
+from tests.utils import get_token_header
 
 
 @pytest.mark.django_db
