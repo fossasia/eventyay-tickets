@@ -10,7 +10,7 @@
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
-			bunt-input(v-else, name="chat-composer", v-model="composingMessage", @keydown.native.enter="send")
+			chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone'", y)
 			.user(v-for="user of members")
 				avatar(:user="user", :size="28")
@@ -22,6 +22,7 @@ import { mapState } from 'vuex'
 import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
 import Avatar from 'components/Avatar'
+import ChatInput from 'components/ChatInput'
 
 export default {
 	props: {
@@ -38,10 +39,9 @@ export default {
 			default: 'compact'
 		}
 	},
-	components: { ChatMessage, Avatar, InfiniteScroll },
+	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
-			composingMessage: ''
 		}
 	},
 	computed: {
@@ -70,9 +70,8 @@ export default {
 		join () {
 			this.$store.dispatch('chat/join')
 		},
-		send () {
-			this.$store.dispatch('chat/sendMessage', {text: this.composingMessage})
-			this.composingMessage = ''
+		send (message) {
+			this.$store.dispatch('chat/sendMessage', {text: message})
 		}
 	}
 }
@@ -104,11 +103,6 @@ export default {
 		align-items: center
 		.bunt-button
 			button-style(color: $clr-primary)
-			width: calc(100% - 32px)
-		.bunt-input
-			input-style(size: compact)
-			flex: none
-			padding: 0
 			width: calc(100% - 32px)
 	&:not(.standalone)
 		justify-content: flex-end
