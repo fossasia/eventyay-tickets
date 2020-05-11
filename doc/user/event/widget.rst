@@ -16,7 +16,7 @@ first should be embedded into the ``<head>`` part of your website, if possible.
 If this is inconvenient, you can put it in the ``<body>`` part as well::
 
     <link rel="stylesheet" type="text/css" href="https://pretalx.com/democon/schedule/widget/v1.css">
-    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v1.en.js" async></script>
+    <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v1.en.js"></script>
 
 The second snippet should be embedded at the position where the widget should show up::
 
