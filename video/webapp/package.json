@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@mdi/font": "^5.0.45",
-    "buntpapier": "^1.8.3",
+    "buntpapier": "^1.8.5",
     "core-js": "^3.6.4",
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
