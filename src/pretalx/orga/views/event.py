@@ -2,6 +2,7 @@ import json
 from contextlib import suppress
 from pathlib import Path
 
+from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -12,6 +13,7 @@ from django.forms.models import inlineformset_factory
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
@@ -688,6 +690,7 @@ def event_list(request):
     return JsonResponse(doc)
 
 
+@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")
 class WidgetSettings(EventPermissionRequired, FormView):
     form_class = WidgetSettingsForm
     permission_required = "orga.change_settings"
