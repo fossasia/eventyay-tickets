@@ -38,7 +38,7 @@ if (token) {
 	router.replace(router.currentRoute.path)
 	store.dispatch('login', {token})
 } else if (localStorage.token) {
-	store.dispatch('login', localStorage.token)
+	store.dispatch('login', {token: localStorage.token})
 } else {
 	console.warn('no token found, login in anonymously')
 	let clientId = localStorage.clientId
