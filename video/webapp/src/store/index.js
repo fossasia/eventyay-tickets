@@ -75,6 +75,13 @@ export default new Vuex.Store({
 		},
 		streamRoom ({state}, {room}) {
 			state.streamingRoom = room
+		},
+		async createRoom ({state}, room) {
+			return await api.call('room.create', room)
+		},
+		'api::room.create' ({state}, room) {
+			state.rooms.push(room)
+			// TODO ordering?
 		}
 	},
 	modules: {

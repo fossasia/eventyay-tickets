@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-room(:class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
+.c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
 	.main
 		.room-info
 			img(v-if="room.picture", :src="room.picture")
@@ -38,7 +38,7 @@ export default {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
 		modules () {
-			return this.room.modules.reduce((acc, module) => {
+			return this.room?.modules.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
 			}, {})
