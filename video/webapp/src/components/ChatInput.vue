@@ -8,6 +8,11 @@ bunt-input-outline-container.c-chat-input
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
 </template>
 <script>
+// TODO
+// - multiline
+// - intercept copy + paste
+// - parse ascii emoticons ;)
+// - parse colol emoji :+1:
 import EmojiPicker from 'components/EmojiPicker'
 import { getEmojiPosition } from 'lib/emoji'
 import { NimbleEmojiIndex } from 'emoji-mart'
