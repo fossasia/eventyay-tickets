@@ -1,8 +1,8 @@
 <template lang="pug">
 #app
 	template(v-if="world")
-		//- app-bar
-		rooms-sidebar(@editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true")
+		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
+		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",  @close="showSidebar = false")
 		router-view
 		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
 		transition(name="prompt")
@@ -26,6 +26,7 @@ export default {
 	components: { AppBar, RoomsSidebar, Livestream, ProfilePrompt, CreateStagePrompt, CreateChatPrompt },
 	data () {
 		return {
+			showSidebar: false,
 			showProfilePrompt: false,
 			showStageCreationPrompt: false,
 			showChatCreationPrompt: false
@@ -38,9 +39,15 @@ export default {
 		},
 	},
 	watch: {
-		room: 'roomChange'
+		room: 'roomChange',
+		$route () {
+			this.showSidebar = false
+		}
 	},
 	methods: {
+		toggleSidebar () {
+			this.showSidebar = !this.showSidebar
+		},
 		roomChange () {
 			if (this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
 				this.$store.dispatch('streamRoom', {room: this.room})
@@ -106,4 +113,9 @@ export default {
 		font-weight: 600
 		font-size: 20px
 		border-radius: 0 0 4px 4px
+
+	+below('s')
+		grid-template-columns: auto
+		grid-template-rows: 64px auto
+		grid-template-areas: "app-bar" "main"
 </style>
