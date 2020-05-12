@@ -1,46 +1,61 @@
 <template lang="pug">
-.c-rooms-sidebar
-	.logo
-		span {{ world.title }}
-	.global-links
-		router-link.room(:to="{name: 'home'}") About
-		router-link.room(:to="{name: 'schedule'}") Schedule
-	.group-title
-		span Stages
-		bunt-icon-button(@click="$emit('createRoom')") plus
-	.stages
-		router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
-			.name {{ stage.name }}
-	.group-title
-		span Channels
-		bunt-icon-button(@click="$emit('createChat')") plus
-	.chats
-		router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
-			.name {{ chat.name }}
-		router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
-			.name {{ chat.name }}
-	.buffer
-	.group-title
-		span Administration
-	.admin
-		router-link.room(:to="{name: 'admin'}") Event Config
-		router-link.room(:to="{name: 'admin'}") Users
-	.profile(@click="$emit('editProfile')")
-		avatar(:user="user", :size="36")
-		.display-name {{ user.profile.display_name }}
+transition(name="sidebar")
+	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
+		.logo(v-if="$mq.above['s']")
+			span {{ world.title }}
+		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
+		scrollbars(y)
+			.global-links
+				router-link.room(:to="{name: 'home'}") About
+				router-link.room(:to="{name: 'schedule'}") Schedule
+			.group-title
+				span Stages
+				bunt-icon-button(@click="$emit('createRoom')") plus
+			.stages
+				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
+					.name {{ stage.name }}
+			.group-title
+				span Channels
+				bunt-icon-button(@click="$emit('createChat')") plus
+			.chats
+				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
+					.name {{ chat.name }}
+				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
+					.name {{ chat.name }}
+			.buffer
+			.group-title
+				span Administration
+			.admin
+				router-link.room(:to="{name: 'admin'}") Event Config
+				router-link.room(:to="{name: 'admin'}") Users
+		.profile(@click="$emit('editProfile')")
+			avatar(:user="user", :size="36")
+			.display-name {{ user.profile.display_name }}
 </template>
 <script>
 import { mapState } from 'vuex'
 import Avatar from 'components/Avatar'
 
 export default {
+	props: {
+		show: Boolean
+	},
 	components: { Avatar },
 	data () {
 		return {
+			lastPointer: null,
+			pointerMovementX: 0,
+			snapBack: false
 		}
 	},
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
+		style () {
+			if (this.pointerMovementX === 0) return
+			return {
+				transform: `translateX(${this.pointerMovementX}px)`
+			}
+		},
 		roomsByType () {
 			const rooms = {
 				generic: [],
@@ -64,7 +79,35 @@ export default {
 		this.$nextTick(() => {
 		})
 	},
-	methods: {}
+	methods: {
+		onPointerdown (event) {
+			if (this.$mq.above.s) return
+			this.lastPointer = event.pointerId
+		},
+		onPointermove (event) {
+			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
+			event.preventDefault()
+			this.pointerMovementX += event.movementX
+			if (this.pointerMovementX > 0) {
+				this.pointerMovementX = 0
+			}
+		},
+		async onPointerup (event) {
+			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
+			event.preventDefault()
+			if (this.pointerMovementX < -80) {
+				this.$emit('close')
+			}
+			this.pointerMovementX = 0
+			// TODO not the cleanest, control transition completely ourselves
+			this.snapBack = true
+			await this.$nextTick()
+			this.snapBack = false
+		},
+		onPointercancel (event) {
+			this.pointerMovementX = 0
+		}
+	}
 }
 </script>
 <style lang="stylus">
@@ -73,6 +116,8 @@ export default {
 	color: $clr-primary-text-dark
 	display: flex
 	flex-direction: column
+	min-height: 0
+	max-height: 100vh
 	.logo
 		font-size: 18px
 		text-align: center
@@ -85,6 +130,9 @@ export default {
 				font-size: 18px
 				height: 24px
 				line-height: @height
+	#btn-close-sidebar
+		margin: 8px
+		icon-button-style(color: $clr-primary-text-dark, style: clear)
 	.global-links
 		display: flex
 		flex-direction: column
@@ -171,4 +219,15 @@ export default {
 			font-weight: 600
 			font-size: 18px
 			margin-left: 8px
+	+below('s')
+		position: fixed
+		left: 0
+		top: 0
+		z-index: 1000
+		width: var(--sidebar-width)
+		touch-action: pan-y
+		&.sidebar-enter-active, &.sidebar-leave-active
+			transition: transform .2s
+		&.sidebar-enter, &.sidebar-leave-to
+			transform: translateX(calc(-1 * var(--sidebar-width)))
 </style>
