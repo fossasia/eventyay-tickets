@@ -14,8 +14,16 @@ export default new Vuex.Store({
 		user: null,
 		world: null,
 		rooms: null,
+		permissions: null,
 		schedule: null,
 		streamingRoom: null
+	},
+	getters: {
+		hasPermission (state) {
+			return (permission) => {
+				return !!state.permissions?.includes(permission)
+			}
+		}
 	},
 	actions: {
 		login ({state}, {token, clientId}) {
@@ -28,6 +36,7 @@ export default new Vuex.Store({
 				state.connected = true
 				state.user = serverState['user.config']
 				state.world = serverState['world.config'].world
+				state.permissions = serverState['world.config'].permissions
 				if (!state.rooms) {
 					state.rooms = serverState['world.config'].rooms
 				} else {
@@ -75,6 +84,13 @@ export default new Vuex.Store({
 		},
 		streamRoom ({state}, {room}) {
 			state.streamingRoom = room
+		},
+		async createRoom ({state}, room) {
+			return await api.call('room.create', room)
+		},
+		'api::room.create' ({state}, room) {
+			state.rooms.push(room)
+			// TODO ordering?
 		}
 	},
 	modules: {

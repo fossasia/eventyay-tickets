@@ -28,7 +28,7 @@ def decode_token(token):
 
 
 print("creating token")
-token = create_token("some-user-id", ["speaker", "addon-2"])
+token = create_token("some-user-id", ["admin"])
 print(token)
 print("verifying token")
 print(decode_token(token))

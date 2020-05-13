@@ -10,13 +10,13 @@ transition(name="sidebar")
 				router-link.room(:to="{name: 'schedule'}") Schedule
 			.group-title
 				span Stages
-				bunt-icon-button(@click="$emit('createRoom')") plus
+		bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title
 				span Channels
-				bunt-icon-button(@click="$emit('createChat')") plus
+		bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createChat')") plus
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
@@ -33,7 +33,7 @@ transition(name="sidebar")
 			.display-name {{ user.profile.display_name }}
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Avatar from 'components/Avatar'
 
 export default {
@@ -50,6 +50,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
+		...mapGetters(['hasPermission']),
 		style () {
 			if (this.pointerMovementX === 0) return
 			return {

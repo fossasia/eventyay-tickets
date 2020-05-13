@@ -1,105 +1,37 @@
-World configuration
-===================
+World actions
+=============
 
-The world configuration is pushed to the client first as part of the successful authentication response.
-If the world config changes, you will get an update like this::
+Users with sufficient :ref:`permissions` can take world-relevant actions like create rooms.
 
-    <= ["world.update", { … }]
+Room creation
+-------------
 
-The body of the configuration is structured like this, filtered to user visibility:
+Rooms can be created with
+
+    <= ["room.create", { … }]
+
+The body of the room is structured like this:
 
 
 .. code-block:: json
 
     {
-        "world": {
-            "title": "Unsere tolle Online-Konferenz",
-            "permissions": []
-        },
-        "rooms": [
-            {
-                "id": "room_1",
-                "name": "Plenum",
-                "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
-                "picture": "https://via.placeholder.com/150",
-                "permissions": [],
-                "modules": [
-                    {
-                        "type": "livestream.native",
-                        "config": {
-                            "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
-                        },
-                        "permissions": []
-                    },
-                    {
-                        "type": "chat.native",
-                        "config": {
-                        },
-                        "permissions": []
-                    },
-                    {
-                        "type": "agenda.pretalx",
-                        "config": {
-                            "api_url": "https://pretalx.com/conf/online/schedule/export/schedule.json",
-                            "room_id": 3
-                        },
-                        "permissions": []
-                    }
-                ]
-            },
-            {
-                "id": "room_2",
-                "name": "Gruppenraum 1",
-                "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
-                "picture": "https://via.placeholder.com/150",
-                "permissions": [],
-                "access": [
-                    {
-                        "level": "viewer",
-                        "permissions": []
-                    },
-                    {
-                        "level": "moderator",
-                        "permissions": []
-                    }
-                ],
-                "modules": [
-                    {
-                        "type": "call.bigbluebutton",
-                        "config": {},
-                        "permissions": []
-                    }
-                ]
-            }
-        ]
+        "name": "Neuer Raum",
+        "modules": [],
+        "announcements": [],
     }
 
 
-Permissions
------------
+The content of ``modules`` can be any list of objects just like in the :ref:`world-config`,
+though only the presence of ``{"type": "chat.native"}`` will currently be processed by the server.
 
-Permissions are rendered **to the user** as a list of strings. This list contains agreed permission names, with the
-default attendee requiring not permissions at all (an empty list). Permissions agreed so far include:
+All users will receive a complete ``room.create`` message. The payload is the same as a room object in the world config.
 
-- ``world.update``
-- ``world.announce``
-- ``room.create``
-- ``room.update``
-- ``room.delete``
-- ``chat.create``
-- ``chat.update``
-- ``chat.delete``
-- ``chat.moderate``
-
-
-On the **configuration** side of things, permissions are a dictionary, mapping from a permission to the required traits
-a token needs to have, like this:
+Additionally, the requesting user will receive a success response in the form
 
 .. code-block:: json
 
     {
-        "permissions": {
-            "world.update": ["trait1", "trait2"],
-            "room.update": ["trait2"],
-        }
+        "room": "room-id-goes-here",
+        "channel": "channel-id-goes-here-if-appropriate"
     }

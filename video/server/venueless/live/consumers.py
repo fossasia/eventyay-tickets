@@ -15,6 +15,7 @@ from venueless.live.exceptions import ConsumerException
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
+from .modules.world import WorldModule
 
 
 class MainConsumer(AsyncJsonWebsocketConsumer):
@@ -24,6 +25,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "chat": ChatModule(),
             "user": AuthModule(),
             "bbb": BBBModule(),
+            "room": WorldModule(),
+            "world": WorldModule(),
         }
         self.user = None
         self.socket_id = str(uuid.uuid4())
@@ -103,8 +106,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         elif message["type"] == "user.broadcast":
             if self.socket_id != message["socket"]:
                 await self.send_json([message["event_type"], message["data"]])
-        elif message["type"] == "world.update":
-            await self.components["user"].dispatch_event(self, message)
+        elif message["type"] in ("world.update", "room.create"):  # broadcast types
+            await self.components["world"].dispatch_event(self, message)
         elif message["type"].startswith("chat."):
             await self.components["chat"].dispatch_event(self, message)
         else:

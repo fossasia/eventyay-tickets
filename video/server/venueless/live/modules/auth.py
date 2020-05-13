@@ -54,12 +54,6 @@ class AuthModule:
         await self.consumer.send_success()
         await self.consumer.user_broadcast("user.updated", user.serialize_public())
 
-    async def push_world_update(self):
-        world_config = await get_world_config_for_user(
-            await get_user(self.world, with_id=self.consumer.user.id, serialize=False)
-        )
-        await self.consumer.send_json(["world.updated", world_config])
-
     async def dispatch_command(self, consumer, content):
         self.consumer = consumer
         self.content = content
@@ -79,18 +73,6 @@ class AuthModule:
             await self.consumer.send_success(user)
         else:
             await self.consumer.send_error(code="user.not_found")
-
-    async def dispatch_event(self, consumer, content):
-        self.consumer = consumer
-        self.content = content
-        self.world = self.consumer.scope["url_route"]["kwargs"]["world"]
-        self.service = ChatService(self.world)
-        if self.content["type"] == "world.update":
-            await self.push_world_update()
-        else:  # pragma: no cover
-            logger.warning(
-                f'Ignored unknown event {content["type"]}'
-            )  # ignore unknown event
 
     async def dispatch_disconnect(self, consumer, close_code):
         self.consumer = consumer
