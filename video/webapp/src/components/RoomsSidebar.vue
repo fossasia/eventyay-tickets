@@ -10,13 +10,13 @@ transition(name="sidebar")
 				router-link.room(:to="{name: 'schedule'}") Schedule
 			.group-title
 				span Stages
-		bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
+				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title
 				span Channels
-		bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createChat')") plus
+				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createChat')") plus
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
@@ -134,6 +134,13 @@ export default {
 	#btn-close-sidebar
 		margin: 8px
 		icon-button-style(color: $clr-primary-text-dark, style: clear)
+	> .c-scrollbars
+		flex: auto
+		.scroll-content
+			flex: auto
+		.scrollbar-rail-y
+			.scrollbar-thumb
+				background-color: $clr-secondary-text-dark
 	.global-links
 		display: flex
 		flex-direction: column
@@ -150,6 +157,7 @@ export default {
 				background-color: rgba(255, 255, 255, .4)
 				color: $clr-primary-text-dark
 	.group-title
+		flex: none
 		color: $clr-secondary-text-dark
 		margin: 16px 8px 0 16px
 		height: 28px
