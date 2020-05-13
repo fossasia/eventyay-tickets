@@ -4,7 +4,7 @@
 		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
 		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",  @close="showSidebar = false")
 		router-view
-		livestream.global-stream(v-if="streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
+		livestream.global-stream(v-if="$mq.above['s'] && streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
 		transition(name="prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
@@ -49,7 +49,7 @@ export default {
 			this.showSidebar = !this.showSidebar
 		},
 		roomChange () {
-			if (this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
+			if (this.$mq.above.s && this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
 				this.$store.dispatch('streamRoom', {room: this.room})
 			}
 			if (this.room && this.streamingRoom && !this.$refs.globalStream?.playing) {
@@ -116,6 +116,6 @@ export default {
 
 	+below('s')
 		grid-template-columns: auto
-		grid-template-rows: 64px auto
+		grid-template-rows: 48px auto
 		grid-template-areas: "app-bar" "main"
 </style>

@@ -112,4 +112,16 @@ export default {
 			border-left: border-separator()
 			flex: none
 			width: var(--chatbar-width)
+	+below('s')
+		flex-direction: column
+		.main
+			flex: none
+		.c-livestream
+			height: 40vh
+			flex: none
+		&:not(.standalone-chat)
+			.c-chat
+				flex: auto
+				width: 100vw
+				min-height: 0
 </style>
