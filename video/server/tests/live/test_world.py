@@ -41,22 +41,27 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         rooms = await get_rooms(world)
         assert len(rooms) == 5
 
-        modules = [{"type": "bogus"}]
+        modules = []
         if with_channel:
             modules.append({"type": "chat.native"})
+        else:
+            modules.append({"type": "livestream.native"})
         await c.send_json_to(
             ["room.create", {"name": "New Room!!", "modules": modules}]
         )
         response = await c.receive_json_from()
+        if with_channel and can_create_rooms:
+            assert response[0] == "success"
 
-        new_rooms = await get_rooms(world)
-        assert len(new_rooms) == len(rooms) + int(can_create_rooms)
+            new_rooms = await get_rooms(world)
+            assert len(new_rooms) == len(rooms) + 1
 
-        if can_create_rooms:
             assert response[-1]["room"]
             assert bool(response[-1]["channel"]) is with_channel
             second_response = await c.receive_json_from()
             assert second_response[0] == "room.create"
             assert response[-1]["room"] == second_response[-1]["id"]
         else:
-            assert response[-1] == {"code": "unauthorized"}
+            assert response[0] == "error"
+            new_rooms = await get_rooms(world)
+            assert len(new_rooms) == len(rooms)

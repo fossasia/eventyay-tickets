@@ -1,5 +1,7 @@
 import logging
 
+from django.core.exceptions import ValidationError
+
 from venueless.core.services.user import get_user
 from venueless.core.services.world import (
     create_room,
@@ -25,9 +27,13 @@ class WorldModule:
         if not self.world.has_permission("room.create", self.consumer.user.traits):
             await self.consumer.send_error("unauthorized")
             return
-        room = await create_room(self.world, self.content[-1])
-        # TODO auto join?
-        await self.consumer.send_success(room)
+        try:
+            room = await create_room(self.world, self.content[-1])
+        except ValidationError as e:
+            await self.consumer.send_error(code="room.invalid", message=str(e))
+        else:
+            # TODO auto join?
+            await self.consumer.send_success(room)
 
     async def push_world_update(self):
         world_config = await get_world_config_for_user(

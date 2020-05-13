@@ -124,6 +124,13 @@ def _create_room(data, with_channel=False):
 
 
 async def create_room(world, data):
+    for m in data.get("modules", []):
+        if m.get("type") != "chat.native":
+            raise ValidationError(
+                f"The dynamic creation of rooms with the module '"
+                f"{m['type']}' is currently not allowed."
+            )
+
     # TODO input validation
     room, channel = await _create_room(
         {
