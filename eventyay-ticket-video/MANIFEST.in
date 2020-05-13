@@ -1,0 +1,3 @@
+recursive-include pretix_venueless/static *
+recursive-include pretix_venueless/templates *
+recursive-include pretix_venueless/locale *
