@@ -10,10 +10,10 @@
 					template(slot-scope="{ option }")
 						.mdi(:class="`mdi-${option.icon}`")
 						.label {{ option.label }}
-				bunt-input(name="name", label="Name", :icon="selectedType.icon", placeholder="fancyawesomechannel")
+				bunt-input(name="name", label="Name", :icon="selectedType.icon", placeholder="fancyawesomechannel", v-model="name")
 				bunt-input-outline-container(label="Description")
 					textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
-				bunt-button(type="submit") create
+				bunt-button(type="submit", :loading="loading") create
 </template>
 <script>
 export default {
@@ -30,7 +30,8 @@ export default {
 				id: 'video',
 				label: 'Video chat',
 				icon: 'webcam'
-			}]
+			}],
+			loading: false
 		}
 	},
 	computed: {
@@ -44,8 +45,26 @@ export default {
 		})
 	},
 	methods: {
-		create () {
-
+		async create () {
+			this.loading = true
+			const modules = []
+			if (this.type === 'text') {
+				modules.push({
+					type: 'chat.native'
+				})
+			} else {
+				modules.push({
+					type: 'call.bigbluebutton'
+				})
+			}
+			const { room } = await this.$store.dispatch('createRoom', {
+				name: this.name,
+				modules
+			})
+			// TODO error handling
+			this.loading = false
+			this.$router.push({name: 'room', params: {roomId: room}})
+			this.$emit('close')
 		}
 	}
 }
