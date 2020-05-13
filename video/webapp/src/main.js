@@ -9,6 +9,7 @@ import App from './App.vue'
 import router from 'router'
 import store from 'store'
 import Scrollbars from 'components/Scrollbars'
+import MediaQueries from 'components/mixins/media-queries'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
@@ -17,6 +18,7 @@ Vue.config.productionTip = false
 Vue.use(Buntpapier)
 Vue.use(Vuelidate)
 Vue.component('scrollbars', Scrollbars)
+Vue.use(MediaQueries)
 // auth.
 // history.replaceState('', document.title, location.pathname + location.search)
 
