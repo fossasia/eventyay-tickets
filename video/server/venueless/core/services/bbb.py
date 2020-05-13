@@ -79,7 +79,7 @@ class BBBService:
                     logger.error(f"Could not create BBB meeting. Response: {body}")
                     return
         except:
-            logger.exception(f"Could not create BBB meeting.")
+            logger.exception("Could not create BBB meeting.")
             return
 
         return get_url(

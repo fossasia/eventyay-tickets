@@ -74,10 +74,10 @@ class Command(BaseCommand):
         filters = options["filter"] or ("*",)
 
         conns = []
-        for k in rc.keys():
-            for l in filters:
-                if fnmatch.fnmatch(k, l):
-                    conns.append(k)
+        for key in rc.keys():
+            for fil in filters:
+                if fnmatch.fnmatch(key, fil):
+                    conns.append(key)
 
         self._staggered_group_send(
             [GROUP_VERSION.format(label=c) for c in conns],
@@ -90,10 +90,10 @@ class Command(BaseCommand):
         filters = options["filter"] or ("*",)
 
         conns = []
-        for k in rc.keys():
-            for l in filters:
-                if fnmatch.fnmatch(k, l):
-                    conns.append(k)
+        for key in rc.keys():
+            for fil in filters:
+                if fnmatch.fnmatch(key, fil):
+                    conns.append(key)
 
         self._staggered_group_send(
             [GROUP_VERSION.format(label=c) for c in conns],
