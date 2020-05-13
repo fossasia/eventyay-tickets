@@ -11,7 +11,7 @@
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
 			chat-input(v-else, @send="send")
-		scrollbars.user-list(v-if="mode === 'standalone'", y)
+		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['s']", y)
 			.user(v-for="user of members")
 				avatar(:user="user", :size="28")
 				span.display-name {{ user ? user.profile.display_name : this.message.sender }}
@@ -128,4 +128,8 @@ export default {
 					font-weight: 600
 					color: $clr-secondary-text-light
 					margin-left: 8px
+		+below('s')
+			grid-template-rows: auto 64px
+			grid-template-columns: auto
+			grid-template-areas: "timeline" "input"
 </style>

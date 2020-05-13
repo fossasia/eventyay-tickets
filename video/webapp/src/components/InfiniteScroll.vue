@@ -21,7 +21,11 @@ export default {
 	computed: {},
 	created () {},
 	mounted () {
-		this.observer = new IntersectionObserver(this.intersected)
+		const scrollParent = this.$el.closest('.bunt-scrollbars')
+		this.observer = new IntersectionObserver(this.intersected, {
+			root: scrollParent,
+			rootMargin: '4px'
+		})
 		this.observer.observe(this.$el)
 	},
 	methods: {
