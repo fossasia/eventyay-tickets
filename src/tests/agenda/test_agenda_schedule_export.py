@@ -535,9 +535,10 @@ def test_html_export_full(
         .open()
         .read()
     )
-    assert slot.submission.title in schedule_xml
-    assert canceled_talk.submission.frab_slug not in schedule_xml
-    assert str(canceled_talk.submission.uuid) not in schedule_xml
+    with scope(event=slot.submission.event):
+        assert slot.submission.title in schedule_xml
+        assert canceled_talk.frab_slug not in schedule_xml
+        assert str(canceled_talk.uuid) not in schedule_xml
 
     talk_ics = (
         (settings.HTMLEXPORT_ROOT / f"test/test/talk/{slot.submission.code}.ics")

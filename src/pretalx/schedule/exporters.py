@@ -170,7 +170,7 @@ class FrabJsonExporter(ScheduleData):
                             str(room["name"]): [
                                 {
                                     "id": talk.submission.id,
-                                    "guid": talk.submission.uuid,
+                                    "guid": talk.uuid,
                                     "logo": talk.submission.urls.image,
                                     "date": talk.start.astimezone(tz).isoformat(),
                                     "start": talk.start.astimezone(tz).strftime(
@@ -178,7 +178,7 @@ class FrabJsonExporter(ScheduleData):
                                     ),
                                     "duration": talk.export_duration,
                                     "room": str(room["name"]),
-                                    "slug": talk.submission.code,
+                                    "slug": talk.frab_slug,
                                     "url": talk.submission.urls.public.full(),
                                     "title": talk.submission.title,
                                     "subtitle": "",

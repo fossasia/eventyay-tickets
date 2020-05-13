@@ -14,12 +14,12 @@
     </conference>
     {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start|date:"c" }}' end='{{ day.end|date:"c" }}'>
         {% for room in day.rooms %}<room name='{{ room.name|xmlescape }}'>
-            {% for talk in room.talks %}<event guid='{{ talk.submission.uuid }}' id='{{ talk.submission.id }}'>
+            {% for talk in room.talks %}<event guid='{{ talk.uuid }}' id='{{ talk.submission.id }}'>
                 <date>{{ talk.start|date:"c" }}</date>
                 <start>{{ talk.start|date:"H:i" }}</start>
                 <duration>{{ talk.export_duration }}</duration>
                 <room>{{ room.name|xmlescape }}</room>
-                <slug>{{ talk.submission.frab_slug }}</slug>
+                <slug>{{ talk.frab_slug }}</slug>
                 <url>{{ base_url }}{{ talk.submission.urls.public }}</url>
                 <recording>
                     <license>{{ talk.submission.license|xmlescape }}</license>

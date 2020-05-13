@@ -1,10 +1,6 @@
 import datetime as dt
 import json
-import re
 import statistics
-import string
-import uuid
-from contextlib import suppress
 from itertools import repeat
 
 from django.conf import settings
@@ -26,12 +22,6 @@ from pretalx.common.utils import path_with_hash
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import QueuedMail
 from pretalx.submission.signals import submission_state_change
-
-INSTANCE_IDENTIFIER = None
-with suppress(Exception):
-    from pretalx.common.models.settings import GlobalSettings
-
-    INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
 
 
 def generate_invite_code(length=32):
@@ -486,27 +476,6 @@ class Submission(LogMixin, GenerateCode, models.Model):
         self.log_action("pretalx.submission.deleted", person=person, orga=True)
 
     remove.alters_data = True
-
-    @cached_property
-    def uuid(self):
-        """A UUID5, calculated from the submission code and the instance
-        identifier."""
-        global INSTANCE_IDENTIFIER
-        if not INSTANCE_IDENTIFIER:
-            from pretalx.common.models.settings import GlobalSettings
-
-            INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
-        return uuid.uuid5(INSTANCE_IDENTIFIER, self.code)
-
-    @cached_property
-    def frab_slug(self):
-        title = re.sub(r"\W+", "-", self.title)
-        legal_chars = string.ascii_letters + string.digits + "-"
-        pattern = f"[^{legal_chars}]+"
-        title = re.sub(pattern, "", title)
-        title = title.lower()
-        title = title.strip("_")
-        return f"{self.event.slug}-{self.pk}-{title}"
 
     @cached_property
     def integer_uuid(self):

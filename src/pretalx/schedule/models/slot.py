@@ -1,4 +1,8 @@
 import datetime as dt
+import re
+import string
+import uuid
+from contextlib import suppress
 from urllib.parse import urlparse
 
 import pytz
@@ -10,6 +14,12 @@ from i18nfield.fields import I18nCharField
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import get_base_url
+
+INSTANCE_IDENTIFIER = None
+with suppress(Exception):
+    from pretalx.common.models.settings import GlobalSettings
+
+    INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
 
 
 class TalkSlot(LogMixin, models.Model):
@@ -190,6 +200,40 @@ class TalkSlot(LogMixin, models.Model):
         """Checks if both slots have the same room and start time."""
         return self.room == other_slot.room and self.start == other_slot.start
 
+    @cached_property
+    def id_suffix(self):
+        if not self.event.settings.present_multiple_times:
+            return ""
+        all_slots = list(
+            TalkSlot.objects.filter(
+                submission_id=self.submission_id, schedule_id=self.schedule_id
+            )
+        )
+        if len(all_slots) == 1:
+            return ""
+        return "-" + str(all_slots.index(self))
+
+    @cached_property
+    def frab_slug(self):
+        title = re.sub(r"\W+", "-", self.submission.title)
+        legal_chars = string.ascii_letters + string.digits + "-"
+        pattern = f"[^{legal_chars}]+"
+        title = re.sub(pattern, "", title)
+        title = title.lower()
+        title = title.strip("_")
+        return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}-{title}"
+
+    @cached_property
+    def uuid(self):
+        """A UUID5, calculated from the submission code and the instance
+        identifier."""
+        global INSTANCE_IDENTIFIER
+        if not INSTANCE_IDENTIFIER:
+            from pretalx.common.models.settings import GlobalSettings
+
+            INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
+        return uuid.uuid5(INSTANCE_IDENTIFIER, self.submission.code + self.id_suffix)
+
     def build_ical(self, calendar, creation_time=None, netloc=None):
         if not self.start or not self.end or not self.room:
             return
@@ -203,8 +247,8 @@ class TalkSlot(LogMixin, models.Model):
         ).value = f"{self.submission.title} - {self.submission.display_speaker_names}"
         vevent.add("dtstamp").value = creation_time
         vevent.add("location").value = str(self.room.name)
-        vevent.add("uid").value = "pretalx-{}-{}@{}".format(
-            self.submission.event.slug, self.submission.code, netloc
+        vevent.add("uid").value = "pretalx-{}-{}{}@{}".format(
+            self.submission.event.slug, self.submission.code, self.id_suffix, netloc
         )
 
         vevent.add("dtstart").value = self.start.astimezone(tz)
