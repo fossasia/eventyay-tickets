@@ -13,6 +13,7 @@ import MediaQueries from 'components/mixins/media-queries'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
@@ -53,3 +54,7 @@ if (token) {
 store.dispatch('connect')
 
 window.__venueless__release = RELEASE
+
+window.addEventListener('beforeinstallprompt', function (event) {
+	console.log('install prompt', event)
+})
