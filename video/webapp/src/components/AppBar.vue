@@ -1,26 +1,15 @@
 <template lang="pug">
 .c-app-bar
-	bunt-icon-button(@click="$emit('toggleSidebar')") menu
+	bunt-icon-button(@click="$emit('toggleSidebar')", @touchend.native="$emit('toggleSidebar')") menu
 	.logo {{ world.title }}
 </template>
 <script>
 import { mapState } from 'vuex'
 
 export default {
-	components: {},
-	data () {
-		return {
-		}
-	},
 	computed: {
 		...mapState(['world'])
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">

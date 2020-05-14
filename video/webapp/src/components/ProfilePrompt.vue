@@ -10,7 +10,8 @@
 				.avatar
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
 					identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
-				bunt-input.display-name(name="displayName", label="Display name", v-model="displayName", :validation="$v.displayName")
+				form(@submit.prevent="update")
+					bunt-input.display-name(name="displayName", label="Display name", v-model="displayName", :validation="$v.displayName")
 			//- link here not strictly good UX
 			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") Change gravatar
 			p.gravatar-hint(v-else-if="!showConnectGravatar") or connect to your #[a(href="#", @click="showConnectGravatar = true") gravatar].
