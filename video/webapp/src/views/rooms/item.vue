@@ -115,7 +115,7 @@ export default {
 	+below('s')
 		flex-direction: column
 		.main
-			flex: none
+			flex: 1 0 auto
 		.c-livestream
 			height: 40vh
 			flex: none
