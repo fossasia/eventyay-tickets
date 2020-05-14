@@ -87,15 +87,14 @@ export default {
 		},
 		onPointermove (event) {
 			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
-			event.preventDefault()
-			this.pointerMovementX += event.movementX
+			this.pointerMovementX += event.movementX / window.devicePixelRatio // because apparently the browser does not do this
 			if (this.pointerMovementX > 0) {
 				this.pointerMovementX = 0
 			}
 		},
 		async onPointerup (event) {
 			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
-			event.preventDefault()
+			this.lastPointer = null
 			if (this.pointerMovementX < -80) {
 				this.$emit('close')
 			}
@@ -106,6 +105,7 @@ export default {
 			this.snapBack = false
 		},
 		onPointercancel (event) {
+			this.lastPointer = null
 			this.pointerMovementX = 0
 		}
 	}
@@ -234,7 +234,10 @@ export default {
 		top: 0
 		z-index: 1000
 		width: var(--sidebar-width)
+		height: 100vh
 		touch-action: pan-y
+		> .c-scrollbars .scroll-content
+			touch-action: pan-y
 		&.sidebar-enter-active, &.sidebar-leave-active
 			transition: transform .2s
 		&.sidebar-enter, &.sidebar-leave-to

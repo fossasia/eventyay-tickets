@@ -2,6 +2,8 @@
 #app
 	template(v-if="world")
 		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
+		transition(name="backdrop")
+			.sidebar-backdrop(v-if="$mq.below['s'] && showSidebar", @pointerup="showSidebar = false")
 		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",  @close="showSidebar = false")
 		router-view
 		livestream.global-stream(v-if="$mq.above['s'] && streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
@@ -118,4 +120,17 @@ export default {
 		grid-template-columns: auto
 		grid-template-rows: 48px auto
 		grid-template-areas: "app-bar" "main"
+
+		.sidebar-backdrop
+			position: fixed
+			top: 0
+			left: 0
+			height: 100vh
+			width: 100vw
+			z-index: 999
+			background-color: $clr-secondary-text-light
+			&.backdrop-enter-active, &.backdrop-leave-active
+				transition: opacity .2s
+			&.backdrop-enter, &.backdrop-leave-to
+				opacity: 0
 </style>
