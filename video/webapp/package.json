@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "vue-cli-service serve"
   },
   "dependencies": {
     "@mdi/font": "^5.0.45",
@@ -22,6 +22,7 @@
     "moment": "^2.24.0",
     "mux.js": "^5.5.3",
     "preact": "^10.4.1",
+    "register-service-worker": "^1.7.1",
     "roboto-fontface": "^0.10.0",
     "shaka-player": "^2.5.10",
     "uuid": "^7.0.3",
@@ -38,6 +39,7 @@
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-e2e-cypress": "~4.3.0",
     "@vue/cli-plugin-eslint": "~4.3.0",
+    "@vue/cli-plugin-pwa": "^4.3.1",
     "@vue/cli-plugin-router": "~4.3.0",
     "@vue/cli-plugin-unit-mocha": "~4.3.0",
     "@vue/cli-plugin-vuex": "~4.3.0",
