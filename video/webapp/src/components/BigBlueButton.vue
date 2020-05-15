@@ -43,6 +43,7 @@ export default {
 <style lang="stylus">
 .c-bigbluebutton
 	flex: auto
+	height: 100%
 	iframe
 		height: 100%
 		width: 100%
