@@ -1,16 +1,20 @@
 <template lang="pug">
-.c-chat-message(:class="[mode, {selected}]")
-	avatar(:user="user", :size="mode === 'standalone' ? 36 : 28", @click.native="showAvatarCard", ref="avatar")
-	.content-wrapper(v-if="mode === 'standalone'")
-		.message-header
-			.display-name(@click="showAvatarCard") {{ user.profile ? user.profile.display_name : this.message.sender }}
-			.timestamp {{ timestamp }}
-		.content(v-html="content")
-	.content-wrapper(v-else)
-		span.display-name {{ user.profile ? user.profile.display_name : this.message.sender }}
-		span.content(v-html="content")
-	.actions
-		bunt-icon-button(@click="showMenu") dots-vertical
+.c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage}]")
+	.avatar-column
+		avatar(:user="user", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+	template(v-if="message.event_type === 'channel.message'")
+		.content-wrapper(v-if="mode === 'standalone'")
+			.message-header
+				.display-name(@click="showAvatarCard") {{ user.profile ? user.profile.display_name : message.sender }}
+				.timestamp {{ timestamp }}
+			.content(v-html="content")
+		.content-wrapper(v-else)
+			span.display-name {{ user.profile ? user.profile.display_name : message.sender }}
+			span.content(v-html="content")
+		.actions
+			bunt-icon-button(@click="showMenu") dots-vertical
+	template(v-else-if="message.event_type === 'channel.member'")
+		.system-content {{ user.profile ? user.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? 'joined' : 'left' }}
 	//- intercepts all events
 	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
 	.menu(v-if="selected", ref="menu")
@@ -51,6 +55,17 @@ export default {
 	},
 	computed: {
 		...mapState('chat', ['usersLookup']),
+		isSystemMessage () {
+			return this.message.event_type !== 'channel.message'
+		},
+		avatarSize () {
+			if (this.message.event_type === 'channel.member') {
+				return 20
+			} else if (this.mode === 'standalone') {
+				return 36
+			}
+			return 28
+		},
 		user () {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender}
 		},
@@ -110,6 +125,10 @@ export default {
 	box-sizing: border-box
 	&:hover, .selected
 		background-color: $clr-grey-100
+	.avatar-column
+		width: 28px
+		display: flex
+		justify-content: flex-end
 	.content-wrapper
 		margin-left: 8px
 		padding-top: 6px // ???
@@ -121,6 +140,10 @@ export default {
 			display: inline-block
 			background-image: url("https://unpkg.com/emoji-datasource-twitter@5.0.1/img/twitter/sheets-256/64.png")
 			background-size: 5700% 5700%
+	.system-content
+		color: $clr-secondary-text-light
+		margin-left: 8px
+		line-height: 20px
 	.c-avatar
 		cursor: pointer
 	.display-name
@@ -182,7 +205,13 @@ export default {
 			margin-top: 16px
 			#btn-ban
 				button-style(color: $clr-danger)
+	&.system-message
+		min-height: 28px
+		.c-avatar
+			margin-right: 4px
 	&.standalone
+		.avatar-column
+			width: 36px
 		.content-wrapper
 			padding-top: 4px
 			display: flex
