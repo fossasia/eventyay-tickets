@@ -7,7 +7,7 @@ transition(name="sidebar")
 		scrollbars(y)
 			.global-links
 				router-link.room(:to="{name: 'home'}") About
-				router-link.room(:to="{name: 'schedule'}") Schedule
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") Schedule
 			.group-title
 				span Stages
 				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
