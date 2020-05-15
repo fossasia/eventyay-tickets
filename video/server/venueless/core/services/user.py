@@ -81,6 +81,7 @@ async def get_user(
         user = await create_user(
             world_id=world_id,
             token_id=token_id,
+            profile=with_token.get("profile") if with_token else None,
             traits=with_token.get("traits") if with_token else None,
         )
     else:
