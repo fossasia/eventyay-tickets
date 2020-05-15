@@ -1,9 +1,9 @@
 <template lang="pug">
 .c-chat-message(:class="[mode, {selected}]")
-	avatar(:user="user", :size="mode === 'standalone' ? 36 : 28")
+	avatar(:user="user", :size="mode === 'standalone' ? 36 : 28", @click.native="showAvatarCard", ref="avatar")
 	.content-wrapper(v-if="mode === 'standalone'")
 		.message-header
-			.display-name {{ user.profile ? user.profile.display_name : this.message.sender }}
+			.display-name(@click="showAvatarCard") {{ user.profile ? user.profile.display_name : this.message.sender }}
 			.timestamp {{ timestamp }}
 		.content(v-html="content")
 	.content-wrapper(v-else)
@@ -12,9 +12,15 @@
 	.actions
 		bunt-icon-button(@click="showMenu") dots-vertical
 	//- intercepts all events
-	.menu-blocker(v-if="selected", @click="selected = false")
+	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
 	.menu(v-if="selected", ref="menu")
+		.edit-message(@click="editMessage") edit message
 		.delete-message(@click="deleteMessage") delete message
+	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
+		avatar(:user="user", :size="128")
+		.name {{ user.profile ? user.profile.display_name : this.message.sender }}
+		.actions
+			bunt-button#btn-ban ban
 </template>
 <script>
 import moment from 'moment'
@@ -39,7 +45,8 @@ export default {
 	components: { Avatar },
 	data () {
 		return {
-			selected: false
+			selected: false,
+			showingAvatarCard: false
 		}
 	},
 	computed: {
@@ -68,11 +75,27 @@ export default {
 			await this.$nextTick()
 			const button = event.target.closest('.bunt-icon-button')
 			createPopper(button, this.$refs.menu, {
-				placement: 'left'
+				placement: 'left-start'
 			})
 		},
+		editMessage (event) {
+			this.selected = false
+		},
 		deleteMessage (event) {
-			console.log(event)
+			this.selected = false
+		},
+		async showAvatarCard (event) {
+			this.showingAvatarCard = true
+			await this.$nextTick()
+			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard, {
+				placement: 'right-start',
+				modifiers: [{
+					name: 'flip',
+					options: {
+						flipVariations: false
+					}
+				}]
+			})
 		}
 	}
 }
@@ -98,13 +121,17 @@ export default {
 			display: inline-block
 			background-image: url("https://unpkg.com/emoji-datasource-twitter@5.0.1/img/twitter/sheets-256/64.png")
 			background-size: 5700% 5700%
+	.c-avatar
+		cursor: pointer
 	.display-name
 		font-weight: 600
-		// color: $clr-secondary-text-light
 		margin-right: 4px
-	&:not(:hover):not(.selected) .actions
+		&:hover
+			text-decoration: underline
+			cursor: pointer
+	&:not(:hover):not(.selected) > .actions
 		display: none
-	.actions
+	> .actions
 		position: absolute
 		right: 4px
 		top: 6px
@@ -124,6 +151,7 @@ export default {
 		display: flex
 		flex-direction: column
 		min-width: 240px
+		padding: 4px 0
 		> *
 			flex: none
 			height: 32px
@@ -140,6 +168,20 @@ export default {
 				&:hover
 					background-color: $clr-danger
 					color: $clr-primary-text-dark
+	.avatar-card
+		card()
+		z-index: 5000
+		display: flex
+		flex-direction: column
+		padding: 8px
+		.name
+			font-size: 24px
+			font-weight: 600
+			margin-top: 8px
+		.actions
+			margin-top: 16px
+			#btn-ban
+				button-style(color: $clr-danger)
 	&.standalone
 		.content-wrapper
 			padding-top: 4px
