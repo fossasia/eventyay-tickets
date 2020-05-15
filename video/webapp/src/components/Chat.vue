@@ -3,10 +3,7 @@
 	template(v-if="channel")
 		scrollbars.timeline(y)
 			template(v-for="message of filteredTimeline")
-				chat-message(v-if="message.event_type === 'channel.message'", :message="message", :mode="mode", :key="message.event_id")
-				.system-message(v-else)
-					template(v-if="message.event_type === 'channel.member'")
-						| {{ usersLookup[message.content.user.id] ? usersLookup[message.content.user.id].profile.display_name : message.content.user.profile.display_name }} {{ message.content.membership === 'join' ? 'joined' : 'left' }}
+				chat-message(:message="message", :mode="mode", :key="message.event_id")
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
@@ -91,9 +88,6 @@ export default {
 		justify-content: flex-start
 		.message
 			padding-top: 8px
-		.system-message
-			color: $clr-secondary-text-light
-			padding: 4px 32px
 	.chat-input
 		flex: none
 		border-top: border-separator()
