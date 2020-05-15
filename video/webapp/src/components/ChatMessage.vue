@@ -28,7 +28,7 @@ import Avatar from 'components/Avatar'
 
 const emojiRegex = EmojiRegex()
 
-const DATETIME_FORMAT = 'dd.MM. HH:mm'
+const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
 
 export default {
