@@ -100,7 +100,6 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
                     'pretix-item-{}'.format(self.position.item_id),
                     'pretix-variation-{}'.format(self.position.variation_id),
                     'pretix-category-{}'.format(self.position.item.category_id),
-                    'pretix-voucher-tag-{}'.format(self.position.voucher.tag if self.position.voucher else 'None'),
                 } | {
                     'pretix-item-{}'.format(p.item_id)
                     for p in self.position.addons.all()
