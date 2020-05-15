@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load eventurl %}
+{% load bootstrap3 %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Join online event" %}
+        </h3>
+    </div>
+    <ul class="list-group">
+        {% for p in positions %}
+            <li class="list-group-item">
+                <p>
+                    {{ p.item.name }}
+                    {% if p.variation %}
+                        – {{ p.variation.name }}
+                    {% endif %}
+                    {% if p.subevent %}
+                        – {{ p.subevent }}
+                    {% endif %}
+                    {% if p.attendee_name %}
+                        – {{ p.attendee_name }}
+                    {% endif %}
+                    <br>
+                    {% blocktrans trimmed %}
+                        You can now join the event using the following button:
+                    {% endblocktrans %}
+                </p>
+                <div class="form-inline">
+                    <form method="post" target="_blank"
+                          action="{% eventurl event "plugins:pretix_venueless:join" order=order.code position=p.positionid secret=p.web_secret %}">
+                        {% csrf_token %}
+                        <button
+                                class="btn btn-primary btn-lg">
+                            {% trans "Join online event" %}
+                        </button>
+                    </form>
+                </div>
+            </li>
+            {% empty %}
+            <li class="list-group-item">
+                <p>
+                    {% blocktrans trimmed %}
+                        You will be able to join this event with your browser right here when it starts.
+                    {% endblocktrans %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
