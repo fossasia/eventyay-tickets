@@ -26,7 +26,7 @@
                         You can now join the event using the following button:
                     {% endblocktrans %}
                 </p>
-                <div class="form-inline">
+                <div class="form-inline text-center">
                     <form method="post" target="_blank"
                           action="{% eventurl event "plugins:pretix_venueless:join" order=order.code position=p.positionid secret=p.web_secret %}">
                         {% csrf_token %}
