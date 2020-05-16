@@ -1,4 +1,4 @@
-import { getData, getSanitizedData, unifiedToNative } from 'emoji-mart/dist-es/utils'
+import { getData } from 'emoji-mart/dist-es/utils'
 import data from 'emoji-mart/data/twitter.json'
 
 export function getEmojiPosition (emoji) {

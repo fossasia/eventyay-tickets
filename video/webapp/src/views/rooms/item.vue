@@ -12,6 +12,7 @@
 					h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native'] && streamingRoom !== room", :room="room", :module="modules['livestream.native']")
 		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
+		reactions(v-if="modules['livestream.native']", :room="room")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	slot(v-if="streamingRoom && streamingRoom !== room")
 </template>
@@ -21,13 +22,14 @@ import moment from 'moment'
 import BigBlueButton from 'components/BigBlueButton'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
+import Reactions from 'components/Reactions'
 
 export default {
 	name: 'room',
 	props: {
 		roomId: String
 	},
-	components: { BigBlueButton, Chat, Livestream },
+	components: { BigBlueButton, Chat, Livestream, Reactions },
 	data () {
 		return {
 		}
