@@ -71,9 +71,10 @@ class GenericLoginView(FormView):
     def get_success_url(self):
         params = self.request.GET.copy()
         url = urllib.parse.unquote(params.pop("next", [""])[0])
+        params = "?" + params.urlencode() if params else ""
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
-            return redirect(url + ("?" + params.urlencode() if params else ""))
-        return super().get_success_url()
+            return url + params
+        return self.success_url + params
 
     def form_valid(self, form):
         pk = form.save()

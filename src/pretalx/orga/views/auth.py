@@ -22,7 +22,8 @@ class LoginView(GenericLoginView):
     def event(self):
         return getattr(self.request, "event", None)
 
-    def get_success_url(self):
+    @property
+    def success_url(self):
         messages.success(self.request, phrases.orga.logged_in)
         if self.event:
             return self.event.orga_urls.base

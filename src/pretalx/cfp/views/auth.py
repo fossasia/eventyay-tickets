@@ -37,7 +37,8 @@ class LoginView(GenericLoginView):
     def get_error_url(self):
         return self.request.event.urls.base
 
-    def get_success_url(self):
+    @property
+    def success_url(self):
         return self.request.event.urls.user_submissions
 
     def get_password_reset_link(self):
