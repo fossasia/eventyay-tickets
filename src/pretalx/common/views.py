@@ -63,16 +63,22 @@ class GenericLoginView(FormView):
     def password_reset_link(self):
         return self.get_password_reset_link()
 
-    def form_valid(self, form):
-        pk = form.save()
-        user = User.objects.filter(pk=pk).first()
-        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_anonymous:
+            return redirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
 
+    def get_success_url(self):
         params = self.request.GET.copy()
         url = urllib.parse.unquote(params.pop("next", [""])[0])
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return redirect(url + ("?" + params.urlencode() if params else ""))
+        return super().get_success_url()
 
+    def form_valid(self, form):
+        pk = form.save()
+        user = User.objects.filter(pk=pk).first()
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         return redirect(self.get_success_url())
 
 
