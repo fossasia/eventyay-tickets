@@ -101,7 +101,7 @@ export default {
 			width: 20px
 			height: 20px
 			display: inline-block
-			background-image: url("~emoji-datasource-twitter/img/twitter/sheets/64.png")
+			background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 			background-size: 5700% 5700%
 	.bunt-input
 		input-style(size: compact)
