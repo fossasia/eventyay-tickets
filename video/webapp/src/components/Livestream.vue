@@ -1,15 +1,21 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`]")
+.c-livestream(:class="[`size-${size}`, {playing}]")
 	.mdi.mdi-close(v-if="size === 'mini'", @click="$emit('close')")
-	.video-container(ref="videoContainer")
-		video(ref="video", style="width:100%;height:100%", data-shaka-player, autoplay, @playing="playingVideo", @pause="pausingVideo")
+	.video-container(ref="videocontainer")
+		video(ref="video", style="width:100%;height:100%", autoplay, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
+		.controls(@click="toggleVideo")
+			.big-button.mdi(:class="{'mdi-play': !playing, 'mdi-pause': playing}")
+			bunt-progress-circular(v-if="buffering", size="huge")
+			.bottom-controls(@click.stop="")
+				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
+				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
+				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
 	.offline(v-if="offline")
 		.offline-message  Stream offline
 </template>
 <script>
 import { mapState } from 'vuex'
-import shaka from 'shaka-player/dist/shaka-player.ui.js'
-import 'shaka-player/dist/controls.css'
+import shaka from 'shaka-player/dist/shaka-player.compiled.js'
 
 const RETRY_INTERVAL = 5000
 
@@ -32,7 +38,11 @@ export default {
 	data () {
 		return {
 			playing: true,
-			offline: false
+			buffering: true,
+			offline: false,
+			fullscreen: false,
+			volume: 1,
+			muted: false
 		}
 	},
 	computed: {
@@ -45,10 +55,15 @@ export default {
 		}
 		const player = new shaka.Player(this.$refs.video)
 		this.player = player
+		this.onVolumechange()
+
 		player.addEventListener('error', (error) => {
 			console.error(error.detail)
 		})
-		this.playerUI = new shaka.ui.Overlay(player, this.$refs.videoContainer, this.$refs.video)
+		player.addEventListener('buffering', ({buffering}) => {
+			this.buffering = buffering
+		})
+		document.addEventListener('fullscreenchange', this.onFullscreenchange)
 		const load = async () => {
 			if (this._isDestroyed) return
 			try {
@@ -68,8 +83,42 @@ export default {
 	beforeDestroy () {
 		this.player.unload()
 		this.player.destroy()
+		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 	},
 	methods: {
+		toggleVideo () {
+			if (this.$refs.video.paused) {
+				this.$refs.video.play()
+			} else {
+				this.$refs.video.pause()
+			}
+		},
+		toggleFullscreen () {
+			if (document.fullscreenElement) {
+				document.exitFullscreen()
+			} else {
+				this.$refs.videocontainer.requestFullscreen()
+			}
+		},
+		toggleVolume () {
+			this.$refs.video.muted = !this.muted
+		},
+		onVolumeSlider (event) {
+			this.$refs.video.volume = event.target.value
+			this.volume = event.target.value
+		},
+		onVolumechange () {
+			if (this.$refs.video.muted) {
+				this.volume = 0
+				this.muted = true
+			} else {
+				this.volume = this.$refs.video.volume
+				this.muted = false
+			}
+		},
+		onFullscreenchange () {
+			this.fullscreen = !!document.fullscreenElement
+		},
 		playingVideo () {
 			this.playing = true
 		},
@@ -97,17 +146,90 @@ export default {
 		cursor: pointer
 		font-size: 18px
 		opacity: 0
-		transition: opacity .6s ease
-	&:hover > .mdi
-		opacity: 1
+		transition: opacity .3s ease
 	.video-container
 		flex: auto
 		min-height: 0
+	.controls
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
+		opacity: 0
+		transition: opacity .3s ease
+		.bunt-progress-circular, .big-button
+			position: absolute
+			top: 50%
+			left: 50%
+			transform: translate(-50%, -50%)
+			z-index: 500
+			pointer-events: none
+		.big-button
+			cursor: pointer
+			height: 15vh
+			width: @height
+			font-size: @height
+			line-height: @height
+			padding: 4vh
+			background-color: $clr-secondary-text-dark
+			color: $clr-primary-text-light
+			border-radius: 50%
+		.bottom-controls
+			position: absolute
+			bottom: 0
+			width: 100%
+			display: flex
+			justify-content: flex-end
+			align-items: center
+			padding: 16px 16px
+			box-sizing: border-box
+			.bunt-icon-button
+				color: $clr-primary-text-dark
+				height: 42px
+				width: @height
+				.bunt-icon
+					height: 42px
+					font-size: 32px
+					line-height: @height
+			.volume-slider
+				cursor: pointer
+				width: 100px
+				height: 4px
+				background: linear-gradient(to right, $clr-primary-text-dark, calc(var(--volume) * 100%), $clr-disabled-text-dark calc(var(--volume) * 100%))
+				border-radius: 2px
+				appearance: none
+				outline: none
+				&::-webkit-slider-runnable-track
+					appearance: none
+				&::-moz-range-track
+					appearance: none
+				thumb()
+					appearance: none
+					background-color: $clr-white
+					height: 12px
+					width: 12px
+					border-radius: 50%
+				&::-webkit-slider-thumb
+					thumb()
+				&::-moz-range-thumb
+					thumb()
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
+	&:hover, &:not(.playing)
+		.controls
+			opacity: 1
+		.mdi
+			opacity: 1
 	&.size-mini
 		height: 128px
 		width: 230px // TODO total guesstimate
+		.big-button
+			height: 36px
+			width: @height
+			font-size: @height
+			line-height: @height
+			padding: 16px
 	.offline
 		position: absolute
 		left: 0
