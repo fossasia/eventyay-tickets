@@ -120,9 +120,11 @@ class EventPermissionMiddleware:
             and not request.uses_custom_domain
             and not is_exempt
         ):
-            return redirect(
+            response = redirect(
                 urljoin(request.event.settings.custom_domain, request.get_full_path())
             )
+            response["Access-Control-Allow-Origin"] = "*"
+            return response
         if event:
             with scope(event=event):
                 return self.get_response(request)
