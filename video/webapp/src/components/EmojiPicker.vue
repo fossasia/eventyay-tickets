@@ -6,6 +6,7 @@ import { h, render } from 'preact'
 import 'emoji-mart/css/emoji-mart.css'
 import data from 'emoji-mart/data/twitter.json'
 import { NimblePicker } from 'emoji-mart'
+import emojiSheet from 'emoji-datasource-twitter/img/twitter/sheets/64.png'
 
 export default {
 	components: {},
@@ -20,7 +21,10 @@ export default {
 			data,
 			onSelect: this.$emit.bind(this, 'selected'),
 			title: 'Emoji',
-			showPreview: true
+			showPreview: true,
+			backgroundImageFn (set, sheetSize) {
+				return emojiSheet
+			}
 		})
 		render(picker, this.$el)
 	},

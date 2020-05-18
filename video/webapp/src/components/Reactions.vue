@@ -101,7 +101,7 @@ export default {
 		height: 28px
 		width: @height
 		display: inline-block
-		background-image: url("https://unpkg.com/emoji-datasource-twitter@5.0.1/img/twitter/sheets-256/64.png")
+		background-image: url("~emoji-datasource-twitter/img/twitter/sheets/64.png")
 		background-size: 5700% 5700%
 	.reactions-overlay
 		position: absolute
