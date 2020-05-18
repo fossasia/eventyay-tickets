@@ -16,7 +16,7 @@ The body of the configuration is structured like this, filtered to user visibili
     {
         "world": {
             "title": "Unsere tolle Online-Konferenz",
-            "permissions": []
+            "permissions": ["world:view"]
         },
         "rooms": [
             {
@@ -24,20 +24,18 @@ The body of the configuration is structured like this, filtered to user visibili
                 "name": "Plenum",
                 "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
                 "picture": "https://via.placeholder.com/150",
-                "permissions": [],
+                "permissions": ["room:view", "room:chat.read"],
                 "modules": [
                     {
                         "type": "livestream.native",
                         "config": {
                             "hls_url": "https://s1.live.pretix.eu/test/index.m3u8"
                         },
-                        "permissions": []
                     },
                     {
                         "type": "chat.native",
                         "config": {
                         },
-                        "permissions": []
                     },
                     {
                         "type": "agenda.pretalx",
@@ -45,7 +43,6 @@ The body of the configuration is structured like this, filtered to user visibili
                             "api_url": "https://pretalx.com/conf/online/schedule/export/schedule.json",
                             "room_id": 3
                         },
-                        "permissions": []
                     }
                 ]
             },
@@ -54,17 +51,7 @@ The body of the configuration is structured like this, filtered to user visibili
                 "name": "Gruppenraum 1",
                 "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
                 "picture": "https://via.placeholder.com/150",
-                "permissions": [],
-                "access": [
-                    {
-                        "level": "viewer",
-                        "permissions": []
-                    },
-                    {
-                        "level": "moderator",
-                        "permissions": []
-                    }
-                ],
+                "permissions": ["room:view"],
                 "modules": [
                     {
                         "type": "call.bigbluebutton",
@@ -74,36 +61,4 @@ The body of the configuration is structured like this, filtered to user visibili
                 ]
             }
         ]
-    }
-
-
-.. _permissions:
-
-Permissions
------------
-
-Permissions are rendered **to the user** as a list of strings. This list contains agreed permission names, with the
-default attendee requiring not permissions at all (an empty list). Permissions agreed so far include:
-
-- ``world.update``
-- ``world.announce``
-- ``room.create``
-- ``room.update``
-- ``room.delete``
-- ``chat.create``
-- ``chat.update``
-- ``chat.delete``
-- ``chat.moderate``
-
-
-On the **configuration** side of things, permissions are a dictionary, mapping from a permission to the required traits
-a token needs to have, like this:
-
-.. code-block:: json
-
-    {
-        "permissions": {
-            "world.update": ["trait1", "trait2"],
-            "room.update": ["trait2"],
-        }
     }

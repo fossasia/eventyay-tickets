@@ -18,7 +18,8 @@ The body of the room is structured like this:
     {
         "name": "Neuer Raum",
         "modules": [],
-        "announcements": [],
+        "permission_preset": "public",
+        "announcements": []
     }
 
 

@@ -4,8 +4,10 @@ from contextlib import asynccontextmanager
 
 import jwt
 import pytest
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 
+from venueless.core.models import User
 from venueless.core.services.user import get_user_by_token_id
 from venueless.routing import application
 
@@ -32,6 +34,17 @@ async def test_auth_with_client_id(world):
             "user.config",
             "chat.channels",
         }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_no_anonymous_access(world):
+    world.trait_grants["attendee"] = ["ticket-holder"]
+    await database_sync_to_async(world.save)()
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c.receive_json_from()
+        assert response[0] == "authentication.failed"
 
 
 @pytest.mark.asyncio
@@ -72,9 +85,14 @@ async def test_auth_with_jwt_token(index, world):
         await c.send_json_to(["authenticate", {"token": token}])
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
-        assert not response[1]["world.config"][
-            "permissions"
-        ]  # default users don't have permissions
+        assert set(response[1]["world.config"]["permissions"]) == {"world:view"}
+        assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
+            "room:view",
+            "room:chat.read",
+            "room:chat.join",
+            "room:chat.send",
+            "room:bbb.join",
+        }
         assert set(response[1].keys()) == {
             "world.config",
             "user.config",
@@ -292,7 +310,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
         "exp": exp,
         "iat": iat,
         "uid": 123456,
-        "traits": ["chat.read", "foo.bar", "admin"],
+        "traits": ["moderator", "speaker"],
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
     async with world_communicator() as c:
@@ -305,12 +323,90 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "chat.channels",
         }
         assert set(response[1]["world.config"]["permissions"]) == {
-            "world.update",
-            "world.announce",
-            "room.create",
+            "world:view",
+            "room:view",
+            "room:chat.read",
+            "room:chat.join",
+            "room:chat.send",
+            "room:bbb.join",
+            "room:bbb.moderate",
+            "room:chat.moderate",
+            "room:announce",
+            "world:announce",
         }
-        assert "room.update" not in response[1]["world.config"]["permissions"]
-        assert "room.update" in response[1]["world.config"]["rooms"][0]["permissions"]
-        assert (
-            "world.update" not in response[1]["world.config"]["rooms"][0]["permissions"]
-        )
+        assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
+            "room:view",
+            "room:chat.read",
+            "room:chat.join",
+            "room:chat.send",
+            "room:bbb.join",
+            "room:bbb.moderate",
+            "room:chat.moderate",
+            "room:announce",
+        }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
+    config = world.config["JWT_secrets"][0]
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=999)
+    payload = {
+        "iss": config["issuer"],
+        "aud": config["audience"],
+        "exp": exp,
+        "iat": iat,
+        "uid": 123456,
+        "traits": ["blablabla"],
+    }
+    token = jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")
+
+    bbb_room.trait_grants = {}
+    await database_sync_to_async(bbb_room.save)()
+    chat_room.trait_grants = {}
+    await database_sync_to_async(chat_room.save)()
+
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "Plenum",
+            "Stage 2",
+            "Not Streaming",
+        }
+
+    chat_room.trait_grants = {
+        "participant": ["blablabla"],
+    }
+    await database_sync_to_async(chat_room.save)()
+
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "Plenum",
+            "Stage 2",
+            "Not Streaming",
+            "Chat",
+        }
+
+    await database_sync_to_async(bbb_room.role_grants.create)(
+        user=await database_sync_to_async(User.objects.get)(),
+        role="participant",
+        world=world,
+    )
+
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "Plenum",
+            "Stage 2",
+            "Not Streaming",
+            "Chat",
+            "Gruppenraum 1",
+        }

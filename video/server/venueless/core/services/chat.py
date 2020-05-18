@@ -6,10 +6,13 @@ from django.db.models import Max
 
 from ..models import Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
-from .user import get_public_users, get_user_by_id
+from .user import get_public_users
 
 
 class ChatService:
+    class NotAChannelMember(Exception):
+        pass
+
     def __init__(self, world_id):
         self.world_id = world_id
 
@@ -41,6 +44,10 @@ class ChatService:
         async with aioredis() as redis:
             await redis.srem(f"chat:subscriptions:{uid}:{channel}", socket_id)
             return await redis.scard(f"chat:subscriptions:{uid}:{channel}")
+
+    @database_sync_to_async
+    def membership_exists(self, channel, uid):
+        return Membership.objects.filter(channel=channel, user_id=uid).exists()
 
     @database_sync_to_async
     def membership_is_volatile(self, channel, uid):
@@ -102,13 +109,17 @@ class ChatService:
     async def create_event(self, channel, event_type, content, sender, _retry=False):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
+        if event_type not in ("channel.member",) and not await self.membership_exists(
+            channel, sender
+        ):
+            raise self.NotAChannelMember()
         try:
             return await self._store_event(
                 channel_id=channel,
                 id=event_id,
                 event_type=event_type,
                 content=content,
-                sender=await get_user_by_id(self.world_id, sender),
+                sender=sender,
             )
         except IntegrityError as e:
             if "already exists" in str(e) and not _retry:

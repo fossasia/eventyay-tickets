@@ -22,8 +22,9 @@ class RoomViewSet(viewsets.ModelViewSet):
     permission_classes = [ApiAccessRequiredPermission & RoomPermissions]
 
     def get_queryset(self):
-        # TODO: Filter for rooms this user is allowed to see
-        return self.request.world.rooms.all()
+        return self.request.world.rooms.with_permission(
+            traits=self.request.auth.get("traits"), world=self.request.world
+        )
 
     def perform_create(self, serializer):
         serializer.save(world=self.request.world)

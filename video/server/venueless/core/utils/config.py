@@ -13,7 +13,8 @@ def import_config(data):
     world.title = world_config.pop("title")
     world.about = world_config.pop("about")
     world.config = world_config
-    world.permission_config = data.pop("permissions")
+    world.trait_grants = data.pop("trait_grants", {})
+    world.roles = data.pop("roles", {})
     world.save()
 
     for i, room_config in enumerate(data.pop("rooms")):
@@ -25,7 +26,7 @@ def import_config(data):
         room.name = room_config.pop("name")
         room.description = room_config.pop("description")
         room_config.pop("picture")  # TODO import picure from path or http
-        room.permission_config = room_config.pop("permissions", {})
+        room.trait_grants = room_config.pop("trait_grants", {})
         room.module_config = room_config.pop("modules")
         room.sorting_priority = i
         room.save()

@@ -18,7 +18,7 @@ def test_room_list(client, world):
     assert r.data["count"] == 5
     assert r.data["results"][0] == {
         "id": str(world.rooms.first().id),
-        "permission_config": {},
+        "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
                 "type": "livestream.native",
@@ -41,7 +41,7 @@ def test_room_detail(client, world):
     assert r.status_code == 200
     assert r.data == {
         "id": str(world.rooms.first().id),
-        "permission_config": {},
+        "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
                 "type": "livestream.native",
@@ -57,7 +57,7 @@ def test_room_detail(client, world):
 
 @pytest.mark.django_db
 def test_room_delete(client, world):
-    world.permission_config["room.delete"] = ["foobartrait"]
+    world.trait_grants["apiuser"] = ["foobartrait", "admin"]
     world.save()
     rid = world.rooms.first().id
 
@@ -76,7 +76,7 @@ def test_room_delete(client, world):
 
 @pytest.mark.django_db
 def test_room_update(client, world):
-    world.permission_config["room.update"] = ["foobartrait"]
+    world.trait_grants["apiuser"] = ["foobartrait", "admin"]
     world.save()
     rid = world.rooms.first().id
 
@@ -99,7 +99,7 @@ def test_room_update(client, world):
 
 @pytest.mark.django_db
 def test_room_create(client, world):
-    world.permission_config["room.create"] = ["foobartrait"]
+    world.trait_grants["apiuser"] = ["foobartrait", "admin"]
     world.save()
 
     r = client.post(

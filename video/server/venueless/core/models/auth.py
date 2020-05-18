@@ -19,3 +19,34 @@ class User(models.Model):
         # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         return {"id": str(self.id), "profile": self.profile}
+
+    def get_role_grants(self, room=None):
+        roles = set(self.world_grants.values_list("role", flat=True))
+        if room:
+            roles |= set(
+                self.room_grants.filter(room=room).values_list("role", flat=True)
+            )
+        return roles
+
+
+class RoomGrant(models.Model):
+    world = models.ForeignKey(
+        "World", related_name="room_grants", on_delete=models.CASCADE
+    )
+    room = models.ForeignKey(
+        "Room", related_name="role_grants", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "User", related_name="room_grants", on_delete=models.CASCADE
+    )
+    role = models.CharField(max_length=200)
+
+
+class WorldGrant(models.Model):
+    world = models.ForeignKey(
+        "World", related_name="world_grants", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "User", related_name="world_grants", on_delete=models.CASCADE
+    )
+    role = models.CharField(max_length=200)

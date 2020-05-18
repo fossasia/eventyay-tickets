@@ -11,14 +11,15 @@ def test_world_config(client, world):
         "title": "Unsere tolle Online-Konferenz",
         "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
         "config": world.config,
-        "permission_config": world.permission_config,
+        "roles": world.roles,
+        "trait_grants": world.trait_grants,
         "domain": None,
     }
 
 
 @pytest.mark.django_db
 def test_world_config_protect_secrets(client, world):
-    world.permission_config["world.secrets"] = ["foobartrait"]
+    world.trait_grants["apiuser"] = ["foobartrait"]
     world.save()
     r = client.get("/api/v1/worlds/sample/", HTTP_AUTHORIZATION=get_token_header(world))
     assert r.status_code == 403
@@ -27,11 +28,18 @@ def test_world_config_protect_secrets(client, world):
         HTTP_AUTHORIZATION=get_token_header(world, ["api", "foobartrait", "admin"]),
     )
     assert r.status_code == 200
+    world.roles["apiuser"] = ["world:api"]
+    world.save()
+    r = client.get(
+        "/api/v1/worlds/sample/",
+        HTTP_AUTHORIZATION=get_token_header(world, ["api", "admin", "foobartrait"]),
+    )
+    assert r.status_code == 403
 
 
 @pytest.mark.django_db
 def test_world_update(client, world):
-    world.permission_config["world.update"] = ["foobartrait"]
+    world.trait_grants["apiuser"] = ["foobartrait"]
     world.save()
 
     r = client.patch(

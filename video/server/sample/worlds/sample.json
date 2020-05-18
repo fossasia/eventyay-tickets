@@ -23,16 +23,119 @@
       }
     ]
   },
-  "permissions": {
-    "world.api": ["admin", "api"],
-    "world.secrets": ["admin", "api"],
-    "world.update": ["admin"],
-    "world.announce": ["admin"],
-    "room.create": ["admin"],
-    "room.announce": ["admin"],
-    "room.update": ["admin"],
-    "room.delete": ["admin"],
-    "chat.moderate": ["admin"]
+  "roles": {
+    "attendee": [
+      "world:view"
+    ],
+    "viewer": [
+      "world:view",
+      "room:view",
+      "room:chat.read"
+    ],
+    "participant": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:bbb.join",
+      "room:chat.send",
+      "room:chat.join"
+    ],
+    "room_creator": [
+      "world:rooms.create"
+    ],
+    "room_owner": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:update",
+      "room:invite",
+      "room:delete"
+    ],
+    "speaker": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate"
+    ],
+    "moderator": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:chat.moderate",
+      "room:announce",
+      "world:announce"
+    ],
+    "admin": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:chat.moderate",
+      "room:announce",
+      "world:rooms.create",
+      "world:announce",
+      "world:update",
+      "room:delete",
+      "room:update"
+    ],
+    "apiuser": [
+      "world:view",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:chat.moderate",
+      "room:announce",
+      "world:rooms.create",
+      "world:announce",
+      "world:update",
+      "room:delete",
+      "room:update",
+      "world:api",
+      "world:secrets"
+    ]
+  },
+  "trait_grants": {
+    "attendee": [],
+    "viewer": [
+      "global-viewer"
+    ],
+    "participant": [
+      "global-participant"
+    ],
+    "room_creator": [
+      "room-creator"
+    ],
+    "room_owner": [
+      "room-owner"
+    ],
+    "speaker": [
+      "speaker"
+    ],
+    "moderator": [
+      "moderator"
+    ],
+    "admin": [
+      "admin"
+    ],
+    "apiuser": [
+      "api"
+    ]
   },
   "rooms": [
     {
@@ -40,6 +143,10 @@
       "name": "Plenum",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
       "modules": [
         {
           "type": "livestream.native",
@@ -60,6 +167,10 @@
       "name": "Gruppenraum 1",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
       "modules": [
         {
           "type": "call.bigbluebutton",
@@ -76,6 +187,10 @@
       "name": "Stage 2",
       "description": "Hier findet mehr Zeug statt",
       "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
       "modules": [
         {
           "type": "livestream.native",
@@ -96,6 +211,10 @@
       "name": "Not Streaming",
       "description": "Non-Working Stream",
       "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
       "modules": [
         {
           "type": "livestream.native",
@@ -116,6 +235,10 @@
       "name": "Chat",
       "description": "Standalone Chat",
       "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
       "modules": [
         {
           "type": "chat.native",

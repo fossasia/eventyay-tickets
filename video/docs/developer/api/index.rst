@@ -14,6 +14,7 @@ without warning.
    websocket
    user
    config
+   permissions
    world
    chat
    bbb

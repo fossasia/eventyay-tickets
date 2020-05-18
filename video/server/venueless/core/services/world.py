@@ -4,6 +4,7 @@ from contextlib import suppress
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.core.exceptions import ValidationError
+from django.db.models import Max
 
 from venueless.core.models import Channel, Room, World
 
@@ -19,12 +20,15 @@ async def get_world(world_id):
 
 
 @database_sync_to_async
-def _get_rooms(world):
-    return list(world.rooms.all().prefetch_related("channel"))
+def _get_rooms(world, user):
+    qs = world.rooms.all().prefetch_related("channel")
+    if user:
+        qs = qs.with_permission(world=world, user=user)
+    return list(qs)
 
 
-async def get_rooms(world):
-    rooms = await _get_rooms(world)
+async def get_rooms(world, user=None):
+    rooms = await _get_rooms(world, user)
     return rooms
 
 
@@ -62,26 +66,17 @@ async def notify_world_change(world_id):
     await get_channel_layer().group_send(f"world.{world_id}", {"type": "world.update",})
 
 
-def get_room_config(room, world, traits):
-    rules = world.permission_config or {}
-    room_rules = {**rules, **(room.permission_config or {})}
+def get_room_config(room, permissions):
     room_config = {
         "id": str(room.id),
         "name": room.name,
         "picture": room.picture.url if room.picture else None,
         "import_id": room.import_id,
-        "permissions": get_permissions_for_traits(
-            room_rules, traits, prefixes=["room"]
-        ),
+        "permissions": [p for p in permissions if not p.startswith("world:")],
         "modules": [],
     }
     for module in room.module_config:
         module_config = copy.deepcopy(module)
-        module_config["permissions"] = get_permissions_for_traits(
-            {**room_rules, **module_config.pop("permissions", {})},
-            traits,
-            prefixes=[module["type"], module["type"].split(".")[0]],
-        )
         if module["type"] == "call.bigbluebutton":
             module_config["config"] = {}
         elif module["type"] == "chat.native" and getattr(room, "channel", None):
@@ -91,8 +86,8 @@ def get_room_config(room, world, traits):
 
 
 async def get_world_config_for_user(user):
-    # TODO: Remove any rooms the user should not see
     world = await get_world_for_user(user)
+    permissions = await database_sync_to_async(world.get_all_permissions)(user)
     result = {
         "world": {
             "id": str(world.id),
@@ -100,30 +95,45 @@ async def get_world_config_for_user(user):
             "about": world.about,
             "pretalx": world.config.get("pretalx", {}),
         },
+        "permissions": permissions[world],
         "rooms": [],
     }
 
-    traits = set(user.traits)
-    rules = world.permission_config or {}
-    result["permissions"] = get_permissions_for_traits(
-        rules, traits, prefixes=["world", "room.create"]
-    )
-    rooms = await get_rooms(world)
+    rooms = await get_rooms(world, user)
     for room in rooms:
-        result["rooms"].append(get_room_config(room, world, traits))
+        result["rooms"].append(
+            get_room_config(room, permissions[world] | permissions[room])
+        )
     return result
 
 
 @database_sync_to_async
-def _create_room(data, with_channel=False):
+def _create_room(data, with_channel=False, permission_preset="public", creator=None):
+    if "sorting_priority" not in data:
+        data["sorting_priority"] = (
+            Room.objects.filter(world_id=data["world_id"]).aggregate(
+                m=Max("sorting_priority")
+            )["m"]
+            or 0
+        ) + 1
+    if permission_preset == "public":
+        data["trait_grants"] = {
+            "viewer": [],
+            "participant": [],
+        }
+    else:
+        data["trait_grants"] = {}
+
     room = Room.objects.create(**data)
+    if creator:
+        room.role_grants.create(world=room.world, user=creator, role="room_owner")
     channel = None
     if with_channel:
         channel = Channel.objects.create(world_id=room.world_id, room=room)
     return room, channel
 
 
-async def create_room(world, data):
+async def create_room(world, data, creator):
     for m in data.get("modules", []):
         if m.get("type") != "chat.native":
             raise ValidationError(
@@ -137,8 +147,9 @@ async def create_room(world, data):
             "world_id": world.id,
             "name": data["name"],
             "module_config": data.get("modules", []),
-            # TODO sorting_priority
         },
+        permission_preset=data.get("permission_preset", "public"),
+        creator=creator,
         with_channel=any(
             d.get("type") == "chat.native" for d in data.get("modules", [])
         ),
@@ -149,6 +160,7 @@ async def create_room(world, data):
     return {"room": str(room.id), "channel": str(channel.id) if channel else None}
 
 
-async def get_room_config_for_user(room: str, world: str, user):
-    room = await get_room(id=room, world_id=world)
-    return get_room_config(room, room.world, traits=set(user.traits))
+async def get_room_config_for_user(room: str, world_id: str, user):
+    room = await get_room(id=room, world_id=world_id)
+    permissions = await database_sync_to_async(room.world.get_all_permissions)(user)
+    return get_room_config(room, permissions[room] | permissions[room.world])

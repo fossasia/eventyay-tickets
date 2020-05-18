@@ -71,10 +71,9 @@ async def get_user(
         )
 
     if user:
-        traits = None
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
-        await update_user(world_id, id=user.id, traits=traits)
+            await update_user(world_id, id=user.id, traits=traits)
         return user.serialize_public() if serialize else user
 
     if token_id:

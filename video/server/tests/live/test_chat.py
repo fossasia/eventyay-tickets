@@ -3,6 +3,7 @@ import uuid
 from contextlib import asynccontextmanager
 
 import pytest
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 
 from venueless.core.services.chat import ChatService
@@ -137,6 +138,8 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
 @pytest.mark.django_db
 async def test_join_convert_volatile_to_persistent(volatile_chat_room):
     async with world_communicator() as c:
+        volatile_chat_room.trait_grants["moderator"] = []
+        await database_sync_to_async(volatile_chat_room.save)()
         await c.send_json_to(
             ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
         )
@@ -166,6 +169,39 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_join_convert_volatile_to_persistent_require_moderator(
+    volatile_chat_room,
+):
+    async with world_communicator() as c:
+        await c.send_json_to(
+            ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        response = await c.receive_json_from()
+        assert response[0] == "chat.event"
+
+        assert await ChatService("sample").membership_is_volatile(
+            str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
+        )
+
+        await c.send_json_to(
+            [
+                "chat.join",
+                123,
+                {"channel": str(volatile_chat_room.channel.id), "volatile": False},
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+
+        assert await ChatService("sample").membership_is_volatile(
+            str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_join_without_name(chat_room):
     async with world_communicator(named=False) as c:
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
@@ -186,6 +222,23 @@ async def test_subscribe_without_name(chat_room):
             "success",
             123,
             {"state": None, "next_event_id": -1, "members": []},
+        ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_subscribe_permission_denied(chat_room):
+    chat_room.trait_grants = {}
+    await database_sync_to_async(chat_room.save)()
+    async with world_communicator(named=True) as c:
+        await c.send_json_to(
+            ["chat.subscribe", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        response = await c.receive_json_from()
+        assert response == [
+            "error",
+            123,
+            {"code": "protocol.denied", "message": "Permission denied."},
         ]
 
 
@@ -256,6 +309,73 @@ async def test_bogus_command(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_unsupported_event_type(chat_room):
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        await c1.receive_json_from()
+        await c1.receive_json_from()
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event_type": "bogus",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == ["error", 123, {"code": "chat.unsupported_event_type"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_unsupported_content_type(chat_room):
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        await c1.receive_json_from()
+        await c1.receive_json_from()
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "bogus", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == ["error", 123, {"code": "chat.unsupported_content_type"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_requires_membership(chat_room):
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == ["error", 123, {"code": "chat.denied"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_autofix_numbers(chat_room):
     async with world_communicator() as c1, aioredis() as redis:
         await redis.delete("chat.event_id")
@@ -272,7 +392,7 @@ async def test_autofix_numbers(chat_room):
                 123,
                 {
                     "channel": str(chat_room.channel.id),
-                    "event_type": "message",
+                    "event_type": "channel.message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
             ]
@@ -280,6 +400,62 @@ async def test_autofix_numbers(chat_room):
         await c1.receive_json_from()
         response = await c1.receive_json_from()
         assert response[1]["event_id"] == 3
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_private_room_protection(chat_room):
+    chat_room.trait_grants = {}
+    await database_sync_to_async(chat_room.save)()
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            [
+                "chat.fetch",
+                123,
+                {"channel": str(chat_room.channel.id), "count": 20, "before_id": 0,},
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == [
+            "error",
+            123,
+            {"code": "protocol.denied", "message": "Permission denied."},
+        ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_read_only_room_protection(chat_room):
+    chat_room.trait_grants = {"viewer": []}
+    await database_sync_to_async(chat_room.save)()
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        response = await c1.receive_json_from()
+        assert response == [
+            "error",
+            123,
+            {"code": "protocol.denied", "message": "Permission denied."},
+        ]
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response == [
+            "error",
+            123,
+            {"code": "protocol.denied", "message": "Permission denied."},
+        ]
 
 
 @pytest.mark.asyncio
@@ -304,7 +480,7 @@ async def test_fetch_messages_after_join(chat_room):
                 123,
                 {
                     "channel": str(chat_room.channel.id),
-                    "event_type": "message",
+                    "event_type": "channel.message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
             ]
@@ -354,7 +530,7 @@ async def test_fetch_messages_after_join(chat_room):
             assert response[2]["results"][1] == {
                 "channel": str(chat_room.channel.id),
                 "type": "chat.event",
-                "event_type": "message",
+                "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
             }
@@ -395,14 +571,14 @@ async def test_send_message_to_other_client(chat_room):
                 123,
                 {
                     "channel": str(chat_room.channel.id),
-                    "event_type": "message",
+                    "event_type": "channel.message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
             ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
-        assert response[2]["event"]["event_type"] == "message"
+        assert response[2]["event"]["event_type"] == "channel.message"
         assert response[2]["event"]["event_id"]
 
         response = await c1.receive_json_from()
@@ -412,7 +588,7 @@ async def test_send_message_to_other_client(chat_room):
             "chat.event",
             {
                 "channel": str(chat_room.channel.id),
-                "event_type": "message",
+                "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,
@@ -426,7 +602,7 @@ async def test_send_message_to_other_client(chat_room):
             "chat.event",
             {
                 "channel": str(chat_room.channel.id),
-                "event_type": "message",
+                "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,
@@ -477,7 +653,7 @@ async def test_no_messages_after_leave(chat_room):
                 123,
                 {
                     "channel": str(chat_room.channel.id),
-                    "event_type": "message",
+                    "event_type": "channel.message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
             ]
@@ -492,7 +668,7 @@ async def test_no_messages_after_leave(chat_room):
             "chat.event",
             {
                 "channel": str(chat_room.channel.id),
-                "event_type": "message",
+                "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,
@@ -538,7 +714,7 @@ async def test_no_message_after_unsubscribe(chat_room):
                 123,
                 {
                     "channel": str(chat_room.channel.id),
-                    "event_type": "message",
+                    "event_type": "channel.message",
                     "content": {"type": "text", "body": "Hello world"},
                 },
             ]
@@ -553,7 +729,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             "chat.event",
             {
                 "channel": str(chat_room.channel.id),
-                "event_type": "message",
+                "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,

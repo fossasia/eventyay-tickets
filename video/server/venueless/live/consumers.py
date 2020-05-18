@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
@@ -12,6 +13,7 @@ from venueless.core.services.world import get_world
 from venueless.live.channels import GROUP_USER, GROUP_VERSION
 from venueless.live.exceptions import ConsumerException
 
+from ..core.utils.json import CustomJSONEncoder
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -41,8 +43,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         )
         await register_connection()
 
-        world = await get_world(self.scope["url_route"]["kwargs"]["world"])
-        if world is None:
+        self.world = await get_world(self.scope["url_route"]["kwargs"]["world"])
+        if self.world is None:
             await self.send_error("world.unknown_world", close=True)
             return
 
@@ -105,6 +107,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.send_json(["connection.reload", {}])
         elif message["type"] == "user.broadcast":
             if self.socket_id != message["socket"]:
+                await self.components["user"].reload_user()
                 await self.send_json([message["event_type"], message["data"]])
         elif message["type"] in ("world.update", "room.create"):  # broadcast types
             await self.components["world"].dispatch_event(self, message)
@@ -130,3 +133,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
     async def send_success(self, data=None, close=False):
         await self.send_json(self.build_response("success", data), close=close)
+
+    @classmethod
+    async def encode_json(cls, content):
+        return json.dumps(content, cls=CustomJSONEncoder)

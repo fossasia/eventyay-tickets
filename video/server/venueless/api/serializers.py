@@ -9,13 +9,13 @@ class RoomSerializer(serializers.ModelSerializer):
     module_config = serializers.ListField(
         child=serializers.DictField(), required=False, default=[]
     )
-    permission_config = serializers.DictField(required=False, default={})
+    trait_grants = serializers.DictField(required=False, default={})
 
     class Meta:
         model = Room
         fields = [
             "id",
-            "permission_config",
+            "trait_grants",
             "module_config",
             "name",
             "description",
@@ -26,7 +26,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class WorldSerializer(serializers.ModelSerializer):
     config = serializers.DictField()
-    permission_config = serializers.DictField()
+    trait_grants = serializers.DictField()
+    roles = serializers.DictField()
 
     class Meta:
         model = World
@@ -35,6 +36,7 @@ class WorldSerializer(serializers.ModelSerializer):
             "title",
             "about",
             "config",
-            "permission_config",
+            "trait_grants",
+            "roles",
             "domain",
         ]
