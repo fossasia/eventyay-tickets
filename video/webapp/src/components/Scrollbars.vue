@@ -118,6 +118,7 @@ export default {
 			el.setPointerCapture(event.pointerId)
 			this.draggingDimension = dimension
 			this.draggingOffset = event[`offset${dimension.toUpperCase()}`]
+			// TODO cancel
 			el.addEventListener('pointermove', this.onPointermove)
 			el.addEventListener('pointerup', this.onPointerup)
 		},
@@ -148,6 +149,7 @@ export default {
 			this.draggingDimension = null
 			el.releasePointerCapture(event.pointerId)
 			el.removeEventListener('pointermove', this.onPointermove)
+			el.removeEventListener('pointerup', this.onPointerup)
 		},
 		computeDimensions () {
 			if (this.dimensions.x) {
