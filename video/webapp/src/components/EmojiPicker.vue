@@ -6,7 +6,7 @@ import { h, render } from 'preact'
 import 'emoji-mart/css/emoji-mart.css'
 import data from 'emoji-mart/data/twitter.json'
 import { NimblePicker } from 'emoji-mart'
-import emojiSheet from 'emoji-datasource-twitter/img/twitter/sheets/64.png'
+import emojiSheet from 'emoji-datasource-twitter/img/twitter/sheets-256/64.png'
 
 export default {
 	components: {},
