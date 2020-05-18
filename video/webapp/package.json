@@ -14,6 +14,7 @@
     "@popperjs/core": "^2.4.0",
     "buntpapier": "^1.8.5",
     "core-js": "^3.6.4",
+    "emoji-datasource-twitter": "^5.0.1",
     "emoji-mart": "^3.0.0",
     "emoji-regex": "^9.0.0",
     "jwt-decode": "^2.2.0",
