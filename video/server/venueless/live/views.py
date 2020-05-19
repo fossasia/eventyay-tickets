@@ -2,7 +2,7 @@ import json
 import os
 
 from asgiref.sync import async_to_sync
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.views import View
@@ -25,6 +25,34 @@ class SourceCache:
 
 
 sh = SourceCache()
+
+
+class ManifestView(View):
+    def get(self, request, *args, **kwargs):
+        world = get_object_or_404(World, domain=request.headers["Host"])
+        # TODO: Allow to parametrize colors and logos
+        source = {
+            "name": world.title,
+            "short_name": world.title,
+            "theme_color": "#180044",
+            "icons": [
+                {
+                    "src": "/venueless-logo.192.png",
+                    "type": "image/png",
+                    "sizes": "192x192",
+                },
+                {
+                    "src": "/venueless-logo.512.png",
+                    "type": "image/png",
+                    "sizes": "512x512",
+                },
+                {"src": "/venueless-logo.svg", "sizes": "192x192 512x512"},
+            ],
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#000000",
+        }
+        return JsonResponse(source)
 
 
 class AppView(View):
