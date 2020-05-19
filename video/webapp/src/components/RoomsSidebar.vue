@@ -6,16 +6,16 @@ transition(name="sidebar")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
-				router-link.room(:to="{name: 'home'}") About
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") Schedule
+				router-link.room(:to="{name: 'home'}") {{ $t('About') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('Schedule') }}
 			.group-title
-				span Stages
+				span {{ $t('Stages') }}
 				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title
-				span Channels
+				span {{ $t('Channels') }}
 				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createChat')") plus
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
@@ -24,7 +24,7 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 			.buffer
 			.group-title
-				span Administration
+				span {{ $t('Administration') }}
 			.admin
 				router-link.room(:to="{name: 'admin'}") Event Config
 				router-link.room(:to="{name: 'admin'}") Users

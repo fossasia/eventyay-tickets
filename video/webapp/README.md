@@ -30,5 +30,10 @@ npm run test:e2e
 npm run lint
 ```
 
+### Find missing i18n entries
+```
+npm run i18n:report
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

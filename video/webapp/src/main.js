@@ -14,6 +14,7 @@ import 'styles/global.styl'
 import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
 import './registerServiceWorker'
+import i18n from './i18n'
 
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
@@ -32,6 +33,7 @@ if (!shaka.Player.isBrowserSupported()) {
 window.vapp = new Vue({
 	router,
 	store,
+	i18n,
 	render: h => h(App)
 }).$mount('#app')
 
