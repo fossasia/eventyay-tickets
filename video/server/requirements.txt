@@ -6,6 +6,7 @@ djangorestframework==3.11.*
 django-extensions==2.2.5
 tqdm
 
+orjson
 aiofile
 aiohttp
 lxml

@@ -95,7 +95,7 @@ async def get_world_config_for_user(user):
             "about": world.about,
             "pretalx": world.config.get("pretalx", {}),
         },
-        "permissions": permissions[world],
+        "permissions": list(permissions[world]),
         "rooms": [],
     }
 

@@ -1,6 +1,6 @@
-import json
 import uuid
 
+import orjson
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
@@ -13,7 +13,6 @@ from venueless.core.services.world import get_world
 from venueless.live.channels import GROUP_USER, GROUP_VERSION
 from venueless.live.exceptions import ConsumerException
 
-from ..core.utils.json import CustomJSONEncoder
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
@@ -138,6 +137,11 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
     async def send_success(self, data=None, close=False):
         await self.send_json(self.build_response("success", data), close=close)
 
+    # Override send and receive methods to use orjson and less function calls
+
+    async def send_json(self, content, close=False):
+        await super().send(text_data=orjson.dumps(content).decode(), close=close)
+
     @classmethod
-    async def encode_json(cls, content):
-        return json.dumps(content, cls=CustomJSONEncoder)
+    async def decode_json(cls, text_data):
+        return orjson.loads(text_data)
