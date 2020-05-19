@@ -17,6 +17,7 @@ from ..core.utils.json import CustomJSONEncoder
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
+from .modules.room import RoomModule
 from .modules.world import WorldModule
 
 
@@ -27,7 +28,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "chat": ChatModule(),
             "user": AuthModule(),
             "bbb": BBBModule(),
-            "room": WorldModule(),
+            "room": RoomModule(),
             "world": WorldModule(),
         }
         self.user = None
@@ -102,19 +103,22 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
     async def dispatch(self, message):
         if message["type"] == "connection.drop":
-            await self.close()
+            return await self.close()
         elif message["type"] == "connection.reload":
-            await self.send_json(["connection.reload", {}])
+            return await self.send_json(["connection.reload", {}])
         elif message["type"] == "user.broadcast":
             if self.socket_id != message["socket"]:
                 await self.components["user"].reload_user()
                 await self.send_json([message["event_type"], message["data"]])
-        elif message["type"] in ("world.update", "room.create"):  # broadcast types
-            await self.components["world"].dispatch_event(self, message)
-        elif message["type"].startswith("chat."):
-            await self.components["chat"].dispatch_event(self, message)
+            return
+
+        namespace = message["type"].split(".")[0]
+        component = getattr(self, "components", {}).get(namespace)
+        if component:
+            if hasattr(component, "dispatch_event"):
+                return await component.dispatch_event(self, message)
         else:
-            await super().dispatch(message)
+            return await super().dispatch(message)
 
     def build_response(self, status, data):
         if data is None:
