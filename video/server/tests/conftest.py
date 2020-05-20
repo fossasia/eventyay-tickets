@@ -73,6 +73,13 @@ def chat_room(rooms):
             return room
 
 
+@pytest.fixture
+def stream_room(rooms):
+    for room in rooms:  # pragma: no cover
+        if any("livestream.native" == module["type"] for module in room.module_config):
+            return room
+
+
 @database_sync_to_async
 def _clear_db():
     ChatEvent.objects.all().delete()

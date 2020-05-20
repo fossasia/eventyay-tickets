@@ -16,5 +16,6 @@ without warning.
    config
    permissions
    world
+   rooms
    chat
    bbb

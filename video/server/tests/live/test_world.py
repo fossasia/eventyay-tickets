@@ -47,7 +47,7 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         else:
             modules.append({"type": "livestream.native"})
         await c.send_json_to(
-            ["room.create", {"name": "New Room!!", "modules": modules}]
+            ["room.create", 123, {"name": "New Room!!", "modules": modules}]
         )
         response = await c.receive_json_from()
         if with_channel and can_create_rooms:

@@ -87,3 +87,11 @@ class Room(models.Model):
 
     class Meta:
         ordering = ("sorting_priority", "name")
+
+
+class Reaction(models.Model):
+    room = models.ForeignKey(
+        to="Room", related_name="reactions", on_delete=models.CASCADE
+    )
+    reaction = models.CharField(max_length=100)
+    amount = models.IntegerField()
