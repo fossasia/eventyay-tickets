@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`915` Tracks now have a description attached to them which is shown to the user in the CfP, if specified. This can be used to further explain a otherwise very short Track-Name.
 - :feature:`-` Redirects to an event domain now include CORS headers to permit access from any client, to make pretalx integration in other websites easier.
 - :feature:`-` If you go to a login page while you are logged in (e.g. because it was still open in another tab), you are now redirected instead of being prompted to log in.
 - :feature:`-` Exporters can now supply the CORS header they want to send. All exporters provided by pretalx directly now allow access from all origins by default.
