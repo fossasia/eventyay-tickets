@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
-from i18nfield.fields import I18nCharField
+from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.mixins import LogMixin
 from pretalx.common.urls import EventUrls
@@ -18,6 +18,7 @@ class Track(LogMixin, models.Model):
         to="event.Event", on_delete=models.PROTECT, related_name="tracks"
     )
     name = I18nCharField(max_length=200, verbose_name=_("Name"),)
+    description = I18nTextField(verbose_name=_("Description"), blank=True,)
     color = models.CharField(
         max_length=7,
         verbose_name=_("Color"),

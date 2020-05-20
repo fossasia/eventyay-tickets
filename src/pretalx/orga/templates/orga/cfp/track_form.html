@@ -28,6 +28,7 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.name layout='event' %}
+        {% bootstrap_field form.description layout='event' %}
         {% bootstrap_field form.color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
         {% bootstrap_field form.requires_access_code layout='event' %}
         {% include "orga/submit_row.html" %}
