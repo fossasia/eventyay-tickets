@@ -56,9 +56,9 @@ class RequestRequire:
                 max_value = self.event.settings.get(f"cfp_{key}_max_length")
                 if min_value or max_value:
                     if min_value and count_chars:
-                        field.widget.attrs[f"minlength"] = min_value
+                        field.widget.attrs["minlength"] = min_value
                     if max_value and count_chars:
-                        field.widget.attrs[f"maxlength"] = max_value
+                        field.widget.attrs["maxlength"] = max_value
                     field.validators.append(
                         partial(
                             validate_field_length,

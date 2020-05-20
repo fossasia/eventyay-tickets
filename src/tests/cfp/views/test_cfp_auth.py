@@ -57,7 +57,7 @@ def test_can_reset_password_by_email(speaker, client, event):
 @pytest.mark.django_db
 def test_cannot_use_incorrect_token(speaker, client, event):
     response = client.post(
-        event.urls.reset + f"/abcdefg",
+        event.urls.reset + "/abcdefg",
         data={"password": "mynewpassword1!", "password_repeat": "mynewpassword1!"},
         follow=True,
     )

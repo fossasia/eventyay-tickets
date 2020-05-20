@@ -217,7 +217,7 @@ def test_can_reset_password_by_email(orga_user, client, event):
 @pytest.mark.django_db
 def test_cannot_use_incorrect_token(orga_user, client, event):
     response = client.post(
-        f"/orga/reset/abcdefg",
+        "/orga/reset/abcdefg",
         data={"password": "mynewpassword1!", "password_repeat": "mynewpassword1!"},
         follow=True,
     )

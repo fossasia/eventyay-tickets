@@ -50,7 +50,7 @@ def test_schedule_frab_xml_export(
     with django_assert_max_num_queries(30):
         response = client.get(
             reverse(
-                f"agenda:export.schedule.xml",
+                "agenda:export.schedule.xml",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -69,7 +69,7 @@ def test_schedule_frab_xml_export(
     with django_assert_max_num_queries(15):
         response = client.get(
             reverse(
-                f"agenda:export.schedule.xml",
+                "agenda:export.schedule.xml",
                 kwargs={"event": slot.submission.event.slug},
             ),
             HTTP_IF_NONE_MATCH=response["ETag"],
@@ -88,7 +88,7 @@ def test_schedule_frab_xml_export_control_char(
     with django_assert_max_num_queries(25):
         response = client.get(
             reverse(
-                f"agenda:export.schedule.xml",
+                "agenda:export.schedule.xml",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -111,7 +111,7 @@ def test_schedule_frab_json_export(
     with django_assert_max_num_queries(25):
         regular_response = client.get(
             reverse(
-                f"agenda:export.schedule.json",
+                "agenda:export.schedule.json",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -120,7 +120,7 @@ def test_schedule_frab_json_export(
     with django_assert_max_num_queries(25):
         orga_response = client.get(
             reverse(
-                f"agenda:export.schedule.json",
+                "agenda:export.schedule.json",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -151,7 +151,7 @@ def test_schedule_frab_xcal_export(
     with django_assert_max_num_queries(23):
         response = client.get(
             reverse(
-                f"agenda:export.schedule.xcal",
+                "agenda:export.schedule.xcal",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -167,7 +167,7 @@ def test_schedule_ical_export(slot, client, django_assert_max_num_queries):
     with django_assert_max_num_queries(25):
         response = client.get(
             reverse(
-                f"agenda:export.schedule.ics",
+                "agenda:export.schedule.ics",
                 kwargs={"event": slot.submission.event.slug},
             ),
             follow=True,
@@ -504,18 +504,18 @@ def test_html_export_full(
 
     speaker = slot.submission.speakers.all()[0]
     schedule_html = (
-        (settings.HTMLEXPORT_ROOT / "test" / f"test/schedule/index.html").open().read()
+        (settings.HTMLEXPORT_ROOT / "test" / "test/schedule/index.html").open().read()
     )
     assert "Contact us" in schedule_html  # locale
     assert canceled_talk.submission.title not in schedule_html
 
     schedule_json = json.load(
-        (settings.HTMLEXPORT_ROOT / f"test/test/schedule/export/schedule.json").open()
+        (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.json").open()
     )
     assert schedule_json["schedule"]["conference"]["title"] == event.name
 
     schedule_ics = (
-        (settings.HTMLEXPORT_ROOT / f"test/test/schedule/export/schedule.ics")
+        (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.ics")
         .open()
         .read()
     )
@@ -523,7 +523,7 @@ def test_html_export_full(
     assert canceled_talk.submission.code not in schedule_ics
 
     schedule_xcal = (
-        (settings.HTMLEXPORT_ROOT / f"test/test/schedule/export/schedule.xcal")
+        (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.xcal")
         .open()
         .read()
     )
@@ -531,7 +531,7 @@ def test_html_export_full(
     assert speaker.name in schedule_xcal
 
     schedule_xml = (
-        (settings.HTMLEXPORT_ROOT / f"test/test/schedule/export/schedule.xml")
+        (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.xml")
         .open()
         .read()
     )
@@ -563,7 +563,7 @@ def test_speaker_csv_export(slot, orga_client, django_assert_max_num_queries):
     with django_assert_max_num_queries(25):
         response = orga_client.get(
             reverse(
-                f"agenda:export",
+                "agenda:export",
                 kwargs={"event": slot.submission.event.slug, "name": "speakers.csv"},
             ),
             follow=True,
@@ -577,7 +577,7 @@ def test_empty_speaker_csv_export(orga_client, django_assert_max_num_queries, ev
     with django_assert_max_num_queries(25):
         response = orga_client.get(
             reverse(
-                f"agenda:export", kwargs={"event": event.slug, "name": "speakers.csv"},
+                "agenda:export", kwargs={"event": event.slug, "name": "speakers.csv"},
             ),
             follow=True,
         )
@@ -596,7 +596,7 @@ def test_submission_question_csv_export(
 ):
     response = orga_client.get(
         reverse(
-            f"agenda:export",
+            "agenda:export",
             kwargs={
                 "event": slot.submission.event.slug,
                 "name": "submission-questions.csv",
@@ -619,7 +619,7 @@ def test_speaker_question_csv_export(
 ):
     response = orga_client.get(
         reverse(
-            f"agenda:export",
+            "agenda:export",
             kwargs={
                 "event": slot.submission.event.slug,
                 "name": "speaker-questions.csv",
@@ -637,7 +637,7 @@ def test_wrong_export(
 ):
     response = orga_client.get(
         reverse(
-            f"agenda:export",
+            "agenda:export",
             kwargs={"event": slot.submission.event.slug, "name": "wrong",},
         ),
         follow=True,

@@ -14,7 +14,7 @@ from pretalx.schedule.models import Availability, Schedule, TalkSlot
 @pytest.mark.usefixtures("accepted_submission")
 def test_talk_list(orga_client, event, break_slot):
     response = orga_client.get(
-        reverse(f"orga:schedule.api.talks", kwargs={"event": event.slug}), follow=True
+        reverse("orga:schedule.api.talks", kwargs={"event": event.slug}), follow=True
     )
     content = json.loads(response.content.decode())
     assert response.status_code == 200
@@ -26,7 +26,7 @@ def test_talk_list(orga_client, event, break_slot):
 @pytest.mark.usefixtures("accepted_submission", "slot")
 def test_talk_list_with_filter(orga_client, event, schedule):
     response = orga_client.get(
-        reverse(f"orga:schedule.api.talks", kwargs={"event": event.slug}),
+        reverse("orga:schedule.api.talks", kwargs={"event": event.slug}),
         data={"version": schedule.version},
         follow=True,
     )
@@ -41,7 +41,7 @@ def test_talk_schedule_api_create_break(orga_client, event, schedule, room):
     with scope(event=event):
         slot_count = event.wip_schedule.talks.count()
     response = orga_client.post(
-        reverse(f"orga:schedule.api.talks", kwargs={"event": event.slug}),
+        reverse("orga:schedule.api.talks", kwargs={"event": event.slug}),
         json.dumps({"room": room.pk, "duration": 50, "description": "Break"}),
         content_type="application/json",
         follow=True,
@@ -65,7 +65,7 @@ def test_talk_schedule_api_update(orga_client, event, schedule, slot, room, with
         assert slot.start != start
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         data=json.dumps(
             {"room": room.pk if with_room else None, "start": start.isoformat()}
@@ -89,7 +89,7 @@ def test_talk_schedule_api_update_wrong_slot(orga_client, event, schedule, slot)
         assert slot.start != start
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update",
+            "orga:schedule.api.update",
             kwargs={"event": event.slug, "pk": slot.pk + 100},
         ),
         data=json.dumps({"room": 100, "start": start.isoformat()}),
@@ -109,7 +109,7 @@ def test_talk_schedule_api_update_break_slot(
         assert slot.start != start
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         data=json.dumps(
             {
@@ -140,7 +140,7 @@ def test_talk_schedule_api_update_break_slot_explicit_end(
         assert slot.start != start
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         data=json.dumps(
             {
@@ -172,7 +172,7 @@ def test_talk_schedule_api_update_break_slot_no_duration(
         previous_duration = slot.duration
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         data=json.dumps({"room": room.pk, "start": start.isoformat()}),
         follow=True,
@@ -192,7 +192,7 @@ def test_talk_schedule_api_delete_slot(orga_client, event, schedule, break_slot)
         slot_count = event.wip_schedule.talks.count()
     response = orga_client.delete(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         follow=True,
     )
@@ -210,7 +210,7 @@ def test_talk_schedule_api_do_not_delete_slot_with_submission(
         slot_count = event.wip_schedule.talks.count()
     response = orga_client.delete(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         follow=True,
     )
@@ -222,7 +222,7 @@ def test_talk_schedule_api_do_not_delete_slot_with_submission(
 @pytest.mark.django_db
 def test_talk_schedule_api_delete_bogus_slot(orga_client, event, schedule):
     response = orga_client.delete(
-        reverse(f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": 100}),
+        reverse("orga:schedule.api.update", kwargs={"event": event.slug, "pk": 100}),
         follow=True,
     )
     assert response.status_code == 200
@@ -238,7 +238,7 @@ def test_talk_schedule_api_update_reset(orga_client, event, schedule, slot, room
         assert slot.start
     response = orga_client.patch(
         reverse(
-            f"orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
+            "orga:schedule.api.update", kwargs={"event": event.slug, "pk": slot.pk}
         ),
         data=json.dumps({}),
         follow=True,
@@ -271,7 +271,7 @@ def test_api_availabilities(orga_client, event, room, speaker, confirmed_submiss
 
     response = orga_client.get(
         reverse(
-            f"orga:schedule.api.availabilities",
+            "orga:schedule.api.availabilities",
             kwargs={"event": event.slug, "talkid": talk.pk, "roomid": room.pk},
         ),
         follow=True,
@@ -290,7 +290,7 @@ def test_api_availabilities_empty(
 ):
     response = orga_client.get(
         reverse(
-            f"orga:schedule.api.availabilities",
+            "orga:schedule.api.availabilities",
             kwargs={"event": event.slug, "talkid": 100, "roomid": room.pk},
         ),
         follow=True,
@@ -315,7 +315,7 @@ def test_api_availabilities_only_room(
 
     response = orga_client.get(
         reverse(
-            f"orga:schedule.api.availabilities",
+            "orga:schedule.api.availabilities",
             kwargs={"event": event.slug, "talkid": talk.pk, "roomid": room.pk},
         ),
         follow=True,
