@@ -48,7 +48,7 @@ Vue.component('pretalx-schedule-talk', {
             return !this.talk.code
         },
         timeDisplay () {
-            return moment(this.talk.start).format("LT") + ' - ' + moment(this.talk.end).format("LT")
+            return moment.utc(this.talk.start).format("LT") + ' - ' + moment.utc(this.talk.end).format("LT")
         }
     },
 });
