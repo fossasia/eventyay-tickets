@@ -6,7 +6,7 @@
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
-			bunt-button(v-if="!hasJoined", @click="join", tooltip="to start writing, join this channel") join chat
+			bunt-button(v-if="!hasJoinedChannel", @click="join", tooltip="to start writing, join this channel") join chat
 			chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['s']", y)
 			.user(v-for="user of members")
@@ -15,7 +15,7 @@
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
 import Avatar from 'components/Avatar'
@@ -43,7 +43,8 @@ export default {
 	},
 	computed: {
 		...mapState(['connected']),
-		...mapState('chat', ['channel', 'hasJoined', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
+		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
+		...mapGetters('chat', ['hasJoinedChannel']),
 		filteredTimeline () {
 			if (this.mode === 'standalone') return this.timeline.slice().reverse()
 			return this.timeline.filter(message => message.event_type === 'channel.message').reverse()
@@ -53,12 +54,12 @@ export default {
 		connected (value) {
 			if (value) {
 				// resubscribe
-				this.$store.dispatch('chat/subscribe', this.module.channel_id)
+				this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 			}
 		}
 	},
 	created () {
-		this.$store.dispatch('chat/subscribe', this.module.channel_id)
+		this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 	},
 	beforeDestroy () {
 		this.$store.dispatch('chat/unsubscribe')
