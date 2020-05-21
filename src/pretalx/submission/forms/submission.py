@@ -9,6 +9,7 @@ from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
+from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Submission, SubmissionStates
 
 
@@ -70,6 +71,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             ):
                 self.fields.pop("track")
                 return
+
+            self.fields["track"].widget = TrackSelectWidget()
             access_code = self.access_code or getattr(instance, "access_code", None)
             if not access_code or not access_code.track:
                 self.fields["track"].queryset = self.event.tracks.filter(

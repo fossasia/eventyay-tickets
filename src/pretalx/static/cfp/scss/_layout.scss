@@ -10,6 +10,7 @@ body {
   height: 240px;
   z-index: -1;
   display: flex;
+
   #header-image {
     object-fit: cover;
     margin-left: auto;
@@ -75,6 +76,7 @@ header {
 
 #user-dropdown-label {
   color: $white;
+
   #user-dropdown {
     display: none;
     flex-direction: column;
@@ -82,19 +84,23 @@ header {
     z-index: 1000;
     position: fixed;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
     a {
       text-align: left;
       color: $brand-primary;
       padding: 8px 16px;
       white-space: nowrap;
     }
+
     a:hover {
       text-decoration: none;
       background: $gray-lightest;
     }
   }
+
   &:hover {
     text-decoration: none;
+
     #user-dropdown {
       display: flex;
     }
@@ -134,6 +140,7 @@ footer {
 .table-responsive {
   display: table;
 }
+
 @media (max-width: 1400px) {
   .user-logs {
     display: none;
@@ -171,17 +178,21 @@ footer {
         padding-left: 4px;
       }
     }
+
     .url-links {
       flex-direction: column-reverse;
+
       a {
         flex-basis: 0;
         margin-left: 0;
         margin-right: 0;
       }
     }
+
     .orga-edit-link {
       max-height: 40px;
     }
+
     #user-dropdown {
       right: 0;
     }
@@ -190,6 +201,7 @@ footer {
       display: flex;
       flex-direction: row;
       margin-left: auto;
+
       > * {
         margin-left: 4px;
       }
@@ -283,4 +295,11 @@ footer {
       width: 280px;
     }
   }
+}
+
+.track-select-with-descriptions .description {
+  margin-top: .5rem;
+  margin-bottom: 1rem;
+  color: #999;
+  font-style: italic;
 }
