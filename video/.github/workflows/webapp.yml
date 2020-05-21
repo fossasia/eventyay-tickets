@@ -1,6 +1,3 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: webapp
 
 on:
@@ -29,8 +26,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: npm ci
-    - run: npm run build
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./webapp
+    - name: Build webapp
+      run: npm run build
+      working-directory: ./webapp
   lint:
     name: lint
     runs-on: ubuntu-latest
@@ -46,8 +47,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: npm ci
-    - run: npm run i18n:report
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./webapp
+    - name: Lint webapp
+      run: npm run lint
+      working-directory: ./webapp
   i18n:
     name: i18n
     runs-on: ubuntu-latest
@@ -63,5 +68,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: npm ci
-    - run: npm run i18n:report
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./webapp
+    - name: Check for missing i18n entries
+      run: npm run i18n:report
+      working-directory: ./webapp
