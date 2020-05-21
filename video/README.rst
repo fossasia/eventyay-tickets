@@ -14,7 +14,7 @@ venueless
 
 venueless allows you to run events fully online. You can make use of different modules including live video streams, interactive video calls, group chats and more.
 
-venueless is brought to you by `pretix`_ and `pretalx`_.
+venueless is brought to you by `pretix`_, `pretalx`_, and `rash.codes`_.
 
 **This project is in a development stage and currently not intended for production use.**
 
@@ -101,3 +101,4 @@ community.
 .. _pretalx: https://pretalx.com
 .. _pretix: https://pretix.eu
 .. _Sentry blogpost: https://blog.sentry.io/2019/11/06/relicensing-sentry
+.. _rash.codes: https://rash.codes/
