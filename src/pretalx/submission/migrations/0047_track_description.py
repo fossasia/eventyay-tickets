@@ -1,4 +1,5 @@
 from django.db import migrations, models
+import i18nfield.fields
 
 
 class Migration(migrations.Migration):
@@ -8,6 +9,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="track", name="description", field=models.TextField(blank=True)
+            model_name="track",
+            name="description",
+            field=i18nfield.fields.I18nTextField(blank=True),
         ),
     ]
