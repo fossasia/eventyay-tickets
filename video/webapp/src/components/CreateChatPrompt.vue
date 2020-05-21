@@ -16,25 +16,37 @@
 				bunt-button(type="submit", :loading="loading") create
 </template>
 <script>
+import {mapGetters} from "vuex";
+
 export default {
 	components: {},
 	data () {
 		return {
 			name: '',
 			type: 'text',
-			types: [{
-				id: 'text',
-				label: 'Text chat',
-				icon: 'pound'
-			}, {
-				id: 'video',
-				label: 'Video chat',
-				icon: 'webcam'
-			}],
 			loading: false
 		}
 	},
 	computed: {
+		...mapGetters(['hasPermission']),
+		types () {
+			let types = []
+			if (this.hasPermission('world:rooms.create.chat')) {
+				types.push({
+					id: 'text',
+					label: 'Text chat',
+					icon: 'pound'
+				})
+			}
+			if (this.hasPermission('world:rooms.create.bbb')) {
+				types.push({
+					id: 'video',
+					label: 'Video chat',
+					icon: 'webcam'
+				})
+			}
+			return types;
+		},
 		selectedType () {
 			return this.types.find(type => type.id === this.type)
 		}

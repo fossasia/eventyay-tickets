@@ -10,13 +10,13 @@ transition(name="sidebar")
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('Schedule') }}
 			.group-title
 				span {{ $t('Stages') }}
-				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createRoom')") plus
+				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title
 				span {{ $t('Channels') }}
-				bunt-icon-button(v-if="hasPermission('room.create')", @click="$emit('createChat')") plus
+				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
