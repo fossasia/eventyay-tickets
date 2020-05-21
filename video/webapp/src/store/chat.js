@@ -87,6 +87,7 @@ export default {
 		},
 		// INCOMING
 		'api::chat.event' ({state}, event) {
+			if (event.channel !== state.channel) return
 			const handleMembership = (event) => {
 				switch (event.content.membership) {
 					case 'join': {
