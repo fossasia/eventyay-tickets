@@ -1,3 +1,4 @@
+/* global ENV_DEVELOPMENT */
 import cloneDeep from 'lodash/cloneDeep'
 let config
 if (ENV_DEVELOPMENT || !window.venueless) {
