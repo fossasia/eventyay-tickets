@@ -19,6 +19,8 @@ $mq.measures = {
 -get-media-query(value, direction)
 	if -is-string(value)
 		value = $mq.measures[value]
+	if direction is min
+		value += 1
 	condition = 'screen and (%s-width: %s)' % (direction value)
 	return condition
 

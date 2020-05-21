@@ -2,24 +2,24 @@ import throttle from 'lodash/throttle'
 
 // TODO check semantics with rupture
 const SCALE = {
-	xs: '480px',
-	s: '768px',
-	m: '992px',
-	l: '1200px',
-	xl: '1800px',
+	xs: 480,
+	s: 768,
+	m: 992,
+	l: 1200,
+	xl: 1800,
 	hd: Infinity
 }
 
 const Plugin = {
 	install (Vue) {
 		const match = function (value, direction) {
-			if (SCALE[value]) value = SCALE[value]
+			if (SCALE[value]) value = SCALE[value] + (direction === 'min' ? 1 : 0) + 'px'
 			return window.matchMedia(`(${direction}-width: ${value})`).matches
 		}
 		const proxyHandler = function (direction) {
 			return {
 				get (target, property, receiver) {
-					if (typeof property !== 'symbol') {
+					if (typeof property !== 'symbol' && property !== '_isVue') {
 						Vue.set(target, property, match(property, direction))
 					}
 					return Reflect.get(...arguments)
