@@ -43,7 +43,7 @@ You can fetch the profile for a specific user by their ID::
 
 If the user is unknown, error code ``user.not_found`` is returned.
 
-You can also fetch multiple profiles at once:
+You can also fetch multiple profiles at once::
 
     => ["user.fetch", 123, {"ids": ["1234", "5679"]}]
     <- ["success", 123, {"1234": {"id": "1234", "profile": {…}}, "5679": {…}}]
