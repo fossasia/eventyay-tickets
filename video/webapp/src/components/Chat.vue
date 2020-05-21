@@ -60,7 +60,7 @@ export default {
 	created () {
 		this.$store.dispatch('chat/subscribe', this.module.channel_id)
 	},
-	destroyed () {
+	beforeDestroy () {
 		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
