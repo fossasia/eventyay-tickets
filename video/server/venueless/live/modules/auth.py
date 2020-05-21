@@ -3,7 +3,12 @@ import logging
 from channels.db import database_sync_to_async
 
 from venueless.core.permissions import Permission
-from venueless.core.services.user import get_public_user, login, update_user
+from venueless.core.services.user import (
+    get_public_user,
+    get_public_users,
+    login,
+    update_user,
+)
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -70,11 +75,17 @@ class AuthModule(BaseModule):
     @command("fetch")
     @require_world_permission(Permission.WORLD_VIEW)
     async def fetch(self, body):
-        user = await get_public_user(self.consumer.world.id, body.get("id"),)
-        if user:
-            await self.consumer.send_success(user)
+        if "ids" in body:
+            users = await get_public_users(
+                self.consumer.world.id, body.get("ids")[:100]
+            )
+            await self.consumer.send_success({u["id"]: u for u in users})
         else:
-            await self.consumer.send_error(code="user.not_found")
+            user = await get_public_user(self.consumer.world.id, body.get("id"),)
+            if user:
+                await self.consumer.send_success(user)
+            else:
+                await self.consumer.send_error(code="user.not_found")
 
     async def dispatch_disconnect(self, close_code):
         if self.consumer.user:

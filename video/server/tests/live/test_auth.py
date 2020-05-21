@@ -292,6 +292,14 @@ async def test_fetch_user():
             {"id": user_id, "profile": {"display_name": "Cool User"},},
         ]
 
+        await c2.send_json_to(["user.fetch", 14, {"ids": [user_id, str(uuid.uuid4())]}])
+        response = await c2.receive_json_from()
+        assert response == [
+            "success",
+            14,
+            {user_id: {"id": user_id, "profile": {"display_name": "Cool User"}}},
+        ]
+
         await c2.send_json_to(["user.fetch", 14, {"id": str(uuid.uuid4())}])
         response = await c2.receive_json_from()
         assert response == ["error", 14, {"code": "user.not_found"}]
