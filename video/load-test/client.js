@@ -27,7 +27,7 @@ module.exports = function (url, clientNumber, MESSAGES_PER_CLIENT_PER_SECOND, pi
 			ws.send(JSON.stringify(['user.update', correlationId++, {
 				profile: {display_name: `client ${clientNumber}`},
 			}]))
-			ws.send(JSON.stringify(['chat.subscribe', correlationId++, {
+			ws.send(JSON.stringify(['chat.join', correlationId++, {
 				channel: chatModule.channel_id,
 			}]))
 			setTimeout(spam, Math.random() * 500 / MESSAGES_PER_CLIENT_PER_SECOND)
