@@ -5,53 +5,51 @@ from django.core.exceptions import ValidationError
 
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
-from venueless.core.services.world import (
-    create_room,
-    get_room_config_for_user,
-    get_world,
-)
+from venueless.core.services.world import create_room, get_room_config_for_user
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_ROOM
-from venueless.live.decorators import require_world_permission, room_action
+from venueless.live.decorators import (
+    command,
+    event,
+    require_world_permission,
+    room_action,
+)
 from venueless.live.exceptions import ConsumerException
+from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 
 
-class RoomModule:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.actions = {
-            "room.create": self.create_room,
-            "room.enter": self.enter_room,
-            "room.leave": self.leave_room,
-            "room.react": self.send_reaction,
-        }
+class RoomModule(BaseModule):
+    prefix = "room"
 
+    @command("enter")
     @room_action(permission_required=Permission.ROOM_VIEW)
-    async def enter_room(self):
+    async def enter_room(self, body):
         await self.consumer.channel_layer.group_add(
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
         await self.consumer.send_success({})
 
+    @command("leave")
     @room_action()
-    async def leave_room(self):
+    async def leave_room(self, body):
         await self.consumer.channel_layer.group_discard(
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
         await self.consumer.send_success({})
 
+    @command("react")
     @room_action(permission_required=Permission.ROOM_VIEW)
-    async def send_reaction(self):
-        reaction = self.content[2].get("reaction")
+    async def send_reaction(self, body):
+        reaction = body.get("reaction")
         if reaction not in ("+1", "clap", "heart", "open_mouth"):
             raise ConsumerException(
                 code="room.unknown_reaction", message="Unknown reaction"
             )
 
-        redis_key = f"reactions:{self.world_id}:{self.room_id}"
-        redis_debounce_key = f"reactions:{self.world_id}:{self.room_id}:{reaction}:{self.consumer.user.id}"
+        redis_key = f"reactions:{self.consumer.world.id}:{body['room']}"
+        redis_debounce_key = f"reactions:{self.consumer.world.id}:{body['room']}:{reaction}:{self.consumer.user.id}"
 
         # We want to send reactions out to anyone, but we want to aggregate them over short time frames ("ticks") to
         # make sure we do not send 500 messages if 500 people react in the same second, but just one.
@@ -88,65 +86,42 @@ class RoomModule:
                         "reactions": {
                             k.decode(): int(v.decode()) for k, v in val.items()
                         },
-                        "room": str(self.room_id),
+                        "room": str(body["room"]),
                     },
                 )
                 for k, v in val.items():
-                    await store_reaction(self.room_id, k.decode(), int(v.decode()))
+                    await store_reaction(body["room"], k.decode(), int(v.decode()))
             # else: We're just contributing to the reaction counter that someone else started.
 
+    @command("create")
     @require_world_permission(Permission.WORLD_ROOMS_CREATE)
-    async def create_room(self):
+    async def create_room(self, body):
         try:
-            room = await create_room(self.world, self.content[-1], self.consumer.user)
+            room = await create_room(self.consumer.world, body, self.consumer.user)
         except ValidationError as e:
             await self.consumer.send_error(code="room.invalid", message=str(e))
         else:
             await self.consumer.send_success(room)
 
-    async def push_reaction(self):
+    @event("reaction")
+    async def push_reaction(self, body):
         await self.consumer.send_json(
-            [
-                self.content["type"],
-                {k: v for k, v in self.content.items() if k != "type"},
-            ]
+            [body["type"], {k: v for k, v in body.items() if k != "type"},]
         )
 
-    async def push_room_info(self):
-        world = await get_world(self.world_id)
-        if not await world.has_permission_async(
+    @event("create", refresh_user=True, refresh_world=True)
+    async def push_room_info(self, body):
+        await self.consumer.world.refresh_from_db_if_outdated()
+        await self.consumer.user.refresh_from_db_if_outdated()
+        if not await self.consumer.world.has_permission_async(
             user=self.consumer.user, permission=Permission.ROOM_VIEW
         ):
             return
         await self.consumer.send_json(
             [
-                self.content["type"],
+                body["type"],
                 await get_room_config_for_user(
-                    self.content["room"], self.world_id, self.consumer.user
+                    body["room"], self.consumer.world.id, self.consumer.user
                 ),
             ]
         )
-
-    async def dispatch_event(self, consumer, content):
-        self.consumer = consumer
-        self.content = content
-        self.world_id = self.consumer.scope["url_route"]["kwargs"]["world"]
-        if self.content["type"] == "room.create":
-            await self.push_room_info()
-        elif self.content["type"] == "room.reaction":
-            await self.push_reaction()
-        else:  # pragma: no cover
-            logger.warning(
-                f'Ignored unknown event {content["type"]}'
-            )  # ignore unknown event
-
-    async def dispatch_command(self, consumer, content):
-        self.consumer = consumer
-        self.content = content
-        self.world_id = self.consumer.scope["url_route"]["kwargs"]["world"]
-        self.world = await get_world(self.world_id)
-        self.room_id = self.content[2].get("room")
-        action = content[0]
-        if action not in self.actions:
-            raise ConsumerException("room.unsupported_command")
-        await self.actions[action]()

@@ -1,10 +1,12 @@
+from collections import namedtuple
+
 from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 
 from ..models.auth import User
+from ..permissions import Permission
 
 
-@database_sync_to_async
 def get_user_by_id(world_id, user_id):
     try:
         return User.objects.get(id=user_id, world_id=world_id)
@@ -12,7 +14,6 @@ def get_user_by_id(world_id, user_id):
         return
 
 
-@database_sync_to_async
 def get_user_by_token_id(world_id, token_id):
     try:
         return User.objects.get(token_id=token_id, world_id=world_id)
@@ -20,7 +21,6 @@ def get_user_by_token_id(world_id, token_id):
         return
 
 
-@database_sync_to_async
 def get_user_by_client_id(world_id, client_id):
     try:
         return User.objects.get(client_id=client_id, world_id=world_id)
@@ -28,8 +28,9 @@ def get_user_by_client_id(world_id, client_id):
         return
 
 
-async def get_public_user(world_id, id):
-    user = await get_user_by_id(world_id, id)
+@database_sync_to_async
+def get_public_user(world_id, id):
+    user = get_user_by_id(world_id, id)
     if not user:
         return None
     return user.serialize_public()
@@ -47,24 +48,19 @@ def get_public_users(world_id, ids):
     ]
 
 
-async def get_user(
-    world_id=None,
-    *,
-    with_id=None,
-    with_token=None,
-    with_client_id=None,
-    serialize=True,
+def get_user(
+    world_id=None, *, with_id=None, with_token=None, with_client_id=None,
 ):
     if with_id:
-        user = await get_user_by_id(world_id, with_id)
-        return user.serialize_public() if serialize and user else user
+        user = get_user_by_id(world_id, with_id)
+        return user
 
     token_id = None
     if with_token:
         token_id = with_token["uid"]
-        user = await get_user_by_token_id(world_id, token_id)
+        user = get_user_by_token_id(world_id, token_id)
     elif with_client_id:
-        user = await get_user_by_client_id(world_id, with_client_id)
+        user = get_user_by_client_id(world_id, with_client_id)
     else:
         raise Exception(
             "get_user was called without valid with_token, with_id or with_client_id"
@@ -73,26 +69,25 @@ async def get_user(
     if user:
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
-            await update_user(world_id, id=user.id, traits=traits)
-        return user.serialize_public() if serialize else user
+            update_user(world_id, id=user.id, traits=traits)
+        return user
 
     if token_id:
-        user = await create_user(
+        user = create_user(
             world_id=world_id,
             token_id=token_id,
             profile=with_token.get("profile") if with_token else None,
             traits=with_token.get("traits") if with_token else None,
         )
     else:
-        user = await create_user(
+        user = create_user(
             world_id=world_id,
             client_id=with_client_id,
             traits=with_token.get("traits") if with_token else None,
         )
-    return user.serialize_public() if serialize and user else user
+    return user
 
 
-@database_sync_to_async
 def create_user(world_id, *, token_id=None, client_id=None, traits=None, profile=None):
     return User.objects.create(
         world_id=world_id,
@@ -103,7 +98,6 @@ def create_user(world_id, *, token_id=None, client_id=None, traits=None, profile
     )
 
 
-@database_sync_to_async
 @atomic
 def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
     # TODO: Exception handling
@@ -122,3 +116,27 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
         if save_fields:
             user.save(update_fields=save_fields)
     return user.serialize_public() if serialize else user
+
+
+LoginResult = namedtuple("LoginResult", "user world_config chat_channels")
+
+
+@database_sync_to_async
+def login(*, world=None, token=None, client_id=None,) -> LoginResult:
+    from .chat import ChatService
+    from .world import get_world_config_for_user
+
+    user = get_user(world_id=world.pk, with_client_id=client_id, with_token=token)
+
+    if not user or not world.has_permission(
+        user=user, permission=Permission.WORLD_VIEW
+    ):
+        return
+
+    return LoginResult(
+        user=user,
+        world_config=get_world_config_for_user(world, user),
+        chat_channels=ChatService(world.pk).get_channels_for_user(
+            user.pk, is_volatile=False
+        ),
+    )

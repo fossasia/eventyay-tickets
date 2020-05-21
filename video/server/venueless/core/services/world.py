@@ -19,17 +19,11 @@ async def get_world(world_id):
     return world
 
 
-@database_sync_to_async
-def _get_rooms(world, user):
+def get_rooms(world, user):
     qs = world.rooms.all().prefetch_related("channel")
     if user:
         qs = qs.with_permission(world=world, user=user)
     return list(qs)
-
-
-async def get_rooms(world, user=None):
-    rooms = await _get_rooms(world, user)
-    return rooms
 
 
 @database_sync_to_async
@@ -46,11 +40,6 @@ async def get_room(**kwargs):
     with suppress(Room.DoesNotExist, Room.MultipleObjectsReturned, ValidationError):
         room = await _get_room(**kwargs)
         return room
-
-
-@database_sync_to_async
-def get_world_for_user(user):
-    return user.world
 
 
 def get_permissions_for_traits(rules, traits, prefixes):
@@ -85,9 +74,8 @@ def get_room_config(room, permissions):
     return room_config
 
 
-async def get_world_config_for_user(user):
-    world = await get_world_for_user(user)
-    permissions = await database_sync_to_async(world.get_all_permissions)(user)
+def get_world_config_for_user(world, user):
+    permissions = world.get_all_permissions(user)
     result = {
         "world": {
             "id": str(world.id),
@@ -99,7 +87,7 @@ async def get_world_config_for_user(user):
         "rooms": [],
     }
 
-    rooms = await get_rooms(world, user)
+    rooms = get_rooms(world, user)
     for room in rooms:
         result["rooms"].append(
             get_room_config(room, permissions[world] | permissions[room])

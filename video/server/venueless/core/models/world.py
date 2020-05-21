@@ -2,10 +2,10 @@ from collections import defaultdict
 from contextlib import suppress
 
 import jwt
-from channels.db import database_sync_to_async
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
+from venueless.core.models.cache import VersionedModel
 from venueless.core.permissions import Permission
 from venueless.core.utils.json import CustomJSONEncoder
 
@@ -55,7 +55,7 @@ def default_grants():
     }
 
 
-class World(models.Model):
+class World(VersionedModel):
     id = models.CharField(primary_key=True, max_length=50)
     title = models.CharField(max_length=300)
     about = models.TextField(null=True, blank=True)
@@ -119,7 +119,7 @@ class World(models.Model):
         ):
             return True
 
-        roles = await database_sync_to_async(user.get_role_grants)(room)
+        roles = await user.get_role_grants_async(room)
         for r in roles:
             if permission.value in self.roles.get(r, []):
                 return True

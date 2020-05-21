@@ -174,7 +174,7 @@ async def test_wrong_user_command():
         assert response[0] == "authenticated"
         await c.send_json_to(["user.foobar", 123, {"display_name": "Cool User"}])
         response = await c.receive_json_from()
-        assert response == ["error", 123, {"code": "user.unknown_command"}]
+        assert response == ["error", 123, {"code": "user.unsupported_command"}]
 
 
 @pytest.mark.asyncio
@@ -203,10 +203,9 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
         }
-        assert (await get_user_by_token_id("sample", "123456")).traits == [
-            "chat.read",
-            "foo.bar",
-        ]
+        assert (
+            await database_sync_to_async(get_user_by_token_id)("sample", "123456")
+        ).traits == ["chat.read", "foo.bar",]
 
         await c2.send_json_to(["authenticate", {"token": token2}])
         response = await c2.receive_json_from()
@@ -216,7 +215,9 @@ async def test_auth_with_jwt_token_update_traits(world):
             "user.config",
             "chat.channels",
         }
-        assert (await get_user_by_token_id("sample", "123456")).traits == ["chat.read"]
+        assert (
+            await database_sync_to_async(get_user_by_token_id)("sample", "123456")
+        ).traits == ["chat.read"]
 
 
 @pytest.mark.asyncio
@@ -243,10 +244,9 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
         }
-        assert (await get_user_by_token_id("sample", "123456")).traits == [
-            "chat.read",
-            "foo.bar",
-        ]
+        assert (
+            await database_sync_to_async(get_user_by_token_id)("sample", "123456")
+        ).traits == ["chat.read", "foo.bar",]
 
         await c2.send_json_to(["authenticate", {"token": token}])
         response = await c2.receive_json_from()
@@ -256,10 +256,9 @@ async def test_auth_with_jwt_token_twice(world):
             "user.config",
             "chat.channels",
         }
-        assert (await get_user_by_token_id("sample", "123456")).traits == [
-            "chat.read",
-            "foo.bar",
-        ]
+        assert (
+            await database_sync_to_async(get_user_by_token_id)("sample", "123456")
+        ).traits == ["chat.read", "foo.bar",]
 
 
 @pytest.mark.asyncio

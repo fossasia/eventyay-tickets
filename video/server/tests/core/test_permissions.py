@@ -21,10 +21,12 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
     }
 
     user.world_grants.create(role="room_creator", world=world)
+    user.refresh_from_db()
     assert user.get_role_grants() == {"room_creator"}
     assert world.has_permission(user=user, permission=Permission.WORLD_ROOMS_CREATE)
     assert not world.has_permission(user=user, permission=Permission.WORLD_UPDATE)
 
+    user.refresh_from_db()
     assert user.get_role_grants(chat_room) == {"room_creator"}
     assert not world.has_permission(
         user=user, permission=Permission.ROOM_INVITE, room=chat_room
@@ -35,6 +37,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
     }
 
     user.room_grants.create(role="room_owner", room=chat_room, world=world)
+    user.refresh_from_db()
     assert user.get_role_grants(chat_room) == {"room_creator", "room_owner"}
     assert world.has_permission(
         user=user, permission=Permission.ROOM_INVITE, room=chat_room

@@ -137,7 +137,14 @@ else:
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
 
-CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
+    "process": {
+        # LocMemCache is async-safe, other cache backends are not, so we shouldn't ever replace this backend here!
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    },
+}
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
@@ -234,7 +241,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "%(levelname)s %(asctime)s %(name)s %(module)s %(message)s"
+            "format": "%(asctime)s %(levelname)s %(thread)d %(name)s %(module)s %(message)s"
         },
     },
     "handlers": {
@@ -255,17 +262,17 @@ LOGGING = {
         "django.request": {
             "handlers": ["file", "console"],
             "level": loglevel,
-            "propagate": True,
+            "propagate": False,
         },
         "django.security": {
             "handlers": ["file", "console"],
             "level": loglevel,
-            "propagate": True,
+            "propagate": False,
         },
         "django.db.backends": {
             "handlers": ["file", "console"],
-            "level": "INFO",  # Do not output all the queries
-            "propagate": True,
+            "level": loglevel,
+            "propagate": False,
         },
     },
 }

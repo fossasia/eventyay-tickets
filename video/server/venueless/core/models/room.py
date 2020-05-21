@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
 
+from venueless.core.models.cache import VersionedModel
 from venueless.core.permissions import Permission
 
 
@@ -70,7 +71,7 @@ class RoomQuerySet(models.QuerySet):
         return qs.filter(requirements, world=world,)
 
 
-class Room(models.Model):
+class Room(VersionedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     world = models.ForeignKey(
         to="core.World", related_name="rooms", on_delete=models.PROTECT
