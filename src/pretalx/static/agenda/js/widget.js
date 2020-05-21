@@ -9,9 +9,9 @@ Vue.component('pretalx-schedule-talk', {
             :data-time="timeDisplay"
             :data-start="talk.start"
             :data-end="talk.end"
-            target="_blank"
+            :target="isBreak ? '' : '_blank'"
             rel="noopener"
-            :href="talk.code ? (data.event + 'talk/' + talk.code) : '#'"
+            :href="(!isBreak && talk.code) ? (data.event + 'talk/' + talk.code) : '#'"
         >
             <div class="pretalx-schedule-talk-content">
                 <span v-if="talk.do_not_record" class="fa-stack">
