@@ -16,7 +16,9 @@ export default new Vuex.Store({
 		rooms: null,
 		permissions: null,
 		schedule: null,
-		streamingRoom: null
+		activeRoom: null,
+		streamingRoom: null,
+		reactions: null
 	},
 	getters: {
 		hasPermission (state) {
@@ -67,6 +69,7 @@ export default new Vuex.Store({
 			})
 			api.on('closed', () => {
 				state.connected = false
+				state.activeRoom = null
 				dispatch('chat/disconnected', {root: true})
 			})
 		},
@@ -88,9 +91,32 @@ export default new Vuex.Store({
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
 		},
+		async enterRoom ({state, dispatch}, room) {
+			if (!state.connected || !room) return
+			if (state.activeRoom) {
+				await dispatch('leaveRoom', {room: state.activeRoom})
+			}
+			state.activeRoom = room
+			api.call('room.enter', {room: room.id})
+		},
+		async leaveRoom ({state}, room) {
+			if (!state.activeRoom || state.activeRoom.id !== room.id) return
+			state.activeRoom = null
+			state.reactions = null
+			if (api.socketState !== 'open') return
+			api.call('room.leave', {room: room.id})
+		},
+		async addReaction ({state}, reaction) {
+			if (!state.activeRoom) return
+			await api.call('room.react', {room: state.activeRoom.id, reaction})
+		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)
 			// TODO ordering?
+		},
+		'api::room.reaction' ({state}, {room, reactions}) {
+			if (state.activeRoom.id !== room) return
+			state.reactions = reactions
 		}
 	},
 	modules: {

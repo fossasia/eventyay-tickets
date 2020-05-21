@@ -35,7 +35,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['world', 'schedule', 'streamingRoom']),
+		...mapState(['connected', 'world', 'schedule', 'streamingRoom']),
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
@@ -57,12 +57,21 @@ export default {
 			return this.scheduleRoom.talks.find(talk => moment().isBetween(talk.start, talk.end))
 		}
 	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
+	watch: {
+		connected (value) {
+			if (value) {
+				// re-enter
+				this.$store.dispatch('enterRoom', this.room)
+			}
+		}
 	},
-	methods: {}
+	created () {
+		// TODO decouple from component lifecycle
+		this.$store.dispatch('enterRoom', this.room)
+	},
+	beforeDestroy () {
+		this.$store.dispatch('leaveRoom', this.room)
+	},
 }
 </script>
 <style lang="stylus">

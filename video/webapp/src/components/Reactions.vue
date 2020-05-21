@@ -6,10 +6,13 @@
 			.emoji(:style="reaction.style")
 </template>
 <script>
+import { mapState } from 'vuex'
+import shuffle from 'lodash/shuffle'
 import emojiData from 'emoji-mart/data/twitter.json'
 import { getEmojiPosition } from 'lib/emoji'
 
 const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent density
+const SERVER_REACTIONS_INTERVAL = 1000
 
 export default {
 	components: {},
@@ -21,6 +24,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['reactions']),
 		availableReactions () {
 			const emoji = [
 				emojiData.emojis['+1'],
@@ -31,12 +35,33 @@ export default {
 			return emoji.map(e => ({id: e.short_names[0], style: {'background-position': getEmojiPosition(e)}}))
 		}
 	},
+	watch: {
+		reactions () {
+			// put all reactions in a queue and randomize to get rough averages toghether with the particle pool
+			// cap at MAX_PARTICLE_POOL and round up
+			let reactions = []
+			const totalReactions = Object.values(this.reactions).reduce((acc, count) => acc + count, 0)
+			const reactionMultiplier = Math.min(1, MAX_PARTICLE_POOL / totalReactions)
+			for (const [reaction, count] of Object.entries(this.reactions)) {
+				reactions.push(...Array(Math.ceil(count * reactionMultiplier)).fill(reaction))
+			}
+			reactions = shuffle(reactions)
+			const finalLength = reactions.length
+			const distribute = () => {
+				if (reactions.length === 0) return
+				this.renderReaction(reactions.pop())
+				setTimeout(distribute, SERVER_REACTIONS_INTERVAL / finalLength)
+			}
+			distribute()
+		}
+	},
 	mounted () {
 		this.overlayHeight = this.$refs.reactions.offsetHeight
 	},
 	methods: {
 		react (id) {
-			this.renderReaction(id)
+			this.$store.dispatch('addReaction', id)
+			// TODO display immediately and add own cooldown
 		},
 		renderReaction (id) {
 			let element = this.freeParticles.pop()
