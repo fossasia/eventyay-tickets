@@ -1,37 +1,47 @@
+// TODO
+// - volatile channels are automatically left, so we should remove them from `joinedChannels`. Leaving them in does not make any difference right now though.
+
 import Vue from 'vue'
 import api from 'lib/api'
 
 export default {
 	namespaced: true,
 	state: {
+		joinedChannels: null,
 		channel: null,
-		hasJoined: false,
 		members: [],
 		usersLookup: {},
 		timeline: [],
 		beforeCursor: null,
 		fetchingMessages: false
 	},
-	getters: {},
-	mutations: {},
+	getters: {
+		hasJoinedChannel (state) {
+			return state.joinedChannels.includes(state.channel)
+		}
+	},
+	mutations: {
+		setJoinedChannels (state, channels) {
+			state.joinedChannels = channels
+		}
+	},
 	actions: {
 		disconnected ({state}) {
 			state.channel = null
 		},
-		async subscribe ({state, dispatch, rootState}, channel) {
+		async subscribe ({state, dispatch, rootState}, {channel, config}) {
 			if (!rootState.connected) return
 			if (state.channel) {
 				dispatch('unsubscribe')
 			}
 			const { next_event_id: beforeCursor, members } = await api.call('chat.subscribe', {channel})
 			state.channel = channel
-			state.hasJoined = Boolean(localStorage[`chat-channel-joined:${channel}`])
 			state.members = members
 			state.usersLookup = members.reduce((acc, member) => { acc[member.id] = member; return acc }, {})
 			state.timeline = []
 			state.beforeCursor = beforeCursor
 			dispatch('fetchMessages')
-			if (state.hasJoined) {
+			if (config.volatile) { // autojoin volatile channels
 				dispatch('join')
 			}
 		},
@@ -44,8 +54,7 @@ export default {
 		},
 		async join ({state}) {
 			await api.call('chat.join', {channel: state.channel})
-			state.hasJoined = true
-			localStorage[`chat-channel-joined:${state.channel}`] = true
+			state.joinedChannels.push(state.channel)
 		},
 		async fetchMessages ({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
@@ -111,6 +120,9 @@ export default {
 				case 'channel.message': break
 				case 'channel.member': handleMembership(event); break
 			}
+		},
+		'api::chat.channels' ({state}, {channels}) {
+			state.joinedChannels = channels
 		}
 	}
 }

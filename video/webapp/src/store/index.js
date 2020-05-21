@@ -32,13 +32,14 @@ export default new Vuex.Store({
 			state.token = token
 			state.clientId = clientId
 		},
-		connect ({state, dispatch}) {
+		connect ({state, dispatch, commit}) {
 			api.connect({token: state.token, clientId: state.clientId})
 			api.on('joined', (serverState) => {
 				state.connected = true
 				state.user = serverState['user.config']
 				state.world = serverState['world.config'].world
 				state.permissions = serverState['world.config'].permissions
+				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				if (!state.rooms) {
 					state.rooms = serverState['world.config'].rooms
 				} else {
