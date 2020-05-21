@@ -1,5 +1,6 @@
 from collections import defaultdict
 from contextlib import suppress
+from typing import List
 
 import jwt
 from django.contrib.postgres.fields import JSONField
@@ -18,7 +19,7 @@ def default_roles():
         Permission.ROOM_CHAT_SEND,
         Permission.ROOM_BBB_JOIN,
     ]
-    room_creator = [Permission.WORLD_ROOMS_CREATE]
+    room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [
         Permission.ROOM_UPDATE,
         Permission.ROOM_INVITE,
@@ -33,7 +34,13 @@ def default_roles():
     admin = (
         moderator
         + room_creator
-        + [Permission.WORLD_UPDATE, Permission.ROOM_DELETE, Permission.ROOM_UPDATE,]
+        + [
+            Permission.WORLD_UPDATE,
+            Permission.ROOM_DELETE,
+            Permission.ROOM_UPDATE,
+            Permission.WORLD_ROOMS_CREATE_BBB,
+            Permission.WORLD_ROOMS_CREATE_STAGE,
+        ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]
     return {
@@ -80,12 +87,14 @@ class World(VersionedModel):
                     issuer=issuer,
                 )
 
-    def has_permission_implicit(self, *, traits, permission: Permission, room=None):
+    def has_permission_implicit(
+        self, *, traits, permissions: List[Permission], room=None
+    ):
         for role, required_traits in self.trait_grants.items():
             if isinstance(required_traits, list) and all(
                 r in traits for r in required_traits
             ):
-                if permission.value in self.roles.get(role, []):
+                if any(p.value in self.roles.get(role, []) for p in permissions):
                     return True
 
         if room:
@@ -93,35 +102,41 @@ class World(VersionedModel):
                 if isinstance(required_traits, list) and all(
                     r in traits for r in required_traits
                 ):
-                    if permission.value in self.roles.get(role, []):
+                    if any(p.value in self.roles.get(role, []) for p in permissions):
                         return True
 
     def has_permission(self, *, user, permission: Permission, room=None):
         """
         Returns whether a user holds a given permission either on the world or on a specific room.
+        ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if not isinstance(permission, list):
+            permission = [permission]
         if self.has_permission_implicit(
-            traits=user.traits, permission=permission, room=room
+            traits=user.traits, permissions=permission, room=room
         ):
             return True
 
         roles = user.get_role_grants(room)
         for r in roles:
-            if permission.value in self.roles.get(r, []):
+            if any(p.value in self.roles.get(r, []) for p in permission):
                 return True
 
     async def has_permission_async(self, *, user, permission: Permission, room=None):
         """
         Returns whether a user holds a given permission either on the world or on a specific room.
+        ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if not isinstance(permission, list):
+            permission = [permission]
         if self.has_permission_implicit(
-            traits=user.traits, permission=permission, room=room
+            traits=user.traits, permissions=permission, room=room
         ):
             return True
 
         roles = await user.get_role_grants_async(room)
         for r in roles:
-            if permission.value in self.roles.get(r, []):
+            if any(p.value in self.roles.get(r, []) for p in permission):
                 return True
 
     def get_all_permissions(self, user):

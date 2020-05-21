@@ -41,6 +41,7 @@ async def test_settings_not_disclosed(bbb_room):
     await communicator.send_json_to(["authenticate", {"client_id": str(uuid.uuid4())}])
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
+    assert "bbb_defaults" not in response[1]["world.config"]["world"]
     for room in response[1]["world.config"]["rooms"]:
         if room["id"] == str(bbb_room.id):
             assert room["modules"][0]["type"] == "call.bigbluebutton"

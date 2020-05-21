@@ -59,7 +59,7 @@ class ApiAccessRequiredPermission(permissions.BasePermission):
         if isinstance(request.user, AnonymousUser):
             return False
         return request.world.has_permission_implicit(
-            traits=request.auth.get("traits"), permission=Permission.WORLD_API
+            traits=request.auth.get("traits"), permissions=[Permission.WORLD_API]
         )
 
 
@@ -67,12 +67,12 @@ class WorldPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         traits = request.auth.get("traits")
         if not request.world.has_permission_implicit(
-            traits=traits, permission=Permission.WORLD_SECRETS
+            traits=traits, permissions=[Permission.WORLD_SECRETS]
         ):
             return False
         if request.method in ("PATCH", "PUT"):
             return request.world.has_permission_implicit(
-                traits=traits, permission=Permission.WORLD_UPDATE
+                traits=traits, permissions=[Permission.WORLD_UPDATE]
             )
         elif request.method in ("HEAD", "GET", "OPTIONS"):
             return True
@@ -84,7 +84,12 @@ class RoomPermissions(permissions.BasePermission):
         if request.method == "POST":
             traits = request.auth.get("traits")
             return request.world.has_permission_implicit(
-                traits=traits, permission=Permission.WORLD_ROOMS_CREATE
+                traits=traits,
+                permissions=[
+                    Permission.WORLD_ROOMS_CREATE_STAGE,
+                    Permission.WORLD_ROOMS_CREATE_BBB,
+                    Permission.WORLD_ROOMS_CREATE_CHAT,
+                ],
             )
         else:
             return True
@@ -97,7 +102,7 @@ class RoomPermissions(permissions.BasePermission):
             permission = Permission.ROOM_DELETE
         if permission:
             return request.world.has_permission_implicit(
-                permission=permission, traits=request.auth.get("traits")
+                permissions=[permission], traits=request.auth.get("traits")
             )
         else:
             return True

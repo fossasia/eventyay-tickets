@@ -25,6 +25,41 @@ async def world_communicator():
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_create_rooms_unique_names(world):
+    token = get_token(world, ["admin"])
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"token": token}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        await c.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": "Foo Fighter"}}]
+        )
+        await c.receive_json_from()
+
+        await c.send_json_to(
+            [
+                "room.create",
+                123,
+                {"name": "New Room!!", "modules": [{"type": "chat.native"}]},
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+        await c.receive_json_from()
+
+        await c.send_json_to(
+            [
+                "room.create",
+                123,
+                {"name": "New Room!!", "modules": [{"type": "chat.native"}]},
+            ]
+        )
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 @pytest.mark.parametrize("can_create_rooms", [True, False])
 @pytest.mark.parametrize("with_channel", [True, False])
 async def test_create_rooms(world, can_create_rooms, with_channel):
@@ -45,7 +80,7 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         if with_channel:
             modules.append({"type": "chat.native"})
         else:
-            modules.append({"type": "livestream.native"})
+            modules.append({"type": "weird.module"})
         await c.send_json_to(
             ["room.create", 123, {"name": "New Room!!", "modules": modules}]
         )

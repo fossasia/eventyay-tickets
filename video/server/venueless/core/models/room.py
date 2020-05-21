@@ -25,7 +25,7 @@ class RoomQuerySet(models.QuerySet):
         from .auth import RoomGrant, WorldGrant
 
         traits = traits or user.traits
-        if world.has_permission_implicit(traits=traits, permission=permission):
+        if world.has_permission_implicit(traits=traits, permissions=[permission]):
             # User has the permission globally, nothing to do
             return self.all()
 

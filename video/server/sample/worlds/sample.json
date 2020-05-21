@@ -10,6 +10,11 @@
         "130": "room_1"
       }
     },
+    "bbb_defaults": {
+      "url": "https://video1.pretix.eu/bigbluebutton/",
+      "record": false,
+      "secret": "bogussecret"
+    },
     "JWT_secrets": [
       {
         "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
@@ -41,7 +46,7 @@
       "room:chat.join"
     ],
     "room_creator": [
-      "world:rooms.create"
+      "world:rooms.create.chat"
     ],
     "room_owner": [
       "world:view",
@@ -85,7 +90,9 @@
       "room:bbb.moderate",
       "room:chat.moderate",
       "room:announce",
-      "world:rooms.create",
+      "world:rooms.create.stage",
+      "world:rooms.create.chat",
+      "world:rooms.create.bbb",
       "world:announce",
       "world:update",
       "room:delete",
@@ -101,7 +108,9 @@
       "room:bbb.moderate",
       "room:chat.moderate",
       "room:announce",
-      "world:rooms.create",
+      "world:rooms.create.stage",
+      "world:rooms.create.chat",
+      "world:rooms.create.bbb",
       "world:announce",
       "world:update",
       "room:delete",
