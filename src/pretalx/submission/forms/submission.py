@@ -72,7 +72,6 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
                 self.fields.pop("track")
                 return
 
-            self.fields["track"].widget = TrackSelectWidget()
             access_code = self.access_code or getattr(instance, "access_code", None)
             if not access_code or not access_code.track:
                 self.fields["track"].queryset = self.event.tracks.filter(
@@ -184,6 +183,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,
+            "track": TrackSelectWidget,
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,
