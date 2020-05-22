@@ -172,6 +172,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "venueless.urls"
 
+
 X_FRAME_OPTIONS = "DENY"
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -312,3 +313,20 @@ LOGOUT_REDIRECT_URL = "/accounts/login"
 
 VENUELESS_COMMIT = os.environ.get("VENUELESS_COMMIT_SHA", "unknown")
 VENUELESS_ENVIRONMENT = os.environ.get("VENUELESS_ENVIRONMENT", "unknown")
+
+
+SENTRY_DSN = os.environ.get(
+    "VENUELESS_SENTRY_DSN", config.get("sentry", "dsn", fallback="")
+)
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        send_default_pii=False,
+        debug=DEBUG,
+        release=VENUELESS_COMMIT,
+        environment=VENUELESS_ENVIRONMENT,
+    )

@@ -1,10 +1,14 @@
+import asyncio
+import logging
 import random
 import time
 import uuid
 
 import orjson
+from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+from sentry_sdk import capture_exception, configure_scope
 
 from venueless.core.services.connections import (
     ping_connection,
@@ -20,6 +24,8 @@ from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
 from .modules.room import RoomModule
 from .modules.world import WorldModule
+
+logger = logging.getLogger(__name__)
 
 
 class MainConsumer(AsyncJsonWebsocketConsumer):
@@ -48,6 +54,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if self.world is None:
             await self.send_error("world.unknown_world", close=True)
             return
+
+        if settings.SENTRY_DSN:
+            with configure_scope() as scope:
+                scope.set_extra("world", self.world.id)
 
         self.components = {
             "chat": ChatModule(self),
@@ -121,23 +131,35 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             # reconnect every day. That's good for memory usage on both ends as well, probably :) We randomize the
             # interval a little to prevent everying reconnecting at the same time.
             return await self.close()
-        if message["type"] == "connection.drop":
-            return await self.close()
-        elif message["type"] == "connection.reload":
-            return await self.send_json(["connection.reload", {}])
-        elif message["type"] == "user.broadcast":
-            if self.socket_id != message["socket"]:
-                await self.user.refresh_from_db_if_outdated()
-                await self.send_json([message["event_type"], message["data"]])
-            return
 
-        namespace = message["type"].split(".")[0]
-        component = self.components.get(namespace)
-        if component:
-            if hasattr(component, "dispatch_event"):
-                return await component.dispatch_event(message)
-        else:
-            return await super().dispatch(message)
+        try:
+            if message["type"] == "connection.drop":
+                return await self.close()
+            elif message["type"] == "connection.reload":
+                return await self.send_json(["connection.reload", {}])
+            elif message["type"] == "user.broadcast":
+                if self.socket_id != message["socket"]:
+                    await self.user.refresh_from_db_if_outdated()
+                    await self.send_json([message["event_type"], message["data"]])
+                return
+
+            namespace = message["type"].split(".")[0]
+            component = self.components.get(namespace)
+            if component:
+                if hasattr(component, "dispatch_event"):
+                    return await component.dispatch_event(message)
+            else:
+                return await super().dispatch(message)
+        except Exception as e:
+            if isinstance(e, StopConsumer):
+                raise e
+            if settings.SENTRY_DSN:
+                capture_exception(e)
+            logger.exception("Encountered exception, close socket.")
+            self.content = []
+            await self.send_error(code="server.fatal", message="Fatal Server Error")
+            await asyncio.sleep(0.5)
+            await self.close()
 
     def build_response(self, status, data):
         if data is None:

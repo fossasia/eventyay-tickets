@@ -1,7 +1,9 @@
 import asyncio
 import logging
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from sentry_sdk import add_breadcrumb, configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
@@ -30,6 +32,14 @@ class RoomModule(BaseModule):
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
         await self.consumer.send_success({})
+        if settings.SENTRY_DSN:
+            add_breadcrumb(
+                category="room",
+                message=f"Entered room {self.room.pk} ({self.room.name})",
+                level="info",
+            )
+            with configure_scope() as scope:
+                scope.set_extra("last_room", str(self.room.pk))
 
     @command("leave")
     @room_action()

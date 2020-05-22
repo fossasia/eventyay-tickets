@@ -2,6 +2,7 @@ import logging
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
+from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService
@@ -201,6 +202,8 @@ class ChatModule(BaseModule):
 
     async def dispatch_command(self, content):
         self.channel_id = content[2].get("channel")
+        with configure_scope() as scope:
+            scope.set_extra("last_channel", str(self.channel_id))
         return await super().dispatch_command(content)
 
     async def dispatch_disconnect(self, close_code):

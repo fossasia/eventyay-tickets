@@ -1,6 +1,8 @@
 import logging
 
 from channels.db import database_sync_to_async
+from django.conf import settings
+from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.user import (
@@ -42,6 +44,10 @@ class AuthModule(BaseModule):
             return
 
         self.consumer.user = login_result.user
+        if settings.SENTRY_DSN:
+            with configure_scope() as scope:
+                scope.user = {"id": str(self.consumer.user.id)}
+
         await self.consumer.send_json(
             [
                 "authenticated",
