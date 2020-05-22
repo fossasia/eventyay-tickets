@@ -11,8 +11,7 @@
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
-		.disconnected-warning(v-if="!connected")
-			| Connection lost! Trying to reconnect…
+		.disconnected-warning(v-if="!connected") {{ $t('app:no-connection') }}
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
