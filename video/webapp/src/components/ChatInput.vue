@@ -13,6 +13,7 @@ bunt-input-outline-container.c-chat-input
 // - intercept copy + paste
 // - parse ascii emoticons ;)
 // - parse colol emoji :+1:
+// - close emoji picker
 import EmojiPicker from 'components/EmojiPicker'
 import { getEmojiPosition } from 'lib/emoji'
 import { NimbleEmojiIndex } from 'emoji-mart'

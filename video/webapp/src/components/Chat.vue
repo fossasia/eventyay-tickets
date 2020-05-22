@@ -92,18 +92,18 @@ export default {
 	.chat-input
 		flex: none
 		border-top: border-separator()
-		height: 64px
+		height: 56px
 		display: flex
 		justify-content: center
 		align-items: center
 		.bunt-button
 			button-style(color: $clr-primary)
-			width: calc(100% - 32px)
+			width: calc(100% - 16px)
 	&:not(.standalone)
 		justify-content: flex-end
 	&.standalone
 		display: grid
-		grid-template-rows: auto 64px
+		grid-template-rows: auto 56px
 		grid-template-columns: auto 240px
 		grid-template-areas: "timeline sidebar" \
 			"input input"
@@ -124,7 +124,7 @@ export default {
 					color: $clr-secondary-text-light
 					margin-left: 8px
 		+below('s')
-			grid-template-rows: auto 64px
+			grid-template-rows: auto 56px
 			grid-template-columns: auto
 			grid-template-areas: "timeline" "input"
 </style>

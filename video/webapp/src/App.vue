@@ -94,10 +94,10 @@ export default {
 			bottom: calc(100vh - 128px - 4px)
 			right: 4px
 		&:not(.size-mini)
-			bottom: 0
+			bottom: 56px
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-			height: calc(100vh - 112px)
+			height: calc(100vh - 56px * 2)
 	.prompt-enter-active, .prompt-leave-active
 		transition: opacity .5s
 	.prompt-enter, .prompt-leave-to

@@ -11,8 +11,13 @@
 					.current-talk Current talk
 					h3 {{ currentTalk.title }}
 		livestream(v-if="modules['livestream.native'] && streamingRoom !== room", :room="room", :module="modules['livestream.native']")
+		.livestream-placeholder(v-else-if="modules['livestream.native']")
 		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
-		reactions(v-if="modules['livestream.native']", :room="room")
+		reactions-overlay(v-if="modules['livestream.native']")
+		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
+		.stage-tools(v-if="modules['livestream.native']")
+			.stage-tool(:class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
+			reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	slot(v-if="streamingRoom && streamingRoom !== room")
 </template>
@@ -22,16 +27,18 @@ import moment from 'moment'
 import BigBlueButton from 'components/BigBlueButton'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
-import Reactions from 'components/Reactions'
+import ReactionsBar from 'components/ReactionsBar'
+import ReactionsOverlay from 'components/ReactionsOverlay'
 
 export default {
 	name: 'room',
 	props: {
 		roomId: String
 	},
-	components: { BigBlueButton, Chat, Livestream, Reactions },
+	components: { BigBlueButton, Chat, Livestream, ReactionsBar, ReactionsOverlay },
 	data () {
 		return {
+			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
@@ -89,8 +96,10 @@ export default {
 		flex: none
 		display: flex
 		padding: 8px
+		height: 56px
+		box-sizing: border-box
 		img
-			height: 96px
+			height: 48px
 		.room-info-wrapper
 			display: flex
 			flex-direction: column
@@ -114,6 +123,40 @@ export default {
 				font-weight: 500
 				line-height: 20px
 				margin: 0 0 0 4px
+	.livestream-placeholder
+		flex: auto
+	.stage-tools
+		display: flex
+		height: 56px
+		justify-content: flex-end
+		align-items: center
+		user-select: none
+		overflow: hidden
+		.stage-tool
+			font-size: 16px
+			color: $clr-secondary-text-light
+			margin-right: 16px
+			cursor: pointer
+			padding: 8px
+			position: relative
+			&:hover
+				border-radius: 4px
+				background-color: $clr-grey-100
+			&.active::before
+				position: absolute
+				bottom: 6px
+				content: ''
+				display: block
+				height: 2px
+				width: calc(100% - 16px)
+				background-color: $clr-primary
+	.stage-tool-blocker
+		position: fixed
+		top: 0
+		left: 0
+		width: 100vw
+		height: 100vh
+		z-index: 4999
 	&.standalone-chat
 		flex-direction: column
 		.main
