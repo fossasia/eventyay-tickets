@@ -65,18 +65,22 @@ export default {
 			state.beforeCursor = results.length < 25 ? null : results[0].event_id
 			state.fetchingMessages = false
 			// hit the user profile cache for each message
+			const missingProfiles = new Set()
 			for (const event of results) {
 				if (!state.usersLookup[event.sender]) {
-					await dispatch('fetchUser', event.sender)
+					missingProfiles.add(event.sender)
 				}
 				if (event.content.user && !state.usersLookup[event.content.user.id]) {
-					await dispatch('fetchUser', event.content.user.id)
+					missingProfiles.add(event.content.user.id)
 				}
 			}
+			await dispatch('fetchUsers', Array.from(missingProfiles))
 		},
-		async fetchUser ({state}, id) {
-			const user = await api.call('user.fetch', {id})
-			Vue.set(state.usersLookup, user.id, user)
+		async fetchUsers ({state}, ids) {
+			const users = await api.call('user.fetch', {ids})
+			for (const user of Object.values(users)) {
+				Vue.set(state.usersLookup, user.id, user)
+			}
 		},
 		sendMessage ({state}, {text}) {
 			api.call('chat.send', {
