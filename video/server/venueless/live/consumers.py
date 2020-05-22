@@ -9,6 +9,7 @@ from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from sentry_sdk import capture_exception, configure_scope
+from websockets import ConnectionClosed
 
 from venueless.core.services.connections import (
     ping_connection,
@@ -150,6 +151,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                     return await component.dispatch_event(message)
             else:
                 return await super().dispatch(message)
+        except ConnectionClosed:  # pragma: no cover
+            # Connection vanished while we were trying to send something, oops. Nothing we can do except hope our
+            # disconnect handler will be called.
+            pass
         except Exception as e:
             if isinstance(e, StopConsumer):
                 raise e

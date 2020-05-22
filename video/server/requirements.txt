@@ -11,6 +11,7 @@ orjson
 aiofile
 aiohttp
 lxml
+websockets
 
 pyjwt
 pytz
