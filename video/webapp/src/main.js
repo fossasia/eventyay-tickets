@@ -15,6 +15,7 @@ import 'roboto-fontface'
 import '@mdi/font/css/materialdesignicons.css'
 import './registerServiceWorker'
 import i18n from './i18n'
+import features from 'features'
 
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
@@ -29,7 +30,7 @@ window.muxjs = muxjs
 if (!shaka.Player.isBrowserSupported()) {
 	console.error('Browser not supporting shaka player!')
 }
-
+Vue.prototype.$features = features
 window.vapp = new Vue({
 	router,
 	store,

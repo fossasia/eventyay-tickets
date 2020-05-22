@@ -22,12 +22,13 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-			.buffer
-			.group-title
-				span {{ $t('Administration') }}
-			.admin
-				router-link.room(:to="{name: 'admin'}") Event Config
-				router-link.room(:to="{name: 'admin'}") Users
+			template(v-if="$features.enabled('event-admin')")
+				.buffer
+				.group-title
+					span {{ $t('Administration') }}
+				.admin
+					router-link.room(:to="{name: 'admin'}") Event Config
+					router-link.room(:to="{name: 'admin'}") Users
 		.profile(@click="$emit('editProfile')")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}

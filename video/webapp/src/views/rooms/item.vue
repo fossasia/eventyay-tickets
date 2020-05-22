@@ -16,7 +16,7 @@
 		reactions-overlay(v-if="modules['livestream.native']")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="modules['livestream.native']")
-			.stage-tool(:class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
+			.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 			reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 	slot(v-if="streamingRoom && streamingRoom !== room")
