@@ -6,6 +6,7 @@ bunt-input-outline-container.c-chat-input
 			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
 			path(d="M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0")
 	emoji-picker(v-if="showEmojiPicker", @selected="addEmoji")
+	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
 // TODO
@@ -89,12 +90,14 @@ export default {
 	height: 36px
 	box-sizing: border-box
 	&.bunt-input-outline-container
-		padding: 8px 8px 8px 32px
+		padding: 8px 32px 8px 32px
 	.contenteditable
 		margin: 0
 		outline: none
 		font-size: 16px
 		height: 20px
+		white-space: nowrap
+		overflow: hidden
 		.emoji
 			margin: 0 2px
 			vertical-align: bottom
@@ -128,4 +131,15 @@ export default {
 		bottom: 36px
 		left: 0
 		z-index: 500
+	#btn-send
+		position: absolute
+		right: 4px
+		top: 4px
+		icon-button-style(color: $clr-secondary-text-light)
+		height: 28px
+		width: 28px
+		.bunt-icon
+			font-size: 18px
+			height: 24px
+			line-height: @height
 </style>
