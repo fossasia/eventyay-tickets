@@ -57,7 +57,6 @@ export default {
 		border: border-separator()
 		border-radius: 24px
 		padding: 4px
-		z-index: 5000
 		transition: transform .3s ease
 	.bunt-icon-button
 		icon-button-style()
@@ -77,5 +76,6 @@ export default {
 			pointer-events: none
 	&.expanded
 		.actions
+			z-index: 5000
 			transform: translateX(calc(64px - 100% - 16px))
 </style>
