@@ -41,7 +41,7 @@ export default {
 			state.timeline = []
 			state.beforeCursor = beforeCursor
 			dispatch('fetchMessages')
-			if (config.volatile) { // autojoin volatile channels
+			if (config?.volatile) { // autojoin volatile channels
 				dispatch('join')
 			}
 		},

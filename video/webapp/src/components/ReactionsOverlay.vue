@@ -1,9 +1,5 @@
 <template lang="pug">
-.c-reactions(v-resize-observer="onResize")
-	.reactions-overlay(ref="reactions")
-	.actions
-		bunt-icon-button(v-for="reaction of availableReactions", @click="react(reaction.id)")
-			.emoji(:style="reaction.style")
+.c-reactions-overlay(v-resize-observer="onResize")
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -15,6 +11,9 @@ const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent densit
 const SERVER_REACTIONS_INTERVAL = 1000
 
 export default {
+	props: {
+		showReactionBar: Boolean
+	},
 	components: {},
 	data () {
 		return {
@@ -25,15 +24,6 @@ export default {
 	},
 	computed: {
 		...mapState(['reactions']),
-		availableReactions () {
-			const emoji = [
-				emojiData.emojis['+1'],
-				emojiData.emojis.clap,
-				emojiData.emojis.heart,
-				emojiData.emojis.open_mouth,
-			]
-			return emoji.map(e => ({id: e.short_names[0], style: {'background-position': getEmojiPosition(e)}}))
-		}
 	},
 	watch: {
 		reactions () {
@@ -56,20 +46,16 @@ export default {
 		}
 	},
 	mounted () {
-		this.overlayHeight = this.$refs.reactions.offsetHeight
+		this.overlayHeight = this.$el.offsetHeight
 	},
 	methods: {
-		react (id) {
-			this.$store.dispatch('addReaction', id)
-			// TODO display immediately and add own cooldown
-		},
 		renderReaction (id) {
 			let element = this.freeParticles.pop()
 			if (!element) {
 				if (this.particlePool.length < MAX_PARTICLE_POOL) {
 					element = document.createElement('div')
-					element.classList.add('reaction', 'emoji')
-					this.$refs.reactions.appendChild(element)
+					element.classList.add('reaction')
+					this.$el.appendChild(element)
 					this.particlePool.push(element)
 				} else {
 					return
@@ -93,49 +79,28 @@ export default {
 			}
 		},
 		onResize () {
-			this.overlayHeight = this.$refs.reactions.offsetHeight
+			// TODO use reported size from observer
+			this.overlayHeight = this.$el.offsetHeight
 		}
 	}
 }
 </script>
 <style lang="stylus">
-.c-reactions
+.c-reactions-overlay
 	position: absolute
-	bottom: 0
+	bottom: 56px
 	right: var(--chatbar-width)
 	width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 	height: calc(100vh - 112px)
 	pointer-events: none
-	z-index: 600
-	display: flex
-	flex-direction: column
-	align-items: center
-	justify-content: flex-end
-	.actions
-		display: flex
-		pointer-events: all
-		margin-bottom: 24px
-		background-color: $clr-white
-		border-radius: 24px
-		padding: 4px
-		z-index: 602
-		.bunt-icon-button
-			&:not(:first-child)
-				margin-left: 8px
-	.emoji
+	overflow: hidden
+	z-index: 4500
+	.reaction
+		position: absolute
+		bottom: -32px
 		height: 28px
 		width: @height
 		display: inline-block
 		background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 		background-size: 5700% 5700%
-	.reactions-overlay
-		position: absolute
-		top: 0
-		left: 0
-		width: 100%
-		height: 100%
-		overflow: hidden
-		.reaction
-			position: absolute
-			bottom: -32px
 </style>
