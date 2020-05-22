@@ -126,6 +126,7 @@ export default {
 	.livestream-placeholder
 		flex: auto
 	.stage-tools
+		flex: none
 		display: flex
 		height: 56px
 		justify-content: flex-end
