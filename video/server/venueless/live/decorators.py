@@ -80,7 +80,7 @@ def room_action(permission_required: Permission = None, module_required=None):
 
             if module_required is not None:
                 module_config = [
-                    m.get("config")
+                    m.get("config", {})
                     for m in self.room.module_config
                     if m["type"] == module_required
                 ]
