@@ -1,5 +1,5 @@
 <template lang="pug">
-#app
+#app(:style="themeVariables")
 	template(v-if="world")
 		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
@@ -16,6 +16,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import ProfilePrompt from 'components/ProfilePrompt'
@@ -27,6 +28,7 @@ export default {
 	components: { AppBar, RoomsSidebar, Livestream, ProfilePrompt, CreateStagePrompt, CreateChatPrompt },
 	data () {
 		return {
+			themeVariables,
 			showSidebar: false,
 			showProfilePrompt: false,
 			showStageCreationPrompt: false,

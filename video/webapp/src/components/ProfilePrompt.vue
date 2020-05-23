@@ -178,11 +178,9 @@ export default {
 				.bunt-input
 					width: 286px
 				#btn-connect-gravatar
-					button-style(style: clear, color: $clr-primary)
+					themed-button-secondary()
 					margin: 16px 0 0 4px
-					.bunt-progress-circular svg circle
-						stroke: $clr-primary
 			#btn-join-world
 				margin-top: 16px
-				button-style(color: $clr-primary, size: large)
+				themed-button-primary(size: large)
 </style>

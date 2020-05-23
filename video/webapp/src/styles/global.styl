@@ -2,21 +2,18 @@
 variables()
 normalize-css()
 base()
-typography()
+@import 'typography'
 components()
 scrollbars()
 
 a
-	color: $clr-primary
+	color: var(--clr-primary)
 	text-decoration: none
 
 html, body, #app
 	margin: 0
 	height: 100%
 	overflow: hidden
-
-body
-	background-color: $clr-grey-100
 
 ::selection {
 	color: $clr-primary-text-dark

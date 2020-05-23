@@ -114,8 +114,8 @@ export default {
 </script>
 <style lang="stylus">
 .c-rooms-sidebar
-	background-color: #180044
-	color: $clr-primary-text-dark
+	background-color: var(--clr-sidebar)
+	color: var(--clr-sidebar-text-primary)
 	display: flex
 	flex-direction: column
 	min-height: 0
@@ -126,7 +126,7 @@ export default {
 		margin: 16px 0 32px 0
 		.bunt-icon-button
 			margin-left: 4px
-			icon-button-style(color: $clr-primary-text-dark, style: clear)
+			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 			margin: -4px -4px -4px 0
 			.bunt-icon
 				font-size: 18px
@@ -134,14 +134,14 @@ export default {
 				line-height: @height
 	#btn-close-sidebar
 		margin: 8px
-		icon-button-style(color: $clr-primary-text-dark, style: clear)
+		icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 	> .c-scrollbars
 		flex: auto
 		.scroll-content
 			flex: auto
 		.scrollbar-rail-y
 			.scrollbar-thumb
-				background-color: $clr-secondary-text-dark
+				background-color: var(--clr-sidebar-text-secondary)
 	.global-links
 		display: flex
 		flex-direction: column
@@ -150,16 +150,16 @@ export default {
 			height: 36px
 			line-height: 36px
 			padding: 0 24px
-			color: $clr-secondary-text-dark
+			color: var(--clr-sidebar-text-secondary)
 			&:hover
 				background-color: rgba(255, 255, 255, .3)
-				color: $clr-primary-text-dark
+				color: var(--clr-sidebar-text-primary)
 			&.router-link-exact-active
 				background-color: rgba(255, 255, 255, .4)
-				color: $clr-primary-text-dark
+				color: var(--clr-sidebar-text-primary)
 	.group-title
 		flex: none
-		color: $clr-secondary-text-dark
+		color: var(--clr-sidebar-text-secondary)
 		margin: 16px 8px 0 16px
 		height: 28px
 		font-weight: 600
@@ -169,7 +169,7 @@ export default {
 		align-items: center
 		.bunt-icon-button
 			margin: -4px 0
-			icon-button-style(color: $clr-primary-text-dark, style: clear)
+			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
 	.stages, .chats, .admin
 		display: flex
 		flex-direction: column
@@ -178,40 +178,31 @@ export default {
 			height: 36px
 			line-height: 36px
 			padding: 0 24px
-			color: $clr-secondary-text-dark
+			color: var(--clr-sidebar-text-secondary)
 			display: flex
 			&:hover
 				background-color: rgba(255, 255, 255, .3)
-				color: $clr-primary-text-dark
+				color: var(--clr-sidebar-text-primary)
 			&.router-link-active
 				background-color: rgba(255, 255, 255, .4)
-				color: $clr-primary-text-dark
+				color: var(--clr-sidebar-text-primary)
 			&.router-link-active::before
-				color: $clr-secondary-text-dark
+				color: var(--clr-sidebar-text-secondary)
+			&::before
+				font-family: "Material Design Icons"
+				font-size: 18px
+				line-height: 34px
+				color: var(--clr-sidebar-text-disabled)
+				margin-right: 4px
 		.stage
 			&::before
-				font-family: "Material Design Icons"
-				font-size: 18px
-				line-height: 34px
-				color: $clr-disabled-text-dark
 				content: '\F050D'
-				margin-right: 4px
 		.text-chat
 			&::before
-				font-family: "Material Design Icons"
-				font-size: 18px
-				line-height: 34px
-				color: $clr-disabled-text-dark
 				content: '\F0423'
-				margin-right: 4px
 		.video-chat
 			&::before
-				font-family: "Material Design Icons"
-				font-size: 18px
-				line-height: 34px
-				color: $clr-disabled-text-dark
 				content: '\F05A0'
-				margin-right: 4px
 	.buffer
 		flex: auto
 	.profile

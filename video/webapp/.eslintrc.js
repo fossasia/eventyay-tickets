@@ -36,7 +36,7 @@ module.exports = {
 		'vue/require-default-prop': 0,
 		'object-curly-spacing': 0,
 		// replace with babel rules
-		'camelcase': 0,
+		camelcase: 0,
 		'babel/camelcase': ['error', {properties: 'never', ignoreDestructuring: true}],
 		'no-unused-expressions': 0,
 		'babel/no-unused-expressions': 1

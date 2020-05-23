@@ -150,7 +150,7 @@ export default {
 				display: block
 				height: 2px
 				width: calc(100% - 16px)
-				background-color: $clr-primary
+				background-color: var(--clr-primary)
 	.stage-tool-blocker
 		position: fixed
 		top: 0

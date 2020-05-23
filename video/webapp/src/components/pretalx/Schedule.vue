@@ -85,7 +85,7 @@ export default {
 				background-color: transparent,
 				color: $clr-secondary-text-light,
 				active-color: $clr-primary-text-light,
-				indicator-color: $clr-primary
+				indicator-color: var(--clr-primary)
 			)
 			width: auto
 			margin-bottom: 0

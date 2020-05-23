@@ -1,0 +1,63 @@
+themed-button-primary(size = 'normal')
+	color var(--clr-input-primary-fg)
+	background-color var(--clr-input-primary-bg)
+
+	&:hover
+		background-color var(--clr-input-primary-bg-darken)
+
+	&.autofocus:focus,
+	body[modality="keyboard"] &:focus
+		background-color var(--clr-input-primary-bg-darken)
+		outline-color var(--clr-input-primary-bg-darken)
+
+	&.autofocus:focus,
+	body[modality="keyboard"] &:focus
+		outline-width 2px
+		outline-offset 2px
+
+	.bunt-ripple-ink .ripple.held
+		opacity: 0.7
+
+	&.error
+		_flat-button-color($clr-danger)
+
+	&.success
+		_flat-button-color($clr-success)
+
+	.bunt-progress-circular svg circle
+		stroke: var(--clr-input-primary-fg)
+
+	if size is 'large'
+		font-size: 18px
+		height: 52px
+		padding: 0 64px
+	if size is 'huge'
+		font-size: 32px
+		font-weight: 300
+		height: 64px
+		padding: 8px 64px
+
+themed-button-secondary(size = 'normal')
+	color var(--clr-input-secondary-fg)
+	background-color transparent
+
+	&:hover:not(.disabled)
+		background-color: var(--clr-input-secondary-fg-alpha)
+
+	&.autofocus:focus,
+	body[modality="keyboard"] &:focus
+		outline-width 2px
+		outline-offset 0
+
+	.bunt-progress-circular svg circle
+		stroke: var(--clr-input-secondary-fg)
+
+	if size is 'large'
+		font-size: 18px
+		height: 52px
+		padding: 0 64px
+	if size is 'huge'
+		font-size: 32px
+		font-weight: 300
+		height: 64px
+		padding: 8px 64px
