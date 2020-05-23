@@ -72,7 +72,8 @@ class AppView(View):
                             "socket": "wss://{}/ws/world/{}/".format(
                                 request.headers["Host"], world.pk
                             )
-                        }
+                        },
+                        "features": [],
                     }
                 )
             ),
