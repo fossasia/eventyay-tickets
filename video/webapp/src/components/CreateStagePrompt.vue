@@ -67,5 +67,5 @@ export default {
 				flex-direction: column
 				align-self: stretch
 				.bunt-button
-					button-style(color: $clr-primary)
+					themed-button-primary()
 </style>

@@ -184,8 +184,8 @@ export default {
 			cursor: pointer
 			user-select: none
 			&:hover
-				background-color: $clr-primary
-				color: $clr-primary-text-dark
+				background-color: var(--clr-input-primary-bg)
+				color: var(--clr-input-primary-fg)
 			&.delete-message
 				color: $clr-danger
 				&:hover

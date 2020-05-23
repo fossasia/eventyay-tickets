@@ -19,7 +19,7 @@ export default {
 	align-items: center
 	padding: 0 8px
 	background-color: $clr-white
-	border-bottom: 2px solid $clr-primary
+	border-bottom: 2px solid var(--clr-primary)
 	// box-shadow: 0px 2px 5px 0 rgba(0,0,0,0.16), 0px 2px 10px 0 rgba(0,0,0,0.12)
 	z-index: 100
 	.logo

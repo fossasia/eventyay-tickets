@@ -51,7 +51,7 @@ module.exports = {
 		loaderOptions: {
 			stylus: {
 				use: [require('buntpapier/stylus')({implicit: false})],
-				import: ['~buntpapier/buntpapier/index.styl', '~variables']
+				import: ['~buntpapier/buntpapier/index.styl', '~variables', '~themed-buntpapier']
 			}
 		}
 	},

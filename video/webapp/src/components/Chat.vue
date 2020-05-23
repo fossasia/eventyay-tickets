@@ -97,7 +97,7 @@ export default {
 		justify-content: center
 		align-items: center
 		.bunt-button
-			button-style(color: $clr-primary)
+			themed-button-primary()
 			width: calc(100% - 16px)
 	&:not(.standalone)
 		justify-content: flex-end

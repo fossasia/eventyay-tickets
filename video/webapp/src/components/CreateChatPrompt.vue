@@ -16,7 +16,7 @@
 				bunt-button(type="submit", :loading="loading") create
 </template>
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters} from 'vuex'
 
 export default {
 	components: {},
@@ -30,7 +30,7 @@ export default {
 	computed: {
 		...mapGetters(['hasPermission']),
 		types () {
-			let types = []
+			const types = []
 			if (this.hasPermission('world:rooms.create.chat')) {
 				types.push({
 					id: 'text',
@@ -45,7 +45,7 @@ export default {
 					icon: 'webcam'
 				})
 			}
-			return types;
+			return types
 		},
 		selectedType () {
 			return this.types.find(type => type.id === this.type)
@@ -119,7 +119,7 @@ export default {
 				flex-direction: column
 				align-self: stretch
 				.bunt-button
-					button-style(color: $clr-primary)
+					themed-button-primary()
 					margin-top: 16px
 				.bunt-select
 					select-style(size: compact)
