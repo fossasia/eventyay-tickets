@@ -17,7 +17,7 @@ Full configuration
 		"api": {
 			"socket": "wss://sample.demo.venueless.org/ws/world/sample/"
 		},
-		"features": [] // enable experimental features,
+		"features": [] // enable experimental features
 		"theme": {
 			"colors": {
 				"primary": '#673ab7', // hightlight color, should be high contrast on white background
@@ -32,3 +32,4 @@ Experimental Features
 
 * event-admin
 * questions-answers
+* chat-moderation
