@@ -222,4 +222,16 @@ export default {
 			.timestamp
 				font-size: 11px
 				color: $clr-secondary-text-light
+	&.compact
+		min-height: 36px
+		.actions
+			right: 4px
+			top: 2px
+			.bunt-icon-button
+				height: 32px
+				width: @height
+				.bunt-icon
+					font-size: 16px
+					height: 24px
+					line-height: @height
 </style>
