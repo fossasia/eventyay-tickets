@@ -3,6 +3,7 @@ variables()
 normalize-css()
 base()
 @import 'typography'
+typography()
 components()
 scrollbars()
 @import 'themed-buntpapier'
@@ -16,10 +17,6 @@ html, body, #app
 	margin: 0
 	height: 100%
 	overflow: hidden
-
-::selection {
-	color: $clr-primary-text-dark
-}
 
 .bunt-scrollbar
 	min-height: 0 // firefox can fuck off into space
