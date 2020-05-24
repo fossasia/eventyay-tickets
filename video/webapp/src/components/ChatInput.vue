@@ -98,7 +98,10 @@ export default {
 		font-size: 16px
 		height: 20px
 		white-space: nowrap
-		overflow: hidden
+		overflow: scroll
+		&::-webkit-scrollbar
+			display: none
+		scrollbar-width: none
 		.emoji
 			margin: 0 2px
 			vertical-align: bottom
