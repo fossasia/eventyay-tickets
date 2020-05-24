@@ -12,7 +12,7 @@
 			span.display-name {{ user.profile ? user.profile.display_name : message.sender }}
 			span.content(v-html="content")
 		.actions
-			bunt-icon-button(@click="showMenu") dots-vertical
+			bunt-icon-button(v-if="$features.enabled('chat-moderation')", @click="showMenu") dots-vertical
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ user.profile ? user.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? 'joined' : 'left' }}
 	//- intercepts all events
@@ -23,7 +23,7 @@
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
 		avatar(:user="user", :size="128")
 		.name {{ user.profile ? user.profile.display_name : this.message.sender }}
-		.actions
+		.actions(v-if="$features.enabled('chat-moderation')")
 			bunt-button#btn-ban ban
 </template>
 <script>
