@@ -1,6 +1,6 @@
 <template lang="pug">
 bunt-input-outline-container.c-chat-input
-	.contenteditable(ref="contenteditable", contenteditable="true", @keydown.enter="send", @blur="onBlur")
+	.contenteditable(ref="contenteditable", contenteditable="true", @keydown.enter="send")
 	.btn-emoji-picker(@click="toggleEmojiPicker")
 		svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24")
 			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
@@ -33,16 +33,20 @@ export default {
 	computed: {},
 	created () {},
 	mounted () {
-		this.$nextTick(() => {
-		})
+		document.addEventListener('selectionchange', this.onSelectionchange)
+	},
+	destroyed () {
+		document.removeEventListener('selectionchange', this.onSelectionchange)
 	},
 	methods: {
 		toggleEmojiPicker () {
 			this.showEmojiPicker = !this.showEmojiPicker
 		},
-		onBlur () {
+		onSelectionchange () {
 			const selection = window.getSelection()
 			const range = selection.getRangeAt(0)
+			const insideEditable = (range.startContainer.closest ? range.startContainer : range.startContainer.parentElement).closest('.contenteditable')
+			if (!insideEditable) return
 			this.selectedRange = range
 		},
 		send () {
