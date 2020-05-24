@@ -2,7 +2,6 @@
 .c-emoji-picker
 </template>
 <script>
-// TODO close when clicking outside of picker
 import { h, render } from 'preact'
 import 'emoji-mart/css/emoji-mart.css'
 import data from 'emoji-mart/data/twitter.json'
