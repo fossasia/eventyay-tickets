@@ -68,6 +68,7 @@ export default {
 			element.style['background-position'] = getEmojiPosition(emoji)
 			element.style.left = `calc(${startingPosition * 100}% - 24px)`
 			const animation = element.animate([
+				{opacity: 1, transform: 'translateY(0px)'},
 				{opacity: 0, transform: `translateY(-${targetHeight}px)`}
 			], {
 				duration: 1200 + 500 * Math.random()
