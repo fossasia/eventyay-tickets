@@ -47,6 +47,7 @@ export default {
 	},
 	mounted () {
 		this.overlayHeight = this.$el.offsetHeight
+		setInterval(this.renderReaction.bind(this, 'heart'), 76.7)
 	},
 	methods: {
 		renderReaction (id) {
@@ -92,7 +93,7 @@ export default {
 	bottom: 56px
 	right: var(--chatbar-width)
 	width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-	height: calc(100vh - 112px)
+	height: calc(var(--vh100) - 112px)
 	pointer-events: none
 	overflow: hidden
 	z-index: 4500

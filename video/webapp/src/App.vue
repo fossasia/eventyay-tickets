@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:style="themeVariables")
+#app(:style="[themeVariables, browserhackStyle]")
 	template(v-if="world")
 		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
@@ -32,7 +32,8 @@ export default {
 			showSidebar: false,
 			showProfilePrompt: false,
 			showStageCreationPrompt: false,
-			showChatCreationPrompt: false
+			showChatCreationPrompt: false,
+			windowHeight: null
 		}
 	},
 	computed: {
@@ -40,6 +41,13 @@ export default {
 		room () {
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
+		// safari cleverly includes the address bar cleverly in 100vh
+		browserhackStyle () {
+			return {
+				'--vh100': this.windowHeight + 'px',
+				'--vh': this.windowHeight && (this.windowHeight / 100) + 'px'
+			}
+		}
 	},
 	watch: {
 		room: 'roomChange',
@@ -47,7 +55,17 @@ export default {
 			this.showSidebar = false
 		}
 	},
+	mounted () {
+		this.windowHeight = window.innerHeight
+		window.addEventListener('resize', this.onResize)
+	},
+	destroyed () {
+		window.removeEventListener('resize', this.onResize)
+	},
 	methods: {
+		onResize () {
+			this.windowHeight = window.innerHeight
+		},
 		toggleSidebar () {
 			this.showSidebar = !this.showSidebar
 		},
@@ -92,13 +110,13 @@ export default {
 		position: fixed
 		transition: all .2s ease
 		&.size-mini
-			bottom: calc(100vh - 128px - 4px)
+			bottom: calc(var(--vh100) - 128px - 4px)
 			right: 4px
 		&:not(.size-mini)
 			bottom: 56px
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-			height: calc(100vh - 56px * 2)
+			height: calc(var(--vh100) - 56px * 2)
 	.prompt-enter-active, .prompt-leave-active
 		transition: opacity .5s
 	.prompt-enter, .prompt-leave-to
@@ -126,7 +144,7 @@ export default {
 			position: fixed
 			top: 0
 			left: 0
-			height: 100vh
+			height: var(--vh100)
 			width: 100vw
 			z-index: 999
 			background-color: $clr-secondary-text-light
