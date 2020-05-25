@@ -137,6 +137,7 @@ export default {
 	height: 100%
 	background-color: $clr-black
 	position: relative
+	overflow: hidden
 	> .mdi
 		color: $clr-primary-text-dark
 		position: absolute
