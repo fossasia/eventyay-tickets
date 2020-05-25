@@ -44,8 +44,11 @@ export default {
 .c-bigbluebutton
 	flex: auto
 	height: 100%
+	display: flex
+	flex-direction: column
 	iframe
 		height: 100%
 		width: 100%
 		border: none
+		flex: auto // because safari
 </style>
