@@ -8,10 +8,13 @@
 		<title><%= htmlWebpackPlugin.options.title %></title>
 	</head>
 	<body>
-		<noscript>
-			<strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-		</noscript>
 		<div id="app"></div>
+		<div id="browser-block" style="display: none;">
+			<h1>Sorry.</h1>
+			<h2>Your browser does not support some of the features we need.</h2>
+			<h2>Why don't you try an up-to-date version of one of the following browsers?</h2>
+			<div id="compatible-browsers"><a href="https://www.google.com/chrome/" class="chrome"><span></span>Google Chrome</a><a href="https://mozilla.org/firefox" class="firefox"><span></span>Mozilla Firefox</a></div>
+		</div>
 		<!-- built files will be auto injected -->
 	</body>
 </html>

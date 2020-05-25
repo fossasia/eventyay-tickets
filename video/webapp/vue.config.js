@@ -35,10 +35,34 @@ module.exports = {
 			modules: [path.resolve('src'), path.resolve('src/styles'), 'node_modules'],
 			alias: {
 				config: path.resolve(__dirname, 'config.js'),
+				modernizr$: path.resolve(__dirname, '.modernizrrc'),
 				react: 'preact/compat/dist/compat.js',
 				'react-dom': 'preact/compat/dist/compat.js',
 				'preact/hooks': 'preact/hooks/dist/hooks.js'
 			}
+		},
+		module: {
+			rules: [{
+				// preloader needs support for old browsers
+				test: /src\/preloader\.js$/,
+				include: path.resolve(__dirname),
+				exclude: /node_modules/,
+				use: [{
+					loader: 'babel-loader',
+					options: {
+						babelrc: false,
+						presets: [
+							'@babel/env'
+						],
+						plugins: [
+							'@babel/plugin-syntax-dynamic-import',
+						]
+					}
+				}]
+			}, {
+				test: /\.modernizrrc$/,
+				loader: 'modernizr-loader',
+			}]
 		},
 		plugins: [
 			new webpack.DefinePlugin({
@@ -46,6 +70,10 @@ module.exports = {
 				RELEASE: `'${process.env.RELEASE}'`
 			})
 		],
+	},
+	chainWebpack (config) {
+		config.entryPoints.clear()
+		config.entry('preloader').add('./src/preloader.js')
 	},
 	css: {
 		loaderOptions: {
@@ -55,13 +83,5 @@ module.exports = {
 			}
 		}
 	},
-	lintOnSave: true,
-	pluginOptions: {
-		i18n: {
-			locale: 'en',
-			fallbackLocale: 'en',
-			localeDir: 'locales',
-			enableInSFC: true
-		}
-	}
+	lintOnSave: true
 }
