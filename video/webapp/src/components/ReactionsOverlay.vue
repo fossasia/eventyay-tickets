@@ -47,7 +47,6 @@ export default {
 	},
 	mounted () {
 		this.overlayHeight = this.$el.offsetHeight
-		setInterval(this.renderReaction.bind(this, 'heart'), 76.7)
 	},
 	methods: {
 		renderReaction (id) {
