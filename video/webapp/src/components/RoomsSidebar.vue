@@ -119,7 +119,7 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
-	max-height: 100vh
+	max-height: var(--vh100)
 	.logo
 		font-size: 18px
 		text-align: center
@@ -226,7 +226,7 @@ export default {
 		top: 0
 		z-index: 1000
 		width: var(--sidebar-width)
-		height: 100vh
+		height: var(--vh100)
 		touch-action: pan-y
 		> .c-scrollbars .scroll-content
 			touch-action: pan-y
