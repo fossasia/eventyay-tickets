@@ -150,6 +150,7 @@ export default {
 	.video-container
 		flex: auto
 		min-height: 0
+		height: 100%	/* required by Safari */
 	.controls
 		position: absolute
 		top: 0
