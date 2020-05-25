@@ -1,0 +1,32 @@
+#browser-block
+	height: 100vh
+	display: flex
+	flex-direction: column
+	justify-content: center
+	align-items: center
+	h2
+		text-align: center
+		margin: 16px
+	#compatible-browsers
+		width: 40vw
+		display: flex
+		justify-content: space-around
+	.chrome, .firefox
+		transition: transform .2s ease
+		text-align: center
+		text-transform: uppercase
+		font-size: 24px
+		span
+			display: block
+			width: 200px
+			height: 200px
+			background: transparent url("../assets/browsers-bg.png") no-repeat
+			background-size: auto 400px
+
+		&:hover
+			transform: scale(1.1,1.1)
+			text-decoration: underline
+	.chrome span
+		background-position: 0 -200px
+	.firefox span
+		background-position: -200px -200px
