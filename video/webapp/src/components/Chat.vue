@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-chat(:class="[mode]")
 	template(v-if="channel")
-		scrollbars.timeline(y)
+		scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled")
 			template(v-for="message of filteredTimeline")
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
 			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
@@ -39,6 +39,7 @@ export default {
 	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
+			scrolledToTop: true
 		}
 	},
 	computed: {
@@ -56,6 +57,16 @@ export default {
 				// resubscribe
 				this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 			}
+		},
+		async filteredTimeline () {
+			console.log(this.scrolledToTop)
+			// manually scroll to bottom because safari can't deal with reverse direction
+			if (this.scrolledToTop) {
+				await this.$nextTick()
+				// because safari
+				this.$refs.timeline.scrollTop(-1)
+				this.$refs.timeline.scrollTop(0)
+			}
 		}
 	},
 	created () {
@@ -65,6 +76,9 @@ export default {
 		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
+		timelineScrolled (event) {
+			this.scrolledToTop = event.target.scrollTop === 0
+		},
 		join () {
 			this.$store.dispatch('chat/join')
 		},

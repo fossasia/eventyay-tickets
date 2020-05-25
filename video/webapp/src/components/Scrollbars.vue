@@ -104,6 +104,10 @@ export default {
 		this.mutationObserver.disconnect()
 	},
 	methods: {
+		scrollTop (y) {
+			console.log('scrolltop')
+			this.$refs.content.scrollTop = y
+		},
 		onScroll (event) {
 			this.$emit('scroll', event)
 			this.computeThumbPositions()
