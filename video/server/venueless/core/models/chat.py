@@ -33,7 +33,11 @@ class ChatEvent(models.Model):
         to=Channel, db_index=True, related_name="chat_events", on_delete=models.CASCADE,
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(null=True)
     event_type = models.CharField(max_length=200)
+    replaces = models.ForeignKey(
+        to="ChatEvent", related_name="replaced_by", null=True, on_delete=models.CASCADE
+    )
     sender = models.ForeignKey(
         "User",
         null=True,
@@ -52,6 +56,8 @@ class ChatEvent(models.Model):
             "timestamp": self.timestamp.isoformat(),
             "event_type": self.event_type,
             "content": self.content,
+            "edited": self.edited.isoformat() if self.edited else None,
+            "replaces": self.replaces_id,
         }
 
 
