@@ -94,5 +94,6 @@ class Reaction(models.Model):
     room = models.ForeignKey(
         to="Room", related_name="reactions", on_delete=models.CASCADE
     )
+    datetime = models.DateTimeField(auto_now_add=True)
     reaction = models.CharField(max_length=100)
     amount = models.IntegerField()
