@@ -69,6 +69,7 @@ export default {
 			try {
 				console.log('starting stream', this.module.config.hls_url)
 				await player.load(this.module.config.hls_url)
+				this.offline = false
 			} catch (error) {
 				console.error('player failed to load', error)
 				if (error.code < 2000) { // network errors
