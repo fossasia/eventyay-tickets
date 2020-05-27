@@ -105,7 +105,11 @@ export default {
 	},
 	methods: {
 		scrollTop (y) {
-			this.$refs.content.scrollTop = y
+			if (y === Infinity) {
+				this.$refs.content.scrollTop = this.$refs.content.scrollHeight - this.$refs.content.clientHeight
+			} else {
+				this.$refs.content.scrollTop = y
+			}
 		},
 		onScroll (event) {
 			this.$emit('scroll', event)
