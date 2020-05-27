@@ -2,9 +2,9 @@
 .c-chat(:class="[mode]")
 	template(v-if="channel")
 		scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled")
+			infinite-scroll(v-if="!scrollPosition", :loading="fetchingMessages", @load="fetchMessages")
 			template(v-for="message of filteredTimeline")
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
-			infinite-scroll(:loading="fetchingMessages", @load="$store.dispatch('chat/fetchMessages')")
 		.chat-input
 			bunt-button(v-if="!hasJoinedChannel", @click="join", tooltip="to start writing, join this channel") join chat
 			chat-input(v-else, @send="send")
@@ -39,7 +39,8 @@ export default {
 	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
-			scrolledToTop: true
+			scrolledToBottom: true,
+			scrollPosition: null
 		}
 	},
 	computed: {
@@ -47,8 +48,8 @@ export default {
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
 		...mapGetters('chat', ['hasJoinedChannel']),
 		filteredTimeline () {
-			if (this.mode === 'standalone') return this.timeline.slice().reverse()
-			return this.timeline.filter(message => message.event_type === 'channel.message').reverse()
+			if (this.mode === 'standalone') return this.timeline
+			return this.timeline.filter(message => message.event_type === 'channel.message')
 		}
 	},
 	watch: {
@@ -59,12 +60,17 @@ export default {
 			}
 		},
 		async filteredTimeline () {
-			// manually scroll to bottom because safari can't deal with reverse direction
-			if (this.scrolledToTop) {
+			// TODO scroll to bottom when resizing
+			if (this.scrolledToBottom) {
 				await this.$nextTick()
-				// because safari
-				this.$refs.timeline.scrollTop(-1)
-				this.$refs.timeline.scrollTop(0)
+				this.$refs.timeline.scrollTop(Infinity)
+				this.scrollPosition = null
+			} else if (this.scrollPosition) {
+				// restore scrollPosition after load
+				await this.$nextTick()
+				const scrollEl = this.$refs.timeline.$refs.content
+				this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition)
+				this.scrollPosition = null
 			}
 		}
 	},
@@ -75,8 +81,14 @@ export default {
 		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
+		fetchMessages () {
+			// remember scroll height to restore later
+			const scrollEl = this.$refs.timeline.$refs.content
+			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop
+			this.$store.dispatch('chat/fetchMessages')
+		},
 		timelineScrolled (event) {
-			this.scrolledToTop = event.target.scrollTop === 0
+			this.scrolledToBottom = event.target.scrollTop >= event.target.scrollHeight - event.target.clientHeight
 		},
 		join () {
 			this.$store.dispatch('chat/join')
@@ -96,12 +108,12 @@ export default {
 	flex: auto
 	.timeline .scroll-content
 		flex: auto
-		padding: 8px 0
 		display: flex
-		flex-direction: column-reverse
-		justify-content: flex-start
+		overflow-anchor: none
 		.message
 			padding-top: 8px
+		:first-child
+			margin-top: auto
 	.chat-input
 		flex: none
 		border-top: border-separator()
