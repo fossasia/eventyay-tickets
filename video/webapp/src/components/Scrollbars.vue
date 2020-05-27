@@ -105,7 +105,6 @@ export default {
 	},
 	methods: {
 		scrollTop (y) {
-			console.log('scrolltop')
 			this.$refs.content.scrollTop = y
 		},
 		onScroll (event) {
