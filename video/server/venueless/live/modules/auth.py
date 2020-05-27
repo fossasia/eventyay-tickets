@@ -40,7 +40,7 @@ class AuthModule(BaseModule):
 
         login_result = await login(**kwargs)
         if not login_result:
-            await self.consumer.send_json(["authentication.failed", {}])
+            await self.consumer.send_error(code="auth.denied")
             return
 
         self.consumer.user = login_result.user

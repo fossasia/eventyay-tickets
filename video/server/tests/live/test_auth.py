@@ -44,7 +44,8 @@ async def test_no_anonymous_access(world):
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
-        assert response[0] == "authentication.failed"
+        assert response[0] == "error"
+        assert response[1] == {"code": "auth.denied"}
 
 
 @pytest.mark.asyncio

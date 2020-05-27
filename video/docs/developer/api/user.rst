@@ -12,6 +12,12 @@ Users can be authenticated in two ways:
 Logging in
 ----------
 
+The first message you send should be an authentication request. Before you do so, you
+will also not get any messages from the server, except for an error with the code
+``world.unknown_world`` if you connected to an invalid websocket endpoint or possibly
+a ``connection.reload`` message if your page load interferes with an update of the
+client codebase.
+
 Send client-specific ID, receive everything that's already known about the user::
 
     => ["authenticate", {"client_id": "UUID4"}]
@@ -24,6 +30,17 @@ With a token, it works just the same way::
 
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
 documentation for membership semantics.
+
+If authentication failes, you receive an error instead::
+
+    => ["authenticate", {"client_id": "UUID4"}]
+    <- ["error", {"code": "auth.invalid_token"}]
+
+The following error codes are currently used during authentication:
+
+* ``auth.missing_id_or_token``
+* ``auth.invalid_token``
+* ``auth.denied``
 
 Change user info
 ----------------
