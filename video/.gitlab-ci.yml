@@ -52,7 +52,7 @@ upload_container:
     - docker login -u ciuser -p $DOCKERPW docker.rami.io
     - docker push docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
   only:
-    - production
+    - prod
     - master
   tags:
     - docker
@@ -64,7 +64,7 @@ deploy:
     - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME pull
     - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa  deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME upgrade
   only:
-    - production
+    - prod
     - master
   tags:
     - venuelessdeploy
