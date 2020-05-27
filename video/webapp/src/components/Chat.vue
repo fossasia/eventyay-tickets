@@ -59,7 +59,6 @@ export default {
 			}
 		},
 		async filteredTimeline () {
-			console.log(this.scrolledToTop)
 			// manually scroll to bottom because safari can't deal with reverse direction
 			if (this.scrolledToTop) {
 				await this.$nextTick()
