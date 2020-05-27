@@ -153,8 +153,9 @@ export default {
 			text-decoration: underline
 			cursor: pointer
 	&:not(:hover):not(.selected) > .actions
-		display: none
+		visibility: hidden
 	> .actions
+		will-change: display
 		position: absolute
 		right: 4px
 		top: 6px
