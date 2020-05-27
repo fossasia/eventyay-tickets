@@ -16,12 +16,11 @@
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
 			h1 Event not found.
-		template(v-else-if="fatalConnectionError.code === 'auth.missing_id_or_token'")
-			.mdi.mdi-alter-octagon
-			h1 This event requires a valid token. Please use the link provided by your event organizer.
-		template(v-else-if="fatalConnectionError.code === 'auth.denied'")
-			.mdi.mdi-alter-octagon
-			h1 This event requires a valid token. Please use the link provided by your event organizer.
+		template(v-else-if="fatalConnectionError.code === 'auth.denied' || fatalConnectionError.code === 'auth.missing_id_or_token'")
+			.mdi.mdi-alert-octagon
+			h1 This event requires a valid token.
+				br
+				| Please use the link provided by your event organizer.
 		template(v-else)
 			h1 Connection refused.
 		p.code error code: {{ fatalConnectionError.code }}
@@ -158,10 +157,11 @@ export default {
 		justify-content: center
 		align-items: center
 		.mdi
-			font-size: 128px
+			font-size: 10vw
 			color: $clr-danger
 		h1
-			font-size: 64px
+			font-size: 3vw
+			text-align: center
 		.code
 			font-family: monospace
 	+below('s')
@@ -181,4 +181,9 @@ export default {
 				transition: opacity .2s
 			&.backdrop-enter, &.backdrop-leave-to
 				opacity: 0
+		.fatal-connection-error
+			.mdi
+				font-size: 128px
+			h1
+				font-size: 24px
 </style>
