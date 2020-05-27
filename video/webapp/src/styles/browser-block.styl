@@ -1,5 +1,4 @@
 #browser-block
-	height: var(--vh100)
 	display: flex
 	flex-direction: column
 	justify-content: center
@@ -11,6 +10,10 @@
 		width: 40vw
 		display: flex
 		justify-content: space-around
+		+below('s')
+			flex-direction: column
+			width: 100vw
+			align-items: center
 	.chrome, .firefox
 		transition: transform .2s ease
 		text-align: center
