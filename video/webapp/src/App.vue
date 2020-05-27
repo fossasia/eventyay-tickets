@@ -12,6 +12,19 @@
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 		.disconnected-warning(v-if="!connected") {{ $t('app:no-connection') }}
+	.fatal-connection-error(v-else-if="fatalConnectionError")
+		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
+			.mdi.mdi-help-circle
+			h1 Event not found.
+		template(v-else-if="fatalConnectionError.code === 'auth.missing_id_or_token'")
+			.mdi.mdi-alter-octagon
+			h1 This event requires a valid token. Please use the link provided by your event organizer.
+		template(v-else-if="fatalConnectionError.code === 'auth.denied'")
+			.mdi.mdi-alter-octagon
+			h1 This event requires a valid token. Please use the link provided by your event organizer.
+		template(v-else)
+			h1 Connection refused.
+		p.code error code: {{ fatalConnectionError.code }}
 	bunt-progress-circular(v-else, size="huge")
 </template>
 <script>
@@ -37,7 +50,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['connected', 'world', 'user', 'streamingRoom']),
+		...mapState(['fatalConnectionError', 'connected', 'world', 'user', 'streamingRoom']),
 		room () {
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
@@ -134,7 +147,23 @@ export default {
 		font-weight: 600
 		font-size: 20px
 		border-radius: 0 0 4px 4px
-
+	.fatal-connection-error
+		position: fixed
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
+		display: flex
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		.mdi
+			font-size: 128px
+			color: $clr-danger
+		h1
+			font-size: 64px
+		.code
+			font-family: monospace
 	+below('s')
 		grid-template-columns: auto
 		grid-template-rows: 48px auto

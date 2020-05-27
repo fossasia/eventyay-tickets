@@ -11,6 +11,8 @@ export default new Vuex.Store({
 		token: null,
 		clientId: null,
 		connected: false,
+		fatalConnectionError: null,
+		fatalError: null,
 		user: null,
 		world: null,
 		rooms: null,
@@ -72,6 +74,22 @@ export default new Vuex.Store({
 				state.connected = false
 				state.activeRoom = null
 				dispatch('chat/disconnected', {root: true})
+			})
+			api.on('error', error => {
+				switch (error.code) {
+					case 'world.unknown_world':
+					case 'auth.invalid_token':
+					case 'auth.denied':
+					case 'auth.missing_id_or_token':
+						state.fatalConnectionError = error
+						api.close()
+						break
+					case 'server.fatal':
+						state.fatalError = error
+						api.close()
+						break
+				}
+				// TODO handle generic fatal error?
 			})
 		},
 		async updateUser ({state, dispatch}, update) {

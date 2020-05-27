@@ -13,7 +13,6 @@ function loadLocaleMessages () {
 			messages[locale] = locales(key).default
 		}
 	})
-	console.log(messages)
 	return messages
 }
 
