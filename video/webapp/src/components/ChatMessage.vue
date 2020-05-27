@@ -155,7 +155,7 @@ export default {
 	&:not(:hover):not(.selected) > .actions
 		visibility: hidden
 	> .actions
-		will-change: display
+		will-change: visibility
 		position: absolute
 		right: 4px
 		top: 6px
