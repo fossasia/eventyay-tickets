@@ -110,7 +110,7 @@ export default {
 		overflow-anchor: none
 		.message
 			padding-top: 8px
-		:first-child
+		> :first-child
 			margin-top: auto
 	.chat-input
 		flex: none
