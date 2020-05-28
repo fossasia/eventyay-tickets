@@ -6,7 +6,7 @@
 			template(v-for="message of filteredTimeline")
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
 		.chat-input
-			bunt-button(v-if="!hasJoinedChannel", @click="join", tooltip="to start writing, join this channel") join chat
+			bunt-button(v-if="!hasJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 			chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['s']", y)
 			.user(v-for="user of members")

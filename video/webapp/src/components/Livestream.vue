@@ -11,7 +11,7 @@
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
 				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
 	.offline(v-if="offline")
-		.offline-message  Stream offline
+		.offline-message {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
 import { mapState } from 'vuex'

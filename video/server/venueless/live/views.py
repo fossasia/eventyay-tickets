@@ -74,6 +74,7 @@ class AppView(View):
                             )
                         },
                         "features": [],
+                        "locale": world.locale,
                     }
                 )
             ),

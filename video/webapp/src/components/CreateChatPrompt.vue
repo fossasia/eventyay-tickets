@@ -3,17 +3,17 @@
 	.prompt-wrapper(v-scrollbar.y="", @click.stop="")
 		.prompt-wrapper-inner
 			bunt-icon-button#btn-close(@click="$emit('close')") close
-			h1 Create a new channel
-			p Some explanation text
+			h1 {{ $t('CreateChatPrompt:headline:text') }}
+			p {{ $t('CreateChatPrompt:intro:text') }}
 			form(@submit.prevent="create")
 				bunt-select(name="type", label="Type", v-model="type", :options="types")
 					template(slot-scope="{ option }")
 						.mdi(:class="`mdi-${option.icon}`")
 						.label {{ option.label }}
-				bunt-input(name="name", label="Name", :icon="selectedType.icon", placeholder="fancyawesomechannel", v-model="name")
-				bunt-input-outline-container(label="Description")
+				bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
+				bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
 					textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
-				bunt-button(type="submit", :loading="loading") create
+				bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
 </template>
 <script>
 import {mapGetters} from 'vuex'

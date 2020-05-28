@@ -72,6 +72,7 @@ class World(VersionedModel):
     )
     trait_grants = JSONField(null=True, blank=True, default=default_grants)
     domain = models.CharField(max_length=250, unique=True, null=True, blank=True)
+    locale = models.CharField(max_length=100, default="en")
 
     def decode_token(self, token):
         for jwt_config in self.config["JWT_secrets"]:

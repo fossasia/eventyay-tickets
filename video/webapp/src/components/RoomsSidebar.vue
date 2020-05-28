@@ -6,16 +6,16 @@ transition(name="sidebar")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
-				router-link.room(:to="{name: 'home'}") {{ $t('About') }}
-				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('Schedule') }}
+				router-link.room(:to="{name: 'home'}") {{ $t('RoomsSidebar:about:label') }}
+				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('RoomsSidebar:schedule:label') }}
 			.group-title(v-if="roomsByType.generic.length || hasPermission('world:rooms.create.stage')")
-				span {{ $t('Stages') }}
+				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
-				span {{ $t('Channels') }}
+				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
@@ -25,7 +25,7 @@ transition(name="sidebar")
 			template(v-if="$features.enabled('event-admin')")
 				.buffer
 				.group-title
-					span {{ $t('Administration') }}
+					span {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
 					router-link.room(:to="{name: 'admin'}") Event Config
 					router-link.room(:to="{name: 'admin'}") Users
