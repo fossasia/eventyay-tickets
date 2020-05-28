@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -74,13 +75,14 @@ class RoomModule(BaseModule):
 
             # First, increase the number of reactions
             tr = redis.multi_exec()
-            tr.exists(redis_key)
+            tr.hsetnx(redis_key, "tick", int(time.time()))
+            tr.hget(redis_key, "tick")
             tr.hincrby(redis_key, reaction, 1)
-            tick_running, _ = await tr.execute()
+            tick_new, tick_start, _ = await tr.execute()
 
             await self.consumer.send_success({})
 
-            if not tick_running:
+            if tick_new or time.time() - int(tick_start.decode()) > 3:
                 # We're the first one to react since the last tick! It's our job to wait for the length of a tick, then
                 # distribute the value to everyone.
                 await asyncio.sleep(1)
@@ -89,18 +91,23 @@ class RoomModule(BaseModule):
                 tr.hgetall(redis_key)
                 tr.delete(redis_key)
                 val, _ = await tr.execute()
+                if not val:
+                    return
                 await self.consumer.channel_layer.group_send(
                     GROUP_ROOM.format(id=self.room.pk),
                     {
                         "type": "room.reaction",
                         "reactions": {
-                            k.decode(): int(v.decode()) for k, v in val.items()
+                            k.decode(): int(v.decode())
+                            for k, v in val.items()
+                            if k.decode() != "tick"
                         },
                         "room": str(body["room"]),
                     },
                 )
                 for k, v in val.items():
-                    await store_reaction(body["room"], k.decode(), int(v.decode()))
+                    if k.decode() != "tick":
+                        await store_reaction(body["room"], k.decode(), int(v.decode()))
             # else: We're just contributing to the reaction counter that someone else started.
 
     @command("create")
