@@ -105,6 +105,7 @@ export default {
 		overflow: scroll
 		&::-webkit-scrollbar
 			display: none
+		-ms-overflow-style: none
 		scrollbar-width: none
 		.emoji
 			margin: 0 2px

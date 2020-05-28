@@ -219,6 +219,7 @@ $thumb-width-hovered = 12px
 		min-height: 0
 		&::-webkit-scrollbar
 			display: none
+		-ms-overflow-style: none
 		scrollbar-width: none
 
 	&:hover
