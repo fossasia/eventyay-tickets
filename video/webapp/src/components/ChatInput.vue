@@ -1,6 +1,6 @@
 <template lang="pug">
 bunt-input-outline-container.c-chat-input
-	.contenteditable(ref="contenteditable", contenteditable="true", @keydown.enter="send")
+	.contenteditable(ref="contenteditable", contenteditable="true", @keydown.enter="send", @paste.prevent.stop="onPaste")
 	.btn-emoji-picker(@click="toggleEmojiPicker")
 		svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24")
 			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
@@ -12,7 +12,7 @@ bunt-input-outline-container.c-chat-input
 <script>
 // TODO
 // - multiline
-// - intercept copy + paste
+// - intercept copy
 // - parse ascii emoticons ;)
 // - parse colol emoji :+1:
 // - close emoji picker
@@ -48,6 +48,10 @@ export default {
 			const insideEditable = (range.startContainer.closest ? range.startContainer : range.startContainer.parentElement).closest('.contenteditable')
 			if (!insideEditable) return
 			this.selectedRange = range
+		},
+		onPaste (event) {
+			const text = event.clipboardData.getData('text/plain')
+			document.execCommand('insertText', false, text) // HACK obsolete api
 		},
 		send () {
 			event.preventDefault()
