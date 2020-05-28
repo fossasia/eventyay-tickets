@@ -2,11 +2,74 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-07 19:01+0100\n"
+"POT-Creation-Date: 2020-05-28 10:28+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Raphael Michel\n"
+"Last-Translator: Raphael Michel <michel@rami.io>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+
+#: pretix_venueless/__init__.py:16
+msgid "Venueless integration"
+msgstr "Venueless-Integration"
+
+#: pretix_venueless/__init__.py:18
+msgid "Integrates pretix with venueless.org"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:7
+#: pretix_venueless/templates/pretix_venueless/order_info.html:35
+msgid "Join online event"
+msgstr "Online-Event betreten"
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:25
+msgid "You can now join the event using the following button:"
+msgstr "Sie können der Veranstaltung mit folgendem Button beitreten:"
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:43
+msgid ""
+"You will be able to join this event with your browser right here when it "
+"starts."
+msgstr ""
+"Sie können der Veranstaltung mit Ihrem Browser genau hier beitreten, "
+"wenn die Veranstaltung beginnt."
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:5
+msgid "Venueless"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:12
+msgid "Save"
+msgstr "Speichern"
+
+#: pretix_venueless/views.py:25
+msgid "Venueless URL"
+msgstr ""
+
+#: pretix_venueless/views.py:29
+msgid "Venueless secret"
+msgstr ""
+
+#: pretix_venueless/views.py:33
+msgid "Venueless issuer"
+msgstr ""
+
+#: pretix_venueless/views.py:37
+msgid "Venueless audience"
+msgstr ""
+
+#: pretix_venueless/views.py:41
+msgid "Start of live event"
+msgstr ""
+
+#: pretix_venueless/views.py:45
+msgid "Allow users to access the live event before their order is paid"
+msgstr ""
+
+#: pretix_venueless/views.py:68
+msgid "Unknown order code or not authorized to access this order."
+msgstr ""
+"Unbekannte Bestellnummer oder Bestellung gehört einem anderen Benutzer."
