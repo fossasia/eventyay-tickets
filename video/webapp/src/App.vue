@@ -24,7 +24,8 @@
 		template(v-else)
 			h1 Connection refused.
 		p.code error code: {{ fatalConnectionError.code }}
-	bunt-progress-circular(v-else, size="huge")
+	bunt-progress-circular(v-else-if="!fatalError", size="huge")
+	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -49,7 +50,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'connected', 'world', 'user', 'streamingRoom']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user', 'streamingRoom']),
 		room () {
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
@@ -133,7 +134,7 @@ export default {
 		transition: opacity .5s
 	.prompt-enter, .prompt-leave-to
 		opacity: 0
-	.disconnected-warning
+	.disconnected-warning, .fatal-error
 		position: fixed
 		top: 0
 		left: calc(50% - 240px)
