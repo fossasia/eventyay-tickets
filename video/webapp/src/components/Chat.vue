@@ -2,7 +2,7 @@
 .c-chat(:class="[mode]")
 	template(v-if="channel")
 		scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled")
-			infinite-scroll(v-if="!scrollPosition", :loading="fetchingMessages", @load="fetchMessages")
+			infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 			template(v-for="message of filteredTimeline")
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
 		.chat-input
@@ -39,8 +39,8 @@ export default {
 	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
-			scrolledToBottom: true,
-			scrollPosition: null
+			scrollPosition: 0,
+			syncedScroll: true
 		}
 	},
 	computed: {
@@ -61,17 +61,16 @@ export default {
 		},
 		async filteredTimeline () {
 			// TODO scroll to bottom when resizing
-			if (this.scrolledToBottom) {
+			if (this.scrollPosition === 0) {
 				await this.$nextTick()
 				this.$refs.timeline.scrollTop(Infinity)
-				this.scrollPosition = null
-			} else if (this.scrollPosition) {
+			} else {
 				// restore scrollPosition after load
 				await this.$nextTick()
 				const scrollEl = this.$refs.timeline.$refs.content
-				this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition)
-				this.scrollPosition = null
+				this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
 			}
+			this.syncedScroll = true
 		}
 	},
 	created () {
@@ -82,13 +81,12 @@ export default {
 	},
 	methods: {
 		fetchMessages () {
-			// remember scroll height to restore later
-			const scrollEl = this.$refs.timeline.$refs.content
-			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop
+			this.syncedScroll = false
 			this.$store.dispatch('chat/fetchMessages')
 		},
 		timelineScrolled (event) {
-			this.scrolledToBottom = event.target.scrollTop >= event.target.scrollHeight - event.target.clientHeight
+			const scrollEl = this.$refs.timeline.$refs.content
+			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight
 		},
 		join () {
 			this.$store.dispatch('chat/join')
