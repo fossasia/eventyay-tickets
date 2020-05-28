@@ -4,21 +4,21 @@
 		.prompt-wrapper-inner
 			bunt-icon-button#btn-close(v-if="user.profile.display_name", @click="$emit('close')") close
 			template(v-if="!user.profile.display_name")
-				h1 Hi there!
-				p Before you can join others in this awesome event, please tell us how you want to appear to other attendees.
+				h1 {{ $t('ProfilePrompt:headline:text') }}
+				p {{ $t('ProfilePrompt:intro:text') }}
 			.profile
 				.avatar
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
 					identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
 				form(@submit.prevent="update")
-					bunt-input.display-name(name="displayName", label="Display name", v-model="displayName", :validation="$v.displayName")
+					bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model="displayName", :validation="$v.displayName")
 			//- link here not strictly good UX
-			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") Change gravatar
-			p.gravatar-hint(v-else-if="!showConnectGravatar") or connect to your #[a(href="#", @click="showConnectGravatar = true") gravatar].
+			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('ProfilePrompt:gravatar-change:label') }}
+			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('ProfilePrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
 			form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
-				bunt-input(name="gravatar", label="Gravatar email address", hint="your address is not being sent to any server", v-model="email")
-				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") connect
-			bunt-button#btn-join-world(@click="update", :loading="loading") {{ !user.profile.display_name ? 'join' : 'update' }}
+				bunt-input(name="gravatar", :label="$t('ProfilePrompt:gravatar-email:label')", :hint="$t('ProfilePrompt:gravatar-email:hint')", v-model="email")
+				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('ProfilePrompt:gravatar-connect:label') }}
+			bunt-button#btn-join-world(@click="update", :loading="loading") {{ !user.profile.display_name ? $t('ProfilePrompt:create:label') : $t('ProfilePrompt:save:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'

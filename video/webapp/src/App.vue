@@ -11,7 +11,7 @@
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
-		.disconnected-warning(v-if="!connected") {{ $t('app:no-connection') }}
+		.disconnected-warning(v-if="!connected") {{ $t('app:disconnected-warning:text') }}
 	.fatal-connection-error(v-else-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle

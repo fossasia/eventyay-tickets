@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-bigbluebutton
 	iframe(v-if="url", :src="url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia)
-	.error(v-else-if="error") Something went wrong!
+	.error(v-else-if="error") {{ $t('BigBlueButton:error:text') }}
 </template>
 <script>
 import api from 'lib/api'
