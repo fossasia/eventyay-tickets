@@ -8,13 +8,13 @@ transition(name="sidebar")
 			.global-links
 				router-link.room(:to="{name: 'home'}") {{ $t('About') }}
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('Schedule') }}
-			.group-title(v-if="roomsByType.generic.length")
+			.group-title(v-if="roomsByType.generic.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('Stages') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
 				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
-			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length")
+			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('Channels') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
 			.chats
