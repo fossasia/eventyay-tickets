@@ -117,6 +117,7 @@ export default {
 </script>
 <style lang="stylus">
 .c-chat-message
+	flex: none
 	display: flex
 	align-items: flex-start
 	padding: 4px 8px
@@ -132,6 +133,7 @@ export default {
 	.content-wrapper
 		margin-left: 8px
 		padding-top: 6px // ???
+		word-break: break-all
 		.emoji
 			vertical-align: bottom
 			line-height: 20px
