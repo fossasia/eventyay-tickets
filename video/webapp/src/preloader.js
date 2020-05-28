@@ -4,7 +4,7 @@ import 'styles/preloader.styl'
 
 const showBrowserBlock = function () {
 	document.getElementById('browser-block').style.display = null
-	document.body.removeChild(document.getElementById('v-app'))
+	document.body.removeChild(document.getElementById('app'))
 }
 
 // test syntax & API features
