@@ -162,8 +162,27 @@ class ChatModule(BaseModule):
         event_type = body["event_type"]
         if event_type != "channel.message":
             raise ConsumerException("chat.unsupported_event_type")
-        if content.get("type") != "text":
+        if not (
+            content.get("type") == "text"
+            or (content.get("type") == "deleted" and "replaces" in body)
+        ):
             raise ConsumerException("chat.unsupported_content_type")
+
+        if body.get("replaces"):
+            other_message = await self.service.get_event(
+                pk=body["replaces"], channel_id=self.channel_id,
+            )
+            if self.consumer.user.id != other_message.sender_id:
+                # Users may only edit messages by other users if they are mods,
+                # and even then only delete them
+                is_moderator = await self.consumer.world.has_permission_async(
+                    user=self.consumer.user,
+                    room=self.room,
+                    permission=Permission.ROOM_CHAT_MODERATE,
+                )
+                if body["content"]["type"] != "deleted" or not is_moderator:
+                    raise ConsumerException("chat.denied")
+            await self.service.update_event(other_message, new_content=content)
 
         try:
             event = await self.service.create_event(
@@ -171,6 +190,7 @@ class ChatModule(BaseModule):
                 event_type=event_type,
                 content=content,
                 sender=self.consumer.user,
+                replaces=body.get("replaces", None),
             )
         except ChatService.NotAChannelMember:
             raise ConsumerException("chat.denied")

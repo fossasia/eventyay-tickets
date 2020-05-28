@@ -74,6 +74,14 @@ All clients in the room will get a broadcast (see above). Currently, you will ge
 not show the chat message twice, but you also shouldn't rely on getting the broadcast since it might be removed in
 the future as a performance optimization.
 
+You can edit a user's own message by sending an update like this::
+
+    => ["chat.send", 1234, {"channel": "room_0", "event_type": "channel.message", "replaces": 2000, "content": {"type": "text", "body": "Hello world"}}]
+    <- ["success", 1234, {"event": {"channel": "room_0", "event_type": "channel.message", "replaces": 2000, "content": {"type": "text", "body": "Hello world"}, "sender": "user_todo", "event_id": 4}}]
+
+As with message sending, you'll get both the success and the broadcast. The broadcast looks the same as a new message,
+only that it includes the ``"replaces"`` key.
+
 Event types
 ^^^^^^^^^^^
 
@@ -85,11 +93,14 @@ server. All events have the following properties (plus additional ones depending
 * ``sender`` (string, user ID, optional)
 * ``content`` (type and value depending on ``event_type``)
 
-Currently, the following types of events are defined:
+Currently, the following values for ``event_type`` are defined:
 
 - ``channel.message``
 - ``channel.member``
 
+Optional fields include:
+
+- ``replaces``, only valid on ``event_type: channel.message``, indicates that the current message supersedes a previous one.
 
 ``channel.message``
 """""""""""""""""""
@@ -103,6 +114,7 @@ inside the ``content`` property:
 Currently, the following types are defined:
 
 * ``text``: A plain text message. ``body`` is a string with the message.
+* ``deleted``: Any message that was removed by the user or a moderator.
 
 ``channel.member``
 """"""""""""""""""

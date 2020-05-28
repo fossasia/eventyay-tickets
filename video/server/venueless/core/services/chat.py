@@ -3,6 +3,7 @@ from contextlib import suppress
 from channels.db import database_sync_to_async
 from django.db import IntegrityError, transaction
 from django.db.models import Max
+from django.utils.timezone import now
 
 from ..models import ChatEvent, Membership, User
 from ..utils.redis import aioredis
@@ -78,7 +79,7 @@ class ChatService:
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
-    def _store_event(self, channel_id, id, event_type, content, sender):
+    def _store_event(self, channel_id, id, event_type, content, sender, replaces=None):
         if event_type not in ("channel.member",) and not sender.is_member_of_channel(
             channel_id
         ):
@@ -89,6 +90,7 @@ class ChatService:
             event_type=event_type,
             content=content,
             sender=sender,
+            replaces_id=replaces,
         )
         return ce.serialize_public()
 
@@ -103,7 +105,9 @@ class ChatService:
                 return int(rval)
             return 0
 
-    async def create_event(self, channel_id, event_type, content, sender, _retry=False):
+    async def create_event(
+        self, channel_id, event_type, content, sender, replaces=None, _retry=False
+    ):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
         try:
@@ -113,6 +117,7 @@ class ChatService:
                 event_type=event_type,
                 content=content,
                 sender=sender,
+                replaces=replaces,
             )
         except IntegrityError as e:
             if "already exists" in str(e) and not _retry:
@@ -125,3 +130,14 @@ class ChatService:
                 )
                 return res
             raise e  # pragma: no cover
+
+    @database_sync_to_async
+    def get_event(self, **kwargs):
+        return ChatEvent.objects.get(**kwargs)
+
+    @database_sync_to_async
+    def update_event(self, event, new_content):
+        event.content = new_content
+        event.edited = now()
+        event.save()
+        return event

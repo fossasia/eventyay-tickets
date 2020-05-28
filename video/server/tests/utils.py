@@ -1,4 +1,5 @@
 import datetime as dt
+import random
 
 import jwt
 
@@ -13,7 +14,7 @@ def get_token(world, traits):
         "aud": config["audience"],
         "exp": exp,
         "iat": iat,
-        "uid": 123456,
+        "uid": random.randint(9999, 99999),
         "traits": traits,
     }
     return jwt.encode(payload, config["secret"], algorithm="HS256").decode("utf-8")

@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
+from tests.utils import get_token
 
 from venueless.core.services.chat import ChatService
 from venueless.core.utils.redis import aioredis
@@ -12,12 +13,16 @@ from venueless.routing import application
 
 
 @asynccontextmanager
-async def world_communicator(client_id=None, named=True):
+async def world_communicator(client_id=None, named=True, token=None):
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
-    await communicator.send_json_to(
-        ["authenticate", {"client_id": client_id or str(uuid.uuid4())}]
-    )
+    if token:
+        await communicator.send_json_to(["authenticate", {"token": token}])
+
+    else:
+        await communicator.send_json_to(
+            ["authenticate", {"client_id": client_id or str(uuid.uuid4())}]
+        )
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
     communicator.context = response[1]
@@ -78,6 +83,8 @@ async def test_join_leave(chat_room):
                 "event_id": 1,
                 "event_type": "channel.member",
                 "sender": c.context["user.config"]["id"],
+                "edited": None,
+                "replaces": None,
                 "content": {
                     "membership": "join",
                     "user": {
@@ -272,6 +279,8 @@ async def test_subscribe_join_leave(chat_room):
                 "channel": str(chat_room.channel.id),
                 "event_id": 1,
                 "event_type": "channel.member",
+                "edited": None,
+                "replaces": None,
                 "content": {
                     "membership": "join",
                     "user": {
@@ -516,6 +525,8 @@ async def test_fetch_messages_after_join(chat_room):
                 "channel": str(chat_room.channel.id),
                 "event_type": "channel.member",
                 "type": "chat.event",
+                "edited": None,
+                "replaces": None,
                 "content": {
                     "user": {
                         "id": c1.context["user.config"]["id"],
@@ -531,6 +542,8 @@ async def test_fetch_messages_after_join(chat_room):
                 "channel": str(chat_room.channel.id),
                 "type": "chat.event",
                 "event_type": "channel.message",
+                "edited": None,
+                "replaces": None,
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
             }
@@ -591,6 +604,8 @@ async def test_send_message_to_other_client(chat_room):
                 "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
+                "edited": None,
+                "replaces": None,
                 "event_id": 0,
             },
         ]
@@ -605,6 +620,8 @@ async def test_send_message_to_other_client(chat_room):
                 "event_type": "channel.message",
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
+                "edited": None,
+                "replaces": None,
                 "event_id": 0,
             },
         ]
@@ -672,6 +689,8 @@ async def test_no_messages_after_leave(chat_room):
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,
+                "edited": None,
+                "replaces": None,
             },
         ]
 
@@ -733,6 +752,8 @@ async def test_no_message_after_unsubscribe(chat_room):
                 "content": {"type": "text", "body": "Hello world"},
                 "sender": c1.context["user.config"]["id"],
                 "event_id": 0,
+                "edited": None,
+                "replaces": None,
             },
         ]
 
@@ -846,3 +867,94 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
         )
         == 0
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "editor,editee,message_type,success",
+    (
+        ("user", "user", "text", True),
+        ("user", "user", "deleted", True),
+        ("user", "admin", "text", False),
+        ("user", "admin", "deleted", False),
+        ("admin", "user", "text", False),
+        ("admin", "user", "deleted", True),
+        ("admin", "admin", "text", True),
+        ("admin", "admin", "deleted", True),
+    ),
+)
+async def test_edit_messages(world, chat_room, editor, editee, message_type, success):
+    editor_token = get_token(world, [editor])
+    editee_token = get_token(world, [editee]) if editor != editee else None
+    channel_id = str(chat_room.channel.id)
+    async with world_communicator(token=editor_token) as c1, world_communicator(
+        token=editee_token
+    ) as c2:
+        # Setup
+        await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
+        await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # Join notification c1
+        await c2.send_json_to(["chat.join", 123, {"channel": channel_id}])
+        await c2.receive_json_from()  # Success
+        await c1.receive_json_from()  # Join notification c2
+        await c2.receive_json_from()  # Join notification c2
+
+        edit_self = editor == editee
+        editor, not_editor = c1, c2
+        editee, not_editee = (c1, c2) if edit_self else (c2, c1)
+
+        await editee.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await editee.receive_json_from()  # success
+        await editee.receive_json_from()  # receives message
+        await not_editee.receive_json_from()  # receives message
+
+        event_id = response[2]["event"]["event_id"]
+        content = (
+            {"type": "text", "body": "Goodbye world"}
+            if message_type == "text"
+            else {"type": "deleted"}
+        )
+
+        await editor.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "replaces": event_id,
+                    "content": content,
+                },
+            ]
+        )
+        response = await editor.receive_json_from()  # success
+
+        if success:
+            assert response[0] == "success"
+            assert response[2]["event"]["event_type"] == "channel.message"
+            assert response[2]["event"]["content"] == content
+            assert response[2]["event"]["replaces"] == event_id
+            await editor.receive_json_from()  # broadcast
+            response = await not_editor.receive_json_from()  # broadcast
+            assert response[0] == "chat.event"
+            assert response[1]["event_type"] == "channel.message"
+            assert response[1]["content"] == content
+            assert response[1]["replaces"] == event_id
+        else:
+            assert response[0] == "error"
+            assert response[2]["code"] == "chat.denied"
+            with pytest.raises(asyncio.TimeoutError):
+                await editor.receive_json_from()  # no message to either client
+            with pytest.raises(asyncio.TimeoutError):
+                await not_editor.receive_json_from()  # no message to either client
