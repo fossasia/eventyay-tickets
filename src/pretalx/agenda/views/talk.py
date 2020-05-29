@@ -38,6 +38,7 @@ class TalkList(EventPermissionRequired, Filterable, ListView):
             .select_related("event")
             .prefetch_related("speakers")
             .distinct()
+            .order_by("title")
         )
 
     @context
