@@ -69,6 +69,7 @@ CLEANER = bleach.Cleaner(
             url_re=TLD_REGEX,
             parse_email=True,
             skip_tags=["pre", "code"],
+            callbacks=bleach.linkifier.DEFAULT_CALLBACKS,
         )
     ],
 )
