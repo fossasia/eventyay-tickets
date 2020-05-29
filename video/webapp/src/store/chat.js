@@ -103,6 +103,17 @@ export default {
 				}
 			})
 		},
+		editMessage ({state}, {message, newBody}) {
+			api.call('chat.send', {
+				channel: state.channel,
+				event_type: 'channel.message',
+				replaces: message.event_id,
+				content: {
+					type: 'text',
+					body: newBody
+				}
+			})
+		},
 		updateUser ({state}, {id, update}) {
 			if (!state.usersLookup[id]) return
 			for (const [key, value] of Object.entries(update)) {
@@ -135,6 +146,12 @@ export default {
 					const removeIndex = state.timeline.findIndex(msg => msg.event_id === event.replaces)
 					if (removeIndex) {
 						state.timeline.splice(removeIndex, 1)
+					}
+				} else {
+					// TODO resolve edit chain?
+					const replaceIndex = state.timeline.findIndex(msg => msg.event_id === event.replaces)
+					if (replaceIndex) {
+						state.timeline.splice(replaceIndex, 1, event)
 					}
 				}
 			} else {

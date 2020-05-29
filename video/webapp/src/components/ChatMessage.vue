@@ -3,14 +3,13 @@
 	.avatar-column
 		avatar(:user="user", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
 	template(v-if="message.event_type === 'channel.message'")
-		.content-wrapper(v-if="mode === 'standalone'")
-			.message-header
+		.content-wrapper
+			.message-header(v-if="mode === 'standalone'")
 				.display-name(@click="showAvatarCard") {{ user.profile ? user.profile.display_name : message.sender }}
 				.timestamp {{ timestamp }}
-			.content(v-html="content")
-		.content-wrapper(v-else)
-			span.display-name {{ user.profile ? user.profile.display_name : message.sender }}
-			span.content(v-html="content")
+			.display-name(v-else) {{ user.profile ? user.profile.display_name : message.sender }}
+			chat-input(v-if="editing", :message="message", @send="editMessage")
+			.content(v-else, v-html="content")
 		.actions
 			bunt-icon-button(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')", @click="showMenu") dots-vertical
 	template(v-else-if="message.event_type === 'channel.member'")
@@ -18,7 +17,7 @@
 	//- intercepts all events
 	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
 	.menu(v-if="selected", ref="menu")
-		.edit-message(@click="editMessage") {{ $t('ChatMessage:message-edit:label') }}
+		.edit-message(@click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 		.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
 		avatar(:user="user", :size="128")
@@ -27,16 +26,15 @@
 			bunt-button#btn-ban ban
 </template>
 <script>
+// TODO
+// - cancel editing
+// - handle editing error
 import moment from 'moment'
 import { mapState, mapGetters } from 'vuex'
 import { createPopper } from '@popperjs/core'
-import EmojiRegex from 'emoji-regex'
-import { getEmojiDataFromNative } from 'emoji-mart'
-import emojiData from 'emoji-mart/data/twitter.json'
-import { getEmojiPosition } from 'lib/emoji'
+import { getHTMLWithEmoji } from 'lib/emoji'
 import Avatar from 'components/Avatar'
-
-const emojiRegex = EmojiRegex()
+import ChatInput from 'components/ChatInput'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
@@ -46,11 +44,12 @@ export default {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar },
+	components: { Avatar, ChatInput },
 	data () {
 		return {
 			selected: false,
-			showingAvatarCard: false
+			showingAvatarCard: false,
+			editing: false
 		}
 	},
 	computed: {
@@ -79,10 +78,7 @@ export default {
 			}
 		},
 		content () {
-			return this.message.content?.body?.replace(emojiRegex, match => {
-				const emoji = getEmojiDataFromNative(match, 'twitter', emojiData)
-				return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
-			})
+			return getHTMLWithEmoji(this.message.content?.body)
 		}
 	},
 	methods: {
@@ -94,8 +90,13 @@ export default {
 				placement: 'left-start'
 			})
 		},
-		editMessage () {
+		startEditingMessage () {
 			this.selected = false
+			this.editing = true
+		},
+		editMessage (newBody) {
+			this.editing = false
+			this.$store.dispatch('chat/editMessage', {message: this.message, newBody})
 		},
 		deleteMessage () {
 			this.$store.dispatch('chat/deleteMessage', this.message)
@@ -121,7 +122,6 @@ export default {
 .c-chat-message
 	flex: none
 	display: flex
-	align-items: flex-start
 	padding: 4px 8px
 	position: relative
 	min-height: 48px
@@ -129,14 +129,17 @@ export default {
 	&:hover, .selected
 		background-color: $clr-grey-100
 	.avatar-column
+		flex: none
 		width: 28px
 		display: flex
 		justify-content: flex-end
 	.content-wrapper
+		flex: auto
+		min-width: 0
 		margin-left: 8px
 		padding-top: 6px // ???
 		word-break: break-all
-		.emoji
+		.content .emoji
 			vertical-align: bottom
 			line-height: 20px
 			width: 20px
@@ -144,6 +147,8 @@ export default {
 			display: inline-block
 			background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 			background-size: 5700% 5700%
+	.c-chat-input
+		background-color: $clr-white
 	.system-content
 		color: $clr-secondary-text-light
 		margin-left: 8px
@@ -229,6 +234,8 @@ export default {
 				color: $clr-secondary-text-light
 	&.compact
 		min-height: 36px
+		.display-name, .content
+			display: inline
 		.actions
 			right: 4px
 			top: 2px
