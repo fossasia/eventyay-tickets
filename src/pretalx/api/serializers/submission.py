@@ -58,7 +58,7 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
     @staticmethod
     def get_duration(obj):
-        return obj.export_duration
+        return obj.get_duration()
 
     @cached_property
     def can_view_speakers(self):
