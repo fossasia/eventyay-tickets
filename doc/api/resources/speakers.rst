@@ -17,7 +17,7 @@ biography                             string                     The speaker's s
 submissions                           list                       A list of submission codes, e.g. ``["ABCDEF", "GHIJKL"]``
 avatar                                string                     The speaker avatar URL
 email                                 string                     The speaker's email address. Available if the requesting user has organizer privileges.
-availabilities                        list                       A list of availability objects, containing the fields ``id``, ``start``, ``end``, and ``allDay`` for each availability object. Available if the requesting user has organizer privileges.
+availabilities                        list                       A list of availability objects, containing the fields ``id``, ``start``, ``end``, and ``allDay`` for each availability object. Available if the requesting user has organiser privileges.
 ===================================== ========================== =======================================================
 
 .. versionadded:: 1.1.0

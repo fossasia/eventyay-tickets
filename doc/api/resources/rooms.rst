@@ -15,12 +15,12 @@ The room resource contains the following public fields:
 Field                                 Type                       Description
 ===================================== ========================== =======================================================
 id                                    number                     The unique ID of the room object
-name                                  string                     The name of the room
-description                           string                     The description of the room
+name                                  multi-lingual string       The name of the room
+description                           multi-lingual string       The description of the room
 capacity                              number                     How many people fit in the room
 position                              number                     A number indicating the ordering of the room relative to other rooms, e.g. in schedule visualisations
-speaker_info                          string                     Additional information for speakers.
-availabilities                        list                       A list of objects with a ``start`` and ``end`` attribute, both datetimes. Only present when requested by an organiser
+speaker_info                          multi-lingual string       Additional information for speakers.
+availabilities                        list                       A list of objects with a ``start`` and ``end`` attribute, both datetimes. Only available if the requesting user has organiser privileges.
 ===================================== ========================== =======================================================
 
 Endpoints
