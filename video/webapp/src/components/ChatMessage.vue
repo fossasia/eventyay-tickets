@@ -12,7 +12,7 @@
 			span.display-name {{ user.profile ? user.profile.display_name : message.sender }}
 			span.content(v-html="content")
 		.actions
-			bunt-icon-button(v-if="$features.enabled('chat-moderation')", @click="showMenu") dots-vertical
+			bunt-icon-button(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')", @click="showMenu") dots-vertical
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ user.profile ? user.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
 	//- intercepts all events
@@ -23,12 +23,12 @@
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
 		avatar(:user="user", :size="128")
 		.name {{ user.profile ? user.profile.display_name : this.message.sender }}
-		.actions(v-if="$features.enabled('chat-moderation')")
+		.actions(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')")
 			bunt-button#btn-ban ban
 </template>
 <script>
 import moment from 'moment'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { createPopper } from '@popperjs/core'
 import EmojiRegex from 'emoji-regex'
 import { getEmojiDataFromNative } from 'emoji-mart'
@@ -55,6 +55,7 @@ export default {
 	},
 	computed: {
 		...mapState('chat', ['usersLookup']),
+		...mapGetters(['hasPermission']),
 		isSystemMessage () {
 			return this.message.event_type !== 'channel.message'
 		},
@@ -93,10 +94,11 @@ export default {
 				placement: 'left-start'
 			})
 		},
-		editMessage (event) {
+		editMessage () {
 			this.selected = false
 		},
-		deleteMessage (event) {
+		deleteMessage () {
+			this.$store.dispatch('chat/deleteMessage', this.message)
 			this.selected = false
 		},
 		async showAvatarCard (event) {

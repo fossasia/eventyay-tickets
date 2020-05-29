@@ -60,6 +60,7 @@ export default {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
 			const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+			// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
 			state.timeline.unshift(...results)
 			// assume past events don't just appear and stop forever when results are smaller than count
 			state.beforeCursor = results.length < 25 ? null : results[0].event_id
@@ -92,6 +93,16 @@ export default {
 				}
 			})
 		},
+		deleteMessage ({state}, message) {
+			api.call('chat.send', {
+				channel: state.channel,
+				event_type: 'channel.message',
+				replaces: message.event_id,
+				content: {
+					type: 'deleted'
+				}
+			})
+		},
 		updateUser ({state}, {id, update}) {
 			if (!state.usersLookup[id]) return
 			for (const [key, value] of Object.entries(update)) {
@@ -119,7 +130,16 @@ export default {
 					}
 				}
 			}
-			state.timeline.push(event)
+			if (event.replaces) {
+				if (event.content?.type === 'deleted') {
+					const removeIndex = state.timeline.findIndex(msg => msg.event_id === event.replaces)
+					if (removeIndex) {
+						state.timeline.splice(removeIndex, 1)
+					}
+				}
+			} else {
+				state.timeline.push(event)
+			}
 			switch (event.event_type) {
 				case 'channel.message': break
 				case 'channel.member': handleMembership(event); break
