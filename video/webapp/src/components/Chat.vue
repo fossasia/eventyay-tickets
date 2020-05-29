@@ -3,6 +3,7 @@
 	template(v-if="channel")
 		scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled")
 			infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
+				div
 			template(v-for="message of filteredTimeline")
 				chat-message(:message="message", :mode="mode", :key="message.event_id")
 		.chat-input
@@ -60,16 +61,11 @@ export default {
 			}
 		},
 		async filteredTimeline () {
+			await this.$nextTick()
 			// TODO scroll to bottom when resizing
-			if (this.scrollPosition === 0) {
-				await this.$nextTick()
-				this.$refs.timeline.scrollTop(Infinity)
-			} else {
-				// restore scrollPosition after load
-				await this.$nextTick()
-				const scrollEl = this.$refs.timeline.$refs.content
-				this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
-			}
+			// restore scrollPosition after load
+			const scrollEl = this.$refs.timeline.$refs.content
+			this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
 			this.syncedScroll = true
 		}
 	},
