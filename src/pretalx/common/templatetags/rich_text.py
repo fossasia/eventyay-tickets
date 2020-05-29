@@ -1,3 +1,5 @@
+from functools import partial
+
 import bleach
 import markdown
 from django import template
@@ -57,7 +59,20 @@ ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TL
     reverse=True,
 )
 TLD_REGEX = bleach.linkifier.build_url_re(tlds=ALLOWED_TLDS)
-LINKIFIER = bleach.linkifier.Linker(url_re=TLD_REGEX, parse_email=True)
+CLEANER = bleach.Cleaner(
+    tags=ALLOWED_TAGS,
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    filters=[
+        partial(
+            bleach.linkifier.LinkifyFilter,
+            url_re=TLD_REGEX,
+            parse_email=True,
+            skip_tags=["pre", "code"],
+        )
+    ],
+)
+
 md = markdown.Markdown(
     extensions=[
         "markdown.extensions.nl2br",
@@ -72,12 +87,5 @@ def rich_text(text: str):
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ""
-    body_md = LINKIFIER.linkify(
-        bleach.clean(
-            md.reset().convert(str(text)),
-            tags=ALLOWED_TAGS,
-            attributes=ALLOWED_ATTRIBUTES,
-            protocols=ALLOWED_PROTOCOLS,
-        )
-    )
+    body_md = CLEANER.clean(md.reset().convert(str(text)))
     return mark_safe(body_md)
