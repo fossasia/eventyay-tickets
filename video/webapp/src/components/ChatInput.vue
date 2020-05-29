@@ -17,13 +17,16 @@ bunt-input-outline-container.c-chat-input
 // - parse colol emoji :+1:
 // - close emoji picker
 import EmojiPicker from 'components/EmojiPicker'
-import { getEmojiPosition } from 'lib/emoji'
+import { getEmojiPosition, getHTMLWithEmoji } from 'lib/emoji'
 import { NimbleEmojiIndex } from 'emoji-mart'
 import data from 'emoji-mart/data/twitter.json'
 
 const emojiIndex = new NimbleEmojiIndex(data)
 
 export default {
+	props: {
+		message: Object // initialize with existing message to edit
+	},
 	components: { EmojiPicker },
 	data () {
 		return {
@@ -31,8 +34,11 @@ export default {
 		}
 	},
 	computed: {},
-	created () {},
 	mounted () {
+		// HACK generate contenteditable from initial messag
+		if (this.message) {
+			this.$refs.contenteditable.innerHTML = getHTMLWithEmoji(this.message.content?.body)
+		}
 		document.addEventListener('selectionchange', this.onSelectionchange)
 	},
 	destroyed () {

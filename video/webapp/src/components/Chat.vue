@@ -49,8 +49,7 @@ export default {
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
 		...mapGetters('chat', ['hasJoinedChannel']),
 		filteredTimeline () {
-			if (this.mode === 'standalone') return this.timeline.filter(message => message.content.type !== 'deleted')
-			return this.timeline.filter(message => message.event_type === 'channel.message' && message.content.type !== 'deleted')
+			return this.timeline.filter(message => (this.mode === 'standalone' || message.event_type === 'channel.message') && message.content.type !== 'deleted' && !message.replaces)
 		}
 	},
 	watch: {
