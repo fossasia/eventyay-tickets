@@ -128,6 +128,7 @@ export default {
 	.ql-editor
 		font-size: 16px
 		padding: 0
+		font-family: $font-stack
 		&.ql-blank::before
 			font-style: normal
 			color: var(--clr-text-secondary)
