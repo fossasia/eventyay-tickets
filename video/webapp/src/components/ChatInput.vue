@@ -1,6 +1,6 @@
 <template lang="pug">
 bunt-input-outline-container.c-chat-input
-	.contenteditable(ref="contenteditable", contenteditable="true", @keydown.enter="send", @paste.prevent.stop="onPaste")
+	.editor(ref="editor")
 	.btn-emoji-picker(@click="toggleEmojiPicker")
 		svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24")
 			path(d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10")
@@ -11,17 +11,41 @@ bunt-input-outline-container.c-chat-input
 </template>
 <script>
 // TODO
-// - multiline
-// - intercept copy
 // - parse ascii emoticons ;)
 // - parse colol emoji :+1:
-// - close emoji picker
+// - add scrollbar when overflowing parent
+import Quill from 'quill'
+import 'quill/dist/quill.core.css'
 import EmojiPicker from 'components/EmojiPicker'
-import { getEmojiPosition, getHTMLWithEmoji } from 'lib/emoji'
+import { getEmojiPosition, nativeToOps } from 'lib/emoji'
 import { NimbleEmojiIndex } from 'emoji-mart'
 import data from 'emoji-mart/data/twitter.json'
 
 const emojiIndex = new NimbleEmojiIndex(data)
+
+const Delta = Quill.import('delta')
+const Embed = Quill.import('blots/embed')
+class EmojiBlot extends Embed {
+	static create (value) {
+		const node = super.create()
+		const emoji = emojiIndex.emojis[value]
+		const position = getEmojiPosition(emoji)
+		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+		node.style = `background-position: ${position};`
+		node.dataset.emoji = emoji.id
+		return node
+	}
+
+	static value (node) {
+		return node.dataset.emoji
+	}
+}
+
+EmojiBlot.blotName = 'emoji'
+EmojiBlot.className = 'emoji'
+EmojiBlot.tagName = 'img'
+
+Quill.register(EmojiBlot)
 
 export default {
 	props: {
@@ -35,9 +59,21 @@ export default {
 	},
 	computed: {},
 	mounted () {
-		// HACK generate contenteditable from initial messag
+		this.quill = new Quill(this.$refs.editor, {
+			placeholder: 'Send a message',
+			modules: {
+				keyboard: {
+					bindings: {
+						enter: {
+							key: 'Enter',
+							handler: this.send
+						}
+					}
+				}
+			}
+		})
 		if (this.message) {
-			this.$refs.contenteditable.innerHTML = getHTMLWithEmoji(this.message.content?.body)
+			this.quill.setContents(nativeToOps(this.message.content?.body))
 		}
 		document.addEventListener('selectionchange', this.onSelectionchange)
 	},
@@ -55,44 +91,26 @@ export default {
 			if (!insideEditable) return
 			this.selectedRange = range
 		},
-		onPaste (event) {
-			const text = event.clipboardData.getData('text/plain')
-			document.execCommand('insertText', false, text) // HACK obsolete api
-		},
 		send () {
-			event.preventDefault()
-			let message = ''
-			for (const node of this.$refs.contenteditable.childNodes) {
-				if (node.nodeType === Node.TEXT_NODE) {
-					message += node.textContent
-				} else if (node.dataset?.emoji) {
-					message += emojiIndex.emojis[node.dataset.emoji].native
+			const contents = this.quill.getContents()
+			let text = ''
+			for (const op of contents.ops) {
+				if (typeof op.insert === 'string') {
+					text += op.insert
+				} else if (op.insert.emoji) {
+					text += emojiIndex.emojis[op.insert.emoji].native
 				}
 			}
-			this.$emit('send', message)
-			this.$refs.contenteditable.innerHTML = ''
+			text = text.trim()
+			this.$emit('send', text)
+			this.quill.setContents([{insert: '\n'}])
 		},
 		addEmoji (emoji) {
 			// TODO skin color
 			this.showEmojiPicker = false
-			const selection = window.getSelection()
-			const position = getEmojiPosition(emoji)
-			const emojiEl = document.createElement('img')
-			emojiEl.classList.add('emoji')
-			emojiEl.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-			emojiEl.style = `background-position: ${position};`
-			emojiEl.dataset.emoji = emoji.id
-			if (this.selectedRange) {
-				this.selectedRange.insertNode(emojiEl)
-			} else {
-				this.$refs.contenteditable.appendChild(emojiEl)
-			}
-			const index = Array.from(this.$refs.contenteditable.childNodes).indexOf(emojiEl) + 1
-			const range = document.createRange()
-			range.setStart(this.$refs.contenteditable, index)
-			range.setEnd(this.$refs.contenteditable, index)
-			selection.removeAllRanges()
-			selection.addRange(range)
+			const selection = this.quill.getSelection(true)
+			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.id}), 'user')
+			this.quill.setSelection(selection.index + 1, 0)
 		}
 	}
 }
@@ -102,27 +120,28 @@ export default {
 	position: relative
 	display: flex
 	width: calc(100% - 27px) // width of emoji picker for sidebar mode
-	height: 36px
+	min-height: 36px
 	box-sizing: border-box
 	&.bunt-input-outline-container
-		padding: 8px 32px 8px 32px
-	.contenteditable
-		margin: 0
-		outline: none
+		padding: 8px 32px 6px 36px
+	.ql-editor
 		font-size: 16px
-		height: 20px
-		white-space: nowrap
-		overflow: scroll
-		&::-webkit-scrollbar
-			display: none
-		-ms-overflow-style: none
-		scrollbar-width: none
+		padding: 0
+		&.ql-blank::before
+			font-style: normal
+			color: var(--clr-text-secondary)
+			line-height: 22px
+			left: 0
+		p
+			font-size: 16px
+			line-height: 22px
+			word-break: break-all
 		.emoji
 			margin: 0 2px
-			vertical-align: bottom
-			line-height: 20px
+			line-height: 22px
 			width: 20px
 			height: 20px
+			vertical-align: middle
 			display: inline-block
 			background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 			background-size: 5700% 5700%

@@ -1,14 +1,15 @@
 <template lang="pug">
 .c-chat(:class="[mode]")
 	template(v-if="channel")
-		scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled")
-			infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
-				div
-			template(v-for="message of filteredTimeline")
-				chat-message(:message="message", :mode="mode", :key="message.event_id")
-		.chat-input
-			bunt-button(v-if="!hasJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
-			chat-input(v-else, @send="send")
+		.main-chat
+			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize")
+				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
+					div
+				template(v-for="message of filteredTimeline")
+					chat-message(:message="message", :mode="mode", :key="message.event_id")
+			.chat-input
+				bunt-button(v-if="!hasJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['s']", y)
 			.user(v-for="user of members")
 				avatar(:user="user", :size="28")
@@ -63,8 +64,7 @@ export default {
 			await this.$nextTick()
 			// TODO scroll to bottom when resizing
 			// restore scrollPosition after load
-			const scrollEl = this.$refs.timeline.$refs.content
-			this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
+			this.refreshScrollbar()
 			this.syncedScroll = true
 		}
 	},
@@ -83,6 +83,13 @@ export default {
 			const scrollEl = this.$refs.timeline.$refs.content
 			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight
 		},
+		onResize () {
+			this.refreshScrollbar()
+		},
+		refreshScrollbar () {
+			const scrollEl = this.$refs.timeline.$refs.content
+			this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
+		},
 		join () {
 			this.$store.dispatch('chat/join')
 		},
@@ -97,8 +104,11 @@ export default {
 	flex: auto
 	background-color: $clr-white
 	display: flex
-	flex-direction: column
 	flex: auto
+	.main-chat
+		flex: auto
+		display: flex
+		flex-direction: column
 	.timeline .scroll-content
 		flex: auto
 		display: flex
@@ -110,7 +120,9 @@ export default {
 	.chat-input
 		flex: none
 		border-top: border-separator()
-		height: 56px
+		min-height: 56px
+		padding: 8px 0
+		box-sizing: border-box
 		display: flex
 		justify-content: center
 		align-items: center
@@ -120,17 +132,14 @@ export default {
 	&:not(.standalone)
 		justify-content: flex-end
 	&.standalone
-		display: grid
-		grid-template-rows: calc(100% - 56px) 56px // because safari can't even do "auto" right
-		grid-template-columns: auto 240px
-		grid-template-areas: "timeline sidebar" \
-			"input input"
 		min-height: 0
 		.timeline
 			grid-area: timeline
 		.chat-input
 			grid-area: input
 		.user-list
+			flex: none
+			width: 240px
 			grid-area: sidebar
 			padding: 0 0 0 16px
 			border-left: border-separator()
@@ -141,8 +150,4 @@ export default {
 					font-weight: 600
 					color: $clr-secondary-text-light
 					margin-left: 8px
-		+below('s')
-			grid-template-rows: calc(100% - 56px) 56px
-			grid-template-columns: auto
-			grid-template-areas: "timeline" "input"
 </style>
