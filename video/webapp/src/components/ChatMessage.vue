@@ -139,14 +139,16 @@ export default {
 		margin-left: 8px
 		padding-top: 6px // ???
 		word-break: break-all
-		.content .emoji
-			vertical-align: bottom
-			line-height: 20px
-			width: 20px
-			height: 20px
-			display: inline-block
-			background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
-			background-size: 5700% 5700%
+		.content
+			white-space: pre-wrap
+			.emoji
+				vertical-align: bottom
+				line-height: 20px
+				width: 20px
+				height: 20px
+				display: inline-block
+				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
+				background-size: 5700% 5700%
 	.c-chat-input
 		background-color: $clr-white
 	.system-content
