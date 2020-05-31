@@ -1,27 +1,27 @@
 <template lang="pug">
 .c-chat-message(:class="[mode, {selected, 'system-message': isSystemMessage}]")
 	.avatar-column
-		avatar(:user="user", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+		avatar(:user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="mode === 'standalone'")
-				.display-name(@click="showAvatarCard") {{ user.profile ? user.profile.display_name : message.sender }}
+				.display-name(@click="showAvatarCard") {{ sender.profile ? sender.profile.display_name : message.sender }}
 				.timestamp {{ timestamp }}
-			.display-name(v-else) {{ user.profile ? user.profile.display_name : message.sender }}
+			.display-name(v-else) {{ sender.profile ? sender.profile.display_name : message.sender }}
 			chat-input(v-if="editing", :message="message", @send="editMessage")
 			.content(v-else, v-html="content")
 		.actions
-			bunt-icon-button(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')", @click="showMenu") dots-vertical
+			bunt-icon-button(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", @click="showMenu") dots-vertical
 	template(v-else-if="message.event_type === 'channel.member'")
-		.system-content {{ user.profile ? user.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
+		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
 	//- intercepts all events
 	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
 	.menu(v-if="selected", ref="menu")
-		.edit-message(@click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
+		.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 		.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
-		avatar(:user="user", :size="128")
-		.name {{ user.profile ? user.profile.display_name : this.message.sender }}
+		avatar(:user="sender", :size="128")
+		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
 		.actions(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')")
 			bunt-button#btn-ban ban
 </template>
@@ -53,6 +53,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['user']),
 		...mapState('chat', ['usersLookup']),
 		...mapGetters(['hasPermission']),
 		isSystemMessage () {
@@ -66,7 +67,7 @@ export default {
 			}
 			return 28
 		},
-		user () {
+		sender () {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender}
 		},
 		timestamp () {
