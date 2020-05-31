@@ -142,21 +142,14 @@ export default {
 				}
 			}
 			if (event.replaces) {
-				if (event.content?.type === 'deleted') {
-					const removeIndex = state.timeline.findIndex(msg => msg.event_id === event.replaces)
-					if (removeIndex) {
-						state.timeline.splice(removeIndex, 1)
-					}
-				} else {
-					// TODO resolve edit chain?
-					const replaceIndex = state.timeline.findIndex(msg => msg.event_id === event.replaces)
-					if (replaceIndex) {
-						state.timeline.splice(replaceIndex, 1, event)
-					}
+				// handle replaces like the server would
+				const original = state.timeline.find(msg => msg.event_id === event.replaces)
+				if (original) {
+					original.content = event.content
 				}
-			} else {
-				state.timeline.push(event)
 			}
+			// always push event, even when it is a modifying event => consistent with what server returns on fetch
+			state.timeline.push(event)
 			switch (event.event_type) {
 				case 'channel.message': break
 				case 'channel.member': handleMembership(event); break
