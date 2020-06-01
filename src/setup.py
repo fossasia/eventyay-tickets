@@ -113,7 +113,7 @@ setup(
         "inlinestyler==0.2.*",  # https://github.com/dlanger/inlinestyler/blob/master/CHANGELOG
         "libsass==0.20.*",  # https://sass.github.io/libsass-python/changes.html
         "Markdown==3.2.*",  # https://python-markdown.github.io/change_log/
-        "publicsuffixlist==0.6.*",
+        "publicsuffixlist==0.7.*",
         "python-dateutil==2.8.*",  # https://dateutil.readthedocs.io/en/stable/changelog.html
         "pytz",
         "qrcode==6.1",  # https://github.com/lincolnloop/python-qrcode/blob/master/CHANGES.rst
