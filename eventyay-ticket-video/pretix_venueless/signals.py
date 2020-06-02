@@ -28,7 +28,8 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
         return
     positions = [
         p for p in positions
-        if not sender.settings.venueless_start or sender.settings.venueless.datetime(p.subevent or sender) <= now()
+        if not sender.settings.venueless_start or sender.settings.venueless_start.datetime(p.subevent or sender) <=
+           now()
     ]
 
     template = get_template('pretix_venueless/order_info.html')
