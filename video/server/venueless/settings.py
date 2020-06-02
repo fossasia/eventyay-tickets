@@ -118,6 +118,11 @@ CHANNEL_LAYERS = {
                         "VENUELESS_REDIS_PORT",
                         config.get("redis", "port", fallback="6379"),
                     )
+                    + "/"
+                    + os.getenv(
+                        "VENUELESS_REDIS_DB",
+                        config.get("redis", "db", fallback="0"),
+                    )
                 }
             ],
             "prefix": "venueless:asgi:",
