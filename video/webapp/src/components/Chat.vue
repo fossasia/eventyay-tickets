@@ -109,7 +109,7 @@ export default {
 		display: flex
 		flex-direction: column
 	.timeline
-	  flex: 1
+		flex: 1
 	.timeline .scroll-content
 		flex: auto
 		display: flex
