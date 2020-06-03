@@ -104,11 +104,12 @@ export default {
 	flex: auto
 	background-color: $clr-white
 	display: flex
-	flex: auto
 	.main-chat
 		flex: auto
 		display: flex
 		flex-direction: column
+	.timeline
+	  flex: 1
 	.timeline .scroll-content
 		flex: auto
 		display: flex
