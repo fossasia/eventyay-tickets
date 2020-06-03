@@ -57,7 +57,7 @@ class BBBService:
     def __init__(self, world_id):
         self.world_id = world_id
 
-    async def get_join_url(self, room, display_name, moderator=False):
+    async def get_join_url(self, room, uid, display_name, moderator=False):
         m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
         config = m["config"]
         create_params = get_create_params(room)
@@ -87,6 +87,7 @@ class BBBService:
             {
                 "meetingID": create_params["meetingID"],
                 "fullName": display_name,
+                "userID": uid,
                 "password": create_params["moderatorPW"]
                 if moderator
                 else create_params["attendeePW"],

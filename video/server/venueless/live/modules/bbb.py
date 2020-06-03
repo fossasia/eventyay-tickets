@@ -22,6 +22,7 @@ class BBBModule(BaseModule):
             raise ConsumerException("bbb.join.missing_profile")
         url = await service.get_join_url(
             self.room,
+            str(self.consumer.user.id),
             self.consumer.user.profile.get("display_name"),
             moderator=await self.consumer.world.has_permission_async(
                 user=self.consumer.user,
