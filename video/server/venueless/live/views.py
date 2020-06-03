@@ -64,7 +64,12 @@ class AppView(View):
     def get(self, request, *args, **kwargs):
         world = get_object_or_404(World, domain=request.headers["Host"])
         source = sh.source
-        source = re.sub("<title>[^<]*</title>", f"<title>{world.title}</title>", source, re.IGNORECASE | re.MULTILINE)
+        source = re.sub(
+            "<title>[^<]*</title>",
+            f"<title>{world.title}</title>",
+            source,
+            re.IGNORECASE | re.MULTILINE,
+        )
         source = source.replace(
             "<body>",
             "<script>window.venueless={}</script><body>".format(

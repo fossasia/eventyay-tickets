@@ -120,8 +120,7 @@ CHANNEL_LAYERS = {
                     )
                     + "/"
                     + os.getenv(
-                        "VENUELESS_REDIS_DB",
-                        config.get("redis", "db", fallback="0"),
+                        "VENUELESS_REDIS_DB", config.get("redis", "db", fallback="0"),
                     )
                 }
             ],
