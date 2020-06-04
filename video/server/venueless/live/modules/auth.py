@@ -187,12 +187,12 @@ class AuthModule(BaseModule):
     @command("ban")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def ban(self, body):
-        ok = await set_user_banned(self.consumer.world.id, body.get("id"),)
+        ok = await set_user_banned(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(body.get("id")), {"type": "connection.reload"},
+                GROUP_USER.format(id=body.get("id")), {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")
@@ -200,12 +200,12 @@ class AuthModule(BaseModule):
     @command("silence")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def silence(self, body):
-        ok = await set_user_silenced(self.consumer.world.id, body.get("id"),)
+        ok = await set_user_silenced(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(body.get("id")), {"type": "connection.reload"},
+                GROUP_USER.format(id=body.get("id")), {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")
@@ -213,7 +213,7 @@ class AuthModule(BaseModule):
     @command("reactivate")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def reactivate(self, body):
-        ok = await set_user_free(self.consumer.world.id, body.get("id"),)
+        ok = await set_user_free(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
         else:

@@ -116,6 +116,10 @@ class World(VersionedModel):
         Returns whether a user holds a given permission either on the world or on a specific room.
         ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if user.is_banned:  # noqa
+            # safeguard only
+            return False
+
         if not isinstance(permission, list):
             permission = [permission]
 
@@ -139,6 +143,10 @@ class World(VersionedModel):
         Returns whether a user holds a given permission either on the world or on a specific room.
         ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if user.is_banned:  # noqa
+            # safeguard only
+            return False
+
         if not isinstance(permission, list):
             permission = [permission]
 
@@ -159,6 +167,10 @@ class World(VersionedModel):
 
     def get_all_permissions(self, user):
         result = defaultdict(set)
+        if user.is_banned:  # noqa
+            # safeguard only
+            return result
+
         for role, required_traits in self.trait_grants.items():
             if isinstance(required_traits, list) and all(
                 r in user.traits for r in required_traits
@@ -177,9 +189,8 @@ class World(VersionedModel):
 
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(self.roles.get(grant.role, []))
-
         if user.is_silenced:
-            for k, v in result:
-                v &= MAX_PERMISSIONS_IF_SILENCED
+            for k, v in result.items():
+                result[k] &= MAX_PERMISSIONS_IF_SILENCED
 
         return result

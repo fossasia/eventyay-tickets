@@ -159,34 +159,34 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
 
 @database_sync_to_async
 @atomic
-async def set_user_banned(world=None, user_id=None) -> bool:
-    user = get_user(world_id=world.pk, with_id=user_id)
+def set_user_banned(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.BANNED
-    user.save(update_user=["moderation_state"])
+    user.save(update_fields=["moderation_state"])
     return True
 
 
 @database_sync_to_async
 @atomic
-async def set_user_silenced(world=None, user_id=None) -> bool:
-    user = get_user(world_id=world.pk, with_id=user_id)
+def set_user_silenced(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     if user.moderation_state == User.ModerationState.BANNED:
         return True
     user.moderation_state = User.ModerationState.SILENCED
-    user.save(update_user=["moderation_state"])
+    user.save(update_fields=["moderation_state"])
     return True
 
 
 @database_sync_to_async
 @atomic
-async def set_user_free(world=None, user_id=None) -> bool:
-    user = get_user(world_id=world.pk, with_id=user_id)
+def set_user_free(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.NONE
-    user.save(update_user=["moderation_state"])
+    user.save(update_fields=["moderation_state"])
     return True

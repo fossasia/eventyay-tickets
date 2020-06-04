@@ -167,3 +167,39 @@ async def test_check_async(world, chat_room, bbb_room):
     assert not await world.has_permission_async(
         user=user, permission=Permission.ROOM_INVITE, room=chat_room
     )
+
+
+@pytest.mark.django_db
+def test_user_silenced(world, chat_room, bbb_room):
+    user = User.objects.create(
+        world=world,
+        profile={},
+        traits=["trait123", "trait456"],
+        moderation_state=User.ModerationState.SILENCED,
+    )
+    assert user.get_role_grants() == set()
+    world.trait_grants["admin"] = ["trait123"]
+    world.save()
+
+    assert not world.has_permission(
+        user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+    )
+
+    assert Permission.ROOM_CHAT_SEND not in world.get_all_permissions(user)[world]
+    assert Permission.ROOM_CHAT_SEND not in world.get_all_permissions(user)[chat_room]
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_user_silenced_async(world, chat_room, bbb_room):
+    user = await database_sync_to_async(User.objects.create)(
+        world=world,
+        profile={},
+        traits=["trait123", "trait456"],
+        moderation_state=User.ModerationState.SILENCED,
+    )
+    world.trait_grants["room_creator"] = ["trait123"]
+    await database_sync_to_async(world.save)()
+    assert not await world.has_permission_async(
+        user=user, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+    )
