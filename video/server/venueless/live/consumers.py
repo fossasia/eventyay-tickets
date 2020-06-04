@@ -140,7 +140,10 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             if message["type"] == "connection.drop":
                 return await self.close()
             elif message["type"] == "connection.reload":
-                return await self.send_json(["connection.reload", {}])
+                await self.send_json(["connection.reload", {}])
+                await asyncio.sleep(2)
+                await self.close()
+                return
             elif message["type"] == "connection.replaced":
                 await self.send_error(
                     code="connection.replaced", message="Connection replaced"

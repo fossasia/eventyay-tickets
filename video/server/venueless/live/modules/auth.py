@@ -11,7 +11,7 @@ from venueless.core.services.user import (
     get_public_users,
     login,
     update_user,
-)
+    get_user, set_user_banned, set_user_free, set_user_silenced)
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -141,7 +141,7 @@ class AuthModule(BaseModule):
     async def fetch(self, body):
         if "ids" in body:
             users = await get_public_users(
-                self.consumer.world.id, body.get("ids")[:100]
+                self.consumer.world.id, ids=body.get("ids")[:100]
             )
             await self.consumer.send_success({u["id"]: u for u in users})
         else:
@@ -160,3 +160,48 @@ class AuthModule(BaseModule):
                 GROUP_WORLD.format(id=self.consumer.world.id),
                 self.consumer.channel_name,
             )
+
+    @command("list")
+    @require_world_permission(Permission.WORLD_USERS_LIST)
+    async def list(self, body):
+        users = await get_public_users(
+            self.consumer.world.pk,
+        )
+        await self.consumer.send_success({"results": users})
+
+    @command("ban")
+    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    async def ban(self, body):
+        ok = await set_user_banned(self.consumer.world.id, body.get("id"),)
+        if ok:
+            await self.consumer.send_success({})
+            # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
+            await self.consumer.channel_layer.group_send(
+                GROUP_USER.format(body.get('id')),
+                {"type": "connection.reload"},
+            )
+        else:
+            await self.consumer.send_error(code="user.not_found")
+
+    @command("silence")
+    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    async def silence(self, body):
+        ok = await set_user_silenced(self.consumer.world.id, body.get("id"),)
+        if ok:
+            await self.consumer.send_success({})
+            # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
+            await self.consumer.channel_layer.group_send(
+                GROUP_USER.format(body.get('id')),
+                {"type": "connection.reload"},
+            )
+        else:
+            await self.consumer.send_error(code="user.not_found")
+
+    @command("reactivate")
+    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    async def reactivate(self, body):
+        ok = await set_user_free(self.consumer.world.id, body.get("id"),)
+        if ok:
+            await self.consumer.send_success({})
+        else:
+            await self.consumer.send_error(code="user.not_found")

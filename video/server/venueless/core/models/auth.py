@@ -8,7 +8,6 @@ from venueless.core.models.cache import VersionedModel
 
 
 class User(VersionedModel):
-class User(models.Model):
     class ModerationState(models.TextChoices):
         NONE = ""
         SILENCED = "silenced"

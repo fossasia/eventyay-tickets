@@ -10,6 +10,8 @@ class Permission(Enum):
     WORLD_ROOMS_CREATE_STAGE = "world:rooms.create.stage"
     WORLD_ROOMS_CREATE_CHAT = "world:rooms.create.chat"
     WORLD_ROOMS_CREATE_BBB = "world:rooms.create.bbb"
+    WORLD_USERS_LIST = "world:users.list"
+    WORLD_USERS_MANAGE = "world:users.manage"
     ROOM_ANNOUNCE = "room:announce"
     ROOM_VIEW = "room:view"
     ROOM_UPDATE = "room:update"
@@ -21,3 +23,8 @@ class Permission(Enum):
     ROOM_CHAT_MODERATE = "room:chat.moderate"
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
+
+
+MAX_PERMISSIONS_IF_SILENCED = {
+    Permission.WORLD_VIEW, Permission.ROOM_VIEW, Permission.ROOM_CHAT_READ, Permission.ROOM_CHAT_JOIN,
+}

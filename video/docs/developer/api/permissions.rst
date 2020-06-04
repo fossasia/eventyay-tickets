@@ -16,6 +16,8 @@ are defined::
     world:secrets
     world:api
     world:rooms.create
+    world:users.list
+    world:users.manage
     room:announce
     room:view
     room:update

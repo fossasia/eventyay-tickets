@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import Permission
+from venueless.core.permissions import Permission, MAX_PERMISSIONS_IF_SILENCED
 from venueless.core.utils.json import CustomJSONEncoder
 
 
@@ -40,6 +40,8 @@ def default_roles():
             Permission.ROOM_UPDATE,
             Permission.WORLD_ROOMS_CREATE_BBB,
             Permission.WORLD_ROOMS_CREATE_STAGE,
+            Permission.WORLD_USERS_LIST,
+            Permission.WORLD_USERS_MANAGE,
         ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]
@@ -116,6 +118,10 @@ class World(VersionedModel):
         """
         if not isinstance(permission, list):
             permission = [permission]
+
+        if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
+            return False
+
         if self.has_permission_implicit(
             traits=user.traits, permissions=permission, room=room
         ):
@@ -133,6 +139,10 @@ class World(VersionedModel):
         """
         if not isinstance(permission, list):
             permission = [permission]
+
+        if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
+            return False
+
         if self.has_permission_implicit(
             traits=user.traits, permissions=permission, room=room
         ):
@@ -163,4 +173,9 @@ class World(VersionedModel):
 
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(self.roles.get(grant.role, []))
+            
+        if user.is_silenced:
+            for k, v in result:
+                v &= MAX_PERMISSIONS_IF_SILENCED
+
         return result

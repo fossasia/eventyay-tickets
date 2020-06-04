@@ -37,12 +37,15 @@ def get_public_user(world_id, id):
 
 
 @database_sync_to_async
-def get_public_users(world_id, ids, include_banned=False):
+def get_public_users(world_id, *, ids=None, include_banned=False):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
-    qs = User.objects.filter(id__in=ids, world_id=world_id)
-    if not include_banned:
-        qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
+    if ids:
+        qs = User.objects.filter(id__in=ids, world_id=world_id)
+        if not include_banned:
+            qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
+    else:
+        qs = User.objects.filter(world_id=world_id).order_by('profile__display_name', 'id')
     return [
         {
             "id": str(u["id"]),
@@ -138,6 +141,9 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
     ):
         return
 
+    if user.is_banned:
+        return
+
     return LoginResult(
         user=user,
         world_config=get_world_config_for_user(world, user),
@@ -145,3 +151,38 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
             user.pk, is_volatile=False
         ),
     )
+
+
+@database_sync_to_async
+@atomic
+async def set_user_banned(world=None, user_id=None) -> bool:
+    user = get_user(world_id=world.pk, with_id=user_id)
+    if not user:
+        return False
+    user.moderation_state = User.ModerationState.BANNED
+    user.save(update_user=['moderation_state'])
+    return True
+
+
+@database_sync_to_async
+@atomic
+async def set_user_silenced(world=None, user_id=None) -> bool:
+    user = get_user(world_id=world.pk, with_id=user_id)
+    if not user:
+        return False
+    if user.moderation_state == User.ModerationState.BANNED:
+        return True
+    user.moderation_state = User.ModerationState.SILENCED
+    user.save(update_user=['moderation_state'])
+    return True
+
+
+@database_sync_to_async
+@atomic
+async def set_user_free(world=None, user_id=None) -> bool:
+    user = get_user(world_id=world.pk, with_id=user_id)
+    if not user:
+        return False
+    user.moderation_state = User.ModerationState.NONE
+    user.save(update_user=['moderation_state'])
+    return True
