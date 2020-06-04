@@ -26,14 +26,16 @@ class User(VersionedModel):
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
 
-    def serialize_public(self):
+    def serialize_public(self, include_admin_info=False):
         # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
-        return {
+        d = {
             "id": str(self.id),
             "profile": self.profile,
-            "moderation_state": self.moderation_state,
         }
+        if include_admin_info:
+            d["moderation_state"] = self.moderation_state
+        return d
 
     @property
     def is_banned(self):

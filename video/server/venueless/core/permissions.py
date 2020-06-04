@@ -26,5 +26,8 @@ class Permission(Enum):
 
 
 MAX_PERMISSIONS_IF_SILENCED = {
-    Permission.WORLD_VIEW, Permission.ROOM_VIEW, Permission.ROOM_CHAT_READ, Permission.ROOM_CHAT_JOIN,
+    Permission.WORLD_VIEW,
+    Permission.ROOM_VIEW,
+    Permission.ROOM_CHAT_READ,
+    Permission.ROOM_CHAT_JOIN,
 }

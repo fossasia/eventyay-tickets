@@ -29,29 +29,33 @@ def get_user_by_client_id(world_id, client_id):
 
 
 @database_sync_to_async
-def get_public_user(world_id, id):
+def get_public_user(world_id, id, include_admin_info=False):
     user = get_user_by_id(world_id, id)
     if not user:
         return None
-    return user.serialize_public()
+    return user.serialize_public(include_admin_info=include_admin_info)
 
 
 @database_sync_to_async
-def get_public_users(world_id, *, ids=None, include_banned=False):
+def get_public_users(world_id, *, ids=None, include_admin_info=False):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
-    if ids:
+    if ids is not None:
         qs = User.objects.filter(id__in=ids, world_id=world_id)
-        if not include_banned:
-            qs = qs.exclude(moderation_state=User.ModerationState.BANNED)
     else:
-        qs = User.objects.filter(world_id=world_id).order_by('profile__display_name', 'id')
+        qs = User.objects.filter(world_id=world_id).order_by(
+            "profile__display_name", "id"
+        )
     return [
-        {
-            "id": str(u["id"]),
-            "profile": u["profile"],
-            "moderation_state": u["moderation_state"],
-        }
+        dict(
+            id=str(u["id"]),
+            profile=u["profile"],
+            **(
+                {"moderation_state": u["moderation_state"]}
+                if include_admin_info
+                else {}
+            ),
+        )
         for u in qs.values("id", "profile", "moderation_state")
     ]
 
@@ -160,7 +164,7 @@ async def set_user_banned(world=None, user_id=None) -> bool:
     if not user:
         return False
     user.moderation_state = User.ModerationState.BANNED
-    user.save(update_user=['moderation_state'])
+    user.save(update_user=["moderation_state"])
     return True
 
 
@@ -173,7 +177,7 @@ async def set_user_silenced(world=None, user_id=None) -> bool:
     if user.moderation_state == User.ModerationState.BANNED:
         return True
     user.moderation_state = User.ModerationState.SILENCED
-    user.save(update_user=['moderation_state'])
+    user.save(update_user=["moderation_state"])
     return True
 
 
@@ -184,5 +188,5 @@ async def set_user_free(world=None, user_id=None) -> bool:
     if not user:
         return False
     user.moderation_state = User.ModerationState.NONE
-    user.save(update_user=['moderation_state'])
+    user.save(update_user=["moderation_state"])
     return True

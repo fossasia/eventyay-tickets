@@ -10,8 +10,11 @@ from venueless.core.services.user import (
     get_public_user,
     get_public_users,
     login,
+    set_user_banned,
+    set_user_free,
+    set_user_silenced,
     update_user,
-    get_user, set_user_banned, set_user_free, set_user_silenced)
+)
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -89,7 +92,6 @@ class AuthModule(BaseModule):
                 x.decode("utf8") for x in await connection.zrange(key, 0, -1)
             ]
 
-        logger.debug(f"limit {connection_limit} len {len(channel_names)}")
         if len(channel_names) < connection_limit:
             return
 
@@ -141,11 +143,21 @@ class AuthModule(BaseModule):
     async def fetch(self, body):
         if "ids" in body:
             users = await get_public_users(
-                self.consumer.world.id, ids=body.get("ids")[:100]
+                self.consumer.world.id,
+                ids=body.get("ids")[:100],
+                include_admin_info=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
         else:
-            user = await get_public_user(self.consumer.world.id, body.get("id"),)
+            user = await get_public_user(
+                self.consumer.world.id,
+                body.get("id"),
+                include_admin_info=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
+            )
             if user:
                 await self.consumer.send_success(user)
             else:
@@ -166,6 +178,9 @@ class AuthModule(BaseModule):
     async def list(self, body):
         users = await get_public_users(
             self.consumer.world.pk,
+            include_admin_info=await self.consumer.world.has_permission_async(
+                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+            ),
         )
         await self.consumer.send_success({"results": users})
 
@@ -177,8 +192,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(body.get('id')),
-                {"type": "connection.reload"},
+                GROUP_USER.format(body.get("id")), {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")
@@ -191,8 +205,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_success({})
             # Force user browser to reload instead of drop to kick out of e.g. BBB sessions
             await self.consumer.channel_layer.group_send(
-                GROUP_USER.format(body.get('id')),
-                {"type": "connection.reload"},
+                GROUP_USER.format(body.get("id")), {"type": "connection.reload"},
             )
         else:
             await self.consumer.send_error(code="user.not_found")

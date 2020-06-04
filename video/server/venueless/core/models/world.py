@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import Permission, MAX_PERMISSIONS_IF_SILENCED
+from venueless.core.permissions import MAX_PERMISSIONS_IF_SILENCED, Permission
 from venueless.core.utils.json import CustomJSONEncoder
 
 
@@ -119,7 +119,9 @@ class World(VersionedModel):
         if not isinstance(permission, list):
             permission = [permission]
 
-        if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
             return False
 
         if self.has_permission_implicit(
@@ -140,7 +142,9 @@ class World(VersionedModel):
         if not isinstance(permission, list):
             permission = [permission]
 
-        if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
             return False
 
         if self.has_permission_implicit(
@@ -173,7 +177,7 @@ class World(VersionedModel):
 
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(self.roles.get(grant.role, []))
-            
+
         if user.is_silenced:
             for k, v in result:
                 v &= MAX_PERMISSIONS_IF_SILENCED

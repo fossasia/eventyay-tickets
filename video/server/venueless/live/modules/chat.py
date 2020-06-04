@@ -35,7 +35,12 @@ class ChatModule(BaseModule):
         return {
             "state": None,
             "next_event_id": (await self.service.get_last_id()) + 1,
-            "members": await self.service.get_channel_users(self.channel_id),
+            "members": await self.service.get_channel_users(
+                self.channel_id,
+                include_admin_info=await self.consumer.world.has_permission_async(
+                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                ),
+            ),
         }
 
     async def _unsubscribe(self, clean_volatile_membership=True):
