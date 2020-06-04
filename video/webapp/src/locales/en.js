@@ -33,4 +33,10 @@ export default {
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',
 	'RoomsSidebar:channels-headline:text': 'Channels',
+	'App:fatal-connection-error:world.unknown_world:headline': 'Event not found',
+	'App:fatal-connection-error:else:headline': 'Connection refused',
+	'App:fatal-connection-error:auth.denied:headline': 'This event requires a valid token.',
+	'App:fatal-connection-error:auth.denied:text': 'Please use the link provided by your event organizer.',
+	'App:fatal-connection-error:connection.replaced:headline': 'You opened this event on a new device or tab.',
+	'App:fatal-connection-error:connection.replaced:action': 'Continue (disconnect other device)'
 };

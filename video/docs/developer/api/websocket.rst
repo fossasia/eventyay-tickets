@@ -57,3 +57,8 @@ you receive a message like this::
 If the server would like you to reload the client code, you get a message like this::
 
     <- ["connection.reload", {}]
+
+If the server would like you to disconnect because the user opened too many new connections, you get a message like
+this::
+
+    <- ["error", {"code": "connection.replaced"}]

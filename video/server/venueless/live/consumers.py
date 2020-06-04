@@ -138,6 +138,13 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 return await self.close()
             elif message["type"] == "connection.reload":
                 return await self.send_json(["connection.reload", {}])
+            elif message["type"] == "connection.replaced":
+                await self.send_error(
+                    code="connection.replaced", message="Connection replaced"
+                )
+                await asyncio.sleep(0.5)
+                await self.close()
+                return
             elif message["type"] == "user.broadcast":
                 if self.socket_id != message["socket"]:
                     await self.user.refresh_from_db_if_outdated()

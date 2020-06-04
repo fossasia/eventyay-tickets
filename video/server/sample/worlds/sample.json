@@ -15,6 +15,7 @@
       "record": false,
       "secret": "bogussecret"
     },
+    "connection_limit": 2,
     "JWT_secrets": [
       {
         "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",

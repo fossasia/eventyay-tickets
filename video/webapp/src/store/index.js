@@ -81,6 +81,7 @@ export default new Vuex.Store({
 					case 'auth.invalid_token':
 					case 'auth.denied':
 					case 'auth.missing_id_or_token':
+					case 'connection.replaced':
 						state.fatalConnectionError = error
 						api.close()
 						break

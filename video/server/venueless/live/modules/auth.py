@@ -1,4 +1,5 @@
 import logging
+import time
 
 from channels.db import database_sync_to_async
 from django.conf import settings
@@ -58,12 +59,69 @@ class AuthModule(BaseModule):
                 },
             ]
         )
+
+        await self._enforce_connection_limit()
+
         await self.consumer.channel_layer.group_add(
             GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name
         )
         await self.consumer.channel_layer.group_add(
             GROUP_WORLD.format(id=self.consumer.world.id), self.consumer.channel_name
         )
+
+    async def _enforce_connection_limit(self):
+        connection_limit = self.consumer.world.config.get("connection_limit")
+        if not connection_limit:
+            return
+
+        message = {"type": "connection.replaced"}
+
+        channel_names = []
+        group = GROUP_USER.format(id=self.consumer.user.id)
+        cl = self.consumer.channel_layer
+        key = cl._group_key(group)
+        async with cl.connection(cl.consistent_hash(group)) as connection:
+            # Discard old channels based on group_expiry
+            await connection.zremrangebyscore(
+                key, min=0, max=int(time.time()) - cl.group_expiry
+            )
+            channel_names += [
+                x.decode("utf8") for x in await connection.zrange(key, 0, -1)
+            ]
+
+        logger.debug(f"limit {connection_limit} len {len(channel_names)}")
+        if len(channel_names) < connection_limit:
+            return
+
+        if connection_limit == 1:
+            channels_to_drop = channel_names
+        else:
+            channels_to_drop = channel_names[: -1 * (connection_limit - 1)]
+
+        (
+            connection_to_channel_keys,
+            channel_keys_to_message,
+            channel_keys_to_capacity,
+        ) = cl._map_channel_keys_to_connection(channels_to_drop, message)
+
+        for connection_index, channel_redis_keys in connection_to_channel_keys.items():
+            group_send_lua = (
+                """ for i=1,#KEYS do
+                            redis.call('LPUSH', KEYS[i], ARGV[i])
+                            redis.call('EXPIRE', KEYS[i], %d)
+                        end
+                        """
+                % cl.expiry
+            )
+
+            args = [
+                channel_keys_to_message[channel_key]
+                for channel_key in channel_redis_keys
+            ]
+            async with cl.connection(connection_index) as connection:
+                await connection.eval(
+                    group_send_lua, keys=channel_redis_keys, args=args
+                )
 
     @command("update")
     @require_world_permission(Permission.WORLD_VIEW)
