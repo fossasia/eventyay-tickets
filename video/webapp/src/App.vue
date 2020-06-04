@@ -1,10 +1,26 @@
 <template lang="pug">
 #app(:style="[themeVariables, browserhackStyle]")
-	template(v-if="world")
+	.fatal-connection-error(v-if="fatalConnectionError")
+		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
+			.mdi.mdi-help-circle
+			h1 {{ $t('App:fatal-connection-error:world.unknown_world:headline') }}
+		template(v-else-if="fatalConnectionError.code === 'connection.replaced'")
+			.mdi.mdi-alert-octagon
+			h1 {{ $t('App:fatal-connection-error:connection.replaced:headline') }}
+			bunt-button(@click="reload") {{ $t('App:fatal-connection-error:connection.replaced:action') }}
+		template(v-else-if="fatalConnectionError.code === 'auth.denied' || fatalConnectionError.code === 'auth.missing_id_or_token'")
+			.mdi.mdi-alert-octagon
+			h1 {{ $t('App:fatal-connection-error:auth.denied:headline') }}
+				br
+				| {{ $t('App:fatal-connection-error:auth.denied:text') }}
+		template(v-else)
+			h1 {{ $t('App:fatal-connection-error:else:headline') }}
+		p.code error code: {{ fatalConnectionError.code }}
+	template(v-else-if="world")
 		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
 			.sidebar-backdrop(v-if="$mq.below['s'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",  @close="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		livestream.global-stream(v-if="$mq.above['s'] && streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
 		transition(name="prompt")
@@ -12,18 +28,6 @@
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
 		.disconnected-warning(v-if="!connected") {{ $t('app:disconnected-warning:text') }}
-	.fatal-connection-error(v-else-if="fatalConnectionError")
-		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
-			.mdi.mdi-help-circle
-			h1 Event not found.
-		template(v-else-if="fatalConnectionError.code === 'auth.denied' || fatalConnectionError.code === 'auth.missing_id_or_token'")
-			.mdi.mdi-alert-octagon
-			h1 This event requires a valid token.
-				br
-				| Please use the link provided by your event organizer.
-		template(v-else)
-			h1 Connection refused.
-		p.code error code: {{ fatalConnectionError.code }}
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>
@@ -81,6 +85,9 @@ export default {
 		},
 		toggleSidebar () {
 			this.showSidebar = !this.showSidebar
+		},
+		reload () {
+			location.reload()
 		},
 		roomChange () {
 			if (this.$mq.above.s && this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
@@ -165,6 +172,8 @@ export default {
 			text-align: center
 		.code
 			font-family: monospace
+		.bunt-button
+			themed-button-primary('large')
 	+below('s')
 		grid-template-columns: auto
 		grid-template-rows: 48px auto

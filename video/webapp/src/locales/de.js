@@ -33,4 +33,10 @@ export default {
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',
 	'RoomsSidebar:channels-headline:text': 'Kanäle',
+	'App:fatal-connection-error:world.unknown_world:headline': 'Veranstaltung nicht gefunden',
+	'App:fatal-connection-error:else:headline': 'Verbindung abgelehnt',
+	'App:fatal-connection-error:auth.denied:headline': 'Diese Veranstaltung erfordert eine Authentifizierung.',
+	'App:fatal-connection-error:auth.denied:text': 'Bitte verwenden Sie den Link, den Sie vom Veranstalter erhalten haben.',
+	'App:fatal-connection-error:connection.replaced:headline': 'Sie haben diese Veranstaltung in einem neuen Tab oder auf einem anderen Gerät geöffnet.',
+	'App:fatal-connection-error:connection.replaced:action': 'Fortsetzen (andere Verbindung trennen)'
 };
