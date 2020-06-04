@@ -140,8 +140,10 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
 
     user = get_user(world_id=world.pk, with_client_id=client_id, with_token=token)
 
-    if not user or user.is_banned or not world.has_permission(
-        user=user, permission=Permission.WORLD_VIEW
+    if (
+        not user
+        or user.is_banned
+        or not world.has_permission(user=user, permission=Permission.WORLD_VIEW)
     ):
         return
 

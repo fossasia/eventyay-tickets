@@ -480,7 +480,7 @@ async def test_ban_user(world):
             response = await c_admin.receive_json_from()
             assert response[0] == "success"
 
-            await c_admin.send_json_to(["user.ban", 14, {"id": "bla"}])
+            await c_admin.send_json_to(["user.ban", 14, {"id": str(uuid.uuid4())}])
             response = await c_admin.receive_json_from()
             assert response[0] == "error"
 
@@ -496,7 +496,7 @@ async def test_ban_user(world):
         response = await c_admin.receive_json_from()
         assert response[0] == "success"
 
-        await c_admin.send_json_to(["user.reactivate", 14, {"id": "bla"}])
+        await c_admin.send_json_to(["user.reactivate", 14, {"id": str(uuid.uuid4())}])
         response = await c_admin.receive_json_from()
         assert response[0] == "error"
 
@@ -547,7 +547,7 @@ async def test_silence_user(world, volatile_chat_room):
         response = await c_admin.receive_json_from()
         assert response[0] == "success"
 
-        await c_admin.send_json_to(["user.silence", 14, {"id": "bla"}])
+        await c_admin.send_json_to(["user.silence", 14, {"id": str(uuid.uuid4())}])
         response = await c_admin.receive_json_from()
         assert response[0] == "error"
 
