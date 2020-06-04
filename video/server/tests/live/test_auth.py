@@ -480,6 +480,10 @@ async def test_ban_user(world):
             response = await c_admin.receive_json_from()
             assert response[0] == "success"
 
+            await c_admin.send_json_to(["user.ban", 14, {"id": "bla"}])
+            response = await c_admin.receive_json_from()
+            assert response[0] == "error"
+
             assert ["connection.reload", {}] == await c_user.receive_json_from()
             assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
 
@@ -491,6 +495,10 @@ async def test_ban_user(world):
         await c_admin.send_json_to(["user.reactivate", 14, {"id": user_id}])
         response = await c_admin.receive_json_from()
         assert response[0] == "success"
+
+        await c_admin.send_json_to(["user.reactivate", 14, {"id": "bla"}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "error"
 
         async with world_communicator() as c_user:
             await c_user.send_json_to(["authenticate", {"client_id": "4"}])
@@ -538,6 +546,10 @@ async def test_silence_user(world, volatile_chat_room):
         await c_admin.send_json_to(["user.silence", 14, {"id": user_id}])
         response = await c_admin.receive_json_from()
         assert response[0] == "success"
+
+        await c_admin.send_json_to(["user.silence", 14, {"id": "bla"}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "error"
 
         assert ["connection.reload", {}] == await c_user.receive_json_from()
         assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
