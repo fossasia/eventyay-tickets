@@ -1,8 +1,8 @@
 <template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
-		.logo(v-if="$mq.above['s']")
-			span {{ world.title }}
+		.logo(v-if="$mq.above['s']", :class="{'fit-to-width': theme.logo.fitToWidth}")
+			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
@@ -35,6 +35,7 @@ transition(name="sidebar")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
+import theme from 'theme'
 import Avatar from 'components/Avatar'
 
 export default {
@@ -44,6 +45,7 @@ export default {
 	components: { Avatar },
 	data () {
 		return {
+			theme,
 			lastPointer: null,
 			pointerMovementX: 0,
 			snapBack: false
@@ -123,15 +125,12 @@ export default {
 	.logo
 		font-size: 18px
 		text-align: center
-		margin: 16px 0 32px 0
-		.bunt-icon-button
-			margin-left: 4px
-			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
-			margin: -4px -4px -4px 0
-			.bunt-icon
-				font-size: 18px
-				height: 24px
-				line-height: @height
+		margin: 0 16px
+		height: 56px
+		img
+			height: 100%
+		&.fit-to-width
+			height: auto
 	#btn-close-sidebar
 		margin: 8px
 		icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)

@@ -98,6 +98,7 @@ export default {
 		padding: 8px
 		height: 56px
 		box-sizing: border-box
+		border-bottom: border-separator()
 		img
 			height: 48px
 		.room-info-wrapper

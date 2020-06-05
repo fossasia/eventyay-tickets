@@ -12,7 +12,17 @@ const DEFAULT_COLORS = {
 	sidebar: '#180044'
 }
 
+const DEFAULT_LOGO = {
+	url: '/venueless-logo-full-white.svg',
+	fitToWidth: false
+}
+
 const configColors = config.theme?.colors
+
+const themeConfig = {
+	colors: configColors,
+	logo: Object.assign(DEFAULT_LOGO, config.theme?.logo)
+}
 
 const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = color((configColors ?? DEFAULT_COLORS)[key]), acc), {}) // eslint-disable-line no-sequences
 
@@ -50,4 +60,5 @@ for (const [key, value] of Object.entries(colors)) {
 	themeVariables[`--clr-${kebabCase(key)}`] = color(value).toRgbString()
 }
 
+export default themeConfig
 export { themeVariables }

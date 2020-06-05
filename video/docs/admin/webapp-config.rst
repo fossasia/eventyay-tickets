@@ -19,6 +19,10 @@ Full configuration
 		},
 		"features": [] // enable experimental features
 		"theme": {
+			"logo": {
+				"url": "/venueless-logo-full-white.svg",
+				"fitToWidth": false // optional
+			}
 			"colors": {
 				"primary": '#673ab7', // hightlight color, should be high contrast on white background
 				"sidebar": '#180044'
