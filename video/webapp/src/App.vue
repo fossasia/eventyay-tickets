@@ -67,6 +67,7 @@ export default {
 		}
 	},
 	watch: {
+		world: 'worldChange',
 		room: 'roomChange',
 		$route () {
 			this.showSidebar = false
@@ -89,6 +90,10 @@ export default {
 		reload () {
 			location.reload()
 		},
+		worldChange () {
+			// initial connect
+			document.title = this.world.title
+		},
 		roomChange () {
 			if (this.$mq.above.s && this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
 				this.$store.dispatch('streamRoom', {room: this.room})
@@ -101,6 +106,8 @@ export default {
 					this.$store.dispatch('streamRoom', {room: null})
 				}
 			}
+			// TODO non-room urls
+			document.title = `${this.world.title} | ${this.room.name}`
 		},
 		closeMiniStream () {
 			this.$store.dispatch('streamRoom', {room: null})
