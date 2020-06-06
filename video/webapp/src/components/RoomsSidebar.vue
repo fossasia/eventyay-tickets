@@ -28,7 +28,7 @@ transition(name="sidebar")
 					span {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
 					router-link.room(:to="{name: 'admin'}") Event Config
-					router-link.room(:to="{name: 'admin'}") Users
+					router-link.room(:to="{name: 'admin:users'}") Users
 		.profile(@click="$emit('editProfile')")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
@@ -182,7 +182,7 @@ export default {
 			&:hover
 				background-color: rgba(255, 255, 255, .3)
 				color: var(--clr-sidebar-text-primary)
-			&.router-link-active
+			&.router-link-exact-active
 				background-color: rgba(255, 255, 255, .4)
 				color: var(--clr-sidebar-text-primary)
 			&.router-link-active::before

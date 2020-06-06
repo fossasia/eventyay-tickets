@@ -2,6 +2,8 @@
 import Vue from 'vue'
 import Buntpapier from 'buntpapier'
 import Vuelidate from 'vuelidate'
+import VueVirtualScroller from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import shaka from 'shaka-player'
 import muxjs from 'mux.js'
 import { v4 as uuid } from 'uuid'
@@ -20,6 +22,7 @@ import features from 'features'
 Vue.config.productionTip = false
 Vue.use(Buntpapier)
 Vue.use(Vuelidate)
+Vue.use(VueVirtualScroller)
 Vue.component('scrollbars', Scrollbars)
 Vue.use(MediaQueries)
 // auth.

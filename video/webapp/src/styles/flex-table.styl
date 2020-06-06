@@ -1,0 +1,33 @@
+flex-table()
+	width: 100%
+	font-size: 13px
+	flex: 1
+	display: flex
+	flex-direction: column
+	overflow: hidden
+	.header, .table-row
+		height: 48px
+		line-height: 48px
+		text-align: left
+		display: flex
+		> *
+			padding: 0 24px
+
+	.header
+		background-color: $clr-grey-50
+		font-weight: 600
+		flex-shrink: 0
+		border-bottom: border-separator()
+
+	.tbody
+		position: relative
+		flex: auto
+
+		.table-row
+			border-top: border-separator()
+			overflow: hidden
+			position: relative
+			&.active
+				background-color: $clr-grey-100
+			&:hover
+				background-color: $clr-grey-100
