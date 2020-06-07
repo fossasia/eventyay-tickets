@@ -104,17 +104,17 @@ a silenced user can still read everything but cannot join video calls and cannot
 
 To ban a user, send::
 
-    => ["user.ban", 123, {"ids": "1234"}]
+    => ["user.ban", 123, {"id": "1234"}]
     <- ["success", 123, {}]
 
 To silence a user, send::
 
-    => ["user.silence", 123, {"ids": "1234"}]
+    => ["user.silence", 123, {"id": "1234"}]
     <- ["success", 123, {}]
 
 Trying to silence a banned user will be ignored.
 
 To fully reinstantiate either a banned or silenced user, send::
 
-    => ["user.reactivate", 123, {"ids": "1234"}]
+    => ["user.reactivate", 123, {"id": "1234"}]
     <- ["success", 123, {}]
