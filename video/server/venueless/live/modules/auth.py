@@ -187,6 +187,9 @@ class AuthModule(BaseModule):
     @command("ban")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def ban(self, body):
+        if body.get("id") == str(self.consumer.user.id):
+            await self.consumer.send_error(code="user.ban.self")
+            return
         ok = await set_user_banned(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
@@ -200,6 +203,9 @@ class AuthModule(BaseModule):
     @command("silence")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def silence(self, body):
+        if body.get("id") == str(self.consumer.user.id):
+            await self.consumer.send_error(code="user.silence.self")
+            return
         ok = await set_user_silenced(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
@@ -213,6 +219,9 @@ class AuthModule(BaseModule):
     @command("reactivate")
     @require_world_permission(Permission.WORLD_USERS_MANAGE)
     async def reactivate(self, body):
+        if body.get("id") == str(self.consumer.user.id):
+            await self.consumer.send_error(code="user.reactivate.self")
+            return
         ok = await set_user_free(self.consumer.world, body.get("id"),)
         if ok:
             await self.consumer.send_success({})
