@@ -16,7 +16,7 @@
 				.id(:title="user.id") {{ user.id }}
 				.name {{ user.profile.display_name }}
 				.state {{ user.moderation_state }}
-				.actions
+				.actions(v-if="user.id !== ownUser.id")
 					//- moderation_state
 					.placeholder.mdi.mdi-dots-horizontal
 					bunt-button.btn-reactivate(
@@ -45,6 +45,7 @@
 <script>
 // TODO
 // - search
+import { mapState } from 'vuex'
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
 import Avatar from 'components/Avatar'
@@ -59,6 +60,9 @@ export default {
 		}
 	},
 	computed: {
+		...mapState({
+			ownUser: 'user'
+		}),
 		filteredUsers () {
 			if (!this.users) return
 			if (!this.search) return this.users

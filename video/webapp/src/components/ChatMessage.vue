@@ -22,8 +22,27 @@
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
 		avatar(:user="sender", :size="128")
 		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
-		.actions(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate')")
-			bunt-button#btn-ban ban
+		template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
+			.moderation-state {{ sender.moderation_state }}
+			.actions
+				bunt-button.btn-reactivate(
+					v-if="sender.moderation_state",
+					:loading="moderating === 'reactivate'",
+					:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
+					@click="moderateAction(user, 'reactivate')", :key="`${user.id}-reactivate`")
+					| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
+				bunt-button.btn-ban(
+					v-if="sender.moderation_state !== 'banned'",
+					:loading="moderating === 'ban'",
+					:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
+					@click="moderateAction(user, 'ban')", :key="`${user.id}-ban`")
+					| ban
+				bunt-button.btn-silence(
+					v-if="!sender.moderation_state",
+					:loading="moderating === 'silence'",
+					:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
+					@click="moderateAction(user, 'silence')", :key="`${user.id}-silence`")
+					| silence
 </template>
 <script>
 // TODO
@@ -49,7 +68,9 @@ export default {
 		return {
 			selected: false,
 			showingAvatarCard: false,
-			editing: false
+			editing: false,
+			moderating: false,
+			moderationError: null
 		}
 	},
 	computed: {
@@ -115,6 +136,19 @@ export default {
 					}
 				}]
 			})
+		},
+		async moderateAction (user, action) {
+			this.moderating = action
+			this.moderationError = null
+			try {
+				await this.$store.dispatch('chat/moderateUser', {action, user: this.sender})
+			} catch (error) {
+				this.moderationError = {
+					action,
+					message: this.$t(`error:${error.code}`)
+				}
+			}
+			user.moderating = null
 		}
 	}
 }
@@ -216,8 +250,12 @@ export default {
 			margin-top: 8px
 		.actions
 			margin-top: 16px
-			#btn-ban
-				button-style(color: $clr-danger)
+			.btn-reactivate
+				button-style(style: clear, color: $clr-success, text-color: $clr-success)
+			.btn-ban
+				button-style(style: clear, color: $clr-danger, text-color: $clr-danger)
+			.btn-silence
+				button-style(style: clear, color: $clr-deep-orange, text-color: $clr-deep-orange)
 	&.system-message
 		min-height: 28px
 		.c-avatar
