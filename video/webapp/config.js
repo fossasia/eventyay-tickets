@@ -4,7 +4,7 @@ let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	config = {
 		api: {
-			socket: 'ws://localhost:8000/ws/world/sample/'
+			socket: 'ws://localhost:8375/ws/world/sample/'
 		}
 	}
 } else {
