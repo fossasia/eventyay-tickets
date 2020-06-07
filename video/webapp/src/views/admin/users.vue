@@ -1,6 +1,8 @@
 <template lang="pug">
 .c-admin-users
-	h2 Users
+	.header
+		h2 Users
+		bunt-input.search(name="search", placeholder="Search users", icon="search", v-model="search")
 	.users-list
 		.header
 			.avatar
@@ -8,7 +10,7 @@
 			.name Name
 			.state State
 			.actions
-		RecycleScroller.tbody.bunt-scrollbar(v-if="users", :items="users", :item-size="48", v-slot="{item: user}", v-scrollbar.y="")
+		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredUsers", :items="filteredUsers", :item-size="48", v-slot="{item: user}", v-scrollbar.y="")
 			.user.table-row(:class="{error: user.error, updating: user.updating}")
 				avatar.avatar(:user="user", :size="32")
 				.id(:title="user.id") {{ user.id }}
@@ -44,6 +46,7 @@
 // TODO
 // - search
 import api from 'lib/api'
+import fuzzysearch from 'lib/fuzzysearch'
 import Avatar from 'components/Avatar'
 
 export default {
@@ -51,10 +54,17 @@ export default {
 	components: { Avatar },
 	data () {
 		return {
-			users: null
+			users: null,
+			search: ''
 		}
 	},
-	computed: {},
+	computed: {
+		filteredUsers () {
+			if (!this.users) return
+			if (!this.search) return this.users
+			return this.users.filter(user => user.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), user.profile?.display_name?.toLowerCase()))
+		}
+	},
 	async created () {
 		this.users = (await api.call('user.list')).results.map(user => {
 			return {
@@ -90,8 +100,15 @@ export default {
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-white
+	.header
+		background-color: $clr-grey-50
 	h2
 		margin: 16px
+	.search
+		input-style(size: compact)
+		padding: 0
+		margin: 8px
+		flex: none
 	.users-list
 		flex-table()
 		.user
