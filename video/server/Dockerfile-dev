@@ -4,5 +4,5 @@ COPY requirements.txt /requirements.txt
 RUN pip3 install -U pip wheel setuptools && pip3 install -Ur requirements.txt
 ENV VENUELESS_COMMIT_SHA=devcontainer
 WORKDIR /app
-EXPOSE 8000
+EXPOSE 8375
 

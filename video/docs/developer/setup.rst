@@ -25,7 +25,7 @@ To get started, you can use the following command to create the docker container
 
     docker-compose up --build
 
-Our server application will now run on your computer on port 8000, and our web application on port 8880. Both of them
+Our server application will now run on your computer on port 8375, and our web application on port 8880. Both of them
 are configured to automatically restart whenever you change the code, so you can now pick your favorite text editor
 and get started.
 

@@ -5,7 +5,7 @@ services:
             context: ./server
             dockerfile: Dockerfile-dev
         ports:
-            - "8000:8000"
+            - "8375:8375"
         volumes:
             - ./server:/app:ro
             - appdata:/data

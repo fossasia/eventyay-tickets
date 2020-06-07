@@ -12,7 +12,7 @@ server, sends messages and measures response times. To use it, open up the folde
 
 Then, you can use it like this::
 
-    $ npm start ws://localhost:8000/ws/world/sample/
+    $ npm start ws://localhost:8375/ws/world/sample/
 
 To modify the load testing parameters, you can adjust the following command line options:
 
@@ -29,8 +29,8 @@ Note that the regular development webserver started by our docker compose setup 
 setup. To run a more production-like setting, you can run the following commands::
 
     $ docker-compose stop server
-    $ docker-compose run -p 8000:8000 \
-        --entrypoint "gunicorn -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --max-requests 1200 --max-requests-jitter 200 -w 12 venueless.asgi:application" \
+    $ docker-compose run -p 8375:8375 \
+        --entrypoint "gunicorn -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8375 --max-requests 1200 --max-requests-jitter 200 -w 12 venueless.asgi:application" \
         server
 
 Replace ``12`` with two times the number of CPU cores you have.
@@ -43,8 +43,8 @@ To find out which part of the server code is eating your CPU, you can start a pr
 setup, execute the following commands::
 
     $ docker-compose stop server
-    $ docker-compose run -p 8000:8000 \
-        --entrypoint "python manage.py runserver_profiled 0.0.0.0:8000" \
+    $ docker-compose run -p 8375:8375 \
+        --entrypoint "python manage.py runserver_profiled 0.0.0.0:8375" \
         server
 
 Then, apply your load, e.g. run the load testing tool from above or use venueless manually. Once you hit Ctrl+C, the
