@@ -102,7 +102,7 @@ setup(
         "django-compressor==2.4.*",  # https://django-compressor.readthedocs.io/en/latest/changelog/
         "django-context-decorator",
         "django-csp==3.6.*",  # https://github.com/mozilla/django-csp/blob/master/CHANGES
-        "django-filter==2.2.*",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
+        "django-filter==2.3.*",  # https://github.com/carltongibson/django-filter/blob/master/CHANGES.rst
         "django-formset-js-improved==0.5.0.2",  # no changelog, https://github.com/pretix/django-formset-js
         "django-formtools==2.2.*",  # http://django-formtools.readthedocs.io/en/latest/changelog.html
         "django-hierarkey==1.0.*",  # no changelog, https://github.com/raphaelm/django-hierarkey
