@@ -52,6 +52,7 @@ class ManifestView(View):
             "start_url": ".",
             "display": "standalone",
             "background_color": "#000000",
+            "features": ["chat-moderation"]
         }
         return JsonResponse(source)
 
