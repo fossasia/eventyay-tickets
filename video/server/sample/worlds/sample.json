@@ -96,6 +96,8 @@
       "world:rooms.create.bbb",
       "world:announce",
       "world:update",
+      "world:users.list",
+      "world:users.manage",
       "room:delete",
       "room:update"
     ],
@@ -114,6 +116,8 @@
       "world:rooms.create.bbb",
       "world:announce",
       "world:update",
+      "world:users.list",
+      "world:users.manage",
       "room:delete",
       "room:update",
       "world:api",

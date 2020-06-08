@@ -25,7 +25,7 @@ class ChatService:
             qs = qs.filter(volatile=is_volatile)
         return list(str(channel) for channel in qs.values_list("channel", flat=True))
 
-    async def get_channel_users(self, channel):
+    async def get_channel_users(self, channel, include_admin_info=False):
         users = await get_public_users(
             # We're doing an ORM query in an async method, but it's okay, since it is not going to be evaluated but
             # lazily passed to get_public_users which will use it as a subquery :)
@@ -33,6 +33,7 @@ class ChatService:
                 "user_id", flat=True
             ),
             world_id=self.world_id,
+            include_admin_info=include_admin_info,
         )
         return users
 

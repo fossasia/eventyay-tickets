@@ -117,6 +117,20 @@ async def test_missing_permission(bbb_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_silenced(bbb_room):
+    await database_sync_to_async(bbb_room.save)()
+    async with world_communicator(named=False) as c:
+        user = await database_sync_to_async(User.objects.get)()
+        user.moderation_state = User.ModerationState.SILENCED
+        await database_sync_to_async(user.save)()
+        await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+        assert response[2]["code"] == "protocol.denied"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_bbb_down(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:

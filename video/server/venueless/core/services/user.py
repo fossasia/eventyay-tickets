@@ -29,22 +29,34 @@ def get_user_by_client_id(world_id, client_id):
 
 
 @database_sync_to_async
-def get_public_user(world_id, id):
+def get_public_user(world_id, id, include_admin_info=False):
     user = get_user_by_id(world_id, id)
     if not user:
         return None
-    return user.serialize_public()
+    return user.serialize_public(include_admin_info=include_admin_info)
 
 
 @database_sync_to_async
-def get_public_users(world_id, ids):
+def get_public_users(world_id, *, ids=None, include_admin_info=False):
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
-    return [
-        {"id": str(u["id"]), "profile": u["profile"]}
-        for u in User.objects.filter(id__in=ids, world_id=world_id).values(
-            "id", "profile"
+    if ids is not None:
+        qs = User.objects.filter(id__in=ids, world_id=world_id)
+    else:
+        qs = User.objects.filter(world_id=world_id).order_by(
+            "profile__display_name", "id"
         )
+    return [
+        dict(
+            id=str(u["id"]),
+            profile=u["profile"],
+            **(
+                {"moderation_state": u["moderation_state"]}
+                if include_admin_info
+                else {}
+            ),
+        )
+        for u in qs.values("id", "profile", "moderation_state")
     ]
 
 
@@ -128,8 +140,10 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
 
     user = get_user(world_id=world.pk, with_client_id=client_id, with_token=token)
 
-    if not user or not world.has_permission(
-        user=user, permission=Permission.WORLD_VIEW
+    if (
+        not user
+        or user.is_banned
+        or not world.has_permission(user=user, permission=Permission.WORLD_VIEW)
     ):
         return
 
@@ -140,3 +154,38 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
             user.pk, is_volatile=False
         ),
     )
+
+
+@database_sync_to_async
+@atomic
+def set_user_banned(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+    if not user:
+        return False
+    user.moderation_state = User.ModerationState.BANNED
+    user.save(update_fields=["moderation_state"])
+    return True
+
+
+@database_sync_to_async
+@atomic
+def set_user_silenced(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+    if not user:
+        return False
+    if user.moderation_state == User.ModerationState.BANNED:
+        return True
+    user.moderation_state = User.ModerationState.SILENCED
+    user.save(update_fields=["moderation_state"])
+    return True
+
+
+@database_sync_to_async
+@atomic
+def set_user_free(world=None, user_id=None) -> bool:
+    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+    if not user:
+        return False
+    user.moderation_state = User.ModerationState.NONE
+    user.save(update_fields=["moderation_state"])
+    return True

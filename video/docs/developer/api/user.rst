@@ -42,6 +42,16 @@ The following error codes are currently used during authentication:
 * ``auth.invalid_token``
 * ``auth.denied``
 
+User objects
+------------
+
+User objects currently contain the following properties:
+
+* ``id``
+* ``profile``
+* ``moderation_state`` (``""``, ``"silenced"``, or ``"banned"``). Only set on *other* users' profiles if you're allowed
+  to perform silencing and banning.
+
 Change user info
 ----------------
 
@@ -75,3 +85,36 @@ If your user data changes, you will receive a broadcast with your new profile. T
 is changed from a different connection::
 
     <= ["user.updated", {"id": "1234", "profile": {…}}]
+
+Fetching a list of users
+------------------------
+
+If you have sufficient permissions, you can fetch a list of all users like this::
+
+    => ["user.list", 123, {"ids": ["1234", "5679"]}]
+    <- ["success", 123, {"1234": {"id": "1234", "profile": {…}}, "5679": {…}}]
+
+.. note:: Pagination will be implemented on this endpoint in the future.
+
+Managing users
+--------------
+
+With sufficient permissions, you can ban or silence a user. A banned user will be locked out from the system completely,
+a silenced user can still read everything but cannot join video calls and cannot send chat messages.
+
+To ban a user, send::
+
+    => ["user.ban", 123, {"id": "1234"}]
+    <- ["success", 123, {}]
+
+To silence a user, send::
+
+    => ["user.silence", 123, {"id": "1234"}]
+    <- ["success", 123, {}]
+
+Trying to silence a banned user will be ignored.
+
+To fully reinstantiate either a banned or silenced user, send::
+
+    => ["user.reactivate", 123, {"id": "1234"}]
+    <- ["success", 123, {}]

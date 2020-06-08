@@ -27,7 +27,7 @@
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
 			create-chat-prompt(v-else-if="showChatCreationPrompt", @close="showChatCreationPrompt = false")
-		.disconnected-warning(v-if="!connected") {{ $t('app:disconnected-warning:text') }}
+		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 	bunt-progress-circular(v-else-if="!fatalError", size="huge")
 	.fatal-error(v-if="fatalError") {{ fatalError.message }}
 </template>

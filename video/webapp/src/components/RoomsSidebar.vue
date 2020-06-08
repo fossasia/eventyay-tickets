@@ -22,13 +22,12 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-			template(v-if="$features.enabled('event-admin')")
+			template(v-if="hasPermission('world:users.list')")
 				.buffer
 				.group-title
 					span {{ $t('RoomsSidebar:admin-headline:text') }}
 				.admin
-					router-link.room(:to="{name: 'admin'}") Event Config
-					router-link.room(:to="{name: 'admin'}") Users
+					router-link.room(:to="{name: 'admin:users'}", v-if="hasPermission('world:users.list')") Users
 		.profile(@click="$emit('editProfile')")
 			avatar(:user="user", :size="36")
 			.display-name {{ user.profile.display_name }}
@@ -182,7 +181,7 @@ export default {
 			&:hover
 				background-color: rgba(255, 255, 255, .3)
 				color: var(--clr-sidebar-text-primary)
-			&.router-link-active
+			&.router-link-exact-active
 				background-color: rgba(255, 255, 255, .4)
 				color: var(--clr-sidebar-text-primary)
 			&.router-link-active::before

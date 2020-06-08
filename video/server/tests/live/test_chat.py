@@ -571,7 +571,10 @@ async def test_send_message_to_other_client(chat_room):
         assert response[0] == "success"
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
-        assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+        assert list(response[2]["members"][0].keys()) == [
+            "id",
+            "profile",
+        ]
         response = await c1.receive_json_from()
         assert response[0] == "chat.event"
         assert response[1]["content"]["membership"] == "join"
@@ -649,7 +652,10 @@ async def test_no_messages_after_leave(chat_room):
         assert response[0] == "success"
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
-        assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+        assert list(response[2]["members"][0].keys()) == [
+            "id",
+            "profile",
+        ]
         await c1.receive_json_from()  # join notification c1
         await c2.receive_json_from()  # join notification c2
 
@@ -717,7 +723,10 @@ async def test_no_message_after_unsubscribe(chat_room):
         assert response[0] == "success"
         assert response[2]["state"] is None
         assert len(response[2]["members"]) == 1
-        assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+        assert list(response[2]["members"][0].keys()) == [
+            "id",
+            "profile",
+        ]
         await c1.receive_json_from()  # join notification c2
         await c2.receive_json_from()  # join notification c2
 
@@ -783,7 +792,10 @@ async def test_disconnect_is_no_leave(chat_room):
             assert response[0] == "success"
             assert response[2]["state"] is None
             assert len(response[2]["members"]) == 1
-            assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+            assert list(response[2]["members"][0].keys()) == [
+                "id",
+                "profile",
+            ]
             await c1.receive_json_from()  # join notification c2
             await c2.receive_json_from()  # join notification c2
 
@@ -816,7 +828,10 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
                 assert response[0] == "success"
                 assert response[2]["state"] is None
                 assert len(response[2]["members"]) == 1
-                assert list(response[2]["members"][0].keys()) == ["id", "profile"]
+                assert list(response[2]["members"][0].keys()) == [
+                    "id",
+                    "profile",
+                ]
                 await c1.receive_json_from()  # join notification c2
                 await c2.receive_json_from()  # join notification c2
 

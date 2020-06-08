@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import Permission
+from venueless.core.permissions import MAX_PERMISSIONS_IF_SILENCED, Permission
 from venueless.core.utils.json import CustomJSONEncoder
 
 
@@ -40,6 +40,8 @@ def default_roles():
             Permission.ROOM_UPDATE,
             Permission.WORLD_ROOMS_CREATE_BBB,
             Permission.WORLD_ROOMS_CREATE_STAGE,
+            Permission.WORLD_USERS_LIST,
+            Permission.WORLD_USERS_MANAGE,
         ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]
@@ -114,8 +116,18 @@ class World(VersionedModel):
         Returns whether a user holds a given permission either on the world or on a specific room.
         ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return False
+
         if not isinstance(permission, list):
             permission = [permission]
+
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+
         if self.has_permission_implicit(
             traits=user.traits, permissions=permission, room=room
         ):
@@ -131,8 +143,18 @@ class World(VersionedModel):
         Returns whether a user holds a given permission either on the world or on a specific room.
         ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return False
+
         if not isinstance(permission, list):
             permission = [permission]
+
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+
         if self.has_permission_implicit(
             traits=user.traits, permissions=permission, room=room
         ):
@@ -145,6 +167,10 @@ class World(VersionedModel):
 
     def get_all_permissions(self, user):
         result = defaultdict(set)
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return result
+
         for role, required_traits in self.trait_grants.items():
             if isinstance(required_traits, list) and all(
                 r in user.traits for r in required_traits
@@ -163,4 +189,8 @@ class World(VersionedModel):
 
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(self.roles.get(grant.role, []))
+        if user.is_silenced:
+            for k, v in result.items():
+                result[k] &= MAX_PERMISSIONS_IF_SILENCED
+
         return result

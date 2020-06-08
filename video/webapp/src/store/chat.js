@@ -120,6 +120,18 @@ export default {
 				Vue.set(state.usersLookup[id], key, value)
 			}
 		},
+		async moderateUser ({state}, {user, action}) {
+			const postStates = {
+				ban: 'banned',
+				silence: 'silence',
+				reactivate: null
+			}
+			await api.call(`user.${action}`, {id: user.id})
+			if (state.usersLookup[user.id]) {
+				state.usersLookup[user.id].moderation_state = postStates[action]
+			}
+			// user.moderation_state = postStates[action]
+		},
 		// INCOMING
 		'api::chat.event' ({state}, event) {
 			if (event.channel !== state.channel) return

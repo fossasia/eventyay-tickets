@@ -6,6 +6,7 @@ import jwt
 import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
+from tests.utils import get_token
 
 from venueless.core.models import User
 from venueless.core.services.user import get_user_by_token_id
@@ -41,6 +42,23 @@ async def test_auth_with_client_id(world):
 async def test_no_anonymous_access(world):
     world.trait_grants["attendee"] = ["ticket-holder"]
     await database_sync_to_async(world.save)()
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+        assert response[1] == {"code": "auth.denied"}
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_banned(world):
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"client_id": 4}])
+        response = await c.receive_json_from()
+        user_id = response[1]["user.config"]["id"]
+    user = await database_sync_to_async(User.objects.get)(pk=user_id)
+    user.moderation_state = User.ModerationState.BANNED
+    await database_sync_to_async(user.save)()
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
@@ -418,3 +436,147 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
             "Chat",
             "Gruppenraum 1",
         }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_list_users(world):
+    async with world_communicator() as c:
+        await c.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c.receive_json_from()
+        assert response[0] == "authenticated"
+        user_id = response[1]["user.config"]["id"]
+
+        await c.send_json_to(["user.list", 14, {}])
+        response = await c.receive_json_from()
+        assert response[0] == "error"
+
+        world.trait_grants["admin"] = []
+        await database_sync_to_async(world.save)()
+
+        await c.send_json_to(["user.list", 14, {}])
+        response = await c.receive_json_from()
+        assert response == [
+            "success",
+            14,
+            {"results": [{"id": user_id, "profile": {}, "moderation_state": ""}]},
+        ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_ban_user(world):
+    async with world_communicator() as c_admin:
+        token = get_token(world, ["admin"])
+        await c_admin.send_json_to(["authenticate", {"token": token}])
+        await c_admin.receive_json_from()
+
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+            response = await c_user.receive_json_from()
+            user_id = response[1]["user.config"]["id"]
+
+            await c_admin.send_json_to(["user.ban", 14, {"id": user_id}])
+            response = await c_admin.receive_json_from()
+            assert response[0] == "success"
+
+            await c_admin.send_json_to(["user.ban", 14, {"id": str(uuid.uuid4())}])
+            response = await c_admin.receive_json_from()
+            assert response[0] == "error"
+
+            assert ["connection.reload", {}] == await c_user.receive_json_from()
+            assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
+
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+            response = await c_user.receive_json_from()
+            assert response[1] == {"code": "auth.denied"}
+
+        await c_admin.send_json_to(["user.reactivate", 14, {"id": user_id}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "success"
+
+        await c_admin.send_json_to(["user.reactivate", 14, {"id": str(uuid.uuid4())}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "error"
+
+        async with world_communicator() as c_user:
+            await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+            response = await c_user.receive_json_from()
+            assert response[0] == "authenticated"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_silence_user(world, volatile_chat_room):
+    async with world_communicator() as c_user, world_communicator() as c_admin:
+        token = get_token(world, ["admin"])
+        await c_admin.send_json_to(["authenticate", {"token": token}])
+        await c_admin.receive_json_from()
+
+        await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+        response = await c_user.receive_json_from()
+        user_id = response[1]["user.config"]["id"]
+
+        await c_user.send_json_to(
+            ["user.update", 123, {"profile": {"display_name": "Foo Fighter"}}]
+        )
+        await c_user.receive_json_from()
+
+        await c_user.send_json_to(
+            ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+        )
+        await c_user.receive_json_from()
+        await c_user.receive_json_from()
+        await c_user.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(volatile_chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c_user.receive_json_from()
+        assert response[0] == "success"
+        await c_user.receive_json_from()
+
+        await c_admin.send_json_to(["user.silence", 14, {"id": user_id}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "success"
+
+        await c_admin.send_json_to(["user.silence", 14, {"id": str(uuid.uuid4())}])
+        response = await c_admin.receive_json_from()
+        assert response[0] == "error"
+
+        assert ["connection.reload", {}] == await c_user.receive_json_from()
+        assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
+
+    async with world_communicator() as c_user:
+        await c_user.send_json_to(["authenticate", {"client_id": "4"}])
+        await c_user.receive_json_from()
+
+        await c_user.send_json_to(
+            ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+        )
+        await c_user.receive_json_from()
+        await c_user.receive_json_from()
+        await c_user.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(volatile_chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        response = await c_user.receive_json_from()
+        assert response == [
+            "error",
+            123,
+            {"code": "protocol.denied", "message": "Permission denied."},
+        ]
