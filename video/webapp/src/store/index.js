@@ -138,6 +138,7 @@ export default new Vuex.Store({
 			if (state.activeRoom.id !== room) return
 			state.reactions = reactions
 		}
+		// TODO handle user.updated
 	},
 	modules: {
 		chat

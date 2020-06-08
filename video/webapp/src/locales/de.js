@@ -1,5 +1,5 @@
 export default {
-	'app:disconnected-warning:text': 'Verbindung verloren. Verbinde erneut…',
+	'App:disconnected-warning:text': 'Verbindung verloren. Verbinde erneut…',
 	'BigBlueButton:error:text': 'Wir konnten den Videokonferenzserver nicht erreichen, tut uns leid.',
 	'Chat:join-button:tooltip': 'tritt diesem Kanal bei, um zu schreiben',
 	'Chat:join-button:label': 'Chat beitreten',

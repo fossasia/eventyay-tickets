@@ -22,7 +22,11 @@ const routes = [{
 }, {
 	path: '/admin',
 	name: 'admin',
-	component: () => import(/* webpackChunkName: "admin" */ 'views/admin')
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin'),
+}, {
+	path: '/admin/users',
+	name: 'admin:users',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users'),
 }]
 
 const router = new VueRouter({
