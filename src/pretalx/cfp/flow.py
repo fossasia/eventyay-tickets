@@ -448,7 +448,7 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
 
     @property
     def label(self):
-        return _("Account")
+        return _("Profile")
 
     @property
     def _title(self):
