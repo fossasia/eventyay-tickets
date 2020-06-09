@@ -39,4 +39,4 @@ export default {
 	'App:fatal-connection-error:auth.denied:text': 'Please use the link provided by your event organizer.',
 	'App:fatal-connection-error:connection.replaced:headline': 'You opened this event on a new device or tab.',
 	'App:fatal-connection-error:connection.replaced:action': 'Continue (disconnect other device)'
-};
+}
