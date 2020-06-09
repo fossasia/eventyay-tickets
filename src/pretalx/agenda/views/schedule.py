@@ -18,7 +18,7 @@ from django.http import (
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, activate
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
@@ -103,6 +103,11 @@ class ExporterView(ScheduleDataView):
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
+        lang_code = request.GET.get("lang")
+        if lang_code and lang_code in request.event.locales:
+            activate(lang_code)
+        elif "lang" in request.GET:
+            activate(request.event.locale)
         with suppress(Exception):
             exporter.schedule = self.schedule
             exporter.is_orga = getattr(self.request, "is_orga", False)

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`947` In all exporters, you can now select the export language with the ``?lang=`` query parameter. If you don't supply the parameter, pretalx will continue to guess your locale as before. If you provide the parameter without a value, the default event locale will be used.
 - :feature:`934` Instead of being unsorted as before, the list of talks on the schedule page is now sorted alphabetically.
 - :bug:`936` The submission API returned a duration in formatted time, like "00:30", but the API documentation claimed it was a number of minutes. pretalx now returns the number of minutes as promised.
 - :feature:`915` Tracks now have a description attached to them which is shown to the user in the CfP, if specified. This can be used to further explain an otherwise very short track name.
