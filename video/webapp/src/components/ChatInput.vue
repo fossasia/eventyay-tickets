@@ -61,7 +61,7 @@ export default {
 	mounted () {
 		this.quill = new Quill(this.$refs.editor, {
 			placeholder: 'Send a message',
-			formats: [],
+			formats: ['emoji'],
 			modules: {
 				keyboard: {
 					bindings: {
