@@ -7,6 +7,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
+    "lint:nofix": "vue-cli-service lint --no-fix",
     "i18n:report": "vue-i18n-extract report -v './src/**/*.?(js|vue)' -l './src/locales/*.js'",
     "start": "vue-cli-service serve"
   },
