@@ -93,7 +93,7 @@ setup(
     install_requires=[
         "beautifulsoup4==4.9.*",  # https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
         "bleach==3.1.*",  # https://bleach.readthedocs.io/en/latest/changes.html
-        "celery==4.4.3",  # search for "what's new" on http://docs.celeryproject.org/en/latest/, pinned due to https://github.com/celery/celery/issues/6153
+        "celery==4.4.*",  # search for "what's new" on http://docs.celeryproject.org/en/latest/
         "csscompressor==0.9.*",  # 2017-11, no changelog, https://github.com/sprymix/csscompressor
         "cssutils==1.0.*",  # https://pythonhosted.org/cssutils/CHANGELOG.html
         "defusedcsv==1.1.*",  # https://github.com/raphaelm/defusedcsv
