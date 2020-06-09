@@ -3,7 +3,7 @@ import Modernizr from 'modernizr'
 import 'styles/preloader.styl'
 
 const showBrowserBlock = function () {
-	document.getElementById('browser-block').style.display = "block"
+	document.getElementById('browser-block').style.display = 'block'
 	document.body.removeChild(document.getElementById('app'))
 }
 
