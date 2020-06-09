@@ -51,7 +51,7 @@ jobs:
       run: npm ci
       working-directory: ./webapp
     - name: Lint webapp
-      run: npm run lint
+      run: npm run lint:nofix
       working-directory: ./webapp
   i18n:
     name: i18n
