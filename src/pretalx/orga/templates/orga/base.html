@@ -220,7 +220,6 @@
                         {% endfor %}
                     </div>
                 </div>
-                {% endif %}
                 <div class="nav-fold">
                     <span class="has-children">
                         <a class="nav-link nav-link-inner" href="{{ request.event.cfp.urls.text }}">
@@ -254,6 +253,7 @@
                         </a>
                     </div>
                 </div>
+                {% endif %}
             {% endif %}
             {% if can_see_orga_area %}
                 <div class="nav-fold">
