@@ -18,7 +18,8 @@ from django.http import (
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, activate
+from django.utils.translation import activate
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
