@@ -104,7 +104,6 @@ for section in config.sections():
 ## URL SETTINGS
 SITE_URL = config.get("site", "url", fallback="http://localhost")
 SITE_NETLOC = urlparse(SITE_URL).netloc
-INTERNAL_IPS = ("127.0.0.1", "::1")
 ALLOWED_HOSTS = [
     "*"
 ]  # We have our own security middleware to allow for custom event URLs
