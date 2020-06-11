@@ -15,6 +15,7 @@ from venueless.core.services.user import (
     set_user_silenced,
     update_user,
 )
+from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_USER, GROUP_WORLD
 from venueless.live.decorators import command, require_world_permission
 from venueless.live.modules.base import BaseModule
@@ -52,6 +53,10 @@ class AuthModule(BaseModule):
             with configure_scope() as scope:
                 scope.user = {"id": str(self.consumer.user.id)}
 
+        async with aioredis() as redis:
+            redis_read = await redis.hgetall(f"chat:read:{self.consumer.user.id}")
+            read_pointers = {k.decode(): int(v.decode()) for k, v in redis_read.items()}
+
         await self.consumer.send_json(
             [
                 "authenticated",
@@ -59,6 +64,7 @@ class AuthModule(BaseModule):
                     "user.config": self.consumer.user.serialize_public(),
                     "world.config": login_result.world_config,
                     "chat.channels": login_result.chat_channels,
+                    "chat.read_pointers": read_pointers,
                 },
             ]
         )

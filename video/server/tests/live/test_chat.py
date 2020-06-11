@@ -129,6 +129,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
+        event_id = response[1]["event_id"]
 
         assert not await ChatService("sample").membership_is_volatile(
             str(chat_room.channel.id), c.context["user.config"]["id"]
@@ -137,7 +138,11 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         response = await c2.receive_json_from()
         assert response == [
             "chat.channels",
-            {"channels": [str(chat_room.channel.id)]},
+            {
+                "channels": [
+                    {"id": str(chat_room.channel.id), "notification_pointer": event_id}
+                ]
+            },
         ]
 
 
@@ -766,6 +771,9 @@ async def test_no_message_after_unsubscribe(chat_room):
             },
         ]
 
+        response = await c2.receive_json_from()
+        assert response[0] == "chat.notification_pointers"
+
         with pytest.raises(asyncio.TimeoutError):
             await c2.receive_json_from()
 
@@ -933,6 +941,8 @@ async def test_edit_messages(world, chat_room, editor, editee, message_type, suc
         response = await editee.receive_json_from()  # success
         await editee.receive_json_from()  # receives message
         await not_editee.receive_json_from()  # receives message
+        await editee.receive_json_from()  # notification pointer
+        await not_editee.receive_json_from()  # notification pointer
 
         event_id = response[2]["event"]["event_id"]
         content = (
@@ -973,3 +983,161 @@ async def test_edit_messages(world, chat_room, editor, editee, message_type, suc
                 await editor.receive_json_from()  # no message to either client
             with pytest.raises(asyncio.TimeoutError):
                 await not_editor.receive_json_from()  # no message to either client
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_unread_channels(world, chat_room):
+    sender_token = get_token(world, [])
+    receiver_token = get_token(world, [])
+    channel_id = str(chat_room.channel.id)
+    async with world_communicator(token=sender_token) as c1, world_communicator(
+        token=receiver_token
+    ) as c2:
+        # Setup. Both clients join, then c2 unsubscribes again ("background tab")
+        await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
+        await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # Join notification c1
+
+        await c2.send_json_to(["chat.join", 123, {"channel": channel_id}])
+        await c2.receive_json_from()  # Success
+        await c1.receive_json_from()  # Join notification c2
+        await c2.receive_json_from()  # Join notification c2
+
+        await c2.send_json_to(["chat.unsubscribe", 123, {"channel": channel_id}])
+        await c2.receive_json_from()  # Success
+
+        # c1 sends a message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        await c1.receive_json_from()  # success
+        await c1.receive_json_from()  # receives message
+
+        # c1 gets a notification pointer (useless, but currently the case)
+        response = await c1.receive_json_from()  # receives notification pointer
+        assert response[0] == "chat.notification_pointers"
+        assert channel_id in response[1]
+
+        # c2 gets a notification pointer
+        response = await c2.receive_json_from()  # receives notification pointer
+        assert response[0] == "chat.notification_pointers"
+        assert channel_id in response[1]
+
+        # c1 sends a message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        await c1.receive_json_from()  # success
+        response = await c1.receive_json_from()  # receives message
+        event_id = response[1]["event_id"]
+
+        # nobody gets a notification pointer since both are in "unread" state
+
+        # c2 confirms they read the message
+        await c2.send_json_to(
+            ["chat.mark_read", 123, {"channel": channel_id, "id": event_id,},]
+        )
+        await c2.receive_json_from()  # success
+
+        # c1 sends a message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        await c1.receive_json_from()  # success
+        await c1.receive_json_from()  # receives message
+
+        # c2 gets a notification pointer
+        response = await c2.receive_json_from()  # receives notification pointer
+        assert response[0] == "chat.notification_pointers"
+        assert response[1] == {channel_id: event_id + 1}
+
+        with pytest.raises(asyncio.TimeoutError):
+            await c1.receive_json_from()  # no message to either client
+        with pytest.raises(asyncio.TimeoutError):
+            await c2.receive_json_from()  # no message to either client
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_broadcast_read_channels(world, chat_room):
+    token = get_token(world, [])
+    channel_id = str(chat_room.channel.id)
+    async with world_communicator(token=token) as c1, world_communicator(
+        token=token, named=False
+    ) as c2:
+        await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
+        await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # Join notification c1
+
+        await c2.receive_json_from()  # c2 receives new channel list
+
+        # c1 sends a message
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": channel_id,
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                },
+            ]
+        )
+        await c1.receive_json_from()  # success
+        response = await c1.receive_json_from()  # receives message
+        event_id = response[1]["event_id"]
+
+        # c1 gets a notification pointer (useless, but currently the case)
+        response = await c1.receive_json_from()  # receives notification pointer
+        assert response[0] == "chat.notification_pointers"
+        assert channel_id in response[1]
+
+        # c2 gets a notification pointer
+        response = await c2.receive_json_from()  # receives notification pointer
+        assert response[0] == "chat.notification_pointers"
+        assert channel_id in response[1]
+
+        # c2 confirms they read the message
+        await c2.send_json_to(
+            ["chat.mark_read", 123, {"channel": channel_id, "id": event_id,},]
+        )
+        await c2.receive_json_from()  # success
+
+        response = await c1.receive_json_from()
+        assert response == ["chat.read_pointers", {channel_id: event_id}]
+
+        with pytest.raises(asyncio.TimeoutError):
+            await c1.receive_json_from()  # no message to either client
+        with pytest.raises(asyncio.TimeoutError):
+            await c2.receive_json_from()  # no message to either client
+
+    async with world_communicator(token=token) as c3:
+        assert c3.context["chat.channels"] == [
+            {"id": channel_id, "notification_pointer": event_id,}
+        ]
+        assert c3.context["chat.read_pointers"] == {channel_id: event_id}

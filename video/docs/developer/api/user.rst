@@ -21,15 +21,17 @@ client codebase.
 Send client-specific ID, receive everything that's already known about the user::
 
     => ["authenticate", {"client_id": "UUID4"}]
-    <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": []}]
+    <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
 
 With a token, it works just the same way::
 
     => ["authenticate", {"token": "JWTTOKEN"}]
-    <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": []}]
+    <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
 
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
-documentation for membership semantics.
+documentation for membership semantics. The content is strucutred like this::
+
+    "chat.channels": [{"id": "room_0", "notification_pointer": 1234}]
 
 If authentication failes, you receive an error instead::
 
