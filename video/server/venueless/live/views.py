@@ -82,6 +82,7 @@ class AppView(View):
                         },
                         "features": ["chat-moderation"],
                         "locale": world.locale,
+                        "theme": world.config.get("theme", {}),
                     }
                 )
             ),
