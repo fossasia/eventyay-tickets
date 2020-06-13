@@ -192,6 +192,8 @@ export default {
 				line-height: 34px
 				color: var(--clr-sidebar-text-disabled)
 				margin-right: 4px
+			.name
+				ellipsis()
 		.stage
 			&::before
 				content: '\F050D'
