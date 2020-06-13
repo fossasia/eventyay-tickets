@@ -19,7 +19,6 @@ export default new Vuex.Store({
 		permissions: null,
 		schedule: null,
 		activeRoom: null,
-		streamingRoom: null,
 		reactions: null
 	},
 	getters: {
@@ -104,9 +103,6 @@ export default new Vuex.Store({
 			if (!state.world.pretalx?.base_url) return
 			const schedule = await (await fetch(state.world.pretalx.base_url + 'schedule/widget/v1.json')).json()
 			state.schedule = schedule
-		},
-		streamRoom ({state}, {room}) {
-			state.streamingRoom = room
 		},
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
