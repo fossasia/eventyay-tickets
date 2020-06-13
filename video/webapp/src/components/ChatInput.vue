@@ -10,6 +10,7 @@ bunt-input-outline-container.c-chat-input
 	bunt-icon-button#btn-send(@click="send") send
 </template>
 <script>
+/* global ENV_DEVELOPMENT */
 // TODO
 // - parse ascii emoticons ;)
 // - parse colol emoji :+1:
