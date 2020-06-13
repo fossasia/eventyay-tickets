@@ -10,21 +10,17 @@
 				.talk-info(v-if="currentTalk")
 					.current-talk Current talk
 					h3 {{ currentTalk.title }}
-		livestream(v-if="modules['livestream.native'] && streamingRoom !== room", :room="room", :module="modules['livestream.native']")
-		.livestream-placeholder(v-else-if="modules['livestream.native']")
-		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
+		.livestream-placeholder(v-if="modules['livestream.native']")
 		reactions-overlay(v-if="modules['livestream.native']")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="modules['livestream.native']")
 			.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 			reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
-	slot(v-if="streamingRoom && streamingRoom !== room")
 </template>
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
-import BigBlueButton from 'components/BigBlueButton'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 import ReactionsBar from 'components/ReactionsBar'
@@ -35,14 +31,14 @@ export default {
 	props: {
 		roomId: String
 	},
-	components: { BigBlueButton, Chat, Livestream, ReactionsBar, ReactionsOverlay },
+	components: { Chat, Livestream, ReactionsBar, ReactionsOverlay },
 	data () {
 		return {
 			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
-		...mapState(['connected', 'world', 'schedule', 'streamingRoom']),
+		...mapState(['connected', 'world', 'schedule']),
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
