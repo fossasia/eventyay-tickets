@@ -60,6 +60,7 @@ export default {
 	computed: {},
 	mounted () {
 		this.quill = new Quill(this.$refs.editor, {
+			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			placeholder: 'Send a message',
 			formats: ['emoji'],
 			modules: {
