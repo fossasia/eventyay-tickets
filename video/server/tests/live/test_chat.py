@@ -385,6 +385,29 @@ async def test_send_requires_membership(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_send_empty(chat_room):
+    async with world_communicator() as c1:
+        await c1.send_json_to(
+            ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
+        )
+        await c1.receive_json_from()
+        await c1.receive_json_from()
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "channel": str(chat_room.channel.id),
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": ""},
+                },
+            ]
+        )
+        assert await c1.receive_json_from() == ["error", 123, {"code": "chat.empty"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_autofix_numbers(chat_room):
     async with world_communicator() as c1, aioredis() as redis:
         await redis.delete("chat.event_id")
