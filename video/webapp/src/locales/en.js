@@ -1,7 +1,7 @@
 export default {
 	'App:disconnected-warning:text': 'Connection lost! Trying to reconnect…',
 	'BigBlueButton:error:text': 'We could not connect to the video conference server, sorry.',
-	'Chat:join-tooltip:tooltip': 'to start writing, join this channel',
+	'Chat:join-button:tooltip': 'to start writing, join this channel',
 	'Chat:join-button:label': 'join chat',
 	'ChatMessage:join-message:text': 'joined',
 	'ChatMessage:leave-message:text': 'left',
@@ -11,7 +11,7 @@ export default {
 	'CreateStagePrompt:submit:label': 'Create',
 	'CreateStagePrompt:name:label': 'Name',
 	'CreateStagePrompt:name:placeholder': 'fancyawesomestage',
-	'CreateChatPrompt:headline': 'Create a new channel',
+	'CreateChatPrompt:headline:text': 'Create a new channel',
 	'CreateChatPrompt:intro:text': 'Create a new place to discuss a topic you\'d like to talk about.',
 	'CreateChatPrompt:submit:label': 'Create',
 	'CreateChatPrompt:name:label': 'Name',
