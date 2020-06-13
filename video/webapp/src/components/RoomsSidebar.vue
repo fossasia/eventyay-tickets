@@ -128,6 +128,8 @@ export default {
 		height: 56px
 		img
 			height: 100%
+			max-width: 100%
+			object-fit: contain
 		&.fit-to-width
 			height: auto
 	#btn-close-sidebar
