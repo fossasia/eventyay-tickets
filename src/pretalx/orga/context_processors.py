@@ -28,9 +28,13 @@ def orga_events(request):
         return context
 
     if not getattr(request, "event", None):
-        context["nav_global"] = collect_signal(
-            nav_global, {"sender": None, "request": request}
-        )
+        context["nav_global"] = [
+            entry
+            for entry in collect_signal(
+                nav_global, {"sender": None, "request": request}
+            )
+            if entry
+        ]
         return context
 
     _nav_event = []
