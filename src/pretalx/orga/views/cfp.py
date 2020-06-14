@@ -437,6 +437,11 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     def get_permission_object(self):
         return self.get_object() or self.request.event
 
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
+
     def form_valid(self, form):
         messages.success(self.request, "The Submission Type has been saved.")
         form.instance.event = self.request.event
@@ -539,10 +544,15 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_permission_object(self):
         return self.get_object() or self.request.event
 
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result["event"] = self.request.event
+        return result
+
     def form_valid(self, form):
-        messages.success(self.request, _("The track has been saved."))
         form.instance.event = self.request.event
         result = super().form_valid(form)
+        messages.success(self.request, _("The track has been saved."))
         if form.has_changed():
             action = "pretalx.track." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)

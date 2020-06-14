@@ -51,6 +51,9 @@ class SubmissionType(LogMixin, models.Model):
 
     objects = ScopedManager(event="event")
 
+    class Meta:
+        unique_together = (("event", "name"),)
+
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.types}{self.pk}/"
         default = "{base}default"
