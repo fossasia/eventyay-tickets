@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`923` In some settings combinations, reviewers were unable to change or even see their own reviews after submitting them.
 - :feature:`907` pretalx now prevents you from creating multiple tracks or submission types with the same name.
 - :bug:`951` The link to the team settings on the review settings page was incorrect.
 - :bug:`945` Internationalised strings were not always shown as such in the API, sometimes they were instead returned as plain strings.

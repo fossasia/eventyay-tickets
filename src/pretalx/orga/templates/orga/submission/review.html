@@ -117,7 +117,7 @@
         {% bootstrap_form qform layout='event' %}
         {% bootstrap_field form.text layout='event' %}
     {% endif %}
-    {% if can_view_other_reviews %}
+    {% if form.instance.pk %}
     <table class="table review-table table-hover table-responsive-md">
             <tr>
                 <th>{% trans "Score" %}</th>
@@ -159,22 +159,24 @@
                 </td>
             </tr>
             {% endif %}
-            {% for review in reviews %}
-                {% if review != form.instance %}
-                    <tr>
-                        <td>{{ review.score }}</td>
-                        {% for answer in review.answers %}
-                            <td>
-                                {{ answer.answer }}
-                            </td>
-                        {% endfor %}
-                        <td>{{ review.text|rich_text }}</td>
-                        <td>{{ review.user }}</td>
-                    </tr>
-                {% endif %}
-            {% empty %}
-                <tr><td colspan="100">{% trans "Nobody else has submitted a review yet." %}</td></tr>
-            {% endfor %}
+            {% if can_view_other_reviews %}
+                {% for review in reviews %}
+                    {% if review != form.instance %}
+                        <tr>
+                            <td>{{ review.score }}</td>
+                            {% for answer in review.answers %}
+                                <td>
+                                    {{ answer.answer }}
+                                </td>
+                            {% endfor %}
+                            <td>{{ review.text|rich_text }}</td>
+                            <td>{{ review.user }}</td>
+                        </tr>
+                    {% endif %}
+                {% empty %}
+                    <tr><td colspan="100">{% trans "Nobody else has submitted a review yet." %}</td></tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
     {% endif %}
