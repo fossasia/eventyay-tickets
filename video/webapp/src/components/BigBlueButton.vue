@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-bigbluebutton
+.c-bigbluebutton(:class="{background}")
 	.error(v-if="error") {{ $t('BigBlueButton:error:text') }}
 </template>
 <script>
@@ -67,6 +67,10 @@ export default {
 	right: 0
 	width: calc(100vw - var(--sidebar-width))
 	height: calc(var(--vh100) - 56px)
+	&.background
+		pointer-events: none
+		width: 0
+		height: 0
 iframe.bigbluebutton
 	position: fixed
 	bottom: 0
@@ -81,4 +85,7 @@ iframe.bigbluebutton
 		pointer-events: none
 		bottom: calc(var(--vh100) - 48px - 3px)
 		right: 4px + 36px + 4px
+	+below('s')
+		width: 100vw
+		height: calc(var(--vh100) - 56px - 48px)
 </style>
