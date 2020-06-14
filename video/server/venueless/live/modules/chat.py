@@ -232,6 +232,9 @@ class ChatModule(BaseModule):
                     raise ConsumerException("chat.denied")
             await self.service.update_event(other_message, new_content=content)
 
+        if content.get("type") == "text" and not content.get("body"):
+            raise ConsumerException("chat.empty")
+
         try:
             event = await self.service.create_event(
                 channel_id=self.channel_id,

@@ -4,6 +4,7 @@ from urllib.parse import urlencode, urljoin
 
 import aiohttp
 from lxml import etree
+from yarl import URL
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ class BBBService:
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(create_url) as resp:
+                async with session.get(URL(create_url, encoded=True)) as resp:
                     if resp.status != 200:
                         logger.error(
                             f"Could not create BBB meeting. Return code: {resp.status}"

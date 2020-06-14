@@ -128,6 +128,8 @@ export default {
 		height: 56px
 		img
 			height: 100%
+			max-width: 100%
+			object-fit: contain
 		&.fit-to-width
 			height: auto
 	#btn-close-sidebar
@@ -192,6 +194,8 @@ export default {
 				line-height: 34px
 				color: var(--clr-sidebar-text-disabled)
 				margin-right: 4px
+			.name
+				ellipsis()
 		.stage
 			&::before
 				content: '\F050D'

@@ -1,30 +1,27 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
+	.room-info
+		img(v-if="room.picture", :src="room.picture")
+		.room-info-wrapper
+			.room-info-text
+				h2 {{ room.name }}
+				.description {{ room.description }}
+			.talk-info(v-if="currentTalk")
+				.current-talk Current talk
+				h3 {{ currentTalk.title }}
 	.main
-		.room-info
-			img(v-if="room.picture", :src="room.picture")
-			.room-info-wrapper
-				.room-info-text
-					h2 {{ room.name }}
-					.description {{ room.description }}
-				.talk-info(v-if="currentTalk")
-					.current-talk Current talk
-					h3 {{ currentTalk.title }}
-		livestream(v-if="modules['livestream.native'] && streamingRoom !== room", :room="room", :module="modules['livestream.native']")
-		.livestream-placeholder(v-else-if="modules['livestream.native']")
-		big-blue-button(v-else-if="modules['call.bigbluebutton']", :room="room", :module="modules['call.bigbluebutton']")
-		reactions-overlay(v-if="modules['livestream.native']")
-		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
-		.stage-tools(v-if="modules['livestream.native']")
-			.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
-			reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
-	chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
-	slot(v-if="streamingRoom && streamingRoom !== room")
+		.stage(v-if="modules['livestream.native']")
+			.livestream-placeholder
+			reactions-overlay(v-if="modules['livestream.native']")
+			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
+			.stage-tools(v-if="modules['livestream.native']")
+				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
+				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 </template>
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
-import BigBlueButton from 'components/BigBlueButton'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 import ReactionsBar from 'components/ReactionsBar'
@@ -35,14 +32,14 @@ export default {
 	props: {
 		roomId: String
 	},
-	components: { BigBlueButton, Chat, Livestream, ReactionsBar, ReactionsOverlay },
+	components: { Chat, Livestream, ReactionsBar, ReactionsOverlay },
 	data () {
 		return {
 			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
-		...mapState(['connected', 'world', 'schedule', 'streamingRoom']),
+		...mapState(['connected', 'world', 'schedule']),
 		room () {
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
@@ -85,12 +82,12 @@ export default {
 .c-room
 	flex: auto
 	display: flex
+	flex-direction: column
 	background-color: $clr-white
 	min-height: 0
 	.main
 		flex: auto
 		display: flex
-		flex-direction: column
 		min-height: 0
 	.room-info
 		flex: none
@@ -124,6 +121,11 @@ export default {
 				font-weight: 500
 				line-height: 20px
 				margin: 0 0 0 4px
+	.stage
+		display: flex
+		flex-direction: column
+		min-height: 0
+		flex: auto
 	.livestream-placeholder
 		flex: auto
 	.stage-tools
@@ -160,19 +162,19 @@ export default {
 		height: var(--vh100)
 		z-index: 4999
 	&.standalone-chat
-		flex-direction: column
 		.main
-			flex: none
+			flex: auto
 	&:not(.standalone-chat)
 		.c-chat
 			border-left: border-separator()
 			flex: none
 			width: var(--chatbar-width)
 	+below('s')
-		flex-direction: column
 		.main
-			flex: 1 0 auto
-		.c-livestream
+			flex-direction: column
+		.stage
+			flex: none
+		.livestream-placeholder
 			height: 40vh
 			flex: none
 		&:not(.standalone-chat)

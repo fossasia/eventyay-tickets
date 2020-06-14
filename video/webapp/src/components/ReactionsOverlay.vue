@@ -106,5 +106,8 @@ export default {
 		background-size: 5700% 5700%
 	+below('s')
 		width: 100vw
+		height: 40vh
 		right: 0
+		bottom: none
+		top: 48px + 56px
 </style>

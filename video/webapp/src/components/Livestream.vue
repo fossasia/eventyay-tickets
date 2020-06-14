@@ -1,6 +1,5 @@
 <template lang="pug">
 .c-livestream(:class="[`size-${size}`, {playing}]")
-	.mdi.mdi-close(v-if="size === 'mini'", @click="$emit('close')")
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", autoplay, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
@@ -30,7 +29,7 @@ export default {
 			required: true
 		},
 		size: {
-			type: String, // 'normal', 'mini'
+			type: String, // 'normal', 'tiny'
 			default: 'normal'
 		}
 	},
@@ -48,7 +47,9 @@ export default {
 	computed: {
 		...mapState(['streamingRoom'])
 	},
-	created () {},
+	created () {
+		console.log('CREATED')
+	},
 	async mounted () {
 		if (this.streamingRoom !== this.room) {
 			this.$refs.video.muted = true
@@ -224,15 +225,10 @@ export default {
 			opacity: 1
 		.mdi
 			opacity: 1
-	&.size-mini
-		height: 128px
-		width: 230px // TODO total guesstimate
-		.big-button
-			height: 36px
-			width: @height
-			font-size: @height
-			line-height: @height
-			padding: 16px
+	&.size-tiny
+		height: 48px
+		width: 86px // TODO total guesstimate
+		pointer-events: none
 	.offline
 		position: absolute
 		left: 0

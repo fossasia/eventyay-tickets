@@ -22,7 +22,9 @@
 			.sidebar-backdrop(v-if="$mq.below['s'] && showSidebar", @pointerup="showSidebar = false")
 		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
 		router-view(:key="$route.fullPath")
-		livestream.global-stream(v-if="$mq.above['s'] && streamingRoom", ref="globalStream", :room="streamingRoom", :module="streamingRoom.modules.find(module => module.type === 'livestream.native')", :size="streamingRoom === room ? 'normal' : 'mini'", @close="closeMiniStream", :key="streamingRoom.id")
+		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
+		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
+		media-source(v-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		transition(name="prompt")
 			profile-prompt(v-if="!user.profile.display_name || showProfilePrompt", @close="showProfilePrompt = false")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
@@ -39,13 +41,16 @@ import RoomsSidebar from 'components/RoomsSidebar'
 import ProfilePrompt from 'components/ProfilePrompt'
 import CreateStagePrompt from 'components/CreateStagePrompt'
 import CreateChatPrompt from 'components/CreateChatPrompt'
-import Livestream from 'components/Livestream'
+import MediaSource from 'components/MediaSource'
+
+const mediaModules = ['livestream.native', 'call.bigbluebutton']
 
 export default {
-	components: { AppBar, RoomsSidebar, Livestream, ProfilePrompt, CreateStagePrompt, CreateChatPrompt },
+	components: { AppBar, RoomsSidebar, ProfilePrompt, CreateStagePrompt, CreateChatPrompt, MediaSource },
 	data () {
 		return {
 			themeVariables,
+			backgroundRoom: null,
 			showSidebar: false,
 			showProfilePrompt: false,
 			showStageCreationPrompt: false,
@@ -54,9 +59,12 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user', 'streamingRoom']),
+		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
 		room () {
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
+		},
+		roomHasMedia () {
+			return this.room?.modules.some(module => mediaModules.includes(module.type))
 		},
 		// safari cleverly includes the address bar cleverly in 100vh
 		browserhackStyle () {
@@ -94,23 +102,26 @@ export default {
 			// initial connect
 			document.title = this.world.title
 		},
-		roomChange () {
-			if (this.$mq.above.s && this.room && !this.streamingRoom && this.room.modules.some(module => module.type === 'livestream.native')) {
-				this.$store.dispatch('streamRoom', {room: this.room})
-			}
-			if (this.room && this.streamingRoom && !this.$refs.globalStream?.playing) {
-				if (this.room.modules.some(module => module.type === 'livestream.native')) {
-					this.$store.dispatch('streamRoom', {room: this.room})
-				} else {
-					// TODO don't close when mini player is paused and changing rooms
-					this.$store.dispatch('streamRoom', {room: null})
-				}
-			}
+		roomChange (newRoom, oldRoom) {
 			// TODO non-room urls
-			document.title = `${this.world.title} | ${this.room.name}`
-		},
-		closeMiniStream () {
-			this.$store.dispatch('streamRoom', {room: null})
+			let title = this.world.title
+			if (this.room) {
+				title += `| ${this.room.name}`
+			}
+			document.title = title
+
+			if (!this.$mq.above.s) return // no background rooms for mobile
+			if (oldRoom &&
+				!this.backgroundRoom &&
+				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
+				this.$refs.primaryMediaSource.isPlaying()
+			) {
+				this.backgroundRoom = oldRoom
+			}
+			// returning to room currently playing in background should maximize again
+			if (this.backgroundRoom && newRoom === this.backgroundRoom) {
+				this.backgroundRoom = null
+			}
 		}
 	}
 }
@@ -133,17 +144,6 @@ export default {
 		top: 50%
 		left: 50%
 		transform: translate(-50%, -50%)
-	.global-stream
-		position: fixed
-		transition: all .2s ease
-		&.size-mini
-			bottom: calc(var(--vh100) - 128px - 4px)
-			right: 4px
-		&:not(.size-mini)
-			bottom: 56px
-			right: var(--chatbar-width)
-			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
-			height: calc(var(--vh100) - 56px * 2)
 	.prompt-enter-active, .prompt-leave-active
 		transition: opacity .5s
 	.prompt-enter, .prompt-leave-to

@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-home
+.c-home(v-scrollbar.y="")
 	.content(v-html="markdownContent")
 </template>
 <script>
@@ -9,25 +9,15 @@ import MarkdownIt from 'markdown-it'
 const markdownIt = MarkdownIt({
 	breaks: true
 })
+
 export default {
-	components: {},
-	data () {
-		return {
-		}
-	},
 	computed: {
 		...mapState(['world']),
 		markdownContent () {
 			if (!this.world.about) return
 			return markdownIt.render(this.world.about)
 		}
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
