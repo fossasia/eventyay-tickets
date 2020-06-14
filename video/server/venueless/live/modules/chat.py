@@ -33,9 +33,11 @@ class ChatModule(BaseModule):
         await self.service.track_subscription(
             self.channel_id, self.consumer.user.id, self.consumer.socket_id
         )
+        last_id = await self.service.get_last_id()
         return {
             "state": None,
-            "next_event_id": (await self.service.get_last_id()) + 1,
+            "next_event_id": (last_id) + 1,
+            "notification_pointer": last_id,
             "members": await self.service.get_channel_users(
                 self.channel_id,
                 include_admin_info=await self.consumer.world.has_permission_async(
