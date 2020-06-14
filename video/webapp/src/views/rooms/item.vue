@@ -10,8 +10,8 @@
 				.current-talk Current talk
 				h3 {{ currentTalk.title }}
 	.main
-		.stage
-			.livestream-placeholder(v-if="modules['livestream.native']")
+		.stage(v-if="modules['livestream.native']")
+			.livestream-placeholder
 			reactions-overlay(v-if="modules['livestream.native']")
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 			.stage-tools(v-if="modules['livestream.native']")
@@ -162,9 +162,8 @@ export default {
 		height: var(--vh100)
 		z-index: 4999
 	&.standalone-chat
-		flex-direction: column
 		.main
-			flex: none
+			flex: auto
 	&:not(.standalone-chat)
 		.c-chat
 			border-left: border-separator()
