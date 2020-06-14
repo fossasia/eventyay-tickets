@@ -1,5 +1,6 @@
 // TODO
-// - volatile channels are automatically left, so we should remove them from `joinedChannels`. Leaving them in does not make any difference right now though.
+// - volatile channels are automatically left, so we should remove them from `joinedChannels`. Leaving them in does not make any difference right now though. OUTDATED?
+// - use map for joinedChannels
 
 import Vue from 'vue'
 import api from 'lib/api'
@@ -8,6 +9,7 @@ export default {
 	namespaced: true,
 	state: {
 		joinedChannels: null,
+		readPointers: null,
 		channel: null,
 		members: [],
 		usersLookup: {},
@@ -16,34 +18,47 @@ export default {
 		fetchingMessages: false
 	},
 	getters: {
-		hasJoinedChannel (state) {
-			return state.joinedChannels.includes(state.channel)
+		activeJoinedChannel (state) {
+			return state.joinedChannels?.find(channel => channel.id === state.channel)
+		},
+		hasUnreadMessages (state) {
+			return function (channel) {
+				const joinedChannel = state.joinedChannels?.find(c => c.id === channel)
+				return joinedChannel && (!state.readPointers[channel] || joinedChannel.notification_pointer > state.readPointers[channel])
+			}
 		}
 	},
 	mutations: {
 		setJoinedChannels (state, channels) {
 			state.joinedChannels = channels
+		},
+		setReadPointers (state, readPointers) {
+			state.readPointers = readPointers
 		}
 	},
 	actions: {
 		disconnected ({state}) {
 			state.channel = null
 		},
-		async subscribe ({state, dispatch, rootState}, {channel, config}) {
+		async subscribe ({state, dispatch, getters, rootState}, {channel, config}) {
 			if (!rootState.connected) return
 			if (state.channel) {
 				dispatch('unsubscribe')
 			}
-			const { next_event_id: beforeCursor, members } = await api.call('chat.subscribe', {channel})
+			const { next_event_id: beforeCursor, members, notification_pointer: notificationPointer } = await api.call('chat.subscribe', {channel})
 			state.channel = channel
 			state.members = members
 			state.usersLookup = members.reduce((acc, member) => { acc[member.id] = member; return acc }, {})
 			state.timeline = []
 			state.beforeCursor = beforeCursor
-			dispatch('fetchMessages')
+			if (getters.activeJoinedChannel) {
+				getters.activeJoinedChannel.notification_pointer = notificationPointer
+			}
 			if (config?.volatile) { // autojoin volatile channels
 				dispatch('join')
 			}
+			await dispatch('fetchMessages')
+			dispatch('markChannelRead')
 		},
 		async unsubscribe ({state}) {
 			if (!state.channel) return
@@ -53,8 +68,8 @@ export default {
 			await api.call('chat.unsubscribe', {channel})
 		},
 		async join ({state}) {
-			await api.call('chat.join', {channel: state.channel})
-			state.joinedChannels.push(state.channel)
+			const response = await api.call('chat.join', {channel: state.channel})
+			state.joinedChannels.push({id: state.channel, notification_pointer: response.notification_pointer})
 		},
 		async fetchMessages ({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
@@ -76,6 +91,14 @@ export default {
 				}
 			}
 			await dispatch('fetchUsers', Array.from(missingProfiles))
+		},
+		async markChannelRead ({state}) {
+			const pointer = state.timeline[state.timeline.length - 1].event_id
+			await api.call('chat.mark_read', {
+				channel: state.channel,
+				id: pointer
+			})
+			Vue.set(state.readPointers, state.channel, pointer)
 		},
 		async fetchUsers ({state}, ids) {
 			const users = await api.call('user.fetch', {ids})
@@ -133,7 +156,7 @@ export default {
 			// user.moderation_state = postStates[action]
 		},
 		// INCOMING
-		'api::chat.event' ({state}, event) {
+		'api::chat.event' ({state, dispatch}, event) {
 			if (event.channel !== state.channel) return
 			const handleMembership = (event) => {
 				switch (event.content.membership) {
@@ -166,9 +189,22 @@ export default {
 				case 'channel.message': break
 				case 'channel.member': handleMembership(event); break
 			}
+			dispatch('markChannelRead')
 		},
 		'api::chat.channels' ({state}, {channels}) {
 			state.joinedChannels = channels
+		},
+		'api::chat.read_pointers' ({state}, readPointers) {
+			for (const [channel, pointer] of Object.entries(readPointers)) {
+				Vue.set(state.readPointers, channel, pointer)
+			}
+		},
+		'api::chat.notification_pointers' ({state}, notificationPointers) {
+			for (const [channelId, pointer] of Object.entries(notificationPointers)) {
+				const channel = state.joinedChannels.find(c => c.id === channelId)
+				if (!channel) continue
+				channel.notification_pointer = pointer
+			}
 		}
 	}
 }

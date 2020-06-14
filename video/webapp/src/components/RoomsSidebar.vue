@@ -20,7 +20,7 @@ transition(name="sidebar")
 			.chats
 				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}")
+				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 			template(v-if="hasPermission('world:users.list')")
 				.buffer
@@ -52,6 +52,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
+		...mapGetters('chat', ['hasUnreadMessages']),
 		...mapGetters(['hasPermission']),
 		style () {
 			if (this.pointerMovementX === 0) return
@@ -76,11 +77,6 @@ export default {
 			}
 			return rooms
 		}
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
 	},
 	methods: {
 		onPointerdown (event) {
@@ -180,6 +176,7 @@ export default {
 			padding: 0 24px
 			color: var(--clr-sidebar-text-secondary)
 			display: flex
+			position: relative
 			&:hover
 				background-color: rgba(255, 255, 255, .3)
 				color: var(--clr-sidebar-text-primary)
@@ -194,6 +191,18 @@ export default {
 				line-height: 34px
 				color: var(--clr-sidebar-text-disabled)
 				margin-right: 4px
+			&.unread
+				color: var(--clr-sidebar-text-primary)
+				font-weight: 500
+				&::after
+					content: ''
+					position: absolute
+					background-color: var(--clr-sidebar-text-primary)
+					left: 10px
+					top: 15px
+					height: 6px
+					width: @height
+					border-radius: 50%
 			.name
 				ellipsis()
 		.stage
