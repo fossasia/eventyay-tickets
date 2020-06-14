@@ -34,9 +34,6 @@ class Track(LogMixin, models.Model):
 
     objects = ScopedManager(event="event")
 
-    class Meta:
-        unique_together = (("event", "name"),)
-
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.tracks}{self.pk}/"
         delete = "{base}delete"
