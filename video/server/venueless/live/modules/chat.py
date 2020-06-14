@@ -37,7 +37,9 @@ class ChatModule(BaseModule):
         return {
             "state": None,
             "next_event_id": (last_id) + 1,
-            "notification_pointer": last_id,
+            "notification_pointer": await self.service.get_highest_id_in_channel(
+                self.channel_id
+            ),
             "members": await self.service.get_channel_users(
                 self.channel_id,
                 include_admin_info=await self.consumer.world.has_permission_async(

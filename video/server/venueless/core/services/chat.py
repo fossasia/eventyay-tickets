@@ -99,6 +99,13 @@ class ChatService:
         return ce.serialize_public()
 
     @database_sync_to_async
+    def get_highest_id_in_channel(self, channel_id):
+        return (
+            ChatEvent.objects.filter(channel_id=channel_id).aggregate(m=Max("id"))["m"]
+            or 0
+        )
+
+    @database_sync_to_async
     def _get_highest_id(self):
         return ChatEvent.objects.aggregate(m=Max("id"))["m"] or 0
 
