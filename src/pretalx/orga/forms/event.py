@@ -440,7 +440,7 @@ class ReviewSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         if getattr(obj, "slug"):
             additional = _(
                 'You can configure override votes <a href="{link}">in the team settings</a>.'
-            ).format(link=obj.orga_urls.team_settings)
+            ).format(link=obj.organiser.orga_urls.teams)
             self.fields["allow_override_votes"].help_text += f" {additional}"
         minimum = int(obj.settings.review_min_score)
         maximum = int(obj.settings.review_max_score)

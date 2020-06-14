@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`951` The link to the team settings on the review settings page was incorrect.
 - :bug:`945` Internationalised strings were not always shown as such in the API, sometimes they were instead returned as plain strings.
 - :feature:`947` In all exporters, you can now select the export language with the ``?lang=`` query parameter. If you don't supply the parameter, pretalx will continue to guess your locale as before. If you provide the parameter without a value, the default event locale will be used.
 - :feature:`934` Instead of being unsorted as before, the list of talks on the schedule page is now sorted alphabetically.
