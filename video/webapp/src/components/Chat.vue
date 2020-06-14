@@ -8,7 +8,7 @@
 				template(v-for="message of filteredTimeline")
 					chat-message(:message="message", :mode="mode", :key="message.event_id")
 			.chat-input
-				bunt-button(v-if="!hasJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
+				bunt-button(v-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['s']", y)
 			.user(v-for="user of members")
@@ -48,7 +48,7 @@ export default {
 	computed: {
 		...mapState(['connected']),
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
-		...mapGetters('chat', ['hasJoinedChannel']),
+		...mapGetters('chat', ['activeJoinedChannel']),
 		filteredTimeline () {
 			return this.timeline.filter(message => (this.mode === 'standalone' || message.event_type === 'channel.message') && message.content.type !== 'deleted' && !message.replaces)
 		}
