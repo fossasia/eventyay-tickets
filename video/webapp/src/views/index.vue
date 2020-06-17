@@ -5,9 +5,11 @@
 <script>
 import { mapState } from 'vuex'
 import MarkdownIt from 'markdown-it'
+import sanitizeHtml from 'sanitize-html'
 
 const markdownIt = MarkdownIt({
-	breaks: true
+	breaks: true,
+	html: true,
 })
 
 export default {
@@ -15,7 +17,7 @@ export default {
 		...mapState(['world']),
 		markdownContent () {
 			if (!this.world.about) return
-			return markdownIt.render(this.world.about)
+			return sanitizeHtml(markdownIt.render(this.world.about))
 		}
 	}
 }
