@@ -44,6 +44,7 @@ class VersionedModel(models.Model):
 
     def touch(self):
         self.save(update_fields=["version"])
+        self.clear_caches()
 
     async def refresh_from_db_if_outdated(self):
         async with aioredis() as redis:
