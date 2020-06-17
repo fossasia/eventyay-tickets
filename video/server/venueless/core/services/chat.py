@@ -20,10 +20,13 @@ class ChatService:
     def get_channels_for_user(self, user_id, is_volatile=None):
         qs = Membership.objects.filter(
             channel__world_id=self.world_id, user_id=user_id,
-        )
+        ).annotate(max_id=Max("channel__chat_events__id"))
         if is_volatile is not None:  # pragma: no cover
             qs = qs.filter(volatile=is_volatile)
-        return list(str(channel) for channel in qs.values_list("channel", flat=True))
+        return [
+            {"id": str(m["channel"]), "notification_pointer": m["max_id"],}
+            for m in qs.values("channel", "max_id")
+        ]
 
     async def get_channel_users(self, channel, include_admin_info=False):
         users = await get_public_users(
@@ -94,6 +97,13 @@ class ChatService:
             replaces_id=replaces,
         )
         return ce.serialize_public()
+
+    @database_sync_to_async
+    def get_highest_id_in_channel(self, channel_id):
+        return (
+            ChatEvent.objects.filter(channel_id=channel_id).aggregate(m=Max("id"))["m"]
+            or 0
+        )
 
     @database_sync_to_async
     def _get_highest_id(self):

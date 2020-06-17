@@ -7,7 +7,8 @@ from sentry_sdk import configure_scope
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService
 from venueless.core.services.world import get_room
-from venueless.live.channels import GROUP_CHAT
+from venueless.core.utils.redis import aioredis
+from venueless.live.channels import GROUP_CHAT, GROUP_USER
 from venueless.live.decorators import command, event, room_action
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
@@ -32,9 +33,13 @@ class ChatModule(BaseModule):
         await self.service.track_subscription(
             self.channel_id, self.consumer.user.id, self.consumer.socket_id
         )
+        last_id = await self.service.get_last_id()
         return {
             "state": None,
-            "next_event_id": (await self.service.get_last_id()) + 1,
+            "next_event_id": (last_id) + 1,
+            "notification_pointer": await self.service.get_highest_id_in_channel(
+                self.channel_id
+            ),
             "members": await self.service.get_channel_users(
                 self.channel_id,
                 include_admin_info=await self.consumer.world.has_permission_async(
@@ -104,6 +109,12 @@ class ChatModule(BaseModule):
                 GROUP_CHAT.format(channel=self.channel_id), event,
             )
             await self._broadcast_channel_list()
+            if not volatile_config:
+                async with aioredis() as redis:
+                    await redis.sadd(
+                        f"chat:unread.notify:{self.channel_id}",
+                        str(self.consumer.user.id),
+                    )
         await self.consumer.send_success(reply)
 
     async def _leave(self):
@@ -139,6 +150,10 @@ class ChatModule(BaseModule):
         await self._unsubscribe(clean_volatile_membership=False)
         await self._leave()
         await self.consumer.send_success()
+        async with aioredis() as redis:
+            await redis.srem(
+                f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
+            )
 
     @command("unsubscribe")
     @room_action(module_required="chat.native")
@@ -157,6 +172,38 @@ class ChatModule(BaseModule):
             self.channel_id, before_id=before_id, count=count
         )
         await self.consumer.send_success({"results": events})
+
+    @command("mark_read")
+    @room_action(module_required="chat.native")
+    async def mark_read(self, body):
+        if not body.get("id"):
+            raise ConsumerException("chat.invalid_body")
+        async with aioredis() as redis:
+            await redis.hset(
+                f"chat:read:{self.consumer.user.id}", self.channel_id, body.get("id")
+            )
+            await redis.sadd(
+                f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
+            )
+        await self.consumer.send_success()
+        await self.consumer.channel_layer.group_send(
+            GROUP_USER.format(id=self.consumer.user.id),
+            {"type": "chat.read_pointers", "socket": self.consumer.socket_id,},
+        )
+
+    @event("read_pointers")
+    async def publish_read_pointers(self, body):
+        if self.consumer.socket_id != body["socket"]:
+            async with aioredis() as redis:
+                redis_read = await redis.hgetall(f"chat:read:{self.consumer.user.id}")
+                read_pointers = {
+                    k.decode(): int(v.decode()) for k, v in redis_read.items()
+                }
+            await self.consumer.send_json(["chat.read_pointers", read_pointers])
+
+    @event("notification_pointers")
+    async def publish_notification_pointers(self, body):
+        await self.consumer.send_json(["chat.notification_pointers", body.get("data")])
 
     @command("send")
     @room_action(
@@ -202,12 +249,32 @@ class ChatModule(BaseModule):
             )
         except ChatService.NotAChannelMember:
             raise ConsumerException("chat.denied")
-        await self.consumer.channel_layer.group_send(
-            GROUP_CHAT.format(channel=self.channel_id), event
-        )
         await self.consumer.send_success(
             {"event": {k: v for k, v in event.items() if k != "type"}}
         )
+        await self.consumer.channel_layer.group_send(
+            GROUP_CHAT.format(channel=self.channel_id), event
+        )
+
+        # Unread notifications
+        # We pop user IDs from the list of users to notify, because once they've been notified they don't need a
+        # notification again until they sent a new read pointer.
+        async with aioredis() as redis:
+            batch_size = 100
+            while True:
+                users = await redis.spop(f"chat:unread.notify:{self.channel_id}", 100)
+
+                for user in users:
+                    await self.consumer.channel_layer.group_send(
+                        GROUP_USER.format(id=user.decode()),
+                        {
+                            "type": "chat.notification_pointers",
+                            "data": {self.channel_id: event["event_id"]},
+                        },
+                    )
+
+                if len(users) < batch_size:
+                    break
 
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):

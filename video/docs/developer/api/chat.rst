@@ -31,7 +31,7 @@ Joins are idempotent, joining a channel that the user is already part of will no
 
 After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization::
 
-    <= ["chat.channels", {"channels": ["room_0"]}]
+    <= ["chat.channels", {"channels": [{"id": "room_0", "notification_pointer": 12345}]}]
 
 The room can be left the same way::
 
@@ -131,3 +131,63 @@ following properties inside the ``content`` property:
 
 - ``membership``: "join" or "leave" or "ban"
 - ``user``: A dictionary of user data of the user concerned (i.e. the user joining or leaving or being banned)
+
+Read/unread status
+------------------
+
+During authentication, the backend sends you two chat-related keys in the authentication response::
+
+    "chat.channels": [
+        {
+            "id": "room_0",
+            "notification_pointer": 1234,
+        },
+        {
+            "id": "room_2",
+            "notification_pointer": 1337,
+        },
+    ],
+    "chat.read_pointers": {
+        "room_0": 1234
+    },
+
+This tells you that the user has an active, non-volatile membership in two channels (``room_0`` and ``room_1``) and the
+event IDs of the last events that happened in these two channels ("notification pointer". Additionally, it tells you
+that the user has read all messages the first room (the read pointer is equal to the notification pointer), while
+they haven't read any message in the second room.
+
+Once the user has read the new messages in ``room_2``, you can confirm this to the server like this::
+
+    => ["chat.mark_read", 1234, {"channel": "room_2", "id": 1337}]
+    <- ["success", 1234, {}}]
+
+All other connected clients of the same user get an updated list of read pointers::
+
+    <= ["chat.read_pointers", {"room_0": 1234, "room_2": 1337}}]
+
+The client should use the pointers to *update* the local state, but may not rely on all channels to be included in the
+list, even though the backend implementation always sends all channels.
+
+If, in the meantime, a new message is written in the first room, you will receive a broadcast that includes the new
+notification pointer::
+
+    <= ["chat.notification_pointers", {"room_0": 1400}}]
+
+Important notes:
+
+* Again, the message may not contain all channels that you are a member of, only those with a changed value.
+
+* Whenever the notification pointer in the client's known state is larger than the read pointer, the channel should be
+  indicated to the user as containing unread messages.
+
+* You won't receive a notification pointer update with every message. If the server knows the notification pointer
+  already is larger than your read pointer, it may skip the update since it does not change the user-visible result.
+
+* The server may or may not omit these updates for non-content messages, such as leave and join messages.
+
+* The server may or may not omit these updates for channels you are currently subscribed to, since you receive these
+  events anyways.
+
+* The client should ignore notification pointers with lower values than the last known notification pointers.
+
+* These broadcasts are **not** send for volatile memberships.
