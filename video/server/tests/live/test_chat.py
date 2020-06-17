@@ -69,10 +69,16 @@ async def test_join_leave(chat_room):
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "notification_pointer": -1,
+                "members": [],
+            },
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
@@ -233,7 +239,12 @@ async def test_subscribe_without_name(chat_room):
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "notification_pointer": 0,
+                "members": [],
+            },
         ]
 
 
@@ -263,18 +274,30 @@ async def test_subscribe_join_leave(chat_room):
         )
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "members": [],
+                "notification_pointer": -1,
+            },
         ]
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "members": [],
+                "notification_pointer": -1,
+            },
         ]
         response = await c.receive_json_from()
         del response[1]["timestamp"]
@@ -310,10 +333,16 @@ async def test_bogus_command(chat_room):
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "members": [],
+                "notification_pointer": -1,
+            },
         ]
         await c.receive_json_from()  # join notification
         await c.send_json_to(["chat.lol", 123, {}])
@@ -504,10 +533,16 @@ async def test_fetch_messages_after_join(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "members": [],
+                "notification_pointer": -1,
+            },
         ]
         await c1.receive_json_from()  # join notification c1
 
@@ -586,10 +621,16 @@ async def test_send_message_to_other_client(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "notification_pointer": -1,
+                "members": [],
+            },
         ]
         await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(
@@ -667,10 +708,16 @@ async def test_no_messages_after_leave(chat_room):
         )
         response = await c1.receive_json_from()
         response[2]["next_event_id"] = -1
+        response[2]["notification_pointer"] = -1
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "notification_pointer": -1,
+                "members": [],
+            },
         ]
         await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(
@@ -742,7 +789,12 @@ async def test_no_message_after_unsubscribe(chat_room):
         assert response == [
             "success",
             123,
-            {"state": None, "next_event_id": -1, "members": []},
+            {
+                "state": None,
+                "next_event_id": -1,
+                "notification_pointer": 0,
+                "members": [],
+            },
         ]
         await c2.send_json_to(
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
@@ -814,7 +866,12 @@ async def test_disconnect_is_no_leave(chat_room):
             assert response == [
                 "success",
                 123,
-                {"state": None, "members": [], "next_event_id": 1},
+                {
+                    "state": None,
+                    "members": [],
+                    "next_event_id": 1,
+                    "notification_pointer": 0,
+                },
             ]
             await c2.send_json_to(
                 ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
@@ -849,7 +906,12 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
                 assert response == [
                     "success",
                     123,
-                    {"state": None, "members": [], "next_event_id": 1},
+                    {
+                        "state": None,
+                        "members": [],
+                        "next_event_id": 1,
+                        "notification_pointer": 0,
+                    },
                 ]
 
                 await c2.send_json_to(
