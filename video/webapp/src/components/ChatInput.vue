@@ -29,7 +29,10 @@ const Embed = Quill.import('blots/embed')
 class EmojiBlot extends Embed {
 	static create (value) {
 		const node = super.create()
-		const emoji = emojiIndex.emojis[value]
+		let emoji = emojiIndex.emojis[value]
+		if (emoji['1']) { // skin tone hack
+			emoji = emoji['1']
+		}
 		const position = getEmojiPosition(emoji)
 		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 		node.style = `background-position: ${position};`
@@ -101,7 +104,11 @@ export default {
 				if (typeof op.insert === 'string') {
 					text += op.insert
 				} else if (op.insert.emoji) {
-					text += emojiIndex.emojis[op.insert.emoji].native
+					let emoji = emojiIndex.emojis[op.insert.emoji]
+					if (emoji['1']) { // skin tone hack
+						emoji = emoji['1']
+					}
+					text += emoji.native
 				}
 			}
 			text = text.trim()
