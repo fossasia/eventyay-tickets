@@ -33,7 +33,7 @@
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                 {% trans "View conference schedule" %}
             </a>
-        {% elif can_view_sneak_peek %}
+        {% elif can_view_sneak_peek and has_sneak_peek %}
             <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.sneakpeek }}">
                 {% trans "View schedule preview" %}
             </a>
