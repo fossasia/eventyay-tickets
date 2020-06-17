@@ -26,4 +26,17 @@ export default {
 .c-home
 	.content
 		margin: 16px 32px
+
+	table
+		border-collapse: collapse
+		width: 100%
+
+	table td, table th
+		border: 1px solid #ccc
+		border-collapse: collapse
+		padding: 10px
+		text-align: left
+
+	img
+		max-width: 100%
 </style>
