@@ -19,9 +19,9 @@ export default {
 			if (!this.world.about) return
 			return sanitizeHtml(markdownIt.render(this.world.about), {
 				transformTags: {
-					'a': sanitizeHtml.simpleTransform('a', {target: '_blank'}),
+					a: sanitizeHtml.simpleTransform('a', {target: '_blank'}),
 				},
-				allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ])
+				allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
 			})
 		}
 	}
