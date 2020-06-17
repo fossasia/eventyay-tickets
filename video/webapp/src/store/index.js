@@ -41,6 +41,7 @@ export default new Vuex.Store({
 				state.world = serverState['world.config'].world
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
+				commit('chat/setReadPointers', serverState['chat.read_pointers'])
 				if (!state.rooms) {
 					state.rooms = serverState['world.config'].rooms
 				} else {
