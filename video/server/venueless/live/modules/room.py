@@ -8,6 +8,7 @@ from sentry_sdk import add_breadcrumb, configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
+from venueless.core.services.room import end_view, start_view
 from venueless.core.services.world import create_room, get_room_config_for_user
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_ROOM
@@ -26,12 +27,20 @@ logger = logging.getLogger(__name__)
 class RoomModule(BaseModule):
     prefix = "room"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.current_views = {}
+
     @command("enter")
     @room_action(permission_required=Permission.ROOM_VIEW)
     async def enter_room(self, body):
         await self.consumer.channel_layer.group_add(
             GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
         )
+        if self.consumer.world.config.get("track_room_views", True):
+            self.current_views[self.room] = await start_view(
+                self.room, self.consumer.user
+            )
         await self.consumer.send_success({})
         if settings.SENTRY_DSN:
             add_breadcrumb(
@@ -42,13 +51,23 @@ class RoomModule(BaseModule):
             with configure_scope() as scope:
                 scope.set_extra("last_room", str(self.room.pk))
 
+    async def _leave_room(self, room):
+        await self.consumer.channel_layer.group_discard(
+            GROUP_ROOM.format(id=room.pk), self.consumer.channel_name
+        )
+        if room in self.current_views:
+            await end_view(self.current_views[room])
+            del self.current_views[room]
+
     @command("leave")
     @room_action()
     async def leave_room(self, body):
-        await self.consumer.channel_layer.group_discard(
-            GROUP_ROOM.format(id=self.room.pk), self.consumer.channel_name
-        )
+        await self._leave_room(self.room)
         await self.consumer.send_success({})
+
+    async def dispatch_disconnect(self, close_code):
+        for room in self.current_views.keys():
+            await self._leave_room(room)
 
     @command("react")
     @room_action(permission_required=Permission.ROOM_VIEW)

@@ -97,3 +97,10 @@ class Reaction(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     reaction = models.CharField(max_length=100)
     amount = models.IntegerField()
+
+
+class RoomView(models.Model):
+    room = models.ForeignKey(to="Room", related_name="views", on_delete=models.CASCADE)
+    start = models.DateTimeField(auto_now_add=True)
+    end = models.DateTimeField(null=True)
+    user = models.ForeignKey(to="user", related_name="views", on_delete=models.CASCADE)
