@@ -60,6 +60,10 @@ class EventStartpage(EventPageMixin, TemplateView):
 class EventCfP(EventStartpage):
     template_name = "cfp/event/cfp.html"
 
+    @context
+    def has_sneak_peek(self):
+        return self.request.event.submissions.filter(is_featured=True).exists()
+
 
 class GeneralView(TemplateView):
     template_name = "cfp/index.html"
