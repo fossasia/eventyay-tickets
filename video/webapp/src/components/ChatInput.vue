@@ -146,7 +146,7 @@ export default {
 		p
 			font-size: 16px
 			line-height: 22px
-			word-break: break-all
+			overflow-wrap: anywhere
 		.emoji
 			margin: 0 2px
 			line-height: 22px
