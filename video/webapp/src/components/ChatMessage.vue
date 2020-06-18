@@ -173,7 +173,7 @@ export default {
 		min-width: 0
 		margin-left: 8px
 		padding-top: 6px // ???
-		word-break: break-all
+		overflow-wrap: anywhere
 		.content
 			white-space: pre-wrap
 			.emoji
