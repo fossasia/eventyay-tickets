@@ -66,7 +66,7 @@ class RoomModule(BaseModule):
         await self.consumer.send_success({})
 
     async def dispatch_disconnect(self, close_code):
-        for room in self.current_views.keys():
+        for room in list(self.current_views.keys()):
             await self._leave_room(room)
 
     @command("react")
