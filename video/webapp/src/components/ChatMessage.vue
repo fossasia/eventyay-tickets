@@ -49,14 +49,32 @@
 // - cancel editing
 // - handle editing error
 import moment from 'moment'
+import MarkdownIt from 'markdown-it'
 import { mapState, mapGetters } from 'vuex'
+import { markdownEmoji } from 'lib/emoji'
 import { createPopper } from '@popperjs/core'
-import { getHTMLWithEmoji } from 'lib/emoji'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
+
+const markdownIt = MarkdownIt('zero', {
+	linkify: true // TODO more tlds
+})
+markdownIt.enable('linkify')
+markdownIt.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+	tokens[idx].attrPush(['target', '_blank'])
+	tokens[idx].attrPush(['rel', 'noopener noreferrer'])
+	return self.renderToken(tokens, idx, options)
+}
+
+markdownIt.use(markdownEmoji)
+
+const generateHTML = function (input) {
+	if (!input) return
+	return markdownIt.renderInline(input)
+}
 
 export default {
 	props: {
@@ -100,7 +118,7 @@ export default {
 			}
 		},
 		content () {
-			return getHTMLWithEmoji(this.message.content?.body)
+			return generateHTML(this.message.content?.body)
 		}
 	},
 	methods: {
