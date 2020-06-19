@@ -3,7 +3,6 @@
 	.content(v-html="markdownContent")
 </template>
 <script>
-import { mapState } from 'vuex'
 import MarkdownIt from 'markdown-it'
 import sanitizeHtml from 'sanitize-html'
 
@@ -13,11 +12,13 @@ const markdownIt = MarkdownIt({
 })
 
 export default {
+	props: {
+		module: Object
+	},
 	computed: {
-		...mapState(['world']),
 		markdownContent () {
-			if (!this.world.about) return
-			return sanitizeHtml(markdownIt.render(this.world.about), {
+			if (!this.module.config.content) return
+			return sanitizeHtml(markdownIt.render(this.module.config.content), {
 				transformTags: {
 					a: sanitizeHtml.simpleTransform('a', {target: '_blank'}),
 				},

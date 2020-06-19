@@ -1,18 +1,20 @@
 <template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
+		//- TODO clickable logo
 		.logo(v-if="$mq.above['s']", :class="{'fit-to-width': theme.logo.fitToWidth}")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
-				router-link.room(:to="{name: 'home'}") {{ $t('RoomsSidebar:about:label') }}
+				router-link.room(:to="{name: 'home'}") {{ rooms[0].name }}
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('RoomsSidebar:schedule:label') }}
-			.group-title(v-if="roomsByType.generic.length || hasPermission('world:rooms.create.stage')")
+				router-link.room(v-for="page of roomsByType.page", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
+			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
-				router-link.stage(v-for="stage of roomsByType.generic", :to="{name: 'room', params: {roomId: stage.id}}")
+				router-link.stage(v-for="stage of roomsByType.stage", :to="{name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
@@ -62,17 +64,20 @@ export default {
 		},
 		roomsByType () {
 			const rooms = {
-				generic: [],
+				page: [],
+				stage: [],
 				textChat: [],
 				videoChat: []
 			}
-			for (const room of this.rooms) {
+			for (const room of this.rooms.slice(1)) {
 				if (room.modules.length === 1 & room.modules[0].type === 'chat.native') {
 					rooms.textChat.push(room)
 				} else if (room.modules.length === 1 & room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
+				} else if (room.modules.some(module => module.type === 'livestream.native')) {
+					rooms.stage.push(room)
 				} else {
-					rooms.generic.push(room)
+					rooms.page.push(room)
 				}
 			}
 			return rooms

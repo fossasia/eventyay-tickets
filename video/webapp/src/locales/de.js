@@ -28,7 +28,6 @@ export default {
 	'ProfilePrompt:gravatar-connect:label': 'Verbinden',
 	'ProfilePrompt:create:label': 'Eintreten',
 	'ProfilePrompt:save:label': 'Speichern',
-	'RoomsSidebar:about:label': 'Startseite',
 	'RoomsSidebar:schedule:label': 'Zeitplan',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',
