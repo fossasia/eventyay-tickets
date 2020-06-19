@@ -15,19 +15,18 @@ def test_room_list(client, world):
         "/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION=get_token_header(world)
     )
     assert r.status_code == 200
-    assert r.data["count"] == 5
+    assert r.data["count"] == 7
     assert r.data["results"][0] == {
         "id": str(world.rooms.first().id),
         "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
-                "type": "livestream.native",
-                "config": {"hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"},
-            },
-            {"type": "chat.native", "config": {"volatile": True}},
+                "type": "page.markdown",
+                "config": {"content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"},
+            }
         ],
-        "name": "Plenum",
-        "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+        "name": "About",
+        "description": "UNUSED",
         "sorting_priority": 0,
     }
 
@@ -44,13 +43,12 @@ def test_room_detail(client, world):
         "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
-                "type": "livestream.native",
-                "config": {"hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"},
-            },
-            {"type": "chat.native", "config": {"volatile": True}},
+                "type": "page.markdown",
+                "config": {"content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"},
+            }
         ],
-        "name": "Plenum",
-        "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+        "name": "About",
+        "description": "UNUSED",
         "sorting_priority": 0,
     }
 

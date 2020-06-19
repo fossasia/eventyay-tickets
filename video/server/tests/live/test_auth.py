@@ -408,6 +408,8 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "About",
+            "More Info",
             "Plenum",
             "Stage 2",
             "Not Streaming",
@@ -423,6 +425,8 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "About",
+            "More Info",
             "Plenum",
             "Stage 2",
             "Not Streaming",
@@ -440,6 +444,8 @@ async def test_auth_private_rooms_in_world_config(world, bbb_room, chat_room):
         response = await c.receive_json_from()
         assert response[0] == "authenticated"
         assert set(r["name"] for r in response[1]["world.config"]["rooms"]) == {
+            "About",
+            "More Info",
             "Plenum",
             "Stage 2",
             "Not Streaming",

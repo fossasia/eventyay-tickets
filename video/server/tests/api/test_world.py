@@ -9,7 +9,7 @@ def test_world_config(client, world):
     assert r.data == {
         "id": "sample",
         "title": "Unsere tolle Online-Konferenz",
-        "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
+        "about": "UNUSED",
         "config": world.config,
         "roles": world.roles,
         "trait_grants": world.trait_grants,

@@ -74,7 +74,7 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
         await c.receive_json_from()
 
         rooms = await get_rooms(world)
-        assert len(rooms) == 5
+        assert len(rooms) == 7
 
         modules = []
         if with_channel:
