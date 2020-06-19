@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.room-info
+	.room-info(v-if="!modules['page.markdown']")
 		img(v-if="room.picture", :src="room.picture")
 		.room-info-wrapper
 			.room-info-text
@@ -17,6 +17,7 @@
 			.stage-tools(v-if="modules['livestream.native']")
 				.stage-tool(v-if="$features.enabled('questions-answers')", :class="{active: activeStageTool === 'qa'}", @click="activeStageTool = 'qa'") Ask a question
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
+		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 </template>
 <script>
@@ -24,6 +25,7 @@ import { mapState } from 'vuex'
 import moment from 'moment'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
+import MarkdownPage from 'components/MarkdownPage'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 
@@ -32,15 +34,16 @@ export default {
 	props: {
 		roomId: String
 	},
-	components: { Chat, Livestream, ReactionsBar, ReactionsOverlay },
+	components: { Chat, Livestream, MarkdownPage, ReactionsBar, ReactionsOverlay },
 	data () {
 		return {
 			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
-		...mapState(['connected', 'world', 'schedule']),
+		...mapState(['connected', 'world', 'rooms', 'schedule']),
 		room () {
+			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.$store.state.rooms.find(room => room.id === this.roomId)
 		},
 		modules () {

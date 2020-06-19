@@ -28,7 +28,6 @@ export default {
 	'ProfilePrompt:gravatar-connect:label': 'Connect',
 	'ProfilePrompt:create:label': 'join',
 	'ProfilePrompt:save:label': 'update',
-	'RoomsSidebar:about:label': 'About',
 	'RoomsSidebar:schedule:label': 'Schedule',
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Stages',

@@ -2,7 +2,7 @@
   "world": {
     "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
-    "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
+    "about": "UNUSED",
     "pretalx": {
       "base_url": "https://pretalx.com/democon/",
       "room_mapping": {
@@ -152,6 +152,42 @@
     ]
   },
   "rooms": [
+    {
+      "id": "about",
+      "name": "About",
+      "description": "UNUSED",
+      "picture": "UNUSED",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "page.markdown",
+          "config": {
+            "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a-page",
+      "name": "More Info",
+      "description": "UNUSED",
+      "picture": "UNUSED",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "page.markdown",
+          "config": {
+            "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+          }
+        }
+      ]
+    },
     {
       "id": "room_0",
       "name": "Plenum",

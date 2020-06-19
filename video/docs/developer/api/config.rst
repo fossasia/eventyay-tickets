@@ -9,7 +9,7 @@ If the world config changes, you will get an update like this::
     <= ["world.update", { … }]
 
 The body of the configuration is structured like this, filtered to user visibility:
-
+The first room acts as the landing page.
 
 .. code-block:: json
 
