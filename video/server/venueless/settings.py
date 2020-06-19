@@ -157,6 +157,7 @@ INSTALLED_APPS = [
     "venueless.core.CoreConfig",
     "venueless.api.ApiConfig",
     "venueless.live.LiveConfig",
+    "venueless.graphs.GraphsConfig",
 ]
 
 try:

@@ -95,6 +95,7 @@
       "world:rooms.create.chat",
       "world:rooms.create.bbb",
       "world:announce",
+      "world:graphs",
       "world:update",
       "world:users.list",
       "world:users.manage",

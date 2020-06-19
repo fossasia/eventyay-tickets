@@ -7,6 +7,7 @@ class Permission(Enum):
     WORLD_ANNOUNCE = "world:announce"
     WORLD_SECRETS = "world:secrets"
     WORLD_API = "world:api"
+    WORLD_GRAPHS = "world:graphs"
     WORLD_ROOMS_CREATE_STAGE = "world:rooms.create.stage"
     WORLD_ROOMS_CREATE_CHAT = "world:rooms.create.chat"
     WORLD_ROOMS_CREATE_BBB = "world:rooms.create.bbb"

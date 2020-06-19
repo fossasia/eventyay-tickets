@@ -6,6 +6,9 @@ djangorestframework==3.11.*
 django-extensions==2.2.5
 sentry-sdk
 tqdm
+numpy
+matplotlib
+python-dateutil
 
 orjson
 aiofile

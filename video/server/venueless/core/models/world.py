@@ -42,6 +42,7 @@ def default_roles():
             Permission.WORLD_ROOMS_CREATE_STAGE,
             Permission.WORLD_USERS_LIST,
             Permission.WORLD_USERS_MANAGE,
+            Permission.WORLD_GRAPHS,
         ]
     )
     apiuser = admin + [Permission.WORLD_API, Permission.WORLD_SECRETS]
