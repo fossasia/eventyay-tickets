@@ -17,6 +17,7 @@ export default {
 	'CreateChatPrompt:name:label': 'Name',
 	'CreateChatPrompt:name:placeholder': 'fancyawesomechannel',
 	'CreateChatPrompt:description:label': 'Description',
+	'ChatInput:input:placeholder': 'Send a message',
 	'Livestream:offline-message:text': 'Stream offline',
 	'ProfilePrompt:headline:text': 'Hi there!',
 	'ProfilePrompt:intro:text': 'Please tell us your name. If you interact with other attendees, e.g. through chat, we will show them your name. You do not need to use your real name.',
