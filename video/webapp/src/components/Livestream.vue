@@ -10,11 +10,13 @@
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
 				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
 	.offline(v-if="offline")
-		.offline-message {{ $t('Livestream:offline-message:text') }}
+		img.offline-image(v-if="theme.streamOfflineImage", :src="theme.streamOfflineImage")
+		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
 import { mapState } from 'vuex'
 import shaka from 'shaka-player/dist/shaka-player.compiled.js'
+import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
 
@@ -36,6 +38,7 @@ export default {
 	components: {},
 	data () {
 		return {
+			theme,
 			playing: true,
 			buffering: true,
 			offline: false,
@@ -242,4 +245,8 @@ export default {
 		z-index: 100
 		.offline-message
 			font-size: 36px
+		.offline-image
+			height: 100%
+			width: 100%
+			object-fit: contain
 </style>
