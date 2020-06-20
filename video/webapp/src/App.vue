@@ -109,6 +109,7 @@ export default {
 				title += `| ${this.room.name}`
 			}
 			document.title = title
+			this.$store.dispatch('changeRoom', newRoom)
 
 			if (!this.$mq.above.s) return // no background rooms for mobile
 			if (oldRoom &&

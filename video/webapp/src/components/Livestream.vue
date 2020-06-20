@@ -50,9 +50,6 @@ export default {
 	computed: {
 		...mapState(['streamingRoom'])
 	},
-	created () {
-		console.log('CREATED')
-	},
 	async mounted () {
 		if (this.streamingRoom !== this.room) {
 			this.$refs.video.muted = true

@@ -12,6 +12,7 @@
 </template>
 <script>
 // TODO functional component?
+import api from 'lib/api'
 import BigBlueButton from 'components/BigBlueButton'
 import Livestream from 'components/Livestream'
 
@@ -33,10 +34,12 @@ export default {
 			return this.room.modules.find(module => ['livestream.native', 'call.bigbluebutton'].includes(module.type))
 		},
 	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
+	created () {
+		api.call('room.enter', {room: this.room.id})
+	},
+	beforeDestroy () {
+		if (api.socketState !== 'open') return
+		api.call('room.leave', {room: this.room.id})
 	},
 	methods: {
 		isPlaying () {
