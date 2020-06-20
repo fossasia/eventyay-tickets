@@ -45,7 +45,9 @@ class GraphView(View):
 
     @cached_property
     def fig(self):
-        return Figure(figsize=self.size, tight_layout=True)
+        return Figure(
+            figsize=self.size
+        )  # Do not enable tight_layout, it breaks emoji markers
 
     def get(self, request, *args, **kwargs):
         try:
@@ -114,7 +116,7 @@ class RoomAttendanceGraphView(GraphView):
         adds = Counter()
         for v in views:
             bucket = v["start"].replace(
-                second=0, microsecond=0, minute=v["start"].minute // 10
+                second=0, microsecond=0, minute=v["start"].minute // 10 * 10
             )
             while bucket < end and (not v["end"] or bucket < v["end"]):
                 adds[bucket] += 1
@@ -141,13 +143,14 @@ class RoomAttendanceGraphView(GraphView):
         reacts = Counter()
         for r in reactions:
             bucket = r["datetime"].replace(
-                second=0, microsecond=0, minute=r["datetime"].minute // 10
+                second=0, microsecond=0, minute=r["datetime"].minute // 10 * 10
             )
             reacts[bucket, r["reaction"]] += 1
 
         ax.set_ylabel("Viewers")
         ax2 = ax.twinx()
         ax2.set_ylim(0, max(reacts.values()) * 1.4)
+        ax2.set_xlim(begin, end)
         ax2.set_ylabel("Reactions")
 
         for r, emoji in EMOJIS.items():
@@ -156,16 +159,15 @@ class RoomAttendanceGraphView(GraphView):
             values = [p[1] for p in pairs if p[0][1] == r]
 
             emoji_img = pyplot.imread(cbook.get_sample_data(emoji))
-            fig_width = self.fig.get_window_extent().width
-            fig_height = self.fig.get_window_extent().height
+            fig_box = self.fig.get_window_extent()
             emoji_size = 0.03
             emoji_axs = [None for i in range(len(keys))]
             for i in range(len(keys)):
                 loc = ax2.transData.transform((dates.date2num(keys[i]), values[i]))
                 emoji_axs[i] = self.fig.add_axes(
                     [
-                        loc[0] / fig_width - emoji_size / 2,
-                        loc[1] / fig_height - emoji_size / 2,
+                        loc[0] / fig_box.width - emoji_size / 2,
+                        loc[1] / fig_box.height - emoji_size / 2,
                         emoji_size,
                         emoji_size,
                     ],
