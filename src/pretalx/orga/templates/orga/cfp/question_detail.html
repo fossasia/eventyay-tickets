@@ -78,37 +78,11 @@
         {% for answer in question.grouped_answers %}
           <tr>
             <td>
-                {% if question.variant == "file" %}
-                    {% if answer.answer.answer_file %}
-                        <i class="fa fa-file-o"></i>
-                        <a href="{{ answer.answer.answer_file.url }}">
-                            {{ answer.answer.answer }}
-                        </a>
-                    {% else %}
-                        <i class="fa fa-file-o"></i>
-                        {{ answer.answer.answer }} ({% trans "lost file" %})
-                    {% endif %}
-                {% else %}
-                    {% if answer.answer %}
-                        {% if question.variant == 'boolean' %}
-                            {% if answer.answer == "True" %}
-                                {{ quotation_open }}{% trans "Yes" %}{{ quotation_close }}
-                            {% else %}
-                                {{ quotation_open }}{% trans "No" %}{{ quotation_close }}
-                            {% endif %}
-                        {% else %}
-                            {{ quotation_open }}{{ answer.answer }}{{ quotation_close }}
-                        {% endif %}
-                    {% elif answer.options %}
-                        {{ quotation_open }}{{ answer.options__answer }}{{ quotation_close }}
-                    {% else %}
-                        {% trans "Empty answer" %}
-                    {% endif %}
-                {% endif %}
-                </td>
-                <td>
-                    {{ answer.count|times }}
-                </td>
+              {% include "common/question_answer.html" with answer=answer %}
+            </td>
+            <td>
+                {{ answer.count|times }}
+            </td>
           </tr>
         {% endfor %}
       </tbody>

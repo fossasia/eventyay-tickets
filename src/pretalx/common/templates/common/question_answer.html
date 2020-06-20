@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load rich_text %}
+{% if answer.question.variant == 'file' %}
+    <i class="fa fa-file-o"></i>
+    {% if answer.answer_file %}
+        <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
+    {% else %}
+        {% trans "No file provided" %}
+    {% endif %}
+{% elif answer.question.variant == 'boolean' %}
+    {{ answer.boolean_answer|yesno }}
+{% elif answer %}
+    {{ answer.answer|rich_text }}
+{% else %}
+    {% trans "Not answered" %}
+{% endif %}

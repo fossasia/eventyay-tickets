@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` Questions that are visible to reviewers now also show up on the review page, to avoid having to switch to the full submission view in the review process.
 - :bug:`928` Reviewers had access to question answers that were not explicitly visible to reviewers by way of the API.
 - :bug:`923` In some settings combinations, reviewers were unable to change or even see their own reviews after submitting them.
 - :feature:`907` pretalx now prevents you from creating multiple tracks or submission types with the same name.

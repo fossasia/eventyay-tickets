@@ -94,6 +94,14 @@
         </div>
     </div>
     {% endif %}
+    {% for answer in submission.reviewer_answers %}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label">{{ answer.question.question }}</label>
+        <div class="col-md-9 mt-1">
+            {% include "common/question_answer.html" with answer=answer %}
+        </div>
+    </div>
+    {% endfor %}
     {% if can_view_speakers %}
         {% for speaker in profiles %}
         <div class="form-group row">

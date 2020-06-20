@@ -81,16 +81,7 @@
             <section class="answers">
             {% for answer in answers %}
                 <span class="question"><strong>{{ answer.question.question }}</strong></span>
-                <span class="answer">
-                {% if answer.question.variant == 'file' %}
-                    {% if answer.answer_file %}
-                        <i class="fa fa-file-o"></i> <a href="{{ answer.answer_file.url }}">{{ answer.answer_file }}</a>
-                    {% endif %}
-                {% elif answer.question.variant == 'boolean' %}
-                    – {{ answer.boolean_answer|yesno }}
-                {% else %}
-                    – {{ answer.answer }}
-                {% endif %}
+                <span class="answer">– {% include "common/question_answer.html" with answer=answer %}{% endif %}
                 </span>
             {% endfor %}
             {% endif %}
