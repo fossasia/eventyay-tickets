@@ -18,25 +18,17 @@ bunt-input-outline-container.c-chat-input
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import EmojiPicker from 'components/EmojiPicker'
-import { getEmojiPosition, nativeToOps } from 'lib/emoji'
-import { NimbleEmojiIndex } from 'emoji-mart'
-import data from 'emoji-mart/data/twitter.json'
-
-const emojiIndex = new NimbleEmojiIndex(data)
+import { getEmojiPosition, nativeToOps, toNative } from 'lib/emoji'
 
 const Delta = Quill.import('delta')
 const Embed = Quill.import('blots/embed')
 class EmojiBlot extends Embed {
 	static create (value) {
 		const node = super.create()
-		let emoji = emojiIndex.emojis[value]
-		if (emoji['1']) { // skin tone hack
-			emoji = emoji['1']
-		}
-		const position = getEmojiPosition(emoji)
+		const position = getEmojiPosition(value)
 		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 		node.style = `background-position: ${position};`
-		node.dataset.emoji = emoji.id
+		node.dataset.emoji = value
 		return node
 	}
 
@@ -104,11 +96,7 @@ export default {
 				if (typeof op.insert === 'string') {
 					text += op.insert
 				} else if (op.insert.emoji) {
-					let emoji = emojiIndex.emojis[op.insert.emoji]
-					if (emoji['1']) { // skin tone hack
-						emoji = emoji['1']
-					}
-					text += emoji.native
+					text += toNative(op.insert.emoji)
 				}
 			}
 			text = text.trim()
