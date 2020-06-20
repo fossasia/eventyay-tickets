@@ -26,7 +26,8 @@ Full configuration
 			"colors": {
 				"primary": '#673ab7', // hightlight color, should be high contrast on white background
 				"sidebar": '#180044'
-			}
+			},
+			"streamOfflineImage": "/some-large-image.svg" // image shown instead of "Stream offline" 
 		}
 	}
 

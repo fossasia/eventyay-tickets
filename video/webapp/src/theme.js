@@ -21,7 +21,8 @@ const configColors = config.theme?.colors
 
 const themeConfig = {
 	colors: configColors,
-	logo: Object.assign(DEFAULT_LOGO, config.theme?.logo)
+	logo: Object.assign(DEFAULT_LOGO, config.theme?.logo),
+	streamOfflineImage: config.theme?.streamOfflineImage
 }
 
 const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = color((configColors ?? DEFAULT_COLORS)[key]), acc), {}) // eslint-disable-line no-sequences
