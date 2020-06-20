@@ -108,20 +108,10 @@ export default new Vuex.Store({
 		async createRoom ({state}, room) {
 			return await api.call('room.create', room)
 		},
-		async enterRoom ({state, dispatch}, room) {
-			if (!state.connected || !room) return
-			if (state.activeRoom) {
-				await dispatch('leaveRoom', {room: state.activeRoom})
-			}
+		changeRoom ({state}, room) {
+			console.log('CHANGED ROOM', room)
 			state.activeRoom = room
-			api.call('room.enter', {room: room.id})
-		},
-		async leaveRoom ({state}, room) {
-			if (!state.activeRoom || state.activeRoom.id !== room.id) return
-			state.activeRoom = null
 			state.reactions = null
-			if (api.socketState !== 'open') return
-			api.call('room.leave', {room: room.id})
 		},
 		async addReaction ({state}, reaction) {
 			if (!state.activeRoom) return

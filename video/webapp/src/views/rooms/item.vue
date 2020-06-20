@@ -63,22 +63,7 @@ export default {
 			if (!this.scheduleRoom) return
 			return this.scheduleRoom.talks.find(talk => moment().isBetween(talk.start, talk.end))
 		}
-	},
-	watch: {
-		connected (value) {
-			if (value) {
-				// re-enter
-				this.$store.dispatch('enterRoom', this.room)
-			}
-		}
-	},
-	created () {
-		// TODO decouple from component lifecycle
-		this.$store.dispatch('enterRoom', this.room)
-	},
-	beforeDestroy () {
-		this.$store.dispatch('leaveRoom', this.room)
-	},
+	}
 }
 </script>
 <style lang="stylus">
