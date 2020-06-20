@@ -22,10 +22,11 @@ def test_room_list(client, world):
         "module_config": [
             {
                 "type": "page.markdown",
-                "config": {"content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"},
+                "config": {
+                    "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+                },
             }
         ],
-        "name": "About",
         "description": "UNUSED",
         "sorting_priority": 0,
     }
@@ -44,10 +45,11 @@ def test_room_detail(client, world):
         "module_config": [
             {
                 "type": "page.markdown",
-                "config": {"content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"},
+                "config": {
+                    "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+                },
             }
         ],
-        "name": "About",
         "description": "UNUSED",
         "sorting_priority": 0,
     }

@@ -2,7 +2,6 @@
   "world": {
     "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
-    "about": "UNUSED",
     "pretalx": {
       "base_url": "https://pretalx.com/democon/",
       "room_mapping": {

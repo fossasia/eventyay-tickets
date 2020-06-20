@@ -11,7 +11,6 @@ def import_config(data):
     world_config = data.pop("world")
     world, _ = World.objects.get_or_create(id=world_config.pop("id"))
     world.title = world_config.pop("title")
-    world.about = world_config.pop("about")
     world.config = world_config
     world.trait_grants = data.pop("trait_grants", {})
     world.roles = data.pop("roles", {})

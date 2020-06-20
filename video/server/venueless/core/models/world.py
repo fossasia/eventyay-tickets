@@ -68,7 +68,6 @@ def default_grants():
 class World(VersionedModel):
     id = models.CharField(primary_key=True, max_length=50)
     title = models.CharField(max_length=300)
-    about = models.TextField(null=True, blank=True)
     config = JSONField(null=True, blank=True)
     roles = JSONField(
         null=True, blank=True, default=default_roles, encoder=CustomJSONEncoder

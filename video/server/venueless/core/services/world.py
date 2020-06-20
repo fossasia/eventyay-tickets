@@ -82,7 +82,6 @@ def get_world_config_for_user(world, user):
         "world": {
             "id": str(world.id),
             "title": world.title,
-            "about": world.about,
             "pretalx": world.config.get("pretalx", {}),
         },
         "permissions": list(permissions[world]),
