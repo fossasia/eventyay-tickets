@@ -1,6 +1,6 @@
 import io
 import logging
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import timedelta
 from os.path import dirname
 from urllib.parse import urljoin
@@ -110,21 +110,21 @@ class RoomAttendanceGraphView(GraphView):
                 Q(Q(end__isnull=True) | Q(end__gte=begin)) & Q(start__lte=end)
             )
             .order_by()
-            .values("start", "end")
+            .values("user", "start", "end")
         )
 
-        adds = Counter()
+        adds = defaultdict(set)
         for v in views:
             bucket = v["start"].replace(
                 second=0, microsecond=0, minute=v["start"].minute // 10 * 10
             )
             while bucket < end and (not v["end"] or bucket < v["end"]):
-                adds[bucket] += 1
+                adds[bucket].add(v["user"])
                 bucket += timedelta(minutes=10)
 
         pairs = sorted(adds.items())
         keys = [p[0] for p in pairs]
-        values = [p[1] for p in pairs]
+        values = [len(p[1]) for p in pairs]
         ax.plot(keys, values)
 
         ax.xaxis.set_major_formatter(dates.DateFormatter("%d. %H:%M", tz=tz))
@@ -147,11 +147,11 @@ class RoomAttendanceGraphView(GraphView):
             )
             reacts[bucket, r["reaction"]] += 1
 
-        ax.set_ylabel("Viewers")
+        ax.set_ylabel("Unique viewers")
         ax2 = ax.twinx()
         ax2.set_ylim(0, max(reacts.values()) * 1.4)
         ax2.set_xlim(begin, end)
-        ax2.set_ylabel("Reactions")
+        ax2.set_ylabel("Emoji reactions")
 
         for r, emoji in EMOJIS.items():
             pairs = sorted(reacts.items())
