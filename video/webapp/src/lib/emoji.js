@@ -1,25 +1,21 @@
-import { getData } from 'emoji-mart/dist-es/utils'
 import data from 'emoji-mart/data/twitter.json'
 import EmojiRegex from 'emoji-regex'
 import { getEmojiDataFromNative } from 'emoji-mart'
+import { unifiedToNative } from 'emoji-mart/dist-es/utils'
 
 const emojiRegex = EmojiRegex()
 const splitEmojiRegex = new RegExp(`(${emojiRegex.source})`, 'g')
 
 export function getEmojiPosition (emoji) {
-	const { sheet_x: sheetX, sheet_y: sheetY } = getData(emoji, 1, 'twitter', data)
+	if (typeof emoji === 'string') {
+		emoji = data.emojis[emoji]
+	}
+	if (!emoji) return
+	const { sheet_x: sheetX, sheet_y: sheetY } = emoji
 	const multiplyX = 100 / (57 - 1)
 	const multiplyY = 100 / (57 - 1)
 
 	return `${multiplyX * sheetX}% ${multiplyY * sheetY}%`
-}
-
-export function getHTMLWithEmoji (content) {
-	if (!content) return
-	return content.replace(emojiRegex, match => {
-		const emoji = getEmojiDataFromNative(match, 'twitter', data)
-		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
-	})
 }
 
 export function nativeToOps (string) {
@@ -31,6 +27,12 @@ export function nativeToOps (string) {
 			return {insert: match}
 		}
 	})
+}
+
+export function toNative (emojiId) {
+	const emoji = data.emojis[emojiId]
+	if (!emoji) return
+	return unifiedToNative(emoji.unified)
 }
 
 export function markdownEmoji (md) {
@@ -87,7 +89,7 @@ export function markdownEmoji (md) {
 		}
 	})
 	md.renderer.rules.emoji = (tokens, idx) => {
-		const emoji = getEmojiDataFromNative(tokens[idx].content, 'twitter', data)
+		const emoji = data.emojis[getEmojiDataFromNative(tokens[idx].content, 'twitter', data).id]
 		return `<span class="emoji" style="background-position: ${getEmojiPosition(emoji)}"></span>`
 	}
 }

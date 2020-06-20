@@ -109,7 +109,6 @@ export default new Vuex.Store({
 			return await api.call('room.create', room)
 		},
 		changeRoom ({state}, room) {
-			console.log('CHANGED ROOM', room)
 			state.activeRoom = room
 			state.reactions = null
 		},
