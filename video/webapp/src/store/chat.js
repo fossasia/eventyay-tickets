@@ -93,6 +93,7 @@ export default {
 			await dispatch('fetchUsers', Array.from(missingProfiles))
 		},
 		async markChannelRead ({state}) {
+			if (state.timeline.length === 0) return
 			const pointer = state.timeline[state.timeline.length - 1].event_id
 			await api.call('chat.mark_read', {
 				channel: state.channel,
