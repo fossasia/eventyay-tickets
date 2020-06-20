@@ -168,8 +168,12 @@ class ChatModule(BaseModule):
     async def fetch(self, body):
         count = body["count"]
         before_id = body["before_id"]
+        volatile_config = self.module_config.get("volatile", False)
         events = await self.service.get_events(
-            self.channel_id, before_id=before_id, count=count
+            self.channel_id,
+            before_id=before_id,
+            count=count,
+            skip_membership=volatile_config,
         )
         await self.consumer.send_success({"results": events})
 

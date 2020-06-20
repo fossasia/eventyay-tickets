@@ -65,6 +65,8 @@ in a way that if events happen *while* you join, you might see the same event *t
     => ["chat.fetch", 1234, {"channel": "room_0", "count": 30, "before_id": 54321}]
     <- ["success", 1234, {"results": […]}]
 
+In volatile chat rooms, ``chat.fetch`` will skip membership messages (joins/leaves).
+
 To send a simple text message::
 
     => ["chat.send", 1234, {"channel": "room_0", "event_type": "channel.message", "content": {"type": "text", "body": "Hello world"}}]

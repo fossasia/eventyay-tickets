@@ -76,10 +76,13 @@ class ChatService:
         Membership.objects.filter(channel_id=channel_id, user_id=uid,).delete()
 
     @database_sync_to_async
-    def get_events(self, channel, before_id, count=50):
-        events = ChatEvent.objects.filter(id__lt=before_id, channel=channel,).order_by(
-            "-id"
-        )[: min(count, 1000)]
+    def get_events(self, channel, before_id, count=50, skip_membership=False):
+        events = ChatEvent.objects
+        if skip_membership:
+            events = events.exclude(event_type="channel.member")
+        events = events.filter(id__lt=before_id, channel=channel,).order_by("-id")[
+            : min(count, 1000)
+        ]
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
