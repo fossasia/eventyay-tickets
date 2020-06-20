@@ -99,6 +99,71 @@ def test_orga_can_see_all_submissions(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "is_visible_to_reviewers,is_reviewer,length",
+    ((True, True, 1), (False, True, 0), (True, False, 1), (False, False, 1),),
+)
+def test_answer_is_visible_to_reviewers(
+    orga_client,
+    review_user,
+    submission,
+    answer,
+    event,
+    is_visible_to_reviewers,
+    is_reviewer,
+    length,
+):
+    if is_reviewer:
+        orga_client.force_login(review_user)
+
+    with scope(event=event):
+        question = answer.question
+        question.is_visible_to_reviewers = is_visible_to_reviewers
+        question.save()
+
+    response = orga_client.get(submission.event.api_urls.submissions, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["count"] == 1
+    assert content["results"][0]["title"] == submission.title
+    assert len(content["results"][0]["answers"]) == length
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "is_visible_to_reviewers,is_reviewer,length",
+    ((True, True, 1), (False, True, 0), (True, False, 1), (False, False, 1),),
+)
+def test_speaker_answer_is_visible_to_reviewers(
+    orga_client,
+    review_user,
+    submission,
+    speaker,
+    personal_answer,
+    event,
+    is_visible_to_reviewers,
+    is_reviewer,
+    length,
+):
+    if is_reviewer:
+        orga_client.force_login(review_user)
+
+    with scope(event=event):
+        question = personal_answer.question
+        question.is_visible_to_reviewers = is_visible_to_reviewers
+        question.save()
+
+    response = orga_client.get(submission.event.api_urls.speakers, follow=True)
+    content = json.loads(response.content.decode())
+
+    assert response.status_code == 200
+    assert content["count"] == 1
+    assert content["results"][0]["name"] == speaker.name
+    assert len(content["results"][0]["answers"]) == length
+
+
+@pytest.mark.django_db
 def test_orga_can_see_all_submissions_even_nonpublic(
     orga_client, slot, accepted_submission, rejected_submission, submission
 ):

@@ -1,6 +1,10 @@
 from rest_framework import viewsets
 
-from pretalx.api.serializers.speaker import SpeakerOrgaSerializer, SpeakerSerializer
+from pretalx.api.serializers.speaker import (
+    SpeakerOrgaSerializer,
+    SpeakerReviewerSerializer,
+    SpeakerSerializer,
+)
 from pretalx.person.models import SpeakerProfile
 
 
@@ -12,8 +16,10 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ("user__name", "user__email")
 
     def get_serializer_class(self):
-        if self.request.user.has_perm("orga.view_speakers", self.request.event):
+        if self.request.user.has_perm("orga.change_submissions", self.request.event):
             return SpeakerOrgaSerializer
+        if self.request.user.has_perm("orga.view_speakers", self.request.event):
+            return SpeakerReviewerSerializer
         return SpeakerSerializer
 
     def get_base_queryset(self):

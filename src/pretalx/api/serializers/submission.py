@@ -115,14 +115,20 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     def get_created(self, obj):
         return obj.created.astimezone(obj.event.tz).isoformat()
 
-    class Meta:
-        model = Submission
+    class Meta(SubmissionSerializer.Meta):
         fields = SubmissionSerializer.Meta.fields + [
             "created",
             "answers",
             "notes",
             "internal_notes",
         ]
+
+
+class SubmissionReviewerSerializer(SubmissionOrgaSerializer):
+    answers = AnswerSerializer(many=True, source="reviewer_answers")
+
+    class Meta(SubmissionOrgaSerializer.Meta):
+        pass
 
 
 class ScheduleListSerializer(ModelSerializer):

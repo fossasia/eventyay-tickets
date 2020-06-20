@@ -286,6 +286,10 @@ class Submission(LogMixin, GenerateCode, models.Model):
             return self.anonymised.get("_anonymised", False)
         return False
 
+    @property
+    def reviewer_answers(self):
+        return self.answers.filter(question__is_visible_to_reviewers=True)
+
     def get_duration(self) -> int:
         """Returns this submission's duration in minutes.
 

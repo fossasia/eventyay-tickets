@@ -63,3 +63,10 @@ class SpeakerOrgaSerializer(SpeakerSerializer):
 
     class Meta(SpeakerSerializer.Meta):
         fields = SpeakerSerializer.Meta.fields + ("answers", "email", "availabilities")
+
+
+class SpeakerReviewerSerializer(SpeakerOrgaSerializer):
+    answers = AnswerSerializer(many=True, source="reviewer_answers")
+
+    class Meta(SpeakerOrgaSerializer.Meta):
+        pass

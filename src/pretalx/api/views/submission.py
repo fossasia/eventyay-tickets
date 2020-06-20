@@ -4,6 +4,7 @@ from pretalx.api.serializers.submission import (
     ScheduleListSerializer,
     ScheduleSerializer,
     SubmissionOrgaSerializer,
+    SubmissionReviewerSerializer,
     SubmissionSerializer,
 )
 from pretalx.schedule.models import Schedule
@@ -38,8 +39,10 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
         return self.request.event.submissions.all()
 
     def get_serializer_class(self):
-        if self.request.user.has_perm("orga.view_submissions", self.request.event):
+        if self.request.user.has_perm("orga.change_submissions", self.request.event):
             return SubmissionOrgaSerializer
+        if self.request.user.has_perm("orga.view_submissions", self.request.event):
+            return SubmissionReviewerSerializer
         return SubmissionSerializer
 
 
