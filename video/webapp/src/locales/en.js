@@ -19,7 +19,7 @@ export default {
 	'CreateChatPrompt:description:label': 'Description',
 	'Livestream:offline-message:text': 'Stream offline',
 	'ProfilePrompt:headline:text': 'Hi there!',
-	'ProfilePrompt:intro:text': 'Before you can join others in this awesome event, please tell us how you want to appear to other attendees.',
+	'ProfilePrompt:intro:text': 'Please tell us your name. If you interact with other attendees, e.g. through chat, we will show them your name. You do not need to use your real name.',
 	'ProfilePrompt:displayname:label': 'Display name',
 	'ProfilePrompt:gravatar-hint:text': 'or connect to your',
 	'ProfilePrompt:gravatar-change:label': 'Change gravatar',

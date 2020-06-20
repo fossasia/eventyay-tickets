@@ -13,8 +13,6 @@ Field                                 Type                       Description
 ===================================== ========================== =======================================================
 id                                    string                     The world's ID
 title                                 string                     A title for the world
-about                                 string                     A markdown-compatible description of the world for the
-                                                                 front page
 config                                object                     Various configuration properties
 permission_config                     object                     Permission rules mapping permission keys to lists of
                                                                  traits
@@ -46,7 +44,6 @@ Endpoints
       {
         "id": "sample",
         "title": "Unsere tolle Online-Konferenz",
-        "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
         "config": {},
         "permission_config": {
             "world.update": ["admin"],
@@ -93,7 +90,6 @@ Endpoints
       {
         "id": "sample",
         "title": "Happy World",
-        "about": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!",
         "config": {},
         "permission_config": {
             "world.update": ["admin"],
