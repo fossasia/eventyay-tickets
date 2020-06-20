@@ -11,14 +11,14 @@ function loadLocaleMessages () {
 		const matched = key.match(/([A-Za-z0-9-_]+)\./i)
 		if (matched && matched.length > 1) {
 			const locale = matched[1]
-			messages[locale] = locales(key).default
+			messages[locale] = Object.assign({}, locales(key).default, config.theme?.textOverwrites ?? {})
 		}
 	})
 	return messages
 }
 
 export default new VueI18n({
-	locale: process.env.VUE_APP_I18N_LOCALE || config.locale || 'en',
-	fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
+	locale: config.locale || 'en',
+	fallbackLocale: 'en',
 	messages: loadLocaleMessages()
 })
