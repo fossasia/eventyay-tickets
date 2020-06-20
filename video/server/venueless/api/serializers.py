@@ -34,7 +34,6 @@ class WorldSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "about",
             "config",
             "trait_grants",
             "roles",

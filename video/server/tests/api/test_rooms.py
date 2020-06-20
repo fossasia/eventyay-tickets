@@ -18,6 +18,7 @@ def test_room_list(client, world):
     assert r.data["count"] == 7
     assert r.data["results"][0] == {
         "id": str(world.rooms.first().id),
+        "name": "About",
         "trait_grants": {"viewer": [], "participant": []},
         "module_config": [
             {
@@ -42,6 +43,7 @@ def test_room_detail(client, world):
     assert r.data == {
         "id": str(world.rooms.first().id),
         "trait_grants": {"viewer": [], "participant": []},
+        "name": "About",
         "module_config": [
             {
                 "type": "page.markdown",
