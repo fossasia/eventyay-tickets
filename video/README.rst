@@ -16,7 +16,7 @@ venueless allows you to run events fully online. You can make use of different m
 
 venueless is brought to you by `pretix`_, `pretalx`_, and `rash.codes`_.
 
-**This project is in a development stage and currently not intended for production use.**
+**This project is in a development stage and requires in-depth technical knowledge for production use.**
 
 License
 -------
