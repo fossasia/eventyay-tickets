@@ -2,6 +2,12 @@ import data from 'emoji-mart/data/twitter.json'
 import EmojiRegex from 'emoji-regex'
 import { getEmojiDataFromNative } from 'emoji-mart'
 import { unifiedToNative } from 'emoji-mart/dist-es/utils'
+import { uncompress } from 'emoji-mart/dist-es/utils/data.js'
+
+// force uncompress data, because we don't use emoji-mart methods
+if (data.compressed) {
+	uncompress(data)
+}
 
 const emojiRegex = EmojiRegex()
 const splitEmojiRegex = new RegExp(`(${emojiRegex.source})`, 'g')
