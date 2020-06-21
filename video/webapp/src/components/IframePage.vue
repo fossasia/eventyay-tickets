@@ -1,10 +1,9 @@
 <template lang="pug">
-.c-iframe
+.c-iframe-page
 	bunt-progress-circular(size="huge", :page="true")
 	iframe(:src="this.module.config.url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia)
 </template>
 <script>
-import api from 'lib/api'
 export default {
 	props: {
 		room: {
@@ -18,13 +17,13 @@ export default {
 	},
 	data () {
 		return {
-			url: null,
+			url: null
 		}
 	},
 }
 </script>
 <style lang="stylus">
-.c-iframe
+.c-iframe-page
 	flex: auto
 	height: 100%
 	display: flex

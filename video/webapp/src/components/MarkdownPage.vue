@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-home(v-scrollbar.y="")
+.c-markdown-page(v-scrollbar.y="")
 	.content(v-html="markdownContent")
 </template>
 <script>
@@ -29,7 +29,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.c-home
+.c-markdown-page
 	.content
 		margin: 16px 32px
 
