@@ -85,7 +85,7 @@ iframe.bigbluebutton
 		pointer-events: none
 		bottom: calc(var(--vh100) - 48px - 3px)
 		right: 4px + 36px + 4px
-	+below('s')
+	+below('m')
 		width: 100vw
 		height: calc(var(--vh100) - 56px - 48px)
 </style>

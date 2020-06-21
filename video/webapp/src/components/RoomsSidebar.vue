@@ -2,7 +2,7 @@
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
 		//- TODO clickable logo
-		.logo(v-if="$mq.above['s']", :class="{'fit-to-width': theme.logo.fitToWidth}")
+		.logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
@@ -85,18 +85,18 @@ export default {
 	},
 	methods: {
 		onPointerdown (event) {
-			if (this.$mq.above.s) return
+			if (this.$mq.above.m) return
 			this.lastPointer = event.pointerId
 		},
 		onPointermove (event) {
-			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
+			if (this.$mq.above.m || this.lastPointer !== event.pointerId) return
 			this.pointerMovementX += event.movementX / window.devicePixelRatio // because apparently the browser does not do this
 			if (this.pointerMovementX > 0) {
 				this.pointerMovementX = 0
 			}
 		},
 		async onPointerup (event) {
-			if (this.$mq.above.s || this.lastPointer !== event.pointerId) return
+			if (this.$mq.above.m || this.lastPointer !== event.pointerId) return
 			this.lastPointer = null
 			if (this.pointerMovementX < -80) {
 				this.$emit('close')
@@ -236,7 +236,7 @@ export default {
 			font-weight: 600
 			font-size: 18px
 			margin-left: 8px
-	+below('s')
+	+below('m')
 		position: fixed
 		left: 0
 		top: 0

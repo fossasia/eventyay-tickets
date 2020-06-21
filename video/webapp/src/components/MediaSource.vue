@@ -70,7 +70,7 @@ export default {
 			right: var(--chatbar-width)
 			width: calc(100vw - var(--sidebar-width) - var(--chatbar-width))
 			height: calc(var(--vh100) - 56px * 2)
-			+below('s')
+			+below('m')
 				bottom: calc(var(--vh100) - 48px - 56px - 40vh)
 				right: 0
 				width: 100vw
