@@ -61,6 +61,7 @@ export default {
 	computed: {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'world', 'user']),
 		room () {
+			if (this.$route.name === 'home') return this.$store.state.rooms?.[0]
 			return this.$store.state.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		roomHasMedia () {

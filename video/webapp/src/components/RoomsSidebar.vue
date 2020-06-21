@@ -7,22 +7,22 @@ transition(name="sidebar")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links
-				router-link.room(:to="{name: 'home'}") {{ rooms[0].name }}
+				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}") {{ rooms[0].name }}
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx.base_url") {{ $t('RoomsSidebar:schedule:label') }}
-				router-link.room(v-for="page of roomsByType.page", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
+				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}") {{ page.name }}
 			.group-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
-				router-link.stage(v-for="stage of roomsByType.stage", :to="{name: 'room', params: {roomId: stage.id}}")
+				router-link.stage(v-for="stage of roomsByType.stage", :to="stage === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.id}}")
 					.name {{ stage.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
 			.chats
-				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="{name: 'room', params: {roomId: chat.id}}")
+				router-link.video-chat(v-for="chat of roomsByType.videoChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}")
 					.name {{ chat.name }}
-				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="{name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
+				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
 			template(v-if="hasPermission('world:users.list')")
 				.buffer
@@ -69,7 +69,7 @@ export default {
 				textChat: [],
 				videoChat: []
 			}
-			for (const room of this.rooms.slice(1)) {
+			for (const room of this.rooms) {
 				if (room.modules.length === 1 & room.modules[0].type === 'chat.native') {
 					rooms.textChat.push(room)
 				} else if (room.modules.length === 1 & room.modules[0].type === 'call.bigbluebutton') {
