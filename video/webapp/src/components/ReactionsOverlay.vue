@@ -104,7 +104,7 @@ export default {
 		display: inline-block
 		background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 		background-size: 5700% 5700%
-	+below('s')
+	+below('m')
 		width: 100vw
 		height: 40vh
 		right: 0

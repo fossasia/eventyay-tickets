@@ -159,7 +159,7 @@ export default {
 			border-left: border-separator()
 			flex: none
 			width: var(--chatbar-width)
-	+below('s')
+	+below('m')
 		.main
 			flex-direction: column
 		.stage

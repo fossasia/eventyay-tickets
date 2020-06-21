@@ -17,10 +17,10 @@
 			h1 {{ $t('App:fatal-connection-error:else:headline') }}
 		p.code error code: {{ fatalConnectionError.code }}
 	template(v-else-if="world")
-		app-bar(v-if="$mq.below['s']", @toggleSidebar="toggleSidebar")
+		app-bar(v-if="$mq.below['m']", @toggleSidebar="toggleSidebar")
 		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['s'] && showSidebar", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['s'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
+			.sidebar-backdrop(v-if="$mq.below['m'] && showSidebar", @pointerup="showSidebar = false")
+		rooms-sidebar(:show="$mq.above['m'] || showSidebar", @editProfile="showProfilePrompt = true", @createRoom="showStageCreationPrompt = true", @createChat="showChatCreationPrompt = true",	@close="showSidebar = false")
 		router-view(:key="$route.fullPath")
 		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 		media-source(v-if="roomHasMedia", ref="primaryMediaSource", :room="room", :key="room.id")
@@ -112,7 +112,7 @@ export default {
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
 
-			if (!this.$mq.above.s) return // no background rooms for mobile
+			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (oldRoom &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
@@ -183,7 +183,7 @@ export default {
 			font-family: monospace
 		.bunt-button
 			themed-button-primary('large')
-	+below('s')
+	+below('m')
 		grid-template-columns: auto
 		grid-template-rows: 48px auto
 		grid-template-areas: "app-bar" "main"
