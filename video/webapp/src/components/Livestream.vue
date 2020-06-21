@@ -3,9 +3,11 @@
 	.video-container(ref="videocontainer")
 		video(ref="video", style="width:100%;height:100%", autoplay, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
-			.big-button.mdi(:class="{'mdi-play': !playing, 'mdi-pause': playing}")
+			.big-button.mdi.mdi-play(v-if="!playing")
 			bunt-progress-circular(v-if="buffering", size="huge")
 			.bottom-controls(@click.stop="")
+				bunt-icon-button(@click="toggleVideo") {{ playing ? 'play' : 'pause' }}
+				.buffer
 				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
 				bunt-icon-button(@click="toggleFullscreen") {{ fullscreen ? 'fullscreen-exit' : 'fullscreen' }}
@@ -186,8 +188,10 @@ export default {
 			display: flex
 			justify-content: flex-end
 			align-items: center
-			padding: 16px 16px
+			padding: 8px 16px
 			box-sizing: border-box
+			.buffer
+				flex: auto
 			.bunt-icon-button
 				color: $clr-primary-text-dark
 				height: 42px
