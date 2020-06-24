@@ -1,10 +1,10 @@
 <template lang="pug">
 .c-livestream(:class="[`size-${size}`, {playing}]")
 	.video-container(ref="videocontainer")
-		video(ref="video", style="width:100%;height:100%", autoplay, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
+		video(ref="video", style="width:100%;height:100%", muted, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
 			.big-button.mdi.mdi-play(v-if="!playing")
-			bunt-progress-circular(v-if="buffering", size="huge")
+			bunt-progress-circular(v-if="buffering && !offline", size="huge")
 			.bottom-controls(@click.stop="")
 				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.buffer
@@ -17,7 +17,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import shaka from 'shaka-player/dist/shaka-player.compiled.js'
+import Hls from 'hls.js'
 import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
@@ -53,22 +53,54 @@ export default {
 		...mapState(['streamingRoom'])
 	},
 	async mounted () {
-		const player = new shaka.Player(this.$refs.video)
+		document.addEventListener('fullscreenchange', this.onFullscreenchange)
+		if (!Hls.isSupported()) return // TODO
+		const player = new Hls()
+		player.attachMedia(this.$refs.video)
 		this.player = player
-		this.onVolumechange()
+		const load = () => {
+			/* player.loadSource('https://99dases4vxzvsda1.hlscdn.obs-server.com/hls/nu945xtzq3nshgxkw3vmy22bcr69k2.m3u8') */
+			player.loadSource(this.module.config.hls_url)
+		}
+		player.on(Hls.Events.MEDIA_ATTACHED, () => {
+			load()
+		})
+		player.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+			this.offline = false
+			this.buffering = false
+			this.$refs.video.play()
+			this.$refs.video.muted = false
+		})
 
-		player.addEventListener('error', (error) => {
+		player.on(Hls.Events.ERROR, (event, data) => {
+			console.error(event, data)
+			if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+				this.buffering = true
+			} else if (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR) {
+				this.offline = true
+				setTimeout(load, RETRY_INTERVAL)
+			} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+				this.buffering = true
+				player.startLoad()
+			}
+		})
+
+		player.on(Hls.Events.FRAG_BUFFERED, () => {
+			this.buffering = false
+		})
+
+		this.onVolumechange()
+		/* player.addEventListener('error', (error) => {
 			console.error(error.detail)
 		})
-		player.addEventListener('buffering', ({buffering}) => {
+		player.on('buffering', ({buffering}) => {
 			this.buffering = buffering
-		})
-		document.addEventListener('fullscreenchange', this.onFullscreenchange)
-		const load = async () => {
+		}) */
+		/* const load = async () => {
 			if (this._isDestroyed) return
 			try {
 				console.log('starting stream', this.module.config.hls_url)
-				await player.load(this.module.config.hls_url)
+				await player.load('https://99dases4vxzvsda1.hlscdn.obs-server.com/hls/nu945xtzq3nshgxkw3vmy22bcr69k2.m3u8')
 				this.offline = false
 			} catch (error) {
 				console.error('player failed to load', error)
@@ -78,11 +110,10 @@ export default {
 				}
 				// TODO handle other errors https://shaka-player-demo.appspot.com/docs/api/shaka.util.Error.html
 			}
-		}
-		await load()
+		} */
+		/* await load() */
 	},
 	beforeDestroy () {
-		this.player.unload()
 		this.player.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 	},
