@@ -35,7 +35,7 @@ export default {
 	.logo
 		margin-left: 8px
 		font-size: 24px
-		height: 56px
+		height: 40px
 		img
 			height: 100%
 </style>
