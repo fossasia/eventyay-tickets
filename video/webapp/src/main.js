@@ -4,8 +4,6 @@ import Buntpapier from 'buntpapier'
 import Vuelidate from 'vuelidate'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import shaka from 'shaka-player'
-import muxjs from 'mux.js'
 import { v4 as uuid } from 'uuid'
 import App from './App.vue'
 import router from 'router'
@@ -28,11 +26,6 @@ Vue.use(MediaQueries)
 // auth.
 // history.replaceState('', document.title, location.pathname + location.search)
 
-shaka.polyfill.installAll()
-window.muxjs = muxjs
-if (!shaka.Player.isBrowserSupported()) {
-	console.error('Browser not supporting shaka player!')
-}
 Vue.prototype.$features = features
 window.vapp = new Vue({
 	router,
