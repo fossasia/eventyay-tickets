@@ -38,4 +38,6 @@ export default {
 		height: 40px
 		img
 			height: 100%
+			max-width: 100%
+			object-fit: contain
 </style>
