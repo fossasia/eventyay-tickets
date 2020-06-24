@@ -1,8 +1,11 @@
 <template lang="pug">
-.c-livestream(:class="[`size-${size}`, {playing}]")
+.c-livestream(:class="[`size-${size}`, {playing, buffering, automuted, muted}]")
 	.video-container(ref="videocontainer")
-		video(ref="video", style="width:100%;height:100%", muted, @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
+		video(ref="video", style="width:100%;height:100%", @playing="playingVideo", @pause="pausingVideo", @volumechange="onVolumechange")
 		.controls(@click="toggleVideo")
+			.automuted-unmute(v-if="automuted")
+				span.mdi.mdi-volume-off
+				span {{ $t('Livestream:automuted-unmute:text') }}
 			.big-button.mdi.mdi-play(v-if="!playing")
 			bunt-progress-circular(v-if="buffering && !offline", size="huge")
 			.bottom-controls(@click.stop="")
@@ -46,13 +49,14 @@ export default {
 			offline: false,
 			fullscreen: false,
 			volume: 1,
-			muted: false
+			muted: false,
+			automuted: false
 		}
 	},
 	computed: {
 		...mapState(['streamingRoom'])
 	},
-	async mounted () {
+	mounted () {
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
 		if (!Hls.isSupported()) return // TODO
 		const player = new Hls()
@@ -65,11 +69,17 @@ export default {
 		player.on(Hls.Events.MEDIA_ATTACHED, () => {
 			load()
 		})
-		player.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+		player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
 			this.offline = false
 			this.buffering = false
-			this.$refs.video.play()
-			this.$refs.video.muted = false
+			try {
+				await this.$refs.video.play()
+			} catch (e) {
+				this.$refs.video.muted = true
+				this.automuted = true
+				this.$refs.video.play()
+			}
+			this.onVolumechange()
 		})
 
 		player.on(Hls.Events.ERROR, (event, data) => {
@@ -89,7 +99,6 @@ export default {
 			this.buffering = false
 		})
 
-		this.onVolumechange()
 		/* player.addEventListener('error', (error) => {
 			console.error(error.detail)
 		})
@@ -119,6 +128,10 @@ export default {
 	},
 	methods: {
 		toggleVideo () {
+			if (this.automuted) {
+				this.toggleVolume()
+				if (!this.$refs.video.paused) return
+			}
 			if (this.$refs.video.paused) {
 				this.$refs.video.play()
 			} else {
@@ -133,6 +146,7 @@ export default {
 			}
 		},
 		toggleVolume () {
+			this.automuted = false
 			this.$refs.video.muted = !this.muted
 		},
 		onVolumeSlider (event) {
@@ -192,6 +206,24 @@ export default {
 		bottom: 0
 		opacity: 0
 		transition: opacity .3s ease
+		.automuted-unmute
+			display: flex
+			align-items: center
+			cursor: pointer
+			position: absolute
+			left: 50%
+			top: 64px
+			transform: translateX(-50%)
+			background-color: $clr-primary-text-light
+			color: $clr-primary-text-dark
+			padding: 16px 24px
+			border-radius: 36px
+			font-size: 24px
+			font-weight: 600
+			.mdi
+				margin-right: 16px
+				font-size: 32px
+				line-height: 32px
 		.bunt-progress-circular, .big-button
 			position: absolute
 			top: 50%
@@ -252,7 +284,7 @@ export default {
 					thumb()
 	.shaka-controls-button-panel > .material-icons
 		font-size: 24px
-	&:hover, &:not(.playing)
+	&:hover, &:not(.playing), &.buffering, &.automuted, &.muted
 		.controls
 			opacity: 1
 		.mdi

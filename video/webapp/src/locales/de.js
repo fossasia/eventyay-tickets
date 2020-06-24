@@ -19,6 +19,7 @@ export default {
 	'CreateChatPrompt:description:label': 'Beschreibung',
 	'ChatInput:input:placeholder': 'Nachricht verschicken',
 	'Livestream:offline-message:text': 'Der Stream ist offline',
+	'Livestream:automuted-unmute:text': 'Klicken um Ton zu aktivieren',
 	'ProfilePrompt:headline:text': 'Hallo!',
 	'ProfilePrompt:intro:text': 'Bitte sage uns, wie du heißt. Wenn du mit anderen Teilnehmern der Veranstaltung, zum Beispiel per Chat, interagierst, wird dein Name angezeigt. Du musst nicht deinen echten Namen verwenden.',
 	'ProfilePrompt:displayname:label': 'Anzeigename',
