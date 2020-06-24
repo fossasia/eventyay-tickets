@@ -6,7 +6,7 @@
 			.big-button.mdi.mdi-play(v-if="!playing")
 			bunt-progress-circular(v-if="buffering", size="huge")
 			.bottom-controls(@click.stop="")
-				bunt-icon-button(@click="toggleVideo") {{ playing ? 'play' : 'pause' }}
+				bunt-icon-button(@click="toggleVideo") {{ playing ? 'pause' : 'play' }}
 				.buffer
 				bunt-icon-button(@click="toggleVolume") {{ muted || volume === 0 ? 'volume_off' : 'volume_high' }}
 				input.volume-slider(type="range", step="any", min="0", max="1", aria-label="Volume", :value="volume", @input="onVolumeSlider", :style="{'--volume': volume}")
