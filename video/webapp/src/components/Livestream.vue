@@ -53,9 +53,6 @@ export default {
 		...mapState(['streamingRoom'])
 	},
 	async mounted () {
-		if (this.streamingRoom !== this.room) {
-			this.$refs.video.muted = true
-		}
 		const player = new shaka.Player(this.$refs.video)
 		this.player = player
 		this.onVolumechange()
