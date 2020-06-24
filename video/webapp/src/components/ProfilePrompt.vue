@@ -11,7 +11,7 @@
 					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
 					identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
 				form(@submit.prevent="update")
-					bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model="displayName", :validation="$v.displayName")
+					bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model.trim="displayName", :validation="$v.displayName")
 			//- link here not strictly good UX
 			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('ProfilePrompt:gravatar-change:label') }}
 			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('ProfilePrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
