@@ -6,10 +6,6 @@
 <script>
 export default {
 	props: {
-		room: {
-			type: Object,
-			required: true
-		},
 		module: {
 			type: Object,
 			required: true
