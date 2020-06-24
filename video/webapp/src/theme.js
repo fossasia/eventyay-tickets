@@ -65,8 +65,8 @@ const themeConfig = {
 const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {}) // eslint-disable-line no-sequences
 
 // modded colors
-colors.primaryDarken15 = colors.primary.darken(15)
-colors.primaryDarken20 = colors.primary.darken(20)
+colors.primaryDarken15 = colors.primary.darken(0.15)
+colors.primaryDarken20 = colors.primary.darken(0.20)
 colors.primaryAlpha60 = colors.primary.alpha(0.6)
 
 // text on main background
@@ -79,7 +79,7 @@ colors.dividers = firstReadable([CLR_DIVIDERS.LIGHT, CLR_DIVIDERS.DARK])
 // button + inputs
 colors.inputPrimaryBg = colors.primary
 colors.inputPrimaryFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], colors.primary)
-colors.inputPrimaryBgDarken = colors.primary.darken(15)
+colors.inputPrimaryBgDarken = colors.primary.darken(0.15)
 // secondary inputs are transparent
 colors.inputSecondaryFg = colors.primary
 colors.inputSecondaryFgAlpha = colors.primary.alpha(0.08)
