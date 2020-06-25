@@ -123,6 +123,8 @@ class RoomAttendanceGraphView(GraphView):
                 adds[bucket].add(v["user"])
                 bucket += timedelta(minutes=10)
 
+        all_users = frozenset().union(*adds.values())
+
         pairs = sorted(adds.items())
         keys = [p[0] for p in pairs]
         values = [len(p[1]) for p in pairs]
@@ -150,7 +152,7 @@ class RoomAttendanceGraphView(GraphView):
             )
             reacts[bucket, r["reaction"]] += 1
 
-        ax.set_ylabel("Unique viewers")
+        ax.set_ylabel("Unique viewers ({} total)".format(len(all_users)))
         ax2 = ax.twinx()
         if reacts:
             ax2.set_ylim(0, max(reacts.values()) * 1.4)
