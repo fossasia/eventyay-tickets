@@ -104,6 +104,7 @@ class RoomAttendanceGraphView(GraphView):
             begin = tz.localize(begin)
         if is_naive(end):
             end = tz.localize(end)
+        end = max(end, begin + timedelta(minutes=1))
 
         views = (
             self.room.views.filter(
@@ -127,9 +128,11 @@ class RoomAttendanceGraphView(GraphView):
         values = [len(p[1]) for p in pairs]
         ax.plot(keys, values)
 
-        ax.xaxis.set_major_formatter(dates.DateFormatter("%d. %H:%M", tz=tz))
         ax.set_xlim(begin, end)
-        ax.set_ylim(0, max(values) * 1.1)
+        if values:
+            ax.set_ylim(0, max(values) * 1.1)
+        else:
+            ax.set_ylim(0, 100)
         ax.grid(True)
 
         reactions = (
@@ -149,7 +152,10 @@ class RoomAttendanceGraphView(GraphView):
 
         ax.set_ylabel("Unique viewers")
         ax2 = ax.twinx()
-        ax2.set_ylim(0, max(reacts.values()) * 1.4)
+        if reacts:
+            ax2.set_ylim(0, max(reacts.values()) * 1.4)
+        else:
+            ax2.set_ylim(0, 100)
         ax2.set_xlim(begin, end)
         ax2.set_ylabel("Emoji reactions")
 
@@ -177,3 +183,4 @@ class RoomAttendanceGraphView(GraphView):
                 emoji_axs[i].axis("off")
         ax.set_title(self.room.name)
         self.fig.autofmt_xdate()
+        ax.xaxis.set_major_formatter(dates.DateFormatter("%d. %H:%M", tz=tz))
