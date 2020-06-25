@@ -26,6 +26,11 @@ import Hls from 'hls.js'
 import theme from 'theme'
 
 const RETRY_INTERVAL = 5000
+const HLS_CONFIG = {
+	// never fall behind live edge
+	liveBackBufferLength: 0,
+	liveMaxLatencyDurationCount: 5
+}
 
 export default {
 	props: {
@@ -61,11 +66,10 @@ export default {
 	mounted () {
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
 		if (!Hls.isSupported()) return // TODO
-		const player = new Hls()
+		const player = new Hls(HLS_CONFIG)
 		player.attachMedia(this.$refs.video)
 		this.player = player
 		const load = () => {
-			/* player.loadSource('https://99dases4vxzvsda1.hlscdn.obs-server.com/hls/nu945xtzq3nshgxkw3vmy22bcr69k2.m3u8') */
 			player.loadSource(this.module.config.hls_url)
 		}
 		player.on(Hls.Events.MEDIA_ATTACHED, () => {
@@ -136,6 +140,8 @@ export default {
 			}
 			if (this.$refs.video.paused) {
 				this.$refs.video.play()
+				// force live edge after unpausing
+				this.$refs.video.currentTime = this.$refs.video.buffered.end(this.$refs.video.buffered.length - 1)
 			} else {
 				this.$refs.video.pause()
 			}
