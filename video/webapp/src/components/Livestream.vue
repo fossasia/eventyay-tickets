@@ -19,6 +19,8 @@
 		.offline-message(v-else) {{ $t('Livestream:offline-message:text') }}
 </template>
 <script>
+// TODOS
+// show controls based on mouse move time
 import { mapState } from 'vuex'
 import Hls from 'hls.js'
 import theme from 'theme'
@@ -86,12 +88,12 @@ export default {
 			console.error(event, data)
 			if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
 				this.buffering = true
-			} else if (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR) {
+			} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
 				this.offline = true
 				setTimeout(load, RETRY_INTERVAL)
 			} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
 				this.buffering = true
-				player.startLoad()
+				setTimeout(() => player.startLoad(), 250)
 			}
 		})
 
