@@ -64,72 +64,59 @@ export default {
 		...mapState(['streamingRoom'])
 	},
 	mounted () {
+		const video = this.$refs.video
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
-		if (!Hls.isSupported()) return // TODO
-		const player = new Hls(HLS_CONFIG)
-		player.attachMedia(this.$refs.video)
-		this.player = player
-		const load = () => {
-			player.loadSource(this.module.config.hls_url)
-		}
-		player.on(Hls.Events.MEDIA_ATTACHED, () => {
-			load()
-		})
-		player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
+		const start = async () => {
 			this.offline = false
 			this.buffering = false
 			try {
 				await this.$refs.video.play()
 			} catch (e) {
-				this.$refs.video.muted = true
+				video.muted = true
 				this.automuted = true
-				this.$refs.video.play()
+				video.play()
 			}
 			this.onVolumechange()
-		})
-
-		player.on(Hls.Events.ERROR, (event, data) => {
-			console.error(event, data)
-			if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
-				this.buffering = true
-			} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
-				this.offline = true
-				setTimeout(load, RETRY_INTERVAL)
-			} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-				this.buffering = true
-				setTimeout(() => player.startLoad(), 250)
+		}
+		if (Hls.isSupported()) {
+			const player = new Hls(HLS_CONFIG)
+			player.attachMedia(this.$refs.video)
+			this.player = player
+			const load = () => {
+				player.loadSource(this.module.config.hls_url)
 			}
-		})
+			player.on(Hls.Events.MEDIA_ATTACHED, () => {
+				load()
+			})
+			player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
+				start()
+			})
 
-		player.on(Hls.Events.FRAG_BUFFERED, () => {
-			this.buffering = false
-		})
-
-		/* player.addEventListener('error', (error) => {
-			console.error(error.detail)
-		})
-		player.on('buffering', ({buffering}) => {
-			this.buffering = buffering
-		}) */
-		/* const load = async () => {
-			if (this._isDestroyed) return
-			try {
-				console.log('starting stream', this.module.config.hls_url)
-				await player.load('https://99dases4vxzvsda1.hlscdn.obs-server.com/hls/nu945xtzq3nshgxkw3vmy22bcr69k2.m3u8')
-				this.offline = false
-			} catch (error) {
-				console.error('player failed to load', error)
-				if (error.code < 2000) { // network errors
+			player.on(Hls.Events.ERROR, (event, data) => {
+				console.error(event, data)
+				if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+					this.buffering = true
+				} else if ([Hls.ErrorDetails.MANIFEST_LOAD_ERROR, Hls.ErrorDetails.LEVEL_LOAD_ERROR].includes(data.details)) {
 					this.offline = true
 					setTimeout(load, RETRY_INTERVAL)
+				} else if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+					this.buffering = true
+					setTimeout(() => player.startLoad(), 250)
 				}
-				// TODO handle other errors https://shaka-player-demo.appspot.com/docs/api/shaka.util.Error.html
-			}
-		} */
-		/* await load() */
+			})
+
+			player.on(Hls.Events.FRAG_BUFFERED, () => {
+				this.buffering = false
+			})
+		} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+			video.src = this.module.config.hls_url
+			video.addEventListener('loadedmetadata', function () {
+				start()
+			})
+		}
 	},
 	beforeDestroy () {
-		this.player.destroy()
+		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 	},
 	methods: {
