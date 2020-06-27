@@ -4,5 +4,5 @@ delete require.cache[require.resolve('moment')]
 var moment = require('moment')
 delete require.cache[require.resolve('moment')]
 
-moment.now = function () { return 1587201480000 }
+moment.now = function () { return 1587206880000 }
 export default moment
