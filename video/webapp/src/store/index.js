@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import moment from 'lib/timetravelMoment'
 import api from 'lib/api'
 import router from 'router'
 import chat from './chat'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -26,6 +26,26 @@ export default new Vuex.Store({
 			return (permission) => {
 				return !!state.permissions?.includes(permission)
 			}
+		},
+		flatSchedule (state) {
+			if (!state.schedule) return
+			const sessions = []
+			for (const day of state.schedule.schedule) {
+				for (const room of day.rooms) {
+					const vRoom = state.rooms.find(r => r.import_id === state.world.pretalx.room_mapping[room.id])
+					for (const talk of room.talks) {
+						sessions.push({
+							title: talk.title,
+							start: moment(talk.start),
+							end: moment(talk.end),
+							speakers: talk.speakers,
+							room: vRoom
+						})
+					}
+				}
+			}
+			sessions.sort((a, b) => a.start.diff(b.start))
+			return {sessions}
 		}
 	},
 	mutations: {

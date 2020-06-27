@@ -3,12 +3,14 @@ import VueRouter from 'vue-router'
 import Schedule from 'views/schedule'
 import Room from 'views/rooms/item'
 import Channel from 'views/channels/item'
+import Home from 'views'
+
 Vue.use(VueRouter)
 
 const routes = [{
 	path: '/',
 	name: 'home',
-	component: Room,
+	component: Home,
 }, {
 	path: '/schedule',
 	name: 'schedule',
