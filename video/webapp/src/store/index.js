@@ -18,6 +18,7 @@ export default new Vuex.Store({
 		rooms: null,
 		permissions: null,
 		schedule: null,
+		now: moment(),
 		activeRoom: null,
 		reactions: null
 	},
@@ -46,6 +47,20 @@ export default new Vuex.Store({
 			}
 			sessions.sort((a, b) => a.start.diff(b.start))
 			return {sessions}
+		},
+		liveSessions (state, getters) {
+			if (!getters.flatSchedule) return
+			const sessions = []
+			for (const session of getters.flatSchedule.sessions) {
+				if (session.end.isBefore(state.now) || session.start.isAfter(state.now)) continue
+				sessions.push(session)
+			}
+			return sessions
+		}
+	},
+	mutations: {
+		updateNow (state) {
+			state.now = moment()
 		}
 	},
 	mutations: {

@@ -52,6 +52,9 @@ if (token) {
 }
 store.dispatch('connect')
 
+// TODO properly time between minutes
+setInterval(() => store.commit('updateNow'), 30000)
+
 window.__venueless__release = RELEASE
 
 window.addEventListener('beforeinstallprompt', function (event) {

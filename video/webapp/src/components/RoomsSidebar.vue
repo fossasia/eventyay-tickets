@@ -1,8 +1,7 @@
 <template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
-		//- TODO clickable logo
-		.logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
+		router-link(to="/").logo(v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
 			img(:src="theme.logo.url", :alt="world.title")
 		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
@@ -14,8 +13,15 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
-				router-link.stage(v-for="stage of roomsByType.stage", :to="stage === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.id}}")
-					.name {{ stage.name }}
+				router-link.stage(v-for="stage of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{live: stage.session}")
+					template(v-if="stage.session")
+						img.preview(:src="`https://picsum.photos/64?v=${index}`")
+						.info
+							.title {{ stage.session.title }}
+							.subtitle
+								.speakers {{ stage.session.speakers.map(s => s.name).join(', ')}}
+								.room {{ stage.room.name }}
+					.name(v-else) {{ stage.room.name }}
 			.group-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')", @click="$emit('createChat')") plus
@@ -65,6 +71,7 @@ export default {
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
 		...mapState('chat', ['joinedChannels']),
+		...mapGetters(['liveSessions']),
 		...mapGetters('chat', ['hasUnreadMessages']),
 		...mapGetters(['hasPermission']),
 		style () {
@@ -86,7 +93,10 @@ export default {
 				} else if (room.modules.length === 1 & room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
-					rooms.stage.push(room)
+					rooms.stage.push({
+						room,
+						session: this.liveSessions.find(session => session.room === room)
+					})
 				} else {
 					rooms.page.push(room)
 				}
@@ -225,8 +235,57 @@ export default {
 			.name
 				ellipsis()
 		.stage
-			&::before
-				content: '\F050D'
+			&.live
+				height: 48px
+				padding: 0 4px 0 16px
+				display: flex
+				align-items: center
+				&::after
+					content: 'live'
+					display: block
+					position: absolute
+					left: 4px
+					top: 2px
+					color: $clr-primary-text-dark
+					background-color: $clr-danger
+					border-radius: 4px
+					line-height: 20px
+					padding: 0 4px
+				img
+					flex: none
+					height: 36px
+					width: @height
+					border-radius: 50%
+					margin-right: 4px
+				.info
+					flex: auto
+					display: flex
+					flex-direction: column
+					width: calc(100% - 40px)
+					justify-content: center
+				.title
+					ellipsis()
+					line-height: 24px
+				.subtitle
+					display: flex
+					justify-content: space-between
+					line-height: 24px
+					color: $clr-disabled-text-dark
+					.room
+						display: flex
+						line-height: 24px
+						&::before
+							content: '\F050D'
+							font-family: "Material Design Icons"
+							font-size: 18px
+							line-height: 24px
+							color: var(--clr-sidebar-text-disabled)
+							margin-right: 4px
+				.speakers
+					ellipsis()
+			&:not(.live)
+				&::before
+					content: '\F050D'
 		.text-chat
 			&::before
 				content: '\F0423'
