@@ -4,6 +4,7 @@
 
 {% block content %}
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+{% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
 {% if "congratulations" in request.GET %}
 <div class="alert alert-success congratulations">
     {% blocktrans trimmed %}
@@ -29,7 +30,7 @@
         <div class="step-label">
             {{ stp.label }}
         </div>
-        {% if stp.links %}
+        {% if stp.links and can_change_settings %}
         <div class="step-links">
             <ul>
             {% for link in stp.links %}
