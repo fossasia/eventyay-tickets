@@ -15,7 +15,7 @@
     <script defer src="{% static "js/jquery.formset.js" %}"></script>
     <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
     {% endcompress %}
-    <script src="{% static "vendored/marked.min.js" %}" defer></script>
+    <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script src="{% static "common/js/markdown.js" %}" defer></script>
     <h2>{% trans "Your submission:" %} {{ submission.title }}</h2>
     {% if submission.public_slots %}
