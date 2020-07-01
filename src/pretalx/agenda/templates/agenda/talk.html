@@ -79,11 +79,11 @@
             {% if answers %}
             <hr />
             <section class="answers">
-            {% for answer in answers %}
-                <span class="question"><strong>{{ answer.question.question }}</strong></span>
-                <span class="answer">– {% include "common/question_answer.html" with answer=answer %}{% endif %}
-                </span>
-            {% endfor %}
+                {% for answer in answers %}
+                    <span class="question"><strong>{{ answer.question.question }}</strong></span>
+                    <span class="answer">– {% include "common/question_answer.html" with answer=answer %}
+                    </span>
+                {% endfor %}
             {% endif %}
             </section>
             {% if submission.active_resources %}
