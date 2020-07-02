@@ -181,6 +181,33 @@ async def test_config_list(world, stream_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_change_schedule_data_unauthorized(world, stream_room):
+    async with world_communicator() as c1, world_communicator() as c2:
+        await c1.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c2.receive_json_from()
+        assert response[0] == "success"
+
+        await c1.send_json_to(
+            [
+                "room.schedule",
+                123,
+                {"room": str(stream_room.pk), "data": {"session": 1}},
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "error"  # Regular users cannot change schedule data
+        assert response[2]["code"] == "protocol.denied"
+
+        with pytest.raises(asyncio.TimeoutError):
+            await c2.receive_json_from()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_config_get(world, stream_room):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
         await c1.send_json_to(["room.config.get", 123, {"room": str(stream_room.pk)}])
@@ -226,3 +253,41 @@ async def test_config_delete(world, stream_room):
         assert response[0] == "success"
         await database_sync_to_async(stream_room.refresh_from_db)()
         assert stream_room.deleted
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_change_schedule_data(world, stream_room):
+    token = get_token(world, ["moderator"])
+    async with world_communicator(token=token) as c1, world_communicator() as c2:
+        await c1.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
+        response = await c2.receive_json_from()
+        assert response[0] == "success"
+
+        await c1.send_json_to(
+            [
+                "room.schedule",
+                123,
+                {"room": str(stream_room.pk), "schedule_data": {"session": 1}},
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        response = await c1.receive_json_from()
+        assert response[0] == "room.schedule"
+        assert response[1] == {
+            "room": str(stream_room.pk),
+            "schedule_data": {"session": 1},
+        }
+
+        response = await c2.receive_json_from()
+        assert response[0] == "room.schedule"
+        assert response[1] == {
+            "room": str(stream_room.pk),
+            "schedule_data": {"session": 1},
+        }

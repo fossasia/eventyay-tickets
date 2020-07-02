@@ -12,7 +12,7 @@ from sentry_sdk import add_breadcrumb, configure_scope
 from venueless.core.models import Channel, Room
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
-from venueless.core.services.room import end_view, start_view
+from venueless.core.services.room import end_view, start_view, update_room
 from venueless.core.services.world import (
     create_room,
     get_room_config_for_user,
@@ -242,3 +242,38 @@ class RoomModule(BaseModule):
     @event("delete")
     async def push_room_delete(self, body):
         await self.consumer.send_json([body["type"], {"id": body["room"]}])
+
+    @command("schedule")
+    @room_action(permission_required=Permission.ROOM_ANNOUNCE)
+    async def change_schedule_data(self, body):
+        data = body.get("schedule_data")
+        if data and not all(key in ["title", "session"] for key in data.keys()):
+            raise ConsumerException(
+                code="room.unknown_schedule_data", message="Unknown schedule data"
+            )
+
+        await self.consumer.send_success({})
+        self.room.schedule_data = data
+        await update_room(self.room)
+        await self.consumer.channel_layer.group_send(
+            GROUP_ROOM.format(id=self.room.pk),
+            {"type": "room.schedule", "schedule_data": data, "room": str(self.room.pk)},
+        )
+
+    @event("schedule", refresh_world=True)
+    @room_action()
+    async def push_schedule_data(self, body):
+        await self.room.refresh_from_db_if_outdated()
+        if not await self.consumer.world.has_permission_async(
+            user=self.consumer.user, permission=Permission.ROOM_VIEW
+        ):
+            return
+        config = await get_room_config_for_user(
+            body["room"], self.consumer.world.id, self.consumer.user
+        )
+        await self.consumer.send_json(
+            [
+                body["type"],
+                {"room": config["id"], "schedule_data": config.get("schedule_data")},
+            ]
+        )

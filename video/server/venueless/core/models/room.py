@@ -85,6 +85,7 @@ class Room(VersionedModel):
     sorting_priority = models.IntegerField(default=0)
     import_id = models.CharField(max_length=100, null=True, blank=True)
     pretalx_id = models.IntegerField(default=0)
+    schedule_data = JSONField(null=True, blank=True)
 
     objects = RoomQuerySet.as_manager()
 

@@ -22,6 +22,7 @@ class RoomSerializer(serializers.ModelSerializer):
             "description",
             "sorting_priority",
             "pretalx_id",
+            "schedule_data",
             # TODO: picture
         ]
 

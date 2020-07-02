@@ -40,7 +40,6 @@ Allowed reactions currently are:
 * ``open_mouth``
 * ``heart``
 
-
 Room management
 ---------------
 
@@ -65,3 +64,17 @@ Or for all rooms::
 
     => ["room.config.list", 123, {}]
     <- ["success", 123, [{…}, …]]
+
+Schedule changes
+----------------
+
+Moderators can update the current ``schedule_data`` field like this::
+
+    => ["room.schedule", 123, {"room": "room_1", "schedule_data": {"session": 1}}]
+    <- ["success", 123, {}]
+
+Permitted session data keys are ``session`` and ``title``.
+
+When the schedule data is updated, a broadcast to all users in the room is sent::
+
+    => ["room.schedule", {"room": "room_1", "schedule_data": {"session": 1}}]

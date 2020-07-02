@@ -32,6 +32,7 @@ def test_room_list(client, world):
         "description": "UNUSED",
         "pretalx_id": 0,
         "sorting_priority": 0,
+        "schedule_data": None,
     }
 
 
@@ -58,6 +59,7 @@ def test_room_detail(client, world):
         "description": "UNUSED",
         "pretalx_id": 0,
         "sorting_priority": 0,
+        "schedule_data": None,
     }
 
 

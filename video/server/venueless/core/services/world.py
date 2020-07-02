@@ -66,6 +66,7 @@ def get_room_config(room, permissions):
         "pretalx_id": room.pretalx_id,
         "permissions": [p for p in permissions if not p.startswith("world:")],
         "modules": [],
+        "schedule_data": room.schedule_data or None,
     }
     for module in room.module_config:
         module_config = copy.deepcopy(module)
