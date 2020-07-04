@@ -72,6 +72,7 @@ else:
     EMAIL_USE_TLS = os.environ.get("VENUELESS_MAIL_TLS", "False") == "True"
     EMAIL_USE_SSL = os.environ.get("VENUELESS_MAIL_SSL", "False") == "True"
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends."
@@ -140,6 +141,18 @@ else:
 
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("VENUELESS_COOKIE_DOMAIN", "")
+
+STATIC_URL = os.getenv(
+    "VENUELESS_STATIC_URL", config.get("urls", "static", fallback="/static/")
+)
+MEDIA_URL = os.getenv(
+    "VENUELESS_MEDIA_URL", config.get("urls", "media", fallback="/media/")
+)
+
+nanocdn = os.getenv("VENUELESS_NANOCDN", config.get("urls", "nanocdn", fallback=""))
+if nanocdn:
+    NANOCDN_URL = nanocdn
+    DEFAULT_FILE_STORAGE = "venueless.platforms.storage.nanocdn.NanoCDNStorage"
 
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
@@ -293,9 +306,6 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "UNICODE_JSON": False,
 }
-
-STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
