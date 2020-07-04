@@ -12,7 +12,7 @@ def test_world_config(client, world):
         "config": world.config,
         "roles": world.roles,
         "trait_grants": world.trait_grants,
-        "domain": None,
+        "domain": "localhost",
     }
 
 
