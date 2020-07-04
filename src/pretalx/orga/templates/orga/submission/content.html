@@ -112,7 +112,11 @@
         {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
         {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
         {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
-        {% if questions_form %}{% bootstrap_form questions_form layout='event' %}{% endif %}
+
+        {% if questions_form %}
+            <div><legend>{% trans "Questions" %}</legend></div>
+            {% bootstrap_form questions_form layout='event' %}
+        {% endif %}
 
         <div class="submit-group panel">
             <span></span>
