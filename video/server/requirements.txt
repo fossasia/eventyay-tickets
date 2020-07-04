@@ -26,7 +26,7 @@ uvicorn
 
 # dev
 black
-isort
+isort==4.*
 flake8
 pytest
 pytest-django
