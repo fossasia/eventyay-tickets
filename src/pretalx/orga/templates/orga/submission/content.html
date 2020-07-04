@@ -32,7 +32,32 @@
         {% if action == "create" %}
             {% bootstrap_field form.speaker layout='event' %}
             {% bootstrap_field form.speaker_name layout='event' %}
-        {% else %}
+        {% endif %}
+        {% if form.instance.median_score != None and can_view_all_reviews %}
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label">
+                {% trans "Reviews" %}
+            </label>
+            <div class="col-md-9">
+                <label>
+                    {{ submission.reviews.count }} {% trans "reviews" %}
+                </label>
+            </div>
+        </div>
+        {% endif %}
+        {% bootstrap_field form.submission_type layout='event' %}
+        {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
+        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
+        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
+        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
+        {% bootstrap_field form.internal_notes layout='event' %}
+        {% bootstrap_field form.content_locale layout='event' %}
+        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
+        {% bootstrap_field form.is_featured layout='event' %}
+        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
+        {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
+        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
+        {% if action != 'create' %}
             <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {% bootstrap_formset_errors formset %}
@@ -58,6 +83,10 @@
                                 {% endif %}
                             </div>
                         </div>
+                    {% empty %}
+                    <div class="mt-1">
+                        {% trans "This submission has no file uploads yet." %}
+                    </div>
                     {% endfor %}
                 </div>
                 <script type="form-template" data-formset-empty-form>
@@ -88,30 +117,6 @@
                 {% endif %}
             </div>
         {% endif %}
-        {% if form.instance.median_score != None and can_view_all_reviews %}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label">
-                {% trans "Reviews" %}
-            </label>
-            <div class="col-md-9">
-                <label>
-                    {{ submission.reviews.count }} {% trans "reviews" %}
-                </label>
-            </div>
-        </div>
-        {% endif %}
-        {% bootstrap_field form.submission_type layout='event' %}
-        {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
-        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
-        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
-        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
-        {% bootstrap_field form.internal_notes layout='event' %}
-        {% bootstrap_field form.content_locale layout='event' %}
-        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
-        {% bootstrap_field form.is_featured layout='event' %}
-        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
-        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
 
         {% if questions_form %}
             <div><legend>{% trans "Questions" %}</legend></div>
