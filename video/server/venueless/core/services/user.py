@@ -133,7 +133,6 @@ def update_user(world_id, id, *, traits=None, public_data=None, serialize=True):
 LoginResult = namedtuple("LoginResult", "user world_config chat_channels")
 
 
-@database_sync_to_async
 def login(*, world=None, token=None, client_id=None,) -> LoginResult:
     from .chat import ChatService
     from .world import get_world_config_for_user

@@ -26,7 +26,10 @@ def _import_world(world_data):
     from venueless.core.utils.config import import_config
 
     import_config(world_data)
-    return World.objects.all().get()
+    world = World.objects.all().get()
+    world.domain = "localhost"
+    world.save()
+    return world
 
 
 @pytest.fixture(autouse=True)

@@ -43,7 +43,7 @@ class AuthModule(BaseModule):
                 return
             kwargs["token"] = token
 
-        login_result = await login(**kwargs)
+        login_result = await database_sync_to_async(login)(**kwargs)
         if not login_result:
             await self.consumer.send_error(code="auth.denied")
             return

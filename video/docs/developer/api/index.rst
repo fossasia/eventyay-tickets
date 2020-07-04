@@ -19,3 +19,4 @@ without warning.
    rooms
    chat
    bbb
+   uploads
