@@ -4,7 +4,8 @@ section.pretalx-schedule-day-wrapper(v-scrollbar.y)
 		.pretalx-schedule-day-header-row
 			span.pretalx-schedule-time-column.pretalx-schedule-day-header
 			.pretalx-schedule-day-room-header(v-for="room in day.rooms", :key="room.name")
-				| {{ room.name }}
+				router-link(:to="roomLink(room.id)", v-if="roomLink(room.id)") {{ room.name }}
+				span(v-else) {{ room.name }}
 		.pretalx-schedule-rooms
 			.pretalx-schedule-nowline(:style="nowlineStyle")
 			.pretalx-schedule-time-column
@@ -16,6 +17,7 @@ import moment from 'lib/timetravelMoment'
 import range from 'lodash/range'
 import last from 'lodash/last'
 import PretalxScheduleRoom from './ScheduleRoom'
+import {mapState} from 'vuex';
 
 export default {
 	name: 'pretalx-schedule-day',
@@ -23,7 +25,19 @@ export default {
 	props: {
 		day: Object
 	},
+	methods: {
+		roomLink (pretalxId) {
+			const room = this.rooms.find((r) => r.pretalx_id === pretalxId)
+			if (room) {
+				return {
+					name: 'room',
+					params: {roomId: room.id}
+				}
+			}
+		}
+	},
 	computed: {
+		...mapState(['rooms']),
 		startOfDay () {
 			let startOfDay
 			for (const room of this.day.rooms) {
