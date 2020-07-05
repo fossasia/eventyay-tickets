@@ -1,30 +1,17 @@
 import hashlib
 import logging
+import random
 from urllib.parse import urlencode, urljoin
 
 import aiohttp
+from channels.db import database_sync_to_async
+from django.db import transaction
 from lxml import etree
 from yarl import URL
 
+from venueless.core.models import BBBCall, BBBServer
+
 logger = logging.getLogger(__name__)
-
-
-def derive_meeting_id(world_id, room_id, secret):
-    return hashlib.sha256(
-        f"{secret}:world:{world_id}:room:{room_id}".encode()
-    ).hexdigest()[:16]
-
-
-def derive_attendee_pw(world_id, room_id, secret):
-    return hashlib.sha256(
-        f"{secret}:world:{world_id}:room:{room_id}:attendee_pw".encode()
-    ).hexdigest()[:16]
-
-
-def derive_moderator_pw(world_id, room_id, secret):
-    return hashlib.sha256(
-        f"{secret}:world:{world_id}:room:{room_id}:moderator_pw".encode()
-    ).hexdigest()[:16]
 
 
 def get_url(operation, params, base_url, secret):
@@ -36,22 +23,38 @@ def get_url(operation, params, base_url, secret):
     )
 
 
-def get_create_params(room):
-    m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
-    config = m["config"]
+def choose_server():
+    all_servers = BBBServer.objects.filter(active=True)
+    # TODO: Implement proper load balancing strategy
+    return random.choice(all_servers)
+
+
+@database_sync_to_async
+@transaction.atomic
+def get_create_params(room, record):
+    try:
+        call = BBBCall.objects.get(room=room)
+        if not call.server.active:
+            call.delete()
+            call = None
+    except BBBCall.DoesNotExist:
+        call = None
+    if not call:
+        call = BBBCall.objects.create(
+            room=room, world=room.world, server=choose_server()
+        )
+
     create_params = {
         "name": room.name,
-        "meetingID": derive_meeting_id(room.world_id, str(room.id), config["secret"]),
-        "attendeePW": derive_attendee_pw(room.world_id, str(room.id), config["secret"]),
-        "moderatorPW": derive_moderator_pw(
-            room.world_id, str(room.id), config["secret"]
-        ),
-        "record": "true" if config.get("record", False) else "false",
+        "meetingID": call.meeting_id,
+        "attendeePW": call.attendee_pw,
+        "moderatorPW": call.moderator_pw,
+        "record": "true" if record else "false",
         "meta_Source": "venueless",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
     }
-    return create_params
+    return create_params, call.server
 
 
 class BBBService:
@@ -61,8 +64,10 @@ class BBBService:
     async def get_join_url(self, room, uid, display_name, moderator=False):
         m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
         config = m["config"]
-        create_params = get_create_params(room)
-        create_url = get_url("create", create_params, config["url"], config["secret"])
+        create_params, server = await get_create_params(
+            room, record=config.get("record", False)
+        )
+        create_url = get_url("create", create_params, server.url, server.secret)
 
         try:
             async with aiohttp.ClientSession() as session:
@@ -94,6 +99,6 @@ class BBBService:
                 else create_params["attendeePW"],
                 "joinViaHtml5": "true",
             },
-            config["url"],
-            config["secret"],
+            server.url,
+            server.secret,
         )

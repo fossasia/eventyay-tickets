@@ -3,7 +3,7 @@ import json
 import pytest
 from channels.db import database_sync_to_async
 
-from venueless.core.models import Channel, ChatEvent, Room, User, World
+from venueless.core.models import BBBServer, Channel, ChatEvent, Room, User, World
 
 
 @pytest.fixture(autouse=True)
@@ -12,6 +12,13 @@ async def clear_redis():
 
     async with aioredis() as redis:
         await redis.flushall()
+
+
+@pytest.fixture(autouse=True)
+async def bbb_server():
+    await database_sync_to_async(BBBServer.objects.create)(
+        url="https://video1.pretix.eu/bigbluebutton/", secret="bogussecret", active=True
+    )
 
 
 @pytest.fixture(scope="session")
@@ -50,7 +57,7 @@ async def rooms(world):
 
 
 @pytest.fixture
-def bbb_room(rooms):  # pragma: no cover
+def bbb_room(rooms, bbb_server):  # pragma: no cover
     for room in rooms:
         if any("call.bigbluebutton" == module["type"] for module in room.module_config):
             return room

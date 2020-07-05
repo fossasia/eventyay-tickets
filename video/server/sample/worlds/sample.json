@@ -6,9 +6,7 @@
       "base_url": "https://pretalx.com/democon/"
     },
     "bbb_defaults": {
-      "url": "https://video1.pretix.eu/bigbluebutton/",
-      "record": false,
-      "secret": "bogussecret"
+      "record": false
     },
     "connection_limit": 2,
     "JWT_secrets": [
@@ -223,9 +221,7 @@
         {
           "type": "call.bigbluebutton",
           "config": {
-            "url": "https://video1.pretix.eu/bigbluebutton/",
-            "record": false,
-            "secret": "bogussecret"
+            "record": false
           }
         }
       ]

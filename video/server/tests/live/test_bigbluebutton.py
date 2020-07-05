@@ -9,7 +9,6 @@ from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 
 from venueless.core.models import User
-from venueless.core.services.bbb import derive_attendee_pw, derive_moderator_pw
 from venueless.routing import application
 
 
@@ -214,10 +213,12 @@ This conference was already in existence and may currently be in progress.
             response = await c.receive_json_from()
             assert response[0] == "success"
             assert "/join?" in response[2]["url"]
-            assert (
-                derive_attendee_pw(bbb_room.world_id, bbb_room.id, "bogussecret")
-                in response[2]["url"]
-            )
+
+            @database_sync_to_async
+            def get_call():
+                return bbb_room.bbb_call
+
+            assert (await get_call()).attendee_pw in response[2]["url"]
 
 
 @pytest.mark.asyncio
@@ -258,7 +259,9 @@ This conference was already in existence and may currently be in progress.
             response = await c.receive_json_from()
             assert response[0] == "success"
             assert "/join?" in response[2]["url"]
-            assert (
-                derive_moderator_pw(bbb_room.world_id, bbb_room.id, "bogussecret")
-                in response[2]["url"]
-            )
+
+            @database_sync_to_async
+            def get_call():
+                return bbb_room.bbb_call
+
+            assert (await get_call()).moderator_pw in response[2]["url"]
