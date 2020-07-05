@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-home
+.c-home(v-scrollbar.y="")
 	.hero
 		img(src="/venueless-logo-full-white.svg")
 	.content
@@ -12,9 +12,9 @@
 				h3 Schedule
 				router-link(:to="{name: 'schedule'}") full schedule
 			.sessions
-				.session(v-for="session, index of nextSessions", :class="{live: session.start.isBefore(now)}")
+				.session(v-for="{session, state}, index of nextSessions", :class="{live: state.isLive}")
 					img.preview(:src="`https://picsum.photos/64?v=${index}`")
-					.time {{ session.start.isBefore(now) ? 'live now' : moment.duration(session.start.diff(now)).humanize(true).replace('minutes', 'mins') }}
+					.time {{ state.timeString }}
 					.info
 						.title {{ session.title }}
 						.speakers {{ session.speakers.map(s => s.name).join(', ')}}
@@ -50,22 +50,31 @@ export default {
 		...mapGetters(['flatSchedule']),
 		nextSessions () {
 			if (!this.flatSchedule) return
+			const getSessionState = (session) => {
+				if (session.room.schedule_data) {
+					return {
+						isLive: true,
+						timeString: 'live now'
+					}
+				}
+				if (session.start.isBefore(this.now)) {
+					return {
+						timeString: 'starting soon'
+					}
+				}
+				return {
+					timeString: moment.duration(session.start.diff(this.now)).humanize(true).replace('minutes', 'mins')
+				}
+			}
 			// current or next sessions per room
 			const sessions = []
 			for (const session of this.flatSchedule.sessions) {
 				if (session.end.isBefore(this.now) || sessions.length > 5) continue
-				sessions.push(session)
+				sessions.push({session, state: getSessionState(session)})
 			}
 			return sessions
 		}
-	},
-	created () {
-	},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	}
 }
 </script>
 <style lang="stylus">
