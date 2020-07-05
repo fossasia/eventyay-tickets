@@ -20,7 +20,8 @@ class RoomSerializer(serializers.ModelSerializer):
             "module_config",
             "name",
             "description",
-            "sorting_priority"
+            "sorting_priority",
+            "pretalx_id",
             # TODO: picture
         ]
 

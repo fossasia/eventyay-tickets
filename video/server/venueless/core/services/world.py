@@ -63,6 +63,7 @@ def get_room_config(room, permissions):
         "name": room.name,
         "picture": room.picture.url if room.picture else None,
         "import_id": room.import_id,
+        "pretalx_id": room.pretalx_id,
         "permissions": [p for p in permissions if not p.startswith("world:")],
         "modules": [],
     }

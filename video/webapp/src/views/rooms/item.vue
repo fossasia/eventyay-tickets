@@ -55,10 +55,11 @@ export default {
 			}, {})
 		},
 		scheduleRoom () {
-			if (!this.schedule || !this.world.pretalx?.room_mapping) return
+			if (!this.schedule || !this.world.pretalx?.base_url) return
 			const scheduleDay = this.schedule.schedule.find(day => moment().isSame(day.start, 'day'))
 			if (!scheduleDay) return
-			const roomId = Number(Object.entries(this.world.pretalx.room_mapping).find(mapping => mapping[1] === this.room.id)?.[0])
+			const roomId = this.room.pretalx_id
+			if (!roomId) return
 			return scheduleDay.rooms.find(room => room.id === roomId)
 		},
 		currentTalk () {

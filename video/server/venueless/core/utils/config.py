@@ -27,6 +27,7 @@ def import_config(data):
         room_config.pop("picture")  # TODO import picure from path or http
         room.trait_grants = room_config.pop("trait_grants", {})
         room.module_config = room_config.pop("modules")
+        room.pretalx_id = room_config.pop("pretalx_id", 0)
         room.sorting_priority = i
         room.save()
         assert not room_config, f"Unused config data: {room_config}"

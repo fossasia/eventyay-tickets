@@ -3,11 +3,7 @@
     "id": "sample",
     "title": "Unsere tolle Online-Konferenz",
     "pretalx": {
-      "base_url": "https://pretalx.com/democon/",
-      "room_mapping": {
-        "131": "room_0",
-        "130": "room_1"
-      }
+      "base_url": "https://pretalx.com/democon/"
     },
     "bbb_defaults": {
       "url": "https://video1.pretix.eu/bigbluebutton/",
@@ -193,6 +189,7 @@
       "name": "Plenum",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
+      "pretalx_id": 130,
       "trait_grants": {
         "viewer": [],
         "participant": []
@@ -217,6 +214,7 @@
       "name": "Gruppenraum 1",
       "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
       "picture": "https://via.placeholder.com/150",
+      "pretalx_id": 131,
       "trait_grants": {
         "viewer": [],
         "participant": []
