@@ -73,16 +73,9 @@ header {
     & > * {
       margin-right: 8px;
       height: 90%;
-      &.dropdown {
+      summary {
         height: 100%;
-        #exportDropdown {
-          height: 90%;
-          margin-bottom: 3px;
-        }
-      }
-      .input-group-append button {
-        display: flex;
-        align-items: center;
+        margin-bottom: 3px;
       }
     }
   }

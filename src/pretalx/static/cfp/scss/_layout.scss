@@ -46,12 +46,12 @@ header {
     color: white;
   }
 
-  a:hover {
+  .locales a:hover {
     border-bottom: 1px dashed $white;
     text-decoration: none;
   }
 
-  a.active {
+  .locales a.active {
     border-bottom: 1px solid $white;
   }
 }
@@ -74,36 +74,9 @@ header {
   }
 }
 
-#user-dropdown-label {
-  color: $white;
-
-  #user-dropdown {
-    display: none;
-    flex-direction: column;
-    background: $white;
-    z-index: 1000;
-    position: fixed;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-
-    a {
-      text-align: left;
-      color: $brand-primary;
-      padding: 8px 16px;
-      white-space: nowrap;
-    }
-
-    a:hover {
-      text-decoration: none;
-      background: $gray-lightest;
-    }
-  }
-
-  &:hover {
-    text-decoration: none;
-
-    #user-dropdown {
-      display: flex;
-    }
+#user-dropdown-label .dropdown-content {
+  a, a:hover {
+    color: $brand-primary;
   }
 }
 

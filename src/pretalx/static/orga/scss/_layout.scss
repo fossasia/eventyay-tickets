@@ -575,26 +575,17 @@ form #id_display-display_header_pattern {
   }
 }
 
-legend .submission-state-dropdown {
-  padding: 8px;
-
-  button,
-  a {
-    font-size: 16px;
-  }
+h2 .submission-state-dropdown {
+  padding: 4px;
 }
 
 .submission-state-dropdown {
   display: inline-block;
 
-  button.dropdown-toggle,
   a {
     font-weight: bold;
-    border-width: 3px;
+    font-size: 16px;
   }
-}
-.submission-dropdown-menu {
-  padding: 0;
 }
 
 .submission-state-deleted,

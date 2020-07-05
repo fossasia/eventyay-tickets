@@ -50,32 +50,32 @@
                 <button type="submit" class="btn btn-info">{% trans "Reset to current version" %}</button>
             </form>
         {% endif %}
-        <div class="dropdown">
-          <a class="btn btn-info dropdown-toggle" href="#" role="button" id="schedule-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% trans "Actions" %}
-          </a>
+        <details class="dropdown">
+            <summary class="btn btn-info" id="schedule-actions">
+                {% trans "Actions" %} <i class="fa fa-caret-down"></i>
+            </summary>
 
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="schedule-actions">
-            <a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
+          <ul class="dropdown-content dropdown-front dropdown-content-sw">
+            <li><a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
                 <i class="fa fa-link"></i> {% trans "View in frontend" %}
-            </a>
+            </a></li>
             {% if request.event.settings.show_schedule %}
-            <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
+            <li><a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
                 <i class="fa fa-eye"></i> {% trans "Hide schedule" %}
-            </a>
+            </a></li>
             {% else %}
-            <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
+            <li><a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
                 <i class="fa fa-eye"></i> {% trans "Make schedule public" %}
-            </a>
+            </a></li>
             {% endif %}
-            <a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
+            <li><a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
                 <i class="fa fa-print"></i> {% trans "Print cards" %}
-            </a>
-            <a href="resend_mails" class="dropdown-item">
+            </a></li>
+            <li><a href="resend_mails" class="dropdown-item">
                 <i class="fa fa-envelope"></i> {% trans "Resend speaker notifications" %}
-            </a>
-          </div>
-        </div>
+            </a></li>
+          </ul>
+        </details>
     </div>
     {% if not request.event.rooms.count %}
         <div class="alert alert-warning schedule-alert">
