@@ -73,6 +73,7 @@ class RoomQuerySet(models.QuerySet):
 
 class Room(VersionedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    deleted = models.BooleanField(default=False)
     world = models.ForeignKey(
         to="core.World", related_name="rooms", on_delete=models.PROTECT
     )

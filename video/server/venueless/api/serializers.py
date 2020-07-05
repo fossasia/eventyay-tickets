@@ -15,6 +15,7 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = [
             "id",
+            "deleted",
             "trait_grants",
             "module_config",
             "name",

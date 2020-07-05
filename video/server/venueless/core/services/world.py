@@ -22,7 +22,7 @@ async def get_world(world_id):
 
 
 def get_rooms(world, user):
-    qs = world.rooms.all().prefetch_related("channel")
+    qs = world.rooms.filter(deleted=False).prefetch_related("channel")
     if user:
         qs = qs.with_permission(world=world, user=user)
     return list(qs)
@@ -31,7 +31,7 @@ def get_rooms(world, user):
 @database_sync_to_async
 def _get_room(**kwargs):
     return (
-        Room.objects.all()
+        Room.objects.filter(deleted=False)
         .prefetch_related("channel")
         .select_related("world")
         .get(**kwargs)
@@ -114,7 +114,11 @@ def _create_room(data, with_channel=False, permission_preset="public", creator=N
     else:
         data["trait_grants"] = {}
 
-    if data.get("world").rooms.filter(name__iexact=data.get("name")).exists():
+    if (
+        data.get("world")
+        .rooms.filter(deleted=False, name__iexact=data.get("name"))
+        .exists()
+    ):
         raise ValidationError("This room name is already taken.", code="name_taken")
     room = Room.objects.create(**data)
     if creator:
