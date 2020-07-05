@@ -17,7 +17,7 @@ import moment from 'lib/timetravelMoment'
 import range from 'lodash/range'
 import last from 'lodash/last'
 import PretalxScheduleRoom from './ScheduleRoom'
-import {mapState} from 'vuex';
+import {mapState} from 'vuex'
 
 export default {
 	name: 'pretalx-schedule-day',
