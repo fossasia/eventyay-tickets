@@ -36,6 +36,7 @@ export default new Vuex.Store({
 					const vRoom = state.rooms.find(r => r.import_id === state.world.pretalx.room_mapping[room.id])
 					for (const talk of room.talks) {
 						sessions.push({
+							id: talk.code,
 							title: talk.title,
 							start: moment(talk.start),
 							end: moment(talk.end),
@@ -48,7 +49,7 @@ export default new Vuex.Store({
 			sessions.sort((a, b) => a.start.diff(b.start))
 			return {sessions}
 		},
-		liveSessions (state, getters) {
+		sessionsScheduledNow (state, getters) {
 			if (!getters.flatSchedule) return
 			const sessions = []
 			for (const session of getters.flatSchedule.sessions) {
@@ -145,6 +146,9 @@ export default new Vuex.Store({
 			if (!state.activeRoom) return
 			await api.call('room.react', {room: state.activeRoom.id, reaction})
 		},
+		async updateRoomSchedule ({state}, {room, schedule_data}) {
+			return await api.call('room.schedule', {room: room.id, schedule_data})
+		},
 		'api::room.create' ({state}, room) {
 			state.rooms.push(room)
 			// TODO ordering?
@@ -164,6 +168,11 @@ export default new Vuex.Store({
 			state.permission = permissions
 			commit('updateRooms', rooms)
 			dispatch('fetchSchedule')
+		},
+		'api::room.schedule' ({state}, {room, schedule_data}) {
+			room = state.rooms.find(r => r.id === room)
+			if (!room) return
+			Vue.set(room, 'schedule_data', schedule_data)
 		}
 		// TODO handle user.updated
 	},

@@ -13,7 +13,7 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="$emit('createRoom')") plus
 			.stages
-				router-link.stage(v-for="stage of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{live: stage.session}")
+				router-link.stage(v-for="stage, index of roomsByType.stage", :to="stage.room === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: stage.room.id}}", :class="{session: stage.session, live: stage.session && stage.schedule_data}")
 					template(v-if="stage.session")
 						img.preview(:src="`https://picsum.photos/64?v=${index}`")
 						.info
@@ -71,9 +71,8 @@ export default {
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
 		...mapState('chat', ['joinedChannels']),
-		...mapGetters(['liveSessions']),
+		...mapGetters(['flatSchedule', 'sessionsScheduledNow', 'hasPermission']),
 		...mapGetters('chat', ['hasUnreadMessages']),
-		...mapGetters(['hasPermission']),
 		style () {
 			if (this.pointerMovementX === 0) return
 			return {
@@ -93,9 +92,16 @@ export default {
 				} else if (room.modules.length === 1 & room.modules[0].type === 'call.bigbluebutton') {
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => module.type === 'livestream.native')) {
+					let session
+					if (room.schedule_data) {
+						session = this.flatSchedule?.find(session => session.id === room.schedule_data.session)
+					}
+					if (!session) {
+						session = this.sessionsScheduledNow?.find(session => session.room === room)
+					}
 					rooms.stage.push({
 						room,
-						session: this.liveSessions.find(session => session.room === room)
+						session
 					})
 				} else {
 					rooms.page.push(room)
@@ -235,22 +241,25 @@ export default {
 			.name
 				ellipsis()
 		.stage
-			&.live
+			&.session
 				height: 48px
 				padding: 0 4px 0 16px
 				display: flex
 				align-items: center
 				&::after
-					content: 'live'
+					content: 'soon'
 					display: block
 					position: absolute
 					left: 4px
 					top: 2px
 					color: $clr-primary-text-dark
-					background-color: $clr-danger
+					background-color: $clr-blue-grey-500
 					border-radius: 4px
-					line-height: 20px
+					line-height: 18px
 					padding: 0 4px
+				&.live
+					content: 'live'
+					background-color: $clr-danger
 				img
 					flex: none
 					height: 36px
@@ -283,7 +292,7 @@ export default {
 							margin-right: 4px
 				.speakers
 					ellipsis()
-			&:not(.live)
+			&:not(.session)
 				&::before
 					content: '\F050D'
 		.text-chat
