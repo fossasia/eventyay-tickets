@@ -32,6 +32,7 @@ class Command(BaseCommand):
                 {"issuer": "any", "audience": "venueless", "secret": secret,}
             ]
         }
+        w.trait_grants["admin"] = ["admin"]
         w.save()
 
         print("World created.")
