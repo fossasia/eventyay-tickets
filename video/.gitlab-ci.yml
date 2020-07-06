@@ -5,7 +5,7 @@ py_style:
     - python -m venv env
     - source env/bin/activate
     - pip install -U pip wheel setuptools
-    - XDG_CACHE_HOME=/cache pip install black flake8 isort
+    - XDG_CACHE_HOME=/cache pip install black flake8 isort==4.*
     - black --check venueless tests
     - flake8 venueless tests
     - isort -rc -c venueless tests
