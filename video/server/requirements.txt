@@ -10,6 +10,7 @@ tqdm
 numpy
 matplotlib
 python-dateutil
+requests
 
 orjson
 aiofile
