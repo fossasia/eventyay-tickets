@@ -36,3 +36,18 @@ Additionally, the requesting user will receive a success response in the form
         "room": "room-id-goes-here",
         "channel": "channel-id-goes-here-if-appropriate"
     }
+
+
+World configuration
+-------------------
+
+As an administrator, you can also get a world's internal configuration::
+
+    => ["world.config.get", 123, {}]
+    <- ["success", 123, {…}]
+
+
+And update it::
+
+    => ["world.config.patch", 123, {"title": "Bla"}]
+    <- ["success", 123, {…}]

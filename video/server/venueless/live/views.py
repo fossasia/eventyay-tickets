@@ -5,6 +5,7 @@ import re
 from asgiref.sync import async_to_sync
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views import View
 
@@ -78,7 +79,8 @@ class AppView(View):
                         "api": {
                             "socket": "wss://{}/ws/world/{}/".format(
                                 request.headers["Host"], world.pk
-                            )
+                            ),
+                            "upload": reverse("storage:upload"),
                         },
                         "features": ["chat-moderation"],
                         "locale": world.locale,

@@ -4,7 +4,8 @@ let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	config = {
 		api: {
-			socket: 'ws://localhost:8375/ws/world/sample/'
+			socket: 'ws://localhost:8375/ws/world/sample/',
+			upload: 'http://localhost:8375/storage/upload/',
 		}
 	}
 } else {

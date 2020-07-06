@@ -39,3 +39,29 @@ Allowed reactions currently are:
 * ``+1``
 * ``open_mouth``
 * ``heart``
+
+
+Room management
+---------------
+
+You can delete a room like this::
+
+    => ["room.delete", 123, {"room": "room_1"}]
+    <- ["success", 123, {}]
+
+
+As an administrator, you can also get a room's internal configuration::
+
+    => ["room.config.get", 123, {"room": "room_1"}]
+    <- ["success", 123, {…}]
+
+
+And update it::
+
+    => ["room.config.patch", 123, {"room": "room_1", "name": "Bla"}]
+    <- ["success", 123, {…}]
+
+Or for all rooms::
+
+    => ["room.config.list", 123, {}]
+    <- ["success", 123, [{…}, …]]

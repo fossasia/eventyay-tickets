@@ -3,16 +3,23 @@ import uuid
 from contextlib import asynccontextmanager
 
 import pytest
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
+from tests.utils import get_token
 
 from venueless.routing import application
 
 
 @asynccontextmanager
-async def world_communicator():
+async def world_communicator(token=None):
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
-    await communicator.send_json_to(["authenticate", {"client_id": str(uuid.uuid4())}])
+    if token:
+        await communicator.send_json_to(["authenticate", {"token": token}])
+    else:
+        await communicator.send_json_to(
+            ["authenticate", {"client_id": str(uuid.uuid4())}]
+        )
     response = await communicator.receive_json_from()
     assert response[0] == "authenticated", response
     communicator.context = response[1]
@@ -160,3 +167,62 @@ async def test_reactions_room_aggregate(world, stream_room):
         }
         with pytest.raises(asyncio.TimeoutError):
             await c2.receive_json_from()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_list(world, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(["room.config.list", 123, {}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        assert len(response[2]) == 7
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_get(world, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(["room.config.get", 123, {"room": str(stream_room.pk)}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        assert response[2] == {
+            "id": str(stream_room.pk),
+            "trait_grants": {"viewer": [], "participant": []},
+            "module_config": [
+                {
+                    "type": "livestream.native",
+                    "config": {"hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"},
+                },
+                {"type": "chat.native", "config": {"volatile": True}},
+            ],
+            "picture": None,
+            "name": "Plenum",
+            "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+            "sorting_priority": 2,
+            "pretalx_id": 130,
+        }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_patch(world, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(
+            ["room.config.patch", 123, {"room": str(stream_room.pk), "name": "Foo"}]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        await database_sync_to_async(stream_room.refresh_from_db)()
+        assert stream_room.name == "Foo"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_delete(world, stream_room):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(["room.delete", 123, {"room": str(stream_room.pk)}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        await database_sync_to_async(stream_room.refresh_from_db)()
+        assert stream_room.deleted

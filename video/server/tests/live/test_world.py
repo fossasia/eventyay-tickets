@@ -14,9 +14,12 @@ def get_rooms(world):
 
 
 @asynccontextmanager
-async def world_communicator():
+async def world_communicator(token=None):
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
+    if token:
+        await communicator.send_json_to(["authenticate", {"token": token}])
+        await communicator.receive_json_from()
     try:
         yield communicator
     finally:
@@ -100,3 +103,45 @@ async def test_create_rooms(world, can_create_rooms, with_channel):
             assert response[0] == "error"
             new_rooms = await get_rooms(world)
             assert len(new_rooms) == len(rooms)
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_get(world):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(["world.config.get", 123, {}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        del response[2]["roles"]  # let this test break less often
+        del response[2]["available_permissions"]  # let this test break less often
+        assert response[2] == {
+            "theme": {},
+            "trait_grants": {
+                "admin": ["admin"],
+                "viewer": ["global-viewer"],
+                "apiuser": ["api"],
+                "speaker": ["speaker"],
+                "attendee": [],
+                "moderator": ["moderator"],
+                "room_owner": ["room-owner"],
+                "participant": ["global-participant"],
+                "room_creator": ["room-creator"],
+            },
+            "bbb_defaults": {"record": False},
+            "pretalx": {"base_url": "https://pretalx.com/democon/"},
+            "title": "Unsere tolle Online-Konferenz",
+            "locale": "en",
+            "timezone": "Europe/Berlin",
+            "connection_limit": 2,
+        }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_config_patch(world):
+    async with world_communicator(token=get_token(world, ["admin"])) as c1:
+        await c1.send_json_to(["world.config.patch", 123, {"title": "Foo"}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+        await database_sync_to_async(world.refresh_from_db)()
+        assert world.title == "Foo"

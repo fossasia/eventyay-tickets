@@ -49,7 +49,6 @@
       "room:chat.join",
       "room:chat.send",
       "room:bbb.join",
-      "room:update",
       "room:invite",
       "room:delete"
     ],

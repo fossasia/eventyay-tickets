@@ -2,14 +2,22 @@ import asyncio
 import logging
 import time
 
+from channels.db import database_sync_to_async
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
 from sentry_sdk import add_breadcrumb, configure_scope
 
+from venueless.core.models import Room
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import end_view, start_view
-from venueless.core.services.world import create_room, get_room_config_for_user
+from venueless.core.services.world import (
+    create_room,
+    get_room_config_for_user,
+    get_rooms,
+)
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_ROOM
 from venueless.live.decorators import (
@@ -22,6 +30,21 @@ from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
+
+
+class RoomConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+            "id",
+            "trait_grants",
+            "module_config",
+            "picture",
+            "name",
+            "description",
+            "sorting_priority",
+            "pretalx_id",
+        )
 
 
 class RoomModule(BaseModule):
@@ -168,4 +191,45 @@ class RoomModule(BaseModule):
                     body["room"], self.consumer.world.id, self.consumer.user
                 ),
             ]
+        )
+
+    @command("config.list")
+    @require_world_permission(Permission.ROOM_UPDATE)
+    async def rooms_list(self, body):
+        rooms = await database_sync_to_async(get_rooms)(self.consumer.world, user=None)
+        await self.consumer.send_success(RoomConfigSerializer(rooms, many=True).data)
+
+    @command("config.get")
+    @room_action(permission_required=Permission.ROOM_UPDATE)
+    async def config_get(self, body):
+        await self.consumer.send_success(RoomConfigSerializer(self.room).data)
+
+    @command("config.patch")
+    @room_action(permission_required=Permission.ROOM_UPDATE)
+    async def config_patch(self, body):
+        s = RoomConfigSerializer(self.room, data=body, partial=True)
+        if s.is_valid():
+            update_fields = set()
+            for f in s.fields.keys():
+                if f in body:
+                    setattr(self.room, f, s.validated_data[f])
+                    update_fields.add(f)
+
+            await database_sync_to_async(self.room.save)(
+                update_fields=list(update_fields)
+            )
+            await self.consumer.send_success(RoomConfigSerializer(self.room).data)
+            # TODO: await notify_world_change(self.consumer.world.id)
+        else:
+            await self.consumer.send_error(code="config.invalid")
+
+    @command("delete")
+    @room_action(permission_required=Permission.ROOM_DELETE)
+    async def delete(self, body):
+        self.room.deleted = True
+        await database_sync_to_async(self.room.save)(update_fields=["deleted"])
+        await self.consumer.send_success()
+        await get_channel_layer().group_send(
+            f"world.{self.consumer.world.id}",
+            {"type": "room.delete", "room": str(self.room.id)},
         )

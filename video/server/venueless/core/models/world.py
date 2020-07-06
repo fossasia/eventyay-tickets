@@ -21,7 +21,6 @@ def default_roles():
     ]
     room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [
-        Permission.ROOM_UPDATE,
         Permission.ROOM_INVITE,
         Permission.ROOM_DELETE,
     ]

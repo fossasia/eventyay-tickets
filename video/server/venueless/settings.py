@@ -166,6 +166,7 @@ CACHES = {
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "channels",
+    "corsheaders",
     "rest_framework",
     "venueless.core.CoreConfig",
     "venueless.api.ApiConfig",
@@ -182,6 +183,7 @@ except ImportError:
     pass
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -191,6 +193,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "venueless.urls"
 
+if DEBUG:
+    CORS_ORIGIN_REGEX_WHITELIST = [
+        r"^http://localhost$",
+        r"^http://localhost:\d+$",
+    ]
 
 X_FRAME_OPTIONS = "DENY"
 SECURE_BROWSER_XSS_FILTER = True

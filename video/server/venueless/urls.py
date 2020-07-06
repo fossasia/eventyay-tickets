@@ -30,7 +30,7 @@ urlpatterns = (
         re_path(r"^healthcheck/", views.HealthcheckView.as_view()),
         re_path(r"^manifest.json", views.ManifestView.as_view()),
         re_path(r"graphs/", include(graphs)),
-        re_path(r"storage/", include(storage)),
+        re_path(r"storage/", include((storage, "storage"), namespace="storage")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + [re_path(r"(.*)", views.AppView.as_view()),]
