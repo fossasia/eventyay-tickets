@@ -26,6 +26,19 @@ const routes = [{
 	path: '/admin/users',
 	name: 'admin:users',
 	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/users'),
+}, {
+	path: '/admin/rooms',
+	name: 'admin:rooms',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/rooms'),
+}, {
+	path: '/admin/rooms/:editRoomId',
+	name: 'admin:room',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/room'),
+	props: true
+}, {
+	path: '/admin/config',
+	name: 'admin:config',
+	component: () => import(/* webpackChunkName: "admin" */ 'views/admin/config'),
 }]
 
 const router = new VueRouter({

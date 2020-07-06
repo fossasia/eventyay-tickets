@@ -11,7 +11,7 @@
 				h3 {{ currentTalk.title }}
 	.main
 		.stage(v-if="modules['livestream.native']")
-			.livestream-placeholder
+			.livestream-placeholdeRaphaelr
 			reactions-overlay(v-if="modules['livestream.native']")
 			.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 			.stage-tools(v-if="modules['livestream.native']")
