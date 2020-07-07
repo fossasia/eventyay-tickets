@@ -53,7 +53,7 @@ Generally, pretalx Python code follows `PEP8`_. We run ``flake8``, ``isort``,
 you're not sure how to format something. They are configured via the
 ``setup.cfg`` file in the ``src`` directory, and can be run like this::
 
-    isort -rc .
+    isort .
     black .
     docformatter --in-place -r .
     flake8 .
