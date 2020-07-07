@@ -80,7 +80,7 @@ class UploadView(View):
         if request.FILES["file"].size > self.max_size:
             return JsonResponse({"error": "file.size"}, status=400)
 
-        if not any(request.FILES["file"].name.endswith(e) for e in self.ext_whitelist):
+        if not any(request.FILES["file"].name.endswith(e).lower() for e in self.ext_whitelist):
             return JsonResponse({"error": "file.type"}, status=400)
 
         sf = StoredFile.objects.create(
