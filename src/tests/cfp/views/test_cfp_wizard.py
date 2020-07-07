@@ -2,8 +2,8 @@ import datetime as dt
 from urllib.parse import urlparse
 
 import bs4
-import django.forms as forms
 import pytest
+from django import forms as forms
 from django.core import mail as djmail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http.request import QueryDict

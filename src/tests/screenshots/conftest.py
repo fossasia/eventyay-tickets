@@ -19,8 +19,8 @@ def chrome_options(chrome_options):
 @pytest.fixture(autouse=True)
 def event():
     from pretalx.event.models import Event
-    from pretalx.submission.models import Question, AnswerOption, QuestionVariant
     from pretalx.person.models import User
+    from pretalx.submission.models import AnswerOption, Question, QuestionVariant
 
     User.objects.create_superuser(
         email="jane@example.org", name=_("Jane Doe"), locale="en", password="jane"

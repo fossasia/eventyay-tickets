@@ -6,8 +6,8 @@ from sys import executable
 
 
 def log_initial(*, debug, config_files, db_name, db_backend, LOG_DIR, plugins):
-    from pretalx.common.console import start_box, end_box, print_line
     from pretalx import __version__
+    from pretalx.common.console import end_box, print_line, start_box
 
     with suppress(Exception):  # geteuid is not available on all OS
         if os.geteuid() == 0:

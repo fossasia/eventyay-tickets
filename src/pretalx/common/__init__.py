@@ -7,8 +7,8 @@ class CommonConfig(AppConfig):
     name = "pretalx.common"
 
     def ready(self):
-        from . import signals  # noqa
         from . import log_display  # noqa
+        from . import signals  # noqa
         from . import update_check  # noqa
 
 

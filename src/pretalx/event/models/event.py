@@ -439,11 +439,11 @@ class Event(LogMixin, models.Model):
             ACCEPT_TEXT,
             ACK_TEXT,
             GENERIC_SUBJECT,
+            QUESTION_SUBJECT,
+            QUESTION_TEXT,
             REJECT_TEXT,
             UPDATE_SUBJECT,
             UPDATE_TEXT,
-            QUESTION_SUBJECT,
-            QUESTION_TEXT,
         )
         from pretalx.mail.models import MailTemplate
         from pretalx.submission.models import CfP
@@ -797,6 +797,7 @@ class Event(LogMixin, models.Model):
 
     def send_orga_mail(self, text, stats=False):
         from django.utils.translation import override
+
         from pretalx.mail.models import QueuedMail
 
         context = {

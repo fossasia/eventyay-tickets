@@ -1,5 +1,5 @@
 import datetime as dt
-import xml.etree.ElementTree as ET
+from xml.etree import ElementTree as ET
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
