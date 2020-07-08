@@ -147,6 +147,7 @@ export default {
 				name: this.config.name,
 				description: this.config.description,
 				sorting_priority: this.config.sorting_priority,
+				pretalx_id: this.config.pretalx_id,
 				picture: this.config.picture,
 				trait_grants: this.config.trait_grants,
 				module_config: this.config.module_config,
