@@ -1,5 +1,6 @@
 import datetime as dt
 import hashlib
+import logging
 import textwrap
 from contextlib import suppress
 from itertools import repeat
@@ -28,6 +29,8 @@ from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.signals import register_data_exporters
 from pretalx.common.utils import safe_filename
 from pretalx.schedule.exporters import ScheduleData
+
+logger = logging.getLogger(__name__)
 
 
 class ScheduleDataView(EventPermissionRequired, TemplateView):
@@ -104,29 +107,37 @@ class ExporterView(ScheduleDataView):
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
+        if not exporter:
+            raise Http404()
         lang_code = request.GET.get("lang")
         if lang_code and lang_code in request.event.locales:
             activate(lang_code)
         elif "lang" in request.GET:
             activate(request.event.locale)
-        with suppress(Exception):
-            exporter.schedule = self.schedule
-            exporter.is_orga = getattr(self.request, "is_orga", False)
+
+        exporter.schedule = self.schedule
+        exporter.is_orga = getattr(self.request, "is_orga", False)
+
+        try:
             file_name, file_type, data = exporter.render()
             etag = hashlib.sha1(str(data).encode()).hexdigest()
-            if "If-None-Match" in request.headers:
-                if request.headers["If-None-Match"] == etag:
-                    return HttpResponseNotModified()
-            response = HttpResponse(data, content_type=file_type)
-            response["ETag"] = etag
-            if file_type not in ["application/json", "text/xml"]:
-                response[
-                    "Content-Disposition"
-                ] = f'attachment; filename="{safe_filename(file_name)}"'
-            if exporter.cors:
-                response["Access-Control-Allow-Origin"] = exporter.cors
-            return response
-        raise Http404()
+        except Exception:
+            logger.exception(
+                f"Failed to use {exporter.identifier} for {self.request.event.slug}"
+            )
+            raise Http404()
+        if "If-None-Match" in request.headers:
+            if request.headers["If-None-Match"] == etag:
+                return HttpResponseNotModified()
+        response = HttpResponse(data, content_type=file_type)
+        response["ETag"] = etag
+        if file_type not in ["application/json", "text/xml"]:
+            response[
+                "Content-Disposition"
+            ] = f'attachment; filename="{safe_filename(file_name)}"'
+        if exporter.cors:
+            response["Access-Control-Allow-Origin"] = exporter.cors
+        return response
 
 
 class ScheduleView(ScheduleDataView):
