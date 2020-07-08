@@ -2,7 +2,6 @@ import datetime as dt
 import hashlib
 import logging
 import textwrap
-from contextlib import suppress
 from itertools import repeat
 from urllib.parse import unquote
 
