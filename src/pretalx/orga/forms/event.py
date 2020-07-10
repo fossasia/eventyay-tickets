@@ -312,7 +312,7 @@ class MailSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
     mail_reply_to = forms.EmailField(
         label=_("Contact address"),
         help_text=_(
-            "Reply-To address. If this setting is empty and you have no custom sender, your event email address will be used as Reply-To."
+            "Reply-To address. If this setting is empty and you have no custom sender, your event email address will be used as Reply-To address."
         ),
         required=False,
     )

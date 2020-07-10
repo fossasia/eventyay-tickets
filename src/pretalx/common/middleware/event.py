@@ -62,7 +62,7 @@ class EventPermissionMiddleware:
             params = request.GET.copy()
             next_url = params.pop("next", None)
             next_url = next_url[0] if next_url else request.path
-            params = "&" + request.GET.urlencode() if request.GET else ""
+            params = request.GET.urlencode() if request.GET else ""
             params = f"?next={quote(next_url)}&{params}"
             event = getattr(request, "event", None)
             if event:
