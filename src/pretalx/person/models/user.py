@@ -21,7 +21,7 @@ from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
-from pretalx.common.mixins.models import GenerateCode
+from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.utils import path_with_hash
 
@@ -48,7 +48,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
+class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     """The pretalx user model.
 
     Users describe all kinds of persons who interact with pretalx: Organisers, reviewers, submitters, speakers.
@@ -220,9 +220,11 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
         self.set_unusable_password()
         self.save()
         self.profiles.all().update(biography="")
-        Answer.objects.filter(
+        for answer in Answer.objects.filter(
             person=self, question__contains_personal_data=True
-        ).delete()
+        ):
+            answer.delete()  # Iterate to delete answer files, too
+        self._delete_files()
         for team in self.teams.all():
             team.members.remove(self)
 
@@ -244,6 +246,7 @@ class User(PermissionsMixin, GenerateCode, AbstractBaseUser):
                 )
             self.logged_actions().delete()
             self.own_actions().update(person=None)
+            self._delete_files()
             self.delete()
 
     shred.alters_data = True

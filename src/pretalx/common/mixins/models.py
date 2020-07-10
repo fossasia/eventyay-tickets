@@ -1,6 +1,8 @@
 import json
+from contextlib import suppress
 
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
 from django.utils.crypto import get_random_string
 from django_scopes import scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
@@ -74,3 +76,23 @@ class GenerateCode:
         if not getattr(self, self._code_property, None):
             self.assign_code()
         return super().save(*args, **kwargs)
+
+
+class FileCleanupMixin:
+    """ Deletes all uploaded files when object is deleted. """
+
+    def _delete_files(self):
+        file_attributes = [
+            field.name
+            for field in self._meta.fields
+            if isinstance(field, models.FileField)
+        ]
+        for field in file_attributes:
+            value = getattr(self, field, None)
+            if value:
+                with suppress(Exception):
+                    value.delete(save=False)
+
+    def delete(self, *args, **kwargs):
+        self._delete_files()
+        return super().delete(*args, **kwargs)

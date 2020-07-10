@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.utils import path_with_hash
 
 
@@ -10,7 +10,7 @@ def resource_path(instance, filename):
     return f"{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/{path_with_hash(filename)}"
 
 
-class Resource(LogMixin, models.Model):
+class Resource(LogMixin, FileCleanupMixin, models.Model):
     """Resources are file uploads belonging to a.
 
     :class:`~pretalx.submission.models.submission.Submission`.

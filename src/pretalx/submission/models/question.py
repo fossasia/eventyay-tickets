@@ -7,7 +7,7 @@ from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
 from pretalx.common.choices import Choices
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import I18nStrJSONEncoder, path_with_hash
@@ -269,7 +269,7 @@ class AnswerOption(LogMixin, models.Model):
         return str(self.answer)
 
 
-class Answer(LogMixin, models.Model):
+class Answer(LogMixin, FileCleanupMixin, models.Model):
     """Answers are connected to a.
 
     :class:`~pretalx.submission.models.question.Question`, and, depending on

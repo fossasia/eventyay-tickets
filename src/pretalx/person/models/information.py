@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
@@ -13,7 +13,7 @@ def resource_path(instance, filename):
     return f"{instance.event.slug}/speaker_information/{path_with_hash(filename)}"
 
 
-class SpeakerInformation(LogMixin, models.Model):
+class SpeakerInformation(LogMixin, FileCleanupMixin, models.Model):
     """Represents any information organisers want to show all or some
     submitters or speakers."""
 

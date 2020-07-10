@@ -16,7 +16,7 @@ from django_scopes import scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
-from pretalx.common.mixins import LogMixin
+from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
@@ -64,7 +64,7 @@ def event_logo_path(instance, filename):
 
 
 @hierarkey.add()
-class Event(LogMixin, models.Model):
+class Event(LogMixin, FileCleanupMixin, models.Model):
     """The Event class has direct or indirect relations to all other models.
 
     Since most models depend on the Event model in some way, they should
@@ -842,29 +842,33 @@ class Event(LogMixin, models.Model):
         )
 
         deletion_order = [
-            self.logged_actions(),
-            self.queued_mails.all(),
-            self.cfp,
-            self.mail_templates.all(),
-            self.information.all(),
-            TalkSlot.objects.filter(schedule__event=self),
-            Feedback.objects.filter(talk__event=self),
-            Resource.objects.filter(submission__event=self),
-            Answer.objects.filter(question__event=self),
-            AnswerOption.objects.filter(question__event=self),
-            Question.all_objects.filter(event=self),
-            Submission.all_objects.filter(event=self),
-            self.tracks.all(),
-            self.submission_types.all(),
-            self.schedules.all(),
-            SpeakerProfile.objects.filter(event=self),
-            self.rooms.all(),
-            ActivityLog.objects.filter(event=self),
-            self,
+            (self.logged_actions(), False),
+            (self.queued_mails.all(), False),
+            (self.cfp, False),
+            (self.mail_templates.all(), False),
+            (self.information.all(), True),
+            (TalkSlot.objects.filter(schedule__event=self), False),
+            (Feedback.objects.filter(talk__event=self), False),
+            (Resource.objects.filter(submission__event=self), True),
+            (Answer.objects.filter(question__event=self), True),
+            (AnswerOption.objects.filter(question__event=self), False),
+            (Question.all_objects.filter(event=self), False),
+            (Submission.all_objects.filter(event=self), True),
+            (self.tracks.all(), False),
+            (self.submission_types.all(), False),
+            (self.schedules.all(), False),
+            (SpeakerProfile.objects.filter(event=self), False),
+            (self.rooms.all(), False),
+            (ActivityLog.objects.filter(event=self), False),
+            (self, False),
         ]
 
         self._delete_mail_templates()
-        for entry in deletion_order:
-            entry.delete()
+        for entry, detail in deletion_order:
+            if detail:
+                for obj in entry:
+                    obj.delete()
+            else:
+                entry.delete()
 
     shred.alters_data = True
