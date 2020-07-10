@@ -79,7 +79,7 @@ class GenerateCode:
 
 
 class FileCleanupMixin:
-    """ Deletes all uploaded files when object is deleted. """
+    """Deletes all uploaded files when object is deleted."""
 
     def _delete_files(self):
         file_attributes = [
