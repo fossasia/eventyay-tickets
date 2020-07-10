@@ -126,6 +126,8 @@ aside.sidebar {
     width: 300px;
     z-index: 0;
     background: $offwhite;
+    max-height: 500px;
+    overflow-y: auto;
     li {
       border-top: $gray-light 1px solid;
       &:hover,
