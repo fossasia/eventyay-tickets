@@ -1,10 +1,10 @@
 <template lang="pug">
-.pretalx-schedule(:class="{mobile}", ref="wrapper", :style="style")
+.pretalx-schedule(ref="wrapper", :style="style")
 	.header
 		h2 {{ $t('Schedule') }}
 		bunt-tabs(v-if="schedule.schedule.length > 1", :active-tab="activeDay.start")
 			bunt-tab(v-for="day in schedule.schedule", :id="day.start", :header="formatDate(day.start)", @selected="activeDay = day")
-		.pretalx-widget-attribution
+		.pretalx-widget-attribution(v-if="$mq.above.m")
 			| · powered by #[a(href="https://pretalx.com", rel="noopener", target="_blank") pretalx] ·
 	pretalx-schedule-day(:day="activeDay", :key="activeDay.start")
 </template>
@@ -21,7 +21,6 @@ export default {
 	data () {
 		return {
 			scheduleData: null,
-			mobile: false,
 			activeDay: null,
 		}
 	},
@@ -51,10 +50,6 @@ export default {
 			}
 		})
 		this.activeDay = this.schedule.schedule.find(day => moment().isSame(day.start, 'day')) ?? this.schedule.schedule[0]
-	},
-	mounted () {
-		// TODO replace with proper mq support
-		this.mobile = this.$refs && this.$refs.wrapper && this.$refs.wrapper.clientWidth <= 800
 	},
 	methods: {
 		formatDate (value) {
@@ -91,4 +86,21 @@ export default {
 			margin-bottom: 0
 			display: flex
 			flex-direction: column
+	+below('m')
+		width: 100vw
+		> .header
+			flex-direction: column
+			height: 96px
+			padding: 0
+			align-items: stretch
+			h2
+				text-align: center
+				margin: 8px 0 -8px // HACK
+			.bunt-tabs-header
+				max-width: 100vw
+				overflow-x: scroll
+				.bunt-tab-header-item
+					flex: none
+				.bunt-tab-header-item-text
+					white-space: nowrap
 </style>
