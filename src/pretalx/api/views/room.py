@@ -5,7 +5,7 @@ from pretalx.schedule.models import Room
 
 
 class RoomPagination(pagination.LimitOffsetPagination):
-    page_size = 100
+    default_limit = 100
 
 
 class RoomViewSet(viewsets.ReadOnlyModelViewSet):
