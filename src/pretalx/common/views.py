@@ -68,13 +68,18 @@ class GenericLoginView(FormView):
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
 
-    def get_success_url(self):
-        params = self.request.GET.copy()
+    @classmethod
+    def get_next_url_or_fallback(cls, request, success_url):
+        """Reused in logout()"""
+        params = request.GET.copy()
         url = urllib.parse.unquote(params.pop("next", [""])[0])
         params = "?" + params.urlencode() if params else ""
         if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             return url + params
         return self.success_url + params
+
+    def get_success_url(self):
+        return self.get_next_url_or_fallback(self.request, self.success_url)
 
     def form_valid(self, form):
         pk = form.save()

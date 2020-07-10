@@ -37,7 +37,9 @@ class LoginView(GenericLoginView):
 
 def logout_view(request: HttpRequest) -> HttpResponseRedirect:
     logout(request)
-    return redirect(reverse("orga:login"))
+    return redirect(
+        GenericLoginView.get_next_url_or_fallback(request, reverse("orga:login"))
+    )
 
 
 class ResetView(GenericResetView):

@@ -59,15 +59,17 @@ class EventPermissionMiddleware:
             request.user.is_anonymous
             and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
         ):
+            params = request.GET.copy()
+            next_url = params.pop("next", None)
+            next_url = next_url[0] if next_url else request.path
             params = "&" + request.GET.urlencode() if request.GET else ""
+            params = f"?next={quote(next_url)}&{params}"
             event = getattr(request, "event", None)
             if event:
                 return (
-                    reverse("orga:event.login", kwargs={"event": event.slug})
-                    + f"?next={quote(request.path)}"
-                    + params
+                    reverse("orga:event.login", kwargs={"event": event.slug}) + params
                 )
-            return reverse("orga:login") + f"?next={quote(request.path)}" + params
+            return reverse("orga:login") + params
         return None
 
     def __call__(self, request):
