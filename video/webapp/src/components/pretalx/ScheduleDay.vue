@@ -1,5 +1,5 @@
 <template lang="pug">
-section.pretalx-schedule-day-wrapper(v-scrollbar.y)
+scrollbars.pretalx-schedule-day-wrapper(y, x)
 	.pretalx-schedule-day(:data-start="day.display_start")
 		.pretalx-schedule-day-header-row
 			span.pretalx-schedule-time-column.pretalx-schedule-day-header
