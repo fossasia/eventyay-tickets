@@ -10,7 +10,12 @@ from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.services.world import get_room
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
-from venueless.live.decorators import command, event, room_action
+from venueless.live.decorators import (
+    command,
+    event,
+    require_world_permission,
+    room_action,
+)
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
@@ -212,15 +217,18 @@ class ChatModule(BaseModule):
         )
         await self._broadcast_channel_list()
 
-    async def _broadcast_channel_list(self):
-        await self.consumer.user.refresh_from_db_if_outdated()
+    async def _broadcast_channel_list(self, user=None):
+        if not user:
+            user = self.consumer.user
+        user.refresh_from_db_if_outdated()
         await self.consumer.user_broadcast(
             "chat.channels",
             {
                 "channels": await database_sync_to_async(
                     self.service.get_channels_for_user
-                )(self.consumer.user.id, is_volatile=False)
+                )(user, is_volatile=False)
             },
+            user_id=user.id,
         )
 
     @command("leave")
@@ -383,6 +391,40 @@ class ChatModule(BaseModule):
         await self.consumer.send_json(
             ["chat.event", {k: v for k, v in body.items() if k != "type"}]
         )
+
+    @command("direct.create")
+    @require_world_permission(Permission.WORLD_CHAT_DIRECT)
+    async def direct_create(self, body):
+        user_ids = set(body.get("users", []))
+        user_ids.add(self.consumer.user.id)
+
+        channel, created, users = await self.service.get_or_create_direct_channel(
+            user_ids=user_ids
+        )
+        if not channel:
+            raise ConsumerException("chat.denied")
+
+        self.channel_id = str(channel.id)
+
+        reply = await self._subscribe()
+        if created:
+            for user in users:
+                event = await self.service.create_event(
+                    channel_id=str(self.channel_id),
+                    event_type="channel.member",
+                    content={"membership": "join", "user": user.serialize_public(),},
+                    sender=user,
+                )
+                await self.consumer.channel_layer.group_send(
+                    GROUP_CHAT.format(channel=self.channel_id), event,
+                )
+                await self._broadcast_channel_list(user=user)
+                async with aioredis() as redis:
+                    await redis.sadd(
+                        f"chat:unread.notify:{self.channel_id}", str(user.id),
+                    )
+        reply["channel"] = str(channel.id)
+        await self.consumer.send_success(reply)
 
     async def dispatch_command(self, content):
         self.channel_id = content[2].get("channel")

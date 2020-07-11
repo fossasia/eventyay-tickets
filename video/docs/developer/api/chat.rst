@@ -1,6 +1,14 @@
 Chat module
 ===========
 
+Channels
+--------
+
+Everything around chat happens in a **channel**. Currently, we have two types of channels:
+
+* Channels tied to a room. These channels inherit their permission configuration from the room. User's can join and leave them at will.
+* Direct message channels. Their set of members is immutable, it is not possible to join them or add additional users after their creation.
+
 Membership and subscription
 ---------------------------
 
@@ -48,6 +56,20 @@ If you don't want to join or leave, you can explicitly subscribe and unsubscribe
     <- ["success", 1234, {}]
 
 If you close the websocket, an unsubscribe will be performed automatically.
+
+Direct messages
+---------------
+
+To start a direct conversation with one or more other users, send a message like this. You do not need
+to include your own user ID::
+
+    => ["chat.direct.create", 1234, {"users": ["other_user_id"]}]
+    <- ["success", 1234, {"channel": "12345", "state": {…}, "next_event_id": 54321, "members": […]}]
+
+A new channel will be created for this set of users or an existing one will be re-used if it is already
+there. With this command, you will also be directly subscribed to the channel and therefore receive the
+same keys in the response as with the ``chat.subscribe`` command. All your other clients as well as all
+connected clients of the other users receive a regular channel list update.
 
 Events
 ------

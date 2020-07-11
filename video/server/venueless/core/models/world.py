@@ -18,6 +18,7 @@ def default_roles():
         Permission.ROOM_CHAT_JOIN,
         Permission.ROOM_CHAT_SEND,
         Permission.ROOM_BBB_JOIN,
+        Permission.WORLD_CHAT_DIRECT,
     ]
     room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [

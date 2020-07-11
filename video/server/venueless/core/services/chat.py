@@ -3,7 +3,7 @@ from contextlib import suppress
 from channels.db import database_sync_to_async
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import Max, Q
+from django.db.models import Count, Max, OuterRef, Q, Subquery
 from django.utils.timezone import now
 
 from ..models import Channel, ChatEvent, Membership, User
@@ -155,6 +155,48 @@ class ChatService:
                 )
                 return res
             raise e  # pragma: no cover
+
+    @database_sync_to_async
+    def get_or_create_direct_channel(self, user_ids):
+        with transaction.atomic():
+            users = list(User.objects.filter(world_id=self.world_id, id__in=user_ids))
+            if len(users) != len(user_ids) or len(users) < 2:
+                return None, False, []
+            try:
+                return (
+                    Channel.objects.annotate(
+                        mcount_match=Subquery(
+                            Membership.objects.filter(
+                                channel=OuterRef("pk"), user_id__in=user_ids
+                            )
+                            .order_by()
+                            .values("channel")
+                            .annotate(c=Count("*"))
+                            .values("c")
+                        ),
+                        mcount_mismatch=Subquery(
+                            Membership.objects.filter(channel=OuterRef("pk"),)
+                            .exclude(user_id__in=user_ids)
+                            .order_by()
+                            .values("channel")
+                            .annotate(c=Count("*"))
+                            .values("c")
+                        ),
+                    ).get(
+                        mcount_mismatch__isnull=True,
+                        mcount_match=len(user_ids),
+                        room__isnull=True,
+                        world_id=self.world_id,
+                    ),
+                    False,
+                    users,
+                )
+            except Channel.DoesNotExist:
+                c = Channel.objects.create(room=None, world_id=self.world_id)
+                for u in users:
+                    Membership.objects.create(channel=c, user=u, volatile=False)
+
+                return c, True, users
 
     @database_sync_to_async
     def get_event(self, **kwargs):

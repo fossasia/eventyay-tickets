@@ -16,12 +16,14 @@ class Channel(models.Model):
 
     def save(self, *args, **kwargs):
         r = super().save(*args, **kwargs)
-        self.room.touch()
+        if self.room:
+            self.room.touch()
         return r
 
     def delete(self, *args, **kwargs):
         r = super().delete(*args, **kwargs)
-        self.room.touch()
+        if self.room:
+            self.room.touch()
         return r
 
 
