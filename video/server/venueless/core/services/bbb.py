@@ -31,15 +31,36 @@ def choose_server():
 
 @database_sync_to_async
 @transaction.atomic
-def get_create_params(room, record):
+def get_create_params_for_call_id(call_id, record, user):
+    try:
+        call = BBBCall.objects.get(id=call_id, invited_members__in=[user])
+        if not call.server.active:
+            call.server = choose_server()
+            call.save(update_fields=["server"])
+    except BBBCall.DoesNotExist:
+        return None, None
+
+    create_params = {
+        "name": "Call",
+        "meetingID": call.meeting_id,
+        "attendeePW": call.attendee_pw,
+        "moderatorPW": call.moderator_pw,
+        "record": "true" if record else "false",
+        "meta_Source": "venueless",
+        "meta_Call": str(call_id),
+    }
+    return create_params, call.server
+
+
+@database_sync_to_async
+@transaction.atomic
+def get_create_params_for_room(room, record):
     try:
         call = BBBCall.objects.get(room=room)
         if not call.server.active:
-            call.delete()
-            call = None
+            call.server = choose_server()
+            call.save(update_fields=["server"])
     except BBBCall.DoesNotExist:
-        call = None
-    if not call:
         call = BBBCall.objects.create(
             room=room, world=room.world, server=choose_server()
         )
@@ -61,42 +82,69 @@ class BBBService:
     def __init__(self, world_id):
         self.world_id = world_id
 
-    async def get_join_url(self, room, uid, display_name, moderator=False):
-        m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
-        config = m["config"]
-        create_params, server = await get_create_params(
-            room, record=config.get("record", False)
-        )
-        create_url = get_url("create", create_params, server.url, server.secret)
-
+    async def _create(self, url):
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(URL(create_url, encoded=True)) as resp:
+                async with session.get(URL(url, encoded=True)) as resp:
                     if resp.status != 200:
                         logger.error(
                             f"Could not create BBB meeting. Return code: {resp.status}"
                         )
-                        return
+                        return False
 
                     body = await resp.text()
 
                 root = etree.fromstring(body)
                 if root.xpath("returncode")[0].text != "SUCCESS":
                     logger.error(f"Could not create BBB meeting. Response: {body}")
-                    return
+                    return False
         except:
             logger.exception("Could not create BBB meeting.")
+            return False
+        return True
+
+    async def get_join_url_for_room(self, room, user, moderator=False):
+        m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
+        config = m["config"]
+        create_params, server = await get_create_params_for_room(
+            room, record=config.get("record", False)
+        )
+        create_url = get_url("create", create_params, server.url, server.secret)
+        if not await self._create(create_url):
             return
 
         return get_url(
             "join",
             {
                 "meetingID": create_params["meetingID"],
-                "fullName": display_name,
-                "userID": uid,
+                "fullName": user.profile.get("display_name", ""),
+                "userID": str(user.pk),
                 "password": create_params["moderatorPW"]
                 if moderator
                 else create_params["attendeePW"],
+                "joinViaHtml5": "true",
+            },
+            server.url,
+            server.secret,
+        )
+
+    async def get_join_url_for_call_id(self, call_id, user):
+        create_params, server = await get_create_params_for_call_id(
+            call_id, False, user
+        )
+        if not create_params:
+            return
+        create_url = get_url("create", create_params, server.url, server.secret)
+        if not await self._create(create_url):
+            return
+
+        return get_url(
+            "join",
+            {
+                "meetingID": create_params["meetingID"],
+                "fullName": user.profile.get("display_name", ""),
+                "userID": str(user.pk),
+                "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
             },
             server.url,

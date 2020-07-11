@@ -1,7 +1,9 @@
+import re
 import sys
 from contextlib import asynccontextmanager
 
 import pytest
+from aioresponses import aioresponses
 from channels.db import database_sync_to_async
 from tests.utils import LoggingCommunicator
 
@@ -503,3 +505,101 @@ async def test_send_if_blocked_by_user(world):
         response = await c1.receive_json_from()
         assert "error" == response[0]
         assert "chat.denied" == response[2]["code"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_call_invite(world):
+    with aioresponses() as m:
+        m.get(
+            re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
+            body="""<response>
+<returncode>SUCCESS</returncode>
+<meetingID>6c58284d0c68af95</meetingID>
+<internalMeetingID>322ed97cafe9a92fa4ef7f7c70da553f213df06b-1587484839039</internalMeetingID>
+<parentMeetingID>bbb-none</parentMeetingID>
+<attendeePW>d35746f043310256</attendeePW>
+<moderatorPW>bf889e3c60742bee</moderatorPW>
+<createTime>1587484839039</createTime>
+<voiceBridge>70957</voiceBridge>
+<dialNumber>613-555-1234</dialNumber>
+<createDate>Tue Apr 21 18:00:39 CEST 2020</createDate>
+<hasUserJoined>true</hasUserJoined>
+<duration>0</duration>
+<hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+<messageKey>duplicateWarning</messageKey>
+<message>
+This conference was already in existence and may currently be in progress.
+</message>
+</response>""",
+        )
+
+        world.trait_grants["participant"] = []
+        await database_sync_to_async(world.save)()
+        async with world_communicator(client_id="a") as c1, world_communicator(
+            client_id="b"
+        ) as c2:
+            channel = await _setup_dms(c1, c2)
+            await c1.send_json_to(
+                [
+                    "chat.send",
+                    123,
+                    {
+                        "event_type": "channel.message",
+                        "content": {"type": "call", "body": {}},
+                        "channel": channel,
+                    },
+                ]
+            )
+            response = await c1.receive_json_from()
+            assert "success" == response[0]
+
+            response = await c1.receive_json_from()  # chat event
+            await c1.receive_json_from()  # new notification pointer
+            await c2.receive_json_from()  # new notification pointer
+
+            assert response[0] == "chat.event"
+            call_id = response[1]["content"]["body"]["id"]
+
+            await c1.send_json_to(
+                ["bbb.call_url", 123, {"call": call_id,},]
+            )
+            response = await c1.receive_json_from()
+            assert "success" == response[0]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_call_require_invite(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2, world_communicator(client_id="c") as c3:
+        channel = await _setup_dms(c1, c2)
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "call", "body": {}},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        response = await c1.receive_json_from()  # chat event
+        await c1.receive_json_from()  # new notification pointer
+        await c2.receive_json_from()  # new notification pointer
+
+        assert response[0] == "chat.event"
+        call_id = response[1]["content"]["body"]["id"]
+
+        await c3.send_json_to(
+            ["bbb.call_url", 123, {"call": call_id,},]
+        )
+        response = await c3.receive_json_from()
+        assert "error" == response[0]

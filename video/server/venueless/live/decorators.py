@@ -77,6 +77,7 @@ def room_action(permission_required: Permission = None, module_required=None):
 
                 if channel and channel.room:
                     self.room = channel.room
+                    self.channel = channel
                 else:
                     raise ConsumerException("room.unknown", "Unknown room ID")
             else:

@@ -182,7 +182,7 @@ class ChatModule(BaseModule):
         )
         if joined:
             event = await self.service.create_event(
-                channel_id=str(self.channel_id),
+                channel=self.channel,
                 event_type="channel.member",
                 content={
                     "membership": "join",
@@ -207,7 +207,7 @@ class ChatModule(BaseModule):
         await self.consumer.channel_layer.group_send(
             GROUP_CHAT.format(channel=self.channel_id),
             await self.service.create_event(
-                channel_id=self.channel_id,
+                channel=self.channel,
                 event_type="channel.member",
                 content={
                     "membership": "leave",
@@ -315,6 +315,7 @@ class ChatModule(BaseModule):
         if not (
             content.get("type") == "text"
             or (content.get("type") == "deleted" and "replaces" in body)
+            or (content.get("type") == "call" and not self.channel.room)
         ):
             raise ConsumerException("chat.unsupported_content_type")
 
@@ -344,7 +345,7 @@ class ChatModule(BaseModule):
             raise ConsumerException("chat.denied")
 
         event = await self.service.create_event(
-            channel_id=self.channel_id,
+            channel=self.channel,
             event_type=event_type,
             content=content,
             sender=self.consumer.user,
@@ -414,7 +415,7 @@ class ChatModule(BaseModule):
         if created:
             for user in users:
                 event = await self.service.create_event(
-                    channel_id=str(self.channel_id),
+                    channel=channel,
                     event_type="channel.member",
                     content={"membership": "join", "user": user.serialize_public(),},
                     sender=user,

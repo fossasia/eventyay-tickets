@@ -54,7 +54,9 @@ async def test_login_required(bbb_room):
     communicator = WebsocketCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     try:
-        await communicator.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
+        await communicator.send_json_to(
+            ["bbb.room_url", 123, {"room": str(bbb_room.pk)}]
+        )
         response = await communicator.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "protocol.unauthenticated"
@@ -76,7 +78,7 @@ async def test_wrong_command():
 @pytest.mark.django_db
 async def test_wrong_room(chat_room):
     async with world_communicator() as c:
-        await c.send_json_to(["bbb.url", 123, {"room": str(chat_room.pk)}])
+        await c.send_json_to(["bbb.room_url", 123, {"room": str(chat_room.pk)}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "room.unknown"
@@ -86,7 +88,7 @@ async def test_wrong_room(chat_room):
 @pytest.mark.django_db
 async def test_unknown_room():
     async with world_communicator() as c:
-        await c.send_json_to(["bbb.url", 123, {"room": "a"}])
+        await c.send_json_to(["bbb.room_url", 123, {"room": "a"}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "room.unknown"
@@ -96,7 +98,7 @@ async def test_unknown_room():
 @pytest.mark.django_db
 async def test_unnamed(bbb_room):
     async with world_communicator(named=False) as c:
-        await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+        await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "bbb.join.missing_profile"
@@ -108,7 +110,7 @@ async def test_missing_permission(bbb_room):
     bbb_room.trait_grants = {"participant": ["foo"]}
     await database_sync_to_async(bbb_room.save)()
     async with world_communicator(named=False) as c:
-        await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+        await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "protocol.denied"
@@ -122,7 +124,7 @@ async def test_silenced(bbb_room):
         user = await database_sync_to_async(User.objects.get)()
         user.moderation_state = User.ModerationState.SILENCED
         await database_sync_to_async(user.save)()
-        await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+        await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
         response = await c.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "protocol.denied"
@@ -133,7 +135,7 @@ async def test_silenced(bbb_room):
 async def test_bbb_down(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
-            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+            await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
 
             m.get(re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"), status=500)
 
@@ -147,7 +149,7 @@ async def test_bbb_down(bbb_room):
 async def test_bbb_exception(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
-            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.id)}])
+            await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
 
             m.get(
                 re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
@@ -164,7 +166,7 @@ async def test_bbb_exception(bbb_room):
 async def test_bbb_xml_error(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
-            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
+            await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
                 re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
@@ -185,7 +187,7 @@ async def test_bbb_xml_error(bbb_room):
 async def test_successful_url(bbb_room):
     with aioresponses() as m:
         async with world_communicator(named=True) as c:
-            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
+            await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
                 re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
@@ -231,7 +233,7 @@ async def test_successful_url_moderator(bbb_room):
                 world=bbb_room.world,
                 role="speaker",
             )
-            await c.send_json_to(["bbb.url", 123, {"room": str(bbb_room.pk)}])
+            await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.pk)}])
 
             m.get(
                 re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),

@@ -6,8 +6,9 @@ from django.db import IntegrityError, transaction
 from django.db.models import Count, Max, OuterRef, Prefetch, Q, Subquery
 from django.utils.timezone import now
 
-from ..models import Channel, ChatEvent, Membership, User
+from ..models import BBBCall, Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
+from .bbb import choose_server
 from .user import get_public_users
 
 
@@ -124,10 +125,18 @@ class ChatService:
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
-    def _store_event(self, channel_id, id, event_type, content, sender, replaces=None):
+    def _store_event(self, channel, id, event_type, content, sender, replaces=None):
+        if content.get("type") == "call":
+            call = BBBCall.objects.create(
+                world_id=self.world_id, server=choose_server()
+            )
+            call.invited_members.add(*[m.user for m in channel.members.all()])
+            content.setdefault("body", {})
+            content["body"]["id"] = str(call.id)
+
         ce = ChatEvent.objects.create(
             id=id,
-            channel_id=channel_id,
+            channel=channel,
             event_type=event_type,
             content=content,
             sender=sender,
@@ -154,13 +163,13 @@ class ChatService:
             return 0
 
     async def create_event(
-        self, channel_id, event_type, content, sender, replaces=None, _retry=False
+        self, channel, event_type, content, sender, replaces=None, _retry=False
     ):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
         try:
             return await self._store_event(
-                channel_id=channel_id,
+                channel=channel,
                 id=event_id,
                 event_type=event_type,
                 content=content,
@@ -174,7 +183,7 @@ class ChatService:
                     current_max = await self._get_highest_id()
                     await redis.set("chat.event_id", current_max + 1)
                 res = await self.create_event(
-                    channel_id, event_type, content, sender, _retry=True
+                    channel, event_type, content, sender, _retry=True
                 )
                 return res
             raise e  # pragma: no cover

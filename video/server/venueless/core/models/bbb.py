@@ -28,3 +28,4 @@ class BBBCall(models.Model):
     world = models.ForeignKey(
         to="World", related_name="bbb_calls", on_delete=models.CASCADE,
     )
+    invited_members = models.ManyToManyField(to="User", related_name="bbb_invites",)
