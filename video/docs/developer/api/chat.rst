@@ -118,8 +118,8 @@ As with message sending, you'll get both the success and the broadcast. The broa
 only that it includes the ``"replaces"`` key.
 
 If you're trying to send a direct message to a user who blocked you, or to a channel you have no permission sending to,
-you will receive an error with code ``chat.denied``. If your body is invalid, you will receive one of the following
-error codes:
+or to edit/delete a message you may not modify, you will receive an error with code ``chat.denied``. If your body is
+invalid, you will receive one of the following error codes:
 
 * ``chat.empty``
 * ``chat.unsupported_event_type``
@@ -158,6 +158,9 @@ Currently, the following types are defined:
 
 * ``text``: A plain text message. ``body`` is a string with the message.
 * ``deleted``: Any message that was removed by the user or a moderator.
+* ``call``: A audio/video call that can be joined. ``body`` is a dictionary that should be empty when you send such a
+  message. If you receive such a message, there will be an ``id`` property with the call ID which you can use to fetch
+  the BigBlueButton call URL. Currently only supported in direct messages.
 
 ``channel.member``
 """"""""""""""""""
