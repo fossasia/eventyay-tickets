@@ -1,3 +1,4 @@
+import sys
 from contextlib import asynccontextmanager
 
 import pytest
@@ -25,6 +26,33 @@ async def world_communicator(client_id):
         yield communicator
     finally:
         await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_no_permission(world):
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ):
+        await c1.send_json_to(
+            [
+                "chat.direct.create",
+                123,
+                {
+                    "users": [
+                        str(
+                            (
+                                await database_sync_to_async(User.objects.get)(
+                                    client_id="b"
+                                )
+                            ).id
+                        )
+                    ]
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
 
 
 @pytest.mark.asyncio
@@ -66,36 +94,55 @@ async def test_start_direct_channel(world):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_invalid_user(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1:
+        await c1.send_json_to(
+            ["chat.direct.create", 123, {"users": ["foobar"]},]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
+
+
+async def _setup_dms(c1, c2):
+    await c1.send_json_to(
+        [
+            "chat.direct.create",
+            123,
+            {
+                "users": [
+                    str(
+                        (
+                            await database_sync_to_async(User.objects.get)(
+                                client_id="b"
+                            )
+                        ).id
+                    ),
+                ]
+            },
+        ]
+    )
+    response = await c1.receive_json_from()
+    assert "success" == response[0]
+    channel = response[2]["channel"]
+
+    await c1.receive_json_from()  # join event 1
+    await c1.receive_json_from()  # join event 2
+    await c2.receive_json_from()  # channel list
+
+    return channel
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_reuse_direct_channel(world):
     world.trait_grants["participant"] = []
     await database_sync_to_async(world.save)()
     async with world_communicator(client_id="a") as c1, world_communicator(
         client_id="b"
     ) as c2:
-        await c1.send_json_to(
-            [
-                "chat.direct.create",
-                123,
-                {
-                    "users": [
-                        str(
-                            (
-                                await database_sync_to_async(User.objects.get)(
-                                    client_id="b"
-                                )
-                            ).id
-                        )
-                    ]
-                },
-            ]
-        )
-        response = await c1.receive_json_from()
-        assert "success" == response[0]
-        channel = response[2]["channel"]
-
-        await c1.receive_json_from()  # join event 1
-        await c1.receive_json_from()  # join event 2
-        await c2.receive_json_from()  # channel list
+        channel = await _setup_dms(c1, c2)
 
         await c1.send_json_to(
             [
@@ -202,3 +249,96 @@ async def test_do_not_reuse_direct_channel_with_additional_user(world):
         response = await c1.receive_json_from()
         assert "success" == response[0]
         assert channel != response[2]["channel"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_subscribe_member_only(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2, world_communicator(client_id="c") as c3:
+        channel = await _setup_dms(c1, c2)
+
+        await c1.send_json_to(
+            ["chat.subscribe", 123, {"channel": channel},]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        await c3.send_json_to(
+            ["chat.subscribe", 123, {"channel": channel},]
+        )
+        response = await c3.receive_json_from()
+        assert "error" == response[0]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_member_only(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2, world_communicator(client_id="c") as c3:
+        channel = await _setup_dms(c1, c2)
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        await c3.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c3.receive_json_from()
+        assert "error" == response[0]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_fetch_member_only(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2, world_communicator(client_id="c") as c3:
+        channel = await _setup_dms(c1, c2)
+
+        await c1.send_json_to(
+            [
+                "chat.fetch",
+                123,
+                {"channel": channel, "count": 20, "before_id": sys.maxsize,},
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        await c3.send_json_to(
+            [
+                "chat.fetch",
+                123,
+                {"channel": channel, "count": 20, "before_id": sys.maxsize,},
+            ]
+        )
+        response = await c3.receive_json_from()
+        assert "error" == response[0]
