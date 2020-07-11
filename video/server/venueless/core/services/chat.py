@@ -182,8 +182,19 @@ class ChatService:
     @database_sync_to_async
     def get_or_create_direct_channel(self, user_ids):
         with transaction.atomic():
-            users = list(User.objects.filter(world_id=self.world_id, id__in=user_ids))
-            if len(users) != len(user_ids) or len(users) < 2:
+            users = list(
+                User.objects.prefetch_related("blocked_users").filter(
+                    world_id=self.world_id, id__in=user_ids
+                )
+            )
+            if (
+                len(users) != len(user_ids)
+                or len(users) < 2
+                or any(
+                    any(v in u.blocked_users.all() for v in users if v != u)
+                    for u in users
+                )
+            ):
                 return None, False, []
             try:
                 return (

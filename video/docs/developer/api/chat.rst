@@ -79,6 +79,9 @@ there. With this command, you will also be directly subscribed to the channel an
 same keys in the response as with the ``chat.subscribe`` command. All your other clients as well as all
 connected clients of the other users receive a regular channel list update.
 
+You will receive error code ``chat.denied`` if either you do not have the ``world:chat.direct`` permission, or one of
+user IDs you passed does not exist, or any of the users blocked any of the other users.
+
 Events
 ------
 
@@ -113,6 +116,14 @@ You can edit a user's own message by sending an update like this::
 
 As with message sending, you'll get both the success and the broadcast. The broadcast looks the same as a new message,
 only that it includes the ``"replaces"`` key.
+
+If you're trying to send a direct message to a user who blocked you, or to a channel you have no permission sending to,
+you will receive an error with code ``chat.denied``. If your body is invalid, you will receive one of the following
+error codes:
+
+* ``chat.empty``
+* ``chat.unsupported_event_type``
+* ``chat.unsupported_content_type``
 
 Event types
 ^^^^^^^^^^^

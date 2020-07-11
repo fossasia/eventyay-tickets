@@ -22,6 +22,9 @@ class User(VersionedModel):
     )
     profile = JSONField()
     traits = ArrayField(models.CharField(max_length=200), blank=True)
+    blocked_users = models.ManyToManyField(
+        "self", related_name="blocked_by", symmetrical=False
+    )
 
     class Meta:
         unique_together = (("token_id", "world"), ("client_id", "world"))
@@ -81,9 +84,24 @@ class User(VersionedModel):
             await database_sync_to_async(self._update_membership_cache)()
         return str(channel_id) in self._membership_cache
 
+    async def is_blocked_in_channel_async(self, channel):
+        if channel.room:
+            return False
+        if channel.id not in self._block_cache:
+
+            @database_sync_to_async
+            def _add():
+                self._block_cache[channel.id] = channel.members.filter(
+                    user__in=self.blocked_by.all()
+                ).exists()
+
+            await _add()
+        return self._block_cache[channel.id]
+
     def clear_caches(self):
         self._membership_cache = None
         self._grant_cache = None
+        self._block_cache = {}
 
 
 class RoomGrant(models.Model):

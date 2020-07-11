@@ -118,3 +118,19 @@ To fully reinstantiate either a banned or silenced user, send::
 
     => ["user.reactivate", 123, {"id": "1234"}]
     <- ["success", 123, {}]
+
+Blocking users
+--------------
+
+Everyone can block other users. Blocking currently means the other users cannot start new direct messages to you. If
+they already have an open direct message channel with you, they cannot send any new messages to that channel.
+
+To block a user, send::
+
+    => ["user.block", 123, {"id": "1234"}]
+    <- ["success", 123, {}]
+
+To unblock a user, send::
+
+    => ["user.unblock", 123, {"id": "1234"}]
+    <- ["success", 123, {}]

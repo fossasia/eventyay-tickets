@@ -348,3 +348,158 @@ async def test_fetch_member_only(world):
         )
         response = await c3.receive_json_from()
         assert "error" == response[0]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_blocked_user(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ):
+        await c1.send_json_to(
+            [
+                "user.block",
+                123,
+                {
+                    "id": str(
+                        (
+                            await database_sync_to_async(User.objects.get)(
+                                client_id="b"
+                            )
+                        ).id
+                    )
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+        await c1.send_json_to(
+            [
+                "chat.direct.create",
+                123,
+                {
+                    "users": [
+                        str(
+                            (
+                                await database_sync_to_async(User.objects.get)(
+                                    client_id="b"
+                                )
+                            ).id
+                        )
+                    ]
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
+        assert "chat.denied" == response[2]["code"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_blocked_by_user(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2:
+        await c2.send_json_to(
+            [
+                "user.block",
+                123,
+                {
+                    "id": str(
+                        (
+                            await database_sync_to_async(User.objects.get)(
+                                client_id="a"
+                            )
+                        ).id
+                    )
+                },
+            ]
+        )
+        response = await c2.receive_json_from()
+        assert "success" == response[0]
+        await c1.send_json_to(
+            [
+                "chat.direct.create",
+                123,
+                {
+                    "users": [
+                        str(
+                            (
+                                await database_sync_to_async(User.objects.get)(
+                                    client_id="b"
+                                )
+                            ).id
+                        )
+                    ]
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
+        assert "chat.denied" == response[2]["code"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_if_blocked_by_user(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2:
+        channel = await _setup_dms(c1, c2)
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        await c1.receive_json_from()  # chat event
+        await c1.receive_json_from()  # new notification pointer
+        await c2.receive_json_from()  # new notification pointer
+
+        await c2.send_json_to(
+            [
+                "user.block",
+                123,
+                {
+                    "id": str(
+                        (
+                            await database_sync_to_async(User.objects.get)(
+                                client_id="a"
+                            )
+                        ).id
+                    )
+                },
+            ]
+        )
+        response = await c2.receive_json_from()
+        assert "success" == response[0]
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
+        assert "chat.denied" == response[2]["code"]

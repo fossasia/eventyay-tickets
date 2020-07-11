@@ -72,8 +72,7 @@ class VersionedModel(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._membership_cache = None
-        self._grant_cache = None
+        self.clear_caches()
 
     def clear_caches(self):
         pass

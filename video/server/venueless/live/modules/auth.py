@@ -7,12 +7,14 @@ from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.user import (
+    block_user,
     get_public_user,
     get_public_users,
     login,
     set_user_banned,
     set_user_free,
     set_user_silenced,
+    unblock_user,
     update_user,
 )
 from venueless.core.utils.redis import aioredis
@@ -229,6 +231,30 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.reactivate.self")
             return
         ok = await set_user_free(self.consumer.world, body.get("id"),)
+        if ok:
+            await self.consumer.send_success({})
+        else:
+            await self.consumer.send_error(code="user.not_found")
+
+    @command("block")
+    async def block(self, body):
+        if body.get("id") == str(self.consumer.user.id):
+            await self.consumer.send_error(code="user.block.self")
+            return
+        ok = await block_user(self.consumer.world, self.consumer.user, body.get("id"),)
+        if ok:
+            await self.consumer.send_success({})
+        else:
+            await self.consumer.send_error(code="user.not_found")
+
+    @command("unblock")
+    async def unblock(self, body):
+        if body.get("id") == str(self.consumer.user.id):
+            await self.consumer.send_error(code="user.unblock.self")
+            return
+        ok = await unblock_user(
+            self.consumer.world, self.consumer.user, body.get("id"),
+        )
         if ok:
             await self.consumer.send_success({})
         else:

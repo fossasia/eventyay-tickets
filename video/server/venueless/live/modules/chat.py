@@ -340,6 +340,9 @@ class ChatModule(BaseModule):
         if content.get("type") == "text" and not content.get("body"):
             raise ConsumerException("chat.empty")
 
+        if await self.consumer.user.is_blocked_in_channel_async(self.channel):
+            raise ConsumerException("chat.denied")
+
         event = await self.service.create_event(
             channel_id=self.channel_id,
             event_type=event_type,
