@@ -37,10 +37,6 @@ A join means that the user and their chosen ``profile`` will be visible to other
 Messages can only be sent to chats that have been joined. A join action is **implicitly also a subscribe** action.
 Joins are idempotent, joining a channel that the user is already part of will not return an error.
 
-After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization::
-
-    <= ["chat.channels", {"channels": [{"id": "room_0", "notification_pointer": 12345}]}]
-
 The room can be left the same way::
 
     => ["chat.leave", 1234, {"channel": "room_0"}]
@@ -56,6 +52,18 @@ If you don't want to join or leave, you can explicitly subscribe and unsubscribe
     <- ["success", 1234, {}]
 
 If you close the websocket, an unsubscribe will be performed automatically.
+
+Channel list
+------------
+
+After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization::
+
+    <= ["chat.channels", {"channels": [{"id": "room_0", "notification_pointer": 12345}]}]
+
+During authentication, you receive the same list in the ``chat.channels`` key of the authentication responses.
+For direct message channels, there will be an additional key ``members`` with the user objects of the other people
+in the channel, such that the frontend can label the direct message channel with their user names. This key is entirely
+missing for room-based channels.
 
 Direct messages
 ---------------

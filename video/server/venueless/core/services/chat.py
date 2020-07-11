@@ -3,7 +3,7 @@ from contextlib import suppress
 from channels.db import database_sync_to_async
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import Count, Max, OuterRef, Q, Subquery
+from django.db.models import Count, Max, OuterRef, Prefetch, Q, Subquery
 from django.utils.timezone import now
 
 from ..models import Channel, ChatEvent, Membership, User
@@ -33,15 +33,38 @@ class ChatService:
         self.world_id = world_id
 
     def get_channels_for_user(self, user_id, is_volatile=None):
-        qs = Membership.objects.filter(
-            channel__world_id=self.world_id, user_id=user_id,
-        ).annotate(max_id=Max("channel__chat_events__id"))
+        qs = (
+            Membership.objects.filter(channel__world_id=self.world_id, user_id=user_id,)
+            .annotate(max_id=Max("channel__chat_events__id"))
+            .prefetch_related(
+                Prefetch(
+                    "channel",
+                    queryset=Channel.objects.prefetch_related(
+                        Prefetch(
+                            "members",
+                            Membership.objects.filter(
+                                channel__room__isnull=True
+                            ).select_related("user"),
+                            to_attr="direct_members",
+                        )
+                    ),
+                )
+            )
+        )
         if is_volatile is not None:  # pragma: no cover
             qs = qs.filter(volatile=is_volatile)
-        return [
-            {"id": str(m["channel"]), "notification_pointer": m["max_id"],}
-            for m in qs.values("channel", "max_id")
-        ]
+        res = []
+        for m in qs:
+            r = {
+                "id": str(m.channel_id),
+                "notification_pointer": m.max_id,
+            }
+            if not m.channel.room_id:
+                r["members"] = [
+                    m.user.serialize_public() for m in m.channel.direct_members
+                ]
+            res.append(r)
+        return res
 
     async def get_channel_users(self, channel, include_admin_info=False):
         users = await get_public_users(

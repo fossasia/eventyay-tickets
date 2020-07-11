@@ -29,9 +29,7 @@ With a token, it works just the same way::
     <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
 
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
-documentation for membership semantics. The content is strucutred like this::
-
-    "chat.channels": [{"id": "room_0", "notification_pointer": 1234}]
+documentation for membership semantics.
 
 If authentication failes, you receive an error instead::
 

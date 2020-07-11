@@ -369,6 +369,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:chat.moderate",
             "room:announce",
             "world:announce",
+            "world:chat.direct",
         }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",

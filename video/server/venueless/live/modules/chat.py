@@ -37,8 +37,6 @@ def channel_action(
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(self, body, *args):
-            nonlocal require_membership
-
             if "channel" in body:
                 self.channel = self.consumer.channel_cache.get(body["channel"])
                 if not self.channel:
@@ -80,9 +78,12 @@ def channel_action(
                 ):
                     raise ConsumerException("protocol.denied", "Permission denied.")
 
-            if callable(require_membership):
-                require_membership = require_membership(self.channel)
-            if require_membership and self.consumer.user:
+            req_m = (
+                require_membership(self.channel)
+                if callable(require_membership)
+                else require_membership
+            )
+            if req_m:
                 if not await self.consumer.user.is_member_of_channel_async(
                     self.channel.pk
                 ):

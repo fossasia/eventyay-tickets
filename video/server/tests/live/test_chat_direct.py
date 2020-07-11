@@ -90,6 +90,12 @@ async def test_start_direct_channel(world):
 
         response = await c2.receive_json_from()  # channel list
         assert response[0] == "chat.channels"
+        assert "a" in {
+            a["profile"]["display_name"] for a in response[1]["channels"][0]["members"]
+        }
+        assert "b" in {
+            a["profile"]["display_name"] for a in response[1]["channels"][0]["members"]
+        }
 
 
 @pytest.mark.asyncio

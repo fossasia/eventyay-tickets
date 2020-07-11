@@ -18,6 +18,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:view",
         "world:view",
     }
@@ -51,6 +52,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:invite",
         "room:delete",
         "room:view",
@@ -61,6 +63,7 @@ def test_user_explicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:view",
         "world:view",
     }
@@ -79,6 +82,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:view",
         "world:view",
     }
@@ -123,6 +127,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:invite",
         "room:delete",
         "room:view",
@@ -133,6 +138,7 @@ def test_user_implicit_roles(world, chat_room, bbb_room):
         "room:chat.join",
         "room:chat.read",
         "room:chat.send",
+        "world:chat.direct",
         "room:view",
         "world:view",
     }
