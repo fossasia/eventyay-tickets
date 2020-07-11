@@ -36,6 +36,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.socket_id = str(uuid.uuid4())
         self.world = None
         self.room_cache = {}
+        self.channel_cache = {}
         self.components = {}
         self.conn_time = 0
 

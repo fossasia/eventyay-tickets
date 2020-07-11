@@ -1,19 +1,34 @@
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.utils.timezone import now
 
-from ..models import ChatEvent, Membership, User
+from ..models import Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
 from .user import get_public_users
 
 
-class ChatService:
-    class NotAChannelMember(Exception):
-        pass
+@database_sync_to_async
+def _get_channel(**kwargs):
+    return (
+        Channel.objects.filter(Q(room__isnull=True) | Q(room__deleted=False))
+        .select_related("world", "room")
+        .get(**kwargs)
+    )
 
+
+async def get_channel(**kwargs):
+    with suppress(
+        Channel.DoesNotExist, Channel.MultipleObjectsReturned, ValidationError
+    ):
+        c = await _get_channel(**kwargs)
+        return c
+
+
+class ChatService:
     def __init__(self, world_id):
         self.world_id = world_id
 
@@ -87,10 +102,6 @@ class ChatService:
 
     @database_sync_to_async
     def _store_event(self, channel_id, id, event_type, content, sender, replaces=None):
-        if event_type not in ("channel.member",) and not sender.is_member_of_channel(
-            channel_id
-        ):
-            raise self.NotAChannelMember()
         ce = ChatEvent.objects.create(
             id=id,
             channel_id=channel_id,

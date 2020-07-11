@@ -71,14 +71,14 @@ class User(VersionedModel):
             roles |= self._grant_cache.get(room.id, set())
         return roles
 
-    def is_member_of_channel(self, channel_id):
-        def update(self):
-            self._membership_cache = set(
-                str(i) for i in self.chat_channels.values_list("channel_id", flat=True)
-            )
+    def _update_membership_cache(self):
+        self._membership_cache = set(
+            str(i) for i in self.chat_channels.values_list("channel_id", flat=True)
+        )
 
+    async def is_member_of_channel_async(self, channel_id):
         if self._membership_cache is None:
-            update(self)
+            await database_sync_to_async(self._update_membership_cache)()
         return str(channel_id) in self._membership_cache
 
     def clear_caches(self):

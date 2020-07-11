@@ -1,3 +1,4 @@
+import functools
 import logging
 from contextlib import suppress
 
@@ -5,7 +6,7 @@ from channels.db import database_sync_to_async
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
-from venueless.core.services.chat import ChatService
+from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.services.world import get_room
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
@@ -14,6 +15,82 @@ from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
+
+
+def channel_action(
+    room_permission_required: Permission = None,
+    room_module_required=None,
+    require_membership=True,
+):
+    """
+    Wraps a command that works on a chat channel regardless of whether the channel is tied to a room or not.
+    If it *is* tied to a room, the ``room_permisison_required`` and ``room_module_required`` options are enforced.
+
+    ``require_membership`` enforces the user is a member of a channel for an action.
+    """
+
+    def wrapper(func):
+        @functools.wraps(func)
+        async def wrapped(self, body, *args):
+            nonlocal require_membership
+
+            if "channel" in body:
+                self.channel = self.consumer.channel_cache.get(body["channel"])
+                if not self.channel:
+                    self.channel = await get_channel(
+                        world=self.consumer.world, pk=body["channel"]
+                    )
+                    self.consumer.channel_cache[body["channel"]] = self.channel
+                elif self.channel.room:
+                    await self.channel.room.refresh_from_db_if_outdated()
+            else:
+                raise ConsumerException("chat.unknown", "Unknown channel ID")
+            if not self.channel:
+                raise ConsumerException("room.unknown", "Unknown room ID")
+
+            if self.channel.room and room_module_required is not None:
+                module_config = [
+                    m.get("config", {})
+                    for m in self.channel.room.module_config
+                    if m["type"] == room_module_required
+                ]
+                if module_config:
+                    self.module_config = module_config[0]
+                else:
+                    raise ConsumerException(
+                        "room.unknown", "Room does not contain a matching module."
+                    )
+
+            if not getattr(self.consumer, "user", None):  # pragma: no cover
+                # Just a precaution, should never be called since MainConsumer.receive_json already checks this
+                raise ConsumerException(
+                    "protocol.unauthenticated", "No authentication provided."
+                )
+
+            if self.channel.room and room_permission_required is not None:
+                if not await self.consumer.world.has_permission_async(
+                    user=self.consumer.user,
+                    permission=room_permission_required,
+                    room=self.channel.room,
+                ):
+                    raise ConsumerException("protocol.denied", "Permission denied.")
+
+            if callable(require_membership):
+                require_membership = require_membership(self.channel)
+            if require_membership and self.consumer.user:
+                if not await self.consumer.user.is_member_of_channel_async(
+                    self.channel.pk
+                ):
+                    raise ConsumerException("chat.denied")
+
+            try:
+                return await func(self, body, *args)
+            finally:
+                del self.channel
+
+        return wrapped
+
+    return wrapper
 
 
 class ChatModule(BaseModule):
@@ -64,8 +141,10 @@ class ChatModule(BaseModule):
         )
 
     @command("subscribe")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_READ, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_READ,
+        room_module_required="chat.native",
+        require_membership=lambda channel: not channel.room,
     )
     async def subscribe(self, body):
         reply = await self._subscribe()
@@ -156,19 +235,23 @@ class ChatModule(BaseModule):
             )
 
     @command("unsubscribe")
-    @room_action(module_required="chat.native")
+    @channel_action(room_module_required="chat.native", require_membership=False)
     async def unsubscribe(self, body):
         await self._unsubscribe()
         await self.consumer.send_success()
 
     @command("fetch")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_READ, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_READ,
+        room_module_required="chat.native",
+        require_membership=True,
     )
     async def fetch(self, body):
         count = body["count"]
         before_id = body["before_id"]
-        volatile_config = self.module_config.get("volatile", False)
+        volatile_config = self.channel.room and self.module_config.get(
+            "volatile", False
+        )
         events = await self.service.get_events(
             self.channel_id,
             before_id=before_id,
@@ -178,7 +261,7 @@ class ChatModule(BaseModule):
         await self.consumer.send_success({"results": events})
 
     @command("mark_read")
-    @room_action(module_required="chat.native")
+    @channel_action(room_module_required="chat.native", require_membership=True)
     async def mark_read(self, body):
         if not body.get("id"):
             raise ConsumerException("chat.invalid_body")
@@ -210,8 +293,10 @@ class ChatModule(BaseModule):
         await self.consumer.send_json(["chat.notification_pointers", body.get("data")])
 
     @command("send")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_SEND, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_SEND,
+        room_module_required="chat.native",
+        require_membership=True,
     )
     async def send(self, body):
         content = body["content"]
@@ -231,10 +316,13 @@ class ChatModule(BaseModule):
             if self.consumer.user.id != other_message.sender_id:
                 # Users may only edit messages by other users if they are mods,
                 # and even then only delete them
-                is_moderator = await self.consumer.world.has_permission_async(
-                    user=self.consumer.user,
-                    room=self.room,
-                    permission=Permission.ROOM_CHAT_MODERATE,
+                is_moderator = (
+                    self.channel.room
+                    and await self.consumer.world.has_permission_async(
+                        user=self.consumer.user,
+                        room=self.channel.room,
+                        permission=Permission.ROOM_CHAT_MODERATE,
+                    )
                 )
                 if body["content"]["type"] != "deleted" or not is_moderator:
                     raise ConsumerException("chat.denied")
@@ -243,16 +331,13 @@ class ChatModule(BaseModule):
         if content.get("type") == "text" and not content.get("body"):
             raise ConsumerException("chat.empty")
 
-        try:
-            event = await self.service.create_event(
-                channel_id=self.channel_id,
-                event_type=event_type,
-                content=content,
-                sender=self.consumer.user,
-                replaces=body.get("replaces", None),
-            )
-        except ChatService.NotAChannelMember:
-            raise ConsumerException("chat.denied")
+        event = await self.service.create_event(
+            channel_id=self.channel_id,
+            event_type=event_type,
+            content=content,
+            sender=self.consumer.user,
+            replaces=body.get("replaces", None),
+        )
         await self.consumer.send_success(
             {"event": {k: v for k, v in event.items() if k != "type"}}
         )
