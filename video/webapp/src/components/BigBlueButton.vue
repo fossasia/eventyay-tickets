@@ -36,7 +36,7 @@ export default {
 	},
 	async created () {
 		try {
-			const {url} = await api.call('bbb.url', {room: this.room.id})
+			const {url} = await api.call('bbb.room_url', {room: this.room.id})
 			const iframe = document.createElement('iframe')
 			iframe.src = url
 			iframe.classList.add('bigbluebutton')
