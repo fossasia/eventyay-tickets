@@ -159,8 +159,7 @@ export default {
 		async openDM () {
 			// TODO loading indicator
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
-			console.log(channel)
-			this.$router.push({name: 'channel', params: {channelId: channel.channel}})
+			this.$router.push({name: 'channel', params: {channelId: channel.id}})
 		},
 		async moderateAction (user, action) {
 			this.moderating = action
