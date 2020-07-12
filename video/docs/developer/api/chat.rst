@@ -72,7 +72,7 @@ To start a direct conversation with one or more other users, send a message like
 to include your own user ID::
 
     => ["chat.direct.create", 1234, {"users": ["other_user_id"]}]
-    <- ["success", 1234, {"channel": "12345", "state": {…}, "next_event_id": 54321, "members": […]}]
+    <- ["success", 1234, {"id": "12345", "state": {…}, "next_event_id": 54321, "members": […]}]
 
 A new channel will be created for this set of users or an existing one will be re-used if it is already
 there. With this command, you will also be directly subscribed to the channel and therefore receive the

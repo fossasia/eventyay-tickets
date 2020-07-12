@@ -428,7 +428,7 @@ class ChatModule(BaseModule):
                     await redis.sadd(
                         f"chat:unread.notify:{self.channel_id}", str(user.id),
                     )
-        reply["channel"] = str(channel.id)
+        reply["id"] = str(channel.id)
         await self.consumer.send_success(reply)
 
     async def dispatch_command(self, content):
