@@ -24,6 +24,11 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
+			.group-title
+				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
+				bunt-icon-button(@click="$emit('createDM')") plus
+			.direct-messages
+				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}") {{ channel.user.profile.display_name }}
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.buffer
 				.group-title
@@ -56,6 +61,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world', 'rooms']),
+		...mapState('chat', ['joinedChannels']),
 		...mapGetters('chat', ['hasUnreadMessages']),
 		...mapGetters(['hasPermission']),
 		style () {
@@ -83,6 +89,9 @@ export default {
 				}
 			}
 			return rooms
+		},
+		directMessageChannels () {
+			return this.joinedChannels?.filter(channel => channel.members).map(channel => ({id: channel.id, user: channel.members.find(member => member.id !== this.user.id)}))
 		}
 	},
 	methods: {
@@ -173,7 +182,7 @@ export default {
 		.bunt-icon-button
 			margin: -4px 0
 			icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
-	.stages, .chats, .admin
+	.stages, .chats, .direct-messages, .admin
 		display: flex
 		flex-direction: column
 		> *

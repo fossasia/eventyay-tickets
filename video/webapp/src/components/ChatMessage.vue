@@ -25,6 +25,7 @@
 		template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
 			.moderation-state {{ sender.moderation_state }}
 			.actions
+				bunt-button.btn-dm(@click="openDM") direct message
 				bunt-button.btn-reactivate(
 					v-if="sender.moderation_state",
 					:loading="moderating === 'reactivate'",
@@ -154,6 +155,12 @@ export default {
 					}
 				}]
 			})
+		},
+		async openDM () {
+			// TODO loading indicator
+			const channel = await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
+			console.log(channel)
+			this.$router.push({name: 'channel', params: {channelId: channel.channel}})
 		},
 		async moderateAction (user, action) {
 			this.moderating = action
