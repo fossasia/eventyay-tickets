@@ -54,6 +54,7 @@ export default {
 		},
 		change () {
 			this.$store.dispatch('updateRoomSchedule', {room: this.room, schedule_data: {session: this.selectedSession.id}})
+			this.$emit('close')
 		}
 	}
 }
