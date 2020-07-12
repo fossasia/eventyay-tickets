@@ -7,7 +7,6 @@ from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
 from venueless.core.services.chat import ChatService, get_channel
-from venueless.core.services.world import get_room
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
 from venueless.live.decorators import (
@@ -380,17 +379,18 @@ class ChatModule(BaseModule):
 
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):
-        room = self.consumer.room_cache.get(("channel", body["channel"]))
-        if room:
-            await room.refresh_from_db_if_outdated()
+        channel = self.consumer.channel_cache.get(body["channel"])
+        if channel:
+            if channel.room:
+                await channel.room.refresh_from_db_if_outdated()
         else:
-            room = await get_room(
-                world=self.consumer.world, channel__id=body["channel"]
-            )
-            self.consumer.room_cache["channel", body["channel"]] = room
+            channel = await get_channel(world=self.consumer.world, id=body["channel"])
+            self.consumer.channel_cache[body["channel"]] = channel
 
-        if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.ROOM_CHAT_READ, room=room
+        if channel.room and not await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            permission=Permission.ROOM_CHAT_READ,
+            room=channel.room,
         ):
             return
         await self.consumer.send_json(
