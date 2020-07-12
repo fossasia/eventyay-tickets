@@ -253,7 +253,7 @@ class ChatModule(BaseModule):
     @channel_action(
         room_permission_required=Permission.ROOM_CHAT_READ,
         room_module_required="chat.native",
-        require_membership=True,
+        require_membership=lambda channel: not channel.room,
     )
     async def fetch(self, body):
         count = body["count"]
