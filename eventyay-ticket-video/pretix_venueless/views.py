@@ -76,7 +76,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         if forbidden:
             raise PermissionDenied()
 
-        if request.event.settings.venueless_start and request.event.settings.venueless.datetime(self.position.subevent or request.event) > now():
+        if request.event.settings.venueless_start and request.event.settings.venueless_start.datetime(self.position.subevent or request.event) > now():
             raise PermissionDenied()
 
         iat = datetime.datetime.utcnow()

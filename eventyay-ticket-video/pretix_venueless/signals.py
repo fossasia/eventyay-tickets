@@ -51,7 +51,7 @@ def w_pos_info(sender: Event, request, order: Order, position, **kwargs):
             or not position.item.admission
     ):
         return
-    if sender.settings.venueless_start and sender.settings.venueless.datetime(position.subevent or sender) > now():
+    if sender.settings.venueless_start and sender.settings.venueless_start.datetime(position.subevent or sender) > now():
         positions = []
     else:
         positions = [position]
