@@ -74,23 +74,28 @@ export default {
 		async fetchMessages ({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
-			const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
-			// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
-			state.timeline.unshift(...results)
-			// assume past events don't just appear and stop forever when results are smaller than count
-			state.beforeCursor = results.length < 25 ? null : results[0].event_id
-			state.fetchingMessages = false
-			// hit the user profile cache for each message
-			const missingProfiles = new Set()
-			for (const event of results) {
-				if (!state.usersLookup[event.sender]) {
-					missingProfiles.add(event.sender)
+			try {
+				const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+				// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
+				state.timeline.unshift(...results)
+				// assume past events don't just appear and stop forever when results are smaller than count
+				state.beforeCursor = results.length < 25 ? null : results[0].event_id
+				// hit the user profile cache for each message
+				const missingProfiles = new Set()
+				for (const event of results) {
+					if (!state.usersLookup[event.sender]) {
+						missingProfiles.add(event.sender)
+					}
+					if (event.content.user && !state.usersLookup[event.content.user.id]) {
+						missingProfiles.add(event.content.user.id)
+					}
 				}
-				if (event.content.user && !state.usersLookup[event.content.user.id]) {
-					missingProfiles.add(event.content.user.id)
-				}
+				await dispatch('fetchUsers', Array.from(missingProfiles))
+			} catch (e) {
+				console.error(e)
+				// TODO show error
 			}
-			await dispatch('fetchUsers', Array.from(missingProfiles))
+			state.fetchingMessages = false
 		},
 		async markChannelRead ({state}) {
 			if (state.timeline.length === 0) return
@@ -155,6 +160,12 @@ export default {
 				state.usersLookup[user.id].moderation_state = postStates[action]
 			}
 			// user.moderation_state = postStates[action]
+		},
+		async openDirectMessage ({state}, {user}) {
+			console.log(user)
+			const channel = await api.call('chat.direct.create', {users: [user.id]})
+			state.joinedChannels.push(channel)
+			return channel
 		},
 		// INCOMING
 		'api::chat.event' ({state, dispatch}, event) {
