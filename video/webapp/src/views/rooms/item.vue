@@ -62,7 +62,7 @@ export default {
 		currentSession () {
 			let session
 			if (this.room.schedule_data) {
-				session = this.flatSchedule?.find(session => session.id === this.room.schedule_data.session)
+				session = this.flatSchedule?.sessions.find(session => session.id === this.room.schedule_data.session)
 			}
 			if (!session) {
 				session = this.sessionsScheduledNow?.find(session => session.room === this.room)
