@@ -22,10 +22,10 @@
 	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
 		avatar(:user="sender", :size="128")
 		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
+		bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") direct message
 		template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
 			.moderation-state {{ sender.moderation_state }}
 			.actions
-				bunt-button.btn-dm(@click="openDM") direct message
 				bunt-button.btn-reactivate(
 					v-if="sender.moderation_state",
 					:loading="moderating === 'reactivate'",
