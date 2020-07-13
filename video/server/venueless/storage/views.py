@@ -81,7 +81,7 @@ class UploadView(View):
             return JsonResponse({"error": "file.size"}, status=400)
 
         if not any(
-            request.FILES["file"].name.endswith(e).lower() for e in self.ext_whitelist
+            request.FILES["file"].name.lower().endswith(e) for e in self.ext_whitelist
         ):
             return JsonResponse({"error": "file.type"}, status=400)
 
