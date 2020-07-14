@@ -78,7 +78,7 @@
             <summary class="btn btn-primary">{% trans "Links" %} <i class="fa fa-caret-down"></i></summary>
             <ul class="dropdown-content dropdown-content-sw">
                 {% if submission.state == "confirmed" %}<li><a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>{% trans "Public link" %}</a></li>{% endif %}
-                <li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% trans "Secret public link" %}</a></li>
+                {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% trans "Secret public link" %}</a></li>{% endif %}
             </ul>
         </details>
     </ul>
