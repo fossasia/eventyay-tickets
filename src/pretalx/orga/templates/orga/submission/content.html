@@ -132,10 +132,12 @@
                         {% trans "Send mail to speakers" %}
                     </a>
                 {% endif %}
+                {% if not form.read_only %}
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
                     {% trans "Save" %}
                 </button>
+                {% endif %}
             </span>
         </div>
     </fieldset></form>

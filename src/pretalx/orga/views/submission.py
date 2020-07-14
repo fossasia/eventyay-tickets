@@ -298,6 +298,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
     @cached_property
     def _questions_form(self):
         submission = self.get_object()
+        form_kwargs = self.get_form_kwargs()
         return QuestionsForm(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
@@ -312,6 +313,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                     "orga.view_review_dashboard", self.request.event
                 )
             ),
+            readonly = form_kwargs["read_only"],
         )
 
     @context
