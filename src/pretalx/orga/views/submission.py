@@ -313,7 +313,7 @@ class SubmissionContent(ActionFromUrl, SubmissionViewMixin, CreateOrUpdateView):
                     "orga.view_review_dashboard", self.request.event
                 )
             ),
-            readonly = form_kwargs["read_only"],
+            readonly=form_kwargs["read_only"],
         )
 
     @context
