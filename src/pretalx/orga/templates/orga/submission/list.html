@@ -90,7 +90,7 @@
                     {% endif %}
                     <td>
                         <a href="{{ submission.orga_urls.base }}">
-                            {{ submission.title }}
+                            {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}
                         </a>
                     </td>
                     {% if can_view_speakers %}
