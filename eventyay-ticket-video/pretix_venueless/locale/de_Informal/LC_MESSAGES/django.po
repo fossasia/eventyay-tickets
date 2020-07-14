@@ -18,7 +18,7 @@ msgstr "Venueless-Integration"
 
 #: pretix_venueless/__init__.py:18
 msgid "Integrates pretix with venueless.org"
-msgstr ""
+msgstr "Integriert pretix und venueless.org"
 
 #: pretix_venueless/templates/pretix_venueless/order_info.html:7
 #: pretix_venueless/templates/pretix_venueless/order_info.html:35
@@ -34,7 +34,7 @@ msgid ""
 "You will be able to join this event with your browser right here when it "
 "starts."
 msgstr ""
-"Du kannst der Veranstaltung mit Ihrem Browser genau hier beitreten, wenn "
+"Du kannst der Veranstaltung mit deinem Browser genau hier beitreten, wenn "
 "die Veranstaltung beginnt."
 
 #: pretix_venueless/templates/pretix_venueless/settings.html:5
@@ -67,7 +67,7 @@ msgstr "Veranstaltungsbeginn"
 
 #: pretix_venueless/views.py:45
 msgid "Allow users to access the live event before their order is paid"
-msgstr ""
+msgstr "Erlaube Nutzern die Live-Veranstaltung zu besuchen, bevor die Bestellung bezahlt wurde"
 
 #: pretix_venueless/views.py:68
 msgid "Unknown order code or not authorized to access this order."
