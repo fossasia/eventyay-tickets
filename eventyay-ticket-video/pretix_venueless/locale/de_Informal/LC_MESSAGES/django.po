@@ -18,7 +18,7 @@ msgstr "Venueless-Integration"
 
 #: pretix_venueless/__init__.py:18
 msgid "Integrates pretix with venueless.org"
-msgstr "Integriert Pretix und Venueless.org"
+msgstr "Integriert pretix und venueless.org"
 
 #: pretix_venueless/templates/pretix_venueless/order_info.html:7
 #: pretix_venueless/templates/pretix_venueless/order_info.html:35
