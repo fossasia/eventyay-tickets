@@ -123,6 +123,7 @@
             {% bootstrap_form questions_form layout='event' %}
         {% endif %}
 
+        {% if can_send_mails or not form.read_only %}
         <div class="submit-group panel">
             <span></span>
             <span>
@@ -140,6 +141,7 @@
                 {% endif %}
             </span>
         </div>
+        {% endif %}
     </fieldset></form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
