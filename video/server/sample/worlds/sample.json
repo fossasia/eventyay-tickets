@@ -290,6 +290,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "room_4",
+      "name": "Exhibition Hall",
+      "description": "Much stands, very networking",
+      "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "exhibition.native",
+          "config": {}
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    }
+  ],
+  "exhibitors": [
+    {
+      "name": "Messebau Schmidt UG",
+      "description": "Handwerk aus Leidenschaft",
+      "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+      "grid_color": "558cad",
+      "room": "room_4"
+    },
+    {
+      "name": "Tube GmbH",
+      "description": "Ihr Partner im Großhandel",
+      "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wie liefern!",
+      "grid_color": "77d49f",
+      "room": "room_4"
     }
   ]
 }

@@ -2,7 +2,7 @@ import copy
 
 from django.db import transaction
 
-from venueless.core.models import Channel, Room, World
+from venueless.core.models import Channel, Exhibitor, Room, World
 
 
 @transaction.atomic
@@ -35,5 +35,17 @@ def import_config(data):
         for module in room.module_config:
             if module["type"] == "chat.native":
                 Channel.objects.get_or_create(room=room, world=world)
+
+    for i, exhibitor_config in enumerate(data.pop("exhibitors")):
+        exhibitor, _ = Exhibitor.objects.get_or_create(
+            world=world,
+            room=Room.objects.get(import_id=exhibitor_config.pop("room")),
+            name=exhibitor_config.pop("name"),
+        )
+        exhibitor.description = exhibitor_config.pop("description")
+        exhibitor.text = exhibitor_config.pop("text")
+        exhibitor.grid_color = exhibitor_config.pop("grid_color")
+        exhibitor.save()
+        assert not exhibitor_config, f"Unused config data: {room_config}"
 
     assert not data, f"Unused config data: {data}"
