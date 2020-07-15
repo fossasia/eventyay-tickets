@@ -200,7 +200,7 @@ Vue.component("modal", {
         <div class="form-group row">
           <label class="col-md-3 col-form-label">Duration</label>
           <div class="col-md-9"><div class="input-group">
-            <input type="number" name="duration" value="30" min="0" class="form-control" placeholder="Duration" title="Duration in minutes" v-model="talk.duration" v-on:keyup.enter="saveTalk">
+            <input type="number" name="duration" value="30" min="5" class="form-control" placeholder="Duration" title="Duration in minutes" v-model="talk.duration" v-on:keyup.enter="saveTalk">
             <div class="input-group-append"><span class="input-group-append input-group-text">minutes</span></div>
           </div>
         </div></div>
@@ -242,10 +242,12 @@ Vue.component("modal", {
           this.$emit("saveTalk", this.talk)
         })
       } else {
-        api.createTalk(this.talk).then(resp => {
-          dragController.closeModal()
-          this.$emit("newTalk", resp)
-        })
+        if (this.talk.duration) {
+          api.createTalk(this.talk).then(resp => {
+            dragController.closeModal()
+            this.$emit("newTalk", resp)
+          })
+        }
       }
     },
   }
@@ -430,7 +432,7 @@ var app = new Vue({
   template: `
     <div @mousemove="onMouseMove" @mouseup="onMouseUp">
       <div id="fahrplan" :class="showUnassigned ? 'narrow' : 'wide'">
-        <modal ref="modalTalk" v-if="dragController.modalTalk" :talk="dragController.modalTalk" v-on:deleteTalk="deleteTalk" v-on:saveTalk="saveTalk" :locales="locales" v-on:newTalk="newTalk"></modal>
+        <modal ref="modalTalk" v-if="dragController.modalTalk && dragController.modalTalk.duration" :talk="dragController.modalTalk" v-on:deleteTalk="deleteTalk" v-on:saveTalk="saveTalk" :locales="locales" v-on:newTalk="newTalk"></modal>
         <div id="timeline" v-if="!loading">
           <div class="timeline-container">
             <timestep v-for="timestep in timesteps" :timestep="timestep" :start="start" :thin="false">
