@@ -23,6 +23,7 @@ from venueless.live.exceptions import ConsumerException
 from .modules.auth import AuthModule
 from .modules.bbb import BBBModule
 from .modules.chat import ChatModule
+from .modules.exhibition import ExhibitionModule
 from .modules.room import RoomModule
 from .modules.world import WorldModule
 
@@ -65,6 +66,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "user": AuthModule(self),
             "bbb": BBBModule(self),
             "room": RoomModule(self),
+            "exhibition": ExhibitionModule(self),
             "world": WorldModule(self),
         }
 
