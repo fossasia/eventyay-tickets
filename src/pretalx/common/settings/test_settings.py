@@ -38,7 +38,7 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = (  # NOQA
     ("django.template.loaders.cached.Loader", template_loaders),  # NOQA
 )
 
-DEBUG = True
+DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
