@@ -195,16 +195,14 @@
         </div>
         <div class="submit-group">
             <div>
-                <button type="submit" class="btn btn-lg btn-outline-success">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% trans "Save" %}</button>
             </div>
             <div>
-                {% if skip_for_now %}
-                <a href="{{ skip_for_now.orga_urls.reviews }}" class="btn btn-lg btn-warning">{% trans "Skip for now" %}</a>
-                {% endif %}
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission, mark this one as skipped" %}">{% trans "Skip for now" %}</button>
                 {% if not request.event.settings.review_score_mandatory and not request.event.settings.review_text_mandatory %}
-                <button type="submit" class="btn btn-lg btn-info" name="show_next" value="1" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Abstain" %}</button>
+                <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Abstain" %}</button>
                 {% endif %}
-                <button type="submit" class="btn btn-lg btn-success" name="show_next" value="1" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Save and next" %}</button>
+                <button type="submit" class="btn btn-lg btn-success" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% trans "Go to random next unreviewed submission" %}">{% trans "Save and next" %}</button>
             </div>
         </div>
     {% endif %}

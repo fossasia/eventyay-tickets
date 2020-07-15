@@ -292,12 +292,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             readonly=self.read_only,
         )
 
-    @context
-    def skip_for_now(self):
-        return Review.find_missing_reviews(
-            self.request.event, self.request.user, ignore=[self.submission]
-        ).first()
-
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result["done"] = self.request.user.reviews.filter(
@@ -329,19 +323,48 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         self.qform.save()
         return super().form_valid(form)
 
-    def get_success_url(self) -> str:
-        if self.request.POST.get("show_next", "0").strip() == "1":
-            next_submission = Review.find_missing_reviews(
-                self.request.event, self.request.user
-            ).first()
-            if next_submission:
-                messages.success(self.request, phrases.orga.another_review)
-                return next_submission.orga_urls.reviews
-            messages.success(
-                self.request, _("Nice, you have no submissions left to review!")
+    def post(self, request, *args, **kwargs):
+        action = self.request.POST.get("review_submit")
+        if action == "abstain":
+            Review.objects.get_or_create(
+                user=self.request.user, submission=self.submission
             )
-            return self.request.event.orga_urls.reviews
-        return self.submission.orga_urls.reviews
+            return redirect(self.get_success_url())
+        if action == "skip_for_now":
+            key = f"{self.request.event.slug}_ignored_reviews"
+            ignored_submissions = self.request.session.get(key) or []
+            ignored_submissions.append(self.submission.pk)
+            self.request.session[key] = ignored_submissions
+            return redirect(self.get_success_url())
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self) -> str:
+        action = self.request.POST.get("review_submit")
+        if action == "save":
+            return self.submission.orga_urls.reviews
+            # save, skip_for_now, save_and_next
+
+        key = f"{self.request.event.slug}_ignored_reviews"
+        ignored_submissions = self.request.session.get(key) or []
+        print(len(ignored_submissions))
+        next_submission = Review.find_missing_reviews(
+            self.request.event, self.request.user, ignore=ignored_submissions,
+        ).first()
+        if not next_submission:
+            ignored_submissions = (
+                [self.submission.pk] if action == "skip_for_now" else []
+            )
+            next_submission = Review.find_missing_reviews(
+                self.request.event, self.request.user, ignore=ignored_submissions,
+            ).first()
+        self.request.session[key] = ignored_submissions
+        if next_submission:
+            messages.success(self.request, phrases.orga.another_review)
+            return next_submission.orga_urls.reviews
+        messages.success(
+            self.request, _("Nice, you have no submissions left to review!")
+        )
+        return self.request.event.orga_urls.reviews
 
 
 class ReviewSubmissionDelete(EventPermissionRequired, TemplateView):
