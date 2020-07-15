@@ -74,7 +74,9 @@ class Review(models.Model):
             queryset = queryset.filter(track__in=tracks)
         if ignore:
             queryset = queryset.exclude(pk__in=[submission.pk for submission in ignore])
-        return queryset.order_by("review_count", "?")
+        # This is not randomised, because order_by("review_count", "?") sets all annotated
+        # review_count values to 1.
+        return queryset.order_by("review_count")
 
     @cached_property
     def event(self):
