@@ -45,6 +45,16 @@
     {% bootstrap_form_errors form %}
     {% bootstrap_form_errors qform %}
     <div class="form-group row">
+        <label class="col-md-3 col-form-label">{% trans "Title" %}</label>
+        <div class="col-md-9 mt-1">
+            {% if can_view_speakers %}
+                {{ submission.title|default:'-' }}
+            {% else %}
+                {{ submission.anonymised.title|default:submission.title|default:'-' }}
+            {% endif %}
+        </div>
+    </div>
+    <div class="form-group row">
         <label class="col-md-3 col-form-label">{% trans "Submission Type" %}</label>
         <div class="col-md-9 mt-1">
             {{ submission.submission_type }}
