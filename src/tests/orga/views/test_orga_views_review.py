@@ -195,7 +195,9 @@ def test_cannot_see_other_review_before_own(other_review_client, review):
     assert review.text not in response.content.decode()
 
     response = other_review_client.post(
-        review.urls.base, follow=True, data={"score": 0, "text": "My mistake.",}
+        review.urls.base,
+        follow=True,
+        data={"score": 0, "text": "My mistake.", "review_submit": "save"},
     )
     assert response.status_code == 200
     with scope(event=review.event):

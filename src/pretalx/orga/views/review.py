@@ -12,7 +12,6 @@ from pretalx.common.mixins.views import (
     Filterable,
     PermissionRequired,
 )
-from pretalx.common.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import ReviewForm
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
@@ -324,7 +323,7 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
-        action = self.request.POST.get("review_submit")
+        action = self.request.POST.get("review_submit") or "save"
         if action == "abstain":
             Review.objects.get_or_create(
                 user=self.request.user, submission=self.submission
