@@ -170,7 +170,7 @@
                 </td>
                 <td>
                     {% if not read_only %}
-                        <button type="submit" class="btn btn-success">{% trans "Save" %}
+                        <button type="submit" name="review_submit" value="save" class="btn btn-success">{% trans "Save" %}
                     {% else %}
                         {{ request.user.get_display_name }}
                     {% endif %}
