@@ -346,7 +346,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
 
         key = f"{self.request.event.slug}_ignored_reviews"
         ignored_submissions = self.request.session.get(key) or []
-        print(len(ignored_submissions))
         next_submission = Review.find_missing_reviews(
             self.request.event, self.request.user, ignore=ignored_submissions,
         ).first()
@@ -359,7 +358,6 @@ class ReviewSubmission(PermissionRequired, CreateOrUpdateView):
             ).first()
         self.request.session[key] = ignored_submissions
         if next_submission:
-            messages.success(self.request, phrases.orga.another_review)
             return next_submission.orga_urls.reviews
         messages.success(
             self.request, _("Nice, you have no submissions left to review!")

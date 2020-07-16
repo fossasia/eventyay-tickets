@@ -41,13 +41,3 @@ class OrgaPhrases(Phrases, app="orga"):
         _("In my opinion, this talk will appeal to ..."),
         _("While I think the talk is a great fit, it might be improved by ..."),
     ]
-    another_review = [
-        _("You're on a roll!"),
-        _('"Just ONE more review, promise …"'),
-        _("Review saved, thanks!"),
-        _("One down, ... some more to go!"),
-        _(
-            "Conferences build on good talk selection – which builds on reviewers like you!"
-        ),
-        _("Remember to take a break between reviews, occasionally."),
-    ]
