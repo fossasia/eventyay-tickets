@@ -503,6 +503,9 @@ if DEBUG:
             .strip()
         )
 
+with suppress(ImportError):
+    from .override_settings import *  # noqa
+
 log_initial(
     debug=DEBUG,
     config_files=CONFIG_FILES,
