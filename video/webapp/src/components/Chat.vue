@@ -10,7 +10,7 @@
 			.chat-input
 				bunt-button(v-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 				chat-input(v-else, @send="send")
-		scrollbars.user-list(v-if="mode === 'standalone' && $mq.above['m']", y)
+		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
 			.user(v-for="user of members")
 				avatar(:user="user", :size="28")
 				span.display-name {{ user ? user.profile.display_name : this.message.sender }}
@@ -32,6 +32,10 @@ export default {
 		mode: {
 			type: String, // 'standalone', 'compact'
 			default: 'compact'
+		},
+		showUserlist: {
+			type: Boolean,
+			default: true
 		}
 	},
 	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
