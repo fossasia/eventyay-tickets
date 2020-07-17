@@ -162,13 +162,27 @@ export default {
 			// user.moderation_state = postStates[action]
 		},
 		async openDirectMessage ({state}, {user}) {
-			console.log(user)
 			const channel = await api.call('chat.direct.create', {users: [user.id]})
 			state.joinedChannels.push(channel)
 			return channel
 		},
 		closeDirectMessage ({state}, {channel}) {
 			api.call('chat.leave', {channel: channel.id})
+		},
+		async startCall ({state, dispatch}) {
+			const {event} = await api.call('chat.send', {
+				channel: state.channel,
+				event_type: 'channel.message',
+				content: {
+					type: 'call',
+					body: {}
+				}
+			})
+			dispatch('joinCall', event.content.body.id)
+		},
+		async joinCall ({state}, callId) {
+			const {url} = await api.call('bbb.call_url', {call: callId})
+			window.open(url, '_blank')
 		},
 		// INCOMING
 		'api::chat.event' ({state, dispatch}, event) {

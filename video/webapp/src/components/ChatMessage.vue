@@ -5,11 +5,15 @@
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="mode === 'standalone'")
-				.display-name(@click="showAvatarCard") {{ sender.profile ? sender.profile.display_name : message.sender }}
+				.display-name(@click="showAvatarCard") {{ senderDisplayName }}
 				.timestamp {{ timestamp }}
-			.display-name(v-else) {{ sender.profile ? sender.profile.display_name : message.sender }}
-			chat-input(v-if="editing", :message="message", @send="editMessage")
-			.content(v-else, v-html="content")
+			.display-name(v-else) {{ senderDisplayName }}
+			template(v-if="message.content.type === 'text'")
+				chat-input(v-if="editing", :message="message", @send="editMessage")
+				.content(v-else, v-html="content")
+			.call(v-else-if="message.content.type === 'call'")
+				.prompt {{ senderDisplayName }} invited you to a video call
+				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
 		.actions
 			bunt-icon-button(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", @click="showMenu") dots-vertical
 	template(v-else-if="message.event_type === 'channel.member'")
@@ -19,31 +23,7 @@
 	.menu(v-if="selected", ref="menu")
 		.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 		.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
-	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
-		avatar(:user="sender", :size="128")
-		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
-		bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") direct message
-		template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
-			.moderation-state {{ sender.moderation_state }}
-			.actions
-				bunt-button.btn-reactivate(
-					v-if="sender.moderation_state",
-					:loading="moderating === 'reactivate'",
-					:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
-					@click="moderateAction(user, 'reactivate')", :key="`${user.id}-reactivate`")
-					| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-				bunt-button.btn-ban(
-					v-if="sender.moderation_state !== 'banned'",
-					:loading="moderating === 'ban'",
-					:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
-					@click="moderateAction(user, 'ban')", :key="`${user.id}-ban`")
-					| ban
-				bunt-button.btn-silence(
-					v-if="!sender.moderation_state",
-					:loading="moderating === 'silence'",
-					:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
-					@click="moderateAction(user, 'silence')", :key="`${user.id}-silence`")
-					| silence
+	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender")
 </template>
 <script>
 // TODO
@@ -56,6 +36,7 @@ import { markdownEmoji } from 'lib/emoji'
 import { createPopper } from '@popperjs/core'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
+import ChatUserCard from 'components/ChatUserCard'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
@@ -82,14 +63,12 @@ export default {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar, ChatInput },
+	components: { Avatar, ChatInput, ChatUserCard },
 	data () {
 		return {
 			selected: false,
 			showingAvatarCard: false,
-			editing: false,
-			moderating: false,
-			moderationError: null
+			editing: false
 		}
 	},
 	computed: {
@@ -109,6 +88,9 @@ export default {
 		},
 		sender () {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender}
+		},
+		senderDisplayName () {
+			return this.sender.profile?.display_name ?? this.message.sender
 		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
@@ -146,7 +128,7 @@ export default {
 		async showAvatarCard (event) {
 			this.showingAvatarCard = true
 			await this.$nextTick()
-			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard, {
+			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$el, {
 				placement: 'right-start',
 				modifiers: [{
 					name: 'flip',
@@ -155,24 +137,6 @@ export default {
 					}
 				}]
 			})
-		},
-		async openDM () {
-			// TODO loading indicator
-			const channel = await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
-			this.$router.push({name: 'channel', params: {channelId: channel.id}})
-		},
-		async moderateAction (user, action) {
-			this.moderating = action
-			this.moderationError = null
-			try {
-				await this.$store.dispatch('chat/moderateUser', {action, user: this.sender})
-			} catch (error) {
-				this.moderationError = {
-					action,
-					message: this.$t(`error:${error.code}`)
-				}
-			}
-			user.moderating = null
 		}
 	}
 }
@@ -262,24 +226,6 @@ export default {
 				&:hover
 					background-color: $clr-danger
 					color: $clr-primary-text-dark
-	.avatar-card
-		card()
-		z-index: 5000
-		display: flex
-		flex-direction: column
-		padding: 8px
-		.name
-			font-size: 24px
-			font-weight: 600
-			margin-top: 8px
-		.actions
-			margin-top: 16px
-			.btn-reactivate
-				button-style(style: clear, color: $clr-success, text-color: $clr-success)
-			.btn-ban
-				button-style(style: clear, color: $clr-danger, text-color: $clr-danger)
-			.btn-silence
-				button-style(style: clear, color: $clr-deep-orange, text-color: $clr-deep-orange)
 	&.system-message
 		min-height: 28px
 		.c-avatar
