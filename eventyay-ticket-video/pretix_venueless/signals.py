@@ -15,7 +15,7 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
     if (
             (order.status != Order.STATUS_PAID and not (order.status == Order.STATUS_PENDING and
                                                         sender.settings.venueless_allow_pending))
-            or not order.positions.exists()
+            or not order.positions.exists() or not sender.settings.venueless_secret
     ):
         return
 
@@ -49,6 +49,7 @@ def w_pos_info(sender: Event, request, order: Order, position, **kwargs):
             or not order.positions.exists()
             or position.canceled
             or not position.item.admission
+            or not sender.settings.venueless_secret
     ):
         return
     if sender.settings.venueless_start and sender.settings.venueless_start.datetime(position.subevent or sender) > now():
