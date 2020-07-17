@@ -28,7 +28,9 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				bunt-icon-button(@click="$emit('createDM')") plus
 			.direct-messages
-				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}") {{ channel.user.profile.display_name }}
+				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}")
+					.name {{ channel.user.profile.display_name }}
+					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
 				.buffer
 				.group-title
@@ -230,6 +232,14 @@ export default {
 		.video-chat
 			&::before
 				content: '\F05A0'
+		.direct-message
+			padding-right: 8px
+			display: flex
+			justify-content: space-between
+			.bunt-icon-button
+				icon-button-style(color: var(--clr-sidebar-text-primary), style: clear)
+			&:not(:hover) .bunt-icon-button
+				display: none
 	.buffer
 		flex: auto
 	.profile
