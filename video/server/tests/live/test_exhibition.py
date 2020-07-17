@@ -54,3 +54,57 @@ async def test_list_short(world, exhibition_room):
                     "sorting_priority": 0,
                 },
             ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_get(world, exhibition_room):
+    async with world_communicator() as c:
+        await c.send_json_to(
+            ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
+        )
+        response = await c.receive_json_from()
+        e_id = response[2]["exhibitors"].pop()["id"]
+
+        await c.send_json_to(["exhibition.get", 123, {"exhibitor": str(e_id)}])
+        response = await c.receive_json_from()
+        assert response[0] == "success"
+
+        e = response[2]["exhibitor"]
+        del e["id"]
+        assert e in [
+            {
+                "name": "Messebau Schmidt UG",
+                "description": "Handwerk aus Leidenschaft",
+                "logo": "https://via.placeholder.com/150",
+                "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+                "header_img": "https://via.placeholder.com/728x90",
+                "size": 1,
+                "sorting_priority": 0,
+                "links": [
+                    {"display_text": "Website", "url": "http://example.org/"},
+                    {
+                        "display_text": "Info Broschüre",
+                        "url": "https://de.wikipedia.org/wiki/Messebau",
+                    },
+                ],
+                "social_media_links": [
+                    {"display_text": "XING", "url": "https://www.xing.com/"}
+                ],
+                "staff": [],
+            },
+            {
+                "name": "Tube GmbH",
+                "description": "Ihr Partner im Großhandel",
+                "logo": "https://via.placeholder.com/150",
+                "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
+                "header_img": "https://via.placeholder.com/728x90",
+                "size": 1,
+                "sorting_priority": 1,
+                "links": [],
+                "social_media_links": [
+                    {"display_text": "linkedin", "url": "https://www.linkedin.com/"}
+                ],
+                "staff": [],
+            },
+        ]

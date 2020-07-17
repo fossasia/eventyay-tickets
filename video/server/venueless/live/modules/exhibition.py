@@ -19,3 +19,8 @@ class ExhibitionModule(BaseModule):
     async def list(self, body):
         exhibitors = await self.service.get_exhibitors(room_id=body["room"])
         await self.consumer.send_success({"exhibitors": exhibitors})
+
+    @command("get")
+    async def get(self, body):
+        exhibitor = await self.service.get_exhibitor(exhibitor_id=body["exhibitor"])
+        await self.consumer.send_success({"exhibitor": exhibitor})

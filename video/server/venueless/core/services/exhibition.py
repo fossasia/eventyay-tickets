@@ -5,9 +5,7 @@ from venueless.core.models import Exhibitor
 
 def get_exhibitor_by_id(world_id, id):
     try:
-        return Exhibitor.objects.select_related("social_media_links", "links").get(
-            id=id, world_id=world_id
-        )
+        return Exhibitor.objects.get(id=id, world_id=world_id)
     except Exhibitor.DoesNotExist:
         return
 
@@ -35,23 +33,25 @@ class ExhibitionService:
         ]
 
     @database_sync_to_async
-    def get_exhibitor(self, id):
-        e = get_exhibitor_by_id(self.world_id, id)
+    def get_exhibitor(self, exhibitor_id):
+        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
         if not e:
             return None
 
-        links = e.links.values("display_text", "url")
-        social_media_links = e.social_media_links.values("display_text", "url")
+        links = list(e.links.values("display_text", "url"))
+        social_media_links = list(e.social_media_links.values("display_text", "url"))
+        staff = list(e.staff.values("user__id"))
 
         return dict(
             id=str(e.id),
             name=e.name,
             description=e.description,
-            logo=e.logo.url,
+            logo=e.logo,
             text=e.text,
-            header_img=e.header_img.url,
+            header_img=e.header_img,
             size=e.size,
             sorting_priority=e.sorting_priority,
             links=links,
             social_media_links=social_media_links,
+            staff=staff,
         )
