@@ -1,8 +1,12 @@
 <template lang="pug">
 .c-channel
-	chat(mode="standalone", :module="{channel_id: channelId}")
+	.header
+		h2 {{ otherUser.profile.display_name }}
+		bunt-icon-button(@click="startCall", tooltip="start video call", tooltipPlacement="left") phone_outline
+	chat(mode="standalone", :module="{channel_id: channelId}", :showUserlist="false")
 </template>
 <script>
+import { mapState } from 'vuex'
 import Chat from 'components/Chat'
 
 export default {
@@ -10,18 +14,21 @@ export default {
 		channelId: String
 	},
 	components: { Chat },
-	data () {
-		return {
+	computed: {
+		...mapState(['user']),
+		...mapState('chat', ['joinedChannels']),
+		channel () {
+			return this.joinedChannels?.find(channel => channel.id === this.channelId)
+		},
+		otherUser () {
+			return this.channel?.members.find(member => member.id !== this.user.id)
 		}
 	},
-	computed: {
-	},
-	created () {},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {}
+	methods: {
+		startCall () {
+			this.$store.dispatch('chat/startCall')
+		}
+	}
 }
 </script>
 <style lang="stylus">
@@ -31,4 +38,17 @@ export default {
 	flex-direction: column
 	background-color: $clr-white
 	min-height: 0
+	.header
+		flex: none
+		display: flex
+		padding: 8px 16px
+		height: 56px
+		box-sizing: border-box
+		border-bottom: border-separator()
+		justify-content: space-between
+		align-items: center
+		h2
+			margin: 0
+		.bunt-icon-button
+			icon-button-style(style: clear)
 </style>
