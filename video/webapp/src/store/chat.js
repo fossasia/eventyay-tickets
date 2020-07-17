@@ -167,6 +167,9 @@ export default {
 			state.joinedChannels.push(channel)
 			return channel
 		},
+		closeDirectMessage ({state}, {channel}) {
+			api.call('chat.leave', {channel: channel.id})
+		},
 		// INCOMING
 		'api::chat.event' ({state, dispatch}, event) {
 			if (event.channel !== state.channel) return
