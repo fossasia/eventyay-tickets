@@ -42,11 +42,15 @@ async def test_list_short(world, exhibition_room):
                 {
                     "name": "Tube GmbH",
                     "description": "Ihr Partner im Großhandel",
-                    "grid_color": "77d49f",
+                    "logo": "https://via.placeholder.com/150",
+                    "size": 1,
+                    "sorting_priority": 1,
                 },
                 {
                     "name": "Messebau Schmidt UG",
                     "description": "Handwerk aus Leidenschaft",
-                    "grid_color": "558cad",
+                    "logo": "https://via.placeholder.com/150",
+                    "size": 1,
+                    "sorting_priority": 0,
                 },
             ]

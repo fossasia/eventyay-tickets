@@ -7,9 +7,11 @@ class Exhibitor(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=300, null=True)
     description = models.CharField(max_length=500, null=True)
+    logo = models.URLField(null=True, blank=True)
     text = models.TextField(null=True)
-    grid_color = models.CharField(max_length=6, null=True)
-    # TODO: header & tile img
+    header_img = models.URLField(null=True, blank=True)
+    size = models.IntegerField(default=0)
+    sorting_priority = models.IntegerField(default=0)
     room = models.ForeignKey(
         to="Room", related_name="exhibitors", on_delete=models.CASCADE,
     )
@@ -28,13 +30,28 @@ class Exhibitor(models.Model):
         return r
 
 
-class ExhibitorStaff(models.Model):
+class ExhibitorSocialMediaLink(models.Model):
     exhibitor = models.ForeignKey(
         to=Exhibitor,
-        max_length=300,
         db_index=True,
-        related_name="staff",
+        related_name="social_media_links",
         on_delete=models.CASCADE,
+    )
+    display_text = models.CharField(max_length=300, blank=False)
+    url = models.URLField(blank=False)
+
+
+class ExhibitorLink(models.Model):
+    exhibitor = models.ForeignKey(
+        to=Exhibitor, db_index=True, related_name="links", on_delete=models.CASCADE,
+    )
+    display_text = models.CharField(max_length=300, blank=False)
+    url = models.URLField(blank=False)
+
+
+class ExhibitorStaff(models.Model):
+    exhibitor = models.ForeignKey(
+        to=Exhibitor, db_index=True, related_name="staff", on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
         "User",
