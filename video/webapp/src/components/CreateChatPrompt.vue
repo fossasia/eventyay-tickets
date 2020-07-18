@@ -1,25 +1,25 @@
 <template lang="pug">
-.c-create-chat-prompt(@click="$emit('close')")
-	.prompt-wrapper(v-scrollbar.y="", @click.stop="")
-		.prompt-wrapper-inner
-			bunt-icon-button#btn-close(@click="$emit('close')") close
-			h1 {{ $t('CreateChatPrompt:headline:text') }}
-			p {{ $t('CreateChatPrompt:intro:text') }}
-			form(@submit.prevent="create")
-				bunt-select(name="type", label="Type", v-model="type", :options="types")
-					template(slot-scope="{ option }")
-						.mdi(:class="`mdi-${option.icon}`")
-						.label {{ option.label }}
-				bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
-				bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
-					textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
-				bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
+prompt.c-create-chat-prompt(@close="$emit('close')")
+	.content
+		bunt-icon-button#btn-close(@click="$emit('close')") close
+		h1 {{ $t('CreateChatPrompt:headline:text') }}
+		p {{ $t('CreateChatPrompt:intro:text') }}
+		form(@submit.prevent="create")
+			bunt-select(name="type", label="Type", v-model="type", :options="types")
+				template(slot-scope="{ option }")
+					.mdi(:class="`mdi-${option.icon}`")
+					.label {{ option.label }}
+			bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
+			bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
+				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+			bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import Prompt from 'components/Prompt'
 
 export default {
-	components: {},
+	components: { Prompt },
 	data () {
 		return {
 			name: '',
@@ -83,56 +83,40 @@ export default {
 </script>
 <style lang="stylus">
 .c-create-chat-prompt
-	position: fixed
-	top: 0
-	left: 0
-	width: 100vw
-	height: var(--vh100)
-	z-index: 1000
-	background-color: $clr-secondary-text-light
-	display: flex
-	justify-content: center
-	align-items: center
-	.prompt-wrapper
-		card()
+	.content
 		display: flex
 		flex-direction: column
-		width: 480px
-		max-height: 80vh
-		.prompt-wrapper-inner
+		padding: 32px
+		position: relative
+		#btn-close
+			icon-button-style(style: clear)
+			position: absolute
+			top: 8px
+			right: 8px
+		h1
+			margin: 0
+			text-align: center
+		p
+			max-width: 320px
+		form
 			display: flex
 			flex-direction: column
-			padding: 32px
-			position: relative
-			#btn-close
-				icon-button-style(style: clear)
-				position: absolute
-				top: 8px
-				right: 8px
-			h1
-				margin: 0
-				text-align: center
-			p
-				max-width: 320px
-			form
-				display: flex
-				flex-direction: column
-				align-self: stretch
-				.bunt-button
-					themed-button-primary()
-					margin-top: 16px
-				.bunt-select
-					select-style(size: compact)
-					ul li
-						display: flex
-						.mdi
-							margin-right: 8px
-				.bunt-input-outline-container
-					textarea
-						background-color: transparent
-						border: none
-						outline: none
-						resize: vertical
-						min-height: 64px
-						padding: 0 8px
+			align-self: stretch
+			.bunt-button
+				themed-button-primary()
+				margin-top: 16px
+			.bunt-select
+				select-style(size: compact)
+				ul li
+					display: flex
+					.mdi
+						margin-right: 8px
+			.bunt-input-outline-container
+				textarea
+					background-color: transparent
+					border: none
+					outline: none
+					resize: vertical
+					min-height: 64px
+					padding: 0 8px
 </style>
