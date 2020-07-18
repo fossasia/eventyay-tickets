@@ -11,17 +11,20 @@
 				bunt-button(v-if="!activeJoinedChannel", @click="join", :tooltip="$t('Chat:join-button:tooltip')") {{ $t('Chat:join-button:label') }}
 				chat-input(v-else, @send="send")
 		scrollbars.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']", y)
-			.user(v-for="user of members")
+			.user(v-for="user of members", @click="showUserCard($event, user)")
 				avatar(:user="user", :size="28")
 				span.display-name {{ user ? user.profile.display_name : this.message.sender }}
+		chat-user-card(v-if="selectedUser", ref="avatarCard", :sender="selectedUser", @close="selectedUser = null")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
+import { createPopper } from '@popperjs/core'
 import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
+import ChatUserCard from 'components/ChatUserCard'
 
 export default {
 	props: {
@@ -38,9 +41,10 @@ export default {
 			default: true
 		}
 	},
-	components: { ChatMessage, Avatar, InfiniteScroll, ChatInput },
+	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
 	data () {
 		return {
+			selectedUser: null,
 			scrollPosition: 0,
 			syncedScroll: true
 		}
@@ -95,6 +99,20 @@ export default {
 		},
 		send (message) {
 			this.$store.dispatch('chat/sendMessage', {text: message})
+		},
+		async showUserCard (event, user) {
+			this.selectedUser = user
+			await this.$nextTick()
+			const target = event.target.closest('.user')
+			createPopper(target, this.$refs.avatarCard.$refs.card, {
+				placement: 'left-start',
+				modifiers: [{
+					name: 'flip',
+					options: {
+						flipVariations: false
+					}
+				}]
+			})
 		}
 	}
 }
@@ -142,11 +160,16 @@ export default {
 			flex: none
 			width: 240px
 			grid-area: sidebar
-			padding: 0 0 0 16px
 			border-left: border-separator()
+			.scroll-content
+				padding: 16px 0
 			.user
 				display: flex
 				align-items: center
+				cursor: pointer
+				padding: 2px 16px
+				&:hover
+					background-color: $clr-grey-100
 				.display-name
 					font-weight: 600
 					color: $clr-secondary-text-light
