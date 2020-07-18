@@ -4,6 +4,7 @@
 
 import Vue from 'vue'
 import api from 'lib/api'
+import router from 'router'
 
 export default {
 	namespaced: true,
@@ -161,21 +162,27 @@ export default {
 			}
 			// user.moderation_state = postStates[action]
 		},
+		async blockUser ({state}, {user}) {
+			await api.call('user.block', {id: user.id})
+		},
 		async openDirectMessage ({state}, {user}) {
 			const channel = await api.call('chat.direct.create', {users: [user.id]})
 			state.joinedChannels.push(channel)
+			if (router.currentRoute.name !== 'channel' || router.currentRoute.params.channelId !== channel.id) {
+				await router.push({name: 'channel', params: {channelId: channel.id}})
+			}
 			return channel
 		},
 		closeDirectMessage ({state}, {channel}) {
 			api.call('chat.leave', {channel: channel.id})
 		},
-		async startCall ({state, dispatch}) {
+		async startCall ({state, dispatch}, {channel}) {
+			if (!channel) channel = state.channel
 			const {event} = await api.call('chat.send', {
-				channel: state.channel,
+				channel: channel.id,
 				event_type: 'channel.message',
 				content: {
-					type: 'call',
-					body: {}
+					type: 'call'
 				}
 			})
 			dispatch('joinCall', event.content.body.id)

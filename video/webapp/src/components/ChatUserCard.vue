@@ -7,12 +7,12 @@
 		.state {{ userStates.join(', ') }}
 		.actions(v-if="sender.id !== user.id")
 			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
-			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="openDM") call
+			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
 			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
-					.block(@click="openDM") block
+					.block(@click="blockUser") block
 					template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
 						.divider Moderator Actions
 						.reactivate(
@@ -69,8 +69,15 @@ export default {
 	methods: {
 		async openDM () {
 			// TODO loading indicator
+			await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
+		},
+		async startCall () {
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {user: this.sender})
-			this.$router.push({name: 'channel', params: {channelId: channel.id}})
+			await this.$store.dispatch('chat/startCall', {channel})
+		},
+		async blockUser () {
+			this.$store.dispatch('chat/blockUser', {user: this.sender})
+			this.$emit('close')
 		},
 		async moderateAction (action) {
 			this.moderating = action
@@ -84,6 +91,7 @@ export default {
 				}
 			}
 			this.moderating = null
+			this.$emit('close')
 		}
 	}
 }
