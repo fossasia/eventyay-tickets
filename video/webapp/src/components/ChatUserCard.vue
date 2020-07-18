@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-chat-user-card
-	.g-background-blocker(@click="$emit('close')")
-	.user-card(ref="card", @mousedown="showMoreActions=false")
+	.g-background-blocker(v-if="!userAction", @click="$emit('close')")
+	.user-card(v-if="!userAction", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
 		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
 		.state {{ userStates.join(', ') }}
@@ -12,42 +12,29 @@
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
-					.block(@click="blockUser") block
+					.block(@click="userAction = 'block'") block
 					template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
 						.divider Moderator Actions
-						.reactivate(
-							v-if="sender.moderation_state",
-							:loading="moderating === 'reactivate'",
-							:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
-							@click="moderateAction('reactivate')", :key="`${sender.id}-reactivate`")
+						.reactivate(v-if="sender.moderation_state", @click="userAction = 'reactivate'")
 							| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-						.ban(
-							v-if="sender.moderation_state !== 'banned'",
-							:loading="moderating === 'ban'",
-							:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
-							@click="moderateAction('ban')", :key="`${sender.id}-ban`")
-							| ban
-						.silence(
-							v-if="!sender.moderation_state",
-							:loading="moderating === 'silence'",
-							:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
-							@click="moderateAction('silence')", :key="`${sender.id}-silence`")
-							| silence
+						.ban(v-if="sender.moderation_state !== 'banned'", @click="userAction = 'ban'") ban
+						.silence(v-if="!sender.moderation_state", @click="userAction = 'silence'") silence
+	user-action-prompt(v-if="userAction", :action="userAction", :user="sender", @close="$emit('close')")
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Avatar from 'components/Avatar'
 import MenuDropdown from 'components/MenuDropdown'
-
+import UserActionPrompt from 'components/UserActionPrompt'
 export default {
 	props: {
 		sender: Object,
 	},
-	components: { Avatar, MenuDropdown },
+	components: { Avatar, MenuDropdown, UserActionPrompt },
 	data () {
 		return {
 			showMoreActions: false,
-			moderating: false,
+			userAction: null,
 			moderationError: null
 		}
 	},
@@ -77,20 +64,6 @@ export default {
 		},
 		async blockUser () {
 			this.$store.dispatch('chat/blockUser', {user: this.sender})
-			this.$emit('close')
-		},
-		async moderateAction (action) {
-			this.moderating = action
-			this.moderationError = null
-			try {
-				await this.$store.dispatch('chat/moderateUser', {action, user: this.sender})
-			} catch (error) {
-				this.moderationError = {
-					action,
-					message: this.$t(`error:${error.code}`)
-				}
-			}
-			this.moderating = null
 			this.$emit('close')
 		}
 	}
