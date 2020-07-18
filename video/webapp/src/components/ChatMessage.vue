@@ -12,7 +12,8 @@
 				chat-input(v-if="editing", :message="message", @send="editMessage")
 				.content(v-else, v-html="content")
 			.call(v-else-if="message.content.type === 'call'")
-				.prompt {{ senderDisplayName }} invited you to a video call
+				.prompt(v-if="message.sender === user.id") You started a video call
+				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
 				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
 		.actions
 			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected")
@@ -165,6 +166,18 @@ export default {
 				display: inline-block
 				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 				background-size: 5700% 5700%
+		.call
+			border: border-separator()
+			border-radius: 6px
+			align-self: flex-start
+			padding: 16px
+			margin-top: 8px
+			display: flex
+			flex-direction: column
+			.bunt-button
+				themed-button-primary()
+				margin-top: 16px
+				align-self: flex-end
 	.c-chat-input
 		background-color: $clr-white
 	.system-content
