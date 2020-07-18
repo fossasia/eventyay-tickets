@@ -1,43 +1,52 @@
 <template lang="pug">
 .c-chat-user-card
-	avatar(:user="sender", :size="128")
-	.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
-	bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
-	bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") call
-	bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") block
-	template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
-		.moderation-state {{ sender.moderation_state }}
-		.actions
-			bunt-button.btn-reactivate(
-				v-if="sender.moderation_state",
-				:loading="moderating === 'reactivate'",
-				:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
-				@click="moderateAction('reactivate')", :key="`${sender.id}-reactivate`")
-				| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-			bunt-button.btn-ban(
-				v-if="sender.moderation_state !== 'banned'",
-				:loading="moderating === 'ban'",
-				:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
-				@click="moderateAction('ban')", :key="`${sender.id}-ban`")
-				| ban
-			bunt-button.btn-silence(
-				v-if="!sender.moderation_state",
-				:loading="moderating === 'silence'",
-				:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
-				@click="moderateAction('silence')", :key="`${sender.id}-silence`")
-				| silence
+	.g-background-blocker(@click="$emit('close')")
+	.user-card(ref="card", @mousedown="showMoreActions=false")
+		avatar(:user="sender", :size="128")
+		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
+		.state {{ userStates.join(', ') }}
+		.actions(v-if="sender.id !== user.id")
+			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
+			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="openDM") call
+			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
+				template(v-slot:button="{toggle}")
+					bunt-icon-button(@click="toggle") dots-vertical
+				template(v-slot:menu)
+					.block(@click="openDM") block
+					template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
+						.divider Moderator Actions
+						.reactivate(
+							v-if="sender.moderation_state",
+							:loading="moderating === 'reactivate'",
+							:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
+							@click="moderateAction('reactivate')", :key="`${sender.id}-reactivate`")
+							| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
+						.ban(
+							v-if="sender.moderation_state !== 'banned'",
+							:loading="moderating === 'ban'",
+							:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
+							@click="moderateAction('ban')", :key="`${sender.id}-ban`")
+							| ban
+						.silence(
+							v-if="!sender.moderation_state",
+							:loading="moderating === 'silence'",
+							:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
+							@click="moderateAction('silence')", :key="`${sender.id}-silence`")
+							| silence
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Avatar from 'components/Avatar'
+import MenuDropdown from 'components/MenuDropdown'
 
 export default {
 	props: {
 		sender: Object,
 	},
-	components: { Avatar },
+	components: { Avatar, MenuDropdown },
 	data () {
 		return {
+			showMoreActions: false,
 			moderating: false,
 			moderationError: null
 		}
@@ -45,6 +54,12 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
+		userStates () {
+			const states = []
+			states.push(this.sender.moderation_state)
+			// TODO blocked
+			return states
+		}
 	},
 	created () {},
 	mounted () {
@@ -75,21 +90,42 @@ export default {
 </script>
 <style lang="stylus">
 .c-chat-user-card
-	card()
-	z-index: 5000
-	display: flex
-	flex-direction: column
-	padding: 8px
-	.name
-		font-size: 24px
-		font-weight: 600
-		margin-top: 8px
-	.actions
-		margin-top: 16px
-		.btn-reactivate
-			button-style(style: clear, color: $clr-success, text-color: $clr-success)
-		.btn-ban
-			button-style(style: clear, color: $clr-danger, text-color: $clr-danger)
-		.btn-silence
-			button-style(style: clear, color: $clr-deep-orange, text-color: $clr-deep-orange)
+	.user-card
+		card()
+		z-index: 5000
+		display: flex
+		flex-direction: column
+		padding: 8px
+		.name
+			font-size: 24px
+			font-weight: 600
+			margin-top: 8px
+		.actions
+			margin-top: 16px
+			display: flex
+			.bunt-button
+				button-style(style: clear)
+			.bunt-icon-button
+				icon-button-style(style: clear)
+			.c-menu-dropdown .menu
+				.delete-message
+					color: $clr-danger
+					&:hover
+						background-color: $clr-danger
+						color: $clr-primary-text-dark
+				.reactivate
+					color: $clr-success
+					&:hover
+						background-color: $clr-success
+						color: $clr-primary-text-dark
+				.ban, .block
+					color: $clr-danger
+					&:hover
+						background-color: $clr-danger
+						color: $clr-primary-text-dark
+				.silence
+					color: $clr-deep-orange
+					&:hover
+						background-color: $clr-deep-orange
+						color: $clr-primary-text-dark
 </style>

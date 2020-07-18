@@ -15,15 +15,15 @@
 				.prompt {{ senderDisplayName }} invited you to a video call
 				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
 		.actions
-			bunt-icon-button(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", @click="showMenu") dots-vertical
+			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected")
+				template(v-slot:button="{toggle}")
+					bunt-icon-button(@click="toggle") dots-vertical
+				template(v-slot:menu)
+					.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
+					.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
-	//- intercepts all events
-	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
-	.menu(v-if="selected", ref="menu")
-		.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
-		.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
-	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender")
+	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
 </template>
 <script>
 // TODO
@@ -37,6 +37,7 @@ import { createPopper } from '@popperjs/core'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
+import MenuDropdown from 'components/MenuDropdown'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
@@ -63,7 +64,7 @@ export default {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar, ChatInput, ChatUserCard },
+	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown },
 	data () {
 		return {
 			selected: false,
@@ -105,14 +106,6 @@ export default {
 		}
 	},
 	methods: {
-		async showMenu (event) {
-			this.selected = true
-			await this.$nextTick()
-			const button = event.target.closest('.bunt-icon-button')
-			createPopper(button, this.$refs.menu, {
-				placement: 'left-start'
-			})
-		},
 		startEditingMessage () {
 			this.selected = false
 			this.editing = true
@@ -128,7 +121,7 @@ export default {
 		async showAvatarCard (event) {
 			this.showingAvatarCard = true
 			await this.$nextTick()
-			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$el, {
+			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$refs.card, {
 				placement: 'right-start',
 				modifiers: [{
 					name: 'flip',
@@ -196,36 +189,12 @@ export default {
 		display: flex
 		.bunt-icon-button
 			icon-button-style(style: clear)
-	.menu-blocker
-		position: fixed
-		top: 0
-		left: 0
-		width: 100vw
-		height: var(--vh100)
-		z-index: 4999
-	.menu
-		card()
-		z-index: 5000
-		display: flex
-		flex-direction: column
-		min-width: 240px
-		padding: 4px 0
-		> *
-			flex: none
-			height: 32px
-			font-size: 16px
-			line-height: 32px
-			padding: 0 0 0 16px
-			cursor: pointer
-			user-select: none
+	.c-menu-dropdown .menu
+		.delete-message
+			color: $clr-danger
 			&:hover
-				background-color: var(--clr-input-primary-bg)
-				color: var(--clr-input-primary-fg)
-			&.delete-message
-				color: $clr-danger
-				&:hover
-					background-color: $clr-danger
-					color: $clr-primary-text-dark
+				background-color: $clr-danger
+				color: $clr-primary-text-dark
 	&.system-message
 		min-height: 28px
 		.c-avatar
