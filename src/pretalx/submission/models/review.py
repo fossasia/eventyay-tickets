@@ -136,6 +136,9 @@ class ReviewPhase(models.Model):
     can_see_speaker_names = models.BooleanField(
         verbose_name=_("Reviewers can see speaker names"), default=True,
     )
+    can_see_reviewer_names = models.BooleanField(
+        verbose_name=_("Reviewers can see the names of other reviewers"), default=True,
+    )
     can_change_submission_state = models.BooleanField(
         verbose_name=_("Reviewers can accept and reject submissions"), default=False,
     )

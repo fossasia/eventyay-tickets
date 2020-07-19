@@ -12,6 +12,7 @@
 
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
 {% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}
+{% has_perm 'orga.view_reviewer_names' request.user submission as can_view_reviewer_names %}
 {% if request.user in submission.speakers.all %}
     <div class="alert alert-error"><span>
         {% blocktrans trimmed %}
@@ -171,7 +172,7 @@
                 <td>
                     {% if not read_only %}
                         <button type="submit" name="review_submit" value="save" class="btn btn-success">{% trans "Save" %}
-                    {% else %}
+                    {% elif can_view_reviewer_names %}
                         {{ request.user.get_display_name }}
                     {% endif %}
                 </td>
@@ -188,7 +189,7 @@
                                 </td>
                             {% endfor %}
                             <td>{{ review.text|rich_text }}</td>
-                            <td>{{ review.user }}</td>
+                            <td>{% if can_view_reviewer_names %}{{ review.user }}{% endif %}</td>
                         </tr>
                     {% endif %}
                 {% empty %}
