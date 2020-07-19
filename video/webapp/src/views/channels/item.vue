@@ -26,7 +26,8 @@ export default {
 	},
 	methods: {
 		startCall () {
-			this.$store.dispatch('chat/startCall')
+			const channel = this.channel
+			this.$store.dispatch('chat/startCall', {channel})
 		}
 	}
 }
