@@ -270,7 +270,7 @@ class ChatModule(BaseModule):
         await self.consumer.send_success({"results": events})
 
     @command("mark_read")
-    @channel_action(room_module_required="chat.native", require_membership=True)
+    @channel_action(room_module_required="chat.native", require_membership=False)
     async def mark_read(self, body):
         if not body.get("id"):
             raise ConsumerException("chat.invalid_body")
