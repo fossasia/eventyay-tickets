@@ -33,7 +33,7 @@ class ChatService:
     def __init__(self, world_id):
         self.world_id = world_id
 
-    def get_channels_for_user(self, user_id, is_volatile=None):
+    def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
         qs = (
             Membership.objects.filter(channel__world_id=self.world_id, user_id=user_id,)
             .annotate(max_id=Max("channel__chat_events__id"))
@@ -52,6 +52,8 @@ class ChatService:
                 )
             )
         )
+        if is_hidden is not None:
+            qs = qs.filter(hidden=is_hidden)
         if is_volatile is not None:  # pragma: no cover
             qs = qs.filter(volatile=is_volatile)
         res = []
@@ -113,6 +115,23 @@ class ChatService:
     @database_sync_to_async
     def remove_channel_user(self, channel_id, uid):
         Membership.objects.filter(channel_id=channel_id, user_id=uid,).delete()
+
+    @database_sync_to_async
+    def hide_channel_user(self, channel_id, uid):
+        Membership.objects.filter(channel_id=channel_id, user_id=uid).update(
+            hidden=True
+        )
+
+    @database_sync_to_async
+    def show_chanels_to_hidden_users(self, channel_id):
+        u = []
+        for m in Membership.objects.filter(
+            channel_id=channel_id, hidden=True
+        ).select_related("user"):
+            u.append(m.user)
+            m.hidden = False
+            m.save(update_fields=["hidden"])
+        return u
 
     @database_sync_to_async
     def get_events(self, channel, before_id, count=50, skip_membership=False):

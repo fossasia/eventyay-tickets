@@ -82,6 +82,9 @@ connected clients of the other users receive a regular channel list update.
 You will receive error code ``chat.denied`` if either you do not have the ``world:chat.direct`` permission, or one of
 user IDs you passed does not exist, or any of the users blocked any of the other users.
 
+You can use the regular ``chat.leave`` command to hide a conversation from your channel list. You will technically still
+be a member and it will automatically reappear in your channel list if new messages are received.
+
 Events
 ------
 

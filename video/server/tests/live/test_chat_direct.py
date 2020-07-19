@@ -606,3 +606,67 @@ async def test_send_call_require_invite(world):
         )
         response = await c3.receive_json_from()
         assert "error" == response[0]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_hide_and_reappear(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2:
+        await c1.send_json_to(
+            [
+                "chat.direct.create",
+                123,
+                {
+                    "users": [
+                        str(
+                            (
+                                await database_sync_to_async(User.objects.get)(
+                                    client_id="b"
+                                )
+                            ).id
+                        ),
+                    ]
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+        channel = response[2]["id"]
+
+        await c1.receive_json_from()  # join event 1
+        await c1.receive_json_from()  # join event 2
+        await c1.receive_json_from()  # channel list
+
+        cl = await c2.receive_json_from()  # channel list
+        assert channel in [c["id"] for c in cl[1]["channels"]]
+
+        await c2.send_json_to(
+            ["chat.leave", 123, {"channel": channel},]
+        )
+        response = await c2.receive_json_from()
+        assert "success" == response[0]
+        cl = await c2.receive_json_from()  # channel list
+        assert channel not in [c["id"] for c in cl[1]["channels"]]
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+        await c1.receive_json_from()  # message
+
+        cl = await c2.receive_json_from()  # channel list
+        assert channel in [c["id"] for c in cl[1]["channels"]]
+        await c2.receive_json_from()  # notification pointer

@@ -233,15 +233,25 @@ class ChatModule(BaseModule):
         )
 
     @command("leave")
-    @room_action(module_required="chat.native")
+    @channel_action(
+        room_module_required="chat.native",
+        require_membership=lambda channel: not channel.room,
+    )
     async def leave(self, body):
         await self._unsubscribe(clean_volatile_membership=False)
-        await self._leave()
+        if self.channel.room:
+            await self._leave()
+            async with aioredis() as redis:
+                await redis.srem(
+                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
+                )
+        else:
+            await self.service.hide_channel_user(self.channel_id, self.consumer.user.id)
+            async with aioredis() as redis:
+                await redis.delete(f"chat:direct:shownall:{self.channel_id}")
+            await self._broadcast_channel_list()
+
         await self.consumer.send_success()
-        async with aioredis() as redis:
-            await redis.srem(
-                f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
-            )
 
     @command("unsubscribe")
     @channel_action(room_module_required="chat.native", require_membership=False)
@@ -344,6 +354,25 @@ class ChatModule(BaseModule):
         if await self.consumer.user.is_blocked_in_channel_async(self.channel):
             raise ConsumerException("chat.denied")
 
+        # Re-open direct messages. If a user hid a direct message channel, it should re-appear once they get a message
+        if not self.channel.room:
+            async with aioredis() as redis:
+                all_visible = await redis.exists(
+                    f"chat:direct:shownall:{self.channel_id}"
+                )
+            if not all_visible:
+                users = await self.service.show_chanels_to_hidden_users(self.channel_id)
+                for user in users:
+                    await self._broadcast_channel_list(user=user)
+                    async with aioredis() as redis:
+                        await redis.sadd(
+                            f"chat:unread.notify:{self.channel_id}", str(user.id),
+                        )
+            async with aioredis() as redis:
+                await redis.setex(
+                    f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                )
+
         event = await self.service.create_event(
             channel=self.channel,
             event_type=event_type,
@@ -429,6 +458,11 @@ class ChatModule(BaseModule):
                     await redis.sadd(
                         f"chat:unread.notify:{self.channel_id}", str(user.id),
                     )
+            async with aioredis() as redis:
+                await redis.setex(
+                    f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                )
+
         reply["id"] = str(channel.id)
         await self.consumer.send_success(reply)
 

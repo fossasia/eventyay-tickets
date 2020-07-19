@@ -79,6 +79,7 @@ class Membership(models.Model):
         related_name="chat_channels",
     )
     volatile = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (("user", "channel"),)
