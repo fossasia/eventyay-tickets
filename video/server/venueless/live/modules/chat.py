@@ -229,7 +229,6 @@ class ChatModule(BaseModule):
                 )(user, is_volatile=False)
             },
             user_id=user.id,
-            include_current_client=True,
         )
 
     @command("leave")

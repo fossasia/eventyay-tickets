@@ -82,9 +82,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         )
         await unregister_connection()
 
-    async def user_broadcast(
-        self, event_type, data, user_id=None, include_current_client=False
-    ):
+    async def user_broadcast(self, event_type, data, user_id=None):
         """
         Broadcast a message to other clients of the same user.
         """
@@ -94,7 +92,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 "type": "user.broadcast",
                 "event_type": event_type,
                 "data": data,
-                "socket": self.socket_id if not include_current_client else None,
+                "socket": self.socket_id,
             },
         )
 
