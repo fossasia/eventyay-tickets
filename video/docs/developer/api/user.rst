@@ -134,3 +134,8 @@ To unblock a user, send::
 
     => ["user.unblock", 123, {"id": "1234"}]
     <- ["success", 123, {}]
+
+To get a list of blocked users, send::
+
+    => ["user.list.blocked", 123, {}]
+    <- ["success", 123, [{"id": "1234", "profile": {…}}]]

@@ -157,6 +157,12 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
 
 @database_sync_to_async
 @atomic
+def get_blocked_users(user) -> bool:
+    return [u.serialize_public() for u in user.blocked_users.all()]
+
+
+@database_sync_to_async
+@atomic
 def set_user_banned(world, user_id) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:

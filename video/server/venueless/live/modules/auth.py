@@ -8,6 +8,7 @@ from sentry_sdk import configure_scope
 from venueless.core.permissions import Permission
 from venueless.core.services.user import (
     block_user,
+    get_blocked_users,
     get_public_user,
     get_public_users,
     login,
@@ -259,3 +260,8 @@ class AuthModule(BaseModule):
             await self.consumer.send_success({})
         else:
             await self.consumer.send_error(code="user.not_found")
+
+    @command("list.blocked")
+    async def list_blocked(self, body):
+        users = await get_blocked_users(self.consumer.user,)
+        await self.consumer.send_success({"users": users})

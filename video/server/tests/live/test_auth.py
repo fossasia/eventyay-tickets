@@ -616,6 +616,11 @@ async def test_block_user(world):
             response = await c_blocker.receive_json_from()
             assert response[0] == "success"
 
+            await c_blocker.send_json_to(["user.list.blocked", 14, {}])
+            response = await c_blocker.receive_json_from()
+            assert response[0] == "success"
+            assert response[2]["users"][0]["id"] == user_id
+
             await c_blocker.send_json_to(["user.block", 14, {"id": str(uuid.uuid4())}])
             response = await c_blocker.receive_json_from()
             assert response[0] == "error"
@@ -623,6 +628,11 @@ async def test_block_user(world):
         await c_blocker.send_json_to(["user.unblock", 14, {"id": user_id}])
         response = await c_blocker.receive_json_from()
         assert response[0] == "success"
+
+        await c_blocker.send_json_to(["user.list.blocked", 14, {}])
+        response = await c_blocker.receive_json_from()
+        assert response[0] == "success"
+        assert not response[2]["users"]
 
         await c_blocker.send_json_to(["user.unblock", 14, {"id": str(uuid.uuid4())}])
         response = await c_blocker.receive_json_from()
