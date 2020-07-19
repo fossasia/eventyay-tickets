@@ -4,8 +4,7 @@ from contextlib import asynccontextmanager
 
 import pytest
 from channels.db import database_sync_to_async
-from channels.testing import WebsocketCommunicator
-from tests.utils import get_token
+from tests.utils import LoggingCommunicator, get_token
 
 from venueless.core.services.chat import ChatService
 from venueless.core.utils.redis import aioredis
@@ -14,7 +13,7 @@ from venueless.routing import application
 
 @asynccontextmanager
 async def world_communicator(client_id=None, named=True, token=None):
-    communicator = WebsocketCommunicator(application, "/ws/world/sample/")
+    communicator = LoggingCommunicator(application, "/ws/world/sample/")
     await communicator.connect()
     if token:
         await communicator.send_json_to(["authenticate", {"token": token}])
@@ -41,7 +40,7 @@ async def world_communicator(client_id=None, named=True, token=None):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_unknown_event():
-    communicator = WebsocketCommunicator(application, "/ws/world/sampleeeeeeee/")
+    communicator = LoggingCommunicator(application, "/ws/world/sampleeeeeeee/")
     await communicator.connect()
     await communicator.send_json_to(["authenticate", {"client_id": str(uuid.uuid4())}])
     response = await communicator.receive_json_from()
@@ -100,12 +99,14 @@ async def test_join_leave(chat_room):
                 },
             },
         ]
+        await c.receive_json_from()  # channel list
 
         await c.send_json_to(
             ["chat.leave", 123, {"channel": str(chat_room.channel.id)}]
         )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
+        await c.receive_json_from()  # channel list
 
 
 @pytest.mark.asyncio
@@ -122,6 +123,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
+        await c.receive_json_from()  # channel list
 
         assert await ChatService("sample").membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -136,6 +138,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
         event_id = response[1]["event_id"]
+        await c.receive_json_from()  # channel list
 
         assert not await ChatService("sample").membership_is_volatile(
             str(chat_room.channel.id), c.context["user.config"]["id"]
@@ -165,6 +168,7 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room):
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
+        await c.receive_json_from()  # channel list
 
         assert await ChatService("sample").membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -198,6 +202,7 @@ async def test_join_convert_volatile_to_persistent_require_moderator(
         assert response[0] == "success"
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
+        await c.receive_json_from()  # channel list
 
         assert await ChatService("sample").membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
@@ -319,11 +324,13 @@ async def test_subscribe_join_leave(chat_room):
                 "sender": c.context["user.config"]["id"],
             },
         ]
+        await c.receive_json_from()  # channel list
         await c.send_json_to(
             ["chat.leave", 123, {"channel": str(chat_room.channel.id)}]
         )
         response = await c.receive_json_from()
         assert response == ["success", 123, {}]
+        await c.receive_json_from()  # channel list
 
 
 @pytest.mark.asyncio
@@ -358,6 +365,7 @@ async def test_unsupported_event_type(chat_room):
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
         )
         await c1.receive_json_from()
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()
         await c1.send_json_to(
             [
@@ -382,6 +390,7 @@ async def test_unsupported_content_type(chat_room):
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
         )
         await c1.receive_json_from()
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()
         await c1.send_json_to(
             [
@@ -425,6 +434,7 @@ async def test_send_empty(chat_room):
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
         )
         await c1.receive_json_from()
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()
         await c1.send_json_to(
             [
@@ -451,6 +461,7 @@ async def test_autofix_numbers(chat_room):
         await c1.receive_json_from()
         response = await c1.receive_json_from()
         assert response[1]["event_id"] == 1
+        await c1.receive_json_from()  # channel list
         await redis.delete("chat.event_id")
         await c1.send_json_to(
             [
@@ -544,6 +555,7 @@ async def test_fetch_messages_after_join(chat_room):
                 "notification_pointer": -1,
             },
         ]
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c1
 
         await c1.send_json_to(
@@ -567,6 +579,7 @@ async def test_fetch_messages_after_join(chat_room):
             response = await c2.receive_json_from()
             assert response[0] == "success"
             next_id = response[2]["next_event_id"]
+            await c2.receive_json_from()  # channel list
             await c2.receive_json_from()  # join notification c2
 
             await c2.send_json_to(
@@ -632,6 +645,7 @@ async def test_send_message_to_other_client(chat_room):
                 "members": [],
             },
         ]
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
@@ -644,6 +658,7 @@ async def test_send_message_to_other_client(chat_room):
             "id",
             "profile",
         ]
+        await c2.receive_json_from()  # channel list
         response = await c1.receive_json_from()
         assert response[0] == "chat.event"
         assert response[1]["content"]["membership"] == "join"
@@ -719,6 +734,7 @@ async def test_no_messages_after_leave(chat_room):
                 "members": [],
             },
         ]
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c1
         await c2.send_json_to(
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
@@ -731,6 +747,7 @@ async def test_no_messages_after_leave(chat_room):
             "id",
             "profile",
         ]
+        await c2.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c1
         await c2.receive_json_from()  # join notification c2
 
@@ -739,6 +756,7 @@ async def test_no_messages_after_leave(chat_room):
         )
         response = await c2.receive_json_from()
         assert response == ["success", 123, {}]
+        await c2.receive_json_from()  # channel list
         with pytest.raises(asyncio.TimeoutError):
             await c2.receive_json_from()  # leave notification c2
         response = await c1.receive_json_from()  # leave notification c1
@@ -784,6 +802,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
         )
         response = await c1.receive_json_from()
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c1
         response[2]["next_event_id"] = -1
         assert response == [
@@ -807,6 +826,7 @@ async def test_no_message_after_unsubscribe(chat_room):
             "id",
             "profile",
         ]
+        await c2.receive_json_from()  # channel list
         await c1.receive_json_from()  # join notification c2
         await c2.receive_json_from()  # join notification c2
 
@@ -862,6 +882,7 @@ async def test_disconnect_is_no_leave(chat_room):
                 ["chat.join", 123, {"channel": str(chat_room.channel.id)}]
             )
             response = await c1.receive_json_from()
+            await c1.receive_json_from()  # channel list
             await c1.receive_json_from()  # join notification c1
             assert response == [
                 "success",
@@ -884,6 +905,7 @@ async def test_disconnect_is_no_leave(chat_room):
                 "id",
                 "profile",
             ]
+            await c2.receive_json_from()  # channel list
             await c1.receive_json_from()  # join notification c2
             await c2.receive_json_from()  # join notification c2
 
@@ -902,6 +924,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
                     ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
                 )
                 response = await c1.receive_json_from()
+                await c1.receive_json_from()  # channel list
                 await c1.receive_json_from()  # join notification c1
                 assert response == [
                     "success",
@@ -925,6 +948,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
                     "id",
                     "profile",
                 ]
+                await c2.receive_json_from()  # channel list
                 await c1.receive_json_from()  # join notification c2
                 await c2.receive_json_from()  # join notification c2
 
@@ -1002,9 +1026,11 @@ async def test_edit_messages(world, chat_room, editor, editee, message_type, suc
         # Setup
         await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
         await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # Join notification c1
         await c2.send_json_to(["chat.join", 123, {"channel": channel_id}])
         await c2.receive_json_from()  # Success
+        await c2.receive_json_from()  # channel list
         await c1.receive_json_from()  # Join notification c2
         await c2.receive_json_from()  # Join notification c2
 
@@ -1082,10 +1108,12 @@ async def test_unread_channels(world, chat_room):
         # Setup. Both clients join, then c2 unsubscribes again ("background tab")
         await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
         await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # Join notification c1
 
         await c2.send_json_to(["chat.join", 123, {"channel": channel_id}])
         await c2.receive_json_from()  # Success
+        await c2.receive_json_from()  # channel list
         await c1.receive_json_from()  # Join notification c2
         await c2.receive_json_from()  # Join notification c2
 
@@ -1177,6 +1205,7 @@ async def test_broadcast_read_channels(world, chat_room):
     ) as c2:
         await c1.send_json_to(["chat.join", 123, {"channel": channel_id}])
         await c1.receive_json_from()  # Success
+        await c1.receive_json_from()  # channel list
         await c1.receive_json_from()  # Join notification c1
 
         await c2.receive_json_from()  # c2 receives new channel list

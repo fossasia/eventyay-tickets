@@ -138,6 +138,7 @@ async def _setup_dms(c1, c2):
     await c1.receive_json_from()  # join event 1
     await c1.receive_json_from()  # join event 2
     await c2.receive_json_from()  # channel list
+    await c1.receive_json_from()  # channel list
 
     return channel
 
@@ -236,6 +237,7 @@ async def test_do_not_reuse_direct_channel_with_additional_user(world):
         await c1.receive_json_from()  # join event 3
         await c2.receive_json_from()  # channel list
         await c3.receive_json_from()  # channel list
+        await c1.receive_json_from()  # channel list
 
         await c1.send_json_to(
             [
@@ -257,6 +259,7 @@ async def test_do_not_reuse_direct_channel_with_additional_user(world):
         response = await c1.receive_json_from()
         assert "success" == response[0]
         assert channel != response[2]["id"]
+        await c1.receive_json_from()  # channel list
 
 
 @pytest.mark.asyncio
