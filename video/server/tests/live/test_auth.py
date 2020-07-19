@@ -545,6 +545,7 @@ async def test_silence_user(world, volatile_chat_room):
         )
         await c_user.receive_json_from()
         await c_user.receive_json_from()
+        await c_user.receive_json_from()
         await c_user.send_json_to(
             [
                 "chat.send",
