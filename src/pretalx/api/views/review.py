@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import viewsets
 
-from pretalx.api.serializers.review import ReviewSerializer, AnonymousReviewSerializer
+from pretalx.api.serializers.review import AnonymousReviewSerializer, ReviewSerializer
 from pretalx.submission.models import Review
 from pretalx.submission.models.submission import SubmissionStates
 
