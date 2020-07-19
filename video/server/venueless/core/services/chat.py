@@ -208,7 +208,7 @@ class ChatService:
             raise e  # pragma: no cover
 
     @database_sync_to_async
-    def get_or_create_direct_channel(self, user_ids):
+    def get_or_create_direct_channel(self, user_ids, initiating):
         with transaction.atomic():
             users = list(
                 User.objects.prefetch_related("blocked_users").filter(
@@ -256,7 +256,12 @@ class ChatService:
             except Channel.DoesNotExist:
                 c = Channel.objects.create(room=None, world_id=self.world_id)
                 for u in users:
-                    Membership.objects.create(channel=c, user=u, volatile=False)
+                    Membership.objects.create(
+                        channel=c,
+                        user=u,
+                        volatile=False,
+                        hidden=str(u.id) != initiating,
+                    )
 
                 return c, True, users
 

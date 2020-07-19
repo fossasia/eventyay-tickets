@@ -434,7 +434,7 @@ class ChatModule(BaseModule):
         user_ids.add(self.consumer.user.id)
 
         channel, created, users = await self.service.get_or_create_direct_channel(
-            user_ids=user_ids
+            user_ids=user_ids, initiating=self.consumer.user.id
         )
         if not channel:
             raise ConsumerException("chat.denied")
@@ -452,15 +452,6 @@ class ChatModule(BaseModule):
                 )
                 await self.consumer.channel_layer.group_send(
                     GROUP_CHAT.format(channel=self.channel_id), event,
-                )
-                await self._broadcast_channel_list(user=user)
-                async with aioredis() as redis:
-                    await redis.sadd(
-                        f"chat:unread.notify:{self.channel_id}", str(user.id),
-                    )
-            async with aioredis() as redis:
-                await redis.setex(
-                    f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
                 )
 
         reply["id"] = str(channel.id)
