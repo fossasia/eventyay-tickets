@@ -30,13 +30,15 @@
 			h2 Delete this message?
 			.message
 				.avatar-column
-					avatar(:user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+					avatar(:user="sender", :size="avatarSize")
 				.content-wrapper
-					.message-header(v-if="mode === 'standalone'")
-						.display-name(@click="showAvatarCard") {{ senderDisplayName }}
+					.message-header
+						.display-name {{ senderDisplayName }}
 						.timestamp {{ timestamp }}
 					.content(v-html="content")
-			bunt-button#btn-delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
+			.actions
+				bunt-button#btn-cancel(@click="showDeletePrompt = false") cancel
+				bunt-button#btn-delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 </template>
 <script>
 // TODO
@@ -235,10 +237,15 @@ export default {
 			border: border-separator()
 			padding: 8px
 			display: flex
-		#btn-delete-message
-			button-style(color: $clr-danger)
+		.actions
+			display: flex
 			align-self: flex-end
 			margin-top: 16px
+		#btn-cancel
+			button-style(style: clear)
+			margin-right: 8px
+		#btn-delete-message
+			button-style(color: $clr-danger)
 	&.system-message
 		min-height: 28px
 		.c-avatar
