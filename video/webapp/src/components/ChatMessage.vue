@@ -21,10 +21,22 @@
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
 					.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
-					.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
+					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
 	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
+	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
+		.prompt-content
+			h2 Delete this message?
+			.message
+				.avatar-column
+					avatar(:user="sender", :size="avatarSize", @click.native="showAvatarCard", ref="avatar")
+				.content-wrapper
+					.message-header(v-if="mode === 'standalone'")
+						.display-name(@click="showAvatarCard") {{ senderDisplayName }}
+						.timestamp {{ timestamp }}
+					.content(v-html="content")
+			bunt-button#btn-delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 </template>
 <script>
 // TODO
@@ -39,6 +51,7 @@ import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
 import MenuDropdown from 'components/MenuDropdown'
+import Prompt from 'components/Prompt'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
@@ -65,12 +78,13 @@ export default {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown },
+	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
 	data () {
 		return {
 			selected: false,
 			showingAvatarCard: false,
-			editing: false
+			editing: false,
+			showDeletePrompt: false
 		}
 	},
 	computed: {
@@ -117,7 +131,7 @@ export default {
 		},
 		deleteMessage () {
 			this.$store.dispatch('chat/deleteMessage', this.message)
-			this.selected = false
+			this.showDeletePrompt = false
 		},
 		async showAvatarCard (event) {
 			this.showingAvatarCard = true
@@ -208,6 +222,23 @@ export default {
 			&:hover
 				background-color: $clr-danger
 				color: $clr-primary-text-dark
+	.delete-message-prompt
+		.prompt-wrapper
+			width: auto
+			min-width: 480px
+			max-width: 780px
+		.prompt-content
+			padding: 16px
+			display: flex
+			flex-direction: column
+		.message
+			border: border-separator()
+			padding: 8px
+			display: flex
+		#btn-delete-message
+			button-style(color: $clr-danger)
+			align-self: flex-end
+			margin-top: 16px
 	&.system-message
 		min-height: 28px
 		.c-avatar
