@@ -38,9 +38,6 @@ export default {
 				return this.user.moderation_state === 'banned' ? 'unban' : 'unsilence'
 			}
 			return this.action
-		},
-		successLabel () {
-
 		}
 	},
 	methods: {
