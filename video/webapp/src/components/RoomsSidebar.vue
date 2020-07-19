@@ -28,7 +28,7 @@ transition(name="sidebar")
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				bunt-icon-button(@click="$emit('createDM')") plus
 			.direct-messages
-				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}")
+				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					.name {{ channel.user.profile.display_name }}
 					bunt-icon-button(@click.prevent.stop="$store.dispatch('chat/closeDirectMessage', {channel})") close
 			template(v-if="hasPermission('world:users.list') || hasPermission('world:update') || hasPermission('room:update')")
