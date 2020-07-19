@@ -84,7 +84,7 @@ async def test_start_direct_channel(world):
         )
         response = await c1.receive_json_from()
         assert "success" == response[0]
-        assert "channel" in response[2]
+        assert "id" in response[2]
         assert "notification_pointer" in response[2]
         assert "state" in response[2]
         assert "a" in {a["profile"]["display_name"] for a in response[2]["members"]}
@@ -133,7 +133,7 @@ async def _setup_dms(c1, c2):
     )
     response = await c1.receive_json_from()
     assert "success" == response[0]
-    channel = response[2]["channel"]
+    channel = response[2]["id"]
 
     await c1.receive_json_from()  # join event 1
     await c1.receive_json_from()  # join event 2
@@ -171,7 +171,7 @@ async def test_reuse_direct_channel(world):
         )
         response = await c1.receive_json_from()
         assert "success" == response[0]
-        assert channel == response[2]["channel"]
+        assert channel == response[2]["id"]
 
         await c2.send_json_to(
             [
@@ -192,7 +192,7 @@ async def test_reuse_direct_channel(world):
         )
         response = await c2.receive_json_from()
         assert "success" == response[0]
-        assert channel == response[2]["channel"]
+        assert channel == response[2]["id"]
 
 
 @pytest.mark.asyncio
@@ -229,7 +229,7 @@ async def test_do_not_reuse_direct_channel_with_additional_user(world):
         )
         response = await c1.receive_json_from()
         assert "success" == response[0]
-        channel = response[2]["channel"]
+        channel = response[2]["id"]
 
         await c1.receive_json_from()  # join event 1
         await c1.receive_json_from()  # join event 2
@@ -256,7 +256,7 @@ async def test_do_not_reuse_direct_channel_with_additional_user(world):
         )
         response = await c1.receive_json_from()
         assert "success" == response[0]
-        assert channel != response[2]["channel"]
+        assert channel != response[2]["id"]
 
 
 @pytest.mark.asyncio
