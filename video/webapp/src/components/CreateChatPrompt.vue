@@ -6,7 +6,7 @@
 			h1 {{ $t('CreateChatPrompt:headline:text') }}
 			p {{ $t('CreateChatPrompt:intro:text') }}
 			form(@submit.prevent="create")
-				bunt-select(name="type", label="Type", v-model="type", :options="types")
+				bunt-select(name="type", :label="$t('CreateChatPrompt:type:label')", v-model="type", :options="types")
 					template(slot-scope="{ option }")
 						.mdi(:class="`mdi-${option.icon}`")
 						.label {{ option.label }}
@@ -34,14 +34,14 @@ export default {
 			if (this.hasPermission('world:rooms.create.chat')) {
 				types.push({
 					id: 'text',
-					label: 'Text chat',
+					label: this.$t('CreateChatPrompt:type.text:label'),
 					icon: 'pound'
 				})
 			}
 			if (this.hasPermission('world:rooms.create.bbb')) {
 				types.push({
 					id: 'video',
-					label: 'Video chat',
+					label: this.$t('CreateChatPrompt:type.video:label'),
 					icon: 'webcam'
 				})
 			}
