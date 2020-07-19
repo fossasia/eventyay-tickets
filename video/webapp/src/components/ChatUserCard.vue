@@ -3,12 +3,12 @@
 	.g-background-blocker(v-if="!userAction", @click="$emit('close')")
 	.user-card(v-if="!userAction", ref="card", @mousedown="showMoreActions=false")
 		avatar(:user="sender", :size="128")
-		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
+		.name {{ sender.profile ? sender.profile.display_name : sender }}
 		.state {{ userStates.join(', ') }}
 		.actions(v-if="sender.id !== user.id")
 			bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") message
 			bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") call
-			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
+			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || sender === user.id)", v-model="showMoreActions", :blockBackground="false", @mousedown.native.stop="")
 				template(v-slot:button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
 				template(v-slot:menu)
