@@ -173,11 +173,15 @@ export default {
 			}
 			return channel
 		},
-		closeDirectMessage ({state}, {channel}) {
-			api.call('chat.leave', {channel: channel.id})
+		async closeDirectMessage ({state}, {channel}) {
+			await api.call('chat.leave', {channel: channel.id})
+			if (router.currentRoute.name === 'channel' && router.currentRoute.params.channelId === channel.id) {
+				await router.push({name: 'home'})
+			}
+			const index = state.joinedChannels.findIndex(c => c.id === channel.id)
+			if (index > -1) state.joinedChannels.splice(index, 1)
 		},
 		async startCall ({state, dispatch}, {channel}) {
-			if (!channel) channel = state.channel
 			const {event} = await api.call('chat.send', {
 				channel: channel.id,
 				event_type: 'channel.message',
