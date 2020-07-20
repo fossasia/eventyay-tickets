@@ -18,6 +18,7 @@ def default_roles():
         Permission.ROOM_CHAT_JOIN,
         Permission.ROOM_CHAT_SEND,
         Permission.ROOM_BBB_JOIN,
+        Permission.ROOM_EXHIBITION_CONTACT,
     ]
     room_creator = [Permission.WORLD_ROOMS_CREATE_CHAT]
     room_owner = participant + [
@@ -39,6 +40,7 @@ def default_roles():
             Permission.ROOM_UPDATE,
             Permission.WORLD_ROOMS_CREATE_BBB,
             Permission.WORLD_ROOMS_CREATE_STAGE,
+            Permission.WORLD_ROOMS_CREATE_EXHIBITION,
             Permission.WORLD_USERS_LIST,
             Permission.WORLD_USERS_MANAGE,
             Permission.WORLD_GRAPHS,

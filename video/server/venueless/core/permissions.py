@@ -11,6 +11,7 @@ class Permission(Enum):
     WORLD_ROOMS_CREATE_STAGE = "world:rooms.create.stage"
     WORLD_ROOMS_CREATE_CHAT = "world:rooms.create.chat"
     WORLD_ROOMS_CREATE_BBB = "world:rooms.create.bbb"
+    WORLD_ROOMS_CREATE_EXHIBITION = "world:rooms.create.exhibition"
     WORLD_USERS_LIST = "world:users.list"
     WORLD_USERS_MANAGE = "world:users.manage"
     ROOM_ANNOUNCE = "room:announce"
@@ -24,6 +25,7 @@ class Permission(Enum):
     ROOM_CHAT_MODERATE = "room:chat.moderate"
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
+    ROOM_EXHIBITION_CONTACT = "room:exhibition.contact"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {
