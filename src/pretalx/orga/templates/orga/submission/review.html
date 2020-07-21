@@ -200,10 +200,12 @@
     </table>
     {% endif %}
     {% if not read_only %}
-        <div class="progress" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+        {% if done != total_reviews %}
+            <div class="progress" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ done }}" aria-valuemin="0" aria-valuemax="{{ total_reviews }}" title="{% trans "Review progress" %}: {{ done }} / {{ total_reviews }}">
+                </div>
             </div>
-        </div>
+        {% endif %}
         <div class="submit-group">
             <div>
                 <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% trans "Save" %}</button>
