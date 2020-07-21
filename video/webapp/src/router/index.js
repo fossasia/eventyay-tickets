@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Schedule from 'views/schedule'
 import Room from 'views/rooms/item'
+import Exhibitor from 'views/exhibitors/item'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,11 @@ const routes = [{
 	path: '/rooms/:roomId',
 	name: 'room',
 	component: Room,
+	props: true
+}, {
+	path: '/exhibitors/:exhibitorId',
+	name: 'exhibitor',
+	component: Exhibitor,
 	props: true
 }, {
 	path: '/admin',
