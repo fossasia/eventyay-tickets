@@ -19,6 +19,7 @@
 				reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
+		exhibition(v-else-if="modules['exhibition.native']", :room="room")
 		chat(v-if="modules['chat.native']", :room="room", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
 </template>
 <script>
@@ -28,6 +29,7 @@ import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
 import MarkdownPage from 'components/MarkdownPage'
 import IframePage from 'components/IframePage'
+import Exhibition from 'components/Exhibition'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
 
@@ -36,7 +38,7 @@ export default {
 	props: {
 		roomId: String
 	},
-	components: { Chat, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay },
+	components: { Chat, Exhibition, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay },
 	data () {
 		return {
 			activeStageTool: null // reaction, qa

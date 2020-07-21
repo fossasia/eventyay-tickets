@@ -304,12 +304,6 @@
         {
           "type": "exhibition.native",
           "config": {}
-        },
-        {
-          "type": "chat.native",
-          "config": {
-            "volatile": true
-          }
         }
       ]
     }
