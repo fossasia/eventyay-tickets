@@ -58,7 +58,9 @@ ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TL
     list(set(suffix.rsplit(".")[-1] for suffix in PublicSuffixList()._publicsuffix)),
     reverse=True,
 )
-TLD_REGEX = bleach.linkifier.build_url_re(tlds=ALLOWED_TLDS, protocols=ALLOWED_PROTOCOLS)
+TLD_REGEX = bleach.linkifier.build_url_re(
+    tlds=ALLOWED_TLDS, protocols=ALLOWED_PROTOCOLS
+)
 CLEANER = bleach.Cleaner(
     tags=ALLOWED_TAGS,
     attributes=ALLOWED_ATTRIBUTES,
