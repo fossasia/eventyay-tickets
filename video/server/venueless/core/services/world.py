@@ -147,9 +147,7 @@ async def create_room(world, data, creator):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.", code="denied"
             )
-        if "bbb_defaults" not in world.config:
-            raise ValidationError("No default BBB settings configured.")
-        data.get("modules", [])[0]["config"] = world.config["bbb_defaults"]
+        data.get("modules", [])[0]["config"] = {}
     elif "livestream.native" in types:
         if not await world.has_permission_async(
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_STAGE

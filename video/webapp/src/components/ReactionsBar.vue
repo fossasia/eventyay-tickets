@@ -25,6 +25,7 @@ export default {
 				emojiData.emojis.clap,
 				emojiData.emojis.heart,
 				emojiData.emojis['+1'],
+				emojiData.emojis.rolling_on_the_floor_laughing,
 				emojiData.emojis.open_mouth,
 			]
 			return emoji.map(e => ({id: e.short_names[0], style: {'background-position': getEmojiPosition(e)}}))
