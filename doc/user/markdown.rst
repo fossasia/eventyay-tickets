@@ -21,38 +21,38 @@ on the right:
 +------------------------------------------+--------------------------------------+
 | Markdown                                 | Result                               |
 +==========================================+======================================+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          |                                      |
 |     Please *please* keep the _deadline_. | Please *please* keep the *deadline*. |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          |                                      |
 |     This is **important**.               | This is **important**.               |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          |                                      |
 |     Print `this`.                        | Print ``this``.                      |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          | Look at https://pretalx.com.<br>     |
 |     Look at https://pretalx.com.         |                                      |
 |     Look at [this](https://pretalx.com.) | Look at this_.                       |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          |                                      |
 |    * First item                          |  * First item                        |
 |    * Second item which is too long to    |  * Second item which is too long to  |
 |      fit in a line                       |    fit in a line                     |
 |    * Third item                          |  * Third item                        |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |                                      |
+| .. code-block:: md                       |                                      |
 |                                          |                                      |
 |    1. First item                         |  1. First item                       |
 |    2. Second item which is too long to   |  2. Second item which is too long to |
 |       fit in a line                      |     fit in a line                    |
 |    3. Third item                         |  3. Third item                       |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 |  .. raw:: html                       |
+| .. code-block:: md                       |  .. raw:: html                       |
 |                                          |                                      |
 |    # Headline 1                          |     <h1>Headline 1</h1>              |
 |    ## Headline 2                         |     <h2>Headline 2</h2>              |
@@ -61,7 +61,7 @@ on the right:
 |    ##### Headline 5                      |     <h5>Headline 5</h5>              |
 |    ###### Headline 6                     |     <h6>Headline 6</h6>              |
 +------------------------------------------+--------------------------------------+
-| .. code-block:: markdown                 | .. raw:: html                        |
+| .. code-block:: md                       | .. raw:: html                        |
 |                                          |                                      |
 |     *****                                |     <hr>                             |
 +------------------------------------------+--------------------------------------+
