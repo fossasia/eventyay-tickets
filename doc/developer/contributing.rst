@@ -68,7 +68,7 @@ do the right thing::
 
     prettier --trailing-comma es5 --no-semi --write "path/to/file"
 
-Our tests run with py.test, so please use their ``assert`` statement
+Our tests run with pytest, so please use their ``assert`` statement
 conventions.
 
 Remember to mark all user-facing strings for **translation**.

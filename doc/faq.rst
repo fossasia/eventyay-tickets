@@ -11,7 +11,7 @@ Email
 secure app`_, which you'll have to grant special access. Even then, Gmail is
 known to unexpectedly block your SMTP connection with unhelpful error messages
 if you use it to send out too many emails in bulk (e.g. all rejections for a
-conference) even on GSuite, so using GMail for transactional email is a bad
+conference) even on GSuite, so using Gmail for transactional email is a bad
 idea
 
 .. _less secure app: https://support.google.com/accounts/answer/6010255

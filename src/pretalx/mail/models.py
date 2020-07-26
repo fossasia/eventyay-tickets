@@ -22,7 +22,7 @@ class MailTemplate(LogMixin, models.Model):
     :class:`~pretalx.mail.models.QueuedMail` objects.
 
     The process does not come with variable substitution except for
-    hardcoded cases, for now.
+    special cases, for now.
     """
 
     event = models.ForeignKey(

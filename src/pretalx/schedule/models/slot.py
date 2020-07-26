@@ -101,7 +101,7 @@ class TalkSlot(LogMixin, models.Model):
         """'Casts' a slot as.
 
         :class:`~pretalx.schedule.models.availability.Availability`, useful for
-        availability arithmetics.
+        availability arithmetic.
         """
         from pretalx.schedule.models import Availability
 

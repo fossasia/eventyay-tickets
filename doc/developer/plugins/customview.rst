@@ -12,8 +12,8 @@ pretalx.
 
 .. _urlconf:
 
-Orga panel views
-----------------
+Organiser panel views
+---------------------
 
 If you want to add a custom view to the organiser area of an event, register an URL in your
 ``urls.py`` that lives in the ``/orga/`` subpath::

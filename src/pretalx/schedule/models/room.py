@@ -31,7 +31,7 @@ class Room(LogMixin, models.Model):
         blank=True,
         verbose_name=_("Speaker Information"),
         help_text=_(
-            "Information relevant for speakers scheduled in this room, for example room size, special directions, available adapters for video input …"
+            "Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …"
         ),
     )
     capacity = models.PositiveIntegerField(

@@ -67,7 +67,7 @@ Your embedded widget could look like the following:
 Styling
 -------
 
-If you want, you can customize the appearance of the widget to fit your website with CSS. If you inspect the rendered
+If you want, you can customise the appearance of the widget to fit your website with CSS. If you inspect the rendered
 HTML of the widget with your browser's developer tools, you will see that nearly every element has a custom class
 and all classes are prefixed with ``pretalx-schedule``. You can override the styles as much as you want to and if
 you want to go all custom, you don't even need to use the stylesheet provided by us at all.

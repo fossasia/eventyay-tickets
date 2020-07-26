@@ -1,7 +1,7 @@
 Release a pretalx version
 =========================
 
-You are a pretalx maintainer and want to release a new version? Woo-hoo, here we go!
+You are a pretalx maintainer and want to release a new version? Hold on to your fancy hat or your favourite socks, here we go!
 
 Boarding checks
 ---------------
@@ -38,7 +38,7 @@ Take-off and landing
 8. Upload the release: ``twine upload dist/pretalx-x.y.z.tar.gz dist/pretalx-x.y.z.tar.gz.asc``
 9. Push the release: ``git push && git push --tags``
 10. Install/update the package somewhere.
-11. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the tar.gz you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
+11. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)
 12. Push the blog post.
 13. Upgrade `the docker repository <https://github.com/pretalx/pretalx-docker>`_
 14. Switch to master branch

@@ -4,7 +4,7 @@ Writing an recording provider plugin
 A Recording Provider is a way to provide iframes of videos that will be
 displayed on the public talk pages of a talk.
 
-In this document, we will walk throug the creation of a plugin for a new
+In this document, we will walk through the creation of a plugin for a new
 recording provider step by step. If you'd like to look at a completed working
 recording provider, take a look at our `plugin for media.ccc.de
 <https://github.com/pretalx/pretalx-media-ccc-de>`_.

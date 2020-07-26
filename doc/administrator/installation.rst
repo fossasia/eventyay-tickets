@@ -80,7 +80,7 @@ run pretalx. We cannot maintain an up-to-date dependency list for all Linux
 flavours, but we can offer you a list for Ubuntu. You should be able to find
 the appropriate packages on your system from there:
 
-On Ubuntu-esque systems, you will need packages like:
+On Ubuntu-like systems, you will need packages like:
 
 - ``build-essential``
 - ``libssl-dev``

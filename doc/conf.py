@@ -13,6 +13,14 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
 django.setup()
 
+# PyEnchant is required for spellchecking only, and somewhat bothersome
+# to install on some systems.
+try:
+    import enchant
+    HAS_PYENCHANT = True
+except:
+    HAS_PYENCHANT = False
+
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -29,6 +37,8 @@ extensions = [
     'sphinxcontrib_django',
     'releases',
 ]
+if HAS_PYENCHANT:
+    extensions.append('sphinxcontrib.spelling')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -128,3 +138,9 @@ html_context = {
 
 # Autodoc options
 autodoc_member_order = 'groupwise'
+
+# Spelling options
+if HAS_PYENCHANT:
+    spelling_lang = 'en_GB'
+    spelling_word_list_filename='spelling_wordlist.txt'
+    spelling_show_suggestions=True

@@ -14,6 +14,8 @@ class ActivityLog(models.Model):
 
     It is **not** designed to provide a complete or reliable audit
     trail.
+
+    :param is_orga_action: True, if the logged action was performed by a privileged user.
     """
 
     event = models.ForeignKey(

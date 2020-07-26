@@ -46,7 +46,7 @@ As with all plugin signals, the ``sender`` keyword argument will contain the eve
 """
 nav_event_settings = EventPluginSignal(providing_args=["request"])
 """
-This signal is sent out to collect additiona settings sub-pages of an event.
+This signal is sent out to collect additional settings sub-pages of an event.
 Receivers are expected to return a list of dictionaries. The dictionaries
 should contain at least the keys ``label`` and ``url``. You should also return
 an ``active`` key with a boolean set to ``True``, when this item should be marked

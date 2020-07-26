@@ -155,7 +155,7 @@ class Question(LogMixin, models.Model):
         blank=True,
         verbose_name=_("Maximum text length"),
         help_text=_(
-            "Maximum allowed text lenght in characters or words (set in CfP settings)."
+            "Maximum allowed text length in characters or words (set in CfP settings)."
         ),
     )
     is_public = models.BooleanField(

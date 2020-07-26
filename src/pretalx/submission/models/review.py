@@ -17,7 +17,7 @@ class Review(models.Model):
     :param score: The upper and lower bounds of this value are defined in an
         event's settings.
     :param override_vote: If this field is ``True`` or ``False``, it indicates
-        that the reviewer has spent one of their override votes to emphasize
+        that the reviewer has spent one of their override votes to emphasise
         their opinion of the review. It is ``None`` otherwise.
     """
 
@@ -102,7 +102,7 @@ class Review(models.Model):
 
 class ReviewPhase(models.Model):
     """ReviewPhases determine reviewer access rights during a (potentially
-    open) timeframe.
+    open) time frame.
 
     :param is_active: Is this phase currently active? There can be only one
         active phase per event. Use the ``activate`` method to activate a

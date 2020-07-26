@@ -12,7 +12,10 @@ from pretalx.common.urls import EventUrls
 class Track(LogMixin, models.Model):
     """A track groups :class:`~pretalx.submission.models.submission.Submission`
     objects within an :class:`~pretalx.event.models.event.Event`, e.g. by
-    topic."""
+    topic.
+
+    :param color: The track colour, in the format #012345.
+    """
 
     event = models.ForeignKey(
         to="event.Event", on_delete=models.PROTECT, related_name="tracks"

@@ -34,7 +34,7 @@ on the right:
 |     Print `this`.                        | Print ``this``.                      |
 +------------------------------------------+--------------------------------------+
 | .. code-block:: md                       |                                      |
-|                                          | Look at https://pretalx.com.<br>     |
+|                                          | Look at https://pretalx.com.         |
 |     Look at https://pretalx.com.         |                                      |
 |     Look at [this](https://pretalx.com.) | Look at this_.                       |
 +------------------------------------------+--------------------------------------+

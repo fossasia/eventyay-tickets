@@ -85,14 +85,14 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         was modified.
     :param question_template: Templates for emails sent when a speaker has not
         yet answered a question, and organisers send out reminders.
-    :param primary_color: Main event color. Accepts hex values like
+    :param primary_color: Main event colour. Accepts hex values like
         ``#00ff00``.
     :param custom_css: Custom event CSS. Has to pass fairly restrictive
         validation for security considerations.
     :param logo: Replaces the event name in the public header. Will be
         displayed at up to full header height and up to full content width.
     :param header_image: Replaces the header pattern and/or background
-        color. Center-aligned, so when the window shrinks, the center will
+        colour. Centred, so when the window shrinks, the centre will
         continue to be displayed.
     :param plugins: A list of active plugins as a comma-separated string.
         Please use the ``plugin_list`` property for interaction.
@@ -129,7 +129,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         max_length=30,
         default="UTC",
         help_text=_(
-            "All event dates will be localized and interpreted to be in this timezone."
+            "All event dates will be localised and interpreted to be in this timezone."
         ),
     )
     email = models.EmailField(
@@ -404,7 +404,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             self.plugin_list = plugins_active
 
     def disable_plugin(self, module: str) -> None:
-        """Disbles a named plugin.
+        """Disables a named plugin.
 
         Caution, no validation is performed at this point. No exception is
         raised if the module was not part of the active plugins.
@@ -781,7 +781,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         self, name: str, user=None, notify_speakers: bool = False, comment: str = None
     ):
         """Releases a new :class:`~pretalx.schedule.models.schedule.Schedule`
-        by finalizing the current WIP schedule.
+        by finalising the current WIP schedule.
 
         :param name: The new version name
         :param user: The :class:`~pretalx.person.models.user.User` executing the release

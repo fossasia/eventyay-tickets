@@ -309,7 +309,7 @@ class Schedule(LogMixin, models.Model):
 
     @cached_property
     def warnings(self) -> dict:
-        """A dictionary of warnings to be acknowledged pre-release.
+        """A dictionary of warnings to be acknowledged before a release.
 
         ``talk_warnings`` contains a list of talk-related warnings.
         ``unscheduled`` is the list of talks without a scheduled slot,

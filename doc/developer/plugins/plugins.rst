@@ -155,8 +155,8 @@ Which you can use in your code like this::
 .. versionadded:: 1.1
    The ``PLUGIN_SETTINGS`` configuration was added in pretalx 1.1.
 
-.. _Django application: https://docs.djangoproject.com/en/1.7/ref/applications/
-.. _signal dispatcher: https://docs.djangoproject.com/en/1.7/topics/signals/
+.. _Django application: https://docs.djangoproject.com/en/dev/ref/applications/
+.. _signal dispatcher: https://docs.djangoproject.com/en/dev/topics/signals/
 .. _namespace packages: http://legacy.python.org/dev/peps/pep-0420/
 .. _entry point: https://setuptools.readthedocs.io/en/latest/pkg_resources.html#locating-plugins
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest/

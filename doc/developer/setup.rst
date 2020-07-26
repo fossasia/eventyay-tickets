@@ -116,7 +116,7 @@ Before you check in your code into git, always run the static checkers and unit 
           ``tox -e dev -- -m pytest -n NUM`` with ``NUM`` being the number of threads you want to use.
 
 If you edit a stylesheet ``.scss`` file, please run ``sass-convert -i path/to/file.scss``
-afterwards to autoformat that file.
+afterwards to format that file.
 
 Working with mails
 ^^^^^^^^^^^^^^^^^^
@@ -166,7 +166,7 @@ functionality a try::
 
 Then, go to http://localhost:8081 for a version of the documentation that
 automatically re-builds when you save a changed source file.
-Please note that changes in the static files (stylesheets and javascript) will only be reflected
+Please note that changes in the static files (stylesheets and JavaScript) will only be reflected
 after a restart.
 
 .. _compile it yourself: https://unix.stackexchange.com/a/332658/2013

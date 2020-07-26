@@ -92,7 +92,7 @@ command after every upgrade.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``regenerate_css`` command regenerates only the custom CSS for events. It
-only runs for events with a specified custom color, or custom uploaded styles.
+only runs for events with a specified custom colour, or custom uploaded styles.
 You can specify an event slug with ``--event``. If no event is specified, the
 files for all relevant events will be rebuilt.
 

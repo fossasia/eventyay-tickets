@@ -14,7 +14,7 @@ from pretalx.common.urls import EventUrls
 
 class CfP(LogMixin, models.Model):
     """Every :class:`~pretalx.event.models.event.Event` has one Call for
-    P(apers|articipation|roposals).
+    Papers/Participation/Proposals.
 
     :param deadline: The regular deadline. Please note that submissions can be available for longer than this if different deadlines are configured on single submission types.
     """
