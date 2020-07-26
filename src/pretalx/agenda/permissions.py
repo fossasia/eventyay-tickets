@@ -24,8 +24,13 @@ def has_agenda(user, event):
 
 
 @rules.predicate
-def is_sneak_peek_visible(user, event):
-    return bool(event and event.is_public and event.settings.show_sneak_peek)
+def are_featured_submissions_visible(user, event):
+    if not event or not event.is_public or event.settings.show_featured == "never":
+        return False
+    if event.settings.show_featured == "always":
+        return True
+    # event.settings.show_featured == "pre_schedule"
+    return (not is_agenda_visible(user, event)) or (not has_agenda(user, event))
 
 
 @rules.predicate
@@ -63,9 +68,8 @@ rules.add_perm(
     "agenda.view_schedule", (has_agenda & is_agenda_visible) | can_change_submissions
 )
 rules.add_perm(
-    "agenda.view_sneak_peek",
-    ((~is_agenda_visible | ~has_agenda) & is_sneak_peek_visible)
-    | can_change_submissions,
+    "agenda.view_featured_submissions",
+    are_featured_submissions_visible | can_change_submissions,
 )
 rules.add_perm("agenda.view_slot", is_submission_visible | can_change_submissions)
 rules.add_perm("agenda.view_speaker", is_speaker_viewable | can_change_submissions)
