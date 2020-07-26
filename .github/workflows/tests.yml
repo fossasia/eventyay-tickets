@@ -1,0 +1,78 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - 'doc/**'
+      - 'src/pretalx/locale/**'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - 'doc/**'
+      - 'src/pretalx/locale/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Tests
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        database: [sqlite, postgres, mysql]
+        exclude:
+          - database: mysql
+            python-version: 3.7
+          - database: sqlite
+            python-version: 3.7
+          - database: mysql
+            python-version: 3.6
+          - database: sqlite
+            python-version: 3.6
+    steps:
+      - uses: actions/checkout@v2
+      - uses: getong/mariadb-action@v1.1
+        with:
+          mariadb version: '10.4'
+          mysql database: 'pretalx'
+          mysql root password: ''
+        if: matrix.database == 'mysql'
+      - uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: '11'
+          postgresql db: 'pretalx'
+          postgresql user: 'postgres'
+          postgresql password: 'postgres'
+        if: matrix.database == 'postgres'
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install system dependencies
+        run: sudo apt install gettext mysql-client
+      - name: Install Python dependencies
+        run: pip3 install -Ue "src[dev]" --no-use-pep517
+      - name: Install MySQL dependencies
+        run: pip3 install -Ue "src[mysql]" --no-use-pep517
+        if: matrix.database == 'mysql'
+      - name: Install Postgres dependencies
+        run: pip3 install -Ue "src[postgres]" --no-use-pep517
+        if: matrix.database == 'postgres'
+      - name: Run checks
+        run: python manage.py check --deploy
+        working-directory: ./src
+      - name: Run tests
+        working-directory: ./src
+        run: PRETALX_CONFIG_FILE=tests/ci_${{ matrix.database }}.cfg py.test -nauto -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: src/coverage.xml
+          fail_ci_if_error: true
+        if: matrix.database == 'postgres' && matrix.python-version == '3.8'

@@ -77,10 +77,10 @@ class BaseExporter:
         raise NotImplementedError()  # NOQA
 
     class urls(EventUrls):
-        """The base attribute of this class contains the relative URL where this
-        exporter's data will be found, e.g. /event/schedule/export/my-export.ext
-        Use ``exporter.urls.base.full()`` for the complete URL, taking into
-        account the configured event URL, or HTML export URL."""
+        """The base attribute of this class contains the relative URL where
+        this exporter's data will be found, e.g. /event/schedule/export/my-
+        export.ext Use ``exporter.urls.base.full()`` for the complete URL,
+        taking into account the configured event URL, or HTML export URL."""
 
         base = "{self.event.urls.export}{self.quoted_identifier}"
 

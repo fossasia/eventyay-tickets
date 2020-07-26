@@ -128,6 +128,8 @@ setup(
     extras_require={
         "dev": [
             "black",
+            "check-manifest",
+            "coverage",
             "docformatter",
             "Faker",
             "flake8",
@@ -140,6 +142,8 @@ setup(
             "pytest-mock",
             "pytest-rerunfailures",
             "pytest-tldr",
+            "pytest-xdist",
+            "pywatchman",
             "responses",
             "urllib3",
         ],
