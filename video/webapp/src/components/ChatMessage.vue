@@ -145,6 +145,11 @@ export default {
 					options: {
 						flipVariations: false
 					}
+				}, {
+					name: 'preventOverflow',
+					options: {
+						padding: 8
+					}
 				}]
 			})
 		}

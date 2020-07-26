@@ -1,19 +1,15 @@
 <template lang="pug">
 prompt.c-user-action-prompt(@close="$emit('close')", :class="[`action-${action}`]")
 	.content
-		.user-question
+		h2(v-if="success") {{ $t(`UserActionPrompt:action.${actionLabel}:confirmation`) }}
+		h2(v-else) {{ $t(`UserActionPrompt:action.${actionLabel}:question`) }}
+		.user
 			avatar(:user="user", :size="128")
-			h2(v-if="success")
-				i {{ user.profile.display_name }}
-				div has been {{ success }}
-			h2(v-else)
-				span.action {{ actionLabel }}
-				i  {{ user.profile.display_name }}
-				|  ?
-		p This will have CONSEQUENCES!
+			.display-name {{ user.profile.display_name }}
+		.explanation {{ $t(`UserActionPrompt:action.${actionLabel}:explanation`) }}
 		.actions
-			bunt-button.btn-cancel(v-if="!success", @click="$emit('close')") cancel
-			bunt-button.btn-action(@click="takeAction", :loading="loading", :error-message="error") {{ actionLabel }}
+			bunt-button.btn-cancel(v-if="!success", @click="$emit('close')") {{ $t(`Prompt:cancel:label`) }}
+			bunt-button.btn-action(@click="takeAction", :loading="loading", :error-message="error") {{ $t(`UserActionPrompt:action.${actionLabel}:execute:label`) }}
 </template>
 <script>
 import Prompt from 'components/Prompt'
@@ -52,7 +48,7 @@ export default {
 					reactivate: this.user.moderation_state === 'banned' ? 'unbanned' : 'unsilenced'
 				}
 				if (this.action === 'block') {
-
+					await this.$store.dispatch('chat/blockUser', {user: this.user})
 				} else {
 					await this.$store.dispatch('chat/moderateUser', {action: this.action, user: this.user})
 				}
@@ -73,22 +69,28 @@ export default {
 		display: flex
 		flex-direction: column
 		padding: 16px
-		.user-question
+		h2
+			margin: 16px 0 0 16px
+		.user
 			display: flex
 			align-items: center
-			h2
-				margin-left: 16px
-				.action
-					text-transform: capitalize
+			margin: 0 0 0 8px
+			.display-name
+				font-size: 24px
+				margin-left: 8px
+		.explanation
+			margin: 16px 16px 32px 16px
 		.actions
 			align-self: flex-end
 			.btn-cancel
 				button-style(style: clear)
 				margin-right: 8px
-	&.action-ban .btn-action
-		button-style(color: $clr-danger)
+	&.action-ban, &.action-block
+		.btn-action
+			button-style(color: $clr-danger)
 	&.action-silence .btn-action
 		button-style(color: $clr-deep-orange)
-	&.action-reactivate .btn-action
-		button-style(color: $clr-success)
+	&.action-reactivate, &.action-unblock
+		.btn-action
+			button-style(color: $clr-success)
 </style>
