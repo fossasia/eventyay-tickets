@@ -26,7 +26,7 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 			.group-title
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
-				bunt-icon-button(@click="$emit('createDM')") plus
+				//- bunt-icon-button(@click="$emit('createDM')") plus
 			.direct-messages
 				router-link.direct-message(v-for="channel of directMessageChannels", :to="{name: 'channel', params: {channelId: channel.id}}", :class="{unread: hasUnreadMessages(channel.id)}")
 					.name {{ channel.user.profile.display_name }}
