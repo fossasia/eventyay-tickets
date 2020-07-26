@@ -419,14 +419,16 @@ class ScheduleView(ScheduleDataView):
     def dispatch(self, request, **kwargs):
         if not self.request.user.has_perm(
             "agenda.view_schedule", self.request.event
-        ) and self.request.user.has_perm("agenda.view_sneak_peek", self.request.event):
+        ) and self.request.user.has_perm(
+            "agenda.view_featured_submissions", self.request.event
+        ):
             messages.success(
                 request,
                 _(
-                    "Our schedule is not live yet, but we have this sneak peek available!"
+                    "Our schedule is not live yet, but we have this list of featured talks available!"
                 ),
             )
-            return HttpResponseRedirect(self.request.event.urls.sneakpeek)
+            return HttpResponseRedirect(self.request.event.urls.featured)
         return super().dispatch(request, **kwargs)
 
     def get(self, request, **kwargs):

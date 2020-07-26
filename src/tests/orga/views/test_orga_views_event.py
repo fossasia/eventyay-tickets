@@ -104,6 +104,7 @@ def test_add_custom_css(event, orga_client, path, allowed):
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
                 "settings-schedule_display": event.settings.schedule_display,
+                "settings-show_featured": event.settings.show_featured,
             },
             follow=True,
         )
@@ -134,6 +135,7 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
                 "primary_color": event.primary_color or "",
                 "custom_css": custom_css,
                 "settings-schedule_display": event.settings.schedule_display,
+                "settings-show_featured": event.settings.show_featured,
             },
             follow=True,
         )
@@ -163,6 +165,7 @@ def test_add_logo(event, orga_client):
                 "custom_css": "",
                 "logo": logo,
                 "settings-schedule_display": event.settings.schedule_display,
+                "settings-show_featured": event.settings.show_featured,
             },
             follow=True,
         )
@@ -195,6 +198,7 @@ def test_add_logo_no_svg(event, orga_client):
                 "custom_css": "",
                 "logo": logo,
                 "settings-schedule_display": event.settings.schedule_display,
+                "settings-show_featured": event.settings.show_featured,
             },
             follow=True,
         )
@@ -231,6 +235,7 @@ def test_change_custom_domain(event, orga_client, monkeypatch):
             "logo": "",
             "settings-custom_domain": "https://myevent.com",
             "settings-schedule_display": event.settings.schedule_display,
+            "settings-show_featured": event.settings.show_featured,
         },
         follow=True,
     )
@@ -258,6 +263,7 @@ def test_change_custom_domain_to_site_url(event, orga_client):
             "logo": "",
             "settings-custom_domain": settings.SITE_URL,
             "settings-schedule_display": event.settings.schedule_display,
+            "settings-show_featured": event.settings.show_featured,
         },
         follow=True,
     )
@@ -286,6 +292,7 @@ def test_change_custom_domain_to_other_event_domain(event, orga_client, other_ev
             "logo": "",
             "settings-custom_domain": other_event.settings.custom_domain,
             "settings-schedule_display": event.settings.schedule_display,
+            "settings-show_featured": event.settings.show_featured,
         },
         follow=True,
     )
@@ -321,6 +328,7 @@ def test_change_custom_domain_to_unavailable_domain(
             "logo": "",
             "settings-custom_domain": "https://example.org",
             "settings-schedule_display": event.settings.schedule_display,
+            "settings-show_featured": event.settings.show_featured,
         },
         follow=True,
     )

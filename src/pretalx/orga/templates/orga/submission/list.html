@@ -69,9 +69,9 @@
                 </th>
                 {% if can_change_submission %}
                 <th>
-                    {% trans "Sneak peek" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% trans "Show this submission on the public preview page, if it was accepted" %}"></i>
-                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% trans "Sort by sneak peek first" %}"></i></a>
-                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% trans "Sort sneak peek last" %}"></i></a>
+                    {% trans "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% trans "Show this talk on the list of featured talks, once it was accepted" %}"></i>
+                    <a href="?{% url_replace request 'sort' '-is_featured' %}"><i class="fa fa-caret-down" title="{% trans "Sort by featured first" %}"></i></a>
+                    <a href="?{% url_replace request 'sort' 'is_featured' %}"><i class="fa fa-caret-up" title="{% trans "Sort featured last" %}"></i></a>
                 </th>
                 <th></th>
                 {% endif %}
@@ -110,7 +110,7 @@
                     </td>
                     {% if can_change_submission %}
                     <td class="submission_featured">
-                        <div class="checkbox mt-1" title="{% trans 'Show this submission in the public sneak peek.' %}">
+                        <div class="checkbox mt-1" title="{% trans 'Show this submission in the list of featured talks.' %}">
                             <input
                                 type="checkbox"
                                 id="featured_{{ submission.code }}"

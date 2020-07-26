@@ -36,7 +36,7 @@ class EventStartpage(EventPageMixin, TemplateView):
         )
 
     @context
-    def has_sneak_peek(self):
+    def has_featured(self):
         return self.request.event.submissions.filter(is_featured=True).exists()
 
     @context
@@ -61,7 +61,7 @@ class EventCfP(EventStartpage):
     template_name = "cfp/event/cfp.html"
 
     @context
-    def has_sneak_peek(self):
+    def has_featured(self):
         return self.request.event.submissions.filter(is_featured=True).exists()
 
 
@@ -74,8 +74,7 @@ class GeneralView(TemplateView):
         return [
             e
             for e in events
-            if e.is_public
-            or self.request.user.has_perm("cfp.view_event", e)
+            if e.is_public or self.request.user.has_perm("cfp.view_event", e)
         ]
 
     def get_context_data(self, **kwargs):

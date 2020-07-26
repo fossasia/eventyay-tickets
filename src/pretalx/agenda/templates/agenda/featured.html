@@ -6,7 +6,7 @@
 
 {% block agenda_content %}
 <p>
-    <b>{% trans "Welcome to our schedule sneak peek!" %}</b><br><br>
+    <b>{% trans "Welcome to our list of featured talks!" %}</b><br><br>
     {% if talks %}
     {% blocktrans trimmed %}
     We prepared a list of exciting talks, so you can get a feel for our
@@ -21,7 +21,7 @@
     {% endblocktrans %}
     {% endif %}
 </p>
-<article id="sneakpeak">
+<article id="featured-talks">
     {% for talk in talks %}
         <section>
             <h3 class="talk-title">

@@ -62,33 +62,37 @@ def test_can_see_schedule_with_broken_accept_header(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("sneak_peek", (True, False))
+@pytest.mark.parametrize("featured", ("always", "never", "pre_schedule"))
 def test_cannot_see_schedule_by_setting(
-    client, user, event, slot, other_slot, sneak_peek
+    client, user, event, slot, other_slot, featured
 ):
     with scope(event=event):
         event.settings.show_schedule = False
         assert not user.has_perm("agenda.view_schedule", event)
-        event.settings.show_sneak_peek = sneak_peek
-    response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT="text/html")
-    assert response.status_code == (404 if not sneak_peek else 200)
-    if sneak_peek:
-        assert response.redirect_chain == [(event.urls.sneakpeek, 302)]
+        event.settings.show_featured = featured
+    response = client.get(event.urls.schedule, HTTP_ACCEPT="text/html")
+    if featured == "never":
+        assert response.status_code == 404
+    else:
+        assert response.status_code == 302
+        assert response.url == event.urls.featured
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("sneak_peek", (True, False))
-def test_cannot_see_no_schedule(client, user, event, slot, other_slot, sneak_peek):
+@pytest.mark.parametrize("featured", ("always", "never", "pre_schedule"))
+def test_cannot_see_no_schedule(client, user, event, slot, other_slot, featured):
     with scope(event=event):
         event.current_schedule.talks.all().delete()
         event.current_schedule.delete()
         del event.current_schedule
-        event.settings.show_sneak_peek = sneak_peek
+        event.settings.show_featured = featured
         assert not user.has_perm("agenda.view_schedule", event)
-    response = client.get(event.urls.schedule, follow=True, HTTP_ACCEPT="text/html")
-    assert response.status_code == (404 if not sneak_peek else 200)
-    if sneak_peek:
-        assert response.redirect_chain == [(event.urls.sneakpeek, 302)]
+    response = client.get(event.urls.schedule, HTTP_ACCEPT="text/html")
+    if featured == "never":
+        assert response.status_code == 404
+    else:
+        assert response.status_code == 302
+        assert response.url == event.urls.featured
 
 
 @pytest.mark.django_db

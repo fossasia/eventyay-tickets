@@ -215,12 +215,15 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         choices=(("proportional", _("Proportional")), ("list", _("List")),),
         required=True,
     )
-    show_sneak_peek = forms.BooleanField(
-        label=_("Show a sneak peek before schedule release"),
-        help_text=_(
-            "Set to publicly display a selected list of talks which you have marked to be featured."
+    show_featured = forms.ChoiceField(
+        label=_("Show featured talks"),
+        choices=(
+            ("never", _("Never")),
+            ("pre_schedule", _("Until the first schedule is released")),
+            ("always", _("Always")),
         ),
-        required=False,
+        help_text=_("Should the talks marked as featured shown publicly?"),
+        required=True,
     )
     export_html_on_schedule_release = forms.BooleanField(
         label=_("Generate HTML export on schedule release"),

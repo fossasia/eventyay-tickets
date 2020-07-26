@@ -84,7 +84,7 @@ def event_urls(event):
     yield event.urls.base
     yield event.urls.schedule
     yield from schedule_version_urls(event)
-    yield event.urls.sneakpeek
+    yield event.urls.featured
     yield event.urls.talks
     yield from event_talk_urls(event)
     yield event.urls.speakers

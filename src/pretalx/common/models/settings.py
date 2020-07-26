@@ -35,7 +35,9 @@ hierarkey.add_type(
 
 hierarkey.add_default("show_schedule", "True", bool)
 hierarkey.add_default("schedule_display", "proportional", str)
-hierarkey.add_default("show_sneak_peek", "True", bool)
+hierarkey.add_default(
+    "show_featured", "pre_schedule", str
+)  # always, never, pre-schedule
 hierarkey.add_default("show_widget_if_not_public", "False", bool)
 hierarkey.add_default("export_html_on_schedule_release", "False", bool)
 hierarkey.add_default("imprint_url", None, str)
