@@ -706,3 +706,51 @@ async def test_hide_and_reappear(world):
         await c2.receive_json_from()  # notification pointer
         await c2b.receive_json_from()  # channel list
         await c2b.receive_json_from()  # notification pointer
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_send_if_silenced(world):
+    world.trait_grants["participant"] = []
+    await database_sync_to_async(world.save)()
+    async with world_communicator(client_id="a") as c1, world_communicator(
+        client_id="b"
+    ) as c2:
+        channel = await _setup_dms(c1, c2)
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "success" == response[0]
+
+        await c1.receive_json_from()  # chat event
+        await c1.receive_json_from()  # new notification pointer
+        await c2.receive_json_from()  # channel list
+        await c2.receive_json_from()  # new notification pointer
+
+        u = await database_sync_to_async(User.objects.get)(client_id="a")
+        u.moderation_state = User.ModerationState.SILENCED
+        await database_sync_to_async(u.save)()
+
+        await c1.send_json_to(
+            [
+                "chat.send",
+                123,
+                {
+                    "event_type": "channel.message",
+                    "content": {"type": "text", "body": "Hello world"},
+                    "channel": channel,
+                },
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert "error" == response[0]
+        assert "chat.denied" == response[2]["code"]

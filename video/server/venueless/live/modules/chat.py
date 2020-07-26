@@ -353,6 +353,10 @@ class ChatModule(BaseModule):
         if await self.consumer.user.is_blocked_in_channel_async(self.channel):
             raise ConsumerException("chat.denied")
 
+        if self.consumer.user.is_silenced:
+            # In regular channels, this is already prevented by room permissions
+            raise ConsumerException("chat.denied")
+
         # Re-open direct messages. If a user hid a direct message channel, it should re-appear once they get a message
         if not self.channel.room:
             async with aioredis() as redis:
