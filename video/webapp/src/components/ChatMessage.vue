@@ -5,44 +5,40 @@
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
 			.message-header(v-if="mode === 'standalone'")
-				.display-name(@click="showAvatarCard") {{ sender.profile ? sender.profile.display_name : message.sender }}
+				.display-name(@click="showAvatarCard") {{ senderDisplayName }}
 				.timestamp {{ timestamp }}
-			.display-name(v-else) {{ sender.profile ? sender.profile.display_name : message.sender }}
-			chat-input(v-if="editing", :message="message", @send="editMessage")
-			.content(v-else, v-html="content")
+			.display-name(v-else) {{ senderDisplayName }}
+			template(v-if="message.content.type === 'text'")
+				chat-input(v-if="editing", :message="message", @send="editMessage")
+				.content(v-else, v-html="content")
+			.call(v-else-if="message.content.type === 'call'")
+				.prompt(v-if="message.sender === user.id") You started a video call
+				.prompt(v-else) {{ senderDisplayName }} invited you to a video call
+				bunt-button(@click="$store.dispatch('chat/joinCall', message.content.body.id)") Join
 		.actions
-			bunt-icon-button(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", @click="showMenu") dots-vertical
+			menu-dropdown(v-if="$features.enabled('chat-moderation') && (hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected")
+				template(v-slot:button="{toggle}")
+					bunt-icon-button(@click="toggle") dots-vertical
+				template(v-slot:menu)
+					.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
+					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
 		.system-content {{ sender.profile ? sender.profile.display_name : message.sender }} {{ message.content.membership === 'join' ? $t('ChatMessage:join-message:text') : $t('ChatMessage:leave-message:text') }}
-	//- intercepts all events
-	.menu-blocker(v-if="selected || showingAvatarCard", @click="selected = false, showingAvatarCard = false")
-	.menu(v-if="selected", ref="menu")
-		.edit-message(v-if="message.sender === user.id", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
-		.delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
-	.avatar-card(v-if="showingAvatarCard", ref="avatarCard")
-		avatar(:user="sender", :size="128")
-		.name {{ sender.profile ? sender.profile.display_name : this.message.sender }}
-		template(v-if="$features.enabled('chat-moderation') && hasPermission('room:chat.moderate') && sender.id !== user.id")
-			.moderation-state {{ sender.moderation_state }}
+	chat-user-card(v-if="showingAvatarCard", ref="avatarCard", :sender="sender", @close="showingAvatarCard = false")
+	prompt.delete-message-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
+		.prompt-content
+			h2 Delete this message?
+			.message
+				.avatar-column
+					avatar(:user="sender", :size="avatarSize")
+				.content-wrapper
+					.message-header
+						.display-name {{ senderDisplayName }}
+						.timestamp {{ timestamp }}
+					.content(v-html="content")
 			.actions
-				bunt-button.btn-reactivate(
-					v-if="sender.moderation_state",
-					:loading="moderating === 'reactivate'",
-					:error-message="(moderationError && moderationError.action === 'reactivate') ? moderationError.message : null",
-					@click="moderateAction(user, 'reactivate')", :key="`${user.id}-reactivate`")
-					| {{ sender.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
-				bunt-button.btn-ban(
-					v-if="sender.moderation_state !== 'banned'",
-					:loading="moderating === 'ban'",
-					:error-message="(moderationError && moderationError.action === 'ban') ? moderationError.message : null",
-					@click="moderateAction(user, 'ban')", :key="`${user.id}-ban`")
-					| ban
-				bunt-button.btn-silence(
-					v-if="!sender.moderation_state",
-					:loading="moderating === 'silence'",
-					:error-message="(moderationError && moderationError.action === 'silence') ? moderationError.message : null",
-					@click="moderateAction(user, 'silence')", :key="`${user.id}-silence`")
-					| silence
+				bunt-button#btn-cancel(@click="showDeletePrompt = false") cancel
+				bunt-button#btn-delete-message(@click="deleteMessage") {{ $t('ChatMessage:message-delete:label') }}
 </template>
 <script>
 // TODO
@@ -55,6 +51,9 @@ import { markdownEmoji } from 'lib/emoji'
 import { createPopper } from '@popperjs/core'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
+import ChatUserCard from 'components/ChatUserCard'
+import MenuDropdown from 'components/MenuDropdown'
+import Prompt from 'components/Prompt'
 
 const DATETIME_FORMAT = 'DD.MM. HH:mm'
 const TIME_FORMAT = 'HH:mm'
@@ -81,14 +80,13 @@ export default {
 		message: Object,
 		mode: String
 	},
-	components: { Avatar, ChatInput },
+	components: { Avatar, ChatInput, ChatUserCard, MenuDropdown, Prompt },
 	data () {
 		return {
 			selected: false,
 			showingAvatarCard: false,
 			editing: false,
-			moderating: false,
-			moderationError: null
+			showDeletePrompt: false
 		}
 	},
 	computed: {
@@ -109,6 +107,9 @@ export default {
 		sender () {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender}
 		},
+		senderDisplayName () {
+			return this.sender.profile?.display_name ?? this.message.sender
+		},
 		timestamp () {
 			const timestamp = moment(this.message.timestamp)
 			if (timestamp.isSame(moment(), 'day')) {
@@ -122,14 +123,6 @@ export default {
 		}
 	},
 	methods: {
-		async showMenu (event) {
-			this.selected = true
-			await this.$nextTick()
-			const button = event.target.closest('.bunt-icon-button')
-			createPopper(button, this.$refs.menu, {
-				placement: 'left-start'
-			})
-		},
 		startEditingMessage () {
 			this.selected = false
 			this.editing = true
@@ -140,33 +133,25 @@ export default {
 		},
 		deleteMessage () {
 			this.$store.dispatch('chat/deleteMessage', this.message)
-			this.selected = false
+			this.showDeletePrompt = false
 		},
 		async showAvatarCard (event) {
 			this.showingAvatarCard = true
 			await this.$nextTick()
-			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard, {
+			createPopper(this.$refs.avatar.$el, this.$refs.avatarCard.$refs.card, {
 				placement: 'right-start',
 				modifiers: [{
 					name: 'flip',
 					options: {
 						flipVariations: false
 					}
+				}, {
+					name: 'preventOverflow',
+					options: {
+						padding: 8
+					}
 				}]
 			})
-		},
-		async moderateAction (user, action) {
-			this.moderating = action
-			this.moderationError = null
-			try {
-				await this.$store.dispatch('chat/moderateUser', {action, user: this.sender})
-			} catch (error) {
-				this.moderationError = {
-					action,
-					message: this.$t(`error:${error.code}`)
-				}
-			}
-			user.moderating = null
 		}
 	}
 }
@@ -202,6 +187,18 @@ export default {
 				display: inline-block
 				background-image: url("~emoji-datasource-twitter/img/twitter/sheets-256/64.png")
 				background-size: 5700% 5700%
+		.call
+			border: border-separator()
+			border-radius: 6px
+			align-self: flex-start
+			padding: 16px
+			margin-top: 8px
+			display: flex
+			flex-direction: column
+			.bunt-button
+				themed-button-primary()
+				margin-top: 16px
+				align-self: flex-end
 	.c-chat-input
 		background-color: $clr-white
 	.system-content
@@ -226,54 +223,34 @@ export default {
 		display: flex
 		.bunt-icon-button
 			icon-button-style(style: clear)
-	.menu-blocker
-		position: fixed
-		top: 0
-		left: 0
-		width: 100vw
-		height: var(--vh100)
-		z-index: 4999
-	.menu
-		card()
-		z-index: 5000
-		display: flex
-		flex-direction: column
-		min-width: 240px
-		padding: 4px 0
-		> *
-			flex: none
-			height: 32px
-			font-size: 16px
-			line-height: 32px
-			padding: 0 0 0 16px
-			cursor: pointer
-			user-select: none
+	.c-menu-dropdown .menu
+		.delete-message
+			color: $clr-danger
 			&:hover
-				background-color: var(--clr-input-primary-bg)
-				color: var(--clr-input-primary-fg)
-			&.delete-message
-				color: $clr-danger
-				&:hover
-					background-color: $clr-danger
-					color: $clr-primary-text-dark
-	.avatar-card
-		card()
-		z-index: 5000
-		display: flex
-		flex-direction: column
-		padding: 8px
-		.name
-			font-size: 24px
-			font-weight: 600
-			margin-top: 8px
+				background-color: $clr-danger
+				color: $clr-primary-text-dark
+	.delete-message-prompt
+		.prompt-wrapper
+			width: auto
+			min-width: 480px
+			max-width: 780px
+		.prompt-content
+			padding: 16px
+			display: flex
+			flex-direction: column
+		.message
+			border: border-separator()
+			padding: 8px
+			display: flex
 		.actions
+			display: flex
+			align-self: flex-end
 			margin-top: 16px
-			.btn-reactivate
-				button-style(style: clear, color: $clr-success, text-color: $clr-success)
-			.btn-ban
-				button-style(style: clear, color: $clr-danger, text-color: $clr-danger)
-			.btn-silence
-				button-style(style: clear, color: $clr-deep-orange, text-color: $clr-deep-orange)
+		#btn-cancel
+			button-style(style: clear)
+			margin-right: 8px
+		#btn-delete-message
+			button-style(color: $clr-danger)
 	&.system-message
 		min-height: 28px
 		.c-avatar

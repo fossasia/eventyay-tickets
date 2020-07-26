@@ -4,6 +4,7 @@
 
 import Vue from 'vue'
 import api from 'lib/api'
+import router from 'router'
 
 export default {
 	namespaced: true,
@@ -74,23 +75,28 @@ export default {
 		async fetchMessages ({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
-			const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
-			// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
-			state.timeline.unshift(...results)
-			// assume past events don't just appear and stop forever when results are smaller than count
-			state.beforeCursor = results.length < 25 ? null : results[0].event_id
-			state.fetchingMessages = false
-			// hit the user profile cache for each message
-			const missingProfiles = new Set()
-			for (const event of results) {
-				if (!state.usersLookup[event.sender]) {
-					missingProfiles.add(event.sender)
+			try {
+				const {results} = await api.call('chat.fetch', {channel: state.channel, count: 25, before_id: state.beforeCursor})
+				// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
+				state.timeline.unshift(...results)
+				// assume past events don't just appear and stop forever when results are smaller than count
+				state.beforeCursor = results.length < 25 ? null : results[0].event_id
+				// hit the user profile cache for each message
+				const missingProfiles = new Set()
+				for (const event of results) {
+					if (!state.usersLookup[event.sender]) {
+						missingProfiles.add(event.sender)
+					}
+					if (event.content.user && !state.usersLookup[event.content.user.id]) {
+						missingProfiles.add(event.content.user.id)
+					}
 				}
-				if (event.content.user && !state.usersLookup[event.content.user.id]) {
-					missingProfiles.add(event.content.user.id)
-				}
+				await dispatch('fetchUsers', Array.from(missingProfiles))
+			} catch (e) {
+				console.error(e)
+				// TODO show error
 			}
-			await dispatch('fetchUsers', Array.from(missingProfiles))
+			state.fetchingMessages = false
 		},
 		async markChannelRead ({state}) {
 			if (state.timeline.length === 0) return
@@ -155,6 +161,39 @@ export default {
 				state.usersLookup[user.id].moderation_state = postStates[action]
 			}
 			// user.moderation_state = postStates[action]
+		},
+		async blockUser ({state}, {user}) {
+			await api.call('user.block', {id: user.id})
+		},
+		async openDirectMessage ({state}, {user}) {
+			const channel = await api.call('chat.direct.create', {users: [user.id]})
+			state.joinedChannels.push(channel)
+			if (router.currentRoute.name !== 'channel' || router.currentRoute.params.channelId !== channel.id) {
+				await router.push({name: 'channel', params: {channelId: channel.id}})
+			}
+			return channel
+		},
+		async closeDirectMessage ({state}, {channel}) {
+			await api.call('chat.leave', {channel: channel.id})
+			if (router.currentRoute.name === 'channel' && router.currentRoute.params.channelId === channel.id) {
+				await router.push({name: 'home'})
+			}
+			const index = state.joinedChannels.findIndex(c => c.id === channel.id)
+			if (index > -1) state.joinedChannels.splice(index, 1)
+		},
+		async startCall ({state, dispatch}, {channel}) {
+			const {event} = await api.call('chat.send', {
+				channel: channel.id,
+				event_type: 'channel.message',
+				content: {
+					type: 'call'
+				}
+			})
+			dispatch('joinCall', event.content.body.id)
+		},
+		async joinCall ({state}, callId) {
+			const {url} = await api.call('bbb.call_url', {call: callId})
+			window.open(url, '_blank')
 		},
 		// INCOMING
 		'api::chat.event' ({state, dispatch}, event) {
