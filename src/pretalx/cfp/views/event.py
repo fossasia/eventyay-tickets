@@ -70,13 +70,11 @@ class GeneralView(TemplateView):
 
     def filter_events(self, events):
         if self.request.user.is_anonymous:
-            return [
-                e for e in events.filter(is_public=True) if e.settings.show_on_dashboard
-            ]
+            events.filter(is_public=True)
         return [
             e
             for e in events
-            if (e.is_public and e.settings.show_on_dashboard)
+            if e.is_public
             or self.request.user.has_perm("cfp.view_event", e)
         ]
 

@@ -33,7 +33,6 @@ hierarkey.add_type(
 )
 
 
-hierarkey.add_default("show_on_dashboard", "True", bool)
 hierarkey.add_default("show_schedule", "True", bool)
 hierarkey.add_default("schedule_display", "proportional", str)
 hierarkey.add_default("show_sneak_peek", "True", bool)

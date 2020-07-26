@@ -198,13 +198,6 @@ class EventSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
         ),
         required=False,
     )
-    show_on_dashboard = forms.BooleanField(
-        label=_("Show on dashboard"),
-        help_text=_(
-            "Set to show this event on this website's public dashboard. Will only show if the event is public."
-        ),
-        required=False,
-    )
     show_schedule = forms.BooleanField(
         label=_("Show schedule publicly"),
         help_text=_(

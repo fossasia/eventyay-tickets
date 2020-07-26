@@ -601,7 +601,6 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             for setting in [
                 "custom_domain",
                 "display_header_data",
-                "show_on_dashboard",
             ]:
                 value = steps["display"].get(setting)
                 if value:
