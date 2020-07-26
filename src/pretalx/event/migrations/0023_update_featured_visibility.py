@@ -11,7 +11,7 @@ def update_show_featured(apps, schema_editor):
         old_value = EventSettings.objects.filter(
             object=event, key="show_sneak_peek"
         ).first()
-        if old_value.value == "False":
+        if old_value and old_value.value == "False":
             EventSettings.objects.create(
                 object=event, key="show_featured", value="never",
             )
