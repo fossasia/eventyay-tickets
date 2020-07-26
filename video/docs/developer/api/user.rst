@@ -29,9 +29,7 @@ With a token, it works just the same way::
     <- ["authenticated", {"user.config": {…}, "world.config": {…}, "chat.channels": [], "chat.read_pointers": {}}]
 
 ``chat.channels`` contains a list of **non-volatile** chat rooms the user is a member of. See chat module
-documentation for membership semantics. The content is strucutred like this::
-
-    "chat.channels": [{"id": "room_0", "notification_pointer": 1234}]
+documentation for membership semantics.
 
 If authentication failes, you receive an error instead::
 
@@ -120,3 +118,24 @@ To fully reinstantiate either a banned or silenced user, send::
 
     => ["user.reactivate", 123, {"id": "1234"}]
     <- ["success", 123, {}]
+
+Blocking users
+--------------
+
+Everyone can block other users. Blocking currently means the other users cannot start new direct messages to you. If
+they already have an open direct message channel with you, they cannot send any new messages to that channel.
+
+To block a user, send::
+
+    => ["user.block", 123, {"id": "1234"}]
+    <- ["success", 123, {}]
+
+To unblock a user, send::
+
+    => ["user.unblock", 123, {"id": "1234"}]
+    <- ["success", 123, {}]
+
+To get a list of blocked users, send::
+
+    => ["user.list.blocked", 123, {}]
+    <- ["success", 123, [{"id": "1234", "profile": {…}}]]

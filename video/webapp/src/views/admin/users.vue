@@ -19,6 +19,7 @@
 				.actions(v-if="user.id !== ownUser.id")
 					//- moderation_state
 					.placeholder.mdi.mdi-dots-horizontal
+					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {user})") message
 					bunt-button.btn-reactivate(
 						v-if="user.moderation_state",
 						:loading="user.updating === 'reactivate'",
@@ -130,7 +131,7 @@ export default {
 			width: 78px
 		.actions
 			flex: none
-			width: 136px
+			width: 260px
 			padding: 0 24px 0 0
 			display: flex
 			align-items: center
@@ -138,6 +139,8 @@ export default {
 			.placeholder
 				flex: none
 				color: $clr-secondary-text-light
+			.btn-open-dm
+				button-style(style: clear)
 			.btn-reactivate
 				button-style(style: clear, color: $clr-success, text-color: $clr-success)
 			.btn-ban

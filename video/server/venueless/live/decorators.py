@@ -1,6 +1,7 @@
 import functools
 
 from venueless.core.permissions import Permission
+from venueless.core.services.chat import get_channel
 from venueless.core.services.world import get_room
 from venueless.live.exceptions import ConsumerException
 
@@ -56,23 +57,29 @@ def room_action(permission_required: Permission = None, module_required=None):
         @functools.wraps(func)
         async def wrapped(self, body, *args):
             if "room" in body:
-                self.room = self.consumer.room_cache.get(("room", body["room"]))
+                self.room = self.consumer.room_cache.get(body["room"])
                 if self.room:
                     await self.room.refresh_from_db_if_outdated()
                 else:
                     self.room = await get_room(
                         world=self.consumer.world, id=body["room"]
                     )
-                    self.consumer.room_cache["room", body["room"]] = self.room
+                    self.consumer.room_cache[body["room"]] = self.room
             elif "channel" in body:
-                self.room = self.consumer.room_cache.get(("channel", body["channel"]))
-                if self.room:
-                    await self.room.refresh_from_db_if_outdated()
-                else:
-                    self.room = await get_room(
-                        world=self.consumer.world, channel__id=body["channel"]
+                channel = self.consumer.channel_cache.get(body["channel"])
+                if not channel:
+                    channel = await get_channel(
+                        world=self.consumer.world, pk=body["channel"]
                     )
-                    self.consumer.room_cache["channel", body["channel"]] = self.room
+                    self.consumer.channel_cache[body["channel"]] = channel
+                elif channel.room:
+                    await channel.room.refresh_from_db_if_outdated()
+
+                if channel and channel.room:
+                    self.room = channel.room
+                    self.channel = channel
+                else:
+                    raise ConsumerException("room.unknown", "Unknown room ID")
             else:
                 raise ConsumerException("room.unknown", "Unknown room ID")
             if not self.room:

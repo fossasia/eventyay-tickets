@@ -1,32 +1,73 @@
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import Max
+from django.db.models import Count, Max, OuterRef, Prefetch, Q, Subquery
 from django.utils.timezone import now
 
-from ..models import ChatEvent, Membership, User
+from ..models import BBBCall, Channel, ChatEvent, Membership, User
 from ..utils.redis import aioredis
+from .bbb import choose_server
 from .user import get_public_users
 
 
-class ChatService:
-    class NotAChannelMember(Exception):
-        pass
+@database_sync_to_async
+def _get_channel(**kwargs):
+    return (
+        Channel.objects.filter(Q(room__isnull=True) | Q(room__deleted=False))
+        .select_related("world", "room")
+        .get(**kwargs)
+    )
 
+
+async def get_channel(**kwargs):
+    with suppress(
+        Channel.DoesNotExist, Channel.MultipleObjectsReturned, ValidationError
+    ):
+        c = await _get_channel(**kwargs)
+        return c
+
+
+class ChatService:
     def __init__(self, world_id):
         self.world_id = world_id
 
-    def get_channels_for_user(self, user_id, is_volatile=None):
-        qs = Membership.objects.filter(
-            channel__world_id=self.world_id, user_id=user_id,
-        ).annotate(max_id=Max("channel__chat_events__id"))
+    def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
+        qs = (
+            Membership.objects.filter(channel__world_id=self.world_id, user_id=user_id,)
+            .annotate(max_id=Max("channel__chat_events__id"))
+            .prefetch_related(
+                Prefetch(
+                    "channel",
+                    queryset=Channel.objects.prefetch_related(
+                        Prefetch(
+                            "members",
+                            Membership.objects.filter(
+                                channel__room__isnull=True
+                            ).select_related("user"),
+                            to_attr="direct_members",
+                        )
+                    ),
+                )
+            )
+        )
+        if is_hidden is not None:
+            qs = qs.filter(hidden=is_hidden)
         if is_volatile is not None:  # pragma: no cover
             qs = qs.filter(volatile=is_volatile)
-        return [
-            {"id": str(m["channel"]), "notification_pointer": m["max_id"],}
-            for m in qs.values("channel", "max_id")
-        ]
+        res = []
+        for m in qs:
+            r = {
+                "id": str(m.channel_id),
+                "notification_pointer": m.max_id,
+            }
+            if not m.channel.room_id:
+                r["members"] = [
+                    m.user.serialize_public() for m in m.channel.direct_members
+                ]
+            res.append(r)
+        return res
 
     async def get_channel_users(self, channel, include_admin_info=False):
         users = await get_public_users(
@@ -76,6 +117,23 @@ class ChatService:
         Membership.objects.filter(channel_id=channel_id, user_id=uid,).delete()
 
     @database_sync_to_async
+    def hide_channel_user(self, channel_id, uid):
+        Membership.objects.filter(channel_id=channel_id, user_id=uid).update(
+            hidden=True
+        )
+
+    @database_sync_to_async
+    def show_chanels_to_hidden_users(self, channel_id):
+        u = []
+        for m in Membership.objects.filter(
+            channel_id=channel_id, hidden=True
+        ).select_related("user"):
+            u.append(m.user)
+            m.hidden = False
+            m.save(update_fields=["hidden"])
+        return u
+
+    @database_sync_to_async
     def get_events(self, channel, before_id, count=50, skip_membership=False):
         events = ChatEvent.objects
         if skip_membership:
@@ -86,14 +144,18 @@ class ChatService:
         return [e.serialize_public() for e in reversed(list(events))]
 
     @database_sync_to_async
-    def _store_event(self, channel_id, id, event_type, content, sender, replaces=None):
-        if event_type not in ("channel.member",) and not sender.is_member_of_channel(
-            channel_id
-        ):
-            raise self.NotAChannelMember()
+    def _store_event(self, channel, id, event_type, content, sender, replaces=None):
+        if content.get("type") == "call":
+            call = BBBCall.objects.create(
+                world_id=self.world_id, server=choose_server()
+            )
+            call.invited_members.add(*[m.user for m in channel.members.all()])
+            content.setdefault("body", {})
+            content["body"]["id"] = str(call.id)
+
         ce = ChatEvent.objects.create(
             id=id,
-            channel_id=channel_id,
+            channel=channel,
             event_type=event_type,
             content=content,
             sender=sender,
@@ -120,13 +182,13 @@ class ChatService:
             return 0
 
     async def create_event(
-        self, channel_id, event_type, content, sender, replaces=None, _retry=False
+        self, channel, event_type, content, sender, replaces=None, _retry=False
     ):
         async with aioredis() as redis:
             event_id = await redis.incr("chat.event_id")
         try:
             return await self._store_event(
-                channel_id=channel_id,
+                channel=channel,
                 id=event_id,
                 event_type=event_type,
                 content=content,
@@ -140,10 +202,68 @@ class ChatService:
                     current_max = await self._get_highest_id()
                     await redis.set("chat.event_id", current_max + 1)
                 res = await self.create_event(
-                    channel_id, event_type, content, sender, _retry=True
+                    channel, event_type, content, sender, _retry=True
                 )
                 return res
             raise e  # pragma: no cover
+
+    @database_sync_to_async
+    def get_or_create_direct_channel(self, user_ids, initiating):
+        with transaction.atomic():
+            users = list(
+                User.objects.prefetch_related("blocked_users").filter(
+                    world_id=self.world_id, id__in=user_ids
+                )
+            )
+            if (
+                len(users) != len(user_ids)
+                or len(users) < 2
+                or any(
+                    any(v in u.blocked_users.all() for v in users if v != u)
+                    for u in users
+                )
+            ):
+                return None, False, []
+            try:
+                return (
+                    Channel.objects.annotate(
+                        mcount_match=Subquery(
+                            Membership.objects.filter(
+                                channel=OuterRef("pk"), user_id__in=user_ids
+                            )
+                            .order_by()
+                            .values("channel")
+                            .annotate(c=Count("*"))
+                            .values("c")
+                        ),
+                        mcount_mismatch=Subquery(
+                            Membership.objects.filter(channel=OuterRef("pk"),)
+                            .exclude(user_id__in=user_ids)
+                            .order_by()
+                            .values("channel")
+                            .annotate(c=Count("*"))
+                            .values("c")
+                        ),
+                    ).get(
+                        mcount_mismatch__isnull=True,
+                        mcount_match=len(user_ids),
+                        room__isnull=True,
+                        world_id=self.world_id,
+                    ),
+                    False,
+                    users,
+                )
+            except Channel.DoesNotExist:
+                c = Channel.objects.create(room=None, world_id=self.world_id)
+                for u in users:
+                    Membership.objects.create(
+                        channel=c,
+                        user=u,
+                        volatile=False,
+                        hidden=str(u.id) != initiating,
+                    )
+
+                return c, True, users
 
     @database_sync_to_async
     def get_event(self, **kwargs):

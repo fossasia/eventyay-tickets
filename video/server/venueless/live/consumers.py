@@ -36,6 +36,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.socket_id = str(uuid.uuid4())
         self.world = None
         self.room_cache = {}
+        self.channel_cache = {}
         self.components = {}
         self.conn_time = 0
 
@@ -81,12 +82,12 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         )
         await unregister_connection()
 
-    async def user_broadcast(self, event_type, data):
+    async def user_broadcast(self, event_type, data, user_id=None):
         """
         Broadcast a message to other clients of the same user.
         """
         await self.channel_layer.group_send(
-            GROUP_USER.format(id=self.user.id),
+            GROUP_USER.format(id=user_id or self.user.id),
             {
                 "type": "user.broadcast",
                 "event_type": event_type,

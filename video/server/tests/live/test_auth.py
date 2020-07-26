@@ -369,6 +369,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:chat.moderate",
             "room:announce",
             "world:announce",
+            "world:chat.direct",
         }
         assert set(response[1]["world.config"]["rooms"][0]["permissions"]) == {
             "room:view",
@@ -596,3 +597,43 @@ async def test_silence_user(world, volatile_chat_room):
             123,
             {"code": "protocol.denied", "message": "Permission denied."},
         ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_block_user(world):
+    async with world_communicator() as c_blocker:
+        token = get_token(world, [])
+        await c_blocker.send_json_to(["authenticate", {"token": token}])
+        await c_blocker.receive_json_from()
+
+        async with world_communicator() as c_blockee:
+            await c_blockee.send_json_to(["authenticate", {"client_id": "4"}])
+            response = await c_blockee.receive_json_from()
+            user_id = response[1]["user.config"]["id"]
+
+            await c_blocker.send_json_to(["user.block", 14, {"id": user_id}])
+            response = await c_blocker.receive_json_from()
+            assert response[0] == "success"
+
+            await c_blocker.send_json_to(["user.list.blocked", 14, {}])
+            response = await c_blocker.receive_json_from()
+            assert response[0] == "success"
+            assert response[2]["users"][0]["id"] == user_id
+
+            await c_blocker.send_json_to(["user.block", 14, {"id": str(uuid.uuid4())}])
+            response = await c_blocker.receive_json_from()
+            assert response[0] == "error"
+
+        await c_blocker.send_json_to(["user.unblock", 14, {"id": user_id}])
+        response = await c_blocker.receive_json_from()
+        assert response[0] == "success"
+
+        await c_blocker.send_json_to(["user.list.blocked", 14, {}])
+        response = await c_blocker.receive_json_from()
+        assert response[0] == "success"
+        assert not response[2]["users"]
+
+        await c_blocker.send_json_to(["user.unblock", 14, {"id": str(uuid.uuid4())}])
+        response = await c_blocker.receive_json_from()
+        assert response[0] == "error"
