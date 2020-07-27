@@ -119,6 +119,7 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 linkcheck_ignore = [
     'https://pretalx.yourdomain.com',
     'http://localhost',
+    'http://127.0.0.1',
     r'https://github.com/pretalx/pretalx/issues/\d+',  # The release notes are auto generated and contain a LOT of issue links
 ]
 

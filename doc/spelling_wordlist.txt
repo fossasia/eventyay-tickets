@@ -27,12 +27,14 @@ discoverable
 Django
 drag'n'drop
 embeddable
+env
 ETags
 favicon
 filesystem
 frab
 frontend
 Gmail
+gettext
 gravatar
 GSuite
 gunicorn
@@ -41,6 +43,7 @@ iframe
 iframes
 installable
 iterable
+libffi
 localhost
 lookups
 lossy
