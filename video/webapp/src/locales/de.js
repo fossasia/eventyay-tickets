@@ -34,6 +34,8 @@ export default {
 	'RoomsSidebar:admin-headline:text': 'Administration',
 	'RoomsSidebar:stages-headline:text': 'Bühnen',
 	'RoomsSidebar:channels-headline:text': 'Kanäle',
+	'Exhibition:contact-button:label': 'Aussteller kontaktieren',
+	'Exhibition:contact-button:tooltip': 'Live chat mit den Aussteller starten',
 	'App:fatal-connection-error:world.unknown_world:headline': 'Veranstaltung nicht gefunden',
 	'App:fatal-connection-error:else:headline': 'Verbindung abgelehnt',
 	'App:fatal-connection-error:auth.denied:headline': 'Diese Veranstaltung erfordert eine Authentifizierung.',

@@ -37,6 +37,8 @@ export default {
 	'RoomsSidebar:admin-users:label': 'Users',
 	'RoomsSidebar:admin-config:label': 'Config',
 	'RoomsSidebar:admin-rooms:label': 'Rooms',
+	'Exhibition:contact-button:label': 'contact exhibitor',
+	'Exhibition:contact-button:tooltip': 'request a live chat with the exhibitor',
 	'App:fatal-connection-error:world.unknown_world:headline': 'Event not found',
 	'App:fatal-connection-error:else:headline': 'Connection refused',
 	'App:fatal-connection-error:auth.denied:headline': 'This event requires a valid token.',
