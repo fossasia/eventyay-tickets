@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-27 19:04+0000\n"
-"PO-Revision-Date: 2020-03-05 14:46+0000\n"
+"PO-Revision-Date: 2020-07-27 21:56+0200\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: tests/screenshots/conftest.py:26
 msgid "Jane Doe"
@@ -157,10 +157,8 @@ msgid "by"
 msgstr "von"
 
 #: pretalx/agenda/templates/agenda/featured.html:9
-#, fuzzy
-#| msgid "Welcome to our schedule sneak peek!"
 msgid "Welcome to our list of featured talks!"
-msgstr "Willkommen zu unserer Programmvorschau!"
+msgstr "Willkommen zu unserer Liste von Highlights:"
 
 #: pretalx/agenda/templates/agenda/featured.html:11
 msgid ""
@@ -299,14 +297,12 @@ msgid "No speakers"
 msgstr "Keine Vortragenden"
 
 #: pretalx/agenda/views/schedule.py:428
-#, fuzzy
-#| msgid "Our schedule is not live yet, but we have this sneak peek available!"
 msgid ""
 "Our schedule is not live yet, but we have this list of featured talks "
 "available!"
 msgstr ""
-"Unser Ablaufplan ist noch nicht fertig, aber wir haben bis dahin diese "
-"Vorschau zusammengestellt!"
+"Unser Programm ist noch nicht fertig, aber wir haben bis dahin diese "
+"Sammlung von Highlights zusammengestellt!"
 
 #: pretalx/agenda/views/talk.py:166
 #, python-brace-format
@@ -1111,8 +1107,6 @@ msgstr "Vergangene Veranstaltungen"
 
 #: pretalx/cfp/templates/widgets/track-select-widget.html:9
 #: pretalx/cfp/templates/widgets/track-select-widget.html:22
-#, fuzzy
-#| msgid "Track Descriptions"
 msgid "Track descriptions"
 msgstr "Track-Beschreibungen"
 
@@ -1948,16 +1942,12 @@ msgid "An orga member"
 msgstr "Ein Veranstalter"
 
 #: pretalx/common/templates/common/question_answer.html:8
-#, fuzzy
-#| msgid "No description provided."
 msgid "No file provided"
-msgstr "Keine Beschreibung verfügbar."
+msgstr "Keine Datei"
 
 #: pretalx/common/templates/common/question_answer.html:15
-#, fuzzy
-#| msgid "Not arrived"
 msgid "Not answered"
-msgstr "Nicht angekommen"
+msgstr "Nicht beantwortet"
 
 #: pretalx/common/templates/common/user_api_token.html:8
 msgid "API Access"
@@ -2413,16 +2403,7 @@ msgid "Invite to team {team} for {email}"
 msgstr "Einladung zum Team {team} an {email}"
 
 #: pretalx/event/models/organiser.py:173
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi!\n"
-#| "You have been invited to the {name} event organiser team - Please click "
-#| "here to accept:\n"
-#| "\n"
-#| "{invitation_link}\n"
-#| "\n"
-#| "See you there,\n"
-#| "The {event} team"
+#, python-brace-format
 msgid ""
 "Hi!\n"
 "You have been invited to the {name} event organiser team - Please click here "
@@ -2441,7 +2422,7 @@ msgstr ""
 "    {invitation_link}\n"
 "\n"
 "Wir freuen uns auf dich\n"
-"Das {event}-Team"
+"Das {organiser}-Team"
 
 #: pretalx/event/models/organiser.py:185
 msgid "You have been invited to an organiser team"
@@ -2872,16 +2853,12 @@ msgstr ""
 "eine Benachrichtigung über jede neue Einreichung."
 
 #: pretalx/orga/forms/cfp.py:174
-#, fuzzy
-#| msgid "You cannot review this submission at this time."
 msgid "You already have a submission type by this name!"
-msgstr "Derzeit kann für diese Veranstaltung kein Feedback gegeben werden."
+msgstr "Ihr habt schon einen Einreichungstyp dieses Namens!"
 
 #: pretalx/orga/forms/cfp.py:203
-#, fuzzy
-#| msgid "I already have an account"
 msgid "You already have a track by this name!"
-msgstr "Ich habe schon einen Account"
+msgstr "Ihr habt schon einen Track dieses Namens!"
 
 #: pretalx/orga/forms/cfp.py:253
 #, python-brace-format
@@ -2991,6 +2968,9 @@ msgid ""
 "dates. You will have to release a new schedule version to notify all "
 "speakers."
 msgstr ""
+"Alle Vorträge, die schon Teil des Programms sind, werden verschoben, wenn "
+"das Veranstaltungsdatum sich ändert. Um die Vortragenden zu benachrichtigen, "
+"müsst ihr eine neue Programmversion veröffentlichen."
 
 #: pretalx/orga/forms/event.py:107
 msgid "Your default language needs to be one of your active languages."
@@ -3054,20 +3034,16 @@ msgid "List"
 msgstr "Liste"
 
 #: pretalx/orga/forms/event.py:219
-#, fuzzy
-#| msgid "Scheduled Talks"
 msgid "Show featured talks"
-msgstr "Verplante Vorträge"
+msgstr "Highlights zeigen"
 
 #: pretalx/orga/forms/event.py:221 pretalx/submission/models/review.py:131
 msgid "Never"
 msgstr "Nie"
 
 #: pretalx/orga/forms/event.py:222
-#, fuzzy
-#| msgid "The first schedule was released."
 msgid "Until the first schedule is released"
-msgstr "Das erste Programm wurde veröffentlicht."
+msgstr "Bis das erste Programm veröffentlicht wird"
 
 #: pretalx/orga/forms/event.py:223 pretalx/submission/models/review.py:130
 msgid "Always"
@@ -3075,7 +3051,7 @@ msgstr "Immer"
 
 #: pretalx/orga/forms/event.py:225
 msgid "Should the talks marked as featured shown publicly?"
-msgstr ""
+msgstr "Sollen die als Highlight markierten Vorträge sichtbar sein?"
 
 #: pretalx/orga/forms/event.py:229
 msgid "Generate HTML export on schedule release"
@@ -3147,10 +3123,6 @@ msgid "Contact address"
 msgstr "Kontaktadresse"
 
 #: pretalx/orga/forms/event.py:311
-#, fuzzy
-#| msgid ""
-#| "Reply-To address. If this setting is empty and you have no custom sender, "
-#| "your event email address will be used as Reply-To."
 msgid ""
 "Reply-To address. If this setting is empty and you have no custom sender, "
 "your event email address will be used as Reply-To address."
@@ -3443,10 +3415,8 @@ msgid "Notify speakers of changes"
 msgstr "Vortragende über Änderungen informieren"
 
 #: pretalx/orga/forms/schedule.py:21
-#, fuzzy
-#| msgid "We released our first schedule!"
 msgid "We released a new schedule version!"
-msgstr "Wir haben unsere erste Programmversion rausgebracht!"
+msgstr "Wir eine neue Programmversion veröffentlicht!"
 
 #: pretalx/orga/forms/schedule.py:28
 msgid "This schedule version was used already, please choose a different one."
@@ -4506,10 +4476,9 @@ msgstr "Einladung zum %(organiser)s-Team \"%(name)s\""
 
 #: pretalx/orga/templates/orga/invitation.html:16
 #: pretalx/orga/templates/orga/invitation.html:33
-#, fuzzy, python-format
-#| msgid "You have been invited to an organiser team"
+#, python-format
 msgid "You have been invited to join the organiser team %(name)s."
-msgstr "Du wurdest zu einem Team eingeladen"
+msgstr "Du wurdest zu dem Veranstalter-Team %(name)s eingeladen"
 
 #: pretalx/orga/templates/orga/invitation.html:21
 #, python-format
@@ -4518,6 +4487,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
+"Wenn du auf <a href=\"%(domain)s\">%(domain)s</a> schon einen Account hast – "
+"entweder als Vortragende oder in einem Orga-Team – melde dich bitte an. "
+"Ansonsten erstelle dir einen neuen Account, um dem Team beizutreten."
 
 #: pretalx/orga/templates/orga/invitation.html:36
 #, python-format
@@ -4528,6 +4500,11 @@ msgid ""
 "in with the other account. </p><p> If you believe to have received this "
 "invitation by mistake, please contact the organiser directly."
 msgstr ""
+"Um die Einladung mit diesem Account anzunehmen, klicke bitte den großen "
+"Knopf. Um die Einladung mit einem anderen Account anzunehmen, kannst du dich "
+"<a href=\"/orga/logout/?next=%(link)s\">ausloggen</a> und dann mit dem "
+"anderen Account einloggen. </p><p> Wenn du diese Einladung irrtümlich "
+"erhalten hast, melde dich bitte beim Veranstalter direkt."
 
 #: pretalx/orga/templates/orga/invitation.html:44
 msgid "Join the team!"
@@ -4686,8 +4663,6 @@ msgid "Rejection Mail"
 msgstr "Ablehnungsmail"
 
 #: pretalx/orga/templates/orga/mails/template_list.html:61
-#, fuzzy
-#| msgid "New schedule!"
 msgid "New schedule version"
 msgstr "Neue Programmversion"
 
@@ -5131,17 +5106,11 @@ msgid "Release"
 msgstr "Veröffentlichen"
 
 #: pretalx/orga/templates/orga/schedule/room_form.html:17
-#, fuzzy
-#| msgid "Room"
-#| msgid_plural "Rooms"
 msgctxt "Room information"
 msgid "Room"
 msgstr "Raum"
 
 #: pretalx/orga/templates/orga/schedule/room_list.html:8
-#, fuzzy
-#| msgid "Room"
-#| msgid_plural "Rooms"
 msgctxt "Number of rooms"
 msgid "Room"
 msgid_plural "Rooms"
@@ -5287,7 +5256,7 @@ msgstr "ausstehende Einladung"
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:58
 msgid "Resend invite"
-msgstr ""
+msgstr "Einladung erneut versenden"
 
 #: pretalx/orga/templates/orga/settings/team_detail.html:70
 msgid "Add member"
@@ -5298,10 +5267,8 @@ msgid "Permissions"
 msgstr "Berechtigungen"
 
 #: pretalx/orga/templates/orga/settings/team_resend.html:10
-#, fuzzy
-#| msgid "Do you really want to send {count} mails?"
 msgid "Do you want to resend the email to:"
-msgstr "Möchtest du wirklich {count} E-Mails verschicken?"
+msgstr "Möchtest du diese E-Mail erneut verschicken:"
 
 #: pretalx/orga/templates/orga/settings/team_reset_password.html:7
 #: pretalx/orga/templates/orga/speaker/reset_password.html:7
@@ -5500,40 +5467,41 @@ msgid ""
 "have no permissions to change this submission will be shown the anonymised "
 "submission content."
 msgstr ""
+"Wenn eine Review-Phase mit Anonymisierung aktiv ist, werden alle Reviewer "
+"die anonymisierten Texte sehen, sofern sie nicht die Rechte haben, die "
+"Einreichung zu editieren."
 
 #: pretalx/orga/templates/orga/submission/anonymise.html:24
 msgid "Original"
-msgstr ""
+msgstr "Original"
 
 #: pretalx/orga/templates/orga/submission/anonymise.html:27
 msgid "Anonymised"
-msgstr ""
+msgstr "Anonymisiert"
 
 #: pretalx/orga/templates/orga/submission/anonymise.html:48
 msgid "Save and go to next unanonymised"
-msgstr ""
+msgstr "Speichern und zur nächsten nicht-anonymisierten Einreichung"
 
 #: pretalx/orga/templates/orga/submission/anonymise.html:56
 msgid "Replace selection with █"
-msgstr ""
+msgstr "Markierten Text mit █ ersetzen"
 
 #: pretalx/orga/templates/orga/submission/answer_list.html:18
 msgid "No questions have been answered at the moment."
 msgstr "Bislang scheint keine Frage beantwortet worden zu sein."
 
 #: pretalx/orga/templates/orga/submission/base.html:53
-#, fuzzy
-#| msgid "Invitation"
 msgid "Anonymisation"
-msgstr "Einladung"
+msgstr "Anonymisierung"
 
 #: pretalx/orga/templates/orga/submission/base.html:81
 msgid "Public link"
-msgstr ""
+msgstr "Öffentlicher Link"
 
 #: pretalx/orga/templates/orga/submission/base.html:82
 msgid "Secret public link"
-msgstr ""
+msgstr "Geheimer öffentlicher Link"
 
 #: pretalx/orga/templates/orga/submission/content.html:24
 msgid "This submission was created using an access code:"
@@ -5544,10 +5512,8 @@ msgid "reviews"
 msgstr "Reviews"
 
 #: pretalx/orga/templates/orga/submission/content.html:88
-#, fuzzy
-#| msgid "The submission was unconfirmed."
 msgid "This submission has no file uploads yet."
-msgstr "Die Bestätigung der Einreichung wurde zurückgenommen."
+msgstr "Diese Einreichung hat noch keine hochgeladenen Dateien"
 
 #: pretalx/orga/templates/orga/submission/content.html:133
 msgid "Send mail to speakers"
@@ -5588,33 +5554,25 @@ msgstr "Nach Status sortieren (z-a)"
 
 #: pretalx/orga/templates/orga/submission/list.html:72
 msgid "Featured"
-msgstr ""
+msgstr "Highlight"
 
 #: pretalx/orga/templates/orga/submission/list.html:72
-#, fuzzy
-#| msgid "Show this submission on the public preview page, if it was accepted"
 msgid "Show this talk on the list of featured talks, once it was accepted"
 msgstr ""
-"Zeige diese Einreichung in der öffentlichen Vorschau, falls sie angenommen "
+"Zeige diese Einreichung in der Liste von Highlights, falls sie angenommen "
 "wurde"
 
 #: pretalx/orga/templates/orga/submission/list.html:73
-#, fuzzy
-#| msgid "Sort by sneak peek first"
 msgid "Sort by featured first"
-msgstr "Einreichungen mit Vorschau zuerst"
+msgstr "Highlights zuerst"
 
 #: pretalx/orga/templates/orga/submission/list.html:74
-#, fuzzy
-#| msgid "Sort sneak peek last"
 msgid "Sort featured last"
-msgstr "Einreichungen mit Vorschau zuletzt"
+msgstr "Highlights zuletzt"
 
 #: pretalx/orga/templates/orga/submission/list.html:113
-#, fuzzy
-#| msgid "Show this submission in the public sneak peek."
 msgid "Show this submission in the list of featured talks."
-msgstr "Zeige diese Einreichung in der Programmvorschau."
+msgstr "Zeige diese Einreichung in der Liste der Highlights."
 
 #: pretalx/orga/templates/orga/submission/review.html:18
 msgid "You're not allowed to review or see reviews for your own submissions."
@@ -5650,10 +5608,9 @@ msgid "Review progress"
 msgstr "Review-Fortschritt"
 
 #: pretalx/orga/templates/orga/submission/review.html:214
-#, fuzzy
-#| msgid "Go to random next unreviewed submission"
 msgid "Go to random next unreviewed submission, mark this one as skipped"
-msgstr "Weiter zu zufälliger nächster Einreichung"
+msgstr ""
+"Weiter zu zufälliger nächster Einreichung, diese als übersprungen markieren"
 
 #: pretalx/orga/templates/orga/submission/review.html:214
 msgid "Skip for now"
@@ -6208,10 +6165,8 @@ msgid "The team invitation was retracted."
 msgstr "Die Einladung wurde verschickt."
 
 #: pretalx/orga/views/organiser.py:172
-#, fuzzy
-#| msgid "The team invitation was retracted."
 msgid "The team invitation was sent again."
-msgstr "Die Einladung wurde verschickt."
+msgstr "Die Einladung wurde erneut verschickt."
 
 #: pretalx/orga/views/organiser.py:200 pretalx/orga/views/speaker.py:183
 msgid "The password was reset and the user was notified."
@@ -6427,16 +6382,12 @@ msgid "The submission has been updated!"
 msgstr "Die Einreichung wurde gespeichert."
 
 #: pretalx/orga/views/submission.py:518
-#, fuzzy
-#| msgid "The submission has been updated!"
 msgid "The anonymisation has been updated."
-msgstr "Die Einreichung wurde gespeichert."
+msgstr "Die Anonymisierung wurde gespeichert."
 
 #: pretalx/orga/views/submission.py:520
-#, fuzzy
-#| msgid "The submission was unconfirmed."
 msgid "This submission is now marked as anonymised."
-msgstr "Die Bestätigung der Einreichung wurde zurückgenommen."
+msgstr "Die Einreichung ist nun als anonymisiert markiert."
 
 #: pretalx/orga/views/submission.py:537
 #, python-brace-format
@@ -6651,6 +6602,7 @@ msgstr ""
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr ""
+"Bitte beachte, dass alle Zeiten in der Veranstaltungs-Zeitzone, {tz}, sind."
 
 #: pretalx/schedule/forms.py:94
 msgid "The submitted availability does not comply with the required format."
@@ -6710,10 +6662,6 @@ msgid "version"
 msgstr "Version"
 
 #: pretalx/schedule/models/schedule.py:45
-#, fuzzy
-#| msgid ""
-#| "This is how the new schedule version will appear in the public changelog "
-#| "and in the RSS feed."
 msgid "This text will be shown in the public changelog and the RSS feed."
 msgstr ""
 "So wird die neue Programmversion im öffentlichen Changelog und im RSS-Feed "
@@ -6945,16 +6893,12 @@ msgstr ""
 "um sie auf alle Tracks anzuwenden."
 
 #: pretalx/submission/models/question.py:113
-#, fuzzy
-#| msgid ""
-#| "You can limit this question to some tracks. Leave this field empty to "
-#| "apply to all tracks."
 msgid ""
 "You can limit this question to some submission types. Leave this field empty "
 "to apply to all submission types."
 msgstr ""
-"Du kannst diese Frage auf bestimmte Tracks beschränken. Lass das Feld frei, "
-"um sie auf alle Tracks anzuwenden."
+"Du kannst diese Frage auf bestimmte Einreichungstypen beschränken. Lass das "
+"Feld frei, um sie auf alle Einreichungstypen anzuwenden."
 
 #: pretalx/submission/models/question.py:118
 msgid "question"
@@ -7075,10 +7019,8 @@ msgid "Reviewers can see speaker names"
 msgstr "Reviewer können die Namen der Vortragenden sehen"
 
 #: pretalx/submission/models/review.py:140
-#, fuzzy
-#| msgid "Reviewers can see other reviews"
 msgid "Reviewers can see the names of other reviewers"
-msgstr "Reviewer können andere Reviews sehen"
+msgstr "Reviewer können die Namen anderer Reviewer sehen"
 
 #: pretalx/submission/models/review.py:143
 msgid "Reviewers can accept and reject submissions"
@@ -7137,12 +7079,10 @@ msgid "How many times this talk will be held."
 msgstr "Wie oft der Vortrag gehalten wird."
 
 #: pretalx/submission/models/submission.py:194
-#, fuzzy
-#| msgid "Show this submission on the public preview page, if it was accepted"
 msgid "Show this talk on list of featured talks, once it was accepted."
 msgstr ""
-"Zeige diese Einreichung in der öffentlichen Vorschau, falls sie angenommen "
-"wurde"
+"Zeige diese Einreichung in der Liste von Highlights, wenn sie angenommen "
+"wurde."
 
 #: pretalx/submission/models/submission.py:198
 msgid "Don't record this talk."
