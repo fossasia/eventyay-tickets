@@ -4,13 +4,18 @@ from django.db import models
 
 
 class Exhibitor(models.Model):
+    class Sizes(models.TextChoices):
+        S = "1x1"
+        M = "3x1"
+        L = "3x3"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=300, null=True)
-    description = models.CharField(max_length=500, null=True)
+    name = models.CharField(max_length=80, null=True)
+    tagline = models.CharField(max_length=250, null=True)
+    short_text = models.TextField(max_length=500, null=True)
     logo = models.URLField(null=True, blank=True)
     text = models.TextField(null=True)
-    header_img = models.URLField(null=True, blank=True)
-    size = models.IntegerField(default=0)
+    size = models.CharField(max_length=3, default=Sizes.S, choices=Sizes.choices)
     sorting_priority = models.IntegerField(default=0)
     room = models.ForeignKey(
         to="Room", related_name="exhibitors", on_delete=models.CASCADE,

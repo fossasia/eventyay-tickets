@@ -16,19 +16,30 @@ class ExhibitionService:
 
     @database_sync_to_async
     def get_exhibitors(self, room_id):
-        qs = Exhibitor.objects.filter(world__id=self.world_id).filter(room__id=room_id)
+        qs = (
+            Exhibitor.objects.filter(world__id=self.world_id)
+            .filter(room__id=room_id)
+            .order_by("sorting_priority", "name")
+        )
 
         return [
             dict(
                 id=str(e["id"]),
                 name=e["name"],
-                description=e["description"],
+                tagline=e["tagline"],
+                short_text=e["short_text"],
                 logo=e["logo"],
                 size=e["size"],
                 sorting_priority=e["sorting_priority"],
             )
             for e in qs.values(
-                "id", "name", "description", "logo", "size", "sorting_priority"
+                "id",
+                "name",
+                "tagline",
+                "short_text",
+                "logo",
+                "size",
+                "sorting_priority",
             )
         ]
 
@@ -45,10 +56,9 @@ class ExhibitionService:
         return dict(
             id=str(e.id),
             name=e.name,
-            description=e.description,
+            tagline=e.tagline,
             logo=e.logo,
             text=e.text,
-            header_img=e.header_img,
             size=e.size,
             sorting_priority=e.sorting_priority,
             links=links,

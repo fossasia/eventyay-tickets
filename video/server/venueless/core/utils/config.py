@@ -49,10 +49,10 @@ def import_config(data):
             room=Room.objects.get(import_id=exhibitor_config.pop("room")),
             name=exhibitor_config.pop("name"),
         )
-        exhibitor.description = exhibitor_config.pop("description")
+        exhibitor.tagline = exhibitor_config.pop("tagline")
+        exhibitor.short_text = exhibitor_config.pop("short_text")
         exhibitor.logo = exhibitor_config.pop("logo")
         exhibitor.text = exhibitor_config.pop("text")
-        exhibitor.header_img = exhibitor_config.pop("header_img")
         exhibitor.size = exhibitor_config.pop("size")
         exhibitor.sorting_priority = i
         exhibitor.save()

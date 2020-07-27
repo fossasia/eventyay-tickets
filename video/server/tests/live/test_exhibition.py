@@ -41,16 +41,22 @@ async def test_list_short(world, exhibition_room):
             assert e in [
                 {
                     "name": "Tube GmbH",
-                    "description": "Ihr Partner im Großhandel",
+                    "tagline": "Ihr Partner im Großhandel",
+                    "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
+                    "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                    "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                     "logo": "https://via.placeholder.com/150",
-                    "size": 1,
+                    "size": "1x1",
                     "sorting_priority": 1,
                 },
                 {
                     "name": "Messebau Schmidt UG",
-                    "description": "Handwerk aus Leidenschaft",
+                    "tagline": "Handwerk aus Leidenschaft",
+                    "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod"
+                    " tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero "
+                    "eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
                     "logo": "https://via.placeholder.com/150",
-                    "size": 1,
+                    "size": "1x1",
                     "sorting_priority": 0,
                 },
             ]
@@ -75,11 +81,10 @@ async def test_get(world, exhibition_room):
         assert e in [
             {
                 "name": "Messebau Schmidt UG",
-                "description": "Handwerk aus Leidenschaft",
+                "tagline": "Handwerk aus Leidenschaft",
                 "logo": "https://via.placeholder.com/150",
                 "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
-                "header_img": "https://via.placeholder.com/728x90",
-                "size": 1,
+                "size": "1x1",
                 "sorting_priority": 0,
                 "links": [
                     {"display_text": "Website", "url": "http://example.org/"},
@@ -95,11 +100,10 @@ async def test_get(world, exhibition_room):
             },
             {
                 "name": "Tube GmbH",
-                "description": "Ihr Partner im Großhandel",
+                "tagline": "Ihr Partner im Großhandel",
                 "logo": "https://via.placeholder.com/150",
                 "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
-                "header_img": "https://via.placeholder.com/728x90",
-                "size": 1,
+                "size": "1x1",
                 "sorting_priority": 1,
                 "links": [],
                 "social_media_links": [
