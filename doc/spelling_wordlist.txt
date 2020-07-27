@@ -44,6 +44,7 @@ iframes
 installable
 iterable
 libffi
+linters
 localhost
 lookups
 lossy

@@ -287,7 +287,8 @@ def test_replace_availabilities(availabilitiesform):
     (
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 1, 12)
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
+                end=dt.datetime(2017, 1, 1, 12, tzinfo=pytz.utc),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -297,7 +298,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 2)
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
+                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -307,7 +309,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1), end=dt.datetime(2017, 1, 1, 10)
+                start=dt.datetime(2017, 1, 1, tzinfo=pytz.utc),
+                end=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
             ),
             {
                 "start": "2017-01-01T00:00:00Z",
@@ -317,7 +320,8 @@ def test_replace_availabilities(availabilitiesform):
         ),
         (
             Availability(
-                start=dt.datetime(2017, 1, 1, 10), end=dt.datetime(2017, 1, 2)
+                start=dt.datetime(2017, 1, 1, 10, tzinfo=pytz.utc),
+                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
             ),
             {
                 "start": "2017-01-01T10:00:00Z",
@@ -326,7 +330,10 @@ def test_replace_availabilities(availabilitiesform):
             },
         ),
         (
-            Availability(start=dt.datetime(2017, 1, 1), end=dt.datetime(2017, 1, 2)),
+            Availability(
+                start=dt.datetime(2017, 1, 1, tzinfo=pytz.utc),
+                end=dt.datetime(2017, 1, 2, tzinfo=pytz.utc),
+            ),
             {
                 "start": "2017-01-01T00:00:00Z",
                 "end": "2017-01-02T00:00:00Z",
@@ -336,7 +343,8 @@ def test_replace_availabilities(availabilitiesform):
     ),
 )
 def test_serialize_availability(availabilitiesform, avail, expected):
-    actual = avail.serialize()
+    with timezone.override(pytz.utc):
+        actual = avail.serialize()
     del actual["id"]
     assert actual == expected
 
@@ -373,7 +381,7 @@ def test_serialize_availability(availabilitiesform, avail, expected):
     ),
 )
 def test_serialize(availabilitiesform, avails, expected, tzname):
-    with scope(event=availabilitiesform.event):
+    with scope(event=availabilitiesform.event), timezone.override(pytz.utc):
         availabilitiesform.event.timezone = tzname
         availabilitiesform.event.save()
 
