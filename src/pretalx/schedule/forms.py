@@ -55,6 +55,10 @@ class AvailabilitiesFormMixin(forms.Form):
             kwargs.pop("instance")
         kwargs["initial"] = initial
         super().__init__(*args, **kwargs)
+        if self.event and "availabilities" in self.fields:
+            self.fields["availabilities"].help_text += " " + str(
+                _("Please note that all times are in the event timezone, {tz}.")
+            ).format(tz=self.event.timezone)
 
     def _parse_availabilities_json(self, jsonavailabilities):
         try:
