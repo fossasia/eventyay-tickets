@@ -584,6 +584,15 @@ h2 .submission-state-dropdown {
 .submission-state-dropdown {
   display: inline-block;
 
+  summary {
+    display: flex;
+    align-items: baseline;
+
+    & > * {
+      padding: 0 4px;
+    }
+  }
+
   a {
     font-weight: bold;
     font-size: 16px;
