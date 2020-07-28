@@ -4,13 +4,10 @@
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/nvd3/nv.d3.min.css" %}" />
 {% endblock %}
 
 {% block scripts %}
     {% compress js %}
-        <script defer src="{% static "vendored/nvd3/d3.min.js" %}"></script>
-        <script defer src="{% static "vendored/nvd3/nv.d3.min.js" %}"></script>
         <script defer src="{% static "orga/js/stats.js" %}"></script>
     {% endcompress %}
 {% endblock %}
