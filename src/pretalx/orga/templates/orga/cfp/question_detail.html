@@ -53,7 +53,7 @@
     {% trans "Nobody has answered this question at the moment." %}
 {% else %}
     {% if missing_answers %}
-        {% blocktrans with count=answer_count missing=missing_answers trimmed %}
+        {% blocktrans with count=answer_count|times missing=missing_answers trimmed %}
             This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers are still missing.
         {% endblocktrans %}
     {% else %}
