@@ -72,7 +72,8 @@
     <table class="table table-responsive">
       <thead>
         <th>{% trans "Answer" %}</th>
-        <th>{% trans "Amount" %}</th>
+        <th>{% trans "Count" %}</th>
+        <th class="text-center">{% trans "%" %}</th>
       </thead>
       <tbody>
         {% for answer in grouped_answers %}
@@ -82,8 +83,11 @@
                 {% if answer.answer %}{{ answer.answer }}{% else %}{{ answer.options__answer }}{% endif %}
               </a>
             </td>
-            <td>
-                {{ answer.count|times }}
+            <td class="text-center">
+                {{ answer.count }}
+            </td>
+            <td class="text-right">
+                {% widthratio answer.count answer_count 100 %}&nbsp;%
             </td>
           </tr>
         {% endfor %}
