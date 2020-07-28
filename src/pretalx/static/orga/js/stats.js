@@ -32,6 +32,7 @@ const drawTimeline = () => {
     }),
     xaxis: {
       type: 'datetime',
+      tooltip: {enabled: false},
     },
     annotations: {
       xaxis: deadlines,
@@ -75,8 +76,10 @@ const drawTimeline = () => {
     }],
     tooltip: {
       enabled: true,
+      shared: true,
       x: {show: true},
-      marker: {show: false}
+      marker: {show: true},
+      onDatasetHover: {highlightDataSeries: true},
     }
   };
   const chart = new ApexCharts(element, options)
