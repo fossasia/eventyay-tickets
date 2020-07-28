@@ -1,13 +1,14 @@
 <template lang="pug">
 .c-exhibition
 	.exhibitors(v-if="exhibitors", v-scrollbar.y="")
-		router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
-			.content
-				.header
-					img.logo(:src="exhibitor.logo" height="150" width="150")
-					.name(v-if="exhibitor.size != '1x1'") {{ exhibitor.name }}
-					.tagline(v-if="exhibitor.size != '1x1'") {{ exhibitor.tagline }}
-				.text(v-if="exhibitor.size == '3x3'") {{ exhibitor.short_text }}
+		.exhibitor-grid
+			router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
+				.content
+					.header
+						img.logo(:src="exhibitor.logo" height="150" width="150")
+						.name(v-if="exhibitor.size != '1x1'") {{ exhibitor.name }}
+						.tagline(v-if="exhibitor.size != '1x1'") {{ exhibitor.tagline }}
+					.text(v-if="exhibitor.size == '3x3'") {{ exhibitor.short_text }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -38,13 +39,15 @@ export default {
 .c-exhibition
 	width: 100%
 	.exhibitors
+		height: 100%
+	.exhibitor-grid
 		display: grid
 		grid-template-columns: repeat(auto-fill, 180px)
 		grid-auto-rows: 180px
 		grid-auto-flow: dense // denser grid, but breaks order
 		gap: 15px
 		padding: 15px
-	.exhibitors::before
+	.exhibitor-grid::before
 		content: ''
 		width: 0
 		padding-bottom: 100%

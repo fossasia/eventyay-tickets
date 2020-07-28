@@ -7,11 +7,12 @@
 				.name {{ exhibitor.name }}
 				.tagline {{ exhibitor.tagline }}
 		.main(v-scrollbar.y="")
-			.content(v-html="markdownContent")
-			.sm-links
-				a.link.bunt-button(v-for="link in exhibitor.social_media_links")(:href="link.url", target="_blank") {{ link.display_text }}
-			.links
-				a.link.bunt-button(v-for="link in exhibitor.links")(:href="link.url", target="_blank") {{ link.display_text }}
+			.div
+				.content(v-html="markdownContent")
+				.sm-links
+					a.link.bunt-button(v-for="link in exhibitor.social_media_links")(:href="link.url", target="_blank") {{ link.display_text }}
+				.links
+					a.link.bunt-button(v-for="link in exhibitor.links")(:href="link.url", target="_blank") {{ link.display_text }}
 		.contact
 			bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
@@ -85,7 +86,8 @@ export default {
 				font-weight: bold
 				padding: 0.83rem
 	.main
-		flex-grow: 1
+		flex: 1
+		flex-basis: 10px
 		padding: 16px
 		.links
 			display: flex
