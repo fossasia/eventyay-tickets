@@ -312,3 +312,29 @@ I'm looking forward to your submission!
             subject=self.cleaned_data["subject"],
             text=self.cleaned_data["text"],
         )
+
+
+class QuestionFilterForm(forms.Form):
+    role = forms.ChoiceField(
+        choices=(
+            ("", _("all")),
+            ("accepted", _("Accepted or confirmed speakers")),
+            ("confirmed", _("Confirmed speakers")),
+        ),
+        required=False,
+    )
+    track = SafeModelChoiceField(Track.objects.none(), required=False)
+    submission_type = SafeModelChoiceField(
+        SubmissionType.objects.none(), required=False
+    )
+
+    def __init__(self, *args, event, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+        self.fields["submission_type"].queryset = SubmissionType.objects.filter(
+            event=event
+        )
+        if not event.settings.use_tracks:
+            self.fields.pop("track", None)
+        elif "track" in self.fields:
+            self.fields["track"].queryset = event.tracks.all()

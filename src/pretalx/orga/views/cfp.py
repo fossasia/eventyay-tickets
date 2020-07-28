@@ -26,6 +26,7 @@ from pretalx.orga.forms.cfp import (
     AccessCodeSendForm,
     AnswerOptionForm,
     CfPSettingsForm,
+    QuestionFilterForm,
     SubmitterAccessCodeForm,
 )
 from pretalx.person.forms import SpeakerFilterForm
@@ -190,33 +191,31 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
     @context
     def filter_form(self):
-        return SpeakerFilterForm()
+        return QuestionFilterForm(self.request.GET, event=self.request.event)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         question = self.object
         if question:
             role = self.request.GET.get("role")
-            if role == "true":
-                talks = self.request.event.talks.all()
-                speakers = self.request.event.speakers.all()
-                answers = question.answers.filter(
-                    models.Q(person__in=speakers) | models.Q(submission__in=talks)
+            track = self.request.GET.get("track")
+            submission_type = self.request.GET.get("submission_type")
+            talks = self.request.event.submissions.all()
+            speakers = self.request.event.speakers.all()
+            if role == "accepted":
+                talks = self.request.event.submissions.filter(
+                    models.Q(state="accepted") | models.Q(state="confirmed")
                 )
-            elif role == "false":
-                talks = self.request.event.submissions.exclude(
-                    code__in=self.request.event.talks.values_list("code", flat=True)
-                )
-                speakers = self.request.event.submitters.exclude(
-                    code__in=self.request.event.speakers.all().values_list(
-                        "code", flat=True
-                    )
-                )
-                answers = question.answers.filter(
-                    models.Q(person__in=speakers) | models.Q(submission__in=talks)
-                )
-            else:
-                answers = question.answers.all()
+            elif role == "confirmed":
+                talks = self.request.event.submissions.filter(state="confirmed")
+            if track:
+                talks = talks.filter(track=track)
+            if submission_type:
+                talks = talks.filter(submission_type=submission_type)
+            speakers = self.request.event.submitters.filter(submissions__in=talks)
+            answers = question.answers.filter(
+                models.Q(person__in=speakers) | models.Q(submission__in=talks)
+            )
             result["answer_count"] = answers.count()
             result["missing_answers"] = (
                 question.missing_answers()
