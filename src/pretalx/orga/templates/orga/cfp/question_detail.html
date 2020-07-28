@@ -78,7 +78,7 @@
         {% for answer in question.grouped_answers %}
           <tr>
             <td>
-              {% include "common/question_answer.html" with answer=answer %}
+              {% if answer.answer %}{{ answer.answer }}{% else %}{{ answer.options__answer }}{% endif %}
             </td>
             <td>
                 {{ answer.count|times }}
