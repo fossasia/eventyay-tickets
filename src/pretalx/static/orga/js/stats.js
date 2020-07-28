@@ -12,6 +12,7 @@ const drawTimeline = () => {
       strokeDashArray: 0,
       label: {
         style: {
+          borderColor: '#ff4560',
           background: '#ff4560',
           color: '#fff',
           fontSize: '14px',
