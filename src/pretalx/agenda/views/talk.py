@@ -124,7 +124,7 @@ class TalkView(PermissionRequired, TemplateView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         if self.recording.get("csp_header"):
-            response._csp_update = {"child-src": self.recording.get("csp_header")}
+            response._csp_update = {"frame-src": self.recording.get("csp_header")}
         return response
 
     def get_context_data(self, **kwargs):
