@@ -31,8 +31,10 @@ const options = {
   },
   legend: {
     formatter: function(val, opts) {
+      if (val.length > 15) val = val.slice(0, 15) + "…"
       return val + " - " + opts.w.globals.series[opts.seriesIndex]
-    }
+    },
+    position: "bottom",
   },
   responsive: [{
     breakpoint: 480,
@@ -49,7 +51,13 @@ const options = {
     pie: {
       donut: {
         labels: {
-          show: true
+          show: true,
+          name: {
+            formatter: (val) => {
+              if (val.length < 15) return val
+              return val.slice(0, 15) + "…"
+            }
+          }
         }
       }
     }

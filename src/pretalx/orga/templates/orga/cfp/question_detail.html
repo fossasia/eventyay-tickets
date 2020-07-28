@@ -78,7 +78,7 @@
           <tr>
             <td>
               <a href="{{ request.event.orga_urls.submissions }}?{% if request.GET.role == 'accepted' %}state=accepted&state=confirmed&{% elif request.GET.role == 'confirmed' %}state=confirmed&{% endif %}{% if request.GET.track %}track={{ request.GET.track }}&{% endif %}{% if request.GET.submission_type %}submission_type={{ request.GET.submission_type }}&{% endif %}question={{ question.id }}&{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
-                {% if answer.answer %}{{ answer.answer }}{% else %}{{ answer.options__answer }}{% endif %}
+                {% if answer.answer %}{{ answer.answer|truncatechars:140 }}{% else %}{{ answer.options__answer|truncatechars:140 }}{% endif %}
               </a>
             </td>
             <td class="text-center">
