@@ -125,6 +125,8 @@ const drawPieChart = (data, scope, type) => {
             show: true,
             name: {
               formatter: (val) => {
+                const details = val.indexOf("(")  // Truncate duration display in centre of donut chart
+                if (details) val = val.substring(0, details)
                 if (val.length < 15) return val
                 return val.slice(0, 15) + "…"
               }
