@@ -1,5 +1,3 @@
-import json
-
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -10,7 +8,7 @@ from pretalx.common.choices import Choices
 from pretalx.common.mixins.models import FileCleanupMixin, LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import I18nStrJSONEncoder, path_with_hash
+from pretalx.common.utils import path_with_hash
 
 
 def answer_file_path(instance, filename):
@@ -186,28 +184,6 @@ class Question(LogMixin, models.Model):
     def __str__(self):
         """Help when debugging."""
         return f"Question(event={self.event.slug}, variant={self.variant}, target={self.target}, question={self.question})"
-
-    @cached_property
-    def grouped_answers(self):
-        if self.variant == QuestionVariant.FILE:
-            return [{"answer": answer, "count": 1} for answer in self.answers.all()]
-        if self.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
-            return (
-                self.answers.order_by("options")
-                .values("options", "options__answer")
-                .annotate(count=models.Count("id"))
-                .order_by("-count")
-            )
-        return list(
-            self.answers.order_by("answer")
-            .values("answer")
-            .annotate(count=models.Count("id"))
-            .order_by("-count")
-        )
-
-    @cached_property
-    def grouped_answers_json(self):
-        return json.dumps(list(self.grouped_answers), cls=I18nStrJSONEncoder)
 
     def missing_answers(
         self, filter_speakers: list = False, filter_talks: list = False

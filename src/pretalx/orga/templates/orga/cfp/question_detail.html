@@ -62,10 +62,10 @@
         {% endblocktrans %}
     {% endif %}
   <div id="question-stats" class="d-flex">
-    {% if question.variant != "file" and question.grouped_answers|length < 50 %}
+    {% if question.variant != "file" and grouped_answers|length < 50 %}
     <div class="card">
         <div class="card-header">{% trans "Answers" %}</div>
-      <div id="question-data" class="d-none" data-states='{{ question.grouped_answers_json }}'></div>
+      <div id="question-data" class="d-none" data-states='{{ grouped_answers_json }}'></div>
       <div id="question-answers" class="pie card-body"><svg></svg></div>
     </div>
     {% endif %}

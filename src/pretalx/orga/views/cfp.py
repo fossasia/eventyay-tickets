@@ -20,6 +20,7 @@ from pretalx.common.mixins.views import (
     EventPermissionRequired,
     PermissionRequired,
 )
+from pretalx.common.utils import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
@@ -35,6 +36,7 @@ from pretalx.submission.models import (
     CfP,
     Question,
     QuestionTarget,
+    QuestionVariant,
     SubmissionType,
     SubmitterAccessCode,
     Track,
@@ -196,34 +198,51 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         question = self.object
-        if question:
-            role = self.request.GET.get("role")
-            track = self.request.GET.get("track")
-            submission_type = self.request.GET.get("submission_type")
-            talks = self.request.event.submissions.all()
-            speakers = self.request.event.speakers.all()
-            if role == "accepted":
-                talks = self.request.event.submissions.filter(
-                    models.Q(state="accepted") | models.Q(state="confirmed")
-                )
-            elif role == "confirmed":
-                talks = self.request.event.submissions.filter(state="confirmed")
-            if track:
-                talks = talks.filter(track=track)
-            if submission_type:
-                talks = talks.filter(submission_type=submission_type)
-            speakers = self.request.event.submitters.filter(submissions__in=talks)
-            answers = question.answers.filter(
-                models.Q(person__in=speakers) | models.Q(submission__in=talks)
+        if not question:
+            return result
+        role = self.request.GET.get("role")
+        track = self.request.GET.get("track")
+        submission_type = self.request.GET.get("submission_type")
+        talks = self.request.event.submissions.all()
+        speakers = self.request.event.speakers.all()
+        if role == "accepted":
+            talks = self.request.event.submissions.filter(
+                models.Q(state="accepted") | models.Q(state="confirmed")
             )
-            result["answer_count"] = answers.count()
-            result["missing_answers"] = (
-                question.missing_answers()
-                if not role
-                else question.missing_answers(
-                    filter_speakers=speakers, filter_talks=talks
-                )
+        elif role == "confirmed":
+            talks = self.request.event.submissions.filter(state="confirmed")
+        if track:
+            talks = talks.filter(track=track)
+        if submission_type:
+            talks = talks.filter(submission_type=submission_type)
+        speakers = self.request.event.submitters.filter(submissions__in=talks)
+        answers = question.answers.filter(
+            models.Q(person__in=speakers) | models.Q(submission__in=talks)
+        )
+        result["answer_count"] = answers.count()
+        result["missing_answers"] = question.missing_answers(
+            filter_speakers=speakers, filter_talks=talks
+        )
+        if question.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
+            grouped_answers = (
+                answers.order_by("options")
+                .values("options", "options__answer")
+                .annotate(count=models.Count("id"))
+                .order_by("-count")
             )
+        elif question.variant == QuestionVariant.FILE:
+            grouped_answers = [{"answer": answer, "count": 1} for answer in answers]
+        else:
+            grouped_answers = (
+                answers.order_by("answer")
+                .values("answer")
+                .annotate(count=models.Count("id"))
+                .order_by("-count")
+            )
+        result["grouped_answers"] = grouped_answers
+        result["grouped_answers_json"] = json.dumps(
+            list(grouped_answers), cls=I18nStrJSONEncoder
+        )
         return result
 
     def get_form_kwargs(self):
