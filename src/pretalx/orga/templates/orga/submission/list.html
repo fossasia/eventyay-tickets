@@ -45,6 +45,18 @@
             {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
+        {% if filter_form.is_valid and filter_form.cleaned_data.question %}
+            <p class="text-muted ml-2">
+                <span class="fa fa-filter"></span>
+                {% blocktrans trimmed with question=filter_form.cleaned_data.question.question %}
+                    List filtered by answers to question "{{ question }}".
+                {% endblocktrans %}
+                <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                    <span class="fa fa-times"></span>
+                    {% trans "Remove filter" %}
+                </a>
+            </p>
+        {% endif %}
     </div>
 
     <table class="table table-sm table-hover table-responsive-md">

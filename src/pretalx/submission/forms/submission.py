@@ -10,7 +10,7 @@ from pretalx.common.forms.fields import IMAGE_EXTENSIONS, ExtensionFileField
 from pretalx.common.forms.widgets import CheckboxMultiDropdown, MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, RequestRequire
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
-from pretalx.submission.models import Submission, SubmissionStates
+from pretalx.submission.models import Question, Submission, SubmissionStates
 
 
 class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
@@ -201,6 +201,7 @@ class SubmissionFilterForm(forms.Form):
         required=False, widget=CheckboxMultiDropdown
     )
     track = forms.MultipleChoiceField(required=False, widget=CheckboxMultiDropdown)
+    question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
 
     def __init__(self, event, *args, **kwargs):
         self.event = event
@@ -248,3 +249,4 @@ class SubmissionFilterForm(forms.Form):
             for track in event.tracks.all()
         ]
         self.fields["track"].widget.attrs["title"] = _("Tracks")
+        self.fields["question"].queryset = event.questions.all()

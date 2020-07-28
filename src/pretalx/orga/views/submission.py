@@ -8,7 +8,7 @@ from dateutil import rrule
 from django.contrib import messages
 from django.contrib.syndication.views import Feed
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -37,6 +37,7 @@ from pretalx.person.forms import OrgaSpeakerForm
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.forms import QuestionsForm, ResourceForm, SubmissionFilterForm
 from pretalx.submission.models import (
+    Answer,
     Feedback,
     Resource,
     Submission,
@@ -470,6 +471,23 @@ class SubmissionList(EventPermissionRequired, Sortable, Filterable, ListView):
             .all()
         )
         qs = self.filter_queryset(qs)
+        question = self.request.GET.get("question")
+        answer = self.request.GET.get("answer")
+        option = self.request.GET.get("answer__options")
+        if question and (answer or option):
+            if option:
+                answers = Answer.objects.filter(
+                    submission_id=OuterRef("pk"),
+                    question_id=question,
+                    options__pk=option,
+                )
+            else:
+                answers = Answer.objects.filter(
+                    submission_id=OuterRef("pk"),
+                    question_id=question,
+                    answer__exact=answer,
+                )
+            qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=True)
         if "state" not in self.request.GET:
             qs = qs.exclude(state="deleted")
         qs = self.sort_queryset(qs)
