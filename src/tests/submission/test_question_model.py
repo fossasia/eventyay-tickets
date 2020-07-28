@@ -1,11 +1,7 @@
-import json
-from itertools import repeat
-
 import pytest
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
 
-from pretalx.submission.models import Answer, AnswerOption, Question
+from pretalx.submission.models import Answer, Question
 
 
 @pytest.mark.parametrize("target", ("submission", "speaker", "reviewer"))
