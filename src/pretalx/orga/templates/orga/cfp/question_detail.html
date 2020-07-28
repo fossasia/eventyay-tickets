@@ -53,7 +53,7 @@
     {% trans "Nobody has answered this question at the moment." %}
 {% else %}
     {% if missing_answers %}
-        {% blocktrans with count=question.answers.count|times missing=missing_answers trimmed %}
+        {% blocktrans with count=answer_count missing=missing_answers trimmed %}
             This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers are still missing.
         {% endblocktrans %}
     {% else %}
@@ -75,7 +75,7 @@
         <th>{% trans "Amount" %}</th>
       </thead>
       <tbody>
-        {% for answer in question.grouped_answers %}
+        {% for answer in grouped_answers %}
           <tr>
             <td>
               <a href="{{ request.event.orga_urls.submissions }}?{% if request.GET.role == 'accepted' %}state=accepted&state=confirmed&{% elif request.GET.role == 'confirmed' %}state=confirmed&{% endif %}{% if request.GET.track %}track={{ request.GET.track }}&{% endif %}{% if request.GET.submission_type %}submission_type={{ request.GET.submission_type }}&{% endif %}question={{ question.id }}&{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
