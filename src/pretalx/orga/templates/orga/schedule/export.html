@@ -71,7 +71,20 @@ schedule release, but you can also trigger that action here.
 <hr>
 <h3>{% trans "API" %}</h3>
 
+<p>
 {% trans "You can also use the API to export or use data." %}
+</p>
+
+<p>{% blocktrans trimmed %}
+    Some of the exports above are only accessible for organisers, or include
+    more information when accessed with your organiser account. If you want to
+    access the organiser version in automatic integrations, you'll have to
+    provide your authentication token just like in the API, like this:
+{% endblocktrans %}</p>
+
+<pre>
+    curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
+</pre>
 
 <div class="submit-group"><span></span><span>
     <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
