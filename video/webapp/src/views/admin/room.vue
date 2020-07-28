@@ -64,6 +64,7 @@ const KNOWN_TYPES = [
 	'page.markdown',
 	'page.iframe',
 	'livestream.native',
+	'exhibition.native',
 	'chat.native',
 	'call.bigbluebutton'
 ]
