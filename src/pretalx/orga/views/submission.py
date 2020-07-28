@@ -593,6 +593,25 @@ class SubmissionStats(PermissionRequired, TemplateView):
         return self.request.event.submission_types.all().count() > 1
 
     @context
+    def id_mapping(self):
+        data = {
+            "type": {
+                str(submission_type): submission_type.id
+                for submission_type in self.request.event.submission_types.all()
+            },
+            "state": {
+                str(value): key
+                for key, value in SubmissionStates.display_values.items()
+            },
+        }
+        if self.show_tracks:
+            data["track"] = {
+                str(track): track.id for track in self.request.event.tracks.all()
+            }
+        return json.dumps(data)
+
+    @context
+    @cached_property
     def show_tracks(self):
         return (
             self.request.event.settings.use_tracks

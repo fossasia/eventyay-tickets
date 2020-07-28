@@ -46,15 +46,16 @@ class SubmissionStates(Choices):
     WITHDRAWN = "withdrawn"
     DELETED = "deleted"
 
-    valid_choices = [
-        (SUBMITTED, _("submitted")),
-        (ACCEPTED, _("accepted")),
-        (CONFIRMED, _("confirmed")),
-        (REJECTED, _("rejected")),
-        (CANCELED, _("canceled")),
-        (WITHDRAWN, _("withdrawn")),
-        (DELETED, _("deleted")),
-    ]
+    display_values = {
+        SUBMITTED: _("submitted"),
+        ACCEPTED: _("accepted"),
+        CONFIRMED: _("confirmed"),
+        REJECTED: _("rejected"),
+        CANCELED: _("canceled"),
+        WITHDRAWN: _("withdrawn"),
+        DELETED: _("deleted"),
+    }
+    valid_choices = [(key, value) for key, value in display_values.items()]
 
     valid_next_states = {
         SUBMITTED: (REJECTED, WITHDRAWN, ACCEPTED),

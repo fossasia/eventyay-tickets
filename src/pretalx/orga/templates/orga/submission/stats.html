@@ -4,10 +4,12 @@
 {% load static %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/apexcharts/apexcharts.css" %}" />
 {% endblock %}
 
 {% block scripts %}
     {% compress js %}
+        <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
         <script defer src="{% static "orga/js/stats.js" %}"></script>
     {% endcompress %}
 {% endblock %}
@@ -21,14 +23,15 @@
         </button>
     </h2>
 
+    <div id="global-data" class="d-none" data-url="{{ request.event.orga_urls.submissions }}?" data-mapping="{{ id_mapping }}"></div>
+
     {% if submission_timeline_data %}
     <div class="card stats-timeline">
         <div class="card-header submissions">{% trans "Submissions by submission date" %}</div>
         <div class="card-header talks d-none">{% trans "Talks by submission date" %}</div>
-        <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}'></div>
-        <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}'></div>
-        <div id="submission-timeline" class="card-body submissions"><svg></svg></div>
-        <div id="talk-timeline" class="card-body talks d-none"><svg></svg></div>
+        <div id="submission-timeline-data" class="d-none" data-timeline='{{ submission_timeline_data }}' data-label="{% trans "Submissions" %}"></div>
+        <div id="talk-timeline-data" class="d-none" data-timeline='{{ talk_timeline_data }}' data-label="{% trans "Talks" %}"></div>
+        <div id="timeline" class="card-body submissions"></div>
     </div>
     {% endif %}
 
@@ -38,8 +41,8 @@
         <div class="card-header talks d-none">{% trans "Talks by submission type" %}</div>
         <div id="submission-type-data" class="d-none" data-states='{{ submission_type_data }}'></div>
         <div id="talk-type-data" class="d-none" data-states='{{ talk_type_data }}'></div>
-        <div id="submission-types" class="pie card-body submissions"><svg></svg></div>
-        <div id="talk-types" class="pie card-body talks d-none"><svg></svg></div>
+        <div id="submission-type" class="pie card-body submissions"></div>
+        <div id="talk-type" class="pie card-body talks d-none"></div>
     </div>
     {% endif %}
 
@@ -49,8 +52,8 @@
         <div class="card-header talks d-none">{% trans "Talks by track" %}</div>
         <div id="submission-track-data" class="d-none" data-states='{{ submission_track_data }}'></div>
         <div id="talk-track-data" class="d-none" data-states='{{ talk_track_data }}'></div>
-        <div id="submission-tracks" class="pie card-body submissions"><svg></svg></div>
-        <div id="talk-tracks" class="pie card-body talks d-none"><svg></svg></div>
+        <div id="submission-track" class="pie card-body submissions"></div>
+        <div id="talk-track" class="pie card-body talks d-none"></div>
     </div>
     {% endif %}
 
@@ -60,8 +63,8 @@
         <div class="card-header talks d-none">{% trans "Talks by state" %}</div>
         <div id="submission-state-data" class="d-none" data-states='{{ submission_state_data }}'></div>
         <div id="talk-state-data" class="d-none" data-states='{{ talk_state_data }}'></div>
-        <div id="submission-states" class="pie card-body submissions"><svg></svg></div>
-        <div id="talk-states" class="pie card-body talks d-none"><svg></svg></div>
+        <div id="submission-state" class="pie card-body submissions"></div>
+        <div id="talk-state" class="pie card-body talks d-none"></div>
     </div>
     {% endif %}
 </div>

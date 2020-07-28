@@ -29,9 +29,6 @@ const options = {
   dataLabels: {
     enabled: false
   },
-  fill: {
-    type: 'gradient',
-  },
   legend: {
     formatter: function(val, opts) {
       return val + " - " + opts.w.globals.series[opts.seriesIndex]
