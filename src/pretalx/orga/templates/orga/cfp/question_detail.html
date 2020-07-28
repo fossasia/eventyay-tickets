@@ -6,10 +6,12 @@
 {% load times %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/apexcharts/apexcharts.css" %}" />
 {% endblock %}
 
 {% block scripts %}
     {% compress js %}
+        <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
         <script defer src="{% static "orga/js/question_stats.js" %}"></script>
     {% endcompress %}
 {% endblock %}
@@ -23,32 +25,29 @@
     </a>
 </h4>
 
-{% if question.active %}
-  <div class="alert alert-info">
-    <span>
-    {% trans "This question is currently active, it will be asked during submission." %}
-    <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
-    </span>
-  </div>
-{% else %}
-  <div class="alert alert-info">
-    <span>
-    {% trans "This question is currently inactive, and will not be asked during submission." %}
-    <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
-    </span>
-  </div>
-{% endif %}
-
-<div class="pb-2">
+{% if answer_count %}
+<div class="pb-4">
   <form class="form-inline">
     {% bootstrap_form filter_form layout='inline' %}
     <button class="btn btn-info" type="submit">{% trans "Filter" %}</button>
   </form>
 </div>
+{% endif %}
+
+<p>
+{% if question.active %}
+    {% trans "This question is currently active, it will be asked during submission." %}
+    <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% trans "Hide question" %}</a>
+{% else %}
+    {% trans "This question is currently inactive, and will not be asked during submission." %}
+    <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% trans "Activate question" %}</a>
+{% endif %}
+</p>
 
 {% if not answer_count %}
     {% trans "Nobody has answered this question at the moment." %}
 {% else %}
+  <p>
     {% if missing_answers %}
         {% blocktrans with count=answer_count|times missing=missing_answers trimmed %}
             This question has been answered <strong>{{ count }}</strong>, <strong>{{ missing }}</strong> answers are still missing.
@@ -58,13 +57,15 @@
             This question has been answered <strong>{{ count }}</strong>, and no answers are missing.
         {% endblocktrans %}
     {% endif %}
-  <div id="question-stats" class="d-flex">
+  </p>
+  <div id="question-data" class="d-none"
+        data-states='{{ grouped_answers_json }}'
+        data-url="{{ request.event.orga_urls.submissions }}?{% if request.GET.role == 'accepted' %}state=accepted&state=confirmed&{% elif request.GET.role == 'confirmed' %}state=confirmed&{% endif %}{% if request.GET.track %}track={{ request.GET.track }}&{% endif %}{% if request.GET.submission_type %}submission_type={{ request.GET.submission_type }}&{% endif %}question={{ question.id }}&"
+  >
+  </div>
+  <div id="question-stats" class="d-flex mt-4 pt-4">
     {% if question.variant != "file" and grouped_answers|length < 50 %}
-    <div class="card">
-        <div class="card-header">{% trans "Answers" %}</div>
-      <div id="question-data" class="d-none" data-states='{{ grouped_answers_json }}'></div>
-      <div id="question-answers" class="pie card-body"><svg></svg></div>
-    </div>
+      <div id="question-answers"></div>
     {% endif %}
     <table class="table table-responsive">
       <thead>

@@ -856,16 +856,14 @@ h2 .submission-state-dropdown {
   }
 }
 #question-stats {
+  display: flex;
+  flex-wrap: wrap;
   .table {
     width: auto;
     padding: 16px;
   }
-  .card {
-    min-height: 300px;
-    min-width: 450px;
-    max-width: 450px;
-    max-height: 450px;
-    margin-right: 16px;
+  #question-answers {
+    margin-right: 32px;
   }
 }
 #release #id_version {
