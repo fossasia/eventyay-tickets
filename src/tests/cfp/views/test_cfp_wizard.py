@@ -126,12 +126,8 @@ class TestWizard:
             f"/{next_step}/" in current_url
         ), f"{current_url} does not end with /{next_step}/!"
         doc = bs4.BeautifulSoup(response.rendered_content, "lxml")
-        if success:
-            assert doc.select(".alert-success")
-            assert doc.select("#user-dropdown-label")
-        else:
-            assert not doc.select(".alert-success")
-            assert not doc.select("#user-dropdown-label")
+        assert bool(doc.select(".alert-success")) is success
+        assert bool(doc.select("#user-dropdown-label")) is success
         return response, current_url
 
     def assert_submission(

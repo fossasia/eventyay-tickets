@@ -257,10 +257,8 @@ class TestEventCreation:
             client=client,
         )
 
-    def submit_timeline(self, deadline, client, past=False):
+    def submit_timeline(self, deadline, client):
         _now = now()
-        if past:
-            _now = _now - dt.timedelta(days=7)
         tomorrow = _now + dt.timedelta(days=1)
         date = "%Y-%m-%d"
         datetime = "%Y-%m-%d %H:%M:%S"

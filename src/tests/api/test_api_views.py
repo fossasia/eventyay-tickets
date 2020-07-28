@@ -94,8 +94,12 @@ def test_orga_can_see_all_submissions(
     assert response.status_code == 200
     assert content["count"] == 4
     assert content["results"][0]["title"] == slot.submission.title
-    assert any(submission["answers"] == [] for submission in content["results"])
-    assert any(submission["answers"] != [] for submission in content["results"])
+    assert len(
+        [submission for submission in content["results"] if submission["answers"] == []]
+    )
+    assert len(
+        [submission for submission in content["results"] if submission["answers"] != []]
+    )
 
 
 @pytest.mark.django_db

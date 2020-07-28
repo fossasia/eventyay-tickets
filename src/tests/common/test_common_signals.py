@@ -40,7 +40,8 @@ def test_send_chained(event):
     footer_link.send_chained(event, request="test", chain_kwarg_name="test")
 
 
-def send_chained_wrong_type():
+@pytest.mark.django_db
+def test_send_chained_wrong_type():
     with pytest.raises(ValueError):
         footer_link.send_chained("tra", request="test", chain_kwarg_name="test")
 

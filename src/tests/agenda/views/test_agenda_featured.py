@@ -33,15 +33,13 @@ def test_featured_invisible_because_schedule(
         event.settings.show_featured = featured
         event.release_schedule("42")
     with django_assert_max_num_queries(27):
-        response = client.get(event.urls.featured, follow=True)
+        response = client.get(event.urls.featured)
 
     if featured != "always":
         # there might be multiple redirects to correct trailing slashes, so the
         # one we're looking for is not always the last one.
-        assert any(
-            r[0].rstrip("/") == event.urls.schedule.rstrip("/") and r[1] == 302
-            for r in response.redirect_chain
-        )
+        assert response.status_code == 302
+        assert response.url == event.urls.schedule
     else:
         assert response.status_code == 200
 

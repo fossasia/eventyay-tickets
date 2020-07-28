@@ -20,7 +20,6 @@ from pretalx.event.models import Event
     "TRAVIS" not in os.environ or "CI" not in os.environ and os.environ["CI"],
     reason="No need to bother with this outside of CI.",
 )
-@pytest.mark.xfail
 def test_schedule_xsd_is_up_to_date():
     """This test is currently meant to fail.
 

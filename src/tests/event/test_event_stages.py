@@ -51,5 +51,5 @@ def test_event_stages(
             assert in_stage(event, stage) == (
                 stage == target
             ), f'Event is{" not" if stage == target else ""} {stage} when it should be {target}!'
-            if stage == target:
+            if stage == target and target != "WRAPUP":
                 break

@@ -5,10 +5,9 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="generator">
           <xs:complexType>
-            <xs:sequence>
-            </xs:sequence>
-          <xs:attribute type="xs:string" name="name"/>
-          <xs:attribute type="xs:string" name="version"/>
+            <xs:sequence />
+            <xs:attribute type="xs:string" name="name"/>
+            <xs:attribute type="xs:string" name="version"/>
           </xs:complexType>
         </xs:element>
         <xs:element type="xs:string" name="version"/>
