@@ -16,10 +16,7 @@
 {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
 {% has_perm 'orga.change_submission_state' request.user request.event as can_change_submission %}
 {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-    <a href="{{ request.event.orga_urls.submission_feed }}" title="{% trans "Submission feed" %}">
-        <i class="fa fa-feed float-right"></i>
-    </a>
-    <h2>
+    <h2 class="d-flex align-items-center">
         <span>
             {{ page_obj.paginator.count }}
             {% blocktrans trimmed count count=page_obj.paginator.count %}
@@ -28,6 +25,16 @@
             submissions
             {% endblocktrans %}
         </span>
+        {% if can_create_submission %}
+        <p class="ml-auto">
+            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
+                <i class="fa fa-plus"></i> {% trans "Add new submission" %}
+            </a>
+        </p>
+        <a href="{{ request.event.orga_urls.submission_feed }}" title="{% trans "Submission feed" %}">
+            <i class="fa fa-feed ml-3 mb-2"></i>
+        </a>
+        {% endif %}
     </h2>
 
     <div class="submit-group">
@@ -38,13 +45,6 @@
             {% if show_tracks %}{% bootstrap_field filter_form.track %}{% endif %}
             <button class="btn btn-success" type="submit">{% trans "Search" %}</button>
         </form>
-        {% if can_create_submission %}
-        <p class="ml-auto">
-            <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
-                <i class="fa fa-plus"></i> {% trans "Add new submission" %}
-            </a>
-        </p>
-        {% endif %}
     </div>
 
     <table class="table table-sm table-hover table-responsive-md">
