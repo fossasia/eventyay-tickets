@@ -619,6 +619,30 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
 
     @context
+    def timeline_annotations(self):
+        deadlines = [
+            (
+                submission_type.deadline.astimezone(self.request.event.tz).strftime(
+                    "%Y-%m-%d"
+                ),
+                str(_("Deadline")) + f" ({submission_type.name})",
+            )
+            for submission_type in self.request.event.submission_types.filter(
+                deadline__isnull=False
+            )
+        ]
+        if self.request.event.cfp.deadline:
+            deadlines.append(
+                (
+                    self.request.event.cfp.deadline.astimezone(
+                        self.request.event.tz
+                    ).strftime("%Y-%m-%d"),
+                    str(_("Deadline")),
+                )
+            )
+        return json.dumps({"deadlines": deadlines})
+
+    @context
     def submission_timeline_data(self):
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()

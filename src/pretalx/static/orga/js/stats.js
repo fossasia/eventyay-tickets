@@ -5,6 +5,22 @@ let searchUrl = globalData.dataset.url
 const drawTimeline = () => {
   const dataElements = [document.getElementById("submission-timeline-data"), document.getElementById("talk-timeline-data")]
   const element = document.getElementById("timeline")
+  const deadlines = JSON.parse(globalData.dataset.annotations).deadlines.map(element => {
+    return {
+      x: new Date(element[0]).getTime(),
+      borderColor: '#ff4560',
+      strokeDashArray: 0,
+      label: {
+        style: {
+          background: '#ff4560',
+          color: '#fff',
+          fontSize: '14px',
+          padding: {top: 5}
+        },
+        text: element[1]
+      }
+    }
+  })
   let options = {
     series: dataElements.map(element => {
       return {
@@ -16,6 +32,9 @@ const drawTimeline = () => {
     }),
     xaxis: {
       type: 'datetime',
+    },
+    annotations: {
+      xaxis: deadlines,
     },
     chart: {
       width: element.parentElement.clientWidth - 50,
