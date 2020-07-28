@@ -1,16 +1,16 @@
 {% load i18n %}
 {% if state == 'submitted' %}
-    <i class="fa fa-inbox"></i> {% trans "submitted" %}
+    <i class="fa fa-inbox"></i> <span class="state-fragment">{% trans "submitted" %}</span>
 {% elif state == 'rejected' %}
-    <i class="fa fa-ban"></i> {% trans "not accepted" %}
+    <i class="fa fa-ban"></i> <span class="state-fragment">{% trans "not accepted" %}</span>
 {% elif state == 'accepted' %}
-    <i class="fa fa-check-circle"></i> {% trans "accepted" %}
+    <i class="fa fa-check-circle"></i> <span class="state-fragment">{% trans "accepted" %}</span>
 {% elif state == 'confirmed' %}
-    <i class="fa fa-check-circle"></i> {% trans "confirmed" %}
+    <i class="fa fa-check-circle"></i> <span class="state-fragment">{% trans "confirmed" %}</span>
 {% elif state == 'canceled' %}
-    <i class="fa fa-times-circle"></i> {% trans "canceled" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{% trans "canceled" %}</span>
 {% elif state == 'withdrawn' %}
-    <i class="fa fa-times-circle"></i> {% trans "withdrawn" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{% trans "withdrawn" %}</span>
 {% elif state == 'deleted' %}
-    <i class="fa fa-times-circle"></i> {% trans "deleted" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{% trans "deleted" %}</span>
 {% endif %}
