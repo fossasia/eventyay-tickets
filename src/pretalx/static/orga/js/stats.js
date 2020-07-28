@@ -3,7 +3,7 @@ const dataMapping = JSON.parse(globalData.dataset.mapping)
 let searchUrl = globalData.dataset.url
 
 const drawTimeline = () => {
-  const dataElements = [document.getElementById("submission-timeline-data"), document.getElementById("talk-timeline-data")]
+  const dataElements = [document.getElementById("submission-timeline-data"), document.getElementById("talk-timeline-data")].filter(element => element.dataset.timeline)
   const element = document.getElementById("timeline")
   const deadlines = JSON.parse(globalData.dataset.annotations).deadlines.map(element => {
     return {
@@ -88,7 +88,9 @@ const drawTimeline = () => {
 }
 
 const getPieData = (id) => {
-  const data = JSON.parse(document.getElementById(id).dataset.states)
+  const element = document.getElementById(id)
+  if (!element.dataset.states) return
+  const data = JSON.parse(element.dataset.states)
   return {
     series: data.map(e => e.value),
     labels: data.map(e => e.label),
@@ -172,7 +174,8 @@ let chartTypes = ["state", "type"]
 if (dataMapping.track) chartTypes.push("track")
 let submissionChartData = chartTypes.reduce(
   (result, item, index, array) => {
-    result[item] = getPieData("submission-" + item + "-data")
+    const data = getPieData("submission-" + item + "-data")
+    if (data) result[item] = data
     return result
   },
   {}
