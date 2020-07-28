@@ -165,7 +165,8 @@ const drawPieChart = (data, scope, type) => {
 
 }
 
-const chartTypes = ["state", "type", "track"]
+let chartTypes = ["state", "type"]
+if (dataMapping.track) chartTypes.push("track")
 let submissionChartData = chartTypes.reduce(
   (result, item, index, array) => {
     result[item] = getPieData("submission-" + item + "-data")
