@@ -4,6 +4,7 @@ import warnings
 from django.conf import settings
 from django.http import Http404
 from django.urls import resolve
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.cfp.signals import footer_link, html_head
@@ -35,6 +36,10 @@ def locale_context(request):
     context["js_locale"] = get_moment_locale()
     context["quotation_open"] = _("“")
     context["quotation_close"] = _("”")
+    lang = translation.get_language()
+    context["html_locale"] = translation.get_language_info(lang).get(
+        "public_code", lang
+    )
     return context
 
 

@@ -333,6 +333,7 @@ LANGUAGES_INFORMATION = {
         "natural_name": "Deutsch",
         "official": True,
         "percentage": 100,
+        "public_code": "de",
     },
     "fr": {
         "name": _("French"),
