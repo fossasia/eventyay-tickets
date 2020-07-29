@@ -512,8 +512,10 @@ var app = new Vue({
     },
     filteredTalks() {
       if (!this.talks) return []
+      const search = this.search.toLowerCase()
       return this.talks.filter(talk => {
-        return talk.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+        const speakers = talk.speakers || []
+        return talk.title.toLowerCase().includes(search) || speakers.some(speaker => speaker.name.toLowerCase().includes(search))
       })
     },
     eventSlug() {

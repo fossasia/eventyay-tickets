@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`979` In the schedule editor, you can now search for talks by speaker name.
 - :feature:`-` pretalx now shows the complete history of logged changes to organisers.
 - :support:`-` pretalx will no longer make alarmist noises about missing migrations.
 - :feature:`882` You can now filter the submission list by specific question answers.
