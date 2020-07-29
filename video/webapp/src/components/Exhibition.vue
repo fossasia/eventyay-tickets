@@ -38,6 +38,7 @@ export default {
 <style lang="stylus">
 .c-exhibition
 	width: 100%
+	height: 100%
 	.exhibitors
 		height: 100%
 	.exhibitor-grid
@@ -47,19 +48,14 @@ export default {
 		grid-auto-flow: dense // denser grid, but breaks order
 		gap: 15px
 		padding: 15px
-	.exhibitor-grid::before
-		content: ''
-		width: 0
-		padding-bottom: 100%
-		grid-row: 1 / 1
-		grid-column: 1 / 1
+		max-height: inherit;
 	.exhibitor
 		.content
 			height: 100%
 			color: $clr-primary-text-light
 			card()
 			.header
-				height: 150px
+				min-height: 150px
 				padding: 15px
 			.logo
 				float: left
@@ -86,4 +82,10 @@ export default {
 		grid-area: span 1 / span 3
 	.exhibitor-3x3
 		grid-area: span 3 / span 3
+
+	+below('m')
+		.exhibitor-1x3
+			grid-area: span 1 / span 2
+		.exhibitor-3x3
+			grid-area: span 3 / span 2
 </style>
