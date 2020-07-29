@@ -5,15 +5,12 @@ Administrator documentation
 
 You want to install pretalx on your own server? That’s great! We have
 documentation for a standard installation using pip in an unprivileged local
-user account. If you want a more out-of-the-box way of running pretalx, head
-over to our docker-compose setup. Please note that the pip installation is by
-far better tested and supported than the docker setup.
+user account.
 
-These pages document do not go into details on performance tuning, alternate
-caching backends, and so on. – if you have questions, don’t hesitate to ask.
-(Or you can play around and send us documentation pull requests!)
-
-We also provide an `ansible role`_ compatible with our pip setup.
+If you want a more out-of-the-box way of running pretalx, please consider our
+hosted version at `pretalx.com`_. Other than that, we also have an
+`ansible role`_ and a community-provided `docker-compose setup`_. Please
+note that the docker setup is not officially supported.
 
 .. toctree::
    :maxdepth: 2
@@ -27,3 +24,4 @@ We also provide an `ansible role`_ compatible with our pip setup.
 
 .. _ansible role: https://github.com/pretalx/ansible-pretalx
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
+.. _pretalx.com: https://pretalx.com
