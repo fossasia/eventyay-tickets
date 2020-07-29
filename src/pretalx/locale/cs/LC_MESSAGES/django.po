@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-27 19:04+0000\n"
-"PO-Revision-Date: 2020-07-06 01:46+0000\n"
-"Last-Translator: Martin Vobruba <vobruba.martin@gmail.com>\n"
+"PO-Revision-Date: 2020-07-29 22:38+0000\n"
+"Last-Translator: bohacpetr <bohyn.cz@gmail.com>\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Weblate 4.1\n"
 
 #: tests/screenshots/conftest.py:26
 msgid "Jane Doe"
@@ -155,10 +155,8 @@ msgid "by"
 msgstr "od"
 
 #: pretalx/agenda/templates/agenda/featured.html:9
-#, fuzzy
-#| msgid "Welcome to our schedule sneak peek!"
 msgid "Welcome to our list of featured talks!"
-msgstr "Vítejte v náhledu programu!"
+msgstr "Vítejte v přehledu vybraných přednášek!"
 
 #: pretalx/agenda/templates/agenda/featured.html:11
 msgid ""
