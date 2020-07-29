@@ -4433,31 +4433,36 @@ footer span.commit code, footer span.commit .rst-content tt, .rst-content footer
     flex-grow: 1;
     height: auto;
     display: flex;
-    flex-direction: column;
     flex-wrap: nowrap;
     color: black;
     background-color: rgba(255, 255, 255, 0.76);
-    border: 1px solid #3aa57c;
-    border-left: 4px solid #3aa57c;
-    padding: 20px;
-    padding-bottom: 0;
-    margin: 10px;
+    margin: 5px;
+    margin-right: 15px;
     font-weight: normal;
+    align-items: start;
 }
-a.sectionbox:hover {
-    color: #3aa57c;
+.sectionbox .fa {
+  font-size: 48px;
+  color: #3aa57c;
+  margin-right: 8px;
+}
+.sectionbox .content {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  margin-top: 10px;
 }
 a {
     color: #3aa57c;
     font-weight: bold;
 }
 .sectionbox .heading {
-    font-weight: bold;
     color: #3aa57c;
+    font-size: 20px;
 }
-.sectionbox .text {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding-top: 10px;
+.sectionbox .text p {
+    color: black;
+    margin: 4px 0;
 }
 
 @media screen and (max-width: 480px) {

@@ -9,8 +9,8 @@ from datetime import date
 
 sys.path.insert(0, os.path.abspath('../src'))
 
-import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretalx.settings")
+import django
 django.setup()
 
 # PyEnchant is required for spellchecking only, and somewhat bothersome
