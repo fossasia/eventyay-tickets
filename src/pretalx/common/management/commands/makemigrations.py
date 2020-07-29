@@ -1,5 +1,4 @@
-"""
-This command supersedes the Django-inbuilt makemigrations command.
+"""This command supersedes the Django-inbuilt makemigrations command.
 
 It serves to create fewer migrations: Django, for technically very good reasons,
 creates migrations for tiny changes, including many that have no bearing on the
