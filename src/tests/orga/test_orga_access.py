@@ -18,6 +18,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     "url,orga_access,reviewer_access",
     [
         ("event.dashboard", 200, 200),
+        ("event.history", 200, 404),
         ("event.user_list", 200, 200),
         ("cfp.questions.view", 200, 404),
         ("cfp.questions.create", 200, 404),

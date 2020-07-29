@@ -18,7 +18,14 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DeleteView, FormView, TemplateView, UpdateView, View
+from django.views.generic import (
+    DeleteView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
@@ -32,6 +39,7 @@ from pretalx.common.mixins.views import (
     PermissionRequired,
     SensibleBackWizardMixin,
 )
+from pretalx.common.models import ActivityLog
 from pretalx.common.tasks import regenerate_css
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.views import is_form_bound
@@ -220,6 +228,16 @@ class EventLive(EventSettingsPermission, TemplateView):
                 )
                 messages.success(request, _("This event is now hidden."))
         return redirect(event.orga_urls.base)
+
+
+class EventHistory(EventSettingsPermission, ListView):
+    template_name = "orga/event/history.html"
+    model = ActivityLog
+    context_object_name = "log_entries"
+    paginate_by = 200
+
+    def get_queryset(self):
+        return ActivityLog.objects.filter(event=self.request.event)
 
 
 class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):

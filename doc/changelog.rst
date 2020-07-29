@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx now shows the complete history of logged changes to organisers.
 - :support:`-` pretalx will no longer make alarmist noises about missing migrations.
 - :feature:`882` You can now filter the submission list by specific question answers.
 - :feature:`-` Questions that are visible to reviewers now also show up on the review page, to avoid having to switch to the full submission view in the review process.

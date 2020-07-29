@@ -266,6 +266,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
         live = "{base}live"
         delete = "{base}delete"
         cfp = "{base}cfp/"
+        history = "{base}history/"
         users = "{base}api/users"
         mail = "{base}mails/"
         compose_mails = "{mail}compose"

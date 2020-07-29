@@ -117,6 +117,7 @@ urlpatterns = [
                 ),
                 url("^delete$", event.EventDelete.as_view(), name="event.delete"),
                 url("^live$", event.EventLive.as_view(), name="event.live"),
+                url("^history/$", event.EventHistory.as_view(), name="event.history"),
                 url("^api/users$", person.UserList.as_view(), name="event.user_list"),
                 url(
                     "^cfp/$",

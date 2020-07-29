@@ -2,9 +2,11 @@
 
 {% if entries|length %}
 <div class="panel panel-default">
+    {% if not hide_title %}
     <div class="panel-heading"><h3>
         {% trans "History" %}
     </h3></div>
+    {% endif %}
 
     <ul class="list-group">
         {% for log in entries %}
