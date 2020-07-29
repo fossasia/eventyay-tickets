@@ -6,9 +6,9 @@
 			.heading
 				.name {{ exhibitor.name }}
 				.tagline {{ exhibitor.tagline }}
-		.main(v-scrollbar.y="")
+		.content(v-scrollbar.y="")
 			.div
-				.content(v-html="markdownContent")
+				.text(v-html="markdownContent")
 				.sm-links
 					a.link.bunt-button(v-for="link in exhibitor.social_media_links")(:href="link.url", target="_blank") {{ link.display_text }}
 				.links
@@ -54,7 +54,11 @@ export default {
 		this.$nextTick(() => {
 		})
 	},
-	methods: {}
+	methods: {
+		contact () {
+			return // TODO: issue chat request
+		},
+	}
 }
 </script>
 <style lang="stylus">
@@ -85,7 +89,7 @@ export default {
 				text-rendering: optimizelegibility
 				font-weight: bold
 				padding: 0.83rem
-	.main
+	.content
 		flex: 1
 		flex-basis: 10px
 		padding: 16px
