@@ -147,7 +147,10 @@ rules.add_perm("orga.perform_reviews", is_reviewer & reviews_are_open)
 rules.add_perm(
     "orga.remove_review", is_administrator | (is_review_author & can_be_reviewed)
 )
-rules.add_perm("orga.view_schedule", can_change_submissions)
+rules.add_perm(
+    "orga.view_schedule",
+    can_change_submissions | (is_reviewer & can_view_speaker_names),
+)
 rules.add_perm("orga.release_schedule", can_change_submissions)
 rules.add_perm("orga.edit_schedule", can_change_submissions)
 rules.add_perm("orga.schedule_talk", can_change_submissions)
