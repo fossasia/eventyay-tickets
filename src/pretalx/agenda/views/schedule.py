@@ -421,9 +421,7 @@ class ScheduleView(ScheduleDataView):
         return "html"
 
     def dispatch(self, request, **kwargs):
-        if not self.request.user.has_perm(
-            "agenda.view_schedule", self.request.event
-        ) and self.request.user.has_perm(
+        if not self.has_permission() and self.request.user.has_perm(
             "agenda.view_featured_submissions", self.request.event
         ):
             messages.success(
