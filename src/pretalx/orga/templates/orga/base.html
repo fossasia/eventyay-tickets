@@ -413,16 +413,12 @@
                 {% endblock %}
             </main>
             <footer>
-                {% with "href='http://pretalx.com'" as a_attr %}
-                    {% blocktrans trimmed %}
-                        powered by <a {{ a_attr }}>pretalx</a>
-                    {% endblocktrans %}
-                {% endwith %}
+                {% include "common/powered_by.html" %}
                 {% if development_warning %}
-                    <span class="text-warning">&middot; {% trans "running in development mode" %}</span>
+                    <span class="text-warning">· {% trans "running in development mode" %}</span>
                 {% endif %}
                 {% if pretalx_version %}
-                    <span>&middot;
+                    <span>·
                         {% if development_warning %}<a href="https://github.com/pretalx/pretalx/tree/{{ pretalx_version }}/">{{ pretalx_version }}</a>
                         {% else %}v{{ pretalx_version }}{% endif %}
                     </span>

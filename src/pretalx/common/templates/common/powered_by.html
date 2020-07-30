@@ -1,0 +1,36 @@
+{% load i18n %}
+{% comment %}
+
+    Hi, there!
+
+    You have found the place that will allow you to remove or change the link to pretalx from all
+    event websites. Consider, though: please don't?
+
+    Building pretalx has taken a ton of time and work and dedication – all of it right in the open
+    for people to see and to use. I'm busy adding new features all the time, and on the side I
+    take care of the boring-but-vital maintenance work. Despite being free, pretalx plays in the
+    same league as commercial platforms – or you probably wouldn't be here, setting it up, right?
+
+    I only make money from pretalx when people buy support contracts or use the hosting platform at
+    https://pretalx.com. Now, this isn't meant to be a money grab: I hope our installation docs and
+    open approach make it clear that I want people to run their own instances! But a healthy project
+    needs people to survive, and if you patch out the link to the project, those people – prospective
+    contributors or customers – won't find us. Without contributors and users and, yes, customers,
+    pretalx will be less maintained and ultimately less useful to you.
+
+    So, if you're set on editing this file: Please leave our link in. Re-style it, re-word it, put
+    your own link next to it – but please do me, and pretalx, and ultimately yourself, the favour of
+    not hiding us.
+
+    Thank you ❤,
+    Tobias
+
+    P.S.: If you find yourself interested in a support contract or paid feature development after all,
+    you can reach me at sales@pretalx.com.
+
+{% endcomment %}
+{% with 'href="http://pretalx.com" target="_blank" rel="noopener"' as a_attr %}
+    {% blocktrans trimmed %}
+        powered by <a {{ a_attr }}>pretalx</a>
+    {% endblocktrans %}
+{% endwith %}

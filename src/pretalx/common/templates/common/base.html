@@ -150,9 +150,7 @@
                 {% endblocktrans %}
             </div>
             {% endif %}
-            <a href="http://pretalx.com" target="_blank" rel="noopener">
-                <img src="{% static "common/img/logo.svg" %}" alt="{% trans "The pretalx logo" %}">
-            </a>
+            {% include "common/powered_by.html" %}
             {% if request.event %}
                 &middot;
                 <a href="mailto:{{ request.event.email }}">{% trans "Contact us" %}</a>
