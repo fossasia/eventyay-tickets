@@ -354,7 +354,7 @@ class ChatModule(BaseModule):
             raise ConsumerException("chat.denied")
 
         if self.consumer.user.is_silenced:
-            # In regular channels, this is already prevented by room permissions
+            # In regular channels, this is already prevented by room permissions, but we need to check for DMs
             raise ConsumerException("chat.denied")
 
         # Re-open direct messages. If a user hid a direct message channel, it should re-appear once they get a message

@@ -59,6 +59,24 @@ The interactive ``clone_world`` command allows you to create a venueless world w
     Enter the domain of the new world (e.g. myevent.example.org): venueless.mydomain.com
     World cloned.
 
+``generate_token``
+""""""""""""""""
+
+The ``generate_token`` command allows you to create a valid access token to a venueless world::
+
+    > generate_token myevent2019 --trait moderator --trait speaker --days 90
+    https://venueless.mydomain.com/#token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9…
+
+``list_worlds``
+"""""""""""""""
+
+The ``list_worlds`` command allows you to list all worlds in the database::
+
+    > list_worlds
+    ID                  Title                             URL
+    myevent2019         My Event 2019                     https://2019.myevent.com
+    myevent2020         My Event 2020                     https://2020.myevent.com
+
 ``import_config``
 """""""""""""""""
 
@@ -124,4 +142,4 @@ Debugging
 """""""""
 
 The ``shell`` command opens a shell with the venueless configuration and environment. All database models and some more
-useful modules will  be imported automatically.
+useful modules will be imported automatically.
