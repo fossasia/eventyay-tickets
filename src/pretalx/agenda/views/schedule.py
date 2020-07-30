@@ -141,7 +141,11 @@ class ExporterView(ScheduleDataView):
 
 class ScheduleView(ScheduleDataView):
     template_name = "agenda/schedule.html"
-    permission_required = "agenda.view_schedule"
+
+    def get_permission_required(self):
+        if self.version == "wip":
+            return ["orga.view_schedule"]
+        return ["agenda.view_schedule"]
 
     @staticmethod
     def _get_text_list(data):
@@ -452,9 +456,7 @@ class ScheduleView(ScheduleDataView):
         return super().get(request, **kwargs)  # Fallback to standard HTML response
 
     def get_object(self):
-        if self.version == "wip" and self.request.user.has_perm(
-            "orga.view_schedule", self.request.event
-        ):
+        if self.version == "wip":
             return self.request.event.wip_schedule
         return super().get_object()
 
