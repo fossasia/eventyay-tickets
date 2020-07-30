@@ -427,7 +427,7 @@ class ScheduleView(ScheduleDataView):
             messages.success(
                 request,
                 _(
-                    "Our schedule is not live yet, but we have this list of featured talks available!"
+                    "Our schedule is not live yet"
                 ),
             )
             return HttpResponseRedirect(self.request.event.urls.featured)
