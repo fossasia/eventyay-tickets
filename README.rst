@@ -1,26 +1,26 @@
 |logo|
 
-.. image:: https://img.shields.io/travis/pretalx/pretalx/master.svg
-   :target: https://travis-ci.org/pretalx/pretalx
+.. image:: https://img.shields.io/github/workflow/status/pretalx/pretalx/Tests.svg
+   :target: https://github.com/pretalx/pretalx/actions?query=workflow%3ATests
    :alt: Continuous integration
 
-.. image:: https://img.shields.io/codecov/c/github/pretalx/pretalx.svg?colorB=1c4a3b
+.. image:: https://img.shields.io/codecov/c/github/pretalx/pretalx.svg?colorB=3aa57c
    :target: https://codecov.io/gh/pretalx/pretalx
    :alt: Coverage
 
-.. image:: https://img.shields.io/pypi/v/pretalx.svg?colorB=1c4a3b
+.. image:: https://img.shields.io/pypi/v/pretalx.svg?colorB=3aa57c
    :target: https://pypi.python.org/pypi/pretalx
    :alt: PyPI
 
-.. image:: https://img.shields.io/badge/docs-passing-1c4a3b
+.. image:: https://img.shields.io/badge/docs-passing-3aa57c
    :target: https://docs.pretalx.org/
    :alt: Documentation
 
-.. image:: https://img.shields.io/badge/news-blog-1c4a3b
+.. image:: https://img.shields.io/badge/news-blog-3aa57c
    :target: https://docs.pretalx.org/
    :alt: Website
 
-.. image:: https://img.shields.io/twitter/url?label=Twitter&logoColor=%231c4a3b&style=social&url=https%3A%2F%2Ftwitter.com%2Fpretalx
+.. image:: https://img.shields.io/twitter/url?label=Twitter&logoColor=%234aa57c&style=social&url=https%3A%2F%2Ftwitter.com%2Fpretalx
    :target: https://twitter.com/pretalx
    :alt: Twitter account
 
