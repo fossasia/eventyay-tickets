@@ -424,12 +424,7 @@ class ScheduleView(ScheduleDataView):
         if not self.has_permission() and self.request.user.has_perm(
             "agenda.view_featured_submissions", self.request.event
         ):
-            messages.success(
-                request,
-                _(
-                    "Our schedule is not live yet"
-                ),
-            )
+            messages.success(request, _("Our schedule is not live yet."))
             return HttpResponseRedirect(self.request.event.urls.featured)
         return super().dispatch(request, **kwargs)
 
