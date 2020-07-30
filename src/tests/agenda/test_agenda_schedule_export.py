@@ -461,7 +461,7 @@ def test_html_export_full(
         call_command("export_schedule_html", event.slug, "--zip")
 
     paths = [
-        "static/common/img/logo.svg",
+        "static/common/img/favicon-32x32.png",
         f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
         "test/schedule/index.html",
         "test/schedule/export/schedule.json",
