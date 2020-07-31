@@ -45,6 +45,9 @@
 					bunt-input(v-model="val.config.hls_url", label="HLS URL", name="url")
 				div(v-else-if="val.type == 'call.bigbluebutton'")
 					bunt-checkbox(v-model="val.config.record", label="Allow recording (needs to be set before first join)", name="record")
+					bunt-checkbox(v-model="val.config.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
+					bunt-input(v-model="val.config.voice_bridge", label="Voice Bridge ID", name="voice_bridge")
+					bunt-input(v-model="val.config.prefer_server", label="Prefer Server with ID", name="prefer_server")
 				div(v-else-if="val.type == 'chat.native'")
 					bunt-checkbox(v-model="val.config.volatile", label="Users only join temporarily (use for large rooms, e.g. stage chats)", name="volatile")
 			div.add-module
