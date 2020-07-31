@@ -9,6 +9,10 @@ class BBBServer(models.Model):
     active = models.BooleanField(default=True)
     url = models.URLField()
     secret = models.CharField(max_length=300)
+    world_exclusive = models.ForeignKey(
+        "World", null=True, blank=True, on_delete=models.PROTECT
+    )
+    rooms_only = models.BooleanField(default=False)
 
 
 def random_key():
@@ -29,3 +33,5 @@ class BBBCall(models.Model):
         to="World", related_name="bbb_calls", on_delete=models.CASCADE,
     )
     invited_members = models.ManyToManyField(to="User", related_name="bbb_invites",)
+    guest_policy = models.CharField(default="ALWAYS_ACCEPT", max_length=50)
+    voice_bridge = models.CharField(null=True, blank=True, max_length=5)

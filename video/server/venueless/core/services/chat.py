@@ -30,12 +30,12 @@ async def get_channel(**kwargs):
 
 
 class ChatService:
-    def __init__(self, world_id):
-        self.world_id = world_id
+    def __init__(self, world):
+        self.world = world
 
     def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
         qs = (
-            Membership.objects.filter(channel__world_id=self.world_id, user_id=user_id,)
+            Membership.objects.filter(channel__world_id=self.world.pk, user_id=user_id,)
             .annotate(max_id=Max("channel__chat_events__id"))
             .prefetch_related(
                 Prefetch(
@@ -76,7 +76,7 @@ class ChatService:
             ids=Membership.objects.filter(channel_id=channel).values_list(
                 "user_id", flat=True
             ),
-            world_id=self.world_id,
+            world_id=self.world.pk,
             include_admin_info=include_admin_info,
         )
         return users
@@ -147,7 +147,7 @@ class ChatService:
     def _store_event(self, channel, id, event_type, content, sender, replaces=None):
         if content.get("type") == "call":
             call = BBBCall.objects.create(
-                world_id=self.world_id, server=choose_server()
+                world_id=self.world.pk, server=choose_server(self.world)
             )
             call.invited_members.add(*[m.user for m in channel.members.all()])
             content.setdefault("body", {})
@@ -212,7 +212,7 @@ class ChatService:
         with transaction.atomic():
             users = list(
                 User.objects.prefetch_related("blocked_users").filter(
-                    world_id=self.world_id, id__in=user_ids
+                    world_id=self.world.id, id__in=user_ids
                 )
             )
             if (
@@ -248,13 +248,13 @@ class ChatService:
                         mcount_mismatch__isnull=True,
                         mcount_match=len(user_ids),
                         room__isnull=True,
-                        world_id=self.world_id,
+                        world_id=self.world.id,
                     ),
                     False,
                     users,
                 )
             except Channel.DoesNotExist:
-                c = Channel.objects.create(room=None, world_id=self.world_id)
+                c = Channel.objects.create(room=None, world_id=self.world.id)
                 for u in users:
                     Membership.objects.create(
                         channel=c,

@@ -6,6 +6,7 @@ from urllib.parse import urlencode, urljoin
 import aiohttp
 from channels.db import database_sync_to_async
 from django.db import transaction
+from django.db.models import Q
 from lxml import etree
 from yarl import URL
 
@@ -23,10 +24,25 @@ def get_url(operation, params, base_url, secret):
     )
 
 
-def choose_server():
-    all_servers = BBBServer.objects.filter(active=True)
-    # TODO: Implement proper load balancing strategy
-    return random.choice(all_servers)
+def choose_server(world, room=None, prefer_server=None):
+    servers = BBBServer.objects.filter(active=True)
+    if not room:
+        servers = servers.filter(rooms_only=False)
+
+    search_order = [
+        servers.filter(Q(id=prefer_server) | Q(url=prefer_server)).filter(
+            Q(world_exclusive=world) | Q(world_exclusive__isnull=True)
+        ),
+        servers.filter(world_exclusive=world),
+        servers.filter(world_exclusive__isnull=True),
+    ]
+    for qs in search_order:
+        servers = list(qs)
+        if not servers:
+            continue
+
+        # TODO: Implement proper load balancing strategy
+        return random.choice(servers)
 
 
 @database_sync_to_async
@@ -35,7 +51,7 @@ def get_create_params_for_call_id(call_id, record, user):
     try:
         call = BBBCall.objects.get(id=call_id, invited_members__in=[user])
         if not call.server.active:
-            call.server = choose_server()
+            call.server = choose_server(world=call.world)
             call.save(update_fields=["server"])
     except BBBCall.DoesNotExist:
         return None, None
@@ -49,20 +65,32 @@ def get_create_params_for_call_id(call_id, record, user):
         "meta_Source": "venueless",
         "meta_Call": str(call_id),
     }
+    if call.voice_bridge:
+        create_params["voiceBridge"] = call.voice_bridge
+    if call.guest_policy:
+        create_params["guestPolicy"] = call.guest_policy
     return create_params, call.server
 
 
 @database_sync_to_async
 @transaction.atomic
-def get_create_params_for_room(room, record):
+def get_create_params_for_room(
+    room, record, voice_bridge, guest_policy, prefer_server=None
+):
     try:
         call = BBBCall.objects.get(room=room)
         if not call.server.active:
-            call.server = choose_server()
+            call.server = choose_server(world=room.world, room=room)
             call.save(update_fields=["server"])
     except BBBCall.DoesNotExist:
         call = BBBCall.objects.create(
-            room=room, world=room.world, server=choose_server()
+            room=room,
+            world=room.world,
+            server=choose_server(
+                world=room.world, room=room, prefer_server=prefer_server
+            ),
+            voice_bridge=voice_bridge,
+            guest_policy=guest_policy,
         )
 
     create_params = {
@@ -75,6 +103,10 @@ def get_create_params_for_room(room, record):
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
     }
+    if call.voice_bridge:
+        create_params["voiceBridge"] = call.voice_bridge
+    if call.guest_policy:
+        create_params["guestPolicy"] = call.guest_policy
     return create_params, call.server
 
 
@@ -107,7 +139,13 @@ class BBBService:
         m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
         config = m["config"]
         create_params, server = await get_create_params_for_room(
-            room, record=config.get("record", False)
+            room,
+            record=config.get("record", False),
+            voice_bridge=config.get("voice_bridge", None),
+            prefer_server=config.get("prefer_server", None),
+            guest_policy="ASK_MODERATOR"
+            if config.get("waiting_room", False)
+            else "ALWAYS_ACCEPT",
         )
         create_url = get_url("create", create_params, server.url, server.secret)
         if not await self._create(create_url):
@@ -123,6 +161,9 @@ class BBBService:
                 if moderator
                 else create_params["attendeePW"],
                 "joinViaHtml5": "true",
+                "guest": "true"
+                if not moderator and config.get("waiting_room", False)
+                else "false",
             },
             server.url,
             server.secret,

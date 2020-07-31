@@ -110,7 +110,7 @@ async def test_join_leave(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room):
+async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room, world):
     cid = str(uuid.uuid4())
     async with world_communicator(client_id=cid) as c, world_communicator(
         client_id=cid, named=False
@@ -123,7 +123,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
-        assert await ChatService("sample").membership_is_volatile(
+        assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -137,7 +137,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
         assert response[0] == "chat.event"
         event_id = response[1]["event_id"]
 
-        assert not await ChatService("sample").membership_is_volatile(
+        assert not await ChatService(world).membership_is_volatile(
             str(chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -154,7 +154,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room)
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_join_convert_volatile_to_persistent(volatile_chat_room):
+async def test_join_convert_volatile_to_persistent(volatile_chat_room, world):
     async with world_communicator() as c:
         volatile_chat_room.trait_grants["moderator"] = []
         await database_sync_to_async(volatile_chat_room.save)()
@@ -166,7 +166,7 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room):
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
-        assert await ChatService("sample").membership_is_volatile(
+        assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -180,7 +180,7 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room):
         response = await c.receive_json_from()
         assert response[0] == "success"
 
-        assert not await ChatService("sample").membership_is_volatile(
+        assert not await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -188,7 +188,7 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_join_convert_volatile_to_persistent_require_moderator(
-    volatile_chat_room,
+    volatile_chat_room, world,
 ):
     async with world_communicator() as c:
         await c.send_json_to(
@@ -199,7 +199,7 @@ async def test_join_convert_volatile_to_persistent_require_moderator(
         response = await c.receive_json_from()
         assert response[0] == "chat.event"
 
-        assert await ChatService("sample").membership_is_volatile(
+        assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -213,7 +213,7 @@ async def test_join_convert_volatile_to_persistent_require_moderator(
         response = await c.receive_json_from()
         assert response[0] == "success"
 
-        assert await ChatService("sample").membership_is_volatile(
+        assert await ChatService(world).membership_is_volatile(
             str(volatile_chat_room.channel.id), c.context["user.config"]["id"]
         )
 
@@ -893,7 +893,7 @@ async def test_disconnect_is_no_leave(chat_room):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
+async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat_room):
     client_id = str(uuid.uuid4())
     async with world_communicator() as c1:
         async with world_communicator(client_id=client_id) as c2:
@@ -940,7 +940,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
 
                 assert (
                     len(
-                        await ChatService("sample").get_channel_users(
+                        await ChatService(world).get_channel_users(
                             str(volatile_chat_room.channel.id)
                         )
                     )
@@ -948,7 +948,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
                 )
             assert (
                 len(
-                    await ChatService("sample").get_channel_users(
+                    await ChatService(world).get_channel_users(
                         str(volatile_chat_room.channel.id)
                     )
                 )
@@ -956,7 +956,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
             )
         assert (
             len(
-                await ChatService("sample").get_channel_users(
+                await ChatService(world).get_channel_users(
                     str(volatile_chat_room.channel.id)
                 )
             )
@@ -969,7 +969,7 @@ async def test_last_disconnect_is_leave_in_volatile_channel(volatile_chat_room):
 
     assert (
         len(
-            await ChatService("sample").get_channel_users(
+            await ChatService(world).get_channel_users(
                 str(volatile_chat_room.channel.id)
             )
         )

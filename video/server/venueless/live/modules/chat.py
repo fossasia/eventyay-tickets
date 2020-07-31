@@ -105,7 +105,7 @@ class ChatModule(BaseModule):
         super().__init__(*args, **kwargs)
         self.channel_id = None
         self.channels_subscribed = set()
-        self.service = ChatService(self.consumer.world.id)
+        self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self):
         self.channels_subscribed.add(self.channel_id)

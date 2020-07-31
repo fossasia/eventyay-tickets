@@ -149,7 +149,7 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
     return LoginResult(
         user=user,
         world_config=get_world_config_for_user(world, user),
-        chat_channels=ChatService(world.pk).get_channels_for_user(
+        chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
         ),
     )
