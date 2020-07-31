@@ -24,7 +24,7 @@ transition(name="sidebar")
 					.name {{ chat.name }}
 				router-link.text-chat(v-for="chat of roomsByType.textChat", :to="chat === rooms[0] ? {name: 'home'} : {name: 'room', params: {roomId: chat.id}}", :class="{unread: hasUnreadMessages(chat.modules[0].channel_id)}")
 					.name {{ chat.name }}
-			.group-title
+			.group-title(v-if="directMessageChannels.length")  // TODO remove when plus button is implemented
 				span {{ $t('RoomsSidebar:direct-messages-headline:text') }}
 				//- bunt-icon-button(@click="$emit('createDM')") plus
 			.direct-messages
