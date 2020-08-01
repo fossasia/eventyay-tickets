@@ -2,7 +2,7 @@
 .c-admin-config(v-scrollbar.y="")
 	.header
 		h2 Configuration
-	bunt-tabs.tabs-default
+	bunt-tabs
 		bunt-tab(id="main", header="Main")
 			main-config()
 		bunt-tab(id="theme", header="Theme")
@@ -29,7 +29,8 @@ export default {
 
 	h2
 		margin: 16px
-
+	.bunt-tabs
+		tabs-style(active-color: var(--clr-primary), indicator-color: var(--clr-primary), background-color: transparent)
 	.bunt-tabs-body
 		padding: 16px
 </style>
