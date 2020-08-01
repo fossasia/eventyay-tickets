@@ -135,6 +135,7 @@
                             </div>
                         </a>
                         <div class="info">
+                            {{ speaker.talk_profile.biography|rich_text }}
                             {% if speaker.other_submissions.count > 1 %}
                                 {{ phrases.agenda.speaker_other_talks }}
                                 <ul class="speaker-talks">
