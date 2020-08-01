@@ -30,7 +30,7 @@
             {% if profile.user.get_gravatar or profile.user.avatar %}
             <img width="100%"
                  {% if profile.user.get_gravatar %}
-                 src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}"
+                 src="https://www.gravatar.com/avatar/{{ profile.user.gravatar_parameter }}?s=200"
                  {% elif profile.user.avatar %}
                  src="{{ profile.user.avatar.url }}"
                  {% endif %}
