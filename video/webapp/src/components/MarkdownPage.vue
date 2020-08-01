@@ -1,36 +1,20 @@
 <template lang="pug">
 .c-markdown-page(v-scrollbar.y="")
-	.content(v-html="markdownContent")
+	markdown-content(:markdown="module.config.content")
 </template>
 <script>
-import MarkdownIt from 'markdown-it'
-import sanitizeHtml from 'sanitize-html'
-
-const markdownIt = MarkdownIt({
-	breaks: true,
-	html: true,
-})
+import MarkdownContent from 'components/MarkdownContent'
 
 export default {
+	components: { MarkdownContent },
 	props: {
 		module: Object
-	},
-	computed: {
-		markdownContent () {
-			if (!this.module.config.content) return
-			return sanitizeHtml(markdownIt.render(this.module.config.content), {
-				transformTags: {
-					a: sanitizeHtml.simpleTransform('a', {target: '_blank'}),
-				},
-				allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-			})
-		}
 	}
 }
 </script>
 <style lang="stylus">
 .c-markdown-page
-	.content
+	.markdown-content
 		margin: 16px 32px
 
 	table
