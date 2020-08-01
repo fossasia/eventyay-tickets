@@ -131,7 +131,6 @@ nav.toolbar
 ##### How to Find Color Variables
 Colors are prefixed with `$clr-`.
 Find existing colors from:
-- https://github.com/aexeagmbh/nagini/blob/master/src/styles/_settings.styl
 - https://github.com/rashfael/buntpapier/blob/master/buntpapier/variables.styl
 - https://github.com/rashfael/buntpapier/blob/master/buntpapier/colors.styl (mapping https://www.materialui.co/colors)
 - for text colors, use `$clr-[primary,secondary,disabled,dividers]-text-[light,dark]` (These greys are defined with alpha on black or white and work better on various backgrounds, use `light` for light backgrounds and `dark` for dark backgrounds)
