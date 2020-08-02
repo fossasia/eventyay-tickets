@@ -28,6 +28,21 @@ export default new Vuex.Store({
 			}
 		}
 	},
+	mutations: {
+		updateRooms (state, rooms) {
+			// preserve object references for media source
+			if (state.rooms) {
+				for (const [index, newRoom] of rooms.entries()) {
+					const oldRoom = state.rooms.find(r => r.id === newRoom.id)
+					if (oldRoom) {
+						Object.assign(oldRoom, newRoom) // good enough?
+						rooms.splice(index, 1, oldRoom)
+					}
+				}
+			}
+			state.rooms = rooms
+		}
+	},
 	actions: {
 		login ({state}, {token, clientId}) {
 			state.token = token
@@ -42,28 +57,7 @@ export default new Vuex.Store({
 				state.permissions = serverState['world.config'].permissions
 				commit('chat/setJoinedChannels', serverState['chat.channels'])
 				commit('chat/setReadPointers', serverState['chat.read_pointers'])
-				if (!state.rooms) {
-					state.rooms = serverState['world.config'].rooms
-				} else {
-					const updatedRooms = []
-					for (const newRoom of serverState['world.config'].rooms) {
-						const oldRoom = state.rooms.find(r => r.id === newRoom.id)
-						if (oldRoom) {
-							Object.assign(oldRoom, newRoom) // good enough?
-							updatedRooms.push(oldRoom)
-						} else {
-							state.rooms.push(newRoom)
-						}
-					}
-					for (const oldRoom of state.rooms) {
-						if (!updatedRooms.includes(oldRoom)) {
-							const index = state.rooms.indexOf(oldRoom)
-							if (index >= 0) {
-								state.rooms.splice(index, 1)
-							}
-						}
-					}
-				}
+				commit('updateRooms', serverState['world.config'].rooms)
 				if (!state.user.profile.display_name) {
 					router.push('/').catch(() => {}) // force new users to welcome page
 					// TODO return after profile update?
@@ -123,6 +117,12 @@ export default new Vuex.Store({
 		'api::room.reaction' ({state}, {room, reactions}) {
 			if (state.activeRoom.id !== room) return
 			state.reactions = reactions
+		},
+		'api::world.updated' ({state, commit, dispatch}, {world, rooms, permissions}) {
+			state.world = world
+			state.permission = permissions
+			commit('updateRooms', rooms)
+			dispatch('fetchSchedule')
 		}
 		// TODO handle user.updated
 	},

@@ -1,34 +1,33 @@
 <template lang="pug">
-.c-profile-prompt
-	.prompt-wrapper(v-scrollbar.y="")
-		.prompt-wrapper-inner
-			bunt-icon-button#btn-close(v-if="user.profile.display_name", @click="$emit('close')") close
-			template(v-if="!user.profile.display_name")
-				h1 {{ $t('ProfilePrompt:headline:text') }}
-				p {{ $t('ProfilePrompt:intro:text') }}
-			.profile
-				.avatar
-					img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
-					identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
-				form(@submit.prevent="update")
-					bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model.trim="displayName", :validation="$v.displayName")
-			//- link here not strictly good UX
-			a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('ProfilePrompt:gravatar-change:label') }}
-			p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('ProfilePrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
-			form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
-				bunt-input(name="gravatar", :label="$t('ProfilePrompt:gravatar-email:label')", :hint="$t('ProfilePrompt:gravatar-email:hint')", v-model="email")
-				bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('ProfilePrompt:gravatar-connect:label') }}
-			bunt-button#btn-join-world(@click="update", :loading="loading") {{ !user.profile.display_name ? $t('ProfilePrompt:create:label') : $t('ProfilePrompt:save:label') }}
+prompt.c-profile-prompt(:allowCancel="!!user.profile.display_name", @close="$emit('close')")
+	.content
+		template(v-if="!user.profile.display_name")
+			h1 {{ $t('ProfilePrompt:headline:text') }}
+			p {{ $t('ProfilePrompt:intro:text') }}
+		.profile
+			.avatar
+				img.gravatar-avatar(v-if="gravatarAvatarUrl", :src="gravatarAvatarUrl")
+				identicon(v-else, :id="identicon || user.id", @click.native="changeIdenticon")
+			form(@submit.prevent="update")
+				bunt-input.display-name(name="displayName", :label="$t('ProfilePrompt:displayname:label')", v-model.trim="displayName", :validation="$v.displayName")
+		//- link here not strictly good UX
+		a.gravatar-connected-hint(v-if="connectedGravatar", href="#", @click="connectedGravatar = false; showConnectGravatar = true") {{ $t('ProfilePrompt:gravatar-change:label') }}
+		p.gravatar-hint(v-else-if="!showConnectGravatar") {{ $t('ProfilePrompt:gravatar-hint:text') }} #[a(href="#", @click="showConnectGravatar = true") gravatar].
+		form.connect-gravatar(v-else, @submit.prevent="connectGravatar")
+			bunt-input(name="gravatar", :label="$t('ProfilePrompt:gravatar-email:label')", :hint="$t('ProfilePrompt:gravatar-email:hint')", v-model="email")
+			bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('ProfilePrompt:gravatar-connect:label') }}
+		bunt-button#btn-join-world(@click="update", :loading="loading") {{ !user.profile.display_name ? $t('ProfilePrompt:create:label') : $t('ProfilePrompt:save:label') }}
 </template>
 <script>
 import { mapState } from 'vuex'
 import { v4 as uuid } from 'uuid'
 import { required } from 'buntpapier/src/vuelidate/validators'
+import Prompt from 'components/Prompt'
 import Identicon from 'components/Identicon'
 import { getHash, getProfile, getAvatarUrl } from 'lib/gravatar'
 
 export default {
-	components: { Identicon },
+	components: { Prompt, Identicon },
 	data () {
 		return {
 			displayName: '',
@@ -120,67 +119,51 @@ export default {
 </script>
 <style lang="stylus">
 .c-profile-prompt
-	position: fixed
-	top: 0
-	left: 0
-	width: 100vw
-	height: var(--vh100)
-	z-index: 1000
-	background-color: $clr-secondary-text-light
-	display: flex
-	justify-content: center
-	align-items: center
-	.prompt-wrapper
-		card()
+	.content
 		display: flex
 		flex-direction: column
-		width: 480px
-		max-height: 80vh
-		.prompt-wrapper-inner
+		align-items: center
+		padding: 32px
+		position: relative
+		#btn-close
+			icon-button-style(style: clear)
+			position: absolute
+			top: 8px
+			right: 8px
+		h1
+			margin: 0
+		p
+			max-width: 320px
+		.profile
+			margin: 16px 0 0 0
 			display: flex
-			flex-direction: column
 			align-items: center
-			padding: 32px
-			position: relative
-			#btn-close
-				icon-button-style(style: clear)
-				position: absolute
-				top: 8px
-				right: 8px
-			h1
-				margin: 0
-			p
-				max-width: 320px
-			.profile
-				margin: 16px 0 0 0
-				display: flex
-				align-items: center
-			.avatar
-				width: 128px
-				height: 128px
-				margin-right: 16px
-			.gravatar-avatar
-				height: 128px
-				border-radius: 50%
-			.c-identicon
-				cursor: pointer
-				height: 128px
-			.display-name
-				width: 240px
-			.gravatar-hint
-				color: $clr-secondary-text-light
-			.gravatar-hint, .gravatar-connected-hint
-				margin-bottom: 16px
-			.connect-gravatar
-				display: flex
-				align-items: flex-start
-				margin: 16px 0 32px 0
-				.bunt-input
-					width: 286px
-				#btn-connect-gravatar
-					themed-button-secondary()
-					margin: 16px 0 0 4px
-			#btn-join-world
-				margin-top: 16px
-				themed-button-primary(size: large)
+		.avatar
+			width: 128px
+			height: 128px
+			margin-right: 16px
+		.gravatar-avatar
+			height: 128px
+			border-radius: 50%
+		.c-identicon
+			cursor: pointer
+			height: 128px
+		.display-name
+			width: 240px
+		.gravatar-hint
+			color: $clr-secondary-text-light
+		.gravatar-hint, .gravatar-connected-hint
+			margin-bottom: 16px
+		.connect-gravatar
+			display: flex
+			align-items: flex-start
+			margin: 16px 0 32px 0
+			.bunt-input
+				width: 286px
+			#btn-connect-gravatar
+				themed-button-secondary()
+				margin: 16px 0 0 4px
+		#btn-join-world
+			margin-top: 16px
+			themed-button-primary(size: large)
 </style>
