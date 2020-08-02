@@ -1,14 +1,11 @@
 <template lang="pug">
 .c-exhibition
-	.exhibitors(v-if="exhibitors", v-scrollbar.y="")
-		.exhibitor-grid
-			router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
-				.content
-					.header
-						img.logo(:src="exhibitor.logo" height="150" width="150")
-						.name(v-if="exhibitor.size != '1x1'") {{ exhibitor.name }}
-						.tagline(v-if="exhibitor.size != '1x1'") {{ exhibitor.tagline }}
-					.text(v-if="exhibitor.size == '3x3'") {{ exhibitor.short_text }}
+	scrollbars.exhibitors(v-if="exhibitors", y)
+		router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}", :class="'exhibitor-' + exhibitor.size")
+			img.logo(:src="exhibitor.logo", :alt="exhibitor.name")
+			.short-text {{ exhibitor.short_text }}
+			.actions
+				bunt-button more
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -36,56 +33,79 @@ export default {
 }
 </script>
 <style lang="stylus">
+$grid-size = 280px
+$logo-height = 130px
+$logo-height-medium = 160px
+$logo-height-large = 427px
+
 .c-exhibition
-	width: 100%
-	height: 100%
-	.exhibitors
-		height: 100%
-	.exhibitor-grid
+	flex: auto
+	display: flex
+	flex-direction: column
+	min-height: 0
+	background-color: $clr-grey-50
+	.exhibitors .scroll-content
+		flex: auto
 		display: grid
-		grid-template-columns: repeat(auto-fill, 180px)
-		grid-auto-rows: 180px
+		grid-template-columns: repeat(auto-fill, $grid-size)
+		grid-auto-rows: $grid-size
 		grid-auto-flow: dense // denser grid, but breaks order
-		gap: 15px
-		padding: 15px
-		max-height: inherit;
+		gap: 16px
+		padding: 16px
+		justify-content: center
 	.exhibitor
-		.content
-			height: 100%
+		background-color: $clr-white
+		border: border-separator()
+		border-radius: 4px
+		display: flex
+		flex-direction: column
+		padding: 8px
+		cursor: pointer
+		img.logo
+			object-fit: contain
+			max-width: 100%
+			height: $logo-height
+			min-height: $logo-height
+			margin: 0 1px
+		.short-text
+			margin-top: 12px
 			color: $clr-primary-text-light
-			card()
-			.header
-				min-height: 150px
-				padding: 15px
-			.logo
-				float: left
-			.tagline
-				font-size: 1.2rem
-				text-rendering: optimizelegibility
-				font-weight: bold
-				padding: 0.83rem
-				margin-left: 150px
-			.name
-				font-size: 1.8rem
-				text-rendering: optimizelegibility
-				font-weight: bold
-				padding: 0.83rem
-				margin-left: 150px
-			.text
-				font-size: 1.2rem
-				padding: 15px
-	.exhibitor .content:hover
-		card-raised()
+			display: -webkit-box
+			-webkit-line-clamp: 5
+			-webkit-box-orient: vertical
+			overflow: hidden
+		.actions
+			flex: auto
+			display: flex
+			justify-content: flex-end
+			align-items: flex-end
+			.bunt-button
+				themed-button-secondary()
+		&:hover
+			border: 1px solid var(--clr-primary)
 	.exhibitor-1x1
 		grid-area: span 1 / span 1
-	.exhibitor-1x3
-		grid-area: span 1 / span 3
+	.exhibitor-3x1
+		grid-area: span 1 / span 2
+		img.logo
+			height: $logo-height-medium
+			min-height: $logo-height-medium
+			margin: 0
 	.exhibitor-3x3
-		grid-area: span 3 / span 3
+		grid-area: span 2 / span 3
+		img.logo
+			height: $logo-height-large
+			min-height: $logo-height-large
+			margin: 0
 
 	+below('m')
 		.exhibitor-1x3
 			grid-area: span 1 / span 2
 		.exhibitor-3x3
-			grid-area: span 3 / span 2
+			grid-area: span 2 / span 3
+	+below('s')
+		.exhibitor-1x3
+			grid-area: span 1 / span 1
+		.exhibitor-3x3
+			grid-area: span 1 / span 1
 </style>
