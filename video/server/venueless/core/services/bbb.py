@@ -6,7 +6,7 @@ from urllib.parse import urlencode, urljoin
 import aiohttp
 from channels.db import database_sync_to_async
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import F, Q, Value
 from lxml import etree
 from yarl import URL
 
@@ -25,12 +25,12 @@ def get_url(operation, params, base_url, secret):
 
 
 def choose_server(world, room=None, prefer_server=None):
-    servers = BBBServer.objects.filter(active=True)
+    servers = BBBServer.objects.filter(active=True).order_by("cost")
     if not room:
         servers = servers.filter(rooms_only=False)
 
     search_order = [
-        servers.filter(Q(id=prefer_server) | Q(url=prefer_server)).filter(
+        servers.filter(url=prefer_server).filter(
             Q(world_exclusive=world) | Q(world_exclusive__isnull=True)
         ),
         servers.filter(world_exclusive=world),
@@ -41,8 +41,18 @@ def choose_server(world, room=None, prefer_server=None):
         if not servers:
             continue
 
-        # TODO: Implement proper load balancing strategy
-        return random.choice(servers)
+        # Servers are sorted by cost, let's do a random pick if we have multiple with the smallest cost
+        smallest_cost = servers[0].cost
+        server = random.choice([s for s in servers if s.cost == smallest_cost])
+
+        if len(servers) > 1:
+            # Usually, if there are multiple servers, a cron job should be set up to the bbb_update_cost management
+            # command that calculates an actual cost function based on the server load (see there for a definition of
+            # the cost function). However, if the cron job does not run (or does not run soon enough), this little
+            # UPDATE statement will make sure we have a round-robin-like distribution among the servers by increasing
+            # the cost value temporarily with every added meeting.
+            BBBServer.objects.filter(pk=server.pk).update(cost=F("cost") + Value("10"))
+        return server
 
 
 @database_sync_to_async

@@ -13,6 +13,7 @@ class BBBServer(models.Model):
         "World", null=True, blank=True, on_delete=models.PROTECT
     )
     rooms_only = models.BooleanField(default=False)
+    cost = models.IntegerField(default=0)
 
 
 def random_key():
