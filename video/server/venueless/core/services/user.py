@@ -149,7 +149,7 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
     return LoginResult(
         user=user,
         world_config=get_world_config_for_user(world, user),
-        chat_channels=ChatService(world.pk).get_channels_for_user(
+        chat_channels=ChatService(world).get_channels_for_user(
             user.pk, is_volatile=False
         ),
     )
@@ -157,7 +157,13 @@ def login(*, world=None, token=None, client_id=None,) -> LoginResult:
 
 @database_sync_to_async
 @atomic
-def set_user_banned(world=None, user_id=None) -> bool:
+def get_blocked_users(user) -> bool:
+    return [u.serialize_public() for u in user.blocked_users.all()]
+
+
+@database_sync_to_async
+@atomic
+def set_user_banned(world, user_id) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
@@ -168,7 +174,7 @@ def set_user_banned(world=None, user_id=None) -> bool:
 
 @database_sync_to_async
 @atomic
-def set_user_silenced(world=None, user_id=None) -> bool:
+def set_user_silenced(world, user_id) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
@@ -181,10 +187,34 @@ def set_user_silenced(world=None, user_id=None) -> bool:
 
 @database_sync_to_async
 @atomic
-def set_user_free(world=None, user_id=None) -> bool:
+def set_user_free(world, user_id) -> bool:
     user = get_user_by_id(world_id=world.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.NONE
     user.save(update_fields=["moderation_state"])
+    return True
+
+
+@database_sync_to_async
+@atomic
+def block_user(world, blocking_user: User, blocked_user_id) -> bool:
+    blocked_user = get_user_by_id(world_id=world.pk, user_id=blocked_user_id)
+    if not blocked_user:
+        return False
+
+    blocking_user.blocked_users.add(blocked_user)
+    blocked_user.touch()
+    return True
+
+
+@database_sync_to_async
+@atomic
+def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
+    blocked_user = get_user_by_id(world_id=world.pk, user_id=blocked_user_id)
+    if not blocked_user:
+        return False
+
+    blocking_user.blocked_users.remove(blocked_user)
+    blocked_user.touch()
     return True

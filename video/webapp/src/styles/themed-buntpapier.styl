@@ -1,6 +1,13 @@
 themed-buntpapier()
 	.bunt-progress-circular svg circle
 		stroke: var(--clr-primary)
+	.bunt-input
+		&.focused
+			.outline
+				stroke: var(--clr-primary)
+				stroke-width: 2px
+			label
+				color: var(--clr-primary)
 
 themed-button-primary(size = 'normal')
 	color var(--clr-input-primary-fg)

@@ -1,6 +1,14 @@
 Chat module
 ===========
 
+Channels
+--------
+
+Everything around chat happens in a **channel**. Currently, we have two types of channels:
+
+* Channels tied to a room. These channels inherit their permission configuration from the room. User's can join and leave them at will.
+* Direct message channels. Their set of members is immutable, it is not possible to join them or add additional users after their creation.
+
 Membership and subscription
 ---------------------------
 
@@ -29,10 +37,6 @@ A join means that the user and their chosen ``profile`` will be visible to other
 Messages can only be sent to chats that have been joined. A join action is **implicitly also a subscribe** action.
 Joins are idempotent, joining a channel that the user is already part of will not return an error.
 
-After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization::
-
-    <= ["chat.channels", {"channels": [{"id": "room_0", "notification_pointer": 12345}]}]
-
 The room can be left the same way::
 
     => ["chat.leave", 1234, {"channel": "room_0"}]
@@ -48,6 +52,38 @@ If you don't want to join or leave, you can explicitly subscribe and unsubscribe
     <- ["success", 1234, {}]
 
 If you close the websocket, an unsubscribe will be performed automatically.
+
+Channel list
+------------
+
+After a join or leave, your current membership list of non-volatile channels will be broadcasted to all clients of that user for synchronization::
+
+    <= ["chat.channels", {"channels": [{"id": "room_0", "notification_pointer": 12345}]}]
+
+During authentication, you receive the same list in the ``chat.channels`` key of the authentication responses.
+For direct message channels, there will be an additional key ``members`` with the user objects of the other people
+in the channel, such that the frontend can label the direct message channel with their user names. This key is entirely
+missing for room-based channels.
+
+Direct messages
+---------------
+
+To start a direct conversation with one or more other users, send a message like this. You do not need
+to include your own user ID::
+
+    => ["chat.direct.create", 1234, {"users": ["other_user_id"]}]
+    <- ["success", 1234, {"id": "12345", "state": {…}, "next_event_id": 54321, "members": […]}]
+
+A new channel will be created for this set of users or an existing one will be re-used if it is already
+there. With this command, you will also be directly subscribed to the channel and therefore receive the
+same keys in the response as with the ``chat.subscribe`` command. All your other clients as well as all
+connected clients of the other users receive a regular channel list update.
+
+You will receive error code ``chat.denied`` if either you do not have the ``world:chat.direct`` permission, or one of
+user IDs you passed does not exist, or any of the users blocked any of the other users.
+
+You can use the regular ``chat.leave`` command to hide a conversation from your channel list. You will technically still
+be a member and it will automatically reappear in your channel list if new messages are received.
 
 Events
 ------
@@ -84,6 +120,14 @@ You can edit a user's own message by sending an update like this::
 As with message sending, you'll get both the success and the broadcast. The broadcast looks the same as a new message,
 only that it includes the ``"replaces"`` key.
 
+If you're trying to send a direct message to a user who blocked you, or to a channel you have no permission sending to,
+or to edit/delete a message you may not modify, you will receive an error with code ``chat.denied``. If your body is
+invalid, you will receive one of the following error codes:
+
+* ``chat.empty``
+* ``chat.unsupported_event_type``
+* ``chat.unsupported_content_type``
+
 Event types
 ^^^^^^^^^^^
 
@@ -117,6 +161,9 @@ Currently, the following types are defined:
 
 * ``text``: A plain text message. ``body`` is a string with the message.
 * ``deleted``: Any message that was removed by the user or a moderator.
+* ``call``: A audio/video call that can be joined. ``body`` is a dictionary that should be empty when you send such a
+  message. If you receive such a message, there will be an ``id`` property with the call ID which you can use to fetch
+  the BigBlueButton call URL. Currently only supported in direct messages.
 
 ``channel.member``
 """"""""""""""""""

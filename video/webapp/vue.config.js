@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
 	devServer: {
@@ -87,4 +88,9 @@ module.exports = {
 		}
 	},
 	lintOnSave: true
+}
+
+if (process.env.ANALYZE) {
+	console.log('building with bundle analyzer')
+	module.exports.configureWebpack.plugins.push(new BundleAnalyzerPlugin({analyzerMode: 'static'}))
 }

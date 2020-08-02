@@ -1,3 +1,4 @@
+import functools
 import logging
 from contextlib import suppress
 
@@ -5,15 +6,96 @@ from channels.db import database_sync_to_async
 from sentry_sdk import configure_scope
 
 from venueless.core.permissions import Permission
-from venueless.core.services.chat import ChatService
-from venueless.core.services.world import get_room
+from venueless.core.services.chat import ChatService, get_channel
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
-from venueless.live.decorators import command, event, room_action
+from venueless.live.decorators import (
+    command,
+    event,
+    require_world_permission,
+    room_action,
+)
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
+
+
+def channel_action(
+    room_permission_required: Permission = None,
+    room_module_required=None,
+    require_membership=True,
+):
+    """
+    Wraps a command that works on a chat channel regardless of whether the channel is tied to a room or not.
+    If it *is* tied to a room, the ``room_permisison_required`` and ``room_module_required`` options are enforced.
+
+    ``require_membership`` enforces the user is a member of a channel for an action.
+    """
+
+    def wrapper(func):
+        @functools.wraps(func)
+        async def wrapped(self, body, *args):
+            if "channel" in body:
+                self.channel = self.consumer.channel_cache.get(body["channel"])
+                if not self.channel:
+                    self.channel = await get_channel(
+                        world=self.consumer.world, pk=body["channel"]
+                    )
+                    self.consumer.channel_cache[body["channel"]] = self.channel
+                elif self.channel.room:
+                    await self.channel.room.refresh_from_db_if_outdated()
+            else:
+                raise ConsumerException("chat.unknown", "Unknown channel ID")
+            if not self.channel:
+                raise ConsumerException("room.unknown", "Unknown room ID")
+
+            if self.channel.room and room_module_required is not None:
+                module_config = [
+                    m.get("config", {})
+                    for m in self.channel.room.module_config
+                    if m["type"] == room_module_required
+                ]
+                if module_config:
+                    self.module_config = module_config[0]
+                else:
+                    raise ConsumerException(
+                        "room.unknown", "Room does not contain a matching module."
+                    )
+
+            if not getattr(self.consumer, "user", None):  # pragma: no cover
+                # Just a precaution, should never be called since MainConsumer.receive_json already checks this
+                raise ConsumerException(
+                    "protocol.unauthenticated", "No authentication provided."
+                )
+
+            if self.channel.room and room_permission_required is not None:
+                if not await self.consumer.world.has_permission_async(
+                    user=self.consumer.user,
+                    permission=room_permission_required,
+                    room=self.channel.room,
+                ):
+                    raise ConsumerException("protocol.denied", "Permission denied.")
+
+            req_m = (
+                require_membership(self.channel)
+                if callable(require_membership)
+                else require_membership
+            )
+            if req_m:
+                if not await self.consumer.user.is_member_of_channel_async(
+                    self.channel.pk
+                ):
+                    raise ConsumerException("chat.denied")
+
+            try:
+                return await func(self, body, *args)
+            finally:
+                del self.channel
+
+        return wrapped
+
+    return wrapper
 
 
 class ChatModule(BaseModule):
@@ -23,7 +105,7 @@ class ChatModule(BaseModule):
         super().__init__(*args, **kwargs)
         self.channel_id = None
         self.channels_subscribed = set()
-        self.service = ChatService(self.consumer.world.id)
+        self.service = ChatService(self.consumer.world)
 
     async def _subscribe(self):
         self.channels_subscribed.add(self.channel_id)
@@ -64,8 +146,10 @@ class ChatModule(BaseModule):
         )
 
     @command("subscribe")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_READ, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_READ,
+        room_module_required="chat.native",
+        require_membership=lambda channel: not channel.room,
     )
     async def subscribe(self, body):
         reply = await self._subscribe()
@@ -97,7 +181,7 @@ class ChatModule(BaseModule):
         )
         if joined:
             event = await self.service.create_event(
-                channel_id=str(self.channel_id),
+                channel=self.channel,
                 event_type="channel.member",
                 content={
                     "membership": "join",
@@ -122,7 +206,7 @@ class ChatModule(BaseModule):
         await self.consumer.channel_layer.group_send(
             GROUP_CHAT.format(channel=self.channel_id),
             await self.service.create_event(
-                channel_id=self.channel_id,
+                channel=self.channel,
                 event_type="channel.member",
                 content={
                     "membership": "leave",
@@ -133,42 +217,59 @@ class ChatModule(BaseModule):
         )
         await self._broadcast_channel_list()
 
-    async def _broadcast_channel_list(self):
-        await self.consumer.user.refresh_from_db_if_outdated()
+    async def _broadcast_channel_list(self, user=None):
+        if not user:
+            user = self.consumer.user
+        user.refresh_from_db_if_outdated()
         await self.consumer.user_broadcast(
             "chat.channels",
             {
                 "channels": await database_sync_to_async(
                     self.service.get_channels_for_user
-                )(self.consumer.user.id, is_volatile=False)
+                )(user, is_volatile=False)
             },
+            user_id=user.id,
         )
 
     @command("leave")
-    @room_action(module_required="chat.native")
+    @channel_action(
+        room_module_required="chat.native",
+        require_membership=lambda channel: not channel.room,
+    )
     async def leave(self, body):
         await self._unsubscribe(clean_volatile_membership=False)
-        await self._leave()
+        if self.channel.room:
+            await self._leave()
+            async with aioredis() as redis:
+                await redis.srem(
+                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
+                )
+        else:
+            await self.service.hide_channel_user(self.channel_id, self.consumer.user.id)
+            async with aioredis() as redis:
+                await redis.delete(f"chat:direct:shownall:{self.channel_id}")
+            await self._broadcast_channel_list()
+
         await self.consumer.send_success()
-        async with aioredis() as redis:
-            await redis.srem(
-                f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
-            )
 
     @command("unsubscribe")
-    @room_action(module_required="chat.native")
+    @channel_action(room_module_required="chat.native", require_membership=False)
     async def unsubscribe(self, body):
         await self._unsubscribe()
         await self.consumer.send_success()
 
     @command("fetch")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_READ, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_READ,
+        room_module_required="chat.native",
+        require_membership=lambda channel: not channel.room,
     )
     async def fetch(self, body):
         count = body["count"]
         before_id = body["before_id"]
-        volatile_config = self.module_config.get("volatile", False)
+        volatile_config = self.channel.room and self.module_config.get(
+            "volatile", False
+        )
         events = await self.service.get_events(
             self.channel_id,
             before_id=before_id,
@@ -178,7 +279,7 @@ class ChatModule(BaseModule):
         await self.consumer.send_success({"results": events})
 
     @command("mark_read")
-    @room_action(module_required="chat.native")
+    @channel_action(room_module_required="chat.native", require_membership=False)
     async def mark_read(self, body):
         if not body.get("id"):
             raise ConsumerException("chat.invalid_body")
@@ -210,8 +311,10 @@ class ChatModule(BaseModule):
         await self.consumer.send_json(["chat.notification_pointers", body.get("data")])
 
     @command("send")
-    @room_action(
-        permission_required=Permission.ROOM_CHAT_SEND, module_required="chat.native"
+    @channel_action(
+        room_permission_required=Permission.ROOM_CHAT_SEND,
+        room_module_required="chat.native",
+        require_membership=True,
     )
     async def send(self, body):
         content = body["content"]
@@ -221,6 +324,7 @@ class ChatModule(BaseModule):
         if not (
             content.get("type") == "text"
             or (content.get("type") == "deleted" and "replaces" in body)
+            or (content.get("type") == "call" and not self.channel.room)
         ):
             raise ConsumerException("chat.unsupported_content_type")
 
@@ -231,10 +335,13 @@ class ChatModule(BaseModule):
             if self.consumer.user.id != other_message.sender_id:
                 # Users may only edit messages by other users if they are mods,
                 # and even then only delete them
-                is_moderator = await self.consumer.world.has_permission_async(
-                    user=self.consumer.user,
-                    room=self.room,
-                    permission=Permission.ROOM_CHAT_MODERATE,
+                is_moderator = (
+                    self.channel.room
+                    and await self.consumer.world.has_permission_async(
+                        user=self.consumer.user,
+                        room=self.channel.room,
+                        permission=Permission.ROOM_CHAT_MODERATE,
+                    )
                 )
                 if body["content"]["type"] != "deleted" or not is_moderator:
                     raise ConsumerException("chat.denied")
@@ -243,16 +350,39 @@ class ChatModule(BaseModule):
         if content.get("type") == "text" and not content.get("body"):
             raise ConsumerException("chat.empty")
 
-        try:
-            event = await self.service.create_event(
-                channel_id=self.channel_id,
-                event_type=event_type,
-                content=content,
-                sender=self.consumer.user,
-                replaces=body.get("replaces", None),
-            )
-        except ChatService.NotAChannelMember:
+        if await self.consumer.user.is_blocked_in_channel_async(self.channel):
             raise ConsumerException("chat.denied")
+
+        if self.consumer.user.is_silenced:
+            # In regular channels, this is already prevented by room permissions, but we need to check for DMs
+            raise ConsumerException("chat.denied")
+
+        # Re-open direct messages. If a user hid a direct message channel, it should re-appear once they get a message
+        if not self.channel.room:
+            async with aioredis() as redis:
+                all_visible = await redis.exists(
+                    f"chat:direct:shownall:{self.channel_id}"
+                )
+            if not all_visible:
+                users = await self.service.show_chanels_to_hidden_users(self.channel_id)
+                for user in users:
+                    await self._broadcast_channel_list(user=user)
+                    async with aioredis() as redis:
+                        await redis.sadd(
+                            f"chat:unread.notify:{self.channel_id}", str(user.id),
+                        )
+            async with aioredis() as redis:
+                await redis.setex(
+                    f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                )
+
+        event = await self.service.create_event(
+            channel=self.channel,
+            event_type=event_type,
+            content=content,
+            sender=self.consumer.user,
+            replaces=body.get("replaces", None),
+        )
         await self.consumer.send_success(
             {"event": {k: v for k, v in event.items() if k != "type"}}
         )
@@ -282,22 +412,53 @@ class ChatModule(BaseModule):
 
     @event("event", refresh_world=True, refresh_user=True)
     async def publish_event(self, body):
-        room = self.consumer.room_cache.get(("channel", body["channel"]))
-        if room:
-            await room.refresh_from_db_if_outdated()
+        channel = self.consumer.channel_cache.get(body["channel"])
+        if channel:
+            if channel.room:
+                await channel.room.refresh_from_db_if_outdated()
         else:
-            room = await get_room(
-                world=self.consumer.world, channel__id=body["channel"]
-            )
-            self.consumer.room_cache["channel", body["channel"]] = room
+            channel = await get_channel(world=self.consumer.world, id=body["channel"])
+            self.consumer.channel_cache[body["channel"]] = channel
 
-        if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.ROOM_CHAT_READ, room=room
+        if channel.room and not await self.consumer.world.has_permission_async(
+            user=self.consumer.user,
+            permission=Permission.ROOM_CHAT_READ,
+            room=channel.room,
         ):
             return
         await self.consumer.send_json(
             ["chat.event", {k: v for k, v in body.items() if k != "type"}]
         )
+
+    @command("direct.create")
+    @require_world_permission(Permission.WORLD_CHAT_DIRECT)
+    async def direct_create(self, body):
+        user_ids = set(body.get("users", []))
+        user_ids.add(self.consumer.user.id)
+
+        channel, created, users = await self.service.get_or_create_direct_channel(
+            user_ids=user_ids, initiating=self.consumer.user.id
+        )
+        if not channel:
+            raise ConsumerException("chat.denied")
+
+        self.channel_id = str(channel.id)
+
+        reply = await self._subscribe()
+        if created:
+            for user in users:
+                event = await self.service.create_event(
+                    channel=channel,
+                    event_type="channel.member",
+                    content={"membership": "join", "user": user.serialize_public(),},
+                    sender=user,
+                )
+                await self.consumer.channel_layer.group_send(
+                    GROUP_CHAT.format(channel=self.channel_id), event,
+                )
+
+        reply["id"] = str(channel.id)
+        await self.consumer.send_success(reply)
 
     async def dispatch_command(self, content):
         self.channel_id = content[2].get("channel")

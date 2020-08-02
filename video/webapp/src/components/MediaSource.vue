@@ -3,7 +3,7 @@
 	transition(name="background-room")
 		.background-room(v-if="background")
 			.description
-				.hint Currently playing
+				.hint {{ $t('MediaSource:room:hint') }}
 				.room-name {{ room.name }}
 			.global-placeholder
 			bunt-icon-button(@click="$emit('close')") close

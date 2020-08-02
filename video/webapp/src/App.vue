@@ -146,10 +146,6 @@ export default {
 		top: 50%
 		left: 50%
 		transform: translate(-50%, -50%)
-	.prompt-enter-active, .prompt-leave-active
-		transition: opacity .5s
-	.prompt-enter, .prompt-leave-to
-		opacity: 0
 	.disconnected-warning, .fatal-error
 		position: fixed
 		top: 0

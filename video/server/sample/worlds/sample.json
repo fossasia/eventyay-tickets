@@ -33,6 +33,7 @@
     ],
     "participant": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:bbb.join",
@@ -44,6 +45,7 @@
     ],
     "room_owner": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:chat.join",
@@ -54,6 +56,7 @@
     ],
     "speaker": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:chat.join",
@@ -63,6 +66,7 @@
     ],
     "moderator": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:chat.join",
@@ -75,6 +79,7 @@
     ],
     "admin": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:chat.join",
@@ -96,6 +101,7 @@
     ],
     "apiuser": [
       "world:view",
+      "world:chat.direct",
       "room:view",
       "room:chat.read",
       "room:chat.join",

@@ -17,6 +17,7 @@ from venueless.core.services.world import (
     create_room,
     get_room_config_for_user,
     get_rooms,
+    notify_world_change,
 )
 from venueless.core.utils.redis import aioredis
 from venueless.live.channels import GROUP_ROOM
@@ -226,7 +227,7 @@ class RoomModule(BaseModule):
                 update_fields=list(update_fields)
             )
             await self.consumer.send_success(RoomConfigSerializer(self.room).data)
-            # TODO: await notify_world_change(self.consumer.world.id)
+            await notify_world_change(self.consumer.world.id)
         else:
             await self.consumer.send_error(code="config.invalid")
 
