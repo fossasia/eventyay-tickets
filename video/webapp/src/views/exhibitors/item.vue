@@ -1,19 +1,26 @@
 <template lang="pug">
-.c-exhibitor
-	template(v-if="exhibitor")
-		.header
-			img.logo(:src="exhibitor.logo")
-			.heading
-				.name {{ exhibitor.name }}
-				.tagline {{ exhibitor.tagline }}
-		scrollbars.content(y)
+scrollbars.c-exhibitor(y)
+	.content-wrapper(v-if="exhibitor")
+		.content
+			//- TODO banner
 			markdown-content.text(:markdown="exhibitor.text")
-			.sm-links
-				a.link.bunt-button(v-for="link in exhibitor.social_media_links", :href="link.url", target="_blank") {{ link.display_text }}
-			.links
-				a.link.bunt-button(v-for="link in exhibitor.links", :href="link.url", target="_blank") {{ link.display_text }}
-		.contact
-			bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
+		.sidebar
+			.header
+				img.logo(:src="exhibitor.logo")
+				.heading
+					h2.name {{ exhibitor.name }}
+					h3.tagline {{ exhibitor.tagline }}
+			.social-media-links
+				a.mdi(v-for="link in exhibitor.social_media_links", :class="`mdi-${link.display_text.toLowerCase()}`", :href="link.url", :title="link.display_text", target="_blank")
+			table.external-links
+				tr(v-for="link in exhibitor.links")
+					th.name {{ link.display_text }}
+					td: a(:href="link.url", target="_blank") {{ link.url }}
+			.contact
+				bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
+			.staff
+				h2 TODO STAFF
+
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
@@ -44,59 +51,75 @@ export default {
 .c-exhibitor
 	flex: auto
 	display: flex
-	flex-direction: column
-	.header
-		flex: none
-		display: flex
-		border-bottom: border-separator()
-		padding: 16px
-		img.logo
-			object-fit: contain
-			height: 130px
-			max-height: 130px
-			max-width: 360px
-		.heading
-			display: flex
-			width: 100%
-			flex-direction: column
-			.name
-				display: flex
-				font-size: 1.8rem
-				text-rendering: optimizelegibility
-				font-weight: bold
-				padding: 0.83rem
-			.tagline
-				display: flex
-				font-size: 1.2rem
-				text-rendering: optimizelegibility
-				font-weight: bold
-				padding: 0.83rem
-	.content
-		flex: 1
-		flex-basis: 10px
-		padding: 16px
-		.links
-			display: flex
-			flex-direction: row
-			margin-top: 8px
-			.bunt-button
-				themed-button-secondary()
-		.sm-links
-			display: flex
-			flex-direction: row
-			margin-top: 8px
-			.bunt-button
-				themed-button-primary()
-	.contact
-		flex: none
-		border-top: border-separator()
-		min-height: 56px
-		padding: 8px 0
-		box-sizing: border-box
+	background-color: $clr-white
+	.content-wrapper
 		display: flex
 		justify-content: center
-		align-items: center
-		.bunt-button
-			themed-button-primary()
-			width: calc(100% - 16px)
+		padding: 8px
+	.content
+		display: flex
+		flex-direction: column
+		width: 100%
+		max-width: 720px
+		padding: 0 16px 0 0
+	.sidebar
+		flex: none
+		min-height: min-content
+		display: flex
+		flex-direction: column
+		width: 320px
+		border: border-separator()
+		border-radius: 4px
+		margin-top: 16px
+		.header
+			flex: none
+			display: flex
+			flex-direction: column
+			border-bottom: border-separator()
+			padding: 8px
+			img.logo
+				object-fit: contain
+				width: 100%
+				height: 160px
+				max-height: 160px
+			.heading
+				display: flex
+				width: 100%
+				flex-direction: column
+				.name
+					margin: 16px 0 8px 0
+				.tagline
+					margin: 0
+		.social-media-links
+			flex: none
+			display: flex
+			border-bottom: border-separator()
+			padding: 4px 16px
+			justify-content: center
+			a
+				font-size: 36px
+				line-height: @font-size
+		.external-links
+			flex: none
+			border-bottom: border-separator()
+			tr
+				height: 24px
+			th
+				font-weight: 400
+				text-align: right
+			td
+				overflow: hidden
+				white-space: nowrap
+				text-overflow: ellipsis
+				max-width: 0
+				width: 100%
+			.name
+				white-space: nowrap
+		.contact
+			flex: none
+			padding: 8px
+			display: flex
+			flex-direction: column
+			.bunt-button
+				themed-button-primary()
 </style>
