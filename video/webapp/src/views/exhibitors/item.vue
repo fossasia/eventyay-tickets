@@ -27,7 +27,7 @@ scrollbars.c-exhibitor(y)
 			table.external-links
 				tr(v-for="link in exhibitor.links")
 					th.name {{ link.display_text }}
-					td: a(:href="link.url", target="_blank") {{ link.url }}
+					td: a(:href="link.url", target="_blank") {{ prettifyUrl(link.url) }}
 			.contact
 				bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 			.staff
@@ -53,6 +53,10 @@ export default {
 		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
 	methods: {
+		prettifyUrl (link) {
+			const url = new URL(link)
+			return url.hostname + (url.pathname !== '/' ? url.pathname : '')
+		},
 		contact () {
 			// TODO: issue chat request
 		},
