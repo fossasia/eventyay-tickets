@@ -1,33 +1,27 @@
 <template lang="pug">
 .c-exhibitor
-	.exhibitor(v-if="exhibitor")
+	template(v-if="exhibitor")
 		.header
-			img.logo(:src="exhibitor.logo" height="150" width="150")
+			img.logo(:src="exhibitor.logo")
 			.heading
 				.name {{ exhibitor.name }}
 				.tagline {{ exhibitor.tagline }}
-		.content(v-scrollbar.y="")
-			.div
-				.text(v-html="markdownContent")
-				.sm-links
-					a.link.bunt-button(v-for="link in exhibitor.social_media_links")(:href="link.url", target="_blank") {{ link.display_text }}
-				.links
-					a.link.bunt-button(v-for="link in exhibitor.links")(:href="link.url", target="_blank") {{ link.display_text }}
+		scrollbars.content(y)
+			markdown-content.text(:markdown="exhibitor.text")
+			.sm-links
+				a.link.bunt-button(v-for="link in exhibitor.social_media_links", :href="link.url", target="_blank") {{ link.display_text }}
+			.links
+				a.link.bunt-button(v-for="link in exhibitor.links", :href="link.url", target="_blank") {{ link.display_text }}
 		.contact
 			bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import api from 'lib/api'
-import MarkdownIt from 'markdown-it'
-import sanitizeHtml from 'sanitize-html'
-
-const markdownIt = MarkdownIt({
-	breaks: true,
-	html: true,
-})
+import MarkdownContent from 'components/MarkdownContent'
 
 export default {
+	components: { MarkdownContent },
 	props: {
 		exhibitorId: String
 	},
@@ -36,43 +30,31 @@ export default {
 			exhibitor: null
 		}
 	},
-	computed: {
-		markdownContent () {
-			if (!this.exhibitor.text) return
-			return sanitizeHtml(markdownIt.render(this.exhibitor.text), {
-				transformTags: {
-					a: sanitizeHtml.simpleTransform('a', {target: '_blank'}),
-				},
-				allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-			})
-		}
-	},
 	async created () {
 		this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
-	mounted () {
-		this.$nextTick(() => {
-		})
-	},
 	methods: {
 		contact () {
-			return // TODO: issue chat request
+			// TODO: issue chat request
 		},
 	}
 }
 </script>
 <style lang="stylus">
 .c-exhibitor
+	flex: auto
 	display: flex
-	.exhibitor
-		display: flex
-		flex-direction: column
-		width: 100%
+	flex-direction: column
 	.header
 		flex: none
 		display: flex
 		border-bottom: border-separator()
 		padding: 16px
+		img.logo
+			object-fit: contain
+			height: 130px
+			max-height: 130px
+			max-width: 360px
 		.heading
 			display: flex
 			width: 100%
