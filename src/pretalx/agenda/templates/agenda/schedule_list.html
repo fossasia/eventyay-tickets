@@ -54,11 +54,11 @@
                                   {% endif %}
                                 </div>
                             </div>
-                          </div>
-                        {% if not schedule.is_archived and talk.submission and not talk.submission.is_deleted %}
+                      {% if not schedule.is_archived and talk.submission and not talk.submission.is_deleted %}
                         </a>
-                        {% endif %}
+                      {% endif %}
                   </div>
+              </div>
               {% endfor %}
         {% else %}
             <div class="no-talks">

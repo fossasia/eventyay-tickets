@@ -506,9 +506,7 @@ header {
     .talk-row {
       display: flex;
       border-bottom: 1px solid $gray-lighter;
-      vertical-align: middle;
       & > * {
-        vertical-align: top;
         padding: 0.7rem;
         a, a:hover {
           text-decoration: none;
@@ -523,6 +521,10 @@ header {
       .talk-time {
         font-weight: bold;
         width: 5rem;
+      }
+      .pretalx-schedule-talk-content {
+        display: flex;
+        flex-direction: column;
       }
     }
   }
