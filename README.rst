@@ -17,7 +17,7 @@
    :alt: Documentation
 
 .. image:: https://img.shields.io/badge/news-blog-3aa57c
-   :target: https://docs.pretalx.org/
+   :target: https://pretalx.com/p/news/
    :alt: Website
 
 .. image:: https://img.shields.io/twitter/url?label=Twitter&logoColor=%234aa57c&style=social&url=https%3A%2F%2Ftwitter.com%2Fpretalx
