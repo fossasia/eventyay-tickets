@@ -112,6 +112,7 @@ ROOT_URLCONF = "pretalx.urls"
 STATIC_URL = config.get("site", "static")
 MEDIA_URL = config.get("site", "media")
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
 
 
 ## SECURITY SETTINGS

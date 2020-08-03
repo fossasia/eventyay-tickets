@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` pretalx now limits file uploads to 10MB.
 - :feature:`979` In the schedule editor, you can now search for talks by speaker name.
 - :feature:`-` pretalx now shows the complete history of logged changes to organisers.
 - :support:`-` pretalx will no longer make alarmist noises about missing migrations.

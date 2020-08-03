@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
@@ -12,8 +10,10 @@ from i18nfield.forms import I18nModelForm
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
     IMAGE_EXTENSIONS,
+    ExtensionFileField,
     PasswordConfirmationField,
     PasswordField,
+    SizeFileField,
 )
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import PublicContent, ReadOnlyFlag
@@ -147,6 +147,9 @@ class SpeakerProfileForm(
         if not self.event.settings.cfp_request_avatar:
             self.fields.pop("avatar", None)
             self.fields.pop("get_gravatar", None)
+        elif "avatar" in self.fields:
+            self.fields["avatar"].extensions = IMAGE_EXTENSIONS
+
         if self.user:
             initial.update(
                 {field: getattr(self.user, field) for field in self.user_fields}
@@ -166,26 +169,6 @@ class SpeakerProfileForm(
             for f in self.USER_FIELDS
             if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
         ]
-
-    def clean_avatar(self):
-        avatar = self.cleaned_data.get("avatar")
-
-        if not avatar:
-            avatar = None
-
-        if avatar:
-            size = getattr(avatar, "_size", None)
-            if avatar.file and size and size > 10 * 1024 * 1024:
-                raise ValidationError(_("Your avatar may not be larger than 10 MB."))
-            extension = Path(avatar.name).suffix.lower()
-            if extension not in IMAGE_EXTENSIONS:
-                raise ValidationError(
-                    _(
-                        "This filetype ({extension}) is not allowed, it has to be one of the following: "
-                    ).format(extension=extension)
-                    + ", ".join(IMAGE_EXTENSIONS)
-                )
-        return avatar
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -225,6 +208,7 @@ class SpeakerProfileForm(
         fields = ("biography",)
         public_fields = ["name", "biography", "avatar"]
         widgets = {
+            "avatar": ExtensionFileField,
             "biography": MarkdownWidget,
         }
 
@@ -319,6 +303,7 @@ class SpeakerInformationForm(I18nModelForm):
             "exclude_unconfirmed",
             "resource",
         )
+        field_classes = {"resource": SizeFileField}
 
 
 class SpeakerFilterForm(forms.Form):

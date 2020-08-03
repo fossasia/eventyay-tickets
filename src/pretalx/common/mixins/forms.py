@@ -5,6 +5,7 @@ from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.translation import gettext_lazy as _
 
+from pretalx.common.forms.fields import SizeFileField
 from pretalx.common.forms.utils import get_help_text, validate_field_length
 from pretalx.common.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
@@ -175,7 +176,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.FILE:
-            field = forms.FileField(
+            field = SizeFileField(
                 label=question.question,
                 required=question.required,
                 disabled=readonly,

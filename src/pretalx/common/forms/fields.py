@@ -1,6 +1,8 @@
 from pathlib import Path
 
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
+from django.core.files.uploadedfile import UploadedFile
 from django.forms import CharField, FileField, ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -46,7 +48,40 @@ class PasswordConfirmationField(CharField):
         super().__init__(*args, **kwargs)
 
 
-class ExtensionFileField(FileField):
+class SizeFileField(FileField):
+    """Takes the intended maximum upload size in bytes."""
+
+    def __init__(self, *args, **kwargs):
+        if "max_size" not in kwargs:  # Allow None, but only explicitly
+            self.max_size = settings.FILE_UPLOAD_DEFAULT_LIMIT
+        else:
+            self.max_size = kwargs.pop("max_size")
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def _format_size(num):
+        for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:  # Future proof 10/10
+            if abs(num) < 1024:
+                return f"{num:3.1f}{unit}B"
+            num /= 1024
+        return f"{num:.1f}YiB"  # Future proof 11/10
+
+    def clean(self, *args, **kwargs):
+        data = super().clean(*args, **kwargs)
+        if (
+            self.max_size
+            and isinstance(data, UploadedFile)
+            and data.size > self.max_size
+        ):
+            raise ValidationError(
+                _("Please do not upload files larger than {size}!").format(
+                    size=SizeFileField._format_size(self.max_size)
+                )
+            )
+        return data
+
+
+class ExtensionFileField(SizeFileField):
     widget = ClearableBasenameFileInput
 
     def __init__(self, *args, **kwargs):

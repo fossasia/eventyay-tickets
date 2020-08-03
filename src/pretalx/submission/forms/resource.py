@@ -1,5 +1,6 @@
 from django import forms
 
+from pretalx.common.forms.fields import SizeFileField
 from pretalx.submission.models import Resource
 
 
@@ -12,3 +13,4 @@ class ResourceForm(forms.ModelForm):
     class Meta:
         model = Resource
         fields = ["resource", "description"]
+        field_classes = {"resource": SizeFileField}
