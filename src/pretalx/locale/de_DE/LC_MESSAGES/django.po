@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-30 14:22+0000\n"
-"PO-Revision-Date: 2020-07-27 21:56+0200\n"
+"PO-Revision-Date: 2020-08-05 00:09+0200\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -298,10 +298,8 @@ msgid "No speakers"
 msgstr "Keine Vortragenden"
 
 #: pretalx/agenda/views/schedule.py:427
-#, fuzzy
-#| msgid "Your schedule is currently publicly visible."
 msgid "Our schedule is not live yet."
-msgstr "Das Programm ist derzeit öffentlich einsehbar."
+msgstr "Das Programm ist derzeit nicht öffentlich einsehbar."
 
 #: pretalx/agenda/views/talk.py:166
 #, python-brace-format
@@ -2229,9 +2227,6 @@ msgid "Event end date"
 msgstr "Veranstaltungsende"
 
 #: pretalx/event/models/event.py:132
-#, fuzzy
-#| msgid ""
-#| "All event dates will be localized and interpreted to be in this timezone."
 msgid ""
 "All event dates will be localised and interpreted to be in this timezone."
 msgstr "Alle Veranstaltungsdaten werden in dieser Zeitzone angezeigt."
@@ -2922,16 +2917,12 @@ msgid "all"
 msgstr "alle"
 
 #: pretalx/orga/forms/cfp.py:321
-#, fuzzy
-#| msgid "All confirmed speakers"
 msgid "Accepted or confirmed speakers"
-msgstr "Alle zugesagten Vortragenden"
+msgstr "Angenommene oder zugesagte Vortragende"
 
 #: pretalx/orga/forms/cfp.py:322
-#, fuzzy
-#| msgid "All confirmed speakers"
 msgid "Confirmed speakers"
-msgstr "Alle zugesagten Vortragenden"
+msgstr "Zugesagte Vortragende"
 
 #: pretalx/orga/forms/event.py:25
 msgid "Active languages"
@@ -4005,10 +3996,8 @@ msgid "Answer"
 msgstr "Antwort"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:73
-#, fuzzy
-#| msgid "Amount"
 msgid "Count"
-msgstr "Betrag"
+msgstr "Anzahl"
 
 #: pretalx/orga/templates/orga/cfp/question_detail.html:74
 #, python-format
@@ -4336,10 +4325,8 @@ msgid "Click here to change"
 msgstr "Klick hier, um das zu ändern"
 
 #: pretalx/orga/templates/orga/event/dashboard.html:82
-#, fuzzy
-#| msgid "History"
 msgid "Full history"
-msgstr "Verlauf"
+msgstr "Kompletter Verlauf"
 
 #: pretalx/orga/templates/orga/event/delete.html:5
 msgid "Do you really want to delete this event?"
@@ -4355,10 +4342,8 @@ msgstr ""
 "werden."
 
 #: pretalx/orga/templates/orga/event/history.html:5
-#, fuzzy
-#| msgid "History"
 msgid "Event History"
-msgstr "Verlauf"
+msgstr "Veranstaltungsverlauf"
 
 #: pretalx/orga/templates/orga/event/live.html:5
 msgid "Deactivate event"
@@ -5585,10 +5570,8 @@ msgid "List filtered by answers to question \"%(question)s\"."
 msgstr ""
 
 #: pretalx/orga/templates/orga/submission/list.html:56
-#, fuzzy
-#| msgid "Remove team member"
 msgid "Remove filter"
-msgstr "Team-Mitglied entfernen"
+msgstr "Filter entfernen"
 
 #: pretalx/orga/templates/orga/submission/list.html:70
 msgid "Sort by title (a-z)"
@@ -6459,10 +6442,8 @@ msgid "New {event} submission: {title}"
 msgstr "Neue Einreichung ({event}): {title}"
 
 #: pretalx/orga/views/submission.py:628 pretalx/orga/views/submission.py:640
-#, fuzzy
-#| msgid "headline"
 msgid "Deadline"
-msgstr "Überschrift"
+msgstr "Einreichungsschluss"
 
 #: pretalx/person/exporters.py:16
 msgid "Speaker CSV"
@@ -6692,10 +6673,6 @@ msgid "A description for attendees, for example directions."
 msgstr "Eine Beschreibung, z.B. eine Wegbeschreibung."
 
 #: pretalx/schedule/models/room.py:34
-#, fuzzy
-#| msgid ""
-#| "Information relevant for speakers scheduled in this room, for example "
-#| "room size, special directions, available adapters for video input …"
 msgid ""
 "Information relevant for speakers scheduled in this room, for example room "
 "size, special directions, available adaptors for video input …"
@@ -7012,9 +6989,6 @@ msgid "Maximum text length"
 msgstr "Maximallänge"
 
 #: pretalx/submission/models/question.py:156
-#, fuzzy
-#| msgid ""
-#| "Maximum allowed text lenght in characters or words (set in CfP settings)."
 msgid ""
 "Maximum allowed text length in characters or words (set in CfP settings)."
 msgstr ""
