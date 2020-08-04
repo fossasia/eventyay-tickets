@@ -21,7 +21,7 @@ export default {
 <style lang="stylus">
 .c-iframe-page
 	flex: auto
-	height: 100%
+	height: auto  // 100% breaks safari
 	display: flex
 	flex-direction: column
 	position: relative
