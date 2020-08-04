@@ -114,6 +114,12 @@ export default new Vuex.Store({
 			state.rooms.push(room)
 			// TODO ordering?
 		},
+		'api::room.delete' ({state}, data) {
+			state.rooms = state.rooms.filter((r) => (r.id !== data.id))
+			if (state.activeRoom.id === data.id) {
+				state.activeRoom = state.rooms[0]
+			}
+		},
 		'api::room.reaction' ({state}, {room, reactions}) {
 			if (state.activeRoom.id !== room) return
 			state.reactions = reactions

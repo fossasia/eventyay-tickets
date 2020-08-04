@@ -185,18 +185,15 @@ class RoomModule(BaseModule):
 
     @event("create", refresh_user=True, refresh_world=True)
     async def push_room_info(self, body):
-        await self.consumer.world.refresh_from_db_if_outdated()
-        await self.consumer.user.refresh_from_db_if_outdated()
-        if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.ROOM_VIEW
-        ):
+        conf = await get_room_config_for_user(
+            body["room"], self.consumer.world.id, self.consumer.user
+        )
+        if "room:view" not in conf["permissions"]:
             return
         await self.consumer.send_json(
             [
                 body["type"],
-                await get_room_config_for_user(
-                    body["room"], self.consumer.world.id, self.consumer.user
-                ),
+                conf,
             ]
         )
 
@@ -243,4 +240,15 @@ class RoomModule(BaseModule):
         await get_channel_layer().group_send(
             f"world.{self.consumer.world.id}",
             {"type": "room.delete", "room": str(self.room.id)},
+        )
+
+    @event("delete")
+    async def push_room_delete(self, body):
+        await self.consumer.send_json(
+            [
+                body["type"],
+                {
+                    "id": body["room"]
+                }
+            ]
         )
