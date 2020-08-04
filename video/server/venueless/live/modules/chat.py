@@ -220,7 +220,7 @@ class ChatModule(BaseModule):
     async def _broadcast_channel_list(self, user=None):
         if not user:
             user = self.consumer.user
-        user.refresh_from_db_if_outdated()
+        await user.refresh_from_db_if_outdated()
         await self.consumer.user_broadcast(
             "chat.channels",
             {
