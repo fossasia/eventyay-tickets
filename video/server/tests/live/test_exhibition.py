@@ -2,8 +2,10 @@ import uuid
 from contextlib import asynccontextmanager
 
 import pytest
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 
+from venueless.core.models import User
 from venueless.routing import application
 
 
@@ -112,3 +114,77 @@ async def test_get(world, exhibition_room):
                 "staff": [],
             },
         ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_exhibition_contact(world, exhibition_room):
+    async with world_communicator() as c_staff, world_communicator() as c1:
+        # get an exhibitor
+        await c_staff.send_json_to(
+            ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        e = response[2]["exhibitors"][0]
+
+        # add staff
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c_staff.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+        await c_staff.send_json_to(
+            [
+                "exhibition.add_staff",
+                123,
+                {
+                    "exhibitor": str(e["id"]),
+                    "staff": str(c_staff.context["user.config"]["id"]),
+                },
+            ]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+
+        await c_staff.send_json_to(["exhibition.get", 123, {"exhibitor": str(e["id"])}])
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["exhibitor"]["staff"][0] == str(
+            c_staff.context["user.config"]["id"]
+        )
+
+        # issue contact request
+        await c1.send_json_to(["exhibition.contact", 123, {"exhibitor": str(e["id"])}])
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        # receive request and answer
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        contact_request_id = response[2]["contact_request"]["id"]
+        await c_staff.send_json_to(
+            [
+                "exhibition.contact_accept",
+                123,
+                {"contact_request": str(contact_request_id)},
+            ]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        # try to answer same request twice
+        await c_staff.send_json_to(
+            [
+                "exhibition.contact_accept",
+                123,
+                {"contact_request": str(contact_request_id)},
+            ]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "error"
+        assert response[2]["code"] == "exhibition.unknown_contact_request"

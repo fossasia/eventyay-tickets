@@ -2,6 +2,7 @@ from .auth import User
 from .bbb import BBBCall, BBBServer
 from .chat import Channel, ChatEvent, Membership
 from .exhibitor import (
+    ContactRequest,
     Exhibitor,
     ExhibitorLink,
     ExhibitorSocialMediaLink,
@@ -23,4 +24,5 @@ __all__ = [
     "ExhibitorStaff",
     "ExhibitorLink",
     "ExhibitorSocialMediaLink",
+    "ContactRequest",
 ]

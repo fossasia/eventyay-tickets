@@ -78,3 +78,26 @@ class ExhibitorStaff(models.Model):
         r = super().delete(*args, **kwargs)
         self.user.touch()
         return r
+
+
+class ContactRequest(models.Model):
+    class States(models.TextChoices):
+        OPEN = "open"
+        MISSED = "missed"
+        ANSWERED = "answered"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    exhibitor = models.ForeignKey(
+        to=Exhibitor,
+        db_index=True,
+        related_name="contact_requests",
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        "User",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="exhibitor_contact_requests",
+    )
+    state = models.CharField(max_length=8, default=States.OPEN, choices=States.choices)
