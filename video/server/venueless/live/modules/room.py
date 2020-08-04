@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models import Room
+from venueless.core.models import Room, Channel
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import end_view, start_view
@@ -225,6 +225,10 @@ class RoomModule(BaseModule):
             await database_sync_to_async(self.room.save)(
                 update_fields=list(update_fields)
             )
+            if "chat.native" in set(m["type"] for m in self.room.module_config):
+                await database_sync_to_async(Channel.objects.get_or_create)(
+                    world_id=self.consumer.world.pk, room=self.room
+                )
             await self.consumer.send_success(RoomConfigSerializer(self.room).data)
             await notify_world_change(self.consumer.world.id)
         else:
