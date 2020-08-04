@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models import Room, Channel
+from venueless.core.models import Channel, Room
 from venueless.core.permissions import Permission
 from venueless.core.services.reactions import store_reaction
 from venueless.core.services.room import end_view, start_view

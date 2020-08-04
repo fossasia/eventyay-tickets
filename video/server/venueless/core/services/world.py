@@ -132,14 +132,15 @@ def _create_room(data, with_channel=False, permission_preset="public", creator=N
 
 async def create_room(world, data, creator):
     types = {m["type"] for m in data.get("modules", [])}
-    if types == {"chat.native"}:
+    if "chat.native" in types:
         if not await world.has_permission_async(
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_CHAT
         ):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.", code="denied"
             )
-        data.get("modules", [])[0]["config"] = {}
+        m = [m for m in data.get("modules", []) if m["type"] == "chat.native"][0]
+        m["config"] = {"volatile": m.get("config", {}).get("volatile", False)}
     elif types == {"call.bigbluebutton"}:
         if not await world.has_permission_async(
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_BBB
@@ -147,7 +148,8 @@ async def create_room(world, data, creator):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.", code="denied"
             )
-        data.get("modules", [])[0]["config"] = {}
+        m = [m for m in data.get("modules", []) if m["type"] == "call.bigbluebutton"][0]
+        m["config"] = {}
     elif "livestream.native" in types:
         if not await world.has_permission_async(
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_STAGE
@@ -155,9 +157,11 @@ async def create_room(world, data, creator):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.", code="denied"
             )
+        m = [m for m in data.get("modules", []) if m["type"] == "livestream.native"][0]
+        m["config"] = {"hls_url": m.get("config", {}).get("hls_url", "")}
     else:
         raise ValidationError(
-            f"The dynamic creation of rooms with the modules {types} is currently not allowed.",
+            f"The dynamic creation of rooms with the modules {types} is cuarrently not allowed.",
             code="invalid",
         )
 
