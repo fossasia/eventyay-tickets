@@ -191,10 +191,7 @@ class RoomModule(BaseModule):
         if "room:view" not in conf["permissions"]:
             return
         await self.consumer.send_json(
-            [
-                body["type"],
-                conf,
-            ]
+            [body["type"], conf,]
         )
 
     @command("config.list")
@@ -244,11 +241,4 @@ class RoomModule(BaseModule):
 
     @event("delete")
     async def push_room_delete(self, body):
-        await self.consumer.send_json(
-            [
-                body["type"],
-                {
-                    "id": body["room"]
-                }
-            ]
-        )
+        await self.consumer.send_json([body["type"], {"id": body["room"]}])
