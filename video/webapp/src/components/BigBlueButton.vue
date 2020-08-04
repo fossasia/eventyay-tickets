@@ -43,6 +43,7 @@ export default {
 			iframe.allow = 'camera; autoplay; microphone; fullscreen; display-capture'
 			iframe.allowfullscreen = true
 			iframe.allowusermedia = true
+			iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox
 			const app = document.querySelector('#app')
 			app.appendChild(iframe)
 			this.iframe = iframe
