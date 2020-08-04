@@ -9,6 +9,7 @@
 			.talk-info(v-if="currentTalk")
 				.current-talk Current talk
 				h3 {{ currentTalk.title }}
+		bunt-icon-button(@click="showRecordingsPrompt = true", :tooltip="$t('Room:recordings:tooltip')", tooltipPlacement="left", v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')") file-video-outline
 	.main
 		.stage(v-if="modules['livestream.native']")
 			.livestream-placeholder
@@ -20,9 +21,11 @@
 		markdown-page(v-else-if="modules['page.markdown']", :module="modules['page.markdown']")
 		iframe-page(v-else-if="modules['page.iframe']", :module="modules['page.iframe']")
 		chat(v-if="modules['chat.native']", :module="modules['chat.native']", :mode="room.modules.length === 1 ? 'standalone' : 'compact'", :key="room.id")
+	transition(name="prompt")
+		recordings-prompt(:room="room", v-if="showRecordingsPrompt", @close="showRecordingsPrompt = false")
 </template>
 <script>
-import { mapState } from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import moment from 'moment'
 import Chat from 'components/Chat'
 import Livestream from 'components/Livestream'
@@ -30,19 +33,22 @@ import MarkdownPage from 'components/MarkdownPage'
 import IframePage from 'components/IframePage'
 import ReactionsBar from 'components/ReactionsBar'
 import ReactionsOverlay from 'components/ReactionsOverlay'
+import RecordingsPrompt from 'components/RecordingsPrompt'
 
 export default {
 	name: 'room',
 	props: {
 		roomId: String
 	},
-	components: { Chat, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay },
+	components: { Chat, Livestream, MarkdownPage, IframePage, ReactionsBar, ReactionsOverlay, RecordingsPrompt },
 	data () {
 		return {
+			showRecordingsPrompt: false,
 			activeStageTool: null // reaction, qa
 		}
 	},
 	computed: {
+		...mapGetters(['hasPermission']),
 		...mapState(['connected', 'world', 'rooms', 'schedule']),
 		room () {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
@@ -87,6 +93,7 @@ export default {
 		height: 56px
 		box-sizing: border-box
 		border-bottom: border-separator()
+		justify-content: space-between
 		img
 			height: 48px
 		.room-info-wrapper

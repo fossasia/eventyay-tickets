@@ -29,6 +29,7 @@ def default_roles():
     moderator = speaker + [
         Permission.ROOM_CHAT_MODERATE,
         Permission.ROOM_ANNOUNCE,
+        Permission.ROOM_BBB_RECORDINGS,
         Permission.WORLD_ANNOUNCE,
     ]
     admin = (

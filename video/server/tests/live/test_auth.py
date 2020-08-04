@@ -367,6 +367,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:bbb.join",
             "room:bbb.moderate",
             "room:chat.moderate",
+            "room:bbb.recordings",
             "room:announce",
             "world:announce",
             "world:chat.direct",
@@ -378,6 +379,7 @@ async def test_auth_with_jwt_token_and_permission_traits(world):
             "room:chat.send",
             "room:bbb.join",
             "room:bbb.moderate",
+            "room:bbb.recordings",
             "room:chat.moderate",
             "room:announce",
         }

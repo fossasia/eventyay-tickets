@@ -1,9 +1,11 @@
 import hashlib
 import logging
 import random
+from datetime import datetime
 from urllib.parse import urlencode, urljoin
 
 import aiohttp
+import pytz
 from channels.db import database_sync_to_async
 from django.db import transaction
 from django.db.models import F, Q, Value
@@ -83,6 +85,11 @@ def get_create_params_for_call_id(call_id, record, user):
 
 
 @database_sync_to_async
+def get_call_for_room(room):
+    return BBBCall.objects.select_related("server").filter(room=room).first()
+
+
+@database_sync_to_async
 @transaction.atomic
 def get_create_params_for_room(
     room, record, voice_bridge, guest_policy, prefer_server=None
@@ -121,16 +128,16 @@ def get_create_params_for_room(
 
 
 class BBBService:
-    def __init__(self, world_id):
-        self.world_id = world_id
+    def __init__(self, world):
+        self.world = world
 
-    async def _create(self, url):
+    async def _get(self, url):
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(URL(url, encoded=True)) as resp:
                     if resp.status != 200:
                         logger.error(
-                            f"Could not create BBB meeting. Return code: {resp.status}"
+                            f"Could not contact BBB. Return code: {resp.status}"
                         )
                         return False
 
@@ -138,12 +145,12 @@ class BBBService:
 
                 root = etree.fromstring(body)
                 if root.xpath("returncode")[0].text != "SUCCESS":
-                    logger.error(f"Could not create BBB meeting. Response: {body}")
+                    logger.error(f"Could not contact BBB. Response: {body}")
                     return False
         except:
-            logger.exception("Could not create BBB meeting.")
+            logger.exception("Could not contact BBB.")
             return False
-        return True
+        return root
 
     async def get_join_url_for_room(self, room, user, moderator=False):
         m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
@@ -158,7 +165,7 @@ class BBBService:
             else "ALWAYS_ACCEPT",
         )
         create_url = get_url("create", create_params, server.url, server.secret)
-        if not await self._create(create_url):
+        if await self._get(create_url) is False:
             return
 
         return get_url(
@@ -186,7 +193,7 @@ class BBBService:
         if not create_params:
             return
         create_url = get_url("create", create_params, server.url, server.secret)
-        if not await self._create(create_url):
+        if await self._get(create_url) is False:
             return
 
         return get_url(
@@ -201,3 +208,46 @@ class BBBService:
             server.url,
             server.secret,
         )
+
+    async def get_recordings_for_room(self, room):
+        call = await get_call_for_room(room)
+        recordings_url = get_url(
+            "getRecordings",
+            {"meetingID": call.meeting_id, "state": "any"},
+            call.server.url,
+            call.server.secret,
+        )
+        root = await self._get(recordings_url)
+        if root is False:
+            return []
+
+        tz = pytz.timezone(self.world.timezone)
+        recordings = []
+        for rec in root.xpath("recordings/recording"):
+            url = None
+            for f in rec.xpath("playback/format"):
+                if f.xpath("type")[0].text != "presentation":
+                    continue
+                url = f.xpath("url")[0].text
+            recordings.append(
+                {
+                    "start": (
+                        datetime.utcfromtimestamp(
+                            int(rec.xpath("startTime")[0].text) / 1000
+                        )
+                    )
+                    .astimezone(tz)
+                    .isoformat(),
+                    "end": (
+                        datetime.utcfromtimestamp(
+                            int(rec.xpath("endTime")[0].text) / 1000
+                        )
+                    )
+                    .astimezone(tz)
+                    .isoformat(),
+                    "participants": rec.xpath("participants")[0].text,
+                    "state": rec.xpath("state")[0].text,
+                    "url": url,
+                }
+            )
+        return recordings

@@ -15,9 +15,13 @@ are defined::
     world:announce
     world:secrets
     world:api
-    world:rooms.create
+    world:graphs
+    world:rooms.create.stage
+    world:rooms.create.chat
+    world:rooms.create.bbb
     world:users.list
     world:users.manage
+    world:chat.direct
     room:announce
     room:view
     room:update
@@ -29,6 +33,7 @@ are defined::
     room:chat.moderate
     room:bbb.join
     room:bbb.moderate
+    room:bbb.recordings
 
 These strings are also exposed through the API to tell the client with operations are permitted.
 

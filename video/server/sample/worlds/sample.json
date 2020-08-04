@@ -73,6 +73,7 @@
       "room:chat.send",
       "room:bbb.join",
       "room:bbb.moderate",
+      "room:bbb.recordings",
       "room:chat.moderate",
       "room:announce",
       "world:announce"
@@ -86,6 +87,7 @@
       "room:chat.send",
       "room:bbb.join",
       "room:bbb.moderate",
+      "room:bbb.recordings",
       "room:chat.moderate",
       "room:announce",
       "world:rooms.create.stage",
@@ -108,6 +110,7 @@
       "room:chat.send",
       "room:bbb.join",
       "room:bbb.moderate",
+      "room:bbb.recordings",
       "room:chat.moderate",
       "room:announce",
       "world:rooms.create.stage",

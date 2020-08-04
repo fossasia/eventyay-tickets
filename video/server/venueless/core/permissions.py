@@ -25,6 +25,7 @@ class Permission(Enum):
     ROOM_CHAT_MODERATE = "room:chat.moderate"
     ROOM_BBB_JOIN = "room:bbb.join"
     ROOM_BBB_MODERATE = "room:bbb.moderate"
+    ROOM_BBB_RECORDINGS = "room:bbb.recordings"
 
 
 MAX_PERMISSIONS_IF_SILENCED = {
