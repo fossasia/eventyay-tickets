@@ -10,6 +10,7 @@ export default {
 	'CreateStagePrompt:headline:text': 'Create a new stage',
 	'CreateStagePrompt:submit:label': 'Create',
 	'CreateStagePrompt:name:label': 'Name',
+	'CreateStagePrompt:url:label': 'HLS URL',
 	'CreateStagePrompt:name:placeholder': 'fancyawesomestage',
 	'CreateChatPrompt:headline:text': 'Create a new channel',
 	'CreateChatPrompt:intro:text': 'Create a new place to discuss a topic you\'d like to talk about.',
