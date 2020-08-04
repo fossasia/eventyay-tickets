@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-iframe-page
-	bunt-progress-circular(size="huge", :page="true")
-	iframe(:src="this.module.config.url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia)
+	bunt-progress-circular(size="huge", :page="true", v-if="loading")
+	iframe(:src="this.module.config.url", allow="camera; autoplay; microphone; fullscreen; display-capture", allowfullscreen, allowusermedia, @load="loaded")
 </template>
 <script>
 export default {
@@ -13,9 +13,15 @@ export default {
 	},
 	data () {
 		return {
-			url: null
+			url: null,
+			loading: false,
 		}
 	},
+	methods: {
+		loaded () {
+			this.loading = false
+		}
+	}
 }
 </script>
 <style lang="stylus">
