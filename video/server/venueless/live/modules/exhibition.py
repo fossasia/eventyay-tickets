@@ -51,13 +51,8 @@ class ExhibitionModule(BaseModule):
                 GROUP_USER.format(id=str(user_id)),
                 {"type": "exhibition.contact_request", "contact_request": request,},
             )
-        await self.consumer.send_success()
 
     @command("contact_cancel")
-    @room_action(
-        permission_required=Permission.ROOM_EXHIBITION_CONTACT,
-        module_required="exhibition.native",
-    )
     async def contact_cancel(self, body):
         request = await self.service.missed(contact_request_id=body["contact_request"])
         if not request:
@@ -68,7 +63,7 @@ class ExhibitionModule(BaseModule):
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {"type": "exhibition.contact_cancel", "contact_request": request,},
+                {"type": "exhibition.contact_close", "contact_request": request,},
             )
 
     @command("contact_accept")
@@ -78,11 +73,15 @@ class ExhibitionModule(BaseModule):
             await self.consumer.send_error("exhibition.unknown_contact_request")
             return
         await self.consumer.send_success()
+        await self.consumer.channel_layer.group_send(
+            GROUP_USER.format(id=request["user_id"]),
+            {"type": "exhibition.contact_accepted", "contact_request": request,},
+        )
         staff = await self.service.get_staff(exhibitor_id=request["exhibitor_id"])
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {"type": "exhibition.contact_cancel", "contact_request": request,},
+                {"type": "exhibition.contact_close", "contact_request": request,},
             )
 
     @command("add_staff")
@@ -100,6 +99,12 @@ class ExhibitionModule(BaseModule):
     async def contact_request(self, body):
         await self.consumer.send_success({"contact_request": body["contact_request"]})
 
-    @event("contact_cancel")
+    @event("contact_accepted")
+    async def contact_accepted(self, body):
+        await self.consumer.send_success({"contact_accepted": body["contact_request"]})
+
+    @event("contact_close")
     async def contact_request_cancel(self, body):
-        await self.consumer.send_success({"contact_request": body["contact_request"]})
+        await self.consumer.send_success(
+            {"contact_request_close": body["contact_request"]}
+        )

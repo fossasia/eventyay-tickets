@@ -80,13 +80,7 @@ class ExhibitionService:
         if not e:
             return None
         request = ContactRequest.objects.create(exhibitor=e, user=user,)
-        request = dict(
-            id=str(request.id),
-            exhibitor_id=str(request.exhibitor.id),
-            user_id=str(request.user.id),
-            state=request.state,
-        )
-        return request
+        return request.serialize()
 
     @database_sync_to_async
     def missed(self, contact_request_id):
@@ -94,7 +88,8 @@ class ExhibitionService:
         if not r:
             return None
         r.state = "missed"
-        return r.save(update_fields=["state"])
+        r.save(update_fields=["state"])
+        return r.serialize()
 
     @database_sync_to_async
     def accept(self, contact_request_id):
@@ -105,13 +100,7 @@ class ExhibitionService:
             return None
         r.state = "answered"
         r.save(update_fields=["state"])
-        r = dict(
-            id=str(r.id),
-            exhibitor_id=str(r.exhibitor.id),
-            user_id=str(r.user.id),
-            state=r.state,
-        )
-        return r
+        return r.serialize()
 
     @database_sync_to_async
     def add_staff(self, exhibitor_id, user_id):

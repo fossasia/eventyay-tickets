@@ -101,3 +101,11 @@ class ContactRequest(models.Model):
         related_name="exhibitor_contact_requests",
     )
     state = models.CharField(max_length=8, default=States.OPEN, choices=States.choices)
+
+    def serialize(self):
+        return dict(
+            id=str(self.id),
+            exhibitor_id=str(self.exhibitor.id),
+            user_id=str(self.user.id),
+            state=self.state,
+        )
