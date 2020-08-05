@@ -28,9 +28,9 @@ from pretalx.orga.forms.cfp import (
     AnswerOptionForm,
     CfPSettingsForm,
     QuestionFilterForm,
+    ReminderFilterForm,
     SubmitterAccessCodeForm,
 )
-from pretalx.person.forms import SpeakerFilterForm
 from pretalx.submission.models import (
     AnswerOption,
     CfP,
@@ -334,8 +334,8 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
     @context
     @cached_property
     def filter_form(self):
-        data = self.request.GET if self.request.method == "GET" else self.request.POST
-        return SpeakerFilterForm(data)
+        data = None if self.request.method == "GET" else self.request.POST
+        return ReminderFilterForm(data, event=self.request.event)
 
     @staticmethod
     def get_missing_answers(*, questions, person, submissions):
@@ -358,26 +358,19 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
             return redirect(request.path)
         if not getattr(request.event, "question_template", None):
             request.event.build_initial_data()
-        if self.filter_form.cleaned_data["role"] == "true":
-            people = set(request.event.speakers)
-            submissions = request.event.talks
-        elif self.filter_form.cleaned_data["role"] == "false":
-            people = set(request.event.submitters) - set(request.event.speakers)
-            submissions = request.event.submissions.exclude(
-                code__in=request.event.talks.values_list("code", flat=True)
-            )
-        else:
-            people = set(request.event.submitters)
-            submissions = request.event.submissions.all()
-
-        mandatory_questions = request.event.questions.filter(required=True)
+        submissions = self.filter_form.get_submissions()
+        people = request.event.submitters.filter(submissions__in=submissions)
+        questions = (
+            self.filter_form.cleaned_data["questions"]
+            or self.filter_form.get_question_queryset()
+        )
         data = {
             "url": request.event.urls.user_submissions.full(),
             "event_name": request.event.name,
         }
         for person in people:
             missing = self.get_missing_answers(
-                questions=mandatory_questions, person=person, submissions=submissions
+                questions=questions, person=person, submissions=submissions
             )
             if missing:
                 data["questions"] = "\n".join(

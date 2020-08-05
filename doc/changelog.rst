@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`-` When you send out reminders about unanswered questions, you can now target specific questions, or tracks, or submission types.
 - :feature:`-` pretalx now limits file uploads to 10MB.
 - :feature:`979` In the schedule editor, you can now search for talks by speaker name.
 - :feature:`-` pretalx now shows the complete history of logged changes to organisers.

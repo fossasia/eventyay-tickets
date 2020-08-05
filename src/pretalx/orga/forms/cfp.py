@@ -342,13 +342,11 @@ class QuestionFilterForm(forms.Form):
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
 
-    def get_question_information(self, question):
-        result = {}
+    def get_submissions(self):
         role = self.cleaned_data["role"]
         track = self.cleaned_data.get("track")
         submission_type = self.cleaned_data["submission_type"]
         talks = self.event.submissions.all()
-        speakers = self.event.submitters.all()
         if role == "accepted":
             talks = talks.filter(Q(state="accepted") | Q(state="confirmed"))
         elif role == "confirmed":
@@ -357,7 +355,12 @@ class QuestionFilterForm(forms.Form):
             talks = talks.filter(track=track)
         if submission_type:
             talks = talks.filter(submission_type=submission_type)
-        speakers = speakers.filter(submissions__in=talks)
+        return talks
+
+    def get_question_information(self, question):
+        result = {}
+        talks = self.get_submissions()
+        speakers = self.event.submitters.filter(submissions__in=talks)
         answers = question.answers.filter(
             Q(person__in=speakers) | Q(submission__in=talks)
         )
@@ -383,3 +386,21 @@ class QuestionFilterForm(forms.Form):
             )
         result["grouped_answers"] = grouped_answers
         return result
+
+
+class ReminderFilterForm(QuestionFilterForm):
+    questions = SafeModelMultipleChoiceField(
+        Question.objects.none(),
+        required=False,
+        help_text=_("If you select no question, all questions will be used."),
+        label=_("Questions"),
+    )
+
+    def get_question_queryset(self):
+        return Question.objects.filter(
+            event=self.event, target__in=["speaker", "submission"],
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["questions"].queryset = self.get_question_queryset()

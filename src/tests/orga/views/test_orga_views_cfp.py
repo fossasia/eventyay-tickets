@@ -440,7 +440,7 @@ def test_can_edit_choice_question(orga_client, event, choice_question):
         assert str(choice_question.options.first().answer) == "African"
 
 
-@pytest.mark.parametrize("role,count", (("true", 1), ("false", 1), ("", 2)))
+@pytest.mark.parametrize("role,count", (("accepted", 1), ("confirmed", 1), ("", 2)))
 @pytest.mark.django_db
 def test_can_remind_speaker_question(
     orga_client,
@@ -454,12 +454,8 @@ def test_can_remind_speaker_question(
     role,
     count,
 ):
+    question = speaker_question
     with scope(event=event):
-        question = speaker_question
-        question.required = True
-        question.save()
-        review_question.required = True
-        review_question.save()
         original_count = QueuedMail.objects.count()
     response = orga_client.post(
         event.cfp.urls.remind_questions, {"role": role}, follow=True
@@ -469,7 +465,7 @@ def test_can_remind_speaker_question(
         assert QueuedMail.objects.count() == original_count + count
 
 
-@pytest.mark.parametrize("role,count", (("true", 1), ("false", 1), ("", 2)))
+@pytest.mark.parametrize("role,count", (("accepted", 1), ("confirmed", 1), ("", 2)))
 @pytest.mark.django_db
 def test_can_remind_submission_question(
     orga_client,
@@ -483,8 +479,30 @@ def test_can_remind_submission_question(
     count,
 ):
     with scope(event=event):
-        question.required = True
-        question.save()
+        original_count = QueuedMail.objects.count()
+    response = orga_client.post(
+        event.cfp.urls.remind_questions, {"role": role}, follow=True
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert QueuedMail.objects.count() == original_count + count
+
+
+@pytest.mark.parametrize("role,count", (("accepted", 1), ("confirmed", 1), ("", 2)))
+@pytest.mark.django_db
+def test_can_remind_multiple_questions(
+    orga_client,
+    event,
+    question,
+    speaker_question,
+    speaker,
+    slot,
+    other_speaker,
+    other_submission,
+    role,
+    count,
+):
+    with scope(event=event):
         original_count = QueuedMail.objects.count()
     response = orga_client.post(
         event.cfp.urls.remind_questions, {"role": role}, follow=True

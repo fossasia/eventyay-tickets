@@ -182,8 +182,7 @@ class Question(LogMixin, models.Model):
         toggle = "{base}toggle"
 
     def __str__(self):
-        """Help when debugging."""
-        return f"Question(event={self.event.slug}, variant={self.variant}, target={self.target}, question={self.question})"
+        return str(self.question)
 
     def missing_answers(
         self, filter_speakers: list = False, filter_talks: list = False
