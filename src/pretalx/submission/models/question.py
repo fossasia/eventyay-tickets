@@ -322,3 +322,7 @@ class Answer(LogMixin, FileCleanupMixin, models.Model):
             return self.answer_file.url if self.answer_file else ""
         if self.question.variant in ("choices", "multiple_choice"):
             return ", ".join(str(option.answer) for option in self.options.all())
+
+    @property
+    def is_answered(self):
+        return bool(self.answer_string)

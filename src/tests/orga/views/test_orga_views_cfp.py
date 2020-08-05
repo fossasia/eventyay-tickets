@@ -523,7 +523,7 @@ def test_can_remind_submission_question_broken_filter(
     assert "Could not send mails" in response.content.decode()
 
 
-@pytest.mark.parametrize("role,count", (("true", 0), ("false", 0), ("", 0)))
+@pytest.mark.parametrize("role,count", (("accepted", 0), ("confirmed", 0), ("", 0)))
 @pytest.mark.django_db
 def test_can_remind_answered_submission_question(
     orga_client,
@@ -545,10 +545,16 @@ def test_can_remind_answered_submission_question(
         event.question_template = None
         event.save()
         Answer.objects.create(
-            submission=slot.submission, question=question, person=speaker
+            submission=slot.submission,
+            question=question,
+            person=speaker,
+            answer="something",
         )
         Answer.objects.create(
-            submission=other_submission, question=question, person=other_speaker
+            submission=other_submission,
+            question=question,
+            person=other_speaker,
+            answer="something",
         )
     response = orga_client.post(
         event.cfp.urls.remind_questions, {"role": role}, follow=True

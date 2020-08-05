@@ -344,11 +344,13 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
         for question in questions:
             if question.target == QuestionTarget.SUBMISSION:
                 for submission in submissions:
-                    if not question.answers.filter(submission=submission):
+                    answer = question.answers.filter(submission=submission).first()
+                    if not answer or not answer.is_answered:
                         missing.append(question)
                         continue
             elif question.target == QuestionTarget.SPEAKER:
-                if not question.answers.filter(person=person):
+                answer = question.answers.filter(person=person).first()
+                if not answer or not answer.is_answered:
                     missing.append(question)
         return missing
 
