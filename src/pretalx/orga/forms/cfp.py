@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 from hierarkey.forms import HierarkeyForm
@@ -9,6 +10,7 @@ from pretalx.submission.models import (
     AnswerOption,
     CfP,
     Question,
+    QuestionVariant,
     SubmissionType,
     SubmitterAccessCode,
     Track,
@@ -322,6 +324,7 @@ class QuestionFilterForm(forms.Form):
             ("confirmed", _("Confirmed speakers")),
         ),
         required=False,
+        label=_("Recipients"),
     )
     track = SafeModelChoiceField(Track.objects.none(), required=False)
     submission_type = SafeModelChoiceField(
@@ -338,3 +341,45 @@ class QuestionFilterForm(forms.Form):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
+
+    def get_question_information(self, question):
+        result = {}
+        role = self.cleaned_data["role"]
+        track = self.cleaned_data.get("track")
+        submission_type = self.cleaned_data["submission_type"]
+        talks = self.event.submissions.all()
+        speakers = self.event.submitters.all()
+        if role == "accepted":
+            talks = talks.filter(Q(state="accepted") | Q(state="confirmed"))
+        elif role == "confirmed":
+            talks = talks.filter(state="confirmed")
+        if track:
+            talks = talks.filter(track=track)
+        if submission_type:
+            talks = talks.filter(submission_type=submission_type)
+        speakers = speakers.filter(submissions__in=talks)
+        answers = question.answers.filter(
+            Q(person__in=speakers) | Q(submission__in=talks)
+        )
+        result["answer_count"] = answers.count()
+        result["missing_answers"] = question.missing_answers(
+            filter_speakers=speakers, filter_talks=talks
+        )
+        if question.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
+            grouped_answers = (
+                answers.order_by("options")
+                .values("options", "options__answer")
+                .annotate(count=Count("id"))
+                .order_by("-count")
+            )
+        elif question.variant == QuestionVariant.FILE:
+            grouped_answers = [{"answer": answer, "count": 1} for answer in answers]
+        else:
+            grouped_answers = (
+                answers.order_by("answer")
+                .values("answer")
+                .annotate(count=Count("id"))
+                .order_by("-count")
+            )
+        result["grouped_answers"] = grouped_answers
+        return result
