@@ -105,6 +105,12 @@ class ExhibitionService:
             return None
         r.state = "answered"
         r.save(update_fields=["state"])
+        r = dict(
+            id=str(r.id),
+            exhibitor_id=str(r.exhibitor.id),
+            user_id=str(r.user.id),
+            state=r.state,
+        )
         return r
 
     @database_sync_to_async
@@ -117,3 +123,10 @@ class ExhibitionService:
             return None
 
         return ExhibitorStaff.objects.create(user=u, exhibitor=e,)
+
+    @database_sync_to_async
+    def get_staff(self, exhibitor_id):
+        e = get_exhibitor_by_id(self.world_id, exhibitor_id)
+        if not e:
+            return None
+        return list(e.staff.values_list("user__id", flat=True))

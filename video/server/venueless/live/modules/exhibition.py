@@ -42,17 +42,14 @@ class ExhibitionModule(BaseModule):
             await self.consumer.send_error("exhibition.unknown_exhibitor")
             return
 
-        contact_request = await self.service.contact(
+        request = await self.service.contact(
             exhibitor_id=exhibitor["id"], user=self.consumer.user
         )
-        await self.consumer.send_success({"contact_request": contact_request})
+        await self.consumer.send_success({"contact_request": request})
         for user_id in exhibitor["staff"]:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {
-                    "type": "exhibition.contact_request",
-                    "contact_request": contact_request,
-                },
+                {"type": "exhibition.contact_request", "contact_request": request,},
             )
         await self.consumer.send_success()
 
@@ -67,6 +64,12 @@ class ExhibitionModule(BaseModule):
             await self.consumer.send_error("exhibition.unknown_contact_request")
             return
         await self.consumer.send_success()
+        staff = await self.service.get_staff(exhibitor_id=request["exhibitor_id"])
+        for user_id in staff:
+            await self.consumer.channel_layer.group_send(
+                GROUP_USER.format(id=str(user_id)),
+                {"type": "exhibition.contact_cancel", "contact_request": request,},
+            )
 
     @command("contact_accept")
     async def contact_accept(self, body):
@@ -75,12 +78,18 @@ class ExhibitionModule(BaseModule):
             await self.consumer.send_error("exhibition.unknown_contact_request")
             return
         await self.consumer.send_success()
+        staff = await self.service.get_staff(exhibitor_id=request["exhibitor_id"])
+        for user_id in staff:
+            await self.consumer.channel_layer.group_send(
+                GROUP_USER.format(id=str(user_id)),
+                {"type": "exhibition.contact_cancel", "contact_request": request,},
+            )
 
     @command("add_staff")
     @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
     async def add_staff(self, body):
         staff = await self.service.add_staff(
-            exhibitor_id=body["exhibitor"], user_id=body["staff"]
+            exhibitor_id=body["exhibitor"], user_id=body["user"]
         )
         if not staff:
             await self.consumer.send_error("exhibition.unknown_user_or_exhibitor")
@@ -89,4 +98,8 @@ class ExhibitionModule(BaseModule):
 
     @event("contact_request")
     async def contact_request(self, body):
+        await self.consumer.send_success({"contact_request": body["contact_request"]})
+
+    @event("contact_cancel")
+    async def contact_request_cancel(self, body):
         await self.consumer.send_success({"contact_request": body["contact_request"]})

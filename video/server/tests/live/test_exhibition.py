@@ -142,7 +142,7 @@ async def test_exhibition_contact(world, exhibition_room):
                 123,
                 {
                     "exhibitor": str(e["id"]),
-                    "staff": str(c_staff.context["user.config"]["id"]),
+                    "user": str(c_staff.context["user.config"]["id"]),
                 },
             ]
         )
