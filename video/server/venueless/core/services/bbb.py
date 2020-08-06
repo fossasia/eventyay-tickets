@@ -78,6 +78,7 @@ def get_create_params_for_call_id(call_id, record, user):
         "record": "true" if record else "false",
         "meta_Source": "venueless",
         "meta_Call": str(call_id),
+        "lockSettingsDisablePrivateChat": "true",
     }
     if call.voice_bridge:
         create_params["voiceBridge"] = call.voice_bridge
@@ -121,6 +122,7 @@ def get_create_params_for_room(
         "meta_Source": "venueless",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
+        "lockSettingsDisablePrivateChat": "true",
     }
     if call.voice_bridge:
         create_params["voiceBridge"] = call.voice_bridge
