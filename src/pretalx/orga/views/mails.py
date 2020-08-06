@@ -393,7 +393,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                         "explanation": _("A list of notifications for this speaker"),
                     }
                 )
-            if template == template.event.question_template:
+            elif template == template.event.question_template:
                 result = [item for item in result if item["name"] in ["event_name"]]
                 result.append(
                     {
