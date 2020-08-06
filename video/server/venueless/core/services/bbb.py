@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import F, Q, Value
 from django.urls import reverse
+from django.utils.html import escape
 from lxml import etree
 from yarl import URL
 
@@ -156,6 +157,31 @@ class BBBService:
             return False
         return root
 
+    async def _post(self, url, xmldata):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    URL(url, encoded=True),
+                    data=xmldata,
+                    headers={"Content-Type": "application/xml"},
+                ) as resp:
+                    if resp.status != 200:
+                        logger.error(
+                            f"Could not contact BBB. Return code: {resp.status}"
+                        )
+                        return False
+
+                    body = await resp.text()
+
+                root = etree.fromstring(body)
+                if root.xpath("returncode")[0].text != "SUCCESS":
+                    logger.error(f"Could not contact BBB. Response: {body}")
+                    return False
+        except:
+            logger.exception("Could not contact BBB.")
+            return False
+        return root
+
     async def get_join_url_for_room(self, room, user, moderator=False):
         m = [m for m in room.module_config if m["type"] == "call.bigbluebutton"][0]
         config = m["config"]
@@ -169,10 +195,21 @@ class BBBService:
             else "ALWAYS_ACCEPT",
         )
         create_url = get_url("create", create_params, server.url, server.secret)
-        if await self._get(create_url) is False:
+
+        xml = "<modules>"
+        presentation = config.get("presentation", None)
+        if presentation:
+            xml += '<module name="presentation"><document url="{}" /></module>'.format(
+                escape(presentation)
+            )
+        xml += "</modules>"
+
+        if await self._post(create_url, xml) is False:
             return
 
-        scheme = 'http://' if settings.DEBUG else 'https://'  # TODO: better determinator?
+        scheme = (
+            "http://" if settings.DEBUG else "https://"
+        )  # TODO: better determinator?
         return get_url(
             "join",
             {
@@ -186,7 +223,9 @@ class BBBService:
                 "guest": "true"
                 if not moderator and config.get("waiting_room", False)
                 else "false",
-                "userdata-bbb_custom_style_url": scheme + self.world.domain + reverse('live:css.bbb'),
+                "userdata-bbb_custom_style_url": scheme
+                + self.world.domain
+                + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
                 "userdata-bbb_mirror_own_webcam": "true",
                 "userdata-bbb_skip_check_audio": "true",
@@ -205,7 +244,9 @@ class BBBService:
         if await self._get(create_url) is False:
             return
 
-        scheme = 'http://' if settings.DEBUG else 'https://'  # TODO: better determinator?
+        scheme = (
+            "http://" if settings.DEBUG else "https://"
+        )  # TODO: better determinator?
         return get_url(
             "join",
             {
@@ -214,7 +255,9 @@ class BBBService:
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
-                "userdata-bbb_custom_style_url": scheme + self.world.domain + reverse('live:css.bbb'),
+                "userdata-bbb_custom_style_url": scheme
+                + self.world.domain
+                + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
                 "userdata-bbb_mirror_own_webcam": "true",
                 "userdata-bbb_skip_check_audio": "true",

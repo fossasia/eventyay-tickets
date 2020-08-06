@@ -130,10 +130,10 @@ class CustomCSSView(View):
 
 @method_decorator(cache_page(1 if settings.DEBUG else 60), name="dispatch")
 class BBBCSSView(TemplateView):
-    template_name = 'live/bbb.css'
-    content_type = 'text/css'
+    template_name = "live/bbb.css"
+    content_type = "text/css"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        ctx['world'] = get_object_or_404(World, domain=self.request.headers["Host"])
+        ctx["world"] = get_object_or_404(World, domain=self.request.headers["Host"])
         return ctx
