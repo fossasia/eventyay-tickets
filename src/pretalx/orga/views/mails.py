@@ -393,6 +393,22 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                         "explanation": _("A list of notifications for this speaker"),
                     }
                 )
+            if template == template.event.question_template:
+                result = [item for item in result if item["name"] in ["event_name"]]
+                result.append(
+                    {
+                        "name": "url",
+                        "explanation": _("The link to the user's list of submissions"),
+                    }
+                )
+                result.append(
+                    {
+                        "name": "questions",
+                        "explanation": _(
+                            "The list of questions that the user has not answered, as bullet points"
+                        ),
+                    }
+                )
             return result
         return None
 

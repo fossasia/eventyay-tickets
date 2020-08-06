@@ -433,6 +433,7 @@ class Event(LogMixin, FileCleanupMixin, models.Model):
             self.ack_template,
             self.reject_template,
             self.update_template,
+            self.question_template,
         ]
 
     def build_initial_data(self):
