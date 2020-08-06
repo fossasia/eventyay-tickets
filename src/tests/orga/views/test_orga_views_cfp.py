@@ -454,7 +454,6 @@ def test_can_remind_speaker_question(
     role,
     count,
 ):
-    question = speaker_question
     with scope(event=event):
         original_count = QueuedMail.objects.count()
     response = orga_client.post(

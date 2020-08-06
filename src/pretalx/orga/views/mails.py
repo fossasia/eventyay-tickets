@@ -342,6 +342,7 @@ class TemplateList(EventPermissionRequired, TemplateView):
         ack = self.request.event.ack_template
         reject = self.request.event.reject_template
         update = self.request.event.update_template
+        remind = self.request.event.question_template
         result["accept"] = MailTemplateForm(
             instance=accept, read_only=True, event=self.request.event
         )
@@ -354,9 +355,12 @@ class TemplateList(EventPermissionRequired, TemplateView):
         result["update"] = MailTemplateForm(
             instance=update, read_only=True, event=self.request.event
         )
+        result["remind"] = MailTemplateForm(
+            instance=remind, read_only=True, event=self.request.event
+        )
         pks = [
             template.pk if template else None
-            for template in [accept, ack, reject, update]
+            for template in [accept, ack, reject, update, remind]
         ]
         result["other"] = [
             MailTemplateForm(

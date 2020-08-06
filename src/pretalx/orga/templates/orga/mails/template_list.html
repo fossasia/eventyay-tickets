@@ -65,6 +65,15 @@
             <a href="{{ request.event.orga_urls.compose_mails }}?template={{ update.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
         </a></div>
     </div>
+    <div>
+        {% csrf_token %}
+        <h3>{% trans "Unanswered questions reminder" %}</h3>
+        {% bootstrap_form remind layout='event' %}
+        <div class="clearfix"><a href="{{ remind.instance.urls.edit }}">
+            <button class="btn btn-info float-right">{% trans "Edit template" %}</button>
+            <a href="{{ request.event.orga_urls.compose_mails }}?template={{ remind.instance.pk }}" class="btn btn-success float-right">{% trans "Send mails" %}</a>
+        </a></div>
+    </div>
 
     {% for template in other %}
     <div>
