@@ -7,7 +7,7 @@ from django.views.static import serve
 
 from .api.urls import urlpatterns as api_patterns
 from .graphs import urls as graphs
-from .live import views
+from .live import urls as live, views
 from .storage import urls as storage
 
 
@@ -31,6 +31,7 @@ urlpatterns = (
         re_path(r"^manifest.json", views.ManifestView.as_view()),
         re_path(r"graphs/", include(graphs)),
         re_path(r"storage/", include((storage, "storage"), namespace="storage")),
+        re_path(r"", include((live, "live"), namespace="live")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + [re_path(r"(.*)", views.AppView.as_view()),]

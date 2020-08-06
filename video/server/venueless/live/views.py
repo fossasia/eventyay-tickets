@@ -6,8 +6,10 @@ from asgiref.sync import async_to_sync
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from venueless.core.models import World
 from venueless.core.utils.redis import aioredis
@@ -23,7 +25,7 @@ class SourceCache:
             with open(wapath) as f:
                 return f.read()
         except IOError:
-            return "<!-- {} not found -->".format(wapath)
+            return "<!-- {} not found --><body></body>".format(wapath)
 
 
 sh = SourceCache()
@@ -89,6 +91,14 @@ class AppView(View):
                 )
             ),
         )
+        if world.config.get("theme", {}).get("css", ""):
+            source = source.replace(
+                "<body>",
+                "<link rel='stylesheet' href='{}'><body>".format(
+                    reverse("live:css.custom")
+                ),
+            )
+
         return HttpResponse(source, content_type="text/html")
 
 
@@ -106,3 +116,11 @@ class HealthcheckView(View):
         self._check_redis()
         World.objects.count()
         return HttpResponse("OK")
+
+
+@method_decorator(cache_page(60), name="dispatch")
+class CustomCSSView(View):
+    def get(self, request, *args, **kwargs):
+        world = get_object_or_404(World, domain=request.headers["Host"])
+        source = world.config.get("theme", {}).get("css", "")
+        return HttpResponse(source, content_type="text/css")
