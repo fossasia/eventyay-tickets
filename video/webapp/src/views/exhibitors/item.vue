@@ -9,13 +9,13 @@ scrollbars.c-exhibitor(y)
 				h2 Downloads
 				a.download(href="#")
 					.mdi.mdi-file-pdf-outline
-					.filename brochure.pdf
+					.filename Broschüre „Übersicht offene Stellen“
 				a.download(href="#")
 					.mdi.mdi-file-pdf-outline
-					.filename datasheet-product-XLW23030.pdf
+					.filename Broschüre „Unsere Produktpalette“
 				a.download(href="#")
 					.mdi.mdi-file-powerpoint-outline
-					.filename some-weird-presentation.ppx
+					.filename Vortragsfolien „Zukunft im Wandel“
 		.sidebar
 			.header
 				img.logo(:src="exhibitor.logo")
@@ -31,7 +31,9 @@ scrollbars.c-exhibitor(y)
 			.contact
 				bunt-button(@click="contact", :tooltip="$t('Exhibition:contact-button:tooltip')") {{ $t('Exhibition:contact-button:label') }}
 			.staff
-				h2 TODO STAFF
+				h3 Unser Standpersonal
+				<div class="user"><div class="c-avatar" style="--avatar-size:28px;"><div class="c-identicon"><svg viewBox="0 0 2.8284271247461903 2.8284271247461903"><g transform="translate(0.125 1.4142135623730951) scale(.9 .9) rotate(-45 0 0)"><g transform="translate(1 0)" class="shape square"><path d="M 0 0 L 0 1 L 1 1 L 1 0z" transform="scale(0.5, 0.5) translate(0.75, 0.2)" style="fill: rgb(0, 188, 212);"></path></g><g transform="translate(0 0)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(0 1)" class="block"><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(1 1)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(0, 188, 212);"></path><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(103, 58, 183);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g></g></svg></div></div><span class="display-name">Max Muster</span></div>
+				<div class="user"><div class="c-avatar" style="--avatar-size:28px;"><div class="c-identicon"><svg viewBox="0 0 2.8284271247461903 2.8284271247461903"><g transform="translate(0.125 1.4142135623730951) scale(.9 .9) rotate(-45 0 0)"><g transform="translate(1 0)" class="shape square"><path d="M 0 0 L 0 1 L 1 1 L 1 0z" transform="scale(0.5, 0.5) translate(0.75, 0.2)" style="fill: rgb(233, 30, 99);"></path></g><g transform="translate(0 0)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(0 1)" class="block"><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g><g transform="translate(1 1)" class="block"><path d="M 0 0 L 1 0 L 0 1" style="fill: rgb(233, 30, 99);"></path><path d="M 0 0 L 0 1 L 1 1" style="fill: rgb(255, 87, 34);"></path><path d="M 0 0 L 0 1 L 1 1 L 1 0z" class="stroke"></path></g></g></svg></div></div><span class="display-name">Maria Müller</span></div>
 
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -140,11 +142,27 @@ export default {
 				white-space: nowrap
 			a:hover
 					text-decoration: underline
+		.staff
+			padding: 8px
+			h3
+				margin: 0
+			.user
+				display: flex
+				align-items: center
+				cursor: pointer
+				padding: 2px 16px 2px 0
+				&:hover
+					background-color: $clr-grey-100
+				.display-name
+					font-weight: 600
+					color: $clr-secondary-text-light
+					margin-left: 8px
 		.contact
 			flex: none
 			padding: 8px
 			display: flex
 			flex-direction: column
+			border-bottom: border-separator()
 			.bunt-button
 				themed-button-primary()
 	.downloads
