@@ -82,6 +82,8 @@ export default {
 			object-fit: contain
 			width: 100%
 			margin-top: 16px
+	.markdown-content img
+		max-width: 100%
 	.sidebar
 		flex: none
 		min-height: min-content
