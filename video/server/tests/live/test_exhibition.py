@@ -130,6 +130,14 @@ async def test_get_invalid_id(world, exhibition_room):
 @pytest.mark.django_db
 async def test_exhibition_contact_cancel(world, exhibition_room):
     async with world_communicator() as c_staff, world_communicator() as c1:
+        await database_sync_to_async(exhibition_room.role_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c1.context["user.config"]["id"]
+            ),
+            world=world,
+            role="participant",
+        )
+
         # get an exhibitor
         await c_staff.send_json_to(
             ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
@@ -167,7 +175,13 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         )
 
         # issue contact request
-        await c1.send_json_to(["exhibition.contact", 123, {"exhibitor": str(e["id"])}])
+        await c1.send_json_to(
+            [
+                "exhibition.contact",
+                123,
+                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
+            ]
+        )
         response = await c1.receive_json_from()
         assert response[0] == "success"
         request_id = response[2]["contact_request"]["id"]
@@ -177,7 +191,11 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         assert response[1]["id"] == request_id
 
         await c1.send_json_to(
-            ["exhibition.contact_cancel", 123, {"contact_request": request_id}]
+            [
+                "exhibition.contact_cancel",
+                123,
+                {"contact_request": request_id, "room": str(exhibition_room.pk)},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -191,6 +209,14 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
 @pytest.mark.django_db
 async def test_exhibition_contact(world, exhibition_room):
     async with world_communicator() as c_staff, world_communicator() as c1:
+        await database_sync_to_async(exhibition_room.role_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c1.context["user.config"]["id"]
+            ),
+            world=world,
+            role="participant",
+        )
+
         # get an exhibitor
         await c_staff.send_json_to(
             ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
@@ -228,7 +254,13 @@ async def test_exhibition_contact(world, exhibition_room):
         )
 
         # issue contact request
-        await c1.send_json_to(["exhibition.contact", 123, {"exhibitor": str(e["id"])}])
+        await c1.send_json_to(
+            [
+                "exhibition.contact",
+                123,
+                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
+            ]
+        )
         response = await c1.receive_json_from()
         assert response[0] == "success"
 

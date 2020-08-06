@@ -36,6 +36,10 @@ class ExhibitionModule(BaseModule):
         await self.consumer.send_success({"exhibitor": exhibitor})
 
     @command("contact")
+    @room_action(
+        module_required="exhibition.native",
+        permission_required=Permission.ROOM_EXHIBITION_CONTACT,
+    )
     async def contact(self, body):
         exhibitor = await self.service.get_exhibitor(exhibitor_id=body["exhibitor"])
         if not exhibitor:
@@ -52,6 +56,10 @@ class ExhibitionModule(BaseModule):
             )
 
     @command("contact_cancel")
+    @room_action(
+        module_required="exhibition.native",
+        permission_required=Permission.ROOM_EXHIBITION_CONTACT,
+    )
     async def contact_cancel(self, body):
         request = await self.service.missed(contact_request_id=body["contact_request"])
         if not request:

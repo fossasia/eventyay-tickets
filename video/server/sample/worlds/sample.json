@@ -38,7 +38,8 @@
       "room:chat.read",
       "room:bbb.join",
       "room:chat.send",
-      "room:chat.join"
+      "room:chat.join",
+      "room:exhibition.contact"
     ],
     "room_creator": [
       "world:rooms.create.chat"
@@ -52,7 +53,8 @@
       "room:chat.send",
       "room:bbb.join",
       "room:invite",
-      "room:delete"
+      "room:delete",
+      "room:exhibition.contact"
     ],
     "speaker": [
       "world:view",
@@ -62,7 +64,8 @@
       "room:chat.join",
       "room:chat.send",
       "room:bbb.join",
-      "room:bbb.moderate"
+      "room:bbb.moderate",
+      "room:exhibition.contact"
     ],
     "moderator": [
       "world:view",
@@ -75,6 +78,7 @@
       "room:bbb.moderate",
       "room:chat.moderate",
       "room:announce",
+      "room:exhibition.contact",
       "world:announce"
     ],
     "admin": [
@@ -88,6 +92,7 @@
       "room:bbb.moderate",
       "room:chat.moderate",
       "room:announce",
+      "room:exhibition.contact",
       "world:rooms.create.stage",
       "world:rooms.create.chat",
       "world:rooms.create.bbb",
@@ -111,6 +116,7 @@
       "room:bbb.moderate",
       "room:chat.moderate",
       "room:announce",
+      "room:exhibition.contact",
       "world:rooms.create.stage",
       "world:rooms.create.chat",
       "world:rooms.create.bbb",
