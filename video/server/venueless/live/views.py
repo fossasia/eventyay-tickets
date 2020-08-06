@@ -3,6 +3,7 @@ import os
 import re
 
 from asgiref.sync import async_to_sync
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -10,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.decorators.cache import cache_page
+from django.views.generic import TemplateView
 
 from venueless.core.models import World
 from venueless.core.utils.redis import aioredis
@@ -118,9 +120,20 @@ class HealthcheckView(View):
         return HttpResponse("OK")
 
 
-@method_decorator(cache_page(60), name="dispatch")
+@method_decorator(cache_page(1 if settings.DEBUG else 60), name="dispatch")
 class CustomCSSView(View):
     def get(self, request, *args, **kwargs):
         world = get_object_or_404(World, domain=request.headers["Host"])
         source = world.config.get("theme", {}).get("css", "")
         return HttpResponse(source, content_type="text/css")
+
+
+@method_decorator(cache_page(1 if settings.DEBUG else 60), name="dispatch")
+class BBBCSSView(TemplateView):
+    template_name = 'live/bbb.css'
+    content_type = 'text/css'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ctx['world'] = get_object_or_404(World, domain=self.request.headers["Host"])
+        return ctx

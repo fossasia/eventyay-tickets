@@ -7,8 +7,10 @@ from urllib.parse import urlencode, urljoin
 import aiohttp
 import pytz
 from channels.db import database_sync_to_async
+from django.conf import settings
 from django.db import transaction
 from django.db.models import F, Q, Value
+from django.urls import reverse
 from lxml import etree
 from yarl import URL
 
@@ -168,6 +170,7 @@ class BBBService:
         if await self._get(create_url) is False:
             return
 
+        scheme = 'http://' if settings.DEBUG else 'https://'  # TODO: better determinator?
         return get_url(
             "join",
             {
@@ -181,6 +184,10 @@ class BBBService:
                 "guest": "true"
                 if not moderator and config.get("waiting_room", False)
                 else "false",
+                "userdata-bbb_custom_style_url": scheme + self.world.domain + reverse('live:css.bbb'),
+                "userdata-bbb_show_public_chat_on_login": "false",
+                "userdata-bbb_mirror_own_webcam": "true",
+                "userdata-bbb_skip_check_audio": "true",
             },
             server.url,
             server.secret,
@@ -196,6 +203,7 @@ class BBBService:
         if await self._get(create_url) is False:
             return
 
+        scheme = 'http://' if settings.DEBUG else 'https://'  # TODO: better determinator?
         return get_url(
             "join",
             {
@@ -204,6 +212,10 @@ class BBBService:
                 "userID": str(user.pk),
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
+                "userdata-bbb_custom_style_url": scheme + self.world.domain + reverse('live:css.bbb'),
+                "userdata-bbb_show_public_chat_on_login": "false",
+                "userdata-bbb_mirror_own_webcam": "true",
+                "userdata-bbb_skip_check_audio": "true",
             },
             server.url,
             server.secret,
