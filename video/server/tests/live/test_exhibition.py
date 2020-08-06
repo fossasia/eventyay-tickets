@@ -173,7 +173,8 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         request_id = response[2]["contact_request"]["id"]
 
         response = await c_staff.receive_json_from()
-        assert response[0] == "success"
+        assert response[0] == "contact_request"
+        assert response[1]["id"] == request_id
 
         await c1.send_json_to(
             ["exhibition.contact_cancel", 123, {"contact_request": request_id}]
@@ -182,8 +183,8 @@ async def test_exhibition_contact_cancel(world, exhibition_room):
         assert response[0] == "success"
 
         response = await c_staff.receive_json_from()
-        assert response[0] == "success"
-        assert response[2]["contact_request_close"]["id"] == request_id
+        assert response[0] == "contact_request_close"
+        assert response[1]["id"] == request_id
 
 
 @pytest.mark.asyncio
@@ -233,8 +234,8 @@ async def test_exhibition_contact(world, exhibition_room):
 
         # receive request and answer
         response = await c_staff.receive_json_from()
-        assert response[0] == "success"
-        contact_request_id = response[2]["contact_request"]["id"]
+        assert response[0] == "contact_request"
+        contact_request_id = response[1]["id"]
         await c_staff.send_json_to(
             [
                 "exhibition.contact_accept",
@@ -245,9 +246,9 @@ async def test_exhibition_contact(world, exhibition_room):
         response = await c_staff.receive_json_from()
         assert response[0] == "success"
         response = await c1.receive_json_from()
-        assert response[0] == "success"
+        assert response[0] == "contact_accepted"
         response = await c_staff.receive_json_from()
-        assert response[0] == "success"
+        assert response[0] == "contact_request_close"
 
         # try to answer same request twice
         await c_staff.send_json_to(

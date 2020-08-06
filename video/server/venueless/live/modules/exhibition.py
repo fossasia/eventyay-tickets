@@ -41,7 +41,6 @@ class ExhibitionModule(BaseModule):
         if not exhibitor:
             await self.consumer.send_error("exhibition.unknown_exhibitor")
             return
-
         request = await self.service.contact(
             exhibitor_id=exhibitor["id"], user=self.consumer.user
         )
@@ -97,14 +96,14 @@ class ExhibitionModule(BaseModule):
 
     @event("contact_request")
     async def contact_request(self, body):
-        await self.consumer.send_success({"contact_request": body["contact_request"]})
+        await self.consumer.send_json(["contact_request", body["contact_request"]])
 
     @event("contact_accepted")
     async def contact_accepted(self, body):
-        await self.consumer.send_success({"contact_accepted": body["contact_request"]})
+        await self.consumer.send_json(["contact_accepted", body["contact_request"]])
 
     @event("contact_close")
     async def contact_request_cancel(self, body):
-        await self.consumer.send_success(
-            {"contact_request_close": body["contact_request"]}
+        await self.consumer.send_json(
+            ["contact_request_close", body["contact_request"]]
         )
