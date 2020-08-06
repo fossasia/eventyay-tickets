@@ -89,7 +89,7 @@ export default {
 		min-height: min-content
 		display: flex
 		flex-direction: column
-		width: 320px
+		width: 360px
 		border: border-separator()
 		border-radius: 4px
 		margin-top: 16px
@@ -103,8 +103,8 @@ export default {
 			img.logo
 				object-fit: contain
 				width: 100%
-				height: 160px
-				max-height: 160px
+				height: 344px
+				max-height: 344px
 			.heading
 				display: flex
 				width: 100%
