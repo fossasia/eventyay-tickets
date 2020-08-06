@@ -196,15 +196,18 @@ class BBBService:
         )
         create_url = get_url("create", create_params, server.url, server.secret)
 
-        xml = "<modules>"
         presentation = config.get("presentation", None)
         if presentation:
+            xml = "<modules>"
             xml += '<module name="presentation"><document url="{}" /></module>'.format(
                 escape(presentation)
             )
-        xml += "</modules>"
+            xml += "</modules>"
+            req = await self._post(create_url, xml)
+        else:
+            req = await self._get(create_url)
 
-        if await self._post(create_url, xml) is False:
+        if req is False:
             return
 
         scheme = (
