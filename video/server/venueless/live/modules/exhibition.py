@@ -79,12 +79,15 @@ class ExhibitionModule(BaseModule):
         if not request:
             await self.consumer.send_error("exhibition.unknown_contact_request")
             return
+        staff = await self.service.get_staff(exhibitor_id=request["exhibitor_id"])
+        if self.consumer.user.id not in staff:
+            await self.consumer.send_error("exhibition.not_staff_member")
+            return
         await self.consumer.send_success()
         await self.consumer.channel_layer.group_send(
             GROUP_USER.format(id=request["user_id"]),
             {"type": "exhibition.contact_accepted", "contact_request": request,},
         )
-        staff = await self.service.get_staff(exhibitor_id=request["exhibitor_id"])
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),

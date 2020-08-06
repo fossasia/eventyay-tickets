@@ -293,3 +293,85 @@ async def test_exhibition_contact(world, exhibition_room):
         response = await c_staff.receive_json_from()
         assert response[0] == "error"
         assert response[2]["code"] == "exhibition.unknown_contact_request"
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_exhibition_contact_not_staff(world, exhibition_room):
+    async with world_communicator() as c_staff, world_communicator() as c1, world_communicator() as c2:
+        await database_sync_to_async(exhibition_room.role_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c1.context["user.config"]["id"]
+            ),
+            world=world,
+            role="participant",
+        )
+        await database_sync_to_async(exhibition_room.role_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c2.context["user.config"]["id"]
+            ),
+            world=world,
+            role="participant",
+        )
+
+        # get an exhibitor
+        await c_staff.send_json_to(
+            ["exhibition.list", 123, {"room": str(exhibition_room.pk)}]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        e = response[2]["exhibitors"][0]
+
+        # add staff
+        await database_sync_to_async(world.world_grants.create)(
+            user=await database_sync_to_async(User.objects.get)(
+                id=c_staff.context["user.config"]["id"]
+            ),
+            world=world,
+            role="admin",
+        )
+        await c_staff.send_json_to(
+            [
+                "exhibition.add_staff",
+                123,
+                {
+                    "exhibitor": str(e["id"]),
+                    "user": str(c_staff.context["user.config"]["id"]),
+                },
+            ]
+        )
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+
+        await c_staff.send_json_to(["exhibition.get", 123, {"exhibitor": str(e["id"])}])
+        response = await c_staff.receive_json_from()
+        assert response[0] == "success"
+        assert response[2]["exhibitor"]["staff"][0] == str(
+            c_staff.context["user.config"]["id"]
+        )
+
+        # issue contact request
+        await c1.send_json_to(
+            [
+                "exhibition.contact",
+                123,
+                {"exhibitor": str(e["id"]), "room": str(exhibition_room.pk)},
+            ]
+        )
+        response = await c1.receive_json_from()
+        assert response[0] == "success"
+
+        # receive request and answer
+        response = await c_staff.receive_json_from()
+        assert response[0] == "contact_request"
+        contact_request_id = response[1]["id"]
+        await c2.send_json_to(
+            [
+                "exhibition.contact_accept",
+                123,
+                {"contact_request": str(contact_request_id)},
+            ]
+        )
+        response = await c2.receive_json_from()
+        assert response[0] == "error"
+        assert response[2]["code"] == "exhibition.not_staff_member"
