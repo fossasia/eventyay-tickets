@@ -4,7 +4,7 @@ from .feedback import Feedback
 from .question import Answer, AnswerOption, Question, QuestionTarget, QuestionVariant
 from .resource import Resource
 from .review import Review, ReviewPhase
-from .submission import Submission, SubmissionError, SubmissionStates
+from .submission import Submission, SubmissionStates
 from .track import Track
 from .type import SubmissionType
 
@@ -20,7 +20,6 @@ __all__ = [
     "Review",
     "ReviewPhase",
     "Submission",
-    "SubmissionError",
     "SubmissionStates",
     "SubmissionType",
     "SubmitterAccessCode",

@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.mail import SendMailException
+from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.mail.context import template_context_from_submission
 from pretalx.mail.models import MailTemplate

@@ -3,12 +3,8 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django_scopes import scope
 
-from pretalx.submission.models import (
-    Answer,
-    Submission,
-    SubmissionError,
-    SubmissionStates,
-)
+from pretalx.common.exceptions import SubmissionError
+from pretalx.submission.models import Answer, Submission, SubmissionStates
 from pretalx.submission.models.submission import submission_image_path
 
 

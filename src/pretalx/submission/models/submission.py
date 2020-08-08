@@ -14,6 +14,7 @@ from django.utils.translation import pgettext
 from django_scopes import ScopedManager
 
 from pretalx.common.choices import Choices
+from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode, LogMixin
 from pretalx.common.phrases import phrases
 from pretalx.common.urls import EventUrls
@@ -25,10 +26,6 @@ from pretalx.submission.signals import submission_state_change
 
 def generate_invite_code(length=32):
     return get_random_string(length=length, allowed_chars=Submission._code_charset)
-
-
-class SubmissionError(Exception):
-    pass
 
 
 def submission_image_path(instance, filename):

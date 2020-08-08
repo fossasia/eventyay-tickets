@@ -8,6 +8,7 @@ from django.core.mail.backends.smtp import EmailBackend
 from inlinestyler.utils import inline_css
 
 from pretalx.celery_app import app
+from pretalx.common.exceptions import SendMailException
 from pretalx.event.models import Event
 
 logger = logging.getLogger(__name__)
@@ -38,10 +39,6 @@ class TolerantDict(dict):
     def __missing__(self, key):
         """Don't fail when formatting strings with a dict with missing keys."""
         return key
-
-
-class SendMailException(Exception):
-    pass
 
 
 @app.task(bind=True)

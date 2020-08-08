@@ -17,7 +17,7 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from django_context_decorator import context
 
 from pretalx.cfp.forms.auth import ResetForm
-from pretalx.common.mail import SendMailException
+from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.person.forms import UserForm
 from pretalx.person.models import User

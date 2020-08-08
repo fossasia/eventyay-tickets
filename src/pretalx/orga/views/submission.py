@@ -21,6 +21,7 @@ from django.utils.translation import gettext as _
 from django.utils.translation import override
 from django.views.generic import ListView, TemplateView, UpdateView, View
 
+from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -41,7 +42,6 @@ from pretalx.submission.models import (
     Feedback,
     Resource,
     Submission,
-    SubmissionError,
     SubmissionStates,
 )
 

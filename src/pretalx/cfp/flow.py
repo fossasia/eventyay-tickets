@@ -23,7 +23,7 @@ from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.cfp.signals import cfp_steps
-from pretalx.common.mail import SendMailException
+from pretalx.common.exceptions import SendMailException
 from pretalx.common.phrases import phrases
 from pretalx.common.utils import language
 from pretalx.person.forms import SpeakerProfileForm, UserForm

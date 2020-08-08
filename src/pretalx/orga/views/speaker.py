@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, View
 from django_context_decorator import context
 
-from pretalx.common.mail import SendMailException
+from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
