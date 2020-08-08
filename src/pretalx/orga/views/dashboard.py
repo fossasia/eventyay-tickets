@@ -109,7 +109,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     teams__in=self.request.event.teams.filter(is_reviewer=True),
                     reviews__isnull=False,
                 )
-                .order_by("user__id")
+                .order_by("id")
                 .distinct()
                 .count()
             )
